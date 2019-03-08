@@ -302,6 +302,7 @@ namespace sw
 			case spv::OpFUnordLessThanEqual:
 			case spv::OpFOrdGreaterThanEqual:
 			case spv::OpFUnordGreaterThanEqual:
+			case spv::OpSMod:
 			case spv::OpUMod:
 			case spv::OpIEqual:
 			case spv::OpINotEqual:
@@ -943,7 +944,7 @@ namespace sw
 				// TODO: what to do about zero-slot objects?
 				if (pointeeTy.sizeInComponents > 0)
 				{
-					routine->createLvalue(insn.word(2), pointeeTy.sizeInComponents);
+					routine->createLvalue(resultId, pointeeTy.sizeInComponents);
 				}
 				break;
 			}
@@ -1081,6 +1082,7 @@ namespace sw
 			case spv::OpFUnordLessThanEqual:
 			case spv::OpFOrdGreaterThanEqual:
 			case spv::OpFUnordGreaterThanEqual:
+			case spv::OpSMod:
 			case spv::OpUMod:
 			case spv::OpIEqual:
 			case spv::OpINotEqual:
@@ -1540,6 +1542,9 @@ namespace sw
 				break;
 			case spv::OpUDiv:
 				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) / As<SIMD::UInt>(rhs)));
+				break;
+			case spv::OpSMod:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) % As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpUMod:
 				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) % As<SIMD::UInt>(rhs)));
