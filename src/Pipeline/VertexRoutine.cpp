@@ -22,6 +22,8 @@
 #include "Vulkan/VkDebug.hpp"
 #include "SpirvShader.hpp"
 
+#include "Vulkan/VkPipelineLayout.hpp"
+
 namespace sw
 {
 	VertexRoutine::VertexRoutine(
@@ -50,6 +52,13 @@ namespace sw
 		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
+
+		Pointer<Pointer<Byte>> descriptorSets = *Pointer<Pointer<Pointer<Byte>>>(data + OFFSET(DrawData,descriptorSets));
+		auto numDescriptorSets = routine.pipelineLayout->getNumDescriptorSets();
+		for(unsigned int i = 0; i < numDescriptorSets; i++)
+		{
+			routine.descriptorSets[i] = descriptorSets[i];
+		}
 
 		Do
 		{
