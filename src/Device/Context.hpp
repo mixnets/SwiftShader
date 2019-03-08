@@ -21,8 +21,11 @@
 #include "Vertex.hpp"
 #include "System/Types.hpp"
 
+#include <Vulkan/VkConfig.h>
+
 namespace vk
 {
+	class DescriptorSet;
 	class ImageView;
 	class PipelineLayout;
 } // namespace vk
@@ -189,6 +192,7 @@ namespace sw
 		int colorWriteActive(int index);
 		bool colorUsed();
 
+		vk::DescriptorSet *descriptorSets[vk::MAX_BOUND_DESCRIPTOR_SETS];
 		Stream input[MAX_VERTEX_INPUTS];
 		void *indexBuffer;
 
