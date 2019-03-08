@@ -288,6 +288,7 @@ namespace sw
 			case spv::OpUDiv:
 			case spv::OpFAdd:
 			case spv::OpFSub:
+			case spv::OpFMul:
 			case spv::OpFDiv:
 			case spv::OpFOrdEqual:
 			case spv::OpFUnordEqual:
@@ -1027,6 +1028,7 @@ namespace sw
 			case spv::OpUDiv:
 			case spv::OpFAdd:
 			case spv::OpFSub:
+			case spv::OpFMul:
 			case spv::OpFDiv:
 			case spv::OpFOrdEqual:
 			case spv::OpFUnordEqual:
@@ -1520,6 +1522,9 @@ namespace sw
 				break;
 			case spv::OpFSub:
 				dst.emplace(i, lhs - rhs);
+				break;
+			case spv::OpFMul:
+				dst.emplace(i, lhs * rhs);
 				break;
 			case spv::OpFDiv:
 				dst.emplace(i, lhs / rhs);
