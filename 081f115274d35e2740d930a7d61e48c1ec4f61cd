@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c9fb27a_0bcd43e1",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T16:42:36Z",
+      "side": 1,
+      "message": "This struct is starting to get relatively large. Not an issue at the moment, but is there any potential for putting these and/or other members in unions when they are mutually exclusive? Or does SPIR-V not put any restriction on decorating things?\n\nLGTM regardless of the answer.",
+      "range": {
+        "startLine": 295,
+        "startChar": 3,
+        "endLine": 297,
+        "endChar": 24
+      },
+      "revId": "081f115274d35e2740d930a7d61e48c1ec4f61cd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e94f9005_2fac647b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T16:42:36Z",
+      "side": 1,
+      "message": "Are these (and others) necessary when we\u0027re using -1 as initialization value?\n\nAgain LGTM for now, just wondering if it\u0027s worth considering refactoring later.",
+      "range": {
+        "startLine": 308,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 28
+      },
+      "revId": "081f115274d35e2740d930a7d61e48c1ec4f61cd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf0e26d2_5c9def02",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T16:42:36Z",
+      "side": 1,
+      "message": "Are negative values expressly forbidden by the SPIR-V spec or validation?\n\nLGTM either way.",
+      "range": {
+        "startLine": 315,
+        "startChar": 7,
+        "endLine": 315,
+        "endChar": 53
+      },
+      "revId": "081f115274d35e2740d930a7d61e48c1ec4f61cd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
