@@ -710,7 +710,11 @@ namespace rr
 
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
-	enum EmulatedType
+	// 64-bit vectors are emulated using 128-bit ones to avoid use of MMX in x86
+	// and VFP in ARM, and eliminate the overhead of converting them to explicit
+	// 128-bit ones. LLVM types are pointers, so we can represent emulated types
+	// as abstract pointers with small enum values.
+	enum EmulatedType : uintptr_t
 	{
 		Type_v2i32,
 		Type_v4i16,
@@ -721,11 +725,23 @@ namespace rr
 		EmulatedTypeCount
 	};
 
+	inline EmulatedType asEmulatedType(Type *type)
+	{
+		return static_cast<EmulatedType>(reinterpret_cast<uintptr_t>(type));
+	}
+
+	inline bool isEmulatedType(Type *type)
+	{
+		EmulatedType t = asEmulatedType(type);
+		return (t < EmulatedTypeCount);
+	}
+
 	llvm::Type *T(Type *t)
 	{
-		uintptr_t type = reinterpret_cast<uintptr_t>(t);
-		if(type < EmulatedTypeCount)
+		if(isEmulatedType(t))
 		{
+			EmulatedType type = asEmulatedType(t);
+
 			// Use 128-bit vectors to implement logically shorter ones.
 			switch(type)
 			{
@@ -779,9 +795,10 @@ namespace rr
 
 	static size_t typeSize(Type *type)
 	{
-		uintptr_t t = reinterpret_cast<uintptr_t>(type);
-		if(t < EmulatedTypeCount)
+		if(isEmulatedType(type))
 		{
+			EmulatedType t = asEmulatedType(type);
+
 			switch(t)
 			{
 			case Type_v2i32: return 8;
@@ -794,14 +811,29 @@ namespace rr
 			}
 		}
 
-		return T(type)->getPrimitiveSizeInBits() / 8;
+		llvm::Type *t = T(type);
+
+		if(t->isPointerTy())
+		{
+			return sizeof(void*);
+		}
+
+		// At this point we should only have LLVM 'primitive' types.
+		unsigned int bits = t->getPrimitiveSizeInBits();
+		assert(bits != 0);
+
+		// TODO(capn): Booleans are 1 bit integers in LLVM's SSA type system,
+		// but are typically stored as one byte. The DataLayout structure should
+		// be used here and many other places if this assumption fails.
+		return (bits + 7) / 8;
 	}
 
 	static unsigned int elementCount(Type *type)
 	{
-		uintptr_t t = reinterpret_cast<uintptr_t>(type);
-		if(t < EmulatedTypeCount)
+		if(isEmulatedType(type))
 		{
+			EmulatedType t = asEmulatedType(type);
+
 			switch(t)
 			{
 			case Type_v2i32: return 2;
@@ -1171,9 +1203,10 @@ namespace rr
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int alignment)
 	{
-		uintptr_t t = reinterpret_cast<uintptr_t>(type);
-		if(t < EmulatedTypeCount)
+		if(isEmulatedType(type))
 		{
+			EmulatedType t = asEmulatedType(type);
+
 			switch(t)
 			{
 			case Type_v2i32:
@@ -1208,9 +1241,10 @@ namespace rr
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int alignment)
 	{
-		uintptr_t t = reinterpret_cast<uintptr_t>(type);
-		if(t < EmulatedTypeCount)
+		if(isEmulatedType(type))
 		{
+			EmulatedType t = asEmulatedType(type);
+
 			switch(t)
 			{
 			case Type_v2i32:
@@ -1268,15 +1302,21 @@ namespace rr
 				createSExt(index, Long::getType());
 		}
 
-		if (reinterpret_cast<uintptr_t>(type) >= EmulatedTypeCount)
+		// For non-emulated types we can rely on LLVM's GEP to calculate the
+		// effective address correctly.
+		if(!isEmulatedType(type))
 		{
 			return V(::builder->CreateGEP(V(ptr), V(index)));
 		}
 
+		// For emulated types we have to multiply the index by the intended
+		// type size ourselves to obain the byte offset.
 		index = (sizeof(void*) == 8) ?
 			createMul(index, createConstantLong((int64_t)typeSize(type))) :
 			createMul(index, createConstantInt((int)typeSize(type)));
 
+		// Cast to a byte pointer, apply the byte offset, and cast back to the
+		// original pointer type.
 		return createBitCast(
 			V(::builder->CreateGEP(V(createBitCast(ptr, T(llvm::PointerType::get(T(Byte::getType()), 0)))), V(index))),
 			T(llvm::PointerType::get(T(type), 0)));
