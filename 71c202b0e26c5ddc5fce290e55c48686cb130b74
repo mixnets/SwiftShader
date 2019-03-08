@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7321a9e0_9c6d2932",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1846,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-08T23:10:58Z",
+      "side": 1,
+      "message": "Note: In the cases where the arguments are not completely obvious, I\u0027m mirroring the SPIRV extended instruction set operand names.",
+      "revId": "71c202b0e26c5ddc5fce290e55c48686cb130b74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
