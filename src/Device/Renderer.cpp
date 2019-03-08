@@ -313,6 +313,11 @@ namespace sw
 		draw->setupPrimitives = setupPrimitives;
 		draw->setupState = setupState;
 
+		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
+		{
+			data->descriptorSets[i] = context->descriptorSets[i];
+		}
+
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
 			data->input[i] = context->input[i].buffer;
