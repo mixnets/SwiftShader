@@ -231,6 +231,9 @@ std::vector<uint32_t> preprocessSpirv(
 	opt.RegisterPass(spvtools::CreateFreezeSpecConstantValuePass());
 	opt.RegisterPass(spvtools::CreateFoldSpecConstantOpAndCompositePass());
 
+	// Strip debug opcodes
+	opt.RegisterPass(spvtools::CreateStripDebugInfoPass());
+
 	std::vector<uint32_t> optimized;
 	opt.Run(code.data(), code.size(), &optimized);
 	return optimized;
