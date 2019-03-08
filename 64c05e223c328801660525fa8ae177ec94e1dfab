@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01269114_6144b5b8",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 715,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T16:56:13Z",
+      "side": 1,
+      "message": "Could you open a bug for it and reference it here? I\u0027m not 100% sure dEQP checks it, but we don\u0027t want to lose track of important robustness issues.",
+      "range": {
+        "startLine": 715,
+        "startChar": 7,
+        "endLine": 715,
+        "endChar": 11
+      },
+      "revId": "64c05e223c328801660525fa8ae177ec94e1dfab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
