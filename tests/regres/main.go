@@ -877,24 +877,23 @@ func compare(old, new *CommitTestResults) string {
 	oldStatusCounts, newStatusCounts := map[Status]int{}, map[Status]int{}
 	totalTests := 0
 
-	broken, fixed, failing, removed, changed, addedPass, addedFail :=
-		[]string{}, []string{}, []string{}, []string{}, []string{}, []string{}, []string{}
+	broken, fixed, failing, removed, changed := []string{}, []string{}, []string{}, []string{}, []string{}
 
 	for test, new := range new.Tests {
 		old, found := old.Tests[test]
+		if !found {
+			log.Printf("Test result for '%s' not found on old change\n", test)
+			continue
+		}
 		switch {
-		case found && old.Status.Passing() && new.Status.Failing():
+		case old.Status.Passing() && new.Status.Failing():
 			broken = append(broken, test)
-		case found && old.Status.Failing() && new.Status.Passing():
+		case old.Status.Failing() && new.Status.Passing():
 			fixed = append(fixed, test)
-		case found && old.Status != new.Status:
+		case old.Status != new.Status:
 			changed = append(changed, test)
-		case found && old.Status.Failing() && new.Status.Failing():
+		case old.Status.Failing() && new.Status.Failing():
 			failing = append(failing, test) // Still broken
-		case !found && new.Status.Passing():
-			addedPass = append(addedPass, test) // New test, passing
-		case !found && new.Status.Failing():
-			addedFail = append(addedFail, test) // New test, broken
 		}
 		totalTests++
 		if found {
@@ -988,24 +987,13 @@ func compare(old, new *CommitTestResults) string {
 		sb.WriteString(fmt.Sprintf("\n--- This change removes %d tests: ---\n", n))
 		list(removed)
 	}
-	if n := len(addedFail); n > 0 {
-		sort.Strings(addedFail)
-		sb.WriteString(fmt.Sprintf("\n--- This change adds %d new failing tests: ---\n", n))
-		list(addedFail)
-	}
-	if n := len(addedPass); n > 0 {
-		sort.Strings(addedPass)
-		sb.WriteString(fmt.Sprintf("\n--- This change adds %d new passing tests: ---\n", n))
-		list(addedPass)
-	}
 	if n := len(changed); n > 0 {
 		sort.Strings(changed)
 		sb.WriteString(fmt.Sprintf("\n--- This change alters %d tests: ---\n", n))
 		list(changed)
 	}
 
-	if len(broken) == 0 && len(fixed) == 0 && len(removed) == 0 &&
-		len(addedFail) == 0 && len(addedPass) == 0 && len(changed) == 0 {
+	if len(broken) == 0 && len(fixed) == 0 && len(removed) == 0 && len(changed) == 0 {
 		sb.WriteString(fmt.Sprintf("\n--- No change in test results ---\n"))
 	}
 
