@@ -8,5 +8,7 @@
 
     { "name": "vulkan-wsi", "api": "vulkan", "tests": "testlists/vk-wsi-PASS.txt" },
     { "name": "vulkan-master", "api": "vulkan", "tests": "testlists/vk-master-PASS.txt" },
-    { "name": "vulkan-master-risky", "api": "vulkan", "tests": "testlists/vk-master-risky-PASS.txt" }
+    { "name": "vulkan-master-risky", "api": "vulkan", "tests": "testlists/vk-master-risky-PASS.txt" },
+
+    { "name": "vk-test-these-too", "api": "vulkan", "tests": "testlists/vk-test-these-too.txt" }
 ]
