@@ -251,6 +251,8 @@ namespace sw
 		void addQuery(Query *query);
 		void removeQuery(Query *query);
 
+		void advanceInstanceAttributes();
+
 		void synchronize();
 
 		#if PERF_HUD
