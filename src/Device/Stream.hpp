@@ -40,6 +40,7 @@ namespace sw
 	{
 		const void *buffer;
 		unsigned int stride;
+		unsigned int instanceStride;
 	};
 
 	struct Stream : public StreamResource
@@ -48,6 +49,7 @@ namespace sw
 		{
 			this->buffer = buffer;
 			this->stride = stride;
+			this->instanceStride = 0;
 		}
 
 		Stream &define(StreamType type, unsigned int count, bool normalized = false)
@@ -75,6 +77,7 @@ namespace sw
 
 			buffer = &null;
 			stride = 0;
+			instanceStride = 0;
 			type = STREAMTYPE_FLOAT;
 			count = 0;
 			normalized = false;
