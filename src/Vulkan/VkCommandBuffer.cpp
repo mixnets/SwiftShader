@@ -159,7 +159,7 @@ struct IndexBufferBind : public CommandBuffer::Command
 	const VkIndexType indexType;
 };
 
-void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context& context, int firstVertex)
+void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context& context, int firstVertex, int firstInstance)
 {
 	for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
 	{
@@ -169,7 +169,7 @@ void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context& context, int f
 			const auto &vertexInput = vertexInputBindings[attrib.binding];
 			Buffer *buffer = Cast(vertexInput.buffer);
 			attrib.buffer = buffer ? buffer->getOffsetPointer(
-					attrib.offset + vertexInput.offset + attrib.stride * firstVertex) : nullptr;
+					attrib.offset + vertexInput.offset + attrib.stride * firstVertex + attrib.instanceStride * firstInstance) : nullptr;
 		}
 	}
 }
@@ -219,7 +219,7 @@ struct Draw : public CommandBuffer::Command
 			executionState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
 
 		sw::Context context = pipeline->getContext();
-		executionState.bindVertexInputs(context, firstVertex);
+		executionState.bindVertexInputs(context, firstVertex, firstInstance);
 
 		executionState.renderer->setContext(context);
 		executionState.renderer->setScissor(pipeline->getScissor());
@@ -234,6 +234,15 @@ struct Draw : public CommandBuffer::Command
 		{
 			executionState.renderer->setInstanceID(instance);
 			executionState.renderer->draw(context.drawType, primitiveCount);
+
+			for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
+			{
+				auto &attrib = context.input[i];
+				if (attrib.count)
+				{
+					attrib.buffer = (void const *)((uintptr_t)attrib.buffer + attrib.instanceStride);
+				}
+			}
 		}
 	}
 
@@ -256,7 +265,8 @@ struct DrawIndexed : public CommandBuffer::Command
 				executionState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
 
 		sw::Context context = pipeline->getContext();
-		executionState.bindVertexInputs(context, vertexOffset);
+
+		executionState.bindVertexInputs(context, vertexOffset, firstInstance);
 
 		context.indexBuffer = Cast(executionState.indexBufferBinding.buffer)->getOffsetPointer(
 				executionState.indexBufferBinding.offset + firstIndex * (executionState.indexType == VK_INDEX_TYPE_UINT16 ? 2 : 4));
@@ -277,6 +287,15 @@ struct DrawIndexed : public CommandBuffer::Command
 		{
 			executionState.renderer->setInstanceID(instance);
 			executionState.renderer->draw(static_cast<sw::DrawType>(drawType), primitiveCount);
+
+			for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
+			{
+				auto &attrib = context.input[i];
+				if (attrib.count)
+				{
+					attrib.buffer = (void const *)((uintptr_t)attrib.buffer + attrib.instanceStride);
+				}
+			}
 		}
 	}
 
