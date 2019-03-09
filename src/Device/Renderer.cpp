@@ -314,7 +314,7 @@ namespace sw
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
 			data->input[i] = context->input[i].buffer;
-			data->stride[i] = context->input[i].stride;
+			data->stride[i] = context->input[i].vertexStride;
 		}
 
 		if(context->indexBuffer)
