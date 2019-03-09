@@ -288,15 +288,13 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 
 	// Temporary in-binding-order representation of buffer strides, to be consumed below
 	// when considering attributes. TODO: unfuse buffers from attributes in backend, is old GL model.
-	uint32_t bufferStrides[MAX_VERTEX_INPUT_BINDINGS];
+	uint32_t vertexStrides[MAX_VERTEX_INPUT_BINDINGS];
+	uint32_t instanceStrides[MAX_VERTEX_INPUT_BINDINGS];
 	for(uint32_t i = 0; i < vertexInputState->vertexBindingDescriptionCount; i++)
 	{
 		auto const & desc = vertexInputState->pVertexBindingDescriptions[i];
-		bufferStrides[desc.binding] = desc.stride;
-		if(desc.inputRate != VK_VERTEX_INPUT_RATE_VERTEX)
-		{
-			UNIMPLEMENTED();
-		}
+		vertexStrides[desc.binding] = desc.inputRate == VK_VERTEX_INPUT_RATE_VERTEX ? desc.stride : 0;
+		instanceStrides[desc.binding] = desc.inputRate == VK_VERTEX_INPUT_RATE_INSTANCE ? desc.stride : 0;
 	}
 
 	for(uint32_t i = 0; i < vertexInputState->vertexAttributeDescriptionCount; i++)
@@ -308,7 +306,8 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		input.normalized = !sw::Surface::isNonNormalizedInteger(desc.format);
 		input.offset = desc.offset;
 		input.binding = desc.binding;
-		input.stride = bufferStrides[desc.binding];
+		input.stride = vertexStrides[desc.binding];
+		input.instanceStride = instanceStrides[desc.binding];
 	}
 
 	const VkPipelineInputAssemblyStateCreateInfo* assemblyState = pCreateInfo->pInputAssemblyState;
