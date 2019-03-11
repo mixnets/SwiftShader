@@ -22,6 +22,30 @@
       "revId": "ff674cd06854a60be309211f6edffb0d0b1326ee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6eb6fe21_219cb79c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 617,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-11T22:23:13Z",
+      "side": 1,
+      "message": "No, *and* the format properties query is required to report 1.\nDetails in 38.1.1 Supported Sample Counts",
+      "parentUuid": "f7a4bb79_66639157",
+      "range": {
+        "startLine": 617,
+        "startChar": 41,
+        "endLine": 617,
+        "endChar": 62
+      },
+      "revId": "ff674cd06854a60be309211f6edffb0d0b1326ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
