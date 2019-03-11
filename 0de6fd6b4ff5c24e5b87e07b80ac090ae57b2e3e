@@ -140,6 +140,30 @@
       "revId": "0de6fd6b4ff5c24e5b87e07b80ac090ae57b2e3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "194473fd_42174384",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-11T18:06:06Z",
+      "side": 1,
+      "message": "Oh, I don\u0027t mind either way, I would just like it if both were the same, so you could also change the other one to make them similar. Thanks.",
+      "parentUuid": "19ee848b_bc3dab20",
+      "range": {
+        "startLine": 1055,
+        "startChar": 2,
+        "endLine": 1059,
+        "endChar": 6
+      },
+      "revId": "0de6fd6b4ff5c24e5b87e07b80ac090ae57b2e3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
