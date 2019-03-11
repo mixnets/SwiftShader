@@ -401,7 +401,11 @@ void PhysicalDevice::getFormatProperties(VkFormat format, VkFormatProperties* pF
 	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
 	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
 		pFormatProperties->optimalTilingFeatures |=
-			VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+			VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT |
+			VK_FORMAT_FEATURE_TRANSFER_SRC_BIT |
+			VK_FORMAT_FEATURE_TRANSFER_DST_BIT |
+			VK_FORMAT_FEATURE_BLIT_SRC_BIT |
+			VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
 		break;
 	default:
 		break;
@@ -607,8 +611,6 @@ void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type,
                                               VkImageUsageFlags usage, VkImageCreateFlags flags,
 	                                          VkImageFormatProperties* pImageFormatProperties) const
 {
-	pImageFormatProperties->maxArrayLayers = vk::MAX_IMAGE_ARRAY_LAYERS;
-
 	switch(type)
 	{
 	case VK_IMAGE_TYPE_1D:
@@ -616,6 +618,8 @@ void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type,
 		pImageFormatProperties->maxExtent.width = 1 << (vk::MAX_IMAGE_LEVELS_1D - 1);
 		pImageFormatProperties->maxExtent.height = 1;
 		pImageFormatProperties->maxExtent.depth = 1;
+		pImageFormatProperties->sampleCounts = VK_SAMPLE_COUNT_1_BIT;	// no 1D + multisample
+		pImageFormatProperties->maxArrayLayers = vk::MAX_IMAGE_ARRAY_LAYERS;
 		break;
 	case VK_IMAGE_TYPE_2D:
 		if(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT)
@@ -624,6 +628,7 @@ void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type,
 			pImageFormatProperties->maxExtent.width = 1 << (vk::MAX_IMAGE_LEVELS_CUBE - 1);
 			pImageFormatProperties->maxExtent.height = 1 << (vk::MAX_IMAGE_LEVELS_CUBE - 1);
 			pImageFormatProperties->maxExtent.depth = 1;
+			pImageFormatProperties->sampleCounts = VK_SAMPLE_COUNT_1_BIT;	// no cube + multisample
 		}
 		else
 		{
@@ -631,13 +636,29 @@ void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type,
 			pImageFormatProperties->maxExtent.width = 1 << (vk::MAX_IMAGE_LEVELS_2D - 1);
 			pImageFormatProperties->maxExtent.height = 1 << (vk::MAX_IMAGE_LEVELS_2D - 1);
 			pImageFormatProperties->maxExtent.depth = 1;
+
+			VkFormatProperties props;
+			getFormatProperties(format, &props);
+			auto features = tiling == VK_IMAGE_TILING_LINEAR ? props.linearTilingFeatures : props.optimalTilingFeatures;
+			if (features & (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT))
+			{
+				// Only renderable formats make sense for multisample
+				pImageFormatProperties->sampleCounts = getSampleCounts();
+			}
+			else
+			{
+				pImageFormatProperties->sampleCounts = VK_SAMPLE_COUNT_1_BIT;
+			}
 		}
+		pImageFormatProperties->maxArrayLayers = vk::MAX_IMAGE_ARRAY_LAYERS;
 		break;
 	case VK_IMAGE_TYPE_3D:
 		pImageFormatProperties->maxMipLevels = vk::MAX_IMAGE_LEVELS_3D;
 		pImageFormatProperties->maxExtent.width = 1 << (vk::MAX_IMAGE_LEVELS_3D - 1);
 		pImageFormatProperties->maxExtent.height = 1 << (vk::MAX_IMAGE_LEVELS_3D - 1);
 		pImageFormatProperties->maxExtent.depth = 1 << (vk::MAX_IMAGE_LEVELS_3D - 1);
+		pImageFormatProperties->sampleCounts = VK_SAMPLE_COUNT_1_BIT;	// no 3D + multisample
+		pImageFormatProperties->maxArrayLayers = 1;		// no 3D + layers
 		break;
 	default:
 		UNREACHABLE(type);
@@ -645,8 +666,6 @@ void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type,
 	}
 
 	pImageFormatProperties->maxResourceSize = 1 << 31; // Minimum value for maxResourceSize
-	pImageFormatProperties->sampleCounts = getSampleCounts();
-
 }
 
 uint32_t PhysicalDevice::getQueueFamilyPropertyCount() const
