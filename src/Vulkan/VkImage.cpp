@@ -16,8 +16,8 @@
 #include "VkBuffer.hpp"
 #include "VkDevice.hpp"
 #include "VkImage.hpp"
+#include "VkFormatUtils.h"
 #include "Device/Blitter.hpp"
-#include "Device/Surface.hpp"
 #include <cstring>
 
 namespace
@@ -28,8 +28,8 @@ namespace
 		// isDepth / isStencil etc to check for their aspect
 
 		VkImageAspectFlags aspects = 0;
-		if (sw::Surface::isDepth(format)) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
-		if (sw::Surface::isStencil(format)) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		if (vk::utils::IsDepth(format)) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		if (vk::utils::IsStencil(format)) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
 
 		// TODO: YCbCr planar formats have different aspects
 
@@ -337,7 +337,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 	// Depth and Stencil pitch should be computed separately
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
 	                (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
-	return sw::Surface::pitchB(getMipLevelExtent(mipLevel).width, isCube() ? 1 : 0, getFormat(aspect), false);
+	return vk::utils::PitchB(getMipLevelExtent(mipLevel).width, isCube() ? 1 : 0, getFormat(aspect), false);
 }
 
 int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -346,7 +346,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
 	                (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
 	VkExtent3D mipLevelExtent = getMipLevelExtent(mipLevel);
-	return sw::Surface::sliceB(mipLevelExtent.width, mipLevelExtent.height, isCube() ? 1 : 0, getFormat(aspect), false);
+	return vk::utils::SliceB(mipLevelExtent.width, mipLevelExtent.height, isCube() ? 1 : 0, getFormat(aspect), false);
 }
 
 int Image::bytesPerTexel(VkImageAspectFlagBits aspect) const
@@ -354,7 +354,7 @@ int Image::bytesPerTexel(VkImageAspectFlagBits aspect) const
 	// Depth and Stencil bytes should be computed separately
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
 	                (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
-	return sw::Surface::bytes(getFormat(aspect));
+	return vk::utils::Bytes(getFormat(aspect));
 }
 
 VkFormat Image::getFormat(VkImageAspectFlagBits aspect) const
@@ -467,11 +467,11 @@ VkFormat Image::getClearFormat() const
 {
 	// Set the proper format for the clear value, as described here:
 	// https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#clears-values
-	if(sw::Surface::isSignedNonNormalizedInteger(format))
+	if(vk::utils::IsSignedNonNormalizedInteger(format))
 	{
 		return VK_FORMAT_R32G32B32A32_SINT;
 	}
-	else if(sw::Surface::isUnsignedNonNormalizedInteger(format))
+	else if(vk::utils::IsUnsignedNonNormalizedInteger(format))
 	{
 		return VK_FORMAT_R32G32B32A32_UINT;
 	}
