@@ -16,3 +16,7 @@ make --jobs=$(nproc)
 
 # Run the GLES unit tests.
 ./unittests
+
+# Run the Vulkan unit tests.
+cd .. # Must be run from project root
+build/vk-unittests
