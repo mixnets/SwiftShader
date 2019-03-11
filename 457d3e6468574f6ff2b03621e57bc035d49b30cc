@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "823fa740_326f2a1c",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-11T14:52:45Z",
+      "side": 1,
+      "message": "Ah, ok, I missed that this was a +\u003d because of all the casts on that line.",
+      "parentUuid": "c94a346a_38be0db5",
+      "range": {
+        "startLine": 243,
+        "startChar": 60,
+        "endLine": 243,
+        "endChar": 84
+      },
+      "revId": "457d3e6468574f6ff2b03621e57bc035d49b30cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1f397e4_64cf61c2",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
