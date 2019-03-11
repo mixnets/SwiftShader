@@ -81,13 +81,13 @@ namespace sw
 			delete [] contents;
 		}
 
-		void emplace(uint32_t n, RValue<SIMD::Float> &&value) { emplace(n, value.value); }
-		void emplace(uint32_t n, RValue<SIMD::Int> &&value)   { emplace(n, value.value); }
-		void emplace(uint32_t n, RValue<SIMD::UInt> &&value)  { emplace(n, value.value); }
+		void move(uint32_t n, RValue<SIMD::Float> &&value) { emplace(n, value.value); }
+		void move(uint32_t n, RValue<SIMD::Int> &&value)   { emplace(n, value.value); }
+		void move(uint32_t n, RValue<SIMD::UInt> &&value)  { emplace(n, value.value); }
 
-		void emplace(uint32_t n, const RValue<SIMD::Float> &value) { emplace(n, value.value); }
-		void emplace(uint32_t n, const RValue<SIMD::Int> &value)   { emplace(n, value.value); }
-		void emplace(uint32_t n, const RValue<SIMD::UInt> &value)  { emplace(n, value.value); }
+		void move(uint32_t n, const RValue<SIMD::Float> &value) { emplace(n, value.value); }
+		void move(uint32_t n, const RValue<SIMD::Int> &value)   { emplace(n, value.value); }
+		void move(uint32_t n, const RValue<SIMD::UInt> &value)  { emplace(n, value.value); }
 
 		// Value retrieval functions.
 		RValue<SIMD::Float> Float(uint32_t i) const
