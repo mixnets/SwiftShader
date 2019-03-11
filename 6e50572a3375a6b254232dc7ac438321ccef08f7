@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ffdc47e_36db5861",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-11T19:53:40Z",
+      "side": 1,
+      "message": "Nit: { on next line",
+      "range": {
+        "startLine": 694,
+        "startChar": 26,
+        "endLine": 694,
+        "endChar": 28
+      },
+      "revId": "6e50572a3375a6b254232dc7ac438321ccef08f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
