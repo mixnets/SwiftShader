@@ -64,7 +64,7 @@ namespace sw
 	class Intermediate
 	{
 	public:
-		using Scalar = RValue<SIMD::Float>;
+		using Scalar = rr::Value*;
 
 		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
@@ -79,25 +79,19 @@ namespace sw
 			delete [] contents;
 		}
 
-		void emplace(uint32_t n, Scalar&& value)
-		{
-			ASSERT(n < size);
-			ASSERT(reinterpret_cast<Scalar const *>(&contents[n])->value == nullptr);
-			new (&contents[n]) Scalar(value);
-		}
-
-		void emplace(uint32_t n, const Scalar& value)
-		{
-			ASSERT(n < size);
-			ASSERT(reinterpret_cast<Scalar const *>(&contents[n])->value == nullptr);
-			new (&contents[n]) Scalar(value);
-		}
+		void emplace(uint32_t n, RValue<SIMD::Float> &&value) { emplace(n, value.value); }
+		void emplace(uint32_t n, RValue<SIMD::Int> &&value)   { emplace(n, value.value); }
+		void emplace(uint32_t n, RValue<SIMD::UInt> &&value)  { emplace(n, value.value); }
+		
+		void emplace(uint32_t n, const RValue<SIMD::Float> &value) { emplace(n, value.value); }
+		void emplace(uint32_t n, const RValue<SIMD::Int> &value)   { emplace(n, value.value); }
+		void emplace(uint32_t n, const RValue<SIMD::UInt> &value)  { emplace(n, value.value); }
 
 		Scalar const & operator[](uint32_t n) const
 		{
 			ASSERT(n < size);
 			auto scalar = reinterpret_cast<Scalar const *>(&contents[n]);
-			ASSERT(scalar->value != nullptr);
+			ASSERT(scalar != nullptr);
 			return *scalar;
 		}
 
@@ -108,6 +102,20 @@ namespace sw
 		Intermediate & operator=(Intermediate &&) = delete;
 
 	private:
+		void emplace(uint32_t n, Scalar&& value)
+		{
+			ASSERT(n < size);
+			ASSERT(reinterpret_cast<Scalar const *>(&contents[n]) == nullptr);
+			new (&contents[n]) Scalar(value);
+		}
+
+		void emplace(uint32_t n, const Scalar& value)
+		{
+			ASSERT(n < size);
+			ASSERT(reinterpret_cast<Scalar const *>(&contents[n]) == nullptr);
+			new (&contents[n]) Scalar(value);
+		}
+
 		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
 
 		ContentsType *contents;
@@ -531,7 +539,7 @@ namespace sw
 		RValue<SIMD::Float> operator[](uint32_t i) const
 		{
 			if (intermediate)
-				return (*intermediate)[i];
+				return RValue<SIMD::Float>((*intermediate)[i]);
 
 			auto constantValue = reinterpret_cast<float *>(obj.constantValue.get());
 			return RValue<SIMD::Float>(constantValue[i]);

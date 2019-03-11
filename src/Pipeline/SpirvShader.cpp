@@ -1233,7 +1233,7 @@ namespace sw
 		else if (interleavedByLane)
 		{
 			// Lane-interleaved data. No divergent offsets.
-			Pointer<SIMD::Float> src = ptrBase;
+			Pointer<SIMD::Float> src = Pointer<SIMD::Float>(ptrBase);
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
 				dst.emplace(i, src[i]);
@@ -1332,7 +1332,7 @@ namespace sw
 					{
 						Int offset = Int(i) + Extract(offsets, j);
 						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-						ptrBase[offset] = Extract(src[i], j);
+						ptrBase[offset] = Extract(RValue<SIMD::Float>(src[i]), j);
 					}
 				}
 			}
@@ -1342,7 +1342,7 @@ namespace sw
 				Pointer<SIMD::Float> dst = ptrBase;
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					dst[i] = src[i];
+					dst[i] = RValue<SIMD::Float>(src[i]);
 				}
 			}
 			else
@@ -1351,7 +1351,7 @@ namespace sw
 				Pointer<SIMD::Float> dst = ptrBase;
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					dst[i] = SIMD::Float(src[i]);
+					dst[i] = RValue<SIMD::Float>(src[i]);
 				}
 			}
 		}
