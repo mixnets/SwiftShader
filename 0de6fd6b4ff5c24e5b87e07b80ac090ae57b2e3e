@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d43dc724_bd63bb22",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-11T16:51:19Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "d456e1a5_d1ea75cf",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 36
+      },
+      "revId": "0de6fd6b4ff5c24e5b87e07b80ac090ae57b2e3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4b2f745_0827e27d",
         "filename": "src/Vulkan/VkPipeline.hpp",
         "patchSetId": 5
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "319541ab_39e77fb0",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-11T16:51:19Z",
+      "side": 1,
+      "message": "Good catch. Done.",
+      "parentUuid": "a4b2f745_0827e27d",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 38
+      },
+      "revId": "0de6fd6b4ff5c24e5b87e07b80ac090ae57b2e3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "39f2738b_e898b6d4",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 5
@@ -59,6 +107,30 @@
       "writtenOn": "2019-03-11T15:55:42Z",
       "side": 1,
       "message": "nit: slightly weird that the logic is reversed from the previous function.",
+      "range": {
+        "startLine": 1055,
+        "startChar": 2,
+        "endLine": 1059,
+        "endChar": 6
+      },
+      "revId": "0de6fd6b4ff5c24e5b87e07b80ac090ae57b2e3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19ee848b_bc3dab20",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-11T16:51:19Z",
+      "side": 1,
+      "message": "I tend to have the true-block of if-statements be the likely case. This is a habit I formed after working on consoles where branch-prediction without additional hints defaulted to true, and was costly to mis-predict.\n\nFor modern CPUs this probably doesn\u0027t apply, but I still like the convention to keep the most common case before the else.\n\nIf this bothers you, I can change it.",
+      "parentUuid": "39f2738b_e898b6d4",
       "range": {
         "startLine": 1055,
         "startChar": 2,
