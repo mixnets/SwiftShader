@@ -109,6 +109,7 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClCompile Include="VkDescriptorUpdateTemplate.cpp" />
     <ClCompile Include="VkDevice.cpp" />
     <ClCompile Include="VkDeviceMemory.cpp" />
+    <ClCompile Include="VkFormatUtils.cpp" />
     <ClCompile Include="VkFramebuffer.cpp" />
     <ClCompile Include="VkGetProcAddress.cpp" />
     <ClCompile Include="VkImage.cpp" />
@@ -209,6 +210,7 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClInclude Include="VkDeviceMemory.hpp" />
     <ClInclude Include="VkEvent.hpp" />
     <ClInclude Include="VkFence.hpp" />
+    <ClInclude Include="VkFormatUtils.h" />
     <ClInclude Include="VkFramebuffer.hpp" />
     <ClInclude Include="VkGetProcAddress.h" />
     <ClInclude Include="VkImage.hpp" />
