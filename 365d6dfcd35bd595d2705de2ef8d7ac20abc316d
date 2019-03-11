@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6bef54f_21a60dd0",
+        "filename": "kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-11T10:00:30Z",
+      "side": 1,
+      "message": "Great! But not mentioned in the change description. Perhaps move to a separate change?",
+      "range": {
+        "startLine": 20,
+        "startChar": 2,
+        "endLine": 20,
+        "endChar": 18
+      },
+      "revId": "365d6dfcd35bd595d2705de2ef8d7ac20abc316d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ce495d7_fc21b88e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-11T10:00:30Z",
+      "side": 1,
+      "message": "nit: I\u0027d have probably implemented these two as:\n\n  inline EmulatedType asEmulatedType(Type *type)\n  {\n      EmulatedType t \u003d static_cast\u003cEmulatedType\u003e(reinterpret_cast\u003cuintptr_t\u003e(type));\n      return t \u003c EmulatedTypeCount ? t : Type_NonEmulated; // Type_NonEmulated is a new 0th entry in EmulatedType\n  }\n\n  inline bool isEmulatedType(Type *type)\n  {\n      return asEmulatedType(type) !\u003d Type_NonEmulated;\n  }\n\nThat way you don\u0027t have asEmulatedType return non-enum values (which feels like a bad API behaviour for asXXX), and the code below that does: isEmulatedType() -\u003e asEmulatedType() -\u003e switch, can all be simplified to:\n\n  switch(asEmulatedType(t))\n\nAlso: isEmulatedType may not be needed with this change.",
+      "revId": "365d6dfcd35bd595d2705de2ef8d7ac20abc316d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
