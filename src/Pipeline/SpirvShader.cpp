@@ -1227,7 +1227,7 @@ namespace sw
 					if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 					v = Insert(v, ptrBase[offset], j);
 				}
-				dst.emplace(i, v);
+				dst.move(i, v);
 			}
 		}
 		else if (interleavedByLane)
@@ -1236,7 +1236,7 @@ namespace sw
 			Pointer<SIMD::Float> src = Pointer<SIMD::Float>(ptrBase);
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
-				dst.emplace(i, src[i]);
+				dst.move(i, src[i]);
 			}
 		}
 		else
@@ -1244,7 +1244,7 @@ namespace sw
 			// Non-interleaved data. No divergent offsets.
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
-				dst.emplace(i, RValue<SIMD::Float>(ptrBase[i]));
+				dst.move(i, RValue<SIMD::Float>(ptrBase[i]));
 			}
 		}
 	}
@@ -1259,7 +1259,7 @@ namespace sw
 		ASSERT(getObject(baseId).pointerBase == getObject(objectId).pointerBase);
 
 		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
-		dst.emplace(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine)));
+		dst.move(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine)));
 	}
 
 	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine) const
@@ -1371,7 +1371,7 @@ namespace sw
 			GenericValue srcObjectAccess(this, routine, srcObjectId);
 
 			for (auto j = 0u; j < srcObjectTy.sizeInComponents; j++)
-				dst.emplace(offset++, srcObjectAccess[j]);
+				dst.move(offset++, srcObjectAccess[j]);
 		}
 	}
 
@@ -1390,17 +1390,17 @@ namespace sw
 		// old components before
 		for (auto i = 0u; i < firstNewComponent; i++)
 		{
-			dst.emplace(i, srcObjectAccess[i]);
+			dst.move(i, srcObjectAccess[i]);
 		}
 		// new part
 		for (auto i = 0u; i < newPartObjectTy.sizeInComponents; i++)
 		{
-			dst.emplace(firstNewComponent + i, newPartObjectAccess[i]);
+			dst.move(firstNewComponent + i, newPartObjectAccess[i]);
 		}
 		// old components after
 		for (auto i = firstNewComponent + newPartObjectTy.sizeInComponents; i < type.sizeInComponents; i++)
 		{
-			dst.emplace(i, srcObjectAccess[i]);
+			dst.move(i, srcObjectAccess[i]);
 		}
 	}
 
@@ -1415,7 +1415,7 @@ namespace sw
 		GenericValue compositeObjectAccess(this, routine, insn.word(3));
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
-			dst.emplace(i, compositeObjectAccess[firstComponent + i]);
+			dst.move(i, compositeObjectAccess[firstComponent + i]);
 		}
 	}
 
@@ -1438,15 +1438,15 @@ namespace sw
 			{
 				// Undefined value. Until we decide to do real undef values, zero is as good
 				// a value as any
-				dst.emplace(i, RValue<SIMD::Float>(0.0f));
+				dst.move(i, RValue<SIMD::Float>(0.0f));
 			}
 			else if (selector < firstHalfType.sizeInComponents)
 			{
-				dst.emplace(i, firstHalfAccess[selector]);
+				dst.move(i, firstHalfAccess[selector]);
 			}
 			else
 			{
-				dst.emplace(i, secondHalfAccess[selector - firstHalfType.sizeInComponents]);
+				dst.move(i, secondHalfAccess[selector - firstHalfType.sizeInComponents]);
 			}
 		}
 	}
@@ -1460,7 +1460,7 @@ namespace sw
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
-			dst.emplace(i, srcLHS[i] * srcRHS[0]);
+			dst.move(i, srcLHS[i] * srcRHS[0]);
 		}
 	}
 
@@ -1478,34 +1478,34 @@ namespace sw
 			{
 			case spv::OpNot:
 			case spv::OpLogicalNot:		// logical not == bitwise not due to all-bits boolean representation
-				dst.emplace(i, As<SIMD::Float>(~As<SIMD::UInt>(val)));
+				dst.move(i, As<SIMD::Float>(~As<SIMD::UInt>(val)));
 				break;
 			case spv::OpSNegate:
-				dst.emplace(i, As<SIMD::Float>(-As<SIMD::Int>(val)));
+				dst.move(i, As<SIMD::Float>(-As<SIMD::Int>(val)));
 				break;
 			case spv::OpFNegate:
-				dst.emplace(i, -val);
+				dst.move(i, -val);
 				break;
 			case spv::OpConvertFToU:
-				dst.emplace(i, As<SIMD::Float>(SIMD::UInt(val)));
+				dst.move(i, As<SIMD::Float>(SIMD::UInt(val)));
 				break;
 			case spv::OpConvertFToS:
-				dst.emplace(i, As<SIMD::Float>(SIMD::Int(val)));
+				dst.move(i, As<SIMD::Float>(SIMD::Int(val)));
 				break;
 			case spv::OpConvertSToF:
-				dst.emplace(i, SIMD::Float(As<SIMD::Int>(val)));
+				dst.move(i, SIMD::Float(As<SIMD::Int>(val)));
 				break;
 			case spv::OpConvertUToF:
-				dst.emplace(i, SIMD::Float(As<SIMD::UInt>(val)));
+				dst.move(i, SIMD::Float(As<SIMD::UInt>(val)));
 				break;
 			case spv::OpBitcast:
-				dst.emplace(i, val);
+				dst.move(i, val);
 				break;
 			case spv::OpIsInf:
-				dst.emplace(i, As<SIMD::Float>(IsInf(val)));
+				dst.move(i, As<SIMD::Float>(IsInf(val)));
 				break;
 			case spv::OpIsNan:
-				dst.emplace(i, As<SIMD::Float>(IsNan(val)));
+				dst.move(i, As<SIMD::Float>(IsNan(val)));
 				break;
 			default:
 				UNIMPLEMENTED("Unhandled unary operator %s", OpcodeName(insn.opcode()).c_str());
@@ -1529,19 +1529,19 @@ namespace sw
 			switch (insn.opcode())
 			{
 			case spv::OpIAdd:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) + As<SIMD::Int>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) + As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpISub:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) - As<SIMD::Int>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) - As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpIMul:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) * As<SIMD::Int>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) * As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpSDiv:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) / As<SIMD::Int>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) / As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpUDiv:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) / As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) / As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpSMod:
 			{
@@ -1556,122 +1556,122 @@ namespace sw
 				// See also http://mathforum.org/library/drmath/view/52343.html
 				auto signDiff = CmpNEQ(CmpGE(a, SIMD::Int(0)), CmpGE(b, SIMD::Int(0)));
 				auto fixedMod = mod + (b & CmpNEQ(mod, SIMD::Int(0)) & signDiff);
-				dst.emplace(i, As<SIMD::Float>(fixedMod));
+				dst.move(i, As<SIMD::Float>(fixedMod));
 				break;
 			}
 			case spv::OpUMod:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) % As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) % As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpIEqual:
 			case spv::OpLogicalEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpEQ(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpEQ(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpINotEqual:
 			case spv::OpLogicalNotEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpNEQ(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpNEQ(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpUGreaterThan:
-				dst.emplace(i, As<SIMD::Float>(CmpGT(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpGT(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
 				break;
 			case spv::OpSGreaterThan:
-				dst.emplace(i, As<SIMD::Float>(CmpGT(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpGT(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpUGreaterThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpGE(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpGE(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
 				break;
 			case spv::OpSGreaterThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpGE(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpGE(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpULessThan:
-				dst.emplace(i, As<SIMD::Float>(CmpLT(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpLT(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
 				break;
 			case spv::OpSLessThan:
-				dst.emplace(i, As<SIMD::Float>(CmpLT(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpLT(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpULessThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpLE(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpLE(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
 				break;
 			case spv::OpSLessThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpLE(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(CmpLE(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpFAdd:
-				dst.emplace(i, lhs + rhs);
+				dst.move(i, lhs + rhs);
 				break;
 			case spv::OpFSub:
-				dst.emplace(i, lhs - rhs);
+				dst.move(i, lhs - rhs);
 				break;
 			case spv::OpFMul:
-				dst.emplace(i, lhs * rhs);
+				dst.move(i, lhs * rhs);
 				break;
 			case spv::OpFDiv:
-				dst.emplace(i, lhs / rhs);
+				dst.move(i, lhs / rhs);
 				break;
 			case spv::OpFOrdEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpEQ(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpEQ(lhs, rhs)));
 				break;
 			case spv::OpFUnordEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpUEQ(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpUEQ(lhs, rhs)));
 				break;
 			case spv::OpFOrdNotEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpNEQ(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpNEQ(lhs, rhs)));
 				break;
 			case spv::OpFUnordNotEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpUNEQ(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpUNEQ(lhs, rhs)));
 				break;
 			case spv::OpFOrdLessThan:
-				dst.emplace(i, As<SIMD::Float>(CmpLT(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpLT(lhs, rhs)));
 				break;
 			case spv::OpFUnordLessThan:
-				dst.emplace(i, As<SIMD::Float>(CmpULT(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpULT(lhs, rhs)));
 				break;
 			case spv::OpFOrdGreaterThan:
-				dst.emplace(i, As<SIMD::Float>(CmpGT(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpGT(lhs, rhs)));
 				break;
 			case spv::OpFUnordGreaterThan:
-				dst.emplace(i, As<SIMD::Float>(CmpUGT(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpUGT(lhs, rhs)));
 				break;
 			case spv::OpFOrdLessThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpLE(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpLE(lhs, rhs)));
 				break;
 			case spv::OpFUnordLessThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpULE(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpULE(lhs, rhs)));
 				break;
 			case spv::OpFOrdGreaterThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpGE(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpGE(lhs, rhs)));
 				break;
 			case spv::OpFUnordGreaterThanEqual:
-				dst.emplace(i, As<SIMD::Float>(CmpUGE(lhs, rhs)));
+				dst.move(i, As<SIMD::Float>(CmpUGE(lhs, rhs)));
 				break;
 			case spv::OpShiftRightLogical:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) >> As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) >> As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpShiftRightArithmetic:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) >> As<SIMD::Int>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) >> As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpShiftLeftLogical:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) << As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) << As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpBitwiseOr:
 			case spv::OpLogicalOr:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) | As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) | As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpBitwiseXor:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) ^ As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) ^ As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpBitwiseAnd:
 			case spv::OpLogicalAnd:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) & As<SIMD::UInt>(rhs)));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) & As<SIMD::UInt>(rhs)));
 				break;
 			case spv::OpSMulExtended:
 				// Extended ops: result is a structure containing two members of the same type as lhs & rhs.
 				// In our flat view then, component i is the i'th component of the first member;
 				// component i + N is the i'th component of the second member.
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) * As<SIMD::Int>(rhs)));
-				dst.emplace(i + lhsType.sizeInComponents, As<SIMD::Float>(MulHigh(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
+				dst.move(i, As<SIMD::Float>(As<SIMD::Int>(lhs) * As<SIMD::Int>(rhs)));
+				dst.move(i + lhsType.sizeInComponents, As<SIMD::Float>(MulHigh(As<SIMD::Int>(lhs), As<SIMD::Int>(rhs))));
 				break;
 			case spv::OpUMulExtended:
-				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) * As<SIMD::UInt>(rhs)));
-				dst.emplace(i + lhsType.sizeInComponents, As<SIMD::Float>(MulHigh(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
+				dst.move(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) * As<SIMD::UInt>(rhs)));
+				dst.move(i + lhsType.sizeInComponents, As<SIMD::Float>(MulHigh(As<SIMD::UInt>(lhs), As<SIMD::UInt>(rhs))));
 				break;
 			default:
 				UNIMPLEMENTED("Unhandled binary operator %s", OpcodeName(insn.opcode()).c_str());
@@ -1695,7 +1695,7 @@ namespace sw
 			result += srcLHS[i] * srcRHS[i];
 		}
 
-		dst.emplace(0, result);
+		dst.move(0, result);
 	}
 
 	void SpirvShader::EmitSelect(InsnIterator insn, SpirvRoutine *routine) const
@@ -1712,7 +1712,7 @@ namespace sw
 			auto lhs = srcLHS[i];
 			auto rhs = srcRHS[i];
 			auto out = (cond & As<Int4>(lhs)) | (~cond & As<Int4>(rhs));   // FIXME: IfThenElse()
-			dst.emplace(i, As<SIMD::Float>(out));
+			dst.move(i, As<SIMD::Float>(out));
 		}
 	}
 
@@ -1729,7 +1729,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Abs(src[i]));
+				dst.move(i, Abs(src[i]));
 			}
 			break;
 		}
@@ -1738,7 +1738,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Abs(As<SIMD::Int>(src[i]))));
+				dst.move(i, As<SIMD::Float>(Abs(As<SIMD::Int>(src[i]))));
 			}
 			break;
 		}
@@ -1746,9 +1746,9 @@ namespace sw
 		{
 			auto lhs = GenericValue(this, routine, insn.word(5));
 			auto rhs = GenericValue(this, routine, insn.word(6));
-			dst.emplace(0, lhs[1] * rhs[2] - rhs[1] * lhs[2]);
-			dst.emplace(1, lhs[2] * rhs[0] - rhs[2] * lhs[0]);
-			dst.emplace(2, lhs[0] * rhs[1] - rhs[0] * lhs[1]);
+			dst.move(0, lhs[1] * rhs[2] - rhs[1] * lhs[2]);
+			dst.move(1, lhs[2] * rhs[0] - rhs[2] * lhs[0]);
+			dst.move(2, lhs[0] * rhs[1] - rhs[0] * lhs[1]);
 			break;
 		}
 		case GLSLstd450Floor:
@@ -1756,7 +1756,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Floor(src[i]));
+				dst.move(i, Floor(src[i]));
 			}
 			break;
 		}
@@ -1765,7 +1765,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Trunc(src[i]));
+				dst.move(i, Trunc(src[i]));
 			}
 			break;
 		}
@@ -1774,7 +1774,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Ceil(src[i]));
+				dst.move(i, Ceil(src[i]));
 			}
 			break;
 		}
@@ -1783,7 +1783,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Frac(src[i]));
+				dst.move(i, Frac(src[i]));
 			}
 			break;
 		}
@@ -1792,7 +1792,7 @@ namespace sw
 			auto src = GenericValue(this, routine, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Round(src[i]));
+				dst.move(i, Round(src[i]));
 			}
 			break;
 		}
@@ -1803,7 +1803,7 @@ namespace sw
 			{
 				auto x = Round(src[i]);
 				// dst = round(src) + ((round(src) < src) * 2 - 1) * (fract(src) == 0.5) * isOdd(round(src));
-				dst.emplace(i, x + ((SIMD::Float(CmpLT(x, src[i]) & SIMD::Int(1)) * SIMD::Float(2.0f)) - SIMD::Float(1.0f)) *
+				dst.move(i, x + ((SIMD::Float(CmpLT(x, src[i]) & SIMD::Int(1)) * SIMD::Float(2.0f)) - SIMD::Float(1.0f)) *
 						SIMD::Float(CmpEQ(Frac(src[i]), SIMD::Float(0.5f)) & SIMD::Int(1)) * SIMD::Float(Int4(x) & SIMD::Int(1)));
 			}
 			break;
@@ -1814,7 +1814,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Min(lhs[i], rhs[i]));
+				dst.move(i, Min(lhs[i], rhs[i]));
 			}
 			break;
 		}
@@ -1824,7 +1824,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Max(lhs[i], rhs[i]));
+				dst.move(i, Max(lhs[i], rhs[i]));
 			}
 			break;
 		}
@@ -1834,7 +1834,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Min(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
+				dst.move(i, As<SIMD::Float>(Min(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
 			}
 			break;
 		}
@@ -1844,7 +1844,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Max(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
+				dst.move(i, As<SIMD::Float>(Max(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
 			}
 			break;
 		}
@@ -1854,7 +1854,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Min(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
+				dst.move(i, As<SIMD::Float>(Min(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
 			}
 			break;
 		}
@@ -1864,7 +1864,7 @@ namespace sw
 			auto rhs = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Max(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
+				dst.move(i, As<SIMD::Float>(Max(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
 			}
 			break;
 		}
@@ -1874,7 +1874,7 @@ namespace sw
 			auto x = GenericValue(this, routine, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(CmpNLT(x[i], edge[i]) & As<SIMD::Int>(SIMD::Float(1.0f))));
+				dst.move(i, As<SIMD::Float>(CmpNLT(x[i], edge[i]) & As<SIMD::Int>(SIMD::Float(1.0f))));
 			}
 			break;
 		}
@@ -1886,7 +1886,7 @@ namespace sw
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto tx = Min(Max((x[i] - edge0[i]) / (edge1[i] - edge0[i]), SIMD::Float(0.0f)), SIMD::Float(1.0f));
-				dst.emplace(i, tx * tx * (Float4(3.0f) - Float4(2.0f) * tx));
+				dst.move(i, tx * tx * (Float4(3.0f) - Float4(2.0f) * tx));
 			}
 			break;
 		}
@@ -1897,7 +1897,7 @@ namespace sw
 			auto a = GenericValue(this, routine, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, a[i] * (y[i] - x[i]) + x[i]);
+				dst.move(i, a[i] * (y[i] - x[i]) + x[i]);
 			}
 			break;
 		}
@@ -1908,7 +1908,7 @@ namespace sw
 			auto maxVal = GenericValue(this, routine, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, Min(Max(x[i], minVal[i]), maxVal[i]));
+				dst.move(i, Min(Max(x[i], minVal[i]), maxVal[i]));
 			}
 			break;
 		}
@@ -1919,7 +1919,7 @@ namespace sw
 			auto maxVal = GenericValue(this, routine, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Min(Max(As<SIMD::Int>(x[i]), As<SIMD::Int>(minVal[i])), As<SIMD::Int>(maxVal[i]))));
+				dst.move(i, As<SIMD::Float>(Min(Max(As<SIMD::Int>(x[i]), As<SIMD::Int>(minVal[i])), As<SIMD::Int>(maxVal[i]))));
 			}
 			break;
 		}
@@ -1930,7 +1930,7 @@ namespace sw
 			auto maxVal = GenericValue(this, routine, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				dst.emplace(i, As<SIMD::Float>(Min(Max(As<SIMD::UInt>(x[i]), As<SIMD::UInt>(minVal[i])), As<SIMD::UInt>(maxVal[i]))));
+				dst.move(i, As<SIMD::Float>(Min(Max(As<SIMD::UInt>(x[i]), As<SIMD::UInt>(minVal[i])), As<SIMD::UInt>(maxVal[i]))));
 			}
 			break;
 		}
@@ -1941,7 +1941,7 @@ namespace sw
 			{
 				auto neg = As<SIMD::Int>(CmpLT(src[i], SIMD::Float(-0.0f))) & As<SIMD::Int>(SIMD::Float(-1.0f));
 				auto pos = As<SIMD::Int>(CmpNLE(src[i], SIMD::Float(+0.0f))) & As<SIMD::Int>(SIMD::Float(1.0f));
-				dst.emplace(i, As<SIMD::Float>(neg | pos));
+				dst.move(i, As<SIMD::Float>(neg | pos));
 			}
 			break;
 		}
@@ -1952,7 +1952,7 @@ namespace sw
 			{
 				auto neg = CmpLT(As<SIMD::Int>(src[i]), SIMD::Int(0)) & SIMD::Int(-1);
 				auto pos = CmpNLE(As<SIMD::Int>(src[i]), SIMD::Int(0)) & SIMD::Int(1);
-				dst.emplace(i, As<SIMD::Float>(neg | pos));
+				dst.move(i, As<SIMD::Float>(neg | pos));
 			}
 			break;
 		}
@@ -1976,7 +1976,7 @@ namespace sw
 			result |= As<SIMD::UInt>(src[i]);
 		}
 
-		dst.emplace(0, As<SIMD::Float>(result));
+		dst.move(0, As<SIMD::Float>(result));
 	}
 
 	void SpirvShader::EmitAll(InsnIterator insn, SpirvRoutine *routine) const
@@ -1994,7 +1994,7 @@ namespace sw
 			result &= As<SIMD::UInt>(src[i]);
 		}
 
-		dst.emplace(0, As<SIMD::Float>(result));
+		dst.move(0, As<SIMD::Float>(result));
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
