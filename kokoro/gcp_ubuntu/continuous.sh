@@ -16,3 +16,6 @@ make --jobs=$(nproc)
 
 # Run the GLES unit tests.
 ./unittests
+
+# Run the Vulkan unit tests.
+./vk-unittests
