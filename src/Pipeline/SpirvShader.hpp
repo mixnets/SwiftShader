@@ -64,7 +64,7 @@ namespace sw
 	class Intermediate
 	{
 	public:
-		using Scalar = rr::Value*;
+		using Scalar = RValue<Void>;
 
 		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
@@ -79,13 +79,13 @@ namespace sw
 			delete [] contents;
 		}
 
-		void move(uint32_t n, RValue<SIMD::Float> &&value) { emplace(n, value.value); }
-		void move(uint32_t n, RValue<SIMD::Int> &&value)   { emplace(n, value.value); }
-		void move(uint32_t n, RValue<SIMD::UInt> &&value)  { emplace(n, value.value); }
+		void move(uint32_t n, RValue<SIMD::Float> &&value) { emplace(n, value); }
+		void move(uint32_t n, RValue<SIMD::Int> &&value)   { emplace(n, value); }
+		void move(uint32_t n, RValue<SIMD::UInt> &&value)  { emplace(n, value); }
 		
-		void move(uint32_t n, const RValue<SIMD::Float> &value) { emplace(n, value.value); }
-		void move(uint32_t n, const RValue<SIMD::Int> &value)   { emplace(n, value.value); }
-		void move(uint32_t n, const RValue<SIMD::UInt> &value)  { emplace(n, value.value); }
+		void move(uint32_t n, const RValue<SIMD::Float> &value) { emplace(n, value); }
+		void move(uint32_t n, const RValue<SIMD::Int> &value)   { emplace(n, value); }
+		void move(uint32_t n, const RValue<SIMD::UInt> &value)  { emplace(n, value); }
 
 		Scalar const & operator[](uint32_t n) const
 		{
@@ -102,18 +102,20 @@ namespace sw
 		Intermediate & operator=(Intermediate &&) = delete;
 
 	private:
-		void emplace(uint32_t n, Scalar&& value)
+		template<typename T>
+		void emplace(uint32_t n, RValue<T>&& value)
 		{
 			ASSERT(n < size);
 			ASSERT(reinterpret_cast<Scalar const *>(&contents[n]) == nullptr);
-			new (&contents[n]) Scalar(value);
+			new (&contents[n]) RValue<T>(value);
 		}
 
-		void emplace(uint32_t n, const Scalar& value)
+		template<typename T>
+		void emplace(uint32_t n, const RValue<T>& value)
 		{
 			ASSERT(n < size);
 			ASSERT(reinterpret_cast<Scalar const *>(&contents[n]) == nullptr);
-			new (&contents[n]) Scalar(value);
+			new (&contents[n]) RValue<T>(value);
 		}
 
 		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
@@ -539,7 +541,7 @@ namespace sw
 		RValue<SIMD::Float> operator[](uint32_t i) const
 		{
 			if (intermediate)
-				return RValue<SIMD::Float>((*intermediate)[i]);
+				return RValue<SIMD::Float>((*intermediate)[i].value);
 
 			auto constantValue = reinterpret_cast<float *>(obj.constantValue.get());
 			return RValue<SIMD::Float>(constantValue[i]);

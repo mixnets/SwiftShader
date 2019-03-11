@@ -167,11 +167,12 @@ namespace rr
 		typedef float type;
 	};
 
-	template<class T>
+	template<typename T>
 	class RValue
 	{
 	public:
 		explicit RValue(Value *rvalue);
+		explicit RValue(const RValue<Void> &rvalue) : value(rvalue.value) {}
 
 		RValue(const T &lvalue);
 		RValue(typename IntLiteral<T>::type i);
@@ -180,7 +181,7 @@ namespace rr
 
 		RValue<T> &operator=(const RValue<T>&) = delete;
 
-		Value *value;   // FIXME: Make private
+		Value *value;
 	};
 
 	template<typename T>
@@ -2801,7 +2802,7 @@ namespace rr
 	}
 
 	template<class T, class S>
-	RValue<T> ReinterpretCast(RValue<S> val)
+	RValue<T> ReinterpretCast(const RValue<S> &val)
 	{
 		return RValue<T>(Nucleus::createBitCast(val.value, T::getType()));
 	}
@@ -2827,7 +2828,7 @@ namespace rr
 	}
 
 	template<class T, class S>
-	RValue<T> As(RValue<S> val)
+	RValue<T> As(const RValue<S> &val)
 	{
 		return ReinterpretCast<T>(val);
 	}
