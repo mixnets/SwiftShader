@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7a4bb79_66639157",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 617,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-11T22:12:38Z",
+      "side": 1,
+      "message": "Just curious: For all of these explicit \"VK_SAMPLE_COUNT_1_BIT\", is it actually allowed to create 1D/Cube/3D images with anything other than VK_SAMPLE_COUNT_1_BIT?",
+      "range": {
+        "startLine": 617,
+        "startChar": 41,
+        "endLine": 617,
+        "endChar": 62
+      },
+      "revId": "ff674cd06854a60be309211f6edffb0d0b1326ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
