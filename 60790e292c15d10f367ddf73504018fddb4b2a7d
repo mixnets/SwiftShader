@@ -16,6 +16,24 @@
       "revId": "60790e292c15d10f367ddf73504018fddb4b2a7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "294bc221_0bbee62c",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1841,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-11T14:07:52Z",
+      "side": 1,
+      "message": "Never. In Vulkan, this shouldn\u0027t happen, but in OpenGL, some format conversions weren\u0027t explicitly supported in the Blitter, so we it was using the sw::Surface::read and sw::SUrface::write functions, which are extremely inefficient. We don\u0027t want to use that path in Vulkan and the Blitter should support every format.",
+      "parentUuid": "3ad2a0b7_636b8884",
+      "revId": "60790e292c15d10f367ddf73504018fddb4b2a7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
