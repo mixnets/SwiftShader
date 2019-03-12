@@ -1211,41 +1211,54 @@ namespace sw
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
 
-		auto &dst = routine->createIntermediate(objectId, objectTy.sizeInComponents);
+		auto load = SpirvRoutine::Value(objectTy.sizeInComponents);
 
-		if (pointer.kind == Object::Kind::Value)
+		BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
 		{
-			// Divergent offsets.
-			auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+			// Divergent offsets or masked lanes.
+			auto offsets = pointer.kind == Object::Kind::Value ?
+					As<SIMD::Int>(routine->getIntermediate(pointerId)[0]) :
+					RValue<SIMD::Int>(SIMD::Int(0));
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
 				// i wish i had a Float,Float,Float,Float constructor here..
-				SIMD::Float v;
 				for (int j = 0; j < SIMD::Width; j++)
 				{
-					Int offset = Int(i) + Extract(offsets, j);
-					if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-					v = Insert(v, ptrBase[offset], j);
+					If(Extract(routine->enableLaneMask, j) != 0)
+					{
+						Int offset = Int(i) + Extract(offsets, j);
+						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
+						load[i] = Insert(load[i], ptrBase[offset], j);
+					}
 				}
-				dst.emplace(i, v);
 			}
-		}
-		else if (interleavedByLane)
+		},
+		/* else */ [&]()
 		{
-			// Lane-interleaved data. No divergent offsets.
-			Pointer<SIMD::Float> src = ptrBase;
-			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+			// No divergent offsets or masked lanes.
+			if (interleavedByLane)
 			{
-				dst.emplace(i, src[i]);
+				// Lane-interleaved data.
+				Pointer<SIMD::Float> src = ptrBase;
+				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+				{
+					load[i] = src[i];
+				}
 			}
-		}
-		else
+			else
+			{
+				// Non-interleaved data.
+				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+				{
+					load[i] = RValue<SIMD::Float>(ptrBase[i]);
+				}
+			}
+		});
+
+		auto &dst = routine->createIntermediate(objectId, objectTy.sizeInComponents);
+		for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 		{
-			// Non-interleaved data. No divergent offsets.
-			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
-			{
-				dst.emplace(i, RValue<SIMD::Float>(ptrBase[i]));
-			}
+			dst.emplace(i, load[i]);
 		}
 	}
 
@@ -1292,67 +1305,105 @@ namespace sw
 
 		if (object.kind == Object::Kind::Constant)
 		{
+			// Constant source data.
 			auto src = reinterpret_cast<float *>(object.constantValue.get());
-
-			if (pointer.kind == Object::Kind::Value)
+			BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
 			{
-				// Constant source data. Divergent offsets.
-				auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+				// Divergent offsets or masked lanes.
+				auto offsets = pointer.kind == Object::Kind::Value ?
+						As<SIMD::Int>(routine->getIntermediate(pointerId)[0]) :
+						RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						Int offset = Int(i) + Extract(offsets, j);
-						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-						ptrBase[offset] = RValue<Float>(src[i]);
+						If(Extract(routine->enableLaneMask, j) != 0)
+						{
+							Int offset = Int(i) + Extract(offsets, j);
+							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
+							ptrBase[offset] = RValue<Float>(src[i]);
+						}
 					}
 				}
-			}
-			else
+			},
+			/* else */ [&]()
 			{
-				// Constant source data. No divergent offsets.
+				// Constant source data.
+				// No divergent offsets or masked lanes.
 				Pointer<SIMD::Float> dst = ptrBase;
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					dst[i] = RValue<SIMD::Float>(src[i]);
 				}
-			}
+			});
 		}
 		else
 		{
+			// Intermediate source data.
 			auto &src = routine->getIntermediate(objectId);
-
-			if (pointer.kind == Object::Kind::Value)
+			BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
 			{
-				// Intermediate source data. Divergent offsets.
-				auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+				// Divergent offsets or masked lanes.
+				auto offsets = pointer.kind == Object::Kind::Value ?
+						As<SIMD::Int>(routine->getIntermediate(pointerId)[0]) :
+						RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						Int offset = Int(i) + Extract(offsets, j);
-						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-						ptrBase[offset] = Extract(src[i], j);
+						If(Extract(routine->enableLaneMask, j) != 0)
+						{
+							Int offset = Int(i) + Extract(offsets, j);
+							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
+							ptrBase[offset] = Extract(src[i], j);
+						}
 					}
 				}
-			}
-			else if (interleavedByLane)
+			},
+			/* else */ [&]()
 			{
-				// Intermediate source data. Lane-interleaved data. No divergent offsets.
-				Pointer<SIMD::Float> dst = ptrBase;
-				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
+				// No divergent offsets or masked lanes.
+				if (interleavedByLane)
 				{
-					dst[i] = src[i];
+					// Lane-interleaved data.
+					Pointer<SIMD::Float> dst = ptrBase;
+					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
+					{
+						dst[i] = src[i];
+					}
 				}
-			}
-			else
+				else
+				{
+					// Intermediate source data. Non-interleaved data.
+					Pointer<SIMD::Float> dst = ptrBase;
+					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
+					{
+						dst[i] = SIMD::Float(src[i]);
+					}
+				}
+			});
+		}
+	}
+
+	void SpirvShader::BranchDivergent(SpirvRoutine *routine,
+			bool condition,
+			std::function<void()> emitDivergent,
+			std::function<void()> emitNonDivergent)
+	{
+		if (condition)
+		{
+			emitDivergent();
+		}
+		else
+		{
+			auto anyLanesDisabled = SignMask(~routine->enableLaneMask) != 0;
+			If(anyLanesDisabled)
 			{
-				// Intermediate source data. Non-interleaved data. No divergent offsets.
-				Pointer<SIMD::Float> dst = ptrBase;
-				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
-				{
-					dst[i] = SIMD::Float(src[i]);
-				}
+				emitDivergent();
+			}
+			Else
+			{
+				emitNonDivergent();
 			}
 		}
 	}
