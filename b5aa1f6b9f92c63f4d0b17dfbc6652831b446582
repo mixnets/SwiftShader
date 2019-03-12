@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8f50b12c_2787f811",
+        "filename": "src/Vulkan/VkFormatUtils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-12T15:18:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f58e1da_4d9f8291",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 15
+      },
+      "revId": "b5aa1f6b9f92c63f4d0b17dfbc6652831b446582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d41cdec7_2b2e0e94",
         "filename": "src/Vulkan/VkFormatUtils.h",
         "patchSetId": 4
@@ -36,6 +60,24 @@
       "writtenOn": "2019-03-12T03:49:16Z",
       "side": 1,
       "message": "nit: These are closely related so I wouldn\u0027t put blank lines between them.",
+      "revId": "b5aa1f6b9f92c63f4d0b17dfbc6652831b446582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d34061d_e88f4a13",
+        "filename": "src/Vulkan/VkFormatUtils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-12T15:18:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d41cdec7_2b2e0e94",
       "revId": "b5aa1f6b9f92c63f4d0b17dfbc6652831b446582",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
