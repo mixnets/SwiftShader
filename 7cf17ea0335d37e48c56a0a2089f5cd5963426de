@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e7f7aeb_f1dce2ee",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 36174,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-12T08:44:53Z",
+      "side": 1,
+      "message": "These two are still flapping.",
+      "revId": "7cf17ea0335d37e48c56a0a2089f5cd5963426de",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
