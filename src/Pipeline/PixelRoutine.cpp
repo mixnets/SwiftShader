@@ -390,12 +390,26 @@ namespace sw
 
 		if(!state.quadLayoutDepthBuffer)
 		{
-			buffer = zBuffer + 4 * x;
+			if (state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				buffer = zBuffer + 2 * x;
+			}
+			else
+			{
+				buffer = zBuffer + 4 * x;
+			}
 			pitch = *Pointer<Int>(data + OFFSET(DrawData,depthPitchB));
 		}
 		else
 		{
-			buffer = zBuffer + 8 * x;
+			if (state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				buffer = zBuffer + 4 * x;
+			}
+			else
+			{
+				buffer = zBuffer + 8 * x;
+			}
 		}
 
 		if(q > 0)
@@ -409,9 +423,22 @@ namespace sw
 		{
 			if(!state.quadLayoutDepthBuffer)
 			{
-				// FIXME: Properly optimizes?
-				zValue.xy = *Pointer<Float4>(buffer);
-				zValue.zw = *Pointer<Float4>(buffer + pitch - 8);
+				if (state.depthFormat == VK_FORMAT_D16_UNORM)
+				{
+					// Fixme: UShort2 lacks required operations
+					zValue.x = Float(UInt(*Pointer<UShort>(buffer)));
+					zValue.y = Float(UInt(*Pointer<UShort>(buffer+2)));
+					zValue.z = Float(UInt(*Pointer<UShort>(buffer+pitch)));
+					zValue.w = Float(UInt(*Pointer<UShort>(buffer+pitch+2)));
+					// Unscale
+					zValue = zValue * *Pointer<Float4>(constants + OFFSET(Constants,unscaleUShort));
+				}
+				else
+				{
+					// FIXME: Properly optimizes?
+					zValue.xy = *Pointer<Float4>(buffer);
+					zValue.zw = *Pointer<Float4>(buffer + pitch - 8);
+				}
 			}
 			else
 			{
@@ -539,17 +566,34 @@ namespace sw
 			}
 		}
 
+		// FIXME: D16_UNORM can do depth test in packed representation,
+		// is probably faster than unpacking & repacking
+
 		Pointer<Byte> buffer;
 		Int pitch;
 
 		if(!state.quadLayoutDepthBuffer)
 		{
-			buffer = zBuffer + 4 * x;
+			if (state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				buffer = zBuffer + 2 * x;
+			}
+			else
+			{
+				buffer = zBuffer + 4 * x;
+			}
 			pitch = *Pointer<Int>(data + OFFSET(DrawData,depthPitchB));
 		}
 		else
 		{
-			buffer = zBuffer + 8 * x;
+			if (state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				buffer = zBuffer + 4 * x;
+			}
+			else
+			{
+				buffer = zBuffer + 8 * x;
+			}
 		}
 
 		if(q > 0)
@@ -563,14 +607,32 @@ namespace sw
 		{
 			if(!state.quadLayoutDepthBuffer)
 			{
-				// FIXME: Properly optimizes?
-				zValue.xy = *Pointer<Float4>(buffer);
-				zValue.zw = *Pointer<Float4>(buffer + pitch - 8);
+				if (state.depthFormat == VK_FORMAT_D16_UNORM)
+				{
+					// Fixme: UShort2 lacks required operations
+					zValue.x = Float(UInt(*Pointer<UShort>(buffer)));
+					zValue.y = Float(UInt(*Pointer<UShort>(buffer+2)));
+					zValue.z = Float(UInt(*Pointer<UShort>(buffer+pitch)));
+					zValue.w = Float(UInt(*Pointer<UShort>(buffer+pitch+2)));
+					// Unscale
+					zValue = zValue * *Pointer<Float4>(constants + OFFSET(Constants,unscaleUShort));
+				}
+				else
+				{
+					// FIXME: Properly optimizes?
+					zValue.xy = *Pointer<Float4>(buffer);
+					zValue.zw = *Pointer<Float4>(buffer + pitch - 8);
+				}
 			}
 			else
 			{
 				zValue = *Pointer<Float4>(buffer, 16);
 			}
+		}
+
+		if (state.depthFormat == VK_FORMAT_D16_UNORM)
+		{
+			Z *= Float4(65536.f);
 		}
 
 		Z = As<Float4>(As<Int4>(Z) & *Pointer<Int4>(constants + OFFSET(Constants,maskD4X) + zMask * 16, 16));
@@ -579,9 +641,19 @@ namespace sw
 
 		if(!state.quadLayoutDepthBuffer)
 		{
-			// FIXME: Properly optimizes?
-			*Pointer<Float2>(buffer) = Float2(Z.xy);
-			*Pointer<Float2>(buffer + pitch) = Float2(Z.zw);
+			if (state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				*Pointer<UShort>(buffer) = UShort(UInt(Float(Z.x)));
+				*Pointer<UShort>(buffer+2) = UShort(UInt(Float(Z.y)));
+				*Pointer<UShort>(buffer+pitch) = UShort(UInt(Float(Z.z)));
+				*Pointer<UShort>(buffer+pitch+2) = UShort(UInt(Float(Z.w)));
+			}
+			else
+			{
+				// FIXME: Properly optimizes?
+				*Pointer<Float2>(buffer) = Float2(Z.xy);
+				*Pointer<Float2>(buffer + pitch) = Float2(Z.zw);
+			}
 		}
 		else
 		{
