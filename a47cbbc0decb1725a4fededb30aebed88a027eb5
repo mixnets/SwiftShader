@@ -22,6 +22,30 @@
       "revId": "a47cbbc0decb1725a4fededb30aebed88a027eb5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81fe026f_95f98905",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 668,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-12T04:37:29Z",
+      "side": 1,
+      "message": "Done. Samples, layers, depth are good candidates for defaults. Width and height are set differently by every branch anyway.",
+      "parentUuid": "ac8a4799_0d668e85",
+      "range": {
+        "startLine": 668,
+        "startChar": 1,
+        "endLine": 668,
+        "endChar": 88
+      },
+      "revId": "a47cbbc0decb1725a4fededb30aebed88a027eb5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
