@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b7282dc8_6832d048",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-12T09:02:10Z",
+      "side": 1,
+      "message": "Good spot. Done.",
+      "parentUuid": "ba22d01b_c5d2778c",
+      "range": {
+        "startLine": 83,
+        "startChar": 3,
+        "endLine": 83,
+        "endChar": 15
+      },
+      "revId": "3f736cc7b9b93c53ebe92680dd193720feeda21f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "db14946b_c2978086",
         "filename": "src/Pipeline/ComputeProgram.cpp",
         "patchSetId": 9
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-12T04:36:14Z",
       "side": 1,
       "message": "We might be able to get away with doing this after 1.0, so don\u0027t jump on this just yet.",
+      "range": {
+        "startLine": 153,
+        "startChar": 5,
+        "endLine": 153,
+        "endChar": 47
+      },
+      "revId": "3f736cc7b9b93c53ebe92680dd193720feeda21f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bcaf53d5_f6d3c18a",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-12T09:02:10Z",
+      "side": 1,
+      "message": "I\u0027ve been taking a look at this and coroutines to see how they\u0027d call gear together.\nI\u0027ll keep this on the back-burner for now.",
+      "parentUuid": "db14946b_c2978086",
       "range": {
         "startLine": 153,
         "startChar": 5,
