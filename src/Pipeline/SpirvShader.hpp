@@ -23,6 +23,7 @@
 
 #include <array>
 #include <cstring>
+#include <functional>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -41,6 +42,7 @@ namespace sw
 {
 	// Forward declarations.
 	class SpirvRoutine;
+	class SpirvScope;
 
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
@@ -114,107 +116,129 @@ namespace sw
 		uint32_t size;
 	};
 
+	using SpirvInsn = uint32_t;
+
+	// SpirvInsnIt is an interator over SPIRV instructions, designed to support
+	// range-based-for.
+	class SpirvInsnIt
+	{
+	public:
+		using Store = std::vector<SpirvInsn>;
+
+		spv::Op opcode() const
+		{
+			return static_cast<spv::Op>(*iter & spv::OpCodeMask);
+		}
+
+		uint32_t wordCount() const
+		{
+			return *iter >> spv::WordCountShift;
+		}
+
+		uint32_t word(uint32_t n) const
+		{
+			ASSERT(n < wordCount());
+			return iter[n];
+		}
+
+		uint32_t const * wordPointer(uint32_t n) const
+		{
+			ASSERT(n < wordCount());
+			return &iter[n];
+		}
+
+		bool operator!=(SpirvInsnIt const &other) const
+		{
+			return iter != other.iter;
+		}
+
+		SpirvInsnIt operator*() const
+		{
+			return *this;
+		}
+
+		SpirvInsnIt &operator++()
+		{
+			iter += wordCount();
+			return *this;
+		}
+
+		SpirvInsnIt const operator++(int)
+		{
+			SpirvInsnIt ret{*this};
+			iter += wordCount();
+			return ret;
+		}
+
+		SpirvInsnIt(SpirvInsnIt const &other) = default;
+
+		SpirvInsnIt() = default;
+
+		explicit SpirvInsnIt(Store::const_iterator iter) : iter{iter}
+		{
+		}
+
+	private:
+		Store::const_iterator iter;
+	};
+
+	class SpirvBlock
+	{
+	public:
+		using ID = SpirvID<SpirvBlock>;
+
+		SpirvBlock() = default;
+		SpirvBlock(const SpirvBlock& other) = default;
+		explicit SpirvBlock(SpirvInsnIt begin, SpirvInsnIt end) : begin_(begin), end_(end) {}
+
+		/* range-based-for interface */
+		inline SpirvInsnIt begin() const { return begin_; }
+		inline SpirvInsnIt end() const { return end_; }
+
+	private:
+		SpirvInsnIt begin_;
+		SpirvInsnIt end_;
+	};
+
 	class SpirvShader
 	{
 	public:
-		using InsnStore = std::vector<uint32_t>;
+		using InsnStore = SpirvInsnIt::Store;
 		InsnStore insns;
 
-		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
-		class InsnIterator
-		{
-			InsnStore::const_iterator iter;
-
-		public:
-			spv::Op opcode() const
-			{
-				return static_cast<spv::Op>(*iter & spv::OpCodeMask);
-			}
-
-			uint32_t wordCount() const
-			{
-				return *iter >> spv::WordCountShift;
-			}
-
-			uint32_t word(uint32_t n) const
-			{
-				ASSERT(n < wordCount());
-				return iter[n];
-			}
-
-			uint32_t const * wordPointer(uint32_t n) const
-			{
-				ASSERT(n < wordCount());
-				return &iter[n];
-			}
-
-			bool operator!=(InsnIterator const &other) const
-			{
-				return iter != other.iter;
-			}
-
-			InsnIterator operator*() const
-			{
-				return *this;
-			}
-
-			InsnIterator &operator++()
-			{
-				iter += wordCount();
-				return *this;
-			}
-
-			InsnIterator const operator++(int)
-			{
-				InsnIterator ret{*this};
-				iter += wordCount();
-				return ret;
-			}
-
-			InsnIterator(InsnIterator const &other) = default;
-
-			InsnIterator() = default;
-
-			explicit InsnIterator(InsnStore::const_iterator iter) : iter{iter}
-			{
-			}
-		};
-
 		/* range-based-for interface */
-		InsnIterator begin() const
+		SpirvInsnIt begin() const
 		{
-			return InsnIterator{insns.cbegin() + 5};
+			return SpirvInsnIt{insns.cbegin() + 5};
 		}
 
-		InsnIterator end() const
+		SpirvInsnIt end() const
 		{
-			return InsnIterator{insns.cend()};
+			return SpirvInsnIt{insns.cend()};
 		}
-
-		class Type;
-		using TypeID = SpirvID<Type>;
 
 		class Type
 		{
 		public:
-			InsnIterator definition;
+			using ID = SpirvID<Type>;
+
+			SpirvInsnIt definition;
 			spv::StorageClass storageClass = static_cast<spv::StorageClass>(-1);
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
 
 			// Inner element type for pointers, arrays, vectors and matrices.
-			TypeID element;
+			ID element;
 		};
-
-		class Object;
-		using ObjectID = SpirvID<Object>;
 
 		class Object
 		{
 		public:
-			InsnIterator definition;
-			TypeID type;
-			ObjectID pointerBase;
+			using ID = SpirvID<Object>;
+
+			SpirvInsnIt definition;
+			Type::ID type;
+			ID pointerBase;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 			enum class Kind
@@ -231,17 +255,17 @@ namespace sw
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
 
 		// TypeOrObjectID is an identifier that represents a Type or an Object,
-		// and supports implicit casting to and from TypeID or ObjectID.
+		// and supports implicit casting to and from Type::ID or Object::ID.
 		class TypeOrObjectID : public SpirvID<TypeOrObject>
 		{
 		public:
 			using Hash = std::hash<SpirvID<TypeOrObject>>;
 
 			inline TypeOrObjectID(uint32_t id) : SpirvID(id) {}
-			inline TypeOrObjectID(TypeID id) : SpirvID(id.value()) {}
-			inline TypeOrObjectID(ObjectID id) : SpirvID(id.value()) {}
-			inline operator TypeID() const { return TypeID(value()); }
-			inline operator ObjectID() const { return ObjectID(value()); }
+			inline TypeOrObjectID(Type::ID id) : SpirvID(id.value()) {}
+			inline TypeOrObjectID(Object::ID id) : SpirvID(id.value()) {}
+			inline operator Type::ID() const { return Type::ID(value()); }
+			inline operator Object::ID() const { return Object::ID(value()); }
 		};
 
 		int getSerialID() const
@@ -329,7 +353,7 @@ namespace sw
 		};
 
 		std::unordered_map<TypeOrObjectID, Decorations, TypeOrObjectID::Hash> decorations;
-		std::unordered_map<TypeID, std::vector<Decorations>> memberDecorations;
+		std::unordered_map<Type::ID, std::vector<Decorations>> memberDecorations;
 
 		struct InterfaceComponent
 		{
@@ -346,7 +370,7 @@ namespace sw
 
 		struct BuiltinMapping
 		{
-			ObjectID Id;
+			Object::ID Id;
 			uint32_t FirstComponent;
 			uint32_t SizeInComponents;
 		};
@@ -362,14 +386,14 @@ namespace sw
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> outputBuiltins;
 
-		Type const &getType(TypeID id) const
+		Type const &getType(Type::ID id) const
 		{
 			auto it = types.find(id);
 			ASSERT(it != types.end());
 			return it->second;
 		}
 
-		Object const &getObject(ObjectID id) const
+		Object const &getObject(Object::ID id) const
 		{
 			auto it = defs.find(id);
 			ASSERT(it != defs.end());
@@ -382,16 +406,17 @@ namespace sw
 		Modes modes;
 		HandleMap<Type> types;
 		HandleMap<Object> defs;
+		HandleMap<SpirvBlock> blocks;
 
 		// DeclareType creates a Type for the given OpTypeX instruction, storing
 		// it into the types map. It is called from the analysis pass (constructor).
-		void DeclareType(InsnIterator insn);
+		void DeclareType(SpirvInsnIt insn);
 
-		void ProcessExecutionMode(InsnIterator it);
+		void ProcessExecutionMode(SpirvInsnIt it);
 
-		uint32_t ComputeTypeSize(InsnIterator insn);
+		uint32_t ComputeTypeSize(SpirvInsnIt insn);
 		void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
-		void ApplyDecorationsForIdMember(Decorations *d, TypeID id, uint32_t member) const;
+		void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
 
 		// Returns true if data in the given storage class is word-interleaved
 		// by each SIMD vector lane, otherwise data is linerally stored.
@@ -421,41 +446,92 @@ namespace sw
 		//
 		static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
 
-		template<typename F>
-		int VisitInterfaceInner(TypeID id, Decorations d, F f) const;
+		// BranchDivergent calls emitDivergent if condition is true or
+		// enableLaneMask has a 0 in any element.
+		//
+		// emitDivergent should consider each lane's enabled state and any other
+		// per-lane state.
+		// emitNonDivergent can safely assume that all lanes are enabled and are
+		// non-divergent.
+		void BranchDivergent(SpirvRoutine *routine, SpirvScope *scope,
+			bool condition,
+			std::function<void(SpirvScope*)> emitDivergent,
+			std::function<void(SpirvScope*)> emitNonDivergent) const;
+
+		void Branch(SpirvScope *scope, Int4 condition,
+			std::function<void(SpirvScope*)> emitTrue,
+			std::function<void(SpirvScope*)> emitFalse) const;
+
+		void Select(SpirvScope *scope, Int4 condition,
+			std::function<void(SpirvScope*)> emitTrue,
+			std::function<void(SpirvScope*)> emitFalse) const;
+
+		void Merge(SpirvScope *scope, std::initializer_list<SpirvScope*> from);
 
 		template<typename F>
-		void VisitInterface(ObjectID id, F f) const;
+		int VisitInterfaceInner(Type::ID id, Decorations d, F f) const;
 
-		uint32_t GetConstantInt(ObjectID id) const;
-		Object& CreateConstant(InsnIterator it);
+		template<typename F>
+		void VisitInterface(Object::ID id, F f) const;
+
+		uint32_t GetConstantInt(Object::ID id) const;
+		Object& CreateConstant(SpirvInsnIt it);
 
 		void ProcessInterfaceVariable(Object &object);
 
-		SIMD::Int WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		uint32_t WalkLiteralAccessChain(TypeID id, uint32_t numIndexes, uint32_t const *indexes) const;
+		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine, SpirvScope *scope) const;
+		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
 		// Emit pass instructions:
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitDot(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitSelect(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAny(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAll(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitVariable(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitLoad(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitStore(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAccessChain(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeConstruct(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeInsert(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeExtract(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitVectorShuffle(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitVectorTimesScalar(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitUnaryOp(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitBinaryOp(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitDot(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitSelect(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitExtendedInstruction(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAny(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAll(SpirvInsnIt insn, SpirvRoutine *routine, SpirvScope *scope) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
 		static std::string OpcodeName(spv::Op op);
+	};
+
+	class SpirvScope
+	{
+	public:
+		inline SpirvScope(SpirvScope *parent) : parent(parent) {}
+
+		const SpirvScope *parent;
+
+		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
+
+		Intermediate &createIntermediate(SpirvShader::Object::ID id, uint32_t size)
+		{
+			auto it = intermediates.emplace(std::piecewise_construct,
+					std::forward_as_tuple(id),
+					std::forward_as_tuple(size));
+			return it.first->second;
+		}
+
+		Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
+		{
+			auto it = intermediates.find(id);
+			if (it != intermediates.end())
+			{
+				return it->second;
+			}
+			ASSERT(parent != nullptr);
+			return parent->getIntermediate(id);
+		}
 	};
 
 	class SpirvRoutine
@@ -467,45 +543,32 @@ namespace sw
 
 		vk::PipelineLayout const * const pipelineLayout;
 
-		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
+		std::unordered_map<SpirvShader::Object::ID, Value> lvalues;
 
-		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
-
-		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
+		std::unordered_map<SpirvShader::Object::ID, Pointer<Byte> > physicalPointers;
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
 
+		SpirvScope rootScope;
+
+		SIMD::Int enableLaneMask = SIMD::Int(0xFFFFFFFF);
+
 		std::array<Pointer<Byte>, vk::MAX_BOUND_DESCRIPTOR_SETS> descriptorSets;
 
-		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
+		void createLvalue(SpirvShader::Object::ID id, uint32_t size)
 		{
 			lvalues.emplace(id, Value(size));
 		}
 
-		Intermediate& createIntermediate(SpirvShader::ObjectID id, uint32_t size)
-		{
-			auto it = intermediates.emplace(std::piecewise_construct,
-					std::forward_as_tuple(id),
-					std::forward_as_tuple(size));
-			return it.first->second;
-		}
-
-		Value& getValue(SpirvShader::ObjectID id)
+		Value& getValue(SpirvShader::Object::ID id)
 		{
 			auto it = lvalues.find(id);
 			ASSERT(it != lvalues.end());
 			return it->second;
 		}
 
-		Intermediate const& getIntermediate(SpirvShader::ObjectID id) const
-		{
-			auto it = intermediates.find(id);
-			ASSERT(it != intermediates.end());
-			return it->second;
-		}
-
-		Pointer<Byte>& getPhysicalPointer(SpirvShader::ObjectID id)
+		Pointer<Byte>& getPhysicalPointer(SpirvShader::Object::ID id)
 		{
 			auto it = physicalPointers.find(id);
 			assert(it != physicalPointers.end());
@@ -524,9 +587,9 @@ namespace sw
 		Intermediate const *intermediate;
 
 	public:
-		GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::ObjectID objId) :
+		GenericValue(SpirvShader const *shader, SpirvScope const *scope, SpirvShader::Object::ID objId) :
 				obj(shader->getObject(objId)),
-				intermediate(obj.kind == SpirvShader::Object::Kind::Value ? &routine->getIntermediate(objId) : nullptr) {}
+				intermediate(obj.kind == SpirvShader::Object::Kind::Value ? &scope->getIntermediate(objId) : nullptr) {}
 
 		RValue<SIMD::Float> operator[](uint32_t i) const
 		{
