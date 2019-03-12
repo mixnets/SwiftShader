@@ -32,9 +32,6 @@ namespace sw
 
 	private:
 		const char *precache;
-		#if defined(_WIN32)
-		HMODULE precacheDLL;
-		#endif
 	};
 
 	template<class State>
