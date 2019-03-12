@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f58e1da_4d9f8291",
+        "filename": "src/Vulkan/VkFormatUtils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-12T03:49:16Z",
+      "side": 1,
+      "message": "I don\u0027t think it\u0027s useful to put this into an extra namespace level (there\u0027s zero risk to clash with something else).\n\nBut how about creating a vk::Format class that constructs from a VkFormat and has these functions as methods? Not necessary to do as part of this patch as far as I\u0027m concerned.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 15
+      },
+      "revId": "b5aa1f6b9f92c63f4d0b17dfbc6652831b446582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d41cdec7_2b2e0e94",
+        "filename": "src/Vulkan/VkFormatUtils.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-12T03:49:16Z",
+      "side": 1,
+      "message": "nit: These are closely related so I wouldn\u0027t put blank lines between them.",
+      "revId": "b5aa1f6b9f92c63f4d0b17dfbc6652831b446582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
