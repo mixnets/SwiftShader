@@ -16,6 +16,24 @@
       "revId": "cefa81e6ce7d634d773eee20da72d17d01d1f0b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c543ee89_d5c90cb2",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-12T00:26:37Z",
+      "side": 0,
+      "message": "Good spot. Done.",
+      "parentUuid": "bc43a408_ae6540bc",
+      "revId": "cefa81e6ce7d634d773eee20da72d17d01d1f0b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
