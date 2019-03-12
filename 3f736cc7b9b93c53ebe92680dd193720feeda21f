@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba22d01b_c5d2778c",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-12T04:36:14Z",
+      "side": 1,
+      "message": "Can be a C array, since it\u0027s not being indexed by any dynamic (i.e. Reactor type) value?",
+      "range": {
+        "startLine": 83,
+        "startChar": 3,
+        "endLine": 83,
+        "endChar": 15
+      },
+      "revId": "3f736cc7b9b93c53ebe92680dd193720feeda21f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db14946b_c2978086",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-12T04:36:14Z",
+      "side": 1,
+      "message": "We might be able to get away with doing this after 1.0, so don\u0027t jump on this just yet.",
+      "range": {
+        "startLine": 153,
+        "startChar": 5,
+        "endLine": 153,
+        "endChar": 47
+      },
+      "revId": "3f736cc7b9b93c53ebe92680dd193720feeda21f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
