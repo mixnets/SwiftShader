@@ -23,6 +23,7 @@
 
 #include <array>
 #include <cstring>
+#include <functional>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -421,6 +422,22 @@ namespace sw
 		//
 		static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
 
+		// BranchDivergent calls emitDivergent if condition is true or
+		// enableLaneMask has a 0 in any element.
+		//
+		// emitDivergent should consider each lane's enabled state and any other
+		// per-lane state.
+		// emitNonDivergent can safely assume that all lanes are enabled and are
+		// non-divergent.
+		//
+		// Note: routine->createIntermediate() must not be called inside
+		// emitDivergent or emitNonDivergent. This restriction may be lifted
+		// later.
+		static void BranchDivergent(SpirvRoutine *routine,
+			bool condition,
+			std::function<void()> emitDivergent,
+			std::function<void()> emitNonDivergent);
+
 		template<typename F>
 		int VisitInterfaceInner(TypeID id, Decorations d, F f) const;
 
@@ -475,6 +492,8 @@ namespace sw
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		SIMD::Int enableLaneMask = SIMD::Int(0xFFFFFFFF);
 
 		std::array<Pointer<Byte>, vk::MAX_BOUND_DESCRIPTOR_SETS> descriptorSets;
 
