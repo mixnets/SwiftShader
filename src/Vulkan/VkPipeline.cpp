@@ -535,6 +535,15 @@ const sw::Color<float>& GraphicsPipeline::getBlendConstants() const
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
 	: Pipeline(Cast(pCreateInfo->layout))
 {
+	auto& stage = pCreateInfo->stage;
+	if((stage.stage != VK_SHADER_STAGE_COMPUTE_BIT) ||
+	   (stage.flags != 0) ||
+	   !((stage.pSpecializationInfo == nullptr) ||
+	     ((stage.pSpecializationInfo->mapEntryCount == 0) &&
+	      (stage.pSpecializationInfo->dataSize == 0))))
+	{
+		UNIMPLEMENTED();
+	}
 }
 
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
