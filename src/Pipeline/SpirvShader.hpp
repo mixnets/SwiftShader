@@ -26,6 +26,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
 #include <type_traits>
@@ -66,15 +67,23 @@ namespace sw
 	class Intermediate
 	{
 	public:
-		Intermediate(uint32_t size) : scalar(new rr::Value*[size]), size(size) {
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		Intermediate(uint32_t size) : size(size), scalar(new rr::Value*[size])
+		{
 			memset(scalar, 0, sizeof(rr::Value*) * size);
-#endif
 		}
+
+		Intermediate(Intermediate && other) : size(other.size), scalar(other.scalar)
+		{
+			other.scalar = nullptr;
+		}
+
 
 		~Intermediate()
 		{
-			delete[] scalar;
+			if (scalar != nullptr)
+			{
+				delete[] scalar;
+			}
 		}
 
 		void emplace(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); }
@@ -84,6 +93,14 @@ namespace sw
 		void emplace(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); }
 		void emplace(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); }
 		void emplace(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); }
+
+		void replace(uint32_t i, RValue<SIMD::Float> &&scalar) { replace(i, scalar.value); }
+		void replace(uint32_t i, RValue<SIMD::Int> &&scalar)   { replace(i, scalar.value); }
+		void replace(uint32_t i, RValue<SIMD::UInt> &&scalar)  { replace(i, scalar.value); }
+
+		void replace(uint32_t i, const RValue<SIMD::Float> &scalar) { replace(i, scalar.value); }
+		void replace(uint32_t i, const RValue<SIMD::Int> &scalar)   { replace(i, scalar.value); }
+		void replace(uint32_t i, const RValue<SIMD::UInt> &scalar)  { replace(i, scalar.value); }
 
 		// Value retrieval functions.
 		RValue<SIMD::Float> Float(uint32_t i) const
@@ -107,11 +124,13 @@ namespace sw
 			return As<SIMD::UInt>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::UInt>(scalar)
 		}
 
-		// No copy/move construction or assignment
+		// No copy construction or assignment
 		Intermediate(Intermediate const &) = delete;
-		Intermediate(Intermediate &&) = delete;
 		Intermediate & operator=(Intermediate const &) = delete;
-		Intermediate & operator=(Intermediate &&) = delete;
+		Intermediate & operator=(Intermediate && other) = delete;
+
+		// Number of elements
+		uint32_t const size;
 
 	private:
 		void emplace(uint32_t i, rr::Value *value)
@@ -121,8 +140,13 @@ namespace sw
 			scalar[i] = value;
 		}
 
-		rr::Value **const scalar;
-		uint32_t size;
+		void replace(uint32_t i, rr::Value *value)
+		{
+			ASSERT(i < size);
+			scalar[i] = value;
+		}
+
+		rr::Value **scalar;
 	};
 
 	class SpirvShader
@@ -157,6 +181,11 @@ namespace sw
 			{
 				ASSERT(n < wordCount());
 				return &iter[n];
+			}
+
+			bool operator==(InsnIterator const &other) const
+			{
+				return iter == other.iter;
 			}
 
 			bool operator!=(InsnIterator const &other) const
@@ -243,18 +272,51 @@ namespace sw
 		{
 		public:
 			using ID = SpirvID<Block>;
+			using Set = std::unordered_set<ID>;
+
+			struct Edge
+			{
+				ID from;
+				ID to;
+
+				bool operator == (const Edge& other) const { return from == other.from && to == other.to; }
+
+				struct Hash
+				{
+					std::size_t operator()(const Edge& edge) const noexcept
+					{
+						return std::hash<uint32_t>()(edge.from.value() * 31 + edge.to.value());
+					}
+				};
+			};
 
 			Block() = default;
 			Block(const Block& other) = default;
-			explicit Block(InsnIterator begin, InsnIterator end) : begin_(begin), end_(end) {}
+			explicit Block(InsnIterator begin, InsnIterator end);
 
 			/* range-based-for interface */
 			inline InsnIterator begin() const { return begin_; }
 			inline InsnIterator end() const { return end_; }
 
-		private:
+			enum Kind
+			{
+				Simple, // No control flow.
+				StructuredBranch, // OpSelectionMerge + OpBranchConditional
+				UnstructuredBranch, // OpBranchConditional
+				StructuredSwitch, // OpSelectionMerge + OpSwitch
+				UnstructuredSwitch, // OpSwitch
+				Loop,
+			};
+
 			InsnIterator begin_;
 			InsnIterator end_;
+			Kind kind;
+			InsnIterator mergeInstruction;
+			InsnIterator branchInstruction;
+			ID mergeBlock;
+			ID continueTarget;
+			Set ins;
+			Set outs;
 		};
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
@@ -384,7 +446,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine) const;
+		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -408,7 +470,7 @@ namespace sw
 		Block const &getBlock(Block::ID id) const
 		{
 			auto it = blocks.find(id);
-			ASSERT(it != blocks.end());
+			ASSERT_MSG(it != blocks.end(), "Unknown block %d", id.value());
 			return it->second;
 		}
 
@@ -420,9 +482,6 @@ namespace sw
 		HandleMap<Object> defs;
 		HandleMap<Block> blocks;
 		Block::ID mainBlockId; // Block of the entry point function.
-
-		void EmitBlock(SpirvRoutine *routine, Block const &block) const;
-		void EmitInstruction(SpirvRoutine *routine, InsnIterator insn) const;
 
 		// DeclareType creates a Type for the given OpTypeX instruction, storing
 		// it into the types map. It is called from the analysis pass (constructor).
@@ -477,26 +536,76 @@ namespace sw
 		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
+		// EmitState holds control-flow state for the emit() pass.
+		class EmitState
+		{
+		public:
+			RValue<SIMD::Int> activeLaneMask() const
+			{
+				return RValue<SIMD::Int>(activeLaneMaskValue);
+			}
+
+			void setActiveLaneMask(RValue<SIMD::Int> mask)
+			{
+				activeLaneMaskValue = mask.value;
+			}
+
+			void addOutputActiveLaneMaskEdge(Block::ID out, RValue<SIMD::Int> mask);
+			void addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask);
+			RValue<SIMD::Int> getActiveLaneMaskEdge(Block::ID from, Block::ID to);
+
+			SpirvRoutine *routine = nullptr;
+			rr::Value *activeLaneMaskValue = nullptr;
+			Block::ID currentBlock;
+			Block::Set visited; // Blocks already emitted.
+			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
+		};
+
+		// EmitResult is an enumerator of result values from the Emit functions.
+		enum class EmitResult
+		{
+			Continue, // No termination instructions.
+			Terminator, // Reached a termination instruction.
+		};
+
+		bool existsPath(Block::ID from, Block::ID to) const;
+
+		void EmitBlock(Block::ID id, EmitState *state) const;
+		EmitResult EmitInstruction(InsnIterator insn, EmitState *state) const;
+
+		// Functions that emit control flow:
+		void EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state) const;
+		void EmitLoop(EmitState *state) const;
+		Intermediate getPhiValue(InsnIterator insn, EmitState *state) const;
+
 		// Emit pass instructions:
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorExtractDynamic(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorInsertDynamic(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitDot(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitSelect(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAny(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAll(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitBranch(InsnIterator insn, SpirvRoutine *routine) const;
+		EmitResult EmitVariable(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitLoad(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitStore(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitAccessChain(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitCompositeConstruct(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitCompositeInsert(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitCompositeExtract(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitVectorShuffle(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitVectorTimesScalar(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitVectorExtractDynamic(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitVectorInsertDynamic(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitUnaryOp(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitBinaryOp(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitDot(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitSelect(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitExtendedInstruction(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitSelectionMerge(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitLoopMerge(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitSwitch(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitBranchConditional(Block::ID blockId, EmitState *state) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
@@ -524,8 +633,6 @@ namespace sw
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
 
-		SIMD::Int activeLaneMask = SIMD::Int(0xFFFFFFFF);
-
 		std::array<Pointer<Byte>, vk::MAX_BOUND_DESCRIPTOR_SETS> descriptorSets;
 		Pointer<Byte> pushConstants;
 
@@ -545,21 +652,21 @@ namespace sw
 		Value& getValue(SpirvShader::Object::ID id)
 		{
 			auto it = lvalues.find(id);
-			ASSERT(it != lvalues.end());
+			ASSERT_MSG(it != lvalues.end(), "Unknown value %d", id.value());
 			return it->second;
 		}
 
 		Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
 		{
 			auto it = intermediates.find(id);
-			ASSERT(it != intermediates.end());
+			ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 			return it->second;
 		}
 
 		Pointer<Byte>& getPhysicalPointer(SpirvShader::Object::ID id)
 		{
 			auto it = physicalPointers.find(id);
-			assert(it != physicalPointers.end());
+			ASSERT_MSG(it != physicalPointers.end(), "Unknown physical pointer %d", id.value());
 			return it->second;
 		}
 	};

@@ -946,7 +946,7 @@ namespace rr
 			}
 		}
 
-		if(false)
+		if(true)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
