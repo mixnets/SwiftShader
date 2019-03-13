@@ -221,6 +221,25 @@ namespace sw
 					for (auto j = 0u; j < constituentTy.sizeInComponents; j++)
 						object.constantValue[offset++] = constituent.constantValue[j];
 				}
+
+				auto objectId = ObjectID(insn.word(2));
+				auto decorationsIt = decorations.find(objectId);
+				if (decorationsIt != decorations.end() &&
+					decorationsIt->second.BuiltIn == spv::BuiltInWorkgroupSize)
+				{
+					// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#interfaces-builtin-variables :
+					// Decorating an object with the WorkgroupSize built-in
+					// decoration will make that object contain the dimensions
+					// of a local workgroup. If an object is decorated with the
+					// WorkgroupSize decoration, this must take precedence over
+					// any execution mode set for LocalSize.
+					// The object decorated with WorkgroupSize must be declared
+					// as a three-component vector of 32-bit integers.
+					ASSERT(getType(object.type).sizeInComponents == 3);
+					modes.WorkgroupSizeX = object.constantValue[0];
+					modes.WorkgroupSizeY = object.constantValue[1];
+					modes.WorkgroupSizeZ = object.constantValue[2];
+				}
 				break;
 			}
 
@@ -519,8 +538,11 @@ namespace sw
 			break;
 		case spv::ExecutionModeLocalSize:
 			modes.LocalSizeX = insn.word(3);
-			modes.LocalSizeZ = insn.word(5);
 			modes.LocalSizeY = insn.word(4);
+			modes.LocalSizeZ = insn.word(5);
+			modes.WorkgroupSizeX = modes.LocalSizeX;
+			modes.WorkgroupSizeY = modes.LocalSizeY;
+			modes.WorkgroupSizeZ = modes.LocalSizeZ;
 			break;
 		case spv::ExecutionModeOriginUpperLeft:
 			// This is always the case for a Vulkan shader. Do nothing.
