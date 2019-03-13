@@ -1183,6 +1183,10 @@ namespace sw
 			EmitAll(insn, routine);
 			break;
 
+		case spv::OpBranch:
+			EmitBranch(insn, routine);
+			break;
+
 		default:
 			UNIMPLEMENTED(OpcodeName(insn.opcode()).c_str());
 			break;
@@ -2048,6 +2052,12 @@ namespace sw
 		}
 
 		dst.emplace(0, As<SIMD::Float>(result));
+	}
+
+	void SpirvShader::EmitBranch(InsnIterator insn, SpirvRoutine *routine) const
+	{
+		auto blockId = Block::ID(insn.word(1));
+		EmitBlock(routine, getBlock(blockId));
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
