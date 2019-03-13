@@ -22,6 +22,30 @@
       "revId": "70f3dc79f5bd26c550879fd676091ccd5fc0d6b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6174c324_bf15a3c6",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-13T17:41:43Z",
+      "side": 1,
+      "message": "Scratch that. We should use what\u0027s most performant/convenient in the generated code. No change needed here.",
+      "parentUuid": "a911d84c_6a2445e9",
+      "range": {
+        "startLine": 441,
+        "startChar": 9,
+        "endLine": 441,
+        "endChar": 19
+      },
+      "revId": "70f3dc79f5bd26c550879fd676091ccd5fc0d6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
