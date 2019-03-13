@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "845e9405_0fe4ae3a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-13T19:21:10Z",
+      "side": 1,
+      "message": "This is guaranteed to be encountered after all ExecutionModes, so you *could* just write LocalSize* rather than introducing a second set?",
+      "revId": "8959233f54b7a30efec1bc2dc8d582ac0232d1c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
