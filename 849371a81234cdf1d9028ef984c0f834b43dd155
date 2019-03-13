@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "66db8465_19cffc70",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-13T04:09:28Z",
+      "side": 1,
+      "message": "Future direction: just call this \u0027integer\u0027? Normalized formats are \u0027normalized\u0027.",
+      "revId": "849371a81234cdf1d9028ef984c0f834b43dd155",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9fa0a050_41b5c3b0",
+        "filename": "src/Vulkan/VkFormat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-13T04:09:28Z",
+      "side": 1,
+      "message": "I\u0027m not sure this is going to work out -- is likely we can do quad layout for VK_IMAGE_TILING_OPTIMAL + format [+ perhaps *not* some troublesome usage flags].",
+      "revId": "849371a81234cdf1d9028ef984c0f834b43dd155",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
