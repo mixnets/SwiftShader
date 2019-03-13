@@ -140,6 +140,9 @@ namespace sw
 				break;
 			}
 
+			case spv::OpSelectionMerge:
+				break; // Nothing to do in analysis pass.
+
 			case spv::OpTypeVoid:
 			case spv::OpTypeBool:
 			case spv::OpTypeInt:
@@ -1024,10 +1027,15 @@ namespace sw
 		EmitBlock(routine, getBlock(mainBlockId));
 	}
 
-	void SpirvShader::EmitBlock(SpirvRoutine *routine, Block const &block) const
+	void SpirvShader::EmitBlock(SpirvRoutine *routine, Block const &block, Block::ID stopAt /*= Block::ID(0) */) const
 	{
 		for (auto insn : block)
 		{
+			if (insn.opcode() == spv::OpBranch && stopAt == Block::ID(insn.word(1)))
+			{
+				return;
+			}
+
 			EmitInstruction(routine, insn);
 		}
 	}
@@ -1207,6 +1215,13 @@ namespace sw
 		case spv::OpBranch:
 			EmitBranch(insn, routine);
 			break;
+
+		case spv::OpSelectionMerge:
+			EmitSelectionMerge(insn, routine);
+			break;
+
+		case spv::OpBranchConditional:
+			break; // Handled by OpSelectionMerge
 
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
@@ -2205,6 +2220,41 @@ namespace sw
 	{
 		auto blockId = Block::ID(insn.word(1));
 		EmitBlock(routine, getBlock(blockId));
+	}
+
+	void SpirvShader::EmitSelectionMerge(InsnIterator insn, SpirvRoutine *routine) const
+	{
+		auto mergeBlockId = Block::ID(insn.word(1));
+
+		auto branchInsn = insn; branchInsn++;
+		switch (branchInsn.opcode())
+		{
+		case spv::OpBranchConditional:
+			EmitBranchConditional(branchInsn, routine, mergeBlockId);
+			break;
+		case spv::OpSwitch:
+			UNIMPLEMENTED("OpSwitch");
+			break;
+		default:
+			// OpSelectionMerge must immediately precede either an
+			// OpBranchConditional or OpSwitch instruction.
+			UNREACHABLE("Unexpected opcode"); // See Appendix A of the Vulkan spec.
+		}
+	}
+
+	void SpirvShader::EmitBranchConditional(InsnIterator insn, SpirvRoutine *routine, Block::ID mergeBlockId) const
+	{
+		// auto condId = Object::ID(insn.word(1));
+		auto trueBlockId = Block::ID(insn.word(2));
+		auto falseBlockId = Block::ID(insn.word(3));
+
+		// TODO: Optimize for case where all lanes take same path.
+		// TODO: Set enabled masks.
+		EmitBlock(routine, getBlock(trueBlockId), mergeBlockId);
+		EmitBlock(routine, getBlock(falseBlockId), mergeBlockId);
+
+		// TODO: Phis.
+		EmitBlock(routine, getBlock(mergeBlockId));
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const

@@ -419,7 +419,7 @@ namespace sw
 		HandleMap<Block> blocks;
 		Block::ID mainBlockId; // Block of the entry point function.
 
-		void EmitBlock(SpirvRoutine *routine, Block const &block) const;
+		void EmitBlock(SpirvRoutine *routine, Block const &block, Block::ID stopAt = Block::ID(0)) const;
 		void EmitInstruction(SpirvRoutine *routine, InsnIterator insn) const;
 
 		// DeclareType creates a Type for the given OpTypeX instruction, storing
@@ -491,7 +491,9 @@ namespace sw
 		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const;
 		void EmitAny(InsnIterator insn, SpirvRoutine *routine) const;
 		void EmitAll(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitSelectionMerge(InsnIterator insn, SpirvRoutine *routine) const;
 		void EmitBranch(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitBranchConditional(InsnIterator insn, SpirvRoutine *routine, Block::ID mergeBlockId) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
