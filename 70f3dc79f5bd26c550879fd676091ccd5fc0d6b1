@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a911d84c_6a2445e9",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-13T17:39:23Z",
+      "side": 1,
+      "message": "Should probably eventually use VkRect for DrawData as well, but this is fine for now.",
+      "range": {
+        "startLine": 441,
+        "startChar": 9,
+        "endLine": 441,
+        "endChar": 19
+      },
+      "revId": "70f3dc79f5bd26c550879fd676091ccd5fc0d6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
