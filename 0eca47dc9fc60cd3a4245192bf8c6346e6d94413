@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d003bcd_20b91856",
+        "filename": "src/Device/RoutineCache.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-13T03:28:23Z",
+      "side": 1,
+      "message": "Pretty sure this isn\u0027t used any more either. Perhaps all we need is a typedef for RoutineCache\u003cState\u003e in each \u0027Processor\u0027 that uses it.",
+      "range": {
+        "startLine": 34,
+        "startChar": 14,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "0eca47dc9fc60cd3a4245192bf8c6346e6d94413",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
