@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3ff60f7b_f66d9a11",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-13T12:09:44Z",
+      "side": 1,
+      "message": "Ack. I can make a CL to rename this. I\u0027ll leave it as is in this cl so that we can clearly see that the functions (behavior) haven\u0027t changed.",
+      "parentUuid": "66db8465_19cffc70",
+      "revId": "849371a81234cdf1d9028ef984c0f834b43dd155",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9fa0a050_41b5c3b0",
         "filename": "src/Vulkan/VkFormat.h",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "849371a81234cdf1d9028ef984c0f834b43dd155",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ccba2742_fa645167",
+        "filename": "src/Vulkan/VkFormat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-13T12:09:44Z",
+      "side": 1,
+      "message": "We can certainly add arguments or class members at a later point if necessary.",
+      "parentUuid": "9fa0a050_41b5c3b0",
+      "revId": "849371a81234cdf1d9028ef984c0f834b43dd155",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
