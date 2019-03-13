@@ -42,6 +42,7 @@ namespace sw
 {
 	// Forward declarations.
 	class SpirvRoutine;
+	class SpirvScope;
 
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
@@ -429,14 +430,14 @@ namespace sw
 		// per-lane state.
 		// emitNonDivergent can safely assume that all lanes are enabled and are
 		// non-divergent.
-		//
-		// Note: routine->createIntermediate() must not be called inside
-		// emitDivergent or emitNonDivergent. This restriction may be lifted
-		// later.
-		static void BranchDivergent(SpirvRoutine *routine,
+		void BranchDivergent(SpirvRoutine *routine, SpirvScope *scope,
 			bool condition,
-			std::function<void()> emitDivergent,
-			std::function<void()> emitNonDivergent);
+			std::function<void(SpirvScope*)> emitDivergent,
+			std::function<void(SpirvScope*)> emitNonDivergent) const;
+
+		void Branch(SpirvScope *scope, Int4 condition,
+			std::function<void(SpirvScope*)> emitTrue,
+			std::function<void(SpirvScope*)> emitFalse) const;
 
 		template<typename F>
 		int VisitInterfaceInner(TypeID id, Decorations d, F f) const;
@@ -449,30 +450,61 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		SIMD::Int WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		SIMD::Int WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine, SpirvScope *scope) const;
 		uint32_t WalkLiteralAccessChain(TypeID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
 		// Emit pass instructions:
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitDot(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitSelect(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAny(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAll(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitVariable(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitLoad(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitStore(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitDot(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitSelect(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAny(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
+		void EmitAll(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
 		static std::string OpcodeName(spv::Op op);
+	};
+
+	class SpirvScope
+	{
+	public:
+		inline SpirvScope(SpirvScope *parent) : parent(parent) {}
+
+		void Merge(SpirvScope *childA, SpirvScope *childB);
+
+		const SpirvScope *parent;
+
+		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
+
+		Intermediate &createIntermediate(SpirvShader::ObjectID id, uint32_t size)
+		{
+			auto it = intermediates.emplace(std::piecewise_construct,
+					std::forward_as_tuple(id),
+					std::forward_as_tuple(size));
+			return it.first->second;
+		}
+
+		Intermediate const& getIntermediate(SpirvShader::ObjectID id) const
+		{
+			auto it = intermediates.find(id);
+			if (it != intermediates.end())
+			{
+				return it->second;
+			}
+			ASSERT(parent != nullptr);
+			return parent->getIntermediate(id);
+		}
 	};
 
 	class SpirvRoutine
@@ -486,12 +518,12 @@ namespace sw
 
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
-		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
-
 		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		SpirvScope rootScope;
 
 		SIMD::Int enableLaneMask = SIMD::Int(0xFFFFFFFF);
 
@@ -502,25 +534,11 @@ namespace sw
 			lvalues.emplace(id, Value(size));
 		}
 
-		Intermediate& createIntermediate(SpirvShader::ObjectID id, uint32_t size)
-		{
-			auto it = intermediates.emplace(std::piecewise_construct,
-					std::forward_as_tuple(id),
-					std::forward_as_tuple(size));
-			return it.first->second;
-		}
 
 		Value& getValue(SpirvShader::ObjectID id)
 		{
 			auto it = lvalues.find(id);
 			ASSERT(it != lvalues.end());
-			return it->second;
-		}
-
-		Intermediate const& getIntermediate(SpirvShader::ObjectID id) const
-		{
-			auto it = intermediates.find(id);
-			ASSERT(it != intermediates.end());
 			return it->second;
 		}
 
@@ -543,9 +561,9 @@ namespace sw
 		Intermediate const *intermediate;
 
 	public:
-		GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::ObjectID objId) :
+		GenericValue(SpirvShader const *shader, SpirvScope const *scope, SpirvShader::ObjectID objId) :
 				obj(shader->getObject(objId)),
-				intermediate(obj.kind == SpirvShader::Object::Kind::Value ? &routine->getIntermediate(objId) : nullptr) {}
+				intermediate(obj.kind == SpirvShader::Object::Kind::Value ? &scope->getIntermediate(objId) : nullptr) {}
 
 		RValue<SIMD::Float> operator[](uint32_t i) const
 		{
