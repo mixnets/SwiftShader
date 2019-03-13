@@ -684,7 +684,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	SIMD::Int SpirvShader::WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	SIMD::Int SpirvShader::WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		// TODO: think about explicit layout (UBO/SSBO) storage classes
 		// TODO: avoid doing per-lane work in some cases if we can?
@@ -697,7 +697,7 @@ namespace sw
 		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
 		// Start with its offset and build from there.
 		if (baseObject.kind == Object::Kind::Value)
-			dynamicOffset += As<SIMD::Int>(routine->getIntermediate(id)[0]);
+			dynamicOffset += As<SIMD::Int>(scope->getIntermediate(id)[0]);
 
 		for (auto i = 0u; i < numIndexes; i++)
 		{
@@ -728,7 +728,7 @@ namespace sw
 				if (obj.kind == Object::Kind::Constant)
 					constantOffset += stride * GetConstantInt(indexIds[i]);
 				else
-					dynamicOffset += SIMD::Int(stride) * As<SIMD::Int>(routine->getIntermediate(indexIds[i])[0]);
+					dynamicOffset += SIMD::Int(stride) * As<SIMD::Int>(scope->getIntermediate(indexIds[i])[0]);
 				typeId = type.element;
 				break;
 			}
@@ -957,6 +957,8 @@ namespace sw
 
 	void SpirvShader::emit(SpirvRoutine *routine) const
 	{
+		SpirvScope *scope = &routine->rootScope;
+
 		for (auto insn : *this)
 		{
 			switch (insn.opcode())
@@ -1012,39 +1014,39 @@ namespace sw
 				break;
 
 			case spv::OpVariable:
-				EmitVariable(insn, routine);
+				EmitVariable(insn, routine, scope);
 				break;
 
 			case spv::OpLoad:
-				EmitLoad(insn, routine);
+				EmitLoad(insn, routine, scope);
 				break;
 
 			case spv::OpStore:
-				EmitStore(insn, routine);
+				EmitStore(insn, routine, scope);
 				break;
 
 			case spv::OpAccessChain:
-				EmitAccessChain(insn, routine);
+				EmitAccessChain(insn, routine, scope);
 				break;
 
 			case spv::OpCompositeConstruct:
-				EmitCompositeConstruct(insn, routine);
+				EmitCompositeConstruct(insn, routine, scope);
 				break;
 
 			case spv::OpCompositeInsert:
-				EmitCompositeInsert(insn, routine);
+				EmitCompositeInsert(insn, routine, scope);
 				break;
 
 			case spv::OpCompositeExtract:
-				EmitCompositeExtract(insn, routine);
+				EmitCompositeExtract(insn, routine, scope);
 				break;
 
 			case spv::OpVectorShuffle:
-				EmitVectorShuffle(insn, routine);
+				EmitVectorShuffle(insn, routine, scope);
 				break;
 
 			case spv::OpVectorTimesScalar:
-				EmitVectorTimesScalar(insn, routine);
+				EmitVectorTimesScalar(insn, routine, scope);
 				break;
 
 			case spv::OpNot:
@@ -1058,7 +1060,7 @@ namespace sw
 			case spv::OpBitcast:
 			case spv::OpIsInf:
 			case spv::OpIsNan:
-				EmitUnaryOp(insn, routine);
+				EmitUnaryOp(insn, routine, scope);
 				break;
 
 			case spv::OpIAdd:
@@ -1106,27 +1108,27 @@ namespace sw
 			case spv::OpLogicalNotEqual:
 			case spv::OpUMulExtended:
 			case spv::OpSMulExtended:
-				EmitBinaryOp(insn, routine);
+				EmitBinaryOp(insn, routine, scope);
 				break;
 
 			case spv::OpDot:
-				EmitDot(insn, routine);
+				EmitDot(insn, routine, scope);
 				break;
 
 			case spv::OpSelect:
-				EmitSelect(insn, routine);
+				EmitSelect(insn, routine, scope);
 				break;
 
 			case spv::OpExtInst:
-				EmitExtendedInstruction(insn, routine);
+				EmitExtendedInstruction(insn, routine, scope);
 				break;
 
 			case spv::OpAny:
-				EmitAny(insn, routine);
+				EmitAny(insn, routine, scope);
 				break;
 
 			case spv::OpAll:
-				EmitAll(insn, routine);
+				EmitAll(insn, routine, scope);
 				break;
 
 			default:
@@ -1136,7 +1138,7 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitVariable(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitVariable(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		ObjectID resultId = insn.word(2);
 		auto &object = getObject(resultId);
@@ -1181,7 +1183,7 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitLoad(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitLoad(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		ObjectID objectId = insn.word(2);
 		ObjectID pointerId = insn.word(3);
@@ -1211,12 +1213,14 @@ namespace sw
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
 
-		auto &dst = routine->createIntermediate(objectId, objectTy.sizeInComponents);
+		auto &dst = scope->createIntermediate(objectId, objectTy.sizeInComponents);
 
-		BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
+		BranchDivergent(routine, scope, pointer.kind == Object::Kind::Value, [&](SpirvScope *scope)
 		{
-			// Divergent offsets.
-			auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+			// Divergent offsets or masked lanes.
+			auto offsets = pointer.kind == Object::Kind::Value ?
+					As<SIMD::Int>(scope->getIntermediate(pointerId)[0]) :
+					RValue<SIMD::Int>(SIMD::Int(0));
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
 				// i wish i had a Float,Float,Float,Float constructor here..
@@ -1229,7 +1233,7 @@ namespace sw
 				}
 				dst.emplace(i, v);
 			}
-		}, /* else */ [&]()
+		}, /* else */ [&](SpirvScope *scope)
 		{
 			// No divergent offsets.
 			if (interleavedByLane)
@@ -1252,7 +1256,7 @@ namespace sw
 		});
 	}
 
-	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		TypeID typeId = insn.word(1);
 		ObjectID objectId = insn.word(2);
@@ -1261,11 +1265,11 @@ namespace sw
 		ASSERT(type.sizeInComponents == 1);
 		ASSERT(getObject(baseId).pointerBase == getObject(objectId).pointerBase);
 
-		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
-		dst.emplace(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine)));
+		auto &dst = scope->createIntermediate(objectId, type.sizeInComponents);
+		dst.emplace(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine, scope)));
 	}
 
-	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		ObjectID pointerId = insn.word(1);
 		ObjectID objectId = insn.word(2);
@@ -1296,11 +1300,14 @@ namespace sw
 
 		if (object.kind == Object::Kind::Constant)
 		{
+			// Constant source data.
 			auto src = reinterpret_cast<float *>(object.constantValue.get());
-			BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
+			BranchDivergent(routine, scope, pointer.kind == Object::Kind::Value, [&](SpirvScope *scope)
 			{
-				// Constant source data. Divergent offsets.
-				auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+				// Divergent offsets or masked lanes.
+				auto offsets = pointer.kind == Object::Kind::Value ?
+					As<SIMD::Int>(scope->getIntermediate(pointerId)[0]) :
+					RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
@@ -1313,9 +1320,9 @@ namespace sw
 						}
 					}
 				}
-			}, /* else */ [&]()
+			}, /* else */ [&](SpirvScope *scope)
 			{
-				// Constant source data. No divergent offsets.
+				// No divergent offsets.
 				Pointer<SIMD::Float> dst = ptrBase;
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
@@ -1326,12 +1333,15 @@ namespace sw
 		}
 		else
 		{
-			auto &src = routine->getIntermediate(objectId);
+			// Intermediate source data.
+			auto &src = scope->getIntermediate(objectId);
 
-			BranchDivergent(routine, pointer.kind == Object::Kind::Value, [&]()
+			BranchDivergent(routine, scope, pointer.kind == Object::Kind::Value, [&](SpirvScope *scope)
 			{
-				// Intermediate source data. Divergent offsets.
-				auto offsets = As<SIMD::Int>(routine->getIntermediate(pointerId)[0]);
+				// Divergent offsets or masked lanes.
+				auto offsets = pointer.kind == Object::Kind::Value ?
+					As<SIMD::Int>(scope->getIntermediate(pointerId)[0]) :
+					RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
@@ -1344,12 +1354,12 @@ namespace sw
 						}
 					}
 				}
-			}, /* else */ [&]()
+			}, /* else */ [&](SpirvScope *scope)
 			{
 				//  No divergent offsets.
 				if (interleavedByLane)
 				{
-					// Intermediate source data. Lane-interleaved data.
+					// Lane-interleaved data.
 					Pointer<SIMD::Float> dst = ptrBase;
 					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
@@ -1358,7 +1368,7 @@ namespace sw
 				}
 				else
 				{
-					// Intermediate source data. Non-interleaved data.
+					// Non-interleaved data.
 					Pointer<SIMD::Float> dst = ptrBase;
 					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
@@ -1369,33 +1379,113 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::BranchDivergent(SpirvRoutine *routine,
+	void SpirvShader::BranchDivergent(SpirvRoutine *routine, SpirvScope *scope,
 			bool condition,
-			std::function<void()> emitDivergent,
-			std::function<void()> emitNonDivergent)
+			std::function<void(SpirvScope*)> emitDivergent,
+			std::function<void(SpirvScope*)> emitNonDivergent) const
 	{
 		if (condition)
 		{
-			emitDivergent();
+			emitDivergent(scope);
 		}
 		else
 		{
 			auto anyLanesDisabled = SignMask(~routine->enableLaneMask) != 0;
 			If(anyLanesDisabled)
 			{
-				emitDivergent();
+				emitDivergent(scope);
 			}
 			Else
 			{
-				emitNonDivergent();
+				emitNonDivergent(scope);
 			}
 		}
 	}
 
-	void SpirvShader::EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::Branch(SpirvScope *scope,
+			Int4 condition,
+			std::function<void(SpirvScope*)> emitTrue,
+			std::function<void(SpirvScope*)> emitFalse) const
+	{
+		auto allTrue = SignMask(~condition) == 0;
+		auto allFalse = SignMask(condition) == 0;
+
+		SpirvScope trueScope(scope);
+		SpirvScope falseScope(scope);
+
+		If(allTrue)
+		{
+			emitTrue(&trueScope);
+		}
+		Else If(allFalse)
+		{
+			emitFalse(&falseScope);
+		}
+		Else
+		{
+			emitTrue(&trueScope);
+			emitFalse(&falseScope);
+		}
+
+		scope->Merge(&trueScope, &falseScope);
+	}
+
+	void SpirvScope::Merge(SpirvScope *childA, SpirvScope *childB)
+	{
+		UNIMPLEMENTED();
+		/*
+		for (auto &itIm : trueScope.intermediates)
+		{
+			auto id = itIm.first;
+			auto &obj = getObject(id);
+			auto &type = getType(obj.type);
+			auto &trueIm = itIm.second;
+			auto &joinIm = scope->createIntermediate(id, type.sizeInComponents);
+			const auto& it = falseScope.intermediates.find(itIm.first);
+			if (it != falseScope.intermediates.end())
+			{
+				// Merge true and false values
+				auto& falseIm = it->second;
+
+				for (auto i = 0u; i < type.sizeInComponents; i++)
+				{
+					auto val = (condition & As<Int4>(trueIm[i])) | (~condition & As<Int4>(falseIm[i]));   // FIXME: IfThenElse()
+					joinIm.emplace(i, As<SIMD::Float>(val));
+				}
+			}
+			else
+			{
+				// Copy from true.
+				for (auto i = 0u; i < type.sizeInComponents; i++)
+				{
+					joinIm.emplace(i, As<SIMD::Float>(trueIm[i]));
+				}
+			}
+		}
+		for (auto &itIm : falseScope.intermediates)
+		{
+			auto id = itIm.first;
+			auto &obj = getObject(id);
+			auto &type = getType(obj.type);
+			auto &falseIm = itIm.second;
+			auto &joinIm = scope->createIntermediate(id, type.sizeInComponents);
+			const auto& it = trueScope.intermediates.find(itIm.first);
+			if (it == trueScope.intermediates.end())
+			{
+				// Copy from false.
+				for (auto i = 0u; i < type.sizeInComponents; i++)
+				{
+					joinIm.emplace(i, As<SIMD::Float>(falseIm[i]));
+				}
+			}
+		}
+		*/
+	}
+
+	void SpirvShader::EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto offset = 0u;
 
 		for (auto i = 0u; i < insn.wordCount() - 3; i++)
@@ -1403,24 +1493,24 @@ namespace sw
 			ObjectID srcObjectId = insn.word(3u + i);
 			auto & srcObject = getObject(srcObjectId);
 			auto & srcObjectTy = getType(srcObject.type);
-			GenericValue srcObjectAccess(this, routine, srcObjectId);
+			GenericValue srcObjectAccess(this, scope, srcObjectId);
 
 			for (auto j = 0u; j < srcObjectTy.sizeInComponents; j++)
 				dst.emplace(offset++, srcObjectAccess[j]);
 		}
 	}
 
-	void SpirvShader::EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		TypeID resultTypeId = insn.word(1);
 		auto &type = getType(resultTypeId);
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &newPartObject = getObject(insn.word(3));
 		auto &newPartObjectTy = getType(newPartObject.type);
 		auto firstNewComponent = WalkLiteralAccessChain(resultTypeId, insn.wordCount() - 5, insn.wordPointer(5));
 
-		GenericValue srcObjectAccess(this, routine, insn.word(4));
-		GenericValue newPartObjectAccess(this, routine, insn.word(3));
+		GenericValue srcObjectAccess(this, scope, insn.word(4));
+		GenericValue newPartObjectAccess(this, scope, insn.word(3));
 
 		// old components before
 		for (auto i = 0u; i < firstNewComponent; i++)
@@ -1439,32 +1529,32 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &compositeObject = getObject(insn.word(3));
 		TypeID compositeTypeId = compositeObject.definition.word(1);
 		auto firstComponent = WalkLiteralAccessChain(compositeTypeId, insn.wordCount() - 4, insn.wordPointer(4));
 
-		GenericValue compositeObjectAccess(this, routine, insn.word(3));
+		GenericValue compositeObjectAccess(this, scope, insn.word(3));
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
 			dst.emplace(i, compositeObjectAccess[firstComponent + i]);
 		}
 	}
 
-	void SpirvShader::EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 
 		// Note: number of components in result type, first half type, and second
 		// half type are all independent.
 		auto &firstHalfType = getType(getObject(insn.word(3)).type);
 
-		GenericValue firstHalfAccess(this, routine, insn.word(3));
-		GenericValue secondHalfAccess(this, routine, insn.word(4));
+		GenericValue firstHalfAccess(this, scope, insn.word(3));
+		GenericValue secondHalfAccess(this, scope, insn.word(4));
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
@@ -1486,12 +1576,12 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto srcLHS = GenericValue(this, routine, insn.word(3));
-		auto srcRHS = GenericValue(this, routine, insn.word(4));
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto srcLHS = GenericValue(this, scope, insn.word(3));
+		auto srcRHS = GenericValue(this, scope, insn.word(4));
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
@@ -1499,11 +1589,11 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto src = GenericValue(this, routine, insn.word(3));
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto src = GenericValue(this, scope, insn.word(3));
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
@@ -1548,13 +1638,13 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &lhsType = getType(getObject(insn.word(3)).type);
-		auto srcLHS = GenericValue(this, routine, insn.word(3));
-		auto srcRHS = GenericValue(this, routine, insn.word(4));
+		auto srcLHS = GenericValue(this, scope, insn.word(3));
+		auto srcRHS = GenericValue(this, scope, insn.word(4));
 
 		for (auto i = 0u; i < lhsType.sizeInComponents; i++)
 		{
@@ -1714,14 +1804,14 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitDot(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitDot(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
 		assert(type.sizeInComponents == 1);
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &lhsType = getType(getObject(insn.word(3)).type);
-		auto srcLHS = GenericValue(this, routine, insn.word(3));
-		auto srcRHS = GenericValue(this, routine, insn.word(4));
+		auto srcLHS = GenericValue(this, scope, insn.word(3));
+		auto srcRHS = GenericValue(this, scope, insn.word(4));
 
 		SIMD::Float result = srcLHS[0] * srcRHS[0];
 
@@ -1733,13 +1823,13 @@ namespace sw
 		dst.emplace(0, result);
 	}
 
-	void SpirvShader::EmitSelect(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitSelect(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto srcCond = GenericValue(this, routine, insn.word(3));
-		auto srcLHS = GenericValue(this, routine, insn.word(4));
-		auto srcRHS = GenericValue(this, routine, insn.word(5));
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto srcCond = GenericValue(this, scope, insn.word(3));
+		auto srcLHS = GenericValue(this, scope, insn.word(4));
+		auto srcRHS = GenericValue(this, scope, insn.word(5));
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
@@ -1751,17 +1841,17 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto extInstIndex = static_cast<GLSLstd450>(insn.word(4));
 
 		switch (extInstIndex)
 		{
 		case GLSLstd450FAbs:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Abs(src[i]));
@@ -1770,7 +1860,7 @@ namespace sw
 		}
 		case GLSLstd450SAbs:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Abs(As<SIMD::Int>(src[i]))));
@@ -1779,8 +1869,8 @@ namespace sw
 		}
 		case GLSLstd450Cross:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			dst.emplace(0, lhs[1] * rhs[2] - rhs[1] * lhs[2]);
 			dst.emplace(1, lhs[2] * rhs[0] - rhs[2] * lhs[0]);
 			dst.emplace(2, lhs[0] * rhs[1] - rhs[0] * lhs[1]);
@@ -1788,7 +1878,7 @@ namespace sw
 		}
 		case GLSLstd450Floor:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Floor(src[i]));
@@ -1797,7 +1887,7 @@ namespace sw
 		}
 		case GLSLstd450Trunc:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Trunc(src[i]));
@@ -1806,7 +1896,7 @@ namespace sw
 		}
 		case GLSLstd450Ceil:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Ceil(src[i]));
@@ -1815,7 +1905,7 @@ namespace sw
 		}
 		case GLSLstd450Fract:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Frac(src[i]));
@@ -1824,7 +1914,7 @@ namespace sw
 		}
 		case GLSLstd450Round:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Round(src[i]));
@@ -1833,7 +1923,7 @@ namespace sw
 		}
 		case GLSLstd450RoundEven:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto x = Round(src[i]);
@@ -1845,8 +1935,8 @@ namespace sw
 		}
 		case GLSLstd450FMin:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Min(lhs[i], rhs[i]));
@@ -1855,8 +1945,8 @@ namespace sw
 		}
 		case GLSLstd450FMax:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Max(lhs[i], rhs[i]));
@@ -1865,8 +1955,8 @@ namespace sw
 		}
 		case GLSLstd450SMin:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Min(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
@@ -1875,8 +1965,8 @@ namespace sw
 		}
 		case GLSLstd450SMax:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Max(As<SIMD::Int>(lhs[i]), As<SIMD::Int>(rhs[i]))));
@@ -1885,8 +1975,8 @@ namespace sw
 		}
 		case GLSLstd450UMin:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Min(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
@@ -1895,8 +1985,8 @@ namespace sw
 		}
 		case GLSLstd450UMax:
 		{
-			auto lhs = GenericValue(this, routine, insn.word(5));
-			auto rhs = GenericValue(this, routine, insn.word(6));
+			auto lhs = GenericValue(this, scope, insn.word(5));
+			auto rhs = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Max(As<SIMD::UInt>(lhs[i]), As<SIMD::UInt>(rhs[i]))));
@@ -1905,8 +1995,8 @@ namespace sw
 		}
 		case GLSLstd450Step:
 		{
-			auto edge = GenericValue(this, routine, insn.word(5));
-			auto x = GenericValue(this, routine, insn.word(6));
+			auto edge = GenericValue(this, scope, insn.word(5));
+			auto x = GenericValue(this, scope, insn.word(6));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(CmpNLT(x[i], edge[i]) & As<SIMD::Int>(SIMD::Float(1.0f))));
@@ -1915,9 +2005,9 @@ namespace sw
 		}
 		case GLSLstd450SmoothStep:
 		{
-			auto edge0 = GenericValue(this, routine, insn.word(5));
-			auto edge1 = GenericValue(this, routine, insn.word(6));
-			auto x = GenericValue(this, routine, insn.word(7));
+			auto edge0 = GenericValue(this, scope, insn.word(5));
+			auto edge1 = GenericValue(this, scope, insn.word(6));
+			auto x = GenericValue(this, scope, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto tx = Min(Max((x[i] - edge0[i]) / (edge1[i] - edge0[i]), SIMD::Float(0.0f)), SIMD::Float(1.0f));
@@ -1927,9 +2017,9 @@ namespace sw
 		}
 		case GLSLstd450FMix:
 		{
-			auto x = GenericValue(this, routine, insn.word(5));
-			auto y = GenericValue(this, routine, insn.word(6));
-			auto a = GenericValue(this, routine, insn.word(7));
+			auto x = GenericValue(this, scope, insn.word(5));
+			auto y = GenericValue(this, scope, insn.word(6));
+			auto a = GenericValue(this, scope, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, a[i] * (y[i] - x[i]) + x[i]);
@@ -1938,9 +2028,9 @@ namespace sw
 		}
 		case GLSLstd450FClamp:
 		{
-			auto x = GenericValue(this, routine, insn.word(5));
-			auto minVal = GenericValue(this, routine, insn.word(6));
-			auto maxVal = GenericValue(this, routine, insn.word(7));
+			auto x = GenericValue(this, scope, insn.word(5));
+			auto minVal = GenericValue(this, scope, insn.word(6));
+			auto maxVal = GenericValue(this, scope, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, Min(Max(x[i], minVal[i]), maxVal[i]));
@@ -1949,9 +2039,9 @@ namespace sw
 		}
 		case GLSLstd450SClamp:
 		{
-			auto x = GenericValue(this, routine, insn.word(5));
-			auto minVal = GenericValue(this, routine, insn.word(6));
-			auto maxVal = GenericValue(this, routine, insn.word(7));
+			auto x = GenericValue(this, scope, insn.word(5));
+			auto minVal = GenericValue(this, scope, insn.word(6));
+			auto maxVal = GenericValue(this, scope, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Min(Max(As<SIMD::Int>(x[i]), As<SIMD::Int>(minVal[i])), As<SIMD::Int>(maxVal[i]))));
@@ -1960,9 +2050,9 @@ namespace sw
 		}
 		case GLSLstd450UClamp:
 		{
-			auto x = GenericValue(this, routine, insn.word(5));
-			auto minVal = GenericValue(this, routine, insn.word(6));
-			auto maxVal = GenericValue(this, routine, insn.word(7));
+			auto x = GenericValue(this, scope, insn.word(5));
+			auto minVal = GenericValue(this, scope, insn.word(6));
+			auto maxVal = GenericValue(this, scope, insn.word(7));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				dst.emplace(i, As<SIMD::Float>(Min(Max(As<SIMD::UInt>(x[i]), As<SIMD::UInt>(minVal[i])), As<SIMD::UInt>(maxVal[i]))));
@@ -1971,7 +2061,7 @@ namespace sw
 		}
 		case GLSLstd450FSign:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto neg = As<SIMD::Int>(CmpLT(src[i], SIMD::Float(-0.0f))) & As<SIMD::Int>(SIMD::Float(-1.0f));
@@ -1982,7 +2072,7 @@ namespace sw
 		}
 		case GLSLstd450SSign:
 		{
-			auto src = GenericValue(this, routine, insn.word(5));
+			auto src = GenericValue(this, scope, insn.word(5));
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto neg = CmpLT(As<SIMD::Int>(src[i]), SIMD::Int(0)) & SIMD::Int(-1);
@@ -1996,13 +2086,13 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitAny(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitAny(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
 		assert(type.sizeInComponents == 1);
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &srcType = getType(getObject(insn.word(3)).type);
-		auto src = GenericValue(this, routine, insn.word(3));
+		auto src = GenericValue(this, scope, insn.word(3));
 
 		SIMD::UInt result = As<SIMD::UInt>(src[0]);
 
@@ -2014,13 +2104,13 @@ namespace sw
 		dst.emplace(0, As<SIMD::Float>(result));
 	}
 
-	void SpirvShader::EmitAll(InsnIterator insn, SpirvRoutine *routine) const
+	void SpirvShader::EmitAll(InsnIterator insn, SpirvRoutine *routine, SpirvScope *scope) const
 	{
 		auto &type = getType(insn.word(1));
 		assert(type.sizeInComponents == 1);
-		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto &dst = scope->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &srcType = getType(getObject(insn.word(3)).type);
-		auto src = GenericValue(this, routine, insn.word(3));
+		auto src = GenericValue(this, scope, insn.word(3));
 
 		SIMD::UInt result = As<SIMD::UInt>(src[0]);
 
@@ -2062,7 +2152,8 @@ namespace sw
 	}
 
 	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
-		pipelineLayout(pipelineLayout)
+		pipelineLayout(pipelineLayout),
+		rootScope(nullptr)
 	{
 	}
 
