@@ -114,18 +114,15 @@ namespace sw
 		uint32_t size;
 	};
 
-	class SpirvShader
-	{
-	public:
-		using InsnStore = std::vector<uint32_t>;
-		InsnStore insns;
+	// SpirvInsn is a single SPIR-V instruction.
+	using SpirvInsn = uint32_t;
 
-		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
-		class InsnIterator
+	// SpirvInsnIt is an interator over SPIR-V instructions.
+	class SpirvInsnIt
 		{
-			InsnStore::const_iterator iter;
-
 		public:
+		using Store = std::vector<SpirvInsn>;
+
 			spv::Op opcode() const
 			{
 				return static_cast<spv::Op>(*iter & spv::OpCodeMask);
@@ -148,47 +145,56 @@ namespace sw
 				return &iter[n];
 			}
 
-			bool operator!=(InsnIterator const &other) const
+		bool operator!=(SpirvInsnIt const &other) const
 			{
 				return iter != other.iter;
 			}
 
-			InsnIterator operator*() const
+		SpirvInsnIt operator*() const
 			{
 				return *this;
 			}
 
-			InsnIterator &operator++()
+		SpirvInsnIt &operator++()
 			{
 				iter += wordCount();
 				return *this;
 			}
 
-			InsnIterator const operator++(int)
+		SpirvInsnIt const operator++(int)
 			{
-				InsnIterator ret{*this};
+			SpirvInsnIt ret{*this};
 				iter += wordCount();
 				return ret;
 			}
 
-			InsnIterator(InsnIterator const &other) = default;
+		SpirvInsnIt(SpirvInsnIt const &other) = default;
 
-			InsnIterator() = default;
+		SpirvInsnIt() = default;
 
-			explicit InsnIterator(InsnStore::const_iterator iter) : iter{iter}
+		explicit SpirvInsnIt(Store::const_iterator iter) : iter{iter}
 			{
 			}
+
+	private:
+		Store::const_iterator iter;
 		};
 
+	class SpirvShader
+	{
+	public:
+		using InsnStore = SpirvInsnIt::Store;
+		InsnStore insns;
+
 		/* range-based-for interface */
-		InsnIterator begin() const
+		SpirvInsnIt begin() const
 		{
-			return InsnIterator{insns.cbegin() + 5};
+			return SpirvInsnIt{insns.cbegin() + 5};
 		}
 
-		InsnIterator end() const
+		SpirvInsnIt end() const
 		{
-			return InsnIterator{insns.cend()};
+			return SpirvInsnIt{insns.cend()};
 		}
 
 		class Type
@@ -196,7 +202,7 @@ namespace sw
 		public:
 			using ID = SpirvID<Type>;
 
-			InsnIterator definition;
+			SpirvInsnIt definition;
 			spv::StorageClass storageClass = static_cast<spv::StorageClass>(-1);
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
@@ -210,7 +216,7 @@ namespace sw
 		public:
 			using ID = SpirvID<Object>;
 
-			InsnIterator definition;
+			SpirvInsnIt definition;
 			Type::ID type;
 			ID pointerBase;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
@@ -224,6 +230,26 @@ namespace sw
 				Value,             // Values held by SpirvRoutine::intermediates
 				PhysicalPointer,   // Pointer held by SpirvRoutine::physicalPointers
 			} kind = Kind::Unknown;
+		};
+
+		// Block is an interval of SPIR-V instructions, starting with the
+		// opening OpLabel, and ending with a termination instruction.
+		class Block
+		{
+		public:
+			using ID = SpirvID<Block>;
+
+			Block() = default;
+			Block(const Block& other) = default;
+			explicit Block(SpirvInsnIt begin, SpirvInsnIt end) : begin_(begin), end_(end) {}
+
+			/* range-based-for interface */
+			inline SpirvInsnIt begin() const { return begin_; }
+			inline SpirvInsnIt end() const { return end_; }
+
+		private:
+			SpirvInsnIt begin_;
+			SpirvInsnIt end_;
 		};
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
@@ -374,20 +400,32 @@ namespace sw
 			return it->second;
 		}
 
+		Block const &getBlock(Block::ID id) const
+		{
+			auto it = blocks.find(id);
+			ASSERT(it != blocks.end());
+			return it->second;
+		}
+
 	private:
 		const int serialID;
 		static volatile int serialCounter;
 		Modes modes;
 		HandleMap<Type> types;
 		HandleMap<Object> defs;
+		HandleMap<Block> blocks;
+		Block::ID mainBlockId; // Block of the entry point function.
+
+		void EmitBlock(SpirvRoutine *routine, Block const &block) const;
+		void EmitInstruction(SpirvRoutine *routine, SpirvInsnIt insn) const;
 
 		// DeclareType creates a Type for the given OpTypeX instruction, storing
 		// it into the types map. It is called from the analysis pass (constructor).
-		void DeclareType(InsnIterator insn);
+		void DeclareType(SpirvInsnIt insn);
 
-		void ProcessExecutionMode(InsnIterator it);
+		void ProcessExecutionMode(SpirvInsnIt it);
 
-		uint32_t ComputeTypeSize(InsnIterator insn);
+		uint32_t ComputeTypeSize(SpirvInsnIt insn);
 		void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 		void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
 
@@ -426,7 +464,7 @@ namespace sw
 		void VisitInterface(Object::ID id, F f) const;
 
 		uint32_t GetConstantInt(Object::ID id) const;
-		Object& CreateConstant(InsnIterator it);
+		Object& CreateConstant(SpirvInsnIt it);
 
 		void ProcessInterfaceVariable(Object &object);
 
@@ -434,22 +472,22 @@ namespace sw
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
 		// Emit pass instructions:
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitDot(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitSelect(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAny(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAll(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitVariable(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitLoad(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitStore(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitAccessChain(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitCompositeConstruct(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitCompositeInsert(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitCompositeExtract(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitVectorShuffle(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitVectorTimesScalar(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitUnaryOp(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitBinaryOp(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitDot(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitSelect(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitExtendedInstruction(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitAny(SpirvInsnIt insn, SpirvRoutine *routine) const;
+		void EmitAll(SpirvInsnIt insn, SpirvRoutine *routine) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
