@@ -2,174 +2,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Gnome",
-            "type": "cppdbg",
+            "name": "deqp",
+            "type": "lldb",
             "request": "launch",
             "preLaunchTask": "make",
-            "program": "${workspaceRoot}/debug/OGLESIntroducingPVRApi",
-            "args": ["LD_LIBRARY_PATH=./"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}/debug/",
-            "environment": [],
-            "externalConsole": true,
-            "linux": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            },
-            "osx": {
-                "MIMode": "lldb"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Glass",
-            "type": "cppdbg",
-            "request": "launch",
-            "preLaunchTask": "make",
-            "program": "${workspaceRoot}/debug/OGLESGlass",
-            "args": ["LD_LIBRARY_PATH=./"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}/debug/",
-            "environment": [],
-            "externalConsole": true,
-            "linux": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            },
-            "osx": {
-                "MIMode": "lldb"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
-        },
-        {
-            "name": "SubzeroTest",
-            "type": "cppdbg",
-            "request": "launch",
-            "preLaunchTask": "make",
-            "program": "${workspaceRoot}/debug/SubzeroTest",
-            "args": [],
-            "stopAtEntry": false,
+            "program": "/ssd/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan/deqp-vk",
+            "args": [
+                "-n", "dEQP-VK.spirv_assembly.instruction.graphics.loop.switch_continue_vert",
+                // "-n", "dEQP-VK.spirv_assembly.instruction.compute.*",
+            ],
             "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": true,
+            "expressions": "native",
             "linux": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
+                "env": {
+                    "VK_ICD_FILENAMES": "${workspaceFolder}/build/Linux/vk_swiftshader_icd.json",
+                },
             },
-            "osx": {
-                "MIMode": "lldb"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
         },
         {
-            "name": "OGLES2HelloAPI",
-            "type": "cppdbg",
+            "name": "vk-unittests",
+            "type": "lldb",
             "request": "launch",
             "preLaunchTask": "make",
-            "program": "${workspaceRoot}/debug/OGLES2HelloAPI",
-            "args": [],
-            "stopAtEntry": false,
+            "program": "${workspaceRoot}/build/vk-unittests",
+            "args": [
+               // "--gtest_filter=ComputeParams/SwiftShaderVulkanBufferToBufferComputeTest.*",
+            ],
             "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": true,
-            "linux": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            },
-            "osx": {
-                "MIMode": "lldb"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
+            "expressions": "native",
         },
-        {
-            "name": "C++ Attach",
-            "type": "cppdbg",
-            "request": "attach",
-            "program": "enter program name, for example ${workspaceRoot}/a.out",
-            "processId": "${command:pickProcess}",
-            "linux": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            },
-            "osx": {
-                "MIMode": "lldb"
-            },
-            "windows": {
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
-        }
     ]
 }
