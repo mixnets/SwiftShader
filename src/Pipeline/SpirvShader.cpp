@@ -38,6 +38,7 @@ namespace sw
 
 		Block::ID currentBlock;
 		InsnIterator blockStart;
+		Object::ID entrypointFunction;
 
 		for (auto insn : *this)
 		{
@@ -122,6 +123,7 @@ namespace sw
 			case spv::OpBranchConditional:
 			case spv::OpSwitch:
 			case spv::OpReturn:
+			case spv::OpReturnValue:
 			// fallthrough
 
 			// Termination instruction:
@@ -245,28 +247,32 @@ namespace sw
 				break; // Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
 
 			case spv::OpEntryPoint:
+				entrypointFunction = insn.word(2);
 				break;
 			case spv::OpFunction:
-				ASSERT(mainBlockId.value() == 0); // Multiple functions found
-				// Scan forward to find the function's label.
-				for (auto it = insn; it != end() && mainBlockId.value() == 0; it++)
+				if (insn.word(2) == entrypointFunction.value())
 				{
-					switch (it.opcode())
+					// Scan forward to find the function's label.
+					for (auto it = insn; it != end() && mainBlockId.value() == 0; it++)
 					{
-					case spv::OpFunction:
-					case spv::OpFunctionParameter:
-						break;
-					case spv::OpLabel:
-						mainBlockId = Block::ID(it.word(1));
-						break;
-					default:
-						ERR("Unexpected opcode '%s' following OpFunction", OpcodeName(it.opcode()).c_str());
+						switch (it.opcode())
+						{
+						case spv::OpFunction:
+						case spv::OpFunctionParameter:
+							break;
+						case spv::OpLabel:
+							mainBlockId = Block::ID(it.word(1));
+							break;
+						default:
+							ERR("Unexpected opcode '%s' following OpFunction", OpcodeName(it.opcode()).c_str());
+						}
 					}
 				}
-				ASSERT(mainBlockId.value() != 0); // Function's OpLabel not found
 				break;
 			case spv::OpFunctionEnd:
 				// Due to preprocessing, the entrypoint and its function provide no value.
+				break;
+			case spv::OpFunctionParameter:
 				break;
 			case spv::OpExtInstImport:
 				// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
@@ -288,7 +294,6 @@ namespace sw
 				// No semantic impact
 				break;
 
-			case spv::OpFunctionParameter:
 			case spv::OpFunctionCall:
 			case spv::OpSpecConstant:
 			case spv::OpSpecConstantComposite:
