@@ -1956,6 +1956,47 @@ namespace sw
 			}
 			break;
 		}
+		case GLSLstd450Reflect:
+		{
+			auto I = GenericValue(this, routine, insn.word(5));
+			auto N = GenericValue(this, routine, insn.word(6));
+
+			SIMD::Float d = I[0] * N[0];
+
+			for (auto i = 1u; i < type.sizeInComponents; i++)
+			{
+				d += I[i] * N[i];
+			}
+
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				dst.emplace(i, I[i] - SIMD::Float(2.0f) * d * N[i]);
+			}
+			break;
+		}
+		case GLSLstd450Refract:
+		{
+			auto I = GenericValue(this, routine, insn.word(5));
+			auto N = GenericValue(this, routine, insn.word(6));
+			auto eta = GenericValue(this, routine, insn.word(7));
+
+			SIMD::Float d = I[0] * N[0];
+
+			for (auto i = 1u; i < type.sizeInComponents; i++)
+			{
+				d += I[i] * N[i];
+			}
+
+			SIMD::Float k = SIMD::Float(1.0f) - eta[0] * eta[0] * (SIMD::Float(1.0f) - d * d);
+			SIMD::Int pos = CmpNLT(k, SIMD::Float(0.0f));
+			SIMD::Float t = (eta[0] * d + Sqrt(k));
+
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				dst.emplace(i, As<Float4>(pos & As<Int4>(eta[0] * I[i] - t * N[i])));
+			}
+			break;
+		}
 		default:
 			UNIMPLEMENTED("Unhandled ExtInst %d", extInstIndex);
 		}
