@@ -208,6 +208,7 @@ std::vector<uint32_t> preprocessSpirv(
 	});
 
 	opt.RegisterPass(spvtools::CreateInlineExhaustivePass());
+	opt.RegisterPass(spvtools::CreateEliminateDeadFunctionsPass());
 
 	// If the pipeline uses specialization, apply the specializations before freezing
 	if (specializationInfo)
