@@ -87,15 +87,15 @@ Preparing the server
 Testing OpenGL ES
 -----------------
 
-20. a) Assuming you already built SwiftShader, copy these two files:
+20. a) Assuming you already built SwiftShader in the `build` folder, copy these two files:
 
     `libEGL.dll`\
     `libGLESv2.dll`
 
     From:
 
-    `<path to SwiftShader>\out\Release_x64` or\
-    `<path to SwiftShader>\out\Debug_x64`
+    `<path to SwiftShader>\build\Release_x64` or\
+    `<path to SwiftShader>\build\Debug_x64`
 
     To:
 
@@ -106,8 +106,8 @@ Testing Vulkan
 
 20. b) Assuming you already built SwiftShader, copy and rename this file:
 
-    `<path to SwiftShader>\out\Release_x64\vk_swiftshader.dll` or\
-    `<path to SwiftShader>\out\Debug_x64\vk_swiftshader.dll`
+    `<path to SwiftShader>\build\Release_x64\vk_swiftshader.dll` or\
+    `<path to SwiftShader>\build\Debug_x64\vk_swiftshader.dll`
 
     To:
 
