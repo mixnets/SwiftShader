@@ -22,6 +22,30 @@
       "revId": "8a183f7589317f7535e3958c5cca168efe683ebb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "faa67d35_898a6641",
+        "filename": "src/Common/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-14T20:23:44Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4146d2af_167749bd",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 31
+      },
+      "revId": "8a183f7589317f7535e3958c5cca168efe683ebb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
