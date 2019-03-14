@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4146d2af_167749bd",
+        "filename": "src/Common/Memory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-14T19:56:45Z",
+      "side": 1,
+      "message": "Note: This isn\u0027t quite checking that alignment isn\u0027t a multiple of sizeof(void*), just that it is lower. I get that in practice an non power of 2 alignment or sizeof(void*) isn\u0027t a thing, but maybe it should be mentioned that being a multiple of sizeof(void*) is really what we\u0027re aiming for. Anyway, no big deal if you think that\u0027s being too verbose.",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 31
+      },
+      "revId": "8a183f7589317f7535e3958c5cca168efe683ebb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
