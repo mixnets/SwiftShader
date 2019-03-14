@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae83e19_6e9b7273",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-14T13:21:30Z",
+      "side": 1,
+      "message": "Actually the SPIR-V spec states that it produces an undefined value, while the Vulkan spec imposes that \"division by zero produces an unspecified result but must not lead to Vulkan interruption or termination\".",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 81
+      },
+      "revId": "7ecee670c751a6aa7a3ab118a611e72b88aa8727",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a63ae6d0_032930ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-14T13:21:30Z",
+      "side": 1,
+      "message": "I vaguely recall that that a specific bug was already opened for this, but I can\u0027t seem to find it right away. Chris?",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "7ecee670c751a6aa7a3ab118a611e72b88aa8727",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
