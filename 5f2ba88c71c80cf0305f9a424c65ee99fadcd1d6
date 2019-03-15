@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45cd7fed_d4f1c790",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-15T19:30:15Z",
+      "side": 1,
+      "message": "On Windows, all of this got pasted right into the \"message\" variable at line 63.",
+      "range": {
+        "startLine": 81,
+        "startChar": 9,
+        "endLine": 81,
+        "endChar": 63
+      },
+      "revId": "5f2ba88c71c80cf0305f9a424c65ee99fadcd1d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
