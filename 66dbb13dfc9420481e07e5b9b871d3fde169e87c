@@ -22,6 +22,30 @@
       "revId": "66dbb13dfc9420481e07e5b9b871d3fde169e87c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "956dc409_25bceeaf",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-15T14:39:05Z",
+      "side": 1,
+      "message": "Done. I was afraid end() would be unclear, but now that it\u0027s done, it looks fine.",
+      "parentUuid": "156b4fb6_3f7764c5",
+      "range": {
+        "startLine": 40,
+        "startChar": 10,
+        "endLine": 40,
+        "endChar": 18
+      },
+      "revId": "66dbb13dfc9420481e07e5b9b871d3fde169e87c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
