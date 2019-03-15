@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b767f76a_ee887f87",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1804,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-15T16:16:36Z",
+      "side": 1,
+      "message": "This doesn\u0027t make sense. This structure is filled out by the implementation. At this point, it\u0027s uninitialized.\n\nYour implementation would be correct if you just set these with VK_FALSE (you never require a dedicated allocation, and you never prefer one).",
+      "revId": "42820fafbf95d3056c884c99b81b22bc6c1123e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
