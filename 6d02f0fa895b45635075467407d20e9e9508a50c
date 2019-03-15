@@ -22,6 +22,30 @@
       "revId": "6d02f0fa895b45635075467407d20e9e9508a50c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "024e43d8_0d740768",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-15T11:47:49Z",
+      "side": 1,
+      "message": "Sure, yes. Do we normally do that in the same cl or as a separate cl?",
+      "parentUuid": "3bcb47bc_e68f302e",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 63
+      },
+      "revId": "6d02f0fa895b45635075467407d20e9e9508a50c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
