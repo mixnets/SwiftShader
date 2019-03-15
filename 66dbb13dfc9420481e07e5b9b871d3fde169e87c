@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "156b4fb6_3f7764c5",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T12:48:42Z",
+      "side": 1,
+      "message": "nit: Perhaps call this end() and return one byte past the last one, so it\u0027s similar to STL containers and we can use \u003c instead of \u003c\u003d operators?\n\nYour call.",
+      "range": {
+        "startLine": 40,
+        "startChar": 10,
+        "endLine": 40,
+        "endChar": 18
+      },
+      "revId": "66dbb13dfc9420481e07e5b9b871d3fde169e87c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
