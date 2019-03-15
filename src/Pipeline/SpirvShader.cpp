@@ -1120,9 +1120,17 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitBlock(Block::ID id, EmitState *state) const
 	{
-		if (state->stopAt == id)
+		if (state->stopAtA == id)
 		{
-			return EmitResult::ReachedBlock;
+			return EmitResult::ReachedBlockA;
+		}
+		if (state->stopAtB == id)
+		{
+			return EmitResult::ReachedBlockB;
+		}
+		if (state->stopAtC == id)
+		{
+			return EmitResult::ReachedBlockC;
 		}
 
 		auto block = getBlock(id);
@@ -1135,7 +1143,9 @@ namespace sw
 			{
 			case EmitResult::Continue:
 				continue;
-			case EmitResult::ReachedBlock:
+			case EmitResult::ReachedBlockA:
+			case EmitResult::ReachedBlockB:
+			case EmitResult::ReachedBlockC:
 			case EmitResult::Terminator:
 				return res;
 			}
@@ -1316,6 +1326,7 @@ namespace sw
 			return EmitSelectionMerge(insn, state);
 
 		case spv::OpBranchConditional:
+		case spv::OpSwitch:
 			break; // Handled by OpSelectionMerge
 
 		case spv::OpPhi:
@@ -2455,8 +2466,7 @@ namespace sw
 			return EmitBranchConditional(branchInsn, state, mergeBlockId);
 
 		case spv::OpSwitch:
-			UNIMPLEMENTED("OpSwitch");
-			break;
+			return EmitSwitch(branchInsn, state, mergeBlockId);
 
 		default:
 			// OpSelectionMerge must immediately precede either an
@@ -2504,6 +2514,130 @@ namespace sw
 		state->phiActiveLaneMasks.emplace(falseState.currentBlock, falseState.activeLaneMask());
 
 		// Continue emitting from the merge block.
+		return EmitBlock(mergeBlockId, state);
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const
+	{
+		// an OpSwitch block dominates all its defined case constructs
+		// – each case construct has at most one branch to another case
+		//   construct.
+		// – each case construct is branched to by at most one other case
+		//   construct.
+		// – if Target T1 branches to Target T2, or if Target T1 branches to the
+		//   Default and the Default branches to Target T2, then T1 must
+		//   immediately precede T2 in the list of the OpSwitch Target operands.
+
+		auto selId = Object::ID(insn.word(1));
+		auto defaultBlockId = Block::ID(insn.word(2));
+
+		auto sel = GenericValue(this, state->routine, selId);
+		ASSERT(getType(getObject(selId).type).sizeInComponents == 1);
+
+		auto numCases = (insn.wordCount() - 3) / 2;
+
+		// TODO: Optimize for case where all lanes take same path.
+
+		// mergeLaneMask is the mask of lanes that continue to be active after
+		// the switch is finished.
+		SIMD::Int mergeLaneMask = SIMD::Int(0);
+
+		// fallthroughLaneMask is the mask of lanes that are active after
+		// falling through from the previous switch case.
+		SIMD::Int fallthroughLaneMask = SIMD::Int(0);
+
+		// defaultLaneMask is a mask of lanes that are going to use the default
+		// case. These bits will be unset as other cases are picked.
+		SIMD::Int defaultLaneMask = state->activeLaneMask();
+
+		// Gather up the case label matches and calculate defaultLaneMask.
+		std::vector<RValue<SIMD::Int>> caseLabelMatches;
+		caseLabelMatches.reserve(numCases);
+		for (uint32_t i = 0; i < numCases; i++)
+		{
+			auto label = insn.word(i * 2 + 3);
+			auto caseLabelMatch = CmpEQ(sel.Int(0), SIMD::Int(label));
+			caseLabelMatches.push_back(caseLabelMatch);
+			// Disable the lanes for the default case.
+			defaultLaneMask &= ~caseLabelMatch;
+		}
+
+		// emitDefault emits the logic for the default case.
+		// This can be after any case block, and can be used as a fallthrough
+		// between the immediately preceding case and immediately succeeding
+		// case.
+		bool emittedDefault = false;
+		auto emitDefault = [&](Block::ID nextCase)
+		{
+			ASSERT_MSG(!emittedDefault, "Attempting to emit default case twice");
+			emittedDefault = true;
+
+			auto defaultState = state->fork(defaultLaneMask | fallthroughLaneMask, mergeBlockId, nextCase);
+
+			auto res = EmitBlock(defaultBlockId, &defaultState);
+
+			mergeLaneMask |= defaultState.activeLaneMask();
+			state->phiActiveLaneMasks.emplace(defaultState.currentBlock, defaultState.activeLaneMask());
+
+			if (res == EmitResult::ReachedBlockA)
+			{
+				// Reached the merge block
+				fallthroughLaneMask = SIMD::Int(0);
+			}
+			else
+			{
+				// Fallthrough into next case
+				fallthroughLaneMask = defaultState.activeLaneMask();
+			}
+		};
+
+		// Emit each of the cases and the default case if it is used as a
+		// fallthrough.
+		for (uint32_t i = 0; i < numCases; i++)
+		{
+			auto caseBlockId = Block::ID(insn.word(i * 2 + 4));
+			auto nextCaseBlockId = Block::ID((i < numCases - 1) ? insn.word(i * 2 + 6) : 0);
+
+			// The case lanes are the fallthrough + case label.
+			auto caseLaneMask = fallthroughLaneMask | (state->activeLaneMask() & caseLabelMatches[i]);
+
+			// Stop emission at the merge block or the next label (in case of
+			// fallthrough).
+			auto caseState = state->fork(caseLaneMask, mergeBlockId, nextCaseBlockId, defaultBlockId);
+
+			auto res = EmitBlock(caseBlockId, &caseState);
+
+			mergeLaneMask |= caseState.activeLaneMask();
+			state->phiActiveLaneMasks.emplace(caseState.currentBlock, caseState.activeLaneMask());
+
+			switch (res)
+			{
+			case EmitResult::ReachedBlockA:
+				// Reached the merge block
+				fallthroughLaneMask = SIMD::Int(0);
+				break;
+			case EmitResult::ReachedBlockB:
+				// Fallthrough into next case
+				fallthroughLaneMask = caseState.activeLaneMask();
+				break;
+			case EmitResult::ReachedBlockC:
+				// Fallthrough into default
+				fallthroughLaneMask = caseState.activeLaneMask();
+				emitDefault(nextCaseBlockId);
+				break;
+			case EmitResult::Terminator:
+				break;
+			default:
+				UNREACHABLE("Unexpected EmitResult %d", int(res));
+			}
+		}
+
+		if (!emittedDefault)
+		{
+			emitDefault(0);
+		}
+
+		state->setActiveLaneMask(mergeLaneMask);
 		return EmitBlock(mergeBlockId, state);
 	}
 
