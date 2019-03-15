@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6256ce8d_534f4798",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T18:36:00Z",
+      "side": 1,
+      "message": "Doesn\u0027t have to be an array? Could just use localSizeX/Y/Z and remove the need for the enum.",
+      "range": {
+        "startLine": 57,
+        "startChar": 6,
+        "endLine": 57,
+        "endChar": 18
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2ccd7c0_5eabc3e4",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T18:36:00Z",
+      "side": 1,
+      "message": ".x ?",
+      "range": {
+        "startLine": 177,
+        "startChar": 20,
+        "endLine": 177,
+        "endChar": 23
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
