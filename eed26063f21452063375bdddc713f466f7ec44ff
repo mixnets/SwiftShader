@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6d4399d3_071714f6",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-15T18:51:59Z",
+      "side": 1,
+      "message": "I could do, but I use array indexing later, and its nice to be consistent.",
+      "parentUuid": "6256ce8d_534f4798",
+      "range": {
+        "startLine": 57,
+        "startChar": 6,
+        "endLine": 57,
+        "endChar": 18
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2ccd7c0_5eabc3e4",
         "filename": "src/Pipeline/ComputeProgram.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-15T18:36:00Z",
       "side": 1,
       "message": ".x ?",
+      "range": {
+        "startLine": 177,
+        "startChar": 20,
+        "endLine": 177,
+        "endChar": 23
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d178bfda_69ecb685",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-15T18:51:59Z",
+      "side": 1,
+      "message": "uint4 doesn\u0027t have those accessors, only int4 does. I suppose I could add them.",
+      "parentUuid": "b2ccd7c0_5eabc3e4",
       "range": {
         "startLine": 177,
         "startChar": 20,
