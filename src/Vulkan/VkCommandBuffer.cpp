@@ -528,7 +528,11 @@ struct SignalEvent : public CommandBuffer::Command
 
 	void play(CommandBuffer::ExecutionState& executionState) override
 	{
-		Cast(ev)->signal();
+		if(Cast(ev)->signal())
+		{
+			// Was waiting for signal on this event, sync now
+			executionState.renderer->synchronize();
+		}
 	}
 
 private:
@@ -550,6 +554,25 @@ struct ResetEvent : public CommandBuffer::Command
 private:
 	VkEvent ev;
 	VkPipelineStageFlags stageMask; // FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
+};
+
+struct WaitEvent : public CommandBuffer::Command
+{
+	WaitEvent(VkEvent ev) : ev(ev)
+	{
+	}
+
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		if(!Cast(ev)->wait())
+		{
+			// Already signaled, sync now
+			executionState.renderer->synchronize();
+		}
+	}
+
+private:
+	VkEvent ev;
 };
 
 struct BindDescriptorSet : public CommandBuffer::Command
@@ -996,7 +1019,18 @@ void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent* pEvents, VkPi
 	uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
 	uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers)
 {
-	UNIMPLEMENTED("waitEvents");
+	ASSERT(state == RECORDING);
+
+	if((memoryBarrierCount > 0) || (bufferMemoryBarrierCount > 0) || (imageMemoryBarrierCount > 0))
+	{
+		UNIMPLEMENTED("waitEvents");
+	}
+
+	// Note: srcStageMask and dstStageMask are currently ignored
+	for(uint32_t i = 0; i < eventCount; i++)
+	{
+		addCommand<WaitEvent>(pEvents[i]);
+	}
 }
 
 void CommandBuffer::draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
