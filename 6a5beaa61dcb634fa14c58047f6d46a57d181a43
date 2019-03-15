@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "3d521b51_b133123d",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2774,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T14:56:14Z",
+      "side": 1,
+      "message": "Or they could just all call a Return(RValue\u003cT\u003e ret), basically, except keep that one hidden to now allow just any type (or make it accessible if we do want that).",
+      "parentUuid": "bafa74ec_085894f4",
+      "range": {
+        "startLine": 2773,
+        "startChar": 1,
+        "endLine": 2774,
+        "endChar": 0
+      },
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "126eb522_585e48cd",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 1
@@ -102,6 +126,24 @@
       "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2237e306_cac9a568",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1154,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T14:56:14Z",
+      "side": 1,
+      "message": "Historically this hasn\u0027t been done because if you\u0027re using Reactor to generate functions which return a value that isn\u0027t a status integer, you\u0027re probably better off with static code. Anyway, we can look into it later. Specifically for prototyping and testing it seems useful.",
+      "parentUuid": "5c36bdd5_0499a050",
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
