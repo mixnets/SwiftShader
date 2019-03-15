@@ -16,6 +16,24 @@
       "revId": "37c94d886a695c26f4f069606c323d79512e15fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67de7e7a_63adc604",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T14:57:52Z",
+      "side": 1,
+      "message": "Maybe.\nIf we kept it at 1, then without some horrible hacks, I\u0027d need to force the compute shaders to actually all be single lane.\nIf it\u0027s okay with you, I\u0027d like to keep this as sw::SIMD::Width until I actually find a case where dropping to single lane would be significantly easier.",
+      "parentUuid": "74474482_a3777031",
+      "revId": "37c94d886a695c26f4f069606c323d79512e15fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
