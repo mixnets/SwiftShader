@@ -44,15 +44,15 @@ namespace vk
 #if defined(SWIFTSHADER_DISABLE_TRACE)
 #define TRACE(message, ...) (void(0))
 #else
-#define TRACE(message, ...) vk::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define TRACE(message, ...) vk::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, #__VA_ARGS__)
 #endif
 
 // A macro to print a warning message to the debugging log and stderr to denote
 // an issue that needs fixing.
-#define FIXME(message, ...) vk::warn("%s:%d FIXME: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__);
+#define FIXME(message, ...) vk::warn("%s:%d FIXME: " message "\n", __FILE__, __LINE__, #__VA_ARGS__);
 
 // A macro to print a warning message to the debugging log and stderr.
-#define WARN(message, ...) vk::warn("%s:%d WARNING: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__);
+#define WARN(message, ...) vk::warn("%s:%d WARNING: " message "\n", __FILE__, __LINE__, #__VA_ARGS__);
 
 // A macro that prints the message to the debugging log and stderr and
 // immediately aborts execution of the application.
@@ -60,7 +60,7 @@ namespace vk
 // Note: This will terminate the application regardless of build flags!
 //       Use with extreme caution!
 #undef ABORT
-#define ABORT(message, ...) vk::abort("%s:%d ABORT: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define ABORT(message, ...) vk::abort("%s:%d ABORT: " message "\n", __FILE__, __LINE__, #__VA_ARGS__)
 
 // A macro that delegates to:
 //   ABORT() in debug builds (!NDEBUG || DCHECK_ALWAYS_ON)
@@ -68,9 +68,9 @@ namespace vk
 //   WARN() in release builds (NDEBUG && !DCHECK_ALWAYS_ON)
 #undef DABORT
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-#define DABORT(...) ABORT(__VA_ARGS__)
+#define DABORT(message, ...) ABORT(message, #__VA_ARGS__)
 #else
-#define DABORT(...) WARN(__VA_ARGS__)
+#define DABORT(message, ...) WARN(message, #__VA_ARGS__)
 #endif
 
 // A macro asserting a condition.
@@ -78,7 +78,7 @@ namespace vk
 #undef ASSERT_MSG
 #define ASSERT_MSG(expression, format, ...) do { \
 	if(!(expression)) { \
-		DABORT("ASSERT(%s): " format "\n", #expression, ##__VA_ARGS__); \
+		DABORT("ASSERT(%s): " format "\n", #expression, #__VA_ARGS__); \
 	} } while(0)
 
 // A macro asserting a condition.
@@ -91,11 +91,11 @@ namespace vk
 
 // A macro to indicate unimplemented functionality.
 #undef UNIMPLEMENTED
-#define UNIMPLEMENTED(...) DABORT("UNIMPLEMENTED! " __VA_ARGS__)
+#define UNIMPLEMENTED(...) DABORT("UNIMPLEMENTED! ", #__VA_ARGS__)
 
 // A macro for code which is not expected to be reached under valid assumptions.
 #undef UNREACHABLE
-#define UNREACHABLE(...) DABORT("UNREACHABLE! " __VA_ARGS__)
+#define UNREACHABLE(...) DABORT("UNREACHABLE! ", #__VA_ARGS__)
 
 // A macro asserting a condition and performing a return.
 #undef ASSERT_OR_RETURN
