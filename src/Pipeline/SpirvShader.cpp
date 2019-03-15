@@ -1040,9 +1040,13 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitBlock(Block::ID id, EmitState *state) const
 	{
-		if (state->stopAt == id)
+		if (state->stopAtA == id)
 		{
-			return EmitResult::ReachedBlock;
+			return EmitResult::ReachedBlockA;
+		}
+		if (state->stopAtB == id)
+		{
+			return EmitResult::ReachedBlockB;
 		}
 
 		auto block = getBlock(id);
@@ -1055,7 +1059,8 @@ namespace sw
 			{
 			case EmitResult::Continue:
 				continue;
-			case EmitResult::ReachedBlock:
+			case EmitResult::ReachedBlockA:
+			case EmitResult::ReachedBlockB:
 			case EmitResult::Terminator:
 				return res;
 			}
@@ -1235,6 +1240,7 @@ namespace sw
 			return EmitSelectionMerge(insn, state);
 
 		case spv::OpBranchConditional:
+		case spv::OpSwitch:
 			break; // Handled by OpSelectionMerge
 
 		case spv::OpPhi:
@@ -2359,8 +2365,7 @@ namespace sw
 			return EmitBranchConditional(branchInsn, state, mergeBlockId);
 
 		case spv::OpSwitch:
-			UNIMPLEMENTED("OpSwitch");
-			break;
+			return EmitSwitch(branchInsn, state, mergeBlockId);
 
 		default:
 			// OpSelectionMerge must immediately precede either an
@@ -2402,6 +2407,69 @@ namespace sw
 		state->phiActiveLaneMasks.emplace(falseState.currentBlock, falseState.activeLaneMask());
 
 		// Continue emitting from the merge block.
+		return EmitBlock(mergeBlockId, state);
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const
+	{
+		auto selId = Object::ID(insn.word(1));
+		auto defaultBlockId = Block::ID(insn.word(2));
+
+		auto sel = GenericValue(this, state->routine, selId);
+		ASSERT(getType(getObject(selId).type).sizeInComponents == 1);
+
+		auto numCases = (insn.wordCount() - 3) / 2;
+
+		// TODO: Optimize for case where all lanes take same path.
+
+		// mergeLaneMask is the mask of lanes that continue to be active after
+		// the switch is finished.
+		SIMD::Int mergeLaneMask = SIMD::Int(0);
+
+		// fallthroughLaneMask is the mask of lanes that are active after
+		// falling through from the previous switch case.
+		SIMD::Int fallthroughLaneMask = SIMD::Int(0);
+
+		// defaultLaneMask is a mask of lanes that are going to use the default
+		// case. These bits will be unset as other cases are picked.
+		SIMD::Int defaultLaneMask = state->activeLaneMask();
+
+		for (uint32_t i = 0; i < numCases; i++)
+		{
+			auto label = insn.word(i * 2 + 3);
+			auto blockId = Block::ID(insn.word(i * 2 + 4));
+			auto nextCaseBlockId = Block::ID((i < numCases - 1) ? insn.word(i * 2 + 6) : 0);
+
+			// Case label match.
+			auto labelMatch = CmpEQ(sel.Int(0), SIMD::Int(label));
+
+			// Disable the lanes for the default case.
+			defaultLaneMask &= ~labelMatch;
+
+			// The case lanes are the fallthrough + case label.
+			auto caseLaneMask = fallthroughLaneMask | (state->activeLaneMask() & labelMatch);
+
+			// Stop emission at the merge block or the next label (in case of
+			// fallthrough).
+			auto caseState = state->fork(caseLaneMask, mergeBlockId, nextCaseBlockId);
+
+			auto res = EmitBlock(blockId, &caseState);
+
+			auto fallthrough = res == EmitResult::ReachedBlockB;
+			fallthroughLaneMask = fallthrough ? caseState.activeLaneMask() : RValue<SIMD::Int>(SIMD::Int(0));
+
+			mergeLaneMask |= caseState.activeLaneMask();
+			state->phiActiveLaneMasks.emplace(caseState.currentBlock, caseState.activeLaneMask());
+		}
+
+		// Emit the default block
+		auto defaultState = state->fork(defaultLaneMask | fallthroughLaneMask, mergeBlockId);
+		EmitBlock(defaultBlockId, &defaultState);
+		mergeLaneMask |= defaultState.activeLaneMask();
+
+		state->setActiveLaneMask(mergeLaneMask);
+		state->phiActiveLaneMasks.emplace(defaultState.currentBlock, defaultState.activeLaneMask());
+
 		return EmitBlock(mergeBlockId, state);
 	}
 
