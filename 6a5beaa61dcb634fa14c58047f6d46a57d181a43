@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1eeded89_065b4851",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T10:16:16Z",
+      "side": 1,
+      "message": "operator\u003d\u003d was required for the test. Added !\u003d for completeness.",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 61
+      },
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "496ae46d_c981e76f",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1971,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T10:16:16Z",
+      "side": 1,
+      "message": "Again, needed for the test.",
+      "range": {
+        "startLine": 1971,
+        "startChar": 2,
+        "endLine": 1971,
+        "endChar": 34
+      },
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bafa74ec_085894f4",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2774,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T10:16:16Z",
+      "side": 1,
+      "message": "I saw that Return() and Return(RValue\u003cInt\u003e) includes these, which seemed like a good idea. Can move out to another change if this one is doing too much.\n\nHighlights the fact that copy-and-paste implementations can lead to subtle differences. For Reactor 2.0 can we just template these for RValue\u003cT\u003e, Pointer\u003cT\u003e and use enable_if to pick the types we allow?",
+      "range": {
+        "startLine": 2773,
+        "startChar": 1,
+        "endLine": 2774,
+        "endChar": 0
+      },
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "126eb522_585e48cd",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1128,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T10:16:16Z",
+      "side": 1,
+      "message": "Reactor 2.0 feature request: No arbitrary restrictions on parameter types.",
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c36bdd5_0499a050",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1154,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T10:16:16Z",
+      "side": 1,
+      "message": "Reactor 2.0 feature request: No arbitrary restrictions on return types.",
+      "revId": "6a5beaa61dcb634fa14c58047f6d46a57d181a43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
