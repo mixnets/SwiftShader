@@ -479,12 +479,13 @@ namespace sw
 				setActiveLaneMask(activeLaneMask);
 			}
 
-			EmitState fork(RValue<SIMD::Int> const &activeLaneMask, Block::ID stopAt)
+			EmitState fork(RValue<SIMD::Int> const &activeLaneMask, Block::ID stopAtA, Block::ID stopAtB = 0)
 			{
 				auto out = EmitState(activeLaneMask);
 				out.routine = routine;
 				out.currentBlock = currentBlock;
-				out.stopAt = stopAt;
+				out.stopAtA = stopAtA;
+				out.stopAtB = stopAtB;
 				return out;
 			}
 
@@ -501,7 +502,8 @@ namespace sw
 			SpirvRoutine *routine;
 			rr::Value *activeLaneMaskValue;
 			Block::ID currentBlock;
-			Block::ID stopAt;
+			Block::ID stopAtA;
+			Block::ID stopAtB;
 			std::unordered_map<Block::ID, RValue<SIMD::Int>> phiActiveLaneMasks;
 		};
 
@@ -509,7 +511,8 @@ namespace sw
 		{
 			Continue,
 			Terminator, // Reached a termination instruction.
-			ReachedBlock, // Reached EmitState::stopAt.
+			ReachedBlockA, // Reached EmitState::stopAtA.
+			ReachedBlockB, // Reached EmitState::stopAtB.
 		};
 
 		EmitResult EmitBlock(Block::ID id, EmitState *state) const;
@@ -537,6 +540,7 @@ namespace sw
 		EmitResult EmitSelectionMerge(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
+		EmitResult EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;

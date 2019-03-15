@@ -63,8 +63,10 @@
 	#include "llvm/IR/LegacyPassManager.h"
 	#include "llvm/IR/Mangler.h"
 	#include "llvm/IR/Module.h"
+	#include "llvm/IR/Verifier.h"
 	#include "llvm/Support/Error.h"
 	#include "llvm/Support/TargetSelect.h"
+	#include "llvm/Support/raw_os_ostream.h"
 	#include "llvm/Target/TargetOptions.h"
 	#include "llvm/Transforms/InstCombine/InstCombine.h"
 	#include "llvm/Transforms/Scalar.h"
@@ -77,6 +79,7 @@
 	#define CreateCall3 CreateCall
 
 	#include <unordered_map>
+	#include <iostream>
 #endif
 
 #include <fstream>
@@ -963,6 +966,9 @@ namespace rr
 		{
 			optimize();
 		}
+
+		llvm::raw_os_ostream errStream(std::cerr);
+		llvm::verifyModule(*::module, &errStream);
 
 		if(false)
 		{
