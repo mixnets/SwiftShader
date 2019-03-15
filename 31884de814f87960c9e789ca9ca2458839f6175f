@@ -22,6 +22,30 @@
       "revId": "31884de814f87960c9e789ca9ca2458839f6175f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "773671fd_df5958d1",
+        "filename": "src/Reactor/ReactorUnitTests.vcxproj.user",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T21:39:37Z",
+      "side": 1,
+      "message": "Yes. It adds the --gtest_break_on_failure --gtest_filter\u003d* arguments for easy debugging.",
+      "parentUuid": "2c1b8917_7364668f",
+      "range": {
+        "startLine": 1,
+        "startChar": 3,
+        "endLine": 1,
+        "endChar": 6
+      },
+      "revId": "31884de814f87960c9e789ca9ca2458839f6175f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
