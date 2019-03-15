@@ -68,9 +68,9 @@ namespace vk
 //   WARN() in release builds (NDEBUG && !DCHECK_ALWAYS_ON)
 #undef DABORT
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-#define DABORT(...) ABORT(__VA_ARGS__)
+#define DABORT(message, ...) ABORT(message, __VA_ARGS__)
 #else
-#define DABORT(...) WARN(__VA_ARGS__)
+#define DABORT(message, ...) WARN(message, __VA_ARGS__)
 #endif
 
 // A macro asserting a condition.
@@ -91,11 +91,11 @@ namespace vk
 
 // A macro to indicate unimplemented functionality.
 #undef UNIMPLEMENTED
-#define UNIMPLEMENTED(...) DABORT("UNIMPLEMENTED! " __VA_ARGS__)
+#define UNIMPLEMENTED(...) DABORT("UNIMPLEMENTED! ", __VA_ARGS__)
 
 // A macro for code which is not expected to be reached under valid assumptions.
 #undef UNREACHABLE
-#define UNREACHABLE(...) DABORT("UNREACHABLE! " __VA_ARGS__)
+#define UNREACHABLE(...) DABORT("UNREACHABLE! ", __VA_ARGS__)
 
 // A macro asserting a condition and performing a return.
 #undef ASSERT_OR_RETURN
