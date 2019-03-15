@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74474482_a3777031",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-15T14:47:13Z",
+      "side": 1,
+      "message": "This is signing us up for a bit more work, right? We actually have to do subgroup operations across whatever width we claim here..\n\nI agree that it\u0027s the \"right\" value to expose :)",
+      "revId": "37c94d886a695c26f4f069606c323d79512e15fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
