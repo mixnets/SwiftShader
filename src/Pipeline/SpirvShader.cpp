@@ -1034,9 +1034,13 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitBlock(Block::ID id, EmitState *state) const
 	{
-		if (state->stopAt == id)
+		if (state->stopAtA == id)
 		{
-			return EmitResult::ReachedBlock;
+			return EmitResult::ReachedBlockA;
+		}
+		if (state->stopAtB == id)
+		{
+			return EmitResult::ReachedBlockB;
 		}
 
 		auto block = getBlock(id);
@@ -1049,7 +1053,8 @@ namespace sw
 			{
 			case EmitResult::Continue:
 				continue;
-			case EmitResult::ReachedBlock:
+			case EmitResult::ReachedBlockA:
+			case EmitResult::ReachedBlockB:
 			case EmitResult::Terminator:
 				return res;
 			}
@@ -1107,9 +1112,6 @@ namespace sw
 
 		case spv::OpLabel:
 			return EmitResult::Continue;
-
-		case spv::OpReturn:
-			return EmitResult::Terminator;
 
 		case spv::OpVariable:
 			return EmitVariable(insn, state);
@@ -1220,10 +1222,17 @@ namespace sw
 			return EmitSelectionMerge(insn, state);
 
 		case spv::OpBranchConditional:
+		case spv::OpSwitch:
 			break; // Handled by OpSelectionMerge
 
 		case spv::OpPhi:
 			return EmitPhi(insn, state);
+
+		case spv::OpUnreachable:
+			return EmitUnreachable(insn, state);
+
+		case spv::OpReturn:
+			return EmitReturn(insn, state);
 
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
@@ -1311,7 +1320,7 @@ namespace sw
 		}
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
-		auto anyInactiveLanes = SignMask(~state->activeLaneMask) != 0;
+		auto anyInactiveLanes = SignMask(~state->activeLaneMask()) != 0;
 
 		auto load = SpirvRoutine::Value(objectTy.sizeInComponents);
 
@@ -1326,7 +1335,7 @@ namespace sw
 				// i wish i had a Float,Float,Float,Float constructor here..
 				for (int j = 0; j < SIMD::Width; j++)
 				{
-					If(Extract(state->activeLaneMask, j) != 0)
+					If(Extract(state->activeLaneMask(), j) != 0)
 					{
 						Int offset = Int(i) + Extract(offsets, j);
 						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -1410,7 +1419,7 @@ namespace sw
 		}
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
-		auto anyInactiveLanes = SignMask(~state->activeLaneMask) != 0;
+		auto anyInactiveLanes = SignMask(~state->activeLaneMask()) != 0;
 
 		if (object.kind == Object::Kind::Constant)
 		{
@@ -1426,7 +1435,7 @@ namespace sw
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						If(Extract(state->activeLaneMask, j) != 0)
+						If(Extract(state->activeLaneMask(), j) != 0)
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -1460,7 +1469,7 @@ namespace sw
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						If(Extract(state->activeLaneMask, j) != 0)
+						If(Extract(state->activeLaneMask(), j) != 0)
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -2283,8 +2292,8 @@ namespace sw
 			return EmitBranchConditional(branchInsn, state, mergeBlockId);
 
 		case spv::OpSwitch:
-			UNIMPLEMENTED("OpSwitch");
-			break;
+			return EmitSwitch(branchInsn, state, mergeBlockId);
+
 		default:
 			// OpSelectionMerge must immediately precede either an
 			// OpBranchConditional or OpSwitch instruction.
@@ -2304,14 +2313,72 @@ namespace sw
 		ASSERT(getType(getObject(condId).type).sizeInComponents == 1);
 
 		// TODO: Optimize for case where all lanes take same path.
-		auto trueState = state->fork(state->activeLaneMask & cond.Int(0), mergeBlockId);
-		ASSERT(EmitBlock(trueBlockId, &trueState) == EmitResult::ReachedBlock);
+		auto trueState = state->fork(state->activeLaneMask() & cond.Int(0), mergeBlockId);
+		EmitBlock(trueBlockId, &trueState);
 
-		auto falseState = state->fork(state->activeLaneMask & ~cond.Int(0), mergeBlockId);
-		ASSERT(EmitBlock(falseBlockId, &falseState) == EmitResult::ReachedBlock);
+		auto falseState = state->fork(state->activeLaneMask() & ~cond.Int(0), mergeBlockId);
+		EmitBlock(falseBlockId, &falseState);
 
-		state->phiActiveLaneMasks.emplace(trueState.currentBlock, trueState.activeLaneMask);
-		state->phiActiveLaneMasks.emplace(falseState.currentBlock, falseState.activeLaneMask);
+		state->setActiveLaneMask(trueState.activeLaneMask() | falseState.activeLaneMask());
+
+		state->phiActiveLaneMasks.emplace(trueState.currentBlock, trueState.activeLaneMask());
+		state->phiActiveLaneMasks.emplace(falseState.currentBlock, falseState.activeLaneMask());
+		return EmitBlock(mergeBlockId, state);
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const
+	{
+		auto selId = Object::ID(insn.word(1));
+		auto defaultBlockId = Block::ID(insn.word(2));
+
+		auto sel = GenericValue(this, state->routine, selId);
+		ASSERT(getType(getObject(selId).type).sizeInComponents == 1);
+
+		auto numCases = (insn.wordCount() - 3) / 2;
+
+		// TODO: Optimize for case where all lanes take same path.
+
+		SIMD::Int fallthroughLaneMask = SIMD::Int(0);
+		SIMD::Int mergeLaneMask = SIMD::Int(0);
+
+		// defaultLaneMask is a mask of lanes that are going to use the default
+		// case. These bits will be unset as other cases are picked.
+		SIMD::Int defaultLaneMask = state->activeLaneMask();
+
+		for (uint32_t i = 0; i < numCases; i++)
+		{
+			auto label = insn.word(i * 2 + 3);
+			auto blockId = Block::ID(insn.word(i * 2 + 4));
+			auto nextCaseBlockId = Block::ID((i < numCases - 1) ? insn.word(i * 2 + 6) : 0);
+
+			auto labelMatch = CmpEQ(sel.Int(0), SIMD::Int(label));
+
+			// Disable the lanes for default when this case is taken.
+			defaultLaneMask &= ~labelMatch;
+
+			auto caseLaneMask = fallthroughLaneMask | (state->activeLaneMask() & labelMatch);
+
+			// Stop emission at the merge block or the next label (in case of
+			// fallthrough).
+			auto caseState = state->fork(caseLaneMask, mergeBlockId, nextCaseBlockId);
+
+			auto res = EmitBlock(blockId, &caseState);
+
+			auto fallthrough = res == EmitResult::ReachedBlockB;
+			fallthroughLaneMask = fallthrough ? caseState.activeLaneMask() : RValue<SIMD::Int>(SIMD::Int(0));
+
+			mergeLaneMask |= caseState.activeLaneMask();
+			state->phiActiveLaneMasks.emplace(caseState.currentBlock, caseState.activeLaneMask());
+		}
+
+		// Emit the default block
+		auto defaultState = state->fork(defaultLaneMask | fallthroughLaneMask, mergeBlockId);
+		EmitBlock(defaultBlockId, &defaultState);
+		mergeLaneMask |= defaultState.activeLaneMask();
+
+		state->setActiveLaneMask(mergeLaneMask);
+		state->phiActiveLaneMasks.emplace(defaultState.currentBlock, defaultState.activeLaneMask());
+
 		return EmitBlock(mergeBlockId, state);
 	}
 
@@ -2349,6 +2416,18 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitUnreachable(InsnIterator insn, EmitState *state) const
+	{
+		// TODO: Log something in this case?
+		state->setActiveLaneMask(SIMD::Int(0));
+		return EmitResult::Terminator;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitReturn(InsnIterator insn, EmitState *state) const
+	{
+		state->setActiveLaneMask(SIMD::Int(0));
+		return EmitResult::Terminator;
+	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 	{
