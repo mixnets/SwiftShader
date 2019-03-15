@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5fc25c78_fae1c193",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T03:15:54Z",
+      "side": 1,
+      "message": "This assert isn\u0027t about validity. It\u0027s about being notified when a test or app attempts to use non-default values so we can check whether the feature needs implementing or something else unexpected is going on. Anyway, since we\u0027re still checking for depthBoundsTestEnable, that\u0027s should be adequate for this purpose.",
+      "range": {
+        "startLine": 10,
+        "startChar": 6,
+        "endLine": 10,
+        "endChar": 14
+      },
+      "revId": "779f569f352af6a187b98cd9b73c819d29293900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
