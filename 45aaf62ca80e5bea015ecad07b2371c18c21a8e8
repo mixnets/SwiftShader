@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7229c20_9bcc81df",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-15T11:51:44Z",
+      "side": 0,
+      "message": "Note: shouldn\u0027t these still be validated if depthBoundsTestEnable is true? Just removing them might make us forget to implement these later on.",
+      "range": {
+        "startLine": 362,
+        "startChar": 5,
+        "endLine": 363,
+        "endChar": 48
+      },
+      "revId": "45aaf62ca80e5bea015ecad07b2371c18c21a8e8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
