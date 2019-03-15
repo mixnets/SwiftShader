@@ -46,6 +46,30 @@
       "revId": "31884de814f87960c9e789ca9ca2458839f6175f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3786ae88_86d1aa2e",
+        "filename": "src/Reactor/ReactorUnitTests.vcxproj.user",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T21:40:30Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "773671fd_df5958d1",
+      "range": {
+        "startLine": 1,
+        "startChar": 3,
+        "endLine": 1,
+        "endChar": 6
+      },
+      "revId": "31884de814f87960c9e789ca9ca2458839f6175f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
