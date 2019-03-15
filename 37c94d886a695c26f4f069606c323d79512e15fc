@@ -34,6 +34,24 @@
       "revId": "37c94d886a695c26f4f069606c323d79512e15fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bcf5565_279c4810",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-15T15:01:35Z",
+      "side": 1,
+      "message": "No, I agree that this change is right :)",
+      "parentUuid": "67de7e7a_63adc604",
+      "revId": "37c94d886a695c26f4f069606c323d79512e15fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
