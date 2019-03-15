@@ -480,13 +480,14 @@ namespace sw
 
 			// fork returns a new EmitState copying the routine and currentBlock
 			// from this EmitState, and replacing the active lane mask and the
-			// block ID to stop emission at.
-			EmitState fork(RValue<SIMD::Int> const &activeLaneMask, Block::ID stopAt)
+			// block IDs to stop emission at.
+			EmitState fork(RValue<SIMD::Int> const &activeLaneMask, Block::ID stopAtA, Block::ID stopAtB = 0)
 			{
 				auto out = EmitState(activeLaneMask);
 				out.routine = routine;
 				out.currentBlock = currentBlock;
-				out.stopAt = stopAt;
+				out.stopAtA = stopAtA;
+				out.stopAtB = stopAtB;
 				return out;
 			}
 
@@ -503,7 +504,8 @@ namespace sw
 			SpirvRoutine *routine = nullptr;
 			rr::Value *activeLaneMaskValue = nullptr;
 			Block::ID currentBlock;
-			Block::ID stopAt;
+			Block::ID stopAtA;
+			Block::ID stopAtB;
 			std::unordered_map<Block::ID, RValue<SIMD::Int> > phiActiveLaneMasks;
 		};
 
@@ -512,12 +514,13 @@ namespace sw
 		{
 			Continue, // No termination instructions or EmitState::stopAt reached.
 			Terminator, // Reached a termination instruction.
-			ReachedBlock, // Reached EmitState::stopAt.
+			ReachedBlockA, // Reached EmitState::stopAtA.
+			ReachedBlockB, // Reached EmitState::stopAtB.
 		};
 
 		// EmitBlock emits instructions starting with the block with the given
 		// identifier. Emit continues to build the shader program until a
-		// terminator instruction or state->stopAt is reached.
+		// terminator instruction or state->stopAt[A,B] is reached.
 		EmitResult EmitBlock(Block::ID id, EmitState *state) const;
 		EmitResult EmitInstruction(InsnIterator insn, EmitState *state) const;
 
@@ -543,6 +546,7 @@ namespace sw
 		EmitResult EmitSelectionMerge(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
+		EmitResult EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
