@@ -46,6 +46,30 @@
       "revId": "aea2686a254912e62ba10df5a9973ef673139e6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "536c8e17_41e3ed51",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1536,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T18:54:09Z",
+      "side": 1,
+      "message": "Heh, I read that as SIMD::UInt(0). Good catch!",
+      "parentUuid": "0038196f_65640beb",
+      "range": {
+        "startLine": 1536,
+        "startChar": 17,
+        "endLine": 1536,
+        "endChar": 28
+      },
+      "revId": "aea2686a254912e62ba10df5a9973ef673139e6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
