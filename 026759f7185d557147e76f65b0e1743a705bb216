@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "74432cf9_f776a676",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-15T13:15:59Z",
+      "side": 1,
+      "message": "I\u0027m not sure that\u0027s going to behave the same way?\n\nMy understanding of this code is to attempt to disable the constructors for types that do not match.\n\ne.g. BoolLiteral\u003cBool\u003e::type is a bool, but BoolLiteral\u003canything-else\u003e::type is a forward declared struct.\n\nIf I change the constructor to just RValue(bool) then any old RValue\u003cT\u003e will accept a bool - which doesn\u0027t seem right.",
+      "parentUuid": "fe22e28c_d219959b",
+      "range": {
+        "startLine": 128,
+        "startChar": 1,
+        "endLine": 138,
+        "endChar": 3
+      },
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "46c9fd73_e5646dfa",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 2
