@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a16b97f6_e0ecbe49",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T13:00:16Z",
+      "side": 1,
+      "message": "I encountered this bug too while playing with b/128636885, so let\u0027s associate it with that.",
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe22e28c_d219959b",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T13:00:16Z",
+      "side": 1,
+      "message": "I don\u0027t think you need this since it\u0027s only ever going to represent bool.",
+      "range": {
+        "startLine": 128,
+        "startChar": 1,
+        "endLine": 138,
+        "endChar": 3
+      },
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46c9fd73_e5646dfa",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T13:00:16Z",
+      "side": 1,
+      "message": "bool b",
+      "range": {
+        "startLine": 183,
+        "startChar": 9,
+        "endLine": 183,
+        "endChar": 40
+      },
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
