@@ -16,6 +16,24 @@
       "revId": "42820fafbf95d3056c884c99b81b22bc6c1123e4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8e31d17_ff4c9617",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1804,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-15T16:50:05Z",
+      "side": 1,
+      "message": "Wow I must be tired. I confused pInfo (which is const) and pMemoryRequirements (which is not const). Yeah, will fix this.",
+      "parentUuid": "b767f76a_ee887f87",
+      "revId": "42820fafbf95d3056c884c99b81b22bc6c1123e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
