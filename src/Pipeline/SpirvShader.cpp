@@ -330,6 +330,7 @@ namespace sw
 			case spv::OpFMul:
 			case spv::OpFDiv:
 			case spv::OpFMod:
+			case spv::OpFRem:
 			case spv::OpFOrdEqual:
 			case spv::OpFUnordEqual:
 			case spv::OpFOrdNotEqual:
@@ -1141,6 +1142,7 @@ namespace sw
 		case spv::OpFMul:
 		case spv::OpFDiv:
 		case spv::OpFMod:
+		case spv::OpFRem:
 		case spv::OpFOrdEqual:
 		case spv::OpFUnordEqual:
 		case spv::OpFOrdNotEqual:
@@ -1768,6 +1770,9 @@ namespace sw
 				break;
 			case spv::OpFMod:
 				dst.emplace(i, lhs.Float(i) - rhs.Float(i) * Floor(lhs.Float(i) / rhs.Float(i)));
+				break;
+			case spv::OpFRem:
+				dst.emplace(i, lhs.Float(i) % rhs.Float(i));
 				break;
 			case spv::OpFOrdEqual:
 				dst.emplace(i, CmpEQ(lhs.Float(i), rhs.Float(i)));
