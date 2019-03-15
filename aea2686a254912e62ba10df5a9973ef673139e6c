@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c11e0180_d2a4b333",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1536,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T18:43:39Z",
+      "side": 1,
+      "message": "Should only make it into v when index \u003d\u003d 0.",
+      "range": {
+        "startLine": 1536,
+        "startChar": 17,
+        "endLine": 1536,
+        "endChar": 28
+      },
+      "revId": "aea2686a254912e62ba10df5a9973ef673139e6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
