@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "3e04a132_baaf4e80",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T14:25:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "74432cf9_f776a676",
+      "range": {
+        "startLine": 128,
+        "startChar": 1,
+        "endLine": 138,
+        "endChar": 3
+      },
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "46c9fd73_e5646dfa",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 2
@@ -104,6 +128,30 @@
       "revId": "026759f7185d557147e76f65b0e1743a705bb216",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d85e3455_fe7ba3ef",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-15T14:25:27Z",
+      "side": 1,
+      "message": "Ah, yes, that suggestion is wrong since it will cause lots of ambiguous conversion attempts. Instead what I had working is to not have this line and just have a specialized inline definition for RValue\u003cBool\u003e::RValue(bool b), keeping IntLiteral\u003cBool\u003e and not needing BoolLiteral.\n\nI thought there would be a difference in allowing expressions such as RValue\u003cInt\u003e + bool, but that doesn\u0027t appear to be the case in practice... The compiler simply finds the RValue\u003cInt\u003e + RValue\u003cInt\u003e operator and converts the bool to an int itself before constructing an RValue\u003cInt\u003e out of it. I\u0027m not sure if there\u0027s any other practical difference.\n\nThe specialization is less code and keeps treating booleans as integers (which I think technically they are). Another way to fix this bug would be to have a createConstantInt(bool). Anyway, let\u0027s land this fix as-is and come back to this after Pastel 1.0.",
+      "parentUuid": "46c9fd73_e5646dfa",
+      "range": {
+        "startLine": 183,
+        "startChar": 9,
+        "endLine": 183,
+        "endChar": 40
+      },
+      "revId": "026759f7185d557147e76f65b0e1743a705bb216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
