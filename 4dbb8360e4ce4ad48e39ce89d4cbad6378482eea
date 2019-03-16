@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "261a5f88_3db4db64",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-16T04:41:34Z",
+      "side": 1,
+      "message": "Are the other members of subresourceRange relevant? If not perhaps we should instead have an Image::clear() variant which merely takes the aspectMask.",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 14
+      },
+      "revId": "4dbb8360e4ce4ad48e39ce89d4cbad6378482eea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
