@@ -29,7 +29,11 @@ namespace sw
 	public:
 		MutexLock()
 		{
-			pthread_mutex_init(&mutex, NULL);
+			pthread_mutexattr_t Attr;
+			pthread_mutexattr_init(&Attr);
+			pthread_mutexattr_settype(&Attr, PTHREAD_MUTEX_RECURSIVE);
+			pthread_mutex_init(&mutex, &Attr);
+			pthread_mutexattr_destroy(&Attr);
 		}
 
 		~MutexLock()
