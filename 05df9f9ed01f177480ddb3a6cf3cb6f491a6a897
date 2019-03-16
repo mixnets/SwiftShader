@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "301b1511_32729e00",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1770,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-16T03:42:55Z",
+      "side": 1,
+      "message": "This can lead to significant numerical errors for lhs values greater than 2^24. That\u0027s because these values no longer have fractional digits.\n\nLet\u0027s add a TODO(b/126873455) to document this. Since it\u0027s the implementation that was used in GLSL ES, it probably won\u0027t be an issue for Pastel 1.0.",
+      "range": {
+        "startLine": 1770,
+        "startChar": 19,
+        "endLine": 1770,
+        "endChar": 84
+      },
+      "revId": "05df9f9ed01f177480ddb3a6cf3cb6f491a6a897",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
