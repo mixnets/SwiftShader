@@ -22,6 +22,30 @@
       "revId": "4dbb8360e4ce4ad48e39ce89d4cbad6378482eea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "083b01e5_5a94d55e",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-16T04:43:16Z",
+      "side": 1,
+      "message": "Yes -- layer/level need to come from the image view\u0027s subresourceRange.",
+      "parentUuid": "261a5f88_3db4db64",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 14
+      },
+      "revId": "4dbb8360e4ce4ad48e39ce89d4cbad6378482eea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
