@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "fcd7ccd8_7ffbc24d",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-16T04:20:27Z",
+      "side": 1,
+      "message": "This line puts the three modes fields into an array, so whether it\u0027s done here or later seems like an inconsistency to me. Could you point out where it\u0027s really useful to have them in an array?\n\nAnyway, just a minor nit. Can be refactored later iff more elegant.",
+      "parentUuid": "6d4399d3_071714f6",
+      "range": {
+        "startLine": 57,
+        "startChar": 6,
+        "endLine": 57,
+        "endChar": 18
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2ccd7c0_5eabc3e4",
         "filename": "src/Pipeline/ComputeProgram.cpp",
         "patchSetId": 8
@@ -93,6 +117,30 @@
       "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64e9cd36_279481c7",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-16T04:20:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d178bfda_69ecb685",
+      "range": {
+        "startLine": 177,
+        "startChar": 20,
+        "endLine": 177,
+        "endChar": 23
+      },
+      "revId": "eed26063f21452063375bdddc713f466f7ec44ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
