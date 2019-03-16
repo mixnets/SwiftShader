@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4f9adfb4_90d1b538",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-16T04:59:53Z",
+      "side": 1,
+      "message": "I\u0027m happy to rename this; however, modeled off the other clear() impl just below.",
+      "parentUuid": "3e509595_61103503",
+      "range": {
+        "startLine": 95,
+        "startChar": 25,
+        "endLine": 95,
+        "endChar": 27
+      },
+      "revId": "4dbb8360e4ce4ad48e39ce89d4cbad6378482eea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "261a5f88_3db4db64",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 3
