@@ -23,7 +23,7 @@ dEQP-VK.compute.builtin_var.work_group_id
 dEQP-VK.compute.builtin_var.work_group_id_component
 dEQP-VK.compute.builtin_var.work_group_size
 dEQP-VK.compute.builtin_var.work_group_size_component
-dEQP-VK.glsl.builtin.function.common.floatbitstouint.vec4_mediump_compute
+dEQP-VK.glsl.builtin.precision.smoothstep.mediump_compute.vec4
 dEQP-VK.glsl.builtin_var.simple.pointcoord
 dEQP-VK.spirv_assembly.instruction.compute.composite_insert.mat2x3
 dEQP-VK.spirv_assembly.instruction.compute.composite_insert.mat3x3
