@@ -138,7 +138,6 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClCompile Include="..\Device\Renderer.cpp" />
     <ClCompile Include="..\Device\Sampler.cpp" />
     <ClCompile Include="..\Device\SetupProcessor.cpp" />
-    <ClCompile Include="..\Device\Surface.cpp" />
     <ClCompile Include="..\Device\SwiftConfig.cpp" />
     <ClCompile Include="..\Device\Vector.cpp" />
     <ClCompile Include="..\Device\VertexProcessor.cpp" />
@@ -233,7 +232,6 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClInclude Include="..\Device\Sampler.hpp" />
     <ClInclude Include="..\Device\SetupProcessor.hpp" />
     <ClInclude Include="..\Device\Stream.hpp" />
-    <ClInclude Include="..\Device\Surface.hpp" />
     <ClInclude Include="..\Device\SwiftConfig.hpp" />
     <ClInclude Include="..\Device\Triangle.hpp" />
     <ClInclude Include="..\Device\Vector.hpp" />
