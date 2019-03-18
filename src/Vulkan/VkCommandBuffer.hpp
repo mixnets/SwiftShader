@@ -139,7 +139,7 @@ public:
 		void bindAttachments();
 	};
 
-	void submit(CommandBuffer::ExecutionState& executionState);
+	void submit(CommandBuffer::ExecutionState& executionState) const;
 
 	class Command;
 private:
@@ -147,7 +147,7 @@ private:
 	template<typename T, typename... Args> void addCommand(Args&&... args);
 
 	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
-	State state = INITIAL;
+	mutable State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations

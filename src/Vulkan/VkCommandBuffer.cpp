@@ -105,6 +105,23 @@ protected:
 private:
 };
 
+class ExecuteCommands : public CommandBuffer::Command
+{
+public:
+	ExecuteCommands(const VkCommandBuffer& commandBuffer) : commandBuffer(commandBuffer)
+	{
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		Cast(commandBuffer)->submit(executionState);
+	}
+
+private:
+	const VkCommandBuffer commandBuffer;
+};
+
 class PipelineBind : public CommandBuffer::Command
 {
 public:
@@ -599,7 +616,7 @@ VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBu
 	// must also provide a non-null pInheritanceInfo, which we don't implement yet, but is caught below.
 	(void) flags;
 
-	if(pInheritanceInfo)
+	if(pInheritanceInfo && pInheritanceInfo->renderPass)
 	{
 		UNIMPLEMENTED("pInheritanceInfo");
 	}
@@ -666,7 +683,12 @@ void CommandBuffer::endRenderPass()
 
 void CommandBuffer::executeCommands(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
 {
-	UNIMPLEMENTED("executeCommands");
+	ASSERT(state == RECORDING);
+
+	for(uint32_t i = 0; i < commandBufferCount; ++i)
+	{
+		addCommand<ExecuteCommands>(pCommandBuffers[i]);
+	}
 }
 
 void CommandBuffer::setDeviceMask(uint32_t deviceMask)
@@ -1019,7 +1041,7 @@ void CommandBuffer::drawIndexedIndirect(VkBuffer buffer, VkDeviceSize offset, ui
 	UNIMPLEMENTED("drawIndexedIndirect");
 }
 
-void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
+void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState) const
 {
 	// Perform recorded work
 	state = PENDING;
