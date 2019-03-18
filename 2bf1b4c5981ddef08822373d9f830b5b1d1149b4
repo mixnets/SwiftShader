@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19a5357c_d76771bd",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-18T20:43:05Z",
+      "side": 1,
+      "message": "The only reasonable usage of mutable I know of is for caching things. What\u0027s the reasoning behind making submit() const? It seems to me that a debug check that it returns back to the correct state seems sufficient?",
+      "range": {
+        "startLine": 150,
+        "startChar": 1,
+        "endLine": 150,
+        "endChar": 9
+      },
+      "revId": "2bf1b4c5981ddef08822373d9f830b5b1d1149b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
