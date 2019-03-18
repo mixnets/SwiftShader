@@ -22,6 +22,30 @@
       "revId": "d5de8ac10bd4a88abeb19fa218331542451a10f8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a3f5744_f3ac4331",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-18T16:52:33Z",
+      "side": 1,
+      "message": "We\u0027re working towards eliminating sw::Context, so this seems fine to me at a glance.",
+      "parentUuid": "0cb65f1b_d1e76bfb",
+      "range": {
+        "startLine": 187,
+        "startChar": 0,
+        "endLine": 187,
+        "endChar": 91
+      },
+      "revId": "d5de8ac10bd4a88abeb19fa218331542451a10f8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
