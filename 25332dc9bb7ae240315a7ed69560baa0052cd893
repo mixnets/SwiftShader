@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8a989fb_becc44e7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-18T13:36:46Z",
+      "side": 1,
+      "message": "I think it\u0027s great! Line numbers move often so this gives us an idea of the missing feature much more quickly.",
+      "range": {
+        "startLine": 13,
+        "startChar": 44,
+        "endLine": 14,
+        "endChar": 23
+      },
+      "revId": "25332dc9bb7ae240315a7ed69560baa0052cd893",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
