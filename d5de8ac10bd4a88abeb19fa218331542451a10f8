@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0cb65f1b_d1e76bfb",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-18T15:53:59Z",
+      "side": 1,
+      "message": "Nit: It feels like this should be something like:\nsw::Context::bindVertexInputs(vertexInputBindings, firstVertex)",
+      "range": {
+        "startLine": 187,
+        "startChar": 0,
+        "endLine": 187,
+        "endChar": 91
+      },
+      "revId": "d5de8ac10bd4a88abeb19fa218331542451a10f8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
