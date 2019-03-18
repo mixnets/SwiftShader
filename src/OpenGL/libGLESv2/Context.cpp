@@ -1645,6 +1645,27 @@ Program *Context::getCurrentProgram() const
 	return mResourceManager->getProgram(mState.currentProgram);
 }
 
+Texture *Context::getTargetTexture(GLenum target) const
+{
+	Texture *texture = nullptr;
+
+	switch(target)
+	{
+	case GL_TEXTURE_2D:            texture = getTexture2D();
+	case GL_TEXTURE_2D_ARRAY:      texture = getTexture2DArray();
+	case GL_TEXTURE_3D:            texture = getTexture3D();
+	case GL_TEXTURE_CUBE_MAP:      texture = getTextureCubeMap();
+	case GL_TEXTURE_EXTERNAL_OES:  texture = getTextureExternal();
+	case GL_TEXTURE_RECTANGLE_ARB: texture = getTexture2DRect();
+	default:
+		return error(GL_INVALID_ENUM, nullptr);
+	}
+
+	ASSERT(texture);  // Must always have a default texture to fall back to.
+
+	return texture;
+}
+
 Texture2D *Context::getTexture2D() const
 {
 	return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));

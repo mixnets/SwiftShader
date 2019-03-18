@@ -2108,35 +2108,23 @@ void GenerateMipmap(GLenum target)
 
 	if(context)
 	{
-		es2::Texture *texture = nullptr;
+		es2::Texture *texture = context->getTargetTexture(target);
 
-		switch(target)
+		// [OpenGL ES 3.2]: "if levelbase is not defined, or if any dimension
+		// is zero, all mipmap levels are left unchanged. This is not an error."
+		if(!texture || !texture->isBaseLevelDefined())
 		{
-		case GL_TEXTURE_2D:
-			texture = context->getTexture2D();
-			break;
-		case GL_TEXTURE_CUBE_MAP:
-			{
-				TextureCubeMap *cube = context->getTextureCubeMap();
-				texture = cube;
+			return;
+		}
 
-				if(!cube->isCubeComplete())
-				{
-					return error(GL_INVALID_OPERATION);
-				}
+		if(target == GL_TEXTURE_CUBE_MAP)
+		{
+			TextureCubeMap *cube = context->getTextureCubeMap();
+
+			if(!cube->isCubeComplete())
+			{
+				return error(GL_INVALID_OPERATION);
 			}
-			break;
-		case GL_TEXTURE_2D_ARRAY:
-			texture = context->getTexture2DArray();
-			break;
-		case GL_TEXTURE_3D:
-			texture = context->getTexture3D();
-			break;
-		case GL_TEXTURE_RECTANGLE_ARB:
-			texture = context->getTexture2DRect();
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
 		}
 
 		if(!IsMipmappable(texture->getFormat(target, texture->getBaseLevel())))
@@ -3296,18 +3284,11 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 
 	if(context)
 	{
-		es2::Texture *texture;
+		es2::Texture *texture = context->getTargetTexture(target);
 
-		switch(target)
+		if(!texture)
 		{
-		case GL_TEXTURE_2D:            texture = context->getTexture2D();       break;
-		case GL_TEXTURE_2D_ARRAY:      texture = context->getTexture2DArray();  break;
-		case GL_TEXTURE_3D:            texture = context->getTexture3D();       break;
-		case GL_TEXTURE_CUBE_MAP:      texture = context->getTextureCubeMap();  break;
-		case GL_TEXTURE_EXTERNAL_OES:  texture = context->getTextureExternal(); break;
-		case GL_TEXTURE_RECTANGLE_ARB: texture = context->getTexture2DRect();   break;
-		default:
-			return error(GL_INVALID_ENUM);
+			return;
 		}
 
 		switch(pname)
@@ -3383,18 +3364,11 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 
 	if(context)
 	{
-		es2::Texture *texture;
+		es2::Texture *texture = context->getTargetTexture(target);
 
-		switch(target)
+		if(!texture)
 		{
-		case GL_TEXTURE_2D:            texture = context->getTexture2D();       break;
-		case GL_TEXTURE_2D_ARRAY:      texture = context->getTexture2DArray();  break;
-		case GL_TEXTURE_3D:            texture = context->getTexture3D();       break;
-		case GL_TEXTURE_CUBE_MAP:      texture = context->getTextureCubeMap();  break;
-		case GL_TEXTURE_EXTERNAL_OES:  texture = context->getTextureExternal(); break;
-		case GL_TEXTURE_RECTANGLE_ARB: texture = context->getTexture2DRect();   break;
-		default:
-			return error(GL_INVALID_ENUM);
+			return;
 		}
 
 		switch(pname)
@@ -4655,18 +4629,11 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 
 	if(context)
 	{
-		es2::Texture *texture;
+		es2::Texture *texture = context->getTargetTexture(target);
 
-		switch(target)
+		if(!texture)
 		{
-		case GL_TEXTURE_2D:            texture = context->getTexture2D();       break;
-		case GL_TEXTURE_2D_ARRAY:      texture = context->getTexture2DArray();  break;
-		case GL_TEXTURE_3D:            texture = context->getTexture3D();       break;
-		case GL_TEXTURE_CUBE_MAP:      texture = context->getTextureCubeMap();  break;
-		case GL_TEXTURE_EXTERNAL_OES:  texture = context->getTextureExternal(); break;
-		case GL_TEXTURE_RECTANGLE_ARB: texture = context->getTexture2DRect();   break;
-		default:
-			return error(GL_INVALID_ENUM);
+			return;
 		}
 
 		switch(pname)
@@ -4786,18 +4753,11 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 
 	if(context)
 	{
-		es2::Texture *texture;
+		es2::Texture *texture = context->getTargetTexture(target);
 
-		switch(target)
+		if(!texture)
 		{
-		case GL_TEXTURE_2D:            texture = context->getTexture2D();       break;
-		case GL_TEXTURE_2D_ARRAY:      texture = context->getTexture2DArray();  break;
-		case GL_TEXTURE_3D:            texture = context->getTexture3D();       break;
-		case GL_TEXTURE_CUBE_MAP:      texture = context->getTextureCubeMap();  break;
-		case GL_TEXTURE_EXTERNAL_OES:  texture = context->getTextureExternal(); break;
-		case GL_TEXTURE_RECTANGLE_ARB: texture = context->getTexture2DRect();   break;
-		default:
-			return error(GL_INVALID_ENUM);
+			return;
 		}
 
 		switch(pname)
