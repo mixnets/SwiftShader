@@ -159,6 +159,14 @@ const (
 	Timeout = Status("TIMEOUT")
 	// Crash is the status of a test that crashed.
 	Crash = Status("CRASH")
+	// Unimplemented is the status of a test that failed with UNIMPLEMENTED().
+	Unimplemented = Status("UNIMPLEMENTED")
+	// Unreachable is the status of a test that failed with UNREACHABLE().
+	Unreachable = Status("UNREACHABLE")
+	// Assert is the status of a test that failed with ASSERT() or ASSERT_MSG().
+	Assert = Status("ASSERT")
+	// Abort is the status of a test that failed with ABORT().
+	Abort = Status("ABORT")
 	// NotSupported is the status of a test feature not supported by the driver.
 	NotSupported = Status("NOT_SUPPORTED")
 	// CompatibilityWarning is the status passing test with a warning.
@@ -173,7 +181,7 @@ var Statuses = []Status{Pass, Fail, Timeout, Crash, NotSupported, CompatibilityW
 // Failing returns true if the task status requires fixing.
 func (s Status) Failing() bool {
 	switch s {
-	case Fail, Timeout, Crash:
+	case Fail, Timeout, Crash, Unimplemented, Unreachable, Assert:
 		return true
 	default:
 		return false
