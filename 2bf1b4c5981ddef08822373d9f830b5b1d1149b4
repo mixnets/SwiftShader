@@ -22,6 +22,30 @@
       "revId": "2bf1b4c5981ddef08822373d9f830b5b1d1149b4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53eac3fc_7836e5c7",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-18T21:06:41Z",
+      "side": 1,
+      "message": "Const/mutable details aside, this state machine is also not really correct.\n\n- A secondary is pending for the entire time at least one primary which refers to it is pending.\n- The transitions to INVALID are incomplete, and they *should* be incomplete; tracking invalidations due to resource changes is expensive.\n\nThis isn\u0027t really intended to be modeled by the driver.",
+      "parentUuid": "19a5357c_d76771bd",
+      "range": {
+        "startLine": 150,
+        "startChar": 1,
+        "endLine": 150,
+        "endChar": 9
+      },
+      "revId": "2bf1b4c5981ddef08822373d9f830b5b1d1149b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
