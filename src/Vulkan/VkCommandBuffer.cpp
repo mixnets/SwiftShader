@@ -105,6 +105,23 @@ protected:
 private:
 };
 
+class ExecuteCommands : public CommandBuffer::Command
+{
+public:
+	ExecuteCommands(const VkCommandBuffer& commandBuffer) : commandBuffer(commandBuffer)
+	{
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		Cast(commandBuffer)->submitSecondary(executionState);
+	}
+
+private:
+	const VkCommandBuffer commandBuffer;
+};
+
 class PipelineBind : public CommandBuffer::Command
 {
 public:
@@ -656,10 +673,7 @@ VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBu
 	// must also provide a non-null pInheritanceInfo, which we don't implement yet, but is caught below.
 	(void) flags;
 
-	if(pInheritanceInfo)
-	{
-		UNIMPLEMENTED("pInheritanceInfo");
-	}
+	// pInheritanceInfo merely contains optimization hints, so we currently ignore it
 
 	if(state != INITIAL)
 	{
@@ -723,7 +737,12 @@ void CommandBuffer::endRenderPass()
 
 void CommandBuffer::executeCommands(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
 {
-	UNIMPLEMENTED("executeCommands");
+	ASSERT(state == RECORDING);
+
+	for(uint32_t i = 0; i < commandBufferCount; ++i)
+	{
+		addCommand<ExecuteCommands>(pCommandBuffers[i]);
+	}
 }
 
 void CommandBuffer::setDeviceMask(uint32_t deviceMask)
@@ -1096,6 +1115,14 @@ void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
 
 	// After work is completed
 	state = EXECUTABLE;
+}
+
+void CommandBuffer::submitSecondary(CommandBuffer::ExecutionState& executionState) const
+{
+	for(auto& command : *commands)
+	{
+		command->play(executionState);
+	}
 }
 
 } // namespace vk
