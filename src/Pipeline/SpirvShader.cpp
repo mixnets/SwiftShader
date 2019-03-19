@@ -401,6 +401,7 @@ namespace sw
 			case spv::OpIsNan:
 			case spv::OpAny:
 			case spv::OpAll:
+			case spv::OpAtomicLoad:
 				// Instructions that yield an intermediate value
 			{
 				Type::ID typeId = insn.word(1);
@@ -422,6 +423,7 @@ namespace sw
 			}
 
 			case spv::OpStore:
+			case spv::OpAtomicStore:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -1100,10 +1102,12 @@ namespace sw
 			break;
 
 		case spv::OpLoad:
+		case spv::OpAtomicLoad:
 			EmitLoad(insn, routine);
 			break;
 
 		case spv::OpStore:
+		case spv::OpAtomicStore:
 			EmitStore(insn, routine);
 			break;
 
@@ -1292,6 +1296,7 @@ namespace sw
 
 		ASSERT(getType(pointer.type).element == object.type);
 		ASSERT(Type::ID(insn.word(1)) == object.type);
+		ASSERT((insn.opcode() != spv::OpAtomicLoad) || getType(getType(pointer.type).element) == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
@@ -1387,6 +1392,8 @@ namespace sw
 		auto &elementTy = getType(pointerTy.element);
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
+
+		ASSERT((insn.opcode() != spv::OpAtomicStore) || getType(getType(pointer.type).element) == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
