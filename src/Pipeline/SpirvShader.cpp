@@ -1930,7 +1930,7 @@ namespace sw
 	{
 		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
-		assert(type.sizeInComponents == 1);
+		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &lhsType = getType(getObject(insn.word(3)).type);
 		auto lhs = GenericValue(this, routine, insn.word(3));
@@ -2306,7 +2306,7 @@ namespace sw
 	{
 		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
-		assert(type.sizeInComponents == 1);
+		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &srcType = getType(getObject(insn.word(3)).type);
 		auto src = GenericValue(this, routine, insn.word(3));
@@ -2326,7 +2326,7 @@ namespace sw
 	{
 		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
-		assert(type.sizeInComponents == 1);
+		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &srcType = getType(getObject(insn.word(3)).type);
 		auto src = GenericValue(this, routine, insn.word(3));
