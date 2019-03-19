@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4d89686_fd056cb3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T02:19:43Z",
+      "side": 1,
+      "message": "Will fix: this is now a component offset again.",
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "252b3c0f_cfc2a16e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 771,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T02:19:43Z",
+      "side": 1,
+      "message": "Will fix: magic 4s from byte offset \u003c-\u003e component offset transition",
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
