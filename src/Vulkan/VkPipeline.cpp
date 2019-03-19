@@ -546,12 +546,12 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 }
 
 void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-	size_t numDescriptorSets, VkDescriptorSet *descriptorSets)
+	size_t numDescriptorSets, VkDescriptorSet *descriptorSets, void *pushConstants)
 {
 	ASSERT_OR_RETURN(routine != nullptr);
 	sw::ComputeProgram::run(
 		routine, reinterpret_cast<void**>(descriptorSets),
-		groupCountX, groupCountY, groupCountZ);
+		groupCountX, groupCountY, groupCountZ, pushConstants);
 }
 
 } // namespace vk
