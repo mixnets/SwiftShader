@@ -247,6 +247,24 @@ struct Draw : public CommandBuffer::Command
 		sw::Context context = pipeline->getContext();
 		executionState.bindVertexInputs(context, firstVertex);
 
+		const auto& boundDescriptorSets = executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_GRAPHICS];
+		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
+		{
+			context.descriptorSets[i] = reinterpret_cast<vk::DescriptorSet*>(boundDescriptorSets[i]);
+		}
+
+		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
+		{
+			auto &attrib = context.input[i];
+			if (attrib.count)
+			{
+				const auto &vertexInput = executionState.vertexInputBindings[attrib.binding];
+				Buffer *buffer = Cast(vertexInput.buffer);
+				attrib.buffer = buffer ? buffer->getOffsetPointer(
+						attrib.offset + vertexInput.offset + attrib.stride * firstVertex) : nullptr;
+			}
+		}
+
 		context.pushConstants = executionState.pushConstants;
 
 		executionState.renderer->setContext(context);
@@ -285,6 +303,24 @@ struct DrawIndexed : public CommandBuffer::Command
 
 		sw::Context context = pipeline->getContext();
 		executionState.bindVertexInputs(context, vertexOffset);
+
+		const auto& boundDescriptorSets = executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_GRAPHICS];
+		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
+		{
+			context.descriptorSets[i] = reinterpret_cast<vk::DescriptorSet*>(boundDescriptorSets[i]);
+		}
+
+		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
+		{
+			auto &attrib = context.input[i];
+			if (attrib.count)
+			{
+				const auto &vertexInput = executionState.vertexInputBindings[attrib.binding];
+				Buffer *buffer = Cast(vertexInput.buffer);
+				attrib.buffer = buffer ? buffer->getOffsetPointer(
+						attrib.offset + vertexInput.offset + attrib.stride * vertexOffset) : nullptr;
+			}
+		}
 
 		context.pushConstants = executionState.pushConstants;
 
