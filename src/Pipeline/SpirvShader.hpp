@@ -140,6 +140,12 @@ namespace sw
 				return static_cast<spv::Op>(*iter & spv::OpCodeMask);
 			}
 
+		/*	Type::ID resultType() const
+			{
+				ASSERT(getType(word(1)));
+				return word(1);
+			}*/
+
 			uint32_t wordCount() const
 			{
 				return *iter >> spv::WordCountShift;
@@ -205,6 +211,8 @@ namespace sw
 		public:
 			using ID = SpirvID<Type>;
 
+			spv::Op opcode() const { return definition.opcode(); }
+
 			InsnIterator definition;
 			spv::StorageClass storageClass = static_cast<spv::StorageClass>(-1);
 			uint32_t sizeInComponents = 0;
@@ -213,11 +221,13 @@ namespace sw
 			// Inner element type for pointers, arrays, vectors and matrices.
 			ID element;
 		};
-
-		class Object
+		
+		class  Object
 		{
 		public:
 			using ID = SpirvID<Object>;
+
+			spv::Op opcode() const { return definition.opcode(); }
 
 			InsnIterator definition;
 			Type::ID type;
@@ -473,6 +483,20 @@ namespace sw
 
 		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
+			const SpirvShader::Type &WalkLiteralAccessChainType(const Object &pointer) const;
+
+				bool isScalar(spv::Op op) const
+			{
+				switch(op)
+				{
+				case spv::OpTypeBool:
+				case spv::OpTypeInt:
+				case spv::OpTypeFloat:
+					return true;
+				default:
+					return false;
+				}
+			}
 
 		// Emit pass instructions:
 		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
