@@ -140,6 +140,9 @@ namespace sw
 				break;
 			}
 
+			case spv::OpSelectionMerge:
+				break; // Nothing to do in analysis pass.
+
 			case spv::OpTypeVoid:
 			case spv::OpTypeBool:
 			case spv::OpTypeInt:
@@ -399,6 +402,7 @@ namespace sw
 			case spv::OpIsNan:
 			case spv::OpAny:
 			case spv::OpAll:
+			case spv::OpPhi:
 				// Instructions that yield an intermediate value
 			{
 				Type::ID typeId = insn.word(1);
@@ -1108,12 +1112,7 @@ namespace sw
 			return EmitResult::Continue;
 
 		case spv::OpLabel:
-		case spv::OpReturn:
-			// TODO: when we do control flow, will need to do some work here.
-			// Until then, there is nothing to do -- we expect there to be an initial OpLabel
-			// in the entrypoint function, for which we do nothing; and a final OpReturn at the
-			// end of the entrypoint function, for which we do nothing.
-			return EmitResult::Terminator;
+			return EmitResult::Continue;
 
 		case spv::OpVariable:
 			return EmitVariable(insn, state);
@@ -1231,6 +1230,21 @@ namespace sw
 
 		case spv::OpBranch:
 			return EmitBranch(insn, state);
+
+		case spv::OpSelectionMerge:
+			return EmitSelectionMerge(insn, state);
+
+		case spv::OpBranchConditional:
+			break; // Handled by OpSelectionMerge
+
+		case spv::OpPhi:
+			return EmitPhi(insn, state);
+
+		case spv::OpUnreachable:
+			return EmitUnreachable(insn, state);
+
+		case spv::OpReturn:
+			return EmitReturn(insn, state);
 
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
@@ -2332,6 +2346,116 @@ namespace sw
 	{
 		auto blockId = Block::ID(insn.word(1));
 		return EmitBlock(blockId, state);
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitSelectionMerge(InsnIterator insn, EmitState *state) const
+	{
+		auto mergeBlockId = Block::ID(insn.word(1));
+
+		auto branchInsn = insn; branchInsn++;
+		switch (branchInsn.opcode())
+		{
+		case spv::OpBranchConditional:
+			return EmitBranchConditional(branchInsn, state, mergeBlockId);
+
+		case spv::OpSwitch:
+			UNIMPLEMENTED("OpSwitch");
+			break;
+
+		default:
+			// OpSelectionMerge must immediately precede either an
+			// OpBranchConditional or OpSwitch instruction.
+			UNREACHABLE("Unexpected opcode");
+		}
+
+		return EmitResult::Terminator;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitBranchConditional(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const
+	{
+		auto condId = Object::ID(insn.word(1));
+		auto trueBlockId = Block::ID(insn.word(2));
+		auto falseBlockId = Block::ID(insn.word(3));
+
+		if (trueBlockId == falseBlockId)
+		{
+			// No divergence. Act as a OpBranch.
+			return EmitBlock(trueBlockId, state);
+		}
+
+		auto cond = GenericValue(this, state->routine, condId);
+
+		// Condition must be a Boolean type scalar.
+		ASSERT(getType(getObject(condId).type).sizeInComponents == 1);
+
+		// TODO: Optimize for case where all lanes take same path.
+
+		// Emit the true block.
+		auto trueState = state->fork(state->activeLaneMask() & cond.Int(0), mergeBlockId);
+		EmitBlock(trueBlockId, &trueState);
+
+		// Emit the false block. If there is no else, falseBlockId == mergeBlockId and EmitBlock
+		// will simply return.
+		auto falseState = state->fork(state->activeLaneMask() & ~cond.Int(0), mergeBlockId);
+		EmitBlock(falseBlockId, &falseState);
+
+		// The active lane mask is the merge of the true and false active lanes.
+		// This takes into consideration returns.
+		state->setActiveLaneMask(trueState.activeLaneMask() | falseState.activeLaneMask());
+
+		// Add phi records for both branches taken.
+		state->phiActiveLaneMasks.emplace(trueState.currentBlock, trueState.activeLaneMask());
+		state->phiActiveLaneMasks.emplace(falseState.currentBlock, falseState.activeLaneMask());
+
+		// Continue emitting from the merge block.
+		return EmitBlock(mergeBlockId, state);
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitPhi(InsnIterator insn, EmitState *state) const
+	{
+		auto routine = state->routine;
+		auto typeId = Type::ID(insn.word(1));
+		auto type = getType(typeId);
+		auto objectId = Object::ID(insn.word(2));
+
+		Array<SIMD::Int> out(type.sizeInComponents);
+
+		for (uint32_t w = 3; w < insn.wordCount(); w += 2)
+		{
+			auto varId = Object::ID(insn.word(w + 0));
+			auto blockId = Block::ID(insn.word(w + 1));
+			auto it = state->phiActiveLaneMasks.find(blockId);
+			ASSERT_MSG(it != state->phiActiveLaneMasks.end(), "No phi record for block %d", blockId.value());
+
+			auto in = GenericValue(this, routine, varId);
+
+			for (uint32_t i = 0; i < type.sizeInComponents; i++)
+			{
+				auto inMasked = in.Int(i) & it->second;
+				out[i] = (w == 3) ? inMasked : (out[i] | inMasked);
+			}
+		}
+
+		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
+		for (auto i = 0u; i < type.sizeInComponents; i++)
+		{
+			dst.emplace(i, out[i]);
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitUnreachable(InsnIterator insn, EmitState *state) const
+	{
+		// TODO: Log something in this case?
+		state->setActiveLaneMask(SIMD::Int(0));
+		return EmitResult::Terminator;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitReturn(InsnIterator insn, EmitState *state) const
+	{
+		state->setActiveLaneMask(SIMD::Int(0));
+		return EmitResult::Terminator;
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
