@@ -139,7 +139,8 @@ protected:
 			executionState.pipelines[VK_PIPELINE_BIND_POINT_COMPUTE]);
 		pipeline->run(groupCountX, groupCountY, groupCountZ,
 			MAX_BOUND_DESCRIPTOR_SETS,
-			executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_COMPUTE]);
+			executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_COMPUTE],
+			executionState.pushConstants);
 	}
 
 private:
