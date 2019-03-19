@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9237fd6_8942174c",
+        "filename": "tests/VulkanUnitTests/unittests.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-19T19:33:44Z",
+      "side": 1,
+      "message": "Well spotted!",
+      "range": {
+        "startLine": 388,
+        "startChar": 51,
+        "endLine": 388,
+        "endChar": 55
+      },
+      "revId": "6ce9f3ede8d1281cd28e8f3aa7bdbbafbaf68799",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
