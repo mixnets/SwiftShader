@@ -401,6 +401,7 @@ namespace sw
 			case spv::OpIsNan:
 			case spv::OpAny:
 			case spv::OpAll:
+			case spv::OpAtomicLoad:
 				// Instructions that yield an intermediate value
 			{
 				Type::ID typeId = insn.word(1);
@@ -422,6 +423,7 @@ namespace sw
 			}
 
 			case spv::OpStore:
+			case spv::OpAtomicStore:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -677,7 +679,11 @@ namespace sw
 		ApplyDecorationsForId(&d, id);
 
 		auto const &obj = getType(id);
+<<<<<<< HEAD
 		switch(obj.opcode())
+=======
+		switch (obj.opcode())
+>>>>>>> dc5cd4376... Implement atomic load/store
 		{
 		case spv::OpTypePointer:
 			return VisitInterfaceInner<F>(obj.definition.word(3), d, f);
@@ -762,7 +768,11 @@ namespace sw
 		for (auto i = 0u; i < numIndexes; i++)
 		{
 			auto & type = getType(typeId);
+<<<<<<< HEAD
 			switch(type.opcode())
+=======
+			switch (type.opcode())
+>>>>>>> dc5cd4376... Implement atomic load/store
 			{
 			case spv::OpTypeStruct:
 			{
@@ -808,7 +818,11 @@ namespace sw
 		for (auto i = 0u; i < numIndexes; i++)
 		{
 			auto & type = getType(typeId);
+<<<<<<< HEAD
 			switch(type.opcode())
+=======
+			switch (type.opcode())
+>>>>>>> dc5cd4376... Implement atomic load/store
 			{
 			case spv::OpTypeStruct:
 			{
@@ -840,6 +854,50 @@ namespace sw
 		}
 
 		return constantOffset;
+	}
+
+	const SpirvShader::Type &SpirvShader::PointeeType(const Object &pointer) const
+	{
+		switch(pointer.opcode())
+		{
+		case spv::OpVariable:
+			{
+				auto variable = pointer.definition;
+				Object::ID resultId = variable.word(2);
+				auto &object = getObject(resultId);
+				auto &objectTy = getType(object.type);
+				auto &pointeeTy = getType(objectTy.element);
+			}
+			break;
+		case spv::OpAccessChain:
+		case spv::OpInBoundsAccessChain:
+			{
+				auto accessChain = pointer.definition;
+				Type::ID resultPointTypeId = accessChain.word(1);
+				Object::ID baseId = accessChain.word(3);
+				uint32_t numIndexes = accessChain.wordCount() - 4;
+				const uint32_t *indexes = accessChain.wordPointer(4);
+
+				const Type &resultPointerType = getType(resultPointTypeId);
+				Type::ID resultPointeeTypeId = resultPointerType.definition.word(3);
+
+				return getType(resultPointeeTypeId);
+			}
+			break;
+		case spv::OpFunctionParameter:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		case spv::OpImageTexelPointer:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		case spv::OpCopyObject:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		default:
+			UNREACHABLE("Not a pointer producing instruction: %s", OpcodeName(pointer.opcode()).c_str());
+		}
+
+		return getType(0);
 	}
 
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
@@ -997,14 +1055,30 @@ namespace sw
 			{
 			case spv::OpVariable:
 			{
+<<<<<<< HEAD
 				Type::ID resultPointerTypeId = insn.word(1);
 				auto resultPointerType = getType(resultPointerTypeId);
 				auto pointeeType = getType(resultPointerType.element);
 
 				if(pointeeType.sizeInComponents > 0)
+=======
+				Object::ID resultId = insn.word(2);
+				auto &object = getObject(resultId);
+				auto &objectTy = getType(object.type);
+				auto &pointeeTy =  getType(objectTy.element);
+
+				auto pointeeTy2 = getType(getType(insn.word(1)).definition.word(3));
+
+
+				if (pointeeTy.sizeInComponents > 0)
+>>>>>>> dc5cd4376... Implement atomic load/store
 				{
 					Object::ID resultId = insn.word(2);
 					routine->createLvalue(resultId, pointeeType.sizeInComponents);
+				}
+				else
+				{
+					UNIMPLEMENTED("Zero-slot object");
 				}
 				else
 				{
@@ -1104,10 +1178,12 @@ namespace sw
 			break;
 
 		case spv::OpLoad:
+		case spv::OpAtomicLoad:
 			EmitLoad(insn, routine);
 			break;
 
 		case spv::OpStore:
+		case spv::OpAtomicStore:
 			EmitStore(insn, routine);
 			break;
 
@@ -1296,6 +1372,7 @@ namespace sw
 
 		ASSERT(getType(pointer.type).element == object.type);
 		ASSERT(Type::ID(insn.word(1)) == object.type);
+		ASSERT((insn.opcode() != spv::OpAtomicLoad) || PointeeType(pointer).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
@@ -1391,6 +1468,8 @@ namespace sw
 		auto &elementTy = getType(pointerTy.element);
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
+
+		ASSERT((insn.opcode() != spv::OpAtomicStore) || getType(pointerBaseTy.element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
