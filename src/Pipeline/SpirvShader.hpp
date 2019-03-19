@@ -68,10 +68,9 @@ namespace sw
 	public:
 		using Scalar = RValue<SIMD::Float>;
 
-		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size)
+		{
 			memset(contents, 0, sizeof(ContentsType) * size);
-#endif
 		}
 
 		~Intermediate()
@@ -406,7 +405,7 @@ namespace sw
 		Block const &getBlock(Block::ID id) const
 		{
 			auto it = blocks.find(id);
-			ASSERT(it != blocks.end());
+			ASSERT_MSG(it != blocks.end(), "Unknown block %d", id.value());
 			return it->second;
 		}
 
@@ -592,21 +591,21 @@ namespace sw
 		Value& getValue(SpirvShader::Object::ID id)
 		{
 			auto it = lvalues.find(id);
-			ASSERT(it != lvalues.end());
+			ASSERT_MSG(it != lvalues.end(), "Unknown value %d", id.value());
 			return it->second;
 		}
 
 		Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
 		{
 			auto it = intermediates.find(id);
-			ASSERT(it != intermediates.end());
+			ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 			return it->second;
 		}
 
 		Pointer<Byte>& getPhysicalPointer(SpirvShader::Object::ID id)
 		{
 			auto it = physicalPointers.find(id);
-			assert(it != physicalPointers.end());
+			ASSERT_MSG(it != physicalPointers.end(), "Unknown physical pointer %d", id.value());
 			return it->second;
 		}
 	};
