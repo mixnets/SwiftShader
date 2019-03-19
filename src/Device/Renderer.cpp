@@ -444,6 +444,11 @@ namespace sw
 			data->scissorY1 = scissor.offset.y + scissor.extent.height;
 		}
 
+		// Push constants
+		{
+			memcpy(data->pushConstants, context->pushConstants, vk::MAX_PUSH_CONSTANT_SIZE);
+		}
+
 		draw->primitive = 0;
 		draw->count = count;
 

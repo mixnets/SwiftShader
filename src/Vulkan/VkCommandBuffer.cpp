@@ -241,6 +241,8 @@ struct Draw : public CommandBuffer::Command
 			}
 		}
 
+		memcpy(context.pushConstants, executionState.pushConstants, MAX_PUSH_CONSTANT_SIZE);
+
 		executionState.renderer->setContext(context);
 		executionState.renderer->setScissor(pipeline->getScissor());
 		executionState.renderer->setViewport(pipeline->getViewport());
@@ -287,6 +289,8 @@ struct DrawIndexed : public CommandBuffer::Command
 						attrib.offset + vertexInput.offset + attrib.stride * vertexOffset) : nullptr;
 			}
 		}
+
+		memcpy(context.pushConstants, executionState.pushConstants, MAX_PUSH_CONSTANT_SIZE);
 
 		context.indexBuffer = Cast(executionState.indexBufferBinding.buffer)->getOffsetPointer(
 				executionState.indexBufferBinding.offset + firstIndex * (executionState.indexType == VK_INDEX_TYPE_UINT16 ? 2 : 4));
@@ -571,6 +575,25 @@ private:
 	const VkDescriptorSet descriptorSet;
 };
 
+struct SetPushConstants : public CommandBuffer::Command
+{
+	SetPushConstants(uint32_t offset, uint32_t size, void const *pValues)
+		: offset(offset), size(size)
+	{
+		memcpy(data, pValues, size);
+	}
+
+	void play(CommandBuffer::ExecutionState& executionState)
+	{
+		memcpy(executionState.pushConstants + offset, data, size);
+	}
+
+private:
+	uint32_t offset;
+	uint32_t size;
+	unsigned char data[MAX_PUSH_CONSTANT_SIZE];
+};
+
 CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
 {
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
@@ -740,7 +763,7 @@ void CommandBuffer::copyQueryPoolResults(VkQueryPool queryPool, uint32_t firstQu
 void CommandBuffer::pushConstants(VkPipelineLayout layout, VkShaderStageFlags stageFlags,
 	uint32_t offset, uint32_t size, const void* pValues)
 {
-	UNIMPLEMENTED("pushConstants");
+	addCommand<SetPushConstants>(offset, size, pValues);
 }
 
 void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, const VkViewport* pViewports)

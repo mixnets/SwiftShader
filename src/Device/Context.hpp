@@ -15,6 +15,7 @@
 #ifndef sw_Context_hpp
 #define sw_Context_hpp
 
+#include "Vulkan/VkConfig.h"
 #include "Sampler.hpp"
 #include "Stream.hpp"
 #include "Point.hpp"
@@ -220,6 +221,8 @@ namespace sw
 		unsigned int sampleMask;
 		unsigned int multiSampleMask;
 		int sampleCount;
+
+		unsigned char pushConstants[vk::MAX_PUSH_CONSTANT_SIZE];
 	};
 }
 
