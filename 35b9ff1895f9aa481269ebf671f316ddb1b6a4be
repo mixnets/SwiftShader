@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4862719_fc2ab7c4",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-19T19:31:32Z",
+      "side": 1,
+      "message": "All of this can now be simplified to rr::Value* now, right?",
+      "range": {
+        "startLine": 133,
+        "startChar": 2,
+        "endLine": 133,
+        "endChar": 24
+      },
+      "revId": "35b9ff1895f9aa481269ebf671f316ddb1b6a4be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
