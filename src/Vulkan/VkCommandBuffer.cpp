@@ -230,6 +230,13 @@ struct Draw : public CommandBuffer::Command
 			executionState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
 
 		sw::Context context = pipeline->getContext();
+
+		const auto& boundDescriptorSets = executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_GRAPHICS];
+		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
+		{
+			context.descriptorSets[i] = reinterpret_cast<vk::DescriptorSet*>(boundDescriptorSets[i]);
+		}
+
 		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
 		{
 			auto &attrib = context.input[i];
@@ -279,6 +286,13 @@ struct DrawIndexed : public CommandBuffer::Command
 				executionState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
 
 		sw::Context context = pipeline->getContext();
+
+		const auto& boundDescriptorSets = executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_GRAPHICS];
+		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
+		{
+			context.descriptorSets[i] = reinterpret_cast<vk::DescriptorSet*>(boundDescriptorSets[i]);
+		}
+
 		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
 		{
 			auto &attrib = context.input[i];

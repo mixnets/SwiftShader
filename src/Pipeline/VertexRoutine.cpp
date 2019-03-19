@@ -22,6 +22,8 @@
 #include "Vulkan/VkDebug.hpp"
 #include "SpirvShader.hpp"
 
+#include "Vulkan/VkPipelineLayout.hpp"
+
 namespace sw
 {
 	VertexRoutine::VertexRoutine(
@@ -50,6 +52,7 @@ namespace sw
 		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
+
 
 		Do
 		{
