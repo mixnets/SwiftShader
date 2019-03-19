@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "f4235a59_0bb42ac0",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:35:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a118d1e1_6ae8f96e",
+      "range": {
+        "startLine": 449,
+        "startChar": 3,
+        "endLine": 449,
+        "endChar": 9
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4d89686_fd056cb3",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -138,6 +162,24 @@
     },
     {
       "key": {
+        "uuid": "d48e0cfa_20df1729",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:35:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4d89686_fd056cb3",
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "252b3c0f_cfc2a16e",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -152,6 +194,24 @@
       "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d16d8f9f_35773f2b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 771,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:35:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "252b3c0f_cfc2a16e",
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -178,6 +238,30 @@
     },
     {
       "key": {
+        "uuid": "10a22fb3_3b1aaf79",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:35:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c49a0a69_9bd6ad90",
+      "range": {
+        "startLine": 583,
+        "startChar": 2,
+        "endLine": 583,
+        "endChar": 8
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f12e90d9_f751d14f",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
@@ -198,6 +282,30 @@
       "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e012d48_0f14bae0",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:35:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f12e90d9_f751d14f",
+      "range": {
+        "startLine": 588,
+        "startChar": 2,
+        "endLine": 588,
+        "endChar": 8
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
