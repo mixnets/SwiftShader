@@ -199,7 +199,7 @@ namespace sw
 					break;
 
 				default:
-					UNREACHABLE("Unexpected StorageClass"); // See Appendix A of the Vulkan spec.
+					UNREACHABLE("Unexpected StorageClass %d", storageClass); // See Appendix A of the Vulkan spec.
 					break;
 				}
 				break;
@@ -401,6 +401,7 @@ namespace sw
 			case spv::OpIsNan:
 			case spv::OpAny:
 			case spv::OpAll:
+			case spv::OpAtomicLoad:
 				// Instructions that yield an intermediate value
 			{
 				Type::ID typeId = insn.word(1);
@@ -422,6 +423,7 @@ namespace sw
 			}
 
 			case spv::OpStore:
+			case spv::OpAtomicStore:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -499,13 +501,13 @@ namespace sw
 		auto &objectTy = getType(object.type);
 		ASSERT(objectTy.storageClass == spv::StorageClassInput || objectTy.storageClass == spv::StorageClassOutput);
 
-		ASSERT(objectTy.definition.opcode() == spv::OpTypePointer);
+		ASSERT(objectTy.opcode() == spv::OpTypePointer);
 		auto pointeeTy = getType(objectTy.element);
 
 		auto &builtinInterface = (objectTy.storageClass == spv::StorageClassInput) ? inputBuiltins : outputBuiltins;
 		auto &userDefinedInterface = (objectTy.storageClass == spv::StorageClassInput) ? inputs : outputs;
 
-		ASSERT(object.definition.opcode() == spv::OpVariable);
+		ASSERT(object.opcode() == spv::OpVariable);
 		Object::ID resultId = object.definition.word(2);
 
 		if (objectTy.isBuiltInBlock)
@@ -677,7 +679,7 @@ namespace sw
 		ApplyDecorationsForId(&d, id);
 
 		auto const &obj = getType(id);
-		switch (obj.definition.opcode())
+		switch (obj.opcode())
 		{
 		case spv::OpTypePointer:
 			return VisitInterfaceInner<F>(obj.definition.word(3), d, f);
@@ -762,7 +764,7 @@ namespace sw
 		for (auto i = 0u; i < numIndexes; i++)
 		{
 			auto & type = getType(typeId);
-			switch (type.definition.opcode())
+			switch (type.opcode())
 			{
 			case spv::OpTypeStruct:
 			{
@@ -794,7 +796,7 @@ namespace sw
 			}
 
 			default:
-				UNIMPLEMENTED("Unexpected type '%s' in WalkAccessChain", OpcodeName(type.definition.opcode()).c_str());
+				UNIMPLEMENTED("Unexpected type '%s' in WalkAccessChain", OpcodeName(type.opcode()).c_str());
 			}
 		}
 
@@ -808,7 +810,7 @@ namespace sw
 		for (auto i = 0u; i < numIndexes; i++)
 		{
 			auto & type = getType(typeId);
-			switch (type.definition.opcode())
+			switch (type.opcode())
 			{
 			case spv::OpTypeStruct:
 			{
@@ -840,6 +842,50 @@ namespace sw
 		}
 
 		return constantOffset;
+	}
+
+	const SpirvShader::Type &SpirvShader::PointeeType(const Object &pointer) const
+	{
+		switch(pointer.opcode())
+		{
+		case spv::OpVariable:
+			{
+				auto variable = pointer.definition;
+				Object::ID resultId = variable.word(2);
+				auto &object = getObject(resultId);
+				auto &objectTy = getType(object.type);
+				auto &pointeeTy = getType(objectTy.element);
+			}
+			break;
+		case spv::OpAccessChain:
+		case spv::OpInBoundsAccessChain:
+			{
+				auto accessChain = pointer.definition;
+				Type::ID resultPointTypeId = accessChain.word(1);
+				Object::ID baseId = accessChain.word(3);
+				uint32_t numIndexes = accessChain.wordCount() - 4;
+				const uint32_t *indexes = accessChain.wordPointer(4);
+
+				const Type &resultPointerType = getType(resultPointTypeId);
+				Type::ID resultPointeeTypeId = resultPointerType.definition.word(3);
+
+				return getType(resultPointeeTypeId);
+			}
+			break;
+		case spv::OpFunctionParameter:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		case spv::OpImageTexelPointer:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		case spv::OpCopyObject:
+			UNIMPLEMENTED("Unhandled pointer producing instruction %s", OpcodeName(pointer.opcode()).c_str());
+			break;
+		default:
+			UNREACHABLE("Not a pointer producing instruction: %s", OpcodeName(pointer.opcode()).c_str());
+		}
+
+		return getType(0);
 	}
 
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
@@ -983,7 +1029,7 @@ namespace sw
 		// but is possible to construct integer constant 0 via OpConstantNull.
 		auto insn = getObject(id).definition;
 		ASSERT(insn.opcode() == spv::OpConstant);
-		ASSERT(getType(insn.word(1)).definition.opcode() == spv::OpTypeInt);
+		ASSERT(getType(insn.word(1)).opcode() == spv::OpTypeInt);
 		return insn.word(3);
 	}
 
@@ -1000,11 +1046,18 @@ namespace sw
 				Object::ID resultId = insn.word(2);
 				auto &object = getObject(resultId);
 				auto &objectTy = getType(object.type);
-				auto &pointeeTy = getType(objectTy.element);
-				// TODO: what to do about zero-slot objects?
+				auto &pointeeTy =  getType(objectTy.element);
+
+				auto pointeeTy2 = getType(getType(insn.word(1)).definition.word(3));
+
+
 				if (pointeeTy.sizeInComponents > 0)
 				{
 					routine->createLvalue(resultId, pointeeTy.sizeInComponents);
+				}
+				else
+				{
+					UNIMPLEMENTED("Zero-slot object");
 				}
 				break;
 			}
@@ -1100,10 +1153,12 @@ namespace sw
 			break;
 
 		case spv::OpLoad:
+		case spv::OpAtomicLoad:
 			EmitLoad(insn, routine);
 			break;
 
 		case spv::OpStore:
+		case spv::OpAtomicStore:
 			EmitStore(insn, routine);
 			break;
 
@@ -1292,6 +1347,7 @@ namespace sw
 
 		ASSERT(getType(pointer.type).element == object.type);
 		ASSERT(Type::ID(insn.word(1)) == object.type);
+		ASSERT((insn.opcode() != spv::OpAtomicLoad) || PointeeType(pointer).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
@@ -1365,14 +1421,16 @@ namespace sw
 	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const
 	{
 		Type::ID typeId = insn.word(1);
-		Object::ID objectId = insn.word(2);
+		Object::ID resultId = insn.word(2);
 		Object::ID baseId = insn.word(3);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(baseId).pointerBase == getObject(objectId).pointerBase);
+		ASSERT(getObject(baseId).pointerBase == getObject(resultId).pointerBase);
 
-		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
-		dst.emplace(0, WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine));
+		auto &dst = routine->createIntermediate(resultId, type.sizeInComponents);
+		uint32_t numIndexes = insn.wordCount() - 4;
+		const uint32_t *indexes = insn.wordPointer(4);
+		dst.emplace(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
 	}
 
 	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine) const
@@ -1385,6 +1443,8 @@ namespace sw
 		auto &elementTy = getType(pointerTy.element);
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
+
+		ASSERT((insn.opcode() != spv::OpAtomicStore) || getType(pointerBaseTy.element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
