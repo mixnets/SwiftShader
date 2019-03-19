@@ -170,7 +170,15 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 	{
 	case DLL_PROCESS_ATTACH:
 		#ifdef DEBUGGER_WAIT_DIALOG
-			WaitForDebugger(instance);
+		{
+			char buffer[] = "0";
+			GetEnvironmentVariable("SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG", buffer, sizeof(buffer));
+
+			if(buffer[0] != '1')
+			{
+				WaitForDebugger(instance);
+			}
+		}
 		#endif
 		egl::attachProcess();
 		break;
