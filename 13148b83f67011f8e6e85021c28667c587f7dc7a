@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "01c9e94e_b8f3027a",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-19T14:16:06Z",
+      "side": 1,
+      "message": "How about a third option: I wrap the array in a struct, so a simple assignment does the right thing always?",
+      "parentUuid": "48e87373_5fc97e9d",
+      "range": {
+        "startLine": 449,
+        "startChar": 3,
+        "endLine": 449,
+        "endChar": 9
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a4d89686_fd056cb3",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
