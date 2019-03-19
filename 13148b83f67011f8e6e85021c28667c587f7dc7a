@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "29e73267_99aca610",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-19T07:49:43Z",
+      "side": 1,
+      "message": "I\u0027m paranoid about memory corruption whenever I see a memcpy. Can we add some seatbelts? Something like:\n\n    memcpy(data-\u003epushConstants, context-\u003epushConstants, std::min(sizeof(data-\u003epushConstants), sizeof(context-\u003epushConstants));\n\nor:\n\n    static_assert(sizeof(data-\u003epushConstants) \u003d\u003d vk::MAX_PUSH_CONSTANT_SIZE);\n    static_assert(sizeof(context-\u003epushConstants) \u003d\u003d vk::MAX_PUSH_CONSTANT_SIZE);\n    memcpy(data-\u003epushConstants, context-\u003epushConstants, vk::MAX_PUSH_CONSTANT_SIZE);\n\nHere and elsewhere.",
+      "range": {
+        "startLine": 449,
+        "startChar": 3,
+        "endLine": 449,
+        "endChar": 9
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a4d89686_fd056cb3",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -30,6 +53,52 @@
       "writtenOn": "2019-03-19T02:19:43Z",
       "side": 1,
       "message": "Will fix: magic 4s from byte offset \u003c-\u003e component offset transition",
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c49a0a69_9bd6ad90",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-19T07:49:43Z",
+      "side": 1,
+      "message": "ASSERT(size \u003c\u003d MAX_PUSH_CONSTANT_SIZE)",
+      "range": {
+        "startLine": 583,
+        "startChar": 2,
+        "endLine": 583,
+        "endChar": 8
+      },
+      "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f12e90d9_f751d14f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-19T07:49:43Z",
+      "side": 1,
+      "message": "ASSERT(offset + size \u003c\u003d sizeof(executionState.pushConstants))",
+      "range": {
+        "startLine": 588,
+        "startChar": 2,
+        "endLine": 588,
+        "endChar": 8
+      },
       "revId": "13148b83f67011f8e6e85021c28667c587f7dc7a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
