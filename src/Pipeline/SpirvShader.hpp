@@ -477,6 +477,7 @@ namespace sw
 
 		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
+		const Type &PointeeType(const Object &pointer) const;
 
 		// Emit pass instructions:
 		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
