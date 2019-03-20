@@ -45,7 +45,7 @@ namespace sw
 			return;
 		}
 
-		State state(format, dest->getFormat(aspect), dest->getSampleCountFlagBits(), { 0xF });
+		State state(format, dest->getFormat(aspect), 1, dest->getSampleCountFlagBits(), { 0xF });
 		Routine *blitRoutine = getRoutine(state);
 		if(!blitRoutine)
 		{
@@ -87,6 +87,7 @@ namespace sw
 
 				format.bytes(),                                       // sPitchB
 				dest->rowPitchBytes(aspect, subresLayers.mipLevel),   // dPitchB
+				0,                                                    // sSliceB (unused in clear operations)
 				dest->slicePitchBytes(aspect, subresLayers.mipLevel), // dSliceB
 
 				0.5f, 0.5f, 0.0f, 0.0f, // x0, y0, w, h
@@ -1411,6 +1412,21 @@ namespace sw
 							{
 								return nullptr;
 							}
+
+							if(state.srcSamples > 1) // Resolve multisampled source
+							{
+								Float4 accum = color;
+								for(int i = 1; i < state.srcSamples; i++)
+								{
+									s += *Pointer<Int>(blit + OFFSET(BlitData, sSliceB));
+									if(!read(color, s, state))
+									{
+										return nullptr;
+									}
+									accum += color;
+								}
+								color = accum * Float4(1.0f / static_cast<float>(state.srcSamples));
+							}
 						}
 						else   // Bilinear filtering
 						{
@@ -1541,7 +1557,7 @@ namespace sw
 		VkImageAspectFlagBits srcAspect = static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask);
 		VkImageAspectFlagBits dstAspect = static_cast<VkImageAspectFlagBits>(region.dstSubresource.aspectMask);
 
-		State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), dst->getSampleCountFlagBits(),
+		State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 		            { filter != VK_FILTER_NEAREST, srcAspect == VK_IMAGE_ASPECT_STENCIL_BIT, filter != VK_FILTER_NEAREST });
 		state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 		                    (region.srcOffsets[0].y < 0) ||
@@ -1560,6 +1576,7 @@ namespace sw
 
 		data.sPitchB = src->rowPitchBytes(srcAspect, region.srcSubresource.mipLevel);
 		data.dPitchB = dst->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel);
+		data.sSliceB = src->slicePitchBytes(srcAspect, region.srcSubresource.mipLevel);
 		data.dSliceB = dst->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel);
 
 		data.w = static_cast<float>(region.srcOffsets[1].x - region.srcOffsets[0].x) /

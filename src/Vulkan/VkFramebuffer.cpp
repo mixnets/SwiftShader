@@ -99,6 +99,22 @@ ImageView *Framebuffer::getAttachment(uint32_t index) const
 	return attachments[index];
 }
 
+void Framebuffer::resolve()
+{
+	VkSubpassDescription subpass = renderPass->getCurrentSubpass();
+	if(subpass.pResolveAttachments)
+	{
+		for(uint32_t i = 0; i < subpass.colorAttachmentCount; i++)
+		{
+			uint32_t resolveAttachment = subpass.pResolveAttachments[i].attachment;
+			if(resolveAttachment != VK_ATTACHMENT_UNUSED)
+			{
+				attachments[subpass.pColorAttachments[i].attachment]->resolve(attachments[resolveAttachment]);
+			}
+		}
+	}
+}
+
 size_t Framebuffer::ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo)
 {
 	return pCreateInfo->attachmentCount * sizeof(void*);

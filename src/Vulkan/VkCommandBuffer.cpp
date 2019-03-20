@@ -81,6 +81,10 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState) override
 	{
+		// FIXME(sugoi): remove these 2 lines and resolve in Renderer::finishRendering()
+		executionState.renderer->synchronize();
+		executionState.renderPassFramebuffer->resolve();
+
 		executionState.renderPass->nextSubpass();
 	}
 
@@ -97,6 +101,10 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState) override
 	{
+		// FIXME(sugoi): remove these 2 lines and resolve in Renderer::finishRendering()
+		executionState.renderer->synchronize();
+		executionState.renderPassFramebuffer->resolve();
+
 		executionState.renderPass->end();
 		executionState.renderPass = nullptr;
 		executionState.renderPassFramebuffer = nullptr;
