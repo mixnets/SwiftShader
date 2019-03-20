@@ -46,6 +46,30 @@
       "revId": "35b9ff1895f9aa481269ebf671f316ddb1b6a4be",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2cf2fed_31e1559c",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-20T01:55:37Z",
+      "side": 1,
+      "message": "Done. I thought about doing it in a separate change, but it makes a lot more sense to do it in one go. Thanks!",
+      "parentUuid": "7f7d5ac0_23817de6",
+      "range": {
+        "startLine": 133,
+        "startChar": 2,
+        "endLine": 133,
+        "endChar": 24
+      },
+      "revId": "35b9ff1895f9aa481269ebf671f316ddb1b6a4be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
