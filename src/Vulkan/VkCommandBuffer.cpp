@@ -81,6 +81,12 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState) override
 	{
+		// FIXME(sugoi): remove the following lines and resolve in Renderer::finishRendering()
+		//               for a Draw command or after the last command of the current subpass
+		//               which modifies pixels.
+		executionState.renderer->synchronize();
+		executionState.renderPassFramebuffer->resolve();
+
 		executionState.renderPass->nextSubpass();
 	}
 
@@ -97,13 +103,17 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState) override
 	{
-		executionState.renderPass->end();
-		executionState.renderPass = nullptr;
-		executionState.renderPassFramebuffer = nullptr;
-
 		// Execute (implicit or explicit) VkSubpassDependency to VK_SUBPASS_EXTERNAL
 		// This is somewhat heavier than the actual ordering required.
 		executionState.renderer->synchronize();
+		// FIXME(sugoi): remove the following line and resolve in Renderer::finishRendering()
+		//               for a Draw command or after the last command of the current subpass
+		//               which modifies pixels.
+		executionState.renderPassFramebuffer->resolve();
+
+		executionState.renderPass->end();
+		executionState.renderPass = nullptr;
+		executionState.renderPassFramebuffer = nullptr;
 	}
 
 private:

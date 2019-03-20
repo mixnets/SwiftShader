@@ -35,6 +35,7 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 	ImageView *getAttachment(uint32_t index) const;
+	void resolve();
 
 private:
 	RenderPass* renderPass;
