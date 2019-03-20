@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e4d2d155_c664f91f",
+        "filename": "src/Device/QuadRasterizer.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-20T07:22:27Z",
+      "side": 1,
+      "message": "The reason I didn\u0027t mark this as virtual was that I didn\u0027t think it was necessary. I now see why:\n\n\tQuadRasterizer *generator \u003d new PixelProgram(state, context-\u003epipelineLayout, context-\u003epixelShader);\n\tgenerator-\u003egenerate();\n\troutine \u003d (*generator)(\"PixelRoutine_%0.8X\", state.shaderID);\n\tdelete generator;\n\nWhich seems a little... odd?\n\nI don\u0027t see any QuadRasterizer pointers being passed around, so I would opt for making the constructor and generate protected and dropping the virtuals. That or just fold QuadRasterizer into PixelProgram.",
+      "parentUuid": "4f5dd4f5_4affa56c",
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6cbc8903_6501e086",
         "filename": "src/Main/libX11.hpp",
         "patchSetId": 6
@@ -74,6 +92,29 @@
       "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9498a7d3_d4d0d067",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-20T07:22:27Z",
+      "side": 1,
+      "message": "Probably not needed.",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 38
+      },
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
