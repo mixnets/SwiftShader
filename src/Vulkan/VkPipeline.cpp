@@ -231,7 +231,7 @@ std::vector<uint32_t> preprocessSpirv(
 	std::vector<uint32_t> optimized;
 	opt.Run(code.data(), code.size(), &optimized);
 
-	if (false) {
+	if (true) {
 		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
 		std::string preOpt;
 		core.Disassemble(code, &preOpt);

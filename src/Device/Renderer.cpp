@@ -1703,6 +1703,7 @@ namespace sw
 			case 0:  threadCount = CPUID::processAffinity();  break;
 			default: threadCount = configuration.threadCount; break;
 			}
+			threadCount = 1;
 
 			CPUID::setEnableSSE4_1(configuration.enableSSE4_1);
 			CPUID::setEnableSSSE3(configuration.enableSSSE3);

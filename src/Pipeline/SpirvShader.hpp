@@ -26,6 +26,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
 #include <type_traits>
@@ -66,13 +67,23 @@ namespace sw
 	class Intermediate
 	{
 	public:
-		Intermediate(uint32_t size) : scalar(new rr::Value*[size]), size(size) {
+		Intermediate(uint32_t size) : size(size), scalar(new rr::Value*[size])
+		{
 			memset(scalar, 0, sizeof(rr::Value*) * size);
 		}
 
+		Intermediate(Intermediate && other) : size(other.size), scalar(other.scalar)
+		{
+			other.scalar = nullptr;
+		}
+
+
 		~Intermediate()
 		{
-			delete[] scalar;
+			if (scalar != nullptr)
+			{
+				delete[] scalar;
+			}
 		}
 
 		void emplace(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); }
@@ -82,6 +93,14 @@ namespace sw
 		void emplace(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); }
 		void emplace(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); }
 		void emplace(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); }
+
+		void replace(uint32_t i, RValue<SIMD::Float> &&scalar) { replace(i, scalar.value); }
+		void replace(uint32_t i, RValue<SIMD::Int> &&scalar)   { replace(i, scalar.value); }
+		void replace(uint32_t i, RValue<SIMD::UInt> &&scalar)  { replace(i, scalar.value); }
+
+		void replace(uint32_t i, const RValue<SIMD::Float> &scalar) { replace(i, scalar.value); }
+		void replace(uint32_t i, const RValue<SIMD::Int> &scalar)   { replace(i, scalar.value); }
+		void replace(uint32_t i, const RValue<SIMD::UInt> &scalar)  { replace(i, scalar.value); }
 
 		// Value retrieval functions.
 		RValue<SIMD::Float> Float(uint32_t i) const
@@ -105,11 +124,13 @@ namespace sw
 			return As<SIMD::UInt>(scalar[i]);  // TODO(b/128539387): RValue<SIMD::UInt>(scalar)
 		}
 
-		// No copy/move construction or assignment
+		// No copy construction or assignment
 		Intermediate(Intermediate const &) = delete;
-		Intermediate(Intermediate &&) = delete;
 		Intermediate & operator=(Intermediate const &) = delete;
-		Intermediate & operator=(Intermediate &&) = delete;
+		Intermediate & operator=(Intermediate && other) = delete;
+
+		// Number of elements
+		uint32_t const size;
 
 	private:
 		void emplace(uint32_t i, rr::Value *value)
@@ -119,8 +140,13 @@ namespace sw
 			scalar[i] = value;
 		}
 
-		rr::Value **const scalar;
-		uint32_t size;
+		void replace(uint32_t i, rr::Value *value)
+		{
+			ASSERT(i < size);
+			scalar[i] = value;
+		}
+
+		rr::Value **scalar;
 	};
 
 	class SpirvShader
@@ -480,17 +506,21 @@ namespace sw
 			// Construct an EmitState with the given mask for active lanes.
 			EmitState(RValue<SIMD::Int> const &activeLaneMask);
 
-			// fork returns a new EmitState copying the routine and currentBlock
-			// from this EmitState, and replacing the active lane mask and the
-			// block IDs to stop emission at.
-			EmitState fork(RValue<SIMD::Int> const &activeLaneMask, Block::ID stopAtA, Block::ID stopAtB = 0, Block::ID stopAtC = 0)
+			// fork returns a new EmitState with a copy of this EmitState.
+			EmitState fork()
+			{
+				return fork(activeLaneMask());
+			}
+
+			// fork returns a new EmitState copying state from EmitState, and
+			// replacing the active lane mask and the block IDs to stop emission
+			// at.
+			EmitState fork(RValue<SIMD::Int> const &activeLaneMask)
 			{
 				auto out = EmitState(activeLaneMask);
 				out.routine = routine;
 				out.currentBlock = currentBlock;
-				out.stopAtA = stopAtA;
-				out.stopAtB = stopAtB;
-				out.stopAtC = stopAtC;
+				out.blocks = blocks;
 				return out;
 			}
 
@@ -507,27 +537,56 @@ namespace sw
 			SpirvRoutine *routine = nullptr;
 			rr::Value *activeLaneMaskValue = nullptr;
 			Block::ID currentBlock;
-			Block::ID stopAtA;
-			Block::ID stopAtB;
-			Block::ID stopAtC;
-			std::unordered_map<Block::ID, RValue<SIMD::Int> > phiActiveLaneMasks;
+			std::unordered_map<Block::ID, rr::BasicBlock*> blocks;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.
 		enum class EmitResult
 		{
-			Continue, // No termination instructions or EmitState::stopAt reached.
+			Continue, // No termination instructions.
 			Terminator, // Reached a termination instruction.
-			ReachedBlockA, // Reached EmitState::stopAtA.
-			ReachedBlockB, // Reached EmitState::stopAtB.
-			ReachedBlockC, // Reached EmitState::stopAtC.
 		};
+
+		struct ControlFlowInfo
+		{
+			enum Kind
+			{
+				Simple, // No control flow.
+				ConditionalBranch,
+				Switch,
+				Loop,
+			};
+			Kind kind;
+			InsnIterator mergeInstruction;
+			InsnIterator branchInstruction;
+			Block::ID headerBlock;
+			Block::ID mergeBlock;
+			Block::ID continueTarget;
+		};
+
+		ControlFlowInfo getControlFlowInfo(Block::ID blockId) const;
+
+
+		using BlockSet = std::unordered_set<Block::ID>;
+
+		using PhiActiveLaneMasks = std::unordered_map<Block::ID, RValue<SIMD::Int>>;
 
 		// EmitBlock emits instructions starting with the block with the given
 		// identifier. Emit continues to build the shader program until a
-		// terminator instruction or state->stopAt[A,B] is reached.
-		EmitResult EmitBlock(Block::ID id, EmitState *state) const;
-		EmitResult EmitInstruction(InsnIterator insn, EmitState *state) const;
+		// terminator instruction or any of the stopAt blocks are reached.
+		Block::ID EmitBlock(Block::ID id, EmitState *state) const;
+		Block::ID EmitBlock(Block::ID id, EmitState *state, BlockSet const &stopAt) const;
+		Block::ID EmitBlock(Block::ID id, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+		Block::ID EmitBlock(Block::ID id, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks, InsnIterator begin) const;
+		EmitResult EmitInstruction(InsnIterator insn, EmitState *state, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+
+		// Functions that emit control flow:
+		Block::ID EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+		Block::ID EmitConditionalBranch(InsnIterator begin, ControlFlowInfo const &cfi, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+		Block::ID EmitSwitch(InsnIterator begin, ControlFlowInfo const &cfi, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+		Block::ID EmitLoop(InsnIterator begin, ControlFlowInfo const &cfi, EmitState *state, BlockSet const &stopAt, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
+		Block::ID EmitMergeBlock(Block::ID blockId, EmitState *state, PhiActiveLaneMasks const &phiActiveLaneMasks, std::unordered_set<Block::ID> stopAt) const;
+		Intermediate AllocAndInitPhi(InsnIterator insn, EmitState *state, PhiActiveLaneMasks const &phiActiveLaneMasks, Block::ID ignoreBlock = 0) const;
 
 		// Emit pass instructions:
 		EmitResult EmitVariable(InsnIterator insn, EmitState *state) const;
@@ -549,12 +608,12 @@ namespace sw
 		EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitSelectionMerge(InsnIterator insn, EmitState *state) const;
-		EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
-		EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
-		EmitResult EmitSwitch(InsnIterator insn, EmitState *state, Block::ID mergeBlockId) const;
-		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitLoopMerge(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitBranchConditional(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitSwitch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitPhi(InsnIterator insn, EmitState *state, PhiActiveLaneMasks const &phiActiveLaneMasks) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
