@@ -161,6 +161,30 @@
       "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7cfcdc04_715a89ae",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T13:22:08Z",
+      "side": 1,
+      "message": "Most of this goes away when we get Context/Renderer straightened out and we start generating draw calls directly out of the execution state.",
+      "parentUuid": "852aaf79_16743ccf",
+      "range": {
+        "startLine": 276,
+        "startChar": 7,
+        "endLine": 276,
+        "endChar": 18
+      },
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
