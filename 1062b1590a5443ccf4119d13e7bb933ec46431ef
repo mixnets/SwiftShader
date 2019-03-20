@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4f5dd4f5_4affa56c",
+        "filename": "src/Device/QuadRasterizer.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T01:06:51Z",
+      "side": 1,
+      "message": "Note: this is critical!\n\nTODO: Mark the override correctly; would have caught this with less headscratching",
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6cbc8903_6501e086",
+        "filename": "src/Main/libX11.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T01:06:51Z",
+      "side": 1,
+      "message": "This was in Ben\u0027s V4 commit. Inclined to split it as we\u0027re not touching these files otherwise.",
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
