@@ -572,7 +572,6 @@ EGLAPI EGLBoolean EGLAPIENTRY eglWaitNative(EGLint engine)
 
 EGLAPI EGLBoolean EGLAPIENTRY eglSwapBuffers(EGLDisplay dpy, EGLSurface surface)
 {
-	LockGuard lock(egl::getDisplayLock(dpy));
 	return egl::SwapBuffers(dpy, surface);
 }
 
