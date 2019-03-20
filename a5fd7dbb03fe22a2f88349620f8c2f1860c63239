@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1128ce68_28fa7c04",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-20T07:07:15Z",
+      "side": 1,
+      "message": "scalar[i]",
+      "range": {
+        "startLine": 101,
+        "startChar": 10,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "a5fd7dbb03fe22a2f88349620f8c2f1860c63239",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb3a8847_1df3f36e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-20T07:07:15Z",
+      "side": 1,
+      "message": "scalar[i]",
+      "range": {
+        "startLine": 108,
+        "startChar": 10,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "a5fd7dbb03fe22a2f88349620f8c2f1860c63239",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e717455a_3b416931",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-20T07:07:15Z",
+      "side": 1,
+      "message": "Scalar is a pointer and this makes it look like it is something more complicated than it actually is. Suggest replacing with:\n\n   scalar[i] \u003d value\n\nAlso suggest removing the Scalar typedef for in-place rr::Value*, I think this is adding complexity, not reducing it.",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 123,
+        "endChar": 33
+      },
+      "revId": "a5fd7dbb03fe22a2f88349620f8c2f1860c63239",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
