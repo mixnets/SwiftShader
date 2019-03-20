@@ -70,6 +70,30 @@
       "revId": "2bf1b4c5981ddef08822373d9f830b5b1d1149b4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1def45e_86c0e967",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T20:39:14Z",
+      "side": 1,
+      "message": "Removed this change.",
+      "parentUuid": "f2a7ef19_14951674",
+      "range": {
+        "startLine": 150,
+        "startChar": 1,
+        "endLine": 150,
+        "endChar": 9
+      },
+      "revId": "2bf1b4c5981ddef08822373d9f830b5b1d1149b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
