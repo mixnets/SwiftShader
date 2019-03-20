@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "f865a358_16630e2a",
+        "filename": "src/Device/QuadRasterizer.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T15:27:48Z",
+      "side": 1,
+      "message": "I want to make sure we\u0027re doing the right thing for FS-less pipelines (pure depth rendering, etc) which we haven\u0027t got to yet.\n\nOther than that, I\u0027m in favor of flattening out these hierarchies. A lot of this flexibility was there to support fixed function.",
+      "parentUuid": "e4d2d155_c664f91f",
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6cbc8903_6501e086",
         "filename": "src/Main/libX11.hpp",
         "patchSetId": 6
