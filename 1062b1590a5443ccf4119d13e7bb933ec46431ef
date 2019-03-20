@@ -33,6 +33,93 @@
       "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de0952c3_b91fa7e3",
+        "filename": "src/Main/libX11.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-20T02:22:56Z",
+      "side": 1,
+      "message": "Doesn\u0027t bother me since it\u0027s a one-line change. If it\u0027s intertwined with other relevant changes it becomes distracting, but this is more efficient than starting a new change, IMO.",
+      "parentUuid": "6cbc8903_6501e086",
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c7e26f1_7a01129c",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-20T02:22:56Z",
+      "side": 1,
+      "message": "This is hopping back and forth between generate methods. Acceptable for now but I made a note about refactoring it in the 2.0 doc.",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 2
+      },
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3fa55e3_a11adf6a",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-20T02:22:56Z",
+      "side": 1,
+      "message": "nit: stray newline",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 0
+      },
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "852aaf79_16743ccf",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-20T02:22:56Z",
+      "side": 1,
+      "message": "Derive from Draw to avoid code duplication? Can be done later. Made a note about it in 2.0 doc.",
+      "range": {
+        "startLine": 276,
+        "startChar": 7,
+        "endLine": 276,
+        "endChar": 18
+      },
+      "revId": "1062b1590a5443ccf4119d13e7bb933ec46431ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
