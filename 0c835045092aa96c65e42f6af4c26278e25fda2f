@@ -34,6 +34,24 @@
       "revId": "0c835045092aa96c65e42f6af4c26278e25fda2f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b28bf396_a8d71b71",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1024,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T19:19:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47c1ce03_1a8c10a7",
+      "revId": "0c835045092aa96c65e42f6af4c26278e25fda2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
