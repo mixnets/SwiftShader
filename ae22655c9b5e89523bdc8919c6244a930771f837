@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ae1d2b68_3199bce8",
+        "filename": "src/Device/Sampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T19:43:03Z",
+      "side": 1,
+      "message": "Note that this code is unused in Vulkan, this is for reference only.\nSwitching to ImageView here would require me to add functionality to ImageView which may end up being unnecessary.",
+      "parentUuid": "d6d81960_44aabd42",
+      "range": {
+        "startLine": 113,
+        "startChar": 56,
+        "endLine": 113,
+        "endChar": 62
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c4ba9dc8_7aa07c9f",
         "filename": "src/Device/Sampler.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-18T20:37:06Z",
       "side": 1,
       "message": "We\u0027ll be using borders for non-cube as well in the future. But looks OK for now.",
+      "range": {
+        "startLine": 119,
+        "startChar": 12,
+        "endLine": 119,
+        "endChar": 35
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e842b071_85ef0aaa",
+        "filename": "src/Device/Sampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T19:43:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c4ba9dc8_7aa07c9f",
       "range": {
         "startLine": 119,
         "startChar": 12,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1398babd_e42eb71e",
+        "filename": "src/Device/Sampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T19:43:03Z",
+      "side": 1,
+      "message": "Not quite, an ImageView has a subresourceRange, which contains an aspectMask, which could contain multiple aspects (depth and stencil, for example). I would assume that Sampler::setTextureLevel() would take an \"VkImageAspectFlagBits aspect\" argument at some point.",
+      "parentUuid": "00b83f3a_f15dbf8f",
+      "range": {
+        "startLine": 131,
+        "startChar": 65,
+        "endLine": 131,
+        "endChar": 70
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f3dbce4c_2204e159",
         "filename": "src/Device/Sampler.hpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-03-18T20:37:06Z",
       "side": 1,
       "message": "We should just make this the default for vk::Format::format\nDoesn\u0027t have to be done in this patch.",
+      "range": {
+        "startLine": 156,
+        "startChar": 30,
+        "endLine": 156,
+        "endChar": 49
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "172796fc_11cd8991",
+        "filename": "src/Device/Sampler.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T19:43:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3dbce4c_2204e159",
       "range": {
         "startLine": 156,
         "startChar": 30,
