@@ -52,6 +52,23 @@
       "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45a3926e_b962c171",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T22:00:18Z",
+      "side": 1,
+      "message": "Shouldnt this be inside slicePitchBytes?\n\nI would like both a slicePitchBytes (or perhaps we should call it layerPitchBytes?) and samplePitchBytes query.",
+      "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
