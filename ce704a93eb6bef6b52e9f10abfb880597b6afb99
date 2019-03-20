@@ -16,6 +16,24 @@
       "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bad3769_1070440c",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-20T20:20:11Z",
+      "side": 1,
+      "message": "If you look at finishRendering(), you can see that within that function, we can detect that we finished rendering the entire draw task. This is why we gather data for queries here, so a section of this function only happens once per draw call.\n\nThe idea would be to link the resolve command to the last command which modifies pixels in a renderPass. If it\u0027s a clear command, we can call resolve() after the clear, this case should be trivial. If the last command of the renderPass is a draw call, since these are the only async operations, the idea would to do it in finishRendering(), when we detect that the entire draw task is completed.",
+      "parentUuid": "86bd5f4d_612dfeb9",
+      "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
