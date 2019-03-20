@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "86bd5f4d_612dfeb9",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-20T19:59:03Z",
+      "side": 1,
+      "message": "I\u0027m not sure your plan works here.\n\nRenderer::finishRendering executes both far too often (per-pixel-task) and not enough. Suppose I call vkCmdClearAttachments during this subpass. Nobody will call Renderer::finishRendering in that case.",
+      "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
