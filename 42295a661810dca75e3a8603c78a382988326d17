@@ -22,6 +22,30 @@
       "revId": "42295a661810dca75e3a8603c78a382988326d17",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df4e9cec_91cf6f63",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 641,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-21T15:31:24Z",
+      "side": 1,
+      "message": "This isn\u0027t necessary currently, AFAIK. This file is full of ignored parameters. For example, CommandBuffer::pipelineBarrier() ignores all of its parameters.",
+      "parentUuid": "a5d59a00_13ae42bb",
+      "range": {
+        "startLine": 641,
+        "startChar": 4,
+        "endLine": 641,
+        "endChar": 21
+      },
+      "revId": "42295a661810dca75e3a8603c78a382988326d17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
