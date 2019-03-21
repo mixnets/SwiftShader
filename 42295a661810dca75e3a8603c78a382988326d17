@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5d59a00_13ae42bb",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 641,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T13:50:02Z",
+      "side": 1,
+      "message": "I think this will lead to unused parameter warning treated as error on some builds. Add \"(void)pInheritanceInfo;\" ?",
+      "range": {
+        "startLine": 641,
+        "startChar": 4,
+        "endLine": 641,
+        "endChar": 21
+      },
+      "revId": "42295a661810dca75e3a8603c78a382988326d17",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
