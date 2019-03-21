@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "afdbd26f_7363a2eb",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-21T23:41:36Z",
+      "side": 1,
+      "message": "I agree.\n\nLong term I\u0027d rather actually just delete all of this and work from the Vulkan structures directly, but a rename will be less confusing for now.",
+      "parentUuid": "49688683_d8385aa9",
+      "range": {
+        "startLine": 42,
+        "startChar": 15,
+        "endLine": 42,
+        "endChar": 21
+      },
+      "revId": "457d3e6468574f6ff2b03621e57bc035d49b30cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7aa44aa9_f9d28b59",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
