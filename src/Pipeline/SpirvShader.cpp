@@ -21,6 +21,12 @@
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
 
+#include <queue>
+
+#ifdef Bool
+#undef Bool // b/127920555
+#endif
+
 namespace sw
 {
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
@@ -1116,8 +1122,12 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine) const
+	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const
 	{
+		EmitState state;
+		state.setActiveLaneMask(activeLaneMask);
+		state.routine = routine;
+
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?
 		for (auto insn : *this)
@@ -1126,22 +1136,82 @@ namespace sw
 			{
 				break;
 			}
-			EmitInstruction(routine, insn);
+			EmitInstruction(insn, &state);
 		}
 
-		// Emit the main function block
-		EmitBlock(routine, getBlock(mainBlockId));
-	}
-
-	void SpirvShader::EmitBlock(SpirvRoutine *routine, Block const &block) const
-	{
-		for (auto insn : block)
+		// Emit all the blocks in BFS order, starting with the main block.
+		std::queue<Block::ID> pending;
+		pending.push(mainBlockId);
+		while (pending.size() > 0)
 		{
-			EmitInstruction(routine, insn);
+			auto id = pending.front();
+			pending.pop();
+			if (state.visited.count(id) == 0)
+			{
+				EmitBlock(id, &state);
+				for (auto it : getBlock(id).outs)
+				{
+					pending.push(it);
+				}
+			}
 		}
 	}
 
-	void SpirvShader::EmitInstruction(SpirvRoutine *routine, InsnIterator insn) const
+	void SpirvShader::EmitBlock(Block::ID id, EmitState *state) const
+	{
+		if (state->visited.count(id) > 0)
+		{
+			return; // Already processed this block.
+		}
+
+		state->visited.emplace(id);
+
+		auto &block = getBlock(id);
+
+		switch (block.kind)
+		{
+			case Block::Simple:
+				if (id != mainBlockId)
+				{
+					// Emit all preceeding blocks and set the activeLaneMask.
+					Intermediate activeLaneMask(1);
+					activeLaneMask.emplace(0, SIMD::Int(0));
+					for (auto in : block.ins)
+					{
+						EmitBlock(in, state);
+						auto inMask = state->getActiveLaneMaskEdge(in, id);
+						activeLaneMask.replace(0, activeLaneMask.Int(0) | inMask);
+					}
+					state->setActiveLaneMask(activeLaneMask.Int(0));
+				}
+				state->currentBlock = id;
+				EmitInstructions(block.begin(), block.end(), state);
+				break;
+
+			default:
+				UNIMPLEMENTED("Unhandled Block Kind: %d", int(block.kind));
+		}
+	}
+
+	void SpirvShader::EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state) const
+	{
+		for (auto insn = begin; insn != end; insn++)
+		{
+			auto res = EmitInstruction(insn, state);
+			switch (res)
+			{
+			case EmitResult::Continue:
+				continue;
+			case EmitResult::Terminator:
+				break;
+			default:
+				UNREACHABLE("Unexpected EmitResult %d", int(res));
+				break;
+			}
+		}
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
 		switch (insn.opcode())
 		{
@@ -1186,7 +1256,7 @@ namespace sw
 		case spv::OpString:
 			// Nothing to do at emit time. These are either fully handled at analysis time,
 			// or don't require any work at all.
-			break;
+			return EmitResult::Continue;
 
 		case spv::OpLabel:
 		case spv::OpReturn:
@@ -1194,52 +1264,41 @@ namespace sw
 			// Until then, there is nothing to do -- we expect there to be an initial OpLabel
 			// in the entrypoint function, for which we do nothing; and a final OpReturn at the
 			// end of the entrypoint function, for which we do nothing.
-			break;
+			return EmitResult::Continue;
 
 		case spv::OpVariable:
-			EmitVariable(insn, routine);
-			break;
+			return EmitVariable(insn, state);
 
 		case spv::OpLoad:
-			EmitLoad(insn, routine);
-			break;
+			return EmitLoad(insn, state);
 
 		case spv::OpStore:
-			EmitStore(insn, routine);
-			break;
+			return EmitStore(insn, state);
 
 		case spv::OpAccessChain:
 		case spv::OpInBoundsAccessChain:
-			EmitAccessChain(insn, routine);
-			break;
+			return EmitAccessChain(insn, state);
 
 		case spv::OpCompositeConstruct:
-			EmitCompositeConstruct(insn, routine);
-			break;
+			return EmitCompositeConstruct(insn, state);
 
 		case spv::OpCompositeInsert:
-			EmitCompositeInsert(insn, routine);
-			break;
+			return EmitCompositeInsert(insn, state);
 
 		case spv::OpCompositeExtract:
-			EmitCompositeExtract(insn, routine);
-			break;
+			return EmitCompositeExtract(insn, state);
 
 		case spv::OpVectorShuffle:
-			EmitVectorShuffle(insn, routine);
-			break;
+			return EmitVectorShuffle(insn, state);
 
 		case spv::OpVectorExtractDynamic:
-			EmitVectorExtractDynamic(insn, routine);
-			break;
+			return EmitVectorExtractDynamic(insn, state);
 
 		case spv::OpVectorInsertDynamic:
-			EmitVectorInsertDynamic(insn, routine);
-			break;
+			return EmitVectorInsertDynamic(insn, state);
 
 		case spv::OpVectorTimesScalar:
-			EmitVectorTimesScalar(insn, routine);
-			break;
+			return EmitVectorTimesScalar(insn, state);
 
 		case spv::OpNot:
 		case spv::OpSNegate:
@@ -1261,8 +1320,7 @@ namespace sw
 		case spv::OpDPdxFine:
 		case spv::OpDPdyFine:
 		case spv::OpFwidthFine:
-			EmitUnaryOp(insn, routine);
-			break;
+			return EmitUnaryOp(insn, state);
 
 		case spv::OpIAdd:
 		case spv::OpISub:
@@ -1312,41 +1370,37 @@ namespace sw
 		case spv::OpLogicalNotEqual:
 		case spv::OpUMulExtended:
 		case spv::OpSMulExtended:
-			EmitBinaryOp(insn, routine);
-			break;
+			return EmitBinaryOp(insn, state);
 
 		case spv::OpDot:
-			EmitDot(insn, routine);
-			break;
+			return EmitDot(insn, state);
 
 		case spv::OpSelect:
-			EmitSelect(insn, routine);
-			break;
+			return EmitSelect(insn, state);
 
 		case spv::OpExtInst:
-			EmitExtendedInstruction(insn, routine);
-			break;
+			return EmitExtendedInstruction(insn, state);
 
 		case spv::OpAny:
-			EmitAny(insn, routine);
-			break;
+			return EmitAny(insn, state);
 
 		case spv::OpAll:
-			EmitAll(insn, routine);
-			break;
+			return EmitAll(insn, state);
 
 		case spv::OpBranch:
-			EmitBranch(insn, routine);
-			break;
+			return EmitBranch(insn, state);
 
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
 			break;
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitVariable(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		Object::ID resultId = insn.word(2);
 		auto &object = getObject(resultId);
 		auto &objectTy = getType(object.type);
@@ -1393,10 +1447,13 @@ namespace sw
 		default:
 			break;
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitLoad(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		Object::ID objectId = insn.word(2);
 		Object::ID pointerId = insn.word(3);
 		auto &object = getObject(objectId);
@@ -1424,7 +1481,7 @@ namespace sw
 		}
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
-		auto anyInactiveLanes = SignMask(~routine->activeLaneMask) != 0;
+		auto anyInactiveLanes = SignMask(~state->activeLaneMask()) != 0;
 
 		auto load = SpirvRoutine::Value(objectTy.sizeInComponents);
 
@@ -1439,7 +1496,7 @@ namespace sw
 				// i wish i had a Float,Float,Float,Float constructor here..
 				for (int j = 0; j < SIMD::Width; j++)
 				{
-					If(Extract(routine->activeLaneMask, j) != 0)
+					If(Extract(state->activeLaneMask(), j) != 0)
 					{
 						Int offset = Int(i) + Extract(offsets, j);
 						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -1475,10 +1532,13 @@ namespace sw
 		{
 			dst.emplace(i, load[i]);
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		Type::ID typeId = insn.word(1);
 		Object::ID resultId = insn.word(2);
 		Object::ID baseId = insn.word(3);
@@ -1500,10 +1560,13 @@ namespace sw
 		{
 			dst.emplace(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		Object::ID pointerId = insn.word(1);
 		Object::ID objectId = insn.word(2);
 		auto &object = getObject(objectId);
@@ -1529,7 +1592,7 @@ namespace sw
 		}
 
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
-		auto anyInactiveLanes = SignMask(~routine->activeLaneMask) != 0;
+		auto anyInactiveLanes = SignMask(~state->activeLaneMask()) != 0;
 
 		if (object.kind == Object::Kind::Constant)
 		{
@@ -1545,7 +1608,7 @@ namespace sw
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						If(Extract(routine->activeLaneMask, j) != 0)
+						If(Extract(state->activeLaneMask(), j) != 0)
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -1579,7 +1642,7 @@ namespace sw
 				{
 					for (int j = 0; j < SIMD::Width; j++)
 					{
-						If(Extract(routine->activeLaneMask, j) != 0)
+						If(Extract(state->activeLaneMask(), j) != 0)
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
@@ -1611,10 +1674,13 @@ namespace sw
 				}
 			}
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitCompositeConstruct(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitCompositeConstruct(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto offset = 0u;
@@ -1631,10 +1697,13 @@ namespace sw
 				dst.emplace(offset++, srcObjectAccess.Float(j));
 			}
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitCompositeInsert(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitCompositeInsert(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		Type::ID resultTypeId = insn.word(1);
 		auto &type = getType(resultTypeId);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
@@ -1660,10 +1729,13 @@ namespace sw
 		{
 			dst.emplace(i, srcObjectAccess.Float(i));
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitCompositeExtract(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitCompositeExtract(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &compositeObject = getObject(insn.word(3));
@@ -1675,10 +1747,13 @@ namespace sw
 		{
 			dst.emplace(i, compositeObjectAccess.Float(firstComponent + i));
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitVectorShuffle(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitVectorShuffle(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 
@@ -1707,10 +1782,13 @@ namespace sw
 				dst.emplace(i, secondHalfAccess.Float(selector - firstHalfType.sizeInComponents));
 			}
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitVectorExtractDynamic(sw::SpirvShader::InsnIterator insn, sw::SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitVectorExtractDynamic(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &srcType = getType(getObject(insn.word(3)).type);
@@ -1726,10 +1804,12 @@ namespace sw
 		}
 
 		dst.emplace(0, v);
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitVectorInsertDynamic(sw::SpirvShader::InsnIterator insn, sw::SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitVectorInsertDynamic(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 
@@ -1742,10 +1822,12 @@ namespace sw
 			SIMD::UInt mask = CmpEQ(SIMD::UInt(i), index.UInt(0));
 			dst.emplace(i, (src.UInt(i) & ~mask) | (component.UInt(0) & mask));
 		}
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitVectorTimesScalar(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitVectorTimesScalar(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto lhs = GenericValue(this, routine, insn.word(3));
@@ -1755,10 +1837,13 @@ namespace sw
 		{
 			dst.emplace(i, lhs.Float(i) * rhs.Float(0));
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto src = GenericValue(this, routine, insn.word(3));
@@ -1854,10 +1939,13 @@ namespace sw
 				UNIMPLEMENTED("Unhandled unary operator %s", OpcodeName(insn.opcode()).c_str());
 			}
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto &lhsType = getType(getObject(insn.word(3)).type);
@@ -2047,10 +2135,13 @@ namespace sw
 				UNIMPLEMENTED("Unhandled binary operator %s", OpcodeName(insn.opcode()).c_str());
 			}
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitDot(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitDot(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
@@ -2059,10 +2150,13 @@ namespace sw
 		auto rhs = GenericValue(this, routine, insn.word(4));
 
 		dst.emplace(0, Dot(lhsType.sizeInComponents, lhs, rhs));
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitSelect(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitSelect(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto cond = GenericValue(this, routine, insn.word(3));
@@ -2073,10 +2167,13 @@ namespace sw
 		{
 			dst.emplace(i, (cond.Int(i) & lhs.Int(i)) | (~cond.Int(i) & rhs.Int(i)));   // FIXME: IfThenElse()
 		}
+
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitExtendedInstruction(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitExtendedInstruction(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
 		auto extInstIndex = static_cast<GLSLstd450>(insn.word(4));
@@ -2402,6 +2499,8 @@ namespace sw
 		default:
 			UNIMPLEMENTED("Unhandled ExtInst %d", extInstIndex);
 		}
+
+		return EmitResult::Continue;
 	}
 
 	SIMD::Float SpirvShader::Dot(unsigned numComponents, GenericValue const & x, GenericValue const & y) const
@@ -2416,8 +2515,9 @@ namespace sw
 		return d;
 	}
 
-	void SpirvShader::EmitAny(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitAny(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
@@ -2432,10 +2532,12 @@ namespace sw
 		}
 
 		dst.emplace(0, result);
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitAll(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitAll(InsnIterator insn, EmitState *state) const
 	{
+		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
@@ -2450,12 +2552,15 @@ namespace sw
 		}
 
 		dst.emplace(0, result);
+		return EmitResult::Continue;
 	}
 
-	void SpirvShader::EmitBranch(InsnIterator insn, SpirvRoutine *routine) const
+	SpirvShader::EmitResult SpirvShader::EmitBranch(InsnIterator insn, EmitState *state) const
 	{
-		auto blockId = Block::ID(insn.word(1));
-		EmitBlock(routine, getBlock(blockId));
+		auto target = Block::ID(insn.word(1));
+		auto edge = Block::Edge{state->currentBlock, target};
+		state->edgeActiveLaneMasks.emplace(edge, state->activeLaneMask());
+		return EmitResult::Terminator;
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
@@ -2573,6 +2678,36 @@ namespace sw
 				break;
 		}
 	}
+
+	void SpirvShader::EmitState::addOutputActiveLaneMaskEdge(Block::ID to, RValue<SIMD::Int> mask)
+	{
+		addActiveLaneMaskEdge(currentBlock, to, mask & activeLaneMask());
+	}
+
+	void SpirvShader::EmitState::addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask)
+	{
+		auto edge = Block::Edge{from, to};
+		auto it = edgeActiveLaneMasks.find(edge);
+		if (it == edgeActiveLaneMasks.end())
+		{
+			edgeActiveLaneMasks.emplace(edge, mask);
+		}
+		else
+		{
+			auto combined = it->second | mask;
+			edgeActiveLaneMasks.erase(edge);
+			edgeActiveLaneMasks.emplace(edge, combined);
+		}
+	}
+
+	RValue<SIMD::Int> SpirvShader::EmitState::getActiveLaneMaskEdge(Block::ID from, Block::ID to)
+	{
+		auto edge = Block::Edge{from, to};
+		auto it = edgeActiveLaneMasks.find(edge);
+		ASSERT_MSG(it != edgeActiveLaneMasks.end(), "Could not find edge %d -> %d", from.value(), to.value());
+		return it->second;
+	}
+
 	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
 		pipelineLayout(pipelineLayout)
 	{
