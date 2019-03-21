@@ -20,6 +20,9 @@
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkConfig.h"
+#include "Device/Config.hpp""
+
+#include <spirv/unified1/spirv.hpp>
 
 #include <array>
 #include <cstring>
@@ -30,8 +33,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <memory>
-#include <spirv/unified1/spirv.hpp>
-#include <Device/Config.hpp>
+#include <atomic>
 
 namespace vk
 {
@@ -508,6 +510,21 @@ namespace sw
 
 		// Helper as we often need to take dot products as part of doing other things.
 		SIMD::Float Dot(unsigned numComponents, GenericValue const & x, GenericValue const & y) const;
+
+		std::memory_order MemoryOrder(spv::MemorySemanticsMask memoryOrder) const
+		{
+			switch(memoryOrder)
+			{
+			case spv::MemorySemanticsMaskNone:                   return std::memory_order_relaxed;
+			case spv::MemorySemanticsAcquireMask:                return std::memory_order_acquire;
+			case spv::MemorySemanticsReleaseMask:                return std::memory_order_release;
+			case spv::MemorySemanticsAcquireReleaseMask:         return std::memory_order_acq_rel;
+			case spv::MemorySemanticsSequentiallyConsistentMask: return std::memory_order_acq_rel;  // Vulkan 1.1: "SequentiallyConsistent is treated as AcquireRelease"
+			default:
+				UNREACHABLE("MemorySemanticsMask %x", memoryOrder);
+				return std::memory_order_acq_rel;
+			}
+		}
 	};
 
 	class SpirvRoutine
