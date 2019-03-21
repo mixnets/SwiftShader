@@ -25,7 +25,7 @@ namespace sw
 	// ID; instead it is used to prevent implicit casts between idenfitifers of
 	// different T types.
 	// IDs are typically used as a map key to value of type T.
-	template <typename T>
+	template<typename T>
 	class SpirvID
 	{
 	public:
@@ -34,14 +34,15 @@ namespace sw
 		bool operator == (const SpirvID<T>& rhs) const { return id == rhs.id; }
 		bool operator < (const SpirvID<T>& rhs) const { return id < rhs.id; }
 
-		// value returns the numerical value of the identifier.
+		// value() returns the numerical value of the identifier.
 		uint32_t value() const { return id; }
+
 	private:
 		uint32_t id;
 	};
 
 	// HandleMap<T> is an unordered map of SpirvID<T> to T.
-	template <typename T>
+	template<typename T>
 	using HandleMap = std::unordered_map<SpirvID<T>, T>;
 }
 

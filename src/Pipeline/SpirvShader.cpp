@@ -1369,17 +1369,26 @@ namespace sw
 
 	void SpirvShader::EmitLoad(InsnIterator insn, SpirvRoutine *routine) const
 	{
-		Object::ID objectId = insn.word(2);
+		bool atomic = (insn.opcode() == spv::OpAtomicLoad);
+		Object::ID resultId = insn.word(2);
 		Object::ID pointerId = insn.word(3);
-		auto &object = getObject(objectId);
-		auto &objectTy = getType(object.type);
+		auto &result = getObject(resultId);
+		auto &resultTy = getType(result.type);
 		auto &pointer = getObject(pointerId);
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
+		std::memory_order memoryOrder = std::memory_order_relaxed;
 
-		ASSERT(getType(pointer.type).element == object.type);
-		ASSERT(Type::ID(insn.word(1)) == object.type);
-		ASSERT((insn.opcode() != spv::OpAtomicLoad) || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
+		if(atomic)
+		{
+			Object::ID semanticsId = insn.word(5);
+			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+			memoryOrder = MemoryOrder(memorySemantics);
+		}
+
+		ASSERT(getType(pointer.type).element == result.type);
+		ASSERT(Type::ID(insn.word(1)) == result.type);
+		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
@@ -1399,7 +1408,7 @@ namespace sw
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
 		auto anyInactiveLanes = SignMask(~routine->activeLaneMask) != 0;
 
-		auto load = SpirvRoutine::Value(objectTy.sizeInComponents);
+		auto load = SpirvRoutine::Value(resultTy.sizeInComponents);
 
 		If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
 		{
@@ -1407,7 +1416,7 @@ namespace sw
 			auto offsets = pointer.kind == Object::Kind::Value ?
 					As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
 					RValue<SIMD::Int>(SIMD::Int(0));
-			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+			for (auto i = 0u; i < resultTy.sizeInComponents; i++)
 			{
 				// i wish i had a Float,Float,Float,Float constructor here..
 				for (int j = 0; j < SIMD::Width; j++)
@@ -1416,7 +1425,7 @@ namespace sw
 					{
 						Int offset = Int(i) + Extract(offsets, j);
 						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-						load[i] = Insert(load[i], ptrBase[offset], j);
+						load[i] = Insert(load[i], Load(&ptrBase[offset], sizeof(float), atomic, memoryOrder), j);
 					}
 				}
 			}
@@ -1428,50 +1437,25 @@ namespace sw
 			{
 				// Lane-interleaved data.
 				Pointer<SIMD::Float> src = ptrBase;
-				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+				for (auto i = 0u; i < resultTy.sizeInComponents; i++)
 				{
-					load[i] = src[i];
+					load[i] = Load(&src[i], sizeof(float4), atomic, memoryOrder);
 				}
 			}
 			else
 			{
 				// Non-interleaved data.
-				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+				for (auto i = 0u; i < resultTy.sizeInComponents; i++)
 				{
-					load[i] = RValue<SIMD::Float>(ptrBase[i]);
+					load[i] = RValue<SIMD::Float>(Load(&ptrBase[i], sizeof(float), atomic, memoryOrder));
 				}
 			}
 		}
 
-		auto &dst = routine->createIntermediate(objectId, objectTy.sizeInComponents);
-		for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+		auto &dst = routine->createIntermediate(resultId, resultTy.sizeInComponents);
+		for (auto i = 0u; i < resultTy.sizeInComponents; i++)
 		{
 			dst.emplace(i, load[i]);
-		}
-	}
-
-	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const
-	{
-		Type::ID typeId = insn.word(1);
-		Object::ID resultId = insn.word(2);
-		Object::ID baseId = insn.word(3);
-		uint32_t numIndexes = insn.wordCount() - 4;
-		const uint32_t *indexes = insn.wordPointer(4);
-		auto &type = getType(typeId);
-		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(baseId).pointerBase == getObject(resultId).pointerBase);
-
-		auto &dst = routine->createIntermediate(resultId, type.sizeInComponents);
-
-		if(type.storageClass == spv::StorageClassPushConstant ||
-		   type.storageClass == spv::StorageClassUniform ||
-		   type.storageClass == spv::StorageClassStorageBuffer)
-		{
-			dst.emplace(0, WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine));
-		}
-		else
-		{
-			dst.emplace(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
 		}
 	}
 
@@ -1486,6 +1470,14 @@ namespace sw
 		auto &elementTy = getType(pointerTy.element);
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
+		std::memory_order memoryOrder = std::memory_order_relaxed;
+
+		if(atomic)
+		{
+			Object::ID semanticsId = insn.word(3);
+			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+			memoryOrder = MemoryOrder(memorySemantics);
+		}
 
 		ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
@@ -1525,7 +1517,7 @@ namespace sw
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-							ptrBase[offset] = RValue<Float>(src[i]);
+							Store(RValue<Float>(src[i]), &ptrBase[offset], sizeof(float), atomic, memoryOrder);
 						}
 					}
 				}
@@ -1537,7 +1529,7 @@ namespace sw
 				Pointer<SIMD::Float> dst = ptrBase;
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					dst[i] = RValue<SIMD::Float>(src[i]);
+					Store(RValue<SIMD::Float>(src[i]), &dst[i], sizeof(float), atomic, memoryOrder);
 				}
 			}
 		}
@@ -1559,7 +1551,7 @@ namespace sw
 						{
 							Int offset = Int(i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
-							ptrBase[offset] = Extract(src.Float(i), j);
+							Store(Extract(src.Float(i), j), &ptrBase[offset], sizeof(float), atomic, memoryOrder);
 						}
 					}
 				}
@@ -1573,7 +1565,7 @@ namespace sw
 					Pointer<SIMD::Float> dst = ptrBase;
 					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
-						dst[i] = src.Float(i);
+						Store(src.Float(i), &dst[i], sizeof(float), atomic, memoryOrder);
 					}
 				}
 				else
@@ -1582,10 +1574,35 @@ namespace sw
 					Pointer<SIMD::Float> dst = ptrBase;
 					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
-						dst[i] = SIMD::Float(src.Float(i));
+						Store<SIMD::Float>(SIMD::Float(src.Float(i)), &dst[i], sizeof(float), atomic, memoryOrder);
 					}
 				}
 			}
+		}
+	}
+
+	void SpirvShader::EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const
+	{
+		Type::ID typeId = insn.word(1);
+		Object::ID resultId = insn.word(2);
+		Object::ID baseId = insn.word(3);
+		uint32_t numIndexes = insn.wordCount() - 4;
+		const uint32_t *indexes = insn.wordPointer(4);
+		auto &type = getType(typeId);
+		ASSERT(type.sizeInComponents == 1);
+		ASSERT(getObject(baseId).pointerBase == getObject(resultId).pointerBase);
+
+		auto &dst = routine->createIntermediate(resultId, type.sizeInComponents);
+
+		if(type.storageClass == spv::StorageClassPushConstant ||
+		   type.storageClass == spv::StorageClassUniform ||
+		   type.storageClass == spv::StorageClassStorageBuffer)
+		{
+			dst.emplace(0, WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine));
+		}
+		else
+		{
+			dst.emplace(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
 		}
 	}
 
