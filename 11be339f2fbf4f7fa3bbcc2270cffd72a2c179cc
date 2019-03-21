@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0defb1d0_edc3b506",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-21T22:19:32Z",
+      "side": 1,
+      "message": "This should be correct. We always have to dispatch a full 2x2 so that derivatives work, even at the edges of primitives.\n\nSome of the invocations will not have their bits set in cMask etc.\n\nWe should combine those two to produce the HelperInvocation builtin.",
+      "revId": "11be339f2fbf4f7fa3bbcc2270cffd72a2c179cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
