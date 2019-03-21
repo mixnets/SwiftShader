@@ -23,8 +23,7 @@
 #include <cstdio>
 
 #include <string>
-
-#undef Bool // b/127920555
+#include <atomic>
 
 #if !defined(NDEBUG) && (REACTOR_LLVM_VERSION >= 7)
 #define ENABLE_RR_PRINT 1 // Enables RR_PRINT(), RR_WATCH()
@@ -2234,6 +2233,18 @@ namespace rr
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<Int> offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset);
 
+	template<typename T>
+	RValue<T> Load(RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		return RValue<T>(Nucleus::createLoad(pointer.value, T::getType(), false, alignment, atomic, memoryOrder));
+	}
+
+	template<typename T>
+	void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		Nucleus::createStore(value.value, pointer.value, T::getType(), false, alignment, atomic, memoryOrder);
+	}
+
 	template<class T, int S = 1>
 	class Array : public LValue<T>
 	{
@@ -2244,6 +2255,11 @@ namespace rr
 		Reference<T> operator[](unsigned int index);
 		Reference<T> operator[](RValue<Int> index);
 		Reference<T> operator[](RValue<UInt> index);
+
+	//	operator RValue<Pointer<T>>()
+	//	{
+	//		return RValue<Pointer<T>>(address);
+	//	}
 	};
 
 //	RValue<Array<T>> operator++(Array<T> &val, int);   // Post-increment
@@ -3123,8 +3139,8 @@ namespace rr
 	#define RR_GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
 	#define RR_COUNT_ARGUMENTS(...) RR_GET_NTH_ARG(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 	static_assert(1 == RR_COUNT_ARGUMENTS(a), "RR_COUNT_ARGUMENTS broken"); // Sanity checks.
-	static_assert(2 == RR_COUNT_ARGUMENTS(a, b), "RR_COUNT_ARGUMENTS broken");
-	static_assert(3 == RR_COUNT_ARGUMENTS(a, b, c), "RR_COUNT_ARGUMENTS broken");
+//	static_assert(2 == RR_COUNT_ARGUMENTS(a, b), "RR_COUNT_ARGUMENTS broken");
+//	static_assert(3 == RR_COUNT_ARGUMENTS(a, b, c), "RR_COUNT_ARGUMENTS broken");
 
 	// RR_WATCH_FMT(...) resolves to a string literal that lists all the
 	// arguments by name. This string can be passed to LOG() to print each of
