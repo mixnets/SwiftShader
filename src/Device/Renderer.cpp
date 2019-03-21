@@ -1687,6 +1687,8 @@ namespace sw
 			default: threadCount = configuration.threadCount; break;
 			}
 
+			threadCount = 1;
+
 			CPUID::setEnableSSE4_1(configuration.enableSSE4_1);
 			CPUID::setEnableSSSE3(configuration.enableSSSE3);
 			CPUID::setEnableSSE3(configuration.enableSSE3);
