@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "76906aa3_bbf0deda",
+        "filename": "src/Device/Sampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T13:43:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ae1d2b68_3199bce8",
+      "range": {
+        "startLine": 113,
+        "startChar": 56,
+        "endLine": 113,
+        "endChar": 62
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4ba9dc8_7aa07c9f",
         "filename": "src/Device/Sampler.cpp",
         "patchSetId": 1
@@ -140,6 +164,30 @@
       "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "408a7330_f33b6995",
+        "filename": "src/Device/Sampler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T13:43:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1398babd_e42eb71e",
+      "range": {
+        "startLine": 131,
+        "startChar": 65,
+        "endLine": 131,
+        "endChar": 70
+      },
+      "revId": "ae22655c9b5e89523bdc8919c6244a930771f837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
