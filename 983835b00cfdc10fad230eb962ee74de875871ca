@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb7f4c4c_b01e2b42",
+        "filename": "src/Common/RecursiveLock.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T23:45:37Z",
+      "side": 1,
+      "message": "Still unbalanced. Just remove this bracket.",
+      "range": {
+        "startLine": 95,
+        "startChar": 2,
+        "endLine": 95,
+        "endChar": 3
+      },
+      "revId": "983835b00cfdc10fad230eb962ee74de875871ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
