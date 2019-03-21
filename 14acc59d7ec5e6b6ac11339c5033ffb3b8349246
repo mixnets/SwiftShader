@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aedd5844_d7ffe0b9",
+        "filename": "src/Common/RecursiveLock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T14:20:51Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 1,
+        "startChar": 13,
+        "endLine": 1,
+        "endChar": 18
+      },
+      "revId": "14acc59d7ec5e6b6ac11339c5033ffb3b8349246",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79ffef7c_13d9ad80",
+        "filename": "src/Common/RecursiveLock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T14:20:51Z",
+      "side": 1,
+      "message": "The pthread spec states that for recursive locks \"A thread attempting to unlock a mutex which another thread has locked shall return with an error.\" and also that \"A thread attempting to unlock an unlocked mutex shall return with an error.\" This seems useful to detect and report in debug builds. Can you add an assert?",
+      "range": {
+        "startLine": 56,
+        "startChar": 3,
+        "endLine": 56,
+        "endChar": 23
+      },
+      "revId": "14acc59d7ec5e6b6ac11339c5033ffb3b8349246",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1f508a5_851968be",
+        "filename": "src/OpenGL/libEGL/Display.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-21T14:20:51Z",
+      "side": 1,
+      "message": "nit: We include headers from other folders after headers within the same folder (helps detect certain clashes), so move this down one line.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "14acc59d7ec5e6b6ac11339c5033ffb3b8349246",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
