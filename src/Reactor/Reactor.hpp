@@ -24,8 +24,6 @@
 
 #include <string>
 
-#undef Bool // b/127920555
-
 #if !defined(NDEBUG) && (REACTOR_LLVM_VERSION >= 7)
 #define ENABLE_RR_PRINT 1 // Enables RR_PRINT(), RR_WATCH()
 #endif // !defined(NDEBUG) && (REACTOR_LLVM_VERSION >= 7)
@@ -2233,6 +2231,18 @@ namespace rr
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, int offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<Int> offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset);
+
+	template<typename T>
+	RValue<T> Load(RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		return RValue<T>(Nucleus::createLoad(pointer.value, T::getType(), false, alignment, atomic, memoryOrder));
+	}
+
+	template<typename T>
+	void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		Nucleus::createStore(value.value, pointer.value, T::getType(), false, alignment, atomic, memoryOrder);
+	}
 
 	template<class T, int S = 1>
 	class Array : public LValue<T>
