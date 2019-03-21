@@ -1408,7 +1408,7 @@ namespace sw
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
 		auto anyInactiveLanes = SignMask(~routine->activeLaneMask) != 0;
 
-		auto load = SpirvRoutine::Value(resultTy.sizeInComponents);
+		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
 
 		If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
 		{
