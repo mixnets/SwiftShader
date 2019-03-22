@@ -1,4 +1,7 @@
 [
+    { "name": "egl-master-risky", "api": "egl", "tests": "testlists/egl-master-risky-PASS.txt" },
+    { "name": "egl-master", "api": "egl", "tests": "testlists/egl-master-PASS.txt" },
+
     { "name": "gles2-master-risky", "api": "gles2", "tests": "testlists/gles2-master-risky-PASS.txt" },
     { "name": "gles2-master", "api": "gles2", "tests": "testlists/gles2-master-PASS.txt" },
 
