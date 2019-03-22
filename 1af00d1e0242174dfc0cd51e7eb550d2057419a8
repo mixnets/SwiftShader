@@ -117,6 +117,30 @@
       "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4059c57d_2afd6457",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1557,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-22T15:47:35Z",
+      "side": 1,
+      "message": "In the case I was investigating, offsets were all 0 and w and h were 0.5 (so upscaling by 2X with filtering on). x0 and y0 were both at 0.25. I\u0027ll need to re-check where the issue actually is.",
+      "parentUuid": "f3c7abda_e2c65d79",
+      "range": {
+        "startLine": 1557,
+        "startChar": 8,
+        "endLine": 1557,
+        "endChar": 19
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
