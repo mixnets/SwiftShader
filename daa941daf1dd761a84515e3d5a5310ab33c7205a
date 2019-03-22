@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "855abea5_6b4b20f0",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T15:12:32Z",
+      "side": 1,
+      "message": "note: LLVM 3.0 bails for some reason. Will be deprecated soon.",
+      "range": {
+        "startLine": 843,
+        "startChar": 0,
+        "endLine": 845,
+        "endChar": 8
+      },
+      "revId": "daa941daf1dd761a84515e3d5a5310ab33c7205a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
