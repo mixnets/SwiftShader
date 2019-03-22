@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "88c147ac_794c496a",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1546,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-22T14:26:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "83d12ed9_953a356b",
+      "range": {
+        "startLine": 1546,
+        "startChar": 2,
+        "endLine": 1546,
+        "endChar": 16
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84b62c72_7b7dc191",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-22T14:04:17Z",
       "side": 1,
       "message": "I think we should simply always do this for Pastel 1.0, and optimize it later. There are some issues with error accumulation that may not be accounted for yet. And we\u0027re not optimizing for same-size region yet either. Let\u0027s make that a more coordinated effort after 1.0.",
+      "range": {
+        "startLine": 1557,
+        "startChar": 8,
+        "endLine": 1557,
+        "endChar": 19
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02447c23_a48f3c78",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1557,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-22T14:26:31Z",
+      "side": 1,
+      "message": "I can do this, but I\u0027m not too worried about error accumulation, since we\u0027re always within the bounds of the image, not right on the edge, because we use pixel centers. The only issue was that, when filtering is on, we subtract 0.5 to both coordinates, so if the origin is below (0.5, 0.5), we\u0027re reading memory out of bounds.",
+      "parentUuid": "84b62c72_7b7dc191",
       "range": {
         "startLine": 1557,
         "startChar": 8,
