@@ -141,6 +141,7 @@ dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.ran
 dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_32_bytes
 dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_3_bytes
 dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_4_bytes
+dEQP-VK.synchronization.internally_synchronized_objects.pipeline_cache_compute
 dEQP-VK.ubo.3_level_array.std140.column_major_mat4.both
 dEQP-VK.ubo.3_level_array.std140.column_major_mat4.both_comp_access
 dEQP-VK.ubo.3_level_array.std140.column_major_mat4.fragment
