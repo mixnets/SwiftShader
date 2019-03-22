@@ -54,6 +54,14 @@ LLVM_TRIPLES = {
     'darwin': [
         ('__x86_64__', 'x86_64-apple-darwin'),
     ],
+    'windows': [
+        ('__x86_64__', 'x86_64-pc-win32'),
+        ('__i386__', 'i686-pc-win32'),
+        ('__arm__', 'armv7-pc-win32'),
+        ('__aarch64__', 'aarch64-pc-win32'),
+        ('__mips__', 'mipsel-pc-win32'),
+        ('__mips64', 'mips64el-pc-win32'),
+    ],
 }
 
 LLVM_OPTIONS = [
@@ -70,7 +78,7 @@ LLVM_OPTIONS = [
 def _parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('name', help='destination name',
-                        choices=['android', 'linux', 'darwin'])
+                        choices=['android', 'linux', 'darwin', 'windows'])
     parser.add_argument('-j', '--jobs', help='parallel compilation', type=int)
     return parser.parse_args()
 
@@ -81,8 +89,8 @@ def build_llvm(num_jobs):
         num_jobs = multiprocessing.cpu_count()
 
     os.makedirs(LLVM_OBJS, exist_ok=True)
-    run(['cmake', LLVM_DIR] + LLVM_OPTIONS, cwd=LLVM_OBJS)
-    run(['make', '-j' + str(num_jobs)], cwd=LLVM_OBJS)
+    run(['cmake', '-Thost=x64', LLVM_DIR] + LLVM_OPTIONS, cwd=LLVM_OBJS)
+    run(['cmake', '--build', '.', '-j', str(num_jobs)], cwd=LLVM_OBJS)
 
 
 def list_files(src_base, src, dst_base, suffixes):
