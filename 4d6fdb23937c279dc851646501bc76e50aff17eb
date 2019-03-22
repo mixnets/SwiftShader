@@ -22,6 +22,30 @@
       "revId": "4d6fdb23937c279dc851646501bc76e50aff17eb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "405b072f_d0f344e5",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1420,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T14:53:32Z",
+      "side": 1,
+      "message": "Ack. Still trying to assess how scary it is to overwrite rvalues.",
+      "parentUuid": "e320b63a_781cae99",
+      "range": {
+        "startLine": 1420,
+        "startChar": 14,
+        "endLine": 1420,
+        "endChar": 45
+      },
+      "revId": "4d6fdb23937c279dc851646501bc76e50aff17eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
