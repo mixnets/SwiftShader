@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acf4a991_72245277",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T04:33:21Z",
+      "side": 1,
+      "message": "When marking override, remove virtual since it\u0027s redundant and bug-prone.",
+      "range": {
+        "startLine": 51,
+        "startChar": 2,
+        "endLine": 51,
+        "endChar": 10
+      },
+      "revId": "40d7182110c2fbf7683aebeef16df0c4e61699ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
