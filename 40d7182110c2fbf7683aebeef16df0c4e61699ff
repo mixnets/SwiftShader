@@ -46,6 +46,30 @@
       "revId": "40d7182110c2fbf7683aebeef16df0c4e61699ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28ae759e_56734312",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T13:09:14Z",
+      "side": 1,
+      "message": "If you make the base method non-virtual, and remove the override here, this method will still be virtual. Can affect classes derived from this one.",
+      "parentUuid": "744b9f69_d600e354",
+      "range": {
+        "startLine": 51,
+        "startChar": 2,
+        "endLine": 51,
+        "endChar": 10
+      },
+      "revId": "40d7182110c2fbf7683aebeef16df0c4e61699ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
