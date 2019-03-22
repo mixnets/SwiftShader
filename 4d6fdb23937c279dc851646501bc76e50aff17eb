@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e320b63a_781cae99",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1420,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-22T10:59:24Z",
+      "side": 1,
+      "message": "Alternatively, we could use Intermediate::replace. (https://swiftshader-review.googlesource.com/c/SwiftShader/+/27769)\n\nI think this is preferable, as we can easily change Intermediate to avoid heap allocations if the array size is smaller than some fixed size (say 4).",
+      "range": {
+        "startLine": 1420,
+        "startChar": 14,
+        "endLine": 1420,
+        "endChar": 45
+      },
+      "revId": "4d6fdb23937c279dc851646501bc76e50aff17eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
