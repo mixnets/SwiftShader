@@ -15,7 +15,12 @@
 #ifndef DebugAndroid_hpp
 #define DebugAndroid_hpp
 
-#if ANDROID_PLATFORM_SDK_VERSION < 27
+#ifdef ANDROID_NDK_BUILD
+#include <android/log.h>
+#define LOG_TAG "SwiftShader"
+#define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define ALOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+#elif ANDROID_PLATFORM_SDK_VERSION < 27
 #include <cutils/log.h>
 #elif ANDROID_PLATFORM_SDK_VERSION >= 27
 #include <log/log.h>
