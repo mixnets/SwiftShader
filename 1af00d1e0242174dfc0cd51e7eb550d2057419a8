@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "cfda28c9_3ea25425",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1459,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-22T20:10:04Z",
+      "side": 1,
+      "message": "Oh, here it is:\nThe problem with having texture coordinates below 0.5 isn\u0027t OOB reads, as I first suspected, but it\u0027s getting errors because fx and fy will have negative values because (x0, y0) would be negative and (X0, Y0) would be 0. The fix still works properly, though, even though the root cause wasn\u0027t OOB reads.\n\nSo, in my example, if X \u003d\u003d Y \u003d\u003d 0.25, then x \u003d\u003d y \u003d\u003d -0.25, so fx \u003d\u003d fy \u003d\u003d -0.25 and ix \u003d\u003d iy \u003d\u003d 1.25.\nThe final equation be:\ncolor \u003d (c00 * 1.25 + c01 * -0.25) * 1.25 + (c10 * 1.25 + c11 * -0.25) * -0.25;\n      \u003d c00 * 1.5625 + c01 * -0.3125 + c10 * -0.3125 + c11 * 0.0625;\n\nSo instead of the c00 counting for 100% of the value, all 4 pixels have an influence on the final color value, which then can be wrong.",
+      "range": {
+        "startLine": 1457,
+        "startChar": 0,
+        "endLine": 1459,
+        "endChar": 42
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "83d12ed9_953a356b",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 1
