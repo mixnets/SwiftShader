@@ -110,6 +110,24 @@
       "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae5b0d85_9d34a5b2",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-22T20:14:32Z",
+      "side": 1,
+      "message": "OK, so I should continue using slicePitchBytes() in the renderer to advance to the correct sample slice.",
+      "parentUuid": "7b759d81_57f1f1d3",
+      "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
