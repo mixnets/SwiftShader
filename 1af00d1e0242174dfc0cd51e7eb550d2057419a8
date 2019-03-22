@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83d12ed9_953a356b",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1546,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T14:04:17Z",
+      "side": 1,
+      "message": "I\u0027d rather keep this after getEntry(), to avoid using highly fluctual parameters as state and also be able to easily refactor this into one method to generate/fetch the routine and one to invoke it (e.g. to consolidate some of the clear() functionality).",
+      "range": {
+        "startLine": 1546,
+        "startChar": 2,
+        "endLine": 1546,
+        "endChar": 16
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84b62c72_7b7dc191",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1557,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-22T14:04:17Z",
+      "side": 1,
+      "message": "I think we should simply always do this for Pastel 1.0, and optimize it later. There are some issues with error accumulation that may not be accounted for yet. And we\u0027re not optimizing for same-size region yet either. Let\u0027s make that a more coordinated effort after 1.0.",
+      "range": {
+        "startLine": 1557,
+        "startChar": 8,
+        "endLine": 1557,
+        "endChar": 19
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
