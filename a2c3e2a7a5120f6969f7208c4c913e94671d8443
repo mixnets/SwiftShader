@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19df81b6_096a572d",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-22T22:26:14Z",
+      "side": 1,
+      "message": "Eek. I had somehow missed this before.\n\nShould pass in the current subpass (here, and above). This renderpass is the one the framebuffer was created with, not the one passed to CmdBeginRenderPass. They are only required to be \u0027compatible\u0027.",
+      "revId": "a2c3e2a7a5120f6969f7208c4c913e94671d8443",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
