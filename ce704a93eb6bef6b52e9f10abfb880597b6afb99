@@ -92,6 +92,24 @@
       "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b759d81_57f1f1d3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-22T19:13:24Z",
+      "side": 1,
+      "message": "I added getMultiSampledLevelSize (which is getMipLevelSize() * samples) and used it where getMipLevelSize() was used.\nThe change is just for clarity, not behavior is modified and both getMultiSampledLevelSize() and getMipLevelSize() are private functions in vk::Image.",
+      "parentUuid": "45a3926e_b962c171",
+      "revId": "ce704a93eb6bef6b52e9f10abfb880597b6afb99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
