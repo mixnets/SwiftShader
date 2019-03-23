@@ -30,6 +30,29 @@
 #define ENABLE_RR_PRINT 1 // Enables RR_PRINT(), RR_WATCH()
 #endif // !defined(NDEBUG) && (REACTOR_LLVM_VERSION >= 7)
 
+// #if !defined(NDEBUG) && (REACTOR_LLVM_VERSION >= 7)
+#define ENABLE_RR_DEBUG_INFO 1
+// #endif
+
+#ifdef ENABLE_RR_DEBUG_INFO
+namespace rr
+{
+	void EmitDebugLocation();
+	void EmitDebugVariable(class Value* value);
+	void DebugPushScope(void const *ptr);
+	void DebugPopScope(void const *ptr);
+}
+	#define RR_DEBUG_INFO_UPDATE_LOC()    rr::EmitDebugLocation()
+	#define RR_DEBUG_INFO_EMIT_VAR(value) rr::EmitDebugVariable(value)
+	#define RR_DEBUG_INFO_PUSH_SCOPE(ptr) rr::DebugPushScope(ptr)
+	#define RR_DEBUG_INFO_POP_SCOPE(ptr)  rr::DebugPopScope(ptr)
+#else
+	#define RR_DEBUG_INFO_UPDATE_LOC()
+	#define RR_DEBUG_INFO_EMIT_VAR(value)
+	#define RR_DEBUG_INFO_PUSH_SCOPE(ptr)
+	#define RR_DEBUG_INFO_POP_SCOPE(ptr)
+#endif // ENABLE_RR_DEBUG_INFO
+
 namespace rr
 {
 	class Bool;
@@ -80,6 +103,10 @@ namespace rr
 
 	class Variable
 	{
+	public:
+		Variable() { RR_DEBUG_INFO_PUSH_SCOPE(this); }
+		Variable(const Variable &rhs) : address(rhs.address) { RR_DEBUG_INFO_PUSH_SCOPE(this); }
+		~Variable() { RR_DEBUG_INFO_POP_SCOPE(this); }
 	protected:
 		friend class PrintValue;
 		Value *address;
@@ -180,10 +207,13 @@ namespace rr
 		explicit RValue(Value *rvalue);
 
 		RValue(const T &lvalue);
+		RValue(const RValue<T> &rhs);
 		RValue(typename BoolLiteral<T>::type i);
 		RValue(typename IntLiteral<T>::type i);
 		RValue(typename FloatLiteral<T>::type f);
 		RValue(const Reference<T> &rhs);
+
+		~RValue();
 
 		RValue<T> &operator=(const RValue<T>&) = delete;
 
@@ -2324,23 +2354,27 @@ namespace rr
 	LValue<T>::LValue(int arraySize)
 	{
 		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
+		RR_DEBUG_INFO_EMIT_VAR(address);
 	}
 
 	template<class T>
 	Value *LValue<T>::loadValue() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Nucleus::createLoad(address, T::getType(), false, 0);
 	}
 
 	template<class T>
 	Value *LValue<T>::storeValue(Value *value) const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Nucleus::createStore(value, address, T::getType(), false, 0);
 	}
 
 	template<class T>
 	Value *LValue<T>::getAddress(Value *index, bool unsignedIndex) const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Nucleus::createGEP(address, T::getType(), index, unsignedIndex);
 	}
 
@@ -2359,6 +2393,7 @@ namespace rr
 	template<class T>
 	RValue<T> Reference<T>::operator=(RValue<T> rhs) const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Nucleus::createStore(rhs.value, address, T::getType(), false, alignment);
 
 		return rhs;
@@ -2367,6 +2402,7 @@ namespace rr
 	template<class T>
 	RValue<T> Reference<T>::operator=(const Reference<T> &ref) const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *tmp = Nucleus::createLoad(ref.address, T::getType(), false, ref.alignment);
 		Nucleus::createStore(tmp, address, T::getType(), false, alignment);
 
@@ -2382,6 +2418,7 @@ namespace rr
 	template<class T>
 	Value *Reference<T>::loadValue() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Nucleus::createLoad(address, T::getType(), false, alignment);
 	}
 
@@ -2394,44 +2431,69 @@ namespace rr
 	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		assert(Nucleus::createBitCast(rvalue, T::getType()) == rvalue);   // Run-time type should match T, so bitcast is no-op.
 
 		value = rvalue;
+		RR_DEBUG_INFO_EMIT_VAR(value);
 	}
 
 	template<class T>
 	RValue<T>::RValue(const T &lvalue)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		value = lvalue.loadValue();
+		RR_DEBUG_INFO_EMIT_VAR(value);
+	}
+
+	template<class T>
+	RValue<T>::RValue(const RValue<T> &rhs) : value(rhs.value)
+	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 	}
 
 	template<class T>
 	RValue<T>::RValue(typename BoolLiteral<T>::type i)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		value = Nucleus::createConstantBool(i);
+		RR_DEBUG_INFO_EMIT_VAR(value);
 	}
 
 	template<class T>
 	RValue<T>::RValue(typename IntLiteral<T>::type i)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		value = Nucleus::createConstantInt(i);
+		RR_DEBUG_INFO_EMIT_VAR(value);
 	}
 
 	template<class T>
 	RValue<T>::RValue(typename FloatLiteral<T>::type f)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		value = Nucleus::createConstantFloat(f);
+		RR_DEBUG_INFO_EMIT_VAR(value);
 	}
 
 	template<class T>
 	RValue<T>::RValue(const Reference<T> &ref)
 	{
+		RR_DEBUG_INFO_PUSH_SCOPE(this);
 		value = ref.loadValue();
+		RR_DEBUG_INFO_EMIT_VAR(value);
+	}
+
+	template<class T>
+	RValue<T>::~RValue()
+	{
+		RR_DEBUG_INFO_POP_SCOPE(this);
 	}
 
 	template<class Vector4, int T>
 	Swizzle2<Vector4, T>::operator RValue<Vector4>() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Vector4>(vector), T);
@@ -2440,6 +2502,7 @@ namespace rr
 	template<class Vector4, int T>
 	Swizzle4<Vector4, T>::operator RValue<Vector4>() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Vector4>(vector), T);
@@ -2448,6 +2511,7 @@ namespace rr
 	template<class Vector4, int T>
 	SwizzleMask4<Vector4, T>::operator RValue<Vector4>() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Vector4>(vector), T);
@@ -2456,24 +2520,28 @@ namespace rr
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask4<Vector4, T>::operator=(RValue<Vector4> rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Mask(*parent, rhs, T);
 	}
 
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask4<Vector4, T>::operator=(RValue<typename Scalar<Vector4>::Type> rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Mask(*parent, Vector4(rhs), T);
 	}
 
 	template<class Vector4, int T>
 	SwizzleMask1<Vector4, T>::operator RValue<typename Scalar<Vector4>::Type>() const   // FIXME: Call a non-template function
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Extract(*parent, T & 0x3);
 	}
 
 	template<class Vector4, int T>
 	SwizzleMask1<Vector4, T>::operator RValue<Vector4>() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Vector4>(vector), T);
@@ -2482,24 +2550,28 @@ namespace rr
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask1<Vector4, T>::operator=(float x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return *parent = Insert(*parent, Float(x), T & 0x3);
 	}
 
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask1<Vector4, T>::operator=(RValue<Vector4> rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Mask(*parent, Float4(rhs), T);
 	}
 
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask1<Vector4, T>::operator=(RValue<typename Scalar<Vector4>::Type> rhs)   // FIXME: Call a non-template function
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return *parent = Insert(*parent, rhs, T & 0x3);
 	}
 
 	template<class Vector4, int T>
 	SwizzleMask2<Vector4, T>::operator RValue<Vector4>() const
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Float4>(vector), T);
@@ -2508,6 +2580,7 @@ namespace rr
 	template<class Vector4, int T>
 	RValue<Vector4> SwizzleMask2<Vector4, T>::operator=(RValue<Vector4> rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Mask(*parent, Float4(rhs), T);
 	}
 
@@ -2538,24 +2611,28 @@ namespace rr
 	template<int X, int Y>
 	Float4::Float4(const Swizzle2<Float4, X> &x, const Swizzle2<Float4, Y> &y) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
 	Float4::Float4(const SwizzleMask2<Float4, X> &x, const Swizzle2<Float4, Y> &y) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
 	Float4::Float4(const Swizzle2<Float4, X> &x, const SwizzleMask2<Float4, Y> &y) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
 	Float4::Float4(const SwizzleMask2<Float4, X> &x, const SwizzleMask2<Float4, Y> &y) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
@@ -2574,24 +2651,28 @@ namespace rr
 	template<class T>
 	Pointer<T>::Pointer(Argument<Pointer<T>> argument) : alignment(1)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		LValue<Pointer<T>>::storeValue(argument.value);
 	}
 
 	template<class T>
 	Pointer<T>::Pointer() : alignment(1)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		LValue<Pointer<T>>::storeValue(Nucleus::createNullPointer(T::getType()));
 	}
 
 	template<class T>
 	Pointer<T>::Pointer(RValue<Pointer<T>> rhs) : alignment(1)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		LValue<Pointer<T>>::storeValue(rhs.value);
 	}
 
 	template<class T>
 	Pointer<T>::Pointer(const Pointer<T> &rhs) : alignment(rhs.alignment)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *value = rhs.loadValue();
 		LValue<Pointer<T>>::storeValue(value);
 	}
@@ -2599,6 +2680,7 @@ namespace rr
 	template<class T>
 	Pointer<T>::Pointer(const Reference<Pointer<T>> &rhs) : alignment(rhs.getAlignment())
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *value = rhs.loadValue();
 		LValue<Pointer<T>>::storeValue(value);
 	}
@@ -2606,6 +2688,7 @@ namespace rr
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(RValue<Pointer<T>> rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		LValue<Pointer<T>>::storeValue(rhs.value);
 
 		return rhs;
@@ -2614,6 +2697,7 @@ namespace rr
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(const Pointer<T> &rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *value = rhs.loadValue();
 		LValue<Pointer<T>>::storeValue(value);
 
@@ -2623,6 +2707,7 @@ namespace rr
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(const Reference<Pointer<T>> &rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *value = rhs.loadValue();
 		LValue<Pointer<T>>::storeValue(value);
 
@@ -2632,12 +2717,14 @@ namespace rr
 	template<class T>
 	Reference<T> Pointer<T>::operator*()
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return Reference<T>(LValue<Pointer<T>>::loadValue(), alignment);
 	}
 
 	template<class T>
 	Reference<T> Pointer<T>::operator[](int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), Nucleus::createConstantInt(index), false);
 
 		return Reference<T>(element, alignment);
@@ -2646,6 +2733,7 @@ namespace rr
 	template<class T>
 	Reference<T> Pointer<T>::operator[](unsigned int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), Nucleus::createConstantInt(index), true);
 
 		return Reference<T>(element, alignment);
@@ -2654,6 +2742,7 @@ namespace rr
 	template<class T>
 	Reference<T> Pointer<T>::operator[](RValue<Int> index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value, false);
 
 		return Reference<T>(element, alignment);
@@ -2662,6 +2751,7 @@ namespace rr
 	template<class T>
 	Reference<T> Pointer<T>::operator[](RValue<UInt> index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value, true);
 
 		return Reference<T>(element, alignment);
@@ -2681,6 +2771,7 @@ namespace rr
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = LValue<T>::getAddress(Nucleus::createConstantInt(index), false);
 
 		return Reference<T>(element);
@@ -2689,6 +2780,7 @@ namespace rr
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](unsigned int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = LValue<T>::getAddress(Nucleus::createConstantInt(index), true);
 
 		return Reference<T>(element);
@@ -2697,6 +2789,7 @@ namespace rr
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](RValue<Int> index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = LValue<T>::getAddress(index.value, false);
 
 		return Reference<T>(element);
@@ -2705,6 +2798,7 @@ namespace rr
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](RValue<UInt> index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *element = LValue<T>::getAddress(index.value, true);
 
 		return Reference<T>(element);
@@ -2737,12 +2831,14 @@ namespace rr
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, RValue<T> ifTrue, RValue<T> ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<T>(Nucleus::createSelect(condition.value, ifTrue.value, ifFalse.value));
 	}
 
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, RValue<T> ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *trueValue = ifTrue.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, trueValue, ifFalse.value));
@@ -2751,6 +2847,7 @@ namespace rr
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, RValue<T> ifTrue, const T &ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *falseValue = ifFalse.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, ifTrue.value, falseValue));
@@ -2759,6 +2856,7 @@ namespace rr
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, const T &ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *trueValue = ifTrue.loadValue();
 		Value *falseValue = ifFalse.loadValue();
 
@@ -2768,6 +2866,7 @@ namespace rr
 	template<class T>
 	void Return(const Pointer<T> &ret)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Nucleus::createRet(Nucleus::createLoad(ret.address, Pointer<T>::getType()));
 		Nucleus::setInsertBlock(Nucleus::createBasicBlock());
 		Nucleus::createUnreachable();
@@ -2776,6 +2875,7 @@ namespace rr
 	template<class T>
 	void Return(RValue<Pointer<T>> ret)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Nucleus::createRet(ret.value);
 		Nucleus::setInsertBlock(Nucleus::createBasicBlock());
 		Nucleus::createUnreachable();
@@ -2820,12 +2920,14 @@ namespace rr
 	template<class T, class S>
 	RValue<T> ReinterpretCast(RValue<S> val)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<T>(Nucleus::createBitCast(val.value, T::getType()));
 	}
 
 	template<class T, class S>
 	RValue<T> ReinterpretCast(const LValue<S> &var)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *val = var.loadValue();
 
 		return RValue<T>(Nucleus::createBitCast(val, T::getType()));
@@ -2840,6 +2942,7 @@ namespace rr
 	template<class T>
 	RValue<T> As(Value *val)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<T>(Nucleus::createBitCast(val, T::getType()));
 	}
 
@@ -2860,6 +2963,8 @@ namespace rr
 	{
 		return ReinterpretCast<T>(val);
 	}
+
+	void Break();
 
 #ifdef ENABLE_RR_PRINT
 	// PrintValue holds the printf format and value(s) for a single argument

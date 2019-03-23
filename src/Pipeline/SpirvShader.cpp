@@ -1490,6 +1490,7 @@ namespace sw
 
 	void SpirvShader::EmitStore(InsnIterator insn, SpirvRoutine *routine) const
 	{
+		EmitDebugLocation();
 		Object::ID pointerId = insn.word(1);
 		Object::ID objectId = insn.word(2);
 		auto &object = getObject(objectId);
@@ -1505,6 +1506,7 @@ namespace sw
 		}
 
 		Pointer<Float> ptrBase;
+
 		if (pointerBase.kind == Object::Kind::PhysicalPointer)
 		{
 			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
