@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34911423_4d0fa6f9",
+        "filename": "third_party/llvm-7.0/scripts/update.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 6725
+      },
+      "writtenOn": "2019-03-23T16:28:18Z",
+      "side": 1,
+      "message": "(if you pass -GNinja to cmake and use ninja to build, your build will be ~15% faster and you don\u0027t need to explicitly pass -j since ninja has a good default)",
+      "revId": "a93024a3d1c2e5d6568a48f8fa911baf9adc350b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
