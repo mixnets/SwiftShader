@@ -46,6 +46,7 @@ namespace sw
 	void ComputeProgram::emit()
 	{
 		Pointer<Pointer<Byte>> descriptorSetsIn = *Pointer<Pointer<Pointer<Byte>>>(data + OFFSET(Data, descriptorSets));
+
 		size_t numDescriptorSets = routine.pipelineLayout->getNumDescriptorSets();
 		for(unsigned int i = 0; i < numDescriptorSets; i++)
 		{

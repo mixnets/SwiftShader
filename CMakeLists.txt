@@ -202,6 +202,9 @@ else()
     set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-7.0/llvm)
     set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-7.0/configs)
 endif()
+set(LIBBACKTRACE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
+set(LIBBACKTRACE_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/config)
+set(LIBBACKTRACE_INCLUDE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
 set(SUBZERO_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/subzero)
 set(SUBZERO_LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-subzero)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -1753,13 +1756,17 @@ elseif(ARCH STREQUAL "arm")
  endif()
 
 set(LLVM_INCLUDE_DIR "")
+set(LIBBACKTRACE_INCLUDE_DIR "")
 
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/windows/include)
 elseif(LINUX)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/linux/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/linux/include)
 elseif(APPLE)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/darwin/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/darwin/include)
 endif()
 
 list(APPEND LLVM_INCLUDE_DIR
@@ -1936,6 +1943,7 @@ set(COMMON_INCLUDE_DIR
     ${SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${LLVM_INCLUDE_DIR}
+    ${LIBBACKTRACE_INCLUDE_DIR}
 )
 set(OPENGL_INCLUDE_DIR
     ${OPENGL_DIR}
@@ -1976,9 +1984,36 @@ list(REMOVE_ITEM SWIFTSHADER_LIST
     ${SOURCE_DIR}/Common/GrallocAndroid.hpp
 )
 
+set(LIBBACKTRACE_LIST
+    #${LIBBACKTRACE_DIR}/alloc.c
+    ${LIBBACKTRACE_DIR}/atomic.c
+    ${LIBBACKTRACE_DIR}/backtrace.c
+    ${LIBBACKTRACE_DIR}/backtrace.h
+    ${LIBBACKTRACE_DIR}/dwarf.c
+    ${LIBBACKTRACE_DIR}/elf.c
+    ${LIBBACKTRACE_DIR}/fileline.c
+    ${LIBBACKTRACE_DIR}/filenames.h
+    ${LIBBACKTRACE_DIR}/internal.h
+    ${LIBBACKTRACE_DIR}/mmap.c
+    ${LIBBACKTRACE_DIR}/mmapio.c
+    #${LIBBACKTRACE_DIR}/nounwind.c
+    #${LIBBACKTRACE_DIR}/pecoff.c
+    ${LIBBACKTRACE_DIR}/posix.c
+    ${LIBBACKTRACE_DIR}/print.c
+    #${LIBBACKTRACE_DIR}/read.c
+    ${LIBBACKTRACE_DIR}/simple.c
+    ${LIBBACKTRACE_DIR}/sort.c
+    ${LIBBACKTRACE_DIR}/state.c
+    # ${LIBBACKTRACE_DIR}/unknown.c
+    # ${LIBBACKTRACE_DIR}/xcoff.c
+)
+
 set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/Reactor.cpp
     ${SOURCE_DIR}/Reactor/LLVMReactor.cpp
+    ${SOURCE_DIR}/Reactor/LLVMReactor.hpp
+    ${SOURCE_DIR}/Reactor/LLVMReactorDebugInfo.cpp
+    ${SOURCE_DIR}/Reactor/LLVMReactorDebugInfo.hpp
     ${SOURCE_DIR}/Reactor/Nucleus.hpp
     ${SOURCE_DIR}/Reactor/Routine.cpp
     ${SOURCE_DIR}/Reactor/Routine.hpp
@@ -2114,7 +2149,6 @@ elseif(LINUX)
     list(APPEND OPENGL_COMPILER_LIST
         ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
     )
-
     list(APPEND VULKAN_LIST
         ${SOURCE_DIR}/WSI/libX11.cpp
         ${SOURCE_DIR}/WSI/libX11.hpp
@@ -2160,13 +2194,21 @@ set_target_properties(SwiftShader PROPERTIES
 )
 target_link_libraries(SwiftShader ${OS_LIBS})
 
+add_library(Libbacktrace STATIC ${LIBBACKTRACE_LIST})
+set_target_properties(Libbacktrace PROPERTIES
+    INCLUDE_DIRECTORIES "${LIBBACKTRACE_INCLUDE_DIR}"
+    POSITION_INDEPENDENT_CODE 1
+    FOLDER "Core"
+)
+target_link_libraries(Libbacktrace ${OS_LIBS})
+
 add_library(ReactorLLVM STATIC ${REACTOR_LLVM_LIST})
 set_target_properties(ReactorLLVM PROPERTIES
     INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
     POSITION_INDEPENDENT_CODE 1
     FOLDER "Core"
 )
-target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
+target_link_libraries(ReactorLLVM llvm Libbacktrace ${OS_LIBS})
 
 if(${REACTOR_BACKEND} STREQUAL "LLVM")
     set(Reactor ReactorLLVM)

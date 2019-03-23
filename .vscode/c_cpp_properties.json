@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "defines": [
+                "REACTOR_LLVM_VERSION=7"
+            ],
+            "includePath": [
+                "${workspaceFolder}/third_party/llvm-7.0/llvm/include",
+                "${workspaceFolder}/third_party/llvm-7.0/configs/common/include",
+                "${workspaceFolder}/third_party/llvm-7.0/configs/linux/include"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
