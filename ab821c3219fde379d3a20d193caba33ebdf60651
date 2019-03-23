@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0b9d3d5d_e54d2f6b",
+        "filename": "third_party/llvm-7.0/configs/windows/include/llvm/Config/llvm-config.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6725
+      },
+      "writtenOn": "2019-03-23T16:37:10Z",
+      "side": 1,
+      "message": "If I remember your update.py script from earlier correctly, the LLVM_NATIVE_TARGET regex logic looked like it might get confused by the conditionally-defined macros that are now in this file. If you haven\u0027t yet, maybe check it does the right thing still.",
+      "revId": "ab821c3219fde379d3a20d193caba33ebdf60651",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
