@@ -16,6 +16,24 @@
       "revId": "a93024a3d1c2e5d6568a48f8fa911baf9adc350b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c23ba8e_a2ecf72d",
+        "filename": "third_party/llvm-7.0/scripts/update.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-25T14:26:40Z",
+      "side": 1,
+      "message": "Thanks for the suggestion, but since this update script is only run when we update LLVM, build speed isn\u0027t that important and I\u0027d like to avoid the dependency on another build system.",
+      "parentUuid": "34911423_4d0fa6f9",
+      "revId": "a93024a3d1c2e5d6568a48f8fa911baf9adc350b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
