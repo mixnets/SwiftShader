@@ -16,6 +16,24 @@
       "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b93d4197_c1d31117",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-25T21:27:10Z",
+      "side": 1,
+      "message": "2.16.2 is for graphics shaders. Compute shaders can have unstructured control flow, no?",
+      "parentUuid": "e6acbf99_79f2bbed",
+      "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
