@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "df5ee5a2_ad80f928",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1459,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-25T13:39:07Z",
+      "side": 1,
+      "message": "Thanks for the details! Let\u0027s use a separate bug ID for this, and indeed also fix it for the GL blitter.",
+      "parentUuid": "cfda28c9_3ea25425",
+      "range": {
+        "startLine": 1457,
+        "startChar": 0,
+        "endLine": 1459,
+        "endChar": 42
+      },
+      "revId": "1af00d1e0242174dfc0cd51e7eb550d2057419a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "83d12ed9_953a356b",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 1
