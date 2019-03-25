@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30678320_6e140986",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-25T14:56:49Z",
+      "side": 1,
+      "message": "nit: While VkDeviceSize is a simple uint64 so it\u0027s safe to modify this by-value argument, this is bug prone if it would be a reference (explicit or implicit as part of the typedef). A new loop counter would make it safe.",
+      "range": {
+        "startLine": 99,
+        "startChar": 22,
+        "endLine": 99,
+        "endChar": 35
+      },
+      "revId": "e669418eee411ebc1c926ef5e369bd5b535419fb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da084e63_a7d5875f",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-25T14:56:49Z",
+      "side": 1,
+      "message": "Could use a comment that this is correct for non-multiple-of-4 size:\n\n// Vulkan 1.1 spec: \"If VK_WHOLE_SIZE is used and the remaining size of the buffer is not a multiple of 4, then the nearest smaller multiple is used.\"",
+      "range": {
+        "startLine": 99,
+        "startChar": 7,
+        "endLine": 99,
+        "endChar": 20
+      },
+      "revId": "e669418eee411ebc1c926ef5e369bd5b535419fb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
