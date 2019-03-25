@@ -95,7 +95,11 @@ void Buffer::fill(VkDeviceSize dstOffset, VkDeviceSize fillSize, uint32_t data)
 {
 	ASSERT((fillSize + dstOffset) <= size);
 
-	memset(getOffsetPointer(dstOffset), data, fillSize);
+	uint32_t* memToWrite = static_cast<uint32_t*>(getOffsetPointer(dstOffset));
+	for(; fillSize >= 4; fillSize -= 4, memToWrite++)
+	{
+		*memToWrite = data;
+	}
 }
 
 void Buffer::update(VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData)
