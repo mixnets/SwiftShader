@@ -52,6 +52,24 @@
       "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "917579b5_0ae4ed97",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-26T08:46:58Z",
+      "side": 1,
+      "message": "I\u0027ll follow up with another change that removes this. We can then see what dEQP thinks of it.",
+      "parentUuid": "7988008c_013732ce",
+      "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
