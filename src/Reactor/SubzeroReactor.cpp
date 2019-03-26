@@ -51,6 +51,7 @@
 #include <mutex>
 #include <limits>
 #include <iostream>
+#include <unordered_set>
 #include <cassert>
 
 namespace
@@ -578,6 +579,18 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
+	static std::unordered_set<Variable*> unmat;
+
+	void Nucleus::birth(Variable *variable)
+	{
+		unmat.emplace(variable);
+	}
+
+	void Nucleus::death(Variable *variable)
+	{
+		unmat.erase(variable);
+	}
+
 	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
 	{
 		if(basicBlock->getInsts().empty() || basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
@@ -649,6 +662,14 @@ namespace rr
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
 	//	assert(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
+
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		::basicBlock = basicBlock;
 	}
 
@@ -676,24 +697,42 @@ namespace rr
 
 	void Nucleus::createRetVoid()
 	{
+		unmat.clear();
+
 		Ice::InstRet *ret = Ice::InstRet::create(::function);
 		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createRet(Value *v)
 	{
+		unmat.clear();
+
 		Ice::InstRet *ret = Ice::InstRet::create(::function, v);
 		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createBr(BasicBlock *dest)
 	{
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		auto br = Ice::InstBr::create(::function, dest);
 		::basicBlock->appendInst(br);
 	}
 
 	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		auto br = Ice::InstBr::create(::function, cond, ifTrue, ifFalse);
 		::basicBlock->appendInst(br);
 	}

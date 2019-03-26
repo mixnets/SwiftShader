@@ -28,6 +28,7 @@ namespace rr
 	class SwitchCases;
 	class BasicBlock;
 	class Routine;
+	class Variable;
 
 	enum Optimization
 	{
@@ -53,6 +54,9 @@ namespace rr
 		Nucleus();
 
 		virtual ~Nucleus();
+
+		static void birth(Variable *variable);
+		static void death(Variable *variable);
 
 		Routine *acquireRoutine(const char *name, bool runOptimizations = true);
 
