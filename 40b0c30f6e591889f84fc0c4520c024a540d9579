@@ -34,6 +34,24 @@
       "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7988008c_013732ce",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-26T00:55:55Z",
+      "side": 1,
+      "message": "Vulkan compute shaders use the GLCompute execution model with the Shader capability, so that section applies. `Kernel` is for OpenCL, which is quite different.",
+      "parentUuid": "b93d4197_c1d31117",
+      "revId": "40b0c30f6e591889f84fc0c4520c024a540d9579",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
