@@ -78,6 +78,7 @@ option (TSAN "Build with thread sanitizer" 0)
 option (UBSAN "Build with undefined behavior sanitizer" 0)
 option (WARNINGS_AS_ERRORS "Treat all warnings as errors" 0)
 option (DCHECK_ALWAYS_ON "Check validation macros even in release builds" 0)
+option (EMIT_DEBUG_INFO "Emit debug info for JIT functions" 0)
 
 if(ARCH STREQUAL "arm")
     set(DEFAULT_REACTOR_BACKEND "Subzero")
@@ -202,6 +203,9 @@ else()
     set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-7.0/llvm)
     set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-7.0/configs)
 endif()
+set(LIBBACKTRACE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
+set(LIBBACKTRACE_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/config)
+set(LIBBACKTRACE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
 set(SUBZERO_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/subzero)
 set(SUBZERO_LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-subzero)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -287,6 +291,10 @@ else()
 
     if(DCHECK_ALWAYS_ON)
         set_cpp_flag("-DDCHECK_ALWAYS_ON")
+    endif()
+
+    if(EMIT_DEBUG_INFO)
+        set_cpp_flag("-DENABLE_RR_DEBUG_INFO")
     endif()
 
     # Disable pedanitc warnings
@@ -1759,10 +1767,13 @@ set(LLVM_INCLUDE_DIR "")
 
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/windows/include)
 elseif(LINUX)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/linux/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/linux/include)
 elseif(APPLE)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/darwin/include)
+    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/darwin/include)
 endif()
 
 list(APPEND LLVM_INCLUDE_DIR
@@ -1939,6 +1950,7 @@ set(COMMON_INCLUDE_DIR
     ${SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${LLVM_INCLUDE_DIR}
+    ${LIBBACKTRACE_INCLUDE_DIR}
 )
 set(OPENGL_INCLUDE_DIR
     ${OPENGL_DIR}
@@ -1979,9 +1991,41 @@ list(REMOVE_ITEM SWIFTSHADER_LIST
     ${SOURCE_DIR}/Common/GrallocAndroid.hpp
 )
 
+if(EMIT_DEBUG_INFO)
+    set(LIBBACKTRACE_LIST
+        ${LIBBACKTRACE_DIR}/atomic.c
+        ${LIBBACKTRACE_DIR}/backtrace.c
+        ${LIBBACKTRACE_DIR}/backtrace.h
+        ${LIBBACKTRACE_DIR}/dwarf.c
+        ${LIBBACKTRACE_DIR}/fileline.c
+        ${LIBBACKTRACE_DIR}/filenames.h
+        ${LIBBACKTRACE_DIR}/internal.h
+        ${LIBBACKTRACE_DIR}/mmap.c
+        ${LIBBACKTRACE_DIR}/mmapio.c
+        ${LIBBACKTRACE_DIR}/posix.c
+        ${LIBBACKTRACE_DIR}/print.c
+        ${LIBBACKTRACE_DIR}/simple.c
+        ${LIBBACKTRACE_DIR}/sort.c
+        ${LIBBACKTRACE_DIR}/state.c
+        ${LIBBACKTRACE_INCLUDE_DIR}/backtrace-supported.h
+        ${LIBBACKTRACE_INCLUDE_DIR}/config.h
+    )
+
+    if(WIN32)
+        list(APPEND LIBBACKTRACE_LIST ${LIBBACKTRACE_DIR}/pecoff.c)
+    elseif(LINUX)
+        list(APPEND LIBBACKTRACE_LIST ${LIBBACKTRACE_DIR}/elf.c)
+    elseif(APPLE)
+        message(FATAL_ERROR "libbacktrace does not support mach-o yet")
+    endif()
+endif(EMIT_DEBUG_INFO)
+
 set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/Reactor.cpp
     ${SOURCE_DIR}/Reactor/LLVMReactor.cpp
+    ${SOURCE_DIR}/Reactor/LLVMReactor.hpp
+    ${SOURCE_DIR}/Reactor/LLVMReactorDebugInfo.cpp
+    ${SOURCE_DIR}/Reactor/LLVMReactorDebugInfo.hpp
     ${SOURCE_DIR}/Reactor/Nucleus.hpp
     ${SOURCE_DIR}/Reactor/Routine.cpp
     ${SOURCE_DIR}/Reactor/Routine.hpp
@@ -2170,6 +2214,17 @@ set_target_properties(ReactorLLVM PROPERTIES
     FOLDER "Core"
 )
 target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
+
+if(EMIT_DEBUG_INFO)
+    add_library(Libbacktrace STATIC ${LIBBACKTRACE_LIST})
+    set_target_properties(Libbacktrace PROPERTIES
+        INCLUDE_DIRECTORIES "${LIBBACKTRACE_INCLUDE_DIR}"
+        POSITION_INDEPENDENT_CODE 1
+        FOLDER "Core"
+    )
+    target_link_libraries(Libbacktrace ${OS_LIBS})
+    target_link_libraries(ReactorLLVM Libbacktrace)
+endif(EMIT_DEBUG_INFO)
 
 if(${REACTOR_BACKEND} STREQUAL "LLVM")
     set(Reactor ReactorLLVM)

@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "Reactor.hpp"
+#include "LLVMReactor.hpp"
+#include "LLVMReactorDebugInfo.hpp"
 
 #include "x86.hpp"
 #include "CPUID.hpp"
@@ -115,6 +117,10 @@ namespace
 	llvm::LLVMContext *context = nullptr;
 	llvm::Module *module = nullptr;
 	llvm::Function *function = nullptr;
+
+#ifdef ENABLE_RR_DEBUG_INFO
+	std::unique_ptr<rr::DebugInfo> di;
+#endif
 
 	rr::MutexLock codegenMutex;
 
@@ -607,6 +613,9 @@ namespace rr
 					}
 				})),
 			targetMachine(llvm::EngineBuilder()
+#ifdef ENABLE_RR_DEBUG_INFO
+				.setOptLevel(llvm::CodeGenOpt::None)
+#endif // ENABLE_RR_DEBUG_INFO
 				.setMArch(arch)
 				.setMAttrs(mattrs)
 				.setTargetOptions(targetOpts)
@@ -618,7 +627,25 @@ namespace rr
 					return ObjLayer::Resources{
 						std::make_shared<llvm::SectionMemoryManager>(),
 						resolver};
-				}),
+				},
+				ObjLayer::NotifyLoadedFtor(),
+				[](llvm::orc::VModuleKey, const llvm::object::ObjectFile &Obj, const llvm::RuntimeDyld::LoadedObjectInfo &L) {
+#ifdef ENABLE_RR_DEBUG_INFO
+					if (di != nullptr)
+					{
+						di->NotifyObjectEmitted(Obj, L);
+					}
+#endif // ENABLE_RR_DEBUG_INFO
+				},
+				[](llvm::orc::VModuleKey, const llvm::object::ObjectFile &Obj) {
+#ifdef ENABLE_RR_DEBUG_INFO
+					if (di != nullptr)
+					{
+						di->NotifyFreeingObject(Obj);
+					}
+#endif // ENABLE_RR_DEBUG_INFO
+				}
+	  		),
 			compileLayer(objLayer, llvm::orc::SimpleCompiler(*targetMachine)),
 			emittedFunctionsNum(0)
 		{
@@ -669,6 +696,13 @@ namespace rr
 
 		void optimize(llvm::Module *module)
 		{
+#ifdef ENABLE_RR_DEBUG_INFO
+			if (di != nullptr)
+			{
+				return; // Don't optimize if we're generating debug info.
+			}
+#endif // ENABLE_RR_DEBUG_INFO
+
 			std::unique_ptr<llvm::legacy::PassManager> passManager(
 				new llvm::legacy::PassManager());
 
@@ -753,24 +787,9 @@ namespace rr
 		}
 	}
 
-	inline Type *T(llvm::Type *t)
-	{
-		return reinterpret_cast<Type*>(t);
-	}
-
 	Type *T(InternalType t)
 	{
 		return reinterpret_cast<Type*>(t);
-	}
-
-	inline llvm::Value *V(Value *t)
-	{
-		return reinterpret_cast<llvm::Value*>(t);
-	}
-
-	inline Value *V(llvm::Value *t)
-	{
-		return reinterpret_cast<Value*>(t);
 	}
 
 	inline std::vector<llvm::Type*> &T(std::vector<Type*> &t)
@@ -1000,6 +1019,13 @@ namespace rr
 			::module->print(file, 0);
 		}
 
+#ifdef ENABLE_RR_DEBUG_INFO
+		if (di != nullptr)
+		{
+			di->Finalize();
+		}
+#endif // ENABLE_RR_DEBUG_INFO
+
 		LLVMRoutine *routine = ::reactorJIT->acquireRoutine(::function);
 
 		return routine;
@@ -1075,6 +1101,10 @@ namespace rr
 			::function->addFnAttr("stack-probe-size", "1048576");
 		#endif
 
+#ifdef ENABLE_RR_DEBUG_INFO
+		::di = std::unique_ptr<DebugInfo>(new DebugInfo(::builder, ::context, ::module, ::function));
+#endif // ENABLE_RR_DEBUG_INFO
+
 		::builder->SetInsertPoint(llvm::BasicBlock::Create(*::context, "", ::function));
 	}
 
@@ -1098,6 +1128,7 @@ namespace rr
 		// materializing variables after the terminator ret instruction.
 		Variable::killUnmaterialized();
 
+		RR_DEBUG_INFO_UPDATE_LOC();
 		::builder->CreateRetVoid();
 	}
 
@@ -1108,6 +1139,7 @@ namespace rr
 		// materializing variables after the terminator ret instruction.
 		Variable::killUnmaterialized();
 
+		RR_DEBUG_INFO_UPDATE_LOC();
 		::builder->CreateRet(V(v));
 	}
 
@@ -1115,123 +1147,146 @@ namespace rr
 	{
 		Variable::materializeAll();
 
+		RR_DEBUG_INFO_UPDATE_LOC();
 		::builder->CreateBr(B(dest));
 	}
 
 	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Variable::materializeAll();
-
 		::builder->CreateCondBr(V(cond), B(ifTrue), B(ifFalse));
 	}
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateAdd(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createSub(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSub(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createMul(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateMul(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createUDiv(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateUDiv(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createSDiv(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSDiv(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFAdd(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFAdd(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFSub(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFSub(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFMul(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFMul(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFDiv(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFDiv(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createURem(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateURem(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createSRem(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSRem(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFRem(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFRem(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createShl(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateShl(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createLShr(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateLShr(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createAShr(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateAShr(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createAnd(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateAnd(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createOr(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateOr(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createXor(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateXor(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createNeg(Value *v)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateNeg(V(v)));
 	}
 
 	Value *Nucleus::createFNeg(Value *v)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFNeg(V(v)));
 	}
 
 	Value *Nucleus::createNot(Value *v)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateNot(V(v)));
 	}
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		switch(asInternalType(type))
 		{
 		case Type_v2i32:
@@ -1270,6 +1325,7 @@ namespace rr
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		switch(asInternalType(type))
 		{
 		case Type_v2i32:
@@ -1308,6 +1364,7 @@ namespace rr
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		assert(V(ptr)->getType()->getContainedType(0) == T(type));
 
 		if(sizeof(void*) == 8)
@@ -1352,46 +1409,55 @@ namespace rr
 
 	Value *Nucleus::createAtomicAdd(Value *ptr, Value *value)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateAtomicRMW(llvm::AtomicRMWInst::Add, V(ptr), V(value), llvm::AtomicOrdering::SequentiallyConsistent));
 	}
 
 	Value *Nucleus::createTrunc(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateTrunc(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createZExt(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateZExt(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createSExt(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSExt(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createFPToSI(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFPToSI(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createSIToFP(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSIToFP(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createFPTrunc(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFPTrunc(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createFPExt(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFPExt(V(v), T(destType)));
 	}
 
 	Value *Nucleus::createBitCast(Value *v, Type *destType)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// Bitcasts must be between types of the same logical size. But with emulated narrow vectors we need
 		// support for casting between scalars and wide vectors. Emulate them by writing to the stack and
 		// reading back as the destination type.
@@ -1415,137 +1481,165 @@ namespace rr
 
 	Value *Nucleus::createICmpEQ(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpEQ(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpNE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpNE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpUGT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpUGT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpUGE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpUGE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpULT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpULT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpULE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpULE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpSGT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpSGT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpSGE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpSGE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpSLT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createICmpSLE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateICmpSLE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpOEQ(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpOEQ(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpOGT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpOGT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpOGE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpOGE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpOLT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpOLT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpOLE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpOLE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpONE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpONE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpORD(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpORD(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpUNO(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpUNO(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpUEQ(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpUEQ(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpUGT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpUGT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpUGE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpUGE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpULT(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpULT(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpULE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpULE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createFCmpUNE(Value *lhs, Value *rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateFCmpUNE(V(lhs), V(rhs)));
 	}
 
 	Value *Nucleus::createExtractElement(Value *vector, Type *type, int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		assert(V(vector)->getType()->getContainedType(0) == T(type));
 		return V(::builder->CreateExtractElement(V(vector), V(createConstantInt(index))));
 	}
 
 	Value *Nucleus::createInsertElement(Value *vector, Value *element, int index)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateInsertElement(V(vector), V(element), V(createConstantInt(index))));
 	}
 
 	Value *Nucleus::createShuffleVector(Value *v1, Value *v2, const int *select)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
+
 		int size = llvm::cast<llvm::VectorType>(V(v1)->getType())->getNumElements();
 		const int maxSize = 16;
 		llvm::Constant *swizzle[maxSize];
@@ -1563,22 +1657,26 @@ namespace rr
 
 	Value *Nucleus::createSelect(Value *c, Value *ifTrue, Value *ifFalse)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(::builder->CreateSelect(V(c), V(ifTrue), V(ifFalse)));
 	}
 
 	SwitchCases *Nucleus::createSwitch(Value *control, BasicBlock *defaultBranch, unsigned numCases)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return reinterpret_cast<SwitchCases*>(::builder->CreateSwitch(V(control), B(defaultBranch), numCases));
 	}
 
 	void Nucleus::addSwitchCase(SwitchCases *switchCases, int label, BasicBlock *branch)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		llvm::SwitchInst *sw = reinterpret_cast<llvm::SwitchInst *>(switchCases);
 		sw->addCase(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), label, true), B(branch));
 	}
 
 	void Nucleus::createUnreachable()
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		::builder->CreateUnreachable();
 	}
 
@@ -1589,56 +1687,67 @@ namespace rr
 
 	Value *Nucleus::createNullValue(Type *Ty)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::Constant::getNullValue(T(Ty)));
 	}
 
 	Value *Nucleus::createConstantLong(int64_t i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt64Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantInt(int i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantInt(unsigned int i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantBool(bool b)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt1Ty(*::context), b));
 	}
 
 	Value *Nucleus::createConstantByte(signed char i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt8Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantByte(unsigned char i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt8Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantShort(short i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt16Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantShort(unsigned short i)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantInt::get(llvm::Type::getInt16Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantFP::get(T(Float::getType()), x));
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(T(Ty), 0)));
 	}
 
@@ -1716,6 +1825,7 @@ namespace rr
 
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::paddusb(x, y);
 #else
@@ -1725,6 +1835,7 @@ namespace rr
 
 	RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psubusb(x, y);
 #else
@@ -1734,6 +1845,7 @@ namespace rr
 
 	RValue<Int> SignMask(RValue<Byte8> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmovmskb(x);
 #else
@@ -1752,6 +1864,7 @@ namespace rr
 
 	RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pcmpeqb(x, y);
 #else
@@ -1766,6 +1879,7 @@ namespace rr
 
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::paddsb(x, y);
 #else
@@ -1775,6 +1889,7 @@ namespace rr
 
 	RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psubsb(x, y);
 #else
@@ -1784,6 +1899,7 @@ namespace rr
 
 	RValue<Int> SignMask(RValue<SByte8> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmovmskb(As<Byte8>(x));
 #else
@@ -1793,6 +1909,7 @@ namespace rr
 
 	RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pcmpgtb(x, y);
 #else
@@ -1802,6 +1919,7 @@ namespace rr
 
 	RValue<Byte8> CmpEQ(RValue<SByte8> x, RValue<SByte8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pcmpeqb(As<Byte8>(x), As<Byte8>(y));
 #else
@@ -1836,6 +1954,7 @@ namespace rr
 
 	Short4::Short4(RValue<Int4> cast)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		int select[8] = {0, 2, 4, 6, 0, 2, 4, 6};
 		Value *short8 = Nucleus::createBitCast(cast.value, Short8::getType());
 
@@ -1851,6 +1970,7 @@ namespace rr
 
 	Short4::Short4(RValue<Float4> cast)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Int4 v4i32 = Int4(cast);
 #if defined(__i386__) || defined(__x86_64__)
 		v4i32 = As<Int4>(x86::packssdw(v4i32, v4i32));
@@ -1864,6 +1984,7 @@ namespace rr
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<Short4>(Nucleus::createShl(lhs.value, rhs.value));
 
@@ -1875,6 +1996,7 @@ namespace rr
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psraw(lhs, rhs);
 #else
@@ -1884,6 +2006,7 @@ namespace rr
 
 	RValue<Short4> Max(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmaxsw(x, y);
 #else
@@ -1893,6 +2016,7 @@ namespace rr
 
 	RValue<Short4> Min(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pminsw(x, y);
 #else
@@ -1902,6 +2026,7 @@ namespace rr
 
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::paddsw(x, y);
 #else
@@ -1911,6 +2036,7 @@ namespace rr
 
 	RValue<Short4> SubSat(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psubsw(x, y);
 #else
@@ -1920,6 +2046,7 @@ namespace rr
 
 	RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmulhw(x, y);
 #else
@@ -1929,6 +2056,7 @@ namespace rr
 
 	RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmaddwd(x, y);
 #else
@@ -1938,6 +2066,7 @@ namespace rr
 
 	RValue<SByte8> PackSigned(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		auto result = x86::packsswb(x, y);
 #else
@@ -1948,6 +2077,7 @@ namespace rr
 
 	RValue<Byte8> PackUnsigned(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		auto result = x86::packuswb(x, y);
 #else
@@ -1958,6 +2088,7 @@ namespace rr
 
 	RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pcmpgtw(x, y);
 #else
@@ -1967,6 +2098,7 @@ namespace rr
 
 	RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pcmpeqw(x, y);
 #else
@@ -1981,6 +2113,7 @@ namespace rr
 
 	UShort4::UShort4(RValue<Float4> cast, bool saturate)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		if(saturate)
 		{
 #if defined(__i386__) || defined(__x86_64__)
@@ -2003,6 +2136,7 @@ namespace rr
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<Short4>(Nucleus::createShl(lhs.value, rhs.value));
 
@@ -2014,6 +2148,7 @@ namespace rr
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<Short4>(Nucleus::createLShr(lhs.value, rhs.value));
 
@@ -2025,16 +2160,19 @@ namespace rr
 
 	RValue<UShort4> Max(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<UShort4>(Max(As<Short4>(x) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u), As<Short4>(y) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u)) + Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u));
 	}
 
 	RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<UShort4>(Min(As<Short4>(x) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u), As<Short4>(y) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u)) + Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u));
 	}
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::paddusw(x, y);
 #else
@@ -2044,6 +2182,7 @@ namespace rr
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psubusw(x, y);
 #else
@@ -2053,6 +2192,7 @@ namespace rr
 
 	RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmulhuw(x, y);
 #else
@@ -2062,6 +2202,7 @@ namespace rr
 
 	RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pavgw(x, y);
 #else
@@ -2076,6 +2217,7 @@ namespace rr
 
 	RValue<Short8> operator<<(RValue<Short8> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psllw(lhs, rhs);
 #else
@@ -2085,6 +2227,7 @@ namespace rr
 
 	RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psraw(lhs, rhs);
 #else
@@ -2094,6 +2237,7 @@ namespace rr
 
 	RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmaddwd(x, y);
 #else
@@ -2103,6 +2247,7 @@ namespace rr
 
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmulhw(x, y);
 #else
@@ -2117,6 +2262,7 @@ namespace rr
 
 	RValue<UShort8> operator<<(RValue<UShort8> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return As<UShort8>(x86::psllw(As<Short8>(lhs), rhs));
 #else
@@ -2126,6 +2272,7 @@ namespace rr
 
 	RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psrlw(lhs, rhs);   // FIXME: Fallback required
 #else
@@ -2135,6 +2282,7 @@ namespace rr
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		int pshufb[16] =
 		{
 			select0 + 0,
@@ -2164,6 +2312,7 @@ namespace rr
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pmulhuw(x, y);
 #else
@@ -2178,6 +2327,7 @@ namespace rr
 
 	RValue<Int> operator++(Int &val, int)   // Post-increment
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		RValue<Int> res = val;
 
 		Value *inc = Nucleus::createAdd(res.value, Nucleus::createConstantInt(1));
@@ -2188,6 +2338,7 @@ namespace rr
 
 	const Int &operator++(Int &val)   // Pre-increment
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *inc = Nucleus::createAdd(val.loadValue(), Nucleus::createConstantInt(1));
 		val.storeValue(inc);
 
@@ -2196,6 +2347,7 @@ namespace rr
 
 	RValue<Int> operator--(Int &val, int)   // Post-decrement
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		RValue<Int> res = val;
 
 		Value *inc = Nucleus::createSub(res.value, Nucleus::createConstantInt(1));
@@ -2206,6 +2358,7 @@ namespace rr
 
 	const Int &operator--(Int &val)   // Pre-decrement
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *inc = Nucleus::createSub(val.loadValue(), Nucleus::createConstantInt(1));
 		val.storeValue(inc);
 
@@ -2214,6 +2367,7 @@ namespace rr
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::cvtss2si(cast);
 #else
@@ -2233,6 +2387,7 @@ namespace rr
 
 	UInt::UInt(RValue<Float> cast)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// Note: createFPToUI is broken, must perform conversion using createFPtoSI
 		// Value *integer = Nucleus::createFPToUI(cast.value, UInt::getType());
 
@@ -2252,6 +2407,7 @@ namespace rr
 
 	RValue<UInt> operator++(UInt &val, int)   // Post-increment
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		RValue<UInt> res = val;
 
 		Value *inc = Nucleus::createAdd(res.value, Nucleus::createConstantInt(1));
@@ -2262,6 +2418,7 @@ namespace rr
 
 	const UInt &operator++(UInt &val)   // Pre-increment
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *inc = Nucleus::createAdd(val.loadValue(), Nucleus::createConstantInt(1));
 		val.storeValue(inc);
 
@@ -2270,6 +2427,7 @@ namespace rr
 
 	RValue<UInt> operator--(UInt &val, int)   // Post-decrement
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		RValue<UInt> res = val;
 
 		Value *inc = Nucleus::createSub(res.value, Nucleus::createConstantInt(1));
@@ -2280,6 +2438,7 @@ namespace rr
 
 	const UInt &operator--(UInt &val)   // Pre-decrement
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *inc = Nucleus::createSub(val.loadValue(), Nucleus::createConstantInt(1));
 		val.storeValue(inc);
 
@@ -2313,6 +2472,7 @@ namespace rr
 
 	RValue<Int2> operator<<(RValue<Int2> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<Int2>(Nucleus::createShl(lhs.value, rhs.value));
 
@@ -2324,6 +2484,7 @@ namespace rr
 
 	RValue<Int2> operator>>(RValue<Int2> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<Int2>(Nucleus::createAShr(lhs.value, rhs.value));
 
@@ -2340,6 +2501,7 @@ namespace rr
 
 	RValue<UInt2> operator<<(RValue<UInt2> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<UInt2>(Nucleus::createShl(lhs.value, rhs.value));
 
@@ -2351,6 +2513,7 @@ namespace rr
 
 	RValue<UInt2> operator>>(RValue<UInt2> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 	//	return RValue<UInt2>(Nucleus::createLShr(lhs.value, rhs.value));
 
@@ -2367,6 +2530,7 @@ namespace rr
 
 	Int4::Int4(RValue<Byte4> cast) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2389,6 +2553,7 @@ namespace rr
 
 	Int4::Int4(RValue<SByte4> cast) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2411,6 +2576,7 @@ namespace rr
 
 	Int4::Int4(RValue<Short4> cast) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2427,6 +2593,7 @@ namespace rr
 
 	Int4::Int4(RValue<UShort4> cast) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2443,6 +2610,7 @@ namespace rr
 
 	Int4::Int4(RValue<Int> rhs) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = loadValue();
 		Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
 
@@ -2454,6 +2622,7 @@ namespace rr
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::pslld(lhs, rhs);
 #else
@@ -2463,6 +2632,7 @@ namespace rr
 
 	RValue<Int4> operator>>(RValue<Int4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psrad(lhs, rhs);
 #else
@@ -2472,6 +2642,7 @@ namespace rr
 
 	RValue<Int4> CmpEQ(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpEQ(x.value, y.value), Int4::getType()));
@@ -2480,6 +2651,7 @@ namespace rr
 
 	RValue<Int4> CmpLT(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSLT(x.value, y.value), Int4::getType()));
@@ -2488,6 +2660,7 @@ namespace rr
 
 	RValue<Int4> CmpLE(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSLE(x.value, y.value), Int4::getType()));
@@ -2496,6 +2669,7 @@ namespace rr
 
 	RValue<Int4> CmpNEQ(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpNE(x.value, y.value), Int4::getType()));
@@ -2504,6 +2678,7 @@ namespace rr
 
 	RValue<Int4> CmpNLT(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSGE(x.value, y.value), Int4::getType()));
@@ -2512,6 +2687,7 @@ namespace rr
 
 	RValue<Int4> CmpNLE(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSGT(x.value, y.value), Int4::getType()));
@@ -2520,6 +2696,7 @@ namespace rr
 
 	RValue<Int4> Max(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2535,6 +2712,7 @@ namespace rr
 
 	RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2550,6 +2728,7 @@ namespace rr
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::cvtps2dq(cast);
 #else
@@ -2559,18 +2738,21 @@ namespace rr
 
 	RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
 		return As<Int4>(V(lowerMulHigh(V(x.value), V(y.value), true)));
 	}
 
 	RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// TODO: For x86, build an intrinsics version of this which uses shuffles + pmuludq.
 		return As<UInt4>(V(lowerMulHigh(V(x.value), V(y.value), false)));
 	}
 
 	RValue<Short8> PackSigned(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::packssdw(x, y);
 #else
@@ -2580,6 +2762,7 @@ namespace rr
 
 	RValue<UShort8> PackUnsigned(RValue<Int4> x, RValue<Int4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::packusdw(x, y);
 #else
@@ -2589,6 +2772,7 @@ namespace rr
 
 	RValue<Int> SignMask(RValue<Int4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::movmskps(As<Float4>(x));
 #else
@@ -2603,6 +2787,7 @@ namespace rr
 
 	UInt4::UInt4(RValue<Float4> cast) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// Note: createFPToUI is broken, must perform conversion using createFPtoSI
 		// Value *xyzw = Nucleus::createFPToUI(cast.value, UInt4::getType());
 
@@ -2622,6 +2807,7 @@ namespace rr
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return As<UInt4>(x86::pslld(As<Int4>(lhs), rhs));
 #else
@@ -2631,6 +2817,7 @@ namespace rr
 
 	RValue<UInt4> operator>>(RValue<UInt4> lhs, unsigned char rhs)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::psrld(lhs, rhs);
 #else
@@ -2640,6 +2827,7 @@ namespace rr
 
 	RValue<UInt4> CmpEQ(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpEQ(x.value, y.value), Int4::getType()));
@@ -2648,11 +2836,13 @@ namespace rr
 
 	RValue<UInt4> CmpLT(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpULT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<UInt4> CmpLE(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpULE(x.value, y.value), Int4::getType()));
@@ -2661,11 +2851,13 @@ namespace rr
 
 	RValue<UInt4> CmpNEQ(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpNE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<UInt4> CmpNLT(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		// FIXME: An LLVM bug causes SExt(ICmpCC()) to produce 0 or 1 instead of 0 or ~0
 		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
 		// return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpUGE(x.value, y.value), Int4::getType()));
@@ -2674,11 +2866,13 @@ namespace rr
 
 	RValue<UInt4> CmpNLE(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpUGT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2694,6 +2888,7 @@ namespace rr
 
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2719,6 +2914,7 @@ namespace rr
 
 	RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(exactAtPow2)
 		{
@@ -2734,6 +2930,7 @@ namespace rr
 
 	RValue<Float> RcpSqrt_pp(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::rsqrtss(x);
 #else
@@ -2743,6 +2940,7 @@ namespace rr
 
 	RValue<Float> Sqrt(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::sqrtss(x);
 #else
@@ -2752,6 +2950,7 @@ namespace rr
 
 	RValue<Float> Round(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2768,6 +2967,7 @@ namespace rr
 
 	RValue<Float> Trunc(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2784,6 +2984,7 @@ namespace rr
 
 	RValue<Float> Frac(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2802,6 +3003,7 @@ namespace rr
 
 	RValue<Float> Floor(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2818,6 +3020,7 @@ namespace rr
 
 	RValue<Float> Ceil(RValue<Float> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2842,6 +3045,7 @@ namespace rr
 
 	Float4::Float4(RValue<Float> rhs) : XYZW(this)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Value *vector = loadValue();
 		Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
 
@@ -2853,6 +3057,7 @@ namespace rr
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::maxps(x, y);
 #else
@@ -2862,6 +3067,7 @@ namespace rr
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::minps(x, y);
 #else
@@ -2871,6 +3077,7 @@ namespace rr
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(exactAtPow2)
 		{
@@ -2886,6 +3093,7 @@ namespace rr
 
 	RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::rsqrtps(x);
 #else
@@ -2895,6 +3103,7 @@ namespace rr
 
 	RValue<Float4> Sqrt(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::sqrtps(x);
 #else
@@ -2904,6 +3113,7 @@ namespace rr
 
 	RValue<Int> SignMask(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::movmskps(x);
 #else
@@ -2913,72 +3123,85 @@ namespace rr
 
 	RValue<Int4> CmpEQ(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpeqps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpOEQ(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpLT(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpltps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpOLT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpLE(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpleps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpOLE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpNEQ(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpneqps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpONE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpNLT(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpnltps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpOGE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpNLE(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 	//	return As<Int4>(x86::cmpnleps(x, y));
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpOGT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpUEQ(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpUEQ(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpULT(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpULT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpULE(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpULE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpUNEQ(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpUNE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpUNLT(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpUGE(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Int4> CmpUNLE(RValue<Float4> x, RValue<Float4> y)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		return RValue<Int4>(Nucleus::createSExt(Nucleus::createFCmpUGT(x.value, y.value), Int4::getType()));
 	}
 
 	RValue<Float4> Round(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -2995,6 +3218,7 @@ namespace rr
 
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -3011,6 +3235,7 @@ namespace rr
 
 	RValue<Float4> Frac(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		Float4 frc;
 
 #if defined(__i386__) || defined(__x86_64__)
@@ -3035,6 +3260,7 @@ namespace rr
 
 	RValue<Float4> Floor(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -3051,6 +3277,7 @@ namespace rr
 
 	RValue<Float4> Ceil(RValue<Float4> x)
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 #if defined(__i386__) || defined(__x86_64__)
 		if(CPUID::supportsSSE4_1())
 		{
@@ -3070,6 +3297,7 @@ namespace rr
 
 	RValue<Long> Ticks()
 	{
+		RR_DEBUG_INFO_UPDATE_LOC();
 		llvm::Function *rdtsc = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::readcyclecounter);
 
 		return RValue<Long>(V(::builder->CreateCall(rdtsc)));
@@ -3715,5 +3943,41 @@ namespace rr
 		::builder->CreateCall(func, vals);
 	}
 #endif // ENABLE_RR_PRINT
+
+	void Break()
+	{
+		auto trap = ::llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::trap);
+		builder->CreateCall(trap);
+	}
+
+	void EmitDebugLocation()
+	{
+#ifdef ENABLE_RR_DEBUG_INFO
+		if (di != nullptr)
+		{
+			di->EmitLocation();
+		}
+#endif // ENABLE_RR_DEBUG_INFO
+	}
+
+	void EmitDebugVariable(Value* value)
+	{
+#ifdef ENABLE_RR_DEBUG_INFO
+		if (di != nullptr)
+		{
+			di->EmitVariable(value);
+		}
+#endif // ENABLE_RR_DEBUG_INFO
+	}
+
+	void FlushDebug()
+	{
+#ifdef ENABLE_RR_DEBUG_INFO
+		if (di != nullptr)
+		{
+			di->Flush();
+		}
+#endif // ENABLE_RR_DEBUG_INFO
+	}
 
 }
