@@ -82,6 +82,7 @@
 #include <fstream>
 #include <numeric>
 #include <thread>
+#include <unordered_set>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -115,6 +116,8 @@ namespace
 	llvm::LLVMContext *context = nullptr;
 	llvm::Module *module = nullptr;
 	llvm::Function *function = nullptr;
+
+	std::unordered_set<rr::Variable*> unmat;
 
 	rr::MutexLock codegenMutex;
 
@@ -953,6 +956,16 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
+	void Nucleus::birth(Variable *variable)
+	{
+		unmat.emplace(variable);
+	}
+
+	void Nucleus::death(Variable *variable)
+	{
+		unmat.erase(variable);
+	}
+
 	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
 	{
 		if(::builder->GetInsertBlock()->empty() || !::builder->GetInsertBlock()->back().isTerminator())
@@ -1052,6 +1065,14 @@ namespace rr
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
 	//	assert(::builder->GetInsertBlock()->back().isTerminator());
+
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		::builder->SetInsertPoint(B(basicBlock));
 	}
 
@@ -1100,11 +1121,25 @@ namespace rr
 
 	void Nucleus::createBr(BasicBlock *dest)
 	{
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		::builder->CreateBr(B(dest));
 	}
 
 	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
+		for(auto *x : unmat)
+		{
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		::builder->CreateCondBr(V(cond), B(ifTrue), B(ifFalse));
 	}
 
