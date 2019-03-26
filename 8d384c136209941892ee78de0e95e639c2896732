@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cdf3da99_d9a8ded1",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:46:56Z",
+      "side": 1,
+      "message": "DrawBase::bytesPerIndex(executionState)?",
+      "range": {
+        "startLine": 281,
+        "startChar": 13,
+        "endLine": 281,
+        "endChar": 71
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d5b77ab_7465d101",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:46:56Z",
+      "side": 1,
+      "message": "DrawBase::appendIndexType(executionState, \u0026drawType) or DrawBase::getDrawType(executionState, drawType)?",
+      "range": {
+        "startLine": 283,
+        "startChar": 14,
+        "endLine": 284,
+        "endChar": 91
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a845a03_6ae6a9a8",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:46:56Z",
+      "side": 1,
+      "message": "Same members as indexed version, so maybe add: \", bool isIndexed)\" ? Your call.",
+      "range": {
+        "startLine": 343,
+        "startChar": 87,
+        "endLine": 343,
+        "endChar": 88
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "279f9764_aaf8a14b",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:46:56Z",
+      "side": 1,
+      "message": "getDrawIndirectCommand(drawId)?",
+      "range": {
+        "startLine": 352,
+        "startChar": 14,
+        "endLine": 352,
+        "endChar": 119
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4405e585_291a7fa9",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:46:56Z",
+      "side": 1,
+      "message": "Could be DrawIndirect::drawIndexed(). Your call.",
+      "range": {
+        "startLine": 372,
+        "startChar": 2,
+        "endLine": 376,
+        "endChar": 3
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
