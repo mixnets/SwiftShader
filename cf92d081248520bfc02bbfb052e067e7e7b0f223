@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6705efd8_3b498b00",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-26T14:55:48Z",
+      "side": 0,
+      "message": "Nit: I agree that this can be ignored, since we already ignore renderPass, but it would be nice to mention it in the description.",
+      "range": {
+        "startLine": 261,
+        "startChar": 4,
+        "endLine": 261,
+        "endChar": 31
+      },
+      "revId": "cf92d081248520bfc02bbfb052e067e7e7b0f223",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
