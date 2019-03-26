@@ -28,6 +28,7 @@ namespace rr
 	class SwitchCases;
 	class BasicBlock;
 	class Routine;
+	class Variable;
 
 	enum Optimization
 	{
@@ -54,14 +55,17 @@ namespace rr
 
 		virtual ~Nucleus();
 
+		static void birth(Variable *variable);
+		static void death(Variable *variable);
+
 		Routine *acquireRoutine(const char *name, bool runOptimizations = true);
 
-		static Value *allocateStackVariable(Type *type, int arraySize = 0);
+		static Value *allocateStackVariable(const Type *type, int arraySize = 0);
 		static BasicBlock *createBasicBlock();
 		static BasicBlock *getInsertBlock();
 		static void setInsertBlock(BasicBlock *basicBlock);
 
-		static void createFunction(Type *ReturnType, std::vector<Type*> &Params);
+		static void createFunction(const Type *ReturnType, std::vector<const Type*> &Params);
 		static Value *getArgument(unsigned int index);
 
 		// Terminators
@@ -96,9 +100,9 @@ namespace rr
 		static Value *createNot(Value *V);
 
 		// Memory instructions
-		static Value *createLoad(Value *ptr, Type *type, bool isVolatile = false, unsigned int alignment = 0, bool atomic = false , std::memory_order memoryOrder = std::memory_order_relaxed);
-		static Value *createStore(Value *value, Value *ptr, Type *type, bool isVolatile = false, unsigned int aligment = 0, bool atomic = false, std::memory_order memoryOrder = std::memory_order_relaxed);
-		static Value *createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex);
+		static Value *createLoad(Value *ptr, const Type *type, bool isVolatile = false, unsigned int alignment = 0, bool atomic = false , std::memory_order memoryOrder = std::memory_order_relaxed);
+		static Value *createStore(Value *value, Value *ptr, const Type *type, bool isVolatile = false, unsigned int aligment = 0, bool atomic = false, std::memory_order memoryOrder = std::memory_order_relaxed);
+		static Value *createGEP(Value *ptr, const Type *type, Value *index, bool unsignedIndex);
 
 		// Atomic instructions
 		static Value *createAtomicAdd(Value *ptr, Value *value);
@@ -111,7 +115,7 @@ namespace rr
 		static Value *createSIToFP(Value *V, Type *destType);
 		static Value *createFPTrunc(Value *V, Type *destType);
 		static Value *createFPExt(Value *V, Type *destType);
-		static Value *createBitCast(Value *V, Type *destType);
+		static Value *createBitCast(Value *V, const Type *destType);
 
 		// Compare instructions
 		static Value *createICmpEQ(Value *lhs, Value *rhs);
@@ -165,7 +169,7 @@ namespace rr
 		static Value *createConstantVector(const int64_t *constants, Type *type);
 		static Value *createConstantVector(const double *constants, Type *type);
 
-		static Type *getPointerType(Type *elementType);
+		static const Type *getPointerType(const Type *elementType);
 
 	private:
 		void optimize();

@@ -51,6 +51,7 @@
 #include <mutex>
 #include <limits>
 #include <iostream>
+#include <vector>
 #include <cassert>
 
 namespace
@@ -153,7 +154,7 @@ namespace rr
 	class SwitchCases : public Ice::InstSwitch {};
 	class BasicBlock : public Ice::CfgNode {};
 
-	Ice::Type T(Type *t)
+	Ice::Type T(const Type *t)
 	{
 		static_assert(static_cast<unsigned int>(Ice::IceType_NUM) < static_cast<unsigned int>(EmulatedBits), "Ice::Type overlaps with our emulated types!");
 		return (Ice::Type)(reinterpret_cast<std::intptr_t>(t) & ~EmulatedBits);
@@ -179,7 +180,7 @@ namespace rr
 		return reinterpret_cast<BasicBlock*>(b);
 	}
 
-	static size_t typeSize(Type *type)
+	static size_t typeSize(const Type *type)
 	{
 		if(reinterpret_cast<std::intptr_t>(type) & EmulatedBits)
 		{
@@ -578,8 +579,22 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
+	static std::unordered_set<Variable*> unmat;
+
+	void Nucleus::birth(Variable *variable)
+	{
+		unmat.emplace(variable);
+	}
+
+	void Nucleus::death(Variable *variable)
+	{
+		unmat.erase(variable);
+	}
+
 	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
 	{
+	//	assert(unmat.empty());
+
 		if(basicBlock->getInsts().empty() || basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
 		{
 			createRetVoid();
@@ -622,7 +637,7 @@ namespace rr
 		rr::optimize(::function);
 	}
 
-	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
+	Value *Nucleus::allocateStackVariable(const Type *t, int arraySize)
 	{
 		Ice::Type type = T(t);
 		int typeSize = Ice::typeWidthInBytes(type);
@@ -649,16 +664,25 @@ namespace rr
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
 	//	assert(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
+		
+		for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();
+		
 		::basicBlock = basicBlock;
 	}
 
-	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
+	void Nucleus::createFunction(const Type *ReturnType, std::vector<const Type*> &Params)
 	{
 		uint32_t sequenceNumber = 0;
 		::function = Ice::Cfg::create(::context, sequenceNumber).release();
 		::allocator = new Ice::CfgLocalAllocatorScope(::function);
 
-		for(Type *type : Params)
+		for(const Type *type : Params)
 		{
 			Ice::Variable *arg = ::function->makeVariable(T(type));
 			::function->addArg(arg);
@@ -682,12 +706,28 @@ namespace rr
 
 	void Nucleus::createRet(Value *v)
 	{
+	/*	for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();*/
+
 		Ice::InstRet *ret = Ice::InstRet::create(::function, v);
 		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createBr(BasicBlock *dest)
 	{
+		for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		auto br = Ice::InstBr::create(::function, dest);
 		::basicBlock->appendInst(br);
 	}
@@ -846,7 +886,7 @@ namespace rr
 		}
 	}
 
-	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align, bool atomic, std::memory_order memoryOrder)
+	Value *Nucleus::createLoad(Value *ptr, const Type *type, bool isVolatile, unsigned int align, bool atomic, std::memory_order memoryOrder)
 	{
 		assert(!atomic);  // Unimplemented
 		assert(memoryOrder == std::memory_order_relaxed);  // Unimplemented
@@ -903,7 +943,7 @@ namespace rr
 		return V(result);
 	}
 
-	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align, bool atomic, std::memory_order memoryOrder)
+	Value *Nucleus::createStore(Value *value, Value *ptr, const Type *type, bool isVolatile, unsigned int align, bool atomic, std::memory_order memoryOrder)
 	{
 		assert(!atomic);  // Unimplemented
 		assert(memoryOrder == std::memory_order_relaxed);  // Unimplemented
@@ -1016,7 +1056,7 @@ namespace rr
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	static Value *createCast(Ice::InstCast::OpKind op, Value *v, Type *destType)
+	static Value *createCast(Ice::InstCast::OpKind op, Value *v, const Type *destType)
 	{
 		if(v->getType() == T(destType))
 		{
@@ -1065,7 +1105,7 @@ namespace rr
 		return createCast(Ice::InstCast::Fpext, v, destType);
 	}
 
-	Value *Nucleus::createBitCast(Value *v, Type *destType)
+	Value *Nucleus::createBitCast(Value *v, const Type *destType)
 	{
 		// Bitcasts must be between types of the same logical size. But with emulated narrow vectors we need
 		// support for casting between scalars and wide vectors. For platforms where this is not supported,
@@ -1298,7 +1338,7 @@ namespace rr
 		::basicBlock->appendInst(unreachable);
 	}
 
-	Type *Nucleus::getPointerType(Type *ElementType)
+	const Type *Nucleus::getPointerType(const Type *ElementType)
 	{
 		if(sizeof(void*) == 8)
 		{

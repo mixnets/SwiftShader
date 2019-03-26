@@ -82,6 +82,7 @@
 #include <fstream>
 #include <numeric>
 #include <thread>
+#include <unordered_set>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -115,6 +116,8 @@ namespace
 	llvm::LLVMContext *context = nullptr;
 	llvm::Module *module = nullptr;
 	llvm::Function *function = nullptr;
+
+	std::unordered_set<rr::Variable*> unmat;
 
 	rr::MutexLock codegenMutex;
 
@@ -731,13 +734,13 @@ namespace rr
 		Type_LLVM
 	};
 
-	inline InternalType asInternalType(Type *type)
+	inline InternalType asInternalType(const Type *type)
 	{
 		InternalType t = static_cast<InternalType>(reinterpret_cast<uintptr_t>(type));
 		return (t < EmulatedTypeCount) ? t : Type_LLVM;
 	}
 
-	llvm::Type *T(Type *t)
+	llvm::Type *T(const Type *t)
 	{
 		// Use 128-bit vectors to implement logically shorter ones.
 		switch(asInternalType(t))
@@ -748,14 +751,14 @@ namespace rr
 		case Type_v8i8:  return T(Byte16::getType());
 		case Type_v4i8:  return T(Byte16::getType());
 		case Type_v2f32: return T(Float4::getType());
-		case Type_LLVM:  return reinterpret_cast<llvm::Type*>(t);
+		case Type_LLVM:  return const_cast<llvm::Type*>(reinterpret_cast<const llvm::Type*>(t));
 		default: assert(false); return nullptr;
 		}
 	}
 
-	inline Type *T(llvm::Type *t)
+	inline Type *T(const llvm::Type *t)
 	{
-		return reinterpret_cast<Type*>(t);
+		return reinterpret_cast<Type*>(const_cast<llvm::Type*>(t));
 	}
 
 	Type *T(InternalType t)
@@ -773,7 +776,7 @@ namespace rr
 		return reinterpret_cast<Value*>(t);
 	}
 
-	inline std::vector<llvm::Type*> &T(std::vector<Type*> &t)
+	inline std::vector<llvm::Type*> &T(std::vector<const Type*> &t)
 	{
 		return reinterpret_cast<std::vector<llvm::Type*>&>(t);
 	}
@@ -788,7 +791,7 @@ namespace rr
 		return reinterpret_cast<BasicBlock*>(t);
 	}
 
-	static size_t typeSize(Type *type)
+	static size_t typeSize(const Type *type)
 	{
 		switch(asInternalType(type))
 		{
@@ -800,7 +803,7 @@ namespace rr
 		case Type_v2f32: return 8;
 		case Type_LLVM:
 			{
-				llvm::Type *t = T(type);
+				const llvm::Type *t = T(type);
 
 				if(t->isPointerTy())
 				{
@@ -953,8 +956,28 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
+	void Nucleus::birth(Variable *variable)
+	{
+		//static int xxx = 0;
+		//xxx++;
+		//if(xxx > 16687) // >16686 <=16697
+		//	variable->materialize();
+	
+		
+		
+		
+		unmat.emplace(variable);
+	}
+
+	void Nucleus::death(Variable *variable)
+	{
+		unmat.erase(variable);
+	}
+
 	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
 	{
+	//	assert(unmat.empty());
+
 		if(::builder->GetInsertBlock()->empty() || !::builder->GetInsertBlock()->back().isTerminator())
 		{
 			llvm::Type *type = ::function->getReturnType();
@@ -1010,7 +1033,7 @@ namespace rr
 		::reactorJIT->optimize(::module);
 	}
 
-	Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
+	Value *Nucleus::allocateStackVariable(const Type *type, int arraySize)
 	{
 		// Need to allocate it in the entry block for mem2reg to work
 		llvm::BasicBlock &entryBlock = ::function->getEntryBlock();
@@ -1051,11 +1074,20 @@ namespace rr
 
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
+
 	//	assert(::builder->GetInsertBlock()->back().isTerminator());
+		for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();
+
 		::builder->SetInsertPoint(B(basicBlock));
 	}
 
-	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
+	void Nucleus::createFunction(const Type *ReturnType, std::vector<const Type*> &Params)
 	{
 		llvm::FunctionType *functionType = llvm::FunctionType::get(T(ReturnType), T(Params), false);
 		::function = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, "", ::module);
@@ -1100,11 +1132,25 @@ namespace rr
 
 	void Nucleus::createBr(BasicBlock *dest)
 	{
+		for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();
 		::builder->CreateBr(B(dest));
 	}
 
 	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
+		for(auto *x : unmat)
+		{
+
+			x->materialize();
+		}
+
+		unmat.clear();
 		::builder->CreateCondBr(V(cond), B(ifTrue), B(ifFalse));
 	}
 
@@ -1213,7 +1259,7 @@ namespace rr
 		return V(::builder->CreateNot(V(v)));
 	}
 
-	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	Value *Nucleus::createLoad(Value *ptr, const Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 	{
 		switch(asInternalType(type))
 		{
@@ -1251,7 +1297,7 @@ namespace rr
 		}
 	}
 
-	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	Value *Nucleus::createStore(Value *value, Value *ptr, const Type *type, bool isVolatile, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 	{
 		switch(asInternalType(type))
 		{
@@ -1289,7 +1335,7 @@ namespace rr
 		}
 	}
 
-	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
+	Value *Nucleus::createGEP(Value *ptr, const Type *type, Value *index, bool unsignedIndex)
 	{
 		assert(V(ptr)->getType()->getContainedType(0) == T(type));
 
@@ -1373,7 +1419,7 @@ namespace rr
 		return V(::builder->CreateFPExt(V(v), T(destType)));
 	}
 
-	Value *Nucleus::createBitCast(Value *v, Type *destType)
+	Value *Nucleus::createBitCast(Value *v, const Type *destType)
 	{
 		// Bitcasts must be between types of the same logical size. But with emulated narrow vectors we need
 		// support for casting between scalars and wide vectors. Emulate them by writing to the stack and
@@ -1565,7 +1611,7 @@ namespace rr
 		::builder->CreateUnreachable();
 	}
 
-	Type *Nucleus::getPointerType(Type *ElementType)
+	const Type *Nucleus::getPointerType(const Type *ElementType)
 	{
 		return T(llvm::PointerType::get(T(ElementType), 0));
 	}

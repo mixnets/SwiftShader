@@ -80,9 +80,30 @@ namespace rr
 
 	class Variable
 	{
-	protected:
 		friend class PrintValue;
-		Value *address;
+
+	public:
+		void materialize() const;
+		Value *loadValue() const;
+		Value *storeValue(Value *value) const;
+		Value *getAddress(Value *index, bool unsignedIndex) const;
+
+	protected:
+		Variable(const Type *type, int arraySize) : type(type), arraySize(arraySize)
+		{
+			Nucleus::birth(this);
+		}
+
+		~Variable()
+		{
+			Nucleus::death(this);
+		}
+
+	private:
+		const Type *type = nullptr;
+		const int arraySize = 0;
+		mutable Value *value = nullptr;
+		mutable Value *address = nullptr;
 	};
 
 	template<class T>
@@ -97,10 +118,6 @@ namespace rr
 		{
 			return false;
 		}
-
-		Value *loadValue() const;
-		Value *storeValue(Value *value) const;
-		Value *getAddress(Value *index, bool unsignedIndex) const;
 	};
 
 	template<class T>
@@ -899,9 +916,9 @@ namespace rr
 		Short8(const Reference<Short8> &rhs);
 		Short8(RValue<Short4> lo, RValue<Short4> hi);
 
-	//	RValue<Short8> operator=(RValue<Short8> rhs);
-	//	RValue<Short8> operator=(const Short8 &rhs);
-	//	RValue<Short8> operator=(const Reference<Short8> &rhs);
+		RValue<Short8> operator=(RValue<Short8> rhs);
+		RValue<Short8> operator=(const Short8 &rhs);
+		RValue<Short8> operator=(const Reference<Short8> &rhs);
 
 		static Type *getType();
 	};
@@ -2214,7 +2231,7 @@ namespace rr
 		Reference<T> operator[](RValue<Int> index);
 		Reference<T> operator[](RValue<UInt> index);
 
-		static Type *getType();
+		static const Type *getType();
 
 	private:
 		const int alignment;
@@ -2313,7 +2330,7 @@ namespace rr
 
 	protected:
 		Nucleus *core;
-		std::vector<Type*> arguments;
+		std::vector<const Type*> arguments;
 	};
 
 	template<typename Return>
@@ -2333,27 +2350,59 @@ namespace rr
 namespace rr
 {
 	template<class T>
-	LValue<T>::LValue(int arraySize)
+	LValue<T>::LValue(int arraySize) : Variable(T::getType(), arraySize)
 	{
-		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
+//		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
 	}
 
-	template<class T>
-	Value *LValue<T>::loadValue() const
+	inline void Variable::materialize() const
 	{
-		return Nucleus::createLoad(address, T::getType(), false, 0);
+		if(!address)
+		{
+			address = Nucleus::allocateStackVariable(type, arraySize);
+		}
+
+		if(value)
+		{
+			storeValue(value);
+		}
+
+		value = nullptr;
 	}
 
-	template<class T>
-	Value *LValue<T>::storeValue(Value *value) const
+	inline Value *Variable::loadValue() const
 	{
-		return Nucleus::createStore(value, address, T::getType(), false, 0);
+		if(value)
+		{
+			return value;
+		}
+
+		if(!address)
+		{
+			// TODO: Return undef instead.
+			materialize();
+		}
+		
+		return Nucleus::createLoad(address, type, false, 0);
 	}
 
-	template<class T>
-	Value *LValue<T>::getAddress(Value *index, bool unsignedIndex) const
+	inline Value *Variable::storeValue(Value *value) const
 	{
-		return Nucleus::createGEP(address, T::getType(), index, unsignedIndex);
+		if(address)
+		{
+			return Nucleus::createStore(value, address, type, false, 0);
+		}
+
+		this->value = value;
+
+		return value;
+	}
+
+	inline Value *Variable::getAddress(Value *index, bool unsignedIndex) const
+	{
+		materialize();
+
+		return Nucleus::createGEP(address, type, index, unsignedIndex);
 	}
 
 	template<class T>
@@ -2680,7 +2729,7 @@ namespace rr
 	}
 
 	template<class T>
-	Type *Pointer<T>::getType()
+	const Type *Pointer<T>::getType()
 	{
 		return Nucleus::getPointerType(T::getType());
 	}
@@ -2798,8 +2847,8 @@ namespace rr
 	{
 		core = new Nucleus();
 
-		Type *types[] = {Arguments::getType()...};
-		for(Type *type : types)
+		const Type *types[] = {Arguments::getType()...};
+		for(const Type *type : types)
 		{
 			if(type != Void::getType())
 			{
