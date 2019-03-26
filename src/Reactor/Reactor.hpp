@@ -23,6 +23,7 @@
 #include <cstdio>
 
 #include <string>
+#include <unordered_set>
 
 #undef Bool // b/127920555
 
@@ -80,9 +81,30 @@ namespace rr
 
 	class Variable
 	{
-	protected:
+		friend class Nucleus;
 		friend class PrintValue;
-		Value *address;
+
+	public:
+		void materialize() const;
+		Value *loadValue() const;
+		Value *storeValue(Value *value) const;
+		Value *getAddress(Value *index, bool unsignedIndex) const;
+
+	protected:
+		Variable(Type *type, int arraySize);
+
+		~Variable();
+
+	private:
+		static void materializeAll();
+		static void killUnmaterialized();
+
+		static std::unordered_set<Variable*> unmaterializedVariables;
+
+		Type *const type;
+		const int arraySize;
+		mutable Value *value = nullptr;
+		mutable Value *address = nullptr;
 	};
 
 	template<class T>
@@ -97,10 +119,6 @@ namespace rr
 		{
 			return false;
 		}
-
-		Value *loadValue() const;
-		Value *storeValue(Value *value) const;
-		Value *getAddress(Value *index, bool unsignedIndex) const;
 	};
 
 	template<class T>
@@ -2333,27 +2351,58 @@ namespace rr
 namespace rr
 {
 	template<class T>
-	LValue<T>::LValue(int arraySize)
+	LValue<T>::LValue(int arraySize) : Variable(T::getType(), arraySize)
 	{
-		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
 	}
 
-	template<class T>
-	Value *LValue<T>::loadValue() const
+	inline void Variable::materialize() const
 	{
-		return Nucleus::createLoad(address, T::getType(), false, 0);
+		if(!address)
+		{
+			address = Nucleus::allocateStackVariable(type, arraySize);
+		}
+
+		if(value)
+		{
+			storeValue(value);
+		}
+
+		value = nullptr;
 	}
 
-	template<class T>
-	Value *LValue<T>::storeValue(Value *value) const
+	inline Value *Variable::loadValue() const
 	{
-		return Nucleus::createStore(value, address, T::getType(), false, 0);
+		if(value)
+		{
+			return value;
+		}
+
+		if(!address)
+		{
+			// TODO: Return undef instead.
+			materialize();
+		}
+
+		return Nucleus::createLoad(address, type, false, 0);
 	}
 
-	template<class T>
-	Value *LValue<T>::getAddress(Value *index, bool unsignedIndex) const
+	inline Value *Variable::storeValue(Value *value) const
 	{
-		return Nucleus::createGEP(address, T::getType(), index, unsignedIndex);
+		if(address)
+		{
+			return Nucleus::createStore(value, address, type, false, 0);
+		}
+
+		this->value = value;
+
+		return value;
+	}
+
+	inline Value *Variable::getAddress(Value *index, bool unsignedIndex) const
+	{
+		materialize();
+
+		return Nucleus::createGEP(address, type, index, unsignedIndex);
 	}
 
 	template<class T>
