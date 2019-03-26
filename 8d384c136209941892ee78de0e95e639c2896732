@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0178a35d_4e903e8e",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-26T22:11:38Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cdf3da99_d9a8ded1",
+      "range": {
+        "startLine": 281,
+        "startChar": 13,
+        "endLine": 281,
+        "endChar": 71
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1d5b77ab_7465d101",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "8d384c136209941892ee78de0e95e639c2896732",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b40c0b6d_43095934",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-26T22:11:38Z",
+      "side": 1,
+      "message": "I want to kill this completely.",
+      "parentUuid": "1d5b77ab_7465d101",
+      "range": {
+        "startLine": 283,
+        "startChar": 14,
+        "endLine": 284,
+        "endChar": 91
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
