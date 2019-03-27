@@ -34,6 +34,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <memory>
+#include <queue>
 
 namespace vk
 {
@@ -572,6 +573,7 @@ namespace sw
 			Block::ID currentBlock; // The current block being built.
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
+			std::queue<Block::ID> *pending;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.
@@ -589,6 +591,10 @@ namespace sw
 		// If from is unreachable, then a mask of all zeros is returned.
 		// Asserts if from is reachable and the edge does not exist.
 		RValue<SIMD::Int> GetActiveLaneMaskEdge(EmitState *state, Block::ID from, Block::ID to) const;
+
+		// Emit all the unvisited blocks (except for ignore) in BFS order,
+		// starting with id.
+		void EmitBlocks(Block::ID id, EmitState *state, Block::ID ignore = 0) const;
 
 		void EmitBlock(Block::ID id, EmitState *state) const;
 		void EmitInstructions(InsnIterator begin, InsnIterator end, EmitState *state) const;

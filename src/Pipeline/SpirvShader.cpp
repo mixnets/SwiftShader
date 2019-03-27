@@ -21,8 +21,6 @@
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
 
-#include <queue>
-
 #ifdef Bool
 #undef Bool // b/127920555
 #endif
@@ -1179,22 +1177,31 @@ namespace sw
 			EmitInstruction(insn, &state);
 		}
 
-		// Emit all the blocks in BFS order, starting with the main block.
+		// Emit all the blocks starting from mainBlockId.
+		EmitBlocks(mainBlockId, &state);
+	}
+
+	void SpirvShader::EmitBlocks(Block::ID id, EmitState *state, Block::ID ignore /* = 0 */) const
+	{
+		auto oldPending = state->pending;
+
 		std::queue<Block::ID> pending;
-		pending.push(mainBlockId);
+		state->pending = &pending;
+		pending.push(id);
 		while (pending.size() > 0)
 		{
 			auto id = pending.front();
 			pending.pop();
-			if (state.visited.count(id) == 0)
+
+			if (id == ignore)
 			{
-				EmitBlock(id, &state);
-				for (auto it : getBlock(id).outs)
-				{
-					pending.push(it);
-				}
+				continue;
 			}
+
+			EmitBlock(id, state);
 		}
+
+		state->pending = oldPending;
 	}
 
 	void SpirvShader::EmitBlock(Block::ID id, EmitState *state) const
@@ -1222,12 +1229,11 @@ namespace sw
 			case Block::UnstructuredSwitch:
 				if (id != mainBlockId)
 				{
-					// Emit all preceding blocks and set the activeLaneMask.
+					// Set the activeLaneMask from the incoming blocks.
 					Intermediate activeLaneMask(1);
 					activeLaneMask.move(0, SIMD::Int(0));
 					for (auto in : block.ins)
 					{
-						EmitBlock(in, state);
 						auto inMask = GetActiveLaneMaskEdge(state, in, id);
 						activeLaneMask.replace(0, activeLaneMask.Int(0) | inMask);
 					}
@@ -1235,6 +1241,10 @@ namespace sw
 				}
 				state->currentBlock = id;
 				EmitInstructions(block.begin(), block.end(), state);
+				for (auto out : block.outs)
+				{
+					state->pending->emplace(out);
+				}
 				break;
 
 			case Block::Loop:
@@ -1277,7 +1287,6 @@ namespace sw
 		{
 			if (!existsPath(blockId, in)) // if not a loop back edge
 			{
-				EmitBlock(in, state);
 				loopActiveLaneMask |= GetActiveLaneMaskEdge(state, in, blockId);
 			}
 		}
@@ -1373,14 +1382,21 @@ namespace sw
 			}
 		}
 
-		// Emit all the back-edge blocks and use their active lane masks to
-		// rebuild the loopActiveLaneMask.
+		// Emit all loop blocks, but don't emit the merge block yet.
+		for (auto out : block.outs)
+		{
+			if (existsPath(out, blockId))
+			{
+				EmitBlocks(out, state, block.mergeBlock);
+			}
+		}
+
+		// Rebuild the loopActiveLaneMask from the loop back edges.
 		loopActiveLaneMask = SIMD::Int(0);
 		for (auto in : block.ins)
 		{
 			if (existsPath(blockId, in))
 			{
-				EmitBlock(in, state);
 				loopActiveLaneMask |= GetActiveLaneMaskEdge(state, in, blockId);
 			}
 		}
@@ -1404,9 +1420,9 @@ namespace sw
 		// otherwise jump to the merge block.
 		Nucleus::createCondBr(AnyTrue(loopActiveLaneMask).value, headerBasicBlock, mergeBasicBlock);
 
-		// Emit the merge block, and we're done.
+		// Continue emitting from the merge block.
 		Nucleus::setInsertBlock(mergeBasicBlock);
-		EmitBlock(block.mergeBlock, state);
+		state->pending->emplace(block.mergeBlock);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
