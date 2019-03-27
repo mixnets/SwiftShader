@@ -360,6 +360,7 @@ namespace sw
 			case spv::OpVectorTimesScalar:
 			case spv::OpMatrixTimesScalar:
 			case spv::OpMatrixTimesVector:
+			case spv::OpVectorTimesMatrix:
 			case spv::OpVectorExtractDynamic:
 			case spv::OpVectorInsertDynamic:
 			case spv::OpNot: // Unary ops
@@ -1476,6 +1477,9 @@ namespace sw
 		case spv::OpMatrixTimesVector:
 			return EmitMatrixTimesVector(insn, state);
 
+		case spv::OpVectorTimesMatrix:
+			return EmitVectorTimesMatrix(insn, state);
+
 		case spv::OpNot:
 		case spv::OpSNegate:
 		case spv::OpFNegate:
@@ -2073,6 +2077,29 @@ namespace sw
 			for (auto j = 1u; j < rhsType.sizeInComponents; j++)
 			{
 				v += lhs.Float(i * rhsType.sizeInComponents + j) * rhs.Float(j);
+			}
+			dst.move(i, v);
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitVectorTimesMatrix(InsnIterator insn, EmitState *state) const
+	{
+		auto routine = state->routine;
+		auto &type = getType(insn.word(1));
+		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto lhs = GenericValue(this, routine, insn.word(3));
+		auto rhs = GenericValue(this, routine, insn.word(4));
+		auto lhsType = getType(getObject(insn.word(3)).type);
+
+		for (auto i = 0u; i < type.sizeInComponents; i++)
+		{
+			/* v = dot(row, vec) */
+			SIMD::Float v = lhs.Float(i) * rhs.Float(0);
+			for (auto j = 1u; j < type.sizeInComponents; j++)
+			{
+				v += lhs.Float(i + j * type.sizeInComponents) * rhs.Float(j);
 			}
 			dst.move(i, v);
 		}
