@@ -1438,6 +1438,8 @@ EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, E
 {
 	EGLAttrib attrib_value;
 	EGLBoolean result = GetSyncAttrib(dpy, sync, attribute, &attrib_value);
+	if (!value)
+		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	*value = static_cast<EGLint>(attrib_value);
 	return result;
 }
