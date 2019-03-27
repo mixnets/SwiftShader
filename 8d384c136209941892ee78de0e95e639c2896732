@@ -119,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "0da54d74_eb1c52b7",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-27T20:00:29Z",
+      "side": 1,
+      "message": "I don\u0027t have a strong argument, but I\u0027m not fond of mashing together multiple Vulkan command types. It makes looking at the command buffer contents more confusing.",
+      "parentUuid": "3a845a03_6ae6a9a8",
+      "range": {
+        "startLine": 343,
+        "startChar": 87,
+        "endLine": 343,
+        "endChar": 88
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "279f9764_aaf8a14b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 2
@@ -130,6 +154,30 @@
       "writtenOn": "2019-03-26T14:46:56Z",
       "side": 1,
       "message": "getDrawIndirectCommand(drawId)?",
+      "range": {
+        "startLine": 352,
+        "startChar": 14,
+        "endLine": 352,
+        "endChar": 119
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2007c74a_b534a915",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-27T20:00:29Z",
+      "side": 1,
+      "message": "I suppose, but we\u0027re already doing almost nothing in this function...",
+      "parentUuid": "279f9764_aaf8a14b",
       "range": {
         "startLine": 352,
         "startChar": 14,
