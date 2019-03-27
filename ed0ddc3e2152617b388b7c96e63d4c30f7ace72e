@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d61747f9_c6bc4365",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-27T14:10:08Z",
+      "side": 1,
+      "message": "b/74572503\n\nOtherwise Chromium tools interpret it as a Monorail issue number.",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 13
+      },
+      "revId": "ed0ddc3e2152617b388b7c96e63d4c30f7ace72e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc1461ef_d3cd42e0",
+        "filename": "src/OpenGL/libEGL/libEGL.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1442,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-27T14:10:08Z",
+      "side": 1,
+      "message": "Validate before calling GetSyncAttrib? Also (nit) we use brackets around singular conditional statements if it doesn\u0027t hurt readability.",
+      "range": {
+        "startLine": 1441,
+        "startChar": 1,
+        "endLine": 1442,
+        "endChar": 45
+      },
+      "revId": "ed0ddc3e2152617b388b7c96e63d4c30f7ace72e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
