@@ -80,8 +80,15 @@ namespace rr
 
 	class Variable
 	{
-	protected:
 		friend class PrintValue;
+
+		Variable &operator=(const Variable&) = delete;
+
+	public:
+		Variable() = default;
+		Variable(const Variable&) = default;
+
+	protected:
 		Value *address;
 	};
 
