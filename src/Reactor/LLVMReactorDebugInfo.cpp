@@ -29,6 +29,7 @@
 #include "llvm/IR/DIBuilder.h"
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/Demangle/Demangle.h"
 
 #include <cctype>
 #include <fstream>
@@ -81,7 +82,7 @@ namespace rr
 		auto sp = diBuilder->createFunction(
 			file,                   // scope
 			"ReactorFunction",      // function name
-			StringRef(),            // linkage
+			"ReactorFunction",      // linkage
 			file,                   // file
 			location.line,          // line
 			funcTy,                 // type
@@ -93,7 +94,8 @@ namespace rr
 		);
 		diSubprogram = sp;
 		function->setSubprogram(sp);
-		builder->SetCurrentDebugLocation(DebugLoc::get(location.line, 0, sp));
+		diRootLocation = DILocation::get(*context, location.line, 0, sp);
+		builder->SetCurrentDebugLocation(diRootLocation);
 	}
 
 	void DebugInfo::Finalize()
@@ -110,7 +112,7 @@ namespace rr
 	{
 		auto const& backtrace = getCallerBacktrace();
 		syncScope(backtrace);
-		builder->SetCurrentDebugLocation(llvm::DebugLoc::get(backtrace.back().line, 0, diScope.back().di));
+		builder->SetCurrentDebugLocation(getLocation(backtrace, backtrace.size() - 1));
 	}
 
 	void DebugInfo::Flush()
@@ -174,11 +176,44 @@ namespace rr
 			auto i = diScope.size();
 			auto location = backtrace[i];
 			auto file = getOrCreateFile(location.function.file.c_str());
-			auto di = diBuilder->createLexicalBlock(diSubprogram, file, location.line, 0);
-			diScope.push_back({location, di});
+			auto funcTy = diBuilder->createSubroutineType(diBuilder->getOrCreateTypeArray({}));
+
+			char buf[1024];
+			size_t size = sizeof(buf);
+			int status = 0;
+			llvm::itaniumDemangle(location.function.name.c_str(), buf, &size, &status);
+			auto name = status == 0 ? buf : location.function.name.c_str();
+
+			auto func = diBuilder->createFunction(
+				file,                           // scope
+				name,                           // function name
+				"",                             // linkage
+				file,                           // file
+				location.line,                  // line
+				funcTy,                         // type
+				false,                          // internal linkage
+				true,                           // definition
+				location.line,                  // scope line
+				llvm::DINode::FlagPrototyped,   // flags
+				false                           // is optimized
+			);
+			diScope.push_back({location, func});
 			LOG("+ STACK(%d): di: %p, location: %s:%d", int(i), di,
 				location.function.file.c_str(), int(location.line));
 		}
+	}
+
+	llvm::DILocation* DebugInfo::getLocation(const Backtrace &backtrace, size_t i)
+	{
+		if (backtrace.size() == 0) { return nullptr; }
+		assert(backtrace.size() == diScope.size());
+		return llvm::DILocation::get(
+			*context,
+			backtrace[i].line,
+			0,
+			diScope[i].di,
+			i > 0 ? getLocation(backtrace, i - 1) : diRootLocation
+		);
 	}
 
 	void DebugInfo::EmitVariable(Value *variable)
@@ -195,21 +230,24 @@ namespace rr
 			{
 				break;
 			}
-			auto tok = tokIt->second;
-			if (tok.kind == Token::Return)
+			auto token = tokIt->second;
+			auto name = token.identifier;
+			if (token.kind == Token::Return)
 			{
 				// This is a:
 				//
 				//   return <expr>;
 				//
-				// Return Value Optimizations may carry across the value to a
-				// local without calling a constructor in statements like:
+				// Emit this expression as two variables -
+				// Once as a synthetic 'return_value' variable at this scope.
+				// Again by bubbling the expression value up the callstack as
+				// Return Value Optimizations (RVOs) are likely to carry across
+				// the value to a local without calling a constructor in
+				// statements like:
 				//
 				//   auto val = foo();
 				//
-				// Bubble the expression value up the callstack to deal with
-				// this.
-				continue;
+				name = "return_value";
 			}
 
 			auto &scope = diScope[i];
@@ -218,7 +256,6 @@ namespace rr
 				emitPending(scope, builder, diBuilder);
 			}
 
-			auto &token = tokIt->second;
 			auto value = V(variable);
 			auto block = builder->GetInsertBlock();
 
@@ -228,13 +265,25 @@ namespace rr
 				insertAfter = insertAfter->getPrevNode();
 			}
 
-			scope.pending.name = token.identifier;
+			scope.pending = Pending{};
+			scope.pending.name = name;
 			scope.pending.location = location;
+			scope.pending.diLocation = getLocation(backtrace, i);
 			scope.pending.value = value;
 			scope.pending.block = block;
 			scope.pending.insertAfter = insertAfter;
 			scope.pending.scope = scope.di;
-			break;
+
+			if (token.kind == Token::Return)
+			{
+				// Insert a noop instruction so the debugger can inspect the
+				// return value before the function scope closes.
+				scope.pending.addNopOnNextLine = true;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 
@@ -256,18 +305,18 @@ namespace rr
 		LOG("  EMIT(%s): di: %p, location: %s:%d, isAlloca: %s", pending.name.c_str(), scope.di,
 			pending.location.function.file.c_str(), pending.location.line, isAlloca ? "true" : "false");
 
-		auto diLoc = llvm::DebugLoc::get(pending.location.line, 0, scope.di);
 		auto value = pending.value;
-		llvm::Instruction *insertBefore = nullptr;
 
+		IRBuilder::InsertPointGuard guard(*builder);
 		if (pending.insertAfter != nullptr)
 		{
-			insertBefore = pending.insertAfter->getNextNode();
+			builder->SetInsertPoint(pending.block, ++pending.insertAfter->getIterator());
 		}
-		else if (pending.block->size() > 0)
+		else
 		{
-			insertBefore = &*pending.block->begin();
+			builder->SetInsertPoint(pending.block);
 		}
+		builder->SetCurrentDebugLocation(pending.diLocation);
 
 		if (!isAlloca)
 		{
@@ -284,10 +333,7 @@ namespace rr
 			llvm::BasicBlock &entryBlock = function->getEntryBlock();
 			auto alloca = new llvm::AllocaInst(value->getType(), 0, pending.name);
 			entryBlock.getInstList().push_front(alloca);
-			auto store = insertBefore != nullptr ?
-				new llvm::StoreInst(value, alloca, insertBefore) :
-				new llvm::StoreInst(value, alloca, pending.block);
-			store->setDebugLoc(diLoc);
+			builder->CreateStore(value, alloca);
 			value = alloca;
 		}
 
@@ -296,14 +342,19 @@ namespace rr
 		auto diFile = getOrCreateFile(pending.location.function.file.c_str());
 		auto diType = getOrCreateType(value->getType()->getPointerElementType());
 		auto diVar = diBuilder->createAutoVariable(scope.di, pending.name, diFile, pending.location.line, diType);
+		auto di = diBuilder->insertDeclare(value, diVar, diBuilder->createExpression(), pending.diLocation, pending.block);
+		if (pending.insertAfter != nullptr) { di->moveAfter(pending.insertAfter); }
 
-		if (insertBefore != nullptr)
+		if (pending.addNopOnNextLine)
 		{
-			diBuilder->insertDeclare(value, diVar, diBuilder->createExpression(), diLoc, insertBefore);
-		}
-		else
-		{
-			diBuilder->insertDeclare(value, diVar, diBuilder->createExpression(), diLoc, pending.block);
+			builder->SetCurrentDebugLocation(llvm::DILocation::get(
+				*context,
+				pending.diLocation->getLine() + 1,
+				0,
+				pending.diLocation->getScope(),
+				pending.diLocation->getInlinedAt()
+			));
+			Nop();
 		}
 
 		scope.pending = Pending{};

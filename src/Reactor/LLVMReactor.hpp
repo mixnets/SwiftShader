@@ -42,6 +42,8 @@ namespace rr
 	{
 		return reinterpret_cast<Value*>(t);
 	}
+
+	void Nop();
 }
 
 #endif // rr_LLVMReactor_hpp
