@@ -22,6 +22,30 @@
       "revId": "2427e087e53b79448b345c7fec91eaf1e152ecf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80f7d7f2_7c532683",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-28T17:46:41Z",
+      "side": 1,
+      "message": "Probably the same, but the signature of the function takes an integer, not an enum.\nCould change, but this is throw-away debug code.",
+      "parentUuid": "76612c76_0986f8b1",
+      "range": {
+        "startLine": 237,
+        "startChar": 34,
+        "endLine": 237,
+        "endChar": 35
+      },
+      "revId": "2427e087e53b79448b345c7fec91eaf1e152ecf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
