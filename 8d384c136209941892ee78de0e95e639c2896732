@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "3b36fa27_82fc03e8",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-28T14:29:50Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0da54d74_eb1c52b7",
+      "range": {
+        "startLine": 343,
+        "startChar": 87,
+        "endLine": 343,
+        "endChar": 88
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "279f9764_aaf8a14b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 2
@@ -178,6 +202,30 @@
       "side": 1,
       "message": "I suppose, but we\u0027re already doing almost nothing in this function...",
       "parentUuid": "279f9764_aaf8a14b",
+      "range": {
+        "startLine": 352,
+        "startChar": 14,
+        "endLine": 352,
+        "endChar": 119
+      },
+      "revId": "8d384c136209941892ee78de0e95e639c2896732",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02430441_af3e03ba",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-28T14:29:50Z",
+      "side": 1,
+      "message": "It might be too involved, but I was thinking of something like:\n\ntemplate \u003cstruct T\u003e\nstruct DrawIndexedBase : public DrawBase\n{\n  DrawIndexedBase(VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)\n    : buffer(buffer), offset(offset), drawCount(drawCount), stride(stride)\n  {\n  }\n\n  inline T* getDrawCommand(uint32_t drawId) const\n  {\n    return reinterpret_cast\u003cT*\u003e(Cast(buffer)-\u003egetOffsetPointer(offset + drawId * stride));\n  }\n\n  void play(CommandBuffer::ExecutionState\u0026 executionState) override\n  {\n    for (auto drawId \u003d 0u; drawId \u003c drawCount; drawId++)\n    {\n      draw(executionState, getDrawCommand(drawId));\n    }\n  }\n\n  VkBuffer buffer;\n  VkDeviceSize offset;\n  uint32_t drawCount;\n  uint32_t stride;\n};\n\nstruct DrawIndirect : public DrawIndexedBase\u003cVkDrawIndirectCommand\u003e\n{\n...\n  inline void draw(CommandBuffer::ExecutionState\u0026 executionState, const VkDrawIndirectCommand* cmd)\n  {\n    draw(executionState, false, cmd-\u003evertexCount, cmd-\u003einstanceCount, 0, cmd-\u003efirstVertex, cmd-\u003efirstInstance);\n  }\n}\n\nstruct DrawIndexedIndirect : public DrawIndexedBase\u003cVkDrawIndexedIndirectCommand\u003e\n{\n...\n  inline void draw(CommandBuffer::ExecutionState\u0026 executionState, const VkDrawIndexedIndirectCommand* cmd)\n  {\n    draw(executionState, true, cmd-\u003eindexCount, cmd-\u003einstanceCount, cmd-\u003efirstIndex, cmd-\u003evertexOffset, cmd-\u003efirstInstance);\n  }\n}\n\nThe template isn\u0027t really necessary, getDrawCommand() could return a void*.\nAnyway, I just wanted to clarify. Maybe I\u0027m overthinking this. Again, your call.",
+      "parentUuid": "2007c74a_b534a915",
       "range": {
         "startLine": 352,
         "startChar": 14,
