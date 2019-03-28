@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_DEBUG;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -138,7 +138,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_DEBUG;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>false</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -167,7 +167,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -198,7 +198,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -230,7 +230,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -263,7 +263,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;..\..\third_party\llvm-7.0\configs\windows\include;..\..\third_party\llvm-7.0\llvm\include;..\..\third_party\llvm-7.0\llvm\lib\Target\X86;..\..\third_party\llvm-7.0\configs\common\include;..\..\third_party\llvm-7.0\configs\common\lib\IR;..\..\third_party\llvm-7.0\configs\common\lib\Transforms\InstCombine;..\..\third_party\llvm-7.0\configs\common\lib\Target\X86;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;REACTOR_LLVM_VERSION=7;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
