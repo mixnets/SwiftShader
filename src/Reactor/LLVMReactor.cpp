@@ -554,12 +554,15 @@ namespace rr
 	public:
 		ExternalFunctionSymbolResolver()
 		{
+			struct F { static void nop() {} };
+
 			func_.emplace("floorf", reinterpret_cast<void*>(floorf));
 			func_.emplace("nearbyintf", reinterpret_cast<void*>(nearbyintf));
 			func_.emplace("truncf", reinterpret_cast<void*>(truncf));
 			func_.emplace("printf", reinterpret_cast<void*>(printf));
 			func_.emplace("puts", reinterpret_cast<void*>(puts));
 			func_.emplace("fmodf", reinterpret_cast<void*>(fmodf));
+			func_.emplace("nop", reinterpret_cast<void*>(F::nop));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3947,6 +3950,14 @@ namespace rr
 	{
 		auto trap = ::llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::trap);
 		builder->CreateCall(trap);
+	}
+
+	void Nop()
+	{
+		auto voidTy = ::llvm::Type::getVoidTy(*context);
+		auto funcTy = ::llvm::FunctionType::get(voidTy, {}, false);
+		auto func = ::module->getOrInsertFunction("nop", funcTy);
+		builder->CreateCall(func);
 	}
 
 	void EmitDebugLocation()

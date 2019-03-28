@@ -1758,7 +1758,13 @@ elseif(ARCH STREQUAL "arm")
         ${LLVM_DIR}/lib/Target/ARM/ARMLegalizerInfo.cpp
         ${LLVM_DIR}/lib/Target/ARM/ARMOptimizeBarriersPass.cpp
     )
- endif()
+endif()
+
+if(EMIT_DEBUG_INFO)
+    list(APPEND LLVM_LIST
+        ${LLVM_DIR}/lib/Demangle/ItaniumDemangle.cpp
+    )
+endif(EMIT_DEBUG_INFO)
 
 set(LLVM_INCLUDE_DIR "")
 
