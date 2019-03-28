@@ -234,9 +234,9 @@ std::vector<uint32_t> preprocessSpirv(
 	if (false) {
 		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
 		std::string preOpt;
-		core.Disassemble(code, &preOpt);
+		core.Disassemble(code, &preOpt, 0);
 		std::string postOpt;
-		core.Disassemble(optimized, &postOpt);
+		core.Disassemble(optimized, &postOpt, 0);
 		std::cout << "PRE-OPT: " << preOpt << std::endl
 		 		<< "POST-OPT: " << postOpt << std::endl;
 	}
