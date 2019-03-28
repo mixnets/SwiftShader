@@ -32,6 +32,7 @@ namespace llvm
 	class DIBuilder;
 	class DICompileUnit;
 	class DIFile;
+	class DILocation;
 	class DIScope;
 	class DISubprogram;
 	class DIType;
@@ -149,10 +150,12 @@ namespace rr
 		{
 			std::string name;
 			Location location;
+			llvm::DILocation *diLocation = nullptr;
 			llvm::Value *value = nullptr;
 			llvm::Instruction *insertAfter = nullptr;
 			llvm::BasicBlock *block = nullptr;
 			llvm::DIScope *scope = nullptr;
+			bool addNopOnNextLine = false;
 		};
 
 		struct Scope
@@ -175,6 +178,8 @@ namespace rr
 		// frames will be returned.
 		Backtrace getCallerBacktrace(size_t limit = 0) const;
 
+		llvm::DILocation* getLocation(const Backtrace &backtrace, size_t i);
+
 		llvm::DIType *getOrCreateType(llvm::Type* type);
 		llvm::DIFile *getOrCreateFile(const char* path);
 		LineTokens const *getOrParseFileTokens(const char* path);
@@ -190,6 +195,7 @@ namespace rr
 		llvm::DIBuilder *diBuilder;
 		llvm::DICompileUnit *diCU;
 		llvm::DISubprogram *diSubprogram;
+		llvm::DILocation *diRootLocation;
 		std::vector<Scope> diScope;
 		std::unordered_map<std::string, llvm::DIFile*> diFiles;
 		std::unordered_map<llvm::Type*, llvm::DIType*> diTypes;
