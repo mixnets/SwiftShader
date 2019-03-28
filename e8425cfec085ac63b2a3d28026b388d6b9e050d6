@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec2abdff_28c9260d",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-28T16:15:33Z",
+      "side": 1,
+      "message": "As we\u0027ve been discussing, I think this changes the behaviour of Variables in exciting ways. Consider:\n\n  void foo(Variable v) { v.storeValue(RValue\u003cInt\u003e(1).value); }\n\n  void bar()\n  {\n     Int x \u003d 1;\n     foo(x);\n     // is x 1 or 2?\n  }\n\nWe can either delete the copy constructor on Variable, or move the rvalue and address fields into a std::shared_ptr. I think I prefer the latter as it keeps the behaviour consistent with what we currently have.",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 35
+      },
+      "revId": "e8425cfec085ac63b2a3d28026b388d6b9e050d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
