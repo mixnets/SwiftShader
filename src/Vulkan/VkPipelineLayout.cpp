@@ -49,10 +49,10 @@ size_t PipelineLayout::getNumDescriptorSets() const
 	return setLayoutCount;
 }
 
-size_t PipelineLayout::getBindingOffset(size_t descriptorSet, size_t binding) const
+DescriptorSetLayout const* PipelineLayout::getDescriptorSetLayout(size_t descriptorSet) const
 {
 	ASSERT(descriptorSet < setLayoutCount);
-	return setLayouts[descriptorSet]->getBindingOffset(binding);
+	return setLayouts[descriptorSet];
 }
 
 } // namespace vk

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkDescriptorUpdateTemplate.hpp"
+#include "VkDescriptorSet.hpp"
 #include "VkDescriptorSetLayout.hpp"
 #include <cstring>
 
@@ -34,8 +35,10 @@ namespace vk
 		return info->descriptorUpdateEntryCount * sizeof(VkDescriptorUpdateTemplateEntry);
 	}
 
-	void DescriptorUpdateTemplate::updateDescriptorSet(VkDescriptorSet descriptorSet, const void* pData)
+	void DescriptorUpdateTemplate::updateDescriptorSet(VkDescriptorSet vkDescriptorSet, const void* pData)
 	{
+		DescriptorSet* descriptorSet = Cast(vkDescriptorSet);
+
 		for(uint32_t i = 0; i < descriptorUpdateEntryCount; i++)
 		{
 			for(uint32_t j = 0; j < descriptorUpdateEntries[i].descriptorCount; j++)

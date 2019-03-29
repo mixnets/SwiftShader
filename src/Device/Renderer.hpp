@@ -114,7 +114,7 @@ namespace sw
 	{
 		const Constants *constants;
 
-		vk::DescriptorSet *descriptorSets[vk::MAX_BOUND_DESCRIPTOR_SETS];
+		vk::DescriptorSet::Binding descriptorSetBindings[vk::MAX_BOUND_DESCRIPTOR_SETS];
 
 		const void *input[MAX_VERTEX_INPUTS];
 		unsigned int stride[MAX_VERTEX_INPUTS];

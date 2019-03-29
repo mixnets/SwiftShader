@@ -542,11 +542,12 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 }
 
 void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-	size_t numDescriptorSets, VkDescriptorSet *descriptorSets, sw::PushConstantStorage const &pushConstants)
+	size_t numDescriptorSets, vk::DescriptorSet::Binding *descriptorSetBindings,
+	sw::PushConstantStorage const &pushConstants)
 {
 	ASSERT_OR_RETURN(routine != nullptr);
 	sw::ComputeProgram::run(
-		routine, reinterpret_cast<void**>(descriptorSets), pushConstants,
+		routine, descriptorSetBindings, pushConstants,
 		groupCountX, groupCountY, groupCountZ);
 }
 

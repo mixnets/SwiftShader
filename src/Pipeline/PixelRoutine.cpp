@@ -56,11 +56,11 @@ namespace sw
 
 	void PixelRoutine::generate()
 	{
-		Pointer<Pointer<Byte>> descriptorSets = Pointer<Pointer<Byte>>(data + OFFSET(DrawData, descriptorSets));
+		Pointer<Pointer<Byte>> descriptorSetBindings = Pointer<Pointer<Byte>>(data + OFFSET(DrawData, descriptorSetBindings));
 		auto numDescriptorSets = routine.pipelineLayout->getNumDescriptorSets();
 		for(unsigned int i = 0; i < numDescriptorSets; i++)
 		{
-			routine.descriptorSets[i] = descriptorSets[i];
+			routine.descriptorSetBindings[i] = descriptorSetBindings[i];
 		}
 
 		QuadRasterizer::generate();
