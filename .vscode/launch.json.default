@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "deqp (lldb)",
+            "program": "/ssd/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan/deqp-vk",
+            "args": ["-n", "dEQP-VK.binding_model.shader_access.primary_cmd_buf.uniform_buffer.fragment.multiple_arbitrary_descriptors.offset_view_nonzero"],
+            "cwd": "/ssd/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan",
+            "env": {"VK_ICD_FILENAMES": "/ssd/src/SwiftShader/build/Linux/vk_swiftshader_icd.json"},
+        },
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "deqp (gdb)",
+            "program": "/ssd/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan/deqp-vk",
+            "args": ["-n", "dEQP-VK.binding_model.shader_access.primary_cmd_buf.uniform_buffer.fragment.multiple_arbitrary_descriptors.offset_view_nonzero"],
+            "cwd": "/ssd/src/VK-GL-CTS/build/external/vulkancts/modules/vulkan",
+            "environment": [{"name": "VK_ICD_FILENAMES", "value": "/ssd/src/SwiftShader/build/Linux/vk_swiftshader_icd.json"}],
+        }
+    ]
+}
