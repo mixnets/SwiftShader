@@ -174,7 +174,6 @@ protected:
 		ComputePipeline* pipeline = static_cast<ComputePipeline*>(
 			executionState.pipelines[VK_PIPELINE_BIND_POINT_COMPUTE]);
 		pipeline->run(groupCountX, groupCountY, groupCountZ,
-			MAX_BOUND_DESCRIPTOR_SETS,
 			executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_COMPUTE],
 			executionState.pushConstants);
 	}
@@ -201,7 +200,6 @@ protected:
 		ComputePipeline* pipeline = static_cast<ComputePipeline*>(
 				executionState.pipelines[VK_PIPELINE_BIND_POINT_COMPUTE]);
 		pipeline->run(cmd->x, cmd->y, cmd->z,
-					  MAX_BOUND_DESCRIPTOR_SETS,
 					  executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_COMPUTE],
 					  executionState.pushConstants);
 	}
@@ -314,7 +312,7 @@ struct DrawBase : public CommandBuffer::Command
 		const auto& boundDescriptorSets = executionState.boundDescriptorSets[VK_PIPELINE_BIND_POINT_GRAPHICS];
 		for(int i = 0; i < vk::MAX_BOUND_DESCRIPTOR_SETS; i++)
 		{
-			context.descriptorSets[i] = reinterpret_cast<vk::DescriptorSet*>(boundDescriptorSets[i]);
+			context.descriptorSetBindings[i] = boundDescriptorSets[i];
 		}
 
 		context.pushConstants = executionState.pushConstants;
@@ -687,21 +685,27 @@ private:
 
 struct BindDescriptorSet : public CommandBuffer::Command
 {
-	BindDescriptorSet(VkPipelineBindPoint pipelineBindPoint, uint32_t set, const VkDescriptorSet& descriptorSet)
-		: pipelineBindPoint(pipelineBindPoint), set(set), descriptorSet(descriptorSet)
+	BindDescriptorSet(VkPipelineBindPoint pipelineBindPoint, uint32_t set, const VkDescriptorSet& descriptorSet,
+		std::shared_ptr<uint32_t[]> &dynamicOffsets)
+		: pipelineBindPoint(pipelineBindPoint), set(set), descriptorSet(descriptorSet),
+		  dynamicOffsets(dynamicOffsets)
 	{
 	}
 
 	void play(CommandBuffer::ExecutionState& executionState)
 	{
 		ASSERT((pipelineBindPoint < VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (set < MAX_BOUND_DESCRIPTOR_SETS));
-		executionState.boundDescriptorSets[pipelineBindPoint][set] = descriptorSet;
+		auto &binding = executionState.boundDescriptorSets[pipelineBindPoint][set];
+		binding.descriptorSet = descriptorSet;
+		binding.dynamicOffsets = dynamicOffsets.get() != nullptr ? &dynamicOffsets[0] : nullptr;
+		binding.dynamicOffsetsStorage = dynamicOffsets;
 	}
 
 private:
 	VkPipelineBindPoint pipelineBindPoint;
 	uint32_t set;
 	const VkDescriptorSet descriptorSet;
+	const std::shared_ptr<uint32_t[]> dynamicOffsets;
 };
 
 struct SetPushConstants : public CommandBuffer::Command
@@ -978,20 +982,50 @@ void CommandBuffer::setStencilReference(VkStencilFaceFlags faceMask, uint32_t re
 	UNIMPLEMENTED("setStencilReference");
 }
 
-void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout,
+void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout vkLayout,
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
 	ASSERT(state == RECORDING);
 
-	if(dynamicOffsetCount > 0)
-	{
-		UNIMPLEMENTED("bindDescriptorSets");
-	}
-
 	for(uint32_t i = 0; i < descriptorSetCount; i++)
 	{
-		addCommand<BindDescriptorSet>(pipelineBindPoint, firstSet + i, pDescriptorSets[i]);
+		auto descriptorSetIndex = firstSet + i;
+		auto layout = vk::Cast(vkLayout);
+		auto setLayout = layout->getDescriptorSetLayout(descriptorSetIndex);
+
+		auto numDynamicBindings = setLayout->getDynamicBindingCount();
+		ASSERT(numDynamicBindings == 0 || pDynamicOffsets != nullptr);
+		ASSERT(dynamicOffsetCount >= numDynamicBindings);
+
+		// TODO: Figure out how to drop this allocation.
+		// FIXME (b/119409619)
+		//
+		// The spec states: "The contents of pDynamicOffsets are consumed
+		// immediately during execution of vkCmdBindDescriptorSets" so a copy
+		// needs to be made here.
+		// VkPhysicalDeviceLimits has maxDescriptorSetUniformBuffersDynamic and
+		// maxDescriptorSetStorageBuffersDynamic, but these are the "maximum
+		// number of dynamic [uniform/storage] buffers that can be included in
+		// descriptor bindings in a pipeline layout across all pipeline shader
+		// stages and descriptor set numbers". While it is feasible to hold a
+		// pre-allocate a buffer large enough to fit all dynamic offsets
+		// for each pipeline, the data would then also have to be copied into
+		// each DrawData per draw.
+		// An alternative solution would be to create a pool of uint32_t's of
+		// various sizes.
+		auto dynamicOffsets = std::shared_ptr<uint32_t[]>(new uint32_t[numDynamicBindings]);
+		for (size_t i = 0; i < numDynamicBindings; i++)
+		{
+			dynamicOffsets[i] = pDynamicOffsets[i];
+		}
+
+		addCommand<BindDescriptorSet>(
+				pipelineBindPoint, descriptorSetIndex, pDescriptorSets[i],
+				dynamicOffsets);
+
+		pDynamicOffsets += numDynamicBindings;
+		dynamicOffsetCount -= numDynamicBindings;
 	}
 }
 
