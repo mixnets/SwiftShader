@@ -12,18 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <spirv/unified1/spirv.hpp>
-#include <spirv/unified1/GLSL.std.450.h>
 #include "SpirvShader.hpp"
+
+#include "SamplerCore.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "Device/Config.hpp"
+
+#include <spirv/unified1/spirv.hpp>
+#include <spirv/unified1/GLSL.std.450.h>
 
 #ifdef Bool
 #undef Bool // b/127920555
+#undef None
 #endif
 
 namespace
@@ -212,6 +217,13 @@ namespace sw
 					break; // Correctly handled.
 
 				case spv::StorageClassUniformConstant:
+					 {
+	 				//	 auto &type = getType(typeId);
+						 object.kind = Object::Kind::Sampler;
+					 }
+					 
+					 break;
+
 				case spv::StorageClassWorkgroup:
 				case spv::StorageClassCrossWorkgroup:
 				case spv::StorageClassGeneric:
@@ -438,6 +450,7 @@ namespace sw
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
+			case spv::OpImageSampleImplicitLod:
 				// Instructions that yield an intermediate value or divergent
 				// pointer
 			{
@@ -854,11 +867,11 @@ namespace sw
 		}
 	}
 
-	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
-		auto &baseObject = getObject(id);
+		auto &baseObject = getObject(baseId);
 		Type::ID typeId = getType(baseObject.type).element;
 		Decorations d = {};
 		ApplyDecorationsForId(&d, baseObject.type);
@@ -880,7 +893,7 @@ namespace sw
 
 		SIMD::Int dynamicOffset;
 		Pointer<Byte> pointerBase;
-		std::tie(pointerBase, dynamicOffset) = GetPointerToData(id, arrayIndex, routine);
+		std::tie(pointerBase, dynamicOffset) = GetPointerToData(baseId, arrayIndex, routine);
 
 		int constantOffset = 0;
 
@@ -1529,7 +1542,9 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
-		switch (insn.opcode())
+		auto opcode = insn.opcode();
+
+		switch (opcode)
 		{
 		case spv::OpTypeVoid:
 		case spv::OpTypeInt:
@@ -1542,6 +1557,8 @@ namespace sw
 		case spv::OpTypeStruct:
 		case spv::OpTypePointer:
 		case spv::OpTypeFunction:
+		case spv::OpTypeImage:
+		case spv::OpTypeSampledImage:
 		case spv::OpExecutionMode:
 		case spv::OpMemoryModel:
 		case spv::OpFunction:
@@ -1735,8 +1752,81 @@ namespace sw
 		case spv::OpKill:
 			return EmitKill(insn, state);
 
+		case spv::OpImageSampleImplicitLod:
+			{
+				Type::ID resultTypeId = insn.word(1);
+				Object::ID resultId = insn.word(2);
+				Object::ID sampledImageId = insn.word(3);
+				Object::ID coordinateId = insn.word(4);
+				auto &resultType = getType(resultTypeId);
+			//	auto &result = getObject(resultId);
+			//	auto &coordinate = getObject(coordinateId);
+
+				auto &sampledImageLoad = getObject(sampledImageId);
+				ASSERT(sampledImageLoad.opcode() == spv::OpLoad);
+
+				Object::ID samplerPointerId = sampledImageLoad.definition.word(3);
+
+				auto &result = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
+				auto &sampledImage = state->routine->getPointer(samplerPointerId);//getObject(sampledImageId).;
+				auto coordinate = GenericValue(this, state->routine, coordinateId);
+
+				assert(insn.wordCount() == 5);
+
+				Pointer<Byte> constants;   // FIXME!
+
+				Sampler::State samplerState;
+				samplerState.textureType = TEXTURE_2D;
+				samplerState.textureFormat = VK_FORMAT_R8G8B8A8_UNORM;
+				samplerState.textureFilter = FILTER_POINT;
+				samplerState.addressingModeU = ADDRESSING_WRAP;
+				samplerState.addressingModeV = ADDRESSING_WRAP;
+				samplerState.addressingModeW = ADDRESSING_WRAP;
+				samplerState.mipmapFilter = MIPMAP_NONE;
+				samplerState.sRGB = false;
+				samplerState.swizzleR = SWIZZLE_RED;
+				samplerState.swizzleG = SWIZZLE_GREEN;
+				samplerState.swizzleB = SWIZZLE_BLUE;
+				samplerState.swizzleA = SWIZZLE_ALPHA;
+				samplerState.highPrecisionFiltering = false;
+				samplerState.compare = COMPARE_BYPASS;
+
+				SamplerCore sampler(constants, samplerState);
+
+				Pointer<Byte> texture = sampledImage + OFFSET(vk::ImageSamplerDescriptor, texture); // sw::Texture*
+				SIMD::Float u = coordinate.Float(0);
+				SIMD::Float v = coordinate.Float(1);
+				SIMD::Float w(0);// = coordinate.Float(0);
+				SIMD::Float q(0);// = coordinate.Float(0);
+				SIMD::Float bias(0);
+				Vector4f dsx;
+				Vector4f dsy;
+				Vector4f offset;
+				SamplerFunction samplerFunction = { Base, None };
+
+			//	*Pointer<Int>(texture) = 0;
+				Vector4f sample = sampler.sampleTextureF(texture, u, v, w, q, bias, dsx, dsy, offset, samplerFunction);
+				
+				if(getType(resultType.element).opcode() == spv::OpTypeFloat)
+				{
+					result.move(0, sample.x);
+					result.move(1, sample.y);
+					result.move(2, sample.z);
+					result.move(3, sample.w);
+				}
+				else
+				{
+				//	HACK HACK HACK
+					result.move(0, As<SIMD::Int>(sample.x * SIMD::Float(0xFF)));
+					result.move(1, As<SIMD::Int>(sample.y * SIMD::Float(0xFF)));
+					result.move(2, As<SIMD::Int>(sample.z * SIMD::Float(0xFF)));
+					result.move(3, As<SIMD::Int>(sample.w * SIMD::Float(0xFF)));
+				}
+			}
+			break;
+
 		default:
-			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
+			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
 		}
 
@@ -1774,6 +1864,27 @@ namespace sw
 			routine->createPointer(resultId, &routine->getVariable(resultId)[0]);
 			break;
 		}
+		case spv::StorageClassUniformConstant:
+		{
+			Decorations d{};
+			ApplyDecorationsForId(&d, resultId);
+			ASSERT(d.DescriptorSet >= 0);
+			ASSERT(d.Binding >= 0);
+
+			uint32_t arrayIndex = 0;  // TODO(capn)
+			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+//			size_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // ImageSamplerDescriptor*
+		//	Pointer<Byte> buffer = binding + OFFSET(vk::ImageSamplerDescriptor, texture); // sw::Texture*
+		//	Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
+		//	Int offset = *Pointer<Int>(binding + OFFSET(VkDescriptorBufferInfo, offset));
+		//	Pointer<Byte> address = data + offset;
+			routine->createPointer(resultId, binding);
+			break;
+		}
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		{
@@ -1789,6 +1900,7 @@ namespace sw
 			break;
 		}
 		default:
+			UNIMPLEMENTED("Storage class %d", objectTy.storageClass);
 			break;
 		}
 
@@ -1806,6 +1918,12 @@ namespace sw
 		auto &pointer = getObject(pointerId);
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
+
+		if(pointer.kind == Object::Kind::Sampler)
+		{
+			// Nothing to do here.
+			return EmitResult::Continue;
+		}
 
 		if(atomic)
 		{
