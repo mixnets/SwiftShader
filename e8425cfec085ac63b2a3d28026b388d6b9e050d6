@@ -22,6 +22,30 @@
       "revId": "e8425cfec085ac63b2a3d28026b388d6b9e050d6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e26d840a_07aa38c5",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-29T03:31:01Z",
+      "side": 1,
+      "message": "Thanks for that ambiguous example. Please take a look at the new patch set. It makes this invalid. Variable was never intended to exist on its own. It\u0027s just a non-template base class for LValue\u003c\u003e.",
+      "parentUuid": "ec2abdff_28c9260d",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 35
+      },
+      "revId": "e8425cfec085ac63b2a3d28026b388d6b9e050d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
