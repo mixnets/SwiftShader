@@ -17,6 +17,7 @@
 
 #include "VkConfig.h"
 #include "VkObject.hpp"
+#include "VkDescriptorSet.hpp"
 #include "Device/Context.hpp"
 #include <memory>
 #include <vector>
@@ -127,7 +128,7 @@ public:
 		RenderPass* renderPass = nullptr;
 		Framebuffer* renderPassFramebuffer = nullptr;
 		Pipeline* pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE] = {};
-		VkDescriptorSet boundDescriptorSets[VK_PIPELINE_BIND_POINT_RANGE_SIZE][MAX_BOUND_DESCRIPTOR_SETS] = { { VK_NULL_HANDLE } };
+		DescriptorSet::Binding boundDescriptorSets[VK_PIPELINE_BIND_POINT_RANGE_SIZE][MAX_BOUND_DESCRIPTOR_SETS];
 		sw::PushConstantStorage pushConstants;
 
 		struct VertexInputBinding
