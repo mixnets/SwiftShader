@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99ae77bc_9ce8b443",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-29T00:46:52Z",
+      "side": 1,
+      "message": "Tests: dEQP-VK.compute.indirect_dispatch.*",
+      "revId": "fd6d3b72710b57b93e0a19dd0241215483f662a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
