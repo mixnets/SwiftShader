@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "857a1bf3_9b70d00f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-29T15:06:01Z",
+      "side": 1,
+      "message": "Nit: Already in the vk namespace.",
+      "range": {
+        "startLine": 230,
+        "startChar": 25,
+        "endLine": 230,
+        "endChar": 29
+      },
+      "revId": "9a03c6eb82412dda15c8b0bd929f9eb5385f65c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
