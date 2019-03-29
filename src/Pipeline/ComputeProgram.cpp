@@ -45,11 +45,11 @@ namespace sw
 
 	void ComputeProgram::emit()
 	{
-		Pointer<Pointer<Byte>> descriptorSetsIn = *Pointer<Pointer<Pointer<Byte>>>(data + OFFSET(Data, descriptorSets));
-		size_t numDescriptorSets = routine.pipelineLayout->getNumDescriptorSets();
+		Pointer<Pointer<Byte>> descriptorSetBindings = Pointer<Pointer<Byte>>(data + OFFSET(Data, descriptorSetBindings));
+		auto numDescriptorSets = routine.pipelineLayout->getNumDescriptorSets();
 		for(unsigned int i = 0; i < numDescriptorSets; i++)
 		{
-			routine.descriptorSets[i] = descriptorSetsIn[i];
+			routine.descriptorSetBindings[i] = descriptorSetBindings[i];
 		}
 
 		routine.pushConstants = Pointer<Byte>(data + OFFSET(Data, pushConstants));
@@ -178,13 +178,14 @@ namespace sw
 	}
 
 	void ComputeProgram::run(
-		Routine *routine, void** descriptorSets, PushConstantStorage const &pushConstants,
+		Routine *routine, vk::DescriptorSet::Binding* descriptorSetBindings,
+		PushConstantStorage const &pushConstants,
 		uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 	{
 		auto runWorkgroup = (void(*)(void*))(routine->getEntry());
 
 		Data data;
-		data.descriptorSets = descriptorSets;
+		data.descriptorSetBindings = descriptorSetBindings;
 		data.numWorkgroups[X] = groupCountX;
 		data.numWorkgroups[Y] = groupCountY;
 		data.numWorkgroups[Z] = groupCountZ;
