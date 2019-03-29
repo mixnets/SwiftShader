@@ -16,6 +16,24 @@
       "revId": "fd6d3b72710b57b93e0a19dd0241215483f662a6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9832bff_f3dc84df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-29T01:20:39Z",
+      "side": 1,
+      "message": "That\u0027s the obvious choice, but they need OpAtomicIAdd etc.",
+      "parentUuid": "99ae77bc_9ce8b443",
+      "revId": "fd6d3b72710b57b93e0a19dd0241215483f662a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
