@@ -657,7 +657,7 @@ namespace sw
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
 
-		std::array<Pointer<Byte>, vk::MAX_BOUND_DESCRIPTOR_SETS> descriptorSets;
+		Pointer<Byte> descriptorSetBindings;
 		Pointer<Byte> pushConstants;
 
 		void createLvalue(SpirvShader::Object::ID id, uint32_t size)

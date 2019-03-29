@@ -30,7 +30,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo);
 
 	size_t getNumDescriptorSets() const;
-	size_t getBindingOffset(size_t descriptorSet, size_t binding) const;
+	DescriptorSetLayout const* getDescriptorSetLayout(size_t descriptorSet) const;
 
 private:
 	uint32_t              setLayoutCount = 0;
