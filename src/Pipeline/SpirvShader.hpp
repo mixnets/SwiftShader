@@ -267,6 +267,7 @@ namespace sw
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
 
+				Sampler,
 			} kind = Kind::Unknown;
 		};
 
