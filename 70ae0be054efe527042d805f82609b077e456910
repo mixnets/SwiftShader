@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f4970da6_0fcf505f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-29T17:34:46Z",
+      "side": 1,
+      "message": "This function is removed in the next CL. Will land both together.",
+      "parentUuid": "c5b032aa_6d07ec70",
+      "range": {
+        "startLine": 484,
+        "startChar": 25,
+        "endLine": 484,
+        "endChar": 28
+      },
+      "revId": "70ae0be054efe527042d805f82609b077e456910",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4e74ac4_b8d83938",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 5
