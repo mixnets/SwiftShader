@@ -36,6 +36,8 @@ namespace vk
 
 	void DescriptorUpdateTemplate::updateDescriptorSet(VkDescriptorSet descriptorSet, const void* pData)
 	{
+		DescriptorSet* ds = vk::Cast(descriptorSet);
+
 		for(uint32_t i = 0; i < descriptorUpdateEntryCount; i++)
 		{
 			for(uint32_t j = 0; j < descriptorUpdateEntries[i].descriptorCount; j++)
@@ -43,7 +45,7 @@ namespace vk
 				const char *memToRead = (const char *)pData + descriptorUpdateEntries[i].offset + j * descriptorUpdateEntries[i].stride;
 				size_t typeSize = 0;
 				uint8_t* memToWrite = descriptorSetLayout->getOffsetPointer(
-					descriptorSet, descriptorUpdateEntries[i].dstBinding, descriptorUpdateEntries[i].dstArrayElement, 1, &typeSize);
+					ds, descriptorUpdateEntries[i].dstBinding, descriptorUpdateEntries[i].dstArrayElement, 1, &typeSize);
 				memcpy(memToWrite, memToRead, typeSize);
 			}
 		}

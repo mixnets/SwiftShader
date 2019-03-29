@@ -51,10 +51,10 @@ VkResult DescriptorPool::allocateSets(uint32_t descriptorSetCount, const VkDescr
 	for(uint32_t i = 0; i < descriptorSetCount; i++)
 	{
 		pDescriptorSets[i] = VK_NULL_HANDLE;
-		layoutSizes[i] = Cast(pSetLayouts[i])->getSize();
+		layoutSizes[i] = Cast(pSetLayouts[i])->getDescriptorSetAllocationSize();
 	}
 
-	VkResult result = allocateSets(&(layoutSizes[0]), descriptorSetCount, pDescriptorSets);
+	VkResult result = allocateSets2(&(layoutSizes[0]), descriptorSetCount, pDescriptorSets);
 	if(result == VK_SUCCESS)
 	{
 		for(uint32_t i = 0; i < descriptorSetCount; i++)
@@ -79,7 +79,7 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 	size_t freeSpace = poolSize - nextItemStart;
 	if(freeSpace >= size)
 	{
-		return reinterpret_cast<VkDescriptorSet>(nextItemStart);
+		return reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(pool) + nextItemStart);
 	}
 
 	// Second, look for space at the beginning of the pool
@@ -107,7 +107,7 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 	return VK_NULL_HANDLE;
 }
 
-VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets)
+VkResult DescriptorPool::allocateSets2(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets)
 {
 	size_t totalSize = 0;
 	for(uint32_t i = 0; i < numAllocs; i++)
@@ -121,17 +121,18 @@ VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescr
 	}
 
 	// Attempt to allocate single chunk of memory
-	VkDescriptorSet memory = findAvailableMemory(totalSize);
-	if(memory != VK_NULL_HANDLE)
 	{
-		pDescriptorSets[0] = memory;
-		for(uint32_t i = 1; i < numAllocs; i++)
+		VkDescriptorSet memory = findAvailableMemory(totalSize);
+		if(memory != VK_NULL_HANDLE)
 		{
-			pDescriptorSets[i] =
-				reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(memory) + sizes[i - 1]);
-			nodes.insert(Node(pDescriptorSets[i], sizes[i]));
+			for(uint32_t i = 0; i < numAllocs; i++)
+			{
+				pDescriptorSets[i] = memory;
+				nodes.insert(Node(pDescriptorSets[i], sizes[i]));
+				memory = reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(memory) + sizes[i]);
+			}
+			return VK_SUCCESS;
 		}
-		return VK_SUCCESS;
 	}
 
 	// Atttempt to allocate each descriptor set separately
