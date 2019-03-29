@@ -17,6 +17,8 @@
 
 #include "VkObject.hpp"
 
+#include "Device/Sampler.hpp"
+
 namespace vk
 {
 
@@ -32,6 +34,13 @@ inline DescriptorSet* Cast(VkDescriptorSet object)
 {
 	return reinterpret_cast<DescriptorSet*>(object);
 }
+
+struct ImageSamplerDescriptor
+{
+	VkDescriptorImageInfo imageInfo;
+
+	sw::Texture texture;
+};
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
