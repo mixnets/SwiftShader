@@ -26,10 +26,10 @@
 
 namespace vk
 {
-	class DescriptorSet;
+	struct DescriptorSet;
 	class ImageView;
 	class PipelineLayout;
-} // namespace vk
+}
 
 namespace sw
 {
