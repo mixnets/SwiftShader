@@ -17,10 +17,20 @@
 
 #include "VkObject.hpp"
 
+#include "Device/Sampler.hpp"
+
 namespace vk
 {
 
 class DescriptorSet;
+
+struct ImageSamplerDescriptor
+{
+	// TODO(capn): Minimize to the data actually needed.
+	VkDescriptorImageInfo imageInfo;
+
+	sw::Texture texture;
+};
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {

@@ -244,6 +244,7 @@ namespace sw
 				Constant,          // Values held by Object::constantValue
 				Value,             // Values held by SpirvRoutine::intermediates
 				PhysicalPointer,   // Pointer held by SpirvRoutine::physicalPointers
+				Sampler,
 			} kind = Kind::Unknown;
 		};
 
