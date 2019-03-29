@@ -70,6 +70,30 @@
       "revId": "2427e087e53b79448b345c7fec91eaf1e152ecf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a640d01a_1bac0e74",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-29T18:25:48Z",
+      "side": 1,
+      "message": "Changed to use the enum.",
+      "parentUuid": "01f23a43_7ab34737",
+      "range": {
+        "startLine": 237,
+        "startChar": 34,
+        "endLine": 237,
+        "endChar": 35
+      },
+      "revId": "2427e087e53b79448b345c7fec91eaf1e152ecf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
