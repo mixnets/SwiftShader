@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1404bdc_8c2115cd",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-29T21:21:08Z",
+      "side": 1,
+      "message": "This seems like an oxymoron. Anyway, std::shared_mutex exists too. :-/",
+      "range": {
+        "startLine": 30,
+        "startChar": 26,
+        "endLine": 30,
+        "endChar": 38
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ec9ffc1_4bc001a1",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-29T21:21:08Z",
+      "side": 1,
+      "message": "respectively",
+      "range": {
+        "startLine": 32,
+        "startChar": 53,
+        "endLine": 32,
+        "endChar": 65
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fa9712b_17e30956",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-29T21:21:08Z",
+      "side": 1,
+      "message": "We probably shouldn\u0027t allow this. It just never has been an issue since only one location uses it. Added as a post-1.0 cleanup.",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 64
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11f20c79_5e5302a2",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-29T21:21:08Z",
+      "side": 1,
+      "message": "destruct()\n\nSame for the ones below. Otherwise they read a bit weird.",
+      "range": {
+        "startLine": 41,
+        "startChar": 5,
+        "endLine": 41,
+        "endChar": 13
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
