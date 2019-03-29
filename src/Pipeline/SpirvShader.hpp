@@ -263,11 +263,18 @@ namespace sw
 				// Pointer held by SpirvRoutine::pointers
 				NonDivergentPointer,
 
+<<<<<<< HEAD
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
 
 			} kind = Kind::Unknown;
+=======
+				Sampler,
+			};
+
+			Kind kind = Kind::Unknown;
+>>>>>>> 6727892c4... WIP-texture-sampling
 		};
 
 		// Block is an interval of SPIR-V instructions, starting with the
