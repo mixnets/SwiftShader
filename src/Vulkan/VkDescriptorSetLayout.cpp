@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkDescriptorSetLayout.hpp"
+#include "VkDescriptorSet.hpp"
 #include "System/Types.hpp"
 
 #include <algorithm>
@@ -164,10 +165,57 @@ void DescriptorSetLayout::initialize(VkDescriptorSet vkDescriptorSet)
 	}
 }
 
+size_t DescriptorSetLayout::getBindingCount() const
+{
+	return bindingCount;
+}
+
 size_t DescriptorSetLayout::getBindingOffset(uint32_t binding) const
 {
 	uint32_t index = getBindingIndex(binding);
 	return bindingOffsets[index] + OFFSET(DescriptorSet, data[0]);
+}
+
+bool DescriptorSetLayout::isBindingDynamic(uint32_t binding) const
+{
+	auto type = bindings[binding].descriptorType;
+	return type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
+		   type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+}
+
+size_t DescriptorSetLayout::getDynamicBindingCount() const
+{
+	size_t count = 0;
+	for (size_t i = 0; i < bindingCount; i++)
+	{
+		if (isBindingDynamic(i))
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+size_t DescriptorSetLayout::getDynamicBindingIndex(size_t binding) const
+{
+	ASSERT(binding < bindingCount);
+	ASSERT(isBindingDynamic(binding));
+
+	size_t index = 0;
+	for (size_t i = 0; i < binding; i++)
+	{
+		if (isBindingDynamic(i))
+		{
+			index++;
+		}
+	}
+	return index;
+}
+
+VkDescriptorSetLayoutBinding const & DescriptorSetLayout::getBindingLayout(uint32_t binding) const
+{
+	ASSERT(binding < bindingCount);
+	return bindings[binding];
 }
 
 uint8_t* DescriptorSetLayout::getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const

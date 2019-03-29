@@ -20,18 +20,7 @@
 namespace vk
 {
 
-class DescriptorSetLayout;
-
-struct DescriptorSet
-{
-	vk::DescriptorSetLayout* layout;
-	uint8_t data[];
-};
-
-inline DescriptorSet* Cast(VkDescriptorSet object)
-{
-	return reinterpret_cast<DescriptorSet*>(object);
-}
+class DescriptorSet;
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
@@ -47,9 +36,33 @@ public:
 	static void CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
 	void initialize(VkDescriptorSet descriptorSet);
+
+	// Returns the total size of the descriptor set in bytes.
 	size_t getDescriptorSetAllocationSize() const;
 
+	// Returns the number of bindings in the descriptor set.
+	size_t getBindingCount() const;
+
+	// Returns the byte offset from the base address of the descriptor set for
+	// the binding with the given index.
 	size_t getBindingOffset(uint32_t binding) const;
+
+	// Returns the number of bindings that are dynamic (see isBindingDynamic).
+	size_t getDynamicBindingCount() const;
+
+	// Returns the dynamic binding index for the binding with the given index.
+	// The binding with the given index must be dynamic.
+	size_t getDynamicBindingIndex(size_t binding) const;
+
+	// Returns true if the binding with the given index is of type:
+	//  VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC or
+	//  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC
+	bool isBindingDynamic(uint32_t binding) const;
+
+	// Returns the VkDescriptorSetLayoutBinding for the binding with the given
+	// index.
+	VkDescriptorSetLayoutBinding const & getBindingLayout(uint32_t binding) const;
+
 	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const;
 
 private:
