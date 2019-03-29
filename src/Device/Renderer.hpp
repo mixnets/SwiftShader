@@ -29,7 +29,7 @@
 
 namespace vk
 {
-	class DescriptorSet;
+	struct DescriptorSet;
 }
 
 namespace sw
