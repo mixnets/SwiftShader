@@ -34,7 +34,7 @@ namespace vk
 		VkResult reset();
 
 	private:
-		VkResult allocateSets(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets);
+		VkResult allocateSets2(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets);
 		VkDescriptorSet findAvailableMemory(size_t size);
 		void freeSet(const VkDescriptorSet descriptorSet);
 		size_t computeTotalFreeSize() const;

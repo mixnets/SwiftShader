@@ -45,7 +45,10 @@ public:
 	bool hasDepthAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT) != 0; }
 	bool hasStencilAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) != 0; }
 
-private:
+
+		
+
+public:
 	bool                       imageTypesMatch(VkImageType imageType) const;
 
 	Image*                     image = nullptr;
