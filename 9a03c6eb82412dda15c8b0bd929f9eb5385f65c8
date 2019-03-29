@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "4afcd57a_4b47b971",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-29T15:37:03Z",
+      "side": 1,
+      "message": "I think this is the assert that is firing for those failing tests.\nI\u0027m seeing it with some of the multiple_discontiguous_descriptor tests too.\n\nNote: I\u0027m not necessarily suggesting the assert is wrong - there might just be more issues this is highlighting.",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 108
+      },
+      "revId": "9a03c6eb82412dda15c8b0bd929f9eb5385f65c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "857a1bf3_9b70d00f",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 1
