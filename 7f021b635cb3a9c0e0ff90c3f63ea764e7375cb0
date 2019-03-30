@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3198efa_1d3c0562",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-30T20:39:54Z",
+      "side": 1,
+      "message": "You need to copy here. The memory pointed to here is not required to remain valid after the call to vkBindDescriptorSets.",
+      "revId": "7f021b635cb3a9c0e0ff90c3f63ea764e7375cb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
