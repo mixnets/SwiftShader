@@ -21,12 +21,12 @@
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
 
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
 #include <system/window.h>
 #include "../../Common/GrallocAndroid.hpp"
 #endif
 
-#if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD)
+#if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD) && !defined(ANDROID_NDK_BUILD)
 #include "../../Common/DebugAndroid.hpp"
 #define LOGLOCK(fmt, ...) // TRACE(fmt " tid=%d", ##__VA_ARGS__, gettid())
 #else
@@ -235,7 +235,7 @@ protected:
 	void loadStencilData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer);
 };
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
 
 inline GLenum GLPixelFormatFromAndroid(int halFormat)
 {
@@ -346,14 +346,18 @@ private:
 	void *lockNativeBuffer(int usage)
 	{
 		void *buffer = nullptr;
+#ifndef ANDROID_NDK_BUILD
 		GrallocModule::getInstance()->lock(nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+#endif
 
 		return buffer;
 	}
 
 	void unlockNativeBuffer()
 	{
+#ifndef ANDROID_NDK_BUILD
 		GrallocModule::getInstance()->unlock(nativeBuffer->handle);
+#endif
 	}
 
 	void release() override
