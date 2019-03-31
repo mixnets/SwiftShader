@@ -16,6 +16,24 @@
       "revId": "7f021b635cb3a9c0e0ff90c3f63ea764e7375cb0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1488ad76_8f3b5d9c",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-31T21:21:57Z",
+      "side": 1,
+      "message": "Thanks. I was aware of this (this change is incomplete, hence no reviewers assigned). I haven\u0027t decided how to best deal with this copy yet and my prior focus was dealing with the test regressions.\nWill shout when this change is ready for review.",
+      "parentUuid": "a3198efa_1d3c0562",
+      "revId": "7f021b635cb3a9c0e0ff90c3f63ea764e7375cb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
