@@ -30,6 +30,7 @@
 #include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkQueryPool.hpp"
 #include "Pipeline/SpirvShader.hpp"
 #include "Vertex.hpp"
 
@@ -307,6 +308,16 @@ namespace sw
 			return;
 		}
 
+		context->occlusionEnabled = false;
+		for(auto query : queries)
+		{
+			if(query->type == VK_QUERY_TYPE_OCCLUSION)
+			{
+				context->occlusionEnabled = true;
+				break;
+			}
+		}
+
 		sync->lock(sw::PRIVATE);
 
 		if(update || oldMultiSampleMask != context->multiSampleMask)
@@ -363,7 +374,7 @@ namespace sw
 
 		if(queries.size() != 0)
 		{
-			draw->queries = new std::list<Query*>();
+			draw->queries = new std::list<vk::Query*>();
 			for(auto &query : queries)
 			{
 				++query->reference; // Atomic
@@ -842,22 +853,33 @@ namespace sw
 				{
 					for(auto &query : *(draw.queries))
 					{
+						std::unique_lock<std::mutex> lk(query->mutex);
+
 						switch(query->type)
 						{
-						case Query::FRAGMENTS_PASSED:
+						case VK_QUERY_TYPE_OCCLUSION:
 							for(int cluster = 0; cluster < clusterCount; cluster++)
 							{
 								query->data += data.occlusion[cluster];
 							}
 							break;
-						case Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
+						case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
 							query->data += processedPrimitives;
 							break;
 						default:
 							break;
 						}
 
-						--query->reference; // Atomic
+						int queryRef = --query->reference; // Atomic
+						if(queryRef == 0)
+						{
+							query->state = vk::Query::FINISHED;
+						}
+
+						// Manual unlocking is done before notifying, to avoid
+						// waking up the waiting thread only to block again
+						lk.unlock();
+						query->cv.notify_one();
 					}
 
 					delete draw.queries;
@@ -1463,12 +1485,12 @@ namespace sw
 		context->vertexShader = shader;
 	}
 
-	void Renderer::addQuery(Query *query)
+	void Renderer::addQuery(vk::Query *query)
 	{
 		queries.push_back(query);
 	}
 
-	void Renderer::removeQuery(Query *query)
+	void Renderer::removeQuery(vk::Query *query)
 	{
 		queries.remove(query);
 	}
