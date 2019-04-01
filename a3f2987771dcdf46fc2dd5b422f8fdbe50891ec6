@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae13ed34_07dcc885",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-01T23:21:22Z",
+      "side": 1,
+      "message": "Should probably split this. There should be no leakage between the GL and Vulkan sides.",
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf9f0103_23853ed4",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-01T23:21:22Z",
+      "side": 1,
+      "message": "Only building the debug version?",
+      "range": {
+        "startLine": 594,
+        "startChar": 11,
+        "endLine": 594,
+        "endChar": 17
+      },
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8251d70d_d8b08b46",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-01T23:21:22Z",
+      "side": 1,
+      "message": "Shouldnt we also have a static_libs section or similar here which pulls in the llvm reactor library?",
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61d7c5a0_3a5ed63f",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-01T23:21:22Z",
+      "side": 1,
+      "message": "I\u0027m very suspicious of this `device_supported`. We want to build this library for the device, not the host. The GL parts of swiftshader may be built entirely for the host now, which might be the source of confusion?",
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
