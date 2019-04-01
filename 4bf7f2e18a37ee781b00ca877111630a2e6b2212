@@ -45,6 +45,30 @@
       "revId": "4bf7f2e18a37ee781b00ca877111630a2e6b2212",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9d94f06_812e70dc",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-01T14:27:59Z",
+      "side": 1,
+      "message": "Sure thing. Note that it already couldn\u0027t be instantiated stand-alone due to the protected destructor. But should be cleaner now.",
+      "parentUuid": "e3574cc5_3579789f",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 38
+      },
+      "revId": "4bf7f2e18a37ee781b00ca877111630a2e6b2212",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
