@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "730e708f_4c963d3c",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T12:38:46Z",
+      "side": 1,
+      "message": "It is a kind of std::shared_mutex, also known as a readers-writer lock: https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock. I decided use the term \u0027shared mutex\u0027 as that\u0027s the closest thing in the C++ standard library.",
+      "parentUuid": "a1404bdc_8c2115cd",
+      "range": {
+        "startLine": 30,
+        "startChar": 26,
+        "endLine": 30,
+        "endChar": 38
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9ec9ffc1_4bc001a1",
         "filename": "src/Common/Resource.hpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-29T21:21:08Z",
       "side": 1,
       "message": "respectively",
+      "range": {
+        "startLine": 32,
+        "startChar": 53,
+        "endLine": 32,
+        "endChar": 65
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14f4c1d7_30498543",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T12:38:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ec9ffc1_4bc001a1",
       "range": {
         "startLine": 32,
         "startChar": 53,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d6fc00bd_6c382f05",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T12:38:46Z",
+      "side": 1,
+      "message": "Completely agree, explicitly documented as this is questionable behaviour.",
+      "parentUuid": "5fa9712b_17e30956",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 64
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "11f20c79_5e5302a2",
         "filename": "src/Common/Resource.hpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-03-29T21:21:08Z",
       "side": 1,
       "message": "destruct()\n\nSame for the ones below. Otherwise they read a bit weird.",
+      "range": {
+        "startLine": 41,
+        "startChar": 5,
+        "endLine": 41,
+        "endChar": 13
+      },
+      "revId": "d42fec8d8fe3e145bbc6f148b7199ba7804fe905",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e16d8b6b_b9a34ef0",
+        "filename": "src/Common/Resource.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T12:38:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "11f20c79_5e5302a2",
       "range": {
         "startLine": 41,
         "startChar": 5,
