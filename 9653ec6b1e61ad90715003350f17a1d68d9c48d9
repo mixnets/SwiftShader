@@ -22,6 +22,30 @@
       "revId": "9653ec6b1e61ad90715003350f17a1d68d9c48d9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34428df1_5e3ad848",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-01T14:46:11Z",
+      "side": 1,
+      "message": "It doesn\u0027t, and I don\u0027t think it should. The Return() adds a terminator ret instruction to the current basic block, and then creates a new basic block and sets it as the current one for any additional code to go into. This way it resembles C, where it\u0027s also valid to have code after a return statement.",
+      "parentUuid": "88d4b146_794ad306",
+      "range": {
+        "startLine": 130,
+        "startChar": 3,
+        "endLine": 130,
+        "endChar": 10
+      },
+      "revId": "9653ec6b1e61ad90715003350f17a1d68d9c48d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
