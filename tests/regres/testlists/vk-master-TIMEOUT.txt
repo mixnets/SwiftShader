@@ -68,7 +68,6 @@ dEQP-VK.ssbo.layout.3_level_unsized_array.std140.row_major_mat3_comp_access
 dEQP-VK.ssbo.layout.3_level_unsized_array.std140.row_major_mat4x2
 dEQP-VK.ssbo.layout.3_level_unsized_array.std140.row_major_mat4x2_comp_access
 dEQP-VK.ssbo.layout.3_level_unsized_array.std430.column_major_mat2x4
-dEQP-VK.ssbo.layout.3_level_unsized_array.std430.column_major_mat2x4_comp_access
 dEQP-VK.ssbo.layout.3_level_unsized_array.std430.column_major_mat3
 dEQP-VK.ssbo.layout.3_level_unsized_array.std430.column_major_mat3_comp_access
 dEQP-VK.ssbo.layout.3_level_unsized_array.std430.column_major_mat4x2
