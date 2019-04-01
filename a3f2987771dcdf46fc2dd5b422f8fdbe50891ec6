@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "8d783718_28d966d2",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7153
+      },
+      "writtenOn": "2019-04-01T23:32:22Z",
+      "side": 1,
+      "message": "It looks like there are some mutually exclusive options set here: \"device_supported: false\" implies it only goes on the host, but I can\u0027t imagine what \"vendor: true\" means for a host binary. I thought \"vendor\" just put the compiled artifacts in the vendor partition of the build.\n\nThere are also some \"target: { android {\" things set below, which conflict with the \"device_supported: false\" property set here.\n\nThe original change that creates the Android.bp files implies these are only for host-side compilation: https://swiftshader-review.googlesource.com/c/SwiftShader/+/17988\nThat leaves the Android.mk files as still controlling the guest build.",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ae13ed34_07dcc885",
         "filename": "Android.bp",
         "patchSetId": 2
