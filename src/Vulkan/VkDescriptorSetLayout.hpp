@@ -44,8 +44,8 @@ public:
 	size_t getBindingCount() const;
 
 	// Returns the byte offset from the base address of the descriptor set for
-	// the given binding.
-	size_t getBindingOffset(uint32_t binding) const;
+	// the given binding and array element within that binding.
+	size_t getBindingOffset(uint32_t binding, uint32_t arrayElement) const;
 
 	// Returns the number of bindings that are dynamic (see isBindingDynamic).
 	size_t getDynamicBindingCount() const;
