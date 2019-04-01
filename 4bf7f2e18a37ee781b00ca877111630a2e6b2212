@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e36d16d9_dfc30e50",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1056,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T10:49:57Z",
+      "side": 1,
+      "message": "As discussed, this is a great start, and there is more room for improvement.\nIdeally we\u0027d only materialize a variable when it is referenced from a non-post-dominated block - however I do not think you can determine this until the whole control flow has been finalised (which is what LLVM\u0027s mem2reg pass does anyway). Materializing only when a variable is referenced from a different block would be a good improvement that would fix these two lost optimisations:\n1) All variables still in scope are materialized unless the block ends in a return, regardless of whether they are used in later blocks or not. You\u0027ll still get a lot of the wins of using SSA values where we\u0027d normally have loads \u0026 stores, but I suspect you\u0027re still alloca\u0027ing a whole lot of unused stack space.\n2) All variables are materialized just because you\u0027ve switched insertion point. This seems a bit icky from a side-effect POV.\n\nAnyway, this can certainly be addressed in a followup change.",
+      "range": {
+        "startLine": 1056,
+        "startChar": 2,
+        "endLine": 1056,
+        "endChar": 29
+      },
+      "revId": "4bf7f2e18a37ee781b00ca877111630a2e6b2212",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3574cc5_3579789f",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-01T10:49:57Z",
+      "side": 1,
+      "message": "\u003e Variable was never intended to exist on its own. It\u0027s just a non-template base class for LValue\u003c\u003e.\n\nShouldn\u0027t we make these protected / private / deleted then?",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 38
+      },
+      "revId": "4bf7f2e18a37ee781b00ca877111630a2e6b2212",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
