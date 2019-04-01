@@ -96,6 +96,24 @@
       "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41622165_39f0e227",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 7153
+      },
+      "writtenOn": "2019-04-01T23:34:58Z",
+      "side": 1,
+      "message": "At the moment Cuttlefish in AOSP master still uses SwiftShader OpenGL in the guest, which I believe is constructed entirely by the Android.mk files.",
+      "parentUuid": "61d7c5a0_3a5ed63f",
+      "revId": "a3f2987771dcdf46fc2dd5b422f8fdbe50891ec6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
