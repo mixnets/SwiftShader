@@ -29,6 +29,7 @@
 namespace vk
 {
 	class DescriptorSet;
+	struct Query;
 }
 
 namespace sw
@@ -82,32 +83,6 @@ namespace sw
 		false,   // booleanFaceRegister
 		false,   // fullPixelPositionRegister
 		false,   // colorsDefaultToZero
-	};
-
-	struct Query
-	{
-		enum Type { FRAGMENTS_PASSED, TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN };
-
-		Query(Type type) : building(false), reference(0), data(0), type(type)
-		{
-		}
-
-		void begin()
-		{
-			building = true;
-			data = 0;
-		}
-
-		void end()
-		{
-			building = false;
-		}
-
-		bool building;
-		AtomicInt reference;
-		AtomicInt data;
-
-		const Type type;
 	};
 
 	struct DrawData
@@ -247,8 +222,8 @@ namespace sw
 		void setViewport(const VkViewport &viewport);
 		void setScissor(const VkRect2D &scissor);
 
-		void addQuery(Query *query);
-		void removeQuery(Query *query);
+		void addQuery(vk::Query *query);
+		void removeQuery(vk::Query *query);
 
 		void advanceInstanceAttributes();
 
@@ -341,7 +316,7 @@ namespace sw
 
 		SwiftConfig *swiftConfig;
 
-		std::list<Query*> queries;
+		std::list<vk::Query*> queries;
 		Resource *sync;
 
 		VertexProcessor::State vertexState;
@@ -378,7 +353,7 @@ namespace sw
 		vk::ImageView *depthBuffer;
 		vk::ImageView *stencilBuffer;
 
-		std::list<Query*> *queries;
+		std::list<vk::Query*> *queries;
 
 		AtomicInt primitive;    // Current primitive to enter pipeline
 		AtomicInt count;        // Number of primitives to render
