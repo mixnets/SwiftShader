@@ -46,6 +46,30 @@
       "revId": "804b889ce67200f9cce5b4f6bd4777e0e31cc3c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4757ca24_c81a07ff",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-02T16:19:17Z",
+      "side": 1,
+      "message": "\u003e I\u0027m assuming this is linked to the ActiveLaneMask\n\nYes state-\u003eactiveLaneMask() has bits set only for lanes which are still executing. These are masked off for early returns, lanes that didn\u0027t take branches, lanes that are no longer looping etc.",
+      "parentUuid": "0955904e_8745b448",
+      "range": {
+        "startLine": 50,
+        "startChar": 2,
+        "endLine": 50,
+        "endChar": 42
+      },
+      "revId": "804b889ce67200f9cce5b4f6bd4777e0e31cc3c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
