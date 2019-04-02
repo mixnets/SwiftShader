@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98a8d24e_05948c99",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-02T20:07:10Z",
+      "side": 1,
+      "message": "For each of these please make it a switch with cases for the six toplogies that we support and an UNIMPLEMENTED() for the default case.",
+      "range": {
+        "startLine": 61,
+        "startChar": 9,
+        "endLine": 61,
+        "endChar": 18
+      },
+      "revId": "f993a2fbb1cb4761988d51194ccc7a71ad983775",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6a34174_11cd816f",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-02T20:07:10Z",
+      "side": 1,
+      "message": "Let\u0027s mark this inline to increase the chances that it won\u0027t add any call overhead.",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 1
+      },
+      "revId": "f993a2fbb1cb4761988d51194ccc7a71ad983775",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbfee81b_1bf37d3c",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-02T20:07:10Z",
+      "side": 1,
+      "message": "Wouldn\u0027t work with future implementation of things like VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY. Perhaps have a helper function for this next to GraphicsPipeline::computePrimitiveCount()?",
+      "range": {
+        "startLine": 108,
+        "startChar": 93,
+        "endLine": 108,
+        "endChar": 95
+      },
+      "revId": "f993a2fbb1cb4761988d51194ccc7a71ad983775",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
