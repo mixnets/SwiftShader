@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e4e9db4_c8326fce",
+        "filename": "tools/strip_cmakelists.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-02T19:05:25Z",
+      "side": 1,
+      "message": "-DREACTOR_BACKEND\u003dLLVM -DREACTOR_LLVM_VERSION\u003d7",
+      "range": {
+        "startLine": 1,
+        "startChar": 78,
+        "endLine": 1,
+        "endChar": 79
+      },
+      "revId": "ddef69576fbf725ae6f4ce718efe69349676a854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
