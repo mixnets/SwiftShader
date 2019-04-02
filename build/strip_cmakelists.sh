@@ -1,0 +1,1 @@
+go run strip_unneeded.go --file=../CMakeLists.txt --test="cd ../build && cmake .. && make"
