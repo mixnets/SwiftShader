@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "adb86fb5_b5d0419c",
+        "filename": "src/Main/FrameBufferAndroid.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-04-02T23:25:25Z",
+      "side": 1,
+      "message": "nit: I find it is good habit for multi-line pre-processor blocks to suffix a #endif with the #if condition, just so the reader doesn\u0027t have to scroll around to find the condition:\n\n#endif // #ifndef ANDROID_NDK_BUILD",
+      "range": {
+        "startLine": 53,
+        "startChar": 1,
+        "endLine": 53,
+        "endChar": 6
+      },
+      "revId": "b8536e7316d64e747d3a849957d783e524c02cdb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a96a8a90_c99c1c6f",
+        "filename": "src/Main/FrameBufferAndroid.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-04-02T23:25:25Z",
+      "side": 1,
+      "message": "Weird tabbing here and below.",
+      "range": {
+        "startLine": 101,
+        "startChar": 1,
+        "endLine": 101,
+        "endChar": 2
+      },
+      "revId": "b8536e7316d64e747d3a849957d783e524c02cdb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae68a9f8_fdb15c9b",
+        "filename": "src/OpenGL/common/debug.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-04-02T23:25:25Z",
+      "side": 1,
+      "message": "weird tabbing here too",
+      "range": {
+        "startLine": 109,
+        "startChar": 1,
+        "endLine": 109,
+        "endChar": 2
+      },
+      "revId": "b8536e7316d64e747d3a849957d783e524c02cdb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
