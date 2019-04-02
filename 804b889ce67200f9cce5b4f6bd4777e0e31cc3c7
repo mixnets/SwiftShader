@@ -22,6 +22,30 @@
       "revId": "804b889ce67200f9cce5b4f6bd4777e0e31cc3c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0955904e_8745b448",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-02T15:39:33Z",
+      "side": 1,
+      "message": "(I\u0027m assuming this is liked to the ActiveLaneMask).\n\nAnyway, it seems like this optimizes out the occlusion query when active, but this is a problem for later.",
+      "parentUuid": "233b9e32_27ce4a9d",
+      "range": {
+        "startLine": 50,
+        "startChar": 2,
+        "endLine": 50,
+        "endChar": 42
+      },
+      "revId": "804b889ce67200f9cce5b4f6bd4777e0e31cc3c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
