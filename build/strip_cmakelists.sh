@@ -1,0 +1,1 @@
+go run strip_unneeded.go --file=../CMakeLists.txt --test="cd ../build && cmake -DREACTOR_BACKEND=LLVM -DREACTOR_EMIT_DEBUG_INFO .. && make"
