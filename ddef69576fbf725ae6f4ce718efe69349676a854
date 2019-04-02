@@ -70,6 +70,30 @@
       "revId": "ddef69576fbf725ae6f4ce718efe69349676a854",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9fabba4_3bf93ef0",
+        "filename": "tools/strip_cmakelists.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-02T19:27:15Z",
+      "side": 1,
+      "message": "No need to change as far as I\u0027m concerned. Just wanted to document this for posterity in case we need this script again.",
+      "parentUuid": "9ef2bcf6_5c7cce6a",
+      "range": {
+        "startLine": 1,
+        "startChar": 78,
+        "endLine": 1,
+        "endChar": 79
+      },
+      "revId": "ddef69576fbf725ae6f4ce718efe69349676a854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
