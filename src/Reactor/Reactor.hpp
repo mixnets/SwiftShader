@@ -2626,6 +2626,7 @@ namespace rr
 	template<class T>
 	Pointer<T>::Pointer(Argument<Pointer<T>> argument) : alignment(1)
 	{
+		LValue<Pointer<T>>::materialize();
 		LValue<Pointer<T>>::storeValue(argument.value);
 	}
 
