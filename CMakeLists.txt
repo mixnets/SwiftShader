@@ -2257,22 +2257,33 @@ if(BUILD_VULKAN)
         PREFIX ""
     )
     set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
+
     target_link_libraries(libvk_swiftshader ${Reactor} ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
+
+    if(WIN32)
+        set(VULKAN_API_LIBRARY_NAME "vulkan-1.dll")
+    elseif(LINUX)
+        set(VULKAN_API_LIBRARY_NAME "libvulkan.so.1")
+    else()
+        message(FATAL_ERROR "Platform does not support Vulkan yet")
+    endif()
+
     add_custom_command(
         TARGET libvk_swiftshader
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:libvk_swiftshader>/translator
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libvk_swiftshader> $<TARGET_FILE_DIR:libvk_swiftshader>/translator/${LIB_PREFIX}Vulkan_translator${CMAKE_SHARED_LIBRARY_SUFFIX}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libvk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/out/
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libvk_swiftshader> ${CMAKE_CURRENT_SOURCE_DIR}/out/${VULKAN_API_LIBRARY_NAME}
     )
     configure_file(
         "${VULKAN_DIR}/vk_swiftshader_icd.json.tmpl"
-        "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/vk_swiftshader_icd.json")
+        "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/vk_swiftshader_icd.json"
+    )
 endif()
 
 ###########################################################
-# Sample programs
+# Sample programs and tests
 ###########################################################
 
 if(BUILD_SAMPLES)
