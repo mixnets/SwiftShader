@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7df47e4e_3516d9b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T10:11:39Z",
+      "side": 1,
+      "message": "Tests: dEQP-VK.robustness.*",
+      "revId": "33ca010b89d79200323262b04c0f5494854c1d04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
