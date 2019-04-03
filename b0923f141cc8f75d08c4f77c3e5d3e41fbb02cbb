@@ -309,6 +309,30 @@
     },
     {
       "key": {
+        "uuid": "2b95a4e3_0bffa8f1",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 912,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T18:37:37Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/28356",
+      "parentUuid": "9fec1681_f04338c1",
+      "range": {
+        "startLine": 912,
+        "startChar": 2,
+        "endLine": 912,
+        "endChar": 14
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb9936c3_025cb6de",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
