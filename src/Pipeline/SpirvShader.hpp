@@ -235,6 +235,7 @@ namespace sw
 			Type::ID type;
 			ID pointerBase;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
+			uint32_t elementStride = 1;
 
 			enum class Kind
 			{
@@ -362,6 +363,8 @@ namespace sw
 
 		struct Decorations
 		{
+			static const Decorations NONE;
+
 			int32_t Location;
 			int32_t Component;
 			int32_t DescriptorSet;
@@ -383,6 +386,7 @@ namespace sw
 			bool HasOffset : 1;
 			bool HasArrayStride : 1;
 			bool HasMatrixStride : 1;
+			bool RowMajor : 1;
 
 			Decorations()
 					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
@@ -392,7 +396,8 @@ namespace sw
 					  HasDescriptorSet{false}, HasBinding{false},
 					  HasBuiltIn{false}, Flat{false}, Centroid{false},
 					  NoPerspective{false}, Block{false}, BufferBlock{false},
-					  HasOffset{false}, HasArrayStride{false}, HasMatrixStride{false}
+					  HasOffset{false}, HasArrayStride{false}, HasMatrixStride{false},
+					  RowMajor{false}
 			{
 			}
 
@@ -456,6 +461,12 @@ namespace sw
 			auto it = blocks.find(id);
 			ASSERT_MSG(it != blocks.end(), "Unknown block %d", id.value());
 			return it->second;
+		}
+
+		Decorations const &getDecorations(TypeOrObjectID id) const
+		{
+			auto it = decorations.find(id);
+			return it != decorations.end() ? it->second : Decorations::NONE;
 		}
 
 	private:

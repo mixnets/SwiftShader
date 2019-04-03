@@ -40,6 +40,8 @@ namespace
 
 namespace sw
 {
+	const SpirvShader::Decorations SpirvShader::Decorations::NONE = SpirvShader::Decorations();
+
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
 
 	SpirvShader::SpirvShader(InsnStore const &insns)
@@ -102,7 +104,7 @@ namespace sw
 
 			case spv::OpGroupDecorate:
 			{
-				auto const &srcDecorations = decorations[insn.word(1)];
+				auto &srcDecorations = getDecorations(insn.word(1));
 				for (auto i = 2u; i < insn.wordCount(); i++)
 				{
 					// remaining operands are targets to apply the group to.
@@ -113,7 +115,7 @@ namespace sw
 
 			case spv::OpGroupMemberDecorate:
 			{
-				auto const &srcDecorations = decorations[insn.word(1)];
+				auto &srcDecorations = getDecorations(insn.word(1));
 				for (auto i = 2u; i < insn.wordCount(); i += 2)
 				{
 					// remaining operands are pairs of <id>, literal for members to apply to.
@@ -451,8 +453,43 @@ namespace sw
 					// interior ptr has two parts:
 					// - logical base ptr, common across all lanes and known at compile time
 					// - per-lane offset
-					Object::ID baseId = insn.word(3);
-					object.pointerBase = getObject(baseId).pointerBase;
+					auto baseId = Object::ID(insn.word(3));
+					auto &base = getObject(baseId);
+					object.pointerBase = base.pointerBase;
+
+					uint32_t numIndices = insn.wordCount() - 4;
+					const uint32_t *indices = insn.wordPointer(4);
+					typeId = getType(base.type).element;
+					Decorations d{};
+					for (auto i = 0u; i < numIndices; i++)
+					{
+						auto & type = getType(typeId);
+						switch(type.opcode())
+						{
+						case spv::OpTypeStruct:
+						{
+							int memberIndex = GetConstantInt(indices[i]);
+							ApplyDecorationsForIdMember(&d, typeId, memberIndex);
+							typeId = type.definition.word(2u + memberIndex);
+							break;
+						}
+
+						case spv::OpTypeMatrix:
+							object.elementStride = d.RowMajor ? getType(type.element).sizeInComponents : 1;
+							typeId = type.element;
+							break;
+
+						case spv::OpTypeVector:
+						case spv::OpTypeArray:
+						case spv::OpTypeRuntimeArray:
+							object.elementStride = 1;
+							typeId = type.element;
+							break;
+
+						default:
+							UNIMPLEMENTED("Unexpected type '%s' in AccessChain", OpcodeName(type.opcode()).c_str());
+						}
+					}
 				}
 				break;
 			}
@@ -866,11 +903,16 @@ namespace sw
 				// TODO: b/127950082: Check bounds.
 				ApplyDecorationsForId(&d, typeId);
 				ASSERT(d.HasMatrixStride);
-				auto & obj = getObject(indexIds[i]);
+				if (d.RowMajor)
+				{
+					UNIMPLEMENTED("d.RowMajor");
+				}
+				auto index = indexIds[i];
+				auto & obj = getObject(index);
 				if (obj.kind == Object::Kind::Constant)
-					constantOffset += d.MatrixStride/sizeof(float) * GetConstantInt(indexIds[i]);
+					constantOffset += d.MatrixStride/sizeof(float) * GetConstantInt(index);
 				else
-					dynamicOffset += SIMD::Int(d.MatrixStride / sizeof(float)) * routine->getIntermediate(indexIds[i]).Int(0);
+					dynamicOffset += SIMD::Int(d.MatrixStride / sizeof(float)) * routine->getIntermediate(index).Int(0);
 				typeId = type.element;
 				break;
 			}
@@ -898,9 +940,12 @@ namespace sw
 		// Produce a *component* offset into location-oriented memory
 
 		int constantOffset = 0;
+		uint32_t elementStride = 1;
 		SIMD::Int dynamicOffset = SIMD::Int(0);
 		auto &baseObject = getObject(id);
 		Type::ID typeId = getType(baseObject.type).element;
+		Decorations d{};
+		ApplyDecorationsForId(&d, baseObject.type);
 
 		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
 		// Start with its offset and build from there.
@@ -917,6 +962,7 @@ namespace sw
 			case spv::OpTypeStruct:
 			{
 				int memberIndex = GetConstantInt(indexIds[i]);
+				ApplyDecorationsForIdMember(&d, typeId, memberIndex);
 				int offsetIntoStruct = 0;
 				for (auto j = 0; j < memberIndex; j++) {
 					auto memberType = type.definition.word(2u + j);
@@ -927,13 +973,26 @@ namespace sw
 				break;
 			}
 
-			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
+			{
+				auto index = Object::ID(indexIds[i]);
+				auto & obj = getObject(index);
+				auto stride = d.RowMajor ? 1 : getType(type.element).sizeInComponents;
+				elementStride = d.RowMajor ? getType(type.element).sizeInComponents : 1;
+				if (obj.kind == Object::Kind::Constant)
+					constantOffset += stride * GetConstantInt(index);
+				else
+					dynamicOffset += SIMD::Int(stride) * routine->getIntermediate(index).Int(0);
+				typeId = type.element;
+				break;
+			}
+
+			case spv::OpTypeVector:
 			case spv::OpTypeArray:
 			case spv::OpTypeRuntimeArray:
 			{
 				// TODO: b/127950082: Check bounds.
-				auto stride = getType(type.element).sizeInComponents;
+				auto stride = elementStride * getType(type.element).sizeInComponents;
 				auto & obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
 					constantOffset += stride * GetConstantInt(indexIds[i]);
@@ -1043,6 +1102,9 @@ namespace sw
 			HasMatrixStride = true;
 			MatrixStride = static_cast<int32_t>(arg);
 			break;
+		case spv::DecorationRowMajor:
+			RowMajor = true;
+			break;
 		default:
 			// Intentionally partial, there are many decorations we just don't care about.
 			break;
@@ -1105,6 +1167,7 @@ namespace sw
 		Centroid |= src.Centroid;
 		Block |= src.Block;
 		BufferBlock |= src.BufferBlock;
+		RowMajor |= src.RowMajor;
 	}
 
 	void SpirvShader::ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const
@@ -1786,7 +1849,8 @@ namespace sw
 
 		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
 
-		If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+		If((pointer.kind == Object::Kind::Value || pointer.elementStride != 1) ||
+		   anyInactiveLanes)
 		{
 			// Divergent offsets or masked lanes.
 			auto offsets = pointer.kind == Object::Kind::Value ?
@@ -1799,7 +1863,7 @@ namespace sw
 				{
 					If(Extract(state->activeLaneMask(), j) != 0)
 					{
-						Int offset = Int(i) + Extract(offsets, j);
+						Int offset = Int(pointer.elementStride * i) + Extract(offsets, j);
 						if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 						load[i] = Insert(load[i], Load(&ptrBase[offset], sizeof(float), atomic, memoryOrder), j);
 					}
@@ -1882,7 +1946,8 @@ namespace sw
 		{
 			// Constant source data.
 			auto src = reinterpret_cast<float *>(object.constantValue.get());
-			If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+			If((pointer.kind == Object::Kind::Value || pointer.elementStride != 1) ||
+			   anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
 				auto offsets = pointer.kind == Object::Kind::Value ?
@@ -1894,7 +1959,7 @@ namespace sw
 					{
 						If(Extract(state->activeLaneMask(), j) != 0)
 						{
-							Int offset = Int(i) + Extract(offsets, j);
+							Int offset = Int(pointer.elementStride * i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 							Store(RValue<Float>(src[i]), &ptrBase[offset], sizeof(float), atomic, memoryOrder);
 						}
@@ -1916,7 +1981,8 @@ namespace sw
 		{
 			// Intermediate source data.
 			auto &src = routine->getIntermediate(objectId);
-			If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+			If((pointer.kind == Object::Kind::Value || pointer.elementStride != 1) ||
+			   anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
 				auto offsets = pointer.kind == Object::Kind::Value ?
@@ -1928,7 +1994,7 @@ namespace sw
 					{
 						If(Extract(state->activeLaneMask(), j) != 0)
 						{
-							Int offset = Int(i) + Extract(offsets, j);
+							Int offset = Int(pointer.elementStride * i) + Extract(offsets, j);
 							if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 							Store(Extract(src.Float(i), j), &ptrBase[offset], sizeof(float), atomic, memoryOrder);
 						}
@@ -2158,16 +2224,18 @@ namespace sw
 		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto lhs = GenericValue(this, routine, insn.word(3));
-		auto rhs = GenericValue(this, routine, insn.word(4));
-		auto rhsType = getType(getObject(insn.word(4)).type);
+		auto matrixId = Object::ID(insn.word(3));
+		auto vectorId = Object::ID(insn.word(4));
+		auto vectorType = getType(getObject(vectorId).type);
+		auto matrix = GenericValue(this, routine, matrixId);
+		auto vector = GenericValue(this, routine, vectorId);
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
-			SIMD::Float v = lhs.Float(i) * rhs.Float(0);
-			for (auto j = 1u; j < rhsType.sizeInComponents; j++)
+			SIMD::Float v = matrix.Float(i) * vector.Float(0);
+			for (auto j = 1u; j < vectorType.sizeInComponents; j++)
 			{
-				v += lhs.Float(i + type.sizeInComponents * j) * rhs.Float(j);
+				v += matrix.Float(i + type.sizeInComponents * j) * vector.Float(j);
 			}
 			dst.move(i, v);
 		}
@@ -2180,16 +2248,18 @@ namespace sw
 		auto routine = state->routine;
 		auto &type = getType(insn.word(1));
 		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto lhs = GenericValue(this, routine, insn.word(3));
-		auto rhs = GenericValue(this, routine, insn.word(4));
-		auto lhsType = getType(getObject(insn.word(3)).type);
+		auto vectorId = Object::ID(insn.word(3));
+		auto matrixId = Object::ID(insn.word(4));
+		auto vectorType = getType(getObject(vectorId).type);
+		auto vector = GenericValue(this, routine, vectorId);
+		auto matrix = GenericValue(this, routine, matrixId);
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
-			SIMD::Float v = lhs.Float(0) * rhs.Float(i * lhsType.sizeInComponents);
-			for (auto j = 1u; j < lhsType.sizeInComponents; j++)
+			SIMD::Float v = vector.Float(0) * matrix.Float(i * vectorType.sizeInComponents);
+			for (auto j = 1u; j < vectorType.sizeInComponents; j++)
 			{
-				v += lhs.Float(j) * rhs.Float(i * lhsType.sizeInComponents + j);
+				v += vector.Float(j) * matrix.Float(i * vectorType.sizeInComponents + j);
 			}
 			dst.move(i, v);
 		}
