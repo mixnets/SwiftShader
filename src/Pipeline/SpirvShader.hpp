@@ -233,17 +233,37 @@ namespace sw
 
 			InsnIterator definition;
 			Type::ID type;
-			ID pointerBase;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 			enum class Kind
 			{
-				Unknown,        /* for paranoia -- if we get left with an object in this state, the module was broken */
-				Variable,          // TODO: Document
-				InterfaceVariable, // TODO: Document
-				Constant,          // Values held by Object::constantValue
-				Value,             // Values held by SpirvRoutine::intermediates
-				PhysicalPointer,   // Pointer held by SpirvRoutine::physicalPointers
+				// Invalid default kind.
+				// If we get left with an object in this state, the module was
+				// broken.
+				Unknown,
+
+				// TODO: Better document this kind.
+				// A shader interface variable pointer.
+				// Pointer formed from a base pointer and per-lane offset.
+				// Base pointer held by SpirvRoutine::pointers
+				// Per-lane offset held by SpirvRoutine::intermediates.
+				InterfaceVariable,
+
+				// Constant value held by Object::constantValue.
+				Constant,
+
+				// Value held by SpirvRoutine::intermediates.
+				Value,
+
+				// A pointer to a vk::DescriptorSet*.
+				// Pointer held by SpirvRoutine::pointers.
+				DescriptorSet,
+
+				// Pointer formed from a base pointer and per-lane offset.
+				// Base pointer held by SpirvRoutine::pointers
+				// Per-lane offset held by SpirvRoutine::intermediates.
+				Pointer,
+
 			} kind = Kind::Unknown;
 		};
 
@@ -362,6 +382,8 @@ namespace sw
 
 		struct Decorations
 		{
+			static const Decorations NONE;
+
 			int32_t Location;
 			int32_t Component;
 			int32_t DescriptorSet;
@@ -458,6 +480,12 @@ namespace sw
 			return it->second;
 		}
 
+		Decorations const &getDecorations(TypeOrObjectID id) const
+		{
+			auto it = decorations.find(id);
+			return it != decorations.end() ? it->second : Decorations::NONE;
+		}
+
 	private:
 		const int serialID;
 		static volatile int serialCounter;
@@ -539,9 +567,9 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		SIMD::Int WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
+		std::pair<Pointer<Byte>, SIMD::Int> WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndices, uint32_t const *indices) const;
 
 		// EmitState holds control-flow state for the emit() pass.
 		class EmitState
@@ -655,7 +683,7 @@ namespace sw
 
 		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
 
-		std::unordered_map<SpirvShader::Object::ID, Pointer<Byte> > physicalPointers;
+		std::unordered_map<SpirvShader::Object::ID, Pointer<Byte> > pointers;
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
@@ -667,7 +695,27 @@ namespace sw
 
 		void createLvalue(SpirvShader::Object::ID id, uint32_t size)
 		{
-			lvalues.emplace(id, Value(size));
+			bool added = lvalues.emplace(id, Value(size)).second;
+			ASSERT_MSG(added, "Value %d created twice", id.value());
+		}
+
+		template <typename T>
+		void createPointer(SpirvShader::Object::ID id, Pointer<T> ptrBase)
+		{
+			bool added = pointers.emplace(id, ptrBase).second;
+			ASSERT_MSG(added, "Pointer %d created twice", id.value());
+		}
+
+		template <typename T>
+		void createPointer(SpirvShader::Object::ID id, RValue<Pointer<T>> ptrBase)
+		{
+			createPointer(id, Pointer<T>(ptrBase));
+		}
+
+		template <typename T>
+		void createPointer(SpirvShader::Object::ID id, Reference<Pointer<T>> ptrBase)
+		{
+			createPointer(id, Pointer<T>(ptrBase));
 		}
 
 		Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
@@ -675,6 +723,7 @@ namespace sw
 			auto it = intermediates.emplace(std::piecewise_construct,
 					std::forward_as_tuple(id),
 					std::forward_as_tuple(size));
+			ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
 			return it.first->second;
 		}
 
@@ -692,10 +741,10 @@ namespace sw
 			return it->second;
 		}
 
-		Pointer<Byte>& getPhysicalPointer(SpirvShader::Object::ID id)
+		Pointer<Byte>& getPointer(SpirvShader::Object::ID id)
 		{
-			auto it = physicalPointers.find(id);
-			ASSERT_MSG(it != physicalPointers.end(), "Unknown physical pointer %d", id.value());
+			auto it = pointers.find(id);
+			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
 			return it->second;
 		}
 	};

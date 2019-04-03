@@ -41,6 +41,8 @@ namespace
 
 namespace sw
 {
+	const SpirvShader::Decorations SpirvShader::Decorations::NONE = SpirvShader::Decorations();
+
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
 
 	SpirvShader::SpirvShader(InsnStore const &insns)
@@ -188,10 +190,9 @@ namespace sw
 					UNIMPLEMENTED("Variable initializers not yet supported");
 
 				auto &object = defs[resultId];
-				object.kind = Object::Kind::Variable;
+				object.kind = Object::Kind::Pointer;
 				object.definition = insn;
 				object.type = typeId;
-				object.pointerBase = insn.word(2);	// base is itself
 
 				ASSERT(getType(typeId).storageClass == storageClass);
 
@@ -201,12 +202,13 @@ namespace sw
 				case spv::StorageClassOutput:
 					ProcessInterfaceVariable(object);
 					break;
+
 				case spv::StorageClassUniform:
 				case spv::StorageClassStorageBuffer:
-				case spv::StorageClassPushConstant:
-					object.kind = Object::Kind::PhysicalPointer;
+					object.kind = Object::Kind::DescriptorSet;
 					break;
 
+				case spv::StorageClassPushConstant:
 				case spv::StorageClassPrivate:
 				case spv::StorageClassFunction:
 					break; // Correctly handled.
@@ -446,15 +448,6 @@ namespace sw
 				object.type = typeId;
 				object.kind = Object::Kind::Value;
 				object.definition = insn;
-
-				if (insn.opcode() == spv::OpAccessChain || insn.opcode() == spv::OpInBoundsAccessChain)
-				{
-					// interior ptr has two parts:
-					// - logical base ptr, common across all lanes and known at compile time
-					// - per-lane offset
-					Object::ID baseId = insn.word(3);
-					object.pointerBase = getObject(baseId).pointerBase;
-				}
 				break;
 			}
 
@@ -816,7 +809,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	SIMD::Int SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
@@ -827,14 +820,66 @@ namespace sw
 		Decorations d{};
 		ApplyDecorationsForId(&d, baseObject.type);
 
-		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
-		// Start with its offset and build from there.
-		if (baseObject.kind == Object::Kind::Value)
+		Pointer<Byte> pointerBase;
+
+		switch (baseObject.kind)
 		{
-			dynamicOffset += routine->getIntermediate(id).Int(0);
+			case Object::Kind::Value:
+			{
+				// The <base> operand is an intermediate value itself, ie
+				// produced by a previous OpAccessChain.
+				// Start with its offset and build from there.
+				pointerBase = routine->getPointer(id);
+				dynamicOffset += routine->getIntermediate(id).Int(0);
+				break;
+			}
+
+			case Object::Kind::DescriptorSet:
+			{
+				size_t arrayIndex = 0;
+
+				auto type = getType(typeId).definition.opcode();
+				if (type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
+				{
+					ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant); // TODO: Support per-lane lookup?
+					arrayIndex = GetConstantInt(indexIds[0]);
+
+					numIndices--;
+					indexIds++;
+					typeId = getType(typeId).element;
+				}
+
+				auto d = getDecorations(id);
+				ASSERT(d.DescriptorSet >= 0);
+				ASSERT(d.Binding >= 0);
+
+				auto set = routine->getPointer(id);
+				auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+				size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+
+				Pointer<Byte> bufferInfo = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
+				Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(bufferInfo + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
+				Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
+				Int offset = *Pointer<Int>(bufferInfo + OFFSET(VkDescriptorBufferInfo, offset));
+				if (setLayout->isBindingDynamic(d.Binding))
+				{
+					uint32_t dynamicBindingIndex =
+						routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+						setLayout->getDynamicDescriptorOffset(d.Binding) +
+						arrayIndex;
+					offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
+				}
+
+				pointerBase = data + offset;
+				break;
+			}
+
+			default:
+				pointerBase = routine->getPointer(id);
+				break;
 		}
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch (type.definition.opcode())
@@ -853,12 +898,22 @@ namespace sw
 			{
 				// TODO: b/127950082: Check bounds.
 				ApplyDecorationsForId(&d, typeId);
-				ASSERT(d.HasArrayStride);
-				auto & obj = getObject(indexIds[i]);
+
+				// "Each array type must have an ArrayStride decoration, unless
+				// it is an array that contains a structure decorated with
+				// Block or BufferBlock, in which case it must not have an
+				// ArrayStride decoration"
+				auto &elDecorations = getDecorations(type.element);
+				ASSERT((elDecorations.Block || elDecorations.BufferBlock) != d.HasArrayStride);
+				auto stride = d.HasArrayStride
+						? (d.ArrayStride / sizeof(float))
+			 			: getType(type.element).sizeInComponents;
+
+				auto &obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
-					constantOffset += d.ArrayStride/sizeof(float) * GetConstantInt(indexIds[i]);
+					constantOffset += stride * GetConstantInt(indexIds[i]);
 				else
-					dynamicOffset += SIMD::Int(d.ArrayStride / sizeof(float)) * routine->getIntermediate(indexIds[i]).Int(0);
+					dynamicOffset += SIMD::Int(stride) * routine->getIntermediate(indexIds[i]).Int(0);
 				typeId = type.element;
 				break;
 			}
@@ -890,10 +945,10 @@ namespace sw
 			}
 		}
 
-		return dynamicOffset + SIMD::Int(constantOffset);
+		return std::make_pair(pointerBase, dynamicOffset + SIMD::Int(constantOffset));
 	}
 
-	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// TODO: avoid doing per-lane work in some cases if we can?
 		// Produce a *component* offset into location-oriented memory
@@ -910,7 +965,7 @@ namespace sw
 			dynamicOffset += routine->getIntermediate(id).Int(0);
 		}
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch(type.opcode())
@@ -952,18 +1007,18 @@ namespace sw
 		return dynamicOffset + SIMD::Int(constantOffset);
 	}
 
-	uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndexes, uint32_t const *indexes) const
+	uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndices, uint32_t const *indices) const
 	{
 		uint32_t constantOffset = 0;
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch(type.opcode())
 			{
 			case spv::OpTypeStruct:
 			{
-				int memberIndex = indexes[i];
+				int memberIndex = indices[i];
 				int offsetIntoStruct = 0;
 				for (auto j = 0; j < memberIndex; j++) {
 					auto memberType = type.definition.word(2u + j);
@@ -980,7 +1035,7 @@ namespace sw
 			{
 				auto elementType = type.definition.word(2);
 				auto stride = getType(elementType).sizeInComponents;
-				constantOffset += stride * indexes[i];
+				constantOffset += stride * indices[i];
 				typeId = elementType;
 				break;
 			}
@@ -1699,8 +1754,16 @@ namespace sw
 		Object::ID resultId = insn.word(2);
 		auto &object = getObject(resultId);
 		auto &objectTy = getType(object.type);
+
 		switch (objectTy.storageClass)
 		{
+		case spv::StorageClassOutput:
+		case spv::StorageClassPrivate:
+		case spv::StorageClassFunction:
+		{
+			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
+			break;
+		}
 		case spv::StorageClassInput:
 		{
 			if (object.kind == Object::Kind::InterfaceVariable)
@@ -1713,6 +1776,7 @@ namespace sw
 									dst[offset++] = routine->inputs[scalarSlot];
 								});
 			}
+			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
 			break;
 		}
 		case spv::StorageClassUniform:
@@ -1721,32 +1785,12 @@ namespace sw
 			Decorations d{};
 			ApplyDecorationsForId(&d, resultId);
 			ASSERT(d.DescriptorSet >= 0);
-			ASSERT(d.Binding >= 0);
-
-			auto set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			size_t arrayIndex = 0; // TODO: descriptor arrays
-			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
-
-			Pointer<Byte> bufferInfo = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
-			Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(bufferInfo + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
-			Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
-			Int offset = *Pointer<Int>(bufferInfo + OFFSET(VkDescriptorBufferInfo, offset));
-			if (setLayout->isBindingDynamic(d.Binding))
-			{
-				uint32_t dynamicBindingIndex =
-					routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-					setLayout->getDynamicDescriptorOffset(d.Binding) +
-					arrayIndex;
-				offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
-			}
-
-			routine->physicalPointers[resultId] = data + offset;
+			routine->createPointer(resultId, routine->descriptorSets[d.DescriptorSet]);
 			break;
 		}
 		case spv::StorageClassPushConstant:
 		{
-			routine->physicalPointers[resultId] = routine->pushConstants;
+			routine->createPointer(resultId, routine->pushConstants);
 			break;
 		}
 		default:
@@ -1765,8 +1809,7 @@ namespace sw
 		auto &result = getObject(resultId);
 		auto &resultTy = getType(result.type);
 		auto &pointer = getObject(pointerId);
-		auto &pointerBase = getObject(pointer.pointerBase);
-		auto &pointerBaseTy = getType(pointerBase.type);
+		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
 		if(atomic)
@@ -1780,22 +1823,13 @@ namespace sw
 		ASSERT(Type::ID(insn.word(1)) == result.type);
 		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage)
+		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage load not yet implemented");
 		}
 
-		Pointer<Float> ptrBase;
-		if (pointerBase.kind == Object::Kind::PhysicalPointer)
-		{
-			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
-		}
-		else
-		{
-			ptrBase = &routine->getValue(pointer.pointerBase)[0];
-		}
-
-		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
+		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
 		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
@@ -1861,8 +1895,6 @@ namespace sw
 		auto &pointer = getObject(pointerId);
 		auto &pointerTy = getType(pointer.type);
 		auto &elementTy = getType(pointerTy.element);
-		auto &pointerBase = getObject(pointer.pointerBase);
-		auto &pointerBaseTy = getType(pointerBase.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
 		if(atomic)
@@ -1874,22 +1906,13 @@ namespace sw
 
 		ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage)
+		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage store not yet implemented");
 		}
 
-		Pointer<Float> ptrBase;
-		if (pointerBase.kind == Object::Kind::PhysicalPointer)
-		{
-			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
-		}
-		else
-		{
-			ptrBase = &routine->getValue(pointer.pointerBase)[0];
-		}
-
-		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
+		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
 		if (object.kind == Object::Kind::Constant)
@@ -1982,23 +2005,25 @@ namespace sw
 		Type::ID typeId = insn.word(1);
 		Object::ID resultId = insn.word(2);
 		Object::ID baseId = insn.word(3);
-		uint32_t numIndexes = insn.wordCount() - 4;
-		const uint32_t *indexes = insn.wordPointer(4);
+		uint32_t numIndices = insn.wordCount() - 4;
+		const uint32_t *indices = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(baseId).pointerBase == getObject(resultId).pointerBase);
-
-		auto &dst = routine->createIntermediate(resultId, type.sizeInComponents);
+		ASSERT(getObject(resultId).kind == Object::Kind::Value);
 
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
 		   type.storageClass == spv::StorageClassStorageBuffer)
 		{
-			dst.move(0, WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine));
+			auto baseAndOffset = WalkExplicitLayoutAccessChain(baseId, numIndices, indices, routine);
+			routine->createPointer(resultId, baseAndOffset.first);
+			routine->createIntermediate(resultId, type.sizeInComponents).move(0, baseAndOffset.second);
 		}
 		else
 		{
-			dst.move(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
+			auto offset = WalkAccessChain(baseId, numIndices, indices, routine);
+			routine->createPointer(resultId, routine->getPointer(baseId));
+			routine->createIntermediate(resultId, type.sizeInComponents).move(0, offset);
 		}
 
 		return EmitResult::Continue;
