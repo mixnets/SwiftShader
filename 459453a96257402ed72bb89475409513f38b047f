@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aed21c86_e2e74c22",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-03T18:08:52Z",
+      "side": 0,
+      "message": "\\o/",
+      "revId": "459453a96257402ed72bb89475409513f38b047f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
