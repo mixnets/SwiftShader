@@ -22,6 +22,30 @@
       "revId": "f5bba6b283c555e0c336ade93c5d9fc1ff56a39e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1a24750_e2655edf",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:59:28Z",
+      "side": 1,
+      "message": "I took this (mostly) from a HLSL compiler, and verified the transforms by examining the transforms stage by stage.",
+      "parentUuid": "4d218359_1df53894",
+      "range": {
+        "startLine": 233,
+        "startChar": 0,
+        "endLine": 238,
+        "endChar": 52
+      },
+      "revId": "f5bba6b283c555e0c336ade93c5d9fc1ff56a39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
