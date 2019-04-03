@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "d3f21fd4_b6b42bdf",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-03T18:21:57Z",
+      "side": 1,
+      "message": "It\u0027s actually triangles. See how for points and lines it also stores three vertex indices. Likewise back when we supported quads they were broken up into two triangles, i.e. one primitive becomes two triangles. Thus I think triangleCount is less confusing.",
+      "parentUuid": "786763e0_b827082f",
+      "range": {
+        "startLine": 96,
+        "startChar": 31,
+        "endLine": 96,
+        "endChar": 44
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "097d68ab_ddf5f7b1",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
