@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3cb64a2_9eece1f8",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "Does anything actually use this yet?",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 46
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfb249da_190b057d",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "One for Chris and Nicolas: Should we be pointing at Khronos\u0027s dEQP? That is much closer to Android internal than this.",
+      "range": {
+        "startLine": 168,
+        "startChar": 15,
+        "endLine": 168,
+        "endChar": 70
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78d641e6_799766ea",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "CMake will actually do this for you on first build.",
+      "range": {
+        "startLine": 170,
+        "startChar": 4,
+        "endLine": 170,
+        "endChar": 27
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ed15fd8_6e7ec3c4",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "/",
+      "range": {
+        "startLine": 172,
+        "startChar": 20,
+        "endLine": 172,
+        "endChar": 21
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dd4fccc_bb4965b0",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "Running these tests is not a necessary part of building.",
+      "range": {
+        "startLine": 191,
+        "startChar": 0,
+        "endLine": 192,
+        "endChar": 21
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bef91588_579354bb",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "Maybe it is just me, but I don\u0027t particularly like adding this sort of stuff to my global environment.\nNote - you haven\u0027t documented that they\u0027ll need to re-exec their .bashrc, or log back in again.",
+      "range": {
+        "startLine": 195,
+        "startChar": 36,
+        "endLine": 195,
+        "endChar": 105
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d30370d8_b3017a19",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "I think you want to pass \n  -DDEQP_TARGET\u003dx11_egl\nhere too.",
+      "range": {
+        "startLine": 211,
+        "startChar": 4,
+        "endLine": 211,
+        "endChar": 9
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4eb6394_87bf2990",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "maybe:\n\n  make --jobs\u003d`nproc`",
+      "range": {
+        "startLine": 212,
+        "startChar": 16,
+        "endLine": 212,
+        "endChar": 18
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4595c1ad_314ee0b3",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:55:45Z",
+      "side": 1,
+      "message": "-n is an alias to --deqp-case",
+      "range": {
+        "startLine": 263,
+        "startChar": 48,
+        "endLine": 263,
+        "endChar": 60
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
