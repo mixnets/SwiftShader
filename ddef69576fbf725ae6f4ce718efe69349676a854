@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "769c4384_40747491",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T13:28:20Z",
+      "side": 0,
+      "message": "This and a few others will need to be restored for the debug info changes, but I can add them conditionally.",
+      "range": {
+        "startLine": 1068,
+        "startChar": 36,
+        "endLine": 1068,
+        "endChar": 63
+      },
+      "revId": "ddef69576fbf725ae6f4ce718efe69349676a854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3339823d_98847ec9",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T13:28:20Z",
+      "side": 0,
+      "message": "Slightly surprised that this isn\u0027t needed for macOS, but I\u0027ve tested and it seems to work without it.",
+      "range": {
+        "startLine": 1085,
+        "startChar": 40,
+        "endLine": 1085,
+        "endChar": 68
+      },
+      "revId": "ddef69576fbf725ae6f4ce718efe69349676a854",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
