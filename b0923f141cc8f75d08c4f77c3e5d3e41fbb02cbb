@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ad7c676_6fa69c87",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-03T03:37:22Z",
+      "side": 1,
+      "message": "nit: remove",
+      "range": {
+        "startLine": 106,
+        "startChar": 2,
+        "endLine": 107,
+        "endChar": 106
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
