@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7a529d2_1ceb8f9a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-03T15:28:19Z",
+      "side": 1,
+      "message": "nit: Could clarify that this is an optimization, not a functional change.",
+      "revId": "a3f0f3cb15a0643f43f39b5fedd8dcd1c7059044",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
