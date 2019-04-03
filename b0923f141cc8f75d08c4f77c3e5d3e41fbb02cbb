@@ -448,6 +448,30 @@
       "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33d65376_25c391d0",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T19:34:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ad7c676_6fa69c87",
+      "range": {
+        "startLine": 106,
+        "startChar": 2,
+        "endLine": 107,
+        "endChar": 106
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
