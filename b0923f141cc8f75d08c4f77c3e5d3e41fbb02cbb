@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "c0b6e9ec_2b05a0ae",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T19:22:19Z",
+      "side": 1,
+      "message": "Without quads there is always one triangle per primitive type, right?\nThat said, I guess it is less confusing when considering batch is an array of 3 vertices.\nSorry Alexis!",
+      "parentUuid": "d3f21fd4_b6b42bdf",
+      "range": {
+        "startLine": 96,
+        "startChar": 31,
+        "endLine": 96,
+        "endChar": 44
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "097d68ab_ddf5f7b1",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
