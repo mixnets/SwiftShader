@@ -2,6 +2,144 @@
   "comments": [
     {
       "key": {
+        "uuid": "1266737b_d46f9861",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "nit: Bonus points if you include the topology in the assert message:\n\n  UNIMPLEMENTED(\"topology %d\", int(topology));\n\nThat way you\u0027re one step closer to identifying the bug / missing feature when it is reported.",
+      "range": {
+        "startLine": 72,
+        "startChar": 3,
+        "endLine": 72,
+        "endChar": 16
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78ca312c_3839fd6d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "\u0027triangleCount\u0027 seems a little odd for things that are not triangles, how about primitiveCount?",
+      "range": {
+        "startLine": 96,
+        "startChar": 31,
+        "endLine": 96,
+        "endChar": 44
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "097d68ab_ddf5f7b1",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "stray tab",
+      "range": {
+        "startLine": 404,
+        "startChar": 1,
+        "endLine": 404,
+        "endChar": 2
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b635c188_03f18085",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "Isn\u0027t this the same as:\n\n  data-\u003eindices \u003d context-\u003eindexBuffer",
+      "range": {
+        "startLine": 406,
+        "startChar": 5,
+        "endLine": 406,
+        "endChar": 25
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30714d80_49b68edb",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 912,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "If you change setBatchIndices to:\n\n\ttemplate\u003ctypename T\u003e\n\tinline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, T indices, unsigned int start, unsigned int triangleCount)\n\t{\n\t\tswitch(topology)\n\t\t{\n\t\tcase VK_PRIMITIVE_TOPOLOGY_POINT_LIST:\n\t\t\tunsigned int index \u003d start;\n\n\t\t\tfor(unsigned int i \u003d 0; i \u003c triangleCount; i++)\n\t\t\t{\n\t\t\t\tbatch[i][0] \u003d indices[index];\n\t\t\t\tbatch[i][1] \u003d indices[index];\n\t\t\t\tbatch[i][2] \u003d indices[index];\n\n\t\t\t\tindex +\u003d 1;\n\t\t\t}\n\t\t\tbreak;\n\n                ...\n\nThen you can reuse that function here:\n\n        struct LinearIndex\n        {\n            unsigned int operator[](unsigned int i) { return i; } \n        };\n\n\tif(!setBatchIndices(batch, topology, LinearIndex(), start, triangleCount))\n\t{\n\t\treturn;\n\t}",
+      "range": {
+        "startLine": 912,
+        "startChar": 2,
+        "endLine": 912,
+        "endChar": 14
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb9936c3_025cb6de",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 919,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T07:50:24Z",
+      "side": 1,
+      "message": "primitiveCount?",
+      "range": {
+        "startLine": 919,
+        "startChar": 32,
+        "endLine": 919,
+        "endChar": 45
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4ad7c676_6fa69c87",
         "filename": "src/Device/VertexProcessor.cpp",
         "patchSetId": 5
