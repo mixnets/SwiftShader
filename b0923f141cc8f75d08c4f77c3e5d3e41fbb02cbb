@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "757d6eea_59c1ff44",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1266737b_d46f9861",
+      "range": {
+        "startLine": 72,
+        "startChar": 3,
+        "endLine": 72,
+        "endChar": 16
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "78ca312c_3839fd6d",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "786763e0_b827082f",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "78ca312c_3839fd6d",
+      "range": {
+        "startLine": 96,
+        "startChar": 31,
+        "endLine": 96,
+        "endChar": 44
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "e207bd97_ec925f55",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "Done. 404 error :)",
+      "parentUuid": "097d68ab_ddf5f7b1",
+      "range": {
+        "startLine": 404,
+        "startChar": 1,
+        "endLine": 404,
+        "endChar": 2
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b635c188_03f18085",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
@@ -91,6 +163,30 @@
       "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a4e954c_7cd16b99",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b635c188_03f18085",
+      "range": {
+        "startLine": 406,
+        "startChar": 5,
+        "endLine": 406,
+        "endChar": 25
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "96f6ee4e_4c7e04d6",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 912,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "I don\u0027t think I can use a pointer type as a typename (so I can\u0027t use uint16_t* as T, but I can use uint16_t as T), so that would break the other cases.",
+      "parentUuid": "30714d80_49b68edb",
+      "range": {
+        "startLine": 912,
+        "startChar": 2,
+        "endLine": 912,
+        "endChar": 14
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb9936c3_025cb6de",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
@@ -137,6 +257,30 @@
       "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77c2c3c8_b285d4a0",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 919,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-03T17:33:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cb9936c3_025cb6de",
+      "range": {
+        "startLine": 919,
+        "startChar": 32,
+        "endLine": 919,
+        "endChar": 45
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
