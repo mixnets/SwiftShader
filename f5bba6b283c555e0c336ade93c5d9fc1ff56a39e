@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d218359_1df53894",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-03T17:53:46Z",
+      "side": 1,
+      "message": "How did you determine this set and its order?\n\nIn spvtools::Optimizer::RegisterPerformancePasses(), LocalSingleBlockLoadStoreElimPass and LocalSingleStoreElimPass are invoked before LocalAccessChainConvertPass, ad after. Also BlockMergePass is run after everything else, and SSARewritePass is never used.",
+      "range": {
+        "startLine": 233,
+        "startChar": 0,
+        "endLine": 238,
+        "endChar": 52
+      },
+      "revId": "f5bba6b283c555e0c336ade93c5d9fc1ff56a39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
