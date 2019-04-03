@@ -237,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "a79b6d30_3bcf7f8f",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 912,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-03T17:57:59Z",
+      "side": 1,
+      "message": "Yes, you can, but you will have to modify the cases in a similar fashion to my first example.",
+      "parentUuid": "96f6ee4e_4c7e04d6",
+      "range": {
+        "startLine": 912,
+        "startChar": 2,
+        "endLine": 912,
+        "endChar": 14
+      },
+      "revId": "b0923f141cc8f75d08c4f77c3e5d3e41fbb02cbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb9936c3_025cb6de",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
