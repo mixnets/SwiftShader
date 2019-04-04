@@ -244,9 +244,8 @@ namespace sw
 
 				// TODO: Better document this kind.
 				// A shader interface variable pointer.
-				// Pointer formed from a base pointer and per-lane offset.
-				// Base pointer held by SpirvRoutine::pointers
-				// Per-lane offset held by SpirvRoutine::intermediates.
+				// Pointer with uniform address across all lanes.
+				// Pointer held by SpirvRoutine::pointers
 				InterfaceVariable,
 
 				// Constant value held by Object::constantValue.
@@ -255,10 +254,14 @@ namespace sw
 				// Value held by SpirvRoutine::intermediates.
 				Intermediate,
 
-				// Pointer formed from a base pointer and per-lane offset.
+				// DivergentPointer formed from a base pointer and per-lane offset.
 				// Base pointer held by SpirvRoutine::pointers
 				// Per-lane offset held by SpirvRoutine::intermediates.
-				Pointer,
+				DivergentPointer,
+
+				// Pointer with uniform address across all lanes.
+				// Pointer held by SpirvRoutine::pointers
+				NonDivergentPointer,
 
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
@@ -558,6 +561,15 @@ namespace sw
 		Object& CreateConstant(InsnIterator it);
 
 		void ProcessInterfaceVariable(Object &object);
+
+		// Returns a base pointer and per-lane offset to the underlying data for
+		// the given pointer object. Handles objects of the following kinds:
+		//  • DescriptorSet
+		//  • DivergentPointer
+		//  • InterfaceVariable
+		//  • NonDivergentPointer
+		// Calling GetPointerToData with objects of any other kind will assert.
+		std::pair<Pointer<Byte>, SIMD::Int> GetPointerToData(Object::ID id, int arrayIndex, SpirvRoutine *routine) const;
 
 		std::pair<Pointer<Byte>, SIMD::Int> WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;

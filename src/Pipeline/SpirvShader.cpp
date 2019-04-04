@@ -188,7 +188,7 @@ namespace sw
 					UNIMPLEMENTED("Variable initializers not yet supported");
 
 				auto &object = defs[resultId];
-				object.kind = Object::Kind::Pointer;
+				object.kind = Object::Kind::NonDivergentPointer;
 				object.definition = insn;
 				object.type = typeId;
 
@@ -438,13 +438,15 @@ namespace sw
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
-				// Instructions that yield an intermediate value
+				// Instructions that yield an intermediate value or divergent
+				// pointer
 			{
 				Type::ID typeId = insn.word(1);
 				Object::ID resultId = insn.word(2);
 				auto &object = defs[resultId];
 				object.type = typeId;
-				object.kind = Object::Kind::Intermediate;
+				object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
+					? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
 				object.definition = insn;
 				break;
 			}
@@ -807,46 +809,22 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, SpirvRoutine *routine) const
 	{
-		// Produce a offset into external memory in sizeof(float) units
-
-		int constantOffset = 0;
-		SIMD::Int dynamicOffset = SIMD::Int(0);
-		auto &baseObject = getObject(id);
-		Type::ID typeId = getType(baseObject.type).element;
-		Decorations d = {};
-		ApplyDecorationsForId(&d, id);
-		ApplyDecorationsForId(&d, baseObject.type);
-
-		Pointer<Byte> pointerBase;
-
-		switch (baseObject.kind)
+		auto &object = getObject(id);
+		switch (object.kind)
 		{
-			case Object::Kind::Intermediate:
-			{
-				// The <base> operand is an intermediate value itself, ie
-				// produced by a previous OpAccessChain.
-				// Start with its offset and build from there.
-				pointerBase = routine->getPointer(id);
-				dynamicOffset += routine->getIntermediate(id).Int(0);
-				break;
-			}
+			case Object::Kind::NonDivergentPointer:
+			case Object::Kind::InterfaceVariable:
+				return std::make_pair(routine->getPointer(id), SIMD::Int(0));
+
+			case Object::Kind::DivergentPointer:
+				return std::make_pair(routine->getPointer(id), routine->getIntermediate(id).Int(0));
 
 			case Object::Kind::DescriptorSet:
 			{
-				size_t arrayIndex = 0;
-
-				auto type = getType(typeId).definition.opcode();
-				if (type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
-				{
-					ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant); // TODO: Support per-lane lookup?
-					arrayIndex = GetConstantInt(indexIds[0]);
-
-					numIndexes--;
-					indexIds++;
-					typeId = getType(typeId).element;
-				}
+				Decorations d = {};
+				ApplyDecorationsForId(&d, id);
 
 				ASSERT(d.DescriptorSet >= 0);
 				ASSERT(d.Binding >= 0);
@@ -867,15 +845,44 @@ namespace sw
 						arrayIndex;
 					offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
 				}
-
-				pointerBase = data + offset;
-				break;
+				return std::make_pair(data + offset, SIMD::Int(0));
 			}
 
 			default:
-				pointerBase = routine->getPointer(id);
-				break;
+				UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+				return std::make_pair(Pointer<Byte>(), SIMD::Int(0));
 		}
+	}
+
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	{
+		// Produce a offset into external memory in sizeof(float) units
+
+		auto &baseObject = getObject(id);
+		Type::ID typeId = getType(baseObject.type).element;
+		Decorations d = {};
+		ApplyDecorationsForId(&d, baseObject.type);
+
+		size_t arrayIndex = 0;
+		if (baseObject.kind == Object::Kind::DescriptorSet)
+		{
+			auto type = getType(typeId).definition.opcode();
+			if (type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
+			{
+				ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant); // TODO: Support per-lane lookup?
+				arrayIndex = GetConstantInt(indexIds[0]);
+
+				numIndexes--;
+				indexIds++;
+				typeId = getType(typeId).element;
+			}
+		}
+
+		SIMD::Int dynamicOffset;
+		Pointer<Byte> pointerBase;
+		std::tie(pointerBase, dynamicOffset) = GetPointerToData(id, arrayIndex, routine);
+
+		int constantOffset = 0;
 
 		for (auto i = 0u; i < numIndexes; i++)
 		{
@@ -946,9 +953,9 @@ namespace sw
 		auto &baseObject = getObject(id);
 		Type::ID typeId = getType(baseObject.type).element;
 
-		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
+		// The <base> operand is a divergent pointer itself.
 		// Start with its offset and build from there.
-		if (baseObject.kind == Object::Kind::Intermediate)
+		if (baseObject.kind == Object::Kind::DivergentPointer)
 		{
 			dynamicOffset += routine->getIntermediate(id).Int(0);
 		}
@@ -1816,18 +1823,18 @@ namespace sw
 			UNIMPLEMENTED("StorageClassImage load not yet implemented");
 		}
 
-		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		SIMD::Int offsets;
+		Pointer<Float> ptrBase;
+		std::tie(ptrBase, offsets) = GetPointerToData(pointerId, 0, routine);
+
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
 		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
 
-		If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
+		If(pointer.kind == Object::Kind::DivergentPointer || anyInactiveLanes)
 		{
 			// Divergent offsets or masked lanes.
-			auto offsets = pointer.kind == Object::Kind::Intermediate ?
-					As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
-					RValue<SIMD::Int>(SIMD::Int(0));
 			for (auto i = 0u; i < resultTy.sizeInComponents; i++)
 			{
 				// i wish i had a Float,Float,Float,Float constructor here..
@@ -1899,7 +1906,10 @@ namespace sw
 			UNIMPLEMENTED("StorageClassImage store not yet implemented");
 		}
 
-		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		SIMD::Int offsets;
+		Pointer<Float> ptrBase;
+		std::tie(ptrBase, offsets) = GetPointerToData(pointerId, 0, routine);
+
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
@@ -1907,12 +1917,10 @@ namespace sw
 		{
 			// Constant source data.
 			auto src = reinterpret_cast<float *>(object.constantValue.get());
-			If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
+			If(pointer.kind == Object::Kind::DivergentPointer || anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
-				auto offsets = pointer.kind == Object::Kind::Intermediate ?
-						As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
-						RValue<SIMD::Int>(SIMD::Int(0));
+
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
@@ -1941,12 +1949,9 @@ namespace sw
 		{
 			// Intermediate source data.
 			auto &src = routine->getIntermediate(objectId);
-			If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
+			If(pointer.kind == Object::Kind::DivergentPointer || anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
-				auto offsets = pointer.kind == Object::Kind::Intermediate ?
-						As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
-						RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
 					for (int j = 0; j < SIMD::Width; j++)
@@ -1997,7 +2002,7 @@ namespace sw
 		const uint32_t *indexes = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(resultId).kind == Object::Kind::Intermediate);
+		ASSERT(getObject(resultId).kind == Object::Kind::DivergentPointer);
 
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
