@@ -46,6 +46,30 @@
       "revId": "174c3fa9ff6525665301fd7c6d140c92ad72ac75",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07e26e9a_69166309",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 682,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T21:13:29Z",
+      "side": 1,
+      "message": "I\u0027d be OK with `Variable`.",
+      "parentUuid": "bf8e9021_361a9bfe",
+      "range": {
+        "startLine": 682,
+        "startChar": 53,
+        "endLine": 682,
+        "endChar": 59
+      },
+      "revId": "174c3fa9ff6525665301fd7c6d140c92ad72ac75",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
