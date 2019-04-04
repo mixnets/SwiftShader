@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ecd6df3_9c100e54",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T19:12:52Z",
+      "side": 1,
+      "message": "I would have done:\n\n```\nDecorations d{};\nApplyDecorationsForId(\u0026d, id);\nApplyDecorationsForId(\u0026d, baseObject.type);\n```\n\nand not needed your new getDecorations() at all.",
+      "revId": "28a9573f1fce3de7e2a36f4e1ee76a7d5bf28eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
