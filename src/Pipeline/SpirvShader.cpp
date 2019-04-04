@@ -809,7 +809,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
@@ -844,7 +844,7 @@ namespace sw
 					ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant); // TODO: Support per-lane lookup?
 					arrayIndex = GetConstantInt(indexIds[0]);
 
-					numIndexes--;
+					numIndices--;
 					indexIds++;
 					typeId = getType(typeId).element;
 				}
@@ -879,7 +879,7 @@ namespace sw
 				break;
 		}
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch (type.definition.opcode())
@@ -938,7 +938,7 @@ namespace sw
 		return std::make_pair(pointerBase, dynamicOffset + SIMD::Int(constantOffset));
 	}
 
-	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// TODO: avoid doing per-lane work in some cases if we can?
 		// Produce a *component* offset into location-oriented memory
@@ -955,7 +955,7 @@ namespace sw
 			dynamicOffset += routine->getIntermediate(id).Int(0);
 		}
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch(type.opcode())
@@ -997,18 +997,18 @@ namespace sw
 		return dynamicOffset + SIMD::Int(constantOffset);
 	}
 
-	uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndexes, uint32_t const *indexes) const
+	uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndices, uint32_t const *indices) const
 	{
 		uint32_t constantOffset = 0;
 
-		for (auto i = 0u; i < numIndexes; i++)
+		for (auto i = 0u; i < numIndices; i++)
 		{
 			auto & type = getType(typeId);
 			switch(type.opcode())
 			{
 			case spv::OpTypeStruct:
 			{
-				int memberIndex = indexes[i];
+				int memberIndex = indices[i];
 				int offsetIntoStruct = 0;
 				for (auto j = 0; j < memberIndex; j++) {
 					auto memberType = type.definition.word(2u + j);
@@ -1025,7 +1025,7 @@ namespace sw
 			{
 				auto elementType = type.definition.word(2);
 				auto stride = getType(elementType).sizeInComponents;
-				constantOffset += stride * indexes[i];
+				constantOffset += stride * indices[i];
 				typeId = elementType;
 				break;
 			}
@@ -1995,8 +1995,8 @@ namespace sw
 		Type::ID typeId = insn.word(1);
 		Object::ID resultId = insn.word(2);
 		Object::ID baseId = insn.word(3);
-		uint32_t numIndexes = insn.wordCount() - 4;
-		const uint32_t *indexes = insn.wordPointer(4);
+		uint32_t numIndices = insn.wordCount() - 4;
+		const uint32_t *indices = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
 		ASSERT(getObject(resultId).kind == Object::Kind::Value);
@@ -2005,13 +2005,13 @@ namespace sw
 		   type.storageClass == spv::StorageClassUniform ||
 		   type.storageClass == spv::StorageClassStorageBuffer)
 		{
-			auto baseAndOffset = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine);
+			auto baseAndOffset = WalkExplicitLayoutAccessChain(baseId, numIndices, indices, routine);
 			routine->createPointer(resultId, baseAndOffset.first);
 			routine->createIntermediate(resultId, type.sizeInComponents).move(0, baseAndOffset.second);
 		}
 		else
 		{
-			auto offset = WalkAccessChain(baseId, numIndexes, indexes, routine);
+			auto offset = WalkAccessChain(baseId, numIndices, indices, routine);
 			routine->createPointer(resultId, routine->getPointer(baseId));
 			routine->createIntermediate(resultId, type.sizeInComponents).move(0, offset);
 		}
