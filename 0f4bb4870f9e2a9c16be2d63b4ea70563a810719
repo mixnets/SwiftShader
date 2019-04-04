@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f49d6d12_2616c561",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "Unused variable.",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 17
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "892445c8_443e4d61",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "Why is this static?\nThis block can be simplified to:\n\n\n\tauto \u0026query \u003d pool[i]; // query can be used below instead of pool[i].\n\tstd::unique_lock\u003cstd::mutex\u003e lk(query.mutex); // You hold the lock after the conditional anyway\n\tif(flags \u0026 VK_QUERY_RESULT_WAIT_BIT) // Must wait for query to finish\n\t{\n\t\tquery.cv.wait(lk, [\u0026query] { return query.state !\u003d Query::ACTIVE; });\n\t}",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 10
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcdde00b_efe2dde3",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "superdooperübernit: How about:\n\n\tif(writeResult)\n\t{\n\t\tresult64[0] \u003d query.data;\n\t}\n\tif(flags \u0026 VK_QUERY_RESULT_WITH_AVAILABILITY_BIT) // Output query availability\n\t{\n\t\tresult64[1] \u003d query.state;\n\t}",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 103,
+        "endChar": 5
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25fffafe_94ce1209",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "Debatable (this is a borderline case), but I\u0027d say you should be locking here",
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7730dea7_a2f96afc",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "I had a quick look at the spec, and couldn\u0027t find anything mentioning what might happen if you reset a query while it is ACTIVE. Seems like a bad idea. Maybe assert?\n\nWe should probably lock here to ensure the write is barriered.\n\nAlso, set data to 0? While the spec says the value is undefined, it is always nicer to reduce chaos.",
+      "range": {
+        "startLine": 159,
+        "startChar": 3,
+        "endLine": 159,
+        "endChar": 37
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42841831_81270f2d",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T14:26:32Z",
+      "side": 1,
+      "message": "nit: It\u0027s a good habit to comment fields that should be locked before access:\n\n  State state; // guarded by mutex\n\netc\n\nThat or have accessors that return a copy / assign under lock.",
+      "range": {
+        "startLine": 37,
+        "startChar": 7,
+        "endLine": 37,
+        "endChar": 12
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
