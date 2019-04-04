@@ -253,7 +253,7 @@ namespace sw
 				Constant,
 
 				// Value held by SpirvRoutine::intermediates.
-				Value,
+				Intermediate,
 
 				// Pointer formed from a base pointer and per-lane offset.
 				// Base pointer held by SpirvRoutine::pointers
@@ -671,7 +671,7 @@ namespace sw
 
 		vk::PipelineLayout const * const pipelineLayout;
 
-		std::unordered_map<SpirvShader::Object::ID, Value> lvalues;
+		std::unordered_map<SpirvShader::Object::ID, Value> values;
 
 		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
 
@@ -685,9 +685,9 @@ namespace sw
 		Pointer<Byte> pushConstants;
 		Int killMask = Int{0};
 
-		void createLvalue(SpirvShader::Object::ID id, uint32_t size)
+		void createValue(SpirvShader::Object::ID id, uint32_t size)
 		{
-			bool added = lvalues.emplace(id, Value(size)).second;
+			bool added = values.emplace(id, Value(size)).second;
 			ASSERT_MSG(added, "Value %d created twice", id.value());
 		}
 
@@ -721,8 +721,8 @@ namespace sw
 
 		Value& getValue(SpirvShader::Object::ID id)
 		{
-			auto it = lvalues.find(id);
-			ASSERT_MSG(it != lvalues.end(), "Unknown value %d", id.value());
+			auto it = values.find(id);
+			ASSERT_MSG(it != values.end(), "Unknown value %d", id.value());
 			return it->second;
 		}
 
@@ -754,7 +754,7 @@ namespace sw
 	public:
 		GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::Object::ID objId) :
 				obj(shader->getObject(objId)),
-				intermediate(obj.kind == SpirvShader::Object::Kind::Value ? &routine->getIntermediate(objId) : nullptr) {}
+				intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &routine->getIntermediate(objId) : nullptr) {}
 
 		RValue<SIMD::Float> Float(uint32_t i) const
 		{
