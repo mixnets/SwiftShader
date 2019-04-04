@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5459055b_9fbf7034",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-04T17:53:36Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "f49d6d12_2616c561",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 17
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "892445c8_443e4d61",
         "filename": "src/Vulkan/VkQueryPool.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "e37afd74_ed96342c",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-04T17:53:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "892445c8_443e4d61",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 10
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fcdde00b_efe2dde3",
         "filename": "src/Vulkan/VkQueryPool.cpp",
         "patchSetId": 7
@@ -59,6 +107,30 @@
       "writtenOn": "2019-04-04T14:26:32Z",
       "side": 1,
       "message": "superdooperübernit: How about:\n\n\tif(writeResult)\n\t{\n\t\tresult64[0] \u003d query.data;\n\t}\n\tif(flags \u0026 VK_QUERY_RESULT_WITH_AVAILABILITY_BIT) // Output query availability\n\t{\n\t\tresult64[1] \u003d query.state;\n\t}",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 103,
+        "endChar": 5
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0562de7a_2820a893",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-04T17:53:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fcdde00b_efe2dde3",
       "range": {
         "startLine": 95,
         "startChar": 4,
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "4382129c_015dd3b4",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-04T17:53:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25fffafe_94ce1209",
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7730dea7_a2f96afc",
         "filename": "src/Vulkan/VkQueryPool.cpp",
         "patchSetId": 7
@@ -108,6 +198,30 @@
       "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5158783_d786f289",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-04T17:53:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7730dea7_a2f96afc",
+      "range": {
+        "startLine": 159,
+        "startChar": 3,
+        "endLine": 159,
+        "endChar": 37
+      },
+      "revId": "0f4bb4870f9e2a9c16be2d63b4ea70563a810719",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
