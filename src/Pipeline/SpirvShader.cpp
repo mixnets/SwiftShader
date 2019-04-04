@@ -188,10 +188,9 @@ namespace sw
 					UNIMPLEMENTED("Variable initializers not yet supported");
 
 				auto &object = defs[resultId];
-				object.kind = Object::Kind::Variable;
+				object.kind = Object::Kind::Pointer;
 				object.definition = insn;
 				object.type = typeId;
-				object.pointerBase = insn.word(2);	// base is itself
 
 				ASSERT(getType(typeId).storageClass == storageClass);
 
@@ -201,12 +200,10 @@ namespace sw
 				case spv::StorageClassOutput:
 					ProcessInterfaceVariable(object);
 					break;
+
 				case spv::StorageClassUniform:
 				case spv::StorageClassStorageBuffer:
 				case spv::StorageClassPushConstant:
-					object.kind = Object::Kind::PhysicalPointer;
-					break;
-
 				case spv::StorageClassPrivate:
 				case spv::StorageClassFunction:
 					break; // Correctly handled.
@@ -446,15 +443,6 @@ namespace sw
 				object.type = typeId;
 				object.kind = Object::Kind::Value;
 				object.definition = insn;
-
-				if (insn.opcode() == spv::OpAccessChain || insn.opcode() == spv::OpInBoundsAccessChain)
-				{
-					// interior ptr has two parts:
-					// - logical base ptr, common across all lanes and known at compile time
-					// - per-lane offset
-					Object::ID baseId = insn.word(3);
-					object.pointerBase = getObject(baseId).pointerBase;
-				}
 				break;
 			}
 
@@ -1699,8 +1687,16 @@ namespace sw
 		Object::ID resultId = insn.word(2);
 		auto &object = getObject(resultId);
 		auto &objectTy = getType(object.type);
+
 		switch (objectTy.storageClass)
 		{
+		case spv::StorageClassOutput:
+		case spv::StorageClassPrivate:
+		case spv::StorageClassFunction:
+		{
+			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
+			break;
+		}
 		case spv::StorageClassInput:
 		{
 			if (object.kind == Object::Kind::InterfaceVariable)
@@ -1713,6 +1709,7 @@ namespace sw
 									dst[offset++] = routine->inputs[scalarSlot];
 								});
 			}
+			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
 			break;
 		}
 		case spv::StorageClassUniform:
@@ -1741,12 +1738,12 @@ namespace sw
 				offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
 			}
 
-			routine->physicalPointers[resultId] = data + offset;
+			routine->createPointer(resultId, data + offset);
 			break;
 		}
 		case spv::StorageClassPushConstant:
 		{
-			routine->physicalPointers[resultId] = routine->pushConstants;
+			routine->createPointer(resultId, routine->pushConstants);
 			break;
 		}
 		default:
@@ -1765,8 +1762,7 @@ namespace sw
 		auto &result = getObject(resultId);
 		auto &resultTy = getType(result.type);
 		auto &pointer = getObject(pointerId);
-		auto &pointerBase = getObject(pointer.pointerBase);
-		auto &pointerBaseTy = getType(pointerBase.type);
+		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
 		if(atomic)
@@ -1780,22 +1776,13 @@ namespace sw
 		ASSERT(Type::ID(insn.word(1)) == result.type);
 		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage)
+		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage load not yet implemented");
 		}
 
-		Pointer<Float> ptrBase;
-		if (pointerBase.kind == Object::Kind::PhysicalPointer)
-		{
-			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
-		}
-		else
-		{
-			ptrBase = &routine->getValue(pointer.pointerBase)[0];
-		}
-
-		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
+		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
 		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
@@ -1861,8 +1848,6 @@ namespace sw
 		auto &pointer = getObject(pointerId);
 		auto &pointerTy = getType(pointer.type);
 		auto &elementTy = getType(pointerTy.element);
-		auto &pointerBase = getObject(pointer.pointerBase);
-		auto &pointerBaseTy = getType(pointerBase.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
 		if(atomic)
@@ -1874,22 +1859,13 @@ namespace sw
 
 		ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage)
+		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage store not yet implemented");
 		}
 
-		Pointer<Float> ptrBase;
-		if (pointerBase.kind == Object::Kind::PhysicalPointer)
-		{
-			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
-		}
-		else
-		{
-			ptrBase = &routine->getValue(pointer.pointerBase)[0];
-		}
-
-		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
+		Pointer<Float> ptrBase = routine->getPointer(pointerId);
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto anyInactiveLanes = AnyFalse(state->activeLaneMask());
 
 		if (object.kind == Object::Kind::Constant)
@@ -1986,19 +1962,21 @@ namespace sw
 		const uint32_t *indexes = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(baseId).pointerBase == getObject(resultId).pointerBase);
-
-		auto &dst = routine->createIntermediate(resultId, type.sizeInComponents);
+		ASSERT(getObject(resultId).kind == Object::Kind::Value);
 
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
 		   type.storageClass == spv::StorageClassStorageBuffer)
 		{
-			dst.move(0, WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine));
+			auto offset = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine);
+			routine->createPointer(resultId, routine->getPointer(baseId));
+			routine->createIntermediate(resultId, type.sizeInComponents).move(0, offset);
 		}
 		else
 		{
-			dst.move(0, WalkAccessChain(baseId, numIndexes, indexes, routine));
+			auto offset = WalkAccessChain(baseId, numIndexes, indexes, routine);
+			routine->createPointer(resultId, routine->getPointer(baseId));
+			routine->createIntermediate(resultId, type.sizeInComponents).move(0, offset);
 		}
 
 		return EmitResult::Continue;
