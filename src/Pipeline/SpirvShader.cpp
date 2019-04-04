@@ -444,7 +444,7 @@ namespace sw
 				Object::ID resultId = insn.word(2);
 				auto &object = defs[resultId];
 				object.type = typeId;
-				object.kind = Object::Kind::Value;
+				object.kind = Object::Kind::Intermediate;
 				object.definition = insn;
 				break;
 			}
@@ -823,7 +823,7 @@ namespace sw
 
 		switch (baseObject.kind)
 		{
-			case Object::Kind::Value:
+			case Object::Kind::Intermediate:
 			{
 				// The <base> operand is an intermediate value itself, ie
 				// produced by a previous OpAccessChain.
@@ -948,7 +948,7 @@ namespace sw
 
 		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
 		// Start with its offset and build from there.
-		if (baseObject.kind == Object::Kind::Value)
+		if (baseObject.kind == Object::Kind::Intermediate)
 		{
 			dynamicOffset += routine->getIntermediate(id).Int(0);
 		}
@@ -1198,7 +1198,7 @@ namespace sw
 				if(pointeeType.sizeInComponents > 0)  // TODO: what to do about zero-slot objects?
 				{
 					Object::ID resultId = insn.word(2);
-					routine->createLvalue(resultId, pointeeType.sizeInComponents);
+					routine->createVariable(resultId, pointeeType.sizeInComponents);
 				}
 				break;
 			}
@@ -1749,14 +1749,14 @@ namespace sw
 		case spv::StorageClassPrivate:
 		case spv::StorageClassFunction:
 		{
-			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
+			routine->createPointer(resultId, &routine->getVariable(resultId)[0]);
 			break;
 		}
 		case spv::StorageClassInput:
 		{
 			if (object.kind == Object::Kind::InterfaceVariable)
 			{
-				auto &dst = routine->getValue(resultId);
+				auto &dst = routine->getVariable(resultId);
 				int offset = 0;
 				VisitInterface(resultId,
 								[&](Decorations const &d, AttribType type) {
@@ -1764,7 +1764,7 @@ namespace sw
 									dst[offset++] = routine->inputs[scalarSlot];
 								});
 			}
-			routine->createPointer(resultId, &routine->getValue(resultId)[0]);
+			routine->createPointer(resultId, &routine->getVariable(resultId)[0]);
 			break;
 		}
 		case spv::StorageClassUniform:
@@ -1822,10 +1822,10 @@ namespace sw
 
 		auto load = std::unique_ptr<SIMD::Float[]>(new SIMD::Float[resultTy.sizeInComponents]);
 
-		If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+		If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
 		{
 			// Divergent offsets or masked lanes.
-			auto offsets = pointer.kind == Object::Kind::Value ?
+			auto offsets = pointer.kind == Object::Kind::Intermediate ?
 					As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
 					RValue<SIMD::Int>(SIMD::Int(0));
 			for (auto i = 0u; i < resultTy.sizeInComponents; i++)
@@ -1907,10 +1907,10 @@ namespace sw
 		{
 			// Constant source data.
 			auto src = reinterpret_cast<float *>(object.constantValue.get());
-			If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+			If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
-				auto offsets = pointer.kind == Object::Kind::Value ?
+				auto offsets = pointer.kind == Object::Kind::Intermediate ?
 						As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
 						RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
@@ -1941,10 +1941,10 @@ namespace sw
 		{
 			// Intermediate source data.
 			auto &src = routine->getIntermediate(objectId);
-			If(pointer.kind == Object::Kind::Value || anyInactiveLanes)
+			If(pointer.kind == Object::Kind::Intermediate || anyInactiveLanes)
 			{
 				// Divergent offsets or masked lanes.
-				auto offsets = pointer.kind == Object::Kind::Value ?
+				auto offsets = pointer.kind == Object::Kind::Intermediate ?
 						As<SIMD::Int>(routine->getIntermediate(pointerId).Int(0)) :
 						RValue<SIMD::Int>(SIMD::Int(0));
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
@@ -1997,7 +1997,7 @@ namespace sw
 		const uint32_t *indexes = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(resultId).kind == Object::Kind::Value);
+		ASSERT(getObject(resultId).kind == Object::Kind::Intermediate);
 
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
@@ -3116,7 +3116,7 @@ namespace sw
 				auto &objectTy = getType(object.type);
 				if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassOutput)
 				{
-					auto &dst = routine->getValue(resultId);
+					auto &dst = routine->getVariable(resultId);
 					int offset = 0;
 					VisitInterface(resultId,
 								   [&](Decorations const &d, AttribType type) {
