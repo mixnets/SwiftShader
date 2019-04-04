@@ -25,6 +25,53 @@
     },
     {
       "key": {
+        "uuid": "e7a62d36_11ea5e65",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "Not that I know of. I pointed this out a while ago as well. Running on Android required adb, but that can be obtained without the need for installing all of Android Studio: https://developer.android.com/studio/command-line/adb",
+      "parentUuid": "d3cb64a2_9eece1f8",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 46
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f3d03b8_c9ace076",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "People running dEQP with SwiftShader are probably also contributors, so I recommend installing the commit hook in one go:\n\ngit clone https://swiftshader.googlesource.com/SwiftShader \u0026\u0026 (cd SwiftShader \u0026\u0026 curl -Lo `git rev-parse --git-dir`/hooks/commit-msg https://gerrit-review.googlesource.com/tools/hooks/commit-msg ; chmod +x `git rev-parse --git-dir`/hooks/commit-msg)",
+      "range": {
+        "startLine": 164,
+        "startChar": 5,
+        "endLine": 164,
+        "endChar": 63
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bfb249da_190b057d",
         "filename": "docs/dEQP.md",
         "patchSetId": 1
@@ -36,6 +83,30 @@
       "writtenOn": "2019-04-03T17:55:45Z",
       "side": 1,
       "message": "One for Chris and Nicolas: Should we be pointing at Khronos\u0027s dEQP? That is much closer to Android internal than this.",
+      "range": {
+        "startLine": 168,
+        "startChar": 15,
+        "endLine": 168,
+        "endChar": 70
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd25be64_3230601e",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "Yes, and use the vulkan-cts-1.1.3 branch (or later? probably ages quickly)",
+      "parentUuid": "bfb249da_190b057d",
       "range": {
         "startLine": 168,
         "startChar": 15,
@@ -118,6 +189,29 @@
     },
     {
       "key": {
+        "uuid": "8158499c_5e5c67dc",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "make --jobs $(nproc)\n\nWe should probably change that in README.md as well.",
+      "range": {
+        "startLine": 189,
+        "startChar": 4,
+        "endLine": 189,
+        "endChar": 17
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8dd4fccc_bb4965b0",
         "filename": "docs/dEQP.md",
         "patchSetId": 1
@@ -164,6 +258,29 @@
     },
     {
       "key": {
+        "uuid": "4eb68e13_404a346b",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "Remove if Android SDK isn\u0027t necessary.",
+      "range": {
+        "startLine": 200,
+        "startChar": 4,
+        "endLine": 203,
+        "endChar": 53
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d30370d8_b3017a19",
         "filename": "docs/dEQP.md",
         "patchSetId": 1
@@ -175,6 +292,30 @@
       "writtenOn": "2019-04-03T17:55:45Z",
       "side": 1,
       "message": "I think you want to pass \n  -DDEQP_TARGET\u003dx11_egl\nhere too.",
+      "range": {
+        "startLine": 211,
+        "startChar": 4,
+        "endLine": 211,
+        "endChar": 9
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96aab8ac_f3d747c5",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "It\u0027s not strictly necessary, iff LD_LIBRARY_PATH points to SwiftShader\u0027s shared libraries during dEQP build. Then it will \u0027dynamically link\u0027 to those. This is why we have EGL 1.5 symbols even though we only implement EGL 1.4 (https://swiftshader-review.googlesource.com/c/SwiftShader/+/15909/).\n\nWith -DDEQP_TARGET\u003dx11_egl, the DEQP_EGL_LIBRARIES CMake variable for dEQP remains empty and it loads the libraries fully dynamically. I\u0027m not sure if it causes issues with X11 where not available. Might be best to document both options.",
+      "parentUuid": "d30370d8_b3017a19",
       "range": {
         "startLine": 211,
         "startChar": 4,
@@ -210,6 +351,47 @@
     },
     {
       "key": {
+        "uuid": "019250ad_7a64cdef",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "make --jobs $(nproc)\n\nis POSIX compliant",
+      "parentUuid": "a4eb6394_87bf2990",
+      "range": {
+        "startLine": 212,
+        "startChar": 16,
+        "endLine": 212,
+        "endChar": 18
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d0aa962_b040d77d",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "Add a note here and in the Windows section that if dEQP is updated, this needs to be run again.",
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4595c1ad_314ee0b3",
         "filename": "docs/dEQP.md",
         "patchSetId": 1
@@ -221,6 +403,30 @@
       "writtenOn": "2019-04-03T17:55:45Z",
       "side": 1,
       "message": "-n is an alias to --deqp-case",
+      "range": {
+        "startLine": 263,
+        "startChar": 48,
+        "endLine": 263,
+        "endChar": 60
+      },
+      "revId": "2ceca1ddcca275a32a714f425490659e2e135013",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7706ab52_d59bf605",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T14:56:50Z",
+      "side": 1,
+      "message": "Personally I like the verbosity. People interested in shorthands can read the command line documentation.",
+      "parentUuid": "4595c1ad_314ee0b3",
       "range": {
         "startLine": 263,
         "startChar": 48,
