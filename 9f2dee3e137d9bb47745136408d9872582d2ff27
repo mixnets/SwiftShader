@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "24e95fcb_9849444a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T19:06:59Z",
+      "side": 1,
+      "message": "Fixed (this is the change with the declaration).",
+      "parentUuid": "67e1c8ac_787b4419",
+      "revId": "9f2dee3e137d9bb47745136408d9872582d2ff27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc5746f3_e87fad29",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "9f2dee3e137d9bb47745136408d9872582d2ff27",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "613edac0_b13308ba",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 852,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T19:06:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc5746f3_e87fad29",
+      "revId": "9f2dee3e137d9bb47745136408d9872582d2ff27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
