@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "21f6deef_34a2aa82",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 843,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T19:28:09Z",
+      "side": 1,
+      "message": "Note: This would extend pretty nicely to dynamically uniform indexing, which is an optional feature in 1.0/1.1. Fully dynamic per lane indexing comes in with EXT_descriptor_indexing and is probably more messy.",
+      "range": {
+        "startLine": 843,
+        "startChar": 10,
+        "endLine": 843,
+        "endChar": 11
+      },
+      "revId": "b14bcd24812a4f80adc7be2fe8a19ab064f5e733",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55278493_4033ae9d",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 7
