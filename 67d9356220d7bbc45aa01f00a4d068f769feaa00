@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "27d4d057_cb57af7a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Unfortunately, this is an internal variable and not externally overrideable, AFAICT.\n\nI\u0027ve joined the CMake mailing list, and asked if there\u0027s a better \nway to solve this. If not, I\u0027ll just put up the patch for review at CMake.",
+      "parentUuid": "2250d2a1_4208cc41",
+      "range": {
+        "startLine": 25,
+        "startChar": 4,
+        "endLine": 25,
+        "endChar": 51
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f5b080a_3449f3f0",
         "filename": "/COMMIT_MSG",
         "patchSetId": 13
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "91e3794d_a75a18a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f5b080a_3449f3f0",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3a7c0f3_bc4d7798",
         "filename": "android.toolchain.cmake",
         "patchSetId": 13
@@ -56,6 +98,24 @@
       "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec199da4_98da61c9",
+        "filename": "android.toolchain.cmake",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3a7c0f3_bc4d7798",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "9accaad9_58e6072a",
+        "filename": "android.toolchain.cmake",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "80bf0944_8acaf36b",
+      "range": {
+        "startLine": 2,
+        "startChar": 26,
+        "endLine": 2,
+        "endChar": 44
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "813dda04_625d00d8",
         "filename": "rundroid",
         "patchSetId": 13
@@ -96,6 +180,24 @@
       "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0ac7ad7_55881a0c",
+        "filename": "rundroid",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "813dda04_625d00d8",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -119,6 +221,30 @@
       "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e476fd77_b1f2dfaa",
+        "filename": "rundroid",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-04-04T18:22:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "886cdab3_d5d0d902",
+      "range": {
+        "startLine": 27,
+        "startChar": 17,
+        "endLine": 27,
+        "endChar": 34
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
