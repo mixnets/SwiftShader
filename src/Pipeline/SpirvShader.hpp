@@ -567,9 +567,9 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		std::pair<Pointer<Byte>, SIMD::Int> WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
+		std::pair<Pointer<Byte>, SIMD::Int> WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndices, uint32_t const *indices) const;
 
 		// EmitState holds control-flow state for the emit() pass.
 		class EmitState
