@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e669d386_6bdd05aa",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T23:40:09Z",
+      "side": 1,
+      "message": "Note: OpPhi with pointers is *only* possible with variable pointers capability which we don\u0027t support. Where are these coming from?",
+      "revId": "e6d0e5f5da508ea9d3c16dfaaab1f27d3817c8e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
