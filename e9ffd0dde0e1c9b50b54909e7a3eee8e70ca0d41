@@ -22,6 +22,30 @@
       "revId": "e9ffd0dde0e1c9b50b54909e7a3eee8e70ca0d41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "384f350a_2e3793a6",
+        "filename": "src/Vulkan/VkDescriptorUpdateTemplate.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-04T13:56:43Z",
+      "side": 1,
+      "message": "arrayElement is an index, where are the RHS is a count.\n\nThe placement of this conditional would naturally be just under the arrayElement increment at line 70, but we\u0027d then need to check that it isn\u0027t the last iteration of the loop as getBindingLayout will assert if the index is OOB. It seemed cleaner to just move it to the top of the loop.\n\nNote the spec doesn\u0027t really say much about the arrayElement being OOB to start with. I\u0027ve not really put any effort into this case as it should just assert at getOffsetPointer.",
+      "parentUuid": "9d2e7e7a_28636687",
+      "range": {
+        "startLine": 49,
+        "startChar": 24,
+        "endLine": 49,
+        "endChar": 26
+      },
+      "revId": "e9ffd0dde0e1c9b50b54909e7a3eee8e70ca0d41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
