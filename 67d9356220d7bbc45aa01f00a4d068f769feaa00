@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2250d2a1_4208cc41",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "I wonder if we can just override this with the correct path in our own CMakeFiles.txt?",
+      "range": {
+        "startLine": 25,
+        "startChar": 4,
+        "endLine": 25,
+        "endChar": 51
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f5b080a_3449f3f0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "Add \"Bug b/129942368\"",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3a7c0f3_bc4d7798",
+        "filename": "android.toolchain.cmake",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "Let\u0027s move this file into build/ to not further clutter the top directory.",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80bf0944_8acaf36b",
+        "filename": "android.toolchain.cmake",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "Ideally this should use {ANDROID_HOME} if it was set. If not, use {HOME}/Android/Sdk if it exists, and if not produce an informative error.",
+      "range": {
+        "startLine": 2,
+        "startChar": 26,
+        "endLine": 2,
+        "endChar": 44
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "813dda04_625d00d8",
+        "filename": "rundroid",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "Not so fond of adding this file to the top directory. Since it would mainly be used for running tests, maybe it should go into tests/ ?\n\nAlso give it a .sh extension to clarify that it\u0027s a shell script?",
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "886cdab3_d5d0d902",
+        "filename": "rundroid",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-04T15:49:53Z",
+      "side": 1,
+      "message": "Ideally this should use $ANDROID_HOME if it was set. If not, use $HOME/Android/Sdk if it exists, and if not produce an informative error.",
+      "range": {
+        "startLine": 27,
+        "startChar": 17,
+        "endLine": 27,
+        "endChar": 34
+      },
+      "revId": "67d9356220d7bbc45aa01f00a4d068f769feaa00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
