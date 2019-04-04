@@ -14,7 +14,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BC5A59A0-B151-32E5-9090-B06A8D88F902}</ProjectGuid>
+    <ProjectGuid>{25BEF432-C515-3936-ABDD-667ABFFF5538}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -151,37 +151,37 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\GLCompiler.vcxproj">
-      <Project>{B81F13DD-ACFB-3AB7-A071-3AD849D68E5C}</Project>
+      <Project>{A3D77C18-4987-3456-BCA4-AD1D05B1BF02}</Project>
       <Name>GLCompiler</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">
-      <Project>{2EA2C687-489E-32F2-8D89-B90620301359}</Project>
+      <Project>{CB22B645-C96F-3608-9C6E-6D29B071AD55}</Project>
       <Name>ReactorLLVM</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\SwiftShader.vcxproj">
-      <Project>{BFECAAAF-ADE7-36E8-BA23-4ABDE5A1A8B6}</Project>
+      <Project>{BBA4BF93-9DD2-3EEE-8D21-52B9BFEB7737}</Project>
       <Name>SwiftShader</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libEGL.vcxproj">
-      <Project>{956A3BCB-1113-3FD7-87CC-908C6073E1FB}</Project>
+      <Project>{D985D9F6-5A30-393A-88A0-8E5272F6A50C}</Project>
       <Name>libEGL</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libGLESv2.vcxproj">
-      <Project>{1F9E81A7-B091-3D9E-AFDD-0DF597ED1EEF}</Project>
+      <Project>{0F3645CA-5F6F-30D7-91A4-A3C9BE4194B5}</Project>
       <Name>libGLESv2</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\llvm.vcxproj">
-      <Project>{B9E0EFB7-8E1B-303D-9222-13F7A82B7858}</Project>
+      <Project>{0811556B-0808-3C9B-B16C-217998A8680D}</Project>
       <Name>llvm</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

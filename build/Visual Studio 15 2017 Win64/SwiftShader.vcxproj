@@ -14,7 +14,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BFECAAAF-ADE7-36E8-BA23-4ABDE5A1A8B6}</ProjectGuid>
+    <ProjectGuid>{BBA4BF93-9DD2-3EEE-8D21-52B9BFEB7737}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -134,6 +134,7 @@
     <ClCompile Include="$(SolutionDir)src\Common\Memory.cpp" />
     <ClInclude Include="$(SolutionDir)src\Common\Memory.hpp" />
     <ClInclude Include="$(SolutionDir)src\Common\MutexLock.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Common\RecursiveLock.hpp" />
     <ClCompile Include="$(SolutionDir)src\Common\Resource.cpp" />
     <ClInclude Include="$(SolutionDir)src\Common\Resource.hpp" />
     <ClCompile Include="$(SolutionDir)src\Common\SharedLibrary.cpp" />

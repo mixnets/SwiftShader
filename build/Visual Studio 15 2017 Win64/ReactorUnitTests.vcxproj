@@ -14,7 +14,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4B70B7B0-44A0-31A9-A8DF-2367BBB103F9}</ProjectGuid>
+    <ProjectGuid>{AFB614AB-DD0F-3A32-90E8-4B831800CDF9}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -150,13 +150,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">
-      <Project>{2EA2C687-489E-32F2-8D89-B90620301359}</Project>
+      <Project>{CB22B645-C96F-3608-9C6E-6D29B071AD55}</Project>
       <Name>ReactorLLVM</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\llvm.vcxproj">
-      <Project>{B9E0EFB7-8E1B-303D-9222-13F7A82B7858}</Project>
+      <Project>{0811556B-0808-3C9B-B16C-217998A8680D}</Project>
       <Name>llvm</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

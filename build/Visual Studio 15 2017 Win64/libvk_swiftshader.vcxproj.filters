@@ -363,6 +363,9 @@
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkDescriptorPool.hpp">
       <Filter>src\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="$(SolutionDir)src\Vulkan\VkDescriptorSet.hpp">
+      <Filter>src\Vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkDescriptorSetLayout.hpp">
       <Filter>src\Vulkan</Filter>
     </ClInclude>
@@ -450,22 +453,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{1D32CFC4-3897-312A-881D-1722E268FA32}</UniqueIdentifier>
+      <UniqueIdentifier>{0FAEA893-1912-3202-8C05-48CBBDB521A9}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Device">
-      <UniqueIdentifier>{B6C7A296-A2E3-3AD7-AB21-D8704E068C23}</UniqueIdentifier>
+      <UniqueIdentifier>{50312018-88FC-3E12-9A27-B68126E16533}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Pipeline">
-      <UniqueIdentifier>{DB68B895-F268-3B01-9904-1630288F10F5}</UniqueIdentifier>
+      <UniqueIdentifier>{E1552611-B34D-39A9-8FC0-DC6F061B9B0E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\System">
-      <UniqueIdentifier>{1A9F70A4-66B3-30AE-A388-EA8F71BE5E85}</UniqueIdentifier>
+      <UniqueIdentifier>{985087FB-7D35-31D0-A77F-1DF57A6962A5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Vulkan">
-      <UniqueIdentifier>{5E41697B-4CDE-339E-90E4-78382FB4F934}</UniqueIdentifier>
+      <UniqueIdentifier>{A51C1441-9C75-380F-8247-3DCA6C985EAB}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\WSI">
-      <UniqueIdentifier>{46FE1358-AF13-386D-B739-661ABC59C446}</UniqueIdentifier>
+      <UniqueIdentifier>{36E499A1-BC50-3306-85F5-E44CA4CDEEE4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

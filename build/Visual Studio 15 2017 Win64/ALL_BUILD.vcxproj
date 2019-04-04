@@ -14,7 +14,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B2B07DA3-A388-307E-A283-3904C31F1CE2}</ProjectGuid>
+    <ProjectGuid>{7E5F7F7D-E5BD-3A68-92EA-EFF139315CEF}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -68,115 +68,115 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\GLCompiler.vcxproj">
-      <Project>{B81F13DD-ACFB-3AB7-A071-3AD849D68E5C}</Project>
+      <Project>{A3D77C18-4987-3456-BCA4-AD1D05B1BF02}</Project>
       <Name>GLCompiler</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\OGLES2HelloAPI.vcxproj">
-      <Project>{F5F127F5-2128-30AA-BCB8-935979A13F41}</Project>
+      <Project>{4BEDFC70-F7A7-38AA-B242-93ECB1F3BC57}</Project>
       <Name>OGLES2HelloAPI</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">
-      <Project>{2EA2C687-489E-32F2-8D89-B90620301359}</Project>
+      <Project>{CB22B645-C96F-3608-9C6E-6D29B071AD55}</Project>
       <Name>ReactorLLVM</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorUnitTests.vcxproj">
-      <Project>{4B70B7B0-44A0-31A9-A8DF-2367BBB103F9}</Project>
+      <Project>{AFB614AB-DD0F-3A32-90E8-4B831800CDF9}</Project>
       <Name>ReactorUnitTests</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools.vcxproj">
-      <Project>{2866BC19-5FA8-3D67-8D94-751A3803A3DF}</Project>
+      <Project>{6AB78D59-301B-37A5-B692-568A56C95D12}</Project>
       <Name>SPIRV-Tools</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\link\SPIRV-Tools-link.vcxproj">
-      <Project>{AC311772-F314-3373-B869-71CD6C30634D}</Project>
+      <Project>{5920AA45-C641-317D-AB81-7A9BB5088B5D}</Project>
       <Name>SPIRV-Tools-link</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\opt\SPIRV-Tools-opt.vcxproj">
-      <Project>{2F8B8E0B-1B59-3671-91FE-A0E499B82D18}</Project>
+      <Project>{9CF03555-7304-3FC9-84CE-089ADC2AE7F9}</Project>
       <Name>SPIRV-Tools-opt</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\reduce\SPIRV-Tools-reduce.vcxproj">
-      <Project>{C672D2D1-E638-3565-87EC-11172BD73995}</Project>
+      <Project>{5137BE8B-E1B5-3E72-A92F-07F118FCA757}</Project>
       <Name>SPIRV-Tools-reduce</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools-shared.vcxproj">
-      <Project>{DB6DF656-7D9C-35B1-B7C4-8FFEAE504240}</Project>
+      <Project>{7470446E-20D0-30EC-8DD4-DED0DA53C648}</Project>
       <Name>SPIRV-Tools-shared</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\SwiftShader.vcxproj">
-      <Project>{BFECAAAF-ADE7-36E8-BA23-4ABDE5A1A8B6}</Project>
+      <Project>{BBA4BF93-9DD2-3EEE-8D21-52B9BFEB7737}</Project>
       <Name>SwiftShader</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libEGL.vcxproj">
-      <Project>{956A3BCB-1113-3FD7-87CC-908C6073E1FB}</Project>
+      <Project>{D985D9F6-5A30-393A-88A0-8E5272F6A50C}</Project>
       <Name>libEGL</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libGLES_CM.vcxproj">
-      <Project>{88C96A70-4C80-3CAC-9EE4-7B95DB194D39}</Project>
+      <Project>{7207EEFB-A6EB-3DAA-ADBE-B3E30F4F74B1}</Project>
       <Name>libGLES_CM</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libGLESv2.vcxproj">
-      <Project>{1F9E81A7-B091-3D9E-AFDD-0DF597ED1EEF}</Project>
+      <Project>{0F3645CA-5F6F-30D7-91A4-A3C9BE4194B5}</Project>
       <Name>libGLESv2</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\libvk_swiftshader.vcxproj">
-      <Project>{1B4D7DF7-FCDB-342F-9D20-F9E0262B6964}</Project>
+      <Project>{32A86259-C1FB-3168-8E96-FA6255B10F7A}</Project>
       <Name>libvk_swiftshader</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\llvm.vcxproj">
-      <Project>{B9E0EFB7-8E1B-303D-9222-13F7A82B7858}</Project>
+      <Project>{0811556B-0808-3C9B-B16C-217998A8680D}</Project>
       <Name>llvm</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-pkg-config.vcxproj">
-      <Project>{96492351-1995-3B6B-A091-E7F4918E443B}</Project>
+      <Project>{DC38A947-8915-3B6C-BF49-81AFB70615C2}</Project>
       <Name>spirv-tools-pkg-config</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-shared-pkg-config.vcxproj">
-      <Project>{049A6034-6699-3DDF-BF15-47C981793305}</Project>
+      <Project>{940ED0AE-2869-3A04-B312-9CC723CFDB95}</Project>
       <Name>spirv-tools-shared-pkg-config</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\unittests.vcxproj">
-      <Project>{BC5A59A0-B151-32E5-9090-B06A8D88F902}</Project>
+      <Project>{25BEF432-C515-3936-ABDD-667ABFFF5538}</Project>
       <Name>unittests</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\vk-unittests.vcxproj">
-      <Project>{5A8F73B9-27CC-3054-8674-0B1ACFDA170B}</Project>
+      <Project>{D41C09F3-BA4C-35A7-8FEB-70417ABCE4D3}</Project>
       <Name>vk-unittests</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
