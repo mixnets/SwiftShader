@@ -41,6 +41,8 @@ namespace
 
 namespace sw
 {
+	const SpirvShader::Decorations SpirvShader::Decorations::NONE = SpirvShader::Decorations();
+
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
 
 	SpirvShader::SpirvShader(InsnStore const &insns)
@@ -203,6 +205,9 @@ namespace sw
 
 				case spv::StorageClassUniform:
 				case spv::StorageClassStorageBuffer:
+					object.kind = Object::Kind::DescriptorSet;
+					break;
+
 				case spv::StorageClassPushConstant:
 				case spv::StorageClassPrivate:
 				case spv::StorageClassFunction:
@@ -804,7 +809,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	SIMD::Int SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
@@ -815,11 +820,63 @@ namespace sw
 		Decorations d{};
 		ApplyDecorationsForId(&d, baseObject.type);
 
-		// The <base> operand is an intermediate value itself, ie produced by a previous OpAccessChain.
-		// Start with its offset and build from there.
-		if (baseObject.kind == Object::Kind::Value)
+		Pointer<Byte> pointerBase;
+
+		switch (baseObject.kind)
 		{
-			dynamicOffset += routine->getIntermediate(id).Int(0);
+			case Object::Kind::Value:
+			{
+				// The <base> operand is an intermediate value itself, ie
+				// produced by a previous OpAccessChain.
+				// Start with its offset and build from there.
+				pointerBase = routine->getPointer(id);
+				dynamicOffset += routine->getIntermediate(id).Int(0);
+				break;
+			}
+
+			case Object::Kind::DescriptorSet:
+			{
+				size_t arrayIndex = 0;
+
+				auto type = getType(typeId).definition.opcode();
+				if (type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
+				{
+					ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant); // TODO: Support per-lane lookup?
+					arrayIndex = GetConstantInt(indexIds[0]);
+
+					numIndexes--;
+					indexIds++;
+					typeId = getType(typeId).element;
+				}
+
+				auto d = getDecorations(id);
+				ASSERT(d.DescriptorSet >= 0);
+				ASSERT(d.Binding >= 0);
+
+				auto set = routine->getPointer(id);
+				auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+				size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+
+				Pointer<Byte> bufferInfo = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
+				Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(bufferInfo + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
+				Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
+				Int offset = *Pointer<Int>(bufferInfo + OFFSET(VkDescriptorBufferInfo, offset));
+				if (setLayout->isBindingDynamic(d.Binding))
+				{
+					uint32_t dynamicBindingIndex =
+						routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+						setLayout->getDynamicDescriptorOffset(d.Binding) +
+						arrayIndex;
+					offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
+				}
+
+				pointerBase = data + offset;
+				break;
+			}
+
+			default:
+				pointerBase = routine->getPointer(id);
+				break;
 		}
 
 		for (auto i = 0u; i < numIndexes; i++)
@@ -878,7 +935,7 @@ namespace sw
 			}
 		}
 
-		return dynamicOffset + SIMD::Int(constantOffset);
+		return std::make_pair(pointerBase, dynamicOffset + SIMD::Int(constantOffset));
 	}
 
 	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
@@ -1718,27 +1775,7 @@ namespace sw
 			Decorations d{};
 			ApplyDecorationsForId(&d, resultId);
 			ASSERT(d.DescriptorSet >= 0);
-			ASSERT(d.Binding >= 0);
-
-			auto set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			size_t arrayIndex = 0; // TODO: descriptor arrays
-			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
-
-			Pointer<Byte> bufferInfo = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
-			Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(bufferInfo + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
-			Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
-			Int offset = *Pointer<Int>(bufferInfo + OFFSET(VkDescriptorBufferInfo, offset));
-			if (setLayout->isBindingDynamic(d.Binding))
-			{
-				uint32_t dynamicBindingIndex =
-					routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-					setLayout->getDynamicDescriptorOffset(d.Binding) +
-					arrayIndex;
-				offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
-			}
-
-			routine->createPointer(resultId, data + offset);
+			routine->createPointer(resultId, routine->descriptorSets[d.DescriptorSet]);
 			break;
 		}
 		case spv::StorageClassPushConstant:
@@ -1964,14 +2001,13 @@ namespace sw
 		ASSERT(type.sizeInComponents == 1);
 		ASSERT(getObject(resultId).kind == Object::Kind::Value);
 
-
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
 		   type.storageClass == spv::StorageClassStorageBuffer)
 		{
-			auto offset = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine);
-			routine->createPointer(resultId, routine->getPointer(baseId));
-			routine->createIntermediate(resultId, type.sizeInComponents).move(0, offset);
+			auto baseAndOffset = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, routine);
+			routine->createPointer(resultId, baseAndOffset.first);
+			routine->createIntermediate(resultId, type.sizeInComponents).move(0, baseAndOffset.second);
 		}
 		else
 		{

@@ -567,7 +567,7 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		SIMD::Int WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		std::pair<Pointer<Byte>, SIMD::Int> WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndices, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndices, uint32_t const *indices) const;
 
