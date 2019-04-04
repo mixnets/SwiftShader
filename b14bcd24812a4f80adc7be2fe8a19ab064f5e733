@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "51cfc4c8_7a54aa8c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 841,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T19:24:35Z",
+      "side": 1,
+      "message": "Note: OpTypeRuntimeArray can only appear here if we do EXT_descriptor_indexing.",
+      "revId": "b14bcd24812a4f80adc7be2fe8a19ab064f5e733",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55278493_4033ae9d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-04T19:24:35Z",
+      "side": 1,
+      "message": "We should use the proper constant value access (and probably retire the GetConstantInt hack completely).",
+      "revId": "b14bcd24812a4f80adc7be2fe8a19ab064f5e733",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
