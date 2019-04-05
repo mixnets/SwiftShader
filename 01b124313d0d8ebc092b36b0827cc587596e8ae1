@@ -56,6 +56,30 @@
       "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dab3c4eb_596e04c6",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-05T21:26:54Z",
+      "side": 1,
+      "message": "Not if the callers are gone too. Should we remove the declaration from the header as well in this case to avoid confusion?",
+      "parentUuid": "b5163b9c_7700c1eb",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 19
+      },
+      "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
