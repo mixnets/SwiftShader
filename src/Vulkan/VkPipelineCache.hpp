@@ -16,6 +16,7 @@
 #define VK_PIPELINE_CACHE_HPP_
 
 #include "VkObject.hpp"
+#include <cstring>
 
 namespace vk
 {
@@ -23,18 +24,73 @@ namespace vk
 class PipelineCache : public Object<PipelineCache, VkPipelineCache>
 {
 public:
-	PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void* mem)
+	PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void* mem) :
+		dataSize(ComputeRequiredAllocationSize(pCreateInfo)), data(reinterpret_cast<uint8_t*>(mem))
 	{
+		CacheHeader* header = reinterpret_cast<CacheHeader*>(mem);
+		header->headerLength = sizeof(CacheHeader);
+		header->headerVersion = VK_PIPELINE_CACHE_HEADER_VERSION_ONE;
+		header->vendorID = VENDOR_ID;
+		header->deviceID = DEVICE_ID;
+		memcpy(header->pipelineCacheUUID, SWIFTSHADER_UUID, VK_UUID_SIZE);
+
+		if(pCreateInfo->pInitialData && (pCreateInfo->initialDataSize > 0))
+		{
+			memcpy(data + sizeof(CacheHeader), pCreateInfo->pInitialData, pCreateInfo->initialDataSize);
+		}
 	}
 
 	~PipelineCache() = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkPipelineCacheCreateInfo* pCreateInfo)
 	{
-		return 0;
+		return pCreateInfo->initialDataSize + sizeof(CacheHeader);
+	}
+
+	VkResult getData(size_t* pDataSize, void* pData)
+	{
+		if(!pData)
+		{
+			*pDataSize = dataSize;
+			return VK_SUCCESS;
+		}
+		
+		if(*pDataSize != dataSize)
+		{
+			*pDataSize = 0;
+			return VK_INCOMPLETE;
+		}
+
+		if(*pDataSize > 0)
+		{
+			memcpy(pData, data, *pDataSize);
+		}
+
+		return VK_SUCCESS;
+	}
+
+	VkResult merge(uint32_t srcCacheCount, const VkPipelineCache* pSrcCaches)
+	{
+		for(uint32_t i = 0; i < srcCacheCount; i++)
+		{
+			// TODO (b/123588002): merge pSrcCaches[i];
+		}
+
+		return VK_SUCCESS;
 	}
 
 private:
+	struct CacheHeader
+	{
+		uint32_t headerLength;
+		uint32_t headerVersion;
+		uint32_t vendorID;
+		uint32_t deviceID;
+		uint8_t  pipelineCacheUUID[VK_UUID_SIZE];
+	};
+
+	size_t dataSize = 0;
+	uint8_t* data   = nullptr;
 };
 
 static inline PipelineCache* Cast(VkPipelineCache object)
