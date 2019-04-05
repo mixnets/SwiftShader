@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91166014_c1355f3e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T17:13:38Z",
+      "side": 1,
+      "message": "This is confusing/incorrect. As far as I can tell it\u0027s not used as a pointer to the descriptor set, but rather the data pointer of a buffer in a uniform or storage buffer descriptor.\n\nNote that this distinction becomes more important when implementing StorageClassUniformConstant, where we\u0027re reading directly from the descriptor set.",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 18
+      },
+      "revId": "23a3004da4664e7ac419758c2b08aac186177972",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
