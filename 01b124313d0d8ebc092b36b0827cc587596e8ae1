@@ -116,6 +116,30 @@
       "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff25f882_d5fe9fa3",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T21:34:28Z",
+      "side": 1,
+      "message": "Yes, would make it clearer that this should not be called on Android.",
+      "parentUuid": "dab3c4eb_596e04c6",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 19
+      },
+      "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
