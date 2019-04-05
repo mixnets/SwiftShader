@@ -16,6 +16,24 @@
       "revId": "3f4ae37467353d277a05f97fd7a786033d9c98a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2d488da_203a650e",
+        "filename": "src/Vulkan/libvk_swiftshader.lds",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T15:05:48Z",
+      "side": 1,
+      "message": "I\u0027m not sure that\u0027s strictly the case. https://vulkan.lunarg.com/doc/view/1.0.26.0/linux/LoaderAndLayerInterface.html states that \"All other Vulkan entry points must either NOT be exported from the ICD library or else NOT use the official Vulkan function names if they are exported. This requirement is for ICD libraries that include other functionality (such as OpenGL library) and thus could be loaded by the application prior to when the Vulkan loader library is loaded by the application. In other words, the ICD library exported Vulkan symbols must not clash with the loader\u0027s exported Vulkan symbols.\"\n\nNote the condition, which I think makes sense. What\u0027s not sensible in my opinion is for the Loader to dictate what a shared library can and cannot export when there\u0027s no risk of an application unintentionally loading it directly and without posing as the loader library.\n\nNote also https://github.com/KhronosGroup/Vulkan-ValidationLayers/pull/799\n\nAnyway, for Loader versions that mix up symbols from the ICD and their own, we could indeed keep the old version script, and have a separate build with a version script that exposes the full API. Still feels like a shame though since the binary would be exactly the same except for the export table. I\u0027d rather just be able to rename the library to use it for these different purposes.",
+      "parentUuid": "708e4184_7ca0ed4d",
+      "revId": "3f4ae37467353d277a05f97fd7a786033d9c98a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
