@@ -74,14 +74,16 @@ static const std::unordered_map<std::string, PFN_vkVoidFunction> instanceFunctio
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceQueueFamilyProperties2KHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceMemoryProperties2KHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSparseImageFormatProperties2KHR),
+#ifndef __ANDROID__
 	MAKE_VULKAN_INSTANCE_ENTRY(vkDestroySurfaceKHR),
-#ifdef VK_USE_PLATFORM_XLIB_KHR
-	MAKE_VULKAN_INSTANCE_ENTRY(vkCreateXlibSurfaceKHR),
-#endif
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfaceSupportKHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfaceCapabilitiesKHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfaceFormatsKHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfacePresentModesKHR),
+#endif
+#ifdef VK_USE_PLATFORM_XLIB_KHR
+	MAKE_VULKAN_INSTANCE_ENTRY(vkCreateXlibSurfaceKHR),
+#endif
 };
 #undef MAKE_VULKAN_INSTANCE_ENTRY
 
@@ -248,11 +250,14 @@ static const std::unordered_map<std::string, PFN_vkVoidFunction> deviceFunctionP
 	MAKE_VULKAN_DEVICE_ENTRY(vkGetImageSparseMemoryRequirements2KHR),
 	// VK_KHR_maintenance3
 	MAKE_VULKAN_DEVICE_ENTRY(vkGetDescriptorSetLayoutSupportKHR),
+	// VK_KHR_swapchain
+#ifndef __ANDROID__
 	MAKE_VULKAN_DEVICE_ENTRY(vkCreateSwapchainKHR),
 	MAKE_VULKAN_DEVICE_ENTRY(vkDestroySwapchainKHR),
 	MAKE_VULKAN_DEVICE_ENTRY(vkGetSwapchainImagesKHR),
 	MAKE_VULKAN_DEVICE_ENTRY(vkAcquireNextImageKHR),
 	MAKE_VULKAN_DEVICE_ENTRY(vkQueuePresentKHR),
+#endif
 };
 #undef MAKE_VULKAN_DEVICE_ENTRY
 
