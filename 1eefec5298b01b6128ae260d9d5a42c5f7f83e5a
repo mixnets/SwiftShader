@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7f028cb_b76e2363",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T16:56:39Z",
+      "side": 1,
+      "message": "note: OpTypePointer variables are not necessarily divergent. Specifically \"dynamically uniform\" ones like samplers and images. Anyway, works for now and we\u0027ll adjust/optimize later.",
+      "range": {
+        "startLine": 446,
+        "startChar": 21,
+        "endLine": 446,
+        "endChar": 38
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51ab6320_8758bcec",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 809,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T16:56:39Z",
+      "side": 1,
+      "message": "Isnt\u0027 used. I assume you wanted to pass it into the SIMD::Int offset for DivergentPointer below, instead of 0? And adjust the base pointer for the NonDivergent one? Just removing it would work too.",
+      "range": {
+        "startLine": 809,
+        "startChar": 82,
+        "endLine": 809,
+        "endChar": 96
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96826413_597e1169",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T16:56:39Z",
+      "side": 1,
+      "message": "nit: Works for now but I\u0027m not a fan of using templates for stuff that is fixed-type. Also the pair\u003c\u003e\u0027s \"first\" and \"second\" members aren\u0027t self-explanatory. Ultimately I think we want a SIMD::Pointer type here with base and offset members.",
+      "range": {
+        "startLine": 567,
+        "startChar": 2,
+        "endLine": 567,
+        "endChar": 37
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "860438b4_6bc78ca2",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T16:56:39Z",
+      "side": 1,
+      "message": "nit/bikeshed: Pointers are always to data, so GetPointer() would work just as well I think without being confusing.",
+      "range": {
+        "startLine": 567,
+        "startChar": 38,
+        "endLine": 567,
+        "endChar": 54
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
