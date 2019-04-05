@@ -69,6 +69,24 @@
       "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05ff79e9_225f8def",
+        "filename": "third_party/llvm-7.0/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T20:53:28Z",
+      "side": 1,
+      "message": "Absolutely! Just don\u0027t call the CL \"hacks\" ;)",
+      "parentUuid": "6b524c49_30e083e3",
+      "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
