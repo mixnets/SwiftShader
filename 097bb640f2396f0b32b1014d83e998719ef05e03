@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fae3f4d8_edac0388",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T18:15:49Z",
+      "side": 1,
+      "message": "In previous codebases this was handled by a macro typically called NELEM (number of elements):\n\n  #define NELEM(x) (sizeof(x) / sizeof(x[0]))\n\nI\u0027ve found myself wanting something similar a couple of times before on this project - would Nicolas be happy if we added this into the Common directory somewhere?\n\nNot a blocker for this CL at all.",
+      "range": {
+        "startLine": 134,
+        "startChar": 37,
+        "endLine": 134,
+        "endChar": 114
+      },
+      "revId": "097bb640f2396f0b32b1014d83e998719ef05e03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
