@@ -22,6 +22,30 @@
       "revId": "23a3004da4664e7ac419758c2b08aac186177972",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc6ed0b2_d37015fc",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T17:36:53Z",
+      "side": 1,
+      "message": "It really is a pointer to the descriptor set:\nhttps://swiftshader.googlesource.com/SwiftShader/+/refs/changes/91/28391/10/src/Pipeline/SpirvShader.cpp#1783",
+      "parentUuid": "91166014_c1355f3e",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 18
+      },
+      "revId": "23a3004da4664e7ac419758c2b08aac186177972",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
