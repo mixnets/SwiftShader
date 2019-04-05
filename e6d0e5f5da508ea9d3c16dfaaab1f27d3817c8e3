@@ -16,6 +16,24 @@
       "revId": "e6d0e5f5da508ea9d3c16dfaaab1f27d3817c8e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36a51e58_9c1bbcd1",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T09:43:56Z",
+      "side": 1,
+      "message": "This is a giant fall-through block - including OpAccessChain and OpInBoundsAccessChain.\nI originally separated out this block, but I thought it was safer in the longer-term to just check the SPIR-V type, for when we allow things like pointer phis, pointer loads etc.",
+      "parentUuid": "e669d386_6bdd05aa",
+      "revId": "e6d0e5f5da508ea9d3c16dfaaab1f27d3817c8e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
