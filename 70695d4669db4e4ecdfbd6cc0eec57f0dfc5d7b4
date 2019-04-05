@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "565c8968_6f214f56",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 866,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-05T16:07:08Z",
+      "side": 1,
+      "message": "We don\u0027t support EXT_transform_feedback so we should probably get rid of this.",
+      "revId": "70695d4669db4e4ecdfbd6cc0eec57f0dfc5d7b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
