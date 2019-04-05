@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7b71293d_40b322be",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T17:09:01Z",
+      "side": 1,
+      "message": "Ack. There\u0027s room for optimization, but this is as inefficient as it was before.",
+      "parentUuid": "f7f028cb_b76e2363",
+      "range": {
+        "startLine": 446,
+        "startChar": 21,
+        "endLine": 446,
+        "endChar": 38
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51ab6320_8758bcec",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 9
@@ -45,6 +69,30 @@
       "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89e19f1a_97c82746",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 809,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T17:09:01Z",
+      "side": 1,
+      "message": "Yeah, not used in this change, but is in the next. I\u0027d rather not mess around with rebasing any more if that\u0027s okay.",
+      "parentUuid": "51ab6320_8758bcec",
+      "range": {
+        "startLine": 809,
+        "startChar": 82,
+        "endLine": 809,
+        "endChar": 96
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +135,54 @@
         "startChar": 38,
         "endLine": 567,
         "endChar": 54
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f1427ab_dd66996f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T17:09:01Z",
+      "side": 1,
+      "message": "The name makes more sense in the next change where we turn a descriptor pointer into a pointer to its data.",
+      "parentUuid": "860438b4_6bc78ca2",
+      "range": {
+        "startLine": 567,
+        "startChar": 38,
+        "endLine": 567,
+        "endChar": 54
+      },
+      "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb505607_3e380e3b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T17:09:01Z",
+      "side": 1,
+      "message": "Sure. I was thinking something similar - in that I was thinking we could do with a third boolean field to represent if the offsets are all 0 or not (non-divergent). Will likely refactor later.",
+      "parentUuid": "96826413_597e1169",
+      "range": {
+        "startLine": 567,
+        "startChar": 2,
+        "endLine": 567,
+        "endChar": 37
       },
       "revId": "1eefec5298b01b6128ae260d9d5a42c5f7f83e5a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
