@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "708e4184_7ca0ed4d",
+        "filename": "src/Vulkan/libvk_swiftshader.lds",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-05T14:28:33Z",
+      "side": 1,
+      "message": "Exporting these symbols is *forbidden* by the loader-icd interface. If you must have a build which does this, fine, but it should not be the default.",
+      "revId": "3f4ae37467353d277a05f97fd7a786033d9c98a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
