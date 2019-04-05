@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b721d47e_a2d888f8",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T21:18:57Z",
+      "side": 1,
+      "message": "Could you add \"// VK_KHR_surface\" above this line?",
+      "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "750a0e91_d634bcce",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T21:18:57Z",
+      "side": 1,
+      "message": "// VK_KHR_xlib_surface\n\nAlso, it looks like we\u0027re still missing vkGetPhysicalDeviceXlibPresentationSupportKHR from that extension? That can be addressed later.",
+      "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5163b9c_7700c1eb",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T21:18:57Z",
+      "side": 1,
+      "message": "Doesn\u0027t this cause linking issues if you leave it undefined?",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 19
+      },
+      "revId": "01b124313d0d8ebc092b36b0827cc587596e8ae1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
