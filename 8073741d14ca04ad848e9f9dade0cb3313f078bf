@@ -22,6 +22,30 @@
       "revId": "8073741d14ca04ad848e9f9dade0cb3313f078bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a4196c8_cf444483",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-05T20:49:14Z",
+      "side": 1,
+      "message": "https://source.android.com/devices/graphics/implement-vulkan#driver_emun",
+      "parentUuid": "8db84fc6_9c42888f",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 45
+      },
+      "revId": "8073741d14ca04ad848e9f9dade0cb3313f078bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
