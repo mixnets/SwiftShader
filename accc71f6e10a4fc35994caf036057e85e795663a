@@ -33,6 +33,24 @@
       "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50eb737d_fcf789d7",
+        "filename": "third_party/llvm-7.0/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T20:46:27Z",
+      "side": 1,
+      "message": "Note https://swiftshader-review.googlesource.com/c/SwiftShader/+/28368\n\nIndeed only building the native target backend is a big win already.",
+      "parentUuid": "ff345f1d_6d9dc4ef",
+      "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
