@@ -51,6 +51,24 @@
       "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b524c49_30e083e3",
+        "filename": "third_party/llvm-7.0/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-05T20:51:20Z",
+      "side": 1,
+      "message": "Nicolas: are you happy with refinements being done as followups? I would like to get *something* landed sooner rather than later.",
+      "parentUuid": "50eb737d_fcf789d7",
+      "revId": "accc71f6e10a4fc35994caf036057e85e795663a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
