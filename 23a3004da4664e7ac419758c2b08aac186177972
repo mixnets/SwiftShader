@@ -46,6 +46,30 @@
       "revId": "23a3004da4664e7ac419758c2b08aac186177972",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdbe329d_eecf220e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-05T17:56:45Z",
+      "side": 1,
+      "message": "Oh, I see, the actual access into it was moved around. I wasn\u0027t looking at enough context. Could use a bit of clarification in the commit message.\n\nIt also currently assumes that every access to a descriptor set is to a buffer. But that\u0027s probably easy to correct/extend for other resources.",
+      "parentUuid": "bc6ed0b2_d37015fc",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 18
+      },
+      "revId": "23a3004da4664e7ac419758c2b08aac186177972",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
