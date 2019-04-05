@@ -70,6 +70,30 @@
       "revId": "23a3004da4664e7ac419758c2b08aac186177972",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4975955b_2f65b4c4",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-05T18:08:54Z",
+      "side": 1,
+      "message": "Added more info to the commit message.",
+      "parentUuid": "bdbe329d_eecf220e",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 18
+      },
+      "revId": "23a3004da4664e7ac419758c2b08aac186177972",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
