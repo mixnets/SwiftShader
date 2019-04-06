@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #define MAJOR_VERSION 5
-#define MINOR_VERSION 2
-#define PATCH_VERSION 4
+#define MINOR_VERSION 9
+#define PATCH_VERSION 39
 #define BUILD_REVISION 1
 
 #define STRINGIFY(x) #x

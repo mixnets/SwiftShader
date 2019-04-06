@@ -267,8 +267,11 @@ namespace sw
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
 
-				Sampler,
-			} kind = Kind::Unknown;
+				// Pointer to an image/sampler descriptor.
+				ImageSampler,
+			};
+
+			Kind kind = Kind::Unknown;
 		};
 
 		// Block is an interval of SPIR-V instructions, starting with the

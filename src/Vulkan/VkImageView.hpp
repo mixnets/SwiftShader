@@ -36,6 +36,7 @@ public:
 	void clear(const VkClearValue& clearValue, VkImageAspectFlags aspectMask, const VkClearRect& renderArea);
 	void resolve(ImageView* resolveAttachment);
 
+	VkImageViewType getType() const { return viewType; }
 	Format getFormat() const { return format; }
 	int getSampleCount() const { return image->getSampleCountFlagBits(); }
 	int rowPitchBytes(VkImageAspectFlagBits aspect) const { return image->rowPitchBytes(aspect, subresourceRange.baseMipLevel); }
@@ -45,17 +46,17 @@ public:
 	bool hasDepthAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT) != 0; }
 	bool hasStencilAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) != 0; }
 
+	const Image *getImage() const { return image; }
+	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 
-		
+private:
+	bool                          imageTypesMatch(VkImageType imageType) const;
 
-public:
-	bool                       imageTypesMatch(VkImageType imageType) const;
-
-	Image*                     image = nullptr;
-	VkImageViewType            viewType = VK_IMAGE_VIEW_TYPE_2D;
-	Format                     format;
-	VkComponentMapping         components = {};
-	VkImageSubresourceRange    subresourceRange = {};
+	Image *const                  image = nullptr;
+	const VkImageViewType         viewType = VK_IMAGE_VIEW_TYPE_2D;
+	const Format                  format;
+	const VkComponentMapping      components = {};
+	const VkImageSubresourceRange subresourceRange = {};
 };
 
 static inline ImageView* Cast(VkImageView object)

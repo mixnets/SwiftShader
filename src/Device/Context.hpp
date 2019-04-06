@@ -27,7 +27,7 @@
 
 namespace vk
 {
-	struct DescriptorSet;
+	class DescriptorSet;
 	class ImageView;
 	class PipelineLayout;
 }
