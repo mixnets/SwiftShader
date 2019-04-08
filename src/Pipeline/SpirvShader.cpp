@@ -217,12 +217,11 @@ namespace sw
 					break; // Correctly handled.
 
 				case spv::StorageClassUniformConstant:
-					 {
-	 				//	 auto &type = getType(typeId);
-						 object.kind = Object::Kind::Sampler;
-					 }
-					 
-					 break;
+					// This storage class is for data stored within the descriptor itself,
+					// unlike StorageClassUniform which contains handles to buffers.
+					// For Vulkan it corresponds with samplers, images, or combined image samplers.
+					object.kind = Object::Kind::ImageSampler;
+					break;
 
 				case spv::StorageClassWorkgroup:
 				case spv::StorageClassCrossWorkgroup:
@@ -1773,7 +1772,7 @@ namespace sw
 
 				assert(insn.wordCount() == 5);
 
-				Pointer<Byte> constants;   // FIXME!
+				Pointer<Byte> constants;// = state->routine->;  // FIXME(capn)
 
 				Sampler::State samplerState;
 				samplerState.textureType = TEXTURE_2D;
@@ -1806,7 +1805,7 @@ namespace sw
 
 			//	*Pointer<Int>(texture) = 0;
 				Vector4f sample = sampler.sampleTextureF(texture, u, v, w, q, bias, dsx, dsy, offset, samplerFunction);
-				
+
 				if(getType(resultType.element).opcode() == spv::OpTypeFloat)
 				{
 					result.move(0, sample.x);
@@ -1919,9 +1918,9 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
-		if(pointer.kind == Object::Kind::Sampler)
+		if(pointer.kind == Object::Kind::ImageSampler)
 		{
-			// Nothing to do here.
+			// TODO(capn)
 			return EmitResult::Continue;
 		}
 
