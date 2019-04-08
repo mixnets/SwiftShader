@@ -87,14 +87,9 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 		UNIMPLEMENTED("imageTypesMatch");
 	}
 
-	if(image->getFormat() != format)
-	{
-		UNIMPLEMENTED("format");
-	}
-
 	VkImageSubresourceRange sr = subresourceRange;
 	sr.aspectMask = aspectMask;
-	image->clear(clearValue, renderArea, sr);
+	image->clear(clearValue, format, renderArea, sr);
 }
 
 void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags aspectMask, const VkClearRect& renderArea)
@@ -106,11 +101,6 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 		UNIMPLEMENTED("imageTypesMatch");
 	}
 
-	if(image->getFormat() != format)
-	{
-		UNIMPLEMENTED("format");
-	}
-
 	VkImageSubresourceRange sr;
 	sr.aspectMask = aspectMask;
 	sr.baseMipLevel = subresourceRange.baseMipLevel;
@@ -118,7 +108,7 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 	sr.baseArrayLayer = renderArea.baseArrayLayer + subresourceRange.baseArrayLayer;
 	sr.layerCount = renderArea.layerCount;
 
-	image->clear(clearValue, renderArea.rect, sr);
+	image->clear(clearValue, format, renderArea.rect, sr);
 }
 
 void ImageView::resolve(ImageView* resolveAttachment)
