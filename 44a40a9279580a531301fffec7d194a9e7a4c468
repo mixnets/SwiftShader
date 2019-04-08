@@ -33,6 +33,24 @@
       "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1bea092e_acf874a5",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 697,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-08T19:55:59Z",
+      "side": 1,
+      "message": "What would be the issue / what do you suggest?",
+      "parentUuid": "b0498ca1_3b767540",
+      "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
