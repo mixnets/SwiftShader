@@ -431,13 +431,25 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferI
 	return adjustedExtent;
 }
 
+int Image::borderWidth(VkImageAspectFlagBits aspect) const
+{
+	// We won't add a border to compressed cube textures, we'll add it when we decompress the texture
+	return (isCube() && !format.isCompressed()) ? 1 : 0;
+}
+
+int Image::borderHeight(VkImageAspectFlagBits aspect) const
+{
+	// We won't add a border to compressed cube textures, we'll add it when we decompress the texture
+	return (isCube() && !format.isCompressed()) ? 1 : 0;
+}
+
 VkDeviceSize Image::texelOffsetBytesInStorage(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
 	VkOffset3D adjustedOffset = imageOffsetInBlocks(offset, aspect);
 	return adjustedOffset.z * slicePitchBytes(aspect, subresource.mipLevel) +
-	       (adjustedOffset.y + (isCube() ? 1 : 0)) * rowPitchBytes(aspect, subresource.mipLevel) +
-	       (adjustedOffset.x + (isCube() ? 1 : 0)) * getFormat(aspect).bytesPerBlock();
+	       (adjustedOffset.y + borderWidth(aspect)) * rowPitchBytes(aspect, subresource.mipLevel) +
+	       (adjustedOffset.x + borderHeight(aspect)) * getFormat(aspect).bytesPerBlock();
 }
 
 VkExtent3D Image::getMipLevelExtent(uint32_t mipLevel) const
@@ -467,7 +479,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 	// Depth and Stencil pitch should be computed separately
 	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
 	                 (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
-	return getFormat(aspect).pitchB(getMipLevelExtent(mipLevel).width, isCube() ? 1 : 0, true);
+	return getFormat(aspect).pitchB(getMipLevelExtent(mipLevel).width, borderWidth(aspect), true);
 }
 
 int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -482,7 +494,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 		sw::align(mipLevelExtent.width, usedFormat.blockWidth());
 		sw::align(mipLevelExtent.height, usedFormat.blockHeight());
 	}
-	return getFormat(aspect).sliceB(mipLevelExtent.width, mipLevelExtent.height, isCube() ? 1 : 0, true);
+	return getFormat(aspect).sliceB(mipLevelExtent.width, mipLevelExtent.height, borderHeight(aspect), true);
 }
 
 int Image::bytesPerTexel(VkImageAspectFlagBits aspect) const
