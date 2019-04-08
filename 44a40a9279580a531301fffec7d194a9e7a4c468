@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "510be45b_1cf883ff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-08T19:39:35Z",
+      "side": 1,
+      "message": "ImageView\u0027s ?",
+      "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0498ca1_3b767540",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 697,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-08T19:39:35Z",
+      "side": 1,
+      "message": "Ugh... this is currently safe due to other restrictions in our execution model, but will likely bite us later.",
+      "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
