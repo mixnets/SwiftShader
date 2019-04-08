@@ -51,6 +51,24 @@
       "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55388d2c_c52beaff",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 697,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-08T20:00:28Z",
+      "side": 1,
+      "message": "As soon as you can have two clears (to different subresources, etc) proceeding in parallel they would interfere with each other.\n\nPass the format down where it\u0027s needed?",
+      "parentUuid": "1bea092e_acf874a5",
+      "revId": "44a40a9279580a531301fffec7d194a9e7a4c468",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
