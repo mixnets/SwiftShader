@@ -681,7 +681,7 @@ void Image::clear(const VkClearDepthStencilValue& color, const VkImageSubresourc
 	}
 }
 
-void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, const VkImageSubresourceRange& subresourceRange)
+void Image::clear(const VkClearValue& clearValue, const vk::Format& viewFormat, const VkRect2D& renderArea, const VkImageSubresourceRange& subresourceRange)
 {
 	if(!((subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (subresourceRange.aspectMask & (VK_IMAGE_ASPECT_DEPTH_BIT |
@@ -691,6 +691,10 @@ void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, co
 	{
 		UNIMPLEMENTED("subresourceRange");
 	}
+
+	// Perform the clear operation using the ImageView's format
+	vk::Format originalFormat = format;
+	format = viewFormat;
 
 	if(subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT)
 	{
@@ -712,6 +716,8 @@ void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, co
 			clear((void*)(&clearValue.depthStencil.stencil), VK_FORMAT_S8_UINT, stencilSubresourceRange, renderArea);
 		}
 	}
+
+	format = originalFormat;
 }
 
 } // namespace vk
