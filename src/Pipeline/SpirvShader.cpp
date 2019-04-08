@@ -74,9 +74,19 @@ namespace sw
 			{
 				TypeOrObjectID targetId = insn.word(1);
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
-				decorations[targetId].Apply(
-						decoration,
-						insn.wordCount() > 3 ? insn.word(3) : 0);
+				uint32_t value = insn.wordCount() > 3 ? insn.word(3) : 0;
+
+				decorations[targetId].Apply(decoration, value);
+
+				switch(decoration)
+				{
+				case spv::DecorationDescriptorSet:
+					resourceDecorations[targetId].DescriptorSet = value;
+					break;
+				case spv::DecorationBinding:
+					resourceDecorations[targetId].Binding = value;
+					break;
+				}
 
 				if (decoration == spv::DecorationCentroid)
 					modes.NeedsCentroid = true;
@@ -355,13 +365,44 @@ namespace sw
 				break;
 
 			case spv::OpFConvert:
+				UNIMPLEMENTED("No valid uses for OpFConvert until we support multiple bit widths enabled by features such as Float16/Float64 etc.");
+				break;
+
 			case spv::OpSConvert:
 			case spv::OpUConvert:
-				UNIMPLEMENTED("No valid uses for Op*Convert until we support multiple bit widths");
+				UNIMPLEMENTED("No valid uses for Op*Convert until we support multiple bit widths enabled by features such as Int16/Int64 etc.");
 				break;
 
 			case spv::OpLoad:
+				{
+					Object::ID resultId = insn.word(2);
+					Object::ID pointerId = insn.word(3);
+					const auto &d = decorations[pointerId];
+
+					if(d.HasDescriptorSet)
+					{
+						resourceDecorations[resultId].DescriptorSet = d.DescriptorSet;
+						resourceDecorations[resultId].Binding = d.Binding;
+					}
+				}
+				DefineResult(insn);
+				break;
+
 			case spv::OpAccessChain:
+				{
+					Object::ID resultId = insn.word(2);
+					Object::ID baseId = insn.word(3);
+					const auto &d = decorations[baseId];
+
+					if(d.HasDescriptorSet)
+					{
+						resourceDecorations[resultId].DescriptorSet = d.DescriptorSet;
+						resourceDecorations[resultId].Binding = d.Binding;
+					}
+				}
+				DefineResult(insn);
+				break;
+
 			case spv::OpInBoundsAccessChain:
 			case spv::OpCompositeConstruct:
 			case spv::OpCompositeInsert:
@@ -374,11 +415,13 @@ namespace sw
 			case spv::OpMatrixTimesMatrix:
 			case spv::OpVectorExtractDynamic:
 			case spv::OpVectorInsertDynamic:
-			case spv::OpNot: // Unary ops
+			// Unary ops
+			case spv::OpNot:
 			case spv::OpSNegate:
 			case spv::OpFNegate:
 			case spv::OpLogicalNot:
-			case spv::OpIAdd: // Binary ops
+			// Binary ops
+			case spv::OpIAdd:
 			case spv::OpISub:
 			case spv::OpIMul:
 			case spv::OpSDiv:
@@ -450,18 +493,9 @@ namespace sw
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
 			case spv::OpImageSampleImplicitLod:
-				// Instructions that yield an intermediate value or divergent
-				// pointer
-			{
-				Type::ID typeId = insn.word(1);
-				Object::ID resultId = insn.word(2);
-				auto &object = defs[resultId];
-				object.type = typeId;
-				object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
-					? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
-				object.definition = insn;
+				// Instructions that yield an intermediate value or divergent pointer
+				DefineResult(insn);
 				break;
-			}
 
 			case spv::OpStore:
 			case spv::OpAtomicStore:
@@ -1186,6 +1220,17 @@ namespace sw
 		}
 	}
 
+	void SpirvShader::DefineResult(const InsnIterator &insn)
+	{
+		Type::ID typeId = insn.word(1);
+		Object::ID resultId = insn.word(2);
+		auto &object = defs[resultId];
+		object.type = typeId;
+		object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
+			? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
+		object.definition = insn;
+	}
+
 	uint32_t SpirvShader::GetConstantInt(Object::ID id) const
 	{
 		// Slightly hackish access to constants very early in translation.
@@ -1228,11 +1273,9 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const
+	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
 	{
-		EmitState state;
-		state.setActiveLaneMask(activeLaneMask);
-		state.routine = routine;
+		EmitState state(routine, activeLaneMask, descriptorSets);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?
@@ -1761,34 +1804,48 @@ namespace sw
 			//	auto &result = getObject(resultId);
 			//	auto &coordinate = getObject(coordinateId);
 
-				auto &sampledImageLoad = getObject(sampledImageId);
-				ASSERT(sampledImageLoad.opcode() == spv::OpLoad);
+				//auto &sampledImageLoad = getObject(sampledImageId);
+				//ASSERT(sampledImageLoad.opcode() == spv::OpLoad);
 
-				Object::ID samplerPointerId = sampledImageLoad.definition.word(3);
+				Object::ID samplerPointerId = sampledImageId;// sampledImageLoad.definition.word(3);
 
 				auto &result = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
 				auto &sampledImage = state->routine->getPointer(samplerPointerId);//getObject(sampledImageId).;
 				auto coordinate = GenericValue(this, state->routine, coordinateId);
 
-				assert(insn.wordCount() == 5);
-
 				Pointer<Byte> constants;// = state->routine->;  // FIXME(capn)
 
+				const ResourceDecorations &d = resourceDecorations.at(sampledImageId);
+				uint32_t arrayIndex = 0;  // TODO(capn)
+				auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+				size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+
+				const uint8_t *p = reinterpret_cast<const uint8_t*>(state->descriptorSets[d.DescriptorSet]) + bindingOffset;
+				const auto *t = reinterpret_cast<const vk::ImageSamplerDescriptor*>(p);
+
 				Sampler::State samplerState;
-				samplerState.textureType = TEXTURE_2D;
-				samplerState.textureFormat = VK_FORMAT_R8G8B8A8_UNORM;
-				samplerState.textureFilter = FILTER_POINT;
-				samplerState.addressingModeU = ADDRESSING_WRAP;
-				samplerState.addressingModeV = ADDRESSING_WRAP;
-				samplerState.addressingModeW = ADDRESSING_WRAP;
-				samplerState.mipmapFilter = MIPMAP_NONE;
-				samplerState.sRGB = false;
-				samplerState.swizzleR = SWIZZLE_RED;
-				samplerState.swizzleG = SWIZZLE_GREEN;
-				samplerState.swizzleB = SWIZZLE_BLUE;
-				samplerState.swizzleA = SWIZZLE_ALPHA;
+				samplerState.textureType = TEXTURE_2D;                  ASSERT(t->imageView->getType() == VK_IMAGE_VIEW_TYPE_2D);  // TODO(capn)
+				samplerState.textureFormat = t->imageView->getFormat();
+				samplerState.textureFilter = FILTER_POINT;              ASSERT(t->sampler->magFilter == VK_FILTER_NEAREST); ASSERT(t->sampler->minFilter == VK_FILTER_NEAREST);  // TODO(capn)
+
+				samplerState.addressingModeU = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeU == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.addressingModeV = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeV == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.addressingModeW = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeW == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.mipmapFilter = MIPMAP_POINT;               ASSERT(t->sampler->mipmapMode == VK_SAMPLER_MIPMAP_MODE_NEAREST);  // TODO(capn)
+				samplerState.sRGB = false;                              ASSERT(t->imageView->getFormat().isSRGBformat() == false);  // TODO(capn)
+				samplerState.swizzleR = SWIZZLE_RED;                    ASSERT(t->imageView->getComponentMapping().r == VK_COMPONENT_SWIZZLE_R);  // TODO(capn)
+				samplerState.swizzleG = SWIZZLE_GREEN;                  ASSERT(t->imageView->getComponentMapping().g == VK_COMPONENT_SWIZZLE_G);  // TODO(capn)
+				samplerState.swizzleB = SWIZZLE_BLUE;                   ASSERT(t->imageView->getComponentMapping().b == VK_COMPONENT_SWIZZLE_B);  // TODO(capn)
+				samplerState.swizzleA = SWIZZLE_ALPHA;                  ASSERT(t->imageView->getComponentMapping().a == VK_COMPONENT_SWIZZLE_A);  // TODO(capn)
 				samplerState.highPrecisionFiltering = false;
-				samplerState.compare = COMPARE_BYPASS;
+				samplerState.compare = COMPARE_BYPASS;                  ASSERT(t->sampler->compareEnable == VK_FALSE);  // TODO(capn)
+				
+			//	minLod  // TODO(capn)
+			//	maxLod  // TODO(capn)
+			// borderColor  // TODO(capn)
+				ASSERT(t->sampler->mipLodBias == 0.0f);  // TODO(capn)
+				ASSERT(t->sampler->anisotropyEnable == VK_FALSE);  // TODO(capn)
+				ASSERT(t->sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(capn)
 
 				SamplerCore sampler(constants, samplerState);
 
@@ -1801,7 +1858,7 @@ namespace sw
 				Vector4f dsx;
 				Vector4f dsy;
 				Vector4f offset;
-				SamplerFunction samplerFunction = { Base, None };
+				SamplerFunction samplerFunction = { Implicit, None };       ASSERT(insn.wordCount() == 5);  // TODO(capn)
 
 			//	*Pointer<Int>(texture) = 0;
 				Vector4f sample = sampler.sampleTextureF(texture, u, v, w, q, bias, dsx, dsy, offset, samplerFunction);
@@ -1873,14 +1930,8 @@ namespace sw
 			uint32_t arrayIndex = 0;  // TODO(capn)
 			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
-//			size_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
-
 			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
 			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // ImageSamplerDescriptor*
-		//	Pointer<Byte> buffer = binding + OFFSET(vk::ImageSamplerDescriptor, texture); // sw::Texture*
-		//	Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
-		//	Int offset = *Pointer<Int>(binding + OFFSET(VkDescriptorBufferInfo, offset));
-		//	Pointer<Byte> address = data + offset;
 			routine->createPointer(resultId, binding);
 			break;
 		}
@@ -1918,9 +1969,17 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
+		ASSERT(getType(pointer.type).element == result.type);
+		ASSERT(Type::ID(insn.word(1)) == result.type);
+		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
+
 		if(pointer.kind == Object::Kind::ImageSampler)
 		{
+			// Just propagate the pointer.
 			// TODO(capn)
+			auto &ptr = routine->getPointer(pointerId);
+			routine->createPointer(resultId, ptr);
+
 			return EmitResult::Continue;
 		}
 
@@ -1931,10 +1990,7 @@ namespace sw
 			memoryOrder = MemoryOrder(memorySemantics);
 		}
 
-		ASSERT(getType(pointer.type).element == result.type);
-		ASSERT(Type::ID(insn.word(1)) == result.type);
-		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
-
+		
 		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage load not yet implemented");
