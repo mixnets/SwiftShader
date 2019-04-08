@@ -17,6 +17,8 @@
 
 #include "VkObject.hpp"
 
+#include "Vulkan/VkSampler.hpp"
+#include "Vulkan/VkImageView.hpp"
 #include "Device/Sampler.hpp"
 
 namespace vk
@@ -28,7 +30,8 @@ class DescriptorSet;
 struct ImageSamplerDescriptor
 {
 	// TODO(capn): Minimize to the data actually needed.
-	VkDescriptorImageInfo imageInfo;
+	vk::Sampler *sampler;
+	vk::ImageView *imageView;
 
 	sw::Texture texture;
 };

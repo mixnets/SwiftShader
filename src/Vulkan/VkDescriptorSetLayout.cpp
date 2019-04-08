@@ -159,7 +159,7 @@ void DescriptorSetLayout::initialize(VkDescriptorSet vkDescriptorSet)
 			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
 			{
 				ImageSamplerDescriptor* imageSamplerDescriptor = reinterpret_cast<ImageSamplerDescriptor*>(mem);
-				imageSamplerDescriptor->imageInfo.sampler = bindings[i].pImmutableSamplers[j];
+				imageSamplerDescriptor->sampler = vk::Cast(bindings[i].pImmutableSamplers[j]);
 				mem += typeSize;
 			}
 		}
@@ -285,9 +285,10 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 
 			vk::Sampler *sampler = vk::Cast(writeDescriptorSet.pImageInfo[i].sampler);
 			vk::ImageView *imageView = vk::Cast(writeDescriptorSet.pImageInfo[i].imageView);
-			VkImageLayout imageLayout = writeDescriptorSet.pImageInfo[i].imageLayout;
+			//VkImageLayout imageLayout = writeDescriptorSet.pImageInfo[i].imageLayout;
 
-			imageSampler[i].imageInfo = writeDescriptorSet.pImageInfo[i];
+			imageSampler[i].sampler = sampler;
+			imageSampler[i].imageView = imageView;
 
 			sw::Texture *texture = &imageSampler[i].texture;
 			memset(texture, 0, sizeof(sw::Texture));  // TODO: eliminate
