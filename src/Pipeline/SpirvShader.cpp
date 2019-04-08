@@ -366,6 +366,8 @@ namespace sw
 			case spv::OpVectorExtractDynamic:
 			case spv::OpVectorInsertDynamic:
 			case spv::OpNot: // Unary ops
+			case spv::OpBitFieldSExtract:
+			case spv::OpBitFieldUExtract:
 			case spv::OpBitReverse:
 			case spv::OpBitCount:
 			case spv::OpSNegate:
@@ -1634,6 +1636,8 @@ namespace sw
 			return EmitTranspose(insn, state);
 
 		case spv::OpNot:
+    	case spv::OpBitFieldSExtract:
+    	case spv::OpBitFieldUExtract:
     	case spv::OpBitReverse:
     	case spv::OpBitCount:
 		case spv::OpSNegate:
@@ -2335,6 +2339,24 @@ namespace sw
 			case spv::OpLogicalNot:		// logical not == bitwise not due to all-bits boolean representation
 				dst.move(i, ~src.UInt(i));
 				break;
+			case spv::OpBitFieldSExtract:
+			case spv::OpBitFieldUExtract:
+			{
+				auto offset = GenericValue(this, routine, insn.word(4)).UInt(0);
+				auto count = GenericValue(this, routine, insn.word(5)).UInt(0);
+				auto one = SIMD::UInt(1);
+				auto v = src.UInt(i);
+				auto mask = ((one << count) & CmpLT(count, SIMD::UInt(32))) - one;
+				SIMD::UInt out = (v >> offset) & mask;
+				if (insn.opcode() == spv::OpBitFieldSExtract)
+				{
+					auto sign = out & (one << (count - one)) & CmpLE(count, SIMD::UInt(32));
+					auto sext = ~(sign - one);
+					out |= sext;
+				}
+				dst.move(i, out);
+				break;
+			}
 			case spv::OpBitReverse:
 			{
 				// TODO: Add an intrinsic to reactor. Even if there isn't a
