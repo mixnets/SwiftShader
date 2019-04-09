@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a19e517_22cec169",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 291,
+        "startChar": 3,
+        "endLine": 291,
+        "endChar": 46
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "209d1bbc_0262e1a9",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "imageView-\u003egetOffsetPointer",
+      "range": {
+        "startLine": 308,
+        "startChar": 19,
+        "endLine": 308,
+        "endChar": 41
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54018789_f18b285b",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "add getMipLevelExtent to imageView",
+      "range": {
+        "startLine": 313,
+        "startChar": 24,
+        "endLine": 313,
+        "endChar": 48
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c48d8e66_d2503269",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "imageView (and adapt the rowPitchBytes)",
+      "range": {
+        "startLine": 318,
+        "startChar": 17,
+        "endLine": 318,
+        "endChar": 22
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfbecb59_4996be7a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "imageView (and adapt slicePitchBytes)",
+      "range": {
+        "startLine": 319,
+        "startChar": 17,
+        "endLine": 319,
+        "endChar": 22
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb0671b8_8e6a07ac",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T22:03:14Z",
+      "side": 1,
+      "message": "This is dangerous. ImageView should forward the commands needed to the image, so that we can adjust the format and subresource range before using it.\nPlease remove this. I think you\u0027re only missing getMipLevelExtent() anyway.",
+      "range": {
+        "startLine": 49,
+        "startChar": 1,
+        "endLine": 49,
+        "endChar": 48
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
