@@ -570,6 +570,7 @@ namespace rr
 			func_.emplace("powf", reinterpret_cast<void*>(powf));
 			func_.emplace("expf", reinterpret_cast<void*>(expf));
 			func_.emplace("logf", reinterpret_cast<void*>(logf));
+			func_.emplace("exp2f", reinterpret_cast<void*>(exp2f));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3187,6 +3188,12 @@ namespace rr
 	RValue<Float4> Log(RValue<Float4> v)
 	{
 		auto func = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::log, { T(Float4::getType()) } );
+		return RValue<Float4>(V(::builder->CreateCall(func, { V(v.value) })));
+	}
+
+	RValue<Float4> Exp2(RValue<Float4> v)
+	{
+		auto func = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::exp2, { T(Float4::getType()) } );
 		return RValue<Float4>(V(::builder->CreateCall(func, { V(v.value) })));
 	}
 
