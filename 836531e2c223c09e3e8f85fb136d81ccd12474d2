@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28196786_ef7aaec8",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3096,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-09T15:21:08Z",
+      "side": 1,
+      "message": "nit: Might be good to have a Clamp function (and/or Saturate) declared at the top of this function. That way we might be able to promote this to reactor if we find some tricks to do this in a single instruction. Plus it reduces the number of brackets here.",
+      "range": {
+        "startLine": 3096,
+        "startChar": 32,
+        "endLine": 3096,
+        "endChar": 40
+      },
+      "revId": "836531e2c223c09e3e8f85fb136d81ccd12474d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
