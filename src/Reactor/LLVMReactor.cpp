@@ -567,6 +567,7 @@ namespace rr
 			func_.emplace("acoshf", reinterpret_cast<void*>(acoshf));
 			func_.emplace("atanhf", reinterpret_cast<void*>(atanhf));
 			func_.emplace("atan2f", reinterpret_cast<void*>(atan2f));
+			func_.emplace("powf", reinterpret_cast<void*>(powf));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3166,6 +3167,13 @@ namespace rr
 			out = ::builder->CreateInsertElement(out, el, i);
 		}
 		return RValue<Float4>(V(out));
+	}
+
+	RValue<Float4> Pow(RValue<Float4> x, RValue<Float4> y)
+	{
+		auto func = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::pow,
+			{ T(Float4::getType()), T(Float4::getType()) } );
+		return RValue<Float4>(V(::builder->CreateCall(func, { V(x.value), V(y.value) })));
 	}
 
 	Type *Float4::getType()
