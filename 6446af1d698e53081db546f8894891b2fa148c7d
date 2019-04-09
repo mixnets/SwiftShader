@@ -25,6 +25,46 @@
     },
     {
       "key": {
+        "uuid": "fac8c3fd_38a8c860",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-09T22:10:45Z",
+      "side": 1,
+      "message": "default case required to prevent a \u0027N enumeration values not handled in switch\u0027 clang warning",
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d143cb3_6f445f4b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-09T22:10:45Z",
+      "side": 1,
+      "message": "Move to switch?",
+      "range": {
+        "startLine": 104,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 46
+      },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "13febb6c_c0abcbe9",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 7
@@ -323,6 +363,23 @@
         "endLine": 319,
         "endChar": 22
       },
+      "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e52b53d_76027492",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-09T22:10:45Z",
+      "side": 1,
+      "message": "For loop this lot and let the compiler decide whether to unroll or not?",
       "revId": "6446af1d698e53081db546f8894891b2fa148c7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
