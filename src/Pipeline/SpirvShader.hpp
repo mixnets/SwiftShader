@@ -283,6 +283,9 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+
+				// Pointer to an image/sampler descriptor.
+				SampledImage,
 			};
 
 			Kind kind = Kind::Unknown;
