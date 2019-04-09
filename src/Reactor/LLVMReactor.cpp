@@ -556,6 +556,11 @@ namespace rr
 			func_.emplace("fmodf", reinterpret_cast<void*>(fmodf));
 			func_.emplace("sinf", reinterpret_cast<void*>(sinf));
 			func_.emplace("cosf", reinterpret_cast<void*>(cosf));
+
+#ifdef __APPLE__
+			// LLVM uses this function on macOS for tan.
+			func_.emplace("sincosf_stret", reinterpret_cast<void*>(__sincosf_stret));
+#endif // __APPLE__
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3075,6 +3080,11 @@ namespace rr
 	{
 		auto func = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::cos, { V(v.value)->getType() } );
 		return RValue<Float4>(V(::builder->CreateCall(func, V(v.value))));
+	}
+
+	RValue<Float4> Tan(RValue<Float4> v)
+	{
+		return Sin(v) / Cos(v);
 	}
 
 	Type *Float4::getType()
