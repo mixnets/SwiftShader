@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a200592_d1998bdd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2365,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:07:00Z",
+      "side": 1,
+      "message": "note: There\u0027s a trick based on the XOR swap (https://en.wikipedia.org/wiki/XOR_swap_algorithm) to make this faster.\n\nAnyway, once again just commenting on this so I have a link to put in the post-1.0 doc.",
+      "range": {
+        "startLine": 2364,
+        "startChar": 4,
+        "endLine": 2365,
+        "endChar": 59
+      },
+      "revId": "58b2cc493d3e7105cf60d34bf0e42b6a918741fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
