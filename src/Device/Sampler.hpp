@@ -50,7 +50,7 @@ namespace sw
 	{
 		Mipmap mipmap[MIPMAP_LEVELS];
 
-		float LOD;
+	//	float LOD;
 		float4 widthHeightLOD;
 		float4 widthLOD;
 		float4 heightLOD;

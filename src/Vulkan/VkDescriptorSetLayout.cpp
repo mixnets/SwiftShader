@@ -340,6 +340,11 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 					texture->depthLOD[1] = depth * exp2LOD;
 					texture->depthLOD[2] = depth * exp2LOD;
 					texture->depthLOD[3] = depth * exp2LOD;
+
+					texture->baseLevel = 0;
+					texture->maxLevel = 1000;
+					texture->maxLod = sw::MAX_TEXTURE_LOD;
+					texture->minLod = 0;
 				}
 
 				if(format.isFloatFormat())

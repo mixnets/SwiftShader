@@ -1819,12 +1819,88 @@ namespace sw
 				Sampler::State samplerState;
 				samplerState.textureType = TEXTURE_2D;                  ASSERT(t->imageView->getType() == VK_IMAGE_VIEW_TYPE_2D);  // TODO(b/129523279)
 				samplerState.textureFormat = t->imageView->getFormat();
-				samplerState.textureFilter = FILTER_POINT;              ASSERT(t->sampler->magFilter == VK_FILTER_NEAREST); ASSERT(t->sampler->minFilter == VK_FILTER_NEAREST);  // TODO(b/129523279)
+			//	samplerState.textureFilter = FILTER_POINT;              ASSERT(t->sampler->magFilter == VK_FILTER_NEAREST); ASSERT(t->sampler->minFilter == VK_FILTER_NEAREST);  // TODO(b/129523279)
 
-				samplerState.addressingModeU = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeU == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
-				samplerState.addressingModeV = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeV == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
-				samplerState.addressingModeW = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeW == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
-				samplerState.mipmapFilter = MIPMAP_POINT;               ASSERT(t->sampler->mipmapMode == VK_SAMPLER_MIPMAP_MODE_NEAREST);  // TODO(b/129523279)
+				switch(t->sampler->magFilter)
+				{
+				case VK_FILTER_NEAREST:
+					switch(t->sampler->minFilter)
+					{
+					case VK_FILTER_NEAREST:
+						samplerState.textureFilter = FILTER_POINT;
+						break;
+					case VK_FILTER_LINEAR:
+						samplerState.textureFilter = FILTER_MIN_LINEAR_MAG_POINT;
+						break;
+					default:
+						UNIMPLEMENTED("minFilter %d", t->sampler->minFilter);
+					}
+					break;
+				case VK_FILTER_LINEAR:
+					switch(t->sampler->minFilter)
+					{
+					case VK_FILTER_NEAREST:
+						samplerState.textureFilter = FILTER_MIN_POINT_MAG_LINEAR;
+						break;
+					case VK_FILTER_LINEAR:
+						samplerState.textureFilter = FILTER_LINEAR;
+						break;
+					default:
+						UNIMPLEMENTED("minFilter %d", t->sampler->minFilter);
+					}
+					break;
+				default:
+					UNIMPLEMENTED("magFilter %d", t->sampler->magFilter);
+				}
+
+			//	samplerState.addressingModeU = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeU == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
+			//	samplerState.addressingModeV = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeV == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
+			//	samplerState.addressingModeW = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeW == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
+				
+				switch(t->sampler->addressModeU)
+				{
+				case VK_SAMPLER_ADDRESS_MODE_REPEAT:               samplerState.addressingModeU = ADDRESSING_WRAP;       break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT:      samplerState.addressingModeU = ADDRESSING_MIRROR;     break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE:        samplerState.addressingModeU = ADDRESSING_CLAMP;      break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER:      samplerState.addressingModeU = ADDRESSING_BORDER;     break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE: samplerState.addressingModeU = ADDRESSING_MIRRORONCE; break;
+				default: UNIMPLEMENTED("addressModeU %d", t->sampler->addressModeU);
+				}
+
+				switch(t->sampler->addressModeV)
+				{
+				case VK_SAMPLER_ADDRESS_MODE_REPEAT:               samplerState.addressingModeV = ADDRESSING_WRAP;       break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT:      samplerState.addressingModeV = ADDRESSING_MIRROR;     break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE:        samplerState.addressingModeV = ADDRESSING_CLAMP;      break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER:      samplerState.addressingModeV = ADDRESSING_BORDER;     break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE: samplerState.addressingModeV = ADDRESSING_MIRRORONCE; break;
+				default: UNIMPLEMENTED("addressModeV %d", t->sampler->addressModeV);
+				}
+
+				switch(t->sampler->addressModeW)
+				{
+				case VK_SAMPLER_ADDRESS_MODE_REPEAT:               samplerState.addressingModeW = ADDRESSING_WRAP;       break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT:      samplerState.addressingModeW = ADDRESSING_MIRROR;     break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE:        samplerState.addressingModeW = ADDRESSING_CLAMP;      break;
+				case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER:      samplerState.addressingModeW = ADDRESSING_BORDER;     break;
+				case VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE: samplerState.addressingModeW = ADDRESSING_MIRRORONCE; break;
+				default: UNIMPLEMENTED("addressModeW %d", t->sampler->addressModeW);
+				}
+				
+			//	samplerState.mipmapFilter = MIPMAP_POINT;               ASSERT(t->sampler->mipmapMode == VK_SAMPLER_MIPMAP_MODE_NEAREST);  // TODO(b/129523279)
+
+				switch(t->sampler->mipmapMode)
+				{
+				case VK_SAMPLER_MIPMAP_MODE_NEAREST:
+					samplerState.mipmapFilter = MIPMAP_POINT;
+					break;
+				case VK_SAMPLER_MIPMAP_MODE_LINEAR:
+					samplerState.mipmapFilter = MIPMAP_LINEAR;
+					break;
+				default:
+					UNIMPLEMENTED("mipmapMode %d", t->sampler->mipmapMode);
+				}
+
 				samplerState.sRGB = false;                              ASSERT(t->imageView->getFormat().isSRGBformat() == false);  // TODO(b/129523279)
 				samplerState.swizzleR = SWIZZLE_RED;                    ASSERT(t->imageView->getComponentMapping().r == VK_COMPONENT_SWIZZLE_R);  // TODO(b/129523279)
 				samplerState.swizzleG = SWIZZLE_GREEN;                  ASSERT(t->imageView->getComponentMapping().g == VK_COMPONENT_SWIZZLE_G);  // TODO(b/129523279)
