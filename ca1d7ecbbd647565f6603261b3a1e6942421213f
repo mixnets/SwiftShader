@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "586df4e8_61c44317",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T15:39:57Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027ll ever have different vertical and horizontal borders. One border() function should suffice, and if that ever changes it will be easy to refactor.",
+      "range": {
+        "startLine": 86,
+        "startChar": 1,
+        "endLine": 87,
+        "endChar": 54
+      },
+      "revId": "ca1d7ecbbd647565f6603261b3a1e6942421213f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
