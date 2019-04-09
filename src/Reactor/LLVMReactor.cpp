@@ -558,6 +558,7 @@ namespace rr
 			func_.emplace("cosf", reinterpret_cast<void*>(cosf));
 			func_.emplace("sincosf_stret", reinterpret_cast<void*>(__sincosf_stret));
 			func_.emplace("asinf", reinterpret_cast<void*>(asinf));
+			func_.emplace("acosf", reinterpret_cast<void*>(acosf));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3084,10 +3085,10 @@ namespace rr
 		return Sin(v) / Cos(v);
 	}
 
-	RValue<Float4> Asin(RValue<Float4> v)
+	static RValue<Float4> TransformFloat4PerElement(RValue<Float4> v, const char* name)
 	{
 		auto funcTy = ::llvm::FunctionType::get(T(Float::getType()), {T(Float::getType())}, false);
-		auto func = ::module->getOrInsertFunction("asinf", funcTy);
+		auto func = ::module->getOrInsertFunction(name, funcTy);
 		llvm::Value *out = ::llvm::UndefValue::get(T(Float4::getType()));
 		for (uint64_t i = 0; i < 4; i++)
 		{
@@ -3096,7 +3097,17 @@ namespace rr
 		}
 		return RValue<Float4>(V(out));
 	}
-	
+
+	RValue<Float4> Asin(RValue<Float4> v)
+	{
+		return TransformFloat4PerElement(v, "asinf");
+	}
+
+	RValue<Float4> Acos(RValue<Float4> v)
+	{
+		return TransformFloat4PerElement(v, "acosf");
+	}
+
 	Type *Float4::getType()
 	{
 		return T(llvm::VectorType::get(T(Float::getType()), 4));
