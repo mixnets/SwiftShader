@@ -560,6 +560,7 @@ namespace rr
 			func_.emplace("asinf", reinterpret_cast<void*>(asinf));
 			func_.emplace("acosf", reinterpret_cast<void*>(acosf));
 			func_.emplace("atanf", reinterpret_cast<void*>(atanf));
+			func_.emplace("sinhf", reinterpret_cast<void*>(sinhf));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3112,6 +3113,11 @@ namespace rr
 	RValue<Float4> Atan(RValue<Float4> v)
 	{
 		return TransformFloat4PerElement(v, "atanf");
+	}
+
+	RValue<Float4> Sinh(RValue<Float4> v)
+	{
+		return TransformFloat4PerElement(v, "sinhf");
 	}
 
 	Type *Float4::getType()
