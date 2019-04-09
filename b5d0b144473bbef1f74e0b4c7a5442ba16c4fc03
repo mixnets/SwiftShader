@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "722170ce_2db02bc2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:15:18Z",
+      "side": 1,
+      "message": "Bug: b/126126820",
+      "revId": "b5d0b144473bbef1f74e0b4c7a5442ba16c4fc03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0d2355f_7f02f290",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:15:18Z",
+      "side": 1,
+      "message": "note: Ultimately we probably want to hide this and just have operators for doing uniform or per-lane arithmetic that update this accordingly.\n\nLet\u0027s keep that for post-1.0.",
+      "range": {
+        "startLine": 76,
+        "startChar": 3,
+        "endLine": 76,
+        "endChar": 16
+      },
+      "revId": "b5d0b144473bbef1f74e0b4c7a5442ba16c4fc03",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
