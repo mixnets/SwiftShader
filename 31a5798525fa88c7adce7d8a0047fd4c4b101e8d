@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "4d03ab5f_1bc986ef",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T19:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01698b3a_9c42d557",
+      "range": {
+        "startLine": 864,
+        "startChar": 35,
+        "endLine": 864,
+        "endChar": 37
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d96a666_7c194bd5",
         "filename": "src/Vulkan/VkQueryPool.cpp",
         "patchSetId": 9
@@ -131,6 +155,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "3d96a666_7c194bd5",
+      "range": {
+        "startLine": 75,
+        "startChar": 32,
+        "endLine": 75,
+        "endChar": 34
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74c12c8a_6d05215b",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T19:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62ebc9b2_2970c684",
       "range": {
         "startLine": 75,
         "startChar": 32,
@@ -225,6 +273,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "9843a774_48af99f7",
+      "range": {
+        "startLine": 36,
+        "startChar": 25,
+        "endLine": 36,
+        "endChar": 27
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b35df898_693cc5f9",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-09T19:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f61abe2_6dbd120f",
       "range": {
         "startLine": 36,
         "startChar": 25,
