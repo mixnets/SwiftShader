@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a291f7f_00d2f757",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T15:36:11Z",
+      "side": 1,
+      "message": "Test: or Tests: should work",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 5
+      },
+      "revId": "e394fba9b09551ce9d5cf67b094730725b47c930",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "65e11d80_94007552",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 3
@@ -37,6 +60,30 @@
       "side": 1,
       "message": "Ack. I\u0027ll do a mass replace for the whole file if this needs to be changes, as this is used everywhere.",
       "parentUuid": "65e11d80_94007552",
+      "range": {
+        "startLine": 876,
+        "startChar": 27,
+        "endLine": 876,
+        "endChar": 31
+      },
+      "revId": "e394fba9b09551ce9d5cf67b094730725b47c930",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b18a6843_433f6bf0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 876,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T15:36:11Z",
+      "side": 1,
+      "message": "%p isn\u0027t guaranteed to print a 0x prefix, which makes it a bit harder to tell pointers from integers. Nor does it provide a preference for capital vs small hex letters. Hence the explicit 0x%X, but that\u0027s 32-bit only so definitely sub-optimal as well. The \u0027z\u0027 length specifier should do the trick but isn\u0027t universally supported last time I checked.\n\nAnyway, not a priority to fix this.",
+      "parentUuid": "f0ced7b5_77866ec4",
       "range": {
         "startLine": 876,
         "startChar": 27,
