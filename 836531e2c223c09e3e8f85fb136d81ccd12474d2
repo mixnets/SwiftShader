@@ -22,6 +22,30 @@
       "revId": "836531e2c223c09e3e8f85fb136d81ccd12474d2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4c8e24c_c7963b96",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3096,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:35:07Z",
+      "side": 1,
+      "message": "rr::Clamp() actually exists for Int and UInt. Note that for the Float variant it would matter if Min() or Max() is done first, when using NaN as one of the inputs (possibly also denormals when doing DAZ and/or FTZ). So haven\u0027t tackled that issue yet. GLSL specifically states the order of min/max for its clamp() function this reason, and SPIR-V probably specifically doesn\u0027t have it because it\u0027s easy to lower it to separate min/max.\n\nThat said, it looks like for these implementations we could first convert to SIMD::Int, then clamp.\n\nAlso don\u0027t have vector variants of rr::Clamp() though. Probably deserves a closer look after Pastel 1.0.",
+      "parentUuid": "28196786_ef7aaec8",
+      "range": {
+        "startLine": 3096,
+        "startChar": 32,
+        "endLine": 3096,
+        "endChar": 40
+      },
+      "revId": "836531e2c223c09e3e8f85fb136d81ccd12474d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
