@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e1194cc_9332b957",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T14:47:51Z",
+      "side": 1,
+      "message": "Is it enabled as soon as we have an occlusion query in the list? Previously queries had to be in some sort of active state to start taking effect.",
+      "range": {
+        "startLine": 324,
+        "startChar": 3,
+        "endLine": 324,
+        "endChar": 45
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0aa9ad52_f3fac6bc",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T14:47:51Z",
+      "side": 1,
+      "message": "Could use a more descriptive name.",
+      "range": {
+        "startLine": 864,
+        "startChar": 35,
+        "endLine": 864,
+        "endChar": 37
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d96a666_7c194bd5",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T14:47:51Z",
+      "side": 1,
+      "message": "More verbose please. In other places too.",
+      "range": {
+        "startLine": 75,
+        "startChar": 32,
+        "endLine": 75,
+        "endChar": 34
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0807976_7d059f07",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T14:47:51Z",
+      "side": 1,
+      "message": "Note that this has the potential to slightly alter the behavior in Debug vs. Release builds. Not sure there\u0027s a way to avoid that though...",
+      "range": {
+        "startLine": 139,
+        "startChar": 3,
+        "endLine": 139,
+        "endChar": 54
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9843a774_48af99f7",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T14:47:51Z",
+      "side": 1,
+      "message": "\"condition\" ?",
+      "range": {
+        "startLine": 36,
+        "startChar": 25,
+        "endLine": 36,
+        "endChar": 27
+      },
+      "revId": "31a5798525fa88c7adce7d8a0047fd4c4b101e8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
