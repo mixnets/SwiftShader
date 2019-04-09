@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e0a2053_33a8b43f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2368,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T17:58:23Z",
+      "side": 1,
+      "message": "note: Potentially faster to compute as (x \u003c\u003c (32 - count - offset)) \u003e\u003e offset, where the right shift is arithmetic or logical based on S or U variant respectively.\n\nNo need to optimize for Pastel 1.0.",
+      "range": {
+        "startLine": 2362,
+        "startChar": 4,
+        "endLine": 2368,
+        "endChar": 5
+      },
+      "revId": "18ff51d4cc8c6374e2a9081da32f656efb7d50c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
