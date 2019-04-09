@@ -639,12 +639,6 @@ uint32_t Image::getLastMipLevel(const VkImageSubresourceRange& subresourceRange)
 
 void Image::clear(void* pixelData, VkFormat format, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea)
 {
-	if((subresourceRange.baseMipLevel != 0) ||
-	   (subresourceRange.levelCount != 1))
-	{
-		UNIMPLEMENTED("subresourceRange");
-	}
-
 	device->getBlitter()->clear(pixelData, format, this, subresourceRange, &renderArea);
 }
 
@@ -685,9 +679,7 @@ void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, co
 {
 	if(!((subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (subresourceRange.aspectMask & (VK_IMAGE_ASPECT_DEPTH_BIT |
-	                                     VK_IMAGE_ASPECT_STENCIL_BIT))) ||
-	   (subresourceRange.baseMipLevel != 0) ||
-	   (subresourceRange.levelCount != 1))
+	                                     VK_IMAGE_ASPECT_STENCIL_BIT))))
 	{
 		UNIMPLEMENTED("subresourceRange");
 	}
