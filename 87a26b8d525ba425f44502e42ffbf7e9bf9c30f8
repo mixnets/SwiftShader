@@ -22,6 +22,30 @@
       "revId": "87a26b8d525ba425f44502e42ffbf7e9bf9c30f8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79478016_d66df4b6",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3089,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-09T14:51:57Z",
+      "side": 1,
+      "message": "No, this is correct. First struct member is all the fracs, second is all the wholes.",
+      "parentUuid": "1ec51e1c_16585a67",
+      "range": {
+        "startLine": 3089,
+        "startChar": 13,
+        "endLine": 3089,
+        "endChar": 35
+      },
+      "revId": "87a26b8d525ba425f44502e42ffbf7e9bf9c30f8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
