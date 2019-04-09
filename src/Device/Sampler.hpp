@@ -56,13 +56,13 @@ namespace sw
 		float4 heightLOD;
 		float4 depthLOD;
 
-		word4 borderColor4[4];
-		float4 borderColorF[4];
-		float maxAnisotropy;
+		word4 borderColor4[4];   // TODO(capn): Part of sampler.
+		float4 borderColorF[4];  // TODO(capn): Part of sampler.
+		float maxAnisotropy;     // TODO(capn): Part of sampler.
 		int baseLevel;
 		int maxLevel;
-		float minLod;
-		float maxLod;
+		float minLod;  // TODO(capn): Part of sampler.
+		float maxLod;  // TODO(capn): Part of sampler.
 	};
 
 	enum SamplerType
