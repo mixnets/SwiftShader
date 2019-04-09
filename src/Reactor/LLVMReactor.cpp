@@ -559,6 +559,7 @@ namespace rr
 			func_.emplace("sincosf_stret", reinterpret_cast<void*>(__sincosf_stret));
 			func_.emplace("asinf", reinterpret_cast<void*>(asinf));
 			func_.emplace("acosf", reinterpret_cast<void*>(acosf));
+			func_.emplace("atanf", reinterpret_cast<void*>(atanf));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -3106,6 +3107,11 @@ namespace rr
 	RValue<Float4> Acos(RValue<Float4> v)
 	{
 		return TransformFloat4PerElement(v, "acosf");
+	}
+
+	RValue<Float4> Atan(RValue<Float4> v)
+	{
+		return TransformFloat4PerElement(v, "atanf");
 	}
 
 	Type *Float4::getType()
