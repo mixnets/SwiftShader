@@ -3153,7 +3153,7 @@ namespace sw
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
 				auto whole = Floor(val.Float(i));
-				auto frac = val.Float(i) - whole;
+				auto frac = Frac(val.Float(i));
 
 				dst.move(i, frac);
 
@@ -3178,7 +3178,7 @@ namespace sw
 			for (auto i = 0u; i < valTy.sizeInComponents; i++)
 			{
 				auto whole = Floor(val.Float(i));
-				auto frac = val.Float(i) - whole;
+				auto frac = Frac(val.Float(i));
 
 				dst.move(i, frac);
 				dst.move(i + valTy.sizeInComponents, whole);
