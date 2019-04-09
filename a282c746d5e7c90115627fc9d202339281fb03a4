@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae8a4abc_772814c9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3295,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:56:23Z",
+      "side": 1,
+      "message": "note: Eventually we\u0027ll want to move most of these arithmetic instruction implementations into ShaderCore.cpp. Not soon though, since it would result in merge conflicts and review churn.",
+      "range": {
+        "startLine": 3295,
+        "startChar": 48,
+        "endLine": 3295,
+        "endChar": 53
+      },
+      "revId": "a282c746d5e7c90115627fc9d202339281fb03a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
