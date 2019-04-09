@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22e9ca35_c43db4d1",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3086,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-09T18:21:34Z",
+      "side": 1,
+      "message": "Use Frac() instead. See https://swiftshader.googlesource.com/SwiftShader/+/3ed8ba0c5a4b71f3a4a20b2a84e65725186e183f/src/Reactor/SubzeroReactor.cpp#3312\n\nLooks not handled correctly on LLVM actually. I\u0027ll look into it later: https://swiftshader.googlesource.com/SwiftShader/+/3ed8ba0c5a4b71f3a4a20b2a84e65725186e183f/src/Reactor/LLVMReactor.cpp#2785\n\nIdeally Reactor would have a function to compute both correctly at once. I\u0027m making a note about that as well.",
+      "range": {
+        "startLine": 3086,
+        "startChar": 16,
+        "endLine": 3086,
+        "endChar": 36
+      },
+      "revId": "0ce53083b5485cf395086141ea798befba512484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
