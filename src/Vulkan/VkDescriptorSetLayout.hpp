@@ -17,10 +17,24 @@
 
 #include "VkObject.hpp"
 
+#include "Vulkan/VkSampler.hpp"
+#include "Vulkan/VkImageView.hpp"
+#include "Device/Sampler.hpp"
+
 namespace vk
 {
 
 class DescriptorSet;
+
+// TODO(capn): Move to the Device or Pipeline layer.
+struct ImageSamplerDescriptor
+{
+	// TODO(capn): Minimize to the data actually needed.
+	vk::Sampler *sampler;
+	vk::ImageView *imageView;
+
+	sw::Texture texture;
+};
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {

@@ -12,18 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <spirv/unified1/spirv.hpp>
-#include <spirv/unified1/GLSL.std.450.h>
 #include "SpirvShader.hpp"
+
+#include "SamplerCore.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "Device/Config.hpp"
+
+#include <spirv/unified1/spirv.hpp>
+#include <spirv/unified1/GLSL.std.450.h>
 
 #ifdef Bool
 #undef Bool // b/127920555
+#undef None
 #endif
 
 namespace
@@ -69,9 +74,19 @@ namespace sw
 			{
 				TypeOrObjectID targetId = insn.word(1);
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
-				decorations[targetId].Apply(
-						decoration,
-						insn.wordCount() > 3 ? insn.word(3) : 0);
+				uint32_t value = insn.wordCount() > 3 ? insn.word(3) : 0;
+
+				decorations[targetId].Apply(decoration, value);
+
+				switch(decoration)
+				{
+				case spv::DecorationDescriptorSet:
+					resourceDecorations[targetId].DescriptorSet = value;
+					break;
+				case spv::DecorationBinding:
+					resourceDecorations[targetId].Binding = value;
+					break;
+				}
 
 				if (decoration == spv::DecorationCentroid)
 					modes.NeedsCentroid = true;
@@ -212,6 +227,12 @@ namespace sw
 					break; // Correctly handled.
 
 				case spv::StorageClassUniformConstant:
+					// This storage class is for data stored within the descriptor itself,
+					// unlike StorageClassUniform which contains handles to buffers.
+					// For Vulkan it corresponds with samplers, images, or combined image samplers.
+					object.kind = Object::Kind::ImageSampler;
+					break;
+
 				case spv::StorageClassWorkgroup:
 				case spv::StorageClassCrossWorkgroup:
 				case spv::StorageClassGeneric:
@@ -344,13 +365,44 @@ namespace sw
 				break;
 
 			case spv::OpFConvert:
+				UNIMPLEMENTED("No valid uses for OpFConvert until we support multiple bit widths enabled by features such as Float16/Float64 etc.");
+				break;
+
 			case spv::OpSConvert:
 			case spv::OpUConvert:
-				UNIMPLEMENTED("No valid uses for Op*Convert until we support multiple bit widths");
+				UNIMPLEMENTED("No valid uses for Op*Convert until we support multiple bit widths enabled by features such as Int16/Int64 etc.");
 				break;
 
 			case spv::OpLoad:
+				{
+					Object::ID resultId = insn.word(2);
+					Object::ID pointerId = insn.word(3);
+					const auto &d = decorations[pointerId];
+
+					if(d.HasDescriptorSet)
+					{
+						resourceDecorations[resultId].DescriptorSet = d.DescriptorSet;
+						resourceDecorations[resultId].Binding = d.Binding;
+					}
+				}
+				DefineResult(insn);
+				break;
+
 			case spv::OpAccessChain:
+				{
+					Object::ID resultId = insn.word(2);
+					Object::ID baseId = insn.word(3);
+					const auto &d = decorations[baseId];
+
+					if(d.HasDescriptorSet)
+					{
+						resourceDecorations[resultId].DescriptorSet = d.DescriptorSet;
+						resourceDecorations[resultId].Binding = d.Binding;
+					}
+				}
+				DefineResult(insn);
+				break;
+
 			case spv::OpInBoundsAccessChain:
 			case spv::OpCompositeConstruct:
 			case spv::OpCompositeInsert:
@@ -363,11 +415,13 @@ namespace sw
 			case spv::OpMatrixTimesMatrix:
 			case spv::OpVectorExtractDynamic:
 			case spv::OpVectorInsertDynamic:
-			case spv::OpNot: // Unary ops
+			// Unary ops
+			case spv::OpNot:
 			case spv::OpSNegate:
 			case spv::OpFNegate:
 			case spv::OpLogicalNot:
-			case spv::OpIAdd: // Binary ops
+			// Binary ops
+			case spv::OpIAdd:
 			case spv::OpISub:
 			case spv::OpIMul:
 			case spv::OpSDiv:
@@ -438,18 +492,10 @@ namespace sw
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
-				// Instructions that yield an intermediate value or divergent
-				// pointer
-			{
-				Type::ID typeId = insn.word(1);
-				Object::ID resultId = insn.word(2);
-				auto &object = defs[resultId];
-				object.type = typeId;
-				object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
-					? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
-				object.definition = insn;
+			case spv::OpImageSampleImplicitLod:
+				// Instructions that yield an intermediate value or divergent pointer
+				DefineResult(insn);
 				break;
-			}
 
 			case spv::OpStore:
 			case spv::OpAtomicStore:
@@ -854,11 +900,11 @@ namespace sw
 		}
 	}
 
-	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	std::pair<Pointer<Byte>, SIMD::Int> SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
-		auto &baseObject = getObject(id);
+		auto &baseObject = getObject(baseId);
 		Type::ID typeId = getType(baseObject.type).element;
 		Decorations d = {};
 		ApplyDecorationsForId(&d, baseObject.type);
@@ -880,7 +926,7 @@ namespace sw
 
 		SIMD::Int dynamicOffset;
 		Pointer<Byte> pointerBase;
-		std::tie(pointerBase, dynamicOffset) = GetPointerToData(id, arrayIndex, routine);
+		std::tie(pointerBase, dynamicOffset) = GetPointerToData(baseId, arrayIndex, routine);
 
 		int constantOffset = 0;
 
@@ -1174,6 +1220,17 @@ namespace sw
 		}
 	}
 
+	void SpirvShader::DefineResult(const InsnIterator &insn)
+	{
+		Type::ID typeId = insn.word(1);
+		Object::ID resultId = insn.word(2);
+		auto &object = defs[resultId];
+		object.type = typeId;
+		object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
+			? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
+		object.definition = insn;
+	}
+
 	uint32_t SpirvShader::GetConstantInt(Object::ID id) const
 	{
 		// Slightly hackish access to constants very early in translation.
@@ -1216,11 +1273,9 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const
+	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
 	{
-		EmitState state;
-		state.setActiveLaneMask(activeLaneMask);
-		state.routine = routine;
+		EmitState state(routine, activeLaneMask, descriptorSets);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?
@@ -1529,7 +1584,9 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
-		switch (insn.opcode())
+		auto opcode = insn.opcode();
+
+		switch (opcode)
 		{
 		case spv::OpTypeVoid:
 		case spv::OpTypeInt:
@@ -1542,6 +1599,8 @@ namespace sw
 		case spv::OpTypeStruct:
 		case spv::OpTypePointer:
 		case spv::OpTypeFunction:
+		case spv::OpTypeImage:
+		case spv::OpTypeSampledImage:
 		case spv::OpExecutionMode:
 		case spv::OpMemoryModel:
 		case spv::OpFunction:
@@ -1735,8 +1794,95 @@ namespace sw
 		case spv::OpKill:
 			return EmitKill(insn, state);
 
+		case spv::OpImageSampleImplicitLod:
+			{
+				Type::ID resultTypeId = insn.word(1);
+				Object::ID resultId = insn.word(2);
+				Object::ID sampledImageId = insn.word(3);
+				Object::ID coordinateId = insn.word(4);
+				auto &resultType = getType(resultTypeId);
+			//	auto &result = getObject(resultId);
+			//	auto &coordinate = getObject(coordinateId);
+
+				//auto &sampledImageLoad = getObject(sampledImageId);
+				//ASSERT(sampledImageLoad.opcode() == spv::OpLoad);
+
+				Object::ID samplerPointerId = sampledImageId;// sampledImageLoad.definition.word(3);
+
+				auto &result = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
+				auto &sampledImage = state->routine->getPointer(samplerPointerId);//getObject(sampledImageId).;
+				auto coordinate = GenericValue(this, state->routine, coordinateId);
+
+				Pointer<Byte> constants;// = state->routine->;  // FIXME(capn)
+
+				const ResourceDecorations &d = resourceDecorations.at(sampledImageId);
+				uint32_t arrayIndex = 0;  // TODO(capn)
+				auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+				size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+
+				const uint8_t *p = reinterpret_cast<const uint8_t*>(state->descriptorSets[d.DescriptorSet]) + bindingOffset;
+				const auto *t = reinterpret_cast<const vk::ImageSamplerDescriptor*>(p);
+
+				Sampler::State samplerState;
+				samplerState.textureType = TEXTURE_2D;                  ASSERT(t->imageView->getType() == VK_IMAGE_VIEW_TYPE_2D);  // TODO(capn)
+				samplerState.textureFormat = t->imageView->getFormat();
+				samplerState.textureFilter = FILTER_POINT;              ASSERT(t->sampler->magFilter == VK_FILTER_NEAREST); ASSERT(t->sampler->minFilter == VK_FILTER_NEAREST);  // TODO(capn)
+
+				samplerState.addressingModeU = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeU == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.addressingModeV = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeV == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.addressingModeW = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeW == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(capn)
+				samplerState.mipmapFilter = MIPMAP_POINT;               ASSERT(t->sampler->mipmapMode == VK_SAMPLER_MIPMAP_MODE_NEAREST);  // TODO(capn)
+				samplerState.sRGB = false;                              ASSERT(t->imageView->getFormat().isSRGBformat() == false);  // TODO(capn)
+				samplerState.swizzleR = SWIZZLE_RED;                    ASSERT(t->imageView->getComponentMapping().r == VK_COMPONENT_SWIZZLE_R);  // TODO(capn)
+				samplerState.swizzleG = SWIZZLE_GREEN;                  ASSERT(t->imageView->getComponentMapping().g == VK_COMPONENT_SWIZZLE_G);  // TODO(capn)
+				samplerState.swizzleB = SWIZZLE_BLUE;                   ASSERT(t->imageView->getComponentMapping().b == VK_COMPONENT_SWIZZLE_B);  // TODO(capn)
+				samplerState.swizzleA = SWIZZLE_ALPHA;                  ASSERT(t->imageView->getComponentMapping().a == VK_COMPONENT_SWIZZLE_A);  // TODO(capn)
+				samplerState.highPrecisionFiltering = false;
+				samplerState.compare = COMPARE_BYPASS;                  ASSERT(t->sampler->compareEnable == VK_FALSE);  // TODO(capn)
+				
+			//	minLod  // TODO(capn)
+			//	maxLod  // TODO(capn)
+			// borderColor  // TODO(capn)
+				ASSERT(t->sampler->mipLodBias == 0.0f);  // TODO(capn)
+				ASSERT(t->sampler->anisotropyEnable == VK_FALSE);  // TODO(capn)
+				ASSERT(t->sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(capn)
+
+				SamplerCore sampler(constants, samplerState);
+
+				Pointer<Byte> texture = sampledImage + OFFSET(vk::ImageSamplerDescriptor, texture); // sw::Texture*
+				SIMD::Float u = coordinate.Float(0);
+				SIMD::Float v = coordinate.Float(1);
+				SIMD::Float w(0);// = coordinate.Float(0);
+				SIMD::Float q(0);// = coordinate.Float(0);
+				SIMD::Float bias(0);
+				Vector4f dsx;
+				Vector4f dsy;
+				Vector4f offset;
+				SamplerFunction samplerFunction = { Implicit, None };       ASSERT(insn.wordCount() == 5);  // TODO(capn)
+
+			//	*Pointer<Int>(texture) = 0;
+				Vector4f sample = sampler.sampleTextureF(texture, u, v, w, q, bias, dsx, dsy, offset, samplerFunction);
+
+				if(getType(resultType.element).opcode() == spv::OpTypeFloat)
+				{
+					result.move(0, sample.x);
+					result.move(1, sample.y);
+					result.move(2, sample.z);
+					result.move(3, sample.w);
+				}
+				else
+				{
+				//	HACK HACK HACK
+					result.move(0, As<SIMD::Int>(sample.x * SIMD::Float(0xFF)));
+					result.move(1, As<SIMD::Int>(sample.y * SIMD::Float(0xFF)));
+					result.move(2, As<SIMD::Int>(sample.z * SIMD::Float(0xFF)));
+					result.move(3, As<SIMD::Int>(sample.w * SIMD::Float(0xFF)));
+				}
+			}
+			break;
+
 		default:
-			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
+			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
 		}
 
@@ -1774,6 +1920,21 @@ namespace sw
 			routine->createPointer(resultId, &routine->getVariable(resultId)[0]);
 			break;
 		}
+		case spv::StorageClassUniformConstant:
+		{
+			Decorations d{};
+			ApplyDecorationsForId(&d, resultId);
+			ASSERT(d.DescriptorSet >= 0);
+			ASSERT(d.Binding >= 0);
+
+			uint32_t arrayIndex = 0;  // TODO(capn)
+			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // ImageSamplerDescriptor*
+			routine->createPointer(resultId, binding);
+			break;
+		}
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		{
@@ -1789,6 +1950,7 @@ namespace sw
 			break;
 		}
 		default:
+			UNIMPLEMENTED("Storage class %d", objectTy.storageClass);
 			break;
 		}
 
@@ -1807,6 +1969,20 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
+		ASSERT(getType(pointer.type).element == result.type);
+		ASSERT(Type::ID(insn.word(1)) == result.type);
+		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
+
+		if(pointer.kind == Object::Kind::ImageSampler)
+		{
+			// Just propagate the pointer.
+			// TODO(capn)
+			auto &ptr = routine->getPointer(pointerId);
+			routine->createPointer(resultId, ptr);
+
+			return EmitResult::Continue;
+		}
+
 		if(atomic)
 		{
 			Object::ID semanticsId = insn.word(5);
@@ -1814,10 +1990,7 @@ namespace sw
 			memoryOrder = MemoryOrder(memorySemantics);
 		}
 
-		ASSERT(getType(pointer.type).element == result.type);
-		ASSERT(Type::ID(insn.word(1)) == result.type);
-		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
-
+		
 		if (pointerTy.storageClass == spv::StorageClassImage)
 		{
 			UNIMPLEMENTED("StorageClassImage load not yet implemented");
