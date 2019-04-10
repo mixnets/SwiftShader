@@ -22,6 +22,30 @@
       "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a80e405_6d4676ee",
+        "filename": "src/Reactor/Reactor.vcxproj",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-10T19:50:24Z",
+      "side": 1,
+      "message": "Yes, this flag is currently ignored and we get a warning. From the description, it\u0027s \"MultiProcessor build is incompatible with Minimal rebuild option, so removed it\". It\u0027s one of the other.",
+      "parentUuid": "1bd82b84_1a8ca5f6",
+      "range": {
+        "startLine": 153,
+        "startChar": 33,
+        "endLine": 153,
+        "endChar": 38
+      },
+      "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
