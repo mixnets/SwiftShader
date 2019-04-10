@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40beb581_345bfb46",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3639,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-10T19:36:54Z",
+      "side": 1,
+      "message": "I had missed that this was gated by a capability. Probably saves us a couple days :)",
+      "revId": "3aa29565e1acd86d959a881dc3521b0d4fa9d316",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
