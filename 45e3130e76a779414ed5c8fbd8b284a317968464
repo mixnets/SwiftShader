@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d896dc9_dd6643ff",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1798,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-10T17:44:03Z",
+      "side": 1,
+      "message": "Please move to an EmitImageSampleImplicitLod() function.\nIf the Sampler::State setup can be moved to a stateless function in the anonymous namespace up top then this will help untangle any sampler JIT work in the future.",
+      "range": {
+        "startLine": 1798,
+        "startChar": 3,
+        "endLine": 1798,
+        "endChar": 4
+      },
+      "revId": "45e3130e76a779414ed5c8fbd8b284a317968464",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
