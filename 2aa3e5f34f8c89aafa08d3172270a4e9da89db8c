@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "931cd71d_0d1dce71",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-10T17:40:00Z",
+      "side": 1,
+      "message": "As per the email discussion - it would be good to annotate this with a comment stating that this is temporary, and that new code should use SpirvRoutine::descriptorSets unless it is also temporary code that is needed for images / samplers.",
+      "range": {
+        "startLine": 640,
+        "startChar": 3,
+        "endLine": 640,
+        "endChar": 53
+      },
+      "revId": "2aa3e5f34f8c89aafa08d3172270a4e9da89db8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
