@@ -22,6 +22,30 @@
       "revId": "c580c5a9469c84e213b1bbd18cda7c146f370ab5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "632b6906_0ac35fd7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3072,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-10T20:52:44Z",
+      "side": 1,
+      "message": "Ack. I just didn\u0027t want to go changing this too much for the sake of it when I knew there was refactoring to be done.",
+      "parentUuid": "0dfe95d0_c1843872",
+      "range": {
+        "startLine": 3072,
+        "startChar": 6,
+        "endLine": 3072,
+        "endChar": 11
+      },
+      "revId": "c580c5a9469c84e213b1bbd18cda7c146f370ab5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
