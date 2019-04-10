@@ -46,6 +46,30 @@
       "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "40e39e7d_0a9e7f91",
+        "filename": "src/Reactor/Reactor.vcxproj",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-10T20:04:46Z",
+      "side": 1,
+      "message": "Actually we want this to be true while Minimal Rebuild should be disabled. The latter is deprecated: https://docs.microsoft.com/en-us/cpp/build/reference/gm-enable-minimal-rebuild?view\u003dvs-2019\n\nI have a WIP patch which cleans things up and should probably land before this one: https://swiftshader-review.googlesource.com/c/SwiftShader/+/28769 Will make it review-worthy soon.",
+      "parentUuid": "2a80e405_6d4676ee",
+      "range": {
+        "startLine": 153,
+        "startChar": 33,
+        "endLine": 153,
+        "endChar": 38
+      },
+      "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
