@@ -70,6 +70,30 @@
       "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c0df40b_63c95d69",
+        "filename": "src/Reactor/Reactor.vcxproj",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-10T20:19:26Z",
+      "side": 1,
+      "message": "I\u0027ll just remove it from this cl.",
+      "parentUuid": "40e39e7d_0a9e7f91",
+      "range": {
+        "startLine": 153,
+        "startChar": 33,
+        "endLine": 153,
+        "endChar": 38
+      },
+      "revId": "6538cf4a2ee109a6220d6977661af74a0cf0b24d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
