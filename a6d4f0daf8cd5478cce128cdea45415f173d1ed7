@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3da58ae2_f6884178",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-10T17:34:41Z",
+      "side": 1,
+      "message": "Separating these from \u0027decorations\u0027 seems like a rather arbitrary move right now. \u0027decorations\u0027 clearly contains a mix of types and object IDs. If we\u0027re going to break this up, then we should probably split it in two and kill the TypeOrObjectID filth.\nI\u0027m not saying the decision to break these up by category is wrong, it would just be nice to go one way or another and not introduce a half-way house.",
+      "range": {
+        "startLine": 442,
+        "startChar": 2,
+        "endLine": 448,
+        "endChar": 78
+      },
+      "revId": "a6d4f0daf8cd5478cce128cdea45415f173d1ed7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b22d3c80_bf4938f7",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-10T17:34:41Z",
+      "side": 1,
+      "message": "Please document.",
+      "range": {
+        "startLine": 528,
+        "startChar": 7,
+        "endLine": 528,
+        "endChar": 19
+      },
+      "revId": "a6d4f0daf8cd5478cce128cdea45415f173d1ed7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
