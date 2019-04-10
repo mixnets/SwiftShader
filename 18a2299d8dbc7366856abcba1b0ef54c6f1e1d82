@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b1f88fd_0b94a6b8",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-10T02:38:43Z",
+      "side": 1,
+      "message": "Vulkan 1.1 spec for VkImageCreateInfo: \"arrayLayers must be greater than 0\". So this condition is always true.",
+      "range": {
+        "startLine": 44,
+        "startChar": 9,
+        "endLine": 44,
+        "endChar": 32
+      },
+      "revId": "18a2299d8dbc7366856abcba1b0ef54c6f1e1d82",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
