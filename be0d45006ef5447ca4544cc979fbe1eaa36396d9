@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb3682bc_46e25ed4",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-10T21:54:31Z",
+      "side": 1,
+      "message": "We shouldn\u0027t need to handwrite all the rr::RValue\u003cT\u003e noise now that Reactor is smarter about whether to materialize allocas ?",
+      "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
