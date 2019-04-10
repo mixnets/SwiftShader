@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5243e439_7afc248c",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3092,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-10T21:08:52Z",
+      "side": 1,
+      "message": "bikeshed: Although I understand this is only to be used internally, I\u0027m not a big fan of this name. Something like MathFunction(\"sin\", x) or even Math\u003c\"sin\"\u003e(x) seems more elegant to me. Anyway, no need to change now.",
+      "range": {
+        "startLine": 3092,
+        "startChar": 23,
+        "endLine": 3092,
+        "endChar": 48
+      },
+      "revId": "79889675e805186a2d247800328c77f6aa6c9171",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
