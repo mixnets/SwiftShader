@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d88f02aa_b9965747",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-10T21:31:42Z",
+      "side": 1,
+      "message": "LGTM for now but this is probably a good candidate for splitting off from the generic decorations since things that care about relaxed precision are unlikely to care about other decorations. Let\u0027s look into that post-1.0.\n\nAlso, this will have to be propagated by AccessChain and Load when it was applied to a variable instead of a math instruction.",
+      "range": {
+        "startLine": 425,
+        "startChar": 3,
+        "endLine": 425,
+        "endChar": 29
+      },
+      "revId": "5a94aadcaf1cf303b0db8ced5a2a9ccef3ff2f43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
