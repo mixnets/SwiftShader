@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <spirv/unified1/spirv.hpp>
-#include <spirv/unified1/GLSL.std.450.h>
 #include "SpirvShader.hpp"
+
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
+
+#include <spirv/unified1/spirv.hpp>
+#include <spirv/unified1/GLSL.std.450.h>
 
 #ifdef Bool
 #undef Bool // b/127920555
@@ -82,9 +84,19 @@ namespace sw
 			{
 				TypeOrObjectID targetId = insn.word(1);
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
-				decorations[targetId].Apply(
-						decoration,
-						insn.wordCount() > 3 ? insn.word(3) : 0);
+				uint32_t value = insn.wordCount() > 3 ? insn.word(3) : 0;
+
+				decorations[targetId].Apply(decoration, value);
+
+				switch(decoration)
+				{
+				case spv::DecorationDescriptorSet:
+					descriptorDecorations[targetId].DescriptorSet = value;
+					break;
+				case spv::DecorationBinding:
+					descriptorDecorations[targetId].Binding = value;
+					break;
+				}
 
 				if (decoration == spv::DecorationCentroid)
 					modes.NeedsCentroid = true;
@@ -364,6 +376,25 @@ namespace sw
 
 			case spv::OpLoad:
 			case spv::OpAccessChain:
+				{
+					// Propagate the descriptor decorations to the result.
+					Object::ID resultId = insn.word(2);
+					Object::ID pointerId = insn.word(3);
+					const auto &d = descriptorDecorations.find(pointerId);
+
+					if(d != descriptorDecorations.end())
+					{
+						ASSERT(d->second.DescriptorSet >= 0);
+						ASSERT(d->second.Binding >= 0);
+
+						descriptorDecorations[resultId].DescriptorSet = d->second.DescriptorSet;
+						descriptorDecorations[resultId].Binding = d->second.Binding;
+					}
+
+					DefineResult(insn);
+				}
+				break;
+
 			case spv::OpInBoundsAccessChain:
 			case spv::OpCompositeConstruct:
 			case spv::OpCompositeInsert:
@@ -378,7 +409,8 @@ namespace sw
 			case spv::OpTranspose:
 			case spv::OpVectorExtractDynamic:
 			case spv::OpVectorInsertDynamic:
-			case spv::OpNot: // Unary ops
+			// Unary ops
+			case spv::OpNot:
 			case spv::OpBitFieldInsert:
 			case spv::OpBitFieldSExtract:
 			case spv::OpBitFieldUExtract:
@@ -387,7 +419,8 @@ namespace sw
 			case spv::OpSNegate:
 			case spv::OpFNegate:
 			case spv::OpLogicalNot:
-			case spv::OpIAdd: // Binary ops
+			// Binary ops
+			case spv::OpIAdd:
 			case spv::OpISub:
 			case spv::OpIMul:
 			case spv::OpSDiv:
@@ -843,9 +876,7 @@ namespace sw
 
 			case Object::Kind::DescriptorSet:
 			{
-				Decorations d = {};
-				ApplyDecorationsForId(&d, id);
-
+				const auto &d = descriptorDecorations.at(id);
 				ASSERT(d.DescriptorSet >= 0);
 				ASSERT(d.Binding >= 0);
 
@@ -874,11 +905,11 @@ namespace sw
 		}
 	}
 
-	SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// Produce a offset into external memory in sizeof(float) units
 
-		auto &baseObject = getObject(id);
+		auto &baseObject = getObject(baseId);
 		Type::ID typeId = getType(baseObject.type).element;
 		Decorations d = {};
 		ApplyDecorationsForId(&d, baseObject.type);
@@ -898,7 +929,7 @@ namespace sw
 			}
 		}
 
-		auto ptr = GetPointerToData(id, arrayIndex, routine);
+		auto ptr = GetPointerToData(baseId, arrayIndex, routine);
 
 		int constantOffset = 0;
 
@@ -963,21 +994,21 @@ namespace sw
 		return ptr;
 	}
 
-	SIMD::Int SpirvShader::WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	SIMD::Int SpirvShader::WalkAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// TODO: avoid doing per-lane work in some cases if we can?
 		// Produce a *component* offset into location-oriented memory
 
 		int constantOffset = 0;
 		SIMD::Int dynamicOffset = SIMD::Int(0);
-		auto &baseObject = getObject(id);
+		auto &baseObject = getObject(baseId);
 		Type::ID typeId = getType(baseObject.type).element;
 
 		// The <base> operand is a divergent pointer itself.
 		// Start with its offset and build from there.
 		if (baseObject.kind == Object::Kind::DivergentPointer)
 		{
-			dynamicOffset += routine->getIntermediate(id).Int(0);
+			dynamicOffset += routine->getIntermediate(baseId).Int(0);
 		}
 
 		for (auto i = 0u; i < numIndexes; i++)
@@ -1075,14 +1106,6 @@ namespace sw
 			HasComponent = true;
 			Component = arg;
 			break;
-		case spv::DecorationDescriptorSet:
-			HasDescriptorSet = true;
-			DescriptorSet = arg;
-			break;
-		case spv::DecorationBinding:
-			HasBinding = true;
-			Binding = arg;
-			break;
 		case spv::DecorationBuiltIn:
 			HasBuiltIn = true;
 			BuiltIn = static_cast<spv::BuiltIn>(arg);
@@ -1141,18 +1164,6 @@ namespace sw
 			Component = src.Component;
 		}
 
-		if (src.HasDescriptorSet)
-		{
-			HasDescriptorSet = true;
-			DescriptorSet = src.DescriptorSet;
-		}
-
-		if (src.HasBinding)
-		{
-			HasBinding = true;
-			Binding = src.Binding;
-		}
-
 		if (src.HasOffset)
 		{
 			HasOffset = true;
@@ -1192,6 +1203,17 @@ namespace sw
 		{
 			d->Apply(it->second[member]);
 		}
+	}
+
+	void SpirvShader::DefineResult(const InsnIterator &insn)
+	{
+		Type::ID typeId = insn.word(1);
+		Object::ID resultId = insn.word(2);
+		auto &object = defs[resultId];
+		object.type = typeId;
+		object.kind = (getType(typeId).opcode() == spv::OpTypePointer)
+			? Object::Kind::DivergentPointer : Object::Kind::Intermediate;
+		object.definition = insn;
 	}
 
 	uint32_t SpirvShader::GetConstantInt(Object::ID id) const
@@ -1549,7 +1571,9 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
-		switch (insn.opcode())
+		auto opcode = insn.opcode();
+
+		switch (opcode)
 		{
 		case spv::OpTypeVoid:
 		case spv::OpTypeInt:
@@ -1767,7 +1791,7 @@ namespace sw
 			return EmitKill(insn, state);
 
 		default:
-			UNIMPLEMENTED("opcode: %s", OpcodeName(insn.opcode()).c_str());
+			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
 		}
 
@@ -1808,9 +1832,9 @@ namespace sw
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		{
-			Decorations d{};
-			ApplyDecorationsForId(&d, resultId);
+			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0);
+
 			routine->createPointer(resultId, routine->descriptorSets[d.DescriptorSet]);
 			break;
 		}
@@ -1820,6 +1844,7 @@ namespace sw
 			break;
 		}
 		default:
+			UNIMPLEMENTED("Storage class %d", objectTy.storageClass);
 			break;
 		}
 
@@ -1838,16 +1863,16 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
+		ASSERT(getType(pointer.type).element == result.type);
+		ASSERT(Type::ID(insn.word(1)) == result.type);
+		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
+
 		if(atomic)
 		{
 			Object::ID semanticsId = insn.word(5);
 			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
 			memoryOrder = MemoryOrder(memorySemantics);
 		}
-
-		ASSERT(getType(pointer.type).element == result.type);
-		ASSERT(Type::ID(insn.word(1)) == result.type);
-		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
 		if (pointerTy.storageClass == spv::StorageClassImage)
 		{

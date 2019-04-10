@@ -282,8 +282,9 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+			};
 
-			} kind = Kind::Unknown;
+			Kind kind = Kind::Unknown;
 		};
 
 		// Block is an interval of SPIR-V instructions, starting with the
@@ -401,37 +402,30 @@ namespace sw
 
 		struct Decorations
 		{
-			int32_t Location;
-			int32_t Component;
-			int32_t DescriptorSet;
-			int32_t Binding;
-			spv::BuiltIn BuiltIn;
-			int32_t Offset;
-			int32_t ArrayStride;
-			int32_t MatrixStride;
+			int32_t Location = -1;
+			int32_t Component = 0;
+			spv::BuiltIn BuiltIn = static_cast<spv::BuiltIn>(-1);
+			int32_t Offset = -1;
+			int32_t ArrayStride = -1;
+			int32_t MatrixStride = 1;
+
 			bool HasLocation : 1;
 			bool HasComponent : 1;
-			bool HasDescriptorSet : 1;
-			bool HasBinding : 1;
 			bool HasBuiltIn : 1;
+			bool HasOffset : 1;
+			bool HasArrayStride : 1;
+			bool HasMatrixStride : 1;
+
 			bool Flat : 1;
 			bool Centroid : 1;
 			bool NoPerspective : 1;
 			bool Block : 1;
 			bool BufferBlock : 1;
-			bool HasOffset : 1;
-			bool HasArrayStride : 1;
-			bool HasMatrixStride : 1;
 
 			Decorations()
-					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
-					  BuiltIn{static_cast<spv::BuiltIn>(-1)},
-					  Offset{-1}, ArrayStride{-1}, MatrixStride{-1},
-					  HasLocation{false}, HasComponent{false},
-					  HasDescriptorSet{false}, HasBinding{false},
-					  HasBuiltIn{false}, Flat{false}, Centroid{false},
-					  NoPerspective{false}, Block{false}, BufferBlock{false},
-					  HasOffset{false}, HasArrayStride{false}, HasMatrixStride{false}
+					: HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
+					  HasOffset{false}, HasArrayStride{false}, HasMatrixStride{false},
+					  Flat{false}, Centroid{false}, NoPerspective{false}, Block{false}, BufferBlock{false}
 			{
 			}
 
@@ -444,6 +438,14 @@ namespace sw
 
 		std::unordered_map<TypeOrObjectID, Decorations, TypeOrObjectID::Hash> decorations;
 		std::unordered_map<Type::ID, std::vector<Decorations>> memberDecorations;
+
+		struct DescriptorDecorations
+		{
+			int32_t DescriptorSet = -1;
+			int32_t Binding = -1;
+		};
+
+		std::unordered_map<Object::ID, DescriptorDecorations> descriptorDecorations;
 
 		struct InterfaceComponent
 		{
@@ -522,6 +524,8 @@ namespace sw
 		uint32_t ComputeTypeSize(InsnIterator insn);
 		void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 		void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
+
+		void DefineResult(const InsnIterator &insn);
 
 		// Returns true if data in the given storage class is word-interleaved
 		// by each SIMD vector lane, otherwise data is stored linerally.
