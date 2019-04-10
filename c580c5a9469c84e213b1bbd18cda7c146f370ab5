@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0dfe95d0_c1843872",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3072,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-10T20:47:04Z",
+      "side": 1,
+      "message": "nit: While memory_order_relaxed is the default, this may not be entirely obvious to passers-by, so I\u0027d recommend using a regular assignment to the dereferenced pointer instead of Store() here to avoid confusion. Anyway, I agree with the TODO to consolidate this with EmitStore so it will become irrelevant.",
+      "range": {
+        "startLine": 3072,
+        "startChar": 6,
+        "endLine": 3072,
+        "endChar": 11
+      },
+      "revId": "c580c5a9469c84e213b1bbd18cda7c146f370ab5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
