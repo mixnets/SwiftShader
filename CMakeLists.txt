@@ -221,6 +221,7 @@ else()
     set_cpp_flag("-Werror=reorder")
     set_cpp_flag("-Werror=sign-compare")
     set_cpp_flag("-Werror=missing-braces")
+    set_cpp_flag("-Werror=string-conversion")
     set_cpp_flag("-fno-exceptions")
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND
