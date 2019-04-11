@@ -575,6 +575,12 @@ namespace sw
 		template<typename F>
 		void VisitInterface(Object::ID id, F f) const;
 
+		template<typename F>
+		void VisitMemoryObject(Object::ID id, F f) const;
+
+		template<typename F>
+		void VisitMemoryObjectInner(Type::ID id, Decorations d, uint32_t &index, uint32_t offset, F f) const;
+
 		uint32_t GetConstantInt(Object::ID id) const;
 		Object& CreateConstant(InsnIterator it);
 
