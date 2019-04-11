@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d3f88035_43c226b8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T09:43:13Z",
+      "side": 1,
+      "message": "I\u0027ve made a note about cleaning this up further in the post-1.0 doc before. Propagating descriptor related decorations in AccessChain and Load definitely doesn\u0027t need anything other than DescriptorSet and Binding though, so I think we\u0027ll end up with at least three sets.",
+      "parentUuid": "3da58ae2_f6884178",
+      "range": {
+        "startLine": 442,
+        "startChar": 2,
+        "endLine": 448,
+        "endChar": 78
+      },
+      "revId": "a6d4f0daf8cd5478cce128cdea45415f173d1ed7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b22d3c80_bf4938f7",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "a6d4f0daf8cd5478cce128cdea45415f173d1ed7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c30a4fde_12fa0ba3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T09:43:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b22d3c80_bf4938f7",
+      "range": {
+        "startLine": 528,
+        "startChar": 7,
+        "endLine": 528,
+        "endChar": 19
+      },
+      "revId": "a6d4f0daf8cd5478cce128cdea45415f173d1ed7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
