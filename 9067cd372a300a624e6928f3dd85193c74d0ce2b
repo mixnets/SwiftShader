@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0695bb3_27fb6883",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3377,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-11T09:00:25Z",
+      "side": 1,
+      "message": "Maybe, just so you can have some sleep, just reduce this further to something even more likely to work everywhere?\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/28851",
+      "range": {
+        "startLine": 3377,
+        "startChar": 36,
+        "endLine": 3377,
+        "endChar": 47
+      },
+      "revId": "9067cd372a300a624e6928f3dd85193c74d0ce2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
