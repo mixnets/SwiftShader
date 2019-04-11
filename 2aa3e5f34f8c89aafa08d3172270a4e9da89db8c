@@ -22,6 +22,30 @@
       "revId": "2aa3e5f34f8c89aafa08d3172270a4e9da89db8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c19586e3_dacd685b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T09:45:02Z",
+      "side": 1,
+      "message": "As responded in e-mail, I don\u0027t currently consider this temporary.",
+      "parentUuid": "931cd71d_0d1dce71",
+      "range": {
+        "startLine": 640,
+        "startChar": 3,
+        "endLine": 640,
+        "endChar": 53
+      },
+      "revId": "2aa3e5f34f8c89aafa08d3172270a4e9da89db8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
