@@ -16,6 +16,24 @@
       "revId": "42a24a306ccba137a74664b29ee0c5854f2f3989",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79d50512_1420c26f",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-11T20:47:52Z",
+      "side": 1,
+      "message": "Yes, I put it here to be able to assert if it\u0027s ever set to true (if we ever support it), because the dynamic state wouldn\u0027t handle it. See:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/28890/1/src/Vulkan/VkCommandBuffer.cpp#494",
+      "parentUuid": "83faf91a_abec3831",
+      "revId": "42a24a306ccba137a74664b29ee0c5854f2f3989",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
