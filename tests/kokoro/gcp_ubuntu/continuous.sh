@@ -11,7 +11,7 @@ git submodule update --init
 
 mkdir -p build && cd build
 
-cmake ..
+cmake .. "-DREACTOR_BACKEND=${REACTOR_BACKEND}"
 make --jobs=$(nproc)
 
 # Run the reactor unit tests.
