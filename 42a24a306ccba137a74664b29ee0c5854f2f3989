@@ -34,6 +34,23 @@
       "revId": "42a24a306ccba137a74664b29ee0c5854f2f3989",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20a1c705_bd1bec7d",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-11T20:48:23Z",
+      "side": 1,
+      "message": "enum value by const\u0026 is a bit weird?",
+      "revId": "42a24a306ccba137a74664b29ee0c5854f2f3989",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
