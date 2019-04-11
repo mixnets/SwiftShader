@@ -16,6 +16,24 @@
       "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "debe6b5e_19731bec",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-11T02:41:17Z",
+      "side": 1,
+      "message": "We could rely on that, but it will only perform a bunch of redundant map insertions that can easily be avoided with just using RValues.\nI don\u0027t particularly care either way, but unless it is truly offensive to my fingers while typing, I\u0027ll opt for the more performant code if I can.\nNote: All of this code up here in the anonymous namespace is candidate code for moving to Reactor / a math library. I do not have any objections to refactoring during transition.",
+      "parentUuid": "fb3682bc_46e25ed4",
+      "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
