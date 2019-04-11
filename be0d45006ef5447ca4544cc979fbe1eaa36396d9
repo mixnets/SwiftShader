@@ -34,6 +34,47 @@
       "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8decf5a7_444736a5",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T02:58:39Z",
+      "side": 1,
+      "message": "Yes, as long as a variable goes out of scope before a branch is encountered, it will not be materialized. Which will be the case for all of these temporaries used in math instruction implementations.\n\nHowever, note that it comes at the (minor) cost of some extra run-time bookkeeping, while RValue\u003c\u003e is a zero-overhead wrapper for an LLVM SSA value.\n\nThat said, I highly value readability so in some cases it\u0027s definitely worth the tiny cost. It requires a judgement call per case. Here I would argue that it\u0027s not hurting readability a lot since the definition of a determinant is well understood and we won\u0027t be refactoring this code much if ever so we won\u0027t have any trouble caused by the verbosity of RValue\u003c\u003e.\n\nIt would probably help if we got rid of the namespace prefixes (8 characters!). And we could also have another shorthand for frequently used types like RValue\u003cSIMD::Float\u003e, although it runs a big risk of becoming more cryptic and thus less readable. Doesn\u0027t seem worth the bikeshedding effort for now.",
+      "parentUuid": "fb3682bc_46e25ed4",
+      "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b1199fd_e96f501d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T02:58:39Z",
+      "side": 1,
+      "message": "note: Sequences of subtractions and additions are terrible for numerical precision because of potentially big differences in the exponent and thus lots of mantissa bits getting lost. I\u0027m a bit surprised the SPIR-V spec doesn\u0027t state any expectations here.\n\nAt the very least it should on average be better to do (a - b) + (c -d) than ((a - b) + c) - d.\n\nAnyway, since this passes the test let\u0027s land it and I\u0027ll make a note to look into it later.",
+      "range": {
+        "startLine": 133,
+        "startChar": 34,
+        "endLine": 133,
+        "endChar": 35
+      },
+      "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
