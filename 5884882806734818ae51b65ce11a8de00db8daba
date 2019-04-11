@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e2c033f_95b6f29c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-11T02:24:26Z",
+      "side": 1,
+      "message": "note: This is the IEEE754-2008 spec behavior, which both x86 and ARMv8 vector instructions implement, so no explicit checking for NaNs is strictly necessary. Anyway, probably safer to implement it like this for now.",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 75,
+        "endChar": 50
+      },
+      "revId": "5884882806734818ae51b65ce11a8de00db8daba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
