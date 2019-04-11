@@ -45,6 +45,30 @@
       "revId": "69fe3a7dd27de7f73420e1ee037284bb4f9e5706",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7531b5b8_654aba1b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-11T20:21:15Z",
+      "side": 1,
+      "message": "Ack. I\u0027m in hacking mode currently, I\u0027ll tidy up and document it once the regres output isn\u0027t so embarrassing.",
+      "parentUuid": "7558a0c3_62c5f9df",
+      "range": {
+        "startLine": 579,
+        "startChar": 7,
+        "endLine": 579,
+        "endChar": 24
+      },
+      "revId": "69fe3a7dd27de7f73420e1ee037284bb4f9e5706",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
