@@ -17,15 +17,10 @@ COMMON_C_INCLUDES += \
 
 else
 
-ifeq ($(REACTOR_LLVM_VERSION),3)
-COMMON_C_INCLUDES += \
-	$(LOCAL_PATH)/../third_party/LLVM/include
-else
 COMMON_C_INCLUDES += \
 	$(LOCAL_PATH)/../third_party/llvm-7.0/llvm/include \
 	$(LOCAL_PATH)/../third_party/llvm-7.0/configs/android/include \
 	$(LOCAL_PATH)/../third_party/llvm-7.0/configs/common/include
-endif
 
 endif
 
@@ -75,7 +70,6 @@ else
 COMMON_SRC_FILES += \
 	Reactor/LLVMReactor.cpp \
 	Reactor/LLVMRoutine.cpp \
-	Reactor/LLVMRoutineManager.cpp \
 	Reactor/CPUID.cpp
 endif
 
@@ -156,9 +150,6 @@ COMMON_C_INCLUDES += \
 	system/core/libsync/include \
 	system/core/libsync
 endif
-
-# Common LLVM defines
-COMMON_CFLAGS += -DREACTOR_LLVM_VERSION=$(REACTOR_LLVM_VERSION)
 
 # Common Subzero defines
 COMMON_CFLAGS += -DALLOW_DUMP=0 -DALLOW_TIMERS=0 -DALLOW_LLVM_CL=0 -DALLOW_LLVM_IR=0 -DALLOW_LLVM_IR_AS_INPUT=0 -DALLOW_MINIMAL_BUILD=0 -DALLOW_WASM=0 -DICE_THREAD_LOCAL_HACK=1
