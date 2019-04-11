@@ -22,6 +22,30 @@
       "revId": "13581e90d2a6f116f7d3adf4c4aada28c4348f7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7367ea2_5e18c421",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3478,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-11T02:35:33Z",
+      "side": 1,
+      "message": "It\u0027s either a for in an if, or an if in a for - which is the same number of lines unless I use a ternary operator. What are you suggesting?",
+      "parentUuid": "1f052a33_e1aec225",
+      "range": {
+        "startLine": 3476,
+        "startChar": 3,
+        "endLine": 3478,
+        "endChar": 7
+      },
+      "revId": "13581e90d2a6f116f7d3adf4c4aada28c4348f7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
