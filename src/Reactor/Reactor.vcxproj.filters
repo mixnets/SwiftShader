@@ -18,9 +18,6 @@
     <ClCompile Include="Routine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LLVMRoutineManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LLVMRoutine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Routine.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LLVMRoutineManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LLVMRoutine.hpp">
