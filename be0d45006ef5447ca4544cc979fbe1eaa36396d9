@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "38e7573f_e1010b8c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-11T03:12:08Z",
+      "side": 1,
+      "message": "Yup - I pretty much came to exactly the same conclusions - even evaluating various typedefs for RValue\u003cSIMD::Float\u003e, and deciding it wasn\u0027t worth the obfuscation costs.",
+      "parentUuid": "8decf5a7_444736a5",
+      "revId": "be0d45006ef5447ca4544cc979fbe1eaa36396d9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7b1199fd_e96f501d",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 6
