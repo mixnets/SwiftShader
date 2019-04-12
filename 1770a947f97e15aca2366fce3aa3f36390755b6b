@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fae5004d_bd289d3f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1897,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-12T21:05:40Z",
+      "side": 1,
+      "message": "Ack. Will configure my laptop\u0027s editor to remove them automatically next time.",
+      "parentUuid": "ea805617_310bfcf6",
+      "range": {
+        "startLine": 1897,
+        "startChar": 0,
+        "endLine": 1897,
+        "endChar": 3
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ae739bb7_9ac8f1f9",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 11

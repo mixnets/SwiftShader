@@ -22,6 +22,30 @@
       "revId": "84d07266d2fb1ece69b7a0c38709670527a51c26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2a26128_f233bf10",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-12T21:05:40Z",
+      "side": 1,
+      "message": "The former. This implementation matches what we do on the GL side where we have direct access to all levels of the texture.\n\nProbably could use some additional comments. I\u0027ll take care of that in the next changes.",
+      "parentUuid": "24bf68d7_42aaca3e",
+      "range": {
+        "startLine": 296,
+        "startChar": 27,
+        "endLine": 296,
+        "endChar": 39
+      },
+      "revId": "84d07266d2fb1ece69b7a0c38709670527a51c26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
