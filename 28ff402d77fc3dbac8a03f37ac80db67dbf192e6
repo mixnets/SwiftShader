@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92294c24_6e65885b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-12T19:17:52Z",
+      "side": 1,
+      "message": "nit: stray eol tabs here and elsewhere. These will automatically disappear next time I touch these files.",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 4
+      },
+      "revId": "28ff402d77fc3dbac8a03f37ac80db67dbf192e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
