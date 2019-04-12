@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "cf036a34_c4595daf",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-12T22:05:27Z",
+      "side": 1,
+      "message": "I trust you won\u0027t.",
+      "parentUuid": "0a859f10_5b1509ee",
+      "range": {
+        "startLine": 276,
+        "startChar": 4,
+        "endLine": 276,
+        "endChar": 82
+      },
+      "revId": "84d07266d2fb1ece69b7a0c38709670527a51c26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "24bf68d7_42aaca3e",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 12
