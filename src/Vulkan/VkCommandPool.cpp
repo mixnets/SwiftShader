@@ -47,7 +47,8 @@ VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_
 {
 	for(uint32_t i = 0; i < commandBufferCount; i++)
 	{
-		DispatchableCommandBuffer* commandBuffer = new (DEVICE_MEMORY) DispatchableCommandBuffer(level);
+		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+		DispatchableCommandBuffer* commandBuffer = new DispatchableCommandBuffer(level);
 		if(commandBuffer)
 		{
 			pCommandBuffers[i] = *commandBuffer;
