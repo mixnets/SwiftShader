@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b6424249_27b874f0",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-12T00:43:37Z",
+      "side": 1,
+      "message": "Should move this too, as we treat it the same as OpAccessChain.",
+      "revId": "2b0150d00143861ec33c563cc8c7a915a850323f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
