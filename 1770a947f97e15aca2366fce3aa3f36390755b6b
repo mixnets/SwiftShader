@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "34f6b4a4_69dd7ff2",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-12T21:58:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae739bb7_9ac8f1f9",
+      "range": {
+        "startLine": 296,
+        "startChar": 27,
+        "endLine": 296,
+        "endChar": 39
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "617530b6_53ab8fa5",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 11
