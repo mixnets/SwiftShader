@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a9af7a0a_8b149ecc",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-12T19:44:23Z",
+      "side": 1,
+      "message": "I\u0027d still like docs here please.",
+      "range": {
+        "startLine": 589,
+        "startChar": 2,
+        "endLine": 589,
+        "endChar": 22
+      },
+      "revId": "b6233fd7367a27a7e364e657b5579a992d5cc214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
