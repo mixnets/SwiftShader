@@ -1017,6 +1017,8 @@ namespace sw
 			pixel.w = Short4(0xFFFFu);
 			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
+		case VK_FORMAT_B8G8R8A8_SNORM:
+		case VK_FORMAT_B8G8R8A8_SRGB:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
 			buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
@@ -1036,7 +1038,11 @@ namespace sw
 			pixel.w = UnpackHigh(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_SNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
 			buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
@@ -1245,7 +1251,13 @@ namespace sw
 				break;
 			case VK_FORMAT_B8G8R8A8_UNORM:
 			case VK_FORMAT_R8G8B8A8_UNORM:
+			case VK_FORMAT_B8G8R8A8_SNORM:
+			case VK_FORMAT_R8G8B8A8_SNORM:
+			case VK_FORMAT_B8G8R8A8_SRGB:
 			case VK_FORMAT_R8G8B8A8_SRGB:
+			case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+			case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+			case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			case VK_FORMAT_R8G8_UNORM:
 			case VK_FORMAT_R8_UNORM:
 				current.x = current.x - As<Short4>(As<UShort4>(current.x) >> 8) + Short4(0x0080);
@@ -1273,6 +1285,8 @@ namespace sw
 			}
 			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
+		case VK_FORMAT_B8G8R8A8_SNORM:
+		case VK_FORMAT_B8G8R8A8_SRGB:
 			if(rgbaWriteMask == 0x7)
 			{
 				current.x = As<Short4>(As<UShort4>(current.x) >> 8);
@@ -1308,7 +1322,11 @@ namespace sw
 			}
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_SNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			if(rgbaWriteMask == 0x7)
 			{
 				current.x = As<Short4>(As<UShort4>(current.x) >> 8);
@@ -1428,6 +1446,8 @@ namespace sw
 			}
 			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
+		case VK_FORMAT_B8G8R8A8_SNORM:
+		case VK_FORMAT_B8G8R8A8_SRGB:
 			{
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
@@ -1463,7 +1483,11 @@ namespace sw
 			}
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
+		case VK_FORMAT_R8G8B8A8_SNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			{
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
@@ -1970,6 +1994,7 @@ namespace sw
 		case VK_FORMAT_R32_SFLOAT:
 		case VK_FORMAT_R32_SINT:
 		case VK_FORMAT_R32_UINT:
+		case VK_FORMAT_R16_SFLOAT:
 		case VK_FORMAT_R16_SINT:
 		case VK_FORMAT_R16_UINT:
 		case VK_FORMAT_R8_SINT:
@@ -1978,6 +2003,7 @@ namespace sw
 		case VK_FORMAT_R32G32_SFLOAT:
 		case VK_FORMAT_R32G32_SINT:
 		case VK_FORMAT_R32G32_UINT:
+		case VK_FORMAT_R16G16_SFLOAT:
 		case VK_FORMAT_R16G16_SINT:
 		case VK_FORMAT_R16G16_UINT:
 		case VK_FORMAT_R8G8_SINT:
@@ -1990,10 +2016,15 @@ namespace sw
 		case VK_FORMAT_R32G32B32A32_SFLOAT:
 		case VK_FORMAT_R32G32B32A32_SINT:
 		case VK_FORMAT_R32G32B32A32_UINT:
+		case VK_FORMAT_R16G16B16A16_SFLOAT:
 		case VK_FORMAT_R16G16B16A16_SINT:
 		case VK_FORMAT_R16G16B16A16_UINT:
 		case VK_FORMAT_R8G8B8A8_SINT:
 		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_B8G8R8A8_SINT:
+		case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+		case VK_FORMAT_B8G8R8A8_UINT:
+		case VK_FORMAT_A8B8G8R8_UINT_PACK32:
 			transpose4x4(oC.x, oC.y, oC.z, oC.w);
 			break;
 		default:
@@ -2055,6 +2086,7 @@ namespace sw
 				*Pointer<Float>(buffer + 4) = oC.x.y;
 			}
 			break;
+		case VK_FORMAT_R16_SFLOAT:
 		case VK_FORMAT_R16_SINT:
 		case VK_FORMAT_R16_UINT:
 			if(rgbaWriteMask & 0x00000001)
@@ -2173,6 +2205,7 @@ namespace sw
 			oC.y = As<Float4>(As<Int4>(oC.y) | As<Int4>(value));
 			*Pointer<Float4>(buffer) = oC.y;
 			break;
+		case VK_FORMAT_R16G16_SFLOAT:
 		case VK_FORMAT_R16G16_SINT:
 		case VK_FORMAT_R16G16_UINT:
 			if((rgbaWriteMask & 0x00000003) != 0x0)
@@ -2314,6 +2347,7 @@ namespace sw
 				*Pointer<Float4>(buffer + 16, 16) = oC.w;
 			}
 			break;
+		case VK_FORMAT_R16G16B16A16_SFLOAT:
 		case VK_FORMAT_R16G16B16A16_SINT:
 		case VK_FORMAT_R16G16B16A16_UINT:
 			if((rgbaWriteMask & 0x0000000F) != 0x0)
@@ -2346,6 +2380,10 @@ namespace sw
 			break;
 		case VK_FORMAT_R8G8B8A8_SINT:
 		case VK_FORMAT_R8G8B8A8_UINT:
+		case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+		case VK_FORMAT_A8B8G8R8_UINT_PACK32:
+		case VK_FORMAT_B8G8R8A8_SINT:
+		case VK_FORMAT_B8G8R8A8_UINT:
 			if((rgbaWriteMask & 0x0000000F) != 0x0)
 			{
 				UInt2 value, packedCol, mergedMask;
