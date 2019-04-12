@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6cc6e321_3136fb24",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-12T19:48:07Z",
+      "side": 1,
+      "message": "humm, bit gross to be adding fake decorations here. Could it go in Object?",
+      "range": {
+        "startLine": 427,
+        "startChar": 3,
+        "endLine": 427,
+        "endChar": 25
+      },
+      "revId": "fff70a747741ba0b866eb3d5b84d46cc01c5176b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
