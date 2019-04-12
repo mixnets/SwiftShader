@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ea805617_310bfcf6",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1897,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T14:14:59Z",
+      "side": 1,
+      "message": "nit: extra tabs",
+      "range": {
+        "startLine": 1897,
+        "startChar": 0,
+        "endLine": 1897,
+        "endChar": 3
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae739bb7_9ac8f1f9",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T14:14:59Z",
+      "side": 1,
+      "message": "Adding baseLevel twice (here and within ImageView functions when this is used).",
+      "range": {
+        "startLine": 296,
+        "startChar": 27,
+        "endLine": 296,
+        "endChar": 39
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "617530b6_53ab8fa5",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T14:14:59Z",
+      "side": 1,
+      "message": "pitchB?",
+      "range": {
+        "startLine": 311,
+        "startChar": 8,
+        "endLine": 311,
+        "endChar": 14
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29d44b2b_754ec2ed",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T14:14:59Z",
+      "side": 1,
+      "message": "sliceB?",
+      "range": {
+        "startLine": 312,
+        "startChar": 8,
+        "endLine": 312,
+        "endChar": 14
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
