@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "bb924f1d_6edba6cd",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T20:20:23Z",
+      "side": 1,
+      "message": "Ignore this. We should assert that the format isn\u0027t compressed instead.",
+      "parentUuid": "617530b6_53ab8fa5",
+      "range": {
+        "startLine": 311,
+        "startChar": 8,
+        "endLine": 311,
+        "endChar": 14
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "29d44b2b_754ec2ed",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 11
@@ -91,6 +115,30 @@
       "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69b541f8_bd86eb0b",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-12T20:20:23Z",
+      "side": 1,
+      "message": "Ignore this. We should assert that the format isn\u0027t compressed instead.",
+      "parentUuid": "29d44b2b_754ec2ed",
+      "range": {
+        "startLine": 312,
+        "startChar": 8,
+        "endLine": 312,
+        "endChar": 14
+      },
+      "revId": "1770a947f97e15aca2366fce3aa3f36390755b6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
