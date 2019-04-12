@@ -376,12 +376,8 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		if(colorBlendState->attachmentCount == 1)
 		{
 			const VkPipelineColorBlendAttachmentState& attachment = colorBlendState->pAttachments[0];
-			if(attachment.colorWriteMask != (VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT))
-			{
-				UNIMPLEMENTED("colorWriteMask");
-			}
-
-			context.alphaBlendEnable = attachment.blendEnable;
+			context.setColorWriteMask(0, attachment.colorWriteMask);
+			context.alphaBlendEnable = attachment.blendEnable == VK_TRUE;
 			context.separateAlphaBlendEnable = (attachment.alphaBlendOp != attachment.colorBlendOp) ||
 											   (attachment.dstAlphaBlendFactor != attachment.dstColorBlendFactor) ||
 											   (attachment.srcAlphaBlendFactor != attachment.srcColorBlendFactor);
