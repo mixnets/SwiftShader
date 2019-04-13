@@ -2057,6 +2057,7 @@ namespace sw
 			break;
 		case VK_FORMAT_R16_SINT:
 		case VK_FORMAT_R16_UINT:
+		case VK_FORMAT_R16_SFLOAT:
 			if(rgbaWriteMask & 0x00000001)
 			{
 				buffer = cBuffer + 2 * x;
@@ -2175,6 +2176,7 @@ namespace sw
 			break;
 		case VK_FORMAT_R16G16_SINT:
 		case VK_FORMAT_R16G16_UINT:
+		case VK_FORMAT_R16G16_SFLOAT:
 			if((rgbaWriteMask & 0x00000003) != 0x0)
 			{
 				buffer = cBuffer + 4 * x;
@@ -2316,6 +2318,7 @@ namespace sw
 			break;
 		case VK_FORMAT_R16G16B16A16_SINT:
 		case VK_FORMAT_R16G16B16A16_UINT:
+		case VK_FORMAT_R16G16B16A16_SFLOAT:
 			if((rgbaWriteMask & 0x0000000F) != 0x0)
 			{
 				buffer = cBuffer + 8 * x;

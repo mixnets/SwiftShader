@@ -346,11 +346,11 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 			UNIMPLEMENTED("depthStencilState");
 		}
 
-		context.depthBufferEnable = depthStencilState->depthTestEnable;
-		context.depthWriteEnable = depthStencilState->depthWriteEnable;
+		context.depthBufferEnable = depthStencilState->depthTestEnable == VK_TRUE;
+		context.depthWriteEnable = depthStencilState->depthWriteEnable == VK_TRUE;
 		context.depthCompareMode = depthStencilState->depthCompareOp;
 
-		context.stencilEnable = context.twoSidedStencil = depthStencilState->stencilTestEnable;
+		context.stencilEnable = context.twoSidedStencil = depthStencilState->stencilTestEnable == VK_TRUE;
 		if(context.stencilEnable)
 		{
 			context.frontStencil = depthStencilState->front;
