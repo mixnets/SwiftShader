@@ -1782,7 +1782,6 @@ list(APPEND LLVM_INCLUDE_DIR
 
 endif()  # REACTOR_LLVM_VERSION
 
-# Suppress known LLVM warnings
 set(LLVM_COMPILE_FLAGS)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     list(APPEND LLVM_COMPILE_FLAGS
@@ -1790,8 +1789,21 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         "-Wno-maybe-uninitialized"     # ‘X’ may be used uninitialized in this function
         "-Wno-unused-but-set-variable" # variable ‘X’ set but not used
     )
+    string (REPLACE ";" " " LLVM_COMPILE_FLAGS "${LLVM_COMPILE_FLAGS}")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    # Suppress known LLVM warnings
+    set(LLVM_DISABLE_WARNINGS
+        "4141" # 'inline': used more than once
+        "4146" # unary minus operator applied to unsigned type, result still unsigned
+        "4244" # 'X': conversion from 'uint64_t' to 'const unsigned int', possible loss of data
+        "4267" # 'X': conversion from 'size_t' to 'unsigned int', possible loss of data
+        "4291" # 'void X new(size_t,unsigned int,unsigned int)': no matching operator delete found; memory will not be freed if initialization throws an exception
+        "4624" # 'X': destructor was implicitly defined as deleted
+        "4805" # 'X': unsafe mix of type 'unsigned int' and type 'bool' in operation
+        "4996" # 'X': Call to 'Y' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
+    )
+    set(LLVM_COMPILE_FLAGS "/D \"_SCL_SECURE_NO_WARNINGS\" /wd${LLVM_DISABLE_WARNINGS}")
 endif()
-string (REPLACE ";" " " LLVM_COMPILE_FLAGS "${LLVM_COMPILE_FLAGS}")
 
 add_library(llvm STATIC ${LLVM_LIST})
 set_target_properties(llvm PROPERTIES
