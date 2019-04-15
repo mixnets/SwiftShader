@@ -70,6 +70,24 @@
       "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "957bc21b_f6d39116",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T18:17:26Z",
+      "side": 1,
+      "message": "I\u0027m fairly certain I added this to the CMakeLists.txt to match some other build setup, not because it\u0027s used directly.\n\nWile desirable, I\u0027m not sure it\u0027s realistic to arrive at a sensible, finite set of supported build setups, at least for long. We\u0027re pretty much slaves to whatever is decided downstream. It evolves pretty fast. Also has external dependencies, e.g. Microsoft is pushing to build Chrome on ARM64, with their own ABI. So we just do a best effort. Anyway, coverage for all three desktop platforms, with both LLVM and Subzero backends, is an awesome start.",
+      "parentUuid": "14f74041_579c995d",
+      "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
