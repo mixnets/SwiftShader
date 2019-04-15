@@ -22,6 +22,30 @@
       "revId": "10c3c9373d30e0e573da5d6541aa42086befb713",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad748f37_9a7827e4",
+        "filename": "src/OpenGL/libGLESv2/utilities.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T15:43:10Z",
+      "side": 1,
+      "message": "How about IsTexImageTarget() ? Matches the glTexImage*() calls closely so it\u0027s clear what this validates.",
+      "parentUuid": "a23e3b75_2f5dd7ce",
+      "range": {
+        "startLine": 872,
+        "startChar": 8,
+        "endLine": 872,
+        "endChar": 13
+      },
+      "revId": "10c3c9373d30e0e573da5d6541aa42086befb713",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
