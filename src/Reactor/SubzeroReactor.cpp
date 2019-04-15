@@ -3453,6 +3453,11 @@ namespace rr
 
 	// Below are functions currently unimplemented for the Subzero backend.
 	// They are stubbed to satisfy the linker.
+	#ifdef UNIMPLEMENTED
+	#undef UNIMPLEMENTED
+	#endif
+	#define UNIMPLEMENTED(msg) assert(!msg)
+
 	Value *Nucleus::createGather(Value *base, Type *elTy, Value *offsets, Value *mask, unsigned int alignment) { UNIMPLEMENTED("Subzero createGather()"); return nullptr; }
 	void Nucleus::createScatter(Value *base, Value *val, Value *offsets, Value *mask, unsigned int alignment) { UNIMPLEMENTED("Subzero createScatter()"); }
 	RValue<Float4> Sin(RValue<Float4> x) { UNIMPLEMENTED("Subzero Sin()"); return Float4(0); }
