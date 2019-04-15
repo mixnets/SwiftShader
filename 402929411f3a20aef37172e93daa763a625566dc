@@ -81,6 +81,30 @@
       "revId": "402929411f3a20aef37172e93daa763a625566dc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30576ea5_e2acb8da",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T14:51:51Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e4fe112e_521868e9",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 65
+      },
+      "revId": "402929411f3a20aef37172e93daa763a625566dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
