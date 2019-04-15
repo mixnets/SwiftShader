@@ -34,6 +34,24 @@
       "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c72f4f79_34a44739",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T17:11:52Z",
+      "side": 1,
+      "message": "My memory of this is very hazy, but Chrome builds on a variety of platforms (including older versions of Mac OS, which might be the one using Clang 4). Anyway, we could go ahead and try to land this as-is, and revert in case it causes any integration issue. Your call. O:-)",
+      "parentUuid": "3d668d66_c2559304",
+      "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
