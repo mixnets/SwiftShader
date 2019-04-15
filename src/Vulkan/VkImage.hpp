@@ -66,6 +66,7 @@ public:
 	int                      slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
 	bool                     isCube() const;
+	bool                     is3DSlice() const;
 	uint8_t*                 end() const;
 
 	static Format            GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
@@ -76,6 +77,7 @@ private:
 	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMultiSampledLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getLayerSize(VkImageAspectFlagBits aspect) const;
+	VkDeviceSize getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const;
 	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
