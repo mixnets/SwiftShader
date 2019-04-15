@@ -2174,26 +2174,24 @@ endif()
 # SwiftShader Targets
 ###########################################################
 
-add_library(SwiftShader STATIC ${SWIFTSHADER_LIST})
-set_target_properties(SwiftShader PROPERTIES
-    INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
-    POSITION_INDEPENDENT_CODE 1
-    FOLDER "Core"
-    COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
-)
-target_link_libraries(SwiftShader ${OS_LIBS})
-
-add_library(ReactorLLVM STATIC ${REACTOR_LLVM_LIST})
-set_target_properties(ReactorLLVM PROPERTIES
-    INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
-    POSITION_INDEPENDENT_CODE 1
-    FOLDER "Core"
-)
-target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
-
 if(${REACTOR_BACKEND} STREQUAL "LLVM")
+    add_library(ReactorLLVM STATIC ${REACTOR_LLVM_LIST})
+    set_target_properties(ReactorLLVM PROPERTIES
+        INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
+        POSITION_INDEPENDENT_CODE 1
+        FOLDER "Core"
+    )
+    target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
     set(Reactor ReactorLLVM)
 elseif(${REACTOR_BACKEND} STREQUAL "Subzero")
+    add_library(SwiftShader STATIC ${SWIFTSHADER_LIST})
+    set_target_properties(SwiftShader PROPERTIES
+        INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
+        POSITION_INDEPENDENT_CODE 1
+        FOLDER "Core"
+        COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
+    )
+    target_link_libraries(SwiftShader ${OS_LIBS})
     set(Reactor ReactorSubzero)
 else()
     message(FATAL_ERROR "REACTOR_BACKEND must be 'LLVM' or 'Subzero'")
