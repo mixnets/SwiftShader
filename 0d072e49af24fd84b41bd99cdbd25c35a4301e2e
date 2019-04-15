@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b2863f1_06a6676b",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T15:51:26Z",
+      "side": 1,
+      "message": "nit: We tend to put this in parenthesis to avoid misreading this as x \u003d y \u003d true.",
+      "range": {
+        "startLine": 415,
+        "startChar": 30,
+        "endLine": 415,
+        "endChar": 63
+      },
+      "revId": "0d072e49af24fd84b41bd99cdbd25c35a4301e2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
