@@ -16,6 +16,24 @@
       "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d668d66_c2559304",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-15T16:55:24Z",
+      "side": 1,
+      "message": "It is another build variant we\u0027ll have to support. Compiler warnings, flags, binary output... all likely subtly different.\n\nYou sure there\u0027s anything aside from your machine using this?\n\nI will try to support this if you feel strongly, but the fact I\u0027m having to change this line is only reenforcing the fact that there is a real cost to maintain this.",
+      "parentUuid": "3fb73637_bfffc1c5",
+      "revId": "f5afb686717f32493fd8d9bebd5e5b1ffeb83b82",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
