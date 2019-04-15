@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7361ec2_195756c0",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T14:35:07Z",
+      "side": 1,
+      "message": "nit: Can this be combined into a common function, if we need this pattern a few times? Or is it not worth the effort due to fixing b/119409619 will make things work differently anyway?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 65
+      },
+      "revId": "402929411f3a20aef37172e93daa763a625566dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e05973ed_98c74f73",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-15T14:35:07Z",
+      "side": 1,
+      "message": "Could use an ASSERT(deviceMemory) to alert us of an OOM early instead of deeper into the new operator.",
+      "revId": "402929411f3a20aef37172e93daa763a625566dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
