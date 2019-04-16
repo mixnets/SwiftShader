@@ -3815,6 +3815,23 @@ namespace rr
 	}
 #endif  // defined(__i386__) || defined(__x86_64__)
 
+	Value* Call(void const *fptr, std::initializer_list<Value*> args, Type* retTy, std::initializer_list<Type*> argTys)
+	{
+		auto fp = reinterpret_cast<uintptr_t>(fptr);
+
+		::llvm::SmallVector<::llvm::Type*, 8> paramTys;
+		for (auto ty : argTys) { paramTys.push_back(T(ty)); }
+		auto funcTy = ::llvm::FunctionType::get(T(retTy), paramTys, false);
+
+		auto funcPtrTy = funcTy->getPointerTo();
+		auto funcPtrAsI64 = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(*::context), fp);
+		auto funcPtr = ::builder->CreateIntToPtr(funcPtrAsI64, funcPtrTy);
+
+		::llvm::SmallVector<::llvm::Value*, 8> arguments;
+		for (auto arg : args) { arguments.push_back(V(arg)); }
+		return V(::builder->CreateCall(funcPtr, arguments));
+	}
+
 #ifdef ENABLE_RR_PRINT
 	// extractAll returns a vector containing the extracted n scalar value of
 	// the vector vec.

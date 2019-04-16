@@ -2953,6 +2953,34 @@ namespace rr
 		return ReinterpretCast<T>(val);
 	}
 
+	template <typename T>
+	inline Value* valueOf(RValue<T> v) { return v.value; }
+
+	template <typename T>
+	inline Value* valueOf(LValue<T> v) { return valueOf(RValue<T>(v.loadValue())); }
+
+	template<typename T>
+	struct CToReactor;
+
+	template<> struct CToReactor<bool>    { using type = Bool; };
+	template<> struct CToReactor<int>     { using type = Int; };
+	template<> struct CToReactor<float>   { using type = Float; };
+	template<> struct CToReactor<uint8_t> { using type = Byte; };
+
+	template<typename T>
+	struct CToReactor<T*> { using type = Pointer<typename CToReactor<T>::type>; };
+
+	Value* Call(void const *fptr, std::initializer_list<Value*> args, Type* retTy, std::initializer_list<Type*> paramTys);
+
+	template<typename Return, typename ... Arguments>
+	inline typename CToReactor<Return>::type Call(Return(fptr)(Arguments...), typename CToReactor<Arguments>::type... args)
+	{
+		using R = RValue<typename CToReactor<Return>::type>;
+		return R(Call(reinterpret_cast<void*>(fptr),
+			{ valueOf(args) ... },
+			CToReactor<Return>::type::getType(), { CToReactor<Arguments>::type::getType() ... }));
+	}
+
 #ifdef ENABLE_RR_PRINT
 	// PrintValue holds the printf format and value(s) for a single argument
 	// to Print(). A single argument can be expanded into multiple printf
