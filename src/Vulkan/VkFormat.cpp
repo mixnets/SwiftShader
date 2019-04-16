@@ -310,7 +310,7 @@ bool Format::isFloatFormat() const
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:
 		return true;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1040,7 +1040,7 @@ int Format::componentCount() const
 	case VK_FORMAT_R64G64B64A64_SFLOAT:
 		return 4;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return 1;
@@ -1188,7 +1188,7 @@ bool Format::isUnsignedComponent(int component) const
 	case VK_FORMAT_R64G64B64_SFLOAT:
 		return component >= 3;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1408,7 +1408,7 @@ int Format::bytes() const
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:     return 0; // FIXME
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:  return 1; // Y plane only
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return 0;
@@ -1731,7 +1731,7 @@ bool Format::has16bitTextureFormat() const
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return false;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1777,7 +1777,7 @@ bool Format::has8bitTextureComponents() const
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return false;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1823,7 +1823,7 @@ bool Format::has16bitTextureComponents() const
 	case VK_FORMAT_R16G16B16A16_UINT:
 		return true;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1869,7 +1869,7 @@ bool Format::has32bitIntegerTextureComponents() const
 	case VK_FORMAT_R32G32B32A32_UINT:
 		return true;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1915,7 +1915,7 @@ bool Format::hasYuvFormat() const
 	case VK_FORMAT_R16G16B16A16_UINT:
 		return false;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1962,7 +1962,7 @@ bool Format::isRGBComponent(int component) const
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return component < 3;
 	default:
-		ASSERT(false);
+		UNIMPLEMENTED("Format: %d", int(format));
 	}
 
 	return false;
