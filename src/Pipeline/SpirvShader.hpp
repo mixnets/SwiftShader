@@ -460,10 +460,23 @@ namespace sw
 			int32_t DescriptorSet = -1;
 			int32_t Binding = -1;
 
-			void Apply(DescriptorDecorations const &src); 
+			void Apply(DescriptorDecorations const &src);
+
+			bool operator == (const DescriptorDecorations& other) const { return DescriptorSet == other.DescriptorSet && Binding == other.Binding; }
+
+			struct Hash
+			{
+				std::size_t operator()(const DescriptorDecorations& dd) const noexcept
+				{
+					return std::hash<int32_t>()(dd.DescriptorSet + dd.Binding * vk::MAX_BOUND_DESCRIPTOR_SETS);
+				}
+			};
 		};
 
 		std::unordered_map<Object::ID, DescriptorDecorations> descriptorDecorations;
+		std::unordered_map<DescriptorDecorations, uint32_t, DescriptorDecorations::Hash> usedImages;
+
+		void MarkDescriptorUsed(InsnIterator insn, uint32_t &nextImageSlot);
 
 		struct InterfaceComponent
 		{
