@@ -17,6 +17,7 @@
 #include "SamplerCore.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkBufferView.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
@@ -280,7 +281,7 @@ namespace sw
 				auto &d = memberDecorations[targetId];
 				if (memberIndex >= d.size())
 					d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
-				
+
 				d[memberIndex].Apply(decoration, value);
 
 				if (decoration == spv::DecorationCentroid)
@@ -679,6 +680,7 @@ namespace sw
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
 			case spv::OpImageSampleImplicitLod:
+			case spv::OpImageQuerySize:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
 				break;
@@ -2133,7 +2135,10 @@ namespace sw
 
 		case spv::OpImageSampleImplicitLod:
 			return EmitImageSampleImplicitLod(insn, state);
-			
+
+		case spv::OpImageQuerySize:
+			return EmitImageQuerySize(insn, state);
+
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
@@ -4344,6 +4349,64 @@ namespace sw
 			result.move(1, As<SIMD::Int>(sample.y * SIMD::Float(0xFF)));
 			result.move(2, As<SIMD::Int>(sample.z * SIMD::Float(0xFF)));
 			result.move(3, As<SIMD::Int>(sample.w * SIMD::Float(0xFF)));
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitImageQuerySize(InsnIterator insn, EmitState *state) const
+	{
+		auto &resultType = getType(Type::ID(insn.word(1)));
+		auto imageId = Object::ID(insn.word(3));
+		auto &image = getObject(imageId);
+		auto &imageType = getType(image.type);
+		Object::ID resultId = insn.word(2);
+
+		ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
+		bool isArrayed = imageType.definition.word(5) != 0;
+		bool isCubeMap = imageType.definition.word(3) == 3;
+
+		const DescriptorDecorations &d = descriptorDecorations.at(imageId);
+		uint32_t arrayIndex = 0;  // TODO(b/129523279)
+		auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+		size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
+		auto &bindingLayout = setLayout->getBindingLayout(d.Binding);
+
+		Pointer<Byte> set = state->routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
+		Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);
+
+		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
+
+		switch (bindingLayout.descriptorType)
+		{
+		case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+		{
+			Pointer<Byte> bufferView = *Pointer<Pointer<Byte>>(binding); // vk::BufferView*
+			Pointer<Long> size = bufferView + vk::BufferView::ElementCountOffset;
+			dst.move(0, SIMD::Int(Int(*size)));
+			break;
+		}
+		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+		{
+			Pointer<Byte> imageInfo = binding; // VkDescriptorImageInfo*
+			Pointer<Byte> imageView = *Pointer<Pointer<Byte>>(imageInfo + OFFSET(VkDescriptorImageInfo, imageView)); // vk::ImageView*
+			Pointer<Byte> image = *Pointer<Pointer<Byte>>(imageView + vk::ImageView::ImageOffset); // vk::Image*
+			Pointer<Int> extent = image + vk::Image::ExtentOffset; // int[3]*
+			auto dimensions = resultType.sizeInComponents - (isArrayed ? 1 : 0);
+			for (uint32_t i = 0; i < dimensions; i++)
+			{
+				dst.move(i, SIMD::Int(extent[i]));
+			}
+			if (isArrayed)
+			{
+				auto arrayLayers = *Pointer<Int>(image + vk::Image::ArrayLayersOffset); // uint32_t
+				auto numElements = isCubeMap ? arrayLayers / 6 : arrayLayers;
+				dst.move(dimensions, SIMD::Int(numElements));
+			}
+			break;
+		}
+		default:
+			UNIMPLEMENTED("EmitImageQuerySize image descriptorType: %d", int(bindingLayout.descriptorType));
 		}
 
 		return EmitResult::Continue;

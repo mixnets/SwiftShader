@@ -70,6 +70,10 @@ public:
 
 	static Format            GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
 
+	// Offsets in bytes from the Image base address to the field.
+	static const int ExtentOffset;
+	static const int ArrayLayersOffset;
+
 private:
 	void copy(VkBuffer buffer, const VkBufferImageCopy& region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
