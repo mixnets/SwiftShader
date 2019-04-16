@@ -63,21 +63,44 @@ namespace sw
 
 		struct Pointer
 		{
-			Pointer(rr::Pointer<Byte> base) : base(base), offset(0), uniform(true) {}
-			Pointer(rr::Pointer<Byte> base, SIMD::Int offset) : base(base), offset(offset), uniform(false) {}
+			Pointer(rr::Pointer<Byte> base, rr::Int limit) : base(base), limit(limit), offset(0), uniform(true) {}
+			Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset) : base(base), limit(limit), offset(offset), uniform(false) {}
 
-			inline void addOffset(Int delta) { offset += delta; uniform = false; }
+			inline Pointer& operator += (Int i) { offset += i; uniform = false; return *this; }
+			inline Pointer& operator *= (Int i) { offset *= i; uniform = false; return *this; }
+			inline Pointer operator + (Int i) { Pointer p = *this; p += i; return p; }
+			inline Pointer operator * (Int i) { Pointer p = *this; p *= i; return p; }
 
 			// Base address for the pointer, common across all lanes.
 			rr::Pointer<rr::Byte> base;
 
-			// Per lane offsets from base in bytes.
+			// Upper (non-inclusive) limit for offsets from base.
+			rr::Int limit;
+
+			// Per lane offsets from base.
 			// If uniform is false, all offsets are considered zero.
 			Int offset;
 
 			// True if all offsets are zero.
 			bool uniform;
 		};
+
+		template <typename T> struct Element {};
+		template <> struct Element<Float> { using type = rr::Float; };
+		template <> struct Element<Int>   { using type = rr::Int; };
+		template <> struct Element<UInt>  { using type = rr::UInt; };
+
+		template<typename T>
+		void Store(Pointer ptr, T val, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
+
+		template<typename T>
+		void Store(Pointer ptr, RValue<T> val, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed)
+		{
+			Store(ptr, T(val), mask, atomic, order);
+		}
+
+		template<typename T>
+		T Load(Pointer ptr, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
 	}
 
 	// Incrementally constructed complex bundle of rvalues
