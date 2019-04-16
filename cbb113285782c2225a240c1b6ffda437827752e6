@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0754eda0_8c78dca0",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-16T03:24:07Z",
+      "side": 1,
+      "message": "nit: Let\u0027s turn this into \"if(spirvShader-\u003ehasBuiltin(spv::BuiltInFrontFacing))\"\n\nDoesn\u0027t have to happen as part of this CL.",
+      "range": {
+        "startLine": 36,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 45
+      },
+      "revId": "cbb113285782c2225a240c1b6ffda437827752e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "61967727_5d68fee0",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-16T03:24:07Z",
+      "side": 1,
+      "message": "nit: This loses the (minor) optimization that this was only being computed when (two-sided) stencil is being used. Also for BuiltInFrontFacing we only need clockwiseMask if it\u0027s being used.\n\nAgain no need to change this CL. Just noting this for later.",
+      "range": {
+        "startLine": 110,
+        "startChar": 4,
+        "endLine": 110,
+        "endChar": 19
+      },
+      "revId": "cbb113285782c2225a240c1b6ffda437827752e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
