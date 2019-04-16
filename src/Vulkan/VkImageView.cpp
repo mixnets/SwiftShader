@@ -18,6 +18,8 @@
 namespace vk
 {
 
+const int ImageView::ImageOffset = static_cast<int>(offsetof(ImageView, image));
+
 ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem) :
 	image(Cast(pCreateInfo->image)), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
 	components(pCreateInfo->components), subresourceRange(pCreateInfo->subresourceRange)
