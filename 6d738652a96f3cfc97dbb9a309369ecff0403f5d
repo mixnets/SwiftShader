@@ -16,6 +16,24 @@
       "revId": "6d738652a96f3cfc97dbb9a309369ecff0403f5d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93181beb_f7a963ef",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-16T14:16:02Z",
+      "side": 1,
+      "message": "(someone\u0027s editor wrote CR+LF here)",
+      "parentUuid": "8c986f01_fa5dd047",
+      "revId": "6d738652a96f3cfc97dbb9a309369ecff0403f5d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
