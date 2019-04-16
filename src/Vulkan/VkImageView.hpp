@@ -50,6 +50,9 @@ public:
 	const VkComponentMapping &getComponentMapping() const { return components; }
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 
+	// Offsets in bytes from the ImageView base address to the field.
+	static const int ImageOffset;
+
 private:
 	bool                          imageTypesMatch(VkImageType imageType) const;
 
