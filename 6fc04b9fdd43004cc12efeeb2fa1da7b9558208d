@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ebd9b9bd_720f38b8",
+        "filename": "src/Vulkan/VkBufferView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-16T04:42:47Z",
+      "side": 1,
+      "message": "This logic appears backwards.",
+      "revId": "6fc04b9fdd43004cc12efeeb2fa1da7b9558208d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
