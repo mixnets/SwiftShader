@@ -368,7 +368,7 @@ namespace sw
 			return serialID;
 		}
 
-		explicit SpirvShader(InsnStore const &insns);
+		SpirvShader(InsnStore const &insns, vk::PipelineLayout const *);
 
 		struct Modes
 		{
@@ -477,6 +477,8 @@ namespace sw
 		std::unordered_map<DescriptorDecorations, uint32_t, DescriptorDecorations::Hash> usedImages;
 
 		void MarkDescriptorUsed(InsnIterator insn, uint32_t &nextImageSlot);
+
+		vk::PipelineLayout const *pipelineLayout;
 
 		struct InterfaceComponent
 		{
@@ -758,11 +760,7 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
-		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
-
 		using Variable = Array<SIMD::Float>;
-
-		vk::PipelineLayout const * const pipelineLayout;
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> variables;
 
