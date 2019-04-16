@@ -23,11 +23,7 @@ namespace vk
 class BufferView : public Object<BufferView, VkBufferView>
 {
 public:
-	BufferView(const VkBufferViewCreateInfo* pCreateInfo, void* mem) :
-		buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset), range(pCreateInfo->range)
-	{
-	}
-
+	BufferView(const VkBufferViewCreateInfo* pCreateInfo, void* mem);
 	~BufferView() = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkBufferViewCreateInfo* pCreateInfo)
@@ -35,11 +31,16 @@ public:
 		return 0;
 	}
 
+	// Offsets in bytes from the BufferView base address to the field.
+	static const int BufferOffset;
+	static const int ElementCountOffset;
+
 private:
 	VkBuffer     buffer;
 	VkFormat     format;
 	VkDeviceSize offset;
 	VkDeviceSize range;
+	uint64_t     elementCount; // range / formatSize (also unfolds VK_WHOLE_SIZE)
 };
 
 static inline BufferView* Cast(VkBufferView object)
