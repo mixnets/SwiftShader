@@ -1088,6 +1088,56 @@ TEST(ReactorUnitTests, MulAdd)
 	delete routine;
 }
 
+#ifndef REACTOR_BACKEND_SUBZERO // Call() is not currently supported on Subzero.
+TEST(ReactorUnitTests, Call)
+{
+	Routine *routine = nullptr;
+
+	struct Class
+	{
+		static int Callback(uint8_t *p, int i, float f, bool b)
+		{
+			auto c = reinterpret_cast<Class*>(p);
+			c->i = i;
+			c->f = f;
+			c->b = b;
+			return i + int(f) + (b ? 1 : 0);
+		}
+
+		int i = 0;
+		float f = 0.0f;
+		bool b = false;
+	};
+
+	{
+		Function<Int(Pointer<Byte>)> function;
+		{
+			Pointer<Byte> c = function.Arg<0>();
+			auto res = Call(Class::Callback, c, 10, 20.0f, true);
+			Return(res);
+		}
+
+		routine = function("one");
+
+		if(routine)
+		{
+			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+
+			Class c;
+
+			int res = callable(&c);
+
+			EXPECT_EQ(res, 31);
+			EXPECT_EQ(c.i, 10);
+			EXPECT_EQ(c.f, 20.0f);
+			EXPECT_EQ(c.b, true);
+		}
+	}
+
+	delete routine;
+}
+#endif // !REACTOR_BACKEND_SUBZERO
+
 // Check that a complex generated function which utilizes all 8 or 16 XMM
 // registers computes the correct result.
 // (Note that due to MSC's lack of support for inline assembly in x64,

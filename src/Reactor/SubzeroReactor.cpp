@@ -3378,6 +3378,7 @@ namespace rr
 
 	// Below are functions currently unimplemented for the Subzero backend.
 	// They are stubbed to satisfy the linker.
+	Value* Call(void const *fptr, std::initializer_list<Value*> args, Type* retTy, std::initializer_list<Type*> argTys) { UNIMPLEMENTED("Subzero Call()"); return nullptr; }
 	RValue<Float4> Sin(RValue<Float4> x) { UNIMPLEMENTED("Subzero Sin()"); return Float4(0); }
 	RValue<Float4> Cos(RValue<Float4> x) { UNIMPLEMENTED("Subzero Cos()"); return Float4(0); }
 	RValue<Float4> Tan(RValue<Float4> x) { UNIMPLEMENTED("Subzero Tan()"); return Float4(0); }
