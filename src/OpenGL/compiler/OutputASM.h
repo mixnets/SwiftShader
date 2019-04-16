@@ -303,6 +303,7 @@ namespace glsl
 		int samplerRegister(TIntermTyped *sampler);
 		int samplerRegister(TIntermSymbol *sampler);
 		bool isSamplerRegister(TIntermTyped *operand);
+		bool arrayExceedsLimits(TIntermTyped *operand);
 
 		typedef std::vector<TIntermTyped*> VariableArray;
 
