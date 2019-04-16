@@ -26,7 +26,7 @@ namespace sw
 {
 	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets)
 		: data(Arg<0>()),
-		  routine(pipelineLayout),
+		  routine{},
 		  shader(shader),
 		  pipelineLayout(pipelineLayout),
 		  descriptorSets(descriptorSets)

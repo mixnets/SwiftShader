@@ -38,7 +38,7 @@ namespace sw
 			SpirvShader const *spirvShader,
 			const vk::DescriptorSet::Bindings &descriptorSets)
 		: QuadRasterizer(state, spirvShader),
-		  routine(pipelineLayout),
+		  routine{},
 		  descriptorSets(descriptorSets)
 	{
 		spirvShader->emitProlog(&routine);

@@ -222,10 +222,12 @@ namespace sw
 {
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
 
-	SpirvShader::SpirvShader(InsnStore const &insns)
-			: insns{insns}, inputs{MAX_INTERFACE_COMPONENTS},
+	SpirvShader::SpirvShader(InsnStore const &insns, vk::PipelineLayout const *pipelineLayout)
+			: insns{insns}, pipelineLayout{pipelineLayout},
+			  inputs{MAX_INTERFACE_COMPONENTS},
 			  outputs{MAX_INTERFACE_COMPONENTS},
-			  serialID{serialCounter++}, modes{}
+			  serialID{serialCounter++},
+			  modes{}
 	{
 		ASSERT(insns.size() > 0);
 
@@ -707,7 +709,11 @@ namespace sw
 		// TODO: consider images and samplers separately
 		auto const & d = descriptorDecorations.at(insn.word(3));
 		if (usedImages.insert({d, nextImageSlot}).second)
-			nextImageSlot++;	// TODO: consider array of descriptors; needs DS layout at analysis time
+		{
+			auto setLayout = pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			auto &binding = setLayout->getBindingLayout(d.Binding);
+			nextImageSlot += binding.descriptorCount;
+		}
 	}
 
 	void SpirvShader::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable)
@@ -1166,7 +1172,7 @@ namespace sw
 				ASSERT(d.Binding >= 0);
 
 				auto set = routine->getPointer(id);
-				auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+				auto setLayout = pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 				int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
 
 				Pointer<Byte> bufferInfo = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
@@ -1176,7 +1182,7 @@ namespace sw
 				if (setLayout->isBindingDynamic(d.Binding))
 				{
 					uint32_t dynamicBindingIndex =
-						routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+						pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
 						setLayout->getDynamicDescriptorOffset(d.Binding) +
 						arrayIndex;
 					offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
@@ -2194,7 +2200,7 @@ namespace sw
 			ASSERT(d.Binding >= 0);
 
 			uint32_t arrayIndex = 0;  // TODO(b/129523279)
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			auto setLayout = pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
 			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
 			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // SampledImageDescriptor*
@@ -4299,7 +4305,7 @@ namespace sw
 
 		const DescriptorDecorations &d = descriptorDecorations.at(sampledImageId);
 		uint32_t arrayIndex = 0;  // TODO(b/129523279)
-		auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+		auto setLayout = pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 		size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
 
 		const uint8_t *p = reinterpret_cast<const uint8_t*>(state->descriptorSets[d.DescriptorSet]) + bindingOffset;
@@ -4532,10 +4538,4 @@ namespace sw
 		ASSERT_MSG(it != state->edgeActiveLaneMasks.end(), "Could not find edge %d -> %d", from.value(), to.value());
 		return it->second;
 	}
-
-	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
-		pipelineLayout(pipelineLayout)
-	{
-	}
-
 }
