@@ -36,6 +36,7 @@
 #include <type_traits>
 #include <memory>
 #include <queue>
+#include <Device/Sampler.hpp>
 
 namespace vk
 {
@@ -477,6 +478,7 @@ namespace sw
 		std::unordered_map<DescriptorDecorations, uint32_t, DescriptorDecorations::Hash> usedImages;
 
 		void MarkDescriptorUsed(InsnIterator insn, uint32_t &nextImageSlot);
+		void PopulateSamplerState(Sampler::State *state, vk::DescriptorSet::Bindings const &descriptorSets) const;
 
 		vk::PipelineLayout const *pipelineLayout;
 

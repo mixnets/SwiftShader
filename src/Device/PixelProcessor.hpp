@@ -66,7 +66,7 @@ namespace sw
 			bool frontFaceCCW;
 			VkFormat depthFormat;
 
-			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
+			Sampler::State sampler[vk::MAX_PER_STAGE_DESCRIPTOR_SAMPLED_IMAGES];
 		};
 
 		struct State : States

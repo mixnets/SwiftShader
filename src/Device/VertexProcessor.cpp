@@ -131,6 +131,8 @@ namespace sw
 			state.input[i].attribType = context->vertexShader->inputs[i*4].Type;
 		}
 
+		context->vertexShader->PopulateSamplerState(state.sampler, context->descriptorSets);
+
 		state.hash = state.computeHash();
 
 		return state;

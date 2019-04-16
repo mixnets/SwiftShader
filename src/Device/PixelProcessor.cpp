@@ -338,6 +338,11 @@ namespace sw
 
 		state.frontFaceCCW = context->frontFacingCCW;
 
+		if (context->pixelShader)
+		{
+			context->pixelShader->PopulateSamplerState(state.sampler, context->descriptorSets);
+		}
+
 		state.hash = state.computeHash();
 
 		return state;

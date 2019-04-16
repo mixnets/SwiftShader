@@ -716,6 +716,11 @@ namespace sw
 		}
 	}
 
+	void SpirvShader::PopulateSamplerState(Sampler::State *state, vk::DescriptorSet::Bindings const &descriptorSets) const
+	{
+		// TODO: actually populate
+	}
+
 	void SpirvShader::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable)
 	{
 		if (reachable.count(id) == 0)

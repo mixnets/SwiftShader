@@ -161,7 +161,7 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		16, // maxPerStageDescriptorSamplers
 		12, // maxPerStageDescriptorUniformBuffers
 		4, // maxPerStageDescriptorStorageBuffers
-		16, // maxPerStageDescriptorSampledImages
+		MAX_PER_STAGE_DESCRIPTOR_SAMPLED_IMAGES, // maxPerStageDescriptorSampledImages
 		4, // maxPerStageDescriptorStorageImages
 		4, // maxPerStageDescriptorInputAttachments
 		128, // maxPerStageResources
