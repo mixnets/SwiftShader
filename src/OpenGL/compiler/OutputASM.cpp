@@ -3108,6 +3108,10 @@ namespace glsl
 
 		if(var == -1)
 		{
+			if (arrayExceedsLimits(varying))
+			{
+				return 0;
+			}
 			var = allocate(varyings, varying);
 			int registerCount = varying->totalRegisterCount();
 
@@ -3284,6 +3288,10 @@ namespace glsl
 			{
 				if(index == -1)
 				{
+					if (arrayExceedsLimits(uniform))
+					{
+						return 0;
+					}
 					index = allocate(uniforms, uniform);
 				}
 
@@ -3437,6 +3445,10 @@ namespace glsl
 
 		if(index == -1)
 		{
+			if (arrayExceedsLimits(sampler))
+			{
+				return 0;
+			}
 			index = allocate(samplers, sampler, true);
 
 			if(sampler->getQualifier() == EvqUniform)
@@ -3452,6 +3464,33 @@ namespace glsl
 	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
 	{
 		return operand && IsSampler(operand->getBasicType()) && samplerRegister(operand) >= 0;
+	}
+
+	bool OutputASM::arrayExceedsLimits(TIntermTyped *operand)
+	{
+		const TVariable *maxUniformVectors = NULL;
+		TString builtinName = "";
+		if (vertexShader)
+		{
+			builtinName = "gl_MaxVertexUniformVectors";
+		}
+		else if (pixelShader)
+		{
+			builtinName = "gl_MaxFragmentUniformVectors";
+		}
+		maxUniformVectors = static_cast<const TVariable *>(mContext.symbolTable.findBuiltIn(builtinName.c_str(), mContext.getShaderVersion()));
+		if (operand->getArraySize() > maxUniformVectors->getConstPointer()->getIConst())
+		{
+			std::stringstream extraInfoStream;
+			extraInfoStream << "Array size (" << operand->getArraySize() << ") "
+			                << "exceeds limit of " << builtinName
+			                << " (" << maxUniformVectors->getConstPointer()->getIConst() << ")";
+			std::string errorStr = extraInfoStream.str();
+			mContext.error(operand->getLine(), errorStr.c_str(),
+			               operand->getBasicString());
+			return 1;
+		}
+		return 0;
 	}
 
 	int OutputASM::lookup(VariableArray &list, TIntermTyped *variable)
