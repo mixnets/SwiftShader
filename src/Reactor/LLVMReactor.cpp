@@ -3815,17 +3815,20 @@ namespace rr
 	}
 #endif  // defined(__i386__) || defined(__x86_64__)
 
-	Value* Call(void const *fptr, std::initializer_list<Value*> args, Type* retTy, std::initializer_list<Type*> argTys)
+	RValue<Pointer<Byte>> ConstantPointer(void const * ptr)
 	{
-		auto fp = reinterpret_cast<uintptr_t>(fptr);
+		auto ptrAsInt = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(*::context), reinterpret_cast<uintptr_t>(ptr));
+		return RValue<Pointer<Byte>>(V(::builder->CreateIntToPtr(ptrAsInt, T(Pointer<Byte>::getType()))));
+	}
 
+	Value* Call(RValue<Pointer<Byte>> fptr, std::initializer_list<Value*> args, Type* retTy, std::initializer_list<Type*> argTys)
+	{
 		::llvm::SmallVector<::llvm::Type*, 8> paramTys;
 		for (auto ty : argTys) { paramTys.push_back(T(ty)); }
 		auto funcTy = ::llvm::FunctionType::get(T(retTy), paramTys, false);
 
 		auto funcPtrTy = funcTy->getPointerTo();
-		auto funcPtrAsI64 = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(*::context), fp);
-		auto funcPtr = ::builder->CreateIntToPtr(funcPtrAsI64, funcPtrTy);
+		auto funcPtr = ::builder->CreatePointerCast(V(fptr.value), funcPtrTy);
 
 		::llvm::SmallVector<::llvm::Value*, 8> arguments;
 		for (auto arg : args) { arguments.push_back(V(arg)); }
