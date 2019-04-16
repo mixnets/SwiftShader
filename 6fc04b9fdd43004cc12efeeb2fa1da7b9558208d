@@ -16,6 +16,24 @@
       "revId": "6fc04b9fdd43004cc12efeeb2fa1da7b9558208d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afb85b83_37dfafa2",
+        "filename": "src/Vulkan/VkBufferView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-16T11:57:13Z",
+      "side": 1,
+      "message": "Good spot. Fixed.",
+      "parentUuid": "ebd9b9bd_720f38b8",
+      "revId": "6fc04b9fdd43004cc12efeeb2fa1da7b9558208d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
