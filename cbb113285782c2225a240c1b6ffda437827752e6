@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "99e32cc2_a262a746",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-16T03:26:26Z",
+      "side": 1,
+      "message": "Well... this is actually a bit annoying. We need the iterator just below, not only whether the thing is declared.\n\nPerhaps I should adjust the PixelProgram/VertexProgram handling to have a lambda-based approach to binding builtins, like Ben built for ComputeProgram?",
+      "parentUuid": "0754eda0_8c78dca0",
+      "range": {
+        "startLine": 36,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 45
+      },
+      "revId": "cbb113285782c2225a240c1b6ffda437827752e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61967727_5d68fee0",
         "filename": "src/Pipeline/SetupRoutine.cpp",
         "patchSetId": 1
