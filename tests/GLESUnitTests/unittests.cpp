@@ -381,6 +381,56 @@ protected:
 		checkCompiles("", s);
 	}
 
+	// Attempts to compile and expects to fail.
+	void CheckCompileFails(std::string shader, GLenum shaderType)
+	{
+		std::string vs =
+			"#version 300 es\n"
+			"in vec4 position;\n"
+			"out float unfoldable;\n"
+			"$INSERT\n"
+			"void main()\n"
+			"{\n"
+			"    unfoldable = position.x;\n"
+			"    gl_Position = vec4(position.xy, 0.0, 1.0);\n"
+			"    gl_Position.x += F(unfoldable);\n"
+			"}\n";
+
+		std::string fs =
+			"#version 300 es\n"
+			"precision mediump float;\n"
+			"in float unfoldable;\n"
+			"out vec4 fragColor;\n"
+			"$INSERT\n"
+			"void main()\n"
+			"{\n"
+			"    fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+			"    fragColor.x += F(unfoldable);\n"
+			"}\n";
+
+		std::string shaderReplace = "";
+		if (shaderType == GL_VERTEX_SHADER)
+		{
+			shaderReplace = replace(vs, "$INSERT", shader);
+		}
+		else if (shaderType == GL_FRAGMENT_SHADER)
+		{
+			shaderReplace = replace(fs, "$INSERT", shader);
+		}
+		GLchar buf[1024];
+
+		GLuint glShader = glCreateShader(shaderType);
+		const char* source[1] = { shaderReplace.c_str() };
+		glShaderSource(glShader, 1, source, nullptr);
+		glCompileShader(glShader);
+		EXPECT_GLENUM_EQ(GL_NONE, glGetError());
+		GLint compileStatus = 0;
+		glGetShaderiv(glShader, GL_COMPILE_STATUS, &compileStatus);
+		glGetShaderInfoLog(glShader, sizeof(buf), nullptr, buf);
+		EXPECT_EQ(compileStatus, GL_FALSE) << "Compile status: " << std::endl << buf;
+		glDeleteShader(glShader);
+	}
+
 	EGLDisplay getDisplay() const { return display; }
 	EGLConfig getConfig() const { return config; }
 	EGLSurface getSurface() const { return surface; }
@@ -1765,6 +1815,30 @@ TEST_F(SwiftShaderTest, CompilerLimits_SparseLabels)
 		"void Dead5() { Dead1(); Dead2(); Dead3(); Dead4(); }\n"
 		"float F(float f) { for(int i = 0; i < -1; ++i) { Dead5(); } return f; }\n"
 	);
+}
+
+// Test that the compiler doesn't compile arrays larger than
+// GL_MAX_{VERTEX/FRAGMENT}_UNIFORM_VECTOR.
+TEST_F(SwiftShaderTest, CompilerLimits_ArraySize)
+{
+	Initialize(3, false);
+
+	CheckCompileFails(
+		"uniform float u_var[100000000];\n"
+		"float F(float f) { return u_var[2]; }\n",
+		GL_VERTEX_SHADER);
+	CheckCompileFails(
+		"struct structType { mediump sampler2D m0; mediump samplerCube m1; }; \n"
+		"uniform structType u_var[100000000];\n"
+		"float F(float f) { return texture(u_var[2].m1, vec3(0.0)), vec4(0.26, 1.72, 0.60, 0.12).x; }\n",
+		GL_VERTEX_SHADER);
+	CheckCompileFails(
+		"struct structType { mediump sampler2D m0; mediump samplerCube m1; }; \n"
+		"uniform structType u_var[100000000];\n"
+		"float F(float f) { return texture(u_var[2].m1, vec3(0.0)), vec4(0.26, 1.72, 0.60, 0.12).x; }\n",
+		GL_FRAGMENT_SHADER);
+
+	Uninitialize();
 }
 
 #ifndef EGL_ANGLE_iosurface_client_buffer
