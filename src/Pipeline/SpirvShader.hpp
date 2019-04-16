@@ -69,9 +69,9 @@ namespace sw
 			inline void addOffset(Int delta) { offset += delta; uniform = false; }
 
 			// Base address for the pointer, common across all lanes.
-			rr::Pointer<rr::Float> base;
+			rr::Pointer<rr::Byte> base;
 
-			// Per lane offsets from base.
+			// Per lane offsets from base in bytes.
 			// If uniform is false, all offsets are considered zero.
 			Int offset;
 
