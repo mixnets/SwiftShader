@@ -66,6 +66,8 @@ namespace sw
 			Pointer(rr::Pointer<Byte> base) : base(base), offset(0), uniform(true) {}
 			Pointer(rr::Pointer<Byte> base, SIMD::Int offset) : base(base), offset(offset), uniform(false) {}
 
+			inline void addOffset(Int delta) { offset += delta; uniform = false; }
+
 			// Base address for the pointer, common across all lanes.
 			rr::Pointer<rr::Float> base;
 
@@ -272,8 +274,7 @@ namespace sw
 				Intermediate,
 
 				// DivergentPointer formed from a base pointer and per-lane offset.
-				// Base pointer held by SpirvRoutine::pointers
-				// Per-lane offset held by SpirvRoutine::intermediates.
+				// Pointer held by SpirvRoutine::pointers
 				DivergentPointer,
 
 				// Pointer with uniform address across all lanes.
@@ -285,6 +286,7 @@ namespace sw
 				DescriptorSet,
 
 				// Pointer to an image/sampler descriptor.
+				// Pointer held by SpirvRoutine::pointers.
 				SampledImage,
 			};
 
@@ -460,7 +462,7 @@ namespace sw
 			int32_t DescriptorSet = -1;
 			int32_t Binding = -1;
 
-			void Apply(DescriptorDecorations const &src); 
+			void Apply(DescriptorDecorations const &src);
 		};
 
 		std::unordered_map<Object::ID, DescriptorDecorations> descriptorDecorations;
@@ -619,7 +621,7 @@ namespace sw
 		SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, SpirvRoutine *routine) const;
 
 		SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		SIMD::Int WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
 		// EmitState holds control-flow state for the emit() pass.
@@ -755,7 +757,7 @@ namespace sw
 
 		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
 
-		std::unordered_map<SpirvShader::Object::ID, Pointer<Byte> > pointers;
+		std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
 
 		Variable inputs = Variable{MAX_INTERFACE_COMPONENTS};
 		Variable outputs = Variable{MAX_INTERFACE_COMPONENTS};
@@ -771,23 +773,10 @@ namespace sw
 			ASSERT_MSG(added, "Variable %d created twice", id.value());
 		}
 
-		template <typename T>
-		void createPointer(SpirvShader::Object::ID id, Pointer<T> ptrBase)
+		void createPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
 		{
-			bool added = pointers.emplace(id, ptrBase).second;
+			bool added = pointers.emplace(id, ptr).second;
 			ASSERT_MSG(added, "Pointer %d created twice", id.value());
-		}
-
-		template <typename T>
-		void createPointer(SpirvShader::Object::ID id, RValue<Pointer<T>> ptrBase)
-		{
-			createPointer(id, Pointer<T>(ptrBase));
-		}
-
-		template <typename T>
-		void createPointer(SpirvShader::Object::ID id, Reference<Pointer<T>> ptrBase)
-		{
-			createPointer(id, Pointer<T>(ptrBase));
 		}
 
 		Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
@@ -813,7 +802,7 @@ namespace sw
 			return it->second;
 		}
 
-		Pointer<Byte>& getPointer(SpirvShader::Object::ID id)
+		SIMD::Pointer const& getPointer(SpirvShader::Object::ID id) const
 		{
 			auto it = pointers.find(id);
 			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
