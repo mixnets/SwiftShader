@@ -1248,6 +1248,8 @@ namespace sw
 			case VK_FORMAT_R8G8B8A8_SRGB:
 			case VK_FORMAT_R8G8_UNORM:
 			case VK_FORMAT_R8_UNORM:
+			case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+			case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 				current.x = current.x - As<Short4>(As<UShort4>(current.x) >> 8) + Short4(0x0080);
 				current.y = current.y - As<Short4>(As<UShort4>(current.y) >> 8) + Short4(0x0080);
 				current.z = current.z - As<Short4>(As<UShort4>(current.z) >> 8) + Short4(0x0080);
@@ -1309,6 +1311,8 @@ namespace sw
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			if(rgbaWriteMask == 0x7)
 			{
 				current.x = As<Short4>(As<UShort4>(current.x) >> 8);
@@ -1432,7 +1436,7 @@ namespace sw
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
 
-				if(state.targetFormat[index] == VK_FORMAT_B8G8R8A8_UNORM && bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
+				if(bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
 				{
 					Short4 masked = value;
 					c01 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
@@ -1448,7 +1452,7 @@ namespace sw
 				buffer += *Pointer<Int>(data + OFFSET(DrawData,colorPitchB[index]));
 				value = *Pointer<Short4>(buffer);
 
-				if(state.targetFormat[index] == VK_FORMAT_B8G8R8A8_UNORM && bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
+				if(bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
 				{
 					Short4 masked = value;
 					c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
@@ -1464,11 +1468,13 @@ namespace sw
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			{
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
 
-				bool masked = ((state.targetFormat[index] == VK_FORMAT_R8G8B8A8_UNORM || state.targetFormat[index] == VK_FORMAT_R8G8B8A8_SRGB) && rgbaWriteMask != 0x0000000F); // FIXME: Need for masking when XBGR && Fh?
+				bool masked = (rgbaWriteMask != 0x0000000F); // FIXME: Need for masking when XBGR && Fh?
 
 				if(masked)
 				{
