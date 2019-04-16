@@ -235,6 +235,7 @@ namespace sw
 
 		Block::ID currentBlock;
 		InsnIterator blockStart;
+		uint32_t nextImageSlot = 0;
 
 		for (auto insn : *this)
 		{
@@ -678,9 +679,14 @@ namespace sw
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
 			case spv::OpPhi:
-			case spv::OpImageSampleImplicitLod:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
+				break;
+
+			case spv::OpImageSampleImplicitLod:
+				// Instructions that access images through descriptors
+				DefineResult(insn);
+				MarkDescriptorUsed(insn, nextImageSlot);
 				break;
 
 			case spv::OpStore:
@@ -694,6 +700,14 @@ namespace sw
 		}
 
 		AssignBlockIns();
+	}
+
+	void SpirvShader::MarkDescriptorUsed(InsnIterator insn, uint32_t &nextImageSlot)
+	{
+		// TODO: consider images and samplers separately
+		auto const & d = descriptorDecorations.at(insn.word(3));
+		if (usedImages.insert({d, nextImageSlot}).second)
+			nextImageSlot++;	// TODO: consider array of descriptors; needs DS layout at analysis time
 	}
 
 	void SpirvShader::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable)
