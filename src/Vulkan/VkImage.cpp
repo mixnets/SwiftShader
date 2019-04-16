@@ -41,6 +41,9 @@ namespace
 namespace vk
 {
 
+const int Image::ExtentOffset = static_cast<int>(offsetof(Image, extent));
+const int Image::ArrayLayersOffset = static_cast<int>(offsetof(Image, arrayLayers));
+
 Image::Image(const Image::CreateInfo* pCreateInfo, void* mem) :
 	device(Cast(pCreateInfo->device)),
 	flags(pCreateInfo->pCreateInfo->flags),
