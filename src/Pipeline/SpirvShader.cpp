@@ -1161,6 +1161,7 @@ namespace sw
 				Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(bufferInfo + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
 				Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
 				Int offset = *Pointer<Int>(bufferInfo + OFFSET(VkDescriptorBufferInfo, offset));
+				Int size = *Pointer<Int>(buffer + vk::Buffer::DataSize); // void*
 				if (setLayout->isBindingDynamic(d.Binding))
 				{
 					uint32_t dynamicBindingIndex =
@@ -1169,12 +1170,12 @@ namespace sw
 						arrayIndex;
 					offset += routine->descriptorDynamicOffsets[dynamicBindingIndex];
 				}
-				return SIMD::Pointer(data + offset);
+				return SIMD::Pointer(data + offset, size - offset);
 			}
 
 			default:
 				UNREACHABLE("Invalid pointer kind %d", int(object.kind));
-				return SIMD::Pointer(Pointer<Byte>());
+				return SIMD::Pointer(Pointer<Byte>(), 0);
 		}
 	}
 
@@ -2174,7 +2175,8 @@ namespace sw
 		case spv::StorageClassFunction:
 		{
 			auto base = &routine->getVariable(resultId)[0];
-			routine->createPointer(resultId, SIMD::Pointer(base));
+			auto size = objectTy.sizeInComponents * sizeof(float);
+			routine->createPointer(resultId, SIMD::Pointer(base, size));
 			break;
 		}
 		case spv::StorageClassInput:
@@ -2190,7 +2192,8 @@ namespace sw
 								});
 			}
 			auto base = &routine->getVariable(resultId)[0];
-			routine->createPointer(resultId, SIMD::Pointer(base));
+			auto size = objectTy.sizeInComponents * sizeof(float);
+			routine->createPointer(resultId, SIMD::Pointer(base, size));
 			break;
 		}
 		case spv::StorageClassUniformConstant:
@@ -2200,11 +2203,12 @@ namespace sw
 			ASSERT(d.Binding >= 0);
 
 			uint32_t arrayIndex = 0;  // TODO(b/129523279)
+			auto size = Int(sizeof(vk::SampledImageDescriptor)); // TODO(b/129523279)
 			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
 			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
 			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
-			routine->createPointer(resultId, SIMD::Pointer(binding));
+			routine->createPointer(resultId, SIMD::Pointer(binding, size));
 			break;
 		}
 		case spv::StorageClassUniform:
@@ -2213,12 +2217,12 @@ namespace sw
 			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
 
-			routine->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet]));
+			routine->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet], 0));
 			break;
 		}
 		case spv::StorageClassPushConstant:
 		{
-			routine->createPointer(resultId, SIMD::Pointer(routine->pushConstants));
+			routine->createPointer(resultId, SIMD::Pointer(routine->pushConstants, vk::MAX_PUSH_CONSTANT_SIZE));
 			break;
 		}
 		default:

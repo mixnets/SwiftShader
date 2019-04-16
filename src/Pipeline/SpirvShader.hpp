@@ -63,15 +63,21 @@ namespace sw
 
 		struct Pointer
 		{
-			Pointer(rr::Pointer<Byte> base) : base(base), offset(0), uniform(true) {}
-			Pointer(rr::Pointer<Byte> base, SIMD::Int offset) : base(base), offset(offset), uniform(false) {}
+			Pointer(rr::Pointer<Byte> base, rr::Int limit) : base(base), limit(limit), offset(0), uniform(true) {}
+			Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset) : base(base), limit(limit), offset(offset), uniform(false) {}
 
 			inline void addOffset(Int delta) { offset += delta; uniform = false; }
+
+			Float4 loadFloat4(bool atomic = false, std::memory_order order = std::memory_order_relaxed) const;
+			void store(Float4 value, bool atomic = false, std::memory_order order = std::memory_order_relaxed) const;
 
 			// Base address for the pointer, common across all lanes.
 			rr::Pointer<rr::Byte> base;
 
-			// Per lane offsets from base in bytes.
+			// Upper (non-inclusive) limit for offsets from base.
+			rr::Int limit;
+
+			// Per lane offsets from base.
 			// If uniform is false, all offsets are considered zero.
 			Int offset;
 
