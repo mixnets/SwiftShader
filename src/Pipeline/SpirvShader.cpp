@@ -280,7 +280,7 @@ namespace sw
 				auto &d = memberDecorations[targetId];
 				if (memberIndex >= d.size())
 					d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
-				
+
 				d[memberIndex].Apply(decoration, value);
 
 				if (decoration == spv::DecorationCentroid)
@@ -2133,7 +2133,7 @@ namespace sw
 
 		case spv::OpImageSampleImplicitLod:
 			return EmitImageSampleImplicitLod(insn, state);
-			
+
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
