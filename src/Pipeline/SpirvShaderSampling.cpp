@@ -32,6 +32,11 @@
 
 #include <mutex>
 
+#ifdef Bool
+#undef Bool // b/127920555
+#undef None
+#endif
+
 namespace sw {
 
 SpirvShader::ImageSampler SpirvShader::getImageSampler(vk::ImageView *imageView, vk::Sampler *sampler)
@@ -49,12 +54,12 @@ SpirvShader::ImageSampler SpirvShader::getImageSampler(vk::ImageView *imageView,
     if (it != cache.end()) { return it->second; }
 
     // TODO: Hold a separate mutex lock for the sampler being built.
-    auto function = rr::Function<Float4(Pointer<Byte> image, Pointer<SIMD::Float>, Pointer<SIMD::Float>)>();
+    auto function = rr::Function<Void(Pointer<Byte> image, Pointer<SIMD::Float>, Pointer<SIMD::Float>)>();
     Pointer<Byte> image = function.Arg<0>();
     Pointer<SIMD::Float> in = function.Arg<1>();
     Pointer<SIMD::Float> out = function.Arg<2>();
     emitSamplerFunction(imageView, sampler, image, in, out);
-    auto fptr = reinterpret_cast<ImageSampler>(function("sampler"));
+    auto fptr = reinterpret_cast<ImageSampler>((void *)function("sampler")->getEntry());
     cache.emplace(key, fptr);
     return fptr;
 }
