@@ -52,25 +52,25 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMet
 {
 	// TODO(b/129523279): Move somewhere sensible.
 	static std::unordered_map<uint64_t, ImageSampler*> cache;
-	static std::mutex mutex;
+    static std::mutex mutex;
 
 	// FIXME(b/129523279): Take instruction opcode and optional parameters into acount (SamplerMethod / SamplerOption).
 	auto key = (static_cast<uint64_t>(imageView->id) << 32) | static_cast<uint64_t>(sampler->id);
 
-	std::unique_lock<std::mutex> lock(mutex);
-	auto it = cache.find(key);
-	if (it != cache.end()) { return it->second; }
+    std::unique_lock<std::mutex> lock(mutex);
+    auto it = cache.find(key);
+    if (it != cache.end()) { return it->second; }
 
-	// TODO: Hold a separate mutex lock for the sampler being built.
+    // TODO: Hold a separate mutex lock for the sampler being built.
 	auto function = rr::Function<Void(Pointer<Byte> image, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)>();
-	Pointer<Byte> image = function.Arg<0>();
-	Pointer<SIMD::Float> in = function.Arg<1>();
-	Pointer<SIMD::Float> out = function.Arg<2>();
+    Pointer<Byte> image = function.Arg<0>();
+    Pointer<SIMD::Float> in = function.Arg<1>();
+    Pointer<SIMD::Float> out = function.Arg<2>();
 	Pointer<Byte> constants = function.Arg<3>();
 	emitSamplerFunction(samplerMethod, imageView, sampler, image, in, out, constants);
-	auto fptr = reinterpret_cast<ImageSampler*>((void *)function("sampler")->getEntry());
-	cache.emplace(key, fptr);
-	return fptr;
+    auto fptr = reinterpret_cast<ImageSampler*>((void *)function("sampler")->getEntry());
+    cache.emplace(key, fptr);
+    return fptr;
 }
 
 void SpirvShader::emitSamplerFunction(
@@ -80,35 +80,35 @@ void SpirvShader::emitSamplerFunction(
 {
 	Sampler::State samplerState = {};
 	samplerState.textureType = convertTextureType(imageView->getType());
-	samplerState.textureFormat = imageView->getFormat();
+	samplerState.textureFormat = imageView->getFormat(vk::ImageView::SAMPLING);
 	samplerState.textureFilter = convertFilterMode(sampler);
 
 	samplerState.addressingModeU = convertAddressingMode(sampler->addressModeU);
 	samplerState.addressingModeV = convertAddressingMode(sampler->addressModeV);
 	samplerState.addressingModeW = convertAddressingMode(sampler->addressModeW);
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
-	samplerState.sRGB = imageView->getFormat().isSRGBformat();
+	samplerState.sRGB = imageView->getFormat(vk::ImageView::SAMPLING).isSRGBformat();
 	samplerState.swizzle = imageView->getComponentMapping();
-	samplerState.highPrecisionFiltering = false;
-	samplerState.compare = COMPARE_BYPASS;                  ASSERT(sampler->compareEnable == VK_FALSE);  // TODO(b/129523279)
+    samplerState.highPrecisionFiltering = false;
+    samplerState.compare = COMPARE_BYPASS;                  ASSERT(sampler->compareEnable == VK_FALSE);  // TODO(b/129523279)
 
 //	minLod  // TODO(b/129523279)
 //	maxLod  // TODO(b/129523279)
 //	borderColor  // TODO(b/129523279)
-	ASSERT(sampler->mipLodBias == 0.0f);  // TODO(b/129523279)
-	ASSERT(sampler->anisotropyEnable == VK_FALSE);  // TODO(b/129523279)
-	ASSERT(sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(b/129523279)
+    ASSERT(sampler->mipLodBias == 0.0f);  // TODO(b/129523279)
+    ASSERT(sampler->anisotropyEnable == VK_FALSE);  // TODO(b/129523279)
+    ASSERT(sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(b/129523279)
 
-	SamplerCore s(constants, samplerState);
+    SamplerCore s(constants, samplerState);
 
-	Pointer<Byte> texture = image + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
+    Pointer<Byte> texture = image + OFFSET(vk::SampledImageDescriptor, texture); // sw::Texture*
 	SIMD::Float uv[2];
-	SIMD::Float w(0);     // TODO(b/129523279)
-	SIMD::Float q(0);     // TODO(b/129523279)
+    SIMD::Float w(0);     // TODO(b/129523279)
+    SIMD::Float q(0);     // TODO(b/129523279)
 	SIMD::Float bias(0);
-	Vector4f dsx;         // TODO(b/129523279)
-	Vector4f dsy;         // TODO(b/129523279)
-	Vector4f offset;      // TODO(b/129523279)
+    Vector4f dsx;         // TODO(b/129523279)
+    Vector4f dsy;         // TODO(b/129523279)
+    Vector4f offset;      // TODO(b/129523279)
 	SamplerFunction samplerFunction = { samplerMethod, None };  // TODO(b/129523279)
 
 	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
@@ -117,7 +117,7 @@ void SpirvShader::emitSamplerFunction(
 
 	int coordinateCount = 0;
 	switch(imageView->getType())
-	{
+    {
 	case VK_IMAGE_VIEW_TYPE_1D: coordinateCount = 1; break;
 	case VK_IMAGE_VIEW_TYPE_2D: coordinateCount = 2; break;
 	default:
@@ -138,11 +138,11 @@ void SpirvShader::emitSamplerFunction(
 
 	Vector4f sample = s.sampleTexture(texture, uv[0], uv[1], w, q, bias, dsx, dsy, offset, samplerFunction);
 
-	Pointer<SIMD::Float> rgba = out;
-	rgba[0] = sample.x;
-	rgba[1] = sample.y;
-	rgba[2] = sample.z;
-	rgba[3] = sample.w;
+        Pointer<SIMD::Float> rgba = out;
+        rgba[0] = sample.x;
+        rgba[1] = sample.y;
+        rgba[2] = sample.z;
+        rgba[3] = sample.w;
 }
 
 sw::TextureType SpirvShader::convertTextureType(VkImageViewType imageViewType)
@@ -159,13 +159,13 @@ sw::TextureType SpirvShader::convertTextureType(VkImageViewType imageViewType)
 	default:
 		UNIMPLEMENTED("imageViewType %d", imageViewType);
 		return TEXTURE_2D;
-	}
+    }
 }
 
 sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 {
 	switch(sampler->magFilter)
-	{
+    {
 	case VK_FILTER_NEAREST:
 		switch(sampler->minFilter)
 		{
@@ -174,7 +174,7 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 		default:
 			UNIMPLEMENTED("minFilter %d", sampler->minFilter);
 			return FILTER_POINT;
-		}
+    }
 		break;
 	case VK_FILTER_LINEAR:
 		switch(sampler->minFilter)

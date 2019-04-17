@@ -303,18 +303,18 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				VkOffset3D offset = {0, 0, 0};
 				VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT;
-				void *buffer = imageView->getOffsetPointer(offset, aspect, level);
+				void *buffer = imageView->getOffsetPointer(offset, aspect, level, ImageView::SAMPLING);
 
 				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
 				mipmap.buffer[0] = buffer;
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
-				Format format = imageView->getFormat();
+				Format format = imageView->getFormat(ImageView::SAMPLING);
 				int width = extent.width;
 				int height = extent.height;
 				int depth = extent.depth;
-				int pitchP = imageView->rowPitchBytes(aspect, level) / format.bytes();
-				int sliceP = imageView->slicePitchBytes(aspect, level) / format.bytes();
+				int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / format.bytes();
+				int sliceP = imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING) / format.bytes();
 
 				float exp2LOD = 1.0f;
 
