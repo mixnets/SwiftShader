@@ -81,7 +81,7 @@ void SpirvShader::emitSamplerFunction(
 {
 	Sampler::State samplerState = {};
 	samplerState.textureType = convertTextureType(imageView->getType());
-	samplerState.textureFormat = imageView->getFormat();
+	samplerState.textureFormat = imageView->getFormat(vk::ImageView::SAMPLING);
 	samplerState.textureFilter = convertFilterMode(sampler);
 	samplerState.border = sampler->borderColor;
 
@@ -93,7 +93,7 @@ void SpirvShader::emitSamplerFunction(
 		samplerState.addressingModeW = ADDRESSING_LAYER;
 
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
-	samplerState.sRGB = imageView->getFormat().isSRGBformat();
+	samplerState.sRGB = imageView->getFormat(vk::ImageView::SAMPLING).isSRGBformat();
 	samplerState.swizzle = imageView->getComponentMapping();
 	samplerState.highPrecisionFiltering = false;
 	samplerState.compare = COMPARE_BYPASS;                  ASSERT(sampler->compareEnable == VK_FALSE);  // TODO(b/129523279)
