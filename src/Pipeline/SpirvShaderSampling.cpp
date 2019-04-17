@@ -55,7 +55,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, const vk:
 
 	Sampler samplerState = {};
 	samplerState.textureType = convertTextureType(imageView->getType());
-	samplerState.textureFormat = imageView->getFormat();
+	samplerState.textureFormat = imageView->getFormat(vk::ImageView::SAMPLING);
 	samplerState.textureFilter = convertFilterMode(sampler);
 	samplerState.border = sampler->borderColor;
 
@@ -88,63 +88,63 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 		Pointer<SIMD::Float> out = function.Arg<3>();
 		Pointer<Byte> constants = function.Arg<4>();
 
-		SamplerCore s(constants, samplerState);
+	SamplerCore s(constants, samplerState);
 
-		SIMD::Float uvw[3];
-		SIMD::Float q(0);     // TODO(b/129523279)
+	SIMD::Float uvw[3];
+	SIMD::Float q(0);     // TODO(b/129523279)
 		SIMD::Float lodOrBias(0);  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
-		Vector4f dsx;
-		Vector4f dsy;
-		Vector4f offset;
-		SamplerFunction samplerFunction = instruction.getSamplerFunction();
+	Vector4f dsx;
+	Vector4f dsy;
+	Vector4f offset;
+	SamplerFunction samplerFunction = instruction.getSamplerFunction();
 
-		uint32_t i = 0;
-		for( ; i < instruction.coordinates; i++)
-		{
-			uvw[i] = in[i];
-		}
+	uint32_t i = 0;
+	for( ; i < instruction.coordinates; i++)
+	{
+		uvw[i] = in[i];
+	}
 
-		// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
-		// Implement optimized 1D sampling.
+	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
+	// Implement optimized 1D sampling.
 		if(samplerState.textureType == TEXTURE_1D ||
 			samplerState.textureType == TEXTURE_1D_ARRAY)
-		{
-			uvw[1] = SIMD::Float(0);
-		}
+	{
+		uvw[1] = SIMD::Float(0);
+	}
 
 		if(instruction.samplerMethod == Lod || instruction.samplerMethod == Bias)
-		{
+	{
 			lodOrBias = in[i];
 			i++;
-		}
-		else if(instruction.samplerMethod == Grad)
+	}
+	else if(instruction.samplerMethod == Grad)
+	{
+		for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
 		{
-			for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
-			{
-				dsx[j] = in[i];
-			}
-
-			for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
-			{
-				dsy[j] = in[i];
-			}
+			dsx[j] = in[i];
 		}
 
-		if(instruction.samplerOption == Offset)
+		for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
 		{
-			for(uint32_t j = 0; j < instruction.offsetComponents; j++, i++)
-			{
-				offset[j] = in[i];
-			}
+			dsy[j] = in[i];
 		}
+	}
+
+	if(instruction.samplerOption == Offset)
+	{
+		for(uint32_t j = 0; j < instruction.offsetComponents; j++, i++)
+		{
+			offset[j] = in[i];
+		}
+	}
 
 		Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], q, lodOrBias, dsx, dsy, offset, samplerFunction);
 
-		Pointer<SIMD::Float> rgba = out;
-		rgba[0] = sample.x;
-		rgba[1] = sample.y;
-		rgba[2] = sample.z;
-		rgba[3] = sample.w;
+	Pointer<SIMD::Float> rgba = out;
+	rgba[0] = sample.x;
+	rgba[1] = sample.y;
+	rgba[2] = sample.z;
+	rgba[3] = sample.w;
 	}
 
 	return (ImageSampler*)function("sampler")->getEntry();
