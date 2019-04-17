@@ -93,6 +93,30 @@
       "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "800040e1_fe3077a5",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-17T14:03:07Z",
+      "side": 1,
+      "message": "unless I change ImageView to duplicate this data - which seems like a micro-opt.",
+      "parentUuid": "094f5faf_52671d70",
+      "range": {
+        "startLine": 73,
+        "startChar": 1,
+        "endLine": 75,
+        "endChar": 36
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
