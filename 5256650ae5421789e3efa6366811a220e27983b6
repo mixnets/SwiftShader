@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f8ac95a_25b2cd64",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T18:56:11Z",
+      "side": 1,
+      "message": "nag: Bug ID, for the entire chain. Let\u0027s create a new one and make it block b/129523279",
+      "revId": "5256650ae5421789e3efa6366811a220e27983b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
