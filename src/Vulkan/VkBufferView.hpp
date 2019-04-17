@@ -16,6 +16,7 @@
 #define VK_BUFFER_VIEW_HPP_
 
 #include "VkObject.hpp"
+#include "VkFormat.h"
 
 namespace vk
 {
@@ -31,16 +32,14 @@ public:
 		return 0;
 	}
 
-	// Offsets in bytes from the BufferView base address to the field.
-	static const int BufferOffset;
-	static const int ElementCountOffset;
+	void *getPointer() const;
+	uint32_t getElementCount() const { return range / Format(format).bytes(); }
 
 private:
 	VkBuffer     buffer;
 	VkFormat     format;
 	VkDeviceSize offset;
 	VkDeviceSize range;
-	uint64_t     elementCount; // range / formatSize (also unfolds VK_WHOLE_SIZE)
 };
 
 static inline BufferView* Cast(VkBufferView object)

@@ -19,21 +19,22 @@
 namespace vk
 {
 
-const int BufferView::BufferOffset = static_cast<int>(offsetof(BufferView, buffer));
-const int BufferView::ElementCountOffset = static_cast<int>(offsetof(BufferView, elementCount));
-
 BufferView::BufferView(const VkBufferViewCreateInfo* pCreateInfo, void* mem) :
-    buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset),
-    range(pCreateInfo->range)
+    buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset)
 {
-	if (range == VK_WHOLE_SIZE)
+    if (pCreateInfo->range == VK_WHOLE_SIZE)
     {
-        elementCount = Cast(pCreateInfo->buffer)->getSize() / vk::Format(format).bytes();
+        range = Cast(pCreateInfo->buffer)->getSize() - offset;
     }
     else
     {
-        elementCount = range / vk::Format(format).bytes();
+        range = pCreateInfo->range - offset;
     }
+}
+
+void * BufferView::getPointer() const
+{
+    return Cast(buffer)->getOffsetPointer(offset);
 }
 
 }
