@@ -106,6 +106,16 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     message(FATAL_ERROR "In source builds are not allowed by LLVM, please create a build/ directory and build from there. You may have to delete the CMakeCache.txt file and CMakeFiles directory that are next to the CMakeLists.txt.")
 endif()
 
+if(${REACTOR_BACKEND} STREQUAL "LLVM")
+    set(Reactor ReactorLLVM)
+    set(REACTOR_BACKEND_DEFINE "REACTOR_BACKEND_LLVM")
+elseif(${REACTOR_BACKEND} STREQUAL "Subzero")
+    set(Reactor ReactorSubzero)
+    set(REACTOR_BACKEND_DEFINE "REACTOR_BACKEND_SUBZERO")
+else()
+    message(FATAL_ERROR "REACTOR_BACKEND must be 'LLVM' or 'Subzero'")
+endif()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ###########################################################
@@ -2179,7 +2189,7 @@ set_target_properties(SwiftShader PROPERTIES
     INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
     POSITION_INDEPENDENT_CODE 1
     FOLDER "Core"
-    COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
+    COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;${REACTOR_BACKEND_DEFINE}=1"
 )
 target_link_libraries(SwiftShader ${OS_LIBS})
 
@@ -2188,22 +2198,16 @@ set_target_properties(ReactorLLVM PROPERTIES
     INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
     POSITION_INDEPENDENT_CODE 1
     FOLDER "Core"
+    COMPILE_DEFINITIONS "${REACTOR_BACKEND_DEFINE}=1"
 )
 target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
-
-if(${REACTOR_BACKEND} STREQUAL "LLVM")
-    set(Reactor ReactorLLVM)
-elseif(${REACTOR_BACKEND} STREQUAL "Subzero")
-    set(Reactor ReactorSubzero)
-else()
-    message(FATAL_ERROR "REACTOR_BACKEND must be 'LLVM' or 'Subzero'")
-endif()
 
 add_library(GLCompiler STATIC ${OPENGL_COMPILER_LIST})
 set_target_properties(GLCompiler PROPERTIES
     INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
     POSITION_INDEPENDENT_CODE 1
     FOLDER "OpenGL"
+    COMPILE_DEFINITIONS "${REACTOR_BACKEND_DEFINE}=1"
 )
 target_link_libraries(GLCompiler ${OS_LIBS})
 
@@ -2218,7 +2222,7 @@ if(BUILD_EGL)
     set_target_properties(libEGL PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
-        COMPILE_DEFINITIONS "EGL_EGLEXT_PROTOTYPES; EGLAPI=; NO_SANITIZE_FUNCTION=;"
+        COMPILE_DEFINITIONS "EGL_EGLEXT_PROTOTYPES;EGLAPI=;NO_SANITIZE_FUNCTION=;${REACTOR_BACKEND_DEFINE}=1"
         PREFIX ""
     )
     if (ANDROID)
@@ -2241,7 +2245,7 @@ if(BUILD_GLESv2)
     set_target_properties(libGLESv2 PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
-        COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES; GL_API=; GL_APICALL=; GLAPI=; NO_SANITIZE_FUNCTION=;"
+        COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES;GL_API=;GL_APICALL=;GLAPI=;NO_SANITIZE_FUNCTION=;${REACTOR_BACKEND_DEFINE}=1"
         PREFIX ""
     )
     if (ANDROID)
@@ -2264,7 +2268,7 @@ if(BUILD_GLES_CM)
     set_target_properties(libGLES_CM PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
-        COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES; EGLAPI=; GL_API=; GL_APICALL=; GLAPI=;"
+        COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES;EGLAPI=;GL_API=;GL_APICALL=;GLAPI=;${REACTOR_BACKEND_DEFINE}=1"
         PREFIX ""
     )
     if (ANDROID)
@@ -2293,7 +2297,7 @@ if(BUILD_VULKAN)
     set_target_properties(libvk_swiftshader PROPERTIES
         INCLUDE_DIRECTORIES "${VULKAN_INCLUDE_DIR}"
         FOLDER "Vulkan"
-        COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
+        COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;${REACTOR_BACKEND_DEFINE}=1"
         PREFIX ""
     )
     set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
@@ -2320,7 +2324,7 @@ if(BUILD_SAMPLES)
         add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_Windows.cpp)
         set_target_properties(OGLES2HelloAPI PROPERTIES
             INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES;${REACTOR_BACKEND_DEFINE}=1"
             FOLDER "Samples"
         )
         target_link_libraries(OGLES2HelloAPI libEGL libGLESv2)
@@ -2330,7 +2334,7 @@ if(BUILD_SAMPLES)
         add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_LinuxX11.cpp)
         set_target_properties(OGLES2HelloAPI PROPERTIES
             INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES;${REACTOR_BACKEND_DEFINE}=1"
         )
         target_link_libraries(OGLES2HelloAPI dl X11 libEGL libGLESv2)   # Explicitly link our "lib*" targets, not the platform provided "EGL" and "GLESv2"
     elseif(APPLE)
@@ -2340,7 +2344,7 @@ if(BUILD_SAMPLES)
         )
         set_target_properties(OGLES2HelloAPI PROPERTIES
             INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES;${REACTOR_BACKEND_DEFINE}=1"
             COMPILE_FLAGS "-Wno-deprecated-declarations" # 'NSTitledWindowMask', 'NSClosableWindowMask' is deprecated
             MACOSX_BUNDLE_INFO_PLIST "${HELLO2_DIR}/Build/OSX/Info.plist"
         )
@@ -2366,6 +2370,7 @@ if(BUILD_TESTS)
     set_target_properties(ReactorUnitTests PROPERTIES
         INCLUDE_DIRECTORIES "${REACTOR_UNIT_TESTS_INCLUDE_DIR}"
         FOLDER "Tests"
+        COMPILE_DEFINITIONS "${REACTOR_BACKEND_DEFINE}=1"
     )
 
     if(NOT WIN32 AND ${REACTOR_BACKEND} STREQUAL "Subzero")
@@ -2393,7 +2398,7 @@ if(BUILD_TESTS)
     set_target_properties(gles-unittests PROPERTIES
         INCLUDE_DIRECTORIES "${GLES_UNITTESTS_INCLUDE_DIR}"
         FOLDER "Tests"
-        COMPILE_DEFINITIONS "STANDALONE"
+        COMPILE_DEFINITIONS "STANDALONE;${REACTOR_BACKEND_DEFINE}=1"
     )
 
     target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS})
@@ -2423,7 +2428,7 @@ if(BUILD_TESTS AND BUILD_VULKAN)
     set_target_properties(vk-unittests PROPERTIES
         INCLUDE_DIRECTORIES "${VK_UNITTESTS_INCLUDE_DIR}"
         FOLDER "Tests"
-        COMPILE_DEFINITIONS "STANDALONE"
+        COMPILE_DEFINITIONS "STANDALONE;${REACTOR_BACKEND_DEFINE}=1"
     )
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
