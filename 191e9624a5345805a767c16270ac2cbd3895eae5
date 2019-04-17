@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d907501f_e5596cd7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4367,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-17T14:00:27Z",
+      "side": 1,
+      "message": "Thanks, I was looking for that.",
+      "parentUuid": "97d5fada_2c35057e",
+      "range": {
+        "startLine": 4367,
+        "startChar": 51,
+        "endLine": 4367,
+        "endChar": 52
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61725bb7_1047e0d7",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "094f5faf_52671d70",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-17T14:00:27Z",
+      "side": 1,
+      "message": "Yes: https://swiftshader.googlesource.com/SwiftShader/+/refs/changes/68/29268/2/src/Pipeline/SpirvShader.cpp#4389",
+      "parentUuid": "61725bb7_1047e0d7",
+      "range": {
+        "startLine": 73,
+        "startChar": 1,
+        "endLine": 75,
+        "endChar": 36
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
