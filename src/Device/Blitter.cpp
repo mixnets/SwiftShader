@@ -1527,7 +1527,7 @@ namespace sw
 		return blitRoutine;
 	}
 
-	void Blitter::blit(vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
+	void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
 	{
 		if(dst->getFormat() == VK_FORMAT_UNDEFINED)
 		{

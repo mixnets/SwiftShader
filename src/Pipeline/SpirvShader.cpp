@@ -4293,14 +4293,14 @@ namespace sw
 
 		Sampler::State samplerState;
 		samplerState.textureType = TEXTURE_2D;                  ASSERT(t->imageView->getType() == VK_IMAGE_VIEW_TYPE_2D);  // TODO(b/129523279)
-		samplerState.textureFormat = t->imageView->getFormat();
+		samplerState.textureFormat = t->imageView->getFormat(vk::ImageView::SAMPLING);
 		samplerState.textureFilter = FILTER_POINT;              ASSERT(t->sampler->magFilter == VK_FILTER_NEAREST); ASSERT(t->sampler->minFilter == VK_FILTER_NEAREST);  // TODO(b/129523279)
 
 		samplerState.addressingModeU = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeU == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
 		samplerState.addressingModeV = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeV == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
 		samplerState.addressingModeW = ADDRESSING_WRAP;         ASSERT(t->sampler->addressModeW == VK_SAMPLER_ADDRESS_MODE_REPEAT);  // TODO(b/129523279)
 		samplerState.mipmapFilter = MIPMAP_POINT;               ASSERT(t->sampler->mipmapMode == VK_SAMPLER_MIPMAP_MODE_NEAREST);  // TODO(b/129523279)
-		samplerState.sRGB = false;                              ASSERT(t->imageView->getFormat().isSRGBformat() == false);  // TODO(b/129523279)
+		samplerState.sRGB = false;                              ASSERT(t->imageView->getFormat(vk::ImageView::SAMPLING).isSRGBformat() == false);  // TODO(b/129523279)
 		samplerState.swizzleR = SWIZZLE_RED;                    ASSERT(t->imageView->getComponentMapping().r == VK_COMPONENT_SWIZZLE_R);  // TODO(b/129523279)
 		samplerState.swizzleG = SWIZZLE_GREEN;                  ASSERT(t->imageView->getComponentMapping().g == VK_COMPONENT_SWIZZLE_G);  // TODO(b/129523279)
 		samplerState.swizzleB = SWIZZLE_BLUE;                   ASSERT(t->imageView->getComponentMapping().b == VK_COMPONENT_SWIZZLE_B);  // TODO(b/129523279)
