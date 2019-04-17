@@ -117,6 +117,30 @@
       "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f888be27_0eab7fb2",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T14:22:42Z",
+      "side": 1,
+      "message": "The ImageView has its own SubresourceRange which determines which parts of the image are actually accessible to the shader: https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#VkImageSubresourceRange So using anything directly from the Image is probably incorrect.\n\nNote that currently VK_DESCRIPTOR_TYPE_STORAGE_IMAGE uses VkDescriptorImageInfo as the descriptor, but that\u0027s definitely going to change into something custom which has only the bits needed by the shader (cf. SampledImageDescriptor). Last but not least the current solution breaks the \u0027private\u0027 access barrier of Image, which could result in some funniness on its own.",
+      "parentUuid": "800040e1_fe3077a5",
+      "range": {
+        "startLine": 73,
+        "startChar": 1,
+        "endLine": 75,
+        "endChar": 36
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
