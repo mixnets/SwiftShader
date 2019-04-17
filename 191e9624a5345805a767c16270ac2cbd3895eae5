@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97d5fada_2c35057e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4367,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T13:49:48Z",
+      "side": 1,
+      "message": "spv::DimCube",
+      "range": {
+        "startLine": 4367,
+        "startChar": 51,
+        "endLine": 4367,
+        "endChar": 52
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61725bb7_1047e0d7",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T13:49:48Z",
+      "side": 1,
+      "message": "Do we need these? Shaders don\u0027t directly access Images, they access ImageViews.",
+      "range": {
+        "startLine": 73,
+        "startChar": 1,
+        "endLine": 75,
+        "endChar": 36
+      },
+      "revId": "191e9624a5345805a767c16270ac2cbd3895eae5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
