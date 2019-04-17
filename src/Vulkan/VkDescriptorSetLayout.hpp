@@ -36,6 +36,14 @@ struct SampledImageDescriptor
 	sw::Texture texture;
 };
 
+struct StorageImageDescriptor
+{
+	void *ptr;
+	VkExtent3D extent;
+	int rowPitchBytes;
+	int slicePitchBytes;
+};
+
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 public:
