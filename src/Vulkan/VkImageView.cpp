@@ -144,7 +144,41 @@ void ImageView::resolve(ImageView* resolveAttachment)
 	image->copyTo(*(resolveAttachment->image), region);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect) const
+const Image* ImageView::getImage(Usage usage) const
+{
+	switch(usage)
+	{
+	case NATIVE:
+		return image;
+	case SAMPLING:
+		return image->getSampledImage();
+	default:
+		UNIMPLEMENTED("usage %d", usage);
+		return nullptr;
+	}
+}
+
+Format ImageView::getFormat(Usage usage) const
+{
+	return getImage(usage)->getFormat();
+}
+
+int ImageView::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
+{
+	return getImage(usage)->getSampledImage()->rowPitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel);
+}
+
+int ImageView::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
+{
+	return getImage(usage)->getSampledImage()->slicePitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel);
+}
+
+VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
+{
+	return image->getMipLevelExtent(subresourceRange.baseMipLevel + mipLevel);
+}
+
+void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, Usage usage) const
 {
 	VkImageSubresourceLayers imageSubresourceLayers =
 	{
@@ -153,7 +187,7 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBit
 		subresourceRange.baseArrayLayer,
 		subresourceRange.layerCount
 	};
-	return image->getTexelPointer(offset, imageSubresourceLayers);
+	return getImage(usage)->getTexelPointer(offset, imageSubresourceLayers);
 }
 
 }
