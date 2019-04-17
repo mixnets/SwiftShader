@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee7771a3_a66fb180",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-17T14:08:54Z",
+      "side": 1,
+      "message": "nit: Other surrounding functions start with a lowercase letter. This is all a bit random in this codebase though.",
+      "range": {
+        "startLine": 385,
+        "startChar": 6,
+        "endLine": 385,
+        "endChar": 23
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3dfa9a2c_6ac08bd1",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1749,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-17T14:08:54Z",
+      "side": 1,
+      "message": "Add an overload of CheckCompileFails, similar to `void checkCompiles(std::string s)` and you won\u0027t have to duplicate this for vertex / fragment.",
+      "range": {
+        "startLine": 1749,
+        "startChar": 1,
+        "endLine": 1749,
+        "endChar": 18
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
