@@ -2,6 +2,98 @@
   "comments": [
     {
       "key": {
+        "uuid": "d7e4100b_419d3714",
+        "filename": "src/OpenGL/compiler/OutputASM.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3115,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T19:14:04Z",
+      "side": 1,
+      "message": "Perhaps arrayExceedsLimits() can be moved into allocate() and make it return -1 on failure. This way we systematically ensure that all allocate() calls validate the array size. Of course we still have to check for -1 at every allocate() call site, but at least it becomes part of a documented (!) contract then.",
+      "range": {
+        "startLine": 3111,
+        "startChar": 3,
+        "endLine": 3115,
+        "endChar": 37
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d676188_0f3d2c38",
+        "filename": "src/OpenGL/compiler/OutputASM.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3471,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T19:14:04Z",
+      "side": 1,
+      "message": "nullptr",
+      "range": {
+        "startLine": 3471,
+        "startChar": 39,
+        "endLine": 3471,
+        "endChar": 43
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8caf894b_91049444",
+        "filename": "src/OpenGL/compiler/OutputASM.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3491,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T19:14:04Z",
+      "side": 1,
+      "message": "true",
+      "range": {
+        "startLine": 3491,
+        "startChar": 10,
+        "endLine": 3491,
+        "endChar": 11
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97c0747d_ee55064f",
+        "filename": "src/OpenGL/compiler/OutputASM.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3493,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T19:14:04Z",
+      "side": 1,
+      "message": "false",
+      "range": {
+        "startLine": 3493,
+        "startChar": 9,
+        "endLine": 3493,
+        "endChar": 10
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ee7771a3_a66fb180",
         "filename": "tests/GLESUnitTests/unittests.cpp",
         "patchSetId": 1
@@ -13,6 +105,30 @@
       "writtenOn": "2019-04-17T14:08:54Z",
       "side": 1,
       "message": "nit: Other surrounding functions start with a lowercase letter. This is all a bit random in this codebase though.",
+      "range": {
+        "startLine": 385,
+        "startChar": 6,
+        "endLine": 385,
+        "endChar": 23
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f752ed4d_f08ed76e",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-17T19:14:04Z",
+      "side": 1,
+      "message": "note: I believe Chromium has or had a style rule to start static functions with a capital letter, which made its way into parts of the SwiftShader code base especially stuff derived from ANGLE. The GLSL compiler started off from 3DLabs code and has its own (personally disliked) style. LLVM and Subzero also have their own flavor.\n\nWith Pastel I\u0027m currently not enforcing a particular style too hard, to keep the velocity, but once we reach 1.0 there\u0027s a nice opportunity to homogenize everything above the JIT backends.",
+      "parentUuid": "ee7771a3_a66fb180",
       "range": {
         "startLine": 385,
         "startChar": 6,
