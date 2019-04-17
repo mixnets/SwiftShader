@@ -95,6 +95,7 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 		return sizeof(SampledImageDescriptor);
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+		return sizeof(StorageImageDescriptor);
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
 		return sizeof(VkDescriptorImageInfo);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
@@ -250,13 +251,11 @@ const uint8_t* DescriptorSetLayout::GetInputData(const VkWriteDescriptorSet& wri
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
 		return reinterpret_cast<const uint8_t*>(writeDescriptorSet.pTexelBufferView);
-		break;
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 		return reinterpret_cast<const uint8_t*>(writeDescriptorSet.pBufferInfo);
-		break;
 	default:
 		UNIMPLEMENTED("descriptorType");
 		return nullptr;
@@ -430,6 +429,19 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 					texture->mipmap[1].onePitchP[3] = CStride;
 				}
 			}
+		}
+	}
+	else if (writeDescriptorSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+	{
+		auto descriptor = reinterpret_cast<StorageImageDescriptor *>(memToWrite);
+		for(uint32_t i = 0; i < writeDescriptorSet.descriptorCount; i++)
+		{
+			auto imageView = vk::Cast(writeDescriptorSet.pImageInfo[i].imageView);
+			descriptor->ptr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT);
+			descriptor->extent = imageView->getMipLevelExtent(0);
+			descriptor->rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			descriptor->slicePitchBytes = imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			descriptor->arrayLayers = imageView->getSubresourceRange().layerCount;
 		}
 	}
 	else

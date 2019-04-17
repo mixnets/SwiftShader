@@ -4388,10 +4388,8 @@ namespace sw
 		}
 		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 		{
-			Pointer<Byte> imageInfo = binding; // VkDescriptorImageInfo*
-			Pointer<Byte> imageView = *Pointer<Pointer<Byte>>(imageInfo + OFFSET(VkDescriptorImageInfo, imageView)); // vk::ImageView*
-			Pointer<Byte> image = *Pointer<Pointer<Byte>>(imageView + vk::ImageView::ImageOffset); // vk::Image*
-			Pointer<Int> extent = image + vk::Image::ExtentOffset; // int[3]*
+			Pointer<Byte> desc = binding; // StorageImageDescriptor*
+			Pointer<Int> extent = desc + OFFSET(vk::StorageImageDescriptor, extent); // int[3]*
 			auto dimensions = resultType.sizeInComponents - (isArrayed ? 1 : 0);
 			for (uint32_t i = 0; i < dimensions; i++)
 			{
@@ -4399,7 +4397,7 @@ namespace sw
 			}
 			if (isArrayed)
 			{
-				auto arrayLayers = *Pointer<Int>(image + vk::Image::ArrayLayersOffset); // uint32_t
+				auto arrayLayers = *Pointer<Int>(desc + OFFSET(vk::StorageImageDescriptor, arrayLayers)); // uint32_t
 				auto numElements = isCubeMap ? arrayLayers / 6 : arrayLayers;
 				dst.move(dimensions, SIMD::Int(numElements));
 			}
