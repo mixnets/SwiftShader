@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "caa26eb2_ccffeaa3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-18T14:58:58Z",
+      "side": 1,
+      "message": "Ack - although I\u0027m from a world where output parameters always come last.\nI looked at changing this, and I know I\u0027m just going to break something. So leaving as-is for now.",
+      "parentUuid": "5f121bba_146a05c0",
+      "range": {
+        "startLine": 746,
+        "startChar": 28,
+        "endLine": 746,
+        "endChar": 68
+      },
+      "revId": "fb075778fbab7a976b47087778ef43248aec8103",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d54ca9ff_c4501ae6",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2019-04-18T14:19:54Z",
       "side": 1,
       "message": "FYI, I experimented with this code and it was relatively straightforward to keep the function pointer around at the OpImageSample to avoid this repeated overhead when we know the descriptor won\u0027t change. So that makes me comfortable about going forward with this change. For non-constant indexed descriptors we can just check dynamically if it\u0027s the same as last time and reuse the function, to in most cases avoid this mutex and larger map lookup as well.\n\nBest of both worlds!",
+      "range": {
+        "startLine": 50,
+        "startChar": 4,
+        "endLine": 54,
+        "endChar": 49
+      },
+      "revId": "fb075778fbab7a976b47087778ef43248aec8103",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "637a3040_3f376ae8",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-18T14:58:58Z",
+      "side": 1,
+      "message": "Great!",
+      "parentUuid": "d54ca9ff_c4501ae6",
       "range": {
         "startLine": 50,
         "startChar": 4,
