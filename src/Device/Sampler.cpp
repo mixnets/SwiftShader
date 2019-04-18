@@ -68,7 +68,6 @@ namespace sw
 
 		compare = COMPARE_BYPASS;
 
-		texture.LOD = 0.0f;
 		exp2LOD = 1.0f;
 
 		texture.baseLevel = 0;
@@ -378,7 +377,6 @@ namespace sw
 
 	void Sampler::setMipmapLOD(float LOD)
 	{
-		texture.LOD = LOD;
 		exp2LOD = exp2(LOD);
 	}
 

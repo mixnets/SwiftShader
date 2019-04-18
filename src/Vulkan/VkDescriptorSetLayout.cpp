@@ -335,6 +335,10 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 					texture->depthLOD[1] = depth * exp2LOD;
 					texture->depthLOD[2] = depth * exp2LOD;
 					texture->depthLOD[3] = depth * exp2LOD;
+
+					texture->baseLevel = baseLevel;
+					texture->maxLod = imageView.;
+					texture->minLod = 0;
 				}
 
 				if(format.isFloatFormat())
