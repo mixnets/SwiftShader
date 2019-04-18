@@ -4380,30 +4380,28 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
-	SIMD::Int SpirvShader::GetTexelOffset(GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const
+	SIMD::Pointer SpirvShader::GetTexelAddress(SIMD::Pointer ptr, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const
 	{
-		// returns a (lane-divergent) byte offset to a texel within a storage image.
 		bool isArrayed = imageType.definition.word(5) != 0;
 		int dims = getType(coordinate.type).sizeInComponents - (isArrayed ? 1 : 0);
 
-		SIMD::Int texelOffset = coordinate.Int(0) * SIMD::Int(texelSize);
+		ptr += coordinate.Int(0) * SIMD::Int(texelSize);
 		if (dims > 1)
 		{
-			texelOffset += coordinate.Int(1) * SIMD::Int(
+			ptr += coordinate.Int(1) * SIMD::Int(
 					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, rowPitchBytes)));
 		}
 		if (dims > 2)
 		{
-			texelOffset += coordinate.Int(2) * SIMD::Int(
+			ptr += coordinate.Int(2) * SIMD::Int(
 					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
 		}
 		if (isArrayed)
 		{
-			texelOffset += coordinate.Int(dims) * SIMD::Int(
+			ptr += coordinate.Int(dims) * SIMD::Int(
 					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
 		}
-
-		return texelOffset;
+		return ptr;
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
@@ -4429,6 +4427,7 @@ namespace sw
 		Pointer<Byte> set = state->routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
 		Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);
 		Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(binding + OFFSET(vk::StorageImageDescriptor, ptr));
+		auto imageSizeInBytes = *Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
 
@@ -4476,19 +4475,13 @@ namespace sw
 			UNIMPLEMENTED("spv::ImageFormat %u", format);
 		}
 
-		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, texelSize);
+		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
+		auto texelPtr = GetTexelAddress(basePtr, coordinate, imageType, binding, texelSize);
 
 		for (auto i = 0u; i < numPackedElements; i++)
 		{
-			for (int j = 0; j < 4; j++)
-			{
-				If(Extract(state->activeLaneMask(), j) != 0)
-				{
-					Int offset = Int(sizeof(float) * i) + Extract(texelOffset, j);
-					packed[i] = Insert(packed[i], Load(RValue<Pointer<Int>>(&imageBase[offset]), sizeof(uint32_t), false,
-						  std::memory_order_relaxed), j);
-				}
-			}
+			packed[i] = SIMD::Load<SIMD::Int>(texelPtr, state->activeLaneMask());
+			texelPtr += sizeof(float);
 		}
 
 		switch(format)
@@ -4587,6 +4580,7 @@ namespace sw
 		Pointer<Byte> set = state->routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
 		Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);	// StorageImageDescriptor*
 		Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(binding + OFFSET(vk::StorageImageDescriptor, ptr));
+		auto imageSizeInBytes = *Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 		SIMD::Int packed[4];
 		auto numPackedElements = 0u;
@@ -4657,19 +4651,13 @@ namespace sw
 			UNIMPLEMENTED("spv::ImageFormat %u", format);
 		}
 
-		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, texelSize);
+		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
+		auto texelPtr = GetTexelAddress(basePtr, coordinate, imageType, binding, texelSize);
 
 		for (auto i = 0u; i < numPackedElements; i++)
 		{
-			for (int j = 0; j < 4; j++)
-			{
-				If(Extract(state->activeLaneMask(), j) != 0)
-				{
-					Int offset = Int(sizeof(float) * i) + Extract(texelOffset, j);
-					Store(Extract(packed[i], j), RValue<Pointer<Int>>(&imageBase[offset]), sizeof(uint32_t), false,
-						  std::memory_order_relaxed);
-				}
-			}
+			SIMD::Store(texelPtr, packed[i], state->activeLaneMask());
+			texelPtr += sizeof(float);
 		}
 
 		return EmitResult::Continue;
