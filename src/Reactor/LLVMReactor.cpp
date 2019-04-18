@@ -782,6 +782,15 @@ namespace rr
 
 			passManager->add(llvm::createSROAPass());
 
+			{
+				// These passes clean up constant boolean conditional branches:
+				//   br i1 [true,false]
+				passManager->add(llvm::createGVNPass());
+				passManager->add(llvm::createInstructionCombiningPass());
+				passManager->add(llvm::createCFGSimplificationPass());
+				passManager->add(llvm::createDeadCodeEliminationPass());
+			}
+
 			for(int pass = 0; pass < 10 && optimization[pass] != Disabled; pass++)
 			{
 				switch(optimization[pass])
@@ -1069,7 +1078,7 @@ namespace rr
 			}
 		}
 
-		if(false)
+		if(true)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
@@ -1087,7 +1096,7 @@ namespace rr
 			optimize();
 		}
 
-		if(false)
+		if(true)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
