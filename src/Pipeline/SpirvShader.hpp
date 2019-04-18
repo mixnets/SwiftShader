@@ -49,6 +49,9 @@ namespace sw
 	// Forward declarations.
 	class SpirvRoutine;
 	class GenericValue;
+	enum FilterType ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
+	enum MipmapType ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
+	enum AddressingMode ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
 
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
@@ -757,10 +760,15 @@ namespace sw
 
 		using ImageSampler = void(void* image, void* uvsIn, void* texelOut);
 
-		static ImageSampler *getImageSampler(vk::ImageView *imageView, vk::Sampler *sampler);
+		static ImageSampler *getImageSampler(const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static void emitSamplerFunction(
-			vk::ImageView *imageView, vk::Sampler *sampler,
+			const vk::ImageView *imageView, const vk::Sampler *sampler,
 			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out);
+
+		// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
+		static sw::FilterType convertFilterMode(const vk::Sampler *sampler);
+		static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
+		static sw::AddressingMode convertAddressingMode(VkSamplerAddressMode);
 	};
 
 	class SpirvRoutine
