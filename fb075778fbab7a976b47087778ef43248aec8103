@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f121bba_146a05c0",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-18T14:19:54Z",
+      "side": 1,
+      "message": "nit: result, image, coordinates order makes a bit more sense to me to match the SPIR-V instruction. Can refactor that later though.",
+      "range": {
+        "startLine": 746,
+        "startChar": 28,
+        "endLine": 746,
+        "endChar": 68
+      },
+      "revId": "fb075778fbab7a976b47087778ef43248aec8103",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d54ca9ff_c4501ae6",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-18T14:19:54Z",
+      "side": 1,
+      "message": "FYI, I experimented with this code and it was relatively straightforward to keep the function pointer around at the OpImageSample to avoid this repeated overhead when we know the descriptor won\u0027t change. So that makes me comfortable about going forward with this change. For non-constant indexed descriptors we can just check dynamically if it\u0027s the same as last time and reuse the function, to in most cases avoid this mutex and larger map lookup as well.\n\nBest of both worlds!",
+      "range": {
+        "startLine": 50,
+        "startChar": 4,
+        "endLine": 54,
+        "endChar": 49
+      },
+      "revId": "fb075778fbab7a976b47087778ef43248aec8103",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
