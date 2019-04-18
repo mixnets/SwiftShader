@@ -86,8 +86,8 @@ namespace sw
 				return *this;
 			}
 
-			inline Pointer operator + (Int i) { Pointer p = *this; p += i; return p; }
-			inline Pointer operator * (Int i) { Pointer p = *this; p *= i; return p; }
+			inline Pointer operator + (SIMD::Int i) { Pointer p = *this; p += i; return p; }
+			inline Pointer operator * (SIMD::Int i) { Pointer p = *this; p *= i; return p; }
 
 			inline Pointer& operator += (int i)
 			{
@@ -835,7 +835,7 @@ namespace sw
 		EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageWrite(InsnIterator insn, EmitState *state) const;
 
-		SIMD::Int GetTexelOffset(GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
+		SIMD::Pointer GetTexelAddress(SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
 
 		// OpcodeName() returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName() will only return the numerical code.
