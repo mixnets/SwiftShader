@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "194f7a79_4fc5facf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-18T02:50:03Z",
+      "side": 1,
+      "message": "nit: Mentioning SwiftShader here is a bit redundant, but instead it would be useful to mention that this is GLSL related. So I\u0027d go with something like \"Reject large arrays of uniforms in GLSL\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 46
+      },
+      "revId": "baa91db7ce4de3bc985e3fdf382bda3b374c9848",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7e4100b_419d3714",
         "filename": "src/OpenGL/compiler/OutputASM.cpp",
         "patchSetId": 1
