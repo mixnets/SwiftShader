@@ -4292,14 +4292,17 @@ namespace sw
 		auto sampler = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, sampler)); // vk::Sampler*
 		auto imageView = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, imageView)); // vk::ImageView*
 
-		auto samplerFunc = Call(getImageSampler, imageView, sampler);
+		If(state->routine->samplerRoutine.isNull())
+		{
+			state->routine->samplerRoutine = Call(getImageSampler, imageView, sampler);
+		}
 
 		Array<SIMD::Float> in(2);
 		in[0] = coordinate.Float(0);
 		in[1] = coordinate.Float(1);
 
 		Array<SIMD::Float> out(4);
-		Call<ImageSampler>(samplerFunc, sampledImage, &in[0], &out[0]);
+		Call<ImageSampler>(state->routine->samplerRoutine, sampledImage, &in[0], &out[0]);
 
 		for (int i = 0; i < 4; i++) { result.move(i, out[i]); }
 
@@ -4479,6 +4482,7 @@ namespace sw
 	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
 		pipelineLayout(pipelineLayout)
 	{
+		//sampler = As<Pointer<Byte>>(Long(Int(0)));
 	}
 
 }

@@ -774,6 +774,8 @@ namespace sw
 		Pointer<Byte> pushConstants;
 		Int killMask = Int{0};
 
+		Pointer<Byte> samplerRoutine;
+
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
 		{
 			bool added = variables.emplace(id, Variable(size)).second;

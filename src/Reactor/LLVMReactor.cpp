@@ -1573,6 +1573,12 @@ namespace rr
 		return V(::builder->CreateFCmpUNE(V(lhs), V(rhs)));
 	}
 
+	Value *Nucleus::createIsNull(Value *pointer)
+	{
+		auto asint = ::builder->CreatePtrToInt(V(pointer), T(Long::getType()));
+		return V(::builder->CreateICmpEQ(asint, V(createConstantLong(0))));
+	}
+
 	Value *Nucleus::createExtractElement(Value *vector, Type *type, int index)
 	{
 		ASSERT(V(vector)->getType()->getContainedType(0) == T(type));

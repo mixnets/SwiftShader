@@ -255,6 +255,9 @@
     <ClCompile Include="..\WSI\VkSwapchainKHR.cpp">
       <Filter>Source Files\WSI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Pipeline\SpirvShaderSampling.cpp">
+      <Filter>Source Files\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
