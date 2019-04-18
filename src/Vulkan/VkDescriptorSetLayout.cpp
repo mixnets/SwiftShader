@@ -444,6 +444,7 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
+			descriptor[i].sizeInBytes = imageView->getImageSizeInBytes();
 		}
 	}
 	else if (writeDescriptorSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER)
@@ -457,6 +458,7 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 			descriptor[i].rowPitchBytes = 0;
 			descriptor[i].slicePitchBytes = 0;
 			descriptor[i].arrayLayers = 1;
+			descriptor[i].sizeInBytes = bufferView->getRangeInBytes();
 		}
 	}
 	else
