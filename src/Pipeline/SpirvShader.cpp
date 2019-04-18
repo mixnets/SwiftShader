@@ -4412,6 +4412,32 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SIMD::Int SpirvShader::GetTexelOffset(GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const
+	{
+		// returns a (lane-divergent) byte offset to a texel within a storage image.
+		bool isArrayed = imageType.definition.word(5) != 0;
+		int dims = getType(coordinate.type).sizeInComponents - (isArrayed ? 1 : 0);
+
+		SIMD::Int texelOffset = coordinate.Int(0) * SIMD::Int(texelSize);
+		if (dims > 1)
+		{
+			texelOffset += coordinate.Int(1) * SIMD::Int(
+					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, rowPitchBytes)));
+		}
+		if (dims > 2)
+		{
+			texelOffset += coordinate.Int(2) * SIMD::Int(
+					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
+		}
+		if (isArrayed)
+		{
+			texelOffset += coordinate.Int(dims) * SIMD::Int(
+					*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
+		}
+
+		return texelOffset;
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -4439,7 +4465,6 @@ namespace sw
 		Pointer<Byte> imageBase = *Pointer<Pointer<Byte>>(binding + OFFSET(vk::StorageImageDescriptor, ptr));
 
 		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
-
 
 		SIMD::Int packed[4];
 		auto numPackedElements = 0u;
@@ -4485,17 +4510,7 @@ namespace sw
 			UNIMPLEMENTED("spv::ImageFormat %u", format);
 		}
 
-		SIMD::Int texelOffset = coordinate.Int(0) * SIMD::Int(texelSize);
-		if (getType(coordinate.type).sizeInComponents > 1)
-		{
-			texelOffset += coordinate.Int(1) * SIMD::Int(
-					*Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, rowPitchBytes)));
-		}
-		if (getType(coordinate.type).sizeInComponents > 2)
-		{
-			texelOffset += coordinate.Int(2) * SIMD::Int(
-					*Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
-		}
+		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, texelSize);
 
 		for (auto i = 0u; i < numPackedElements; i++)
 		{
@@ -4678,17 +4693,7 @@ namespace sw
 			UNIMPLEMENTED("spv::ImageFormat %u", format);
 		}
 
-		SIMD::Int texelOffset = coordinate.Int(0) * SIMD::Int(texelSize);
-		if (getType(coordinate.type).sizeInComponents > 1)
-		{
-			texelOffset += coordinate.Int(1) * SIMD::Int(
-					*Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, rowPitchBytes)));
-		}
-		if (getType(coordinate.type).sizeInComponents > 2)
-		{
-			texelOffset += coordinate.Int(2) * SIMD::Int(
-					*Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, slicePitchBytes)));
-		}
+		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, texelSize);
 
 		for (auto i = 0u; i < numPackedElements; i++)
 		{
