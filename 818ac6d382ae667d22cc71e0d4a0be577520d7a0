@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44331533_8ebb7668",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-18T19:25:51Z",
+      "side": 1,
+      "message": "b/127472316",
+      "range": {
+        "startLine": 11,
+        "startChar": 7,
+        "endLine": 11,
+        "endChar": 16
+      },
+      "revId": "818ac6d382ae667d22cc71e0d4a0be577520d7a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44ef0bb5_d7a6a7d9",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-18T19:25:51Z",
+      "side": 1,
+      "message": "Need stubs for these in SubzeroReactor.cpp",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 117
+      },
+      "revId": "818ac6d382ae667d22cc71e0d4a0be577520d7a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
