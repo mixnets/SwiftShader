@@ -150,6 +150,11 @@ namespace rr
 
 	RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs)
 	{
+		if(Nucleus::isConstantTrue(lhs.value) || Nucleus::isConstantTrue(rhs.value))
+		{
+			return RValue<Bool>(Nucleus::createConstantBool(true));
+		}
+
 		return RValue<Bool>(Nucleus::createOr(lhs.value, rhs.value));
 	}
 

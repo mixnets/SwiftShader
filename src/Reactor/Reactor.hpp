@@ -3423,29 +3423,39 @@ namespace rr
 		bool loopOnce = true;
 	};
 
+	enum {TRUE_BLOCK__, FALSE_BLOCK__, IF_BLOCK__, ELSE_CLAUSE__, ELSE_BLOCK__, IFELSE_END__, IFELSE_END2__};
+
 	class IfElseData
 	{
 	public:
-		IfElseData(RValue<Bool> cmp) : iteration(0)
+		IfElseData(RValue<Bool> cmp)
 		{
 			condition = cmp.value;
+			iteration = IF_BLOCK__;
+			iteration = Nucleus::isConstantTrue(condition) ? TRUE_BLOCK__ : iteration;
+			iteration = Nucleus::isConstantFalse(condition) ? FALSE_BLOCK__ : iteration;
 
-			beginBB = Nucleus::getInsertBlock();
-			trueBB = Nucleus::createBasicBlock();
-			falseBB = nullptr;
-			endBB = Nucleus::createBasicBlock();
+			if(iteration == IF_BLOCK__)  // Not constant condition
+			{
+				beginBB = Nucleus::getInsertBlock();
+				trueBB = Nucleus::createBasicBlock();
+				endBB = Nucleus::createBasicBlock();
 
-			Nucleus::setInsertBlock(trueBB);
+				Nucleus::setInsertBlock(trueBB);
+			}
 		}
 
 		~IfElseData()
 		{
-			Nucleus::createBr(endBB);
+			if(iteration == IFELSE_END__)  // Not constant condition
+			{
+				Nucleus::createBr(endBB);
 
-			Nucleus::setInsertBlock(beginBB);
-			Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
+				Nucleus::setInsertBlock(beginBB);
+				Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
 
-			Nucleus::setInsertBlock(endBB);
+				Nucleus::setInsertBlock(endBB);
+			}
 		}
 
 		operator int()
@@ -3455,7 +3465,14 @@ namespace rr
 
 		IfElseData &operator++()
 		{
-			++iteration;
+			if(iteration < IF_BLOCK__)  // Constant condition
+			{
+				iteration = IFELSE_END2__;
+			}
+			else
+			{
+				++iteration;
+			}
 
 			return *this;
 		}
@@ -3469,12 +3486,13 @@ namespace rr
 		}
 
 	private:
-		Value *condition;
-		BasicBlock *beginBB;
-		BasicBlock *trueBB;
-		BasicBlock *falseBB;
-		BasicBlock *endBB;
-		int iteration;
+		Value *condition = nullptr;
+		BasicBlock *beginBB = nullptr;
+		BasicBlock *trueBB = nullptr;
+		BasicBlock *falseBB = nullptr;
+		BasicBlock *endBB = nullptr;
+		int iteration = IF_BLOCK__;
+		bool constant = false;
 	};
 
 	#define For(init, cond, inc) \
@@ -3483,30 +3501,28 @@ namespace rr
 
 	#define While(cond) For((void)0, cond, (void)0)
 
-	#define Do                                            \
-	{                                                     \
+	#define Do                                           \
+	{                                                    \
 		BasicBlock *body__ = Nucleus::createBasicBlock(); \
 		Nucleus::createBr(body__);                        \
 		Nucleus::setInsertBlock(body__);
 
-	#define Until(cond)                                     \
+	#define Until(cond)                                    \
 		BasicBlock *end__ = Nucleus::createBasicBlock();    \
 		Nucleus::createCondBr((cond).value, end__, body__); \
 		Nucleus::setInsertBlock(end__);                     \
 	}
 
-	enum {IF_BLOCK__, ELSE_CLAUSE__, ELSE_BLOCK__, IFELSE_NUM__};
-
 	#define If(cond)                                                    \
-	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_NUM__; ++ifElse__) \
-	if(ifElse__ == IF_BLOCK__)
+	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_END__; ++ifElse__) \
+	if(ifElse__ == IF_BLOCK__ || ifElse__ == TRUE_BLOCK__)
 
 	#define Else                       \
 	else if(ifElse__ == ELSE_CLAUSE__) \
 	{                                  \
-		 ifElse__.elseClause();        \
+		 ifElse__.elseClause();         \
 	}                                  \
-	else   // ELSE_BLOCK__
+	else if(ifElse__ == ELSE_BLOCK__ || ifElse__ == FALSE_BLOCK__)
 }
 
 #endif   // rr_Reactor_hpp

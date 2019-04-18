@@ -45,7 +45,19 @@ TEST(ReactorUnitTests, Sample)
 			Pointer<Int> p = function.Arg<0>();
 			Int x = p[-1];
 			Int y = function.Arg<1>();
-			Int z = 4;
+			Int z = -4;
+
+			Bool False = false;
+
+			If(true || False)
+			{
+				z = 4;
+			}
+
+			If(false || False)
+			{
+				z = -3;
+			}
 
 			For(Int i = 0, i < 10, i++)
 			{

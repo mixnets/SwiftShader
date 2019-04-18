@@ -165,6 +165,9 @@ namespace rr
 		static Value *createConstantVector(const int64_t *constants, Type *type);
 		static Value *createConstantVector(const double *constants, Type *type);
 
+		static bool isConstantTrue(Value *boolean);
+		static bool isConstantFalse(Value *boolean);
+
 		static Type *getPointerType(Type *elementType);
 
 	private:

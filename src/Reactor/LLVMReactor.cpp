@@ -1714,6 +1714,30 @@ namespace rr
 		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numElements)));
 	}
 
+	bool Nucleus::isConstantTrue(Value *boolean)
+	{
+		if(llvm::isa<llvm::ConstantInt>(V(boolean)))
+		{
+			auto *b = llvm::cast<llvm::ConstantInt>(V(boolean));
+
+			return b->getValue() == true;
+		}
+
+		return false;
+	}
+
+	bool Nucleus::isConstantFalse(Value *boolean)
+	{
+		if(llvm::isa<llvm::ConstantInt>(V(boolean)))
+		{
+			auto *b = llvm::cast<llvm::ConstantInt>(V(boolean));
+
+			return b->getValue() == false;
+		}
+
+		return false;
+	}
+
 	Type *Void::getType()
 	{
 		return T(llvm::Type::getVoidTy(*::context));
