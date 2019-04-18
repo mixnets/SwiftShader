@@ -1267,6 +1267,8 @@ namespace rr
 	RValue<UInt> Max(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Min(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Clamp(RValue<UInt> x, RValue<UInt> min, RValue<UInt> max);
+
+	RValue<UInt> AddAtomic(RValue<Pointer<UInt>> x, RValue<UInt> y, std::memory_order memoryOrder);
 //	RValue<UInt> RoundUInt(RValue<Float> cast);
 
 	class Int2 : public LValue<Int2>

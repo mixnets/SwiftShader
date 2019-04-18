@@ -2507,6 +2507,11 @@ namespace rr
 		return RValue<Long>(Nucleus::createAtomicAdd(x.value, y.value));
 	}
 
+	RValue<UInt> AddAtomic(RValue<Pointer<UInt> > x, RValue<UInt> y, std::memory_order memoryOrder)
+	{
+		return RValue<UInt>(Nucleus::createAtomicAdd(x.value, y.value, memoryOrder));
+	}
+
 	UInt::UInt(Argument<UInt> argument)
 	{
 		materialize();  // FIXME(b/129757459)

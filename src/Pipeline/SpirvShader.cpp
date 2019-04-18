@@ -678,6 +678,7 @@ namespace sw
 			case spv::OpDPdyFine:
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
+			case spv::OpAtomicIAdd:
 			case spv::OpPhi:
 			case spv::OpImageSampleImplicitLod:
 			case spv::OpImageQuerySize:
@@ -1977,6 +1978,9 @@ namespace sw
 		case spv::OpStore:
 		case spv::OpAtomicStore:
 			return EmitStore(insn, state);
+
+		case spv::OpAtomicIAdd:
+			return EmitAtomicIAdd(insn, state);
 
 		case spv::OpAccessChain:
 		case spv::OpInBoundsAccessChain:
@@ -4738,10 +4742,37 @@ namespace sw
 
 		state->routine->createPointer(resultId, imageBase);
 
-		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, sizeof(uint32_t));
+		// TODO: texelOffset is in bytes. get rid of shift once Ben's changes for DivergentPointer land
+		SIMD::Int texelOffset = GetTexelOffset(coordinate, imageType, binding, sizeof(uint32_t)) >> 2;
 		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
 		dst.move(0, texelOffset);
 
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitAtomicIAdd(InsnIterator insn, EmitState *state) const
+	{
+		auto &resultType = getType(Type::ID(insn.word(1)));
+		Object::ID resultId = insn.word(2);
+		Object::ID semanticsId = insn.word(5);
+		auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+		auto memoryOrder = MemoryOrder(memorySemantics);
+		auto value = GenericValue(this, state->routine, insn.word(6));
+		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
+		auto ptr = Pointer<UInt>(state->routine->getPointer(insn.word(3)));
+		auto offsets = state->routine->getIntermediate(insn.word(3)).UInt(0);
+
+		SIMD::UInt x;
+		for (int j = 0; j < SIMD::Width; j++)
+		{
+			If(Extract(state->activeLaneMask(), j) != 0)
+			{
+				auto offset = Extract(offsets, j);
+				x = Insert(x, AddAtomic(&ptr[offset], Extract(value.UInt(0), j), memoryOrder), j);
+			}
+		}
+
+		dst.move(0, x);
 		return EmitResult::Continue;
 	}
 
