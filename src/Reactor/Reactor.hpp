@@ -2285,6 +2285,11 @@ namespace rr
 		Reference<T> operator[](RValue<Int> index);
 		Reference<T> operator[](RValue<UInt> index);
 
+		RValue<Bool> isNull()
+		{
+			return RValue<Bool>(Nucleus::createIsNull(LValue<Pointer<T>>::loadValue()));
+		}
+
 		static Type *getType();
 
 	private:

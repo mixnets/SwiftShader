@@ -49,6 +49,9 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(vk::ImageView *imageView
     // unique ids.
     auto key = reinterpret_cast<uintptr_t>(imageView) ^ reinterpret_cast<uintptr_t>(sampler);
 
+	 static std::atomic<int> counter = 0;
+	 counter++;
+
     std::unique_lock<std::mutex> lock(mutex);
     auto it = cache.find(key);
     if (it != cache.end()) { return it->second; }

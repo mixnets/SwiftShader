@@ -139,6 +139,8 @@ namespace rr
 		static Value *createFCmpULE(Value *lhs, Value *rhs);
 		static Value *createFCmpUNE(Value *lhs, Value *rhs);
 
+		static Value *createIsNull(Value *pointer);
+
 		// Vector instructions
 		static Value *createExtractElement(Value *vector, Type *type, int index);
 		static Value *createInsertElement(Value *vector, Value *element, int index);

@@ -107,6 +107,7 @@ IF EXIST "$(SolutionDir)..\deqp\build\external\vulkancts\modules\vulkan\" (copy 
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Pipeline\SpirvShaderSampling.cpp" />
     <ClCompile Include="libVulkan.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VkBuffer.cpp" />
