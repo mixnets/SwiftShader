@@ -14,8 +14,9 @@
 
 #include "SpirvShader.hpp"
 #include "SpirvUnsupported.hpp"
-
 #include "SamplerCore.hpp"
+
+#include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkBufferView.hpp"
@@ -543,6 +544,7 @@ namespace sw
 				object.definition = insn;
 				object.type = typeId;
 
+				ASSERT(getType(typeId).definition.opcode() == spv::OpTypePointer);
 				ASSERT(getType(typeId).storageClass == storageClass);
 
 				switch (storageClass)
@@ -570,6 +572,13 @@ namespace sw
 					break;
 
 				case spv::StorageClassWorkgroup:
+				{
+					auto &elTy = getType(getType(typeId).element);
+					auto sizeInBytes = elTy.sizeInComponents * sizeof(float);
+					workgroupMemory.allocate(resultId, sizeInBytes);
+					object.kind = Object::Kind::Pointer;
+					break;
+				}
 				case spv::StorageClassAtomicCounter:
 				case spv::StorageClassImage:
 					UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
@@ -862,6 +871,7 @@ namespace sw
 			case spv::OpImageQuerySize:
 			case spv::OpImageRead:
 			case spv::OpImageTexelPointer:
+			case spv::OpGroupNonUniformElect:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
 				break;
@@ -870,6 +880,11 @@ namespace sw
 			case spv::OpAtomicStore:
 			case spv::OpImageWrite:
 				// Don't need to do anything during analysis pass
+				break;
+
+			case spv::OpControlBarrier:
+			case spv::OpMemoryBarrier:
+				modes.ContainsBarriers = true;
 				break;
 
 			case spv::OpExtension:
@@ -1145,6 +1160,7 @@ namespace sw
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		case spv::StorageClassPushConstant:
+		case spv::StorageClassWorkgroup:
 			return false;
 		default:
 			return true;
@@ -2416,6 +2432,15 @@ namespace sw
 		case spv::OpImageTexelPointer:
 			return EmitImageTexelPointer(insn, state);
 
+		case spv::OpControlBarrier:
+			return EmitControlBarrier(insn, state);
+
+		case spv::OpMemoryBarrier:
+			return EmitMemoryBarrier(insn, state);
+
+		case spv::OpGroupNonUniformElect:
+			return EmitGroupNonUniform(insn, state);
+
 		default:
 			UNREACHABLE("%s", OpcodeName(opcode).c_str());
 			break;
@@ -2442,6 +2467,14 @@ namespace sw
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * sizeof(float) * SIMD::Width;
 			routine->createPointer(resultId, SIMD::Pointer(base, size));
+			break;
+		}
+		case spv::StorageClassWorkgroup:
+		{
+			ASSERT(objectTy.opcode() == spv::OpTypePointer);
+			auto base = &routine->workgroupMemory[0];
+			auto size = workgroupMemory.size();
+			routine->createPointer(resultId, SIMD::Pointer(base, size, workgroupMemory.offsetOf(resultId)));
 			break;
 		}
 		case spv::StorageClassInput:
@@ -4687,6 +4720,11 @@ namespace sw
 		return ptr;
 	}
 
+	void SpirvShader::Yield(YieldResult res) const
+	{
+		rr::Yield(RValue<Int>(int(res)));
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -5178,6 +5216,98 @@ namespace sw
 		}
 
 		dst.move(0, x);
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto &executionScopeObj = getObject(Object::ID(insn.word(2)));
+		ASSERT(executionScopeObj.kind == Object::Kind::Constant);
+		ASSERT(getType(executionScopeObj.type).sizeInComponents == 1);
+		auto executionScope = spv::Scope(executionScopeObj.constantValue[0]);
+
+		auto &memoryScopeObj = getObject(Object::ID(insn.word(2)));
+		ASSERT(memoryScopeObj.kind == Object::Kind::Constant);
+		ASSERT(getType(memoryScopeObj.type).sizeInComponents == 1);
+		auto memoryScope = spv::Scope(memoryScopeObj.constantValue[0]);
+
+		(void)memoryScope; // TODO
+
+		switch (executionScope)
+		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceControlBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupControlBarrier);
+			break;
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::SubgroupControlBarrier);
+			break;
+		default:
+			UNIMPLEMENTED("executionScope: %d", int(executionScope));
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto &scopeObj = getObject(Object::ID(insn.word(1)));
+		ASSERT(scopeObj.kind == Object::Kind::Constant);
+		ASSERT(getType(scopeObj.type).sizeInComponents == 1);
+		auto scope = spv::Scope(scopeObj.constantValue[0]);
+
+		switch (scope)
+		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceMemoryBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupMemoryBarrier);
+			break;
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::SubgroupMemoryBarrier);
+			break; // TODO
+		default:
+			UNIMPLEMENTED("scope: %d", int(scope));
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
+	{
+		auto &type = getType(Type::ID(insn.word(1)));
+		Object::ID resultId = insn.word(2);
+		auto &dst = state->routine->createIntermediate(resultId, type.sizeInComponents);
+		switch (insn.opcode())
+		{
+		case spv::OpGroupNonUniformElect:
+		{
+			// Result is true only in the active invocation with the lowest id
+			// in the group, otherwise result is false.
+			auto active = state->activeLaneMask();
+			// TODO: Add swizzle operators to Int4.
+			//   auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+			//   elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+			// Bonus points if could write this as:
+			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
+			auto x = Extract(active, 0);
+			auto y = Extract(active, 1);
+			auto z = Extract(active, 2);
+			auto w = Extract(active, 3);
+			SIMD::Int elect;
+			elect = Insert(elect, x, 0);
+			elect = Insert(elect, y & ~x, 1);
+			elect = Insert(elect, z & ~(x | y), 2);
+			elect = Insert(elect, w & ~(x | y | z), 3);
+			dst.move(0, elect);
+			break;
+		}
+		default:
+			UNIMPLEMENTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()).c_str());
+		}
 		return EmitResult::Continue;
 	}
 
