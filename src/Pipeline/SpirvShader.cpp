@@ -679,6 +679,7 @@ namespace sw
 			case spv::OpFwidthFine:
 			case spv::OpAtomicLoad:
 			case spv::OpAtomicIAdd:
+			case spv::OpAtomicISub:
 			case spv::OpAtomicSMin:
 			case spv::OpAtomicSMax:
 			case spv::OpAtomicUMin:
@@ -686,6 +687,8 @@ namespace sw
 			case spv::OpAtomicAnd:
 			case spv::OpAtomicOr:
 			case spv::OpAtomicXor:
+			case spv::OpAtomicIIncrement:
+			case spv::OpAtomicIDecrement:
 			case spv::OpAtomicExchange:
 			case spv::OpAtomicCompareExchange:
 			case spv::OpPhi:
@@ -2015,6 +2018,7 @@ namespace sw
 			return EmitStore(insn, state);
 
 		case spv::OpAtomicIAdd:
+		case spv::OpAtomicISub:
 		case spv::OpAtomicSMin:
 		case spv::OpAtomicSMax:
 		case spv::OpAtomicUMin:
@@ -2022,6 +2026,8 @@ namespace sw
 		case spv::OpAtomicAnd:
 		case spv::OpAtomicOr:
 		case spv::OpAtomicXor:
+		case spv::OpAtomicIIncrement:
+		case spv::OpAtomicIDecrement:
 		case spv::OpAtomicExchange:
 			return EmitAtomicOp(insn, state);
 
@@ -4757,7 +4763,8 @@ namespace sw
 		Object::ID semanticsId = insn.word(5);
 		auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
 		auto memoryOrder = MemoryOrder(memorySemantics);
-		auto value = GenericValue(this, state->routine, insn.word(6));
+		// Where no value is provided (increment/decrement) use an implicit value of 1.
+		auto value = (insn.wordCount() == 7) ? GenericValue(this, state->routine, insn.word(6)).UInt(0) : RValue<SIMD::UInt>(1);
 		auto &dst = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
 		auto ptr = state->routine->getPointer(insn.word(3));
 
@@ -4767,12 +4774,17 @@ namespace sw
 			If(Extract(state->activeLaneMask(), j) != 0)
 			{
 				auto offset = Extract(ptr.offset, j);
-				auto laneValue = Extract(value.UInt(0), j);
+				auto laneValue = Extract(value, j);
 				UInt v;
 				switch (insn.opcode())
 				{
 				case spv::OpAtomicIAdd:
+				case spv::OpAtomicIIncrement:
 					v = AddAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
+					break;
+				case spv::OpAtomicISub:
+				case spv::OpAtomicIDecrement:
+					v = SubAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
 					break;
 				case spv::OpAtomicAnd:
 					v = AndAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
