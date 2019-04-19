@@ -485,6 +485,7 @@ namespace sw
 				object.definition = insn;
 				object.type = typeId;
 
+				ASSERT(getType(typeId).definition.opcode() == spv::OpTypePointer);
 				ASSERT(getType(typeId).storageClass == storageClass);
 
 				switch (storageClass)
@@ -512,6 +513,13 @@ namespace sw
 					break;
 
 				case spv::StorageClassWorkgroup:
+				{
+					auto sizeInBytes = getType(typeId).sizeInComponents * sizeof(float);
+					workgroupMemory.allocate(resultId, sizeInBytes);
+					object.kind = Object::Kind::Pointer;
+					break;
+				}
+
 				case spv::StorageClassCrossWorkgroup:
 				case spv::StorageClassGeneric:
 				case spv::StorageClassAtomicCounter:
@@ -2358,6 +2366,13 @@ namespace sw
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * sizeof(float) * SIMD::Width;
 			routine->createPointer(resultId, SIMD::Pointer(base, size));
+			break;
+		}
+		case spv::StorageClassWorkgroup:
+		{
+			auto base = &routine->workgroupMemory[0];
+			auto sizeInBytes = objectTy.sizeInComponents * sizeof(float);
+			routine->createPointer(resultId, SIMD::Pointer(base, sizeInBytes, workgroupMemory.offsetOf(resultId)));
 			break;
 		}
 		case spv::StorageClassInput:

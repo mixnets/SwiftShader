@@ -53,6 +53,7 @@ namespace sw
 			vk::DescriptorSet::Bindings const &descriptorSetBindings,
 			vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 			PushConstantStorage const &pushConstants,
+			uint8_t *workgroupMemory,
 			uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 
 	protected:
@@ -69,6 +70,7 @@ namespace sw
 			uint4 numWorkgroups;
 			uint4 workgroupID;
 			PushConstantStorage pushConstants;
+			uint8_t* workgroupMemory;
 		};
 
 		SpirvRoutine routine;
