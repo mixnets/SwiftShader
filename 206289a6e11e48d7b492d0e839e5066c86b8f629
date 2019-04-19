@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02b12349_deb504fa",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1419,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-19T17:53:24Z",
+      "side": 1,
+      "message": "You do not want to do this.\nThe interleaved by lane stuff will multiply the offset. By just changing the base, offsets will be completely out of whack. (I also made this mistake this week).",
+      "range": {
+        "startLine": 1419,
+        "startChar": 3,
+        "endLine": 1419,
+        "endChar": 30
+      },
+      "revId": "206289a6e11e48d7b492d0e839e5066c86b8f629",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
