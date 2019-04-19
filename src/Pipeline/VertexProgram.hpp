@@ -32,15 +32,12 @@ namespace sw
 		VertexProgram(
 			const VertexProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,
-			SpirvShader const *spirvShader,
-			const vk::DescriptorSet::Bindings &descriptorSets);
+			SpirvShader const *spirvShader);
 
 		virtual ~VertexProgram();
 
 	private:
 		void program(UInt &index) override;
-
-		const vk::DescriptorSet::Bindings &descriptorSets;
 	};
 }
 

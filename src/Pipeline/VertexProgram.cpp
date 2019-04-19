@@ -27,10 +27,8 @@ namespace sw
 	VertexProgram::VertexProgram(
 			const VertexProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,
-			SpirvShader const *spirvShader,
-			const vk::DescriptorSet::Bindings &descriptorSets)
-		: VertexRoutine(state, pipelineLayout, spirvShader),
-		  descriptorSets(descriptorSets)
+			SpirvShader const *spirvShader)
+		: VertexRoutine(state, pipelineLayout, spirvShader)
 	{
 		auto it = spirvShader->inputBuiltins.find(spv::BuiltInInstanceIndex);
 		if (it != spirvShader->inputBuiltins.end())
@@ -75,7 +73,7 @@ namespace sw
 		}
 
 		auto activeLaneMask = SIMD::Int(0xFFFFFFFF); // TODO: Control this.
-		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
+		spirvShader->emit(&routine, activeLaneMask);
 
 		spirvShader->emitEpilog(&routine);
 	}

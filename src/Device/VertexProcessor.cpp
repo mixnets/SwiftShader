@@ -142,7 +142,7 @@ namespace sw
 
 		if(!routine)   // Create one
 		{
-			VertexRoutine *generator = new VertexProgram(state, context->pipelineLayout, context->vertexShader, context->descriptorSets);
+			VertexRoutine *generator = new VertexProgram(state, context->pipelineLayout, context->vertexShader);
 			generator->generate();
 			routine = (*generator)("VertexRoutine_%0.8X", state.shaderID);
 			delete generator;

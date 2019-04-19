@@ -24,12 +24,11 @@ namespace
 
 namespace sw
 {
-	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets)
+	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout)
 		: data(Arg<0>()),
 		  routine(pipelineLayout),
 		  shader(shader),
-		  pipelineLayout(pipelineLayout),
-		  descriptorSets(descriptorSets)
+		  pipelineLayout(pipelineLayout)
 	{
 	}
 
@@ -158,7 +157,7 @@ namespace sw
 			});
 
 			// Process numLanes of the workgroup.
-			shader->emit(&routine, activeLaneMask, descriptorSets);
+			shader->emit(&routine, activeLaneMask);
 		}
 	}
 

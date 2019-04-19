@@ -26,9 +26,8 @@ namespace sw
 		PixelProgram(
 				const PixelProcessor::State &state,
 				vk::PipelineLayout const *pipelineLayout,
-				SpirvShader const *spirvShader,
-				const vk::DescriptorSet::Bindings &descriptorSets) :
-			PixelRoutine(state, pipelineLayout, spirvShader, descriptorSets)
+				SpirvShader const *spirvShader) :
+			PixelRoutine(state, pipelineLayout, spirvShader)
 		{
 		}
 
