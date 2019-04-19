@@ -144,14 +144,14 @@ void ImageView::resolve(ImageView* resolveAttachment)
 	image->copyTo(*(resolveAttachment->image), region);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect) const
+void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, int layer) const
 {
 	VkImageSubresourceLayers imageSubresourceLayers =
 	{
 		static_cast<VkImageAspectFlags>(aspect),
 		subresourceRange.baseMipLevel,
-		subresourceRange.baseArrayLayer,
-		subresourceRange.layerCount
+		subresourceRange.baseArrayLayer + layer,
+		1
 	};
 	return image->getTexelPointer(offset, imageSubresourceLayers);
 }
