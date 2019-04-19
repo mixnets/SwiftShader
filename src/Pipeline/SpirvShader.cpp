@@ -703,6 +703,14 @@ namespace sw
 				// Don't need to do anything during analysis pass
 				break;
 
+			case spv::OpExtension:
+			{
+				auto p = reinterpret_cast<char const *>(insn.wordPointer(1));
+				if (!strcmp(p, "SPV_KHR_storage_buffer_storage_class")) break;
+				UNIMPLEMENTED("Unknown extension %s", p);
+				break;
+			}
+
 			default:
 				UNIMPLEMENTED("%s", OpcodeName(insn.opcode()).c_str());
 			}
