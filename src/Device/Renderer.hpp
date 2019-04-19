@@ -89,6 +89,7 @@ namespace sw
 
 		vk::DescriptorSet::Bindings descriptorSets = {};
 		vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
+		uint8_t *workgroupMemory = nullptr;
 
 		const void *input[MAX_VERTEX_INPUTS];
 		unsigned int stride[MAX_VERTEX_INPUTS];
@@ -354,6 +355,7 @@ namespace sw
 		vk::ImageView *stencilBuffer;
 
 		std::list<vk::Query*> *queries;
+		std::vector<uint8_t> workgroupMemory; // TODO: Pool this so we're not allocating with every draw.
 
 		AtomicInt primitive;    // Current primitive to enter pipeline
 		AtomicInt count;        // Number of primitives to render
