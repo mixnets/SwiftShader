@@ -862,6 +862,7 @@ namespace sw
 			case spv::OpImageQuerySize:
 			case spv::OpImageRead:
 			case spv::OpImageTexelPointer:
+			case spv::OpGroupNonUniformElect:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
 				break;
@@ -2415,6 +2416,9 @@ namespace sw
 
 		case spv::OpImageTexelPointer:
 			return EmitImageTexelPointer(insn, state);
+
+		case spv::OpGroupNonUniformElect:
+			return EmitGroupNonUniform(insn, state);
 
 		default:
 			UNREACHABLE("%s", OpcodeName(opcode).c_str());
@@ -5178,6 +5182,41 @@ namespace sw
 		}
 
 		dst.move(0, x);
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
+	{
+		auto &type = getType(Type::ID(insn.word(1)));
+		Object::ID resultId = insn.word(2);
+		auto &dst = state->routine->createIntermediate(resultId, type.sizeInComponents);
+		switch (insn.opcode())
+		{
+		case spv::OpGroupNonUniformElect:
+		{
+			// Result is true only in the active invocation with the lowest id
+			// in the group, otherwise result is false.
+			auto active = state->activeLaneMask();
+			// TODO: Add swizzle operators to Int4.
+			//   auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+			//   elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+			// Bonus points if could write this as:
+			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
+			auto x = Extract(active, 0);
+			auto y = Extract(active, 1);
+			auto z = Extract(active, 2);
+			auto w = Extract(active, 3);
+			SIMD::Int elect;
+			elect = Insert(elect, x, 0);
+			elect = Insert(elect, y & ~x, 1);
+			elect = Insert(elect, z & ~(x | y), 2);
+			elect = Insert(elect, w & ~(x | y | z), 3);
+			dst.move(0, elect);
+			break;
+		}
+		default:
+			UNIMPLEMENTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()).c_str());
+		}
 		return EmitResult::Continue;
 	}
 
