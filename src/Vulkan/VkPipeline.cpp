@@ -561,8 +561,10 @@ void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t g
 	sw::PushConstantStorage const &pushConstants)
 {
 	ASSERT_OR_RETURN(routine != nullptr);
+	std::vector<uint8_t> workgroupMemory(shader->workgroupMemory.size());
 	sw::ComputeProgram::run(
 		routine, descriptorSets, descriptorDynamicOffsets, pushConstants,
+		workgroupMemory.data(),
 		groupCountX, groupCountY, groupCountZ);
 }
 
