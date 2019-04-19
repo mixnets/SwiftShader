@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59eebff3_e921cd3a",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2340,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-19T11:32:58Z",
+      "side": 1,
+      "message": "In what case are we not implicitly converting a Pointer to an RValue\u003cPointer\u003e ? Seems like these new overloads point to an underlying problem. Anyway, doesn\u0027t hurt to add them for now and we can take a closer look later.",
+      "range": {
+        "startLine": 2340,
+        "startChar": 16,
+        "endLine": 2340,
+        "endChar": 34
+      },
+      "revId": "bbd48fdc2863385d126cc288ded78f971ea3818f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
