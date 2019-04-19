@@ -17,7 +17,7 @@
 
 #include "SpirvShader.hpp"
 
-#include "Reactor/Reactor.hpp"
+#include "Reactor/Coroutine.hpp"
 #include "Device/Context.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 
@@ -37,7 +37,13 @@ namespace sw
 	struct Constants;
 
 	// ComputeProgram builds a SPIR-V compute shader.
-	class ComputeProgram : public Function<Void(Pointer<Byte>)>
+	class ComputeProgram : public Coroutine<SpirvShader::YieldResult(
+			void* data,
+			int32_t workgroupX,
+			int32_t workgroupY,
+			int32_t workgroupZ,
+			int32_t firstSubgroup,
+			int32_t subgroupCount)>
 	{
 	public:
 		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
@@ -48,17 +54,18 @@ namespace sw
 		void generate();
 
 		// run executes the compute shader routine for all workgroups.
-		// TODO(bclayton): This probably does not belong here. Consider moving.
-		static void run(
-			Routine *routine,
+		void run(
 			vk::DescriptorSet::Bindings const &descriptorSetBindings,
 			vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 			PushConstantStorage const &pushConstants,
+			uint8_t *workgroupMemory,
 			uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 
 	protected:
 		void emit();
 
+		void setWorkgroupBuiltins(Int workgroupID[3]);
+		void setSubgroupBuiltins(Int workgroupID[3], SIMD::Int localInvocationIndex, Int subgroupIndex);
 		void setInputBuiltin(spv::BuiltIn id, std::function<void(const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)> cb);
 
 		Pointer<Byte> data; // argument 0
@@ -67,10 +74,14 @@ namespace sw
 		{
 			vk::DescriptorSet::Bindings descriptorSets;
 			vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets;
-			uint4 numWorkgroups;
-			uint4 workgroupID;
+			uint4 numWorkgroups; // [x, y, z, 0]
+			uint4 workgroupSize; // [x, y, z, 0]
+			uint32_t invocationsPerSubgroup; // SPIR-V: "SubgroupSize"
+			uint32_t subgroupsPerWorkgroup; // SPIR-V: "NumSubgroups"
+			uint32_t invocationsPerWorkgroup; // Total number of invocations per workgroup.
 			PushConstantStorage pushConstants;
 			const Constants *constants;
+			uint8_t* workgroupMemory;
 		};
 
 		SpirvRoutine routine;
