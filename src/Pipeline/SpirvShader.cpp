@@ -803,6 +803,7 @@ namespace sw
 			case spv::OpStore:
 			case spv::OpAtomicStore:
 			case spv::OpImageWrite:
+			case spv::OpMemoryBarrier:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -2292,6 +2293,9 @@ namespace sw
 
 		case spv::OpImageTexelPointer:
 			return EmitImageTexelPointer(insn, state);
+
+		case spv::OpMemoryBarrier:
+			return EmitMemoryBarrier(insn, state);
 
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
@@ -4834,6 +4838,24 @@ namespace sw
 		}
 
 		dst.move(0, x);
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto &scopeObj = getObject(Object::ID(insn.word(1)));
+		ASSERT(scopeObj.kind == Object::Kind::Constant);
+		ASSERT(getType(scopeObj.type).sizeInComponents == 1);
+		auto scope = spv::Scope(scopeObj.constantValue[0]);
+
+		switch (scope)
+		{
+		case spv::ScopeSubgroup:
+			break; // TODO
+		default:
+			UNIMPLEMENTED("scope: %d", int(scope));
+		}
+
 		return EmitResult::Continue;
 	}
 
