@@ -176,6 +176,12 @@ size_t DescriptorSetLayout::getBindingCount() const
 	return bindingCount;
 }
 
+size_t DescriptorSetLayout::getBindingStride(uint32_t binding) const
+{
+	uint32_t index = getBindingIndex(binding);
+	auto typeSize = GetDescriptorSize(bindings[index].descriptorType);
+}
+
 size_t DescriptorSetLayout::getBindingOffset(uint32_t binding, size_t arrayElement) const
 {
 	uint32_t index = getBindingIndex(binding);
