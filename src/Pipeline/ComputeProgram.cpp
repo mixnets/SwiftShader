@@ -51,6 +51,7 @@ namespace sw
 		routine.descriptorDynamicOffsets = data + OFFSET(Data, descriptorDynamicOffsets);
 		routine.pushConstants = data + OFFSET(Data, pushConstants);
 		routine.constants = *Pointer<Pointer<Byte>>(data + OFFSET(Data, constants));
+		routine.workgroupMemory = *Pointer<Pointer<Byte>>(data + OFFSET(Data, workgroupMemory));
 
 		auto &modes = shader->getModes();
 
@@ -179,6 +180,7 @@ namespace sw
 		vk::DescriptorSet::Bindings const &descriptorSets,
 		vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 		PushConstantStorage const &pushConstants,
+		uint8_t *workgroupMemory,
 		uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 	{
 		auto runWorkgroup = (void(*)(void*))(routine->getEntry());
@@ -192,6 +194,7 @@ namespace sw
 		data.numWorkgroups[3] = 0;
 		data.pushConstants = pushConstants;
 		data.constants = &sw::constants;
+		data.workgroupMemory = workgroupMemory;
 
 		// TODO(bclayton): Split work across threads.
 		for (uint32_t groupZ = 0; groupZ < groupCountZ; groupZ++)
