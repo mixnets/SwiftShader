@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8dbb81de_e082c46f",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2557,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-19T00:14:42Z",
+      "side": 1,
+      "message": "Beware the ides of LLVM - while Kokoro might +1 this, it is not testing LLVM 3.\nI\u0027ve held off submitting https://swiftshader-review.googlesource.com/c/SwiftShader/+/28909 as Chrome is rolling a build today.",
+      "range": {
+        "startLine": 2557,
+        "startChar": 31,
+        "endLine": 2557,
+        "endChar": 58
+      },
+      "revId": "f24950c8b96ea66c942161fcf705e82ec72ed0c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
