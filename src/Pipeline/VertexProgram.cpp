@@ -45,6 +45,7 @@ namespace sw
 		routine.descriptorDynamicOffsets = data + OFFSET(DrawData, descriptorDynamicOffsets);
 		routine.pushConstants = data + OFFSET(DrawData, pushConstants);
 		routine.constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, constants));
+		routine.workgroupMemory = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, workgroupMemory));
 
 		it = spirvShader->inputBuiltins.find(spv::BuiltInSubgroupSize);
 		if (it != spirvShader->inputBuiltins.end())
