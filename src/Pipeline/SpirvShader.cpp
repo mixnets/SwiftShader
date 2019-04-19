@@ -1381,7 +1381,21 @@ namespace sw
 			case spv::OpTypeRuntimeArray:
 			{
 				// TODO: b/127950082: Check bounds.
-				auto stride = getType(type.element).sizeInComponents * sizeof(float);
+				int stride;
+				if (getType(baseObject.type).storageClass == spv::StorageClassUniformConstant)
+				{
+					// indexing into an array of descriptors.
+					auto d = descriptorDecorations.at(baseId);
+					ASSERT(d.DescriptorSet >= 0);
+					ASSERT(d.Binding >= 0);
+					auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+					stride = setLayout->getBindingStride(d.Binding);
+				}
+				else
+				{
+					stride = getType(type.element).sizeInComponents * sizeof(float);
+				}
+
 				auto & obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
 				{
@@ -4356,12 +4370,7 @@ namespace sw
 
 		Pointer<Byte> constants;  // FIXME(b/129523279)
 
-		const DescriptorDecorations &d = descriptorDecorations.at(sampledImageId);
-		uint32_t arrayIndex = 0;  // TODO(b/129523279)
-		auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-		size_t bindingOffset = setLayout->getBindingOffset(d.Binding, arrayIndex);
-
-		auto descriptor = state->routine->descriptorSets[d.DescriptorSet] + bindingOffset; // vk::SampledImageDescriptor*
+		auto descriptor = sampledImage.base; // vk::SampledImageDescriptor*
 		auto sampler = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, sampler)); // vk::Sampler*
 		auto imageView = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, imageView)); // vk::ImageView*
 
