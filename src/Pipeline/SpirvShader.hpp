@@ -21,8 +21,6 @@
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkConfig.h"
-#include "Vulkan/VkDescriptorSet.hpp"
-#include "Common/Types.hpp"
 #include "Device/Config.hpp"
 #include "Device/Sampler.hpp"
 
@@ -595,7 +593,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
+		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -734,13 +732,11 @@ namespace sw
 		class EmitState
 		{
 		public:
-			EmitState(SpirvRoutine *routine, RValue<SIMD::Int> activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets)
+			EmitState(SpirvRoutine *routine, RValue<SIMD::Int> activeLaneMask)
 				: routine(routine),
-				  activeLaneMaskValue(activeLaneMask.value),
-				  descriptorSets(descriptorSets)
+				  activeLaneMaskValue(activeLaneMask.value)
 			{
 			}
-
 			RValue<SIMD::Int> activeLaneMask() const
 			{
 				ASSERT(activeLaneMaskValue != nullptr);
@@ -769,8 +765,6 @@ namespace sw
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::queue<Block::ID> *pending;
-
-			const vk::DescriptorSet::Bindings &descriptorSets;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.

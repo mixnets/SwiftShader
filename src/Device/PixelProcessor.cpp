@@ -336,7 +336,7 @@ namespace sw
 
 		if(!routine)
 		{
-			QuadRasterizer *generator = new PixelProgram(state, context->pipelineLayout, context->pixelShader, context->descriptorSets);
+			QuadRasterizer *generator = new PixelProgram(state, context->pipelineLayout, context->pixelShader);
 			generator->generate();
 			routine = (*generator)("PixelRoutine_%0.8X", state.shaderID);
 			delete generator;

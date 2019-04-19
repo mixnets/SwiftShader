@@ -27,8 +27,7 @@ namespace sw
 	public:
 		PixelRoutine(const PixelProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,
-			SpirvShader const *spirvShader,
-			const vk::DescriptorSet::Bindings &descriptorSets);
+			SpirvShader const *spirvShader);
 
 		virtual ~PixelRoutine();
 
@@ -38,7 +37,6 @@ namespace sw
 		Float4 rhw;  // Reciprocal w
 
 		SpirvRoutine routine;
-		const vk::DescriptorSet::Bindings &descriptorSets;
 
 		// Depth output
 		Float4 oDepth;

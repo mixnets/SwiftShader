@@ -35,11 +35,9 @@ namespace sw
 	PixelRoutine::PixelRoutine(
 			const PixelProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,
-			SpirvShader const *spirvShader,
-			const vk::DescriptorSet::Bindings &descriptorSets)
+			SpirvShader const *spirvShader)
 		: QuadRasterizer(state, spirvShader),
-		  routine(pipelineLayout),
-		  descriptorSets(descriptorSets)
+		  routine(pipelineLayout)
 	{
 		spirvShader->emitProlog(&routine);
 
