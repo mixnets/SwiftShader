@@ -289,7 +289,6 @@ dEQP-VK.renderpass.dedicated_allocation.attachment.4.519
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow.10
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow.11
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow.22
-dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow.42
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow.48
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow_shrink.37
 dEQP-VK.renderpass.dedicated_allocation.attachment_allocation.grow_shrink.47
@@ -400,7 +399,6 @@ dEQP-VK.renderpass.suballocation.attachment_allocation.grow.22
 dEQP-VK.renderpass.suballocation.attachment_allocation.grow.42
 dEQP-VK.renderpass.suballocation.attachment_allocation.grow.48
 dEQP-VK.renderpass.suballocation.attachment_allocation.grow_shrink.37
-dEQP-VK.renderpass.suballocation.attachment_allocation.grow_shrink.47
 dEQP-VK.renderpass.suballocation.attachment_allocation.grow_shrink.7
 dEQP-VK.renderpass.suballocation.attachment_allocation.roll.42
 dEQP-VK.renderpass.suballocation.attachment_allocation.roll.70
