@@ -125,7 +125,7 @@ namespace sw
 				continue;
 			}
 
-			if(!postBlendSRGB && state.writeSRGB && !isSRGB(index))
+			if(!postBlendSRGB && !isSRGB(index))
 			{
 				c[index].x = linearToSRGB(c[index].x);
 				c[index].y = linearToSRGB(c[index].y);
