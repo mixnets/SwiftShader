@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f44ddf7b_6b872445",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-20T12:08:07Z",
+      "side": 1,
+      "message": "130937460",
+      "range": {
+        "startLine": 11,
+        "startChar": 7,
+        "endLine": 11,
+        "endChar": 10
+      },
+      "revId": "c42848b10c12d944d4c02ae6984a98dd09067b8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2ece33f_455c757d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-20T12:08:07Z",
+      "side": 1,
+      "message": "Please add a comment clarifying how this is mandatory for Vulkan 1.1",
+      "range": {
+        "startLine": 709,
+        "startChar": 20,
+        "endLine": 709,
+        "endChar": 56
+      },
+      "revId": "c42848b10c12d944d4c02ae6984a98dd09067b8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
