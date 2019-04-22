@@ -372,7 +372,7 @@ namespace sw
 			return serialID;
 		}
 
-		explicit SpirvShader(InsnStore const &insns);
+		SpirvShader(InsnStore const &insns, VkRenderPass renderPass, uint32_t subpassIndex);
 
 		struct Modes
 		{
@@ -463,11 +463,13 @@ namespace sw
 		{
 			int32_t DescriptorSet = -1;
 			int32_t Binding = -1;
+			int32_t InputAttachmentIndex = -1;
 
 			void Apply(DescriptorDecorations const &src);
 		};
 
 		std::unordered_map<Object::ID, DescriptorDecorations> descriptorDecorations;
+		std::vector<VkFormat> inputAttachmentFormats;
 
 		struct InterfaceComponent
 		{
@@ -736,7 +738,7 @@ namespace sw
 		EmitResult EmitAtomicOp(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
 
-		SIMD::Int GetTexelOffset(GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
+		SIMD::Int GetTexelOffset(SpirvRoutine const * routine, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
 
 		// OpcodeName() returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName() will only return the numerical code.
@@ -785,6 +787,7 @@ namespace sw
 		Pointer<Int> descriptorDynamicOffsets;
 		Pointer<Byte> pushConstants;
 		Int killMask = Int{0};
+		SIMD::Int windowSpacePosition[2];
 
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
 		{
