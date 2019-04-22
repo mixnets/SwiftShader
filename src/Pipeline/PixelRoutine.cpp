@@ -181,7 +181,7 @@ namespace sw
 
 			Bool alphaPass = true;
 
-			if(colorUsed())
+			if(shaderHasEffects())
 			{
 				#if PERF_PROFILE
 					Long shaderTime = Ticks();
@@ -234,7 +234,7 @@ namespace sw
 						}
 					}
 
-					if(colorUsed())
+					if(shaderHasEffects())
 					{
 						#if PERF_PROFILE
 							AddAtomic(Pointer<Long>(&profiler.ropOperations), 4);
@@ -2475,8 +2475,13 @@ namespace sw
 		return Min(Max(linear, Float4(0.0f)), Float4(1.0f));
 	}
 
-	bool PixelRoutine::colorUsed()
+	bool PixelRoutine::shaderHasEffects()
 	{
-		return state.colorWriteMask || state.alphaToCoverage || (spirvShader && spirvShader->getModes().ContainsKill);
+		return state.colorWriteMask ||
+			state.alphaToCoverage ||
+			(spirvShader && (
+				spirvShader->getModes().ContainsKill ||
+				spirvShader->getModes().DepthReplacing ||
+				spirvShader->hasBuiltinOutput(spv::BuiltInSampleMask)));
 	}
 }
