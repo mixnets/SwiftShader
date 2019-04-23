@@ -22,6 +22,30 @@
       "revId": "4f2db910e400701ecc61e78a62be556df080175a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed42c196_c55cd75c",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-23T18:32:36Z",
+      "side": 1,
+      "message": "It is currently. We could avoid it for non-first instances of an instanced draw, so I haven\u0027t ripped it out.",
+      "parentUuid": "6cee7837_0eeaeed1",
+      "range": {
+        "startLine": 332,
+        "startChar": 2,
+        "endLine": 332,
+        "endChar": 12
+      },
+      "revId": "4f2db910e400701ecc61e78a62be556df080175a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
