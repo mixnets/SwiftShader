@@ -16,6 +16,9 @@
 #define VK_QUEUE_HPP_
 
 #include "VkObject.hpp"
+#include "Device/Renderer.hpp"
+#include <queue>
+#include <thread>
 #include <vulkan/vk_icd.h>
 
 namespace sw
@@ -41,17 +44,43 @@ public:
 	}
 
 	void destroy();
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void waitIdle();
+	VkResult submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	VkResult waitIdle();
 #ifndef __ANDROID__
 	void present(const VkPresentInfoKHR* presentInfo);
 #endif
 
 private:
-	sw::Context* context = nullptr;
-	sw::Renderer* renderer = nullptr;
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	void purgeQueue();
+
+	static void TaskLoop(vk::Queue* queue);
+	void taskLoop();
+
+	sw::Context context;
+	sw::Renderer renderer;
+
+	struct Task
+	{
+		uint32_t submitCount = 0;
+		VkSubmitInfo* pSubmits = nullptr;
+		Fence* fence = nullptr;
+
+		enum Type { KILL_THREAD, SUBMIT_QUEUE };
+		Type type = SUBMIT_QUEUE;
+	};
+	std::queue<Task> tasks; // guarded by mutex
+	std::queue<Task> tasksToDelete; // guarded by mutex
+
+	void addTask(const Task& task);
+	Task getTask();
+	void popTask();
+	void submit(const Task& task);
+	void garbageCollect();
+
+	std::mutex mutex;
+	std::condition_variable newTaskAvailable;
+	std::condition_variable emptySubmitQueue;
+	std::thread queueThread;
 };
 
 static inline Queue* Cast(VkQueue object)
