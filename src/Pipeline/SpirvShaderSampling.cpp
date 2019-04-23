@@ -120,12 +120,13 @@ void SpirvShader::emitSamplerFunction(
     }
     else
     {
-        // TODO(b/129523279): Add a Sampler::sampleTextureI() method.
-        Pointer<SIMD::Int> rgba = out;
-        rgba[0] = As<SIMD::Int>(sample.x * SIMD::Float(0xFF));
-        rgba[1] = As<SIMD::Int>(sample.y * SIMD::Float(0xFF));
-        rgba[2] = As<SIMD::Int>(sample.z * SIMD::Float(0xFF));
-        rgba[3] = As<SIMD::Int>(sample.w * SIMD::Float(0xFF));
+		UNIMPLEMENTED();
+        //// TODO(b/129523279): Add a Sampler::sampleTextureI() method.
+        //Pointer<SIMD::Int> rgba = out;
+        //rgba[0] = As<SIMD::Int>(sample.x * SIMD::Float(0xFF));
+        //rgba[1] = As<SIMD::Int>(sample.y * SIMD::Float(0xFF));
+        //rgba[2] = As<SIMD::Int>(sample.z * SIMD::Float(0xFF));
+        //rgba[3] = As<SIMD::Int>(sample.w * SIMD::Float(0xFF));
     }
 }
 
