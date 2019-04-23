@@ -19,6 +19,62 @@
 #include "Device/Renderer.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 
+#include <cstring>
+
+namespace
+{
+
+void QueueSubmit(vk::Queue* queue, uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
+{
+	queue->doSubmit(submitCount, pSubmits, fence);
+}
+
+VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubmits)
+{
+	size_t submitSize = sizeof(VkSubmitInfo) * submitCount;
+	size_t totalSize = submitSize;
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		totalSize += pSubmits[i].waitSemaphoreCount * (sizeof(VkSemaphore) + sizeof(VkPipelineStageFlags));
+		totalSize += pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+		totalSize += pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+	}
+
+	uint8_t* mem = static_cast<uint8_t*>(
+		vk::allocate(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::DEVICE_MEMORY, vk::Fence::GetAllocationScope()));
+
+	VkSubmitInfo* submits = new (mem) VkSubmitInfo[submitCount];
+	memcpy(submits, pSubmits, submitSize);
+	mem += submitSize;
+
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		size_t size = pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+		submits[i].pWaitSemaphores = new (mem) VkSemaphore[pSubmits[i].waitSemaphoreCount];
+		memcpy(const_cast<VkSemaphore*>(submits[i].pWaitSemaphores), pSubmits[i].pWaitSemaphores, size);
+		mem += size;
+
+		size = pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
+		submits[i].pWaitDstStageMask = new (mem) VkPipelineStageFlags[pSubmits[i].waitSemaphoreCount];
+		memcpy(const_cast<VkPipelineStageFlags*>(submits[i].pWaitDstStageMask), pSubmits[i].pWaitDstStageMask, size);
+		mem += size;
+
+		size = pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+		submits[i].pSignalSemaphores = new (mem) VkSemaphore[pSubmits[i].signalSemaphoreCount];
+		memcpy(const_cast<VkSemaphore*>(submits[i].pSignalSemaphores), pSubmits[i].pSignalSemaphores, size);
+		mem += size;
+
+		size = pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+		submits[i].pCommandBuffers = new (mem) VkCommandBuffer[pSubmits[i].commandBufferCount];
+		memcpy(const_cast<VkCommandBuffer*>(submits[i].pCommandBuffers), pSubmits[i].pCommandBuffers, size);
+		mem += size;
+	}
+
+	return submits;
+}
+
+}
+
 namespace vk
 {
 
@@ -31,12 +87,30 @@ Queue::Queue(uint32_t pFamilyIndex, float pPriority) : familyIndex(pFamilyIndex)
 
 void Queue::destroy()
 {
+	waitForQueue();
+
 	delete context;
 	delete renderer;
 }
 
-void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
+VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
 {
+	waitForQueue();
+
+	submitInfo = DeepCopySubmitInfo(submitCount, pSubmits);
+	queueThread = new std::thread(QueueSubmit, this, submitCount, submitInfo, fence);
+
+	return VK_SUCCESS;
+}
+
+void Queue::doSubmit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
+{
+	vk::Fence* fenceObject = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
+	if(fenceObject)
+	{
+		fenceObject->ref();
+	}
+
 	for(uint32_t i = 0; i < submitCount; i++)
 	{
 		auto& submitInfo = pSubmits[i];
@@ -48,6 +122,7 @@ void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence f
 		{
 			CommandBuffer::ExecutionState executionState;
 			executionState.renderer = renderer;
+			executionState.fence = fenceObject;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
 				vk::Cast(submitInfo.pCommandBuffers[j])->submit(executionState);
@@ -60,21 +135,32 @@ void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence f
 		}
 	}
 
-	// FIXME (b/117835459): signal the fence only once the work is completed
-	if(fence != VK_NULL_HANDLE)
+	if(fenceObject)
 	{
-		vk::Cast(fence)->signal();
+		fenceObject->unref();
 	}
 }
 
-void Queue::waitIdle()
+void Queue::waitForQueue()
 {
-	// equivalent to submitting a fence to a queue and waiting
-	// with an infinite timeout for that fence to signal
+	if(queueThread)
+	{
+		queueThread->join();
+		delete queueThread;
+		queueThread = nullptr;
 
-	// FIXME (b/117835459): implement once we have working fences
+		vk::deallocate(submitInfo, DEVICE_MEMORY);
+		submitInfo = nullptr;
+	}
+}
+
+VkResult Queue::waitIdle()
+{
+	waitForQueue();
 
 	renderer->synchronize();
+
+	return VK_SUCCESS;
 }
 
 #ifndef __ANDROID__

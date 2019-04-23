@@ -29,6 +29,7 @@
 #include "System/Timer.hpp"
 #include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkFence.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkQueryPool.hpp"
 #include "Pipeline/SpirvShader.hpp"
@@ -296,7 +297,7 @@ namespace sw
 		sw::deallocate(mem);
 	}
 
-	void Renderer::draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int count, int baseVertex, bool update)
+	void Renderer::draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int count, int baseVertex, vk::Fence* fence, bool update)
 	{
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
@@ -410,6 +411,12 @@ namespace sw
 
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
+
+		if(fence)
+		{
+			fence->ref();
+		}
+		draw->fence = fence;
 
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
@@ -894,6 +901,11 @@ namespace sw
 
 				draw.references = -1;
 				resumeApp->signal();
+
+				if(draw.fence)
+				{
+					draw.fence->unref();
+				}
 			}
 		}
 
