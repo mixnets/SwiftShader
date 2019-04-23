@@ -30,6 +30,7 @@
 namespace vk
 {
 	class DescriptorSet;
+	class Fence;
 	struct Query;
 }
 
@@ -200,7 +201,7 @@ namespace sw
 		void *operator new(size_t size);
 		void operator delete(void * mem);
 
-		void draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int count, int baseVertex, bool update = true);
+		void draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int count, int baseVertex, vk::Fence* fence, bool update = true);
 
 		void setContext(const sw::Context& context);
 
@@ -352,6 +353,7 @@ namespace sw
 		vk::ImageView *renderTarget[RENDERTARGETS];
 		vk::ImageView *depthBuffer;
 		vk::ImageView *stencilBuffer;
+		vk::Fence* fence;
 
 		std::list<vk::Query*> *queries;
 
