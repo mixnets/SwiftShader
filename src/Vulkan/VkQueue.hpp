@@ -16,6 +16,7 @@
 #define VK_QUEUE_HPP_
 
 #include "VkObject.hpp"
+#include <thread>
 #include <vulkan/vk_icd.h>
 
 namespace sw
@@ -41,17 +42,22 @@ public:
 	}
 
 	void destroy();
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void waitIdle();
+	VkResult submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	void doSubmit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	VkResult waitIdle();
 #ifndef __ANDROID__
 	void present(const VkPresentInfoKHR* presentInfo);
 #endif
 
 private:
+	void waitForQueue();
+
 	sw::Context* context = nullptr;
 	sw::Renderer* renderer = nullptr;
+	VkSubmitInfo* submitInfo = nullptr;
 	uint32_t familyIndex = 0;
 	float    priority = 0.0f;
+	std::thread* queueThread = nullptr;
 };
 
 static inline Queue* Cast(VkQueue object)
