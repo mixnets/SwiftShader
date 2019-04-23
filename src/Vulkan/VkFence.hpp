@@ -16,9 +16,14 @@
 #define VK_FENCE_HPP_
 
 #include "VkObject.hpp"
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
 
 namespace vk
 {
+
+using time_point = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
 
 class Fence : public Object<Fence, VkFence>
 {
@@ -35,23 +40,69 @@ public:
 		return 0;
 	}
 
+	void add()
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		++waits;
+	}
+
+	void done()
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		ASSERT(waits > 0);
+		if(!--waits)
+		{
+			// signal the fence, without the unlock/lock required to call signal() here
+			status = VK_SUCCESS;
+			mutexLock.unlock();
+			condition.notify_all();
+		}
+	}
+
 	void signal()
 	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
 		status = VK_SUCCESS;
+		mutexLock.unlock();
+		condition.notify_all();
 	}
 
 	void reset()
 	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		ASSERT(waits == 0);
 		status = VK_NOT_READY;
 	}
 
-	VkResult getStatus() const
+	VkResult getStatus()
 	{
-		return status;
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		auto out = status;
+		mutexLock.unlock();
+		return out;
+	}
+
+	VkResult wait()
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		condition.wait(mutexLock, [this] { return (status == VK_SUCCESS); });
+		auto out = status;
+		mutexLock.unlock();
+		return out;
+	}
+
+	VkResult waitUntil(const time_point& timeout_ns)
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		return condition.wait_until(mutexLock, timeout_ns, [this] { return (status == VK_SUCCESS); }) ?
+		       VK_SUCCESS : VK_TIMEOUT;
 	}
 
 private:
-	VkResult status = VK_NOT_READY;
+	VkResult status = VK_NOT_READY; // guarded by mutex
+	int32_t waits = 0; // guarded by mutex
+	std::mutex mutex;
+	std::condition_variable condition;
 };
 
 static inline Fence* Cast(VkFence object)

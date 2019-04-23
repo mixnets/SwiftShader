@@ -16,6 +16,10 @@
 #define VK_QUEUE_HPP_
 
 #include "VkObject.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
 #include <vulkan/vk_icd.h>
 
 namespace sw
@@ -27,12 +31,14 @@ namespace sw
 namespace vk
 {
 
+class Fence;
+
 class Queue
 {
 	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
 
 public:
-	Queue(uint32_t pFamilyIndex, float pPriority);
+	Queue();
 	~Queue() = delete;
 
 	operator VkQueue()
@@ -41,8 +47,8 @@ public:
 	}
 
 	void destroy();
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void waitIdle();
+	VkResult submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	VkResult waitIdle();
 #ifndef __ANDROID__
 	void present(const VkPresentInfoKHR* presentInfo);
 #endif
@@ -50,8 +56,34 @@ public:
 private:
 	sw::Context* context = nullptr;
 	sw::Renderer* renderer = nullptr;
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+
+	struct Task
+	{
+		uint32_t submitCount = 0;
+		VkSubmitInfo* pSubmits = nullptr;
+		Fence* fence = nullptr;
+
+		enum Type { KILL_THREAD, SUBMIT_QUEUE };
+		Type type = SUBMIT_QUEUE;
+	};
+	std::queue<Task> tasks; // guarded by mutex
+	std::queue<Task> tasksToDelete; // guarded by garbageCollectMutex
+
+	static void TaskLoop(vk::Queue* queue);
+	void taskLoop();
+
+	void addTask(const Task& task);
+	Task getTask();
+	void popTask();
+	void submit(const Task& task);
+	void purgeQueue();
+	void garbageCollect();
+
+	std::mutex mutex;
+	std::mutex garbageCollectMutex;
+	std::condition_variable newTaskAvailable;
+	std::condition_variable emptySubmitQueue;
+	std::thread queueThread;
 };
 
 static inline Queue* Cast(VkQueue object)
