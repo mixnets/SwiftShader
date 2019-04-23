@@ -4639,7 +4639,7 @@ namespace sw
 		auto texelPtr = GetTexelAddress(state->routine, basePtr, coordinate, imageType, binding, texelSize);
 
 		SIMD::Int packed[4];
-		for (auto i = 0; i < texelSize/4; i++)
+		for (auto i = 0; i < (texelSize + 3)/4; i++)
 		{
 			packed[i] = SIMD::Load<SIMD::Int>(texelPtr, state->activeLaneMask());
 			texelPtr += sizeof(float);
@@ -4664,8 +4664,16 @@ namespace sw
 			dst.move(3, SIMD::Int(1));
 			break;
 		case VK_FORMAT_R32_SFLOAT:
+		case VK_FORMAT_D32_SFLOAT:
+		//case VK_FORMAT_D32_SFLOAT_S8_UINT:
 			dst.move(0, packed[0]);
 			// Fill remaining channels with 0,0,1 (of the correct type)
+			dst.move(1, SIMD::Float(0));
+			dst.move(2, SIMD::Float(0));
+			dst.move(3, SIMD::Float(1));
+			break;
+		case VK_FORMAT_D16_UNORM:
+			dst.move(0, SIMD::Float(packed[0] & SIMD::Int(0xffff)) * SIMD::Float(1.0f / 65535.0f));
 			dst.move(1, SIMD::Float(0));
 			dst.move(2, SIMD::Float(0));
 			dst.move(3, SIMD::Float(1));
