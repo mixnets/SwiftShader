@@ -618,7 +618,7 @@ namespace sw
 					if (insn.opcode() == spv::OpAccessChain || insn.opcode() == spv::OpInBoundsAccessChain)
 					{
 						Decorations dd{};
-						ApplyDecorationsForAccessChain(&dd, pointerId, insn.wordCount() - 4, insn.wordPointer(4));
+						ApplyDecorationsForAccessChain(&dd, &descriptorDecorations[resultId], pointerId, insn.wordCount() - 4, insn.wordPointer(4));
 						// Note: offset is the one thing that does *not* propagate, as the access chain accounts for it.
 						dd.HasOffset = false;
 						decorations[resultId].Apply(dd);
@@ -1248,7 +1248,7 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds) const
+	void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds) const
 	{
 		ApplyDecorationsForId(d, baseId);
 		auto &baseObject = getObject(baseId);
@@ -1270,6 +1270,12 @@ namespace sw
 			}
 			case spv::OpTypeArray:
 			case spv::OpTypeRuntimeArray:
+				if (dd->InputAttachmentIndex >= 0)
+				{
+					dd->InputAttachmentIndex += GetConstantInt(indexIds[i]);
+				}
+				typeId = type.element;
+				break;
 			case spv::OpTypeVector:
 				typeId = type.element;
 				break;
