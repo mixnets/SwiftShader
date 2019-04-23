@@ -515,27 +515,21 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit(VkQueue queue, uint32_t submitCount
 	TRACE("(VkQueue queue = 0x%X, uint32_t submitCount = %d, const VkSubmitInfo* pSubmits = 0x%X, VkFence fence = 0x%X)",
 	      queue, submitCount, pSubmits, fence);
 
-	vk::Cast(queue)->submit(submitCount, pSubmits, fence);
-
-	return VK_SUCCESS;
+	return vk::Cast(queue)->submit(submitCount, pSubmits, fence);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueWaitIdle(VkQueue queue)
 {
 	TRACE("(VkQueue queue = 0x%X)", queue);
 
-	vk::Cast(queue)->waitIdle();
-
-	return VK_SUCCESS;
+	return vk::Cast(queue)->waitIdle();
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkDeviceWaitIdle(VkDevice device)
 {
 	TRACE("(VkDevice device = 0x%X)", device);
 
-	vk::Cast(device)->waitIdle();
-
-	return VK_SUCCESS;
+	return vk::Cast(device)->waitIdle();
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryAllocateInfo* pAllocateInfo, const VkAllocationCallbacks* pAllocator, VkDeviceMemory* pMemory)
@@ -718,7 +712,6 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyFence(VkDevice device, VkFence fence, const 
 	TRACE("(VkDevice device = 0x%X, VkFence fence = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, fence, pAllocator);
 
-
 	vk::destroy(fence, pAllocator);
 }
 
@@ -747,9 +740,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(VkDevice device, uint32_t fenceCo
 	TRACE("(VkDevice device = 0x%X, uint32_t fenceCount = %d, const VkFence* pFences = 0x%X, VkBool32 waitAll = %d, uint64_t timeout = %d)",
 		device, fenceCount, pFences, waitAll, timeout);
 
-	vk::Cast(device)->waitForFences(fenceCount, pFences, waitAll, timeout);
-
-	return VK_SUCCESS;
+	return vk::Cast(device)->waitForFences(fenceCount, pFences, waitAll, timeout);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphore(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSemaphore* pSemaphore)
