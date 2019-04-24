@@ -22,6 +22,30 @@
       "revId": "c066650659806779d5026129106660d5a736858a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9acc430b_0b27d3b5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T19:18:59Z",
+      "side": 1,
+      "message": "I was careful to avoid \"side effect\" for this reason. What do you want to call this property?\n\nThe existing code was overzealous about not running the shader at all when it thought it didn\u0027t matter.",
+      "parentUuid": "e5020e28_3bb54d97",
+      "range": {
+        "startLine": 7,
+        "startChar": 54,
+        "endLine": 7,
+        "endChar": 68
+      },
+      "revId": "c066650659806779d5026129106660d5a736858a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
