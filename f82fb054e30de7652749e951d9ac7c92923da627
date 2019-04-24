@@ -93,6 +93,30 @@
       "revId": "f82fb054e30de7652749e951d9ac7c92923da627",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "331ae374_a4432e70",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T15:03:55Z",
+      "side": 1,
+      "message": "Oh, thanks, I missed that those weren\u0027t calling std::atomic_load/store directly. I see why you need all of this now.",
+      "parentUuid": "e95ad0a3_1eeac69e",
+      "range": {
+        "startLine": 492,
+        "startChar": 3,
+        "endLine": 518,
+        "endChar": 5
+      },
+      "revId": "f82fb054e30de7652749e951d9ac7c92923da627",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
