@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5fd18868_d226457b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T19:16:17Z",
+      "side": 1,
+      "message": "OpImageSampleExplicitLod, here and in next para ?",
+      "revId": "7cc01e7e6ac6cb35f79a9de8940cadc1cbae3ed1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
