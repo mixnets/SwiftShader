@@ -52,6 +52,24 @@
       "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02f0aeda_5b82221f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T19:51:21Z",
+      "side": 0,
+      "message": "Fair point. I may be able to bring it back by pulling the sampler data from sw::Texture, directly into the descriptor. Eventually I\u0027ll merge the two anyway and draw a strong line between sampler and image view members.",
+      "parentUuid": "733b2d27_c0ef8b25",
+      "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
