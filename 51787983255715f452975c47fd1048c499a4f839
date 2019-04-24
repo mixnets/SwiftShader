@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da79f2de_39359cd5",
+        "filename": "tests/VulkanUnitTests/VkInstanceFuncs.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T18:28:48Z",
+      "side": 1,
+      "message": "nit: I think it\u0027s preferable not to add the semicolon to the macro.\n\nMakes it easier to see that these are all separate declarations. Also would allow using the macro in different ways.",
+      "range": {
+        "startLine": 20,
+        "startChar": 110,
+        "endLine": 20,
+        "endChar": 111
+      },
+      "revId": "51787983255715f452975c47fd1048c499a4f839",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
