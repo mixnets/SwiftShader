@@ -50,6 +50,7 @@ namespace sw
 	// Forward declarations.
 	class SpirvRoutine;
 	class GenericValue;
+	enum SamplerMethod;
 
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
@@ -153,6 +154,9 @@ namespace sw
 	public:
 		using InsnStore = std::vector<uint32_t>;
 		InsnStore insns;
+
+		using ImageSampler = void(void* image, void* uvsIn, void* texelOut);
+		using GetImageSampler = ImageSampler*(const vk::ImageView *imageView, const vk::Sampler *sampler);
 
 		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
 		class InsnIterator
@@ -730,6 +734,8 @@ namespace sw
 		EmitResult EmitKill(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleImplicitLod(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageSampleExplicitLod(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageSample(GetImageSampler getImageSampler, InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageWrite(InsnIterator insn, EmitState *state) const;
@@ -756,10 +762,11 @@ namespace sw
 		// Returns the pair <significand, exponent>
 		std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
-		using ImageSampler = void(void* image, void* uvsIn, void* texelOut);
-
-		static ImageSampler *getImageSampler(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static void emitSamplerFunction(
+			SamplerMethod samplerMethod,
 			const vk::ImageView *imageView, const vk::Sampler *sampler,
 			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out);
 
