@@ -34,6 +34,24 @@
       "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "733b2d27_c0ef8b25",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T18:58:05Z",
+      "side": 0,
+      "message": "What I\u0027d worry about is a descriptor updated twice, with residue from the first update leaking.\n\nIt may not matter if we\u0027re careful enough with what we reference.",
+      "parentUuid": "6180b9e6_b437f791",
+      "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
