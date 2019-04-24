@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "26af4c53_b4502e4d",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-24T15:05:31Z",
+      "side": 1,
+      "message": "Nit: extra space in the indentation of this entire function",
+      "range": {
+        "startLine": 44,
+        "startChar": 1,
+        "endLine": 44,
+        "endChar": 2
+      },
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "db5c9736_023416d9",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 6
