@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4452cf03_1e51acc5",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T14:34:48Z",
+      "side": 1,
+      "message": "We should probably note somewhere that this condition is guaranteed to be constant across the entire range of descriptors written, even if they span multiple bindings.",
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
