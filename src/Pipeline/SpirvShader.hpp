@@ -49,6 +49,7 @@ namespace sw
 	// Forward declarations.
 	class SpirvRoutine;
 	class GenericValue;
+	enum TextureType ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
 	enum FilterType ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
 	enum MipmapType ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
 	enum AddressingMode ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
@@ -773,6 +774,7 @@ namespace sw
 			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out);
 
 		// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
+		static sw::TextureType convertTextureType(VkImageViewType imageViewType);
 		static sw::FilterType convertFilterMode(const vk::Sampler *sampler);
 		static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
 		static sw::AddressingMode convertAddressingMode(VkSamplerAddressMode);
