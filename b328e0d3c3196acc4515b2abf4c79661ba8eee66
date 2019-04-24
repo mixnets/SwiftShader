@@ -16,6 +16,24 @@
       "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6180b9e6_b437f791",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T18:50:23Z",
+      "side": 0,
+      "message": "Not really. We already zero all allocations, and as far as I\u0027m aware all data (*) that we consume in the shader is now updated. This memset was just a sanity thing during the first steps of texture sampling.\n\nAlso note this memset was overwriting immutable sampler data, so we can\u0027t keep it.\n\n(*) Only the first cube map face is set, but we\u0027ll implement that differently anyway, using layers.",
+      "parentUuid": "cd968a73_754e0ff7",
+      "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
