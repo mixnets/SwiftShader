@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5020e28_3bb54d97",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T15:18:38Z",
+      "side": 1,
+      "message": "The spec defines \"Side Effect\" as \"A store to memory or atomic operation on memory from a shader invocation\", but for this change the term seems to signify other things?\n\nPerhaps we should do something more granular to address the test failures, and look into broader optimization later?",
+      "range": {
+        "startLine": 7,
+        "startChar": 54,
+        "endLine": 7,
+        "endChar": 68
+      },
+      "revId": "c066650659806779d5026129106660d5a736858a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
