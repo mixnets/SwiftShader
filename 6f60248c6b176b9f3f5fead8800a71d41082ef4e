@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a16ef80_0dbd35e5",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4835,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T04:20:02Z",
+      "side": 1,
+      "message": "This is incorrect if lane 0 isn\u0027t active.",
+      "revId": "6f60248c6b176b9f3f5fead8800a71d41082ef4e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
