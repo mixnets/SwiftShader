@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "146ae20b_ab494a96",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T18:03:56Z",
+      "side": 1,
+      "message": "In the input attachment cases we have a VkFormat (from the renderpass). spv::ImageFormat does not have values for many of the formats supported for attachments, so we cannot go the other way.\n\nAlternative would be for input attachments to take a completely different path.",
+      "parentUuid": "dd43208e_19171dde",
+      "range": {
+        "startLine": 12,
+        "startChar": 2,
+        "endLine": 12,
+        "endChar": 63
+      },
+      "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "600c77c8_2940a73d",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 5
