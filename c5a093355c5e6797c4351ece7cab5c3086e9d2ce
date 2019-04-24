@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "db5c9736_023416d9",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-24T15:01:17Z",
+      "side": 1,
+      "message": "nit: we should ensure all enums are cast to int for %d, once I get around to adding the compiler magic to check format specifiers, this will likely warning / error.\nNo need to change now, just a heads up.",
+      "range": {
+        "startLine": 142,
+        "startChar": 33,
+        "endLine": 142,
+        "endChar": 51
+      },
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4452cf03_1e51acc5",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 6
