@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "accdd3ca_12587d50",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T16:47:46Z",
+      "side": 1,
+      "message": "Good eye! Done",
+      "parentUuid": "26af4c53_b4502e4d",
+      "range": {
+        "startLine": 44,
+        "startChar": 1,
+        "endLine": 44,
+        "endChar": 2
+      },
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "db5c9736_023416d9",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 6
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "c0689639_283763fb",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T16:47:46Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "db5c9736_023416d9",
+      "range": {
+        "startLine": 142,
+        "startChar": 33,
+        "endLine": 142,
+        "endChar": 51
+      },
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4452cf03_1e51acc5",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 6
@@ -62,6 +110,24 @@
       "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17dfd6f5_8081f808",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T16:47:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4452cf03_1e51acc5",
+      "revId": "c5a093355c5e6797c4351ece7cab5c3086e9d2ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
