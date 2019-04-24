@@ -69,6 +69,30 @@
       "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98cfbe47_b8ccd00e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T18:05:31Z",
+      "side": 1,
+      "message": "OK. I can move this up to VkPipeline, but the renderpass handle is embedded in the pipeline create info so we can\u0027t do it right at the edge.",
+      "parentUuid": "600c77c8_2940a73d",
+      "range": {
+        "startLine": 261,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 34
+      },
+      "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
