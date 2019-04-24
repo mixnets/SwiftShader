@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "449cb170_b2eea5a8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T14:00:54Z",
+      "side": 1,
+      "message": "Could you clarify? When using regular LLVM load/store instructions it handles all memory-ordering variants, but when using an intrinsic it may end up making an external call?",
+      "range": {
+        "startLine": 9,
+        "startChar": 6,
+        "endLine": 9,
+        "endChar": 9
+      },
+      "revId": "f82fb054e30de7652749e951d9ac7c92923da627",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87971eee_c0cd693f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T14:00:54Z",
+      "side": 1,
+      "message": "Where is this being used?",
+      "range": {
+        "startLine": 492,
+        "startChar": 3,
+        "endLine": 518,
+        "endChar": 5
+      },
+      "revId": "f82fb054e30de7652749e951d9ac7c92923da627",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
