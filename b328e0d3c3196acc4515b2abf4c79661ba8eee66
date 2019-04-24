@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd968a73_754e0ff7",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-24T18:24:29Z",
+      "side": 0,
+      "message": "This memset is still needed, isn\u0027t it?",
+      "revId": "b328e0d3c3196acc4515b2abf4c79661ba8eee66",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
