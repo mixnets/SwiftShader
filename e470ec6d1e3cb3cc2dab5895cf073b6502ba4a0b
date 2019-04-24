@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd43208e_19171dde",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T14:24:28Z",
+      "side": 1,
+      "message": "What\u0027s the intended benefit of that? It seems useful to me to keep SPIR-V minimally coupled to Vulkan, e.g. to use it for a compute-only API. While that\u0027s certainly not a goal of Pastel and thus not something we should work towards, I\u0027m not sure if there\u0027s good value in working away from it.",
+      "range": {
+        "startLine": 12,
+        "startChar": 2,
+        "endLine": 12,
+        "endChar": 63
+      },
+      "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "600c77c8_2940a73d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-24T14:24:28Z",
+      "side": 1,
+      "message": "nit: Cast at libVulkan.cpp level.",
+      "range": {
+        "startLine": 261,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 34
+      },
+      "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
