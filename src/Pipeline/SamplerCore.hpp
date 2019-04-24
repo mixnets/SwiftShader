@@ -15,11 +15,14 @@
 #ifndef sw_SamplerCore_hpp
 #define sw_SamplerCore_hpp
 
-#include "PixelRoutine.hpp"
+#include "ShaderCore.hpp"
+#include "Device/Sampler.hpp"
 #include "Reactor/Reactor.hpp"
 
 namespace sw
 {
+	using namespace rr;
+
 	enum SamplerMethod
 	{
 		Implicit,  // Compute gradients (pixel shader only).
