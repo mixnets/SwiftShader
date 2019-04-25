@@ -257,7 +257,7 @@ namespace sw
 		using InsnStore = std::vector<uint32_t>;
 		InsnStore insns;
 
-		using ImageSampler = void(void* image, void* uvsIn, void* texelOut);
+		using ImageSampler = void(void* image, void* uvsIn, void* texelOut, void* constants);
 		using GetImageSampler = ImageSampler*(const vk::ImageView *imageView, const vk::Sampler *sampler);
 
 		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
@@ -865,7 +865,7 @@ namespace sw
 		static void emitSamplerFunction(
 			SamplerMethod samplerMethod,
 			const vk::ImageView *imageView, const vk::Sampler *sampler,
-			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out);
+			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out, Pointer<Byte> constants);
 
 		// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
 		static sw::TextureType convertTextureType(VkImageViewType imageViewType);
@@ -895,6 +895,7 @@ namespace sw
 		Pointer<Pointer<Byte>> descriptorSets;
 		Pointer<Int> descriptorDynamicOffsets;
 		Pointer<Byte> pushConstants;
+		Pointer<Byte> constants;
 		Int killMask = Int{0};
 
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
