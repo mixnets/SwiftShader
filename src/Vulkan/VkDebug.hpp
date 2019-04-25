@@ -93,6 +93,14 @@ namespace vk
 #undef UNIMPLEMENTED
 #define UNIMPLEMENTED(format, ...) DABORT("UNIMPLEMENTED: " format, ##__VA_ARGS__)
 
+// A macro to indicate unsupported functionality.
+// This should be called when a Vulkan / SPIR-V feature is attempted to be used,
+// but is not currently implemented by SwiftShader.
+// Note that in a well-behaved application these should not be reached as the
+// application should be respecting the advertised features / limits.
+#undef UNSUPPORTED
+#define UNSUPPORTED(format, ...) DABORT("UNSUPPORTED: " format, ##__VA_ARGS__)
+
 // A macro for code which is not expected to be reached under valid assumptions.
 #undef UNREACHABLE
 #define UNREACHABLE(format, ...) DABORT("UNREACHABLE: " format, ##__VA_ARGS__)
