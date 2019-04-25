@@ -46,6 +46,30 @@
       "revId": "c066650659806779d5026129106660d5a736858a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be087fbb_66d947e0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-25T18:07:49Z",
+      "side": 1,
+      "message": "We *could* just stop being clever -- \"if the pipeline includes a fragment shader, we will compile it, even if we think it does nothing useful\"",
+      "parentUuid": "9acc430b_0b27d3b5",
+      "range": {
+        "startLine": 7,
+        "startChar": 54,
+        "endLine": 7,
+        "endChar": 68
+      },
+      "revId": "c066650659806779d5026129106660d5a736858a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
