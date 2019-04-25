@@ -292,10 +292,12 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				VkOffset3D offset = {0, 0, 0};
 				VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT;
-				void *buffer = imageView->getOffsetPointer(offset, aspect, level);
-
 				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
-				mipmap.buffer[0] = buffer;
+
+				for(int i = 0; i < 6; i++)
+				{
+					mipmap.buffer[i] = imageView->getOffsetPointer(offset, aspect, level, i);
+				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
 				Format format = imageView->getFormat();
@@ -434,7 +436,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 		{
 			auto update = reinterpret_cast<VkDescriptorImageInfo const *>(src + entry.offset + entry.stride * i);
 			auto imageView = Cast(update->imageView);
-			descriptor[i].ptr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			descriptor[i].ptr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = imageView->getSubresourceRange().layerCount > 1
