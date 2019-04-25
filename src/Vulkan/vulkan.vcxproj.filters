@@ -525,6 +525,9 @@
     <ClInclude Include="..\Pipeline\SpirvShader.hpp">
       <Filter>Header Files\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="..\Pipeline\SpirvUnsupported.hpp">
+      <Filter>Header Files\Pipeline</Filter>
+    </ClInclude>
     <ClInclude Include="..\WSI\VkSwapchainKHR.hpp">
       <Filter>Header Files\WSI</Filter>
     </ClInclude>
