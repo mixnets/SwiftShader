@@ -244,6 +244,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Pipeline\SpirvShader.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SpirvShaderSampling.cpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SpirvShader_dbg.cpp" />
+    <ClInclude Include="$(SolutionDir)src\Pipeline\SpirvUnsupported.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\VertexProgram.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\VertexProgram.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\VertexRoutine.cpp" />

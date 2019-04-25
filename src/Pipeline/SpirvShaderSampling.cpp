@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
+#include "SpirvUnsupported.hpp"
 
 #include "SamplerCore.hpp" // TODO: Figure out what's needed.
 #include "System/Math.hpp"
@@ -209,7 +210,7 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 	case VK_IMAGE_VIEW_TYPE_CUBE:
 		break;
 	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
-		UNSUPPORTED("ImageCubeArray");
+		UNSUPPORTED(SPIRV_FEATURE_IMAGE_CUBE_ARRAY, "imageViewType: %d", int(imageViewType));
 		if(coordinateIndex == 3)
 		{
 			return ADDRESSING_LAYER;
@@ -242,7 +243,7 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 	case VK_IMAGE_VIEW_TYPE_CUBE:
 		return ADDRESSING_SEAMLESS;
 //	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
-		UNSUPPORTED("ImageCubeArray");
+		UNSUPPORTED(SPIRV_FEATURE_IMAGE_CUBE_ARRAY, "imageViewType: %d", int(imageViewType));
 		return ADDRESSING_SEAMLESS;
 	case VK_IMAGE_VIEW_TYPE_1D:
 	case VK_IMAGE_VIEW_TYPE_2D:
