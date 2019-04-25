@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "547debcf_9c162b7b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-25T16:58:57Z",
+      "side": 1,
+      "message": "Please clarify why we need this, mentioning VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT",
+      "revId": "808c300f743f9154648281501a2c7d197d11d9dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
