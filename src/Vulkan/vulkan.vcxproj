@@ -258,6 +258,7 @@ IF EXIST "$(SolutionDir)..\deqp\build\external\vulkancts\modules\vulkan\" (copy 
     <ClInclude Include="..\Pipeline\SetupRoutine.hpp" />
     <ClInclude Include="..\Pipeline\ShaderCore.hpp" />
     <ClInclude Include="..\Pipeline\SpirvShader.hpp" />
+    <ClInclude Include="..\Pipeline\SpirvUnsupported.hpp" />
     <ClInclude Include="..\Pipeline\VertexPipeline.hpp" />
     <ClInclude Include="..\Pipeline\VertexProgram.hpp" />
     <ClInclude Include="..\Pipeline\VertexRoutine.hpp" />
