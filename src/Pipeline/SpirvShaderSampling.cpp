@@ -103,8 +103,7 @@ void SpirvShader::emitSamplerFunction(
 	SamplerCore s(constants, samplerState);
 
 	Pointer<Byte> texture = image + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
-	SIMD::Float uv[2];
-	SIMD::Float w(0);     // TODO(b/129523279)
+	SIMD::Float uvw[3];
 	SIMD::Float q(0);     // TODO(b/129523279)
 	SIMD::Float bias(0);
 	Vector4f dsx;         // TODO(b/129523279)
@@ -112,22 +111,31 @@ void SpirvShader::emitSamplerFunction(
 	Vector4f offset;      // TODO(b/129523279)
 	SamplerFunction samplerFunction = { samplerMethod, None };  // TODO(b/129523279)
 
-	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
-	// Implement optimized 1D sampling.
-	uv[1] = SIMD::Float(0);
-
 	int coordinateCount = 0;
 	switch(imageView->getType())
 	{
-	case VK_IMAGE_VIEW_TYPE_1D: coordinateCount = 1; break;
-	case VK_IMAGE_VIEW_TYPE_2D: coordinateCount = 2; break;
+	case VK_IMAGE_VIEW_TYPE_1D:         coordinateCount = 1; break;
+	case VK_IMAGE_VIEW_TYPE_2D:         coordinateCount = 2; break;
+//	case VK_IMAGE_VIEW_TYPE_3D:         coordinateCount = 3; break;
+	case VK_IMAGE_VIEW_TYPE_CUBE:       coordinateCount = 3; break;
+//	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   coordinateCount = 2; break;
+//	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   coordinateCount = 3; break;
+//	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: coordinateCount = 4; break;
 	default:
 		UNIMPLEMENTED("imageView type %d", imageView->getType());
 	}
 
 	for(int i = 0; i < coordinateCount; i++)
 	{
-		uv[i] = in[i];
+		uvw[i] = in[i];
+	}
+
+	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
+	// Implement optimized 1D sampling.
+	If(imageView->getType() == VK_IMAGE_VIEW_TYPE_1D ||
+	   imageView->getType() == VK_IMAGE_VIEW_TYPE_1D_ARRAY)
+	{
+		uvw[1] = SIMD::Float(0);
 	}
 
 	if(samplerMethod == Lod)
@@ -137,7 +145,7 @@ void SpirvShader::emitSamplerFunction(
 		bias = in[coordinateCount];
 	}
 
-	Vector4f sample = s.sampleTexture(texture, uv[0], uv[1], w, q, bias, dsx, dsy, offset, samplerFunction);
+	Vector4f sample = s.sampleTexture(texture, uvw[0], uvw[1], uvw[2], q, bias, dsx, dsy, offset, samplerFunction);
 
 	Pointer<SIMD::Float> rgba = out;
 	rgba[0] = sample.x;
@@ -153,7 +161,7 @@ sw::TextureType SpirvShader::convertTextureType(VkImageViewType imageViewType)
 	case VK_IMAGE_VIEW_TYPE_1D:         return TEXTURE_1D;
 	case VK_IMAGE_VIEW_TYPE_2D:         return TEXTURE_2D;
 //	case VK_IMAGE_VIEW_TYPE_3D:         return TEXTURE_3D;
-//	case VK_IMAGE_VIEW_TYPE_CUBE:       return TEXTURE_CUBE;
+	case VK_IMAGE_VIEW_TYPE_CUBE:       return TEXTURE_CUBE;
 //	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   return TEXTURE_1D_ARRAY;
 //	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   return TEXTURE_2D_ARRAY;
 //	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: return TEXTURE_CUBE_ARRAY;
