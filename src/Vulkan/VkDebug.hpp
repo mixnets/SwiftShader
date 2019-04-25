@@ -107,7 +107,7 @@ namespace vk
 // Note that in a well-behaved application these should not be reached as the
 // application should be respecting the advertised features / limits.
 #undef UNSUPPORTED
-#define UNSUPPORTED(format, ...) DABORT("UNSUPPORTED: " format, ##__VA_ARGS__)
+#define UNSUPPORTED(feature, format, ...) DABORT("UNSUPPORTED(" feature "): " format, ##__VA_ARGS__)
 
 // A macro for code which should never be reached, even with misbehaving
 // applications.
