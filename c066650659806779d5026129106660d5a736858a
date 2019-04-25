@@ -70,6 +70,30 @@
       "revId": "c066650659806779d5026129106660d5a736858a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b606be6_4ebc705e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-25T18:51:09Z",
+      "side": 1,
+      "message": "Yes, I\u0027d prefer that approach for now since it eliminates all risk of something unexpected happening.",
+      "parentUuid": "be087fbb_66d947e0",
+      "range": {
+        "startLine": 7,
+        "startChar": 54,
+        "endLine": 7,
+        "endChar": 68
+      },
+      "revId": "c066650659806779d5026129106660d5a736858a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
