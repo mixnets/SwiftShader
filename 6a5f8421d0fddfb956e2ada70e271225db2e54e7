@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be498a20_09116c2f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-04-25T17:11:20Z",
+      "side": 0,
+      "message": "Yeah, this wasn\u0027t supposed to be a fall through, that\u0027s a copy-paste error.",
+      "range": {
+        "startLine": 432,
+        "startChar": 2,
+        "endLine": 432,
+        "endChar": 17
+      },
+      "revId": "6a5f8421d0fddfb956e2ada70e271225db2e54e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
