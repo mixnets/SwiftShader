@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
+#include "SpirvUnsupported.hpp"
 
 #include "SamplerCore.hpp"
 #include "System/Math.hpp"
@@ -514,11 +515,17 @@ namespace sw
 					break;
 
 				case spv::StorageClassWorkgroup:
-				case spv::StorageClassCrossWorkgroup:
-				case spv::StorageClassGeneric:
 				case spv::StorageClassAtomicCounter:
 				case spv::StorageClassImage:
 					UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
+					break;
+
+				case spv::StorageClassCrossWorkgroup:
+					UNSUPPORTED(SPIRV_FEATURE_OPENCL, "StorageClass CrossWorkgroup");
+					break;
+
+				case spv::StorageClassGeneric:
+					UNSUPPORTED(SPIRV_FEATURE_GENERIC_POINTER, "StorageClass Generic");
 					break;
 
 				default:
@@ -613,13 +620,16 @@ namespace sw
 				// Due to preprocessing, the entrypoint and its function provide no value.
 				break;
 			case spv::OpExtInstImport:
+			{
 				// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
 				// Valid shaders will not attempt to import any other instruction sets.
-				if (0 != strcmp("GLSL.std.450", reinterpret_cast<char const *>(insn.wordPointer(2))))
+				auto ext = reinterpret_cast<char const *>(insn.wordPointer(2));
+				if (0 != strcmp("GLSL.std.450", ext))
 				{
-					UNIMPLEMENTED("Only GLSL extended instruction set is supported");
+					UNSUPPORTED(SPIRV_FEATURE_EXTENSION, "%s", ext);
 				}
 				break;
+			}
 			case spv::OpName:
 			case spv::OpMemberName:
 			case spv::OpSource:
@@ -641,16 +651,19 @@ namespace sw
 			case spv::OpSpecConstantTrue:
 				// These should have all been removed by preprocessing passes. If we see them here,
 				// our assumptions are wrong and we will probably generate wrong code.
-				UNIMPLEMENTED("%s should have already been lowered.", OpcodeName(opcode).c_str());
+				UNREACHABLE("%s should have already been lowered.", OpcodeName(opcode).c_str());
 				break;
 
 			case spv::OpFConvert:
-				UNIMPLEMENTED("No valid uses for OpFConvert until we support multiple bit widths enabled by features such as Float16/Float64 etc.");
+				UNSUPPORTED(SPIRV_FEATURE_NON_FLOAT_32, "OpFConvert");
 				break;
 
 			case spv::OpSConvert:
+				UNSUPPORTED(SPIRV_FEATURE_NON_INT_32, "OpSConvert");
+				break;
+
 			case spv::OpUConvert:
-				UNIMPLEMENTED("No valid uses for Op*Convert until we support multiple bit widths enabled by features such as Int16/Int64 etc.");
+				UNSUPPORTED(SPIRV_FEATURE_NON_INT_32, "OpUConvert");
 				break;
 
 			case spv::OpLoad:
@@ -805,11 +818,11 @@ namespace sw
 
 			case spv::OpExtension:
 			{
-				auto p = reinterpret_cast<char const *>(insn.wordPointer(1));
+				auto ext = reinterpret_cast<char const *>(insn.wordPointer(1));
 				// Part of core SPIR-V 1.3. Vulkan 1.1 implementations must also accept the pre-1.3
 				// extension per Appendix A, `Vulkan Environment for SPIR-V`.
-				if (!strcmp(p, "SPV_KHR_storage_buffer_storage_class")) break;
-				UNIMPLEMENTED("Unknown extension %s", p);
+				if (!strcmp(ext, "SPV_KHR_storage_buffer_storage_class")) break;
+				UNSUPPORTED(SPIRV_FEATURE_EXTENSION, "%s", ext);
 				break;
 			}
 
@@ -1007,7 +1020,7 @@ namespace sw
 			// This is always the case for a Vulkan shader. Do nothing.
 			break;
 		default:
-			UNIMPLEMENTED("No other execution modes are permitted");
+			UNREACHABLE("Execution mode: %d", int(mode));
 		}
 	}
 
@@ -1064,8 +1077,7 @@ namespace sw
 			return 1;
 
 		default:
-			// Some other random insn.
-			UNIMPLEMENTED("Only types are supported");
+			UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 			return 0;
 		}
 	}
@@ -1232,7 +1244,7 @@ namespace sw
 			break;
 		}
 		default:
-			UNIMPLEMENTED("%s", OpcodeName(type.opcode()).c_str());
+			UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
 		}
 	}
 
@@ -1330,8 +1342,7 @@ namespace sw
 				d->InsideMatrix = true;
 				break;
 			default:
-				UNIMPLEMENTED("Unexpected type '%s' in ApplyDecorationsForAccessChain",
-							  OpcodeName(type.definition.opcode()).c_str());
+				UNREACHABLE("%s", OpcodeName(type.definition.opcode()).c_str());
 			}
 		}
 	}
@@ -1431,7 +1442,7 @@ namespace sw
 				break;
 			}
 			default:
-				UNIMPLEMENTED("Unexpected type '%s' in WalkExplicitLayoutAccessChain", OpcodeName(type.definition.opcode()).c_str());
+				UNREACHABLE("%s", OpcodeName(type.definition.opcode()).c_str());
 			}
 		}
 
@@ -1480,7 +1491,7 @@ namespace sw
 					auto &obj = getObject(indexIds[i]);
 					if (obj.kind != Object::Kind::Constant)
 					{
-						UNIMPLEMENTED("Nonconstant indexing of descriptor arrays is not supported");
+						UNSUPPORTED(SPIRV_FEATURE_SAMPLED_IMAGE_ARRAY_DYNAMIC_INDEXING, "");
 					}
 
 					auto d = descriptorDecorations.at(baseId);
@@ -1508,7 +1519,7 @@ namespace sw
 			}
 
 			default:
-				UNIMPLEMENTED("Unexpected type '%s' in WalkAccessChain", OpcodeName(type.opcode()).c_str());
+				UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
 			}
 		}
 
@@ -1553,7 +1564,7 @@ namespace sw
 			}
 
 			default:
-				UNIMPLEMENTED("Unexpected type in WalkLiteralAccessChain");
+				UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
 			}
 		}
 
@@ -2335,7 +2346,7 @@ namespace sw
 			return EmitImageTexelPointer(insn, state);
 
 		default:
-			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
+			UNREACHABLE("%s", OpcodeName(opcode).c_str());
 			break;
 		}
 
@@ -2411,7 +2422,7 @@ namespace sw
 			break;
 		}
 		default:
-			UNIMPLEMENTED("Storage class %d", objectTy.storageClass);
+			UNREACHABLE("Storage class %d", objectTy.storageClass);
 			break;
 		}
 
@@ -2994,7 +3005,7 @@ namespace sw
 				break;
 			}
 			default:
-				UNIMPLEMENTED("Unhandled unary operator %s", OpcodeName(insn.opcode()).c_str());
+				UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 			}
 		}
 
@@ -3190,7 +3201,7 @@ namespace sw
 				dst.move(i + lhsType.sizeInComponents, MulHigh(lhs.UInt(i), rhs.UInt(i)));
 				break;
 			default:
-				UNIMPLEMENTED("Unhandled binary operator %s", OpcodeName(insn.opcode()).c_str());
+				UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 			}
 		}
 
@@ -4033,14 +4044,12 @@ namespace sw
 		}
 		case GLSLstd450PackDouble2x32:
 		{
-			// Requires Float64 capability.
-			UNIMPLEMENTED("GLSLstd450PackDouble2x32");
+			UNSUPPORTED(SPIRV_FEATURE_FLOAT_64, "GLSLstd450PackDouble2x32");
 			break;
 		}
 		case GLSLstd450UnpackDouble2x32:
 		{
-			// Requires Float64 capability.
-			UNIMPLEMENTED("GLSLstd450UnpackDouble2x32");
+			UNSUPPORTED(SPIRV_FEATURE_FLOAT_64, "GLSLstd450UnpackDouble2x32");
 			break;
 		}
 		case GLSLstd450FindILsb:
@@ -4074,20 +4083,17 @@ namespace sw
 		}
 		case GLSLstd450InterpolateAtCentroid:
 		{
-			// Requires sampleRateShading / InterpolationFunction capability.
-			UNIMPLEMENTED("GLSLstd450InterpolateAtCentroid");
+			UNSUPPORTED(SPIRV_FEATURE_SAMPLE_RATE_SHADING, "GLSLstd450InterpolateAtCentroid");
 			break;
 		}
 		case GLSLstd450InterpolateAtSample:
 		{
-			// Requires sampleRateShading / InterpolationFunction capability.
-			UNIMPLEMENTED("GLSLstd450InterpolateAtSample");
+			UNSUPPORTED(SPIRV_FEATURE_SAMPLE_RATE_SHADING, "GLSLstd450InterpolateAtCentroid");
 			break;
 		}
 		case GLSLstd450InterpolateAtOffset:
 		{
-			// Requires sampleRateShading / InterpolationFunction capability.
-			UNIMPLEMENTED("GLSLstd450InterpolateAtOffset");
+			UNSUPPORTED(SPIRV_FEATURE_SAMPLE_RATE_SHADING, "GLSLstd450InterpolateAtCentroid");
 			break;
 		}
 		case GLSLstd450NMin:
@@ -4123,7 +4129,7 @@ namespace sw
 			break;
 		}
 		default:
-			UNIMPLEMENTED("Unhandled ExtInst %d", extInstIndex);
+			UNREACHABLE("ExtInst %d", int(extInstIndex));
 			break;
 		}
 
@@ -4518,7 +4524,7 @@ namespace sw
 			break;
 		}
 		default:
-			UNIMPLEMENTED("EmitImageQuerySize image descriptorType: %d", int(bindingLayout.descriptorType));
+			UNREACHABLE("Image descriptorType: %d", int(bindingLayout.descriptorType));
 		}
 
 		return EmitResult::Continue;
@@ -4611,8 +4617,38 @@ namespace sw
 			texelSize = 8;
 			numPackedElements = 2;
 			break;
+		case spv::ImageFormatRg32f:
+		case spv::ImageFormatRg16f:
+		case spv::ImageFormatR11fG11fB10f:
+		case spv::ImageFormatR16f:
+		case spv::ImageFormatRgba16:
+		case spv::ImageFormatRgb10A2:
+		case spv::ImageFormatRg16:
+		case spv::ImageFormatRg8:
+		case spv::ImageFormatR16:
+		case spv::ImageFormatR8:
+		case spv::ImageFormatRgba16Snorm:
+		case spv::ImageFormatRg16Snorm:
+		case spv::ImageFormatRg8Snorm:
+		case spv::ImageFormatR16Snorm:
+		case spv::ImageFormatR8Snorm:
+		case spv::ImageFormatRg32i:
+		case spv::ImageFormatRg16i:
+		case spv::ImageFormatRg8i:
+		case spv::ImageFormatR16i:
+		case spv::ImageFormatR8i:
+		case spv::ImageFormatRgb10a2ui:
+		case spv::ImageFormatRg32ui:
+		case spv::ImageFormatRg16ui:
+		case spv::ImageFormatRg8ui:
+		case spv::ImageFormatR16ui:
+		case spv::ImageFormatR8ui:
+			UNIMPLEMENTED("spv::ImageFormat %d", int(format));
+			break;
+
 		default:
-			UNIMPLEMENTED("spv::ImageFormat %u", format);
+			UNREACHABLE("spv::ImageFormat %d", int(format));
+			break;
 		}
 
 		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
@@ -4691,8 +4727,38 @@ namespace sw
 			dst.move(2, (packed[0] << 8) >> 24);
 			dst.move(3, (packed[0]) >> 24);
 			break;
+		case spv::ImageFormatRg32f:
+		case spv::ImageFormatRg16f:
+		case spv::ImageFormatR11fG11fB10f:
+		case spv::ImageFormatR16f:
+		case spv::ImageFormatRgba16:
+		case spv::ImageFormatRgb10A2:
+		case spv::ImageFormatRg16:
+		case spv::ImageFormatRg8:
+		case spv::ImageFormatR16:
+		case spv::ImageFormatR8:
+		case spv::ImageFormatRgba16Snorm:
+		case spv::ImageFormatRg16Snorm:
+		case spv::ImageFormatRg8Snorm:
+		case spv::ImageFormatR16Snorm:
+		case spv::ImageFormatR8Snorm:
+		case spv::ImageFormatRg32i:
+		case spv::ImageFormatRg16i:
+		case spv::ImageFormatRg8i:
+		case spv::ImageFormatR16i:
+		case spv::ImageFormatR8i:
+		case spv::ImageFormatRgb10a2ui:
+		case spv::ImageFormatRg32ui:
+		case spv::ImageFormatRg16ui:
+		case spv::ImageFormatRg8ui:
+		case spv::ImageFormatR16ui:
+		case spv::ImageFormatR8ui:
+			UNIMPLEMENTED("spv::ImageFormat %d", int(format));
+			break;
+
 		default:
-			UNIMPLEMENTED("");
+			UNREACHABLE("spv::ImageFormat %d", int(format));
+			break;
 		}
 
 		return EmitResult::Continue;
@@ -4781,8 +4847,38 @@ namespace sw
 			packed[1] = SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xffff)) | (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xffff)) << 16);
 			numPackedElements = 2;
 			break;
+		case spv::ImageFormatRg32f:
+		case spv::ImageFormatRg16f:
+		case spv::ImageFormatR11fG11fB10f:
+		case spv::ImageFormatR16f:
+		case spv::ImageFormatRgba16:
+		case spv::ImageFormatRgb10A2:
+		case spv::ImageFormatRg16:
+		case spv::ImageFormatRg8:
+		case spv::ImageFormatR16:
+		case spv::ImageFormatR8:
+		case spv::ImageFormatRgba16Snorm:
+		case spv::ImageFormatRg16Snorm:
+		case spv::ImageFormatRg8Snorm:
+		case spv::ImageFormatR16Snorm:
+		case spv::ImageFormatR8Snorm:
+		case spv::ImageFormatRg32i:
+		case spv::ImageFormatRg16i:
+		case spv::ImageFormatRg8i:
+		case spv::ImageFormatR16i:
+		case spv::ImageFormatR8i:
+		case spv::ImageFormatRgb10a2ui:
+		case spv::ImageFormatRg32ui:
+		case spv::ImageFormatRg16ui:
+		case spv::ImageFormatRg8ui:
+		case spv::ImageFormatR16ui:
+		case spv::ImageFormatR8ui:
+			UNIMPLEMENTED("spv::ImageFormat %d", int(format));
+			break;
+
 		default:
-			UNIMPLEMENTED("spv::ImageFormat %u", format);
+			UNREACHABLE("spv::ImageFormat %d", int(format));
+			break;
 		}
 
 		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
@@ -4881,7 +4977,7 @@ namespace sw
 					v = ExchangeAtomic(Pointer<UInt>(&ptr.base[offset]), laneValue, memoryOrder);
 					break;
 				default:
-					UNIMPLEMENTED("Atomic op", OpcodeName(insn.opcode()).c_str());
+					UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 					break;
 				}
 				x = Insert(x, v, j);
