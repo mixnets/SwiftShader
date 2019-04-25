@@ -141,6 +141,30 @@
       "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9486075f_dc10ec4f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-25T17:13:40Z",
+      "side": 1,
+      "message": "I have to rebase this stack anyway so I will fix this now.",
+      "parentUuid": "dadc6c94_33d3db43",
+      "range": {
+        "startLine": 261,
+        "startChar": 3,
+        "endLine": 261,
+        "endChar": 34
+      },
+      "revId": "e470ec6d1e3cb3cc2dab5895cf073b6502ba4a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
