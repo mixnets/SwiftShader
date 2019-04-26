@@ -48,6 +48,13 @@ struct alignas(16) StorageImageDescriptor
 	int sizeInBytes;
 };
 
+struct alignas(16) BufferDescriptor
+{
+	void *ptr;
+	int sizeInBytes;
+	int robustnessSize;
+};
+
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 public:
@@ -96,7 +103,7 @@ public:
 	// Returns the VkDescriptorSetLayoutBinding for the given binding.
 	VkDescriptorSetLayoutBinding const & getBindingLayout(uint32_t binding) const;
 
-	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const;
+	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize, size_t* typeStride) const;
 
 private:
 	size_t getDescriptorSetDataSize() const;
