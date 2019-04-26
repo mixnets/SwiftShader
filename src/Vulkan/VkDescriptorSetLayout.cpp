@@ -93,10 +93,12 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 
 	switch(type)
 	{
-	case VK_DESCRIPTOR_TYPE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 		size = sizeof(SampledImageDescriptor);
+		break;
+	case VK_DESCRIPTOR_TYPE_SAMPLER:
+	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+		size = sizeof(VkDescriptorImageInfo);
 		break;
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
