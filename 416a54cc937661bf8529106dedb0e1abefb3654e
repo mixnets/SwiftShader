@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafe20fa_7c0699a7",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-26T12:17:03Z",
+      "side": 1,
+      "message": "Please document. \u0027Effects\u0027 isn\u0027t exactly self explanatory.",
+      "range": {
+        "startLine": 93,
+        "startChar": 7,
+        "endLine": 93,
+        "endChar": 23
+      },
+      "revId": "416a54cc937661bf8529106dedb0e1abefb3654e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
