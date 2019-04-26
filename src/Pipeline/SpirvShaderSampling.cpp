@@ -39,14 +39,19 @@
 
 namespace sw {
 
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerImplicit(const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	return getImageSampler(Implicit, imageView, sampler);
 }
 
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	return getImageSampler(Lod, imageView, sampler);
+}
+
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerGrad(const vk::ImageView *imageView, const vk::Sampler *sampler)
+{
+	return getImageSampler(Grad, imageView, sampler);
 }
 
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler)
@@ -143,6 +148,13 @@ void SpirvShader::emitSamplerFunction(
 		// Lod is the second optional image operand, and is incompatible with the first one (Bias),
 		// so it always comes after the coordinates.
 		bias = in[coordinateCount];
+	}
+	else if(samplerMethod == Grad)
+	{
+		dsx[0] = in[coordinateCount + 0];
+		dsx[1] = in[coordinateCount + 1];
+		dsy[0] = in[coordinateCount + 2];
+		dsy[1] = in[coordinateCount + 3];
 	}
 
 	Vector4f sample = s.sampleTexture(texture, uvw[0], uvw[1], uvw[2], q, bias, dsx, dsy, offset, samplerFunction);

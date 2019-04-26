@@ -4434,12 +4434,22 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleImplicitLod(InsnIterator insn, EmitState *state) const
 	{
-		return EmitImageSample(getImageSamplerImplicitLod, insn, state);
+		return EmitImageSample(getImageSamplerImplicit, insn, state);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(InsnIterator insn, EmitState *state) const
 	{
-		return EmitImageSample(getImageSamplerExplicitLod, insn, state);
+		uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(5));
+
+		if((imageOperands & spv::ImageOperandsLodMask) == imageOperands)
+		{
+			return EmitImageSample(getImageSamplerLod, insn, state);
+		}
+		else if((imageOperands & spv::ImageOperandsGradMask) == imageOperands)
+		{
+			return EmitImageSample(getImageSamplerGrad, insn, state);
+		}
+		else UNIMPLEMENTED("Image Operands %x", imageOperands);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSample(GetImageSampler getImageSampler, InsnIterator insn, EmitState *state) const
@@ -4468,6 +4478,8 @@ namespace sw
 		bool lod = false;
 		Object::ID lodId = 0;
 		bool grad = false;
+		Object::ID gradDxId = 0;
+		Object::ID gradDyId = 0;
 		bool constOffset = false;
 		bool sample = false;
 
@@ -4475,6 +4487,9 @@ namespace sw
 		{
 			imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(5));
 			uint32_t operand = 6;
+
+			// Bias
+			// Lod / Grad
 
 			if(imageOperands & spv::ImageOperandsBiasMask)
 			{
@@ -4493,8 +4508,10 @@ namespace sw
 
 			if(imageOperands & spv::ImageOperandsGradMask)
 			{
-				UNIMPLEMENTED("Image operand %x", spv::ImageOperandsGradMask); (void)grad;
 				grad = true;
+				gradDxId = insn.word(operand + 0);
+				gradDyId = insn.word(operand + 1);
+				operand += 2;
 				imageOperands &= ~spv::ImageOperandsGradMask;
 			}
 
@@ -4531,6 +4548,26 @@ namespace sw
 			auto lodValue = GenericValue(this, state->routine, lodId);
 			in[i] = lodValue.Float(0);
 			i++;
+		}
+
+		if(grad)
+		{
+			auto dxValue = GenericValue(this, state->routine, gradDxId);
+			auto dyValue = GenericValue(this, state->routine, gradDyId);
+
+			// TODO: array:
+			// "The number of components of each must equal the number of components in Coordinate, minus the array layer component, if present."
+			for(uint32_t ii = 0; ii < coordinateType.sizeInComponents; ii++)
+			{
+				in[i] = dxValue.Float(ii);
+				i++;
+			}
+
+			for(uint32_t ii = 0; ii < coordinateType.sizeInComponents; ii++)
+			{
+				in[i] = dyValue.Float(ii);
+				i++;
+			}
 		}
 
 		Array<SIMD::Float> out(4);
