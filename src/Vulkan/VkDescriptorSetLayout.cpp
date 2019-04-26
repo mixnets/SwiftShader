@@ -65,6 +65,7 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo* 
 		bindingOffsets[i] = offset;
 		offset += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);
 	}
+	ASSERT_MSG(offset == getDescriptorSetDataSize(), "offset: %d, size: %d", int(offset), int(getDescriptorSetDataSize()));
 }
 
 void DescriptorSetLayout::destroy(const VkAllocationCallbacks* pAllocator)
@@ -126,7 +127,7 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a layout member field.
-	return sizeof(vk::DescriptorSetHeader) + getDescriptorSetDataSize();
+	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + getDescriptorSetDataSize());
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const
@@ -493,7 +494,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 		// applies recursively, with the update affecting consecutive bindings as
 		// needed to update all descriptorCount descriptors.
 		for (auto i = 0u; i < entry.descriptorCount; i++)
-			memcpy(memToWrite + typeSize * i, src + entry.offset + entry.stride * i, typeSize);
+			memcpy(memToWrite + typeSize * i, src + entry.offset + entry.stride * i, entry.stride);
 	}
 }
 
