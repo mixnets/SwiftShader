@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2690178_c7bb03be",
+        "filename": "src/OpenGL/libGLESv2/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T15:00:53Z",
+      "side": 1,
+      "message": "note: I verified that in Vulkan we don\u0027t need this. The spec states that \"The x and y members of offset must be greater than or equal to 0\" in section 25.2. Scissor Test, and the width/height extent parameters are unsigned integers.",
+      "range": {
+        "startLine": 820,
+        "startChar": 6,
+        "endLine": 820,
+        "endChar": 38
+      },
+      "revId": "fa39f2b118ed23d3e770d802e51a06bc5825d7a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "774340da_463f04a1",
+        "filename": "src/Shader/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T15:00:53Z",
+      "side": 1,
+      "message": "Please also make this change in src/Pipeline/SetupRoutine.cpp, which is our Vulkan equivalent.",
+      "range": {
+        "startLine": 192,
+        "startChar": 3,
+        "endLine": 197,
+        "endChar": 37
+      },
+      "revId": "fa39f2b118ed23d3e770d802e51a06bc5825d7a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
