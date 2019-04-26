@@ -867,8 +867,9 @@ namespace sw
 		// Returns the pair <significand, exponent>
 		std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
-		static ImageSampler *getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
-		static ImageSampler *getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerImplicit(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerGrad(const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static ImageSampler *getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static void emitSamplerFunction(
 			SamplerMethod samplerMethod,
