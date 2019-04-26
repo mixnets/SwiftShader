@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "84b8fea0_6e9e24e8",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T12:24:31Z",
+      "side": 1,
+      "message": "nit: Shouldn\u0027t matter for correctness, but initialize to 1 to get a sense of how many images are involved in a test during debugging, ensure repeatable identification when a specific one causes issues, and reserve 0 as invalid.",
+      "range": {
+        "startLine": 45,
+        "startChar": 39,
+        "endLine": 45,
+        "endChar": 40
+      },
+      "revId": "b2c0f4a11d8bc1e6664209ca443989f68d18feea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49b52825_7846c8b0",
+        "filename": "src/Vulkan/VkSampler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T12:24:31Z",
+      "side": 1,
+      "message": "1",
+      "range": {
+        "startLine": 21,
+        "startChar": 37,
+        "endLine": 21,
+        "endChar": 38
+      },
+      "revId": "b2c0f4a11d8bc1e6664209ca443989f68d18feea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
