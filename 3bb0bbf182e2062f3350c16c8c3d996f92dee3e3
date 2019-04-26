@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba16be40_546600bd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T19:59:03Z",
+      "side": 1,
+      "message": "I don\u0027t understand this argument. These strings aren\u0027t long. Several are shorter than their macro name.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 43
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49c9f420_140a9dbc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T19:59:03Z",
+      "side": 1,
+      "message": "Each feature has a member name with a very clear description in the spec. Let\u0027s just use those. Likewise for extension strings, no need to come up with our own.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 61
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56125905_f67570f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T19:59:03Z",
+      "side": 1,
+      "message": "New extensions are added all the time. I don\u0027t want it to become a maintenance burden to list everything we don\u0027t support.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 98
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "433c2c27_be175542",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T19:59:03Z",
+      "side": 1,
+      "message": "Would also be accomplished by consistently mentioning the feature name correctly in the string or a comment.\n\nI don\u0027t think using the macros is making this any more foolproof. I find it more inconvenient, since UNIMPLEMENTED() just takes a string and doesn\u0027t enforce it has to be one of these macros. We could add a comment about that but there\u0027s still lots of room for mistakes. Also people will basically be looking up what the macro name is while they already have the spec\u0027s name in hand.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 95
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
