@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "172d0b92_4cbeeccd",
+        "filename": "third_party/boost/boost/array.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T20:54:37Z",
+      "side": 1,
+      "message": "Please add a copy of this to third_party/boost/",
+      "range": {
+        "startLine": 13,
+        "startChar": 21,
+        "endLine": 13,
+        "endChar": 36
+      },
+      "revId": "58d6e1aa01b30b47712fd23b9e2538ab87ad9c46",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
