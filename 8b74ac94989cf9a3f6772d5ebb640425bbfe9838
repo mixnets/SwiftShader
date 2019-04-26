@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf92b7ae_19fde599",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T04:43:23Z",
+      "side": 1,
+      "message": "This is a uint64_t. Should probably be printed using %llu ?",
+      "range": {
+        "startLine": 654,
+        "startChar": 29,
+        "endLine": 654,
+        "endChar": 46
+      },
+      "revId": "8b74ac94989cf9a3f6772d5ebb640425bbfe9838",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d3c1d8_a0f5e441",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T04:43:23Z",
+      "side": 1,
+      "message": "Print these as %u instead of as a signed int?",
+      "range": {
+        "startLine": 748,
+        "startChar": 10,
+        "endLine": 748,
+        "endChar": 25
+      },
+      "revId": "8b74ac94989cf9a3f6772d5ebb640425bbfe9838",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
