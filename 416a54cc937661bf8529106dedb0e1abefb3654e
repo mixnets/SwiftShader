@@ -46,6 +46,30 @@
       "revId": "416a54cc937661bf8529106dedb0e1abefb3654e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3e0a4eb_67c5a05a",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-26T12:30:37Z",
+      "side": 1,
+      "message": "I\u0027d still like it documented instead of being in some review comment. :)",
+      "parentUuid": "1c0ba5e0_97d4ec84",
+      "range": {
+        "startLine": 93,
+        "startChar": 7,
+        "endLine": 93,
+        "endChar": 23
+      },
+      "revId": "416a54cc937661bf8529106dedb0e1abefb3654e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
