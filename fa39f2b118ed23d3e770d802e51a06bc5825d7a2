@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f387274e_c7fc995a",
+        "filename": "src/OpenGL/libGLESv2/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-26T16:26:04Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a2690178_c7bb03be",
+      "range": {
+        "startLine": 820,
+        "startChar": 6,
+        "endLine": 820,
+        "endChar": 38
+      },
+      "revId": "fa39f2b118ed23d3e770d802e51a06bc5825d7a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "774340da_463f04a1",
         "filename": "src/Shader/SetupRoutine.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "fa39f2b118ed23d3e770d802e51a06bc5825d7a2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e064d9a3_b1d1fc25",
+        "filename": "src/Shader/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-26T16:26:04Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "774340da_463f04a1",
+      "range": {
+        "startLine": 192,
+        "startChar": 3,
+        "endLine": 197,
+        "endChar": 37
+      },
+      "revId": "fa39f2b118ed23d3e770d802e51a06bc5825d7a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
