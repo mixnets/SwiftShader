@@ -474,8 +474,9 @@ namespace sw
 		// trampoline function for retrieving/generating the corresponding sampling routine.
 		struct ImageInstruction
 		{
-			ImageInstruction(SamplerMethod samplerMethod) : samplerMethod(samplerMethod)
+			ImageInstruction(SamplerMethod samplerMethod) : parameters(0)
 			{
+				this->samplerMethod = samplerMethod;
 			}
 
 			// Unmarshal from raw 32-bit data
@@ -488,13 +489,14 @@ namespace sw
 
 			union
 			{
+				uint32_t parameters;
+
 				struct
 				{
 					uint32_t samplerMethod : BITS(SAMPLER_METHOD_LAST);
-					uint32_t coordinates : 3;
+					uint32_t coordinates : 3;     // 1-4
+					uint32_t gradComponents : 2;  // 0-3
 				};
-
-				uint32_t parameters;
 			};
 		};
 
