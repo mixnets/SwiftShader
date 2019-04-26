@@ -22,6 +22,30 @@
       "revId": "a287a4176b80580a0e314afe82481a89380c47e5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db85684a_e985e2cf",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-26T13:03:48Z",
+      "side": 1,
+      "message": "You mean LLVM? We only assume natural alignment of scalars for now. In a few select places vector loads specify 16 byte alignment, e.g.: https://swiftshader.googlesource.com/SwiftShader/+/64da4ae84db22545e72b8bd1f732bd358899380a/src/Pipeline/SamplerCore.cpp#933\n\nOn modern x86 CPUs, movups is as efficient as movaps iff the address is aligned, so it\u0027s not crucial for performance to aggressively enforce alignment. For ARM it greatly depends on the implementation, so I\u0027ll make a note about checking the impact later.",
+      "parentUuid": "749ef82f_ba182cc2",
+      "range": {
+        "startLine": 122,
+        "startChar": 4,
+        "endLine": 122,
+        "endChar": 82
+      },
+      "revId": "a287a4176b80580a0e314afe82481a89380c47e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
