@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b922f24b_9c83d546",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-26T12:35:47Z",
+      "side": 1,
+      "message": "Done (slight rewording, and \u0027use UNIMPLEMENTED()\u0027 -\u003e \u0027use UNSUPPORTED()\u0027",
+      "parentUuid": "40902368_86ef08e4",
+      "range": {
+        "startLine": 92,
+        "startChar": 50,
+        "endLine": 92,
+        "endChar": 51
+      },
+      "revId": "7d0a757ae0176cf76845f936a5d239ccdb08ab90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "19e68d98_850614fe",
         "filename": "src/Vulkan/VkDebug.hpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "43f32077_54a27e8b",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-26T12:35:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19e68d98_850614fe",
+      "range": {
+        "startLine": 104,
+        "startChar": 29,
+        "endLine": 104,
+        "endChar": 80
+      },
+      "revId": "7d0a757ae0176cf76845f936a5d239ccdb08ab90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8988bbe4_d7d55dff",
         "filename": "src/Vulkan/VkDebug.hpp",
         "patchSetId": 1
@@ -59,6 +107,24 @@
       "writtenOn": "2019-04-25T13:21:41Z",
       "side": 1,
       "message": "We could probably also use something to indicate that an app is miss-behaving, other than UNSUPPORTED() (i.e. stuff not just in feature we do\u0027t have yet, but entirely out of spec). INVALID() or something like that, which could replace the less specific DABORT().\n\nAnyway, this is a separate issue and not critical for milestone 1.0 so lets hold off on the discussion \u0026 implementation.",
+      "revId": "7d0a757ae0176cf76845f936a5d239ccdb08ab90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5b71c15_2e9e7e0e",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-26T12:35:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8988bbe4_d7d55dff",
       "revId": "7d0a757ae0176cf76845f936a5d239ccdb08ab90",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
