@@ -89,35 +89,38 @@ size_t DescriptorSetLayout::ComputeRequiredAllocationSize(const VkDescriptorSetL
 
 size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 {
+	size_t size = 0;
+
 	switch(type)
 	{
 	case VK_DESCRIPTOR_TYPE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-		return sizeof(SampledImageDescriptor);
+		size = sizeof(SampledImageDescriptor);
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-		return sizeof(StorageImageDescriptor);
+		size = sizeof(StorageImageDescriptor);
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-		return sizeof(VkDescriptorImageInfo);
+		size = sizeof(VkDescriptorImageInfo);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
 		return sizeof(VkBufferView);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-		return sizeof(VkDescriptorBufferInfo);
+		size = sizeof(VkDescriptorBufferInfo);
 	default:
 		UNIMPLEMENTED("Unsupported Descriptor Type");
+		return 0;
 	}
 
-	return 0;
+	return sw::align<16>(size);
 }
 
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a layout member field.
-	return sizeof(vk::DescriptorSetLayout*) + getDescriptorSetDataSize();
+	return sizeof(vk::DescriptorSetHeader) + getDescriptorSetDataSize();
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const
@@ -149,7 +152,7 @@ void DescriptorSetLayout::initialize(VkDescriptorSet vkDescriptorSet)
 {
 	// Use a pointer to this descriptor set layout as the descriptor set's header
 	DescriptorSet* descriptorSet = vk::Cast(vkDescriptorSet);
-	descriptorSet->layout = this;
+	descriptorSet->header.layout = this;
 	uint8_t* mem = descriptorSet->data;
 
 	for(uint32_t i = 0; i < bindingCount; i++)
@@ -255,7 +258,7 @@ void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
 
 void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
 {
-	DescriptorSetLayout* dstLayout = dstSet->layout;
+	DescriptorSetLayout* dstLayout = dstSet->header.layout;
 	auto &binding = dstLayout->bindings[dstLayout->getBindingIndex(entry.dstBinding)];
 	ASSERT(dstLayout);
 	ASSERT(binding.descriptorType == entry.descriptorType);
@@ -517,11 +520,11 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies)
 {
 	DescriptorSet* srcSet = vk::Cast(descriptorCopies.srcSet);
-	DescriptorSetLayout* srcLayout = srcSet->layout;
+	DescriptorSetLayout* srcLayout = srcSet->header.layout;
 	ASSERT(srcLayout);
 
 	DescriptorSet* dstSet = vk::Cast(descriptorCopies.dstSet);
-	DescriptorSetLayout* dstLayout = dstSet->layout;
+	DescriptorSetLayout* dstLayout = dstSet->header.layout;
 	ASSERT(dstLayout);
 
 	size_t srcTypeSize = 0;
