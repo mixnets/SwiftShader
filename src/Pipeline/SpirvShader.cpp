@@ -559,14 +559,8 @@ namespace sw
 				case spv::StorageClassPushConstant:
 				case spv::StorageClassPrivate:
 				case spv::StorageClassFunction:
-					break; // Correctly handled.
-
 				case spv::StorageClassUniformConstant:
-					// This storage class is for data stored within the descriptor itself,
-					// unlike StorageClassUniform which contains handles to buffers.
-					// For Vulkan it corresponds with samplers, images, or combined image samplers.
-					object.kind = Object::Kind::SampledImage;
-					break;
+					break; // Correctly handled.
 
 				case spv::StorageClassWorkgroup:
 				case spv::StorageClassCrossWorkgroup:
@@ -711,6 +705,8 @@ namespace sw
 			case spv::OpLoad:
 			case spv::OpAccessChain:
 			case spv::OpInBoundsAccessChain:
+			case spv::OpSampledImage:
+			case spv::OpImage:
 				{
 					// Propagate the descriptor decorations to the result.
 					Object::ID resultId = insn.word(2);
@@ -2162,6 +2158,7 @@ namespace sw
 		case spv::OpTypeFunction:
 		case spv::OpTypeImage:
 		case spv::OpTypeSampledImage:
+		case spv::OpTypeSampler:
 		case spv::OpExecutionMode:
 		case spv::OpMemoryModel:
 		case spv::OpFunction:
@@ -2402,6 +2399,12 @@ namespace sw
 		case spv::OpImageTexelPointer:
 			return EmitImageTexelPointer(insn, state);
 
+		case spv::OpSampledImage:
+			return EmitSampledImage(insn, state);
+
+		case spv::OpImage:
+			return EmitImage(insn, state);
+
 		default:
 			UNIMPLEMENTED("opcode: %s", OpcodeName(opcode).c_str());
 			break;
@@ -2508,6 +2511,11 @@ namespace sw
 			// TODO(b/129523279)
 			auto &ptr = routine->getPointer(pointerId);
 			routine->createPointer(resultId, ptr);
+
+			if (resultTy.opcode() == spv::OpTypeSampledImage)
+			{
+				routine->createExtraPointer(resultId, ptr);
+			}
 
 			return EmitResult::Continue;
 		}
@@ -4470,15 +4478,15 @@ namespace sw
 		auto &resultType = getType(resultTypeId);
 
 		auto &result = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
-		auto &sampledImage = state->routine->getPointer(sampledImageId);
+		auto imageDescriptor = state->routine->getPointer(sampledImageId).base;	// vk::SampledImageDescriptor*
+		auto samplerDescriptor = state->routine->getExtraPointer(sampledImageId).base; // vk::SampledImageDescriptor*
 		auto coordinate = GenericValue(this, state->routine, coordinateId);
 		auto &coordinateType = getType(coordinate.type);
 
 		Pointer<Byte> constants;  // FIXME(b/129523279)
 
-		auto descriptor = sampledImage.base; // vk::SampledImageDescriptor*
-		auto sampler = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, sampler)); // vk::Sampler*
-		auto imageView = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, imageView)); // vk::ImageView*
+		auto sampler = *Pointer<Pointer<Byte>>(samplerDescriptor + OFFSET(vk::SampledImageDescriptor, sampler)); // vk::Sampler*
+		auto imageView = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageView)); // vk::ImageView*
 
 		auto samplerFunc = Call(getImageSampler, imageView, sampler);
 
@@ -4553,7 +4561,7 @@ namespace sw
 		}
 
 		Array<SIMD::Float> out(4);
-		Call<ImageSampler>(samplerFunc, sampledImage.base, &in[0], &out[0], state->routine->constants);
+		Call<ImageSampler>(samplerFunc, imageDescriptor, &in[0], &out[0], state->routine->constants);
 
 		for (int i = 0; i < 4; i++) { result.move(i, out[i]); }
 
@@ -4999,6 +5007,33 @@ namespace sw
 		auto ptr = GetTexelAddress(state->routine, basePtr, coordinate, imageType, binding, sizeof(uint32_t));
 
 		state->routine->createPointer(resultId, ptr);
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitSampledImage(InsnIterator insn, EmitState *state) const
+	{
+		// Combine an image and a sampler. The resulting object has the image's descriptor as its `pointer`,
+		// and the sampler's descriptor as its `extra pointer`.
+
+		Object::ID resultId = insn.word(2);
+		Object::ID imageId = insn.word(3);
+		Object::ID samplerId = insn.word(4);
+
+		state->routine->createPointer(resultId, state->routine->getPointer(imageId));
+		state->routine->createExtraPointer(resultId, state->routine->getPointer(samplerId));
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitImage(InsnIterator insn, EmitState *state) const
+	{
+		// Extract the image part of a combined image+sampler
+
+		Object::ID resultId = insn.word(2);
+		Object::ID sampledImageId = insn.word(3);
+
+		state->routine->createPointer(resultId, state->routine->getPointer(sampledImageId));
 
 		return EmitResult::Continue;
 	}

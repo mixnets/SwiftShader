@@ -847,6 +847,8 @@ namespace sw
 		EmitResult EmitImageTexelPointer(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAtomicOp(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitSampledImage(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImage(InsnIterator insn, EmitState *state) const;
 
 		SIMD::Pointer GetTexelAddress(SpirvRoutine const * routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
 
@@ -896,6 +898,7 @@ namespace sw
 		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
 
 		std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
+		std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> extraPointers;
 
 		Variable inputs = Variable{MAX_INTERFACE_COMPONENTS};
 		Variable outputs = Variable{MAX_INTERFACE_COMPONENTS};
@@ -917,6 +920,12 @@ namespace sw
 		{
 			bool added = pointers.emplace(id, ptr).second;
 			ASSERT_MSG(added, "Pointer %d created twice", id.value());
+		}
+
+		void createExtraPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
+		{
+			bool added = extraPointers.emplace(id, ptr).second;
+			ASSERT_MSG(added, "Extra pointer %d created twice", id.value());
 		}
 
 		Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
@@ -946,6 +955,13 @@ namespace sw
 		{
 			auto it = pointers.find(id);
 			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+			return it->second;
+		}
+
+		SIMD::Pointer const& getExtraPointer(SpirvShader::Object::ID id) const
+		{
+			auto it = extraPointers.find(id);
+			ASSERT_MSG(it != extraPointers.end(), "Unknown extra pointer %d", id.value());
 			return it->second;
 		}
 	};
