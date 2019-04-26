@@ -302,10 +302,6 @@ else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
     endif()
 
-    if(REACTOR_EMIT_DEBUG_INFO)
-        list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
-    endif()
-
     # Disable pedanitc warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
@@ -349,6 +345,10 @@ else()
             set_cpp_flag("-fsanitize=undefined")
         endif()
     endif()
+endif()
+
+if(REACTOR_EMIT_DEBUG_INFO)
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
 endif()
 
 if(WIN32)
@@ -1200,7 +1200,6 @@ set(LLVM_INCLUDE_DIR "")
 
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
-    list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/windows/include)
 elseif(LINUX)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/linux/include)
     list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/linux/include)
@@ -1670,6 +1669,21 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
     target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
 
     if(REACTOR_EMIT_DEBUG_INFO)
+    add_library(Boost INTERFACE)
+    target_include_directories(Boost INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost"
+    )
+    if(WIN32)
+        # Boost stacktrace uses COM on Windows.
+        # On Windows, cache COM instances in TLS for performance.
+        target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_WINDBG_CACHED)
+    else()
+        # Boost stacktrace uses libbacktrace
+        target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_BACKTRACE)
+
+        # Boost stacktrace uses exceptions, so force enable it
+        set_cpp_flag("-fexceptions")
+
         add_library(Libbacktrace STATIC ${LIBBACKTRACE_LIST})
         set_target_properties(Libbacktrace PROPERTIES
             INCLUDE_DIRECTORIES "${LIBBACKTRACE_INCLUDE_DIR}"
@@ -1678,6 +1692,8 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
         )
         target_link_libraries(Libbacktrace ${OS_LIBS})
         target_link_libraries(ReactorLLVM Libbacktrace)
+    endif()
+    target_link_libraries(ReactorLLVM Boost)
     endif(REACTOR_EMIT_DEBUG_INFO)
 
     set(Reactor ReactorLLVM)
