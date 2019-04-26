@@ -67,7 +67,7 @@ namespace sw
 			routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(frontFacing);
 		}
 
-		auto activeLaneMask = SIMD::Int(0xFFFFFFFF); // TODO: Control this.
+		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
 		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
 		spirvShader->emitEpilog(&routine);
 
@@ -92,12 +92,7 @@ namespace sw
 		it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
 		if (it != spirvShader->outputBuiltins.end())
 		{
-			oDepth = routine.getVariable(it->second.Id)[it->second.FirstComponent];
-		}
-
-		if(spirvShader->getModes().DepthReplacing)
-		{
-			oDepth = Min(Max(oDepth, Float4(0.0f)), Float4(1.0f));
+			oDepth = Min(Max(routine.getVariable(it->second.Id)[it->second.FirstComponent], Float4(0.0f)), Float4(1.0f));
 		}
 	}
 
