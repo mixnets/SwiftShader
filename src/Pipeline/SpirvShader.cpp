@@ -4453,12 +4453,22 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleImplicitLod(InsnIterator insn, EmitState *state) const
 	{
-		return EmitImageSample(getImageSamplerImplicitLod, insn, state);
+		return EmitImageSample(getImageSamplerImplicit, insn, state);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(InsnIterator insn, EmitState *state) const
 	{
-		return EmitImageSample(getImageSamplerExplicitLod, insn, state);
+		uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(5));
+
+		if((imageOperands & spv::ImageOperandsLodMask) == imageOperands)
+		{
+			return EmitImageSample(getImageSamplerLod, insn, state);
+		}
+		else if((imageOperands & spv::ImageOperandsGradMask) == imageOperands)
+		{
+			return EmitImageSample(getImageSamplerGrad, insn, state);
+		}
+		else UNIMPLEMENTED("Image Operands %x", imageOperands);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSample(GetImageSampler getImageSampler, InsnIterator insn, EmitState *state) const
@@ -4474,8 +4484,6 @@ namespace sw
 		auto coordinate = GenericValue(this, state->routine, coordinateId);
 		auto &coordinateType = getType(coordinate.type);
 
-		Pointer<Byte> constants;  // FIXME(b/129523279)
-
 		auto descriptor = sampledImage.base; // vk::SampledImageDescriptor*
 		auto sampler = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, sampler)); // vk::Sampler*
 		auto imageView = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::SampledImageDescriptor, imageView)); // vk::ImageView*
@@ -4487,6 +4495,8 @@ namespace sw
 		bool lod = false;
 		Object::ID lodId = 0;
 		bool grad = false;
+		Object::ID gradDxId = 0;
+		Object::ID gradDyId = 0;
 		bool constOffset = false;
 		bool sample = false;
 
@@ -4512,8 +4522,11 @@ namespace sw
 
 			if(imageOperands & spv::ImageOperandsGradMask)
 			{
-				UNIMPLEMENTED("Image operand %x", spv::ImageOperandsGradMask); (void)grad;
+				ASSERT(!lod);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits."
 				grad = true;
+				gradDxId = insn.word(operand + 0);
+				gradDyId = insn.word(operand + 1);
+				operand += 2;
 				imageOperands &= ~spv::ImageOperandsGradMask;
 			}
 
@@ -4537,10 +4550,10 @@ namespace sw
 			}
 		}
 
-		Array<SIMD::Float> in(coordinateType.sizeInComponents + lod);
+		Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
 
 		uint32_t i = 0;
-		for( ; i < coordinateType.sizeInComponents; i++)
+		for( ; i < coordinateType.sizeInComponents; i++)  // FIXME(b/129523279): "It may be a vector larger than needed"
 		{
 			in[i] = coordinate.Float(i);
 		}
@@ -4550,6 +4563,25 @@ namespace sw
 			auto lodValue = GenericValue(this, state->routine, lodId);
 			in[i] = lodValue.Float(0);
 			i++;
+		}
+		else if(grad)
+		{
+			auto dxValue = GenericValue(this, state->routine, gradDxId);
+			auto dyValue = GenericValue(this, state->routine, gradDyId);
+
+			// TODO: array:
+			// "The number of components of each must equal the number of components in Coordinate, minus the array layer component, if present."
+			for(uint32_t j = 0; j < coordinateType.sizeInComponents; j++)
+			{
+				in[i] = dxValue.Float(j);
+				i++;
+			}
+
+			for(uint32_t j = 0; j < coordinateType.sizeInComponents; j++)
+			{
+				in[i] = dyValue.Float(j);
+				i++;
+			}
 		}
 
 		Array<SIMD::Float> out(4);

@@ -39,14 +39,19 @@
 
 namespace sw {
 
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerImplicit(const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	return getImageSampler(Implicit, imageView, sampler);
 }
 
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	return getImageSampler(Lod, imageView, sampler);
+}
+
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerGrad(const vk::ImageView *imageView, const vk::Sampler *sampler)
+{
+	return getImageSampler(Grad, imageView, sampler);
 }
 
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler)
@@ -111,38 +116,50 @@ void SpirvShader::emitSamplerFunction(
 	Vector4f offset;      // TODO(b/129523279)
 	SamplerFunction samplerFunction = { samplerMethod, None };  // TODO(b/129523279)
 
-	int coordinateCount = 0;
+	int coordinates = 0;  // Number of coordinate components.
+	int layer = 0;        // 1 to indicate the last coordinate component is the layer index.
 	switch(imageView->getType())
 	{
-	case VK_IMAGE_VIEW_TYPE_1D:         coordinateCount = 1; break;
-	case VK_IMAGE_VIEW_TYPE_2D:         coordinateCount = 2; break;
-//	case VK_IMAGE_VIEW_TYPE_3D:         coordinateCount = 3; break;
-	case VK_IMAGE_VIEW_TYPE_CUBE:       coordinateCount = 3; break;
-//	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   coordinateCount = 2; break;
-//	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   coordinateCount = 3; break;
-//	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: coordinateCount = 4; break;
+	case VK_IMAGE_VIEW_TYPE_1D:         coordinates = 1; layer = 0; break;
+	case VK_IMAGE_VIEW_TYPE_2D:         coordinates = 2; layer = 0; break;
+//	case VK_IMAGE_VIEW_TYPE_3D:         coordinates = 3; layer = 0; break;
+	case VK_IMAGE_VIEW_TYPE_CUBE:       coordinates = 3; layer = 0; break;
+//	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   coordinates = 2; layer = 1; break;
+//	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   coordinates = 3; layer = 1; break;
+//	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: coordinates = 4; layer = 1; break;
 	default:
 		UNIMPLEMENTED("imageView type %d", imageView->getType());
 	}
 
-	for(int i = 0; i < coordinateCount; i++)
+	for(int i = 0; i < coordinates; i++)
 	{
 		uvw[i] = in[i];
 	}
 
 	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
 	// Implement optimized 1D sampling.
-	If(imageView->getType() == VK_IMAGE_VIEW_TYPE_1D ||
+	if(imageView->getType() == VK_IMAGE_VIEW_TYPE_1D ||
 	   imageView->getType() == VK_IMAGE_VIEW_TYPE_1D_ARRAY)
 	{
 		uvw[1] = SIMD::Float(0);
 	}
 
+	// Lod and Grad are explicit-lod image operands, and always come after the coordinates.
 	if(samplerMethod == Lod)
 	{
-		// Lod is the second optional image operand, and is incompatible with the first one (Bias),
-		// so it always comes after the coordinates.
-		bias = in[coordinateCount];
+		bias = in[coordinates];
+	}
+	else if(samplerMethod == Grad)
+	{
+		for(int i = 0; i < coordinates - layer; i++)
+		{
+			dsx[i] = in[coordinates + i];
+		}
+
+		for(int i = 0; i < coordinates - layer; i++)
+		{
+			dsy[i] = in[coordinates + (coordinates - layer) + i];
+		}
 	}
 
 	Vector4f sample = s.sampleTexture(texture, uvw[0], uvw[1], uvw[2], q, bias, dsx, dsy, offset, samplerFunction);
