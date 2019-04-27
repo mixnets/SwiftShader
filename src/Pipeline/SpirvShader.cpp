@@ -2169,6 +2169,8 @@ namespace sw
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
 		auto opcode = insn.opcode();
+		// RR_WATCH(state->routine->workgroupMemory);
+		// RR_WATCH(OpcodeName(opcode).c_str());
 
 		switch (opcode)
 		{
@@ -2468,6 +2470,7 @@ namespace sw
 			auto base = &routine->workgroupMemory[0];
 			auto elementTy = getType(objectTy.element);
 			auto sizeInBytes = elementTy.sizeInComponents * sizeof(float);
+			RR_WATCH(routine->workgroupMemory, base, int(sizeInBytes), workgroupMemory.offsetOf(resultId));
 			routine->createPointer(resultId, SIMD::Pointer(base, sizeInBytes, workgroupMemory.offsetOf(resultId)));
 			break;
 		}

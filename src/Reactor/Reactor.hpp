@@ -132,8 +132,9 @@ namespace rr
 
 		~Variable();
 
-	private:
+	public:
 		static void materializeAll();
+	private:
 		static void killUnmaterialized();
 
 		static std::unordered_set<Variable*> unmaterializedVariables;

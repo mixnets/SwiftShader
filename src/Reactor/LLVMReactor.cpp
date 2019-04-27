@@ -4219,6 +4219,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 		auto handle = args++;
 		auto outPtr = args++;
 		::builder->SetInsertPoint(llvm::BasicBlock::Create(*::context, "co_await", ::coroutine.await));
+		RR_LOG("co_await");
 		auto doneBlock = llvm::BasicBlock::Create(*::context, "done", ::coroutine.await);
 		auto resumeBlock = llvm::BasicBlock::Create(*::context, "resume", ::coroutine.await);
 
@@ -4250,6 +4251,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	{
 		auto handle = ::coroutine.terminate->arg_begin();
 		::builder->SetInsertPoint(llvm::BasicBlock::Create(*::context, "", ::coroutine.terminate));
+		RR_LOG("coroutine_terminate");
 		::builder->CreateCall(coro_destroy, {handle});
 		::builder->CreateRetVoid();
 	}
@@ -4296,6 +4298,8 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	::coroutine.destroyBlock = llvm::BasicBlock::Create(*::context, "terminate", ::function);
 
 	::builder->SetInsertPoint(entryBlock);
+	Variable::materializeAll();
+	RR_LOG("coroutine");
 	::coroutine.promise = ::builder->CreateAlloca(T(YieldType), nullptr, "promise");
 	::coroutine.id = ::builder->CreateCall(coro_id, {
 		::llvm::ConstantInt::get(i32Ty, 0),
@@ -4309,11 +4313,13 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 
 	// Build the suspend block
 	::builder->SetInsertPoint(::coroutine.suspendBlock);
+	RR_LOG("suspend");
 	::builder->CreateCall(coro_end, {::coroutine.handle, ::llvm::ConstantInt::get(i1Ty, 0)});
 	::builder->CreateRet(::coroutine.handle);
 
 	// Build the end block
 	::builder->SetInsertPoint(::coroutine.endBlock);
+	RR_LOG("end");
 	auto action = ::builder->CreateCall(coro_suspend, {
 		::llvm::ConstantTokenNone::get(*::context),
 		::llvm::ConstantInt::get(i1Ty, 1), // final: true
@@ -4324,6 +4330,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 
 	// Build the destroy block
 	::builder->SetInsertPoint(::coroutine.destroyBlock);
+	RR_LOG("terminate");
 	auto memory = ::builder->CreateCall(coro_free, {::coroutine.id, ::coroutine.handle});
 	::builder->CreateCall(freeFrame, {memory});
 	::builder->CreateBr(::coroutine.suspendBlock);
@@ -4360,6 +4367,8 @@ void Yield(Value* val)
 	//  resume:
 	//
 
+	Variable::materializeAll();
+
 	// Types
 	auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
 	auto i8Ty = ::llvm::Type::getInt8Ty(*::context);
@@ -4388,7 +4397,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
 {
 	::builder->CreateBr(::coroutine.endBlock);
 
-	if(false)
+	if(true)
 	{
 		std::error_code error;
 		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-unopt.txt", error);
@@ -4409,7 +4418,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
 		optimize();
 	}
 
-	if(false)
+	if(true)
 	{
 		std::error_code error;
 		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-opt.txt", error);
