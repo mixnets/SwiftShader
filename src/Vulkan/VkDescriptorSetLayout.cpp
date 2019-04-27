@@ -96,22 +96,17 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
 		return sizeof(SampledImageDescriptor);
-		break;
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
 		return sizeof(StorageImageDescriptor);
-		break;
-	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-		return sizeof(VkBufferView);
-		break;
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 		return sizeof(BufferDescriptor);
-		break;
 	default:
 		UNIMPLEMENTED("Unsupported Descriptor Type");
 		return 0;
@@ -263,8 +258,11 @@ void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
 {
 	this->sampler = sampler;
 
-	texture.minLod = sw::clamp(sampler->minLod, 0.0f, (float)(sw::MAX_TEXTURE_LOD));
-	texture.maxLod = sw::clamp(sampler->maxLod, 0.0f, (float)(sw::MAX_TEXTURE_LOD));
+	if (sampler)
+	{
+		texture.minLod = sw::clamp(sampler->minLod, 0.0f, (float) (sw::MAX_TEXTURE_LOD));
+		texture.maxLod = sw::clamp(sampler->maxLod, 0.0f, (float) (sw::MAX_TEXTURE_LOD));
+	}
 }
 
 void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
@@ -280,7 +278,27 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 	ASSERT(reinterpret_cast<intptr_t>(memToWrite) % 16 == 0);  // Each descriptor must be 16-byte aligned.
 
-	if(entry.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+	if (entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER)
+	{
+		SampledImageDescriptor *imageSampler = reinterpret_cast<SampledImageDescriptor*>(memToWrite);
+
+		for(uint32_t i = 0; i < entry.descriptorCount; i++)
+		{
+			auto update = reinterpret_cast<VkDescriptorImageInfo const *>(src + entry.offset + entry.stride * i);
+			// "All consecutive bindings updated via a single VkWriteDescriptorSet structure, except those with a
+			//  descriptorCount of zero, must all either use immutable samplers or must all not use immutable samplers."
+			if (!binding.pImmutableSamplers)
+			{
+				imageSampler[i].updateSampler(vk::Cast(update->sampler));
+			}
+		}
+	}
+	else if (entry.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER)
+	{
+		UNIMPLEMENTED("VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER");
+	}
+	else if (entry.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+	   		 entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
 	{
 		SampledImageDescriptor *imageSampler = reinterpret_cast<SampledImageDescriptor*>(memToWrite);
 
@@ -503,17 +521,6 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			descriptor[i].ptr = buffer->getOffsetPointer(update->offset);
 			descriptor[i].sizeInBytes = update->range;
 		}
-	}
-	else
-	{
-		// If the dstBinding has fewer than descriptorCount array elements remaining
-		// starting from dstArrayElement, then the remainder will be used to update
-		// the subsequent binding - dstBinding+1 starting at array element zero. If
-		// a binding has a descriptorCount of zero, it is skipped. This behavior
-		// applies recursively, with the update affecting consecutive bindings as
-		// needed to update all descriptorCount descriptors.
-		for (auto i = 0u; i < entry.descriptorCount; i++)
-			memcpy(memToWrite + typeStride * i, src + entry.offset + entry.stride * i, typeSize);
 	}
 }
 
