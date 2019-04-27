@@ -519,7 +519,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			auto update = reinterpret_cast<VkDescriptorBufferInfo const *>(src + entry.offset + entry.stride * i);
 			auto buffer = Cast(update->buffer);
 			descriptor[i].ptr = buffer->getOffsetPointer(update->offset);
-			descriptor[i].sizeInBytes = update->range;
+			descriptor[i].sizeInBytes = (update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range;
 		}
 	}
 }
