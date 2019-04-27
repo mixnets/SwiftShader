@@ -17,6 +17,7 @@
 #include "VkDescriptorSet.hpp"
 #include "VkSampler.hpp"
 #include "VkImageView.hpp"
+#include "VkBuffer.hpp"
 #include "VkBufferView.hpp"
 #include "System/Types.hpp"
 
@@ -109,7 +110,7 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-		return sizeof(VkDescriptorBufferInfo);
+		return sizeof(BufferDescriptor);
 		break;
 	default:
 		UNIMPLEMENTED("Unsupported Descriptor Type");
@@ -487,6 +488,20 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			descriptor[i].slicePitchBytes = 0;
 			descriptor[i].arrayLayers = 1;
 			descriptor[i].sizeInBytes = bufferView->getRangeInBytes();
+		}
+	}
+	else if (entry.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
+			 entry.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
+			 entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+			 entry.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
+	{
+		auto descriptor = reinterpret_cast<BufferDescriptor *>(memToWrite);
+		for (uint32_t i = 0; i < entry.descriptorCount; i++)
+		{
+			auto update = reinterpret_cast<VkDescriptorBufferInfo const *>(src + entry.offset + entry.stride * i);
+			auto buffer = Cast(update->buffer);
+			descriptor[i].ptr = buffer->getOffsetPointer(update->offset);
+			descriptor[i].sizeInBytes = update->range;
 		}
 	}
 	else

@@ -48,6 +48,12 @@ struct alignas(16) StorageImageDescriptor
 	int sizeInBytes;
 };
 
+struct alignas(16) BufferDescriptor
+{
+	void *ptr;
+	int sizeInBytes;
+};
+
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 public:
