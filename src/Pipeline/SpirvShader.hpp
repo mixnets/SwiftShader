@@ -840,6 +840,7 @@ namespace sw
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleImplicitLod(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleExplicitLod(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageFetch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSample(GetImageSampler getImageSampler, InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
@@ -871,6 +872,7 @@ namespace sw
 
 		static ImageSampler *getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static ImageSampler *getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler);
+		static ImageSampler *getImageSamplerFetch(const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static ImageSampler *getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler);
 		static void emitSamplerFunction(
 			SamplerMethod samplerMethod,

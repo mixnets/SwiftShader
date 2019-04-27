@@ -842,6 +842,7 @@ namespace sw
 			case spv::OpPhi:
 			case spv::OpImageSampleImplicitLod:
 			case spv::OpImageSampleExplicitLod:
+			case spv::OpImageFetch:
 			case spv::OpImageQuerySize:
 			case spv::OpImageRead:
 			case spv::OpImageTexelPointer:
@@ -2386,6 +2387,9 @@ namespace sw
 
 		case spv::OpImageSampleExplicitLod:
 			return EmitImageSampleExplicitLod(insn, state);
+
+		case spv::OpImageFetch:
+			return EmitImageFetch(insn, state);
 
 		case spv::OpImageQuerySize:
 			return EmitImageQuerySize(insn, state);
@@ -4469,6 +4473,11 @@ namespace sw
 		return EmitImageSample(getImageSamplerExplicitLod, insn, state);
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitImageFetch(InsnIterator insn, EmitState *state) const
+	{
+		return EmitImageSample(getImageSamplerFetch, insn, state);
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageSample(GetImageSampler getImageSampler, InsnIterator insn, EmitState *state) const
 	{
 		Type::ID resultTypeId = insn.word(1);
@@ -4479,7 +4488,8 @@ namespace sw
 
 		auto &result = state->routine->createIntermediate(resultId, resultType.sizeInComponents);
 		auto imageDescriptor = state->routine->getPointer(sampledImageId).base;	// vk::SampledImageDescriptor*
-		auto samplerDescriptor = state->routine->getExtraPointer(sampledImageId).base; // vk::SampledImageDescriptor*
+		auto samplerDescriptor = getType(getObject(sampledImageId).type).opcode() == spv::OpTypeSampledImage ? state->routine->getExtraPointer(sampledImageId).base
+				: imageDescriptor; // vk::SampledImageDescriptor*
 		auto coordinate = GenericValue(this, state->routine, coordinateId);
 		auto &coordinateType = getType(coordinate.type);
 

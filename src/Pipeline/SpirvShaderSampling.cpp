@@ -49,6 +49,11 @@ SpirvShader::ImageSampler *SpirvShader::getImageSamplerExplicitLod(const vk::Ima
 	return getImageSampler(Lod, imageView, sampler);
 }
 
+SpirvShader::ImageSampler *SpirvShader::getImageSamplerFetch(const vk::ImageView *imageView, const vk::Sampler *sampler)
+{
+	return getImageSampler(Fetch, imageView, sampler);
+}
+
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	// TODO(b/129523279): Move somewhere sensible.
