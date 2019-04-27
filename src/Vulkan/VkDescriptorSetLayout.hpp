@@ -58,6 +58,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 
 	static size_t GetDescriptorSize(VkDescriptorType type);
+	static size_t GetDescriptorStride(VkDescriptorType type);
 	static void WriteDescriptorSet(const VkWriteDescriptorSet& descriptorWrites);
 	static void CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
@@ -96,7 +97,7 @@ public:
 	// Returns the VkDescriptorSetLayoutBinding for the given binding.
 	VkDescriptorSetLayoutBinding const & getBindingLayout(uint32_t binding) const;
 
-	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const;
+	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize, size_t* typeStride) const;
 
 private:
 	size_t getDescriptorSetDataSize() const;
