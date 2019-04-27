@@ -37,8 +37,6 @@ namespace sw
 {
 	class Clipper;
 	struct DrawCall;
-	class PixelShader;
-	class VertexShader;
 	class SwiftConfig;
 	struct Task;
 	class Resource;
@@ -213,10 +211,6 @@ namespace sw
 		void setSlopeDepthBias(float slopeBias);
 
 		void setRasterizerDiscard(bool rasterizerDiscard);
-
-		// Programmable pipelines
-		void setPixelShader(const SpirvShader *shader);
-		void setVertexShader(const SpirvShader *shader);
 
 		// Viewport & Clipper
 		void setViewport(const VkViewport &viewport);

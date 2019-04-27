@@ -46,7 +46,7 @@ namespace
 
 namespace sw
 {
-	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state) : constants(constants), state(state)
+	SamplerCore::SamplerCore(Pointer<Byte> &constants, const SamplerState &state) : constants(constants), state(state)
 	{
 	}
 

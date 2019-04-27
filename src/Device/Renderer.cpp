@@ -1410,16 +1410,6 @@ namespace sw
 		context->rasterizerDiscard = rasterizerDiscard;
 	}
 
-	void Renderer::setPixelShader(const SpirvShader *shader)
-	{
-		context->pixelShader = shader;
-	}
-
-	void Renderer::setVertexShader(const SpirvShader *shader)
-	{
-		context->vertexShader = shader;
-	}
-
 	void Renderer::addQuery(vk::Query *query)
 	{
 		queries.push_back(query);
@@ -1508,21 +1498,6 @@ namespace sw
 			VertexProcessor::setRoutineCacheSize(configuration.vertexRoutineCacheSize);
 			PixelProcessor::setRoutineCacheSize(configuration.pixelRoutineCacheSize);
 			SetupProcessor::setRoutineCacheSize(configuration.setupRoutineCacheSize);
-
-			switch(configuration.textureSampleQuality)
-			{
-			case 0:  Sampler::setFilterQuality(FILTER_POINT);       break;
-			case 1:  Sampler::setFilterQuality(FILTER_LINEAR);      break;
-			case 2:  Sampler::setFilterQuality(FILTER_ANISOTROPIC); break;
-			default: Sampler::setFilterQuality(FILTER_ANISOTROPIC); break;
-			}
-
-			switch(configuration.mipmapQuality)
-			{
-			case 0:  Sampler::setMipmapQuality(MIPMAP_POINT);  break;
-			case 1:  Sampler::setMipmapQuality(MIPMAP_LINEAR); break;
-			default: Sampler::setMipmapQuality(MIPMAP_LINEAR); break;
-			}
 
 			setPerspectiveCorrection(configuration.perspectiveCorrection);
 

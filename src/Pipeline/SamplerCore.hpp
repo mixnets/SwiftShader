@@ -55,7 +55,7 @@ namespace sw
 	class SamplerCore
 	{
 	public:
-		SamplerCore(Pointer<Byte> &constants, const Sampler::State &state);
+		SamplerCore(Pointer<Byte> &constants, const SamplerState &state);
 
 		Vector4f sampleTexture(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &bias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function);
 
@@ -109,7 +109,7 @@ namespace sw
 		bool isRGBComponent(int component) const;
 
 		Pointer<Byte> &constants;
-		const Sampler::State &state;
+		const SamplerState &state;
 	};
 }
 

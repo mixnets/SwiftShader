@@ -19,9 +19,6 @@
 
 namespace sw
 {
-	class PixelShader;
-	class SamplerCore;
-
 	class PixelRoutine : public sw::QuadRasterizer, public ShaderCore
 	{
 	public:

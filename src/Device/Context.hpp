@@ -34,34 +34,11 @@ namespace vk
 
 namespace sw
 {
-	class Sampler;
-	class PixelShader;
-	class VertexShader;
 	class SpirvShader;
 	struct Triangle;
 	struct Primitive;
 	struct Vertex;
 	class Resource;
-
-	enum In   // Default input stream semantic
-	{
-		Position = 0,
-		BlendWeight = 1,
-		BlendIndices = 2,
-		Normal = 3,
-		PointSize = 4,
-		Color0 = 5,
-		Color1 = 6,
-		TexCoord0 = 7,
-		TexCoord1 = 8,
-		TexCoord2 = 9,
-		TexCoord3 = 10,
-		TexCoord4 = 11,
-		TexCoord5 = 12,
-		TexCoord6 = 13,
-		TexCoord7 = 14,
-		PositionT = 15
-	};
 
 	enum CullMode ENUM_UNDERLYING_TYPE_UNSIGNED_INT
 	{

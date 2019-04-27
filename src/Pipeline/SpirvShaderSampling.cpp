@@ -79,7 +79,7 @@ void SpirvShader::emitSamplerFunction(
         const vk::ImageView *imageView, const vk::Sampler *sampler,
         Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out, Pointer<Byte> constants)
 {
-	Sampler::State samplerState = {};
+	SamplerState samplerState = {};
 	samplerState.textureType = convertTextureType(imageView->getType());
 	samplerState.textureFormat = imageView->getFormat();
 	samplerState.textureFilter = convertFilterMode(sampler);
