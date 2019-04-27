@@ -100,10 +100,8 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 		break;
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-		size = sizeof(StorageImageDescriptor);
-		break;
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-		size = sizeof(VkDescriptorImageInfo);
+		size = sizeof(StorageImageDescriptor);
 		break;
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
 		size = sizeof(VkBufferView);
