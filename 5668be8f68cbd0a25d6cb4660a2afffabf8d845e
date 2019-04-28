@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0c0f8d3_3497b0c9",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-28T12:13:03Z",
+      "side": 1,
+      "message": "Looks like you\u0027ve ended up reverting all the functional changes of https://swiftshader-review.googlesource.com/c/SwiftShader/+/30088, but there\u0027s still some remnants (for example, getOffsetPointer returning size and stride even though they are now the same value).",
+      "range": {
+        "startLine": 67,
+        "startChar": 42,
+        "endLine": 67,
+        "endChar": 59
+      },
+      "revId": "5668be8f68cbd0a25d6cb4660a2afffabf8d845e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b058699c_0003536a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-28T12:13:03Z",
+      "side": 1,
+      "message": "How is this different from sizeInBytes? Please document.",
+      "range": {
+        "startLine": 55,
+        "startChar": 5,
+        "endLine": 55,
+        "endChar": 19
+      },
+      "revId": "5668be8f68cbd0a25d6cb4660a2afffabf8d845e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
