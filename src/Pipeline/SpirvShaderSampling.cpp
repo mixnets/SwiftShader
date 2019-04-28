@@ -92,6 +92,10 @@ void SpirvShader::emitSamplerFunction(
 	samplerState.addressingModeU = convertAddressingMode(sampler->addressModeU, imageView->getType());
 	samplerState.addressingModeV = convertAddressingMode(sampler->addressModeV, imageView->getType());
 	samplerState.addressingModeW = convertAddressingMode(sampler->addressModeW, imageView->getType());
+
+	if (imageView->getType() == VK_IMAGE_VIEW_TYPE_2D_ARRAY)
+		samplerState.addressingModeW = ADDRESSING_LAYER;
+
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
 	samplerState.sRGB = imageView->getFormat().isSRGBformat();
 	samplerState.swizzle = imageView->getComponentMapping();

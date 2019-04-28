@@ -343,9 +343,9 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				Format format = imageView->getFormat();
 				int width = extent.width;
 				int height = extent.height;
-				int depth = extent.depth;
+				int depth = imageView->getSubresourceRange().layerCount > 1 ? imageView->getSubresourceRange().layerCount : extent.depth;
 				int pitchP = imageView->rowPitchBytes(aspect, level) / format.bytes();
-				int sliceP = imageView->slicePitchBytes(aspect, level) / format.bytes();
+				int sliceP = ((uint8_t const *)imageView->getOffsetPointer({0,0,0}, aspect, level, 1) - (uint8_t const*)imageView->getOffsetPointer({0,0,0}, aspect, level, 0)) / format.bytes();
 
 				float exp2LOD = 1.0f;
 
