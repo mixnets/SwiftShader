@@ -64,7 +64,7 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo* 
 			bindings[i].pImmutableSamplers = nullptr;
 		}
 		bindingOffsets[i] = offset;
-		offset += bindings[i].descriptorCount * GetDescriptorStride(bindings[i].descriptorType);
+		offset += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);
 	}
 	ASSERT_MSG(offset == getDescriptorSetDataSize(), "offset: %d, size: %d", int(offset), int(getDescriptorSetDataSize()));
 }
@@ -113,13 +113,6 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	}
 }
 
-size_t DescriptorSetLayout::GetDescriptorStride(VkDescriptorType type)
-{
-	auto size = GetDescriptorSize(type);
-	// Aligning each descriptor to 16 bytes allows for more efficient vector accesses in the shaders.
-	return sw::align<16>(size);  // TODO(b/123244275): Eliminate by using a custom alignas(16) struct for each desctriptor.
-}
-
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a layout member field.
@@ -131,7 +124,7 @@ size_t DescriptorSetLayout::getDescriptorSetDataSize() const
 	size_t size = 0;
 	for(uint32_t i = 0; i < bindingCount; i++)
 	{
-		size += bindings[i].descriptorCount * GetDescriptorStride(bindings[i].descriptorType);
+		size += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);
 	}
 
 	return size;
@@ -160,7 +153,7 @@ void DescriptorSetLayout::initialize(VkDescriptorSet vkDescriptorSet)
 
 	for(uint32_t i = 0; i < bindingCount; i++)
 	{
-		size_t typeStride = GetDescriptorStride(bindings[i].descriptorType);
+		size_t typeStride = GetDescriptorSize(bindings[i].descriptorType);
 		if(UsesImmutableSamplers(bindings[i]))
 		{
 			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
@@ -185,13 +178,13 @@ size_t DescriptorSetLayout::getBindingCount() const
 size_t DescriptorSetLayout::getBindingStride(uint32_t binding) const
 {
 	uint32_t index = getBindingIndex(binding);
-	return GetDescriptorStride(bindings[index].descriptorType);
+	return GetDescriptorSize(bindings[index].descriptorType);
 }
 
 size_t DescriptorSetLayout::getBindingOffset(uint32_t binding, size_t arrayElement) const
 {
 	uint32_t index = getBindingIndex(binding);
-	auto typeStride = GetDescriptorStride(bindings[index].descriptorType);
+	auto typeStride = GetDescriptorSize(bindings[index].descriptorType);
 	return bindingOffsets[index] + OFFSET(DescriptorSet, data[0]) + (typeStride * arrayElement);
 }
 
@@ -246,7 +239,7 @@ uint8_t* DescriptorSetLayout::getOffsetPointer(DescriptorSet *descriptorSet, uin
 {
 	uint32_t index = getBindingIndex(binding);
 	auto size = GetDescriptorSize(bindings[index].descriptorType);
-	auto stride = GetDescriptorStride(bindings[index].descriptorType);
+	auto stride = size;
 	size_t byteOffset = bindingOffsets[index] + (stride * arrayElement);
 	ASSERT(((size * count) + byteOffset) <= getDescriptorSetDataSize()); // Make sure the operation will not go out of bounds
 	if (typeSize != nullptr) { *typeSize = size; }
@@ -520,6 +513,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			auto buffer = Cast(update->buffer);
 			descriptor[i].ptr = buffer->getOffsetPointer(update->offset);
 			descriptor[i].sizeInBytes = (update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range;
+			descriptor[i].robustnessSize = buffer->getSize() - update->offset;
 		}
 	}
 }

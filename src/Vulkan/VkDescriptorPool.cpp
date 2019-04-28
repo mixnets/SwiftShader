@@ -41,7 +41,7 @@ size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreat
 	for(uint32_t i = 0; i < pCreateInfo->poolSizeCount; i++)
 	{
 		size += pCreateInfo->pPoolSizes[i].descriptorCount *
-		        DescriptorSetLayout::GetDescriptorStride(pCreateInfo->pPoolSizes[i].type);
+		        DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type);
 	}
 
 	return size;

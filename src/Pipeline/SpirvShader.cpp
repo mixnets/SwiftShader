@@ -1341,7 +1341,8 @@ namespace sw
 						setLayout->getDynamicDescriptorOffset(d.Binding) +
 						arrayIndex;
 					Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
-					return SIMD::Pointer(data + offset, size - offset);
+					Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+					return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
 				}
 				else
 				{

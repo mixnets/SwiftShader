@@ -52,6 +52,7 @@ struct alignas(16) BufferDescriptor
 {
 	void *ptr;
 	int sizeInBytes;
+	int robustnessSize;
 };
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
@@ -64,7 +65,6 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 
 	static size_t GetDescriptorSize(VkDescriptorType type);
-	static size_t GetDescriptorStride(VkDescriptorType type);
 	static void WriteDescriptorSet(const VkWriteDescriptorSet& descriptorWrites);
 	static void CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
