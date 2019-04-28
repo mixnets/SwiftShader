@@ -20,6 +20,7 @@
 #include "VkBuffer.hpp"
 #include "VkBufferView.hpp"
 #include "System/Types.hpp"
+#include "Device/Matrix.hpp"
 
 #include <algorithm>
 #include <cstring>
