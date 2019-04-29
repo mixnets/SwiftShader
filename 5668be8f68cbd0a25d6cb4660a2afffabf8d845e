@@ -68,6 +68,30 @@
       "revId": "5668be8f68cbd0a25d6cb4660a2afffabf8d845e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "869608a8_674ac56b",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-29T16:49:10Z",
+      "side": 1,
+      "message": "Will do. Short version: when you have a dynamic offset, the bound range is [bound_offset + dynamic_offset, bound_offset + dynamic_offset + range) -- except that robustness requires us to also consider when that range is partially outside the buffer. Will add docs inline.",
+      "parentUuid": "b058699c_0003536a",
+      "range": {
+        "startLine": 55,
+        "startChar": 5,
+        "endLine": 55,
+        "endChar": 19
+      },
+      "revId": "5668be8f68cbd0a25d6cb4660a2afffabf8d845e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
