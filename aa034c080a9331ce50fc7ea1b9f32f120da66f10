@@ -16,6 +16,47 @@
       "revId": "aa034c080a9331ce50fc7ea1b9f32f120da66f10",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de6d0c8a_23bd5d22",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T05:09:01Z",
+      "side": 1,
+      "message": "Never mind. Just noticed that it\u0027s still just looking at the image descriptor.",
+      "parentUuid": "8b4d0ed8_530f25ed",
+      "revId": "aa034c080a9331ce50fc7ea1b9f32f120da66f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a889028_371f55df",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T05:09:01Z",
+      "side": 1,
+      "message": "Can\u0027t we instead just leave the pointers associated with the sampler and the image objects, and in sampling instructions traverse the OpSampledImage\u0027s operands to retrieve them? The spec allows for this due to \"All OpSampledImage instructions must be in the same block in which their Result \u003cid\u003e are consumed. Result \u003cid\u003e from OpSampledImage instructions must not appear as operands to OpPhi instructions or OpSelect instructions, or any instructions other than the image lookup and query instructions specified to take an operand whose type is OpTypeSampledImage.\"",
+      "range": {
+        "startLine": 901,
+        "startChar": 61,
+        "endLine": 901,
+        "endChar": 74
+      },
+      "revId": "aa034c080a9331ce50fc7ea1b9f32f120da66f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
