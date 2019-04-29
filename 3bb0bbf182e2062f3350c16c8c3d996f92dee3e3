@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e68d0fa0_811a02a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-29T17:01:12Z",
+      "side": 1,
+      "message": "Currently, no. It does allow us to get more verbose though, if that\u0027s what we wanted. For example adding into the string a reference to the part of the spec.",
+      "parentUuid": "ba16be40_546600bd",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 43
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "49c9f420_140a9dbc",
         "filename": "/COMMIT_MSG",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2019-04-26T19:59:03Z",
       "side": 1,
       "message": "Each feature has a member name with a very clear description in the spec. Let\u0027s just use those. Likewise for extension strings, no need to come up with our own.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 61
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f579e78_40299bdd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-29T17:01:12Z",
+      "side": 1,
+      "message": "There\u0027s the question of which name we should be using. There\u0027s the SPIR-V Capability, or the Vulkan Capability. For example sampleRateShading - InterpolationFunction. My attempt with SpirvUnsupported.hpp was to encourage us to use SPIR-V capabilities when using UNSUPPORTED() in SpirvShader, and I was going to add a similar header for Vulkan related caps, which would be used in the Vulkan directory.\n\nUnfortunately we also have a couple of missing features that are not backed by a single spec name. Take for example SPIRV_FEATURE_NON_FLOAT_32. This covers the lack of the SPIR-V Float64 Capability, and/or the lack of the float16 extension (or any other non-32 bit form).\nActually splitting the UNSUPPORTED call into individual cases here is a fair amount of work.\n\nI was also structuring this in such a way that a user of SwiftShader would be presented with a human-readable/sensible error message that clearly explained they were attempting to use a feature that was not supported. UNSUPPORTED(SPIR-V Float64 Capability) is more descriptive to the user than just UNSUPPORTED(Float64). However, this is only going to be useful if we end up printing these error messages...",
+      "parentUuid": "49c9f420_140a9dbc",
       "range": {
         "startLine": 11,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1ea81286_a25db7f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-29T17:01:12Z",
+      "side": 1,
+      "message": "I was referring more to the core spec, but fair enough.",
+      "parentUuid": "56125905_f67570f8",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 98
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "433c2c27_be175542",
         "filename": "/COMMIT_MSG",
         "patchSetId": 6
@@ -82,6 +154,30 @@
       "writtenOn": "2019-04-26T19:59:03Z",
       "side": 1,
       "message": "Would also be accomplished by consistently mentioning the feature name correctly in the string or a comment.\n\nI don\u0027t think using the macros is making this any more foolproof. I find it more inconvenient, since UNIMPLEMENTED() just takes a string and doesn\u0027t enforce it has to be one of these macros. We could add a comment about that but there\u0027s still lots of room for mistakes. Also people will basically be looking up what the macro name is while they already have the spec\u0027s name in hand.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 95
+      },
+      "revId": "3bb0bbf182e2062f3350c16c8c3d996f92dee3e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "402d1fb0_2e422bfa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-29T17:01:12Z",
+      "side": 1,
+      "message": "\u003e Would also be accomplished by consistently mentioning the feature name correctly in the string or a comment.\n\nMy trust in code being \u0027consistently\u0027 and \u0027correctly\u0027 written is a major reason for the claimed over-engineering here. I don\u0027t think I\u0027ve ever worked on a project where duplicate hard-coded literals are kept consistent. Especially when they span multiple files. Especially strings.\n\n\u003e I don\u0027t think using the macros is making this any more foolproof\n\nA compile-time symbol is clearly going to reduce unintentional variations. This is a win for Regres, daily reports, charts, bug reporting, etc, and as (4) says, help the developer locate all references of a feature.\n\n\u003e I find it more inconvenient, since UNIMPLEMENTED() just takes a string and doesn\u0027t enforce it has to be one of these macros.\n\nIn my head UNIMPLEMENTED is far less directly tied to a spec-feature. It indicates unimplemented code, not necessarily an unimplemented API feature backed by a clear specification. This is reflected in Regres by grouping UNIMPLEMENTED()s by file \u0026 line. I was planning on changing Regres to group UNSUPPORTED() calls by the feature string.",
+      "parentUuid": "433c2c27_be175542",
       "range": {
         "startLine": 13,
         "startChar": 0,
