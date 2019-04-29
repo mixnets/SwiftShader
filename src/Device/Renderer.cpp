@@ -405,9 +405,14 @@ namespace sw
 		draw->pixelPointer = (PixelProcessor::RoutinePointer)pixelRoutine->getEntry();
 		draw->setupPrimitives = setupPrimitives;
 		draw->setupState = setupState;
+		draw->workgroupMemory.resize(std::max(
+			context->vertexShader->workgroupMemory.size(),
+			context->pixelShader->workgroupMemory.size()
+		));
 
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
+		data->workgroupMemory = draw->workgroupMemory.data();
 
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
