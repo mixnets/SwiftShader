@@ -390,12 +390,6 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 		srcMemory += srcLayerSize;
 		dstMemory += dstLayerSize;
 	}
-
-	if(bufferIsSource && decompressedImage)
-	{
-		prepareForSampling({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
-		                     region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
-	}
 }
 
 void Image::copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& region)
@@ -810,24 +804,48 @@ void Image::clear(const VkClearValue& clearValue, const vk::Format& viewFormat, 
 	}
 }
 
-void Image::prepareForSampling(const VkImageSubresourceRange& subresourceRange) const
+void Image::prepareForSampling(const VkImageSubresourceRange& subresourceRange)
 {
-	switch(format)
+	if(decompressedImage)
 	{
-	case VK_FORMAT_EAC_R11_UNORM_BLOCK:
-	case VK_FORMAT_EAC_R11_SNORM_BLOCK:
-	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
-	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
-		decodeETC2(subresourceRange);
-		break;
-	default:
-		break;
+		switch(format)
+		{
+		case VK_FORMAT_EAC_R11_UNORM_BLOCK:
+		case VK_FORMAT_EAC_R11_SNORM_BLOCK:
+		case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
+		case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
+			decodeETC2(subresourceRange);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(isCube() && (arrayLayers >= 6))
+	{
+		VkImageSubresourceLayers subresourceLayers =
+		{
+			subresourceRange.aspectMask,
+			subresourceRange.baseMipLevel,
+			subresourceRange.baseArrayLayer,
+			6
+		};
+		uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
+		for(; subresourceLayers.mipLevel <= lastMipLevel; subresourceLayers.mipLevel++)
+		{
+			for(subresourceLayers.baseArrayLayer = 0;
+				subresourceLayers.baseArrayLayer < arrayLayers;
+				subresourceLayers.baseArrayLayer += 6)
+			{
+				device->getBlitter()->updateBorders(decompressedImage ? decompressedImage : this, subresourceLayers);
+			}
+		}
 	}
 }
 
