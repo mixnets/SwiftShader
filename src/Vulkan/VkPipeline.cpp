@@ -530,6 +530,7 @@ ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo,
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
 {
 	delete shader;
+	delete program;
 }
 
 size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
@@ -550,12 +551,9 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 	// FIXME(b/119409619): use allocator.
 	shader = new sw::SpirvShader(code, nullptr, 0);
 	vk::DescriptorSet::Bindings descriptorSets;  // FIXME(b/129523279): Delay code generation until invoke time.
-	sw::ComputeProgram program(shader, layout, descriptorSets);
-
-	program.generate();
-
-	// TODO(bclayton): Cache program
-	routine = program("ComputeRoutine");
+	program = new sw::ComputeProgram(shader, layout, descriptorSets);
+	program->generate();
+	program->finalize();
 }
 
 void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
@@ -563,9 +561,10 @@ void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t g
 	vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 	sw::PushConstantStorage const &pushConstants)
 {
-	ASSERT_OR_RETURN(routine != nullptr);
-	sw::ComputeProgram::run(
-		routine, descriptorSets, descriptorDynamicOffsets, pushConstants,
+	ASSERT_OR_RETURN(program != nullptr);
+	std::vector<uint8_t> workgroupMemory(shader->workgroupMemory.size());
+	program->run(descriptorSets, descriptorDynamicOffsets, pushConstants,
+		workgroupMemory.data(),
 		groupCountX, groupCountY, groupCountZ);
 }
 
