@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3e1bb93_951c9c0d",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-29T16:11:35Z",
+      "side": 0,
+      "message": "(Rather strangely) this is the only line required to make this link with REACTOR_EMIT_DEBUG_INFO enabled. Did you revert others by any chance?",
+      "range": {
+        "startLine": 736,
+        "startChar": 4,
+        "endLine": 736,
+        "endChar": 78
+      },
+      "revId": "ab4e3f1a2b0b5d7b77ddc68ac93043033c737e26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
