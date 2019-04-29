@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a61a437_f54d862a",
+        "filename": "build/strip_cmakelists.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T17:46:32Z",
+      "side": 1,
+      "message": "Added this. Note that I haven\u0027t actually re-run the script. I manually added back GDBRegistrationListener.cpp. Will verify with local clean build...",
+      "range": {
+        "startLine": 1,
+        "startChar": 79,
+        "endLine": 1,
+        "endChar": 127
+      },
+      "revId": "16518cb16444ecd747d1f2c6a297d5a3de538a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
