@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "ff9c85f5_c0e01aeb",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1345,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:56:46Z",
+      "side": 1,
+      "message": "post-1.0-optimization: This could be precomputed and stored in pairs with the dynamic offset. No need to optimize right now.",
+      "range": {
+        "startLine": 1345,
+        "startChar": 41,
+        "endLine": 1345,
+        "endChar": 75
+      },
+      "revId": "5668be8f68cbd0a25d6cb4660a2afffabf8d845e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0c0f8d3_3497b0c9",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 1
