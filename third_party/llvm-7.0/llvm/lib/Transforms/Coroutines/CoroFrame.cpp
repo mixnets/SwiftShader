@@ -403,6 +403,7 @@ static StructType *buildFrameType(Function &F, coro::Shape &Shape,
     if (CurrentDef == Shape.PromiseAlloca)
       continue;
 
+    uint64_t count = 1;
     Type *Ty = nullptr;
     if (auto *AI = dyn_cast<AllocaInst>(CurrentDef)) {
       Ty = AI->getAllocatedType();
@@ -414,11 +415,16 @@ static StructType *buildFrameType(Function &F, coro::Shape &Shape,
           Padder.addType(PaddingTy);
         }
       }
+      if (auto *CI = dyn_cast<ConstantInt>(AI->getArraySize()))
+        count = CI->getValue().getZExtValue();
+      else
+        report_fatal_error("Coroutines cannot handle non static allocas yet");
     } else {
       Ty = CurrentDef->getType();
     }
     S.setFieldIndex(Types.size());
-    Types.push_back(Ty);
+    for (uint64_t i = 0; i < count; i++)
+      Types.push_back(Ty);
     Padder.addType(Ty);
   }
   FrameTy->setBody(Types);
