@@ -320,6 +320,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			}
 
 			imageSampler[i].imageView = imageView;
+			imageView->prepareForSampling();
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 			int baseLevel = subresourceRange.baseMipLevel;
