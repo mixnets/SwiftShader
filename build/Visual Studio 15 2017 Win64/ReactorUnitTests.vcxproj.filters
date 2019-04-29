@@ -10,13 +10,13 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{307AEBE6-F217-340D-9701-0167F1D37482}</UniqueIdentifier>
+      <UniqueIdentifier>{18620425-2C96-38D7-BAE9-B9892C5CC991}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{1D32CFC4-3897-312A-881D-1722E268FA32}</UniqueIdentifier>
+      <UniqueIdentifier>{0FAEA893-1912-3202-8C05-48CBBDB521A9}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Reactor">
-      <UniqueIdentifier>{F51AFC28-EF81-3443-9FD8-3EAA2D053082}</UniqueIdentifier>
+      <UniqueIdentifier>{B366AFAB-7DC3-3D43-9AF1-0A8DC1D640AD}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

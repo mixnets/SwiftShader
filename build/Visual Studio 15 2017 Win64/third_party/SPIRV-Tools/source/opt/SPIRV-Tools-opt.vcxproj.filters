@@ -549,10 +549,10 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{BC4B8AD2-A096-36EC-A16A-CFEE34C3D52C}</UniqueIdentifier>
+      <UniqueIdentifier>{03796F16-F140-300A-8727-0A3A4DCE9E9A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{307AEBE6-F217-340D-9701-0167F1D37482}</UniqueIdentifier>
+      <UniqueIdentifier>{18620425-2C96-38D7-BAE9-B9892C5CC991}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

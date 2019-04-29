@@ -14,7 +14,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B2B07DA3-A388-307E-A283-3904C31F1CE2}</ProjectGuid>
+    <ProjectGuid>{7E5F7F7D-E5BD-3A68-92EA-EFF139315CEF}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -68,43 +68,43 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools.vcxproj">
-      <Project>{2866BC19-5FA8-3D67-8D94-751A3803A3DF}</Project>
+      <Project>{6AB78D59-301B-37A5-B692-568A56C95D12}</Project>
       <Name>SPIRV-Tools</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\link\SPIRV-Tools-link.vcxproj">
-      <Project>{AC311772-F314-3373-B869-71CD6C30634D}</Project>
+      <Project>{5920AA45-C641-317D-AB81-7A9BB5088B5D}</Project>
       <Name>SPIRV-Tools-link</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\opt\SPIRV-Tools-opt.vcxproj">
-      <Project>{2F8B8E0B-1B59-3671-91FE-A0E499B82D18}</Project>
+      <Project>{9CF03555-7304-3FC9-84CE-089ADC2AE7F9}</Project>
       <Name>SPIRV-Tools-opt</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\reduce\SPIRV-Tools-reduce.vcxproj">
-      <Project>{C672D2D1-E638-3565-87EC-11172BD73995}</Project>
+      <Project>{5137BE8B-E1B5-3E72-A92F-07F118FCA757}</Project>
       <Name>SPIRV-Tools-reduce</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools-shared.vcxproj">
-      <Project>{DB6DF656-7D9C-35B1-B7C4-8FFEAE504240}</Project>
+      <Project>{7470446E-20D0-30EC-8DD4-DED0DA53C648}</Project>
       <Name>SPIRV-Tools-shared</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-pkg-config.vcxproj">
-      <Project>{96492351-1995-3B6B-A091-E7F4918E443B}</Project>
+      <Project>{DC38A947-8915-3B6C-BF49-81AFB70615C2}</Project>
       <Name>spirv-tools-pkg-config</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-shared-pkg-config.vcxproj">
-      <Project>{049A6034-6699-3DDF-BF15-47C981793305}</Project>
+      <Project>{940ED0AE-2869-3A04-B312-9CC723CFDB95}</Project>
       <Name>spirv-tools-shared-pkg-config</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
