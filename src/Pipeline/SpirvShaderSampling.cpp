@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "SpirvShader.hpp"
 
 #include "SamplerCore.hpp" // TODO: Figure out what's needed.
@@ -29,7 +28,6 @@
 #include <spirv/unified1/spirv.hpp>
 #include <spirv/unified1/GLSL.std.450.h>
 
-
 #include <mutex>
 
 #ifdef Bool
@@ -39,17 +37,7 @@
 
 namespace sw {
 
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerImplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
-{
-	return getImageSampler(Implicit, imageView, sampler);
-}
-
-SpirvShader::ImageSampler *SpirvShader::getImageSamplerExplicitLod(const vk::ImageView *imageView, const vk::Sampler *sampler)
-{
-	return getImageSampler(Lod, imageView, sampler);
-}
-
-SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMethod, const vk::ImageView *imageView, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t instruction, const vk::ImageView *imageView, const vk::Sampler *sampler)
 {
 	// TODO(b/129523279): Move somewhere sensible.
 	static std::unordered_map<uint64_t, ImageSampler*> cache;
@@ -68,14 +56,16 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(SamplerMethod samplerMet
 	Pointer<SIMD::Float> in = function.Arg<1>();
 	Pointer<SIMD::Float> out = function.Arg<2>();
 	Pointer<Byte> constants = function.Arg<3>();
-	emitSamplerFunction(samplerMethod, imageView, sampler, image, in, out, constants);
+
+	emitSamplerFunction({instruction}, imageView, sampler, image, in, out, constants);
+
 	auto fptr = reinterpret_cast<ImageSampler*>((void *)function("sampler")->getEntry());
 	cache.emplace(key, fptr);
 	return fptr;
 }
 
 void SpirvShader::emitSamplerFunction(
-        SamplerMethod samplerMethod,
+        ImageInstruction instruction,
         const vk::ImageView *imageView, const vk::Sampler *sampler,
         Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out, Pointer<Byte> constants)
 {
@@ -114,7 +104,7 @@ void SpirvShader::emitSamplerFunction(
 	Vector4f dsx;         // TODO(b/129523279)
 	Vector4f dsy;         // TODO(b/129523279)
 	Vector4f offset;      // TODO(b/129523279)
-	SamplerFunction samplerFunction = { samplerMethod, None };  // TODO(b/129523279)
+	SamplerFunction samplerFunction = { instruction.samplerMethod, None };  // TODO(b/129523279)
 
 	int coordinateCount = 0;
 	switch(imageView->getType())
@@ -137,13 +127,13 @@ void SpirvShader::emitSamplerFunction(
 
 	// TODO(b/129523279): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
 	// Implement optimized 1D sampling.
-	If(imageView->getType() == VK_IMAGE_VIEW_TYPE_1D ||
+	if(imageView->getType() == VK_IMAGE_VIEW_TYPE_1D ||
 	   imageView->getType() == VK_IMAGE_VIEW_TYPE_1D_ARRAY)
 	{
 		uvw[1] = SIMD::Float(0);
 	}
 
-	if(samplerMethod == Lod)
+	if(instruction.samplerMethod == Lod)
 	{
 		// Lod is the second optional image operand, and is incompatible with the first one (Bias),
 		// so it always comes after the coordinates.

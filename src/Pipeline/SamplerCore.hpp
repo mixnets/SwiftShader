@@ -27,14 +27,15 @@ namespace sw
 {
 	using namespace rr;
 
-	enum SamplerMethod
+	enum SamplerMethod : uint32_t
 	{
 		Implicit,  // Compute gradients (pixel shader only).
 		Bias,      // Compute gradients and add provided bias.
 		Lod,       // Use provided LOD.
 		Grad,      // Use provided gradients.
 		Fetch,     // Use provided integer coordinates.
-		Base       // Sample base level.
+		Base,      // Sample base level.
+		SAMPLER_METHOD_LAST = Base,
 	};
 
 	enum SamplerOption
