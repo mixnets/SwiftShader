@@ -128,14 +128,19 @@ private:
 			return Argument<RArgumentType<index>>(arg);
 		}
 
+		// Completes building of the coroutine and generates the coroutine's
+		// executable code. After calling, no more reactor functions may be
+		// called without building a new rr::Function or rr::Coroutine.
+		// While automatically called by operator(), finalize() should be called
+		// as early as possible to release the global Reactor mutex lock.
+		inline void finalize();
+
 		// Starts execution of the coroutine and returns a unique_ptr to a
 		// Stream<> that exposes the await() function for obtaining yielded
 		// values.
-		std::unique_ptr<Stream<Return>> operator()(Arguments&&...);
+		std::unique_ptr<Stream<Return>> operator()(Arguments...);
 
 	protected:
-		inline void finalize();
-
 		std::unique_ptr<Nucleus> core;
 		std::shared_ptr<Routine> routine;
 		std::vector<Type*> arguments;
@@ -170,13 +175,13 @@ private:
 
 	template<typename Return, typename... Arguments>
 	std::unique_ptr<Stream<Return>>
-	Coroutine<Return(Arguments...)>::operator()(Arguments&&... args)
+	Coroutine<Return(Arguments...)>::operator()(Arguments... args)
 	{
 		finalize();
 
 		using Sig = Nucleus::CoroutineBegin<Arguments...>;
 		auto pfn = (Sig*)routine->getEntry(Nucleus::CoroutineEntryBegin);
-		auto handle = pfn(std::forward<Arguments>(args)...);
+		auto handle = pfn(args...);
 		return std::unique_ptr<Stream<Return>>(new Stream<Return>(routine, handle));
 	}
 

@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
-
 #include "SamplerCore.hpp"
+
+#include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkBufferView.hpp"
@@ -540,6 +541,7 @@ namespace sw
 				object.definition = insn;
 				object.type = typeId;
 
+				ASSERT(getType(typeId).definition.opcode() == spv::OpTypePointer);
 				ASSERT(getType(typeId).storageClass == storageClass);
 
 				switch (storageClass)
@@ -561,6 +563,13 @@ namespace sw
 					break; // Correctly handled.
 
 				case spv::StorageClassWorkgroup:
+				{
+					auto &elTy = getType(getType(typeId).element);
+					auto sizeInBytes = elTy.sizeInComponents * sizeof(float);
+					workgroupMemory.allocate(resultId, sizeInBytes);
+					object.kind = Object::Kind::Pointer;
+					break;
+				}
 				case spv::StorageClassAtomicCounter:
 				case spv::StorageClassImage:
 					UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
@@ -874,6 +883,11 @@ namespace sw
 				// Don't need to do anything during analysis pass
 				break;
 
+			case spv::OpControlBarrier:
+			case spv::OpMemoryBarrier:
+				modes.ContainsBarriers = true;
+				break;
+
 			case spv::OpExtension:
 			{
 				auto ext = reinterpret_cast<char const *>(insn.wordPointer(1));
@@ -1147,6 +1161,7 @@ namespace sw
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		case spv::StorageClassPushConstant:
+		case spv::StorageClassWorkgroup:
 			return false;
 		default:
 			return true;
@@ -2448,6 +2463,12 @@ namespace sw
 		case spv::OpCopyMemory:
 			return EmitCopyMemory(insn, state);
 
+		case spv::OpControlBarrier:
+			return EmitControlBarrier(insn, state);
+
+		case spv::OpMemoryBarrier:
+			return EmitMemoryBarrier(insn, state);
+
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
 
@@ -2477,6 +2498,14 @@ namespace sw
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * sizeof(float) * SIMD::Width;
 			routine->createPointer(resultId, SIMD::Pointer(base, size));
+			break;
+		}
+		case spv::StorageClassWorkgroup:
+		{
+			ASSERT(objectTy.opcode() == spv::OpTypePointer);
+			auto base = &routine->workgroupMemory[0];
+			auto size = workgroupMemory.size();
+			routine->createPointer(resultId, SIMD::Pointer(base, size, workgroupMemory.offsetOf(resultId)));
 			break;
 		}
 		case spv::StorageClassInput:
@@ -4786,6 +4815,11 @@ namespace sw
 		return ptr;
 	}
 
+	void SpirvShader::Yield(YieldResult res) const
+	{
+		rr::Yield(RValue<Int>(int(res)));
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -5325,6 +5359,52 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto executionScope = GetScope(insn.word(1));
+		auto memoryScope = GetScope(insn.word(2));
+		(void)memoryScope; // TODO
+
+		switch (executionScope)
+		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceControlBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupControlBarrier);
+			break;
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::SubgroupControlBarrier);
+			break;
+		default:
+			UNIMPLEMENTED("executionScope: %d", int(executionScope));
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto memoryScope = GetScope(insn.word(1));
+
+		switch (memoryScope)
+		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceMemoryBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupMemoryBarrier);
+			break;
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::SubgroupMemoryBarrier);
+			break; // TODO
+		default:
+			UNIMPLEMENTED("scope: %d", int(memoryScope));
+		}
+
+		return EmitResult::Continue;
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
 	{
 		auto &type = getType(Type::ID(insn.word(1)));
@@ -5333,7 +5413,6 @@ namespace sw
 		ASSERT_MSG(scope == spv::ScopeSubgroup, "Scope for Non Uniform Group Operations must be Subgroup for Vulkan 1.1");
 
 		auto &dst = state->routine->createIntermediate(resultId, type.sizeInComponents);
-
 		switch (insn.opcode())
 		{
 		case spv::OpGroupNonUniformElect:

@@ -261,6 +261,17 @@ namespace sw
 		using ImageSampler = void(void* image, void* uvsIn, void* texelOut, void* constants);
 		using GetImageSampler = ImageSampler*(const vk::ImageView *imageView, const vk::Sampler *sampler);
 
+		enum class YieldResult
+		{
+			Complete,
+			DeviceControlBarrier,
+			WorkgroupControlBarrier,
+			SubgroupControlBarrier,
+			DeviceMemoryBarrier,
+			WorkgroupMemoryBarrier,
+			SubgroupMemoryBarrier
+		};
+
 		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
 		class InsnIterator
 		{
@@ -541,6 +552,7 @@ namespace sw
 			bool DepthLess : 1;
 			bool DepthUnchanged : 1;
 			bool ContainsKill : 1;
+			bool ContainsBarriers : 1;
 			bool NeedsCentroid : 1;
 
 			// Compute workgroup dimensions
@@ -655,6 +667,30 @@ namespace sw
 			uint32_t SizeInComponents;
 		};
 
+		struct WorkgroupMemory
+		{
+			// allocates a new variable of size bytes with the given identifier.
+			inline void allocate(Object::ID id, uint32_t size)
+			{
+				uint32_t offset = totalSize;
+				auto it = offsets.emplace(id, offset);
+				ASSERT_MSG(it.second, "WorkgroupMemory already has an allocation for object %d", int(id.value()));
+				totalSize += size;
+			}
+			// returns the byte offset of the variable with the given identifier.
+			inline uint32_t offsetOf(Object::ID id) const
+			{
+				auto it = offsets.find(id);
+				ASSERT_MSG(it != offsets.end(), "WorkgroupMemory already has no allocation for object %d", int(id.value()));
+				return it->second;
+			}
+			// returns the total allocated size in bytes.
+			inline uint32_t size() const { return totalSize; }
+		private:
+			uint32_t totalSize = 0; // in bytes
+			std::unordered_map<Object::ID, uint32_t> offsets; // in bytes
+		};
+
 		std::vector<InterfaceComponent> inputs;
 		std::vector<InterfaceComponent> outputs;
 
@@ -665,6 +701,7 @@ namespace sw
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> outputBuiltins;
+		WorkgroupMemory workgroupMemory;
 
 		Type const &getType(Type::ID id) const
 		{
@@ -906,10 +943,14 @@ namespace sw
 		EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitSampledImageCombineOrSplit(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitCopyMemory(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitControlBarrier(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 
 		SIMD::Pointer GetTexelAddress(SpirvRoutine const * routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
 		spv::Scope GetScope(Object::ID id) const;
+
+		void Yield(YieldResult res) const;
 
 		// OpcodeName() returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName() will only return the numerical code.
@@ -958,6 +999,7 @@ namespace sw
 		Variable inputs = Variable{MAX_INTERFACE_COMPONENTS};
 		Variable outputs = Variable{MAX_INTERFACE_COMPONENTS};
 
+		Pointer<Byte> workgroupMemory;
 		Pointer<Pointer<Byte>> descriptorSets;
 		Pointer<Int> descriptorDynamicOffsets;
 		Pointer<Byte> pushConstants;
