@@ -391,10 +391,24 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 		dstMemory += dstLayerSize;
 	}
 
-	if(bufferIsSource && decompressedImage)
+	if(bufferIsSource)
 	{
-		prepareForSampling({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
-		                     region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
+		if(decompressedImage)
+		{
+			prepareForSampling({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
+			                     region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
+		}
+
+		if(isCube() && (arrayLayers >= 6))
+		{
+			VkImageSubresourceLayers subresourceLayers = region.imageSubresource;
+			for(subresourceLayers.baseArrayLayer = 0;
+			    subresourceLayers.baseArrayLayer < arrayLayers;
+			    subresourceLayers.baseArrayLayer += 6)
+			{
+				device->getBlitter()->updateBorders(decompressedImage ? decompressedImage : this, subresourceLayers);
+			}
+		}
 	}
 }
 
