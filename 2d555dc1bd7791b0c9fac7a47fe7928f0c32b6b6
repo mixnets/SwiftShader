@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12d2d3b7_2058f0bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "nag: Bug ID",
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b8d16f7_c8aa877c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "nit: Doesn\u0027t seem to be used (neither before)? Please remove while we\u0027re here.",
+      "range": {
+        "startLine": 363,
+        "startChar": 3,
+        "endLine": 363,
+        "endChar": 12
+      },
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f691f33_6cfcb3a7",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "nit: No longer relevant, please remove.",
+      "range": {
+        "startLine": 385,
+        "startChar": 0,
+        "endLine": 386,
+        "endChar": 113
+      },
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "695a2c85_e5d89948",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 858,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 858,
+        "startChar": 3,
+        "endLine": 858,
+        "endChar": 10
+      },
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52e0ef3a_24b19c11",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 894,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 893,
+        "startChar": 0,
+        "endLine": 894,
+        "endChar": 81
+      },
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d31b860e_49ac6893",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T04:45:44Z",
+      "side": 1,
+      "message": "What uses matrices in this file? Is it a remnant of some other tentative change?",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 28
+      },
+      "revId": "2d555dc1bd7791b0c9fac7a47fe7928f0c32b6b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
