@@ -22,6 +22,30 @@
       "revId": "16518cb16444ecd747d1f2c6a297d5a3de538a0b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1ccc291_9a526216",
+        "filename": "build/strip_cmakelists.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T18:44:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9a61a437_f54d862a",
+      "range": {
+        "startLine": 1,
+        "startChar": 79,
+        "endLine": 1,
+        "endChar": 127
+      },
+      "revId": "16518cb16444ecd747d1f2c6a297d5a3de538a0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
