@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2fb2570_b0b5060b",
+        "filename": "build/strip_cmakelists.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-04-29T18:40:50Z",
+      "side": 1,
+      "message": "Fails with:\n\nBuilding CXX object CMakeFiles/GLCompiler.dir/src/OpenGL/compiler/AnalyzeCallDepth.cpp.o\nerror: unknown warning option \u0027-Werror\u003dunused-lambda-capture\u0027; did you mean \u0027-Werror\u003dunused-parameter\u0027? [-Werror,-Wunknown-warning-option]\n\nLooks like I\u0027d have to revert https://swiftshader-review.googlesource.com/c/SwiftShader/+/29054 to fix this. But I specifically recall having tested that change. Must be some compiler version switcheroo happening that I\u0027m not aware of. Anyway, since it was broken before I don\u0027t necessarily intend to fix it as part of this change.",
+      "range": {
+        "startLine": 2,
+        "startChar": 129,
+        "endLine": 2,
+        "endChar": 134
+      },
+      "revId": "fba700cb711ad5c5a42959a68bf8268a4f961569",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
