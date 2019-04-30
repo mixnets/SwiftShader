@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "015d9dc3_4491189e",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "280115f9_386f6d09",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a69b60eb_dc74f4c0",
         "filename": "src/Reactor/Coroutine.hpp",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc2ccfc2_5fa8838f",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Nope, just an oversight. Done.",
+      "parentUuid": "a69b60eb_dc74f4c0",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "bf4ef871_cb8a1876",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Done. Used shared_ptr for routine as we can spawn many Streams from a single Coroutine, and its nice to be able to have these outlive the Coroutine.",
+      "parentUuid": "60b88789_1c6e80e2",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ef8923d_1dd74633",
         "filename": "src/Reactor/Coroutine.hpp",
         "patchSetId": 3
@@ -67,6 +121,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37b46fb3_2ed20ea8",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Yes unfortunately so.",
+      "parentUuid": "5ef8923d_1dd74633",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "ebfe92c4_7eb8d8e9",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Good idea. There\u0027s a bunch of code in the rr::Print stuff that could also use this. Will followup with another change to add this.",
+      "parentUuid": "39e3189f_f20f7546",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "703d0e69_96d02a1f",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
@@ -101,6 +191,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2422a6d5_1df484ad",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "That isn\u0027t a function index, it is a count.",
+      "parentUuid": "703d0e69_96d02a1f",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "a00c0a61_49bd20b0",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4299,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "194e40e7_814a19f6",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c337dde_b7af02fb",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
@@ -135,6 +261,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d633cdc_4621bc85",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4403,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c337dde_b7af02fb",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "60e5e221_07c8b197",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4409,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Matches the existing code in Nucleus::acquireRoutine() (L986).\nCould refactor, but I\u0027d prefer to do it as a second pass.",
+      "parentUuid": "0617a320_6465098a",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fba0d2eb_e3851540",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
@@ -169,6 +331,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b00893f0_e46f5c87",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4430,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fba0d2eb_e3851540",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -189,6 +369,42 @@
     },
     {
       "key": {
+        "uuid": "ffe3251f_2f4e676b",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1373,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Thanks. Fibonacci is always the goto example of coroutines :)",
+      "parentUuid": "187d00b3_d775dc04",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87c8a957_a0417fc6",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1373,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Thanks. Fibonacci is always the goto example of coroutines :)",
+      "parentUuid": "187d00b3_d775dc04",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d85778d_966af12b",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 3
@@ -203,6 +419,24 @@
       "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52ccc774_1ace7831",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:34:47Z",
+      "side": 1,
+      "message": "Tell me about it. I\u0027ve been writing Golang for the last 5 years. Not being able to specify the fields by name feels like I\u0027m missing a limb.",
+      "parentUuid": "6d85778d_966af12b",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
