@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10c01588_d31efd45",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T12:33:57Z",
+      "side": 1,
+      "message": "All of this input packing is starting to look really fragile.\nPerhaps after pastel 1.0 we could look at moving the offset calculations out to a shared class or something.",
+      "range": {
+        "startLine": 106,
+        "startChar": 1,
+        "endLine": 106,
+        "endChar": 16
+      },
+      "revId": "c55d0b1f1de79448fe89fb8708e24cdced9905b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
