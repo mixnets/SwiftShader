@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acbfa9f6_de406758",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2499,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T18:52:44Z",
+      "side": 1,
+      "message": "This isn\u0027t going to work for the case where the initializer is an OpVariable.",
+      "revId": "e18139f65a671c92f0ccde0944270b1bd1c9ccf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
