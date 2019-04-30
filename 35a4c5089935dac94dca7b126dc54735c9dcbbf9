@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fddf2d58_21b7842f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5229,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T22:55:06Z",
+      "side": 1,
+      "message": "You need to consider the object layouts for both src and dst. Consider a copy from Uniform to Output. You\u0027ll never see the correct offsets for the src, and the dst will look tightly packed (because everything in Output is)",
+      "revId": "35a4c5089935dac94dca7b126dc54735c9dcbbf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
