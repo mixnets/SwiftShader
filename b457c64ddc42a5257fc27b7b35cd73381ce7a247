@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "280115f9_386f6d09",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Maybe worth making this:\n${LLVM_DIR}/../stubs/Stubs.cpp",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a69b60eb_dc74f4c0",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Do we not care to perfect forward args because we know they\u0027re always primitive types? e.g. \"Arguments\u0026\u0026...\"",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60b88789_1c6e80e2",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Why not use unique_ptr for both core and routine? Would simplify some of this code, and we wouldn\u0027t have to worry about memory leaks.",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ef8923d_1dd74633",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Do we not have std::make_unique because we\u0027re C++11?",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39e3189f_f20f7546",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Feels like it would be useful to have a single function to get the value out of an RValue, LValue, and Reference. Then this would become a single function template on any T.",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "703d0e69_96d02a1f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Maybe we can use an enum for the function index?",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "194e40e7_814a19f6",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4299,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "\"terminate\" -\u003e \"destroy\"?",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c337dde_b7af02fb",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4403,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Indendation is off for this block",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0617a320_6465098a",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4409,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Do we want to keep debugging stuff like this here? Perhaps guarded with a macro?",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fba0d2eb_e3851540",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4430,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Same question as on line 4409",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "187d00b3_d775dc04",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1373,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Ha! This is so cool :)",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d85778d_966af12b",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-04-30T14:40:22Z",
+      "side": 1,
+      "message": "Will be great once we can use C++20\u0027s designated initializers (https://en.cppreference.com/w/cpp/language/aggregate_initialization)",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
