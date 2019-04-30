@@ -177,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "296d687d_654e1d7e",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:36:52Z",
+      "side": 1,
+      "message": "Such a good idea, I actually wrote this function already: https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/master/src/Reactor/Reactor.hpp#3073",
+      "parentUuid": "ebfe92c4_7eb8d8e9",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "703d0e69_96d02a1f",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
