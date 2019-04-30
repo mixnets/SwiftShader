@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2380176_35604f90",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T23:52:25Z",
+      "side": 1,
+      "message": "I think you\u0027ve overbuilt this -- there is no workgroup memory for graphics stages.",
+      "revId": "b1313c8867781761e8a001c8367e821a7d797a91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d620bf34_b152840a",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T23:52:25Z",
+      "side": 1,
+      "message": "compute side is OK :D",
+      "revId": "b1313c8867781761e8a001c8367e821a7d797a91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d86a2fc_b85d32b0",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 574,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T23:52:25Z",
+      "side": 1,
+      "message": "SPIRV side looks fine too :D",
+      "revId": "b1313c8867781761e8a001c8367e821a7d797a91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bbe7ce5_6c3fcec5",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T23:52:25Z",
+      "side": 1,
+      "message": "s/already// ?",
+      "revId": "b1313c8867781761e8a001c8367e821a7d797a91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
