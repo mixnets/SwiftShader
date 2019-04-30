@@ -159,7 +159,7 @@ void DescriptorSetLayout::initialize(VkDescriptorSet vkDescriptorSet)
 			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
 			{
 				SampledImageDescriptor* imageSamplerDescriptor = reinterpret_cast<SampledImageDescriptor*>(mem);
-				imageSamplerDescriptor->updateSampler(vk::Cast(bindings[i].pImmutableSamplers[j]));
+				new (&imageSamplerDescriptor->sampler) vk::Sampler(*vk::Cast(bindings[i].pImmutableSamplers[j]));
 				mem += typeSize;
 			}
 		}
@@ -256,17 +256,6 @@ uint8_t* DescriptorSetLayout::getOffsetPointer(DescriptorSet *descriptorSet, uin
 	return &descriptorSet->data[byteOffset];
 }
 
-void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
-{
-	this->sampler = sampler;
-
-	if (sampler)
-	{
-		texture.minLod = sw::clamp(sampler->minLod, 0.0f, (float) (sw::MAX_TEXTURE_LOD));
-		texture.maxLod = sw::clamp(sampler->maxLod, 0.0f, (float) (sw::MAX_TEXTURE_LOD));
-	}
-}
-
 void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
 {
 	DescriptorSetLayout* dstLayout = dstSet->header.layout;
@@ -290,7 +279,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			//  descriptorCount of zero, must all either use immutable samplers or must all not use immutable samplers."
 			if (!binding.pImmutableSamplers)
 			{
-				imageSampler[i].updateSampler(vk::Cast(update->sampler));
+				new (&imageSampler[i].sampler) vk::Sampler(*vk::Cast(update->sampler));
 			}
 		}
 	}
@@ -313,7 +302,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			//  descriptorCount of zero, must all either use immutable samplers or must all not use immutable samplers."
 			if(!binding.pImmutableSamplers)
 			{
-				imageSampler[i].updateSampler(vk::Cast(update->sampler));
+				new (&imageSampler[i].sampler) vk::Sampler(*vk::Cast(update->sampler));
 			}
 
 			imageSampler[i].imageView = imageView;
@@ -357,29 +346,27 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int pitchP = imageView->rowPitchBytes(aspect, level) / format.bytes();
 				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect) : imageView->slicePitchBytes(aspect, level)) / format.bytes();
 
-				float exp2LOD = 1.0f;
-
 				if(mipmapLevel == 0)
 				{
-					texture->widthHeightLOD[0] = width * exp2LOD;
-					texture->widthHeightLOD[1] = width * exp2LOD;
-					texture->widthHeightLOD[2] = height * exp2LOD;
-					texture->widthHeightLOD[3] = height * exp2LOD;
+					texture->widthHeight[0] = width;
+					texture->widthHeight[1] = width;
+					texture->widthHeight[2] = height;
+					texture->widthHeight[3] = height;
 
-					texture->widthLOD[0] = width * exp2LOD;
-					texture->widthLOD[1] = width * exp2LOD;
-					texture->widthLOD[2] = width * exp2LOD;
-					texture->widthLOD[3] = width * exp2LOD;
+					texture->width[0] = width;
+					texture->width[1] = width;
+					texture->width[2] = width;
+					texture->width[3] = width;
 
-					texture->heightLOD[0] = height * exp2LOD;
-					texture->heightLOD[1] = height * exp2LOD;
-					texture->heightLOD[2] = height * exp2LOD;
-					texture->heightLOD[3] = height * exp2LOD;
+					texture->height[0] = height;
+					texture->height[1] = height;
+					texture->height[2] = height;
+					texture->height[3] = height;
 
-					texture->depthLOD[0] = depth * exp2LOD;
-					texture->depthLOD[1] = depth * exp2LOD;
-					texture->depthLOD[2] = depth * exp2LOD;
-					texture->depthLOD[3] = depth * exp2LOD;
+					texture->depth[0] = depth;
+					texture->depth[1] = depth;
+					texture->depth[2] = depth;
+					texture->depth[3] = depth;
 				}
 
 				if(format.isFloatFormat())

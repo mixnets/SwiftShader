@@ -50,14 +50,10 @@ namespace sw
 	{
 		Mipmap mipmap[MIPMAP_LEVELS];
 
-		float4 widthHeightLOD;
-		float4 widthLOD;
-		float4 heightLOD;
-		float4 depthLOD;
-
-		float maxAnisotropy;     // FIXME(b/129523279): Part of Vulkan sampler.
-		float minLod;  // FIXME(b/129523279): Part of Vulkan sampler.
-		float maxLod;  // FIXME(b/129523279): Part of Vulkan sampler.
+		float4 widthHeight;
+		float4 width;
+		float4 height;
+		float4 depth;
 	};
 
 	enum SamplerType
@@ -173,32 +169,6 @@ namespace sw
 		~Sampler();
 
 		State samplerState() const;
-
-		void setTextureLevel(int face, int level, vk::Image *image, TextureType type);
-
-		void setTextureFilter(FilterType textureFilter);
-		void setMipmapFilter(MipmapType mipmapFilter);
-		void setGatherEnable(bool enable);
-		void setAddressingModeU(AddressingMode addressingMode);
-		void setAddressingModeV(AddressingMode addressingMode);
-		void setAddressingModeW(AddressingMode addressingMode);
-		void setReadSRGB(bool sRGB);
-		void setMaxAnisotropy(float maxAnisotropy);
-		void setHighPrecisionFiltering(bool highPrecisionFiltering);
-		void setCompareFunc(CompareFunc compare);
-		void setMinLod(float minLod);
-		void setMaxLod(float maxLod);
-
-		static void setFilterQuality(FilterType maximumFilterQuality);
-		static void setMipmapQuality(MipmapType maximumFilterQuality);
-		void setMipmapLOD(float lod);
-
-		bool hasTexture() const;
-		bool hasUnsignedTexture() const;
-		bool hasCubeTexture() const;
-		bool hasVolumeTexture() const;
-
-		const Texture &getTextureData();
 
 	private:
 		MipmapType mipmapFilter() const;
