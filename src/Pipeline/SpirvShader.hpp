@@ -746,6 +746,9 @@ namespace sw
 		void VisitMemoryObject(Object::ID id, F f) const;
 
 		template<typename F>
+		void VisitMemoryObject(Type::ID id, const Decorations &d, F f) const;
+
+		template<typename F>
 		void VisitMemoryObjectInner(Type::ID id, Decorations d, uint32_t &index, uint32_t offset, F f) const;
 
 		uint32_t GetConstantInt(Object::ID id) const;
@@ -878,6 +881,7 @@ namespace sw
 		EmitResult EmitImageTexelPointer(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAtomicOp(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAtomicCompareExchange(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitCopyMemory(InsnIterator insn, EmitState *state) const;
 
 		SIMD::Pointer GetTexelAddress(SpirvRoutine const * routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
 
