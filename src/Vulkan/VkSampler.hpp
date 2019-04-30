@@ -44,7 +44,11 @@ public:
 	{
 	}
 
+	Sampler(const Sampler &copy) = default;
+
 	~Sampler() = delete;
+
+	Sampler &operator=(const Sampler &rhs) = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkSamplerCreateInfo* pCreateInfo)
 	{
