@@ -58,7 +58,8 @@ namespace rr
 {
 	struct Capabilities
 	{
-		bool CallSupported; // Support for rr::Call()
+		bool CallSupported;       // Support for rr::Call()
+		bool CoroutinesSupported; // Support for rr::Coroutine<F>
 	};
 	extern const Capabilities Caps;
 
@@ -3071,10 +3072,13 @@ namespace rr
 	}
 
 	template <typename T>
-	inline Value* valueOf(RValue<T> v) { return v.value; }
+	inline Value* valueOf(const RValue<T> &v) { return v.value; }
 
 	template <typename T>
-	inline Value* valueOf(LValue<T> v) { return valueOf(RValue<T>(v.loadValue())); }
+	inline Value* valueOf(const LValue<T> &v) { return valueOf(RValue<T>(v.loadValue())); }
+
+	template <typename T>
+	inline Value* valueOf(const Reference<T> &v) { return valueOf(RValue<T>(v)); }
 
 	template<typename T, typename ENABLE = void>
 	struct CToReactorT;
