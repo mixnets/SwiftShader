@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ada1ab0e_4510877d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T00:32:55Z",
+      "side": 1,
+      "message": "This isn\u0027t really what the patch does.\n\nHow about something like:\n\n`Implement Android shared image query so device creation can succeed`",
+      "revId": "672471b7064546f04d112942ce139a2d7fc1d12e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe824c65_9b4fbfbc",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2038,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T00:32:55Z",
+      "side": 1,
+      "message": "Should comment the reason for this [VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID isn\u0027t in the official Vulkan header, and so isn\u0027t a value of this enum type]",
+      "revId": "672471b7064546f04d112942ce139a2d7fc1d12e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
