@@ -24,6 +24,7 @@
 
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <unordered_set>
 
 #undef Bool // b/127920555
@@ -3075,19 +3076,33 @@ namespace rr
 	template <typename T>
 	inline Value* valueOf(LValue<T> v) { return valueOf(RValue<T>(v.loadValue())); }
 
-	template<typename T>
-	struct CToReactor;
+	template<typename T, typename ENABLE = void>
+	struct CToReactorT;
 
-	template<> struct CToReactor<void>         { using type = Void; };
-	template<> struct CToReactor<int>          { using type = Int; };
-	template<> struct CToReactor<unsigned int> { using type = UInt; };
-	template<> struct CToReactor<float>        { using type = Float; };
-	template<> struct CToReactor<int*>         { using type = Pointer<Int>; };
-	template<> struct CToReactor<float*>       { using type = Pointer<Float>; };
+	template<> struct CToReactorT<void>         { using type = Void; };
+	template<> struct CToReactorT<int32_t>      { using type = Int; };
+	template<> struct CToReactorT<uint8_t>      { using type = Byte; };
+	template<> struct CToReactorT<uint32_t>     { using type = UInt; };
+	template<> struct CToReactorT<float>        { using type = Float; };
+
+	template<> struct CToReactorT<int32_t*>      { using type = Pointer<Int>; };
+	template<> struct CToReactorT<uint8_t*>      { using type = Pointer<Byte>; };
+	template<> struct CToReactorT<uint32_t*>     { using type = Pointer<UInt>; };
+	template<> struct CToReactorT<float*>        { using type = Pointer<Float>; };
+
+	template<typename T>
+	struct CToReactorT<T, typename std::enable_if<std::is_enum<T>::value>::type>
+	{
+		using underlying = typename std::underlying_type<T>::type;
+		using type = typename CToReactorT<underlying>::type;
+	};
 
 	// Pointers to non-reactor types are treated as uint8_t*.
 	template<typename T>
-	struct CToReactor<T*> { using type = Pointer<Byte>; };
+	struct CToReactorT<T*> { using type = Pointer<Byte>; };
+
+	template<typename T>
+	using CToReactor = typename CToReactorT<T>::type;
 
 	// Returns a reactor pointer to the fixed-address ptr.
 	RValue<Pointer<Byte>> ConstantPointer(void const * ptr);
@@ -3104,24 +3119,24 @@ namespace rr
 	class CallHelper<Return(Arguments...)>
 	{
 	public:
-		using RReturn = typename CToReactor<Return>::type;
+		using RReturn = CToReactor<Return>;
 
-		static inline RReturn Call(Return(fptr)(Arguments...), typename CToReactor<Arguments>::type... args)
+		static inline RReturn Call(Return(fptr)(Arguments...), CToReactor<Arguments>... args)
 		{
 			return RValue<RReturn>(rr::Call(
 				ConstantPointer(reinterpret_cast<void*>(fptr)),
 				RReturn::getType(),
 				{ valueOf(args) ... },
-				{ CToReactor<Arguments>::type::getType() ... }));
+				{ CToReactor<Arguments>::getType() ... }));
 		}
 
-		static inline RReturn Call(Pointer<Byte> fptr, typename CToReactor<Arguments>::type... args)
+		static inline RReturn Call(Pointer<Byte> fptr, CToReactor<Arguments>... args)
 		{
 			return RValue<RReturn>(rr::Call(
 				fptr,
 				RReturn::getType(),
 				{ valueOf(args) ... },
-				{ CToReactor<Arguments>::type::getType() ... }));
+				{ CToReactor<Arguments>::getType() ... }));
 		}
 	};
 
@@ -3129,26 +3144,26 @@ namespace rr
 	class CallHelper<void(Arguments...)>
 	{
 	public:
-		static inline void Call(void(fptr)(Arguments...), typename CToReactor<Arguments>::type... args)
+		static inline void Call(void(fptr)(Arguments...), CToReactor<Arguments>... args)
 		{
 			rr::Call(ConstantPointer(reinterpret_cast<void*>(fptr)),
 				Void::getType(),
 				{ valueOf(args) ... },
-				{ CToReactor<Arguments>::type::getType() ... });
+				{ CToReactor<Arguments>::getType() ... });
 		}
 
-		static inline void Call(Pointer<Byte> fptr, typename CToReactor<Arguments>::type... args)
+		static inline void Call(Pointer<Byte> fptr, CToReactor<Arguments>... args)
 		{
 			rr::Call(fptr,
 				Void::getType(),
 				{ valueOf(args) ... },
-				{ CToReactor<Arguments>::type::getType() ... });
+				{ CToReactor<Arguments>::getType() ... });
 		}
 	};
 
 	// Calls the function pointer fptr with the given arguments args.
 	template<typename Return, typename ... Arguments>
-	inline typename CToReactor<Return>::type Call(Return(fptr)(Arguments...), typename CToReactor<Arguments>::type... args)
+	inline CToReactor<Return> Call(Return(fptr)(Arguments...), CToReactor<Arguments>... args)
 	{
 		return CallHelper<Return(Arguments...)>::Call(fptr, args...);
 	}
