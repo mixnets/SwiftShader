@@ -239,12 +239,18 @@ else()
     )
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        list(APPEND SWIFTSHADER_COMPILE_OPTIONS
-            "-Werror=unused-lambda-capture"
-            "-Werror=string-conversion"
-            "-Werror=extra-semi"
-            "-Werror=ignored-qualifiers"
-        )
+        if(NOT DEFINED CLANG_VERSION_STRING)
+            set(CLANG_VERSION_STRING CMAKE_CXX_COMPILER_VERSION)
+        endif()
+
+        if(CLANG_VERSION_STRING VERSION_GREATER_EQUAL 5)
+            list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+                "-Werror=unused-lambda-capture"
+                "-Werror=string-conversion"
+                "-Werror=extra-semi"
+                "-Werror=ignored-qualifiers"
+            )
+        endif()
     endif()
 
     # Remove xor, and, or and friends from the list of keywords, they are used
