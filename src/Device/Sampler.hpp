@@ -50,14 +50,10 @@ namespace sw
 	{
 		Mipmap mipmap[MIPMAP_LEVELS];
 
-		float4 widthHeightLOD;
-		float4 widthLOD;
-		float4 heightLOD;
-		float4 depthLOD;
-
-		float maxAnisotropy;     // FIXME(b/129523279): Part of Vulkan sampler.
-		float minLod;  // FIXME(b/129523279): Part of Vulkan sampler.
-		float maxLod;  // FIXME(b/129523279): Part of Vulkan sampler.
+		float4 widthHeight;
+		float4 width;
+		float4 height;
+		float4 depth;
 	};
 
 	enum SamplerType

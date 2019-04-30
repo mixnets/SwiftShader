@@ -929,7 +929,7 @@ namespace sw
 		static void emitSamplerFunction(
 			ImageInstruction instruction,
 			const vk::ImageView *imageView, const vk::Sampler *sampler,
-			Pointer<Byte> image, Pointer<SIMD::Float> in, Pointer<Byte> out, Pointer<Byte> constants);
+			Pointer<Byte> image, Pointer<Byte> sampl, Pointer<SIMD::Float> in, Pointer<Byte> out, Pointer<Byte> constants);
 
 		// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
 		static sw::TextureType convertTextureType(VkImageViewType imageViewType);

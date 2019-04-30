@@ -51,7 +51,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t instruction, co
 	if (it != cache.end()) { return it->second; }
 
 	// TODO: Hold a separate mutex lock for the sampler being built.
-	auto function = rr::Function<Void(Pointer<Byte> image, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)>();
+	auto function = rr::Function<Void(Pointer<Byte> image, Pointer<Byte> sampl, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)>();
 	Pointer<Byte> image = function.Arg<0>();
 	Pointer<SIMD::Float> in = function.Arg<1>();
 	Pointer<SIMD::Float> out = function.Arg<2>();
@@ -87,8 +87,6 @@ void SpirvShader::emitSamplerFunction(
 
 //	minLod  // TODO(b/129523279)
 //	maxLod  // TODO(b/129523279)
-//	borderColor  // TODO(b/129523279)
-	ASSERT(sampler->mipLodBias == 0.0f);  // TODO(b/129523279)
 	ASSERT(sampler->anisotropyEnable == VK_FALSE);  // TODO(b/129523279)
 	ASSERT(sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(b/129523279)
 

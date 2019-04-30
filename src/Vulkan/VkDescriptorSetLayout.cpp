@@ -345,8 +345,6 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int pitchP = imageView->rowPitchBytes(aspect, level) / format.bytes();
 				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect) : imageView->slicePitchBytes(aspect, level)) / format.bytes();
 
-				float exp2LOD = 1.0f;
-
 				if(mipmapLevel == 0)
 				{
 					texture->widthHeightLOD[0] = width * exp2LOD;
