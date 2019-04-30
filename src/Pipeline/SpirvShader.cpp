@@ -850,6 +850,7 @@ namespace sw
 			case spv::OpStore:
 			case spv::OpAtomicStore:
 			case spv::OpImageWrite:
+			case spv::OpCopyMemory:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -1289,14 +1290,19 @@ namespace sw
 	template<typename F>
 	void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, F f) const
 	{
-		auto typeId = getObject(id).type;
-		auto const & type = getType(typeId);
+		Decorations d{};
+		ApplyDecorationsForId(&d, id);
+		VisitMemoryObject(getObject(id).type, d, f);
+	}
+
+	template<typename F>
+	void SpirvShader::VisitMemoryObject(sw::SpirvShader::Type::ID id, const Decorations &d, F f) const
+	{
+		auto const & type = getType(id);
 		if (!IsStorageInterleavedByLane(type.storageClass))	// TODO: really "is explicit layout"
 		{
-			Decorations d{};
-			ApplyDecorationsForId(&d, id);
 			uint32_t index = 0;
-			VisitMemoryObjectInner<F>(typeId, d, index, 0, f);
+			VisitMemoryObjectInner<F>(id, d, index, 0, f);
 		}
 		else
 		{
@@ -2403,6 +2409,9 @@ namespace sw
 		case spv::OpSampledImage:
 		case spv::OpImage:
 			return EmitSampledImageCombineOrSplit(insn, state);
+
+		case spv::OpCopyMemory:
+			return EmitCopyMemory(insn, state);
 
 		default:
 			UNIMPLEMENTED("%s", OpcodeName(opcode).c_str());
@@ -5199,6 +5208,44 @@ namespace sw
 		}
 
 		dst.move(0, x);
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState *state) const
+	{
+		Object::ID dstPtrId = insn.word(1);
+		Object::ID srcPtrId = insn.word(2);
+		auto &dstPtrTyId = getObject(dstPtrId).type;
+		auto &srcPtrTyId = getObject(srcPtrId).type;
+		auto &dstPtrTy = getType(dstPtrTyId);
+		auto &srcPtrTy = getType(srcPtrTyId);
+		ASSERT(dstPtrTy.element == srcPtrTy.element);
+
+		bool dstInterleavedByLane = IsStorageInterleavedByLane(dstPtrTy.storageClass);
+		bool srcInterleavedByLane = IsStorageInterleavedByLane(srcPtrTy.storageClass);
+		auto dstPtr = state->routine->getPointer(dstPtrId);
+		auto srcPtr = state->routine->getPointer(srcPtrId);
+
+		std::unordered_map<uint32_t, uint32_t> srcOffsets;
+
+		Decorations srcDecs{};
+		ApplyDecorationsForId(&srcDecs, srcPtrId);
+		VisitMemoryObject(srcPtrTyId, srcDecs, [&](uint32_t i, uint32_t offset) { srcOffsets[i] = offset; });
+
+		Decorations dstDecs{};
+		ApplyDecorationsForId(&dstDecs, dstPtrId);
+		VisitMemoryObject(dstPtrTyId, dstDecs, [&](uint32_t i, uint32_t dstOffset)
+		{
+			auto it = srcOffsets.find(i);
+			ASSERT(it != srcOffsets.end());
+			auto srcOffset = it->second;
+
+			auto dst = dstPtr + dstOffset;
+			auto src = srcPtr + srcOffset;
+			if (dstInterleavedByLane) { dst = interleaveByLane(dst); }
+			if (srcInterleavedByLane) { src = interleaveByLane(src); }
+			SIMD::Store(dst, SIMD::Load<SIMD::Float>(src, state->activeLaneMask()), state->activeLaneMask());
+		});
 		return EmitResult::Continue;
 	}
 
