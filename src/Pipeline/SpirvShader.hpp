@@ -474,8 +474,10 @@ namespace sw
 		// trampoline function for retrieving/generating the corresponding sampling routine.
 		struct ImageInstruction
 		{
-			ImageInstruction(SamplerMethod samplerMethod) : samplerMethod(samplerMethod)
+			ImageInstruction(SamplerMethod samplerMethod, bool project = false) : parameters(0)
 			{
+				this->samplerMethod = samplerMethod;
+				proj = project;
 			}
 
 			// Unmarshal from raw 32-bit data
@@ -495,9 +497,10 @@ namespace sw
 					uint32_t coordinates : 3;       // 1-4
 					uint32_t gradComponents : 2;    // 0-3 (for each of dx / dy)
 					uint32_t offsetComponents : 2;  // 0-3
+					uint32_t proj : 1;              // Boolean
 				};
 
-				uint32_t parameters = 0;
+				uint32_t parameters;
 			};
 		};
 
@@ -873,6 +876,7 @@ namespace sw
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleImplicitLod(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleExplicitLod(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageSampleProjImplicitLod(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;

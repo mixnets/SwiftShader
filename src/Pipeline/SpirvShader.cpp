@@ -846,6 +846,7 @@ namespace sw
 			case spv::OpPhi:
 			case spv::OpImageSampleImplicitLod:
 			case spv::OpImageSampleExplicitLod:
+			case spv::OpImageSampleProjImplicitLod:
 			case spv::OpImageQuerySize:
 			case spv::OpImageRead:
 			case spv::OpImageTexelPointer:
@@ -2392,6 +2393,9 @@ namespace sw
 
 		case spv::OpImageSampleExplicitLod:
 			return EmitImageSampleExplicitLod(insn, state);
+
+		case spv::OpImageSampleProjImplicitLod:
+			return EmitImageSampleProjImplicitLod(insn, state);
 
 		case spv::OpImageQuerySize:
 			return EmitImageQuerySize(insn, state);
@@ -4475,6 +4479,11 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitImageSampleProjImplicitLod(InsnIterator insn, EmitState *state) const
+	{
+		return EmitImageSample({Implicit, true}, insn, state);
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const
 	{
 		Type::ID resultTypeId = insn.word(1);
@@ -4556,10 +4565,19 @@ namespace sw
 
 		Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
 
+		uint32_t coordinates = coordinateType.sizeInComponents - instruction.proj;
+
 		uint32_t i = 0;
-		for( ; i < coordinateType.sizeInComponents; i++)
+		for( ; i < coordinates; i++)
 		{
-			in[i] = coordinate.Float(i);
+			if(instruction.proj)
+			{
+				in[i] = coordinate.Float(i) / coordinate.Float(coordinates);
+			}
+			else
+			{
+				in[i] = coordinate.Float(i);
+			}
 		}
 
 		if(lod)
@@ -4602,7 +4620,7 @@ namespace sw
 			}
 		}
 
-		instruction.coordinates = coordinateType.sizeInComponents;
+		instruction.coordinates = coordinates;
 
 		auto samplerFunc = Call(getImageSampler, instruction.parameters, imageView, sampler);
 
