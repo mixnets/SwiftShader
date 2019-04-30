@@ -34,6 +34,24 @@
       "revId": "fb5942185d313c9bf35f168d3065c2e4cf1d9442",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0cffd6f4_9b3a38a1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T03:34:55Z",
+      "side": 1,
+      "message": "Ah -- I see. The *packing* code has no idea how many components it needed to pack, and just trusts the size of the coordinate vector passed in, whereas this side looked at the imageview type.",
+      "parentUuid": "f2be2807_fa15b73b",
+      "revId": "fb5942185d313c9bf35f168d3065c2e4cf1d9442",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
