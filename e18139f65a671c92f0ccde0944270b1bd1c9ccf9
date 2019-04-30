@@ -34,6 +34,24 @@
       "revId": "e18139f65a671c92f0ccde0944270b1bd1c9ccf9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d133bbb4_4f917bd2",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2499,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T22:54:59Z",
+      "side": 1,
+      "message": "Added an UNIMPLEMENTED case for this in the hope that the daily regres run will catch these. Updated the change description too.",
+      "parentUuid": "f899e79f_d7f3204a",
+      "revId": "e18139f65a671c92f0ccde0944270b1bd1c9ccf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
