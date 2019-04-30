@@ -46,6 +46,30 @@
       "revId": "fba700cb711ad5c5a42959a68bf8268a4f961569",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cde489ff_d33efeea",
+        "filename": "build/strip_cmakelists.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T15:52:03Z",
+      "side": 1,
+      "message": "This doesn\u0027t currently work on macOS. You get the error:\n\n  libbacktrace does not support mach-o yet\n\nHowever https://swiftshader-review.googlesource.com/c/SwiftShader/+/30030 should fix this.\nNot a blocker.",
+      "parentUuid": "007c4d78_8424cd5c",
+      "range": {
+        "startLine": 2,
+        "startChar": 129,
+        "endLine": 2,
+        "endChar": 134
+      },
+      "revId": "fba700cb711ad5c5a42959a68bf8268a4f961569",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
