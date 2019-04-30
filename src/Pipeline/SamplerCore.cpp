@@ -1134,7 +1134,7 @@ namespace sw
 		return lod;
 	}
 
-	void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
+	void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, const Float &lodOrBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
 	{
 		if(function != Lod && function != Fetch)
 		{
@@ -1183,17 +1183,17 @@ namespace sw
 
 			if(function == Bias)
 			{
-				lod += lodBias;
+				lod += lodOrBias;
 			}
 		}
 		else if(function == Lod)
 		{
-			lod = lodBias;
+			lod = lodOrBias;
 		}
 		else if(function == Fetch)
 		{
 			// TODO: Eliminate int-float-int conversion.
-			lod = Float(As<Int>(lodBias));
+			lod = Float(As<Int>(lodOrBias));
 		}
 		else if(function == Base)
 		{
@@ -1205,7 +1205,7 @@ namespace sw
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
 	}
 
-	void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, Float4 &M, SamplerFunction function)
+	void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodOrBias, Vector4f &dsx, Vector4f &dsy, Float4 &M, SamplerFunction function)
 	{
 		if(function != Lod && function != Fetch)
 		{
@@ -1249,17 +1249,17 @@ namespace sw
 
 			if(function == Bias)
 			{
-				lod += lodBias;
+				lod += lodOrBias;
 			}
 		}
 		else if(function == Lod)
 		{
-			lod = lodBias;
+			lod = lodOrBias;
 		}
 		else if(function == Fetch)
 		{
 			// TODO: Eliminate int-float-int conversion.
-			lod = Float(As<Int>(lodBias));
+			lod = Float(As<Int>(lodOrBias));
 		}
 		else if(function == Base)
 		{
@@ -1271,7 +1271,7 @@ namespace sw
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
 	}
 
-	void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
+	void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, const Float &lodOrBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
 	{
 		if(function != Lod && function != Fetch)
 		{
@@ -1308,17 +1308,17 @@ namespace sw
 
 			if(function == Bias)
 			{
-				lod += lodBias;
+				lod += lodOrBias;
 			}
 		}
 		else if(function == Lod)
 		{
-			lod = lodBias;
+			lod = lodOrBias;
 		}
 		else if(function == Fetch)
 		{
 			// TODO: Eliminate int-float-int conversion.
-			lod = Float(As<Int>(lodBias));
+			lod = Float(As<Int>(lodOrBias));
 		}
 		else if(function == Base)
 		{
