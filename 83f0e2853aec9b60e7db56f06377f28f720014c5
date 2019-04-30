@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da061b16_dd9cef3d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-04-30T00:35:48Z",
+      "side": 1,
+      "message": "Should this be guarded by __ANDROID__ instead?",
+      "revId": "83f0e2853aec9b60e7db56f06377f28f720014c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
