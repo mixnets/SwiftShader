@@ -16,6 +16,24 @@
       "revId": "35a4c5089935dac94dca7b126dc54735c9dcbbf9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15af64ff_ec7fbc21",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5229,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-04-30T22:58:01Z",
+      "side": 1,
+      "message": "I was wondering about this. Thanks for confirming. Will fix.",
+      "parentUuid": "fddf2d58_21b7842f",
+      "revId": "35a4c5089935dac94dca7b126dc54735c9dcbbf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
