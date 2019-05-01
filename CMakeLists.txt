@@ -1066,6 +1066,13 @@ elseif(ARCH STREQUAL "mipsel" OR ARCH STREQUAL "mips64el")
     )
 elseif(ARCH STREQUAL "aarch64")
     list(APPEND LLVM_LIST
+        ${LLVM_DIR}/lib/CodeGen/GlobalMerge.cpp
+        ${LLVM_DIR}/lib/Transforms/Scalar/LoopDataPrefetch.cpp
+        ${LLVM_DIR}/lib/Transforms/Scalar/SeparateConstOffsetFromGEP.cpp
+        ${LLVM_DIR}/lib/Transforms/Scalar/EarlyCSE.cpp
+        ${LLVM_DIR}/lib/Analysis/MemorySSAUpdater.cpp
+        ${LLVM_DIR}/lib/CodeGen/RegAllocPBQP.cpp
+        ${LLVM_DIR}/lib/MC/ConstantPools.cpp
         ${LLVM_DIR}/lib/Target/AArch64/MCTargetDesc/AArch64ELFObjectWriter.cpp
         ${LLVM_DIR}/lib/Target/AArch64/MCTargetDesc/AArch64MCTargetDesc.cpp
         ${LLVM_DIR}/lib/Target/AArch64/MCTargetDesc/AArch64WinCOFFStreamer.cpp
