@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "bcbbc797_2e9527a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T12:36:33Z",
+      "side": 1,
+      "message": "You might be right - my opinions here may not reflect others on the team either.\n\nWe just have to be cautious about adding new ignore-warning directives: somewhat ironically we\u0027re battling a few issues at the moment that attempting to disable warnings that are not understood by earlier versions of Clang produce warnings in themselves that also error (see https://swiftshader-review.googlesource.com/c/SwiftShader/+/30191). It\u0027s a fun game. :)",
+      "parentUuid": "2a015161_92a57f94",
+      "range": {
+        "startLine": 11,
+        "startChar": 34,
+        "endLine": 11,
+        "endChar": 79
+      },
+      "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "218e28c0_25717108",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 1
