@@ -34,6 +34,24 @@
       "revId": "a592c9d3769df64d0e598e5a4dfb16680952f803",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1068a128_3aa9198f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2528,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-01T23:11:39Z",
+      "side": 1,
+      "message": "You\u0027re implementing the producer side, so shouldn\u0027t be speaking for the consumer. Some drivers need to (to enable some vendor-specific hack on the consumer side)",
+      "parentUuid": "c0a5d106_4fbf027f",
+      "revId": "a592c9d3769df64d0e598e5a4dfb16680952f803",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
