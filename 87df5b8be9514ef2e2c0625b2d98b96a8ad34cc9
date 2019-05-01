@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "989ebd6b_bb998d08",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5192,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-01T04:30:11Z",
+      "side": 1,
+      "message": "Vulkan 1.1 Appendix A says:\n\n` Scope for Non Uniform Group Operations must be limited to:\n  * Subgroup\n`\n\nI suppose we should assert if we see Workgroup here.",
+      "parentUuid": "8286927c_48440c9a",
+      "range": {
+        "startLine": 5192,
+        "startChar": 13,
+        "endLine": 5192,
+        "endChar": 18
+      },
+      "revId": "87df5b8be9514ef2e2c0625b2d98b96a8ad34cc9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10ad55a5_5084cb1c",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 2
