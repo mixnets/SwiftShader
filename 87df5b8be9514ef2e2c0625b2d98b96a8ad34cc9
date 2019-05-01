@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "30a5cd8d_06cbe8de",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5192,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T08:37:47Z",
+      "side": 1,
+      "message": "Added ASSERT_MSG.",
+      "parentUuid": "989ebd6b_bb998d08",
+      "range": {
+        "startLine": 5192,
+        "startChar": 13,
+        "endLine": 5192,
+        "endChar": 18
+      },
+      "revId": "87df5b8be9514ef2e2c0625b2d98b96a8ad34cc9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "10ad55a5_5084cb1c",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 2
@@ -60,6 +84,30 @@
       "writtenOn": "2019-05-01T03:42:51Z",
       "side": 1,
       "message": "We should have that: https://swiftshader.googlesource.com/SwiftShader/+/0fc611f16a0e283de450a65b751b168cad37b547/src/Reactor/Reactor.hpp#1844\n\nXYZW\u003c\u003e implements swizzle.",
+      "range": {
+        "startLine": 5194,
+        "startChar": 6,
+        "endLine": 5194,
+        "endChar": 42
+      },
+      "revId": "87df5b8be9514ef2e2c0625b2d98b96a8ad34cc9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90a7d59f_f68e19a3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5194,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T08:37:47Z",
+      "side": 1,
+      "message": "Ah, it was that RValue\u003cInt4\u003e doesn\u0027t have them. Fixed.",
+      "parentUuid": "10ad55a5_5084cb1c",
       "range": {
         "startLine": 5194,
         "startChar": 6,
