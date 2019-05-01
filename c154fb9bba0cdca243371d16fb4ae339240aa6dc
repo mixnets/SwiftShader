@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2a015161_92a57f94",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 14098
+      },
+      "writtenOn": "2019-05-01T12:32:09Z",
+      "side": 1,
+      "message": "Agreed it seems a legit warning. However that class is full of bitfields. You\u0027d hope the compiler would see they all end up zeroes and emit reasonable code but maybe it wouldn\u0027t. Perhaps pull the bitfields into a struct and just memset that, doing cleaner init for the rest of the members?",
+      "parentUuid": "1ad3016a_1f0256e8",
+      "range": {
+        "startLine": 11,
+        "startChar": 34,
+        "endLine": 11,
+        "endChar": 79
+      },
+      "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "218e28c0_25717108",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60dc6c90_fc68bf1e",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1250,
+      "author": {
+        "id": 14098
+      },
+      "writtenOn": "2019-05-01T12:32:09Z",
+      "side": 1,
+      "message": "Sorry, my first time getting and building the project. I\u0027ve obviously done a booboo.",
+      "parentUuid": "218e28c0_25717108",
+      "range": {
+        "startLine": 1250,
+        "startChar": 0,
+        "endLine": 1250,
+        "endChar": 16
+      },
+      "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
