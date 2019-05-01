@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a34de7a_1c9f1bc1",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 905,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "nit: Manual refcounting always gives me the hebejebes. Can we nullify after unref(), and ASSERT(draw.fence \u003d\u003d nullptr) before `draw-\u003efence \u003d fence;`?",
+      "range": {
+        "startLine": 905,
+        "startChar": 5,
+        "endLine": 905,
+        "endChar": 25
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74cb15bf_ea3d9086",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "Looks like this could be simplified if you used stdd:conditional_variable::wait_until instead.",
+      "range": {
+        "startLine": 128,
+        "startChar": 25,
+        "endLine": 128,
+        "endChar": 32
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e8b98f9_13165fde",
+        "filename": "src/Vulkan/VkEvent.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "notify_all?",
+      "range": {
+        "startLine": 44,
+        "startChar": 12,
+        "endLine": 44,
+        "endChar": 22
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5230808f_03e638ae",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "nit: Not sure that ref() / unref() are the best terms to use here.\nThis interface is very similar to go\u0027s WaitGroup (https://golang.org/pkg/sync/#WaitGroup), which has three methods: Add(int), Wait(), Done().",
+      "range": {
+        "startLine": 41,
+        "startChar": 6,
+        "endLine": 41,
+        "endChar": 9
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ddacaa3_a0c4b181",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "Can we add some ASSERTs that ref_count is always positive?",
+      "range": {
+        "startLine": 50,
+        "startChar": 8,
+        "endLine": 50,
+        "endChar": 17
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55252520_1ce95bf7",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "notify_all?",
+      "range": {
+        "startLine": 62,
+        "startChar": 12,
+        "endLine": 62,
+        "endChar": 22
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09ce8ee2_d30a1584",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "Any reason getTask() and popTask() isn\u0027t one atomic op?",
+      "range": {
+        "startLine": 115,
+        "startChar": 19,
+        "endLine": 115,
+        "endChar": 26
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e92c3de_3ccee482",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T19:51:25Z",
+      "side": 1,
+      "message": "Is there any possibility that a new task is added between this and renderer.synchronize()?\nIf so, does it matter?",
+      "range": {
+        "startLine": 226,
+        "startChar": 1,
+        "endLine": 226,
+        "endChar": 18
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
