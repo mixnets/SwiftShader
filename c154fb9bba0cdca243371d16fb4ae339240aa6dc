@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ad3016a_1f0256e8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T12:06:35Z",
+      "side": 1,
+      "message": "This seems like a pretty legit thing to warn about. Since this code was written, we\u0027ve moved to C++11, which has default field initializers. Perhaps we should just fix the code?",
+      "range": {
+        "startLine": 11,
+        "startChar": 34,
+        "endLine": 11,
+        "endChar": 79
+      },
+      "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "218e28c0_25717108",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1250,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T12:06:35Z",
+      "side": 1,
+      "message": "The version of googletest in the submodule is pinned to 02a8ca87735601466d8c564344f9be493da84708, which is before TYPED_TEST_CASE was renamed to TYPED_TEST_SUITE.\nI\u0027m curious to know how you\u0027ve ended up attempting to build with a newer googletest - did you manually resync it, or are you using a custom repo checkout?",
+      "range": {
+        "startLine": 1250,
+        "startChar": 0,
+        "endLine": 1250,
+        "endChar": 16
+      },
+      "revId": "c154fb9bba0cdca243371d16fb4ae339240aa6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
