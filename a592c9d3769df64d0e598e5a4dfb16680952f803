@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8da0ae1_a0de3ac5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2528,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-01T18:18:58Z",
+      "side": 1,
+      "message": "Consumer usage should probably be 0.",
+      "revId": "a592c9d3769df64d0e598e5a4dfb16680952f803",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
