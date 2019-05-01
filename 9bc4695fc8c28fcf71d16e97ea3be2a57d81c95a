@@ -22,6 +22,30 @@
       "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "893bc7f4_9b742fa7",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3084,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-01T08:21:12Z",
+      "side": 1,
+      "message": "It is used as a yield result of a unit test. This macro will be used by more than just CallHelper.",
+      "parentUuid": "9a3001ff_1d465202",
+      "range": {
+        "startLine": 3084,
+        "startChar": 1,
+        "endLine": 3084,
+        "endChar": 68
+      },
+      "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
