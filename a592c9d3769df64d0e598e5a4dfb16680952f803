@@ -16,6 +16,24 @@
       "revId": "a592c9d3769df64d0e598e5a4dfb16680952f803",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0a5d106_4fbf027f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2528,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-05-01T22:53:01Z",
+      "side": 1,
+      "message": "What is the reason for this again?",
+      "parentUuid": "c8da0ae1_a0de3ac5",
+      "revId": "a592c9d3769df64d0e598e5a4dfb16680952f803",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
