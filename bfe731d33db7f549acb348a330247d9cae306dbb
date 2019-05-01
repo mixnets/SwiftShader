@@ -422,6 +422,30 @@
       "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3dd75309_b88d8c91",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-01T21:40:04Z",
+      "side": 1,
+      "message": "Assuming this is *only* called in QWI/DWI and not in WFF, is not legal. QWI requires the queue parameter to be externally synchronized.",
+      "parentUuid": "b3167832_69a02db3",
+      "range": {
+        "startLine": 226,
+        "startChar": 1,
+        "endLine": 226,
+        "endChar": 18
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
