@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3001ff_1d465202",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3084,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-01T04:10:44Z",
+      "side": 1,
+      "message": "Subzero doesn\u0027t support non-32-bit arguments. Is this strictly needed?",
+      "range": {
+        "startLine": 3084,
+        "startChar": 1,
+        "endLine": 3084,
+        "endChar": 68
+      },
+      "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
