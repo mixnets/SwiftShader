@@ -262,6 +262,10 @@ void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
 	{
 		memcpy(&this->sampler, sampler, sizeof(this->sampler));
 	}
+	else
+	{
+		memset(&this->sampler, 0, sizeof(this->sampler));
+	}
 }
 
 void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
