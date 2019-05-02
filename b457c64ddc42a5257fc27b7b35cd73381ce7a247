@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "1c31dca2_8775217c",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-02T13:43:11Z",
+      "side": 1,
+      "message": "Okay, but it would be good to know why it\u0027s not working. One possibility that tends to happen in perfect forwarding scenarios is that if a const ref is passed down, and this type ends up being the type of a class data member initialized via a constructor, then we end up with a reference to a stack value. This is a case where const refs do not extend the lifetime of temporaries. I haven\u0027t drilled down in this code, but it\u0027s maybe what\u0027s happening.",
+      "parentUuid": "f1946b48_67a062c0",
+      "revId": "b457c64ddc42a5257fc27b7b35cd73381ce7a247",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "60b88789_1c6e80e2",
         "filename": "src/Reactor/Coroutine.hpp",
         "patchSetId": 3
