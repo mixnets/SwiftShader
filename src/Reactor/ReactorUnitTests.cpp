@@ -1092,6 +1092,7 @@ TEST(ReactorUnitTests, Call)
 {
 	if (!rr::Caps.CallSupported)
 	{
+		// TODO: Use GTEST_SKIP() when gtest is updated.
 		SUCCEED() << "rr::Call() not supported";
 		return;
 	}
