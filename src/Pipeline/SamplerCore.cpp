@@ -226,6 +226,7 @@ namespace sw
 			case VK_FORMAT_R32G32B32A32_UINT:
 				break;
 			case VK_FORMAT_R8_SNORM:
+			case VK_FORMAT_R8_SRGB:
 			case VK_FORMAT_R8G8_SNORM:
 			case VK_FORMAT_R8G8B8A8_SNORM:
 			case VK_FORMAT_R8_UNORM:
@@ -1708,9 +1709,9 @@ namespace sw
 		if(hasYuvFormat())
 		{
 			// Generic YPbPr to RGB transformation
-				// R = Y                               +           2 * (1 - Kr) * Pr
-				// G = Y - 2 * Kb * (1 - Kb) / Kg * Pb - 2 * Kr * (1 - Kr) / Kg * Pr
-				// B = Y +           2 * (1 - Kb) * Pb
+			// R = Y                               +           2 * (1 - Kr) * Pr
+			// G = Y - 2 * Kb * (1 - Kb) / Kg * Pb - 2 * Kr * (1 - Kr) / Kg * Pr
+			// B = Y +           2 * (1 - Kb) * Pb
 
 			float Kb = 0.114f;
 			float Kr = 0.299f;
@@ -2027,22 +2028,20 @@ namespace sw
 
 	Int4 SamplerCore::computeFilterOffset(Float &lod)
 	{
-		Int4 filter = -1;
-
 		if(state.textureFilter == FILTER_POINT)
 		{
-			filter = 0;
+			return Int4(0);
 		}
 		else if(state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT)
 		{
-			filter = CmpNLE(Float4(lod), Float4(0.0f));
+			return CmpNLE(Float4(lod), Float4(0.0f));
 		}
 		else if(state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
 		{
-			filter = CmpLE(Float4(lod), Float4(0.0f));
+			return CmpLE(Float4(lod), Float4(0.0f));
 		}
 
-		return filter;
+		return Int4(-1);
 	}
 
 	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte> &mipmap)
@@ -2197,7 +2196,8 @@ namespace sw
 				xyz0 += Int4(1);
 			}
 
-			xyz1 = xyz0 - filter;   // Increment
+		//	xyz1 = xyz0 - filter;   // Increment
+			xyz1 = xyz0 + Int(1);   // Increment
 
 			if(function.option == Offset)
 			{
@@ -2258,7 +2258,7 @@ namespace sw
 	}
 
 	void SamplerCore::sRGBtoLinear16_8_16(Short4 &c)
-	{
+	{return;
 		c = As<UShort4>(c) >> 8;
 
 		Pointer<Byte> LUT = Pointer<Byte>(constants + OFFSET(Constants,sRGBtoLinear8_16));

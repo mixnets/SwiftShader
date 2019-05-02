@@ -1,4 +1,4 @@
-// Copyright 2018 The SwiftShader Authors. All Rights Reserved.
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,27 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SWIFTSHADER_XLIBSURFACEKHR_HPP
-#define SWIFTSHADER_XLIBSURFACEKHR_HPP
+#ifndef SWIFTSHADER_WIN32SURFACEKHR_HPP
+#define SWIFTSHADER_WIN32SURFACEKHR_HPP
 
 #include "Vulkan/VkObject.hpp"
 #include "Vulkan/VkImage.hpp"
-#include "libX11.hpp"
 #include "VkSurfaceKHR.hpp"
 
 #include <map>
 
 namespace vk {
 
-class XlibSurfaceKHR : public SurfaceKHR, public ObjectBase<XlibSurfaceKHR, VkSurfaceKHR> {
+class Win32SurfaceKHR : public SurfaceKHR, public ObjectBase<Win32SurfaceKHR, VkSurfaceKHR> {
 public:
-	XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem);
+	Win32SurfaceKHR(const VkWin32SurfaceCreateInfoKHR *pCreateInfo, void *mem);
 
-	~XlibSurfaceKHR() = delete;
+	~Win32SurfaceKHR() = delete;
 
 	void destroySurface(const VkAllocationCallbacks *pAllocator) override;
 
-	static size_t ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo);
+	static size_t ComputeRequiredAllocationSize(const VkWin32SurfaceCreateInfoKHR *pCreateInfo);
 
 	void getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
 
@@ -41,12 +40,18 @@ public:
 	void present(PresentImage* image) override;
 
 private:
-	Display *const pDisplay;
-	const Window window;
-	GC gc;
-	Visual *visual = nullptr;
-	std::map<PresentImage*, XImage*> imageMap;
+	const HINSTANCE hinstance;
+   const HWND      hwnd;
+
+	HDC windowContext = {};
+	HDC bitmapContext = {};
+
+
+	//GC gc;
+	//Visual *visual = nullptr;
+	//std::map<PresentImage*, void*> imageMap;
+	void *framebuffer = nullptr;
 };
 
 }
-#endif //SWIFTSHADER_XLIBSURFACEKHR_HPP
+#endif //SWIFTSHADER_WIN32SURFACEKHR_HPP
