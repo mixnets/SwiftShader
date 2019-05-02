@@ -12,10 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "unittests.hpp"
+
 #include "gtest/gtest.h"
 
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
+	for (int i = 1; i < argc - 1; i++)
+	{
+		if (strcmp(argv[i], "-clusterfuzz")  == 0 ||
+		    strcmp(argv[i], "--clusterfuzz") == 0)
+		{
+			cla::clusterfuzz = argv[i+1];
+			::testing::GTEST_FLAG(filter) = "SwiftShaderTest.ClusterFuzz*"; // Filter to just ClusterFuzz tests
+		}
+	}
 	return RUN_ALL_TESTS();
 }

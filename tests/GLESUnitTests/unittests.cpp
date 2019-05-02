@@ -15,6 +15,8 @@
 // OpenGL ES unit tests that provide coverage for functionality not tested by
 // the dEQP test suite. Also used as a smoke test.
 
+#include "unittests.hpp"
+
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
@@ -29,10 +31,14 @@
 #include <Windows.h>
 #endif
 
-#include <string.h>
 #include <cstdint>
+#include <fstream>
+#include <regex>
+#include <string.h>
 
 #define EXPECT_GLENUM_EQ(expected, actual) EXPECT_EQ(static_cast<GLenum>(expected), static_cast<GLenum>(actual))
+
+std::string cla::clusterfuzz;
 
 class SwiftShaderTest : public testing::Test
 {
@@ -2507,3 +2513,71 @@ TEST_F(IOSurfaceClientBufferTest, MakeCurrentDisallowed)
 	Uninitialize();
 }
 
+TEST_F(SwiftShaderTest, ClusterFuzz)
+{
+	if (cla::clusterfuzz.size() == 0)
+	{
+		// TODO: Use GTEST_SKIP() when gtest is updated.
+		SUCCEED() << "No clusterfuzz file specified";
+		return;
+	}
+
+	// Read the whole clusterfuzz HTML file
+	std::ifstream filestream(cla::clusterfuzz);
+	if (!filestream)
+	{
+		FAIL() << "Couldn't open file: " << cla::clusterfuzz;
+		return;
+	}
+	std::stringstream filebuffer;
+	filebuffer << filestream.rdbuf();
+	std::string file = filebuffer.str();
+
+	// Scan for shader source
+	std::string vs, fs;
+	std::smatch match;
+	static std::regex regex("<script.*\\stype=\"(.*)\".*>([\\s\\S]*?)<\\/script>");
+	while(regex_search(file, match, regex))
+	{
+		if (match.size() > 2)
+		{
+			auto type = match[1];
+			auto source = match[2];
+			if (type == "x-shader/x-vertex")
+			{
+				vs = source;
+			}
+			else if (type == "x-shader/x-fragment")
+			{
+				fs = source;
+			}
+		}
+		file = match.suffix();
+	}
+
+	if (vs == "")
+	{
+		FAIL() << "ClusterFuzz file is missing vertex shader";
+		return;
+	}
+
+	if (fs == "")
+	{
+		FAIL() << "ClusterFuzz file is missing fragment shader";
+		return;
+	}
+
+	Initialize(3, false);
+
+	const ProgramHandles ph = createProgram(vs, fs);
+
+	glUseProgram(ph.program);
+
+	drawQuad(ph.program);
+
+	deleteProgram(ph);
+
+	EXPECT_GLENUM_EQ(GL_NONE, glGetError());
+
+	Uninitialize();
+}
