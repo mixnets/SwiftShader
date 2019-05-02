@@ -52,6 +52,7 @@
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Mangler.h"
 #include "llvm/IR/Module.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetOptions.h"
@@ -969,6 +970,15 @@ namespace rr
 			debugInfo->Finalize();
 		}
 #endif // ENABLE_RR_DEBUG_INFO
+
+		// TODO: Disable for release builds once heavy development is over.
+		bool verifyIR = true;
+		if(verifyIR)
+		{
+			llvm::legacy::PassManager pm;
+			pm.add(llvm::createVerifierPass());
+			pm.run(*::module);
+		}
 
 		if(false)
 		{
