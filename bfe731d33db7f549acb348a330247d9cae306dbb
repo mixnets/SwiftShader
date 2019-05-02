@@ -402,6 +402,30 @@
     },
     {
       "key": {
+        "uuid": "c67c772e_7b9c1d20",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-02T13:17:51Z",
+      "side": 1,
+      "message": "Ah, right, no I think that wouldn\u0027t work properly. If the task queue is empty before the submit operation is completed, then waitForEmptyQueue() could return before the submit operation is done and waitIdle() wouldn\u0027t work properly when we\u0027re not waiting for a draw operation to complete (renderer.synchronize()).\n\nIf I were to do it this way, I would need to add another variable that waitForEmptyQueue() can check for queue activity, but I feel it\u0027s just easier to pop at the end.",
+      "parentUuid": "17a55207_30d27e4a",
+      "range": {
+        "startLine": 115,
+        "startChar": 19,
+        "endLine": 115,
+        "endChar": 26
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b03115bb_9ab355d1",
         "filename": "src/Vulkan/VkQueue.cpp",
         "patchSetId": 9
@@ -422,6 +446,30 @@
       "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5eeb6193_d9f9fa06",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-02T13:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b03115bb_9ab355d1",
+      "range": {
+        "startLine": 144,
+        "startChar": 2,
+        "endLine": 144,
+        "endChar": 15
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -517,6 +565,30 @@
       "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88622555_b485de16",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-02T13:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "978ed124_7392f70c",
+      "range": {
+        "startLine": 226,
+        "startChar": 1,
+        "endLine": 226,
+        "endChar": 18
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
