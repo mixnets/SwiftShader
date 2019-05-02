@@ -39,7 +39,7 @@ void SwapchainKHR::destroy(const VkAllocationCallbacks *pAllocator)
 		{
 			vk::Cast(createInfo.surface)->detachImage(&currentImage);
 			vk::destroy(currentImage.imageMemory, pAllocator);
-			vk::destroy(currentImage.image, pAllocator);
+			currentImage.image->destroy(pAllocator);
 
 			currentImage.imageStatus = NONEXISTENT;
 		}
@@ -69,7 +69,7 @@ void SwapchainKHR::retire()
 			{
 				vk::Cast(createInfo.surface)->detachImage(&currentImage);
 				vk::destroy(currentImage.imageMemory, nullptr);
-				vk::destroy(currentImage.image, nullptr);
+				currentImage.image->destroy(nullptr);
 
 				currentImage.imageStatus = NONEXISTENT;
 			}
@@ -119,16 +119,18 @@ VkResult SwapchainKHR::createImages(VkDevice device)
 	imageInfo.queueFamilyIndexCount = createInfo.queueFamilyIndexCount;
 	imageInfo.initialLayout = VK_IMAGE_LAYOUT_GENERAL;
 
-	VkResult status;
 	for(auto& currentImage : images)
 	{
-		status = vkCreateImage(device, &imageInfo, nullptr, &currentImage.image);
+		VkImage image = VK_NULL_HANDLE;
+		VkResult status = vkCreateImage(device, &imageInfo, nullptr, &image);
 		if(status != VK_SUCCESS)
 		{
 			return status;
 		}
 
-		VkMemoryRequirements memRequirements = vk::Cast(currentImage.image)->getMemoryRequirements();
+		currentImage.image = vk::Cast(image);
+
+		VkMemoryRequirements memRequirements = currentImage.image->getMemoryRequirements();
 
 		VkMemoryAllocateInfo allocInfo = {};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -141,7 +143,7 @@ VkResult SwapchainKHR::createImages(VkDevice device)
 			return status;
 		}
 
-		vkBindImageMemory(device, currentImage.image, currentImage.imageMemory, 0);
+		vkBindImageMemory(device, image, currentImage.imageMemory, 0);
 
 		currentImage.imageStatus = AVAILABLE;
 
@@ -153,7 +155,7 @@ VkResult SwapchainKHR::createImages(VkDevice device)
 
 uint32_t SwapchainKHR::getImageCount() const
 {
-	return static_cast<uint32_t >(images.size());
+	return static_cast<uint32_t>(images.size());
 }
 
 VkResult SwapchainKHR::getImages(uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const
@@ -163,7 +165,7 @@ VkResult SwapchainKHR::getImages(uint32_t *pSwapchainImageCount, VkImage *pSwapc
 	uint32_t i;
 	for (i = 0; i < std::min(*pSwapchainImageCount, count); i++)
 	{
-		pSwapchainImages[i] = images[i].image;
+		pSwapchainImages[i] = *images[i].image;
 	}
 
 	*pSwapchainImageCount = i;
@@ -214,7 +216,7 @@ void SwapchainKHR::present(uint32_t index)
 	{
 		vk::Cast(createInfo.surface)->detachImage(&image);
 		vk::destroy(image.imageMemory, nullptr);
-		vk::destroy(image.image, nullptr);
+		image.image->destroy(nullptr);
 
 		image.imageStatus = NONEXISTENT;
 	}

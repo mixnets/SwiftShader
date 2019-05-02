@@ -261,6 +261,9 @@
     <ClCompile Include="..\WSI\VkSwapchainKHR.cpp">
       <Filter>Source Files\WSI</Filter>
     </ClCompile>
+    <ClCompile Include="..\WSI\Win32SurfaceKHR.cpp">
+      <Filter>Source Files\WSI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -524,6 +527,9 @@
     </ClInclude>
     <ClInclude Include="..\WSI\VkSwapchainKHR.hpp">
       <Filter>Header Files\WSI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WSI\Win32SurfaceKHR.hpp">
+      <Filter>Source Files\WSI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

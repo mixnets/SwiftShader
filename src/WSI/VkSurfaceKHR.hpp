@@ -15,7 +15,7 @@
 #ifndef SWIFTSHADER_VKSURFACEKHR_HPP_
 #define SWIFTSHADER_VKSURFACEKHR_HPP_
 
-#include "Vulkan/VkObject.hpp"
+#include "Vulkan/VkImage.hpp"
 #include <vulkan/vulkan.h>
 #include <vector>
 
@@ -24,7 +24,7 @@ namespace vk
 
 enum PresentImageStatus
 {
-	NONEXISTENT, //  Image wasn't made
+	NONEXISTENT,  // Image wasn't created
 	AVAILABLE,
 	DRAWING,
 	PRESENTING,
@@ -32,9 +32,9 @@ enum PresentImageStatus
 
 struct PresentImage
 {
-	VkImage image;
-	VkDeviceMemory imageMemory;
-	PresentImageStatus imageStatus;
+	vk::Image *image = nullptr;
+	VkDeviceMemory imageMemory = VK_NULL_HANDLE;
+	PresentImageStatus imageStatus = NONEXISTENT;
 };
 
 class SurfaceKHR
@@ -68,13 +68,13 @@ public:
 	void disassociateSwapchain();
 	VkSwapchainKHR getAssociatedSwapchain();
 
-
 private:
 	VkSwapchainKHR associatedSwapchain;
 
 	const std::vector<VkSurfaceFormatKHR> surfaceFormats =
 	{
 		{VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},
+		{VK_FORMAT_R8G8B8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},
 	};
 
 	const std::vector<VkPresentModeKHR> presentModes =

@@ -1674,6 +1674,7 @@ bool Format::has16bitTextureFormat() const
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_R8_SINT:
 	case VK_FORMAT_R8_UINT:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R8G8_SINT:
 	case VK_FORMAT_R8G8_UINT:
 	case VK_FORMAT_R8G8B8A8_SINT:
@@ -1726,6 +1727,7 @@ bool Format::has8bitTextureComponents() const
 	case VK_FORMAT_R8G8B8A8_SRGB:
 	case VK_FORMAT_R8_UNORM:
 	case VK_FORMAT_R8_SNORM:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R8G8_SNORM:
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_R8_SINT:
@@ -1783,6 +1785,7 @@ bool Format::has16bitTextureComponents() const
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_R8_SINT:
 	case VK_FORMAT_R8_UINT:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R8G8_SINT:
 	case VK_FORMAT_R8G8_UINT:
 	case VK_FORMAT_R8G8B8A8_SINT:
@@ -1838,6 +1841,7 @@ bool Format::has32bitIntegerTextureComponents() const
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_R8_SINT:
 	case VK_FORMAT_R8_UINT:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R8G8_SINT:
 	case VK_FORMAT_R8G8_UINT:
 	case VK_FORMAT_R8G8B8A8_SINT:
@@ -1891,6 +1895,7 @@ bool Format::hasYuvFormat() const
 	case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
 	case VK_FORMAT_R5G6B5_UNORM_PACK16:
 	case VK_FORMAT_R8_SNORM:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R8G8_SNORM:
 	case VK_FORMAT_R8G8B8A8_SNORM:
 	case VK_FORMAT_R8_SINT:
@@ -1945,6 +1950,7 @@ bool Format::isRGBComponent(int component) const
 	case VK_FORMAT_R8_UNORM:
 	case VK_FORMAT_R8_SINT:
 	case VK_FORMAT_R8_UINT:
+	case VK_FORMAT_R8_SRGB:
 	case VK_FORMAT_R16_SINT:
 	case VK_FORMAT_R16_UINT:
 	case VK_FORMAT_R16_SFLOAT:
