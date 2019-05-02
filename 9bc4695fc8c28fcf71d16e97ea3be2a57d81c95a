@@ -46,6 +46,30 @@
       "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c9f2aa6f_6e1f0cbd",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3084,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-02T17:11:32Z",
+      "side": 1,
+      "message": "I know, but I\u0027d like to keep the API surface of this minimal to avoid issues with Subzero (or other future backends) later. Can you avoid using uint8 for the test?",
+      "parentUuid": "893bc7f4_9b742fa7",
+      "range": {
+        "startLine": 3084,
+        "startChar": 1,
+        "endLine": 3084,
+        "endChar": 68
+      },
+      "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
