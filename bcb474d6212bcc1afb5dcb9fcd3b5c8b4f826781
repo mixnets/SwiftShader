@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "008f44b8_b8c2f492",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-02T01:49:58Z",
+      "side": 1,
+      "message": "b/131246807",
+      "revId": "bcb474d6212bcc1afb5dcb9fcd3b5c8b4f826781",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
