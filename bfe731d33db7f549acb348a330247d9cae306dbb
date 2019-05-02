@@ -378,6 +378,53 @@
     },
     {
       "key": {
+        "uuid": "17a55207_30d27e4a",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-02T09:29:34Z",
+      "side": 1,
+      "message": "Something like this:\n\n    Queue::Task Queue::takeTask()\n    {\n    \tstd::unique_lock\u003cstd::mutex\u003e mutexLock(mutex);\n    \tif(tasks.empty())\n    \t{\n    \t\temptySubmitQueue.notify_all(); // You could unlock() for this for some perf wins, but readability.\n    \t\tnewTaskAvailable.wait(mutexLock, [this] { return (!tasks.empty()); });\n    \t}\n    \tTask task \u003d tasks.front();\n    \ttasks.pop();\n    \treturn task;\n    }",
+      "parentUuid": "3cedb6b9_47e139e9",
+      "range": {
+        "startLine": 115,
+        "startChar": 19,
+        "endLine": 115,
+        "endChar": 26
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b03115bb_9ab355d1",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-02T09:29:34Z",
+      "side": 1,
+      "message": "UNREACHABLE?",
+      "range": {
+        "startLine": 144,
+        "startChar": 2,
+        "endLine": 144,
+        "endChar": 15
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6e92c3de_3ccee482",
         "filename": "src/Vulkan/VkQueue.cpp",
         "patchSetId": 9
@@ -437,6 +484,30 @@
       "side": 1,
       "message": "Assuming this is *only* called in QWI/DWI and not in WFF, is not legal. QWI requires the queue parameter to be externally synchronized.",
       "parentUuid": "b3167832_69a02db3",
+      "range": {
+        "startLine": 226,
+        "startChar": 1,
+        "endLine": 226,
+        "endChar": 18
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "978ed124_7392f70c",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-02T09:29:34Z",
+      "side": 1,
+      "message": "Fair enough.\nDespite that, the API feels a little icky. If waitForEmptyQueue() is not called anywhere else, I\u0027d probably inline waitForEmptyQueue() into waitIdle(), and hold the lock for the renderer.synchronize().\nAt least then this is less likely to bite someone when refactoring.",
+      "parentUuid": "3dd75309_b88d8c91",
       "range": {
         "startLine": 226,
         "startChar": 1,
