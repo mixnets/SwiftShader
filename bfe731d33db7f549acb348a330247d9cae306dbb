@@ -49,6 +49,29 @@
     },
     {
       "key": {
+        "uuid": "c3ae4e4d_eb1b4806",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 905,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-02T20:27:53Z",
+      "side": 1,
+      "message": "Oh, this is too late, should happen before \"draw.references \u003d -1\" above. Will fix.",
+      "range": {
+        "startLine": 905,
+        "startChar": 4,
+        "endLine": 905,
+        "endChar": 25
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "74cb15bf_ea3d9086",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 9
@@ -328,6 +351,29 @@
       "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e844014d_668c98cd",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-02T20:27:53Z",
+      "side": 1,
+      "message": "Oh crap, this never gets deallocated! will fix.",
+      "range": {
+        "startLine": 38,
+        "startChar": 6,
+        "endLine": 38,
+        "endChar": 14
+      },
+      "revId": "bfe731d33db7f549acb348a330247d9cae306dbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
