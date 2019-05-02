@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "afb5e1f5_1d799c32",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-02T04:32:13Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/30431",
+      "parentUuid": "1e52f280_3d63b15b",
+      "revId": "3f4bb4dc30e46886ddb463845876a918b0308f4f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "caf10af9_86954e3d",
         "filename": "src/Device/Sampler.hpp",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "3f4bb4dc30e46886ddb463845876a918b0308f4f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f3cd174_cf53d999",
+        "filename": "src/Device/Sampler.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-02T04:32:13Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/30431",
+      "parentUuid": "caf10af9_86954e3d",
+      "revId": "3f4bb4dc30e46886ddb463845876a918b0308f4f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
