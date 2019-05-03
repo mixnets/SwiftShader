@@ -22,6 +22,30 @@
       "revId": "5a6fda103205b56b27a137d883e3c634b30f30f1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5086354_a02e7b49",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T18:36:47Z",
+      "side": 1,
+      "message": "Done. Also updated patch to match.",
+      "parentUuid": "badb9f10_c963ffbb",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 23
+      },
+      "revId": "5a6fda103205b56b27a137d883e3c634b30f30f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
