@@ -123,7 +123,7 @@ namespace vk
 			UNIMPLEMENTED("flags");
 		}
 
-		ASSERT(pool[query].state == Query::UNAVAILABLE);
+		ASSERT((pool[query].state == Query::UNAVAILABLE) || (pool[query].state == Query::ACTIVE));
 		pool[query].state = Query::ACTIVE;
 		pool[query].data = 0;
 		pool[query].reference = 1;
@@ -157,8 +157,6 @@ namespace vk
 		for(uint32_t i = firstQuery; i < (firstQuery + queryCount); i++)
 		{
 			std::unique_lock<std::mutex> mutexLock(pool[i].mutex);
-
-			ASSERT(pool[i].state != Query::ACTIVE);
 
 			pool[i].state = Query::UNAVAILABLE;
 			pool[i].data = 0;

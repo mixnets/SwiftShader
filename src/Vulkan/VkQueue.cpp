@@ -96,8 +96,21 @@ void Queue::destroy()
 	context.reset(nullptr);
 }
 
+void Queue::preSubmit(uint32_t submitCount, const VkSubmitInfo* pSubmits)
+{
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		for(uint32_t j = 0; j < pSubmits[i].commandBufferCount; j++)
+		{
+			Cast(pSubmits[i].pCommandBuffers[j])->preSubmit();
+		}
+	}
+}
+
 VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
 {
+	preSubmit(submitCount, pSubmits);
+
 	garbageCollect();
 
 	Task task;
