@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d01bddc8_4628459f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T18:44:39Z",
+      "side": 1,
+      "message": "nit: \"Add traits for Reactor arguments and return types\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 26
+      },
+      "revId": "326822afeac62583474e577733a3c21eac829ba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c7f5635_ffa7140f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T18:44:39Z",
+      "side": 1,
+      "message": "Need bug ID (explaining the why more than the how).",
+      "revId": "326822afeac62583474e577733a3c21eac829ba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "975dd91d_1c8a4268",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T18:44:39Z",
+      "side": 1,
+      "message": "Why was this moved exactly? I generally prefer to keep locally needed things at the bottom of the includes, since now all of the includes below get Bool undefined but *only* if this header gets included first.\n\nSo another file doing\n\n#define Bool they_should_hang_you_for_this\n#include \"Routine.hpp\"\n#include \"Nucleus.hpp\"\n\ncould behave differently with the headers swapped. So if this change was made because one of the headers below needs Bool undefined, it should do so explicitly itself.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 26
+      },
+      "revId": "326822afeac62583474e577733a3c21eac829ba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
