@@ -1,0 +1,228 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d182a8ef_2d8365ea",
+        "filename": "src/Vulkan/VkEvent.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "No real reason for the change here, just less verbose for my tired eyes.",
+      "range": {
+        "startLine": 41,
+        "startChar": 31,
+        "endLine": 41,
+        "endChar": 35
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a9a7161c_ef9ade5c",
+        "filename": "src/Vulkan/VkEvent.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Another case of copy before return.",
+      "range": {
+        "startLine": 56,
+        "startChar": 2,
+        "endLine": 57,
+        "endChar": 16
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab5c6892_1f6e83c2",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Added this constructor so I can reuse a Fence in Queue for a barrier op.",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 31,
+        "endChar": 33
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6401147d_f579061d",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Just stylistic changes.",
+      "range": {
+        "startLine": 45,
+        "startChar": 1,
+        "endLine": 47,
+        "endChar": 0
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4983e1b2_ae61ca5d",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Just split this up to make it match more closely to below.",
+      "range": {
+        "startLine": 32,
+        "startChar": 2,
+        "endLine": 33,
+        "endChar": 77
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d03534f_7fe1b7fb",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Just changed to reduce noise. Logically the same.",
+      "range": {
+        "startLine": 49,
+        "startChar": 9,
+        "endLine": 49,
+        "endChar": 12
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c281b6b8_27c5c372",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "I moved these back to being pointers as I think one of the causes of flakiness is when the renderer is destructed. Also the renderer should be destructed before the context.",
+      "range": {
+        "startLine": 79,
+        "startChar": 1,
+        "endLine": 81,
+        "endChar": 67
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "903a35aa_1e1687bd",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "This *must* happen after everything else is initialized otherwise the thread may go accessing uninitialized data.\nI do see you initialize this last though, so might be a no-op change.",
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26f0063a_50179b3e",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "Moved the add() call here.\nThere was a window between this call and the add() where the fence had no count.\nGiven that the fence needs to change state, this might not have fixed anything.",
+      "range": {
+        "startLine": 110,
+        "startChar": 1,
+        "endLine": 113,
+        "endChar": 2
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e252229_0e636bbb",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 1,
+      "message": "This is my solution to your earlier comment (https://swiftshader-review.googlesource.com/c/SwiftShader/+/29769/9/src/Vulkan/VkQueue.cpp#115)",
+      "range": {
+        "startLine": 193,
+        "startChar": 1,
+        "endLine": 193,
+        "endChar": 14
+      },
+      "revId": "08eac4175aaedf533ba35eebbaebf7289c13a800",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

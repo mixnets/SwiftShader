@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b22e1aa_d6650942",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T14:43:06Z",
+      "side": 0,
+      "message": "Same for the destructor.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 19
+      },
+      "revId": "a27d7dc32da75c69f8f8ec4365644f0576226f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
