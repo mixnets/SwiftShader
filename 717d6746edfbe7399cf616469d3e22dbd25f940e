@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b8cb422_f5716958",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1720,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "24 corner pixels in one routine, nice! :)",
+      "range": {
+        "startLine": 1714,
+        "startChar": 3,
+        "endLine": 1720,
+        "endChar": 4
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "72fd117f_8b2edf6f",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1820,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "Actually, these are all stored consecutively at a known stride apart. So could be avoided to store the pointers separately. Anyway, that\u0027s a refactoring for later. LGTM",
+      "range": {
+        "startLine": 1815,
+        "startChar": 3,
+        "endLine": 1820,
+        "endChar": 45
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd9c9961_b2ae6ae0",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "nit: CubeBorderData, else not very clear why there\u0027s 6 layers.",
+      "range": {
+        "startLine": 103,
+        "startChar": 9,
+        "endLine": 103,
+        "endChar": 19
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "723ea435_e1833e33",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "nit: layer[6] ?",
+      "range": {
+        "startLine": 105,
+        "startChar": 3,
+        "endLine": 110,
+        "endChar": 16
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "903dd02c_fbfe0ce6",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "single \u0027dim\u0027 ?",
+      "range": {
+        "startLine": 112,
+        "startChar": 3,
+        "endLine": 113,
+        "endChar": 14
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5061d1e7_889a33a5",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "nit: spaces were better here.",
+      "range": {
+        "startLine": 397,
+        "startChar": 2,
+        "endLine": 397,
+        "endChar": 7
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67aeeb9d_43a2f36b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 816,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T21:34:05Z",
+      "side": 1,
+      "message": "Should this have gone in the previous patch?",
+      "range": {
+        "startLine": 815,
+        "startChar": 1,
+        "endLine": 816,
+        "endChar": 2
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
