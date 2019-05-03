@@ -28,12 +28,12 @@ using time_point = std::chrono::time_point<std::chrono::system_clock, std::chron
 class Fence : public Object<Fence, VkFence>
 {
 public:
+	Fence() : status(VK_NOT_READY) {}
+
 	Fence(const VkFenceCreateInfo* pCreateInfo, void* mem) :
 		status((pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT) ? VK_SUCCESS : VK_NOT_READY)
 	{
 	}
-
-	~Fence() = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkFenceCreateInfo* pCreateInfo)
 	{
