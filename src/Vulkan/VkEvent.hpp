@@ -38,28 +38,30 @@ public:
 
 	void signal()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		status = VK_EVENT_SET;
-		mutexLock.unlock();
+		lock.unlock();
 		condition.notify_all();
 	}
 
 	void reset()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		status = VK_EVENT_RESET;
 	}
 
 	VkResult getStatus()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		return status;
+		std::unique_lock<std::mutex> lock(mutex);
+		auto result = status;
+		lock.unlock();
+		return result;
 	}
 
 	void wait()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		condition.wait(mutexLock, [this] { return status == VK_EVENT_SET; });
+		std::unique_lock<std::mutex> lock(mutex);
+		condition.wait(lock, [this] { return status == VK_EVENT_SET; });
 	}
 
 private:

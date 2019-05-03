@@ -28,12 +28,12 @@ using time_point = std::chrono::time_point<std::chrono::system_clock, std::chron
 class Fence : public Object<Fence, VkFence>
 {
 public:
+	Fence() : status(VK_NOT_READY) {}
+
 	Fence(const VkFenceCreateInfo* pCreateInfo, void* mem) :
 		status((pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT) ? VK_SUCCESS : VK_NOT_READY)
 	{
 	}
-
-	~Fence() = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkFenceCreateInfo* pCreateInfo)
 	{
@@ -42,63 +42,64 @@ public:
 
 	void add()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		++waits;
+		std::unique_lock<std::mutex> lock(mutex);
+		++count;
 	}
 
 	void done()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		ASSERT(waits > 0);
-		if(!--waits)
+		std::unique_lock<std::mutex> lock(mutex);
+		ASSERT(count > 0);
+		--count;
+		if(count == 0)
 		{
 			// signal the fence, without the unlock/lock required to call signal() here
 			status = VK_SUCCESS;
-			mutexLock.unlock();
+			lock.unlock();
 			condition.notify_all();
 		}
 	}
 
 	void signal()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		status = VK_SUCCESS;
-		mutexLock.unlock();
+		lock.unlock();
 		condition.notify_all();
 	}
 
 	void reset()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		ASSERT(waits == 0);
+		std::unique_lock<std::mutex> lock(mutex);
+		ASSERT(count == 0);
 		status = VK_NOT_READY;
 	}
 
 	VkResult getStatus()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		auto out = status;
-		mutexLock.unlock();
+		lock.unlock();
 		return out;
 	}
 
 	VkResult wait()
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		condition.wait(mutexLock, [this] { return (status == VK_SUCCESS); });
+		std::unique_lock<std::mutex> lock(mutex);
+		condition.wait(lock, [this] { return status == VK_SUCCESS; });
 		return status;
 	}
 
 	VkResult waitUntil(const time_point& timeout_ns)
 	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		return condition.wait_until(mutexLock, timeout_ns, [this] { return (status == VK_SUCCESS); }) ?
+		std::unique_lock<std::mutex> lock(mutex);
+		return condition.wait_until(lock, timeout_ns, [this] { return status == VK_SUCCESS; }) ?
 		       VK_SUCCESS : VK_TIMEOUT;
 	}
 
 private:
 	VkResult status = VK_NOT_READY; // guarded by mutex
-	int32_t waits = 0; // guarded by mutex
+	int32_t count = 0; // guarded by mutex
 	std::mutex mutex;
 	std::condition_variable condition;
 };
