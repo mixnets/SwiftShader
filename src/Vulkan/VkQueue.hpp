@@ -16,6 +16,7 @@
 #define VK_QUEUE_HPP_
 
 #include "VkObject.hpp"
+#include "Device/Renderer.hpp"
 #include <vulkan/vk_icd.h>
 
 namespace sw
@@ -48,10 +49,8 @@ public:
 #endif
 
 private:
-	sw::Context* context = nullptr;
-	sw::Renderer* renderer = nullptr;
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	sw::Context context;
+	sw::Renderer renderer;
 };
 
 static inline Queue* Cast(VkQueue object)

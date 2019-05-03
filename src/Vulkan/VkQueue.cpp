@@ -16,23 +16,17 @@
 #include "VkFence.hpp"
 #include "VkQueue.hpp"
 #include "VkSemaphore.hpp"
-#include "Device/Renderer.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 
 namespace vk
 {
 
-Queue::Queue(uint32_t pFamilyIndex, float pPriority) : familyIndex(pFamilyIndex), priority(pPriority)
+Queue::Queue(uint32_t pFamilyIndex, float pPriority) : context(), renderer(&context, sw::OpenGL, true)
 {
-	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
-	context = new sw::Context();
-	renderer = new sw::Renderer(context, sw::OpenGL, true);
 }
 
 void Queue::destroy()
 {
-	delete context;
-	delete renderer;
 }
 
 void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
@@ -47,7 +41,7 @@ void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence f
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = renderer;
+			executionState.renderer = &renderer;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
 				vk::Cast(submitInfo.pCommandBuffers[j])->submit(executionState);
@@ -74,7 +68,7 @@ void Queue::waitIdle()
 
 	// FIXME (b/117835459): implement once we have working fences
 
-	renderer->synchronize();
+	renderer.synchronize();
 }
 
 #ifndef __ANDROID__
