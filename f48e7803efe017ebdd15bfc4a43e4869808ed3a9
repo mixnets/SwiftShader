@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7d0cf20_dc57740c",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T18:23:46Z",
+      "side": 1,
+      "message": "I have to admit I didn\u0027t have the Friday brainpower to try and figure out what was going on here. A comment might be nice for braindead people like me.",
+      "range": {
+        "startLine": 102,
+        "startChar": 1,
+        "endLine": 105,
+        "endChar": 1
+      },
+      "revId": "f48e7803efe017ebdd15bfc4a43e4869808ed3a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
