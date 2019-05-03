@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "955e6e67_6c73571f",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T14:57:42Z",
+      "side": 1,
+      "message": "Ooh, a clarifying comment, fancy. ;) I\u0027ll make a note about getting these other ones documented as well.",
+      "range": {
+        "startLine": 69,
+        "startChar": 23,
+        "endLine": 69,
+        "endChar": 84
+      },
+      "revId": "827634cd47a2d7e2ceaebd85011e661bc88d5def",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
