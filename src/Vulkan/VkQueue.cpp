@@ -29,45 +29,46 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 	size_t totalSize = submitSize;
 	for(uint32_t i = 0; i < submitCount; i++)
 	{
-		totalSize += pSubmits[i].waitSemaphoreCount * (sizeof(VkSemaphore) + sizeof(VkPipelineStageFlags));
-		totalSize += pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
+		totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
+		totalSize += pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
 		totalSize += pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
+		totalSize += pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
 	}
 
 	uint8_t* mem = static_cast<uint8_t*>(
 		vk::allocate(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::DEVICE_MEMORY, vk::Fence::GetAllocationScope()));
 
-	VkSubmitInfo* submits = new (mem) VkSubmitInfo[submitCount];
-	memcpy(submits, pSubmits, submitSize);
+	auto submits = new (mem) VkSubmitInfo[submitCount];
+	memcpy(mem, pSubmits, submitSize);
 	mem += submitSize;
 
 	for(uint32_t i = 0; i < submitCount; i++)
 	{
 		size_t size = pSubmits[i].waitSemaphoreCount * sizeof(VkSemaphore);
 		submits[i].pWaitSemaphores = new (mem) VkSemaphore[pSubmits[i].waitSemaphoreCount];
-		memcpy(const_cast<VkSemaphore*>(submits[i].pWaitSemaphores), pSubmits[i].pWaitSemaphores, size);
+		memcpy(mem, pSubmits[i].pWaitSemaphores, size);
 		mem += size;
 
 		size = pSubmits[i].waitSemaphoreCount * sizeof(VkPipelineStageFlags);
 		submits[i].pWaitDstStageMask = new (mem) VkPipelineStageFlags[pSubmits[i].waitSemaphoreCount];
-		memcpy(const_cast<VkPipelineStageFlags*>(submits[i].pWaitDstStageMask), pSubmits[i].pWaitDstStageMask, size);
+		memcpy(mem, pSubmits[i].pWaitDstStageMask, size);
 		mem += size;
 
 		size = pSubmits[i].signalSemaphoreCount * sizeof(VkSemaphore);
 		submits[i].pSignalSemaphores = new (mem) VkSemaphore[pSubmits[i].signalSemaphoreCount];
-		memcpy(const_cast<VkSemaphore*>(submits[i].pSignalSemaphores), pSubmits[i].pSignalSemaphores, size);
+		memcpy(mem, pSubmits[i].pSignalSemaphores, size);
 		mem += size;
 
 		size = pSubmits[i].commandBufferCount * sizeof(VkCommandBuffer);
 		submits[i].pCommandBuffers = new (mem) VkCommandBuffer[pSubmits[i].commandBufferCount];
-		memcpy(const_cast<VkCommandBuffer*>(submits[i].pCommandBuffers), pSubmits[i].pCommandBuffers, size);
+		memcpy(mem, pSubmits[i].pCommandBuffers, size);
 		mem += size;
 	}
 
 	return submits;
 }
 
-}
+} // anonymous namespace
 
 namespace vk
 {
@@ -75,39 +76,20 @@ namespace vk
 static const size_t MAX_QUEUED_TASKS = 100;
 
 Queue::Queue(uint32_t pFamilyIndex, float pPriority) : context(), renderer(&context, sw::OpenGL, true),
-	mutex(), newTaskAvailable(), emptySubmitQueue(), queueThread(TaskLoop, this)
+	pending(MAX_QUEUED_TASKS), queueThread(TaskLoop, this)
 {
-}
-
-void Queue::addTask(const Task& task)
-{
-	while(true)
-	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		size_t tasksSize = tasks.size();
-		mutexLock.unlock();
-		if(tasksSize < MAX_QUEUED_TASKS)
-		{
-			break;
-		}
-		waitIdle();
-	}
-
-	std::unique_lock<std::mutex> mutexLock(mutex);
-	tasks.push(task);
-	mutexLock.unlock();
-	newTaskAvailable.notify_one();
 }
 
 void Queue::destroy()
 {
 	Task task;
 	task.type = Task::KILL_THREAD;
-	addTask(task);
-
-	waitIdle(); // Note: calls garbageCollect()
+	pending.put(task);
 
 	queueThread.join();
+	ASSERT_MSG(pending.count() == 0, "queue has work after worker thread shutdown");
+
+	garbageCollect();
 }
 
 VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
@@ -118,7 +100,13 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFen
 	task.submitCount = submitCount;
 	task.pSubmits = DeepCopySubmitInfo(submitCount, pSubmits);
 	task.fence = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
-	addTask(task);
+
+	if(task.fence)
+	{
+		task.fence->add();
+	}
+
+	pending.put(task);
 
 	return VK_SUCCESS;
 }
@@ -128,78 +116,8 @@ void Queue::TaskLoop(vk::Queue* queue)
 	queue->taskLoop();
 }
 
-void Queue::garbageCollect()
+void Queue::submitQueue(const Task& task)
 {
-	std::unique_lock<std::mutex> mutexLock(garbageCollectMutex);
-	while(!tasksToDelete.empty())
-	{
-		Task task = tasksToDelete.front();
-		switch(task.type)
-		{
-		case Task::KILL_THREAD:
-			break;
-		case Task::SUBMIT_QUEUE:
-			vk::deallocate(task.pSubmits, DEVICE_MEMORY);
-			break;
-		default:
-			UNIMPLEMENTED("task.type %d", static_cast<int>(task.type));
-			break;
-		}
-		tasksToDelete.pop();
-	}
-}
-
-Queue::Task Queue::getTask()
-{
-	std::unique_lock<std::mutex> mutexLock(mutex);
-	if(tasks.empty())
-	{
-		newTaskAvailable.wait(mutexLock, [this] { return (!tasks.empty()); });
-	}
-	Task task = tasks.front();
-	return task;
-}
-
-void Queue::popTask()
-{
-	std::unique_lock<std::mutex> mutexLock(mutex);
-	{
-		std::unique_lock<std::mutex> mutexLock(garbageCollectMutex);
-		tasksToDelete.push(tasks.front());
-	}
-	tasks.pop();
-	if(tasks.empty())
-	{
-		mutexLock.unlock();
-		emptySubmitQueue.notify_one();
-	}
-}
-
-void Queue::purgeQueue()
-{
-	// The queue should only contain the last task at this point, make sure it is
-	std::unique_lock<std::mutex> mutexLock(mutex);
-	tasks.pop();
-	if(!tasks.empty())
-	{
-		UNREACHABLE("tasks queue"); // This should never happen
-	}
-
-	// Clear tasks queue memory
-	std::queue<Task> empty;
-	std::swap(tasks, empty);
-
-	mutexLock.unlock();
-	emptySubmitQueue.notify_one();
-}
-
-void Queue::submit(const Task& task)
-{
-	if(task.fence)
-	{
-		task.fence->add();
-	}
-
 	for(uint32_t i = 0; i < task.submitCount; i++)
 	{
 		auto& submitInfo = task.pSubmits[i];
@@ -224,6 +142,11 @@ void Queue::submit(const Task& task)
 		}
 	}
 
+	if (task.pSubmits)
+	{
+		toDelete.put(task.pSubmits);
+	}
+
 	if(task.fence)
 	{
 		task.fence->done();
@@ -234,35 +157,34 @@ void Queue::taskLoop()
 {
 	while(true)
 	{
-		Task task = getTask();
+		Task task = pending.take();
 
 		switch(task.type)
 		{
 		case Task::KILL_THREAD:
-			purgeQueue();
+			ASSERT_MSG(pending.count() == 0, "queue has remaining work!");
 			return;
 		case Task::SUBMIT_QUEUE:
-			submit(task);
+			submitQueue(task);
 			break;
 		default:
 			UNIMPLEMENTED("task.type %d", static_cast<int>(task.type));
 			break;
 		}
-
-		popTask();
 	}
 }
 
 VkResult Queue::waitIdle()
 {
-	// Wait for task queue to be empty
-	{
-		std::unique_lock<std::mutex> mutexLock(mutex);
-		if(!tasks.empty())
-		{
-			emptySubmitQueue.wait(mutexLock, [this] { return (tasks.empty()); });
-		}
-	}
+	// Wait for task queue to flush.
+	vk::Fence fence;
+	fence.add();
+
+	Task task;
+	task.fence = &fence;
+	pending.put(task);
+
+	fence.wait();
 
 	// Wait for all draw operations to complete, if any
 	renderer.synchronize();
@@ -270,6 +192,16 @@ VkResult Queue::waitIdle()
 	garbageCollect();
 
 	return VK_SUCCESS;
+}
+
+void Queue::garbageCollect()
+{
+	while (true)
+	{
+		auto v = toDelete.tryTake();
+		if (!v.second) { break; }
+		vk::deallocate(v.first, DEVICE_MEMORY);
+	}
 }
 
 #ifndef __ANDROID__
