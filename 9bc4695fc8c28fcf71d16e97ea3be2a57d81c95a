@@ -70,6 +70,30 @@
       "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5172470d_2dfd3151",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3084,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-03T20:37:44Z",
+      "side": 1,
+      "message": "Please can we land this? The traits change (which will be submitted together) ensures that uint8_t will not be used as a parameter or return type.",
+      "parentUuid": "c9f2aa6f_6e1f0cbd",
+      "range": {
+        "startLine": 3084,
+        "startChar": 1,
+        "endLine": 3084,
+        "endChar": 68
+      },
+      "revId": "9bc4695fc8c28fcf71d16e97ea3be2a57d81c95a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
