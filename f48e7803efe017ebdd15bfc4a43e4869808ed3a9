@@ -22,6 +22,30 @@
       "revId": "f48e7803efe017ebdd15bfc4a43e4869808ed3a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5338f949_fb8ce1da",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-03T18:34:01Z",
+      "side": 1,
+      "message": "Well, it\u0027s just that dEQP uses uint64_t(-1) when expecting an infinite timeout.\nIf I do start+timeout to find the end time point, that will overflow uint64_t.\nI check what the maximum value timeout can have to not overflow uint64_t.\nIf it\u0027s larger than that, then I assume the app expects an infinite timeout.",
+      "parentUuid": "e7d0cf20_dc57740c",
+      "range": {
+        "startLine": 102,
+        "startChar": 1,
+        "endLine": 105,
+        "endChar": 1
+      },
+      "revId": "f48e7803efe017ebdd15bfc4a43e4869808ed3a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
