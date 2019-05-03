@@ -35,6 +35,7 @@ class CommandBuffer::Command
 public:
 	// FIXME (b/119421344): change the commandBuffer argument to a CommandBuffer state
 	virtual void play(CommandBuffer::ExecutionState& executionState) = 0;
+	virtual void prePlay() {}
 	virtual ~Command() {}
 };
 
@@ -957,6 +958,11 @@ struct BeginQuery : public CommandBuffer::Command
 		Cast(queryPool)->begin(query, flags);
 	}
 
+	void prePlay()
+	{
+		Cast(queryPool)->begin(query, flags);
+	}
+
 private:
 	VkQueryPool queryPool;
 	uint32_t query;
@@ -1520,6 +1526,14 @@ void CommandBuffer::submitSecondary(CommandBuffer::ExecutionState& executionStat
 	for(auto& command : *commands)
 	{
 		command->play(executionState);
+	}
+}
+
+void CommandBuffer::preSubmit() const
+{
+	for(auto& command : *commands)
+	{
+		command->prePlay();
 	}
 }
 

@@ -149,6 +149,7 @@ private:
 	static void TaskLoop(vk::Queue* queue);
 	void taskLoop();
 	void garbageCollect();
+	void preSubmit(uint32_t submitCount, const VkSubmitInfo* pSubmits);
 	void submitQueue(const Task& task);
 
 	std::unique_ptr<sw::Context> context;

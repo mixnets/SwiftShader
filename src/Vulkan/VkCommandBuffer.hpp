@@ -172,6 +172,7 @@ public:
 
 	void submit(CommandBuffer::ExecutionState& executionState);
 	void submitSecondary(CommandBuffer::ExecutionState& executionState) const;
+	void preSubmit() const;
 
 	class Command;
 private:
