@@ -15,8 +15,11 @@
 #ifndef VK_QUEUE_HPP_
 #define VK_QUEUE_HPP_
 
-#include "VkObject.hpp"
+#include "VkFence.hpp"
 #include "Device/Renderer.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 #include <vulkan/vk_icd.h>
 
 namespace sw
@@ -51,6 +54,29 @@ public:
 private:
 	sw::Context context;
 	sw::Renderer renderer;
+
+	struct Task
+	{
+		uint32_t submitCount = 0;
+		const VkSubmitInfo* pSubmits = nullptr;
+		Fence* fence = nullptr;
+		bool executed = true;
+
+		enum Type { KILL_THREAD, SUBMIT_QUEUE };
+		Type type = SUBMIT_QUEUE;
+	};
+	Task task; // guarded by mutex
+
+	static void TaskLoop(vk::Queue* queue);
+	void taskLoop();
+	void waitForTask();
+
+	void submit();
+
+	std::mutex mutex;
+	std::condition_variable newTaskAvailable;
+	std::condition_variable taskExecuted;
+	std::thread queueThread;
 };
 
 static inline Queue* Cast(VkQueue object)

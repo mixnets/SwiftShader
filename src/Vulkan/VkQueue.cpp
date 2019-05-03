@@ -21,19 +21,51 @@
 namespace vk
 {
 
-Queue::Queue(uint32_t pFamilyIndex, float pPriority) : context(), renderer(&context, sw::OpenGL, true)
+Queue::Queue(uint32_t pFamilyIndex, float pPriority) : context(), renderer(&context, sw::OpenGL, true),
+	mutex(), newTaskAvailable(), taskExecuted(), queueThread(TaskLoop, this)
 {
 }
 
 void Queue::destroy()
 {
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		task.type = Task::KILL_THREAD;
+		task.executed = false;
+		mutexLock.unlock();
+		newTaskAvailable.notify_all();
+	}
+
+	waitIdle();
+
+	queueThread.join();
 }
 
 void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
 {
-	for(uint32_t i = 0; i < submitCount; i++)
 	{
-		auto& submitInfo = pSubmits[i];
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		task.submitCount = submitCount;
+		task.pSubmits = pSubmits;
+		task.fence = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
+		task.executed = false;
+		mutexLock.unlock();
+		newTaskAvailable.notify_all();
+	}
+
+	waitIdle();
+}
+
+void Queue::TaskLoop(vk::Queue* queue)
+{
+	queue->taskLoop();
+}
+
+void Queue::submit()
+{
+	for(uint32_t i = 0; i < task.submitCount; i++)
+	{
+		auto& submitInfo = task.pSubmits[i];
 		for(uint32_t j = 0; j < submitInfo.waitSemaphoreCount; j++)
 		{
 			vk::Cast(submitInfo.pWaitSemaphores[j])->wait(submitInfo.pWaitDstStageMask[j]);
@@ -55,19 +87,62 @@ void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence f
 	}
 
 	// FIXME (b/117835459): signal the fence only once the work is completed
-	if(fence != VK_NULL_HANDLE)
+	if(task.fence)
 	{
-		vk::Cast(fence)->signal();
+		task.fence->signal();
+	}
+
+	task.executed = true;
+}
+
+void Queue::waitForTask()
+{
+	std::unique_lock<std::mutex> mutexLock(mutex);
+	if(task.executed)
+	{
+		newTaskAvailable.wait(mutexLock, [this] { return (!task.executed); });
+	}
+}
+
+void Queue::taskLoop()
+{
+	bool doLoop = true;
+	while(doLoop)
+	{
+		waitForTask();
+
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		switch(task.type)
+		{
+		case Task::KILL_THREAD:
+			doLoop = false;
+			break;
+		case Task::SUBMIT_QUEUE:
+			submit();
+			break;
+		default:
+			UNIMPLEMENTED("task.type %d", static_cast<int>(task.type));
+			break;
+		}
+
+		task.executed = true;
+		mutexLock.unlock();
+		taskExecuted.notify_all();
 	}
 }
 
 void Queue::waitIdle()
 {
-	// equivalent to submitting a fence to a queue and waiting
-	// with an infinite timeout for that fence to signal
+	// Wait for task queue to be empty
+	{
+		std::unique_lock<std::mutex> mutexLock(mutex);
+		if(!task.executed)
+		{
+			taskExecuted.wait(mutexLock, [this] { return task.executed; });
+		}
+	}
 
-	// FIXME (b/117835459): implement once we have working fences
-
+	// Wait for all draw operations to complete, if any
 	renderer.synchronize();
 }
 
