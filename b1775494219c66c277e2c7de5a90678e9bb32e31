@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6ba4d82_255512c6",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T16:54:36Z",
+      "side": 1,
+      "message": "Can also be replaced with vk::DeviceMemory. Should be split into a separate refactoring patch.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 15
+      },
+      "revId": "b1775494219c66c277e2c7de5a90678e9bb32e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3ff2556_949b6d78",
+        "filename": "src/WSI/Win32SurfaceKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-03T16:54:36Z",
+      "side": 1,
+      "message": "This is making assumptions about the component order, 32-bit format, matching size, and stride.",
+      "range": {
+        "startLine": 103,
+        "startChar": 1,
+        "endLine": 116,
+        "endChar": 0
+      },
+      "revId": "b1775494219c66c277e2c7de5a90678e9bb32e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
