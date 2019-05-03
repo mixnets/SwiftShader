@@ -62,6 +62,30 @@
       "revId": "326822afeac62583474e577733a3c21eac829ba3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7426687_07f2c7dc",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-05-03T18:52:49Z",
+      "side": 1,
+      "message": "Traits.hpp errored in the typically perplexing way that these macros cause, but Traits.hpp never included an offending header - it was leaking through from somewhere else.\nThis crap is really annoying me. I\u0027ll fix it the next time it bites me.",
+      "parentUuid": "975dd91d_1c8a4268",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 26
+      },
+      "revId": "326822afeac62583474e577733a3c21eac829ba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
