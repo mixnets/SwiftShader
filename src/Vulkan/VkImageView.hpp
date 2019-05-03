@@ -40,7 +40,19 @@ public:
 
 	VkImageViewType getType() const { return viewType; }
 	Format getFormat() const { return format; }
-	int getSampleCount() const { return image->getSampleCountFlagBits(); }
+
+	int getSampleCount() const
+	{
+		switch (image->getSampleCountFlagBits())
+		{
+		case VK_SAMPLE_COUNT_1_BIT: return 1;
+		case VK_SAMPLE_COUNT_4_BIT: return 4;
+		default:
+			UNIMPLEMENTED("Sample count flags %d", image->getSampleCountFlagBits());
+			return 1;
+		}
+	}
+
 	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const { return image->rowPitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel); }
 	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const { return image->slicePitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel); }
 	int layerPitchBytes(VkImageAspectFlagBits aspect) const { return static_cast<int>(image->getLayerSize(aspect)); }
