@@ -1507,7 +1507,8 @@ int Format::sliceB(int width, int height, int border, bool target) const
 	// Render targets require 2x2 quads
 	if(target || isDepth() || isStencil())
 	{
-		height = sw::align<2>(height);
+		// Add one additional row off the bottom of the image to avoid conflicts between layers/slices/samples
+		height = sw::align<2>(height + 1);
 	}
 
 	switch(format)
