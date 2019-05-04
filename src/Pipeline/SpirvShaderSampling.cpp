@@ -66,7 +66,8 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, const vk:
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
 	samplerState.swizzle = imageView->getComponentMapping();
 	samplerState.highPrecisionFiltering = false;
-	samplerState.compare = convertCompare(sampler);
+	samplerState.compareEnable = sampler->compareEnable;
+	samplerState.compareOp = sampler->compareOp;
 
 	ASSERT(sampler->anisotropyEnable == VK_FALSE);  // TODO(b/129523279)
 	ASSERT(sampler->unnormalizedCoordinates == VK_FALSE);  // TODO(b/129523279)
@@ -212,26 +213,6 @@ sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 	default:
 		UNIMPLEMENTED("mipmapMode %d", sampler->mipmapMode);
 		return MIPMAP_POINT;
-	}
-}
-
-sw::CompareFunc SpirvShader::convertCompare(const vk::Sampler *sampler)
-{
-	if (!sampler->compareEnable) return COMPARE_BYPASS;
-
-	switch (sampler->compareOp)
-	{
-	case VK_COMPARE_OP_NEVER: return COMPARE_NEVER;
-	case VK_COMPARE_OP_LESS: return COMPARE_LESS;
-	case VK_COMPARE_OP_EQUAL: return COMPARE_EQUAL;
-	case VK_COMPARE_OP_LESS_OR_EQUAL: return COMPARE_LESSEQUAL;
-	case VK_COMPARE_OP_GREATER: return COMPARE_GREATER;
-	case VK_COMPARE_OP_NOT_EQUAL: return COMPARE_NOTEQUAL;
-	case VK_COMPARE_OP_GREATER_OR_EQUAL: return COMPARE_GREATEREQUAL;
-	case VK_COMPARE_OP_ALWAYS: return COMPARE_ALWAYS;
-	default:
-		UNIMPLEMENTED("compareOp %d", sampler->compareOp);
-		return COMPARE_BYPASS;
 	}
 }
 
