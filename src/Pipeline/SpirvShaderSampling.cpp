@@ -65,7 +65,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, const vk:
 
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
 	samplerState.swizzle = imageView->getComponentMapping();
-	samplerState.highPrecisionFiltering = false;
+	samplerState.highPrecisionFiltering = sampler->compareEnable;	// HACK: Only high precision path supports compare
 	samplerState.compareEnable = sampler->compareEnable;
 	samplerState.compareOp = sampler->compareOp;
 
