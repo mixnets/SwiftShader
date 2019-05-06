@@ -22,6 +22,30 @@
       "revId": "fd47dfeea196717bdca5d5caa5779a99d26ed53b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad164c01_64ccfdb6",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-06T15:49:16Z",
+      "side": 1,
+      "message": "Done. Reminded me to install the trailing whitespace visualizer extension. :)",
+      "parentUuid": "ce7f54dd_c2054d75",
+      "range": {
+        "startLine": 125,
+        "startChar": 3,
+        "endLine": 125,
+        "endChar": 6
+      },
+      "revId": "fd47dfeea196717bdca5d5caa5779a99d26ed53b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
