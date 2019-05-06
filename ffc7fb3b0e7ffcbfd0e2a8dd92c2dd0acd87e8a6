@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0428b73_a7ac6f9d",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-06T17:57:20Z",
+      "side": 1,
+      "message": "I\u0027d rather keep this limited to the padding that we need. Also it\u0027s best to align each slice to 16 bytes. So we could do something like rename this method to sliceBunpadded() and then implement sliceB() as align\u003c16\u003e(sliceBunpadded() + 15)",
+      "range": {
+        "startLine": 1510,
+        "startChar": 2,
+        "endLine": 1511,
+        "endChar": 36
+      },
+      "revId": "ffc7fb3b0e7ffcbfd0e2a8dd92c2dd0acd87e8a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
