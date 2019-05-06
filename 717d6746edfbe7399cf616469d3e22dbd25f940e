@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "95a068fc_f4778cf9",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1720,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3b8cb422_f5716958",
+      "range": {
+        "startLine": 1714,
+        "startChar": 3,
+        "endLine": 1720,
+        "endChar": 4
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "72fd117f_8b2edf6f",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-03T21:34:05Z",
       "side": 1,
       "message": "Actually, these are all stored consecutively at a known stride apart. So could be avoided to store the pointers separately. Anyway, that\u0027s a refactoring for later. LGTM",
+      "range": {
+        "startLine": 1815,
+        "startChar": 3,
+        "endLine": 1820,
+        "endChar": 45
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a93643d_1a6179e7",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1820,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Refactoring was trivial. Done.",
+      "parentUuid": "72fd117f_8b2edf6f",
       "range": {
         "startLine": 1815,
         "startChar": 3,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "b6aa0bd0_772851a6",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd9c9961_b2ae6ae0",
+      "range": {
+        "startLine": 103,
+        "startChar": 9,
+        "endLine": 103,
+        "endChar": 19
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "723ea435_e1833e33",
         "filename": "src/Device/Blitter.hpp",
         "patchSetId": 6
@@ -91,6 +163,30 @@
       "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a7c6ddb_c4e9d72c",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "723ea435_e1833e33",
+      "range": {
+        "startLine": 105,
+        "startChar": 3,
+        "endLine": 110,
+        "endChar": 16
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "45bc1218_a5ed593a",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "903dd02c_fbfe0ce6",
+      "range": {
+        "startLine": 112,
+        "startChar": 3,
+        "endLine": 113,
+        "endChar": 14
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5061d1e7_889a33a5",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 6
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "072b4d97_a0dcde29",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5061d1e7_889a33a5",
+      "range": {
+        "startLine": 397,
+        "startChar": 2,
+        "endLine": 397,
+        "endChar": 7
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67aeeb9d_43a2f36b",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 6
@@ -160,6 +304,30 @@
       "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c20349a4_de4e41e6",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 816,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-06T12:56:08Z",
+      "side": 1,
+      "message": "I\u0027m ok with landing it this way, since this function used to be only for compressed textures in the previous patch.",
+      "parentUuid": "67aeeb9d_43a2f36b",
+      "range": {
+        "startLine": 815,
+        "startChar": 1,
+        "endLine": 816,
+        "endChar": 2
+      },
+      "revId": "717d6746edfbe7399cf616469d3e22dbd25f940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
