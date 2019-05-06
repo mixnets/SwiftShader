@@ -22,6 +22,30 @@
       "revId": "ffc7fb3b0e7ffcbfd0e2a8dd92c2dd0acd87e8a6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "093feb3b_585576c4",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-06T18:57:33Z",
+      "side": 1,
+      "message": "Roger. That sounds better, and will have the advantage of actually being correct for very narrow images.",
+      "parentUuid": "d0428b73_a7ac6f9d",
+      "range": {
+        "startLine": 1510,
+        "startChar": 2,
+        "endLine": 1511,
+        "endChar": 36
+      },
+      "revId": "ffc7fb3b0e7ffcbfd0e2a8dd92c2dd0acd87e8a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
