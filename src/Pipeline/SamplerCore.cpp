@@ -293,17 +293,6 @@ namespace sw
 		return c;
 	}
 
-	void SamplerCore::border(Short4 &mask, Float4 &coordinates)
-	{
-		Int4 border = As<Int4>(CmpLT(Abs(coordinates - Float4(0.5f)), Float4(0.5f)));
-		mask = As<Short4>(Int2(As<Int4>(PackSigned(border, border))));
-	}
-
-	void SamplerCore::border(Int4 &mask, Float4 &coordinates)
-	{
-		mask = As<Int4>(CmpLT(Abs(coordinates - Float4(0.5f)), Float4(0.5f)));
-	}
-
 	Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, Float &lod)
 	{
 		Short4 offset = *Pointer<Short4>(mipmap + halfOffset);
@@ -381,80 +370,6 @@ namespace sw
 			if(!hasUnsignedTextureComponent(1)) c.y += c.y;
 			if(!hasUnsignedTextureComponent(2)) c.z += c.z;
 			if(!hasUnsignedTextureComponent(3)) c.w += c.w;
-		}
-
-		Short4 borderMask;
-
-		if(state.addressingModeU == ADDRESSING_BORDER)
-		{
-			Short4 u0;
-
-			border(u0, u);
-
-			borderMask = u0;
-		}
-
-		if(state.addressingModeV == ADDRESSING_BORDER)
-		{
-			Short4 v0;
-
-			border(v0, v);
-
-			if(state.addressingModeU == ADDRESSING_BORDER)
-			{
-				borderMask &= v0;
-			}
-			else
-			{
-				borderMask = v0;
-			}
-		}
-
-		if(state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D)
-		{
-			Short4 s0;
-
-			border(s0, w);
-
-			if(state.addressingModeU == ADDRESSING_BORDER ||
-			   state.addressingModeV == ADDRESSING_BORDER)
-			{
-				borderMask &= s0;
-			}
-			else
-			{
-				borderMask = s0;
-			}
-		}
-
-		if(state.addressingModeU == ADDRESSING_BORDER ||
-		   state.addressingModeV == ADDRESSING_BORDER ||
-		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
-		{
-			Short4 borderRgb;
-			Short4 borderA;
-			switch (state.border)
-			{
-			case VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK:
-				borderRgb = Short4(0);
-				borderA = Short4(0);
-				break;
-			case VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK:
-				borderRgb = Short4(0);
-				borderA = hasUnsignedTextureComponent(0) ? Short4(0xffff) : Short4(0x7fff);
-				break;
-			case VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE:
-				borderRgb = hasUnsignedTextureComponent(0) ? Short4(0xffff) : Short4(0x7fff);
-				borderA = hasUnsignedTextureComponent(0) ? Short4(0xffff) : Short4(0x7fff);
-				break;
-			default:
-				UNIMPLEMENTED("snorm/unorm border %u", state.border);
-			}
-
-			c.x = (borderMask & c.x) | (~borderMask & borderRgb);
-			c.y = (borderMask & c.y) | (~borderMask & borderRgb);
-			c.z = (borderMask & c.z) | (~borderMask & borderRgb);
-			c.w = (borderMask & c.w) | (~borderMask & borderA);
 		}
 
 		return c;
@@ -545,14 +460,15 @@ namespace sw
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
 		bool texelFetch = (function == Fetch);
+		Short4 border = borderModeActive() ? Short4(0) : Short4();
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u)) : address(u, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v)) : address(v, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w)) : address(w, state.addressingModeW, mipmap);
+		Short4 uuuu = texelFetch ? Short4(As<Int4>(u)) : address(u, border, state.addressingModeU, mipmap);
+		Short4 vvvv = texelFetch ? Short4(As<Int4>(v)) : address(v, border, state.addressingModeV, mipmap);
+		Short4 wwww = texelFetch ? Short4(As<Int4>(w)) : address(w, border, state.addressingModeW, mipmap);
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			c = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, function);
+			c = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, border, function);
 		}
 		else
 		{
@@ -561,10 +477,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
-			Vector4s c0 = sampleTexel(uuuu0, vvvv0, wwww, offset, mipmap, buffer, function);
-			Vector4s c1 = sampleTexel(uuuu1, vvvv0, wwww, offset, mipmap, buffer, function);
-			Vector4s c2 = sampleTexel(uuuu0, vvvv1, wwww, offset, mipmap, buffer, function);
-			Vector4s c3 = sampleTexel(uuuu1, vvvv1, wwww, offset, mipmap, buffer, function);
+			Vector4s c0 = sampleTexel(uuuu0, vvvv0, wwww, offset, mipmap, buffer, border, function);
+			Vector4s c1 = sampleTexel(uuuu1, vvvv0, wwww, offset, mipmap, buffer, border, function);
+			Vector4s c2 = sampleTexel(uuuu0, vvvv1, wwww, offset, mipmap, buffer, border, function);
+			Vector4s c3 = sampleTexel(uuuu1, vvvv1, wwww, offset, mipmap, buffer, border, function);
 
 			if(!gather)   // Blend
 			{
@@ -740,14 +656,15 @@ namespace sw
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
 		bool texelFetch = (function == Fetch);
+		Short4 border = borderModeActive() ? Short4(0) : Short4();
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u_)) : address(u_, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v_)) : address(v_, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w_)) : address(w_, state.addressingModeW, mipmap);
+		Short4 uuuu = texelFetch ? Short4(As<Int4>(u_)) : address(u_, border, state.addressingModeU, mipmap);
+		Short4 vvvv = texelFetch ? Short4(As<Int4>(v_)) : address(v_, border, state.addressingModeV, mipmap);
+		Short4 wwww = texelFetch ? Short4(As<Int4>(w_)) : address(w_, border, state.addressingModeW, mipmap);
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			c_ = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, function);
+			c_ = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, border, function);
 		}
 		else
 		{
@@ -819,7 +736,7 @@ namespace sw
 				{
 					for(int k = 0; k < 2; k++)
 					{
-						c[i][j][k] = sampleTexel(u[i][j][k], v[i][j][k], s[i][j][k], offset, mipmap, buffer, function);
+						c[i][j][k] = sampleTexel(u[i][j][k], v[i][j][k], s[i][j][k], offset, mipmap, buffer, border, function);
 
 						if(componentCount >= 1) { if(hasUnsignedTextureComponent(0)) c[i][j][k].x = MulHigh(As<UShort4>(c[i][j][k].x), f[1 - i][1 - j][1 - k]); else c[i][j][k].x = MulHigh(c[i][j][k].x, fs[1 - i][1 - j][1 - k]); }
 						if(componentCount >= 2) { if(hasUnsignedTextureComponent(1)) c[i][j][k].y = MulHigh(As<UShort4>(c[i][j][k].y), f[1 - i][1 - j][1 - k]); else c[i][j][k].y = MulHigh(c[i][j][k].y, fs[1 - i][1 - j][1 - k]); }
@@ -871,93 +788,6 @@ namespace sw
 			c.y = (cc.y - c.y) * lod4 + c.y;
 			c.z = (cc.z - c.z) * lod4 + c.z;
 			c.w = (cc.w - c.w) * lod4 + c.w;
-		}
-
-		Int4 borderMask;
-
-		if(state.addressingModeU == ADDRESSING_BORDER)
-		{
-			Int4 u0;
-
-			border(u0, u);
-
-			borderMask = u0;
-		}
-
-		if(state.addressingModeV == ADDRESSING_BORDER)
-		{
-			Int4 v0;
-
-			border(v0, v);
-
-			if(state.addressingModeU == ADDRESSING_BORDER)
-			{
-				borderMask &= v0;
-			}
-			else
-			{
-				borderMask = v0;
-			}
-		}
-
-		if(state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D)
-		{
-			Int4 s0;
-
-			border(s0, w);
-
-			if(state.addressingModeU == ADDRESSING_BORDER ||
-			   state.addressingModeV == ADDRESSING_BORDER)
-			{
-				borderMask &= s0;
-			}
-			else
-			{
-				borderMask = s0;
-			}
-		}
-
-		if(state.addressingModeU == ADDRESSING_BORDER ||
-		   state.addressingModeV == ADDRESSING_BORDER ||
-		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
-		{
-			Int4 borderRgb;
-			Int4 borderA;
-
-			switch (state.border)
-			{
-			case VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK:
-				borderRgb = As<Int4>(Float4(0));
-				borderA = As<Int4>(Float4(0));
-				break;
-			case VK_BORDER_COLOR_INT_TRANSPARENT_BLACK:
-				borderRgb = Int4(0);
-				borderA = Int4(0);
-				break;
-			case VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK:
-				borderRgb = As<Int4>(Float4(0));
-				borderA = As<Int4>(Float4(1));
-				break;
-			case VK_BORDER_COLOR_INT_OPAQUE_BLACK:
-				borderRgb = Int4(0);
-				borderA = Int4(1);
-				break;
-			case VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE:
-				borderRgb = As<Int4>(Float4(1));
-				borderA = As<Int4>(Float4(1));
-				break;
-			case VK_BORDER_COLOR_INT_OPAQUE_WHITE:
-				borderRgb = Int4(1);
-				borderA = Int4(1);
-				break;
-			default:
-				UNIMPLEMENTED("sint/uint/sfloat border: %u", state.border);
-			}
-
-			c.x = As<Float4>((borderMask & As<Int4>(c.x)) | (~borderMask & borderRgb));
-			c.y = As<Float4>((borderMask & As<Int4>(c.y)) | (~borderMask & borderRgb));
-			c.z = As<Float4>((borderMask & As<Int4>(c.z)) | (~borderMask & borderRgb));
-			c.w = As<Float4>((borderMask & As<Int4>(c.w)) | (~borderMask & borderA));
 		}
 
 		return c;
@@ -1048,9 +878,11 @@ namespace sw
 		Int4 x0, x1, y0, y1, z0;
 		Float4 fu, fv, fw;
 		Int4 filter = computeFilterOffset(lod);
-		address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU, function);
-		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
-		address(w, z0, z0, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
+		Int4 border = borderModeActive() ? Int4(0) : Int4();
+
+		address(u, x0, x1, fu, mipmap, offset.x, filter, border, OFFSET(Mipmap, width), state.addressingModeU, function);
+		address(v, y0, y1, fv, mipmap, offset.y, filter, border, OFFSET(Mipmap, height), state.addressingModeV, function);
+		address(w, z0, z0, fw, mipmap, offset.z, filter, border, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
@@ -1062,16 +894,16 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
 		{
-			c = sampleTexel(x0, y0, z0, q, mipmap, buffer, function);
+			c = sampleTexel(x0, y0, z0, q, mipmap, buffer, border, function);
 		}
 		else
 		{
 			y1 *= pitchP;
 
-			Vector4f c0 = sampleTexel(x0, y0, z0, q, mipmap, buffer, function);
-			Vector4f c1 = sampleTexel(x1, y0, z0, q, mipmap, buffer, function);
-			Vector4f c2 = sampleTexel(x0, y1, z0, q, mipmap, buffer, function);
-			Vector4f c3 = sampleTexel(x1, y1, z0, q, mipmap, buffer, function);
+			Vector4f c0 = sampleTexel(x0, y0, z0, q, mipmap, buffer, border, function);
+			Vector4f c1 = sampleTexel(x1, y0, z0, q, mipmap, buffer, border, function);
+			Vector4f c2 = sampleTexel(x0, y1, z0, q, mipmap, buffer, border, function);
+			Vector4f c3 = sampleTexel(x1, y1, z0, q, mipmap, buffer, border, function);
 
 			if(!gather)   // Blend
 			{
@@ -1117,9 +949,11 @@ namespace sw
 		Int4 x0, x1, y0, y1, z0, z1;
 		Float4 fu, fv, fw;
 		Int4 filter = computeFilterOffset(lod);
-		address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU, function);
-		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
-		address(w, z0, z1, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
+		Int4 border = borderModeActive() ? Int4(0) : Int4();
+
+		address(u, x0, x1, fu, mipmap, offset.x, filter, border, OFFSET(Mipmap, width), state.addressingModeU, function);
+		address(v, y0, y1, fv, mipmap, offset.y, filter, border, OFFSET(Mipmap, height), state.addressingModeV, function);
+		address(w, z0, z1, fw, mipmap, offset.z, filter, border, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
@@ -1128,21 +962,21 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
 		{
-			c = sampleTexel(x0, y0, z0, w, mipmap, buffer, function);
+			c = sampleTexel(x0, y0, z0, w, mipmap, buffer, border, function);
 		}
 		else
 		{
 			y1 *= pitchP;
 			z1 *= sliceP;
 
-			Vector4f c0 = sampleTexel(x0, y0, z0, w, mipmap, buffer, function);
-			Vector4f c1 = sampleTexel(x1, y0, z0, w, mipmap, buffer, function);
-			Vector4f c2 = sampleTexel(x0, y1, z0, w, mipmap, buffer, function);
-			Vector4f c3 = sampleTexel(x1, y1, z0, w, mipmap, buffer, function);
-			Vector4f c4 = sampleTexel(x0, y0, z1, w, mipmap, buffer, function);
-			Vector4f c5 = sampleTexel(x1, y0, z1, w, mipmap, buffer, function);
-			Vector4f c6 = sampleTexel(x0, y1, z1, w, mipmap, buffer, function);
-			Vector4f c7 = sampleTexel(x1, y1, z1, w, mipmap, buffer, function);
+			Vector4f c0 = sampleTexel(x0, y0, z0, w, mipmap, buffer, border, function);
+			Vector4f c1 = sampleTexel(x1, y0, z0, w, mipmap, buffer, border, function);
+			Vector4f c2 = sampleTexel(x0, y1, z0, w, mipmap, buffer, border, function);
+			Vector4f c3 = sampleTexel(x1, y1, z0, w, mipmap, buffer, border, function);
+			Vector4f c4 = sampleTexel(x0, y0, z1, w, mipmap, buffer, border, function);
+			Vector4f c5 = sampleTexel(x1, y0, z1, w, mipmap, buffer, border, function);
+			Vector4f c6 = sampleTexel(x0, y1, z1, w, mipmap, buffer, border, function);
+			Vector4f c7 = sampleTexel(x1, y1, z1, w, mipmap, buffer, border, function);
 
 			// Blend first slice
 			if(componentCount >= 1) c0.x = c0.x + fu * (c1.x - c0.x);
@@ -1493,7 +1327,7 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
+	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4], const Short4 &border)
 	{
 		Vector4s c;
 
@@ -1719,10 +1553,15 @@ namespace sw
 			}
 		}
 
+		if(borderModeActive())
+		{
+			c = replaceBorderTexel(c, border);
+		}
+
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], const Short4 &border, SamplerFunction function)
 	{
 		Vector4s c;
 
@@ -1828,13 +1667,13 @@ namespace sw
 		}
 		else
 		{
-			return sampleTexel(index, buffer);
+			return sampleTexel(index, buffer, border);
 		}
 
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], const Int4 &border, SamplerFunction function)
 	{
 		Vector4f c;
 
@@ -1962,7 +1801,7 @@ namespace sw
 		{
 			ASSERT(!hasYuvFormat());
 
-			Vector4s cs = sampleTexel(index, buffer);
+			Vector4s cs = sampleTexel(index, buffer, Short4(border));
 
 			bool isInteger = state.textureFormat.isNonNormalizedInteger();
 			int componentCount = textureComponentCount();
@@ -2025,7 +1864,88 @@ namespace sw
 			c.w = Float4(1.0f);
 		}
 
+		if(borderModeActive())
+		{
+			c = replaceBorderTexel(c, border);
+		}
+
 		return c;
+	}
+
+	Vector4s SamplerCore::replaceBorderTexel(const Vector4s &c, Short4 borderMask)
+	{
+		Short4 borderRGB;
+		Short4 borderA;
+
+		switch(state.border)
+		{
+		case VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK:
+			borderRGB = Short4(0);
+			borderA = Short4(0);
+			break;
+		case VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK:
+			borderRGB = Short4(0);
+			borderA = hasUnsignedTextureComponent(0) ? Short4(0xFFFF) : Short4(0x7FFF);
+			break;
+		case VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE:
+			borderRGB = hasUnsignedTextureComponent(0) ? Short4(0xFFFF) : Short4(0x7FFF);
+			borderA = hasUnsignedTextureComponent(0) ? Short4(0xFFFF) : Short4(0x7FFF);
+			break;
+		default:
+			UNIMPLEMENTED("snorm/unorm border %u", state.border);
+		}
+
+		Vector4s out;
+		out.x = (borderMask & c.x) | (~borderMask & borderRGB);
+		out.y = (borderMask & c.y) | (~borderMask & borderRGB);
+		out.z = (borderMask & c.z) | (~borderMask & borderRGB);
+		out.w = (borderMask & c.w) | (~borderMask & borderA);
+
+		return out;
+	}
+
+	Vector4f SamplerCore::replaceBorderTexel(const Vector4f &c, Int4 borderMask)
+	{
+		Int4 borderRGB;
+		Int4 borderA;
+
+		switch(state.border)
+		{
+		case VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK:
+			borderRGB = As<Int4>(Float4(0));
+			borderA = As<Int4>(Float4(0));
+			break;
+		case VK_BORDER_COLOR_INT_TRANSPARENT_BLACK:
+			borderRGB = Int4(0);
+			borderA = Int4(0);
+			break;
+		case VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK:
+			borderRGB = As<Int4>(Float4(0));
+			borderA = As<Int4>(Float4(1));
+			break;
+		case VK_BORDER_COLOR_INT_OPAQUE_BLACK:
+			borderRGB = Int4(0);
+			borderA = Int4(1);
+			break;
+		case VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE:
+			borderRGB = As<Int4>(Float4(1));
+			borderA = As<Int4>(Float4(1));
+			break;
+		case VK_BORDER_COLOR_INT_OPAQUE_WHITE:
+			borderRGB = Int4(1);
+			borderA = Int4(1);
+			break;
+		default:
+			UNIMPLEMENTED("sint/uint/sfloat border: %u", state.border);
+		}
+
+		Vector4f out;
+		out.x = As<Float4>((borderMask & As<Int4>(c.x)) | (~borderMask & borderRGB));
+		out.y = As<Float4>((borderMask & As<Int4>(c.y)) | (~borderMask & borderRGB));
+		out.z = As<Float4>((borderMask & As<Int4>(c.z)) | (~borderMask & borderRGB));
+		out.w = As<Float4>((borderMask & As<Int4>(c.w)) | (~borderMask & borderA));
+
+		return out;
 	}
 
 	void SamplerCore::selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD)
@@ -2090,13 +2010,13 @@ namespace sw
 		return filter;
 	}
 
-	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte> &mipmap)
+	Short4 SamplerCore::address(Float4 &uw, Short4 &border, AddressingMode addressingMode, Pointer<Byte> &mipmap)
 	{
 		if(addressingMode == ADDRESSING_LAYER)
 		{
 			return Min(Max(Short4(RoundInt(uw)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
 		}
-		else if(addressingMode == ADDRESSING_CLAMP || addressingMode == ADDRESSING_BORDER)
+		else if(addressingMode == ADDRESSING_CLAMP)
 		{
 			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
 
@@ -2122,13 +2042,22 @@ namespace sw
 
 			return As<Short4>(Int2(convert)) + Short4(0x8000u);
 		}
+		else if(addressingMode == ADDRESSING_BORDER)
+		{
+			Int4 b = As<Int4>(CmpLT(Abs(uw - Float4(0.5f)), Float4(0.5f)));
+			border |= As<Short4>(Int2(As<Int4>(PackSigned(b, b))));
+
+			// Theoretically this is a clamping mode, but since the texels are
+			// replaced anyway, just perform wrapping, which is cheaper.
+			return Short4(Int4(uw * Float4(1 << 16)));
+		}
 		else   // Wrap
 		{
 			return Short4(Int4(uw * Float4(1 << 16)));
 		}
 	}
 
-	void SamplerCore::address(Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Float4 &texOffset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function)
+	void SamplerCore::address(Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Float4 &texOffset, Int4 &filter, Int4 &border, int whd, AddressingMode addressingMode, SamplerFunction function)
 	{
 		Int4 dim = Int4(*Pointer<Short4>(mipmap + whd, 16));
 		Int4 maxXYZ = dim - Int4(1);
@@ -2167,7 +2096,6 @@ namespace sw
 				switch(addressingMode)
 				{
 				case ADDRESSING_CLAMP:
-				case ADDRESSING_BORDER:
 				case ADDRESSING_SEAMLESS:
 					// Linear filtering of cube doesn't require clamping because the coordinates
 					// are already in [0, 1] range and numerical imprecision is tolerated.
@@ -2178,21 +2106,30 @@ namespace sw
 					}
 					break;
 				case ADDRESSING_MIRROR:
-				{
-					Float4 half = As<Float4>(Int4(halfBits));
-					Float4 one = As<Float4>(Int4(oneBits));
-					Float4 two = As<Float4>(Int4(twoBits));
-					coord = one - Abs(two * Frac(coord * half) - one);
-				}
-				break;
+					{
+						Float4 half = As<Float4>(Int4(halfBits));
+						Float4 one = As<Float4>(Int4(oneBits));
+						Float4 two = As<Float4>(Int4(twoBits));
+						coord = one - Abs(two * Frac(coord * half) - one);
+					}
+					break;
 				case ADDRESSING_MIRRORONCE:
-				{
-					Float4 half = As<Float4>(Int4(halfBits));
-					Float4 one = As<Float4>(Int4(oneBits));
-					Float4 two = As<Float4>(Int4(twoBits));
-					coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
-				}
-				break;
+					{
+						Float4 half = As<Float4>(Int4(halfBits));
+						Float4 one = As<Float4>(Int4(oneBits));
+						Float4 two = As<Float4>(Int4(twoBits));
+						coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
+					}
+					break;
+				case ADDRESSING_BORDER:
+					{
+						border |= As<Int4>(CmpLT(Abs(coord - Float4(0.5f)), Float4(0.5f)));
+
+						// Theoretically this is a clamping mode, but since the texels are
+						// replaced anyway, just perform wrapping, which is cheaper.
+						coord = Frac(coord);
+					}
+					break;
 				default:   // Wrap
 					coord = Frac(coord);
 					break;
@@ -2360,5 +2297,12 @@ namespace sw
 	bool SamplerCore::isRGBComponent(int component) const
 	{
 		return state.textureFormat.isRGBComponent(component);
+	}
+
+	bool SamplerCore::borderModeActive() const
+	{
+		return state.addressingModeU == ADDRESSING_BORDER ||
+		       state.addressingModeV == ADDRESSING_BORDER ||
+		       state.addressingModeW == ADDRESSING_BORDER;
 	}
 }
