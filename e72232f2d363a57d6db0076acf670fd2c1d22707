@@ -22,6 +22,30 @@
       "revId": "e72232f2d363a57d6db0076acf670fd2c1d22707",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1e9e4dc_ec19169a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-07T19:01:51Z",
+      "side": 1,
+      "message": "No.\n\n- You will not see compressed formats here, as they are not supported as storage images or as attachments\n- You may see a KHR_maintenance2 UINT view of a compressed image, and in this case you must expose the raw image as the shader expects to manipulate the block bit patterns directly.",
+      "parentUuid": "411bb4fb_5c9caffc",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 498,
+        "endChar": 64
+      },
+      "revId": "e72232f2d363a57d6db0076acf670fd2c1d22707",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
