@@ -51,6 +51,8 @@ namespace sw
 		}
 
 		State state(format, dstFormat, 1, dest->getSampleCountFlagBits(), { 0xF });
+		state.useStencil = (dstFormat == VK_FORMAT_S8_UINT);
+
 		Routine *blitRoutine = getRoutine(state);
 		if(!blitRoutine)
 		{

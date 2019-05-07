@@ -274,6 +274,87 @@ void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
 	}
 }
 
+namespace
+{
+	void CopyFromQuadLayout(VkBufferImageCopy region, uint8_t *src, int imageRowPitchBytes, int imageSlicePitchBytes, uint8_t *dst, int bufferRowPitchBytes, int bufferSlicePitchBytes)
+	{
+		ASSERT(!(region.imageOffset.x & 1));
+		ASSERT(!(region.imageExtent.width & 1));
+		ASSERT(region.imageExtent.depth == 1);
+
+		bool initialRow = (region.imageOffset.y & 1) != 0;
+		if (initialRow)
+		{
+			region.imageExtent.height--;
+			src -= imageRowPitchBytes;
+			dst -= bufferRowPitchBytes;
+		}
+		bool finalRow = (region.imageExtent.height & 1) != 0;
+		if (finalRow)
+		{
+			region.imageExtent.height--;
+		}
+		bool initialPixel = (region.imageOffset.x & 1) != 0;
+		if (initialPixel)
+		{
+			region.imageExtent.width--;
+		}
+		bool finalPixel = (region.imageExtent.width & 1) != 0;
+		if (finalPixel)
+		{
+			region.imageExtent.width--;
+		}
+
+		auto srcLayerMemory = src;
+		auto dstLayerMemory = dst;
+		for (auto layer = 0u; layer < region.imageSubresource.layerCount; layer++)
+		{
+			auto srcRowMemory = srcLayerMemory;
+			auto dstRow0Memory = dstLayerMemory;
+			auto dstRow1Memory = dstLayerMemory + bufferRowPitchBytes;
+
+			if (initialRow)
+			{
+				for (unsigned x = 0; x < region.imageExtent.width; x += 2)
+				{
+					dstRow1Memory[x] = srcRowMemory[2 * x + 2];
+					dstRow1Memory[x+1] = srcRowMemory[2 * x + 3];
+				}
+				srcRowMemory += 2 * imageRowPitchBytes;
+				dstRow0Memory += 2 * bufferRowPitchBytes;
+				dstRow1Memory += 2 * bufferRowPitchBytes;
+			}
+
+			for (unsigned y = 0; y < region.imageExtent.height; y += 2)
+			{
+				for (unsigned x = 0; x < region.imageExtent.width; x += 2)
+				{
+					dstRow0Memory[x] = srcRowMemory[2 * x];
+					dstRow0Memory[x+1] = srcRowMemory[2 * x + 1];
+					dstRow1Memory[x] = srcRowMemory[2 * x + 2];
+					dstRow1Memory[x+1] = srcRowMemory[2 * x + 3];
+				}
+
+				srcRowMemory += 2 * imageRowPitchBytes;
+				dstRow0Memory += 2 * bufferRowPitchBytes;
+				dstRow1Memory += 2 * bufferRowPitchBytes;
+			}
+
+			if (finalRow)
+			{
+				for (unsigned x = 0; x < region.imageExtent.width; x += 2)
+				{
+					dstRow0Memory[x] = srcRowMemory[2 * x];
+					dstRow0Memory[x+1] = srcRowMemory[2 * x + 1];
+				}
+			}
+
+			srcLayerMemory += imageSlicePitchBytes;
+			dstLayerMemory += bufferSlicePitchBytes;
+		}
+	}
+}
+
 void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSource)
 {
 	if(!((region.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
@@ -312,6 +393,19 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 	uint8_t* imageMemory = static_cast<uint8_t*>(getTexelPointer(region.imageOffset, region.imageSubresource));
 	uint8_t* srcMemory = bufferIsSource ? bufferMemory : imageMemory;
 	uint8_t* dstMemory = bufferIsSource ? imageMemory : bufferMemory;
+
+	if (aspect == VK_IMAGE_ASPECT_STENCIL_BIT)
+	{
+		if (bufferIsSource)
+		{
+			UNIMPLEMENTED("Copy to quad layout");
+		}
+		else
+		{
+			CopyFromQuadLayout(region, imageMemory, imageRowPitchBytes, imageSlicePitchBytes, bufferMemory, bufferRowPitchBytes, bufferSlicePitchBytes);
+		}
+		return;
+	}
 
 	VkDeviceSize copySize = 0;
 	VkDeviceSize bufferLayerSize = 0;
