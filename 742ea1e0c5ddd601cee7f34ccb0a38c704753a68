@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6c66622_13abf4c5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T21:14:35Z",
+      "side": 1,
+      "message": "nit: This phrasing makes it sound like a bug description (as if it\u0027s an issue that pipeline creation ignores the flag). The recommendation (https://github.com/agis/git-style-guide) is to use imperative tense: \"Ignore VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT at pipeline creation\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 69
+      },
+      "revId": "742ea1e0c5ddd601cee7f34ccb0a38c704753a68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
