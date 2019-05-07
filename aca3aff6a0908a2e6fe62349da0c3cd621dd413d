@@ -22,6 +22,30 @@
       "revId": "aca3aff6a0908a2e6fe62349da0c3cd621dd413d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bc487ef_c31b0082",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 981,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-07T19:27:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89d16b53_dc41721d",
+      "range": {
+        "startLine": 981,
+        "startChar": 5,
+        "endLine": 981,
+        "endChar": 9
+      },
+      "revId": "aca3aff6a0908a2e6fe62349da0c3cd621dd413d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
