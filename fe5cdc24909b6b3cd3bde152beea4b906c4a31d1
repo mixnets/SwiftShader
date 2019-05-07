@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ead8b743_212e7761",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 884,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-07T01:56:17Z",
+      "side": 1,
+      "message": "Unused variable. Will fix. We should get unused variable errors on Windows, it\u0027s probably the 3rd time this happened to me in the last months.",
+      "range": {
+        "startLine": 884,
+        "startChar": 8,
+        "endLine": 884,
+        "endChar": 14
+      },
+      "revId": "fe5cdc24909b6b3cd3bde152beea4b906c4a31d1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
