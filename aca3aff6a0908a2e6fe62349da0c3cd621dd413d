@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89d16b53_dc41721d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 981,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T18:04:09Z",
+      "side": 1,
+      "message": "Please make this a FIXME\n\nI\u0027m also tracking this separately, but we\u0027ll ship 1.0 with zero FIXMEs. TODOs are items of lower priority with no milestone attached.",
+      "range": {
+        "startLine": 981,
+        "startChar": 5,
+        "endLine": 981,
+        "endChar": 9
+      },
+      "revId": "aca3aff6a0908a2e6fe62349da0c3cd621dd413d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
