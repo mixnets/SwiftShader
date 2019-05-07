@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f63ca84f_895cc4a7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 899,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-05-07T23:37:52Z",
+      "side": 1,
+      "message": "There are possible leakage issues with this. I am considering a refactor where these items, especially the VkDeviceMemory, are PART of a VkImage.",
+      "revId": "db01125e9123c42852634b088af7052ae203a3a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
