@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "411bb4fb_5c9caffc",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-07T18:17:35Z",
+      "side": 1,
+      "message": "Should this imageView use ImageView::SAMPLING in these calls?",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 498,
+        "endChar": 64
+      },
+      "revId": "e72232f2d363a57d6db0076acf670fd2c1d22707",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
