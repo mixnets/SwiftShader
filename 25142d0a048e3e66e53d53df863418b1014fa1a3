@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ec4a60fb_1573df44",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1276,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-07T19:26:48Z",
+      "side": 1,
+      "message": "This is standard LLVM terminology. https://llvm.org/doxygen/classllvm_1_1PointerType.html#ac8b88a0078801203f54bc2e183ec0b30",
+      "parentUuid": "bdb778f9_f6b9eecf",
+      "range": {
+        "startLine": 1276,
+        "startChar": 9,
+        "endLine": 1276,
+        "endChar": 13
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "42fea093_4385ad2f",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-07T17:49:51Z",
       "side": 1,
       "message": "Can we instead bitcast to a large integer?",
+      "range": {
+        "startLine": 1281,
+        "startChar": 8,
+        "endLine": 1281,
+        "endChar": 26
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e9ab4d2_44235db4",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-07T19:26:48Z",
+      "side": 1,
+      "message": "I\u0027d prefer to match a known implementation (Clang) for an initial working version.\nPlus, I\u0027m not sure you can trivially cast from large integer to vector types.\nIf you could make it work, I think you\u0027d end up with exactly the same call due to the unnatural integer size.",
+      "parentUuid": "42fea093_4385ad2f",
       "range": {
         "startLine": 1281,
         "startChar": 8,
