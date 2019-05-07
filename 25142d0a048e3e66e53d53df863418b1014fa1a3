@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bdb778f9_f6b9eecf",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1276,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T17:49:51Z",
+      "side": 1,
+      "message": "This reads like elementType, which is confusing when the type is a vector. \"pointeeType\"?",
+      "range": {
+        "startLine": 1276,
+        "startChar": 9,
+        "endLine": 1276,
+        "endChar": 13
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42fea093_4385ad2f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T17:49:51Z",
+      "side": 1,
+      "message": "Can we instead bitcast to a large integer?",
+      "range": {
+        "startLine": 1281,
+        "startChar": 8,
+        "endLine": 1281,
+        "endChar": 26
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
