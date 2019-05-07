@@ -238,6 +238,11 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 		}
 		break;
 	case VK_IMAGE_VIEW_TYPE_1D:
+		if (coordinateIndex == 1)
+		{
+			return ADDRESSING_WRAP;	// must avoid BORDER mode
+		}
+		break;
 	case VK_IMAGE_VIEW_TYPE_2D:
 	case VK_IMAGE_VIEW_TYPE_3D:
 		break;
