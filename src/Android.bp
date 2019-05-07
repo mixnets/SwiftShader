@@ -657,6 +657,7 @@ cc_defaults {
         "Common/Thread.cpp",
         "Common/Timer.cpp",
         "Common/DebugAndroid.cpp",
+        "Common/GrallocAndroid.cpp",
         "Device/*.cpp",
         "Pipeline/*.cpp",
         "Vulkan/*.cpp",
