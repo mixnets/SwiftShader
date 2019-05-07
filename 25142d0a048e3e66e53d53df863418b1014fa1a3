@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c6dc62c7_6caa1a1d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1276,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T19:44:33Z",
+      "side": 1,
+      "message": "rant: I don\u0027t think Reactor should follow LLVM terminology. Its entire point is to abstract it to something more developer-friendly. Might as well start that within the implementation layer. Anyway, you have a fair point and I don\u0027t feel strongly about this. LGTM",
+      "parentUuid": "ec4a60fb_1573df44",
+      "range": {
+        "startLine": 1276,
+        "startChar": 9,
+        "endLine": 1276,
+        "endChar": 13
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42fea093_4385ad2f",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
@@ -93,6 +117,30 @@
       "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16296b58_76345bbd",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-07T19:44:33Z",
+      "side": 1,
+      "message": "Indeed I currently expect it to end up with the same call, but at least LLVM would have the freedom to implement it differently in the future. Anyway, LGTM for now if this matches what Clang does.",
+      "parentUuid": "7e9ab4d2_44235db4",
+      "range": {
+        "startLine": 1281,
+        "startChar": 8,
+        "endLine": 1281,
+        "endChar": 26
+      },
+      "revId": "25142d0a048e3e66e53d53df863418b1014fa1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
