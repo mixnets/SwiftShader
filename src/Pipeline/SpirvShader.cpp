@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
-
 #include "SamplerCore.hpp"
+
+#include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkBufferView.hpp"
@@ -880,6 +881,11 @@ namespace sw
 			case spv::OpImageWrite:
 			case spv::OpCopyMemory:
 				// Don't need to do anything during analysis pass
+				break;
+
+			case spv::OpControlBarrier:
+			case spv::OpMemoryBarrier:
+				modes.ContainsBarriers = true;
 				break;
 
 			case spv::OpExtension:
@@ -2456,6 +2462,12 @@ namespace sw
 
 		case spv::OpCopyMemory:
 			return EmitCopyMemory(insn, state);
+
+		case spv::OpControlBarrier:
+			return EmitControlBarrier(insn, state);
+
+		case spv::OpMemoryBarrier:
+			return EmitMemoryBarrier(insn, state);
 
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
@@ -4814,6 +4826,11 @@ namespace sw
 		return ptr;
 	}
 
+	void SpirvShader::Yield(YieldResult res) const
+	{
+		rr::Yield(RValue<Int>(int(res)));
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -5375,6 +5392,44 @@ namespace sw
 			if (srcInterleavedByLane) { src = interleaveByLane(src); }
 			SIMD::Store(dst, SIMD::Load<SIMD::Float>(src, state->activeLaneMask()), state->activeLaneMask());
 		});
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto executionScope = GetScope(insn.word(1));
+		auto memoryScope = GetScope(insn.word(2));
+		(void)memoryScope; // TODO
+
+		switch (executionScope)
+		{
+		case spv::ScopeDevice:
+		case spv::ScopeWorkgroup:
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::ControlBarrier);
+			break;
+		default:
+			UNIMPLEMENTED("executionScope: %d", int(executionScope));
+		}
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto memoryScope = GetScope(insn.word(1));
+
+		switch (memoryScope)
+		{
+		case spv::ScopeDevice:
+		case spv::ScopeWorkgroup:
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::MemoryBarrier);
+			break;
+		default:
+			UNIMPLEMENTED("scope: %d", int(memoryScope));
+		}
+
 		return EmitResult::Continue;
 	}
 
