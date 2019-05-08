@@ -319,7 +319,10 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				imageSampler[i].updateSampler(vk::Cast(update->sampler));
 			}
 
-			imageSampler[i].imageView = imageView;
+			imageSampler[i].imageViewId = imageView->id;
+			imageSampler[i].type = imageView->getType();
+			imageSampler[i].swizzle = imageView->getComponentMapping();
+			imageSampler[i].format = imageView->getFormat(ImageView::SAMPLING);
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 			int baseLevel = subresourceRange.baseMipLevel;
