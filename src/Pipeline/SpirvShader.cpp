@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
-
 #include "SamplerCore.hpp"
+
+#include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkBufferView.hpp"
@@ -880,6 +881,10 @@ namespace sw
 			case spv::OpImageWrite:
 			case spv::OpCopyMemory:
 				// Don't need to do anything during analysis pass
+				break;
+
+			case spv::OpControlBarrier:
+				modes.ContainsControlBarriers = true;
 				break;
 
 			case spv::OpExtension:
@@ -2456,6 +2461,9 @@ namespace sw
 
 		case spv::OpCopyMemory:
 			return EmitCopyMemory(insn, state);
+
+		case spv::OpControlBarrier:
+			return EmitControlBarrier(insn, state);
 
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
@@ -4814,6 +4822,11 @@ namespace sw
 		return ptr;
 	}
 
+	void SpirvShader::Yield(YieldResult res) const
+	{
+		rr::Yield(RValue<Int>(int(res)));
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -5375,6 +5388,41 @@ namespace sw
 			if (srcInterleavedByLane) { src = interleaveByLane(src); }
 			SIMD::Store(dst, SIMD::Load<SIMD::Float>(src, state->activeLaneMask()), state->activeLaneMask());
 		});
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto executionScope = GetScope(insn.word(1));
+		auto memoryScope = GetScope(insn.word(2));
+		auto semantics = Object::ID(insn.word(3));
+
+		if (semantics != spv::MemorySemanticsMaskNone)
+		{
+			UNIMPLEMENTED("MemoryBarriers");
+			(void)memoryScope;
+		}
+
+		switch (executionScope)
+		{
+		case spv::ScopeCrossDevice:
+		case spv::ScopeDevice:
+			// Does this even make sense? I see nothing in the spec that forbids
+			// these from being used, however execution spans shader launches.
+			// For now just fallthrough to the workgroup / subgroup barrier.
+		case spv::ScopeWorkgroup:
+		case spv::ScopeSubgroup:
+			Yield(YieldResult::ControlBarrier);
+			break;
+		case spv::ScopeInvocation:
+			break; // Nothing to do.
+		case spv::ScopeQueueFamilyKHR:
+			UNSUPPORTED("ScopeQueueFamilyKHR");
+			break;
+		default:
+			UNREACHABLE("executionScope: %d", int(executionScope));
+		}
+
 		return EmitResult::Continue;
 	}
 

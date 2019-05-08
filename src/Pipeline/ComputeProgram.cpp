@@ -18,6 +18,8 @@
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
+#include <queue>
+
 namespace
 {
 	enum { X, Y, Z };
@@ -233,14 +235,48 @@ namespace sw
 		data.workgroupMemory = workgroupMemory.data();
 
 		// TODO(bclayton): Split work across threads.
+		using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
+		std::queue<Coroutine> coroutines;
+
 		for (uint32_t groupZ = 0; groupZ < groupCountZ; groupZ++)
 		{
 			for (uint32_t groupY = 0; groupY < groupCountY; groupY++)
 			{
 				for (uint32_t groupX = 0; groupX < groupCountX; groupX++)
 				{
-					(*this)(&data, groupX, groupY, groupZ, 0, subgroupsPerWorkgroup);
+					if (shader->getModes().ContainsControlBarriers)
+					{
+						// Make a function call per subgroup so each subgroup
+						// can yield, bringing all subgroups to the barrier
+						// together.
+						// TODO: Determine the granularity of the shader's
+						// barriers. Fine granularity barriers may not need to
+						// split the shaders into separate calls.
+						for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
+						{
+							auto coroutine = (*this)(&data, groupX, groupY, groupZ, subgroupIndex, 1);
+							coroutines.push(std::move(coroutine));
+						}
+					}
+					else
+					{
+						auto coroutine = (*this)(&data, groupX, groupY, groupZ, 0, subgroupsPerWorkgroup);
+						coroutines.push(std::move(coroutine));
+					}
 				}
+			}
+		}
+
+		while (coroutines.size() > 0)
+		{
+			auto coroutine = std::move(coroutines.front());
+			coroutines.pop();
+
+			SpirvShader::YieldResult result;
+			if (coroutine->await(result))
+			{
+				// TODO: Consider result (when the enum is more than 1 entry).
+				coroutines.push(std::move(coroutine));
 			}
 		}
 	}
