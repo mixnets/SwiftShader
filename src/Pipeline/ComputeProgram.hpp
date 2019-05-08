@@ -37,7 +37,7 @@ namespace sw
 	struct Constants;
 
 	// ComputeProgram builds a SPIR-V compute shader.
-	class ComputeProgram : public Coroutine<int(
+	class ComputeProgram : public Coroutine<SpirvShader::YieldResult(
 			void* data,
 			int32_t workgroupX,
 			int32_t workgroupY,
