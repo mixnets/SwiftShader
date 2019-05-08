@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "860dea99_b4398168",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-08T07:25:02Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 13,
+        "startChar": 30,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "16e97d4edc9a622837ff3591fa6d9768d7ddcca4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c1f5790_6181ac5b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-08T07:25:02Z",
+      "side": 1,
+      "message": "single physical device",
+      "range": {
+        "startLine": 559,
+        "startChar": 29,
+        "endLine": 559,
+        "endChar": 71
+      },
+      "revId": "16e97d4edc9a622837ff3591fa6d9768d7ddcca4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
