@@ -188,9 +188,9 @@ const Image* ImageView::getImage(Usage usage) const
 {
 	switch(usage)
 	{
-	case RAW:
+	case Usage::RAW:
 		return image;
-	case SAMPLING:
+	case Usage::SAMPLING:
 		return image->getSampledImage(format);
 	default:
 		UNIMPLEMENTED("usage %d", int(usage));
@@ -200,7 +200,7 @@ const Image* ImageView::getImage(Usage usage) const
 
 Format ImageView::getFormat(Usage usage) const
 {
-	return ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
+	return ((usage == Usage::RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
 }
 
 int ImageView::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
@@ -213,9 +213,9 @@ int ImageView::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, 
 	return getImage(usage)->slicePitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel);
 }
 
-int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage) const
+int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
 {
-	return static_cast<int>(getImage(usage)->getLayerSize(aspect));
+	return static_cast<int>(getImage(usage)->getLayerSize(aspect, subresourceRange.baseMipLevel + mipLevel));
 }
 
 VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const

@@ -29,7 +29,7 @@ namespace sw
 {
 	struct Mipmap
 	{
-		const void *buffer[6];
+		const void *buffer;
 
 		short4 uHalf;
 		short4 vHalf;
