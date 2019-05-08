@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b819e8e_0faddc99",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-08T22:35:08Z",
+      "side": 1,
+      "message": "Unless you want to spend a day debugging like I did, I\u0027d recommend doing this sooner rather than later.",
+      "range": {
+        "startLine": 310,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 34
+      },
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
