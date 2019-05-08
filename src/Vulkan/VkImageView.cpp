@@ -200,9 +200,9 @@ int ImageView::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, 
 	return getImage(usage)->slicePitchBytes(aspect, subresourceRange.baseMipLevel + mipLevel);
 }
 
-int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage) const
+int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
 {
-	return static_cast<int>(getImage(usage)->getLayerSize(aspect));
+	return static_cast<int>(getImage(usage)->getLayerSize(aspect, subresourceRange.baseMipLevel + mipLevel));
 }
 
 VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
@@ -210,7 +210,7 @@ VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 	return image->getMipLevelExtent(subresourceRange.baseMipLevel + mipLevel);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
+void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
 
@@ -218,7 +218,7 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBit
 	{
 		static_cast<VkImageAspectFlags>(aspect),
 		subresourceRange.baseMipLevel + mipLevel,
-		subresourceRange.baseArrayLayer + layer,
+		subresourceRange.baseArrayLayer,
 		subresourceRange.layerCount
 	};
 	return getImage(usage)->getTexelPointer(offset, imageSubresourceLayers);

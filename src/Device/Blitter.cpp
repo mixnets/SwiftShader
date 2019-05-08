@@ -1822,7 +1822,7 @@ namespace sw
 		{
 			image->getTexelPointer({ 0, 0, 0 }, posX),
 			image->rowPitchBytes(aspect, subresourceLayers.mipLevel),
-			static_cast<uint32_t>(image->getLayerSize(aspect)),
+			static_cast<uint32_t>(image->getLayerSize(aspect, 0)),
 			extent.width
 		};
 		cornerUpdateFunction(&data);

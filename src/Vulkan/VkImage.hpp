@@ -68,7 +68,7 @@ public:
 	bool                     isCube() const;
 	bool                     is3DSlice() const;
 	uint8_t*                 end() const;
-	VkDeviceSize             getLayerSize(VkImageAspectFlagBits aspect) const;
+	VkDeviceSize             getLayerSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 
 	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
 	const Image*             getSampledImage() const { return decompressedImage ? decompressedImage : this; }

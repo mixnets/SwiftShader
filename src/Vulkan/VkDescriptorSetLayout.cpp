@@ -334,20 +334,15 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				if(imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE)
 				{
-					for(int face = 0; face < 6; face++)
-					{
-						// Obtain the pointer to the corner of the level including the border, for seamless sampling.
-						// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
-						VkOffset3D offset = {-1, -1, 0};
-
-						// TODO(b/129523279): Implement as 6 consecutive layers instead of separate pointers.
-						mipmap.buffer[face] = imageView->getOffsetPointer(offset, aspect, level, face, ImageView::SAMPLING);
-					}
+					// Obtain the pointer to the corner of the level including the border, for seamless sampling.
+					// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
+					VkOffset3D offset = {-1, -1, 0};
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, ImageView::SAMPLING);
 				}
 				else
 				{
 					VkOffset3D offset = {0, 0, 0};
-					mipmap.buffer[0] = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, ImageView::SAMPLING);
 				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
@@ -460,8 +455,8 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 					unsigned int CStride = sw::align<16>(YStride / 2);
 					unsigned int CSize = CStride * height / 2;
 
-					mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
-					mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
+				//	mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
+				//	mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
 
 					texture->mipmap[1].width[0] = width / 2;
 					texture->mipmap[1].width[1] = width / 2;
@@ -487,11 +482,11 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 		{
 			auto update = reinterpret_cast<VkDescriptorImageInfo const *>(src + entry.offset + entry.stride * i);
 			auto imageView = Cast(update->imageView);
-			descriptor[i].ptr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
+			descriptor[i].ptr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = imageView->getSubresourceRange().layerCount > 1
-											? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT)
+											? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0)
 											: imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			descriptor[i].sizeInBytes = imageView->getImageSizeInBytes();
