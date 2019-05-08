@@ -156,17 +156,18 @@ namespace sw
 
 	void ComputeProgram::emit()
 	{
+		Int workgroupX = Arg<1>();
+		Int workgroupY = Arg<2>();
+		Int workgroupZ = Arg<3>();
+		Pointer<Byte> workgroupMemory = Arg<4>();
+		Int firstSubgroup = Arg<5>();
+		Int subgroupCount = Arg<6>();
+
 		routine.descriptorSets = data + OFFSET(Data, descriptorSets);
 		routine.descriptorDynamicOffsets = data + OFFSET(Data, descriptorDynamicOffsets);
 		routine.pushConstants = data + OFFSET(Data, pushConstants);
 		routine.constants = *Pointer<Pointer<Byte>>(data + OFFSET(Data, constants));
-		routine.workgroupMemory = *Pointer<Pointer<Byte>>(data + OFFSET(Data, workgroupMemory));
-
-		Int workgroupX = Arg<1>();
-		Int workgroupY = Arg<2>();
-		Int workgroupZ = Arg<3>();
-		Int firstSubgroup = Arg<4>();
-		Int subgroupCount = Arg<5>();
+		routine.workgroupMemory = workgroupMemory;
 
 		Int invocationsPerWorkgroup = *Pointer<Int>(data + OFFSET(Data, invocationsPerWorkgroup));
 
@@ -211,11 +212,6 @@ namespace sw
 		auto invocationsPerWorkgroup = modes.WorkgroupSizeX * modes.WorkgroupSizeY * modes.WorkgroupSizeZ;
 		auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
-		// We're sharing a buffer here across all workgroups.
-		// We can only do this because we know workgroups are executed
-		// serially.
-		std::vector<uint8_t> workgroupMemory(shader->workgroupMemory.size());
-
 		Data data;
 		data.descriptorSets = descriptorSets;
 		data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -232,7 +228,10 @@ namespace sw
 		data.subgroupsPerWorkgroup = subgroupsPerWorkgroup;
 		data.pushConstants = pushConstants;
 		data.constants = &sw::constants;
-		data.workgroupMemory = workgroupMemory.data();
+
+		auto totalGroupCount = groupCountX * groupCountY * groupCountZ;
+		std::vector<uint8_t> workgroupMemoryBuffer(shader->workgroupMemory.size() * totalGroupCount);
+		auto workgroupMemory = workgroupMemoryBuffer.data();
 
 		// TODO(bclayton): Split work across threads.
 		using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
@@ -251,15 +250,16 @@ namespace sw
 						// together.
 						for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
 						{
-							auto coroutine = (*this)(&data, groupX, groupY, groupZ, subgroupIndex, 1);
+							auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory, subgroupIndex, 1);
 							coroutines.push(std::move(coroutine));
 						}
 					}
 					else
 					{
-						auto coroutine = (*this)(&data, groupX, groupY, groupZ, 0, subgroupsPerWorkgroup);
+						auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory, 0, subgroupsPerWorkgroup);
 						coroutines.push(std::move(coroutine));
 					}
+					workgroupMemory += shader->workgroupMemory.size();
 				}
 			}
 		}
