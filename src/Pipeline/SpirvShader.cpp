@@ -880,6 +880,7 @@ namespace sw
 			case spv::OpAtomicStore:
 			case spv::OpImageWrite:
 			case spv::OpCopyMemory:
+			case spv::OpMemoryBarrier:
 				// Don't need to do anything during analysis pass
 				break;
 
@@ -2464,6 +2465,9 @@ namespace sw
 
 		case spv::OpControlBarrier:
 			return EmitControlBarrier(insn, state);
+
+		case spv::OpMemoryBarrier:
+			return EmitMemoryBarrier(insn, state);
 
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
@@ -5393,15 +5397,12 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitState *state) const
 	{
-		auto executionScope = GetScope(insn.word(1));
-		auto memoryScope = GetScope(insn.word(2));
-		auto semantics = Object::ID(insn.word(3));
+		auto executionScope = spv::Scope(GetConstScalarInt(insn.word(1)));
+		auto semantics = spv::MemorySemanticsMask(GetConstScalarInt(insn.word(3)));
 
-		if (semantics != spv::MemorySemanticsMaskNone)
-		{
-			UNIMPLEMENTED("MemoryBarriers");
-			(void)memoryScope;
-		}
+		// TODO: We probably want to consider the memory scope here. For now,
+		// just always emit the full fence.
+		Fence(semantics);
 
 		switch (executionScope)
 		{
@@ -5426,11 +5427,51 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
+	{
+		auto semantics = spv::MemorySemanticsMask(GetConstScalarInt(insn.word(2)));
+		// TODO: We probably want to consider the memory scope here. For now,
+		// just always emit the full fence.
+		Fence(semantics);
+		return EmitResult::Continue;
+	}
+
+	void SpirvShader::Fence(spv::MemorySemanticsMask semantics) const
+	{
+		auto control = static_cast<uint32_t>(semantics) & static_cast<uint32_t>(
+			spv::MemorySemanticsAcquireMask |
+			spv::MemorySemanticsReleaseMask |
+			spv::MemorySemanticsAcquireReleaseMask |
+			spv::MemorySemanticsSequentiallyConsistentMask
+		);
+		switch (control)
+		{
+			case spv::MemorySemanticsMaskNone:
+				return; //no-op
+			case spv::MemorySemanticsAcquireMask:
+				rr::Fence(std::memory_order_acquire);
+				break;
+			case spv::MemorySemanticsReleaseMask:
+				rr::Fence(std::memory_order_release);
+				break;
+			case spv::MemorySemanticsAcquireReleaseMask:
+				rr::Fence(std::memory_order_acq_rel);
+				break;
+			case spv::MemorySemanticsSequentiallyConsistentMask:
+				rr::Fence(std::memory_order_seq_cst);
+				break;
+			default:
+				// it is invalid for more than one of these four bits to be set:
+				// Acquire, Release, AcquireRelease, or SequentiallyConsistent.
+				UNREACHABLE("control: %d", int(control));
+		}
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
 	{
 		auto &type = getType(Type::ID(insn.word(1)));
 		Object::ID resultId = insn.word(2);
-		auto scope = GetScope(insn.word(3));
+		auto scope = spv::Scope(GetConstScalarInt(insn.word(3)));
 		ASSERT_MSG(scope == spv::ScopeSubgroup, "Scope for Non Uniform Group Operations must be Subgroup for Vulkan 1.1");
 
 		auto &dst = state->routine->createIntermediate(resultId, type.sizeInComponents);
@@ -5455,12 +5496,12 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
-	spv::Scope SpirvShader::GetScope(Object::ID id) const
+	uint32_t SpirvShader::GetConstScalarInt(Object::ID id) const
 	{
 		auto &scopeObj = getObject(id);
 		ASSERT(scopeObj.kind == Object::Kind::Constant);
 		ASSERT(getType(scopeObj.type).sizeInComponents == 1);
-		return spv::Scope(scopeObj.constantValue[0]);
+		return scopeObj.constantValue[0];
 	}
 
 	void SpirvShader::emitEpilog(SpirvRoutine *routine) const
