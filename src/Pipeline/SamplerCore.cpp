@@ -69,7 +69,7 @@ namespace sw
 		Float4 wwww = w;
 		Float4 qqqq = q;
 
-		Int face[4];
+		Int4 face;
 		Float lod;
 		Float anisotropy;
 		Float4 uDelta;
@@ -78,7 +78,7 @@ namespace sw
 
 		if(state.textureType == TEXTURE_CUBE)
 		{
-			cubeFace(face, uuuu, vvvv, u, v, w, M);
+			face = cubeFace(uuuu, vvvv, u, v, w, M);
 		}
 
 		if(function == Implicit || function == Bias || function == Grad)
@@ -330,7 +330,7 @@ namespace sw
 		return uvw;
 	}
 
-	Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
+	Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, SamplerFunction function)
 	{
 		Vector4s c = sampleAniso(texture, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
 
@@ -375,7 +375,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		Vector4s c;
 
@@ -435,7 +435,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureType != TEXTURE_3D)
 		{
@@ -447,7 +447,7 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		Vector4s c;
 
@@ -650,7 +650,7 @@ namespace sw
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
-		Int face[4];
+		Int4 face;
 
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
@@ -767,7 +767,7 @@ namespace sw
 		return c_;
 	}
 
-	Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
+	Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, SamplerFunction function)
 	{
 		Vector4f c = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
 
@@ -791,7 +791,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		Vector4f c;
 
@@ -849,7 +849,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureType != TEXTURE_3D)
 		{
@@ -861,7 +861,7 @@ namespace sw
 		}
 	}
 
-	Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
 	{
 		Vector4f c;
 
@@ -938,7 +938,7 @@ namespace sw
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
-		Int face[4];
+		Int4 face;
 
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
@@ -1154,7 +1154,7 @@ namespace sw
 		lod = log2sqrt(lod);   // log2(sqrt(lod))
 	}
 
-	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
+	Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
 	{
 		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
 		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
@@ -1184,13 +1184,15 @@ namespace sw
 		Int4 n = ((xn & xMajor) | (yn & yMajor) | (zn & zMajor)) & Int4(0x80000000);
 		Int negative = SignMask(n);
 
-		face[0] = *Pointer<Int>(constants + OFFSET(Constants,transposeBit0) + negative * 4);
-		face[0] |= *Pointer<Int>(constants + OFFSET(Constants,transposeBit1) + yAxis * 4);
-		face[0] |= *Pointer<Int>(constants + OFFSET(Constants,transposeBit2) + zAxis * 4);
-		face[1] = (face[0] >> 4)  & 0x7;
-		face[2] = (face[0] >> 8)  & 0x7;
-		face[3] = (face[0] >> 12) & 0x7;
-		face[0] &= 0x7;
+		Int faces = *Pointer<Int>(constants + OFFSET(Constants,transposeBit0) + negative * 4);
+		faces |= *Pointer<Int>(constants + OFFSET(Constants,transposeBit1) + yAxis * 4);
+		faces |= *Pointer<Int>(constants + OFFSET(Constants,transposeBit2) + zAxis * 4);
+
+		Int4 face;
+		face.x = faces & 0x7;
+		face.y = (faces >> 4)  & 0x7;
+		face.z = (faces >> 8)  & 0x7;
+		face.w = (faces >> 12) & 0x7;
 
 		M = Max(Max(absX, absY), absZ);
 
@@ -1203,6 +1205,8 @@ namespace sw
 		M = reciprocal(M) * Float4(0.5f);
 		U = U * M + Float4(0.5f);
 		V = V * M + Float4(0.5f);
+
+		return face;
 	}
 
 	Short4 SamplerCore::applyOffset(Short4 &uvw, Float4 &offset, const Int4 &whd, AddressingMode mode)
@@ -1926,7 +1930,7 @@ namespace sw
 		return out;
 	}
 
-	void SamplerCore::selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD)
+	void SamplerCore::selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int4 face, bool secondLOD)
 	{
 		if(state.mipmapFilter == MIPMAP_NONE)
 		{
@@ -1949,22 +1953,28 @@ namespace sw
 			mipmap = texture + OFFSET(Texture,mipmap) + ilod * sizeof(Mipmap) + secondLOD * sizeof(Mipmap);
 		}
 
+		Pointer<Byte> buffer0 = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
+
 		if(state.textureType != TEXTURE_CUBE)
 		{
-			buffer[0] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[0]));
+			buffer[0] = buffer0;
 
 			if(hasYuvFormat())
 			{
-				buffer[1] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[1]));
-				buffer[2] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[2]));
+				UNIMPLEMENTED();
+			//	buffer[1] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[1]));
+			//	buffer[2] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[2]));
 			}
 		}
 		else
 		{
-			for(int i = 0; i < 4; i++)
-			{
-				buffer[i] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer) + face[i] * sizeof(void*));
-			}
+			Int4 faceLayer = face * *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP));
+
+			// TODO: Vectorize
+			buffer[0] = buffer0 + faceLayer.x;
+			buffer[1] = buffer0 + faceLayer.y;
+			buffer[2] = buffer0 + faceLayer.z;
+			buffer[3] = buffer0 + faceLayer.w;
 		}
 	}
 
