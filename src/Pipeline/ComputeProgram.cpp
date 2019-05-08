@@ -244,7 +244,7 @@ namespace sw
 			{
 				for (uint32_t groupX = 0; groupX < groupCountX; groupX++)
 				{
-					if (shader->getModes().ContainsBarriers)
+					if (shader->getModes().ContainsControlBarriers)
 					{
 						// Make a function call per subgroup so each subgroup
 						// can yield, bringing all subgroups to the barrier
@@ -272,9 +272,10 @@ namespace sw
 			auto coroutine = std::move(coroutines.front());
 			coroutines.pop();
 
-			SpirvShader::YieldResult result = SpirvShader::YieldResult::Complete;
+			SpirvShader::YieldResult result;
 			if (coroutine->await(result))
 			{
+				// TODO: Consider result (when the enum is more than 1 entry).
 				coroutines.push(std::move(coroutine));
 			}
 		}

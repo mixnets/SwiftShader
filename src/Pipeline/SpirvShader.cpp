@@ -884,8 +884,7 @@ namespace sw
 				break;
 
 			case spv::OpControlBarrier:
-			case spv::OpMemoryBarrier:
-				modes.ContainsBarriers = true;
+				modes.ContainsControlBarriers = true;
 				break;
 
 			case spv::OpExtension:
@@ -2465,9 +2464,6 @@ namespace sw
 
 		case spv::OpControlBarrier:
 			return EmitControlBarrier(insn, state);
-
-		case spv::OpMemoryBarrier:
-			return EmitMemoryBarrier(insn, state);
 
 		case spv::OpGroupNonUniformElect:
 			return EmitGroupNonUniform(insn, state);
@@ -5399,35 +5395,32 @@ namespace sw
 	{
 		auto executionScope = GetScope(insn.word(1));
 		auto memoryScope = GetScope(insn.word(2));
-		(void)memoryScope; // TODO
+		auto semantics = Object::ID(insn.word(3));
+
+		if (semantics != spv::MemorySemanticsMaskNone)
+		{
+			UNIMPLEMENTED("MemoryBarriers");
+			(void)memoryScope;
+		}
 
 		switch (executionScope)
 		{
+		case spv::ScopeCrossDevice:
 		case spv::ScopeDevice:
+			// Does this even make sense? I see nothing in the spec that forbids
+			// these from being used, however execution spans shader launches.
+			// For now just fallthrough to the workgroup / subgroup barrier.
 		case spv::ScopeWorkgroup:
 		case spv::ScopeSubgroup:
 			Yield(YieldResult::ControlBarrier);
 			break;
-		default:
-			UNIMPLEMENTED("executionScope: %d", int(executionScope));
-		}
-
-		return EmitResult::Continue;
-	}
-
-	SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitState *state) const
-	{
-		auto memoryScope = GetScope(insn.word(1));
-
-		switch (memoryScope)
-		{
-		case spv::ScopeDevice:
-		case spv::ScopeWorkgroup:
-		case spv::ScopeSubgroup:
-			Yield(YieldResult::MemoryBarrier);
+		case spv::ScopeInvocation:
+			break; // Nothing to do.
+		case spv::ScopeQueueFamilyKHR:
+			UNSUPPORTED("ScopeQueueFamilyKHR");
 			break;
 		default:
-			UNIMPLEMENTED("scope: %d", int(memoryScope));
+			UNREACHABLE("executionScope: %d", int(executionScope));
 		}
 
 		return EmitResult::Continue;
