@@ -289,11 +289,6 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 
 	Format copyFormat = getFormat(aspect);
 
-	if (copyFormat.hasQuadLayout())
-	{
-		UNIMPLEMENTED("Quad layout copies");
-	}
-
 	VkExtent3D mipLevelExtent = getMipLevelExtent(region.imageSubresource.mipLevel);
 	VkExtent3D imageExtent = imageExtentInBlocks(region.imageExtent, aspect);
 	VkExtent2D bufferExtent = bufferExtentInBlocks({ imageExtent.width, imageExtent.height }, region);
@@ -320,6 +315,22 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 	uint8_t* imageMemory = static_cast<uint8_t*>(getTexelPointer(region.imageOffset, region.imageSubresource));
 	uint8_t* srcMemory = bufferIsSource ? bufferMemory : imageMemory;
 	uint8_t* dstMemory = bufferIsSource ? imageMemory : bufferMemory;
+
+	if (copyFormat.hasQuadLayout())
+	{
+		if (bufferIsSource)
+		{
+			return device->getBlitter()->blitFromBuffer(this, region.imageSubresource, region.imageOffset,
+														region.imageExtent, bufferMemory, bufferRowPitchBytes,
+														bufferSlicePitchBytes);
+		}
+		else
+		{
+			return device->getBlitter()->blitToBuffer(this, region.imageSubresource, region.imageOffset,
+													  region.imageExtent, bufferMemory, bufferRowPitchBytes,
+													  bufferSlicePitchBytes);
+		}
+	}
 
 	VkDeviceSize copySize = 0;
 	VkDeviceSize bufferLayerSize = 0;
