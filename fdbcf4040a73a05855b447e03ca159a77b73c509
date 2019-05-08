@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f86d5973_7a688386",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-08T19:22:30Z",
+      "side": 1,
+      "message": "I think you\u0027re going to have trouble here -- minmax for totalGroupCount is 2^48.\n\nInstead allocate for some sensible max *inflight* workgroups. I don\u0027t see much value in that being \u003e\u003e\u003d 2 or so.",
+      "revId": "fdbcf4040a73a05855b447e03ca159a77b73c509",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
