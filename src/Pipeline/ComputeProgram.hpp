@@ -42,6 +42,7 @@ namespace sw
 			int32_t workgroupX,
 			int32_t workgroupY,
 			int32_t workgroupZ,
+			void*   workgroupMemory,
 			int32_t firstSubgroup,
 			int32_t subgroupCount)>
 	{
@@ -80,7 +81,6 @@ namespace sw
 			uint32_t invocationsPerWorkgroup; // Total number of invocations per workgroup.
 			PushConstantStorage pushConstants;
 			const Constants *constants;
-			uint8_t* workgroupMemory;
 		};
 
 		SpirvRoutine routine;
