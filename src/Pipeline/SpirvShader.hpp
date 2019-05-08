@@ -547,7 +547,7 @@ namespace sw
 			bool DepthLess : 1;
 			bool DepthUnchanged : 1;
 			bool ContainsKill : 1;
-			bool ContainsBarriers : 1;
+			bool ContainsControlBarriers : 1;
 			bool NeedsCentroid : 1;
 
 			// Compute workgroup dimensions
@@ -939,12 +939,12 @@ namespace sw
 		EmitResult EmitSampledImageCombineOrSplit(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitCopyMemory(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitControlBarrier(InsnIterator insn, EmitState *state) const;
-		EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 
 		SIMD::Pointer GetTexelAddress(SpirvRoutine const * routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId) const;
 		spv::Scope GetScope(Object::ID id) const;
 
+		// Helper for calling rr::Yield with res cast to an rr::Int.
 		void Yield(YieldResult res) const;
 
 		// OpcodeName() returns the name of the opcode op.
