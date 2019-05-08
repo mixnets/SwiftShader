@@ -29,7 +29,7 @@ namespace sw
 {
 	struct Mipmap
 	{
-		const void *buffer[6];
+		const void *buffer;
 
 		float4 fWidth;
 		float4 fHeight;

@@ -324,7 +324,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			imageSampler[i].type = imageView->getType();
 			imageSampler[i].swizzle = imageView->getComponentMapping();
-			imageSampler[i].format = imageView->getFormat(ImageView::SAMPLING);
+			imageSampler[i].format = imageView->getFormat(ImageView::Usage::SAMPLING);
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 			int baseLevel = subresourceRange.baseMipLevel;
@@ -339,31 +339,26 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				if(imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE)
 				{
-					for(int face = 0; face < 6; face++)
-					{
-						// Obtain the pointer to the corner of the level including the border, for seamless sampling.
-						// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
-						VkOffset3D offset = {-1, -1, 0};
-
-						// TODO(b/129523279): Implement as 6 consecutive layers instead of separate pointers.
-						mipmap.buffer[face] = imageView->getOffsetPointer(offset, aspect, level, face, ImageView::SAMPLING);
-					}
+					// Obtain the pointer to the corner of the level including the border, for seamless sampling.
+					// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
+					VkOffset3D offset = {-1, -1, 0};
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::Usage::SAMPLING);
 				}
 				else
 				{
 					VkOffset3D offset = {0, 0, 0};
-					mipmap.buffer[0] = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
+					mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::Usage::SAMPLING);
 				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
-				Format format = imageView->getFormat(ImageView::SAMPLING);
+				Format format = imageView->getFormat(ImageView::Usage::SAMPLING);
 				int layers = imageView->getSubresourceRange().layerCount;
 				// TODO(b/129523279): Untangle depth vs layers throughout the sampler
 				int width = extent.width;
 				int height = extent.height;
 				int depth = layers > 1 ? layers : extent.depth;
-				int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / format.bytes();
-				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / format.bytes();
+				int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::Usage::SAMPLING) / format.bytes();
+				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, level, ImageView::Usage::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::Usage::SAMPLING)) / format.bytes();
 
 				if(mipmapLevel == 0)
 				{
@@ -465,8 +460,8 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 					unsigned int CStride = sw::align<16>(YStride / 2);
 					unsigned int CSize = CStride * height / 2;
 
-					mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
-					mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
+				//	mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
+				//	mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
 
 					texture->mipmap[1].width[0] = width / 2;
 					texture->mipmap[1].width[1] = width / 2;
@@ -496,7 +491,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].samplePitchBytes = imageView->getSubresourceRange().layerCount > 1
-											 ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT)
+											 ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0)
 											 : imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = descriptor[i].samplePitchBytes * imageView->getSampleCount();
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
@@ -507,7 +502,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				descriptor[i].stencilPtr = imageView->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0);
 				descriptor[i].stencilRowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 				descriptor[i].stencilSamplePitchBytes = imageView->getSubresourceRange().layerCount > 1
-												 ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT)
+												 ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT ,0)
 												 : imageView->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 				descriptor[i].stencilSlicePitchBytes = descriptor[i].stencilSamplePitchBytes * imageView->getSampleCount();
 			}

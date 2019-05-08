@@ -138,7 +138,7 @@ void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubre
 	pLayout->size = getMultiSampledLevelSize(aspect, pSubresource->mipLevel);
 	pLayout->rowPitch = rowPitchBytes(aspect, pSubresource->mipLevel);
 	pLayout->depthPitch = slicePitchBytes(aspect, pSubresource->mipLevel);
-	pLayout->arrayPitch = getLayerSize(aspect);
+	pLayout->arrayPitch = getLayerSize(aspect, pSubresource->mipLevel);
 }
 
 void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
@@ -361,7 +361,7 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 		bufferLayerSize = copySize * imageExtent.depth * imageExtent.height;
 	}
 
-	VkDeviceSize imageLayerSize = getLayerSize(aspect);
+	VkDeviceSize imageLayerSize = getLayerSize(aspect, 0);
 	VkDeviceSize srcLayerSize = bufferIsSource ? bufferLayerSize : imageLayerSize;
 	VkDeviceSize dstLayerSize = bufferIsSource ? imageLayerSize : bufferLayerSize;
 
@@ -683,10 +683,10 @@ VkDeviceSize Image::getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLev
 		return slicePitchBytes(aspect, mipLevel);
 	}
 
-	return getLayerSize(aspect);
+	return getLayerSize(aspect, 0);
 }
 
-VkDeviceSize Image::getLayerSize(VkImageAspectFlagBits aspect) const
+VkDeviceSize Image::getLayerSize(VkImageAspectFlagBits aspect, uint32_t level) const
 {
 	VkDeviceSize layerSize = 0;
 
@@ -703,9 +703,9 @@ VkDeviceSize Image::getStorageSize(VkImageAspectFlags aspectMask) const
 	if (aspectMask == (VK_IMAGE_ASPECT_DEPTH_BIT|VK_IMAGE_ASPECT_STENCIL_BIT))
 	{
 		ASSERT(!format.isCompressed());
-		return arrayLayers * (getLayerSize(VK_IMAGE_ASPECT_DEPTH_BIT) + getLayerSize(VK_IMAGE_ASPECT_STENCIL_BIT));
+		return arrayLayers * (getLayerSize(VK_IMAGE_ASPECT_DEPTH_BIT, 0) + getLayerSize(VK_IMAGE_ASPECT_STENCIL_BIT, 0));
 	}
-	return arrayLayers * getLayerSize(static_cast<VkImageAspectFlagBits>(aspectMask));
+	return arrayLayers * getLayerSize(static_cast<VkImageAspectFlagBits>(aspectMask), 0);
 }
 
 void Image::blit(VkImage dstImage, const VkImageBlit& region, VkFilter filter)
