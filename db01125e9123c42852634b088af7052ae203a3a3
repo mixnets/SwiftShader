@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a66fef2_912872c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-08T20:03:51Z",
+      "side": 1,
+      "message": "This doesn\u0027t implement rendering a triangle. It implements VK_ANDROID_native_buffer ?",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 38
+      },
+      "revId": "db01125e9123c42852634b088af7052ae203a3a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78e4f726_1a3f91d7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-08T20:03:51Z",
+      "side": 1,
+      "message": "Common/ is from the OpenGL code stack. The Vulkan equivalent is System/",
+      "range": {
+        "startLine": 51,
+        "startChar": 10,
+        "endLine": 51,
+        "endChar": 16
+      },
+      "revId": "db01125e9123c42852634b088af7052ae203a3a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f63ca84f_895cc4a7",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
