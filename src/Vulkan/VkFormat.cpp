@@ -2037,6 +2037,7 @@ bool Format::hasYuvFormat() const
 	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 	case VK_FORMAT_D32_SFLOAT:
 	case VK_FORMAT_D16_UNORM:
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 		return false;
 	default:
