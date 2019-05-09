@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "963a7f02_46c0f598",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-09T21:55:44Z",
+      "side": 1,
+      "message": "unused",
+      "range": {
+        "startLine": 458,
+        "startChar": 0,
+        "endLine": 461,
+        "endChar": 47
+      },
+      "revId": "0e221c6ffe3bde7e8915dea4412443717fb47498",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
