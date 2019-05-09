@@ -67,7 +67,7 @@ private:
 
 static inline QueryPool* Cast(VkQueryPool object)
 {
-	return reinterpret_cast<QueryPool*>(object);
+	return reinterpret_cast<QueryPool*>(object.GetHandle());
 }
 
 } // namespace vk

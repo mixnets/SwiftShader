@@ -34,29 +34,30 @@ namespace vk
 		VkResult reset();
 
 	private:
+		using HandleType = VkDescriptorSet::HandleType;
 		VkResult allocateSets(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets);
-		VkDescriptorSet findAvailableMemory(size_t size);
+		HandleType findAvailableMemory(size_t size);
 		void freeSet(const VkDescriptorSet descriptorSet);
 		size_t computeTotalFreeSize() const;
 
 		struct Node
 		{
 			Node(VkDescriptorSet set, size_t size) : set(set), size(size) {}
-			bool operator<(const Node& node) const { return this->set < node.set; }
-			bool operator==(VkDescriptorSet set) const { return this->set == set; }
+			bool operator<(const Node& node) const { return this->set.GetHandle() < node.set.GetHandle(); }
+			bool operator==(VkDescriptorSet set) const { return this->set.GetHandle() == set.GetHandle(); }
 
 			VkDescriptorSet set;
 			size_t size;
 		};
 		std::set<Node> nodes;
 
-		VkDescriptorSet pool = nullptr;
+		HandleType pool = nullptr;
 		size_t poolSize = 0;
 	};
 
 	static inline DescriptorPool* Cast(VkDescriptorPool object)
 	{
-		return reinterpret_cast<DescriptorPool*>(object);
+		return reinterpret_cast<DescriptorPool*>(object.GetHandle());
 	}
 
 } // namespace vk

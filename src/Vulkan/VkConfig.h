@@ -17,7 +17,7 @@
 
 #include "Version.h"
 
-#include <vulkan/vulkan_core.h>
+#include <dawn/src/common/vulkan_platform.h>
 
 namespace vk
 {

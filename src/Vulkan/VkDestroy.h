@@ -57,6 +57,20 @@ inline void destroy(VkT vkObject, const VkAllocationCallbacks* pAllocator)
 		// object may not point to the same pointer as vkObject, for dispatchable objects,
 		// for example, so make sure to deallocate based on the vkObject pointer, which
 		// should always point to the beginning of the allocated memory
+		vk::deallocate(reinterpret_cast<void*>(reinterpret_cast<ptrdiff_t>(vkObject.GetHandle())), pAllocator);
+	}
+}
+
+template<typename VkT>
+inline void destroyDispatchable(VkT vkObject, const VkAllocationCallbacks* pAllocator)
+{
+	auto object = Cast(vkObject);
+	if(object)
+	{
+		object->destroy(pAllocator);
+		// object may not point to the same pointer as vkObject, for dispatchable objects,
+		// for example, so make sure to deallocate based on the vkObject pointer, which
+		// should always point to the beginning of the allocated memory
 		vk::deallocate(vkObject, pAllocator);
 	}
 }

@@ -29,7 +29,7 @@ Instance::Instance(const CreateInfo* pCreateInfo, void* mem)
 
 void Instance::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	vk::destroy(physicalDevice, pAllocator);
+	vk::destroyDispatchable(physicalDevice, pAllocator);
 }
 
 uint32_t Instance::getPhysicalDeviceCount() const

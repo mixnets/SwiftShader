@@ -37,7 +37,7 @@ public:
 
 	operator VkPipeline()
 	{
-		return reinterpret_cast<VkPipeline>(this);
+		return VkPipeline::CreateFromHandle(reinterpret_cast<typename VkPipeline::HandleType>(this));
 	}
 
 	void destroy(const VkAllocationCallbacks* pAllocator)
@@ -122,7 +122,7 @@ protected:
 
 static inline Pipeline* Cast(VkPipeline object)
 {
-	return reinterpret_cast<Pipeline*>(object);
+	return reinterpret_cast<Pipeline*>(object.GetHandle());
 }
 
 } // namespace vk

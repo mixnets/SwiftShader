@@ -20,7 +20,7 @@
 #include "VkMemory.h"
 
 #include <new>
-#include <vulkan/vulkan_core.h>
+#include <dawn/src/common/vulkan_platform.h>
 #include <vulkan/vk_icd.h>
 
 namespace vk
@@ -97,7 +97,7 @@ class Object : public ObjectBase<T, VkT>
 public:
 	operator VkT()
 	{
-		return reinterpret_cast<VkT>(this);
+		return VkT::CreateFromHandle(reinterpret_cast<typename VkT::HandleType>(this));
 	}
 };
 

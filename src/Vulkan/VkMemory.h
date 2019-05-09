@@ -15,7 +15,7 @@
 #ifndef VK_MEMORY_HPP_
 #define VK_MEMORY_HPP_
 
-#include <vulkan/vulkan_core.h>
+#include <dawn/src/common/vulkan_platform.h>
 
 namespace vk
 {

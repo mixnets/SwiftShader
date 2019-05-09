@@ -1569,6 +1569,7 @@ file(GLOB_RECURSE VULKAN_LIST
     ${SOURCE_DIR}/WSI/VkSwapchainKHR.cpp
     ${SOURCE_DIR}/WSI/VkSwapchainKHR.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
+	${CMAKE_CURRENT_SOURCE_DIR}/include/dawn/src/common/*.h}
 )
 
 ###########################################################

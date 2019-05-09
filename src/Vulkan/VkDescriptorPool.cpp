@@ -24,7 +24,7 @@ namespace vk
 {
 
 DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo* pCreateInfo, void* mem) :
-	pool(reinterpret_cast<VkDescriptorSet>(mem)),
+	pool(reinterpret_cast<HandleType>(mem)),
 	poolSize(ComputeRequiredAllocationSize(pCreateInfo))
 {
 }
@@ -68,7 +68,7 @@ VkResult DescriptorPool::allocateSets(uint32_t descriptorSetCount, const VkDescr
 	return result;
 }
 
-VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
+DescriptorPool::HandleType DescriptorPool::findAvailableMemory(size_t size)
 {
 	if(nodes.empty())
 	{
@@ -77,17 +77,17 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 
 	// First, look for space at the end of the pool
 	const auto itLast = nodes.rbegin();
-	ptrdiff_t itemStart = reinterpret_cast<char*>(itLast->set) - reinterpret_cast<char*>(pool);
+	ptrdiff_t itemStart = reinterpret_cast<char*>(itLast->set.GetHandle()) - reinterpret_cast<char*>(pool);
 	ptrdiff_t nextItemStart = itemStart + itLast->size;
 	size_t freeSpace = poolSize - nextItemStart;
 	if(freeSpace >= size)
 	{
-		return reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(pool) + nextItemStart);
+		return reinterpret_cast<HandleType>(reinterpret_cast<char*>(pool) + nextItemStart);
 	}
 
 	// Second, look for space at the beginning of the pool
 	const auto itBegin = nodes.end();
-	freeSpace = reinterpret_cast<char*>(itBegin->set) - reinterpret_cast<char*>(pool);
+	freeSpace = reinterpret_cast<char*>(itBegin->set.GetHandle()) - reinterpret_cast<char*>(pool);
 	if(freeSpace >= size)
 	{
 		return pool;
@@ -99,8 +99,8 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 	++nextIt;
 	for(auto it = itBegin; nextIt != itEnd; ++it, ++nextIt)
 	{
-		VkDescriptorSet freeSpaceStart = reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(it->set) + it->size);
-		freeSpace = reinterpret_cast<char*>(nextIt->set) - reinterpret_cast<char*>(freeSpaceStart);
+		HandleType freeSpaceStart = reinterpret_cast<HandleType>(reinterpret_cast<char*>(it->set.GetHandle()) + it->size);
+		freeSpace = reinterpret_cast<char*>(nextIt->set.GetHandle()) - reinterpret_cast<char*>(freeSpaceStart);
 		if(freeSpace >= size)
 		{
 			return freeSpaceStart;
@@ -125,14 +125,14 @@ VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescr
 
 	// Attempt to allocate single chunk of memory
 	{
-		VkDescriptorSet memory = findAvailableMemory(totalSize);
+		HandleType memory = findAvailableMemory(totalSize);
 		if(memory != VK_NULL_HANDLE)
 		{
 			for(uint32_t i = 0; i < numAllocs; i++)
 			{
-				pDescriptorSets[i] = memory;
+				pDescriptorSets[i] = VkDescriptorSet::CreateFromHandle(memory);
 				nodes.insert(Node(pDescriptorSets[i], sizes[i]));
-				memory = reinterpret_cast<VkDescriptorSet>(reinterpret_cast<char*>(memory) + sizes[i]);
+				memory = reinterpret_cast<HandleType>(reinterpret_cast<char*>(memory) + sizes[i]);
 			}
 
 			return VK_SUCCESS;
@@ -142,7 +142,7 @@ VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescr
 	// Atttempt to allocate each descriptor set separately
 	for(uint32_t i = 0; i < numAllocs; i++)
 	{
-		pDescriptorSets[i] = findAvailableMemory(sizes[i]);
+		pDescriptorSets[i] = VkDescriptorSet::CreateFromHandle(findAvailableMemory(sizes[i]));
 		if(pDescriptorSets[i] == VK_NULL_HANDLE)
 		{
 			// vkAllocateDescriptorSets can be used to create multiple descriptor sets. If the
@@ -193,11 +193,11 @@ size_t DescriptorPool::computeTotalFreeSize() const
 
 	// Compute space at the end of the pool
 	const auto itLast = nodes.rbegin();
-	totalFreeSize += poolSize - ((reinterpret_cast<char*>(itLast->set) - reinterpret_cast<char*>(pool)) + itLast->size);
+	totalFreeSize += poolSize - ((reinterpret_cast<char*>(itLast->set.GetHandle()) - reinterpret_cast<char*>(pool)) + itLast->size);
 
 	// Compute space at the beginning of the pool
 	const auto itBegin = nodes.end();
-	totalFreeSize += reinterpret_cast<char*>(itBegin->set) - reinterpret_cast<char*>(pool);
+	totalFreeSize += reinterpret_cast<char*>(itBegin->set.GetHandle()) - reinterpret_cast<char*>(pool);
 
 	// Finally, look between existing pool items
 	const auto itEnd = nodes.end();
@@ -205,7 +205,7 @@ size_t DescriptorPool::computeTotalFreeSize() const
 	++nextIt;
 	for(auto it = itBegin; nextIt != itEnd; ++it, ++nextIt)
 	{
-		totalFreeSize += (reinterpret_cast<char*>(nextIt->set) - reinterpret_cast<char*>(it->set)) - it->size;
+		totalFreeSize += (reinterpret_cast<char*>(nextIt->set.GetHandle()) - reinterpret_cast<char*>(it->set.GetHandle())) - it->size;
 	}
 
 	return totalFreeSize;

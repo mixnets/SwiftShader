@@ -186,12 +186,12 @@ VkResult SwapchainKHR::getNextImage(uint64_t timeout, VkSemaphore semaphore, VkF
 			currentImage.imageStatus = DRAWING;
 			*pImageIndex = i;
 
-			if(semaphore)
+			if(semaphore.GetHandle() != VK_NULL_HANDLE)
 			{
 				vk::Cast(semaphore)->signal();
 			}
 
-			if(fence)
+			if(fence.GetHandle() != VK_NULL_HANDLE)
 			{
 				vk::Cast(fence)->signal();
 			}

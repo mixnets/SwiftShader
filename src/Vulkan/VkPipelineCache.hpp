@@ -48,7 +48,7 @@ private:
 
 static inline PipelineCache* Cast(VkPipelineCache object)
 {
-	return reinterpret_cast<PipelineCache*>(object);
+	return reinterpret_cast<PipelineCache*>(object.GetHandle());
 }
 
 } // namespace vk

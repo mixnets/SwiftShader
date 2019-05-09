@@ -35,7 +35,7 @@ void CommandPool::destroy(const VkAllocationCallbacks* pAllocator)
 	// Free command Buffers allocated in allocateCommandBuffers
 	for(auto commandBuffer : *commandBuffers)
 	{
-		vk::destroy(commandBuffer, DEVICE_MEMORY);
+		vk::destroyDispatchable(commandBuffer, DEVICE_MEMORY);
 	}
 
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
@@ -64,7 +64,7 @@ VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_
 		{
 			for(uint32_t j = 0; j < i; j++)
 			{
-				vk::destroy(pCommandBuffers[j], DEVICE_MEMORY);
+				vk::destroyDispatchable(pCommandBuffers[j], DEVICE_MEMORY);
 			}
 			for(uint32_t j = 0; j < commandBufferCount; j++)
 			{
@@ -84,7 +84,7 @@ void CommandPool::freeCommandBuffers(uint32_t commandBufferCount, const VkComman
 	for(uint32_t i = 0; i < commandBufferCount; ++i)
 	{
 		commandBuffers->erase(pCommandBuffers[i]);
-		vk::destroy(pCommandBuffers[i], DEVICE_MEMORY);
+		vk::destroyDispatchable(pCommandBuffers[i], DEVICE_MEMORY);
 	}
 }
 

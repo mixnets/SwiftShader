@@ -185,7 +185,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 	result = vk::DispatchableInstance::Create(pAllocator, &info, pInstance);
 	if(result != VK_SUCCESS)
 	{
-		vk::destroy(physicalDevice, pAllocator);
+		vk::destroyDispatchable(physicalDevice, pAllocator);
 		return result;
 	}
 
@@ -196,7 +196,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyInstance(VkInstance instance, const VkAlloca
 {
 	TRACE("(VkInstance instance = %p, const VkAllocationCallbacks* pAllocator = %p)", instance, pAllocator);
 
-	vk::destroy(instance, pAllocator);
+	vk::destroyDispatchable(instance, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDevices(VkInstance instance, uint32_t* pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices)
@@ -439,7 +439,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCa
 {
 	TRACE("(VkDevice device = %p, const VkAllocationCallbacks* pAllocator = %p)", device, pAllocator);
 
-	vk::destroy(device, pAllocator);
+	vk::destroyDispatchable(device, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceExtensionProperties(const char* pLayerName, uint32_t* pPropertyCount, VkExtensionProperties* pProperties)
@@ -952,7 +952,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
 		{
 			const VkSamplerYcbcrConversionInfo* ycbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
-			if(ycbcrConversionInfo->conversion != VK_NULL_HANDLE)
+			if(ycbcrConversionInfo->conversion.GetHandle() != VK_NULL_HANDLE)
 			{
 				ASSERT((pCreateInfo->components.r == VK_COMPONENT_SWIZZLE_IDENTITY) &&
 				       (pCreateInfo->components.g == VK_COMPONENT_SWIZZLE_IDENTITY) &&
@@ -2459,7 +2459,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwa
 	TRACE("(VkDevice device = %p, const VkSwapchainCreateInfoKHR* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSwapchainKHR* pSwapchain = %p)",
 			device, pCreateInfo, pAllocator, pSwapchain);
 
-	if(pCreateInfo->oldSwapchain)
+	if(pCreateInfo->oldSwapchain.GetHandle() != VK_NULL_HANDLE)
 	{
 		vk::Cast(pCreateInfo->oldSwapchain)->retire();
 	}
