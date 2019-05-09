@@ -25,16 +25,26 @@
 
 namespace sw
 {
-	Blitter::Blitter()
+	Routine *Blitter::GuardedRoutineCache::query(const State &state)
 	{
-		blitCache = new RoutineCache<State>(1024);
-		cornerUpdateCache = new RoutineCache<State>(64); // We only need one of these per format
+		std::unique_lock<std::mutex> lock(mutex);
+		Routine *blitRoutine = cache.query(state);
+		lock.unlock();
+		return blitRoutine;
+	}
+
+	void Blitter::GuardedRoutineCache::add(const State &state, Routine *routine)
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		cache.add(state, routine);
+	}
+
+	Blitter::Blitter() : blitCache(1024), cornerUpdateCache(64)
+	{
 	}
 
 	Blitter::~Blitter()
 	{
-		delete blitCache;
-		delete cornerUpdateCache;
 	}
 
 	void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D* renderArea)
@@ -1528,8 +1538,7 @@ namespace sw
 
 	Routine *Blitter::getRoutine(const State &state)
 	{
-		criticalSection.lock();
-		Routine *blitRoutine = blitCache->query(state);
+		Routine *blitRoutine = blitCache.query(state);
 
 		if(!blitRoutine)
 		{
@@ -1537,15 +1546,12 @@ namespace sw
 
 			if(!blitRoutine)
 			{
-				criticalSection.unlock();
 				UNIMPLEMENTED("blitRoutine");
 				return nullptr;
 			}
 
-			blitCache->add(state, blitRoutine);
+			blitCache.add(state, blitRoutine);
 		}
-
-		criticalSection.unlock();
 
 		return blitRoutine;
 	}
@@ -1929,24 +1935,23 @@ namespace sw
 			UNIMPLEMENTED("Multi-sampled cube: %d samples", static_cast<int>(samples));
 		}
 
-		criticalSection.lock();
-		Routine *cornerUpdateRoutine = cornerUpdateCache->query(state);
-
-		if(!cornerUpdateRoutine)
+		Routine *cornerUpdateRoutine = nullptr;
 		{
-			cornerUpdateRoutine = generateCornerUpdate(state);
+			cornerUpdateRoutine = cornerUpdateCache.query(state);
 
 			if(!cornerUpdateRoutine)
 			{
-				criticalSection.unlock();
-				UNIMPLEMENTED("cornerUpdateRoutine");
-				return;
+				cornerUpdateRoutine = generateCornerUpdate(state);
+
+				if(!cornerUpdateRoutine)
+				{
+					UNIMPLEMENTED("cornerUpdateRoutine");
+					return;
+				}
+
+				cornerUpdateCache.add(state, cornerUpdateRoutine);
 			}
-
-			cornerUpdateCache->add(state, cornerUpdateRoutine);
 		}
-
-		criticalSection.unlock();
 
 		void(*cornerUpdateFunction)(const CubeBorderData *data) = (void(*)(const CubeBorderData*))cornerUpdateRoutine->getEntry();
 

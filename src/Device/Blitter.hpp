@@ -17,10 +17,10 @@
 
 #include "RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
-#include "System/MutexLock.hpp"
 #include "Vulkan/VkFormat.h"
 
 #include <string.h>
+#include <mutex>
 
 namespace vk
 {
@@ -142,9 +142,19 @@ namespace sw
 	                      const VkImageSubresourceLayers& dstSubresourceLayers, Edge dstEdge,
 	                      const VkImageSubresourceLayers& srcSubresourceLayers, Edge srcEdge);
 
-		RoutineCache<State> *blitCache;
-		RoutineCache<State> *cornerUpdateCache;
-		MutexLock criticalSection;
+		class GuardedRoutineCache {
+		public:
+			GuardedRoutineCache(int n) : cache(n) {}
+
+			Routine *query(const State &state);
+			void add(const State &state, Routine *routine);
+		private:
+			std::mutex mutex;
+			RoutineCache<State> cache; // guarded by blitMutex
+		};
+
+		GuardedRoutineCache blitCache;
+		GuardedRoutineCache cornerUpdateCache;
 	};
 }
 
