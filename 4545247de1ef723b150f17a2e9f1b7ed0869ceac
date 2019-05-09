@@ -87,6 +87,30 @@
       "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ab51a38_b133f036",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-09T14:17:42Z",
+      "side": 1,
+      "message": "Given that I got map key collisions with pointer xor\u0027s, I\u0027d say there is a fairly high chance that this will break many things.",
+      "parentUuid": "e88286c1_343631e4",
+      "range": {
+        "startLine": 310,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 34
+      },
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
