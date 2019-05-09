@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7616226d_33d26ef7",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-09T01:04:02Z",
+      "side": 1,
+      "message": "I am wondering whether this should just be enabled for Windows builds (and Mac?) so that ENABLE_RR_DEBUG_INFO means something on those platforms? Or perhaps I should expose another CMake option like ENABLE_RR_DEBUG_INFO_TRACE?",
+      "revId": "ec1bc9673b50f00c5d032933482963606eed0bbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
