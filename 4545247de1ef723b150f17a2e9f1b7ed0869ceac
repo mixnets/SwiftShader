@@ -22,6 +22,30 @@
       "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b96d707_5d7555c6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-09T00:32:03Z",
+      "side": 1,
+      "message": "Yeah, will fix this before I forget about it ;)",
+      "parentUuid": "3b819e8e_0faddc99",
+      "range": {
+        "startLine": 310,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 34
+      },
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
