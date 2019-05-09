@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e891df4e_5bab24c0",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-09T17:05:04Z",
+      "side": 1,
+      "message": "Bit gross. Would be nicer to move this ID namespace out into its own class, but meh.",
+      "range": {
+        "startLine": 78,
+        "startChar": 1,
+        "endLine": 78,
+        "endChar": 25
+      },
+      "revId": "4030683ac76a26ea94e15f3e80fd8e7c299c3856",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
