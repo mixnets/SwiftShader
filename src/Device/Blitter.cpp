@@ -25,16 +25,16 @@
 
 namespace sw
 {
-	Blitter::Blitter()
+	Blitter::Blitter() :
+		blitCache(1024),
+		blitMutex(),
+		cornerUpdateCache(64), // We only need one of these per format
+		cornerUpdateMutex()
 	{
-		blitCache = new RoutineCache<State>(1024);
-		cornerUpdateCache = new RoutineCache<State>(64); // We only need one of these per format
 	}
 
 	Blitter::~Blitter()
 	{
-		delete blitCache;
-		delete cornerUpdateCache;
 	}
 
 	void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D* renderArea)
@@ -1528,8 +1528,8 @@ namespace sw
 
 	Routine *Blitter::getRoutine(const State &state)
 	{
-		criticalSection.lock();
-		Routine *blitRoutine = blitCache->query(state);
+		std::unique_lock<std::mutex> lock(blitMutex);
+		Routine *blitRoutine = blitCache.query(state);
 
 		if(!blitRoutine)
 		{
@@ -1537,15 +1537,15 @@ namespace sw
 
 			if(!blitRoutine)
 			{
-				criticalSection.unlock();
+				lock.unlock();
 				UNIMPLEMENTED("blitRoutine");
 				return nullptr;
 			}
 
-			blitCache->add(state, blitRoutine);
+			blitCache.add(state, blitRoutine);
 		}
 
-		criticalSection.unlock();
+		lock.unlock();
 
 		return blitRoutine;
 	}
@@ -1929,8 +1929,8 @@ namespace sw
 			UNIMPLEMENTED("Multi-sampled cube: %d samples", static_cast<int>(samples));
 		}
 
-		criticalSection.lock();
-		Routine *cornerUpdateRoutine = cornerUpdateCache->query(state);
+		std::unique_lock<std::mutex> lock(cornerUpdateMutex);
+		Routine *cornerUpdateRoutine = cornerUpdateCache.query(state);
 
 		if(!cornerUpdateRoutine)
 		{
@@ -1938,15 +1938,15 @@ namespace sw
 
 			if(!cornerUpdateRoutine)
 			{
-				criticalSection.unlock();
+				lock.unlock();
 				UNIMPLEMENTED("cornerUpdateRoutine");
 				return;
 			}
 
-			cornerUpdateCache->add(state, cornerUpdateRoutine);
+			cornerUpdateCache.add(state, cornerUpdateRoutine);
 		}
 
-		criticalSection.unlock();
+		lock.unlock();
 
 		void(*cornerUpdateFunction)(const CubeBorderData *data) = (void(*)(const CubeBorderData*))cornerUpdateRoutine->getEntry();
 

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "VkQueryPool.hpp"
-#include "Common/Thread.hpp"
 
 #include <chrono>
 #include <cstring>
