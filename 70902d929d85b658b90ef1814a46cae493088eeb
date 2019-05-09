@@ -22,6 +22,30 @@
       "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79adfbfe_df3483a9",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-09T22:11:55Z",
+      "side": 0,
+      "message": "We already assert elsewhere if you try to use a stage we don\u0027t support.",
+      "parentUuid": "847d8973_59a642fe",
+      "range": {
+        "startLine": 240,
+        "startChar": 29,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
