@@ -237,7 +237,6 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		~(VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT |
 	      VK_PIPELINE_CREATE_DERIVATIVE_BIT |
 	      VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT)) != 0) ||
-	   (pCreateInfo->stageCount != 2) ||
 	   (pCreateInfo->pTessellationState != nullptr))
 	{
 		UNIMPLEMENTED("pCreateInfo settings");
