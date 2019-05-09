@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a583477d_63097f38",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 5832,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-09T18:37:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9bd7ab8_2a1af9c6",
+      "range": {
+        "startLine": 5832,
+        "startChar": 2,
+        "endLine": 5832,
+        "endChar": 45
+      },
+      "revId": "7eb8d04e98c4f385db5da69d1926b6e9523b6856",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4d9b695_6df046c2",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "7eb8d04e98c4f385db5da69d1926b6e9523b6856",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84e847d1_6cbef5b8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 546,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-09T18:37:29Z",
+      "side": 1,
+      "message": "Well that\u0027s exciting. Not sure how that got there.\nEven more exciting is that this compiled on MSVC and Clang. GCC didn\u0027t like it much though!\nFixed.",
+      "parentUuid": "a4d9b695_6df046c2",
+      "range": {
+        "startLine": 546,
+        "startChar": 53,
+        "endLine": 546,
+        "endChar": 54
+      },
+      "revId": "7eb8d04e98c4f385db5da69d1926b6e9523b6856",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
