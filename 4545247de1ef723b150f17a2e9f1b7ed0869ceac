@@ -111,6 +111,30 @@
       "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "234b2bf0_fdbfbce7",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-09T15:09:40Z",
+      "side": 1,
+      "message": "In followup patch today. This is causing trouble already, and is trivial to \"fix\" at least as well as the image view path is fixed.",
+      "parentUuid": "0ab51a38_b133f036",
+      "range": {
+        "startLine": 310,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 34
+      },
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
