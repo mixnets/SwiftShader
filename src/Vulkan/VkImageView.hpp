@@ -88,7 +88,7 @@ private:
 
 static inline ImageView* Cast(VkImageView object)
 {
-	return reinterpret_cast<ImageView*>(object);
+	return reinterpret_cast<ImageView*>(object.get());
 }
 
 } // namespace vk
