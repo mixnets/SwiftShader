@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "8f9faaa9_c6a352af",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-09T14:14:59Z",
+      "side": 1,
+      "message": "Bug",
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3b819e8e_0faddc99",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -37,6 +54,30 @@
       "side": 1,
       "message": "Yeah, will fix this before I forget about it ;)",
       "parentUuid": "3b819e8e_0faddc99",
+      "range": {
+        "startLine": 310,
+        "startChar": 3,
+        "endLine": 310,
+        "endChar": 34
+      },
+      "revId": "4545247de1ef723b150f17a2e9f1b7ed0869ceac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e88286c1_343631e4",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-09T14:14:59Z",
+      "side": 1,
+      "message": "We\u0027ll check for FIXME\u0027s before calling it 1.0, so up to you to do it now or later.",
+      "parentUuid": "5b96d707_5d7555c6",
       "range": {
         "startLine": 310,
         "startChar": 3,
