@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "847d8973_59a642fe",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-09T21:58:21Z",
+      "side": 0,
+      "message": "Should we keep this and modify !\u003d to \u003e instead?\nWe don\u0027t really support more than 2 stages, although we don\u0027t check the stages\u0027 type.",
+      "range": {
+        "startLine": 240,
+        "startChar": 29,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
