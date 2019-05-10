@@ -1317,16 +1317,16 @@ namespace sw
 				c.x = (c.x & Short4(0xF800u));
 				break;
 			case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
-				c.w = (c.x << 12) & Short4(0xF000);
-				c.z = (c.x) & Short4(0xF000);
-				c.y = (c.x << 4) & Short4(0xF000);
-				c.x = (c.x << 8) & Short4(0xF000);
+				c.w = (c.x << 12) & Short4(0xF000u);
+				c.z = (c.x) & Short4(0xF000u);
+				c.y = (c.x << 4) & Short4(0xF000u);
+				c.x = (c.x << 8) & Short4(0xF000u);
 				break;
 			case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
-				c.w = (c.x) & Short4(0x8000);
-				c.z = (c.x << 11) & Short4(0xF800);
-				c.y = (c.x << 6) & Short4(0xF800);
-				c.x = (c.x << 1) & Short4(0xF800);
+				c.w = (c.x) & Short4(0x8000u);
+				c.z = (c.x << 11) & Short4(0xF800u);
+				c.y = (c.x << 6) & Short4(0xF800u);
+				c.x = (c.x << 1) & Short4(0xF800u);
 				break;
 			default:
 				ASSERT(false);
@@ -1382,10 +1382,10 @@ namespace sw
 						if (state.textureFormat == VK_FORMAT_R8G8B8A8_SNORM)
 						{
 							// TODO: avoid populating the low bits at all.
-							c.x &= Short4(0xFF00);
-							c.y &= Short4(0xFF00);
-							c.z &= Short4(0xFF00);
-							c.w &= Short4(0xFF00);
+							c.x &= Short4(0xFF00u);
+							c.y &= Short4(0xFF00u);
+							c.z &= Short4(0xFF00u);
+							c.w &= Short4(0xFF00u);
 						}
 
 						break;
@@ -1457,7 +1457,7 @@ namespace sw
 					case VK_FORMAT_R8_SNORM:
 						// TODO: avoid populating the low bits at all.
 						c.x = Unpack(As<Byte4>(c0));
-						c.x &= Short4(0xff00);
+						c.x &= Short4(0xFF00u);
 						break;
 					default:
 						c.x = Unpack(As<Byte4>(c0));
@@ -1639,15 +1639,15 @@ namespace sw
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			const UShort4 yY = UShort4(iround(Yy * 0x4000));
-			const UShort4 rV = UShort4(iround(Rv * 0x4000));
-			const UShort4 gU = UShort4(iround(-Gu * 0x4000));
-			const UShort4 gV = UShort4(iround(-Gv * 0x4000));
-			const UShort4 bU = UShort4(iround(Bu * 0x4000));
+			const UShort4 yY = UShort4(static_cast<unsigned short>(iround(Yy * 0x4000)));
+			const UShort4 rV = UShort4(static_cast<unsigned short>(iround(Rv * 0x4000)));
+			const UShort4 gU = UShort4(static_cast<unsigned short>(iround(-Gu * 0x4000)));
+			const UShort4 gV = UShort4(static_cast<unsigned short>(iround(-Gv * 0x4000)));
+			const UShort4 bU = UShort4(static_cast<unsigned short>(iround(Bu * 0x4000)));
 
-			const UShort4 r0 = UShort4(iround(-R0 * 0x4000));
-			const UShort4 g0 = UShort4(iround(G0 * 0x4000));
-			const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
+			const UShort4 r0 = UShort4(static_cast<unsigned short>(iround(-R0 * 0x4000)));
+			const UShort4 g0 = UShort4(static_cast<unsigned short>(iround(G0 * 0x4000)));
+			const UShort4 b0 = UShort4(static_cast<unsigned short>(iround(-B0 * 0x4000)));
 
 			UShort4 y = MulHigh(Y, yY);
 			UShort4 r = SubSat(y + MulHigh(V, rV), r0);
@@ -1884,7 +1884,7 @@ namespace sw
 
 		bool scaled = !hasFloatTexture() && !hasUnnormalizedIntegerTexture() && !state.compareEnable;
 		bool sign = !hasUnsignedTextureComponent(0);
-		Int4 float_one = scaled ? As<Int4>(Float4(sign ? 0x7FFF : 0xFFFF)) : As<Int4>(Float4(1.0f));
+		Int4 float_one = scaled ? As<Int4>(Float4(static_cast<float>(sign ? 0x7FFF : 0xFFFF))) : As<Int4>(Float4(1.0f));
 
 		switch(state.border)
 		{
