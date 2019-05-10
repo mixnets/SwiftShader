@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "818e8fd0_d5a02832",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4916,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T14:25:14Z",
+      "side": 1,
+      "message": "You don\u0027t need the storage descriptor path here. Appendix A of the Vulkan 1.1 spec says:\n\nOpImageQuerySizeLod, and OpImageQueryLevels must only consume an “Image” operand whose type has its “Sampled” operand set to 1.",
+      "revId": "f1212902834abdff7d1ed9a6e203855ac468efd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
