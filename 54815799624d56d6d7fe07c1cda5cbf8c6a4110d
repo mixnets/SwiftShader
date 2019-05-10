@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd73f3b7_eff5d585",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-10T21:31:10Z",
+      "side": 1,
+      "message": "Is this a debug thing, or something we\u0027re keeping?",
+      "range": {
+        "startLine": 334,
+        "startChar": 4,
+        "endLine": 334,
+        "endChar": 82
+      },
+      "revId": "54815799624d56d6d7fe07c1cda5cbf8c6a4110d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
