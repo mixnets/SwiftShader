@@ -24,6 +24,7 @@
 
 namespace vk
 {
+class SamplerYcbcrConversion;
 
 class ImageView : public Object<ImageView, VkImageView>
 {
@@ -33,7 +34,7 @@ public:
 	// SAMPLING: Image used for texture sampling
 	enum Usage { RAW, SAMPLING };
 
-	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem);
+	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
 	~ImageView() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
@@ -73,6 +74,7 @@ public:
 	size_t getImageSizeInBytes() const { return image->getMemoryRequirements().size; }
 
 	const uint32_t id = nextID++;
+
 private:
 	static std::atomic<uint32_t> nextID;
 	friend class BufferView;	// ImageView/BufferView share the ID space above.
@@ -85,7 +87,20 @@ private:
 	const Format                  format;
 	const VkComponentMapping      components = {};
 	const VkImageSubresourceRange subresourceRange = {};
+
+	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 };
+
+// TODO: Also used by SamplerYcbcrConversion. Move somewhere centrally?
+inline VkComponentMapping ResolveIdentityMapping(VkComponentMapping m)
+{
+	return {
+			(m.r == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_R : m.r,
+			(m.g == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_G : m.g,
+			(m.b == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_B : m.b,
+			(m.a == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_A : m.a,
+		};
+}
 
 static inline ImageView* Cast(VkImageView object)
 {
