@@ -16,6 +16,24 @@
       "revId": "6e678a7fe47868b6b115ab15f9fd63e6811610af",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d2597ff_100de4fd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2638,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-10T14:29:38Z",
+      "side": 1,
+      "message": "Yes, I\u0027m aware. However, GetPointerToData does the right thing in this case and the name matches exactly what we want to do. More importantly, it lessens copy-and-paste errors (like what this CL is fixing).",
+      "parentUuid": "fc50716e_9c393af3",
+      "revId": "6e678a7fe47868b6b115ab15f9fd63e6811610af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
