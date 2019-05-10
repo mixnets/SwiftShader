@@ -33,8 +33,8 @@ public:
 	}
 
 	void *getPointer() const;
-	uint32_t getElementCount() const { return range / Format(format).bytes(); }
-	uint32_t getRangeInBytes() const { return range; }
+	uint32_t getElementCount() const { return static_cast<uint32_t>(range / Format(format).bytes()); }
+	uint32_t getRangeInBytes() const { return static_cast<uint32_t>(range); }
 
 private:
 	VkBuffer     buffer;

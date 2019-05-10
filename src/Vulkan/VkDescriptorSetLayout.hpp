@@ -29,6 +29,8 @@ class DescriptorSet;
 // TODO(b/129523279): Move to the Device or Pipeline layer.
 struct alignas(16) SampledImageDescriptor
 {
+	~SampledImageDescriptor() = delete;
+
 	void updateSampler(const vk::Sampler *sampler);
 
 	// TODO(b/129523279): Minimize to the data actually needed.
@@ -45,6 +47,8 @@ struct alignas(16) SampledImageDescriptor
 
 struct alignas(16) StorageImageDescriptor
 {
+	~StorageImageDescriptor() = delete;
+
 	void *ptr;
 	VkExtent3D extent;
 	int rowPitchBytes;
@@ -61,6 +65,8 @@ struct alignas(16) StorageImageDescriptor
 
 struct alignas(16) BufferDescriptor
 {
+	~BufferDescriptor() = delete;
+
 	void *ptr;
 	int sizeInBytes;		// intended size of the bound region -- slides along with dynamic offsets
 	int robustnessSize;		// total accessible size from static offset -- does not move with dynamic offset

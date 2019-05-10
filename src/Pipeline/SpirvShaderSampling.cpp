@@ -280,8 +280,8 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 	case VK_IMAGE_VIEW_TYPE_CUBE:
 		return ADDRESSING_SEAMLESS;
 //	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
-		UNSUPPORTED("SPIR-V ImageCubeArray Capability (imageViewType: %d)", int(imageViewType));
-		return ADDRESSING_SEAMLESS;
+//		UNSUPPORTED("SPIR-V ImageCubeArray Capability (imageViewType: %d)", int(imageViewType));
+//		return ADDRESSING_SEAMLESS;
 	case VK_IMAGE_VIEW_TYPE_1D:
 	case VK_IMAGE_VIEW_TYPE_2D:
 	case VK_IMAGE_VIEW_TYPE_3D:
