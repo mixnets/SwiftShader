@@ -226,7 +226,39 @@ endmacro()
 if(MSVC)
     set_cpp_flag("/MP")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
+
+    if(WARNINGS_AS_ERRORS)
+        set_cpp_flag("/WX") # Treat all warnings as errors
+    endif()
+
+    # Disable specific warnings
+    # TODO: Not all of these should be disabled, but for now, we want a warning-free msvc build. Remove these one by one
+    #       and fix the actual warnings in code.
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+        "/wd4005" # 'identifier' : macro redefinition
+        "/wd4018" # 'expression' : signed/unsigned mismatch
+        "/wd4141" # 'modifier' : used more than once
+        "/wd4146" # unary minus operator applied to unsigned type, result still unsigned
+        "/wd4244" # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+        "/wd4267" # 'var' : conversion from 'size_t' to 'type', possible loss of data
+        "/wd4291" # 'void X new(size_t,unsigned int,unsigned int)': no matching operator delete found; memory will not be freed if initialization throws an exception
+        "/wd4309" # 'conversion' : truncation of constant value
+        "/wd4624" # 'derived class' : destructor was implicitly defined as deleted because a base class destructor is inaccessible or deleted
+        "/wd4800" # 'type' : forcing value to bool 'true' or 'false' (performance warning)
+        "/wd4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
+        "/wd5030" # attribute 'attribute' is not recognized
+        "/wd5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
+    )
+
+    # Treat specific warnings as errors
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+        "/we4018" # 'expression' : signed/unsigned mismatch
+        "/we4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
+        "/we5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
+    )
+
 else()
     set_cpp_flag("--std=c++11")
     set_cpp_flag("-fno-exceptions")
@@ -1236,7 +1268,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         "-Wno-unused-but-set-variable" # variable ‘X’ set but not used
     )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    set(LLVM_DISABLE_WARNINGS
+    list(APPEND LLVM_COMPILE_OPTIONS
         "/wd4141" # 'inline': used more than once
         "/wd4146" # unary minus operator applied to unsigned type, result still unsigned
         "/wd4244" # 'X': conversion from 'uint64_t' to 'const unsigned int', possible loss of data
@@ -1247,7 +1279,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         "/wd4805" # 'X': unsafe mix of type 'unsigned int' and type 'bool' in operation
         "/wd4996" # 'X': Call to 'Y' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
     )
-    set(LLVM_COMPILE_OPTIONS "/D \"_SCL_SECURE_NO_WARNINGS\" ${LLVM_DISABLE_WARNINGS}")
 endif()
 
 add_library(llvm STATIC ${LLVM_LIST})
