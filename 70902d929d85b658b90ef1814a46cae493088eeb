@@ -46,6 +46,30 @@
       "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3dfadf2_6f0d685a",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-10T00:57:14Z",
+      "side": 0,
+      "message": "Right, but we don\u0027t seem to assert on having multiple stages of the same type, we just overwrite it silently and probably leak the SpirvShader memory around lines 467 and 471 below. Maybe we could assert that we only have one shader of each type (unless that\u0027s legal, in which case we should fix the memory leak).",
+      "parentUuid": "79adfbfe_df3483a9",
+      "range": {
+        "startLine": 240,
+        "startChar": 29,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
