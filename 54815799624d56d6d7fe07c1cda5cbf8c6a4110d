@@ -70,6 +70,30 @@
       "revId": "54815799624d56d6d7fe07c1cda5cbf8c6a4110d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df752cbf_a6becc41",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T23:08:37Z",
+      "side": 1,
+      "message": "I had so many other newlines in the other junk I was writing out that I didn\u0027t notice ;)",
+      "parentUuid": "56e0823b_5ac304a2",
+      "range": {
+        "startLine": 334,
+        "startChar": 4,
+        "endLine": 334,
+        "endChar": 82
+      },
+      "revId": "54815799624d56d6d7fe07c1cda5cbf8c6a4110d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
