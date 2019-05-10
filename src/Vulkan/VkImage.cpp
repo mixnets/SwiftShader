@@ -501,7 +501,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferI
 int Image::borderSize(VkImageAspectFlagBits aspect) const
 {
 	// We won't add a border to compressed cube textures, we'll add it when we decompress the texture
-	return (isCube() && !format.isCompressed()) ? 1 : 0;
+	return (isCube() && !getFormat(aspect).isCompressed()) ? 1 : 0;
 }
 
 VkDeviceSize Image::texelOffsetBytesInStorage(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const
