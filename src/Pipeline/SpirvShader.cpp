@@ -930,6 +930,7 @@ namespace sw
 				// extension per Appendix A, `Vulkan Environment for SPIR-V`.
 				if (!strcmp(ext, "SPV_KHR_storage_buffer_storage_class")) break;
 				if (!strcmp(ext, "SPV_KHR_variable_pointers")) break;
+				if (!strcmp(ext, "SPV_KHR_device_group")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 				break;
 			}
