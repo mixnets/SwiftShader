@@ -65,7 +65,7 @@ public:
 	bool has8bitTextureComponents() const;
 	bool has16bitTextureComponents() const;
 	bool has32bitIntegerTextureComponents() const;
-	bool hasYuvFormat() const;
+	bool hasYuvFormat() const;  // TODO: Rename to isYcbcrFormat()
 	bool isRGBComponent(int component) const;
 
 private:

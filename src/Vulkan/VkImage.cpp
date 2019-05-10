@@ -31,7 +31,18 @@ namespace
 		if (format.isDepth()) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
 		if (format.isStencil()) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
 
-		// TODO: YCbCr planar formats have different aspects
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT;
+			break;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT;
+			break;
+		default:
+			ASSERT(!format.hasYuvFormat());
+			break;
+		}
 
 		// Anything else is "color".
 		if (!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
@@ -276,11 +287,18 @@ void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
 
 void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSource)
 {
-	if(!((region.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
-	     (region.imageSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
-	     (region.imageSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)))
+	switch(region.imageSubresource.aspectMask)
 	{
-		UNIMPLEMENTED("imageSubresource");
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		break;
+	default:
+		UNIMPLEMENTED("aspectMask %x", int(region.imageSubresource.aspectMask));
+		break;
 	}
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
@@ -576,6 +594,12 @@ Format Image::GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
 {
 	switch(aspect)
 	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+	case (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT):
+	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT):
+	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT):
+		return format;
+
 	case VK_IMAGE_ASPECT_DEPTH_BIT:
 		switch(format)
 		{
@@ -586,9 +610,11 @@ Format Image::GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
 			return VK_FORMAT_D32_SFLOAT;
 		default:
+			UNSUPPORTED("format %d", int(format));
 			break;
 		}
 		break;
+
 	case VK_IMAGE_ASPECT_STENCIL_BIT:
 		switch(format)
 		{
@@ -597,10 +623,28 @@ Format Image::GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
 			return VK_FORMAT_S8_UINT;
 		default:
+			UNSUPPORTED("format %d", int(format));
 			break;
 		}
 		break;
+
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			// Each plane contains 8-bit data.
+			return VK_FORMAT_R8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
 	default:
+		UNSUPPORTED("aspect %x", int(aspect));
 		break;
 	}
 
@@ -630,7 +674,28 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 			return memoryOffset + getStorageSize(VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
 		break;
+
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		if(aspect == VK_IMAGE_ASPECT_PLANE_2_BIT)
+		{
+			a
+		}
+		// Fall through to 2PLANE case:
+	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		if(aspect == VK_IMAGE_ASPECT_PLANE_1_BIT)
+		{
+			b
+		}
+		else
+		{
+			ASSERT(aspect == VK_IMAGE_ASPECT_PLANE_0_BIT);
+
+			c
+		}
+		break;
+
 	default:
+		ASSERT(aspect == VK_IMAGE_ASPECT_COLOR_BIT);
 		break;
 	}
 
