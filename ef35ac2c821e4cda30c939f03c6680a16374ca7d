@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c001ce95_5bbc0c79",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4632,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-10T21:41:45Z",
+      "side": 1,
+      "message": "Nit: Seems like this bug would have been less likely to happen if EmitImageSampleExplicitLod had been kept for emitting OpImageSampleExplicitLod exclusively, and putting the shared code into a function that doesn\u0027t look like its implementing a specific opcode.\nGetImageDimensions() and EmitImageSample() are examples of opcode-shared implementations (although I\u0027d prefer these to not start with \u0027Emit\u0027).",
+      "range": {
+        "startLine": 4631,
+        "startChar": 2,
+        "endLine": 4632,
+        "endChar": 90
+      },
+      "revId": "ef35ac2c821e4cda30c939f03c6680a16374ca7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
