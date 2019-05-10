@@ -79,6 +79,7 @@ namespace sw
 		if(state.textureType == TEXTURE_CUBE)
 		{
 			face = cubeFace(uuuu, vvvv, u, v, w, M);
+			wwww = As<Float4>(face);
 		}
 
 		if(function == Implicit || function == Bias || function == Grad)
@@ -134,7 +135,7 @@ namespace sw
 
 		if(use32BitFiltering)
 		{
-			c = sampleFloatFilter(texture, uuuu, vvvv, wwww, qqqq, offset, lod, anisotropy, uDelta, vDelta, face, function);
+			c = sampleFloatFilter(texture, uuuu, vvvv, wwww, qqqq, offset, lod, anisotropy, uDelta, vDelta, function);
 
 			if(!hasFloatTexture() && !hasUnnormalizedIntegerTexture() && !state.compareEnable)
 			{
@@ -174,7 +175,7 @@ namespace sw
 		}
 		else  // 16-bit filtering.
 		{
-			Vector4s cs = sampleFilter(texture, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
+			Vector4s cs = sampleFilter(texture, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, function);
 
 			if(state.textureFormat == VK_FORMAT_R5G6B5_UNORM_PACK16)
 			{
@@ -330,9 +331,9 @@ namespace sw
 		return uvw;
 	}
 
-	Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, SamplerFunction function)
+	Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function)
 	{
-		Vector4s c = sampleAniso(texture, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
+		Vector4s c = sampleAniso(texture, u, v, w, offset, lod, anisotropy, uDelta, vDelta, false, function);
 
 		if(function == Fetch)
 		{
@@ -341,7 +342,7 @@ namespace sw
 
 		if(state.mipmapFilter == MIPMAP_LINEAR)
 		{
-			Vector4s cc = sampleAniso(texture, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
+			Vector4s cc = sampleAniso(texture, u, v, w, offset, lod, anisotropy, uDelta, vDelta, true, function);
 
 			lod *= Float(1 << 16);
 
@@ -375,13 +376,13 @@ namespace sw
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function)
 	{
 		Vector4s c;
 
 		if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
 		{
-			c = sampleQuad(texture, u, v, w, offset, lod, face, secondLOD, function);
+			c = sampleQuad(texture, u, v, w, offset, lod, secondLOD, function);
 		}
 		else
 		{
@@ -412,7 +413,7 @@ namespace sw
 
 			Do
 			{
-				c = sampleQuad(texture, u0, v0, w, offset, lod, face, secondLOD, function);
+				c = sampleQuad(texture, u0, v0, w, offset, lod, secondLOD, function);
 
 				u0 += du;
 				v0 += dv;
@@ -435,11 +436,11 @@ namespace sw
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureType != TEXTURE_3D)
 		{
-			return sampleQuad2D(texture, u, v, w, offset, lod, face, secondLOD, function);
+			return sampleQuad2D(texture, u, v, w, offset, lod, secondLOD, function);
 		}
 		else
 		{
@@ -447,17 +448,16 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function)
 	{
 		Vector4s c;
 
 		int componentCount = textureComponentCount();
-		bool gather = state.textureFilter == FILTER_GATHER;
+		bool gather = (state.textureFilter == FILTER_GATHER);
 
 		Pointer<Byte> mipmap;
-		Pointer<Byte> buffer[4];
-
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		Pointer<Byte> buffer;
+		selectMipmap(texture, mipmap, buffer, lod, secondLOD);
 
 		bool texelFetch = (function == Fetch);
 
@@ -649,10 +649,8 @@ namespace sw
 		int componentCount = textureComponentCount();
 
 		Pointer<Byte> mipmap;
-		Pointer<Byte> buffer[4];
-		Int4 face;
-
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		Pointer<Byte> buffer;
+		selectMipmap(texture, mipmap, buffer, lod, secondLOD);
 
 		bool texelFetch = (function == Fetch);
 
@@ -767,9 +765,9 @@ namespace sw
 		return c_;
 	}
 
-	Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function)
 	{
-		Vector4f c = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
+		Vector4f c = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, false, function);
 
 		if(function == Fetch)
 		{
@@ -778,7 +776,7 @@ namespace sw
 
 		if(state.mipmapFilter == MIPMAP_LINEAR)
 		{
-			Vector4f cc = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
+			Vector4f cc = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, true, function);
 
 			Float4 lod4 = Float4(Frac(lod));
 
@@ -791,13 +789,13 @@ namespace sw
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function)
 	{
 		Vector4f c;
 
 		if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
 		{
-			c = sampleFloat(texture, u, v, w, q, offset, lod, face, secondLOD, function);
+			c = sampleFloat(texture, u, v, w, q, offset, lod, secondLOD, function);
 		}
 		else
 		{
@@ -826,7 +824,7 @@ namespace sw
 
 			Do
 			{
-				c = sampleFloat(texture, u0, v0, w, q, offset, lod, face, secondLOD, function);
+				c = sampleFloat(texture, u0, v0, w, q, offset, lod, secondLOD, function);
 
 				u0 += du;
 				v0 += dv;
@@ -849,11 +847,11 @@ namespace sw
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureType != TEXTURE_3D)
 		{
-			return sampleFloat2D(texture, u, v, w, q, offset, lod, face, secondLOD, function);
+			return sampleFloat2D(texture, u, v, w, q, offset, lod, secondLOD, function);
 		}
 		else
 		{
@@ -861,17 +859,16 @@ namespace sw
 		}
 	}
 
-	Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int4 face, bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function)
 	{
 		Vector4f c;
 
 		int componentCount = textureComponentCount();
-		bool gather = state.textureFilter == FILTER_GATHER;
+		bool gather = (state.textureFilter == FILTER_GATHER);
 
 		Pointer<Byte> mipmap;
-		Pointer<Byte> buffer[4];
-
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		Pointer<Byte> buffer;
+		selectMipmap(texture, mipmap, buffer, lod, secondLOD);
 
 		Int4 x0, x1, y0, y1, z0;
 		Float4 fu, fv, fw;
@@ -882,10 +879,9 @@ namespace sw
 
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
-		if(hasThirdCoordinate())
+		if(state.addressingModeW != ADDRESSING_UNUSED)
 		{
-			Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
-			z0 *= sliceP;
+			z0 *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
 		}
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
@@ -937,10 +933,8 @@ namespace sw
 		int componentCount = textureComponentCount();
 
 		Pointer<Byte> mipmap;
-		Pointer<Byte> buffer[4];
-		Int4 face;
-
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		Pointer<Byte> buffer;
+		selectMipmap(texture, mipmap, buffer, lod, secondLOD);
 
 		Int4 x0, x1, y0, y1, z0, z1;
 		Float4 fu, fv, fw;
@@ -1156,6 +1150,9 @@ namespace sw
 
 	Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
 	{
+		// TODO: Comply with Vulkan recommendation:
+		// Vulkan 1.1: "The rules should have as the first rule that rz wins over ry and rx, and the second rule that ry wins over rx."
+
 		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
 		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
 		Int4 zn = CmpLT(z, Float4(0.0f));   // z < 0
@@ -1314,7 +1311,7 @@ namespace sw
 	{
 		UInt4 indices = uuuu + vvvv;
 
-		if(hasThirdCoordinate())
+		if(state.addressingModeW != ADDRESSING_UNUSED)
 		{
 			indices += As<UInt4>(wwww);
 		}
@@ -1332,21 +1329,16 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
+	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 	{
 		Vector4s c;
 
-		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
-		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
-		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
-		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
-
 		if(has16bitTextureFormat())
 		{
-			c.x = Insert(c.x, Pointer<Short>(buffer[f0])[index[0]], 0);
-			c.x = Insert(c.x, Pointer<Short>(buffer[f1])[index[1]], 1);
-			c.x = Insert(c.x, Pointer<Short>(buffer[f2])[index[2]], 2);
-			c.x = Insert(c.x, Pointer<Short>(buffer[f3])[index[3]], 3);
+			c.x = Insert(c.x, Pointer<Short>(buffer)[index[0]], 0);
+			c.x = Insert(c.x, Pointer<Short>(buffer)[index[1]], 1);
+			c.x = Insert(c.x, Pointer<Short>(buffer)[index[2]], 2);
+			c.x = Insert(c.x, Pointer<Short>(buffer)[index[3]], 3);
 
 			switch(state.textureFormat)
 			{
@@ -1377,10 +1369,10 @@ namespace sw
 			{
 			case 4:
 				{
-					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
-					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
-					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
-					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
+					Byte4 c0 = Pointer<Byte4>(buffer)[index[0]];
+					Byte4 c1 = Pointer<Byte4>(buffer)[index[1]];
+					Byte4 c2 = Pointer<Byte4>(buffer)[index[2]];
+					Byte4 c3 = Pointer<Byte4>(buffer)[index[3]];
 					c.x = Unpack(c0, c1);
 					c.y = Unpack(c2, c3);
 
@@ -1434,10 +1426,10 @@ namespace sw
 				}
 				break;
 			case 2:
-				c.x = Insert(c.x, Pointer<Short>(buffer[f0])[index[0]], 0);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f1])[index[1]], 1);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f2])[index[2]], 2);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f3])[index[3]], 3);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[0]], 0);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[1]], 1);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[2]], 2);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[3]], 3);
 
 				switch(state.textureFormat)
 				{
@@ -1460,10 +1452,10 @@ namespace sw
 				break;
 			case 1:
 				{
-					Int c0 = Int(*Pointer<Byte>(buffer[f0] + index[0]));
-					Int c1 = Int(*Pointer<Byte>(buffer[f1] + index[1]));
-					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
-					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
+					Int c0 = Int(*Pointer<Byte>(buffer + index[0]));
+					Int c1 = Int(*Pointer<Byte>(buffer + index[1]));
+					Int c2 = Int(*Pointer<Byte>(buffer + index[2]));
+					Int c3 = Int(*Pointer<Byte>(buffer + index[3]));
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 
 					switch(state.textureFormat)
@@ -1495,33 +1487,33 @@ namespace sw
 			switch(textureComponentCount())
 			{
 			case 4:
-				c.x = Pointer<Short4>(buffer[f0])[index[0]];
-				c.y = Pointer<Short4>(buffer[f1])[index[1]];
-				c.z = Pointer<Short4>(buffer[f2])[index[2]];
-				c.w = Pointer<Short4>(buffer[f3])[index[3]];
+				c.x = Pointer<Short4>(buffer)[index[0]];
+				c.y = Pointer<Short4>(buffer)[index[1]];
+				c.z = Pointer<Short4>(buffer)[index[2]];
+				c.w = Pointer<Short4>(buffer)[index[3]];
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
 			case 3:
-				c.x = Pointer<Short4>(buffer[f0])[index[0]];
-				c.y = Pointer<Short4>(buffer[f1])[index[1]];
-				c.z = Pointer<Short4>(buffer[f2])[index[2]];
-				c.w = Pointer<Short4>(buffer[f3])[index[3]];
+				c.x = Pointer<Short4>(buffer)[index[0]];
+				c.y = Pointer<Short4>(buffer)[index[1]];
+				c.z = Pointer<Short4>(buffer)[index[2]];
+				c.w = Pointer<Short4>(buffer)[index[3]];
 				transpose4x3(c.x, c.y, c.z, c.w);
 				break;
 			case 2:
-				c.x = *Pointer<Short4>(buffer[f0] + 4 * index[0]);
-				c.x = As<Short4>(UnpackLow(c.x, *Pointer<Short4>(buffer[f1] + 4 * index[1])));
-				c.z = *Pointer<Short4>(buffer[f2] + 4 * index[2]);
-				c.z = As<Short4>(UnpackLow(c.z, *Pointer<Short4>(buffer[f3] + 4 * index[3])));
+				c.x = *Pointer<Short4>(buffer + 4 * index[0]);
+				c.x = As<Short4>(UnpackLow(c.x, *Pointer<Short4>(buffer + 4 * index[1])));
+				c.z = *Pointer<Short4>(buffer + 4 * index[2]);
+				c.z = As<Short4>(UnpackLow(c.z, *Pointer<Short4>(buffer + 4 * index[3])));
 				c.y = c.x;
 				c.x = UnpackLow(As<Int2>(c.x), As<Int2>(c.z));
 				c.y = UnpackHigh(As<Int2>(c.y), As<Int2>(c.z));
 				break;
 			case 1:
-				c.x = Insert(c.x, Pointer<Short>(buffer[f0])[index[0]], 0);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f1])[index[1]], 1);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f2])[index[2]], 2);
-				c.x = Insert(c.x, Pointer<Short>(buffer[f3])[index[3]], 3);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[0]], 0);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[1]], 1);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[2]], 2);
+				c.x = Insert(c.x, Pointer<Short>(buffer)[index[3]], 3);
 				break;
 			default:
 				ASSERT(false);
@@ -1530,10 +1522,10 @@ namespace sw
 		else if(state.textureFormat == VK_FORMAT_A2B10G10R10_UNORM_PACK32)
 		{
 			Int4 cc;
-			cc = Insert(cc, Pointer<Int>(buffer[f0])[index[0]], 0);
-			cc = Insert(cc, Pointer<Int>(buffer[f1])[index[1]], 1);
-			cc = Insert(cc, Pointer<Int>(buffer[f2])[index[2]], 2);
-			cc = Insert(cc, Pointer<Int>(buffer[f3])[index[3]], 3);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
 
 			// shift each 10 bit field left 6, and replicate 6 high bits into bottom 6
 			c.x = Short4(((cc << 6) & Int4(0xFFC0)) | ((cc >> 4) & Int4(0x3F)));
@@ -1549,10 +1541,10 @@ namespace sw
 		else if(state.textureFormat == VK_FORMAT_A2B10G10R10_UINT_PACK32)
 		{
 			Int4 cc;
-			cc = Insert(cc, Pointer<Int>(buffer[f0])[index[0]], 0);
-			cc = Insert(cc, Pointer<Int>(buffer[f1])[index[1]], 1);
-			cc = Insert(cc, Pointer<Int>(buffer[f2])[index[2]], 2);
-			cc = Insert(cc, Pointer<Int>(buffer[f3])[index[3]], 3);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
+			cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
 
 			c.x = Short4(((cc) & Int4(0x3FF)));
 			c.y = Short4(((cc >> 10) & Int4(0x3FF)));
@@ -1575,7 +1567,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
 	{
 		Vector4s c;
 
@@ -1638,25 +1630,29 @@ namespace sw
 			const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
 			const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
 
-			Int c0 = Int(buffer[0][index[0]]);
-			Int c1 = Int(buffer[0][index[1]]);
-			Int c2 = Int(buffer[0][index[2]]);
-			Int c3 = Int(buffer[0][index[3]]);
+			Pointer<Byte> bufferY = buffer;
+			Pointer<Byte> bufferU = buffer;  // FIXME
+			Pointer<Byte> bufferV = buffer;  // FIXME
+
+			Int c0 = Int(bufferY[index[0]]);
+			Int c1 = Int(bufferY[index[1]]);
+			Int c2 = Int(bufferY[index[2]]);
+			Int c3 = Int(bufferY[index[3]]);
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
 			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
-			c0 = Int(buffer[1][index[0]]);
-			c1 = Int(buffer[1][index[1]]);
-			c2 = Int(buffer[1][index[2]]);
-			c3 = Int(buffer[1][index[3]]);
+			c0 = Int(bufferU[index[0]]);
+			c1 = Int(bufferU[index[1]]);
+			c2 = Int(bufferU[index[2]]);
+			c3 = Int(bufferU[index[3]]);
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			c0 = Int(buffer[2][index[0]]);
-			c1 = Int(buffer[2][index[1]]);
-			c2 = Int(buffer[2][index[2]]);
-			c3 = Int(buffer[2][index[3]]);
+			c0 = Int(bufferV[index[0]]);
+			c1 = Int(bufferV[index[1]]);
+			c2 = Int(bufferV[index[2]]);
+			c3 = Int(bufferV[index[3]]);
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
@@ -1687,7 +1683,7 @@ namespace sw
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
 	{
 		Int4 valid;
 
@@ -1709,18 +1705,13 @@ namespace sw
 
 		if(hasFloatTexture() || has32bitIntegerTextureComponents())
 		{
-			int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
-			int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
-			int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
-			int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
-
 			switch (state.textureFormat)
 			{
 			case VK_FORMAT_R16_SFLOAT:
-				t0 = Int4(*Pointer<UShort4>(buffer[f0] + index[0] * 2));
-				t1 = Int4(*Pointer<UShort4>(buffer[f1] + index[1] * 2));
-				t2 = Int4(*Pointer<UShort4>(buffer[f2] + index[2] * 2));
-				t3 = Int4(*Pointer<UShort4>(buffer[f3] + index[3] * 2));
+				t0 = Int4(*Pointer<UShort4>(buffer + index[0] * 2));
+				t1 = Int4(*Pointer<UShort4>(buffer + index[1] * 2));
+				t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 2));
+				t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 2));
 
 				c.x.x = Extract(As<Float4>(halfToFloatBits(t0)), 0);
 				c.x.y = Extract(As<Float4>(halfToFloatBits(t1)), 0);
@@ -1728,10 +1719,10 @@ namespace sw
 				c.x.w = Extract(As<Float4>(halfToFloatBits(t3)), 0);
 				break;
 			case VK_FORMAT_R16G16_SFLOAT:
-				t0 = Int4(*Pointer<UShort4>(buffer[f0] + index[0] * 4));
-				t1 = Int4(*Pointer<UShort4>(buffer[f1] + index[1] * 4));
-				t2 = Int4(*Pointer<UShort4>(buffer[f2] + index[2] * 4));
-				t3 = Int4(*Pointer<UShort4>(buffer[f3] + index[3] * 4));
+				t0 = Int4(*Pointer<UShort4>(buffer + index[0] * 4));
+				t1 = Int4(*Pointer<UShort4>(buffer + index[1] * 4));
+				t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 4));
+				t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 4));
 
 				// FIXME: shuffles
 				c.x = As<Float4>(halfToFloatBits(t0));
@@ -1741,10 +1732,10 @@ namespace sw
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
 			case VK_FORMAT_R16G16B16A16_SFLOAT:
-				t0 = Int4(*Pointer<UShort4>(buffer[f0] + index[0] * 8));
-				t1 = Int4(*Pointer<UShort4>(buffer[f1] + index[1] * 8));
-				t2 = Int4(*Pointer<UShort4>(buffer[f2] + index[2] * 8));
-				t3 = Int4(*Pointer<UShort4>(buffer[f3] + index[3] * 8));
+				t0 = Int4(*Pointer<UShort4>(buffer + index[0] * 8));
+				t1 = Int4(*Pointer<UShort4>(buffer + index[1] * 8));
+				t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 8));
+				t3 = Int4(*Pointer<UShort4>(buffer + index[3] * 8));
 
 				c.x = As<Float4>(halfToFloatBits(t0));
 				c.y = As<Float4>(halfToFloatBits(t1));
@@ -1757,19 +1748,19 @@ namespace sw
 			case VK_FORMAT_R32_UINT:
 			case VK_FORMAT_D32_SFLOAT:
 				// FIXME: Optimal shuffling?
-				c.x.x = *Pointer<Float>(buffer[f0] + index[0] * 4);
-				c.x.y = *Pointer<Float>(buffer[f1] + index[1] * 4);
-				c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
-				c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
+				c.x.x = *Pointer<Float>(buffer + index[0] * 4);
+				c.x.y = *Pointer<Float>(buffer + index[1] * 4);
+				c.x.z = *Pointer<Float>(buffer + index[2] * 4);
+				c.x.w = *Pointer<Float>(buffer + index[3] * 4);
 				break;
 			case VK_FORMAT_R32G32_SFLOAT:
 			case VK_FORMAT_R32G32_SINT:
 			case VK_FORMAT_R32G32_UINT:
 				// FIXME: Optimal shuffling?
-				c.x.xy = *Pointer<Float4>(buffer[f0] + index[0] * 8);
-				c.x.zw = *Pointer<Float4>(buffer[f1] + index[1] * 8 - 8);
-				c.z.xy = *Pointer<Float4>(buffer[f2] + index[2] * 8);
-				c.z.zw = *Pointer<Float4>(buffer[f3] + index[3] * 8 - 8);
+				c.x.xy = *Pointer<Float4>(buffer + index[0] * 8);
+				c.x.zw = *Pointer<Float4>(buffer + index[1] * 8 - 8);
+				c.z.xy = *Pointer<Float4>(buffer + index[2] * 8);
+				c.z.zw = *Pointer<Float4>(buffer + index[3] * 8 - 8);
 				c.y = c.x;
 				c.x = Float4(c.x.xz, c.z.xz);
 				c.y = Float4(c.y.yw, c.z.yw);
@@ -1777,28 +1768,28 @@ namespace sw
 			case VK_FORMAT_R32G32B32_SFLOAT:
 			case VK_FORMAT_R32G32B32_SINT:
 			case VK_FORMAT_R32G32B32_UINT:
-				c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
-				c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
-				c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
-				c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
+				c.x = *Pointer<Float4>(buffer + index[0] * 16, 16);
+				c.y = *Pointer<Float4>(buffer + index[1] * 16, 16);
+				c.z = *Pointer<Float4>(buffer + index[2] * 16, 16);
+				c.w = *Pointer<Float4>(buffer + index[3] * 16, 16);
 				transpose4x3(c.x, c.y, c.z, c.w);
 				break;
 			case VK_FORMAT_R32G32B32A32_SFLOAT:
 			case VK_FORMAT_R32G32B32A32_SINT:
 			case VK_FORMAT_R32G32B32A32_UINT:
-				c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
-				c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
-				c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
-				c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
+				c.x = *Pointer<Float4>(buffer + index[0] * 16, 16);
+				c.y = *Pointer<Float4>(buffer + index[1] * 16, 16);
+				c.z = *Pointer<Float4>(buffer + index[2] * 16, 16);
+				c.w = *Pointer<Float4>(buffer + index[3] * 16, 16);
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
 			case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 			{
 				Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
-				t.x = *Pointer<Float>(buffer[f0] + index[0] * 4);
-				t.y = *Pointer<Float>(buffer[f1] + index[1] * 4);
-				t.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
-				t.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
+				t.x = *Pointer<Float>(buffer + index[0] * 4);
+				t.y = *Pointer<Float>(buffer + index[1] * 4);
+				t.z = *Pointer<Float>(buffer + index[2] * 4);
+				t.w = *Pointer<Float>(buffer + index[3] * 4);
 				t0 = As<UInt4>(t);
 				c.w = Float4(UInt4(1) << ((t0 >> 27) & UInt4(0x1F))) * Float4(1.0f / (1 << 24));
 				c.x = Float4((t0) & UInt4(0x1FF)) * c.w;
@@ -1809,10 +1800,10 @@ namespace sw
 			case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 			{
 				Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
-				t.x = *Pointer<Float>(buffer[f0] + index[0] * 4);
-				t.y = *Pointer<Float>(buffer[f1] + index[1] * 4);
-				t.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
-				t.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
+				t.x = *Pointer<Float>(buffer + index[0] * 4);
+				t.y = *Pointer<Float>(buffer + index[1] * 4);
+				t.z = *Pointer<Float>(buffer + index[2] * 4);
+				t.w = *Pointer<Float>(buffer + index[3] * 4);
 				t0 = As<UInt4>(t);
 				c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
 				c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
@@ -1943,11 +1934,13 @@ namespace sw
 		return out;
 	}
 
-	void SamplerCore::selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int4 face, bool secondLOD)
+	void SamplerCore::selectMipmap(const Pointer<Byte> &texture, Pointer<Byte> &mipmap, Pointer<Byte> &buffer, const Float &lod, bool secondLOD)
 	{
+		Pointer<Byte> mipmap0 = texture + OFFSET(Texture, mipmap[0]);
+
 		if(state.mipmapFilter == MIPMAP_NONE)
 		{
-			mipmap = texture + OFFSET(Texture,mipmap[0]);
+			mipmap = mipmap0;
 		}
 		else
 		{
@@ -1963,32 +1956,10 @@ namespace sw
 				ilod = Int(lod);
 			}
 
-			mipmap = texture + OFFSET(Texture,mipmap) + ilod * sizeof(Mipmap) + secondLOD * sizeof(Mipmap);
+			mipmap = mipmap0 + ilod * sizeof(Mipmap) + secondLOD * sizeof(Mipmap);
 		}
 
-		Pointer<Byte> buffer0 = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
-
-		if(state.textureType != TEXTURE_CUBE)
-		{
-			buffer[0] = buffer0;
-
-			if(hasYuvFormat())
-			{
-				UNIMPLEMENTED();
-			//	buffer[1] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[1]));
-			//	buffer[2] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[2]));
-			}
-		}
-		else
-		{
-			Int4 faceLayer = face * *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16) * Int4(state.textureFormat.bytes());
-
-			// TODO: Vectorize
-			buffer[0] = buffer0 + faceLayer.x;
-			buffer[1] = buffer0 + faceLayer.y;
-			buffer[2] = buffer0 + faceLayer.z;
-			buffer[3] = buffer0 + faceLayer.w;
-		}
+		buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
 	}
 
 	Int4 SamplerCore::computeFilterOffset(Float &lod)
@@ -2068,6 +2039,10 @@ namespace sw
 		else if(addressingMode == ADDRESSING_LAYER)   // Note: Offset does not apply to array layers
 		{
 			xyz0 = Min(Max(RoundInt(uvw), Int4(0)), maxXYZ);
+		}
+		else if(addressingMode == ADDRESSING_CUBEFACE)
+		{
+			xyz0 = As<Int4>(uvw);
 		}
 		else
 		{

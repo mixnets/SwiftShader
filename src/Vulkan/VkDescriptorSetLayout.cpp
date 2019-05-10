@@ -320,7 +320,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].texture.depth = sw::replicate(1);
 
 			sw::Mipmap &mipmap = imageSampler[i].texture.mipmap[0];
-			mipmap.buffer[0] = bufferView->getPointer();
+			mipmap.buffer = bufferView->getPointer();
 			mipmap.width[0] = mipmap.width[1] = mipmap.width[2] = mipmap.width[3] = static_cast<short>(numElements);
 			mipmap.height[0] = mipmap.height[1] = mipmap.height[2] = mipmap.height[3] = 1;
 			mipmap.depth[0] = mipmap.depth[1] = mipmap.depth[2] = mipmap.depth[3] = 1;
@@ -485,9 +485,9 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				   format == FORMAT_YV12_JFIF*/)
 				{
 					unsigned int YStride = pitchP;
-					unsigned int YSize = YStride * height;
+				//	unsigned int YSize = YStride * height;
 					unsigned int CStride = sw::align<16>(YStride / 2);
-					unsigned int CSize = CStride * height / 2;
+				//	unsigned int CSize = CStride * height / 2;
 
 				//	mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
 				//	mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
