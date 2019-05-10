@@ -16,6 +16,24 @@
       "revId": "b0466c4e4bbd5db7f0ddd6bdc929a1043f926130",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d03f6baf_b2e557b8",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4961,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-10T14:38:05Z",
+      "side": 1,
+      "message": "Removed the VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, kept the VK_DESCRIPTOR_TYPE_STORAGE_IMAGE case.",
+      "parentUuid": "61978d4d_8e17f17a",
+      "revId": "b0466c4e4bbd5db7f0ddd6bdc929a1043f926130",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
