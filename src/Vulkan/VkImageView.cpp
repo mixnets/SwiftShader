@@ -17,16 +17,6 @@
 
 namespace
 {
-	VkComponentMapping ResolveIdentityMapping(VkComponentMapping m)
-	{
-		return {
-			(m.r == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_R : m.r,
-			(m.g == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_G : m.g,
-			(m.b == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_B : m.b,
-			(m.a == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_A : m.a,
-		};
-	}
-
 	VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange range, const vk::Image *image)
 	{
 		return {
@@ -44,10 +34,11 @@ namespace vk
 
 std::atomic<uint32_t> ImageView::nextID(1);
 
-ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem) :
+ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion) :
 	image(Cast(pCreateInfo->image)), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
 	components(ResolveIdentityMapping(pCreateInfo->components)),
-	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
+	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image)),
+	ycbcrConversion(ycbcrConversion)
 {
 }
 

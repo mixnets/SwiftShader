@@ -280,6 +280,7 @@ bool Format::isFloatFormat() const
 	case VK_FORMAT_S8_UINT:
 	case VK_FORMAT_D16_UNORM_S8_UINT:
 	case VK_FORMAT_D24_UNORM_S8_UINT:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return false;
 	case VK_FORMAT_R16_SFLOAT:
@@ -1008,6 +1009,7 @@ int Format::componentCount() const
 	case VK_FORMAT_R64G64B64_SFLOAT:
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
@@ -1150,6 +1152,7 @@ bool Format::isUnsignedComponent(int component) const
 	case VK_FORMAT_D24_UNORM_S8_UINT:
 	case VK_FORMAT_D32_SFLOAT:
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_EAC_R11_UNORM_BLOCK:
 	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
@@ -1444,8 +1447,12 @@ int Format::bytes() const
 	case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:     return 0; // FIXME
-	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:  return 1; // Y plane only
+	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
+		UNREACHABLE("Format: %d", int(format));
+		return 0;
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		return 1;  // Y plane only
 	default:
 		UNIMPLEMENTED("Format: %d", int(format));
 	}
@@ -1510,8 +1517,9 @@ int Format::pitchB(int width, int border, bool target) const
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
 		return 16 * ((width + 11) / 12);
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
-		return sw::align<16>(width);
+		return sw::align<16>(width);  // Y plane only
 	default:
 		return bytes() * width;
 	}
@@ -1573,6 +1581,10 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
 		return pitchB(width, border, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		// "Images in this format must be defined with a width and height that is a multiple of two."
+		return pitchB(width, border, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
 	default:
 		return pitchB(width, border, target) * height;   // Pitch computed per row
 	}
@@ -1783,6 +1795,7 @@ bool Format::has16bitTextureFormat() const
 	case VK_FORMAT_R16G16B16A16_SINT:
 	case VK_FORMAT_R16G16B16A16_UINT:
 	case VK_FORMAT_R16G16B16A16_SFLOAT:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1845,6 +1858,7 @@ bool Format::has8bitTextureComponents() const
 	case VK_FORMAT_R16G16B16A16_SINT:
 	case VK_FORMAT_R16G16B16A16_UINT:
 	case VK_FORMAT_R16G16B16A16_SFLOAT:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1892,6 +1906,7 @@ bool Format::has16bitTextureComponents() const
 	case VK_FORMAT_R32G32_SFLOAT:
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 	case VK_FORMAT_R8_UNORM:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1962,6 +1977,7 @@ bool Format::has32bitIntegerTextureComponents() const
 	case VK_FORMAT_R32G32_SFLOAT:
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 	case VK_FORMAT_R8_UNORM:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
@@ -1987,6 +2003,7 @@ bool Format::hasYuvFormat() const
 {
 	switch(format)
 	{
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return true;
 	case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
@@ -2095,6 +2112,7 @@ bool Format::isRGBComponent(int component) const
 	case VK_FORMAT_R32G32B32A32_SINT:
 	case VK_FORMAT_R32G32B32A32_UINT:
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
