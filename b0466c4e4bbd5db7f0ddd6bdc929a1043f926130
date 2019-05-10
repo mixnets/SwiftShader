@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61978d4d_8e17f17a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4961,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T14:17:13Z",
+      "side": 1,
+      "message": "Texel buffers don\u0027t have samples (they\u0027re also not Dim2D)\n\nStorage images can, but you can\u0027t create them without the VkPhysicalDeviceFeatures::shaderStorageImageMultisample, which we don\u0027t claim to support.\n\nFor spec later: Odd that you can\u0027t query the number of samples in an input attachment.\n\n\nI think this is all fine. Perhaps we should just enable multisampled storage images, since we had to do all the work anyway.",
+      "revId": "b0466c4e4bbd5db7f0ddd6bdc929a1043f926130",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
