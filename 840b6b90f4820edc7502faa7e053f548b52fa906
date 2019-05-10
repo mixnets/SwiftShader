@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d355e268_493140ba",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-10T15:38:43Z",
+      "side": 1,
+      "message": "Bug:",
+      "revId": "840b6b90f4820edc7502faa7e053f548b52fa906",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61e84da4_46dbc3c1",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2102,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-10T15:38:43Z",
+      "side": 1,
+      "message": "In a more optimal implementation we would use a quad layout (or qquad for 512-bit), avoiding scatter altogether. So I\u0027d prefer not to replace this with something overly generic, only to have to bring back custom code for it later.\n\nPlease remove TODO.",
+      "range": {
+        "startLine": 2100,
+        "startChar": 2,
+        "endLine": 2102,
+        "endChar": 11
+      },
+      "revId": "840b6b90f4820edc7502faa7e053f548b52fa906",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a752da3f_7027a727",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1404,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-10T15:38:43Z",
+      "side": 1,
+      "message": "nit: Double newline",
+      "revId": "840b6b90f4820edc7502faa7e053f548b52fa906",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
