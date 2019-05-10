@@ -16,6 +16,24 @@
       "revId": "f1212902834abdff7d1ed9a6e203855ac468efd8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "992d61ff_db0813db",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4916,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T14:27:28Z",
+      "side": 1,
+      "message": "This would allow you to avoid adding more stuff to StorageImageDescriptor",
+      "parentUuid": "818e8fd0_d5a02832",
+      "revId": "f1212902834abdff7d1ed9a6e203855ac468efd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
