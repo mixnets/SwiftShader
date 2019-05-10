@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c4ca495_4a18aa19",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T02:58:59Z",
+      "side": 1,
+      "message": "Should be System/GrallocAndroid.hpp\n\nThis \"works\" as they\u0027re currently the same, but would produce a good headscratcher if they diverge...",
+      "revId": "a26df2caf3a0d72f8ab4e639937b134656cc78b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3af3c3e6_a664a992",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 956,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T02:58:59Z",
+      "side": 1,
+      "message": "You should only be doing this for swapchain images. It looks like this currently happens for *all* images.\nDistinguish between the cases based on whether you have the VkNativeBufferANDROID structure in the pNext chain above.",
+      "revId": "a26df2caf3a0d72f8ab4e639937b134656cc78b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
