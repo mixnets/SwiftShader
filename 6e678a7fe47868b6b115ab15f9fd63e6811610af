@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc50716e_9c393af3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2638,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T14:12:18Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be needed in this case (not going to find descriptor set pointers in Output/Private/Function)",
+      "revId": "6e678a7fe47868b6b115ab15f9fd63e6811610af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
