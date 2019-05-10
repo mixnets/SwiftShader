@@ -383,6 +383,7 @@ swiftshader_source_set("swiftshader_llvm") {
     "llvm/lib/Target/TargetLoweringObjectFile.cpp",
     "llvm/lib/Target/TargetMachine.cpp",
     "llvm/lib/Target/TargetMachineC.cpp",
+    "stubs/Stubs.cpp",
   ]
 
   configs = [ ":swiftshader_llvm_private_config" ]
@@ -1098,6 +1099,12 @@ swiftshader_source_set("swiftshader_llvm_support") {
 
 swiftshader_source_set("swiftshader_llvm_transforms") {
   sources = [
+    "llvm/lib/Transforms/Coroutines/CoroCleanup.cpp",
+    "llvm/lib/Transforms/Coroutines/CoroEarly.cpp",
+    "llvm/lib/Transforms/Coroutines/CoroElide.cpp",
+    "llvm/lib/Transforms/Coroutines/CoroFrame.cpp",
+    "llvm/lib/Transforms/Coroutines/CoroSplit.cpp",
+    "llvm/lib/Transforms/Coroutines/Coroutines.cpp",
     "llvm/lib/Transforms/InstCombine/InstCombineAddSub.cpp",
     "llvm/lib/Transforms/InstCombine/InstCombineAndOrXor.cpp",
     "llvm/lib/Transforms/InstCombine/InstCombineCalls.cpp",
@@ -1111,6 +1118,7 @@ swiftshader_source_set("swiftshader_llvm_transforms") {
     "llvm/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp",
     "llvm/lib/Transforms/InstCombine/InstCombineVectorOps.cpp",
     "llvm/lib/Transforms/InstCombine/InstructionCombining.cpp",
+    "llvm/lib/Transforms/IPO/BarrierNoopPass.cpp",
     "llvm/lib/Transforms/Scalar/ADCE.cpp",
     "llvm/lib/Transforms/Scalar/AlignmentFromAssumptions.cpp",
     "llvm/lib/Transforms/Scalar/BDCE.cpp",
