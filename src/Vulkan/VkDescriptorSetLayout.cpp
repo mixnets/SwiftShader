@@ -314,6 +314,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			auto numElements = bufferView->getElementCount();
 			imageSampler[i].extent = { numElements, 1, 1 };
 			imageSampler[i].arrayLayers = 1;
+			imageSampler[i].mipLevels = 1;
 			imageSampler[i].texture.widthWidthHeightHeight = sw::vector(numElements, numElements, 1, 1);
 			imageSampler[i].texture.width = sw::replicate(numElements);
 			imageSampler[i].texture.height = sw::replicate(1);
@@ -351,6 +352,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].imageViewId = imageView->id;
 			imageSampler[i].extent = imageView->getMipLevelExtent(0);
 			imageSampler[i].arrayLayers = imageView->getSubresourceRange().layerCount;
+			imageSampler[i].mipLevels = imageView->getSubresourceRange().levelCount;
 			imageSampler[i].type = imageView->getType();
 			imageSampler[i].swizzle = imageView->getComponentMapping();
 			imageSampler[i].format = imageView->getFormat(ImageView::SAMPLING);
@@ -529,6 +531,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 											 : imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = descriptor[i].samplePitchBytes * imageView->getSampleCount();
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
+			descriptor[i].mipLevels = imageView->getSubresourceRange().levelCount;
 			descriptor[i].sizeInBytes = imageView->getImageSizeInBytes();
 
 			if (imageView->getFormat().isStencil())
@@ -555,6 +558,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			descriptor[i].slicePitchBytes = 0;
 			descriptor[i].samplePitchBytes = 0;
 			descriptor[i].arrayLayers = 1;
+			descriptor[i].mipLevels = 1;
 			descriptor[i].sizeInBytes = bufferView->getRangeInBytes();
 		}
 	}
