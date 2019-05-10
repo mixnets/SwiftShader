@@ -70,6 +70,30 @@
       "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4320338_6deb8e11",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-10T01:12:53Z",
+      "side": 0,
+      "message": "Not legal.",
+      "parentUuid": "c3dfadf2_6f0d685a",
+      "range": {
+        "startLine": 240,
+        "startChar": 29,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "70902d929d85b658b90ef1814a46cae493088eeb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
