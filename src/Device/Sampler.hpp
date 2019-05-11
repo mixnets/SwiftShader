@@ -153,6 +153,7 @@ namespace sw
 		bool compareEnable;
 		VkCompareOp compareOp;
 		VkBorderColor border;
+		int gatherComponent;
 
 		#if PERF_PROFILE
 		bool compressedFormat;

@@ -35,7 +35,8 @@ namespace sw
 		Grad,      // Use provided gradients.
 		Fetch,     // Use provided integer coordinates.
 		Base,      // Sample base level.
-		SAMPLER_METHOD_LAST = Base,
+		Gather,    // Return one channel of each texel in footprint
+		SAMPLER_METHOD_LAST = Gather,
 	};
 
 	enum SamplerOption
