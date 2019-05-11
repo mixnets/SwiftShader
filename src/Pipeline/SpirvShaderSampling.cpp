@@ -42,7 +42,8 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	static std::mutex mutex;
 
 	// FIXME(b/129523279): Take instruction opcode and optional parameters into account (SamplerMethod / SamplerOption).
-	auto key = (static_cast<uint64_t>(imageDescriptor->imageViewId) << 32) | static_cast<uint64_t>(sampler->id);
+	//auto key = (static_cast<uint64_t>(imageDescriptor->imageViewId) << 32) | static_cast<uint64_t>(sampler->id);
+	auto key = (static_cast<uint64_t>(inst) << 32 | imageDescriptor->imageViewId << 16 | sampler->id);
 
 	std::unique_lock<std::mutex> lock(mutex);
 	auto it = cache.find(key);
@@ -53,7 +54,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	Sampler samplerState = {};
 	samplerState.textureType = convertTextureType(type);
 	samplerState.textureFormat = imageDescriptor->format;
-	samplerState.textureFilter = convertFilterMode(sampler);
+	samplerState.textureFilter = instruction.samplerMethod == Gather ? FILTER_GATHER : convertFilterMode(sampler);
 	samplerState.border = sampler->borderColor;
 
 	samplerState.addressingModeU = convertAddressingMode(0, sampler->addressModeU, type);
@@ -66,6 +67,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
 	samplerState.compareOp = sampler->compareOp;
 	samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates == VK_TRUE);
+	samplerState.gatherComponent = instruction.gatherComponent;
 
 	if(sampler->anisotropyEnable != VK_FALSE)
 	{
