@@ -268,6 +268,26 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 		return VK_ERROR_FORMAT_NOT_SUPPORTED;
 	}
 
+	if ((usage & VK_IMAGE_USAGE_STORAGE_BIT) && !(features & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT))
+	{
+		return VK_ERROR_FORMAT_NOT_SUPPORTED;
+	}
+
+	if ((usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) && !(features & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT))
+	{
+		return VK_ERROR_FORMAT_NOT_SUPPORTED;
+	}
+
+	if ((usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) && !(features & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT))
+	{
+		return VK_ERROR_FORMAT_NOT_SUPPORTED;
+	}
+
+	if ((usage & VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT) && !(features & (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)))
+	{
+		return VK_ERROR_FORMAT_NOT_SUPPORTED;
+	}
+
 	vk::Cast(physicalDevice)->getImageFormatProperties(format, type, tiling, usage, flags, pImageFormatProperties);
 
 	return VK_SUCCESS;
