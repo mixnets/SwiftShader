@@ -95,6 +95,7 @@ void Image::destroy(const VkAllocationCallbacks* pAllocator)
 	if(decompressedImage)
 	{
 		vk::deallocate(decompressedImage, pAllocator);
+		decompressedImage = nullptr;
 	}
 }
 
