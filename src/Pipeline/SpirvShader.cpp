@@ -935,6 +935,8 @@ namespace sw
 			case spv::OpImageSampleProjExplicitLod:
 			case spv::OpImageSampleProjDrefImplicitLod:
 			case spv::OpImageSampleProjDrefExplicitLod:
+			case spv::OpImageGather:
+			case spv::OpImageDrefGather:
 			case spv::OpImageFetch:
 			case spv::OpImageQuerySizeLod:
 			case spv::OpImageQuerySize:
@@ -2485,6 +2487,12 @@ namespace sw
 
 		case spv::OpImageSampleProjDrefExplicitLod:
 			return EmitImageSampleExplicitLod(ProjDref, insn, state);
+
+		case spv::OpImageGather:
+			return EmitImageGather(None, insn, state);
+
+		case spv::OpImageDrefGather:
+			return EmitImageGather(Dref, insn, state);
 
 		case spv::OpImageFetch:
 			return EmitImageFetch(insn, state);
@@ -4654,6 +4662,17 @@ namespace sw
 		return EmitImageSample({variant, Implicit}, insn, state);
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const
+	{
+		ImageInstruction inst = {variant, Gather};
+		if (!inst.isDref())
+		{
+			inst.gatherComponent = getObject(insn.word(5)).constantValue[0];
+			printf("EmitImageGather: gather component %u\n", inst.gatherComponent);
+		}
+		return EmitImageSample(inst, insn, state);
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const
 	{
 		auto isDref = (variant == Dref) || (variant == ProjDref);
@@ -4709,7 +4728,7 @@ namespace sw
 		Object::ID offsetId = 0;
 		bool sample = false;
 
-		uint32_t operand = instruction.isDref() ? 6 : 5;
+		uint32_t operand = (instruction.isDref() || instruction.samplerMethod == Gather) ? 6 : 5;
 
 		if(insn.wordCount() > operand)
 		{

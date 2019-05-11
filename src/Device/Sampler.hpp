@@ -154,6 +154,8 @@ namespace sw
 		VkCompareOp compareOp;
 		VkBorderColor border;
 		bool unnormalizedCoordinates;
+int gatherComponent;
+		VkComponentSwizzle gatherSwizzle;
 
 		#if PERF_PROFILE
 		bool compressedFormat;
