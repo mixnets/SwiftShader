@@ -121,8 +121,6 @@ namespace sw
 		bool depthBufferActive() const;
 		bool stencilActive() const;
 
-		bool perspectiveActive() const;
-
 		bool alphaBlendActive() const;
 		VkBlendFactor sourceBlendFactor() const;
 		VkBlendFactor destBlendFactor() const;
