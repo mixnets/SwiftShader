@@ -22,6 +22,30 @@
       "revId": "9503956c499906442367966cfd651e2380f7c8bb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69127353_034831a8",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-13T15:16:03Z",
+      "side": 1,
+      "message": "I\u0027m not sure how that really helps.\n\nYour problematic scenario looks like this:\n\n1) QueueSubmit, includes draw, with F1\n  - all the work gets tagged with F1, with add/done called as necessary\n\n2) QueueSubmit, no work, with F2\n  - Nothing gets tagged with F2, but all the work submitted in 1) is in F2\u0027s synchronization scope\n\n3) WFF\n  - Fails to ensure the work submitted in 1) is actually complete.",
+      "parentUuid": "9ac17060_8d047691",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 26
+      },
+      "revId": "9503956c499906442367966cfd651e2380f7c8bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
