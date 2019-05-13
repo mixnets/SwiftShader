@@ -44,6 +44,11 @@ void Framebuffer::clear(const RenderPass* renderPass, uint32_t clearValueCount, 
 	for(uint32_t i = 0; i < count; i++)
 	{
 		const VkAttachmentDescription attachment = renderPass->getAttachment(i);
+		if (!renderPass->isAttachmentUsed(i))
+		{
+			continue;
+		}
+
 		const Format format(attachment.format);
 		bool isDepth = format.isDepth();
 		bool isStencil = format.isStencil();
