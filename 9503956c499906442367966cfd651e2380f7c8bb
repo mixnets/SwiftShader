@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ac17060_8d047691",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-13T14:49:19Z",
+      "side": 1,
+      "message": "Instead of doing this, can\u0027t we just add a mutex/condition_variable to the fence and prevent doing more add() calls before all the done() are complete (aka signal happened in the done() function)?\nAll the add() calls for the current work should have been submitted at this point.",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 26
+      },
+      "revId": "9503956c499906442367966cfd651e2380f7c8bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
