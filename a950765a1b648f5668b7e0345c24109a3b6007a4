@@ -68,6 +68,30 @@
       "revId": "a950765a1b648f5668b7e0345c24109a3b6007a4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5176da7a_6178eb25",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-13T21:47:41Z",
+      "side": 1,
+      "message": "Well, not intentionally sharing bits. I\u0027m blatantly cheating here -- \"64K images and samplers ought to be enough for anyone\".\n\nIs critical for a real solution that there are no collisions, as there is no validation of this thing later... we\u0027ll just call a function that does the wrong thing, and all hell breaks loose. The key needs to be larger than 64 bits if you\u0027re going to have 32b image and sampler IDs.",
+      "parentUuid": "8a26fc3f_ad853a8f",
+      "range": {
+        "startLine": 51,
+        "startChar": 1,
+        "endLine": 51,
+        "endChar": 99
+      },
+      "revId": "a950765a1b648f5668b7e0345c24109a3b6007a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
