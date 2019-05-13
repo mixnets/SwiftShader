@@ -22,6 +22,30 @@
       "revId": "ef35ac2c821e4cda30c939f03c6680a16374ca7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c367aa7_6ae7ac2e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4632,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-13T17:17:28Z",
+      "side": 1,
+      "message": "We could possibly just push all of this down into EmitImageSample. We don\u0027t have a clean separation of responsibilities here -- both layers have to go fishing in image operands, and so both need to know where the image operands start. I would like to do that refactor in a separate patch though, since this is a clear bugfix.",
+      "parentUuid": "c001ce95_5bbc0c79",
+      "range": {
+        "startLine": 4631,
+        "startChar": 2,
+        "endLine": 4632,
+        "endChar": 90
+      },
+      "revId": "ef35ac2c821e4cda30c939f03c6680a16374ca7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
