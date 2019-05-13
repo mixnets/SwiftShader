@@ -1722,9 +1722,11 @@ namespace sw
 		float x0 = region.srcOffsets[0].x + (0.5f - region.dstOffsets[0].x) * widthRatio;
 		float y0 = region.srcOffsets[0].y + (0.5f - region.dstOffsets[0].y) * heightRatio;
 
-		bool doFilter = (filter != VK_FILTER_NEAREST);
+		bool doFilter = (filter != VK_FILTER_NEAREST) || (src->getSampleCountFlagBits() != dst->getSampleCountFlagBits());
+
 		State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 		            { doFilter, doFilter });
+
 		state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 		                    (region.srcOffsets[0].y < 0) ||
 		                    (static_cast<uint32_t>(region.srcOffsets[1].x) > srcExtent.width) ||
