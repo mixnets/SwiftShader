@@ -61,7 +61,7 @@ public:
 	uint32_t                 getLastLayerIndex(const VkImageSubresourceRange& subresourceRange) const;
 	uint32_t                 getLastMipLevel(const VkImageSubresourceRange& subresourceRange) const;
 	VkSampleCountFlagBits    getSampleCountFlagBits() const { return samples; }
-	VkExtent3D               getMipLevelExtent(uint32_t mipLevel) const;
+	VkExtent3D               getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int                      rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int                      slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
@@ -91,7 +91,7 @@ private:
 	int bytesPerTexel(VkImageAspectFlagBits flags) const;
 	VkFormat getClearFormat() const;
 	void clear(void* pixelData, VkFormat pixelFormat, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea);
-	int borderSize(VkImageAspectFlagBits aspect) const;
+	int borderSize() const;
 	void decodeETC2(const VkImageSubresourceRange& subresourceRange) const;
 
 	const Device *const      device = nullptr;
