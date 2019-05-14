@@ -157,7 +157,8 @@ void ImageView::resolve(ImageView* resolveAttachment)
 		resolveAttachment->subresourceRange.layerCount
 	};
 	region.dstOffset = { 0, 0, 0 };
-	region.extent = image->getMipLevelExtent(subresourceRange.baseMipLevel);
+	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                         subresourceRange.baseMipLevel);
 
 	image->copyTo(*(resolveAttachment->image), region);
 }
@@ -198,7 +199,8 @@ int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage) const
 
 VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 {
-	return image->getMipLevelExtent(subresourceRange.baseMipLevel + mipLevel);
+	return image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
 void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const

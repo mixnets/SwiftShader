@@ -1950,7 +1950,11 @@ namespace rr
 	class UInt4 : public LValue<UInt4>, public XYZW<UInt4>
 	{
 	public:
+	//	explicit UInt4(RValue<Byte4> cast);
+	//	explicit UInt4(RValue<SByte4> cast);
 		explicit UInt4(RValue<Float4> cast);
+	//	explicit UInt4(RValue<Short4> cast);
+		explicit UInt4(RValue<UShort4> cast);
 
 		UInt4();
 		UInt4(int xyzw);

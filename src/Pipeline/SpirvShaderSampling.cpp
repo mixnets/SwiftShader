@@ -71,6 +71,12 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
 	samplerState.compareOp = sampler->compareOp;
 
+	if(sampler->ycbcrConversion)
+	{
+		samplerState.ycbcrModel = sampler->ycbcrConversion->ycbcrModel;
+		samplerState.ycbcrRange = sampler->ycbcrConversion->ycbcrRange;
+	}
+
 	if(sampler->anisotropyEnable != VK_FALSE)
 	{
 		UNSUPPORTED("anisotropyEnable");
@@ -216,6 +222,11 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 
 sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 {
+	if(sampler->ycbcrConversion)
+	{
+		return MIPMAP_NONE;
+	}
+
 	switch(sampler->mipmapMode)
 	{
 	case VK_SAMPLER_MIPMAP_MODE_NEAREST: return MIPMAP_POINT;
