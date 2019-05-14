@@ -932,6 +932,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 	{
 		switch((long)(extensionCreateInfo->sType))
 		{
+		case VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO_KHR:
+		{
+			ASSERT(!HasExtensionProperty(VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME, deviceExtensionProperties,
+										 sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
+		}
+		break;
 #ifdef __ANDROID__
 		case VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID:
 		{
