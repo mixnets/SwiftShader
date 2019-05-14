@@ -22,33 +22,6 @@
 
 namespace
 {
-	VkImageAspectFlags GetAspects(vk::Format format)
-	{
-		// TODO: probably just flatten this out to a full format list, and alter
-		// isDepth / isStencil etc to check for their aspect
-
-		VkImageAspectFlags aspects = 0;
-		if (format.isDepth()) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
-		if (format.isStencil()) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
-
-		switch(format)
-		{
-		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
-			aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT;
-			break;
-		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
-			aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT;
-			break;
-		default:
-			ASSERT(!format.hasYuvFormat());
-			break;
-		}
-
-		// Anything else is "color".
-		if (!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
-		return aspects;
-	}
-
 	ETC_Decoder::InputType GetInputType(const vk::Format& format)
 	{
 		switch(format)
@@ -119,8 +92,8 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	VkMemoryRequirements memoryRequirements;
 	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = getStorageSize(GetAspects(format)) +
-	                          (decompressedImage ? decompressedImage->getStorageSize(GetAspects(decompressedImage->format)) : 0);
+	memoryRequirements.size = getStorageSize(format.getAspects()) +
+	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
 	return memoryRequirements;
 }
 
@@ -131,7 +104,7 @@ void Image::bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset)
 	if(decompressedImage)
 	{
 		decompressedImage->deviceMemory = deviceMemory;
-		decompressedImage->memoryOffset = memoryOffset + getStorageSize(GetAspects(format));
+		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
 	}
 }
 
@@ -654,12 +627,34 @@ Format Image::GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
 	// YCbCr formats
 	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
 	case VK_IMAGE_ASPECT_PLANE_0_BIT:
-	case VK_IMAGE_ASPECT_PLANE_1_BIT:
-	case VK_IMAGE_ASPECT_PLANE_2_BIT:
 		switch(format)
 		{
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 			return VK_FORMAT_R8_UNORM;
 		default:
 			UNSUPPORTED("format %d", int(format));
