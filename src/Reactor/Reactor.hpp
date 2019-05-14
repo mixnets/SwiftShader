@@ -3314,7 +3314,12 @@ namespace rr
 	template <> struct PrintValue::Ty<Int>
 	{
 		static constexpr const char* fmt = "%d";
-		static std::vector<Value*> val(const RValue<Int>& v) { return {v.value}; }
+		static std::vector<Value*> val(const RValue<Int>& v);
+	};
+	template <> struct PrintValue::Ty<Int2>
+	{
+		static constexpr const char* fmt = "[%d, %d]";
+		static std::vector<Value*> val(const RValue<Int2>& v);
 	};
 	template <> struct PrintValue::Ty<Int4>
 	{
@@ -3324,7 +3329,12 @@ namespace rr
 	template <> struct PrintValue::Ty<UInt>
 	{
 		static constexpr const char* fmt = "%u";
-		static std::vector<Value*> val(const RValue<UInt>& v) { return {v.value}; }
+		static std::vector<Value*> val(const RValue<UInt>& v);
+	};
+	template <> struct PrintValue::Ty<UInt2>
+	{
+		static constexpr const char* fmt = "[%u, %u]";
+		static std::vector<Value*> val(const RValue<UInt2>& v);
 	};
 	template <> struct PrintValue::Ty<UInt4>
 	{
