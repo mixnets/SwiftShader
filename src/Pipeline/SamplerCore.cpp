@@ -1568,20 +1568,6 @@ ASSERT(false);
 			const float Gr = -2 * Kr * (1 - Kr) / Kg;
 			const float Bb = 2 * (1 - Kb);
 
-			// Scaling and bias for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
-			const float Yy = studioSwing ? 255.0f / (235 - 16) : 1.0f;
-			const float Uu = studioSwing ? 255.0f / (240 - 16) : 1.0f;
-			const float Vv = studioSwing ? 255.0f / (240 - 16) : 1.0f;
-
-			const float Rv = Vv * Rr;
-			const float Gu = Uu * Gb;
-			const float Gv = Vv * Gr;
-			const float Bu = Uu * Bb;
-
-			const float R0 = (studioSwing * -16 * Yy - 128 * Rv) / 255;
-			const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
-			const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
-
 			Int c0 = Int(buffer[0][index[0]]);
 			Int c1 = Int(buffer[0][index[1]]);
 			Int c2 = Int(buffer[0][index[2]]);
@@ -1590,44 +1576,66 @@ ASSERT(false);
 		//	UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
-			c0 = Int(buffer[1][index[0]]);
-			c1 = Int(buffer[1][index[1]]);
-			c2 = Int(buffer[1][index[2]]);
-			c3 = Int(buffer[1][index[3]]);
-			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+		//	computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
+		//	c0 = Int(buffer[1][index[0]]);
+		//	c1 = Int(buffer[1][index[1]]);
+		//	c2 = Int(buffer[1][index[2]]);
+		//	c3 = Int(buffer[1][index[3]]);
+		//	c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+		////	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
 		//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
-			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			// TODO: Optimize 2-plane, combined U/V sampling.
-			c0 = Int(buffer[2][index[0]]);
-			c1 = Int(buffer[2][index[1]]);
-			c2 = Int(buffer[2][index[2]]);
-			c3 = Int(buffer[2][index[3]]);
-			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+		//	// TODO: Optimize 2-plane, combined U/V sampling.
+		//	c0 = Int(buffer[2][index[0]]);
+		//	c1 = Int(buffer[2][index[1]]);
+		//	c2 = Int(buffer[2][index[2]]);
+		//	c3 = Int(buffer[2][index[3]]);
+		//	c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+		////	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
 		//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
-			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			Short4 UV;
+			UV = Insert(UV, Pointer<Short>(buffer[1])[index[0]], 0);  // TODO: Insert(UShort4, UShort)
+			UV = Insert(UV, Pointer<Short>(buffer[1])[index[1]], 1);
+			UV = Insert(UV, Pointer<Short>(buffer[1])[index[2]], 2);
+			UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
+			UShort4 U = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
+			UShort4 V = (UV & Short4(0x00FFu)) | (UV << 8);
 
 			if(false)
 			{
-				//const UShort4 yY = UShort4(iround(Yy * 0x4000));
-				//const UShort4 rV = UShort4(iround(Rv * 0x4000));
-				//const UShort4 gU = UShort4(iround(-Gu * 0x4000));
-				//const UShort4 gV = UShort4(iround(-Gv * 0x4000));
-				//const UShort4 bU = UShort4(iround(Bu * 0x4000));
+				// Scaling and bias for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
+				const float Yy = studioSwing ? 255.0f / (235 - 16) : 1.0f;
+				const float Uu = studioSwing ? 255.0f / (240 - 16) : 1.0f;
+				const float Vv = studioSwing ? 255.0f / (240 - 16) : 1.0f;
 
-				//const UShort4 r0 = UShort4(iround(-R0 * 0x4000));
-				//const UShort4 g0 = UShort4(iround(G0 * 0x4000));
-				//const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
+				const float Rv = Vv * Rr;
+				const float Gu = Uu * Gb;
+				const float Gv = Vv * Gr;
+				const float Bu = Uu * Bb;
 
-				//UShort4 y = MulHigh(Y, yY);
-				//UShort4 r = SubSat(y + MulHigh(V, rV), r0);
-				//UShort4 g = SubSat(y + g0, MulHigh(U, gU) + MulHigh(V, gV));
-				//UShort4 b = SubSat(y + MulHigh(U, bU), b0);
+				const float R0 = (studioSwing * -16 * Yy - 128 * Rv) / 255;
+				const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
+				const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
 
-				//c.x = Min(r, UShort4(0x3FFF)) << 2;
-				//c.y = Min(g, UShort4(0x3FFF)) << 2;
-				//c.z = Min(b, UShort4(0x3FFF)) << 2;
+				const UShort4 yY = UShort4(iround(Yy * 0x4000));
+				const UShort4 rV = UShort4(iround(Rv * 0x4000));
+				const UShort4 gU = UShort4(iround(-Gu * 0x4000));
+				const UShort4 gV = UShort4(iround(-Gv * 0x4000));
+				const UShort4 bU = UShort4(iround(Bu * 0x4000));
+
+				const UShort4 r0 = UShort4(iround(-R0 * 0x4000));
+				const UShort4 g0 = UShort4(iround(G0 * 0x4000));
+				const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
+
+				UShort4 y = MulHigh(Y, yY);
+				UShort4 r = SubSat(y + MulHigh(V, rV), r0);
+				UShort4 g = SubSat(y + g0, MulHigh(U, gU) + MulHigh(V, gV));
+				UShort4 b = SubSat(y + MulHigh(U, bU), b0);
+
+				c.x = Min(r, UShort4(0x3FFF)) << 2;
+				c.y = Min(g, UShort4(0x3FFF)) << 2;
+				c.z = Min(b, UShort4(0x3FFF)) << 2;
 			}
 
 			if(state.ycbcrModel == VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY)

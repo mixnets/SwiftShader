@@ -333,14 +333,16 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 		}
 	}
 	else if (entry.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
-	   		 entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+	         entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
 	{
 		SampledImageDescriptor *imageSampler = reinterpret_cast<SampledImageDescriptor*>(memToWrite);
 
 		for(uint32_t i = 0; i < entry.descriptorCount; i++)
 		{
 			auto update = reinterpret_cast<VkDescriptorImageInfo const *>(src + entry.offset + entry.stride * i);
+
 			vk::ImageView *imageView = vk::Cast(update->imageView);
+			Format format = imageView->getFormat(ImageView::SAMPLING);
 			sw::Texture *texture = &imageSampler[i].texture;
 
 			// "All consecutive bindings updated via a single VkWriteDescriptorSet structure, except those with a
@@ -357,7 +359,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].sampleCount = imageView->getSampleCount();
 			imageSampler[i].type = imageView->getType();
 			imageSampler[i].swizzle = imageView->getComponentMapping();
-			imageSampler[i].format = imageView->getFormat(ImageView::SAMPLING);
+			imageSampler[i].format = format;
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 			int baseLevel = subresourceRange.baseMipLevel;
@@ -367,7 +369,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int level = mipmapLevel - baseLevel;  // Level within the image view
 				level = sw::clamp(level, 0, (int)subresourceRange.levelCount - 1);
 
-				bool isYCbCr = imageView->getFormat().hasYuvFormat();
+				bool isYCbCr = format.hasYuvFormat();
 				VkImageAspectFlagBits aspect = !isYCbCr ? VK_IMAGE_ASPECT_COLOR_BIT : VK_IMAGE_ASPECT_PLANE_0_BIT;
 				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
 
@@ -390,7 +392,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 					VkOffset3D offset = {0, 0, 0};
 					mipmap.buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
 					mipmap.buffer[1] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING);
-					mipmap.buffer[2] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
+					if(format.getAspects() & VK_IMAGE_ASPECT_PLANE_2_BIT) mipmap.buffer[2] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
 				}
 				else
 				{
@@ -399,7 +401,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
-				Format format = imageView->getFormat(ImageView::SAMPLING);
+
 				int layers = imageView->getSubresourceRange().layerCount;
 				// TODO(b/129523279): Untangle depth vs layers throughout the sampler
 				int width = extent.width;

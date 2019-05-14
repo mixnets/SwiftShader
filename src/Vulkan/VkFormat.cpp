@@ -86,6 +86,33 @@ bool Format::isNonNormalizedInteger() const
 	return isSignedNonNormalizedInteger() || isUnsignedNonNormalizedInteger();
 }
 
+VkImageAspectFlags Format::getAspects() const
+{
+	// TODO: probably just flatten this out to a full format list, and alter
+	// isDepth / isStencil etc to check for their aspect
+
+	VkImageAspectFlags aspects = 0;
+	if(isDepth()) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
+	if(isStencil()) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
+
+	switch(format)
+	{
+	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT;
+		break;
+	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		aspects = VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT;
+		break;
+	default:
+		ASSERT(!hasYuvFormat());
+		break;
+	}
+
+	// Anything else is "color".
+	if(!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
+	return aspects;
+}
+
 bool Format::isStencil() const
 {
 	switch(format)

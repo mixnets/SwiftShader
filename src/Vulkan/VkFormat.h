@@ -36,6 +36,7 @@ public:
 	bool isUnsignedNonNormalizedInteger() const;
 	bool isNonNormalizedInteger() const;
 
+	VkImageAspectFlags getAspects() const;
 	bool isStencil() const;
 	bool isDepth() const;
 	bool hasQuadLayout() const;
