@@ -22,6 +22,30 @@
       "revId": "1f908db6cde87c3afd4d39a56bd64970e42241f2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7249461c_1c00cc73",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4079,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-14T16:52:49Z",
+      "side": 1,
+      "message": "That returns an int32. This needs to be the natural integer size.",
+      "parentUuid": "f25c6443_d0a3613f",
+      "range": {
+        "startLine": 4079,
+        "startChar": 15,
+        "endLine": 4079,
+        "endChar": 68
+      },
+      "revId": "1f908db6cde87c3afd4d39a56bd64970e42241f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
