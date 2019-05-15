@@ -73,8 +73,6 @@ public:
 	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
 	const Image*             getSampledImage() const { return decompressedImage ? decompressedImage : this; }
 
-	static Format            GetAspectFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
-
 private:
 	void copy(VkBuffer buffer, const VkBufferImageCopy& region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;

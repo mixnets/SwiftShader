@@ -1986,8 +1986,8 @@ ASSERT(false);
 
 			if(hasYuvFormat())
 			{
-				buffer[1] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[1]));
-				buffer[2] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[2]));
+				buffer[1] = *Pointer<Pointer<Byte>>(mipmap + sizeof(Mipmap) * 1 + OFFSET(Mipmap,buffer[0]));
+				buffer[2] = *Pointer<Pointer<Byte>>(mipmap + sizeof(Mipmap) * 2 + OFFSET(Mipmap,buffer[0]));
 			}
 		}
 		else

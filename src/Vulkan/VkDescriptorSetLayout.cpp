@@ -391,9 +391,12 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 					//
 
 					VkOffset3D offset = {0, 0, 0};
-					mipmap.buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
-					mipmap.buffer[1] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING);
-					if(format.getAspects() & VK_IMAGE_ASPECT_PLANE_2_BIT) mipmap.buffer[2] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
+					texture->mipmap[0].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
+					texture->mipmap[1].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING);
+					if(format.getAspects() & VK_IMAGE_ASPECT_PLANE_2_BIT)
+					{
+						texture->mipmap[2].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
+					}
 				}
 				else
 				{

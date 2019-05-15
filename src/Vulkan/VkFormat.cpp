@@ -113,6 +113,90 @@ VkImageAspectFlags Format::getAspects() const
 	return aspects;
 }
 
+Format Format::getAspectFormat(VkImageAspectFlags aspect) const
+{
+	switch(aspect)
+	{
+	case VK_IMAGE_ASPECT_COLOR_BIT:
+	case (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT):
+	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT):
+	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT):
+		return format;
+
+	case VK_IMAGE_ASPECT_DEPTH_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+			return VK_FORMAT_D16_UNORM;
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+			return VK_FORMAT_X8_D24_UNORM_PACK32; // FIXME: This will allocate an extra byte per pixel
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_D32_SFLOAT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_STENCIL_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_D16_UNORM_S8_UINT:
+		case VK_FORMAT_D24_UNORM_S8_UINT:
+		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+			return VK_FORMAT_S8_UINT;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	// YCbCr formats
+	// Vulkan 1.1 section 32.1.1. Compatible formats of planes of multi-planar formats
+	case VK_IMAGE_ASPECT_PLANE_0_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_1_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			return VK_FORMAT_R8G8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	case VK_IMAGE_ASPECT_PLANE_2_BIT:
+		switch(format)
+		{
+		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+			return VK_FORMAT_R8_UNORM;
+		default:
+			UNSUPPORTED("format %d", int(format));
+			break;
+		}
+		break;
+
+	default:
+		UNSUPPORTED("aspect %x", int(aspect));
+		break;
+	}
+
+	return format;
+}
+
 bool Format::isStencil() const
 {
 	switch(format)

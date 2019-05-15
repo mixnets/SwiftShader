@@ -37,6 +37,7 @@ public:
 	bool isNonNormalizedInteger() const;
 
 	VkImageAspectFlags getAspects() const;
+	Format getAspectFormat(VkImageAspectFlags aspect) const;
 	bool isStencil() const;
 	bool isDepth() const;
 	bool hasQuadLayout() const;
