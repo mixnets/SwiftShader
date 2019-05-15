@@ -22,6 +22,30 @@
       "revId": "dcd02274782a18f9a53450e86123158f3aba4f57",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b215cc7_d0e26192",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-15T01:19:06Z",
+      "side": 0,
+      "message": "I think doing this ourselves is the right thing long-term. We just took a shortcut by using this pass, \nbut our implementation is much simpler and faster than doing the SPIRV-\u003eSPIRV transform.",
+      "parentUuid": "a5082d17_caa4d915",
+      "range": {
+        "startLine": 197,
+        "startChar": 1,
+        "endLine": 199,
+        "endChar": 72
+      },
+      "revId": "dcd02274782a18f9a53450e86123158f3aba4f57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
