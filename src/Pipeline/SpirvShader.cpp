@@ -31,6 +31,29 @@
 
 #include <queue>
 
+// Enable this to print verbose debug messages as each SPIR-V instructon is
+// executed. Very handy for performing text diffs when the thread count is
+// reduced to 1 and execution is deterministic.
+#define ENABLE_DBG_MSGS 0
+
+#if ENABLE_DBG_MSGS
+#define DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
+#include "spirv-tools/libspirv.h"
+namespace spvtools {
+	// Function implemented in third_party/SPIRV-Tools/source/disassemble.cpp
+	// but with no public header.
+	std::string spvInstructionBinaryToText(const spv_target_env env,
+	                                       const uint32_t* inst_binary,
+	                                       const size_t inst_word_count,
+	                                       const uint32_t* binary,
+	                                       const size_t word_count,
+	                                       const uint32_t options);
+
+}  // namespace spvtools
+#else
+#define DBG(...)
+#endif // ENABLE_DBG_MSGS
+
 namespace
 {
 	constexpr float PI = 3.141592653589793f;
@@ -330,12 +353,16 @@ namespace sw
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
 					// Offsets are sequential. Perform regular load.
-					return rr::Load(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
+					auto out = rr::Load(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
+					DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, ptr.offsets(), out, mask);
+					return out;
 				}
 				if (ptr.hasStaticEqualOffsets())
 				{
 					// Load one, replicate.
-					return T(*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment));
+					auto out = T(*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment));
+					DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, ptr.offsets(), out, mask);
+					return out;
 				}
 			}
 			else
@@ -368,6 +395,7 @@ namespace sw
 						EL el = *rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment);
 						out = T(el);
 					}
+					DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
 					return out;
 				}
 
@@ -386,10 +414,14 @@ namespace sw
 
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
-					return rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment, zeroMaskedLanes);
+					auto out = rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment, zeroMaskedLanes);
+					DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
+					return out;
 				}
 
-				return rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, alignment, zeroMaskedLanes);
+				auto out = rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, alignment, zeroMaskedLanes);
+				DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
+				return out;
 			}
 			else
 			{
@@ -421,6 +453,7 @@ namespace sw
 						}
 					}
 				}
+				DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
 				return out;
 			}
 		}
@@ -431,6 +464,8 @@ namespace sw
 			using EL = typename Element<T>::type;
 			constexpr size_t alignment = sizeof(float);
 			auto offsets = ptr.offsets();
+
+			DBG("Store(atomic: {0}, order: {1}) {2}:{3} <- {4}, mask: {5}", atomic, int(order), ptr.base, offsets, val, mask);
 
 			switch(robustness)
 			{
@@ -503,6 +538,7 @@ namespace sw
 					}
 				}
 			}
+			DBG("{0}:{1}: {2}", ptr.base, offsets, rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, sizeof(float)));
 		}
 
 	} // namespace SIMD
@@ -2248,8 +2284,10 @@ namespace sw
 			for (auto in : block.ins)
 			{
 				auto inMask = GetActiveLaneMaskEdge(state, in, blockId);
+				DBG("Block {0} -> {1} mask: {2}", in, blockId, inMask);
 				activeLaneMask |= inMask;
 			}
+			DBG("Block {0} mask: {1}", blockId, activeLaneMask);
 			state->setActiveLaneMask(activeLaneMask);
 		}
 
@@ -2262,6 +2300,8 @@ namespace sw
 				state->pending->push_back(out);
 			}
 		}
+
+		DBG("Block {0} done", blockId);
 	}
 
 	void SpirvShader::EmitLoop(EmitState *state) const
@@ -2276,6 +2316,8 @@ namespace sw
 		{
 			return; // Already emitted this loop.
 		}
+
+		DBG("*** LOOP HEADER ***");
 
 		// Gather all the blocks that make up the loop.
 		std::unordered_set<Block::ID> loopBlocks;
@@ -2325,6 +2367,8 @@ namespace sw
 		// Start emitting code inside the loop.
 		Nucleus::createBr(headerBasicBlock);
 		Nucleus::setInsertBlock(headerBasicBlock);
+
+		DBG("*** LOOP START (mask: {0}) ***", loopActiveLaneMask);
 
 		// Load the active lane mask.
 		state->setActiveLaneMask(loopActiveLaneMask);
@@ -2414,6 +2458,8 @@ namespace sw
 			}
 		}
 
+		DBG("*** LOOP END (mask: {0}) ***", loopActiveLaneMask);
+
 		// Loop body now done.
 		// If any lanes are still active, jump back to the loop header,
 		// otherwise jump to the merge block.
@@ -2431,6 +2477,19 @@ namespace sw
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
 		auto opcode = insn.opcode();
+
+#if ENABLE_DBG_MSGS
+		{
+			auto text = spvtools::spvInstructionBinaryToText(
+				SPV_ENV_VULKAN_1_1,
+				insn.wordPointer(0),
+				insn.wordCount(),
+				insns.data(),
+				insns.size(),
+				SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
+			DBG("{0}", text);
+		}
+#endif // ENABLE_DBG_MSGS
 
 		switch (opcode)
 		{
@@ -3661,6 +3720,10 @@ namespace sw
 			}
 		}
 
+		DBG("{0}: {1}", insn.word(2), dst);
+		DBG("{0}: {1}", insn.word(3), lhs);
+		DBG("{0}: {1}", insn.word(4), rhs);
+
 		return EmitResult::Continue;
 	}
 
@@ -3688,9 +3751,14 @@ namespace sw
 
 		for (auto i = 0u; i < type.sizeInComponents; i++)
 		{
-			auto sel = cond.Int(condIsScalar ? 0 : i);
-			dst.move(i, (sel & lhs.Int(i)) | (~sel & rhs.Int(i)));   // TODO: IfThenElse()
+			auto sel = cond.UInt(condIsScalar ? 0 : i);
+			dst.move(i, (sel & lhs.UInt(i)) | (~sel & rhs.UInt(i)));   // TODO: IfThenElse()
 		}
+
+		DBG("{0}: {1}", insn.word(2), dst);
+		DBG("{0}: {1}", insn.word(3), cond);
+		DBG("{0}: {1}", insn.word(4), lhs);
+		DBG("{0}: {1}", insn.word(5), rhs);
 
 		return EmitResult::Continue;
 	}
@@ -4763,6 +4831,7 @@ namespace sw
 
 		auto sel = GenericValue(this, state, selId);
 		ASSERT_MSG(getType(sel.type).sizeInComponents == 1, "Selector must be a scalar");
+		DBG("switch({0})", sel);
 
 		auto numCases = (block.branchInstruction.wordCount() - 3) / 2;
 
@@ -4778,11 +4847,13 @@ namespace sw
 			auto label = block.branchInstruction.word(i * 2 + 3);
 			auto caseBlockId = Block::ID(block.branchInstruction.word(i * 2 + 4));
 			auto caseLabelMatch = CmpEQ(sel.Int(0), SIMD::Int(label));
+			DBG("case {0}: {1}", label, caseLabelMatch & state->activeLaneMask());
 			state->addOutputActiveLaneMaskEdge(caseBlockId, caseLabelMatch);
 			defaultLaneMask &= ~caseLabelMatch;
 		}
 
 		auto defaultBlockId = Block::ID(block.branchInstruction.word(2));
+		DBG("default: {0}", defaultLaneMask);
 		state->addOutputActiveLaneMaskEdge(defaultBlockId, defaultLaneMask);
 
 		return EmitResult::Terminator;
@@ -4837,6 +4908,7 @@ namespace sw
 		for(uint32_t i = 0; i < type.sizeInComponents; i++)
 		{
 			dst.move(i, storage[i]);
+			DBG("LoadPhi({0}.{1}): {2}", objectId, i, storage[i]);
 		}
 	}
 
@@ -4866,7 +4938,14 @@ namespace sw
 			for (uint32_t i = 0; i < type.sizeInComponents; i++)
 			{
 				storage[i] = As<SIMD::Float>((As<SIMD::Int>(storage[i]) & ~mask) | (in.Int(i) & mask));
+				DBG("StorePhi({0}.{1}): [{2} <- {3}] {4}: {5}, mask: {6}",
+					objectId, i, currentBlock, blockId, varId, in.UInt(i), mask);
 			}
+		}
+
+		for (uint32_t i = 0; i < type.sizeInComponents; i++)
+		{
+			DBG("StorePhi({0}.{1}): {2}", objectId, i, As<SIMD::UInt>(storage[i]));
 		}
 	}
 
