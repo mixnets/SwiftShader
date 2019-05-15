@@ -37,6 +37,75 @@
     },
     {
       "key": {
+        "uuid": "a816aae1_3417f52d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5761,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-15T08:29:36Z",
+      "side": 1,
+      "message": "Function has a void return type.",
+      "range": {
+        "startLine": 5761,
+        "startChar": 3,
+        "endLine": 5761,
+        "endChar": 9
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c976aa6c_9aae8435",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5851,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-15T08:29:36Z",
+      "side": 1,
+      "message": "Another case for UNREACHABLE?",
+      "range": {
+        "startLine": 5851,
+        "startChar": 3,
+        "endLine": 5851,
+        "endChar": 16
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b780373_7f8db3c2",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5873,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-15T08:29:36Z",
+      "side": 1,
+      "message": "This is a case for UNSUPPORTED, right?\nUNSUPPORTED means \"shouldn\u0027t be reachable if the app respects the advertised features, but is part of the greater spec that we can implement in the future\".",
+      "range": {
+        "startLine": 5873,
+        "startChar": 4,
+        "endLine": 5873,
+        "endChar": 15
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e319107e_97e87d4e",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 2
@@ -81,6 +150,29 @@
       "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5d3738ff_e81dac7f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5896,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-15T08:29:36Z",
+      "side": 1,
+      "message": "nit: Would be great if we could template this so we only have a single implementation (even greater if we could template all these ops so everything gets a single impl).",
+      "range": {
+        "startLine": 5887,
+        "startChar": 4,
+        "endLine": 5896,
+        "endChar": 26
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
