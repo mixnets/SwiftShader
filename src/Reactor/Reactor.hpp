@@ -1966,6 +1966,9 @@ namespace rr
 		UInt4(const Int4 &rhs);
 		UInt4(const Reference<Int4> &rhs);
 		UInt4(RValue<UInt2> lo, RValue<UInt2> hi);
+		UInt4(RValue<UInt> rhs);
+		UInt4(const UInt &rhs);
+		UInt4(const Reference<UInt> &rhs);
 
 		RValue<UInt4> operator=(RValue<UInt4> rhs);
 		RValue<UInt4> operator=(const UInt4 &rhs);
@@ -3390,6 +3393,17 @@ namespace rr
 	{
 		static constexpr const char* fmt = PrintValue::Ty<T>::fmt;
 		static std::vector<Value*> val(const RValue<T>& v) { return PrintValue::Ty<T>::val(v); }
+	};
+
+	template <> struct PrintValue::Ty<const char*>
+	{
+		static constexpr const char* fmt = "%s";
+		static std::vector<Value*> val(const char* v);
+	};
+	template <> struct PrintValue::Ty<std::string>
+	{
+		static constexpr const char* fmt = PrintValue::Ty<const char*>::fmt;
+		static std::vector<Value*> val(const std::string& v) { return PrintValue::Ty<const char*>::val(v.c_str()); }
 	};
 
 	// Printv emits a call to printf() using the function, file and line,
