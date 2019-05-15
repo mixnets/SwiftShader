@@ -18,10 +18,10 @@
 #include <cstddef>
 #include <cstdint>
 
-template<typename HandleType> class alignas(sizeof(uint64_t)) VkWrapperBase
+template<typename HandleType> class VkNonDispatchableBase
 {
 public:
-	VkWrapperBase(HandleType handle)
+	VkNonDispatchableBase(HandleType handle)
 	{
 		u.dummy = 0;
 		u.handle = handle;
@@ -47,23 +47,23 @@ private:
 	union PointerHandleUnion
 	{
 		HandleType handle;
-		uint64_t dummy; // VkWrapper's size must always be 64 bits even when void* is 32 bits
+		uint64_t dummy; // VkNonDispatchable's size must always be 64 bits even when void* is 32 bits
 	};
 	PointerHandleUnion u;
 };
 
-template<typename T> class alignas(sizeof(uint64_t)) VkWrapper : public VkWrapperBase<T>
+template<typename T> class VkNonDispatchable : public VkNonDispatchableBase<T>
 {
 public:
 	using HandleType = T;
 
-	VkWrapper() : VkWrapperBase<T>(nullptr)
+	VkNonDispatchable() : VkNonDispatchableBase<T>(nullptr)
 	{
 	}
 
-	VkWrapper(HandleType handle) : VkWrapperBase<T>(handle)
+	VkNonDispatchable(HandleType handle) : VkNonDispatchableBase<T>(handle)
 	{
-		static_assert(sizeof(VkWrapper) == sizeof(uint64_t), "Size is not 64 bits!");
+		static_assert(sizeof(VkNonDispatchable) == sizeof(uint64_t), "Size is not 64 bits!");
 	}
 
 	void operator=(HandleType handle)
@@ -75,14 +75,14 @@ public:
 // VkDescriptorSet objects are really just memory in the VkDescriptorPool
 // object, so define different/more convenient operators for this object.
 struct VkDescriptorSet_T;
-template<> class alignas(sizeof(uint64_t)) VkWrapper<VkDescriptorSet_T*> : public VkWrapperBase<uint8_t*>
+template<> class VkNonDispatchable<VkDescriptorSet_T*> : public VkNonDispatchableBase<uint8_t*>
 {
 public:
 	using HandleType = uint8_t*;
 
-	VkWrapper(HandleType handle) : VkWrapperBase<uint8_t*>(handle)
+	VkNonDispatchable(HandleType handle) : VkNonDispatchableBase<uint8_t*>(handle)
 	{
-		static_assert(sizeof(VkWrapper) == sizeof(uint64_t), "Size is not 64 bits!");
+		static_assert(sizeof(VkNonDispatchable) == sizeof(uint64_t), "Size is not 64 bits!");
 	}
 
 	HandleType operator+(ptrdiff_t rhs) const
@@ -103,7 +103,7 @@ public:
 
 #define VK_DEFINE_NON_DISPATCHABLE_HANDLE(object) \
 	typedef struct object##_T *object##Ptr; \
-	typedef VkWrapper<object##Ptr> object;
+	typedef VkNonDispatchable<object##Ptr> object;
 
 #include <vulkan/vulkan.h>
 

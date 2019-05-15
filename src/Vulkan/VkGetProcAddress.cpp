@@ -23,6 +23,24 @@
 #include <vulkan/vk_android_native_buffer.h>
 #endif
 
+#if defined(_MSC_VER) && defined(_WIN32) && !defined(_WIN64)
+namespace
+{
+	// The following function is a hack to allow compilation in Visual Studio using the 32 bit compiler.
+	void Dummy()
+	{
+		// Use VkBufferView and VkDescriptorUpdateTemplate here to prevent an undefined symbol error.
+		// This might be related to template instantiation using the 32 bit compiler.
+		VkBufferView bufferView;
+		VkDescriptorUpdateTemplate descriptorUpdateTemplate;
+
+		// Use VkEvent and VkPipelineCache here to prevent an internal compiler error which crashes the 32 bit compiler.
+		VkEvent anEvent;
+		VkPipelineCache pipelineCache;
+	}
+}
+#endif
+
 namespace vk
 {
 
