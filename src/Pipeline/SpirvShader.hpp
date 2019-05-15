@@ -196,7 +196,7 @@ namespace sw
 	class Intermediate
 	{
 	public:
-		Intermediate(uint32_t size) : scalar(new rr::Value*[size]), size(size) {
+		Intermediate(uint32_t size) : size(size), typeHint(Type::Float), scalar(new rr::Value*[size]) {
 			memset(scalar, 0, sizeof(rr::Value*) * size);
 		}
 
@@ -205,13 +205,20 @@ namespace sw
 			delete[] scalar;
 		}
 
-		void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); }
-		void move(uint32_t i, RValue<SIMD::Int> &&scalar)   { emplace(i, scalar.value); }
-		void move(uint32_t i, RValue<SIMD::UInt> &&scalar)  { emplace(i, scalar.value); }
+		enum class Type
+		{
+			Float,
+			Int,
+			UInt
+		};
 
-		void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); }
-		void move(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); }
-		void move(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); }
+		void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); typeHint = Type::Float; }
+		void move(uint32_t i, RValue<SIMD::Int> &&scalar)   { emplace(i, scalar.value); typeHint = Type::Int; }
+		void move(uint32_t i, RValue<SIMD::UInt> &&scalar)  { emplace(i, scalar.value); typeHint = Type::UInt; }
+
+		void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); typeHint = Type::Float; }
+		void move(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); typeHint = Type::Int; }
+		void move(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); typeHint = Type::UInt; }
 
 		// Value retrieval functions.
 		RValue<SIMD::Float> Float(uint32_t i) const
@@ -241,6 +248,8 @@ namespace sw
 		Intermediate & operator=(Intermediate const &) = delete;
 		Intermediate & operator=(Intermediate &&) = delete;
 
+		const uint32_t size;
+		Type typeHint;
 	private:
 		void emplace(uint32_t i, rr::Value *value)
 		{
@@ -250,7 +259,6 @@ namespace sw
 		}
 
 		rr::Value **const scalar;
-		uint32_t size;
 	};
 
 	class SpirvShader
@@ -1082,10 +1090,6 @@ namespace sw
 		// Constants are transparently widened to per-lane values in operator[].
 		// This is appropriate in most cases -- if we're not going to do something
 		// significantly different based on whether the value is uniform across lanes.
-
-		SpirvShader::Object const &obj;
-		Intermediate const *intermediate;
-
 	public:
 		GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::Object::ID objId) :
 				obj(shader->getObject(objId)),
@@ -1112,6 +1116,8 @@ namespace sw
 			return As<SIMD::UInt>(Float(i));
 		}
 
+		SpirvShader::Object const &obj;
+		Intermediate const *intermediate;
 		SpirvShader::Type::ID const type;
 	};
 
