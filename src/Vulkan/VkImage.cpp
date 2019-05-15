@@ -270,12 +270,11 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 	case VK_IMAGE_ASPECT_PLANE_2_BIT:
 		break;
 	default:
-		UNIMPLEMENTED("aspectMask %x", int(region.imageSubresource.aspectMask));
+		UNSUPPORTED("aspectMask %x", int(region.imageSubresource.aspectMask));
 		break;
 	}
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
-
 	Format copyFormat = getFormat(aspect);
 
 	VkExtent3D imageExtent = imageExtentInBlocks(region.imageExtent, aspect);
@@ -572,21 +571,21 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), true);
 }
 
-int Image::bytesPerTexel(VkImageAspectFlagBits aspect) const
-{
-	// Depth and Stencil bytes should be computed separately
-	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
-	                 (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
-
-	return getFormat(aspect).bytes();
-}
+//int Image::bytesPerTexel(VkImageAspectFlagBits aspect) const
+//{
+//	// Depth and Stencil bytes should be computed separately
+//	ASSERT((aspect & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) !=
+//	                 (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT));
+//
+//	return getFormat(aspect).bytes();
+//}
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
 {
-	return GetFormat(format, aspect);
+	return GetAspectFormat(format, aspect);
 }
 
-Format Image::GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
+Format Image::GetAspectFormat(const vk::Format& format, VkImageAspectFlagBits aspect)
 {
 	switch(aspect)
 	{
