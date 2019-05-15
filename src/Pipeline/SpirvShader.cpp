@@ -29,6 +29,29 @@
 #include <spirv/unified1/spirv.hpp>
 #include <spirv/unified1/GLSL.std.450.h>
 
+#define SPIRVSHADER_DBG 1
+
+#if SPIRVSHADER_DBG
+#define DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
+#include "spirv-tools/libspirv.h"
+namespace spvtools {
+// Decodes the given SPIR-V instruction binary representation to its assembly
+// text. The context is inferred from the provided module binary. The options
+// parameter is a bit field of spv_binary_to_text_options_t. Decoded text will
+// be stored into *text. Any error will be written into *diagnostic if
+// diagnostic is non-null.
+std::string spvInstructionBinaryToText(const spv_target_env env,
+                                       const uint32_t* inst_binary,
+                                       const size_t inst_word_count,
+                                       const uint32_t* binary,
+                                       const size_t word_count,
+                                       const uint32_t options);
+
+}  // namespace spvtools
+#else
+#define DBG(...)
+#endif
+
 namespace
 {
 	constexpr float PI = 3.141592653589793f;
@@ -278,7 +301,9 @@ namespace sw
 			mask &= CmpLT(offsets + SIMD::Int(sizeof(float) - 1), SIMD::Int(ptr.limit)); // Disable OOB reads.
 			if (!atomic && order == std::memory_order_relaxed)
 			{
-				return rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, sizeof(float));
+				auto out = rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, sizeof(float));
+				DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
+				return out;
 			}
 			else
 			{
@@ -310,6 +335,7 @@ namespace sw
 						}
 					}
 				}
+				DBG("Load(atomic: {0}, order: {1}) {2}:{3} -> {4}, mask: {5}", atomic, int(order), ptr.base, offsets, out, mask);
 				return out;
 			}
 		}
@@ -320,6 +346,7 @@ namespace sw
 			using EL = typename Element<T>::type;
 			auto offsets = ptr.offsets();
 			mask &= CmpLT(offsets + SIMD::Int(sizeof(float) - 1), SIMD::Int(ptr.limit)); // Disable OOB reads.
+			DBG("Store {0}:{1} <- {2}, mask: {3}", ptr.base, offsets, val, mask);
 			if (!atomic && order == std::memory_order_relaxed)
 			{
 				return rr::Scatter(rr::Pointer<EL>(ptr.base), val, offsets, mask, sizeof(float));
@@ -2023,8 +2050,10 @@ namespace sw
 			for (auto in : block.ins)
 			{
 				auto inMask = GetActiveLaneMaskEdge(state, in, blockId);
+				DBG("Block {0} -> {1} mask: {2}", in.value(), blockId.value(), inMask);
 				activeLaneMask |= inMask;
 			}
+			DBG("Block {0} mask: {1}", blockId.value(), activeLaneMask);
 			state->setActiveLaneMask(activeLaneMask);
 		}
 
@@ -2034,6 +2063,8 @@ namespace sw
 		{
 			state->pending->emplace(out);
 		}
+
+		DBG("Block {0} done", blockId.value());
 	}
 
 	void SpirvShader::EmitLoop(EmitState *state) const
@@ -2066,6 +2097,8 @@ namespace sw
 		{
 			return; // Already emitted this loop.
 		}
+
+		DBG("*** LOOP HEADER ***");
 
 		std::unordered_set<Block::ID> incomingBlocks;
 		std::unordered_set<Block::ID> loopBlocks;
@@ -2114,6 +2147,8 @@ namespace sw
 		// Start emitting code inside the loop.
 		Nucleus::createBr(headerBasicBlock);
 		Nucleus::setInsertBlock(headerBasicBlock);
+
+		DBG("*** LOOP START (mask: {0}) ***", loopActiveLaneMask);
 
 		// Load the active lane mask.
 		state->setActiveLaneMask(loopActiveLaneMask);
@@ -2170,6 +2205,8 @@ namespace sw
 			}
 		}
 
+		DBG("*** LOOP END (mask: {0}) ***", loopActiveLaneMask);
+
 		// Loop body now done.
 		// If any lanes are still active, jump back to the loop header,
 		// otherwise jump to the merge block.
@@ -2187,6 +2224,19 @@ namespace sw
 	SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 	{
 		auto opcode = insn.opcode();
+
+#if SPIRVSHADER_DBG
+		{
+			auto text = spvtools::spvInstructionBinaryToText(
+				SPV_ENV_VULKAN_1_1,
+				insn.wordPointer(0),
+				insn.wordCount(),
+				insns.data(),
+				insns.size(),
+				SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
+			DBG("{0}", text);
+		}
+#endif // SPIRVSHADER_DBG
 
 		switch (opcode)
 		{
@@ -2640,6 +2690,8 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
+		DBG("OpLoad {0} <- {1}", resultId.value(), pointerId.value());
+
 		ASSERT(getType(pointer.type).element == result.type);
 		ASSERT(Type::ID(insn.word(1)) == result.type);
 		ASSERT(!atomic || getType(getType(pointer.type).element).opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
@@ -2691,6 +2743,8 @@ namespace sw
 		auto &pointerTy = getType(pointer.type);
 		auto &elementTy = getType(pointerTy.element);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
+
+		DBG("OpStore {0} <- {1}", pointerId.value(), objectId.value());
 
 		if(atomic)
 		{
@@ -3423,6 +3477,19 @@ namespace sw
 			default:
 				UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 			}
+		}
+
+		if (OpcodeName(insn.opcode())[0] == 'F')
+		{
+			DBG("%%{0}: {1}", insn.word(3), lhs.Float(0));
+			DBG("%%{0}: {1}", insn.word(4), rhs.Float(0));
+			DBG("%%{0}: {1}", insn.word(2), dst.Float(0));
+		}
+		else
+		{
+			DBG("%%{0}: {1}", insn.word(3), lhs.Int(0));
+			DBG("%%{0}: {1}", insn.word(4), rhs.Int(0));
+			DBG("%%{0}: {1}", insn.word(2), dst.Int(0));
 		}
 
 		return EmitResult::Continue;
@@ -4502,6 +4569,7 @@ namespace sw
 
 		auto sel = GenericValue(this, state->routine, selId);
 		ASSERT_MSG(getType(sel.type).sizeInComponents == 1, "Selector must be a scalar");
+		DBG("switch({0})", sel.Int(0));
 
 		auto numCases = (block.branchInstruction.wordCount() - 3) / 2;
 
@@ -4517,11 +4585,13 @@ namespace sw
 			auto label = block.branchInstruction.word(i * 2 + 3);
 			auto caseBlockId = Block::ID(block.branchInstruction.word(i * 2 + 4));
 			auto caseLabelMatch = CmpEQ(sel.Int(0), SIMD::Int(label));
+			DBG("case {0}: {1}", label, caseLabelMatch & state->activeLaneMask());
 			state->addOutputActiveLaneMaskEdge(caseBlockId, caseLabelMatch);
 			defaultLaneMask &= ~caseLabelMatch;
 		}
 
 		auto defaultBlockId = Block::ID(block.branchInstruction.word(2));
+		DBG("default: {0}", defaultLaneMask);
 		state->addOutputActiveLaneMaskEdge(defaultBlockId, defaultLaneMask);
 
 		return EmitResult::Terminator;
@@ -4570,6 +4640,7 @@ namespace sw
 		for(uint32_t i = 0; i < type.sizeInComponents; i++)
 		{
 			dst.move(i, storage[i]);
+			DBG("LoadPhi(%%{0}.{1}): {2}", objectId.value(), i, storage[i]);
 		}
 	}
 
@@ -4601,7 +4672,16 @@ namespace sw
 			for (uint32_t i = 0; i < type.sizeInComponents; i++)
 			{
 				storage[i] = As<SIMD::Float>((As<SIMD::Int>(storage[i]) & ~mask) | (in.Int(i) & mask));
+				DBG("StorePhi(%%{0}.{1}): %%{2} <- %%{3}: val: {4}, mask: {5}",
+					objectId.value(), i,
+					state->currentBlock.value(), blockId.value(),
+					in.Float(i), mask);
 			}
+		}
+
+		for (uint32_t i = 0; i < type.sizeInComponents; i++)
+		{
+			DBG("StorePhi(%%{0}.{1}): {2}", objectId.value(), i, storage[i]);
 		}
 	}
 
