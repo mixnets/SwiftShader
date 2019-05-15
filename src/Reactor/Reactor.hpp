@@ -3249,6 +3249,7 @@ namespace rr
 	//   * Static arrays in the form T[N] where T can be any of the above.
 	class PrintValue
 	{
+	public:
 		// Ty is a template that can be specialized for printing type T.
 		// Each specialization must expose:
 		//  * A 'static std::string fmt(const T& v)' method that provides the
@@ -3261,6 +3262,7 @@ namespace rr
 			// static std::vector<rr::Value*> val(const T& v);
 		};
 
+	private:
 		// returns the printf format specifier for the given type with a
 		// PrintValue::Ty<T> specialization.
 		template <typename T>
