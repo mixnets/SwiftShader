@@ -1,0 +1,213 @@
+# Copyright 2019 The SwiftShader Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("../swiftshader.gni")
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_libVulkan_private_config") {
+  defines = [
+    "GL_API=",
+    "GL_GLEXT_PROTOTYPES",
+  ]
+
+  if (is_win) {
+    cflags = [
+      "/wd4201",  # nameless struct/union
+      "/wd4324",  # structure was padded due to alignment specifier
+      "/wd5030",  # attribute is not recognized
+    ]
+
+    defines += [
+      "GL_APICALL=",
+      "GLAPI=",
+    ]
+
+    if (is_clang) {
+      defines += [
+        "__STDC_CONSTANT_MACROS",
+        "__STDC_LIMIT_MACROS",
+      ]
+    }
+  } else {
+    cflags = [ "-Wno-sign-compare" ]
+    if (!is_clang) {
+      cflags += [ "-Wno-unused-but-set-variable" ]
+    }
+
+    defines += [
+      "__STDC_CONSTANT_MACROS",
+      "__STDC_LIMIT_MACROS",
+      "GLAPI=GL_APICALL",
+    ]
+
+    if (is_mac) {
+      cflags += [ "-fvisibility=protected" ]
+      defines += [ "GL_APICALL=__attribute__((no_sanitize(\"function\")))" ]
+    } else {
+      defines += [ "GL_APICALL=__attribute__((visibility(\"protected\"))) __attribute__((no_sanitize(\"function\")))" ]
+    }
+  }
+  cflags += [ "-Wno-unused-private-field", "-Wno-switch" ]
+#    cflags = [ "-Wno-sign-compare", "-Wno-unused-private-field" ]
+#    if (!is_clang) {
+#      cflags += [ "-Wno-unused-but-set-variable" ]
+#    }
+}
+
+swiftshader_shared_library("swiftshader_libVulkan") {
+  sources = [
+"Version.h",
+"VkBuffer.cpp",
+"VkBuffer.hpp",
+"VkBufferView.cpp",
+"VkBufferView.hpp",
+"VkCommandBuffer.cpp",
+"VkCommandBuffer.hpp",
+"VkCommandPool.cpp",
+"VkCommandPool.hpp",
+"VkConfig.h",
+"VkDebug.cpp",
+"VkDebug.hpp",
+"VkDescriptorPool.cpp",
+"VkDescriptorPool.hpp",
+"VkDescriptorSet.hpp",
+"VkDescriptorSetLayout.cpp",
+"VkDescriptorSetLayout.hpp",
+"VkDescriptorUpdateTemplate.cpp",
+"VkDescriptorUpdateTemplate.hpp",
+"VkDestroy.h",
+"VkDevice.cpp",
+"VkDevice.hpp",
+"VkDeviceMemory.cpp",
+"VkDeviceMemory.hpp",
+"VkEvent.hpp",
+"VkFence.hpp",
+"VkFormat.cpp",
+"VkFormat.h",
+"VkFramebuffer.cpp",
+"VkFramebuffer.hpp",
+"VkGetProcAddress.cpp",
+"VkGetProcAddress.h",
+"VkImage.cpp",
+"VkImage.hpp",
+"VkImageView.cpp",
+"VkImageView.hpp",
+"VkInstance.cpp",
+"VkInstance.hpp",
+"VkMemory.cpp",
+"VkMemory.h",
+"VkObject.hpp",
+"VkPhysicalDevice.cpp",
+"VkPhysicalDevice.hpp",
+"VkPipeline.cpp",
+"VkPipeline.hpp",
+"VkPipelineCache.cpp",
+"VkPipelineCache.hpp",
+"VkPipelineLayout.cpp",
+"VkPipelineLayout.hpp",
+"VkPromotedExtensions.cpp",
+"VkQueryPool.cpp",
+"VkQueryPool.hpp",
+"VkQueue.cpp",
+"VkQueue.hpp",
+"VkRenderPass.cpp",
+"VkRenderPass.hpp",
+"VkSampler.cpp",
+"VkSampler.hpp",
+"VkSemaphore.hpp",
+"VkShaderModule.cpp",
+"VkShaderModule.hpp",
+"VulkanPlatform.h",
+"libVulkan.cpp",
+"main.cpp",
+"resource.h",
+    "libvk_swiftshader.def",
+    "Vulkan.rc",
+    #Device
+"../Device/Blitter.cpp",
+"../Device/Clipper.cpp",
+"../Device/Color.cpp",
+"../Device/Config.cpp",
+"../Device/Context.cpp",
+"../Device/ETC_Decoder.cpp",
+"../Device/Matrix.cpp",
+"../Device/PixelProcessor.cpp",
+"../Device/Plane.cpp",
+"../Device/Point.cpp",
+"../Device/QuadRasterizer.cpp",
+"../Device/Renderer.cpp",
+"../Device/SetupProcessor.cpp",
+"../Device/SwiftConfig.cpp",
+"../Device/Vector.cpp",
+"../Device/VertexProcessor.cpp",
+
+#Pipeline
+"../Pipeline/ComputeProgram.cpp",
+"../Pipeline/Constants.cpp",
+"../Pipeline/PixelProgram.cpp",
+"../Pipeline/PixelRoutine.cpp",
+"../Pipeline/SamplerCore.cpp",
+"../Pipeline/SetupRoutine.cpp",
+"../Pipeline/ShaderCore.cpp",
+"../Pipeline/SpirvShader.cpp",
+"../Pipeline/SpirvShaderSampling.cpp",
+"../Pipeline/SpirvShader_dbg.cpp",
+"../Pipeline/VertexProgram.cpp",
+"../Pipeline/VertexRoutine.cpp",
+
+# System
+"../System/Configurator.cpp",
+"../System/CPUID.cpp",
+"../System/Debug.cpp",
+"../System/Half.cpp",
+"../System/Math.cpp",
+"../System/Memory.cpp",
+"../System/Resource.cpp",
+"../System/Socket.cpp",
+"../System/Thread.cpp",
+"../System/Timer.cpp",
+
+# WSI
+"../WSI/VkSurfaceKHR.cpp",
+"../WSI/VkSwapchainKHR.cpp",
+"../WSI/libX11.cpp",
+
+]
+
+  configs = [ ":swiftshader_libVulkan_private_config" ]
+
+  if (!is_mac && !is_fuchsia) {
+    output_name = "libVulkan"
+    output_dir = "$root_out_dir/swiftshader"
+  }
+
+  deps = [
+    "../../third_party/SPIRV-Tools",
+    "../Reactor:swiftshader_reactor",
+  ]
+
+  if (is_mac) {
+    ldflags = [ "-Wl,-install_name,@rpath/libswiftshader_libVulkan.dylib" ]
+  } else if (is_linux) {
+    ldflags = [ "-Wl,--version-script=" +
+                rebase_path("libvk_swiftshader.lds", root_build_dir) ]
+  }
+
+  include_dirs = [
+    "../../include",
+    "..",
+    "../../third_party/SPIRV-Headers/include",
+    "../../third_party/SPIRV-Tools/include",
+  ]
+}

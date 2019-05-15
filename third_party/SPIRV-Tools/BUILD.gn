@@ -287,7 +287,7 @@ config("spvtools_internal_config") {
   configs = [ ":spvtools_public_config" ]
 
   if (is_clang) {
-    cflags = [ "-Wno-implicit-fallthrough" ]
+    cflags = [ "-Wno-implicit-fallthrough", "-Wno-switch" ]
   }
 }
 
@@ -691,6 +691,7 @@ if (!build_with_chromium) {
   }
 }
 
+if (!build_with_chromium) {
 test("spvtools_test") {
   sources = [
     "test/assembly_context_test.cpp",
@@ -778,6 +779,7 @@ test("spvtools_test") {
 
   configs += [ ":spvtools_internal_config" ]
 }
+}
 
 if (spirv_tools_standalone) {
   group("fuzzers") {
@@ -788,14 +790,16 @@ if (spirv_tools_standalone) {
   }
 }
 
-executable("spirv-as") {
+if (!build_with_chromium) {
+ executable("spirv-as") {
   sources = [
-    "source/software_version.cpp",
-    "tools/as/as.cpp",
+   "source/software_version.cpp",
+   "tools/as/as.cpp",
   ]
-  deps = [
-    ":spvtools",
-    ":spvtools_build_version",
-  ]
-  configs += [ ":spvtools_internal_config" ]
+   deps = [
+   ":spvtools",
+  ":spvtools_build_version",
+   ]
+    configs += [ ":spvtools_internal_config" ]
+ }
 }
