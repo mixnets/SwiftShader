@@ -25,6 +25,37 @@
 #include <vulkan/vk_android_native_buffer.h>
 #endif
 
+#if defined(_MSC_VER) && defined(_WIN32) && !defined(_WIN64)
+namespace
+{
+	// The following function is a hack to allow compilation in Visual Studio using the 32 bit compiler.
+	void Dummy()
+	{
+		{ VkSemaphore object; }
+		{ VkFence object; }
+		{ VkDeviceMemory object; }
+		{ VkBuffer object; }
+		{ VkImage object; }
+		{ VkEvent object; }
+		{ VkQueryPool object; }
+		{ VkBufferView object; }
+		{ VkImageView object; }
+		{ VkShaderModule object; }
+		{ VkPipelineCache object; }
+		{ VkPipelineLayout object; }
+		{ VkRenderPass object; }
+		{ VkPipeline object; }
+		{ VkDescriptorSetLayout object; }
+		{ VkSampler object; }
+		{ VkDescriptorPool object; }
+		{ VkFramebuffer object; }
+		{ VkCommandPool object; }
+		{ VkSamplerYcbcrConversion object; }
+		{ VkDescriptorUpdateTemplate object; }
+	}
+}
+#endif
+
 namespace vk
 {
 
