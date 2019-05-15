@@ -83,13 +83,20 @@ public:
 		delete[] scalar;
 	}
 
-	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); }
-	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value); }
-	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value); }
+	enum class Type
+	{
+		Float,
+		Int,
+		UInt
+	};
 
-	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); }
-	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value); }
-	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value); }
+	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value, Type::Float); }
+	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value, Type::Int); }
+	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value, Type::UInt); }
+
+	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value, Type::Float); }
+	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value, Type::Int); }
+	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value, Type::UInt); }
 
 	// Value retrieval functions.
 	RValue<SIMD::Float> Float(uint32_t i) const
@@ -120,15 +127,23 @@ public:
 	Intermediate &operator=(Intermediate &&) = delete;
 
 private:
-	void emplace(uint32_t i, rr::Value *value)
+	void emplace(uint32_t i, rr::Value *value, Type type)
 	{
 		ASSERT(i < size);
 		ASSERT(scalar[i] == nullptr);
 		scalar[i] = value;
+#ifdef ENABLE_RR_PRINT
+		typeHint = type;
+#endif  // ENABLE_RR_PRINT
 	}
 
 	rr::Value **const scalar;
 	uint32_t size;
+
+#ifdef ENABLE_RR_PRINT
+	friend struct rr::PrintValue::Ty<sw::Intermediate>;
+	Type typeHint = Type::Float;  // A hint at what this intermediate type likely is.
+#endif                            // ENABLE_RR_PRINT
 };
 
 class SpirvShader
@@ -989,6 +1004,10 @@ private:
 	// significantly different based on whether the value is uniform across lanes.
 	class Operand
 	{
+#ifdef ENABLE_RR_PRINT
+		friend struct rr::PrintValue::Ty<Operand>;
+#endif  // ENABLE_RR_PRINT
+
 		SpirvShader::Object const &obj;
 		Intermediate const *intermediate;
 
@@ -1037,6 +1056,10 @@ private:
 			return obj.typeId();
 		}
 	};
+
+#ifdef ENABLE_RR_PRINT
+	friend struct rr::PrintValue::Ty<Operand>;
+#endif  // ENABLE_RR_PRINT
 
 	Type const &getType(Type::ID id) const
 	{

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
+#include "SpirvShaderDebug.hpp"
 
 #include "ShaderCore.hpp"
 
@@ -60,7 +61,9 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 		auto p = ptr + el.offset;
 		if(interleavedByLane) { p = InterleaveByLane(p); }  // TODO: Interleave once, then add offset?
-		dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
+		auto val = p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder);
+		SPIRV_SHADER_DBG("Load(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4})", atomic, int(memoryOrder), p, val, state->activeLaneMask());
+		dst.move(el.index, val);
 	});
 
 	return EmitResult::Continue;
@@ -103,6 +106,7 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 			auto p = ptr + el.offset;
 			if(interleavedByLane) { p = InterleaveByLane(p); }
+			SPIRV_SHADER_DBG("Store(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4}", atomic, int(memoryOrder), p, SIMD::Int(src[el.index]), mask);
 			p.Store(SIMD::Int(src[el.index]), robustness, mask, atomic, memoryOrder);
 		});
 	}
@@ -113,6 +117,7 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 			auto p = ptr + el.offset;
 			if(interleavedByLane) { p = InterleaveByLane(p); }
+			SPIRV_SHADER_DBG("Store(atomic: {0}, order: {1}, ptr: {2}, val: {3}, mask: {4}", atomic, int(memoryOrder), p, src.Float(el.index), mask);
 			p.Store(src.Float(el.index), robustness, mask, atomic, memoryOrder);
 		});
 	}
