@@ -48,6 +48,8 @@ namespace sw
 		Pointer<Byte> tagCache = cache + OFFSET(VertexCache,tag);
 
 		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
+		UInt maxIndex = *Pointer<UInt>(task + OFFSET(VertexTask,maxIndex));
+		auto maxIndex4 = SIMD::UInt(maxIndex);
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 
@@ -59,10 +61,17 @@ namespace sw
 
 			If(*Pointer<UInt>(tagCache + tagIndex) != indexQ)
 			{
-				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
+				auto activeLaneMask = SIMD::Int(rr::CmpLE(SIMD::UInt(indexQ) + SIMD::UInt(0, 1, 2, 3), maxIndex4));
+
+				// The cache line may be used by a later draw with a higher
+				// max index. If the activeLaneMask is not all 1's, write an
+				// invalid cache tag for the partially filled result.
+				auto invalidateCacheTag = indexQ + UInt(4) > maxIndex;
+				auto tag = IfThenElse(invalidateCacheTag, UInt(0x80000000), indexQ);
+				*Pointer<UInt>(tagCache + tagIndex) = tag;
 
 				readInput(indexQ);
-				program(indexQ);
+				program(activeLaneMask, indexQ);
 				computeClipFlags();
 
 				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
