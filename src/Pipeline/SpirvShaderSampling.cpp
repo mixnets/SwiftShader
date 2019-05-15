@@ -75,6 +75,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	{
 		samplerState.ycbcrModel = sampler->ycbcrConversion->ycbcrModel;
 		samplerState.ycbcrRange = sampler->ycbcrConversion->ycbcrRange;
+		samplerState.swappedChroma = (sampler->ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
 	}
 
 	if(sampler->anisotropyEnable != VK_FALSE)

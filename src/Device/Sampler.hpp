@@ -156,6 +156,7 @@ namespace sw
 
 		VkSamplerYcbcrModelConversion ycbcrModel;
 		VkSamplerYcbcrRange ycbcrRange;
+		bool swappedChroma;
 
 		#if PERF_PROFILE
 		bool compressedFormat;
