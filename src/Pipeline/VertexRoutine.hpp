@@ -62,13 +62,13 @@ namespace sw
 		SpirvShader const * const spirvShader;
 
 	private:
-		virtual void program(UInt &index) = 0;
+		virtual void program(RValue<SIMD::Int> activeLaneMask, UInt &index) = 0;
 
 		typedef VertexProcessor::State::Input Stream;
 
 		Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index);
 		void readInput(UInt &index);
-		void computeClipFlags();
+		void computeClipFlags(RValue<SIMD::Int> activeLaneMask);
 		void writeCache(Pointer<Byte> &cacheLine);
 		void writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cacheLine);
 	};

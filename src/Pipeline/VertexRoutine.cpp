@@ -48,6 +48,7 @@ namespace sw
 		Pointer<Byte> tagCache = cache + OFFSET(VertexCache,tag);
 
 		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
+		auto maxIndex = SIMD::UInt(*Pointer<UInt>(task + OFFSET(VertexTask,maxIndex)));
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 
@@ -61,9 +62,11 @@ namespace sw
 			{
 				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
 
+				auto activeLaneMask = SIMD::Int(rr::CmpLE(SIMD::UInt(indexQ) + SIMD::UInt(0, 1, 2, 3), maxIndex));
+
 				readInput(indexQ);
-				program(indexQ);
-				computeClipFlags();
+				program(activeLaneMask, indexQ);
+				computeClipFlags(activeLaneMask);
 
 				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
 				writeCache(cacheLine0);
@@ -104,7 +107,7 @@ namespace sw
 		}
 	}
 
-	void VertexRoutine::computeClipFlags()
+	void VertexRoutine::computeClipFlags(RValue<SIMD::Int> activeLaneMask)
 	{
 		auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
 		assert(it != spirvShader->outputBuiltins.end());
@@ -122,19 +125,23 @@ namespace sw
 		Int4 minY = CmpNLE(-posW, posY);
 		Int4 minZ = CmpNLE(Float4(0.0f), posZ);
 
-		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxZ) + SignMask(maxZ) * 4);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minX) + SignMask(minX) * 4);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minY) + SignMask(minY) * 4);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minZ) + SignMask(minZ) * 4);
+		Int flags = 0;
+
+		flags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,maxZ) + SignMask(maxZ) * 4);
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,minX) + SignMask(minX) * 4);
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,minY) + SignMask(minY) * 4);
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,minZ) + SignMask(minZ) * 4);
 
 		Int4 finiteX = CmpLE(Abs(posX), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 		Int4 finiteY = CmpLE(Abs(posY), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 		Int4 finiteZ = CmpLE(Abs(posZ), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 
 		Int4 finiteXYZ = finiteX & finiteY & finiteZ;
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + SignMask(finiteXYZ) * 4);
+		flags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + SignMask(finiteXYZ) * 4);
+
+		clipFlags |= flags & As<Int>(activeLaneMask);
 	}
 
 	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index)
