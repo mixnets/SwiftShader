@@ -62,7 +62,7 @@ namespace sw
 		SpirvShader const * const spirvShader;
 
 	private:
-		virtual void program(UInt &index) = 0;
+		virtual void program(RValue<SIMD::Int> activeLaneMask, UInt &index) = 0;
 
 		typedef VertexProcessor::State::Input Stream;
 

@@ -43,6 +43,33 @@ unsigned int minPrimitives = 1;
 unsigned int maxPrimitives = 1 << 21;
 #endif
 
+namespace
+{
+	template <typename T>
+	struct Indexer
+	{
+		Indexer(const T* indices, unsigned int &maxIndex) : indices(indices), maxIndex(maxIndex) {}
+		unsigned int operator[](unsigned int i)
+		{
+			maxIndex = std::max<unsigned int>(maxIndex, indices[i]);
+			return indices[i];
+		}
+		const T *indices;
+		unsigned int &maxIndex;
+	};
+
+	struct LinearIndexer
+	{
+		LinearIndexer(unsigned int &maxIndex) : maxIndex(maxIndex) {}
+		unsigned int operator[](unsigned int i)
+		{
+			maxIndex = std::max(maxIndex, i);
+			return i;
+		}
+		unsigned int &maxIndex;
+	};
+} // anonymous namespace
+
 namespace sw
 {
 	extern bool booleanFaceRegister;
@@ -913,15 +940,12 @@ namespace sw
 
 		unsigned int batch[128][3];   // FIXME: Adjust to dynamic batch size
 		VkPrimitiveTopology topology = static_cast<VkPrimitiveTopology>(static_cast<int>(draw->topology));
+		unsigned int maxIndex = 0;
 
 		if(!indices)
 		{
-			struct LinearIndex
-			{
-				unsigned int operator[](unsigned int i) { return i; }
-			};
-
-			if(!setBatchIndices(batch, topology, LinearIndex(), start, triangleCount))
+			auto indexer = LinearIndexer(maxIndex);
+			if(!setBatchIndices(batch, topology, indexer, start, triangleCount))
 			{
 				return;
 			}
@@ -931,17 +955,23 @@ namespace sw
 			switch(draw->indexType)
 			{
 			case VK_INDEX_TYPE_UINT16:
-				if(!setBatchIndices(batch, topology, static_cast<const uint16_t*>(indices), start, triangleCount))
+			{
+				auto indexer = Indexer<uint16_t>(static_cast<const uint16_t*>(indices), maxIndex);
+				if(!setBatchIndices(batch, topology, indexer, start, triangleCount))
 				{
 					return;
 				}
 				break;
+			}
 			case VK_INDEX_TYPE_UINT32:
-				if(!setBatchIndices(batch, topology, static_cast<const uint32_t*>(indices), start, triangleCount))
+			{
+				auto indexer = Indexer<uint32_t>(static_cast<const uint32_t*>(indices), maxIndex);
+				if(!setBatchIndices(batch, topology, indexer, start, triangleCount))
 				{
 					return;
 				}
 				break;
+			}
 			break;
 			default:
 				ASSERT(false);
@@ -951,6 +981,7 @@ namespace sw
 
 		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
+		task->maxIndex = maxIndex;
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
