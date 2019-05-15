@@ -35,6 +35,7 @@ namespace rr {
 //   * Static arrays in the form T[N] where T can be any of the above.
 class PrintValue
 {
+public:
 	// Ty is a template that can be specialized for printing type T.
 	// Each specialization must expose:
 	//  * A 'static std::string fmt(const T& v)' method that provides the
@@ -83,7 +84,6 @@ class PrintValue
 		return buf;
 	}
 
-public:
 	const std::string format;
 	const std::vector<Value *> values;
 
