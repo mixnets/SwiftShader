@@ -341,6 +341,9 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 			vk::ImageView *imageView = vk::Cast(update->imageView);
 			Format format = imageView->getFormat(ImageView::SAMPLING);
+			bool isYCbCr = format.hasYuvFormat();
+			VkImageAspectFlagBits aspect = isYCbCr ? VK_IMAGE_ASPECT_PLANE_0_BIT : static_cast<VkImageAspectFlagBits>(imageView->getSubresourceRange().aspectMask);//!isYCbCr ? VK_IMAGE_ASPECT_COLOR_BIT : VK_IMAGE_ASPECT_PLANE_0_BIT;
+
 			sw::Texture *texture = &imageSampler[i].texture;
 
 			// "All consecutive bindings updated via a single VkWriteDescriptorSet structure, except those with a
@@ -365,8 +368,6 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int level = mipmapLevel - baseLevel;  // Level within the image view
 				level = sw::clamp(level, 0, (int)subresourceRange.levelCount - 1);
 
-				bool isYCbCr = format.hasYuvFormat();
-				VkImageAspectFlagBits aspect = !isYCbCr ? VK_IMAGE_ASPECT_COLOR_BIT : VK_IMAGE_ASPECT_PLANE_0_BIT;
 				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
 
 				if(imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE)
@@ -378,7 +379,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 						VkOffset3D offset = {-1, -1, 0};
 
 						// TODO(b/129523279): Implement as 6 consecutive layers instead of separate pointers.
-						mipmap.buffer[face] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_COLOR_BIT, level, face, ImageView::SAMPLING);
+						mipmap.buffer[face] = imageView->getOffsetPointer(offset, aspect, level, face, ImageView::SAMPLING);
 					}
 				}
 				else if(isYCbCr)
@@ -393,7 +394,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				else
 				{
 					VkOffset3D offset = {0, 0, 0};
-					mipmap.buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_COLOR_BIT, level, 0, ImageView::SAMPLING);
+					mipmap.buffer[0] = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
 				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(level);
@@ -499,16 +500,13 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				if(isYCbCr)
 				{
-					unsigned int YStride = pitchP;
+				//	unsigned int YStride = pitchP;
 				//	unsigned int YSize = YStride * height;
-					unsigned int CStride = sw::align<16>(YStride / 2);
+				//	unsigned int CStride = sw::align<16>(YStride / 2);
 				//	unsigned int CSize = CStride * height / 2;
 
 					int pitchP2 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_1_BIT, level, ImageView::SAMPLING) /
 					              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_1_BIT).bytes();
-
-				//	mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
-				//	mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;
 
 					texture->mipmap[1].width[0] = width / 2;
 					texture->mipmap[1].width[1] = width / 2;
