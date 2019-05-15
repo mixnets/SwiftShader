@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37fc8457_337352f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-15T01:03:43Z",
+      "side": 1,
+      "message": "b/127454276\nAlso mention SPIRV-Tools bug ID",
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e319107e_97e87d4e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 5886,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-15T01:03:43Z",
+      "side": 1,
+      "message": "Please also make a mention about this in the regular OpQuantizeToF16 lowering.\n\nWe\u0027ll want to make use of x86/ARM conversion from 32-bit to 16-bit float and back at a later point.",
+      "range": {
+        "startLine": 5886,
+        "startChar": 63,
+        "endLine": 5886,
+        "endChar": 69
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f24a672a_11f4b658",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 6008,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-15T01:03:43Z",
+      "side": 1,
+      "message": "Is there anything missing here, or should it be an UNREACHABLE()?",
+      "range": {
+        "startLine": 6008,
+        "startChar": 4,
+        "endLine": 6008,
+        "endChar": 17
+      },
+      "revId": "0ba0bc5daf8fd6d58da8f1462eb72b6b7f359135",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

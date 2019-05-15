@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5082d17_caa4d915",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-15T01:03:43Z",
+      "side": 0,
+      "message": "Does this have to be removed? Maybe just put it in an if(false) {} block and comment why we currently don\u0027t let SPIRV-Tools handle it.",
+      "range": {
+        "startLine": 197,
+        "startChar": 1,
+        "endLine": 199,
+        "endChar": 72
+      },
+      "revId": "dcd02274782a18f9a53450e86123158f3aba4f57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
