@@ -73,7 +73,7 @@ public:
 	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
 	const Image*             getSampledImage() const { return decompressedImage ? decompressedImage : this; }
 
-	static Format            GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
+	static Format            GetAspectFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
 
 private:
 	void copy(VkBuffer buffer, const VkBufferImageCopy& region, bool bufferIsSource);
@@ -88,7 +88,7 @@ private:
 	VkExtent3D imageExtentInBlocks(const VkExtent3D& extent, VkImageAspectFlagBits aspect) const;
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D& offset, VkImageAspectFlagBits aspect) const;
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferImageCopy& region) const;
-	int bytesPerTexel(VkImageAspectFlagBits flags) const;
+	//int bytesPerTexel(VkImageAspectFlagBits flags) const;
 	VkFormat getClearFormat() const;
 	void clear(void* pixelData, VkFormat pixelFormat, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea);
 	int borderSize() const;

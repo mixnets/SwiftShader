@@ -1415,9 +1415,9 @@ int Format::bytes() const
 	case VK_FORMAT_X8_D24_UNORM_PACK32:       return 4;
 	case VK_FORMAT_D32_SFLOAT:                return 4;
 	case VK_FORMAT_S8_UINT:                   return 1;
-	case VK_FORMAT_D16_UNORM_S8_UINT:         return 2; // Separate depth and stencil planes
-	case VK_FORMAT_D24_UNORM_S8_UINT:         return 4; // Combined depth and stencil planes
-	case VK_FORMAT_D32_SFLOAT_S8_UINT:        return 4; // Separate depth and stencil planes
+	case VK_FORMAT_D16_UNORM_S8_UINT:         return 2; // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
+	case VK_FORMAT_D24_UNORM_S8_UINT:         return 4; // Combined depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:        return 4; // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
 	// Note: Compressed formats don't return bytes per pixel,
 	//       since these would be fractional. The returned value
 	//       is bytes per pixel for 1 column, so 2 for 64 bit 4x4
@@ -1480,6 +1480,7 @@ int Format::bytes() const
 		return 0;
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+		// TODO: ASSERT to ensure this is only called per-aspect?
 		return 1;  // Y plane only
 	default:
 		UNIMPLEMENTED("Format: %d", int(format));
@@ -1547,7 +1548,7 @@ int Format::pitchB(int width, int border, bool target) const
 		return 16 * ((width + 11) / 12);
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
-		return sw::align<16>(width);  // Y plane only
+		return sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
 	default:
 		return bytes() * width;
 	}

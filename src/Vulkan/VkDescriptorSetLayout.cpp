@@ -403,8 +403,9 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int width = extent.width;
 				int height = extent.height;
 				int depth = layers > 1 ? layers : extent.depth;
-				int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / format.bytes();
-				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / format.bytes();
+				int bytes = imageView->getFormat(aspect).bytes();
+				int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
+				int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / bytes;
 
 				if(mipmapLevel == 0)
 				{
@@ -503,7 +504,8 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 					unsigned int CStride = sw::align<16>(YStride / 2);
 				//	unsigned int CSize = CStride * height / 2;
 
-					int pitchP2 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_1_BIT, level, ImageView::SAMPLING) / format.bytes();
+					int pitchP2 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_1_BIT, level, ImageView::SAMPLING) /
+					              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_1_BIT).bytes();
 
 				//	mipmap.buffer[1] = (sw::byte*)mipmap.buffer[0] + YSize;
 				//	mipmap.buffer[2] = (sw::byte*)mipmap.buffer[1] + CSize;

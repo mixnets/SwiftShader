@@ -1642,31 +1642,41 @@ ASSERT(false);
 		//	UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-		//	computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
-		//	c0 = Int(buffer[1][index[0]]);
-		//	c1 = Int(buffer[1][index[1]]);
-		//	c2 = Int(buffer[1][index[2]]);
-		//	c3 = Int(buffer[1][index[3]]);
-		//	c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-		////	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
-		//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
+			UShort4 U, V;
 
-		//	// TODO: Optimize 2-plane, combined U/V sampling.
-		//	c0 = Int(buffer[2][index[0]]);
-		//	c1 = Int(buffer[2][index[1]]);
-		//	c2 = Int(buffer[2][index[2]]);
-		//	c3 = Int(buffer[2][index[3]]);
-		//	c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-		////	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
-		//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+			if(state.textureFormat == VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM)
+			{
+				c0 = Int(buffer[1][index[0]]);
+				c1 = Int(buffer[1][index[1]]);
+				c2 = Int(buffer[1][index[2]]);
+				c3 = Int(buffer[1][index[3]]);
+				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+				U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			Short4 UV;
-			UV = Insert(UV, Pointer<Short>(buffer[1])[index[0]], 0);  // TODO: Insert(UShort4, UShort)
-			UV = Insert(UV, Pointer<Short>(buffer[1])[index[1]], 1);
-			UV = Insert(UV, Pointer<Short>(buffer[1])[index[2]], 2);
-			UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
-			UShort4 U = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
-			UShort4 V = (UV & Short4(0x00FFu)) | (UV << 8);
+				c0 = Int(buffer[2][index[0]]);
+				c1 = Int(buffer[2][index[1]]);
+				c2 = Int(buffer[2][index[2]]);
+				c3 = Int(buffer[2][index[3]]);
+				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+				V = As<UShort4>(Unpack(As<Byte4>(c0)));
+			}
+			else if(state.textureFormat == VK_FORMAT_G8_B8R8_2PLANE_420_UNORM)
+			{
+				Short4 UV;
+				UV = Insert(UV, Pointer<Short>(buffer[1])[index[0]], 0);  // TODO: Insert(UShort4, UShort)
+				UV = Insert(UV, Pointer<Short>(buffer[1])[index[1]], 1);
+				UV = Insert(UV, Pointer<Short>(buffer[1])[index[2]], 2);
+				UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
+				U = (UV & Short4(0x00FFu)) | (UV << 8);
+				V = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
+
+				//U = UShort4(0);
+				//Y = UShort4(0);
+			}
+			else UNSUPPORTED("state.textureFormat %d", (int)state.textureFormat);
 
 			if(false)
 			{
