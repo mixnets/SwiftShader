@@ -73,7 +73,7 @@ namespace sw
 	{
 	}
 
-	void VertexProgram::program(UInt &index)
+	void VertexProgram::program(RValue<SIMD::Int> activeLaneMask, UInt &index)
 	{
 		auto it = spirvShader->inputBuiltins.find(spv::BuiltInVertexIndex);
 		if (it != spirvShader->inputBuiltins.end())
@@ -83,9 +83,7 @@ namespace sw
 					As<Float4>(Int4(As<Int>(index) + *Pointer<Int>(data + OFFSET(DrawData, baseVertex))) + Int4(0, 1, 2, 3));
 		}
 
-		auto activeLaneMask = SIMD::Int(0xFFFFFFFF); // TODO: Control this.
 		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
-
 		spirvShader->emitEpilog(&routine);
 	}
 }

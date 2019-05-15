@@ -34,7 +34,7 @@ namespace sw
 		virtual ~VertexProgram();
 
 	private:
-		void program(UInt &index) override;
+		void program(RValue<SIMD::Int> activeLaneMask, UInt &index) override;
 
 		const vk::DescriptorSet::Bindings &descriptorSets;
 	};
