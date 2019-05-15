@@ -1576,41 +1576,56 @@ ASSERT(false);
 		//	UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
-			UShort4 U, V;
+			UShort4 Cb, Cr;
 
-			if(state.textureFormat == VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM)
 			{
-				c0 = Int(buffer[1][index[0]]);
-				c1 = Int(buffer[1][index[1]]);
-				c2 = Int(buffer[1][index[2]]);
-				c3 = Int(buffer[1][index[3]]);
-				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
-				U = As<UShort4>(Unpack(As<Byte4>(c0)));
+				computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
+				UShort4 U, V;
 
-				c0 = Int(buffer[2][index[0]]);
-				c1 = Int(buffer[2][index[1]]);
-				c2 = Int(buffer[2][index[2]]);
-				c3 = Int(buffer[2][index[3]]);
-				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
-				V = As<UShort4>(Unpack(As<Byte4>(c0)));
-			}
-			else if(state.textureFormat == VK_FORMAT_G8_B8R8_2PLANE_420_UNORM)
-			{
-				Short4 UV;
-				UV = Insert(UV, Pointer<Short>(buffer[1])[index[0]], 0);  // TODO: Insert(UShort4, UShort)
-				UV = Insert(UV, Pointer<Short>(buffer[1])[index[1]], 1);
-				UV = Insert(UV, Pointer<Short>(buffer[1])[index[2]], 2);
-				UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
-				U = (UV & Short4(0x00FFu)) | (UV << 8);
-				V = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
+				if(state.textureFormat == VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM)
+				{
+					c0 = Int(buffer[1][index[0]]);
+					c1 = Int(buffer[1][index[1]]);
+					c2 = Int(buffer[1][index[2]]);
+					c3 = Int(buffer[1][index[3]]);
+					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+					U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-				//U = UShort4(0);
-				//Y = UShort4(0);
+					c0 = Int(buffer[2][index[0]]);
+					c1 = Int(buffer[2][index[1]]);
+					c2 = Int(buffer[2][index[2]]);
+					c3 = Int(buffer[2][index[3]]);
+					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+					V = As<UShort4>(Unpack(As<Byte4>(c0)));
+				}
+				else if(state.textureFormat == VK_FORMAT_G8_B8R8_2PLANE_420_UNORM)
+				{
+					Short4 UV;
+					UV = Insert(UV, Pointer<Short>(buffer[1])[index[0]], 0);  // TODO: Insert(UShort4, UShort)
+					UV = Insert(UV, Pointer<Short>(buffer[1])[index[1]], 1);
+					UV = Insert(UV, Pointer<Short>(buffer[1])[index[2]], 2);
+					UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
+					U = (UV & Short4(0x00FFu)) | (UV << 8);
+					V = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
+
+					//U = UShort4(0);
+					//Y = UShort4(0);
+				}
+				else UNSUPPORTED("state.textureFormat %d", (int)state.textureFormat);
+
+				if(!state.swappedChroma)
+				{
+					Cb = U;
+					Cr = V;
+				}
+				else
+				{
+					Cb = V;
+					Cr = U;
+				}
 			}
-			else UNSUPPORTED("state.textureFormat %d", (int)state.textureFormat);
 
 			if(false)
 			{
@@ -1639,9 +1654,9 @@ ASSERT(false);
 				const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
 
 				UShort4 y = MulHigh(Y, yY);
-				UShort4 r = SubSat(y + MulHigh(V, rV), r0);
-				UShort4 g = SubSat(y + g0, MulHigh(U, gU) + MulHigh(V, gV));
-				UShort4 b = SubSat(y + MulHigh(U, bU), b0);
+				UShort4 r = SubSat(y + MulHigh(Cr, rV), r0);
+				UShort4 g = SubSat(y + g0, MulHigh(Cb, gU) + MulHigh(Cr, gV));
+				UShort4 b = SubSat(y + MulHigh(Cb, bU), b0);
 
 				c.x = Min(r, UShort4(0x3FFF)) << 2;
 				c.y = Min(g, UShort4(0x3FFF)) << 2;
@@ -1650,15 +1665,15 @@ ASSERT(false);
 
 			if(state.ycbcrModel == VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY)
 			{
-				c.x = V >> 1;
-				c.y = Y >> 1;
-				c.z = U >> 1;
+				c.x = Cr >> 1;
+				c.y = Y  >> 1;
+				c.z = Cb >> 1;
 			}
 			else
 			{
-				Float4 y = (Float4(Y) - Float4(studioSwing ? 16 * 0x0101 : 0)) * Float4(float(0x7FFF) / (studioSwing ? 219 * 0x0101 : 255 * 0x0101));
-				Float4 u = (Float4(U) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
-				Float4 v = (Float4(V) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
+				Float4 y = (Float4(Y)  - Float4(studioSwing ? 16 * 0x0101 : 0)) * Float4(float(0x7FFF) / (studioSwing ? 219 * 0x0101 : 255 * 0x0101));
+				Float4 u = (Float4(Cb) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
+				Float4 v = (Float4(Cr) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
 
 				if(state.ycbcrModel == VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY)
 				{
