@@ -61,8 +61,10 @@ namespace sw
 			{
 				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
 
+				auto activeLaneMask = SIMD::Int(rr::CmpGT(SIMD::UInt(vertexCount), SIMD::UInt(0, 1, 2, 3)));
+
 				readInput(indexQ);
-				program(indexQ);
+				program(activeLaneMask, indexQ);
 				computeClipFlags();
 
 				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
