@@ -316,13 +316,20 @@ namespace sw
 			delete[] scalar;
 		}
 
-		void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); }
-		void move(uint32_t i, RValue<SIMD::Int> &&scalar)   { emplace(i, scalar.value); }
-		void move(uint32_t i, RValue<SIMD::UInt> &&scalar)  { emplace(i, scalar.value); }
+		enum class Type
+		{
+			Float,
+			Int,
+			UInt
+		};
 
-		void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); }
-		void move(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); }
-		void move(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); }
+		void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value); typeHint = Type::Float; }
+		void move(uint32_t i, RValue<SIMD::Int> &&scalar)   { emplace(i, scalar.value); typeHint = Type::Int; }
+		void move(uint32_t i, RValue<SIMD::UInt> &&scalar)  { emplace(i, scalar.value); typeHint = Type::UInt; }
+
+		void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value); typeHint = Type::Float; }
+		void move(uint32_t i, const RValue<SIMD::Int> &scalar)   { emplace(i, scalar.value); typeHint = Type::Int; }
+		void move(uint32_t i, const RValue<SIMD::UInt> &scalar)  { emplace(i, scalar.value); typeHint = Type::UInt; }
 
 		// Value retrieval functions.
 		RValue<SIMD::Float> Float(uint32_t i) const
@@ -353,6 +360,10 @@ namespace sw
 		Intermediate & operator=(Intermediate &&) = delete;
 
 	private:
+#ifdef ENABLE_RR_PRINT
+		friend struct rr::PrintValue::Ty< sw::Intermediate >;
+#endif // ENABLE_RR_PRINT
+
 		void emplace(uint32_t i, rr::Value *value)
 		{
 			ASSERT(i < size);
@@ -361,7 +372,8 @@ namespace sw
 		}
 
 		rr::Value **const scalar;
-		uint32_t size;
+		const uint32_t size;
+		Type typeHint = Type::Float; // A hint at what this intermediate type likely is.
 	};
 
 	class SpirvShader
@@ -1087,6 +1099,10 @@ namespace sw
 		// significantly different based on whether the value is uniform across lanes.
 		class GenericValue
 		{
+#ifdef ENABLE_RR_PRINT
+			friend struct rr::PrintValue::Ty<GenericValue>;
+#endif // ENABLE_RR_PRINT
+
 			SpirvShader::Object const &obj;
 			Intermediate const *intermediate;
 
@@ -1115,6 +1131,10 @@ namespace sw
 
 			SpirvShader::Type::ID const type;
 		};
+
+#ifdef ENABLE_RR_PRINT
+		friend struct rr::PrintValue::Ty<GenericValue>;
+#endif // ENABLE_RR_PRINT
 
 		Type const &getType(Type::ID id) const
 		{
@@ -1340,9 +1360,104 @@ namespace sw
 		friend class SpirvShader;
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> phis;
-
 	};
 
-}
+}  // namespace sw
+
+#ifdef ENABLE_RR_PRINT
+namespace rr {
+	template<> struct PrintValue::Ty< sw::SpirvShader::Object::ID >
+	{
+		static inline std::string fmt(sw::SpirvShader::Object::ID v) { return "Object<" + std::to_string(v.value()) + ">"; }
+		static inline std::vector<Value*> val(sw::SpirvShader::Object::ID v) { return {}; }
+	};
+	template<> struct PrintValue::Ty< sw::SpirvShader::Type::ID >
+	{
+		static inline std::string fmt(sw::SpirvShader::Type::ID v) { return "Type<" + std::to_string(v.value()) + ">"; }
+		static inline std::vector<Value*> val(sw::SpirvShader::Type::ID v) { return {}; }
+	};
+	template<> struct PrintValue::Ty< sw::SpirvShader::Block::ID >
+	{
+		static inline std::string fmt(sw::SpirvShader::Block::ID v) { return "Block<" + std::to_string(v.value()) + ">"; }
+		static inline std::vector<Value*> val(sw::SpirvShader::Block::ID v) { return {}; }
+	};
+
+	template<> struct PrintValue::Ty< sw::Intermediate >
+	{
+		static inline std::string fmt(const sw::Intermediate& v, uint32_t i)
+		{
+			switch (v.typeHint)
+			{
+			case sw::Intermediate::Type::Float:
+				return PrintValue::Ty<sw::SIMD::Float>::fmt(v.Float(i));
+			case sw::Intermediate::Type::Int:
+				return PrintValue::Ty<sw::SIMD::Int>::fmt(v.Int(i));
+			case sw::Intermediate::Type::UInt:
+				return PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(i));
+			}
+			return "";
+		}
+
+		static inline std::vector<Value*> val(const sw::Intermediate& v, uint32_t i)
+		{
+			switch (v.typeHint)
+			{
+			case sw::Intermediate::Type::Float:
+				return PrintValue::Ty<sw::SIMD::Float>::val(v.Float(i));
+			case sw::Intermediate::Type::Int:
+				return PrintValue::Ty<sw::SIMD::Int>::val(v.Int(i));
+			case sw::Intermediate::Type::UInt:
+				return PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(i));
+			}
+			return {};
+		}
+
+		static inline std::string fmt(const sw::Intermediate& v)
+		{
+			if (v.size == 1)
+			{
+				return fmt(v, 0);
+			}
+
+			std::string out = "[";
+			for (uint32_t i = 0; i < v.size; i++)
+			{
+				if (i > 0) { out += ", "; }
+				out += std::to_string(i) + ": ";
+				out += fmt(v, i);
+			}
+			return out + "]";
+		}
+
+		static inline std::vector<Value*> val(const sw::Intermediate& v)
+		{
+			std::vector<Value*> out;
+			for (uint32_t i = 0; i < v.size; i++)
+			{
+				auto vals = val(v, i);
+				out.insert(out.end(), vals.begin(), vals.end());
+			}
+			return out;
+		}
+	};
+
+	template<> struct PrintValue::Ty< sw::SpirvShader::GenericValue >
+	{
+		static inline std::string fmt(const sw::SpirvShader::GenericValue& v)
+		{
+			return (v.intermediate != nullptr) ?
+				PrintValue::Ty<sw::Intermediate>::fmt(*v.intermediate) :
+				PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(0));
+		}
+
+		static inline std::vector<Value*> val(const sw::SpirvShader::GenericValue& v)
+		{
+			return (v.intermediate != nullptr) ?
+				PrintValue::Ty<sw::Intermediate>::val(*v.intermediate) :
+				PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(0));
+		}
+	};
+}  // namespace rr
+#endif // ENABLE_RR_PRINT
 
 #endif  // sw_SpirvShader_hpp
