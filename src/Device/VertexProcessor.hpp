@@ -37,6 +37,7 @@ namespace sw
 	struct VertexTask
 	{
 		unsigned int vertexCount;
+		unsigned int maxIndex;
 		unsigned int primitiveStart;
 		VertexCache vertexCache;
 	};
