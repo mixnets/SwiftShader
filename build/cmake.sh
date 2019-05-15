@@ -13,7 +13,7 @@ if [[ "$OSTYPE" != "msys" ]]; then
     exit 1
 fi
 
-CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+CMAKE_GENERATOR="Visual Studio 15 2017"
 
 CMAKE_BUILD_PATH="build/$CMAKE_GENERATOR"
 
