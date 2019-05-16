@@ -63,9 +63,9 @@ extern "C"
     #define VKAPI_PTR  VKAPI_ATTR
 #else
     // On other platforms, use the default calling convention
-    #define VKAPI_ATTR
-    #define VKAPI_CALL
-    #define VKAPI_PTR
+#define VKAPI_ATTR
+#define VKAPI_CALL
+#define VKAPI_PTR
 #endif
 
 #include <stddef.h>
