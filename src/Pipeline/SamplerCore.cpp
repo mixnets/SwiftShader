@@ -147,7 +147,7 @@ namespace sw
 			}
 		}
 
-		bool force32BitFiltering = state.highPrecisionFiltering && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
+		bool force32BitFiltering = state.highPrecisionFiltering && !isYcbcrFormat() && (state.textureFilter != FILTER_POINT);
 		bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 		bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
 		                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable || state.largeTexture ||
@@ -1561,7 +1561,7 @@ namespace sw
 		UInt index[4];
 		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
 
-		if(hasYuvFormat())
+		if(isYcbcrFormat())
 		{
 			// Generic YPbPr to RGB transformation
 			// R = Y                               +           2 * (1 - Kr) * Pr
@@ -1804,7 +1804,7 @@ namespace sw
 		}
 		else
 		{
-			ASSERT(!hasYuvFormat());
+			ASSERT(!isYcbcrFormat());
 
 			Vector4s cs = sampleTexel(index, buffer);
 
@@ -1949,7 +1949,7 @@ namespace sw
 		{
 			buffer[0] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[0]));
 
-			if(hasYuvFormat())
+			if(isYcbcrFormat())
 			{
 				buffer[1] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[1]));
 				buffer[2] = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap,buffer[2]));
@@ -2276,9 +2276,9 @@ namespace sw
 		return state.textureFormat.has32bitIntegerTextureComponents();
 	}
 
-	bool SamplerCore::hasYuvFormat() const
+	bool SamplerCore::isYcbcrFormat() const
 	{
-		return state.textureFormat.hasYuvFormat();
+		return state.textureFormat.isYcbcrFormat();
 	}
 
 	bool SamplerCore::isRGBComponent(int component) const
