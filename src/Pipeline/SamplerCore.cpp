@@ -128,9 +128,9 @@ namespace sw
 
 		bool force32BitFiltering = state.highPrecisionFiltering && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
 		bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
-		bool rectangleTexture = (state.textureType == TEXTURE_RECTANGLE);
+		bool unnormalizedCoordinates = !state.normalizedCoordinates;
 		bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
-		                         seamlessCube || rectangleTexture || state.compareEnable || borderModeActive();
+		                         seamlessCube || unnormalizedCoordinates || state.compareEnable || borderModeActive();
 
 		if(use32BitFiltering)
 		{
@@ -1997,14 +1997,31 @@ namespace sw
 
 			Float4 coord = uvw;
 
-			if(state.textureType == TEXTURE_RECTANGLE)
+			if(!state.normalizedCoordinates)
 			{
-				// According to https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_rectangle.txt
-				// "CLAMP_TO_EDGE causes the s coordinate to be clamped to the range[0.5, wt - 0.5].
-				//  CLAMP_TO_EDGE causes the t coordinate to be clamped to the range[0.5, ht - 0.5]."
-				// Unless SwiftShader implements support for ADDRESSING_BORDER, other modes should be equivalent
-				// to CLAMP_TO_EDGE. Rectangle textures have no support for any MIRROR or REPEAT modes.
-				coord = Min(Max(coord, Float4(0.5f)), Float4(dim) - Float4(0.5f));
+				switch(addressingMode)
+				{
+				case ADDRESSING_CLAMP:
+				case ADDRESSING_SEAMLESS:
+					// Linear filtering of cube doesn't require clamping because the coordinates
+					// are already in [0, 1] range and numerical imprecision is tolerated.
+					if(addressingMode != ADDRESSING_SEAMLESS || pointFilter)
+					{
+						Float4 one = As<Float4>(Int4(oneBits));
+						coord = Min(Max(coord, Float4(0.0f)), Float4(dim) * one);
+					}
+					break;
+				case ADDRESSING_MIRROR:
+				case ADDRESSING_MIRRORONCE:
+					UNIMPLEMENTED("addressingMode %d", int(addressingMode));
+					break;
+				case ADDRESSING_BORDER:
+					// Don't map to a valid range here.
+					break;
+				default:   // Wrap
+					coord = modulo(coord, Float4(dim));
+					break;
+				}
 			}
 			else
 			{
