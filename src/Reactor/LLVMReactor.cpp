@@ -1585,6 +1585,12 @@ namespace rr
 		return V(::builder->CreateFPToSI(V(v), T(destType)));
 	}
 
+	Value *Nucleus::createUIToFP(Value *v, Type *destType)
+	{
+		RR_DEBUG_INFO_UPDATE_LOC();
+		return V(::builder->CreateUIToFP(V(v), T(destType)));
+	}
+
 	Value *Nucleus::createSIToFP(Value *v, Type *destType)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
@@ -2951,6 +2957,23 @@ namespace rr
 		          (~uiValue & Int4(cast));
 		// If the value is negative, store 0, otherwise store the result of the conversion
 		storeValue((~(As<Int4>(cast) >> 31) & uiValue).value);
+	}
+
+	UInt4::UInt4(RValue<UShort4> cast) : XYZW(this)
+	{
+		RR_DEBUG_INFO_UPDATE_LOC();
+#if defined(__i386__) || defined(__x86_64__)
+		if(CPUID::supportsSSE4_1())
+		{
+			*this = x86::pmovzxwd(As<UShort8>(cast));
+		}
+		else
+#endif
+		{
+			int swizzle[8] = {0, 8, 1, 9, 2, 10, 3, 11};
+			Value *c = Nucleus::createShuffleVector(cast.value, Short8(0, 0, 0, 0, 0, 0, 0, 0).loadValue(), swizzle);
+			*this = As<UInt4>(c);
+		}
 	}
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, unsigned char rhs)

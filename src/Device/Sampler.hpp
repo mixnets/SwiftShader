@@ -150,6 +150,10 @@ namespace sw
 		VkCompareOp compareOp;
 		VkBorderColor border;
 
+		VkSamplerYcbcrModelConversion ycbcrModel;
+		VkSamplerYcbcrRange ycbcrRange;
+		bool swappedChroma;
+
 		#if PERF_PROFILE
 		bool compressedFormat;
 		#endif

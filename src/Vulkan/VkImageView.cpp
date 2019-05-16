@@ -228,6 +228,21 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBit
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
 
+	//// Image views can select a single plane from a multi-planar format, so make
+	//// sure we use the original plane aspect when requesting the color aspect.
+	//if(aspect == VK_IMAGE_ASPECT_COLOR_BIT)
+	//{
+	//	switch(image->getFormat())
+	//	{
+	//	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+	//	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+	//		aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
 	VkImageSubresourceLayers imageSubresourceLayers =
 	{
 		static_cast<VkImageAspectFlags>(aspect),
