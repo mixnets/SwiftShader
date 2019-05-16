@@ -177,13 +177,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 		return result;
 	}
 
-	vk::Instance::CreateInfo info =
-	{
-		pCreateInfo,
-		physicalDevice
-	};
-
-	result = vk::DispatchableInstance::Create(pAllocator, &info, pInstance);
+	result = vk::DispatchableInstance::Create(pAllocator, pCreateInfo, pInstance, physicalDevice);
 	if(result != VK_SUCCESS)
 	{
 		vk::destroy(physicalDevice, pAllocator);
