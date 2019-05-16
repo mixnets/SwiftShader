@@ -83,7 +83,7 @@ namespace sw
 			cubeFace(face, uuuu, vvvv, u, v, w, M);
 		}
 
-		if(function == Implicit || function == Bias || function == Grad)
+		if(function == Implicit || function == Bias || function == Grad || function == Query)
 		{
 			if(state.textureType != TEXTURE_3D)
 			{
@@ -126,6 +126,13 @@ namespace sw
 			lod += *Pointer<Float>(sampler + OFFSET(vk::Sampler, mipLodBias));
 			lod = Max(lod, *Pointer<Float>(sampler + OFFSET(vk::Sampler, minLod)));
 			lod = Min(lod, *Pointer<Float>(sampler + OFFSET(vk::Sampler, maxLod)));
+		}
+
+		if(function == Query)
+		{
+			c.x = Float4(Round(lod));  // TODO: Preferred formula is ceil(lod + 0.5) - 1
+			c.y = Float4(lod);
+			return c;
 		}
 
 		bool force32BitFiltering = state.highPrecisionFiltering && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
