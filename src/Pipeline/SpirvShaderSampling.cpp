@@ -90,8 +90,6 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 		Pointer<SIMD::Float> out = function.Arg<3>();
 		Pointer<Byte> constants = function.Arg<4>();
 
-		SamplerCore s(constants, samplerState);
-
 		SIMD::Float uvw[3];
 		SIMD::Float q(0);     // TODO(b/129523279)
 		SIMD::Float lodOrBias(0);  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
@@ -150,6 +148,7 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 			}
 		}
 
+		SamplerCore s(constants, samplerState);
 		Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], q, lodOrBias, dsx, dsy, offset, samplerFunction);
 
 		Pointer<SIMD::Float> rgba = out;
