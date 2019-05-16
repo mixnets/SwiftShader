@@ -77,8 +77,8 @@ T Chan<T>::take()
 	}
 	T out = queue.front();
 	queue.pop();
-	lock.unlock();
 	removed.notify_one();
+	lock.unlock();
 	return out;
 }
 
@@ -92,8 +92,8 @@ std::pair<T, bool> Chan<T>::tryTake()
 	}
 	T out = queue.front();
 	queue.pop();
-	lock.unlock();
 	removed.notify_one();
+	lock.unlock();
 	return std::make_pair(out, true);
 }
 
@@ -102,8 +102,8 @@ void Chan<T>::put(const T &item)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	queue.push(item);
-	lock.unlock();
 	added.notify_one();
+	lock.unlock();
 }
 
 template <typename T>

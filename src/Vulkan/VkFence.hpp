@@ -55,8 +55,8 @@ public:
 		{
 			// signal the fence, without the unlock/lock required to call signal() here
 			status = VK_SUCCESS;
-			lock.unlock();
 			condition.notify_all();
+			lock.unlock();
 		}
 	}
 
@@ -64,8 +64,8 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		status = VK_SUCCESS;
-		lock.unlock();
 		condition.notify_all();
+		lock.unlock();
 	}
 
 	void reset()
