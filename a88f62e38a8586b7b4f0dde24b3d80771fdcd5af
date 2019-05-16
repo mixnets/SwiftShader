@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "103caac1_0f04463c",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1452,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-16T14:01:15Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it fix the issue to add the following code before this line?\n\nif(state.convertSRGB \u0026\u0026 state.sourceFormat.isSRGBformat()) // sRGB -\u003e RGB\n{\n\tif(!ApplyScaleAndClamp(color, state)) return nullptr;\n}",
+      "range": {
+        "startLine": 1452,
+        "startChar": 9,
+        "endLine": 1452,
+        "endChar": 24
+      },
+      "revId": "a88f62e38a8586b7b4f0dde24b3d80771fdcd5af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
