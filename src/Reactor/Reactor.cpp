@@ -3896,8 +3896,8 @@ namespace rr
 
 	Float4::Float4(RValue<UShort4> cast) : XYZW(this)
 	{
-		Int4 c(cast);
-		storeValue(Nucleus::createSIToFP(RValue<Int4>(c).value, Float4::getType()));
+		UInt4 c(cast);
+		storeValue(Nucleus::createUIToFP(RValue<UInt4>(c).value, Float4::getType()));
 	}
 
 	Float4::Float4(RValue<Int4> cast) : XYZW(this)
