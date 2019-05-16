@@ -151,8 +151,8 @@ namespace sw
 		VkBorderColor border;
 
 		VkSamplerYcbcrModelConversion ycbcrModel;
-		bool studioSwing;    // Narrow range
-		bool swappedChroma;  // Cb/Cr components in reverse order
+		VkSamplerYcbcrRange ycbcrRange;
+		bool swappedChroma;
 
 		#if PERF_PROFILE
 		bool compressedFormat;

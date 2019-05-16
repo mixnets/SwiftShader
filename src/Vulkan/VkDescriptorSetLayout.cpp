@@ -343,6 +343,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 			vk::ImageView *imageView = vk::Cast(update->imageView);
 			Format format = imageView->getFormat(ImageView::SAMPLING);
+			bool isYCbCr = format.isYcbcrFormat();
 
 			sw::Texture *texture = &imageSampler[i].texture;
 
@@ -365,13 +366,9 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			auto &subresourceRange = imageView->getSubresourceRange();
 			int baseLevel = subresourceRange.baseMipLevel;
 
-			if(format.isYcbcrFormat())
+			if(isYCbCr)
 			{
-				ASSERT(subresourceRange.levelCount == 1);
-
-				// YCbCr images can only have one level, so we can store parameters for the
-				// different planes in the descriptor's mipmap levels instead.
-
+				//
 				const int level = 0;
 				VkOffset3D offset = {0, 0, 0};
 				texture->mipmap[0].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
