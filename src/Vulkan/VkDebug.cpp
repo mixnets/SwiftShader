@@ -23,16 +23,8 @@ namespace vk
 void tracev(const char *format, va_list args)
 {
 #ifndef SWIFTSHADER_DISABLE_TRACE
-	if(false)
-	{
-		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
-
-		if(file)
-		{
-			vfprintf(file, format, args);
-			fclose(file);
-		}
-	}
+  fprintf(stderr, format, args);
+  fprintf(stderr, "\n");
 #endif
 }
 

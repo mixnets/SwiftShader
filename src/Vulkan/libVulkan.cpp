@@ -80,8 +80,9 @@ extern "C"
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char* pName)
 {
 	TRACE("(VkInstance instance = %p, const char* pName = %p)", instance, pName);
+        printf("vk_icdGetInstanceProcAddr\n");
 
-	return vk::GetInstanceProcAddr(instance, pName);
+        return vk::GetInstanceProcAddr(instance, pName);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vk_icdNegotiateLoaderICDInterfaceVersion(uint32_t* pSupportedVersion)
@@ -292,6 +293,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties(VkPhysicalDe
 	{
 		vk::Cast(physicalDevice)->getQueueFamilyProperties(*pQueueFamilyPropertyCount, pQueueFamilyProperties);
 	}
+        printf("Done\n");
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties* pMemoryProperties)
