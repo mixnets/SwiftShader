@@ -77,7 +77,7 @@ bool HasExtensionProperty(const char* extensionName, const VkExtensionProperties
 
 extern "C"
 {
-VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char* pName)
+VK_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char* pName)
 {
 	TRACE("(VkInstance instance = %p, const char* pName = %p)", instance, pName);
 
