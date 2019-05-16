@@ -1515,17 +1515,69 @@ namespace sw
 
 		if(isYcbcrFormat())
 		{
-			// Luminance
+			// Generic YCbCr to RGB transformation
+			// R = Y                               +           2 * (1 - Kr) * Cr
+			// G = Y - 2 * Kb * (1 - Kb) / Kg * Cb - 2 * Kr * (1 - Kr) / Kg * Cr
+			// B = Y +           2 * (1 - Kb) * Cb
+
+			float Kb = 0.114f;
+			float Kr = 0.299f;
+			bool studioSwing = true;
+
+			switch(state.ycbcrRange)
+			{
+			case VK_SAMPLER_YCBCR_RANGE_ITU_FULL:
+				studioSwing = false;
+				break;
+			case VK_SAMPLER_YCBCR_RANGE_ITU_NARROW:
+				studioSwing = true;
+				break;
+			default:
+ASSERT(false);
+			}
+
+			switch(state.ycbcrModel)
+			{
+			case VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY:
+				//Kr = 1.0f;
+				//Kb =
+				studioSwing = false;  // "Y’CbCr range expansion is also ignored"
+				break;
+			case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY:
+				break;
+			case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_709:
+				Kb = 0.0722f;
+				Kr = 0.2126f;
+				break;
+			case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601:
+				Kb = 0.114f;
+				Kr = 0.299f;
+				break;
+			case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020:
+				Kb = 0.0593f;
+				Kr = 0.2627f;
+				break;
+			default:
+ASSERT(false);
+			}
+
+			const float Kg = 1.0f - Kr - Kb;
+
+			const float Rr = 2 * (1 - Kr);
+			const float Gb = -2 * Kb * (1 - Kb) / Kg;
+			const float Gr = -2 * Kr * (1 - Kr) / Kg;
+			const float Bb = 2 * (1 - Kb);
+
 			Int c0 = Int(buffer[0][index[0]]);
 			Int c1 = Int(buffer[0][index[1]]);
 			Int c2 = Int(buffer[0][index[2]]);
 			Int c3 = Int(buffer[0][index[3]]);
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+		//	UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
 			UShort4 Cb, Cr;
 
-			// Chroma
 			{
 				computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
 				UShort4 U, V;
@@ -1537,6 +1589,7 @@ namespace sw
 					c2 = Int(buffer[1][index[2]]);
 					c3 = Int(buffer[1][index[3]]);
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				//	UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
 					U = As<UShort4>(Unpack(As<Byte4>(c0)));
 
 					c0 = Int(buffer[2][index[0]]);
@@ -1544,6 +1597,7 @@ namespace sw
 					c2 = Int(buffer[2][index[2]]);
 					c3 = Int(buffer[2][index[3]]);
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				//	UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
 					V = As<UShort4>(Unpack(As<Byte4>(c0)));
 				}
 				else if(state.textureFormat == VK_FORMAT_G8_B8R8_2PLANE_420_UNORM)
@@ -1555,6 +1609,9 @@ namespace sw
 					UV = Insert(UV, Pointer<Short>(buffer[1])[index[3]], 3);
 					U = (UV & Short4(0x00FFu)) | (UV << 8);
 					V = (UV & Short4(0xFF00u)) | As<Short4>(As<UShort4>(UV) >> 8);
+
+					//U = UShort4(0);
+					//Y = UShort4(0);
 				}
 				else UNSUPPORTED("state.textureFormat %d", (int)state.textureFormat);
 
@@ -1570,20 +1627,53 @@ namespace sw
 				}
 			}
 
+			if(false)
+			{
+				// Scaling and bias for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
+				const float Yy = studioSwing ? 255.0f / (235 - 16) : 1.0f;
+				const float Uu = studioSwing ? 255.0f / (240 - 16) : 1.0f;
+				const float Vv = studioSwing ? 255.0f / (240 - 16) : 1.0f;
+
+				const float Rv = Vv * Rr;
+				const float Gu = Uu * Gb;
+				const float Gv = Vv * Gr;
+				const float Bu = Uu * Bb;
+
+				const float R0 = (studioSwing * -16 * Yy - 128 * Rv) / 255;
+				const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
+				const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
+
+				const UShort4 yY = UShort4(iround(Yy * 0x4000));
+				const UShort4 rV = UShort4(iround(Rv * 0x4000));
+				const UShort4 gU = UShort4(iround(-Gu * 0x4000));
+				const UShort4 gV = UShort4(iround(-Gv * 0x4000));
+				const UShort4 bU = UShort4(iround(Bu * 0x4000));
+
+				const UShort4 r0 = UShort4(iround(-R0 * 0x4000));
+				const UShort4 g0 = UShort4(iround(G0 * 0x4000));
+				const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
+
+				UShort4 y = MulHigh(Y, yY);
+				UShort4 r = SubSat(y + MulHigh(Cr, rV), r0);
+				UShort4 g = SubSat(y + g0, MulHigh(Cb, gU) + MulHigh(Cr, gV));
+				UShort4 b = SubSat(y + MulHigh(Cb, bU), b0);
+
+				c.x = Min(r, UShort4(0x3FFF)) << 2;
+				c.y = Min(g, UShort4(0x3FFF)) << 2;
+				c.z = Min(b, UShort4(0x3FFF)) << 2;
+			}
+
 			if(state.ycbcrModel == VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY)
 			{
-				// YCbCr formats are treated as signed 15-bit.
 				c.x = Cr >> 1;
 				c.y = Y  >> 1;
 				c.z = Cb >> 1;
 			}
 			else
 			{
-				// Scaling and bias for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
-				// Scale down by 0x0101 to normalize the 8.8 samples, and up by 0x7FFF for signed 15-bit output.
-				Float4 y = (Float4(Y)  - Float4(state.studioSwing ? 16 * 0x0101 : 0)) * Float4(float(0x7FFF) / (state.studioSwing ? 219 * 0x0101 : 255 * 0x0101));
-				Float4 u = (Float4(Cb) - Float4(128 * 0x0101))                        * Float4(float(0x7FFF) / (state.studioSwing ? 224 * 0x0101 : 255 * 0x0101));
-				Float4 v = (Float4(Cr) - Float4(128 * 0x0101))                        * Float4(float(0x7FFF) / (state.studioSwing ? 224 * 0x0101 : 255 * 0x0101));
+				Float4 y = (Float4(Y)  - Float4(studioSwing ? 16 * 0x0101 : 0)) * Float4(float(0x7FFF) / (studioSwing ? 219 * 0x0101 : 255 * 0x0101));
+				Float4 u = (Float4(Cb) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
+				Float4 v = (Float4(Cr) - Float4(128 * 0x0101))                  * Float4(float(0x7FFF) / (studioSwing ? 224 * 0x0101 : 255 * 0x0101));
 
 				if(state.ycbcrModel == VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY)
 				{
@@ -1593,39 +1683,6 @@ namespace sw
 				}
 				else
 				{
-					// Generic YCbCr to RGB transformation:
-					// R = Y                               +           2 * (1 - Kr) * Cr
-					// G = Y - 2 * Kb * (1 - Kb) / Kg * Cb - 2 * Kr * (1 - Kr) / Kg * Cr
-					// B = Y +           2 * (1 - Kb) * Cb
-
-					float Kb = 0.114f;
-					float Kr = 0.299f;
-
-					switch(state.ycbcrModel)
-					{
-					case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_709:
-						Kb = 0.0722f;
-						Kr = 0.2126f;
-						break;
-					case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601:
-						Kb = 0.114f;
-						Kr = 0.299f;
-						break;
-					case VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020:
-						Kb = 0.0593f;
-						Kr = 0.2627f;
-						break;
-					default:
-						UNSUPPORTED("ycbcrModel %d", int(state.ycbcrModel));
-					}
-
-					const float Kg = 1.0f - Kr - Kb;
-
-					const float Rr = 2 * (1 - Kr);
-					const float Gb = -2 * Kb * (1 - Kb) / Kg;
-					const float Gr = -2 * Kr * (1 - Kr) / Kg;
-					const float Bb = 2 * (1 - Kb);
-
 					Float4 r = y                  + Float4(Rr) * v;
 					Float4 g = y + Float4(Gb) * u + Float4(Gr) * v;
 					Float4 b = y + Float4(Bb) * u                 ;

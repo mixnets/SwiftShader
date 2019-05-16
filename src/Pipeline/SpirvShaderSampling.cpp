@@ -69,7 +69,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	if(sampler->ycbcrConversion)
 	{
 		samplerState.ycbcrModel = sampler->ycbcrConversion->ycbcrModel;
-		samplerState.studioSwing = (sampler->ycbcrConversion->ycbcrRange == VK_SAMPLER_YCBCR_RANGE_ITU_NARROW);
+		samplerState.ycbcrRange = sampler->ycbcrConversion->ycbcrRange;
 		samplerState.swappedChroma = (sampler->ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
 	}
 
@@ -220,7 +220,7 @@ sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 {
 	if(sampler->ycbcrConversion)
 	{
-		return MIPMAP_NONE;  // YCbCr images can only have one mipmap level.
+		return MIPMAP_NONE;
 	}
 
 	switch(sampler->mipmapMode)
