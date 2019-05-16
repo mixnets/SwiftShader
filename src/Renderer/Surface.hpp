@@ -18,6 +18,7 @@
 #include "Color.hpp"
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
+#include "Common/Thread.hpp"
 
 namespace sw
 {
