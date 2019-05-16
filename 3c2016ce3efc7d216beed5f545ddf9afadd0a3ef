@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cadba650_fa2e9cbc",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-16T23:24:11Z",
+      "side": 1,
+      "message": "You negate this pretty much everywhere -- should it be unnormalizedCoordinates instead (which would match the API) ?",
+      "revId": "3c2016ce3efc7d216beed5f545ddf9afadd0a3ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
