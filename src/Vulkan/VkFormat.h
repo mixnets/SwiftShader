@@ -36,6 +36,8 @@ public:
 	bool isUnsignedNonNormalizedInteger() const;
 	bool isNonNormalizedInteger() const;
 
+	VkImageAspectFlags getAspects() const;
+	Format getAspectFormat(VkImageAspectFlags aspect) const;
 	bool isStencil() const;
 	bool isDepth() const;
 	bool hasQuadLayout() const;
@@ -65,7 +67,7 @@ public:
 	bool has8bitTextureComponents() const;
 	bool has16bitTextureComponents() const;
 	bool has32bitIntegerTextureComponents() const;
-	bool hasYuvFormat() const;
+	bool hasYuvFormat() const;  // TODO: Rename to isYcbcrFormat()
 	bool isRGBComponent(int component) const;
 
 private:

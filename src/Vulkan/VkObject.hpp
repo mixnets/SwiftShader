@@ -28,8 +28,8 @@ namespace vk
 // For use in the placement new to make it verbose that we're allocating an object using device memory
 static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
 
-template<typename T, typename VkT, typename CreateInfo>
-static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject)
+template<typename T, typename VkT, typename CreateInfo, typename... ExtensionInfo>
+static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtensionInfo... extensionInfo)
 {
 	*outObject = VK_NULL_HANDLE;
 
@@ -51,7 +51,7 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	auto object = new (objectMemory) T(pCreateInfo, memory);
+	auto object = new (objectMemory) T(pCreateInfo, memory, extensionInfo...);
 
 	if(!object)
 	{
@@ -78,10 +78,10 @@ public:
 		ASSERT(false);
 	}
 
-	template<typename CreateInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject)
+	template<typename CreateInfo, typename... ExtensionInfo>
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtensionInfo... extensionInfo)
 	{
-		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject);
+		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extensionInfo...);
 	}
 
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }

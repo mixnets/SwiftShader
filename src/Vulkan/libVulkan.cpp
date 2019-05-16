@@ -365,10 +365,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			{
 				const VkPhysicalDeviceSamplerYcbcrConversionFeatures* samplerYcbcrConversionFeatures = reinterpret_cast<const VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(extensionCreateInfo);
 
-				if(samplerYcbcrConversionFeatures->samplerYcbcrConversion == VK_TRUE)
-				{
-					return VK_ERROR_FEATURE_NOT_PRESENT;
-				}
+				ASSERT(samplerYcbcrConversionFeatures->samplerYcbcrConversion == VK_TRUE); (void)samplerYcbcrConversionFeatures;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES:
@@ -408,7 +405,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
-			UNIMPLEMENTED("extensionCreateInfo->sType");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
 			break;
 		}
 
@@ -1022,6 +1019,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 	}
 
 	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 
 	while(extensionCreateInfo)
 	{
@@ -1035,8 +1033,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		break;
 		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
 		{
-			const VkSamplerYcbcrConversionInfo* ycbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
-			if(ycbcrConversionInfo->conversion != VK_NULL_HANDLE)
+			const VkSamplerYcbcrConversionInfo* samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
+			ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
+
+			if(ycbcrConversion != VK_NULL_HANDLE)
 			{
 				ASSERT((pCreateInfo->components.r == VK_COMPONENT_SWIZZLE_IDENTITY) &&
 				       (pCreateInfo->components.g == VK_COMPONENT_SWIZZLE_IDENTITY) &&
@@ -1046,14 +1046,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		}
 		break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::ImageView::Create(pAllocator, pCreateInfo, pView);
+	return vk::ImageView::Create(pAllocator, pCreateInfo, pView, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks* pAllocator)
@@ -1222,12 +1222,33 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 	TRACE("(VkDevice device = %p, const VkSamplerCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSampler* pSampler = %p)",
 		    device, pCreateInfo, pAllocator, pSampler);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
 		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
 	}
 
-	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler);
+	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+
+	while(extensionCreateInfo)
+	{
+		switch(extensionCreateInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
+			{
+				const VkSamplerYcbcrConversionInfo* samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
+				ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
+			}
+			break;
+		default:
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
+			break;
+		}
+
+		extensionCreateInfo = extensionCreateInfo->pNext;
+	}
+
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks* pAllocator)
@@ -1254,7 +1275,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(VkDevice device, cons
 			                             sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
 			break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
@@ -1444,7 +1465,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(VkDevice device, const VkRende
 		}
 		break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
@@ -1951,7 +1972,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 {
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindImageMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
-	
+
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		if(pBindInfos[i].pNext)
@@ -2402,15 +2423,23 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue2(VkDevice device, const VkDeviceQueu
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversion* pYcbcrConversion)
 {
-	TRACE("()");
-	UNIMPLEMENTED("vkCreateSamplerYcbcrConversion");
-	return VK_SUCCESS;
+	TRACE("(VkDevice device = %p, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSamplerYcbcrConversion* pYcbcrConversion = %p)",
+		    device, pCreateInfo, pAllocator, pYcbcrConversion);
+
+	if(pCreateInfo->pNext)
+	{
+		UNIMPLEMENTED("pCreateInfo->pNext");
+	}
+
+	return vk::SamplerYcbcrConversion::Create(pAllocator, pCreateInfo, pYcbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks* pAllocator)
 {
-	TRACE("()");
-	UNIMPLEMENTED("vkDestroySamplerYcbcrConversion");
+	TRACE("(VkDevice device = %p, VkSamplerYcbcrConversion ycbcrConversion = %p, const VkAllocationCallbacks* pAllocator = %p)",
+	      device, ycbcrConversion, pAllocator);
+
+	vk::destroy(ycbcrConversion, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorUpdateTemplate(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorUpdateTemplate* pDescriptorUpdateTemplate)
