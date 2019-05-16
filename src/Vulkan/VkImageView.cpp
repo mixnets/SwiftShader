@@ -178,7 +178,8 @@ void ImageView::resolve(ImageView* resolveAttachment)
 		resolveAttachment->subresourceRange.layerCount
 	};
 	region.dstOffset = { 0, 0, 0 };
-	region.extent = image->getMipLevelExtent(subresourceRange.baseMipLevel);
+	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                         subresourceRange.baseMipLevel);
 
 	image->copyTo(*(resolveAttachment->image), region);
 }
@@ -219,12 +220,28 @@ int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage) const
 
 VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 {
-	return image->getMipLevelExtent(subresourceRange.baseMipLevel + mipLevel);
+	return image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
 void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
+
+	//// Image views can select a single plane from a multi-planar format, so make
+	//// sure we use the original plane aspect when requesting the color aspect.
+	//if(aspect == VK_IMAGE_ASPECT_COLOR_BIT)
+	//{
+	//	switch(image->getFormat())
+	//	{
+	//	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
+	//	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+	//		aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	VkImageSubresourceLayers imageSubresourceLayers =
 	{
@@ -233,6 +250,7 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBit
 		subresourceRange.baseArrayLayer + layer,
 		subresourceRange.layerCount
 	};
+
 	return getImage(usage)->getTexelPointer(offset, imageSubresourceLayers);
 }
 
