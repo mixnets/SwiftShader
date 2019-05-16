@@ -18,6 +18,7 @@
 #include "Surface.hpp"
 #include "RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Common/MutexLock.hpp"
 
 #include <string.h>
 
