@@ -80,7 +80,7 @@ Queue::Queue()
 	queueThread = std::thread(TaskLoop, this);
 }
 
-void Queue::destroy()
+Queue::~Queue()
 {
 	Task task;
 	task.type = Task::KILL_THREAD;
@@ -90,8 +90,6 @@ void Queue::destroy()
 	ASSERT_MSG(pending.count() == 0, "queue has work after worker thread shutdown");
 
 	garbageCollect();
-
-	renderer.reset(nullptr);
 }
 
 VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
