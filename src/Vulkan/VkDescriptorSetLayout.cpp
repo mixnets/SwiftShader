@@ -370,7 +370,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 				int level = mipmapLevel - baseLevel;  // Level within the image view
 				level = sw::clamp(level, 0, (int)subresourceRange.levelCount - 1);
 
-				VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT;
+				VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(imageView->getSubresourceRange().aspectMask);
 				sw::Mipmap &mipmap = texture->mipmap[mipmapLevel];
 
 				if(imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE)
