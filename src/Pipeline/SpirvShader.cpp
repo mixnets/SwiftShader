@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include "SpirvShader.hpp"
-#include "SamplerCore.hpp"
 
+#include "SamplerCore.hpp"
 #include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
@@ -919,8 +919,9 @@ namespace sw
 			case spv::OpImageSampleProjDrefImplicitLod:
 			case spv::OpImageSampleProjDrefExplicitLod:
 			case spv::OpImageFetch:
-			case spv::OpImageQuerySize:
 			case spv::OpImageQuerySizeLod:
+			case spv::OpImageQuerySize:
+			case spv::OpImageQueryLod:
 			case spv::OpImageQueryLevels:
 			case spv::OpImageQuerySamples:
 			case spv::OpImageRead:
@@ -2445,37 +2446,40 @@ namespace sw
 			return EmitKill(insn, state);
 
 		case spv::OpImageSampleImplicitLod:
-			return EmitImageSampleImplicitLod(None, insn, state);
+			return EmitImageSampleImplicitLod(Sample, insn, state);
 
 		case spv::OpImageSampleExplicitLod:
-			return EmitImageSampleExplicitLod(None, insn, state);
+			return EmitImageSampleExplicitLod(Sample, insn, state);
 
 		case spv::OpImageSampleDrefImplicitLod:
-			return EmitImageSampleImplicitLod(Dref, insn, state);
+			return EmitImageSampleImplicitLod(SampleDref, insn, state);
 
 		case spv::OpImageSampleDrefExplicitLod:
-			return EmitImageSampleExplicitLod(Dref, insn, state);
+			return EmitImageSampleExplicitLod(SampleDref, insn, state);
 
 		case spv::OpImageSampleProjImplicitLod:
-			return EmitImageSampleImplicitLod(Proj, insn, state);
+			return EmitImageSampleImplicitLod(SampleProj, insn, state);
 
 		case spv::OpImageSampleProjExplicitLod:
-			return EmitImageSampleExplicitLod(Proj, insn, state);
+			return EmitImageSampleExplicitLod(SampleProj, insn, state);
 
 		case spv::OpImageSampleProjDrefImplicitLod:
-			return EmitImageSampleImplicitLod(ProjDref, insn, state);
+			return EmitImageSampleImplicitLod(SampleProjDref, insn, state);
 
 		case spv::OpImageSampleProjDrefExplicitLod:
-			return EmitImageSampleExplicitLod(ProjDref, insn, state);
+			return EmitImageSampleExplicitLod(SampleProjDref, insn, state);
 
 		case spv::OpImageFetch:
 			return EmitImageFetch(insn, state);
 
+		case spv::OpImageQuerySizeLod:
+			return EmitImageQuerySizeLod(insn, state);
+
 		case spv::OpImageQuerySize:
 			return EmitImageQuerySize(insn, state);
 
-		case spv::OpImageQuerySizeLod:
-			return EmitImageQuerySizeLod(insn, state);
+		case spv::OpImageQueryLod:
+			return EmitImageQueryLod(insn, state);
 
 		case spv::OpImageQueryLevels:
 			return EmitImageQueryLevels(insn, state);
@@ -4638,7 +4642,7 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const
 	{
-		auto isDref = (variant == Dref) || (variant == ProjDref);
+		auto isDref = (variant == SampleDref) || (variant == SampleProjDref);
 		uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(isDref ? 6 : 5));
 		imageOperands &= ~spv::ImageOperandsConstOffsetMask;  // Dealt with later.
 
@@ -4656,7 +4660,7 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitImageFetch(InsnIterator insn, EmitState *state) const
 	{
-		return EmitImageSample({None, Fetch}, insn, state);
+		return EmitImageSample({Sample, Fetch}, insn, state);
 	}
 
 	SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const
@@ -4822,6 +4826,19 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
+	{
+		auto &resultTy = getType(Type::ID(insn.word(1)));
+		auto resultId = Object::ID(insn.word(2));
+		auto imageId = Object::ID(insn.word(3));
+		auto lodId = Object::ID(insn.word(4));
+
+		auto &dst = state->routine->createIntermediate(resultId, resultTy.sizeInComponents);
+		GetImageDimensions(state->routine, resultTy, imageId, lodId, dst);
+
+		return EmitResult::Continue;
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageQuerySize(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultTy = getType(Type::ID(insn.word(1)));
@@ -4835,17 +4852,9 @@ namespace sw
 		return EmitResult::Continue;
 	}
 
-	SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
+	SpirvShader::EmitResult SpirvShader::EmitImageQueryLod(InsnIterator insn, EmitState *state) const
 	{
-		auto &resultTy = getType(Type::ID(insn.word(1)));
-		auto resultId = Object::ID(insn.word(2));
-		auto imageId = Object::ID(insn.word(3));
-		auto lodId = Object::ID(insn.word(4));
-
-		auto &dst = state->routine->createIntermediate(resultId, resultTy.sizeInComponents);
-		GetImageDimensions(state->routine, resultTy, imageId, lodId, dst);
-
-		return EmitResult::Continue;
+		return EmitImageSample({Sample, Query}, insn, state);
 	}
 
 	void SpirvShader::GetImageDimensions(SpirvRoutine const *routine, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const

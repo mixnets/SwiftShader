@@ -35,7 +35,8 @@ namespace sw
 		Grad,      // Use provided gradients.
 		Fetch,     // Use provided integer coordinates.
 		Base,      // Sample base level.
-		SAMPLER_METHOD_LAST = Base,
+		Query,     // Return implicit LOD.
+		SAMPLER_METHOD_LAST = Query,
 	};
 
 	enum SamplerOption
@@ -61,6 +62,8 @@ namespace sw
 		SamplerCore(Pointer<Byte> &constants, const Sampler &state);
 
 		Vector4f sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &lodOrBias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function);
+
+	//	Float4 queryLod(Pointer<Byte> &texture);
 
 	private:
 		Short4 offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, Float &lod);

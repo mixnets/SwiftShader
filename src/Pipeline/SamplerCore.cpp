@@ -81,7 +81,7 @@ namespace sw
 			cubeFace(face, uuuu, vvvv, u, v, w, M);
 		}
 
-		if(function == Implicit || function == Bias || function == Grad)
+		if(function == Implicit || function == Bias || function == Grad || function == Query)
 		{
 			if(state.textureType != TEXTURE_3D)
 			{
@@ -118,6 +118,13 @@ namespace sw
 			lod = Float(0);
 		}
 		else UNREACHABLE("Sampler function %d", int(function));
+
+		if(function == Query)
+		{
+			c.x = Float4(0);
+			c.y = Float4(lod);
+			return c;
+		}
 
 		if(function != Base)
 		{

@@ -477,14 +477,15 @@ namespace sw
 			inline operator Object::ID() const { return Object::ID(value()); }
 		};
 
-		// OpImageSample variants
+		// OpImage variants
 		enum Variant
 		{
-			None,
-			Dref,
-			Proj,
-			ProjDref,
-			VARIANT_LAST = ProjDref
+			Sample,
+			SampleDref,
+			SampleProj,
+			SampleProjDref,
+		//	QueryLod,
+			VARIANT_LAST =  SampleProjDref
 		};
 
 		// Compact representation of image instruction parameters that is passed to the
@@ -508,12 +509,12 @@ namespace sw
 
 			bool isDref() const
 			{
-				return (variant == Dref) || (variant == ProjDref);
+				return (variant == SampleDref) || (variant == SampleProjDref);
 			}
 
 			bool isProj() const
 			{
-				return (variant == Proj) || (variant == ProjDref);
+				return (variant == SampleProj) || (variant == SampleProjDref);
 			}
 
 			union
@@ -526,8 +527,8 @@ namespace sw
 
 					// Parameters are passed to the sampling routine in this order:
 					uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
-				//	uint32_t dref : 1;              // Indicated by Variant::ProjDref|Dref
-				//	uint32_t lodOrBias : 1;         // Indicated by SamplerMethod::Lod|Bias
+				//	uint32_t dref : 1;              // Indicated by Variant::SampleProjDref|SampleDref
+				//	uint32_t lodOrBias : 1;         // Indicated by SamplerMethod::SampleLod|SampleBias
 					uint32_t gradComponents : 2;    // 0-3 (for each of dx / dy)
 					uint32_t offsetComponents : 2;  // 0-3
 				};
@@ -938,8 +939,9 @@ namespace sw
 		EmitResult EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageFetch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
-		EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitImageQueryLod(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQueryLevels(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageQuerySamples(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
