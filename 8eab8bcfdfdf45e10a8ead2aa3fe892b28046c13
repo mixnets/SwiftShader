@@ -22,6 +22,30 @@
       "revId": "8eab8bcfdfdf45e10a8ead2aa3fe892b28046c13",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e4aa519_48df08c8",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-17T21:38:25Z",
+      "side": 1,
+      "message": "Technically yes. It\u0027s not observable (ANDROID_native_buffer is not visible to apps and so not visible to CTS).",
+      "parentUuid": "ef2734e9_3b9f20f1",
+      "range": {
+        "startLine": 240,
+        "startChar": 0,
+        "endLine": 243,
+        "endChar": 60
+      },
+      "revId": "8eab8bcfdfdf45e10a8ead2aa3fe892b28046c13",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
