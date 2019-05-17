@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "25e8f623_f25c020f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-17T17:25:48Z",
+      "side": 1,
+      "message": "Windows Visual Studio 64bit compiler.\nI had a quick look at level 4 warnings, so some of these fixes are for level 4, which we don\u0027t use, but seemed good to fix.",
+      "parentUuid": "7ebed617_8a9df99b",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "8489399fafb73ced16b158c1fa7feee0785b0c05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8a49ca91_7769edc2",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-17T17:17:42Z",
       "side": 1,
       "message": "Should we enable these warnings on other platforms as well, and/or treat them as errors?",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 9,
+        "endChar": 14
+      },
+      "revId": "8489399fafb73ced16b158c1fa7feee0785b0c05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "acecb556_bc0e0df0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-17T17:25:48Z",
+      "side": 1,
+      "message": "I\u0027m surprised some of these format conversions go through silently on other platforms. I thought they were already enabled, but maybe the rules a slightly different depending on the platform.",
+      "parentUuid": "8a49ca91_7769edc2",
       "range": {
         "startLine": 9,
         "startChar": 10,
