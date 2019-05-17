@@ -22,7 +22,6 @@
 #include "Pipeline/Constants.hpp"
 #include "System/CPUID.hpp"
 #include "System/Memory.hpp"
-#include "System/Resource.hpp"
 #include "System/Half.hpp"
 #include "System/Math.hpp"
 #include "System/Timer.hpp"
@@ -249,16 +248,11 @@ namespace sw
 
 		swiftConfig = new SwiftConfig(disableServer);
 		updateConfiguration(true);
-
-		sync = new Resource(0);
 	}
 
 	Renderer::~Renderer()
 	{
-		sync->lock(EXCLUSIVE);
-		sync->destruct();
 		terminateThreads();
-		sync->unlock();
 
 		delete resumeApp;
 		resumeApp = nullptr;
@@ -318,7 +312,7 @@ namespace sw
 			return;
 		}
 
-		sync->lock(sw::PRIVATE);
+		sync.add();
 
 		if(update)
 		{
@@ -810,8 +804,7 @@ namespace sw
 
 	void Renderer::synchronize()
 	{
-		sync->lock(sw::PUBLIC);
-		sync->unlock();
+		sync.wait();
 	}
 
 	void Renderer::finishRendering(Task &pixelTask)
@@ -884,7 +877,7 @@ namespace sw
 					draw.events = nullptr;
 				}
 
-				sync->unlock();
+				sync.done();
 
 				draw.references = -1;
 				resumeApp->signal();
