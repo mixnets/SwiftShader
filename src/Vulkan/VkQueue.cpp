@@ -73,11 +73,8 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 
 namespace vk
 {
-
-Queue::Queue()
+Queue::Queue() : renderer(sw::OpenGL, true)
 {
-	renderer.reset(new sw::Renderer(sw::OpenGL, true));
-
 	queueThread = std::thread(TaskLoop, this);
 }
 
@@ -100,11 +97,11 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFen
 	Task task;
 	task.submitCount = submitCount;
 	task.pSubmits = DeepCopySubmitInfo(submitCount, pSubmits);
-	task.fence = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
+	task.events = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
 
-	if(task.fence)
+	if(task.events)
 	{
-		task.fence->add();
+		task.events->start();
 	}
 
 	pending.put(task);
@@ -129,8 +126,8 @@ void Queue::submitQueue(const Task& task)
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = renderer.get();
-			executionState.fence = task.fence;
+			executionState.renderer = &renderer;
+			executionState.events = task.events;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
 				vk::Cast(submitInfo.pCommandBuffers[j])->submit(executionState);
@@ -148,12 +145,12 @@ void Queue::submitQueue(const Task& task)
 		toDelete.put(task.pSubmits);
 	}
 
-	if(task.fence)
+	if(task.events)
 	{
 		// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
 		// is guaranteed complete by the time the fence signals.
-		renderer->synchronize();
-		task.fence->done();
+		renderer.synchronize();
+		task.events->finish();
 	}
 }
 
@@ -181,14 +178,14 @@ void Queue::taskLoop()
 VkResult Queue::waitIdle()
 {
 	// Wait for task queue to flush.
-	vk::Fence fence;
-	fence.add();
+	sw::WaitGroup wg;
+	wg.add();
 
 	Task task;
-	task.fence = &fence;
+	task.events = &wg;
 	pending.put(task);
 
-	fence.wait();
+	wg.wait();
 
 	garbageCollect();
 
