@@ -150,9 +150,6 @@
     <ClCompile Include="..\System\Memory.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\System\Resource.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="..\System\Socket.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -492,9 +489,6 @@
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="..\System\MutexLock.hpp">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="..\System\Resource.hpp">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="..\System\SharedLibrary.hpp">

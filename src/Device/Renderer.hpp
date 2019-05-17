@@ -298,7 +298,7 @@ namespace sw
 		SwiftConfig *swiftConfig;
 
 		std::list<vk::Query*> queries;
-		Resource *sync;
+		vk::Fence *sync;
 
 		VertexProcessor::State vertexState;
 		SetupProcessor::State setupState;

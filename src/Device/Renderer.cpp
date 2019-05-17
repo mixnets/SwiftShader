@@ -23,7 +23,6 @@
 #include "System/MutexLock.hpp"
 #include "System/CPUID.hpp"
 #include "System/Memory.hpp"
-#include "System/Resource.hpp"
 #include "System/Half.hpp"
 #include "System/Math.hpp"
 #include "System/Timer.hpp"
@@ -251,15 +250,12 @@ namespace sw
 		swiftConfig = new SwiftConfig(disableServer);
 		updateConfiguration(true);
 
-		sync = new Resource(0);
+		sync = new (vk::allocate<vk::Fence>(sizeof(vk::Fence), vk::DEVICE_MEMORY)) vk::Fence();
 	}
 
 	Renderer::~Renderer()
 	{
-		sync->lock(EXCLUSIVE);
-		sync->destruct();
 		terminateThreads();
-		sync->unlock();
 
 		delete resumeApp;
 		resumeApp = nullptr;
@@ -272,6 +268,9 @@ namespace sw
 
 		delete swiftConfig;
 		swiftConfig = nullptr;
+
+		vk::deallocate(sync, vk::DEVICE_MEMORY);
+		sync = nullptr;
 	}
 
 	// This object has to be mem aligned
@@ -317,7 +316,7 @@ namespace sw
 			return;
 		}
 
-		sync->lock(sw::PRIVATE);
+		sync->add();
 
 		if(update)
 		{
@@ -808,8 +807,14 @@ namespace sw
 
 	void Renderer::synchronize()
 	{
-		sync->lock(sw::PUBLIC);
-		sync->unlock();
+		// add/done is noop is a draw call is already running, but sets
+		// the fence status to VK_SUCCESS if no draw call is runnning
+		sync->add();
+		sync->done();
+		// wait for draw calls to end / fence status to become VK_SUCCESS
+		sync->wait();
+		// reset fence status to VK_NOT_READY
+		sync->reset();
 	}
 
 	void Renderer::finishRendering(Task &pixelTask)
@@ -893,7 +898,7 @@ namespace sw
 					draw.fence = nullptr;
 				}
 
-				sync->unlock();
+				sync->done();
 
 				draw.references = -1;
 				resumeApp->signal();
