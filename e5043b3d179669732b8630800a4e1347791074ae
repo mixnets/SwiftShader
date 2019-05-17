@@ -22,6 +22,30 @@
       "revId": "e5043b3d179669732b8630800a4e1347791074ae",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c42c4b2e_49f39835",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-17T14:19:06Z",
+      "side": 1,
+      "message": "Let me know if it does fail. I\u0027ll make sure our CMake includes this.",
+      "parentUuid": "c93d1c76_f2228fbb",
+      "range": {
+        "startLine": 301,
+        "startChar": 1,
+        "endLine": 301,
+        "endChar": 5
+      },
+      "revId": "e5043b3d179669732b8630800a4e1347791074ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
