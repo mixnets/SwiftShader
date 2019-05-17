@@ -5383,13 +5383,13 @@ namespace sw
 			break;
 		case spv::ImageFormatRgba8Snorm:
 			texelSize = 4;
-			packed[0] = (SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
+			packed[0] = (SIMD::Int(Floor(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 						 SIMD::Int(0xFF)) |
-						((SIMD::Int(Round(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
+						((SIMD::Int(Floor(Min(Max(texel.Float(1), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 						  SIMD::Int(0xFF)) << 8) |
-						((SIMD::Int(Round(Min(Max(texel.Float(2), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
+						((SIMD::Int(Floor(Min(Max(texel.Float(2), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 						  SIMD::Int(0xFF)) << 16) |
-						((SIMD::Int(Round(Min(Max(texel.Float(3), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
+						((SIMD::Int(Floor(Min(Max(texel.Float(3), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 						  SIMD::Int(0xFF)) << 24);
 			numPackedElements = 1;
 			break;
