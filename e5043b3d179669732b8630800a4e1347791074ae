@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c93d1c76_f2228fbb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-17T14:07:32Z",
+      "side": 1,
+      "message": "This may lead to an unused variable warning, treated as error. I\u0027m slightly surprised Kokoro doesn\u0027t complain. Maybe that error is only produced by Chromium builds currently? Or because the RHS is constexpr maybe it doesn\u0027t care it\u0027s unused.\n\nOK to land this and find out...",
+      "range": {
+        "startLine": 301,
+        "startChar": 1,
+        "endLine": 301,
+        "endChar": 5
+      },
+      "revId": "e5043b3d179669732b8630800a4e1347791074ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
