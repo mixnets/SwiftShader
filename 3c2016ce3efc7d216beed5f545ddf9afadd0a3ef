@@ -16,6 +16,24 @@
       "revId": "3c2016ce3efc7d216beed5f545ddf9afadd0a3ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d694d69f_2cac0036",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-17T15:04:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cadba650_fa2e9cbc",
+      "revId": "3c2016ce3efc7d216beed5f545ddf9afadd0a3ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
