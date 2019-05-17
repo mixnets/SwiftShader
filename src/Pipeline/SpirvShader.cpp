@@ -4797,6 +4797,14 @@ namespace sw
 				in[i] = dyValue.Float(j);
 			}
 		}
+		else if (instruction.samplerMethod == Fetch)
+		{
+			// The instruction didn't provide a lod operand, but the sampler's Fetch
+			// function requires one to be present. If no lod is supplied, the default
+			// is zero.
+			in[i] = As<SIMD::Float>(SIMD::Int(0));
+			i++;
+		}
 
 		if(constOffset)
 		{
