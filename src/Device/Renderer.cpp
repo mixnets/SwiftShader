@@ -185,7 +185,7 @@ namespace sw
 
 		references = -1;
 
-		fence = nullptr;
+		events = nullptr;
 
 		data = (DrawData*)allocate(sizeof(DrawData));
 		data->constants = &constants;
@@ -299,7 +299,7 @@ namespace sw
 		return false;
 	}
 
-	void Renderer::draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, vk::Fence* fence, bool update)
+	void Renderer::draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, TaskEvents *events, bool update)
 	{
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
@@ -401,12 +401,13 @@ namespace sw
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
 
-		if(fence)
+		if(events)
 		{
-			fence->add();
+			events->start();
 		}
-		ASSERT(!draw->fence);
-		draw->fence = fence;
+
+		ASSERT(!draw->events);
+		draw->events = events;
 
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
@@ -887,10 +888,10 @@ namespace sw
 				draw.setupRoutine->unbind();
 				draw.pixelRoutine->unbind();
 
-				if(draw.fence)
+				if(draw.events)
 				{
-					draw.fence->done();
-					draw.fence = nullptr;
+					draw.events->finish();
+					draw.events = nullptr;
 				}
 
 				sync->unlock();
