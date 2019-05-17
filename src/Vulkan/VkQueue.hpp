@@ -139,7 +139,7 @@ private:
 	{
 		uint32_t submitCount = 0;
 		VkSubmitInfo* pSubmits = nullptr;
-		Fence* fence = nullptr;
+		TaskEvents* events = nullptr;
 
 		enum Type { KILL_THREAD, SUBMIT_QUEUE };
 		Type type = SUBMIT_QUEUE;
@@ -150,7 +150,7 @@ private:
 	void garbageCollect();
 	void submitQueue(const Task& task);
 
-	std::unique_ptr<sw::Renderer> renderer;
+	sw::Renderer renderer;
 	Chan<Task> pending;
 	Chan<VkSubmitInfo*> toDelete;
 	std::thread queueThread;

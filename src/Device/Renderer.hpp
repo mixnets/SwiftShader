@@ -30,7 +30,7 @@
 namespace vk
 {
 	class DescriptorSet;
-	class Fence;
+	class TaskEvents;
 	struct Query;
 }
 
@@ -200,7 +200,7 @@ namespace sw
 
 		bool hasQueryOfType(VkQueryType type) const;
 
-		void draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, vk::Fence* fence, bool update = true);
+		void draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, vk::TaskEvents *events, bool update = true);
 
 		// Viewport & Clipper
 		void setViewport(const VkViewport &viewport);
@@ -333,7 +333,7 @@ namespace sw
 		vk::ImageView *renderTarget[RENDERTARGETS];
 		vk::ImageView *depthBuffer;
 		vk::ImageView *stencilBuffer;
-		vk::Fence* fence;
+		vk::TaskEvents *events;
 
 		std::list<vk::Query*> *queries;
 
