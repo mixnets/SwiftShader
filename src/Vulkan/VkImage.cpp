@@ -588,6 +588,8 @@ uint8_t* Image::end() const
 
 VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 {
+	ASSERT(aspect & format.getAspects());
+
 	switch(format)
 	{
 	case VK_FORMAT_D16_UNORM_S8_UINT:
