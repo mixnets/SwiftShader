@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3da61ed9_f36c3415",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2016,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-17T15:18:28Z",
+      "side": 1,
+      "message": "\"When unnormalizedCoordinates is VK_TRUE, [...] viewType must be either VK_IMAGE_VIEW_TYPE_1D or VK_IMAGE_VIEW_TYPE_2D.\"",
+      "range": {
+        "startLine": 2014,
+        "startChar": 5,
+        "endLine": 2016,
+        "endChar": 44
+      },
+      "revId": "0e5f05a9af7d158628baf4f56edf6b98fab1687e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
