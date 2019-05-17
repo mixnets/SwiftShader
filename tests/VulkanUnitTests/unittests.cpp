@@ -192,6 +192,10 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
     Driver driver;
     ASSERT_TRUE(driver.loadSwiftShader());
 
+    for (int i = 0; true; i++)
+    {
+        printf("--- %d ---\n", i);
+
     const VkInstanceCreateInfo createInfo = {
         VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,  // sType
         nullptr,                                 // pNext
@@ -343,11 +347,11 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 
     VK_ASSERT(device->MapMemory(memory, 0, buffersSize, 0, (void**)&buffers));
 
-    for (size_t i = 0; i < numElements; ++i)
-    {
-        auto got = buffers[i + outOffset];
-        EXPECT_EQ(expected(i), got) << "Unexpected output at " << i;
-    }
+    // for (size_t i = 0; i < numElements; ++i)
+    // {
+    //     auto got = buffers[i + outOffset];
+    //     EXPECT_EQ(expected(i), got) << "Unexpected output at " << i;
+    // }
 
     // Check for writes outside of bounds.
     EXPECT_EQ(buffers[magic0Offset], magic0);
@@ -357,6 +361,7 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 
     device->UnmapMemory(memory);
     buffers = nullptr;
+    }
 }
 
 INSTANTIATE_TEST_CASE_P(ComputeParams, SwiftShaderVulkanBufferToBufferComputeTest, testing::Values(

@@ -150,10 +150,15 @@ private:
 	void garbageCollect();
 	void submitQueue(const Task& task);
 
-	std::unique_ptr<sw::Renderer> renderer;
+	uint32_t magic_a;
+	sw::Renderer renderer;
+	uint32_t magic_b;
 	Chan<Task> pending;
+	uint32_t magic_c;
 	Chan<VkSubmitInfo*> toDelete;
+	uint32_t magic_d;
 	std::thread queueThread;
+	uint32_t magic_e;
 };
 
 static inline Queue* Cast(VkQueue object)

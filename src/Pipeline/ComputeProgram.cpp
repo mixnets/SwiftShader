@@ -214,6 +214,8 @@ namespace sw
 		uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
 		uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 	{
+		return;
+
 		auto &modes = shader->getModes();
 
 		auto invocationsPerSubgroup = SIMD::Width;

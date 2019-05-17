@@ -72,24 +72,44 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 
 namespace vk
 {
-
-Queue::Queue()
+static Queue* current;
+Queue::Queue() : renderer(sw::OpenGL, true)
 {
-	renderer.reset(new sw::Renderer(sw::OpenGL, true));
-
+	current = this;
+	magic_a = 0xaaaaaaaa;
+	magic_b = 0xbbbbbbbb;
+	magic_c = 0xcccccccc;
+	magic_d = 0xdddddddd;
+	magic_e = 0xeeeeeeee;
 	queueThread = std::thread(TaskLoop, this);
 }
 
 Queue::~Queue()
 {
+	ASSERT(current == this);
+	ASSERT(magic_a == 0xaaaaaaaa);
+	ASSERT(magic_b == 0xbbbbbbbb);
+	ASSERT(magic_c == 0xcccccccc);
+	ASSERT(magic_d == 0xdddddddd);
+	ASSERT(magic_e == 0xeeeeeeee);
+
 	Task task;
 	task.type = Task::KILL_THREAD;
 	pending.put(task);
 
+	ASSERT(current == this);
+
 	queueThread.join();
+
+	ASSERT(current == this);
+
 	ASSERT_MSG(pending.count() == 0, "queue has work after worker thread shutdown");
 
+	ASSERT(current == this);
+
 	garbageCollect();
+
+	ASSERT(current == this);
 }
 
 VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
@@ -128,7 +148,7 @@ void Queue::submitQueue(const Task& task)
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = renderer.get();
+			executionState.renderer = &renderer;
 			executionState.fence = task.fence;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
@@ -176,6 +196,13 @@ void Queue::taskLoop()
 
 VkResult Queue::waitIdle()
 {
+	ASSERT(current == this);
+	ASSERT(magic_a == 0xaaaaaaaa);
+	ASSERT(magic_b == 0xbbbbbbbb);
+	ASSERT(magic_c == 0xcccccccc);
+	ASSERT(magic_d == 0xdddddddd);
+	ASSERT(magic_e == 0xeeeeeeee);
+
 	// Wait for task queue to flush.
 	vk::Fence fence;
 	fence.add();
@@ -187,7 +214,7 @@ VkResult Queue::waitIdle()
 	fence.wait();
 
 	// Wait for all draw operations to complete, if any
-	renderer->synchronize();
+	renderer.synchronize();
 
 	garbageCollect();
 
