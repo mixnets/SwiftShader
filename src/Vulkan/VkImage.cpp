@@ -510,9 +510,9 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 	mipLevelExtent.height = extent.height >> mipLevel;
 	mipLevelExtent.depth = extent.depth >> mipLevel;
 
-	if(mipLevelExtent.width == 0)  mipLevelExtent.width = 1;
-	if(mipLevelExtent.height == 0) mipLevelExtent.height = 1;
-	if(mipLevelExtent.depth == 0)  mipLevelExtent.depth = 1;
+	if(mipLevelExtent.width  == 0) { mipLevelExtent.width  = 1; }
+	if(mipLevelExtent.height == 0) { mipLevelExtent.height = 1; }
+	if(mipLevelExtent.depth  == 0) { mipLevelExtent.depth  = 1; }
 
 	switch(aspect)
 	{
