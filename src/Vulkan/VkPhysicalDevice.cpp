@@ -650,6 +650,12 @@ void PhysicalDevice::getFormatProperties(VkFormat format, VkFormatProperties* pF
 	default:
 		break;
 	}
+
+	if(pFormatProperties->optimalTilingFeatures)
+	{
+		pFormatProperties->linearTilingFeatures = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT |
+		                                          VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
+	}
 }
 
 void PhysicalDevice::getImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling,
