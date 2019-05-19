@@ -36,7 +36,7 @@ public:
 
 	void reset()
 	{
-		ASSERT_MSG(wg.count() == 0, "Fence::reset() called when work is in flight");
+		//ASSERT_MSG(wg.count() == 0, "Fence::reset() called when work is in flight");
 		signaled.clear();
 	}
 
@@ -51,7 +51,7 @@ public:
 		return VK_SUCCESS;
 	}
 
-    template <class CLOCK, class DURATION>
+	template <class CLOCK, class DURATION>
 	VkResult wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
 	{
 		return signaled.wait(timeout) ? VK_SUCCESS : VK_TIMEOUT;
@@ -60,13 +60,13 @@ public:
 	// TaskEvents compliance
 	void start() override
 	{
-		ASSERT(!signaled);
+		//ASSERT(!signaled);
 		wg.add();
 	}
 
 	void finish() override
 	{
-		ASSERT(!signaled);
+		//ASSERT(!signaled);
 		if (wg.done())
 		{
 			signaled.signal();

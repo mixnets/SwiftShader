@@ -63,12 +63,14 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		assert(count_ > 0);
-		--count_;
-		if(count_ == 0)
+		auto count = --count_;
+		if(count == 0)
 		{
+			lock.unlock();
 			condition.notify_all();
+			return true;
 		}
-		return count_ == 0;
+		return false;
 	}
 
 	// wait() blocks until all the tasks have been finished.
@@ -124,6 +126,7 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		value = true;
+		lock.unlock();
 		condition.notify_all();
 	}
 
@@ -132,6 +135,7 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		value = false;
+		lock.unlock();
 		condition.notify_all();
 	}
 
