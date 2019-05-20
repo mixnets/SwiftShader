@@ -15,12 +15,71 @@
 #ifndef sw_Synchronization_hpp
 #define sw_Synchronization_hpp
 
+#include <chrono>
 #include <condition_variable>
 #include <mutex>
 #include <queue>
 
 namespace sw
 {
+
+// Event is a synchronization mechanism used to indicate to waiting threads
+// when a boolean condition has become true.
+class Event
+{
+public:
+	Event() : value(false) {}
+	Event(bool initialState) : value(initialState) {}
+
+	// signal() signals the event, unblocking any calls to wait().
+	void signal()
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		value = true;
+		lock.unlock();
+		condition.notify_all();
+	}
+
+	// clear() sets the event signal to false.
+	void clear()
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		value = false;
+		lock.unlock();
+		condition.notify_all();
+	}
+
+	// wait() blocks until all the event signal is set to true.
+	void wait()
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		condition.wait(lock, [this] { return value; });
+	}
+
+	// wait() blocks until the event signal is set to true or the timeout
+	// has been reached, returning true if all tasks have been completed, or
+	// false if the timeout has been reached.
+	template <class CLOCK, class DURATION>
+	bool wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		return condition.wait_until(lock, timeout, [this] { return value; });
+	}
+
+	// bool() returns true if the event is signaled, otherwise false.
+	// Note: No lock is held after bool() returns, so the event state may
+	// immediately change after returning.
+	operator bool()
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		return value;
+	}
+
+public:
+	bool value; // guarded by mutex
+	std::mutex mutex;
+	std::condition_variable condition;
+};
 
 // Chan is a thread-safe FIFO queue of type T.
 // Chan takes its name after Golang's chan.
