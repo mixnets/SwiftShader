@@ -28,57 +28,39 @@ namespace sw
 class Event
 {
 public:
-	Event() : value(false) {}
-	Event(bool initialState) : value(initialState) {}
+	Event() : signaled(false)
+	{
+		pthread_cond_init(&handle, NULL);
+		signaled = false;
+	}
+
+	~Event()
+	{
+		pthread_cond_destroy(&handle);
+	}
 
 	// signal() signals the event, unblocking any calls to wait().
 	void signal()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		value = true;
-		lock.unlock();
-		condition.notify_all();
+		signaled = true;
+		pthread_cond_signal(&handle);
 	}
 
-	// clear() sets the event signal to false.
-	void clear()
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		value = false;
-		lock.unlock();
-		condition.notify_all();
-	}
 
 	// wait() blocks until all the event signal is set to true.
 	void wait()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		condition.wait(lock, [this] { return value; });
+		while(!signaled) pthread_cond_wait(&handle, mutex.native_handle());
+		signaled = false;
 	}
 
-	// wait() blocks until the event signal is set to true or the timeout
-	// has been reached, returning true if all tasks have been completed, or
-	// false if the timeout has been reached.
-	template <class CLOCK, class DURATION>
-	bool wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		return condition.wait_until(lock, timeout, [this] { return value; });
-	}
-
-	// bool() returns true if the event is signaled, otherwise false.
-	// Note: No lock is held after bool() returns, so the event state may
-	// immediately change after returning.
-	operator bool()
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		return value;
-	}
 
 public:
-	bool value; // guarded by mutex
+	pthread_cond_t handle;
 	std::mutex mutex;
-	std::condition_variable condition;
+	volatile bool signaled;
 };
 
 // Chan is a thread-safe FIFO queue of type T.
