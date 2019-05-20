@@ -28,42 +28,79 @@ namespace sw
 class Event
 {
 public:
-	Event() : value(false) {}
-	Event(bool initialState) : value(initialState) {}
+	enum class Type
+	{
+		// The event signal will be automatically reset when a call to wait()
+		// returns.
+		// A single call to signal() will only unblock a single (possibly
+		// pending) call to wait().
+		AutoReset,
+
+		// The event will remain in the signaled state when calling signal().
+		// While the event is in the signaled state, any calls to wait() will
+		// unblock without automatically reseting the signaled state.
+		// The signaled state can be reset with a call to clear().
+		ExplicitReset,
+	};
+
+	Event(Type type = Type::AutoReset, bool initialState = false)
+			: type(type), signaled(initialState) {}
 
 	// signal() signals the event, unblocking any calls to wait().
 	void signal()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		value = true;
+		signaled = true;
 		lock.unlock();
-		condition.notify_all();
+		if (type == Type::AutoReset)
+		{
+			condition.notify_one();
+		}
+		else
+		{
+			condition.notify_all();
+		}
 	}
 
 	// clear() sets the event signal to false.
 	void clear()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		value = false;
+		signaled = false;
 		lock.unlock();
-		condition.notify_all();
 	}
 
 	// wait() blocks until all the event signal is set to true.
+	// If the event was constructed with the type AutoReset, then the signal
+	// is cleared before returning.
 	void wait()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		condition.wait(lock, [this] { return value; });
+		condition.wait(lock, [this] { return signaled; });
+		if (type == Type::AutoReset)
+		{
+			signaled = false;
+		}
 	}
 
 	// wait() blocks until the event signal is set to true or the timeout
-	// has been reached, returning true if all tasks have been completed, or
-	// false if the timeout has been reached.
+	// has been reached, returning true if signal was raised, or false if the
+	// timeout has been reached.
+	// If the event was constructed with the type AutoReset and the wait did
+	// not time out, then the signal is cleared before returning.
 	template <class CLOCK, class DURATION>
 	bool wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		return condition.wait_until(lock, timeout, [this] { return value; });
+		if (!condition.wait_until(lock, timeout, [this] { return signaled; }))
+		{
+			return false;
+		}
+		if (type == Type::AutoReset)
+		{
+			signaled = false;
+		}
+		return true;
 	}
 
 	// bool() returns true if the event is signaled, otherwise false.
@@ -72,11 +109,12 @@ public:
 	operator bool()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		return value;
+		return signaled;
 	}
 
 public:
-	bool value; // guarded by mutex
+	const Type type;
+	bool signaled; // guarded by mutex
 	std::mutex mutex;
 	std::condition_variable condition;
 };
