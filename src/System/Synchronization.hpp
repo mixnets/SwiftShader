@@ -28,57 +28,43 @@ namespace sw
 class Event
 {
 public:
-	Event() : value(false) {}
-	Event(bool initialState) : value(initialState) {}
+	Event() : signaled(false)
+	{
+		pthread_cond_init(&handle, NULL);
+		pthread_mutex_init(&mutex, NULL);
+		signaled = false;
+	}
+
+	~Event()
+	{
+		pthread_cond_destroy(&handle);
+		pthread_mutex_destroy(&mutex);
+	}
 
 	// signal() signals the event, unblocking any calls to wait().
 	void signal()
 	{
-		std::unique_lock<std::mutex> lock(mutex);
-		value = true;
-		lock.unlock();
-		condition.notify_all();
+		pthread_mutex_lock(&mutex);
+		signaled = true;
+		pthread_cond_signal(&handle);
+		pthread_mutex_unlock(&mutex);
 	}
 
-	// clear() sets the event signal to false.
-	void clear()
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		value = false;
-		lock.unlock();
-		condition.notify_all();
-	}
 
 	// wait() blocks until all the event signal is set to true.
 	void wait()
 	{
-		std::unique_lock<std::mutex> lock(mutex);
-		condition.wait(lock, [this] { return value; });
+		pthread_mutex_lock(&mutex);
+		while(!signaled) pthread_cond_wait(&handle, &mutex);
+		signaled = false;
+		pthread_mutex_unlock(&mutex);
 	}
 
-	// wait() blocks until the event signal is set to true or the timeout
-	// has been reached, returning true if all tasks have been completed, or
-	// false if the timeout has been reached.
-	template <class CLOCK, class DURATION>
-	bool wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		return condition.wait_until(lock, timeout, [this] { return value; });
-	}
-
-	// bool() returns true if the event is signaled, otherwise false.
-	// Note: No lock is held after bool() returns, so the event state may
-	// immediately change after returning.
-	operator bool()
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		return value;
-	}
 
 public:
-	bool value; // guarded by mutex
-	std::mutex mutex;
-	std::condition_variable condition;
+	pthread_cond_t handle;
+	pthread_mutex_t mutex;
+	volatile bool signaled;
 };
 
 // Chan is a thread-safe FIFO queue of type T.
