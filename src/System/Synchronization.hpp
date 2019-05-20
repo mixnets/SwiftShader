@@ -37,7 +37,7 @@ public:
 		std::unique_lock<std::mutex> lock(mutex);
 		value = true;
 		lock.unlock();
-		condition.notify_all();
+		condition.notify_one();
 	}
 
 	// clear() sets the event signal to false.
@@ -46,7 +46,7 @@ public:
 		std::unique_lock<std::mutex> lock(mutex);
 		value = false;
 		lock.unlock();
-		condition.notify_all();
+		condition.notify_one();
 	}
 
 	// wait() blocks until all the event signal is set to true.
