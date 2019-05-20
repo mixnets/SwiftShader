@@ -403,7 +403,7 @@ namespace sw
 
 		if(fence)
 		{
-			fence->add();
+			fence->start();
 		}
 		ASSERT(!draw->fence);
 		draw->fence = fence;
@@ -889,7 +889,7 @@ namespace sw
 
 				if(draw.fence)
 				{
-					draw.fence->done();
+					draw.fence->finish();
 					draw.fence = nullptr;
 				}
 
