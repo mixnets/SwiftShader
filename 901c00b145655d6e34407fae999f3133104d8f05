@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f533abe9_2cdd64c6",
+        "filename": "src/Renderer/Blitter.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T16:05:11Z",
+      "side": 1,
+      "message": "TODO: Revert this file.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "901c00b145655d6e34407fae999f3133104d8f05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8065847d_a185b077",
+        "filename": "src/Renderer/Surface.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T16:05:11Z",
+      "side": 1,
+      "message": "TODO: Revert this file.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 28
+      },
+      "revId": "901c00b145655d6e34407fae999f3133104d8f05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
