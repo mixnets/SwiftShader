@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4b698e3_fca81c0c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1733,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "übernit: You can pass the conditional to endif() so that its easier to identify the open scope:\n\n  endif(WIN32)",
+      "range": {
+        "startLine": 1733,
+        "startChar": 4,
+        "endLine": 1733,
+        "endChar": 7
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50c6f7c2_5d760b80",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "übernit: I\u0027m of the opinion that single statement blocks should still use brackets - I\u0027ve witnessed too many broken scoping issues that could have been avoided.\nIf number of lines are an issue, I have no personal objection to single line statements:\n\n  if (backtrace.size() \u003d\u003d 0) { return; }\n\nBut this is just my personal opinion, and you might want to get Nicolas\u0027 views before doing anything here.",
+      "range": {
+        "startLine": 121,
+        "startChar": 3,
+        "endLine": 121,
+        "endChar": 9
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c9d9e52_bba5885d",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "übernit: If you have a #if block more than a few lines, I like to see a comment on the #endif with the condition:\n\n  #endif // if ENABLE_PRINT_EMIT_LOCATION\n\nThat way I don\u0027t have to scroll my eyes around so much, and helps readability if there are other preprocessor blocks nearby / nested.",
+      "range": {
+        "startLine": 128,
+        "startChar": 0,
+        "endLine": 128,
+        "endChar": 6
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3003f914_af7f0d95",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "übernit: The namespace bs is only used for one line. How about:\n\nfor (auto frame : boost::stacktrace::stacktrace())",
+      "range": {
+        "startLine": 447,
+        "startChar": 2,
+        "endLine": 447,
+        "endChar": 42
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14e0f67b_7eb5856b",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "übernit: brackets here and below.",
+      "range": {
+        "startLine": 450,
+        "startChar": 4,
+        "endLine": 450,
+        "endChar": 12
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4338b285_d578f7b8",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3425,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T19:39:45Z",
+      "side": 1,
+      "message": "nit: stray tab at EOL",
+      "range": {
+        "startLine": 3425,
+        "startChar": 6,
+        "endLine": 3425,
+        "endChar": 7
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
