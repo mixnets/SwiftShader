@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01e81f09_6f2e9e5c",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-21T14:41:38Z",
+      "side": 1,
+      "message": "I see that ManualReset is a new type compared to what this class used to offer beforehand. Did you have an actual use-case for this? I can imagine it being useful, for sure, but just wondering if it\u0027s speculative design?",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5baa1021_1ec5942e",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-21T14:41:38Z",
+      "side": 1,
+      "message": "According to cppreference (https://en.cppreference.com/w/cpp/thread/condition_variable), it\u0027s not necessary to hold the lock when invoking notify, so you could scope the lock and signaled \u003d true here. This can be a pessimization, as explained in the first couple lines here: https://stackoverflow.com/a/17102100/4039972",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c16d6ed5_6ac2f35d",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-21T14:41:38Z",
+      "side": 1,
+      "message": "Wouldn\u0027t \"reset\" be a better name, given that Event::Type determines how the event is reset?",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
