@@ -223,6 +223,24 @@
       "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc2cbd24_8f1b7bf6",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-21T15:24:19Z",
+      "side": 1,
+      "message": "Microsoft sucks at naming things, but okay!",
+      "parentUuid": "b61c2470_532497f2",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
