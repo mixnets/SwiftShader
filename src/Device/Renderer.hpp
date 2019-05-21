@@ -20,11 +20,13 @@
 #include "SetupProcessor.hpp"
 #include "Plane.hpp"
 #include "Blitter.hpp"
-#include "System/MutexLock.hpp"
 #include "Device/Config.hpp"
+#include "System/Synchronization.hpp"
+#include "System/Thread.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 
 #include <list>
+#include <mutex>
 #include <thread>
 
 namespace vk
@@ -285,7 +287,7 @@ namespace sw
 		static AtomicInt unitCount;
 		static AtomicInt clusterCount;
 
-		MutexLock schedulerMutex;
+		std::mutex schedulerMutex;
 
 		#if PERF_HUD
 			int64_t vertexTime[16];

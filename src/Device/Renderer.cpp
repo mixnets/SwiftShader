@@ -20,7 +20,6 @@
 #include "Device/SwiftConfig.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Pipeline/Constants.hpp"
-#include "System/MutexLock.hpp"
 #include "System/CPUID.hpp"
 #include "System/Memory.hpp"
 #include "System/Resource.hpp"
