@@ -22,6 +22,30 @@
       "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef73f900_98dd9967",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T14:53:59Z",
+      "side": 1,
+      "message": "Some people (Bjarne Stroustrup and Herb Sutter included) feel that using return tuples is clearer than output ref-arguments:\n\nhttps://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Rf-out-multi\n\nMy personal preference stems from writing Go for years, which forces this style. It also matches the Go\u0027s API for this type.\n\nSo just really a personal preference.",
+      "parentUuid": "4866a93b_24e3e525",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 37
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
