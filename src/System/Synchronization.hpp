@@ -23,7 +23,6 @@
 #define sw_Synchronization_hpp
 
 #include <assert.h>
-#include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
