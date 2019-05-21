@@ -50,15 +50,6 @@ namespace sw
 	class Thread
 	{
 	public:
-		Thread(void (*threadFunction)(void *parameters), void *parameters);
-
-		~Thread();
-
-		void join();
-
-		static void yield();
-		static void sleep(int milliseconds);
-
 		#if defined(_WIN32)
 			typedef DWORD LocalStorageKey;
 		#else
@@ -70,24 +61,6 @@ namespace sw
 		static void *allocateLocalStorage(LocalStorageKey key, size_t size);
 		static void *getLocalStorage(LocalStorageKey key);
 		static void freeLocalStorage(LocalStorageKey key);
-
-	private:
-		struct Entry
-		{
-			void (*const threadFunction)(void *parameters);
-			void *threadParameters;
-			Event *init;
-		};
-
-		#if defined(_WIN32)
-			static unsigned long __stdcall startFunction(void *parameters);
-			HANDLE handle;
-		#else
-			static void *startFunction(void *parameters);
-			pthread_t handle;
-		#endif
-
-		bool hasJoined = false;
 	};
 
 	#if PERF_PROFILE
@@ -103,26 +76,6 @@ namespace sw
 
 namespace sw
 {
-	inline void Thread::yield()
-	{
-		#if defined(_WIN32)
-			Sleep(0);
-		#elif defined(__APPLE__)
-			pthread_yield_np();
-		#else
-			sched_yield();
-		#endif
-	}
-
-	inline void Thread::sleep(int milliseconds)
-	{
-		#if defined(_WIN32)
-			Sleep(milliseconds);
-		#else
-			usleep(1000 * milliseconds);
-		#endif
-	}
-
 	inline Thread::LocalStorageKey Thread::allocateLocalStorageKey(void (*destructor)(void *storage))
 	{
 		#if defined(_WIN32)

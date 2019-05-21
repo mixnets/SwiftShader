@@ -1344,7 +1344,7 @@ namespace sw
 			parameters.renderer = this;
 
 			exitThreads = false;
-			worker[i] = new Thread(threadFunction, &parameters);
+			worker[i] = new std::thread(threadFunction, &parameters);
 
 			suspend[i]->wait();
 			suspend[i]->signal();
@@ -1355,7 +1355,7 @@ namespace sw
 	{
 		while(threadsAwake != 0)
 		{
-			Thread::sleep(1);
+			std::this_thread::yield();
 		}
 
 		for(int thread = 0; thread < threadCount; thread++)

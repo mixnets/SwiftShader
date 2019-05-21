@@ -16,55 +16,5 @@
 
 namespace sw
 {
-	Thread::Thread(void (*threadFunction)(void *parameters), void *parameters)
-	{
-		Event init;
-		Entry entry = {threadFunction, parameters, &init};
-
-		#if defined(_WIN32)
-			handle = CreateThread(NULL, 1024 * 1024, startFunction, &entry, 0, NULL);
-		#else
-			pthread_create(&handle, NULL, startFunction, &entry);
-		#endif
-
-		init.wait();
-	}
-
-	Thread::~Thread()
-	{
-		join();   // Make threads exit before deleting them to not block here
-	}
-
-	void Thread::join()
-	{
-		if(!hasJoined)
-		{
-			#if defined(_WIN32)
-				WaitForSingleObject(handle, INFINITE);
-				CloseHandle(handle);
-			#else
-				pthread_join(handle, NULL);
-			#endif
-
-			hasJoined = true;
-		}
-	}
-
-	#if defined(_WIN32)
-		unsigned long __stdcall Thread::startFunction(void *parameters)
-		{
-			Entry entry = *(Entry*)parameters;
-			entry.init->signal();
-			entry.threadFunction(entry.threadParameters);
-			return 0;
-		}
-	#else
-		void *Thread::startFunction(void *parameters)
-		{
-			Entry entry = *(Entry*)parameters;
-			entry.init->signal();
-			entry.threadFunction(entry.threadParameters);
-			return nullptr;
-		}
-	#endif
+// TODO: Remove file.
 }

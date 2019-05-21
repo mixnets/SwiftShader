@@ -21,11 +21,11 @@
 #include "Plane.hpp"
 #include "Blitter.hpp"
 #include "System/MutexLock.hpp"
-#include "System/Thread.hpp"
 #include "Device/Config.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 
 #include <list>
+#include <thread>
 
 namespace vk
 {
@@ -255,7 +255,7 @@ namespace sw
 
 		AtomicInt exitThreads;
 		AtomicInt threadsAwake;
-		Thread *worker[16];
+		std::thread *worker[16];
 		Event *resume[16];         // Events for resuming threads
 		Event *suspend[16];        // Events for suspending threads
 		Event *resumeApp;          // Event for resuming the application thread
