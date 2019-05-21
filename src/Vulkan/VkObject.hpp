@@ -115,8 +115,6 @@ public:
 	{
 	}
 
-	~DispatchableObject() = delete;
-
 	void destroy(const VkAllocationCallbacks* pAllocator)
 	{
 		object.destroy(pAllocator);
