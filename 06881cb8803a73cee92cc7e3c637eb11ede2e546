@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "dc52f153_e5b5feba",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-21T15:06:27Z",
+      "side": 1,
+      "message": "Could we have a name less generic than Event? Maybe ThreadEvent or SyncEvent. Any name will do, as long as it can\u0027t easily be confused with something else.\nI know you kept the old name, but now, we have vk::Event as well.",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 11
+      },
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "01e81f09_6f2e9e5c",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 3
