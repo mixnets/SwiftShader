@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61c14fad_6ea7c943",
+        "filename": "src/Vulkan/VkDestroy.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-21T14:37:11Z",
+      "side": 1,
+      "message": "Ok, I\u0027m fine with using both the destroy function and the destructor.",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 15
+      },
+      "revId": "5b82b04499e6325bf8b19da79fc0aa4bffc1ee8e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
