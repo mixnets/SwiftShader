@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "22323d7f_bfded17f",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T14:45:58Z",
+      "side": 1,
+      "message": "It\u0027s used by vk::Fence in a later change.",
+      "parentUuid": "01e81f09_6f2e9e5c",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5baa1021_1ec5942e",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "6b71c2aa_dc2eac18",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T14:45:58Z",
+      "side": 1,
+      "message": "https://b.corp.google.com/issues/133135427",
+      "parentUuid": "5baa1021_1ec5942e",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c16d6ed5_6ac2f35d",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2019-05-21T14:41:38Z",
       "side": 1,
       "message": "Wouldn\u0027t \"reset\" be a better name, given that Event::Type determines how the event is reset?",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "668879b1_186b8522",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T14:45:58Z",
+      "side": 1,
+      "message": "signal(), wait(), clear() are a common trio for events: https://en.wikipedia.org/wiki/Event_(synchronization_primitive)\n\nThe type names we picked to match Window\u0027s terminology: https://docs.microsoft.com/en-us/windows/desktop/api/synchapi/nf-synchapi-createeventa",
+      "parentUuid": "c16d6ed5_6ac2f35d",
       "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
