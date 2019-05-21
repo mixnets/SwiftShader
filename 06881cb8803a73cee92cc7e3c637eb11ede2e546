@@ -241,6 +241,24 @@
       "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3918fe41_cbd920f5",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-21T15:25:09Z",
+      "side": 1,
+      "message": "How about:\n\n enum class ClearMode\n {\n    Auto,\n    Manual\n };\n\nAlso, for the sake of not taking out regres for the rest of the day, can I apply stylistic preference changes to the end of the stack?",
+      "parentUuid": "b61c2470_532497f2",
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
