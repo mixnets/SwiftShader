@@ -59,10 +59,10 @@ class WaitGroup : public TaskEvents
 {
 public:
 	// add() begins a new task.
-	void add()
+	void add(int32_t count = 1)
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		++count_;
+		count_ += count;
 	}
 
 	// done() is called when a task of the WaitGroup has been completed.
