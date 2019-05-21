@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3bb02627_ccfde62f",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-21T14:53:14Z",
+      "side": 1,
+      "message": "nit: too many things are called \"events\", maybe taskEvents would make it clearer.",
+      "range": {
+        "startLine": 336,
+        "startChar": 14,
+        "endLine": 336,
+        "endChar": 20
+      },
+      "revId": "148738450b521d7ab9dde78ddd1d1ce76f427aff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
