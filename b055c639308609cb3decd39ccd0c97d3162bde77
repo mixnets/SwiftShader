@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4866a93b_24e3e525",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-21T14:47:09Z",
+      "side": 1,
+      "message": "Just curious, why isn\u0027t this:\nbool Chan\u003cT\u003e::tryTake(T\u0026 out)\n\nSeems like \"T out; if(tryTake(...)) {}\" is more natural than \"auto out \u003d tryTake(); if(out.second) {}\".",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 37
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
