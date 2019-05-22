@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2541a5d9_df11db53",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:28:12Z",
+      "side": 1,
+      "message": "For perfect forwarding, parameter should be:\n\n\tExtendedInfo\u0026\u0026...\n\nAnd below, when constructing:\n\n\tauto object \u003d new (objectMemory) T(pCreateInfo, memory, std::forward\u003cExtendedInfo\u003e(extendedInfo)...);\n\nThis will maintain r-valueness, which is a good thing. Also recommend apply to similar changes below.",
+      "revId": "1f0a8a499aec8b564c0302b4f7960f79c040112e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
