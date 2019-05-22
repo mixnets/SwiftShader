@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "04a4c7a7_3637b906",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T21:47:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2fac3e1_e20aa74d",
+      "revId": "4a1d722871a0e3dbcebdd16810968b9da3a733a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1cd7bc_6618bbb6",
         "filename": "src/System/Resource.hpp",
         "patchSetId": 15
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Ack. Added to my post-stack fixup list.",
       "parentUuid": "ba1cd7bc_6618bbb6",
+      "revId": "4a1d722871a0e3dbcebdd16810968b9da3a733a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dbc27004_10ebf810",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T21:47:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d40e566_58dfc626",
       "revId": "4a1d722871a0e3dbcebdd16810968b9da3a733a2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
