@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "785d7fc0_b987a8a3",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1593,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-22T20:13:32Z",
+      "side": 1,
+      "message": "Note: Linear interpolation would cause a float -\u003e short -\u003e float conversion to happen here (or in the else statement).",
+      "range": {
+        "startLine": 1591,
+        "startChar": 0,
+        "endLine": 1593,
+        "endChar": 21
+      },
+      "revId": "817686b4ad0bdebc1c22e9a5bf3e6811ad415ca7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f624ec63_48fbe097",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1934,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-22T20:13:32Z",
+      "side": 1,
+      "message": "could it be simplified to something like:\nbuffer[1] \u003d buffer[0] + sizeof(Mipmap);\nbuffer[2] \u003d buffer[1] + sizeof(Mipmap);",
+      "range": {
+        "startLine": 1933,
+        "startChar": 4,
+        "endLine": 1934,
+        "endChar": 96
+      },
+      "revId": "817686b4ad0bdebc1c22e9a5bf3e6811ad415ca7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
