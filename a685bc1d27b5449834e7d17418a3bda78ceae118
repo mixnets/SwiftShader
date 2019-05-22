@@ -34,6 +34,24 @@
       "revId": "a685bc1d27b5449834e7d17418a3bda78ceae118",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a9dd9da_64cd1a0b",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T19:48:47Z",
+      "side": 1,
+      "message": "Could do. I\u0027d need to check that ASAN and helgrind don\u0027t consider this a false-positive data race.\nI\u0027ll add it to my list of things to investigate / append to this stack.",
+      "parentUuid": "b98e21a8_77bea2ab",
+      "revId": "a685bc1d27b5449834e7d17418a3bda78ceae118",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
