@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e21c8c8e_d6c97c26",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1053,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T22:29:11Z",
+      "side": 1,
+      "message": "nit: mix of tabs and whitespace.",
+      "range": {
+        "startLine": 1048,
+        "startChar": 3,
+        "endLine": 1053,
+        "endChar": 34
+      },
+      "revId": "ad1392a5e7626a1dff463197aaba37cd712b853c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
