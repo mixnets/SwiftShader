@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87f63084_6bb14464",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T19:48:50Z",
+      "side": 0,
+      "message": "I see that this overload of unlock is gone. Unused?",
+      "revId": "5299364af1812ada0c344d83533cb2035400c1ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

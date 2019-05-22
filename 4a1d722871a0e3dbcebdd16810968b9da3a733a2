@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38669d46_6121422f",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T19:48:50Z",
+      "side": 1,
+      "message": "s/does/doesn\u0027t ?",
+      "revId": "4a1d722871a0e3dbcebdd16810968b9da3a733a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba1cd7bc_6618bbb6",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T19:48:50Z",
+      "side": 1,
+      "message": "\"bool orphaned \u003d false;\" rather than \"\u003d 0\" (avoid conversion warnings, more clear)",
+      "revId": "4a1d722871a0e3dbcebdd16810968b9da3a733a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
