@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "6e5f9135_fbef28d8",
+        "filename": "src/Vulkan/VkDestroy.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T04:07:26Z",
+      "side": 1,
+      "message": "Prior issue, but this comment only says what happens, not why. It has no value because it\u0027s trivial to read what happens. The explanation from the commit message would be useful here. Also \"releasing the object\" should probably be \"freeing the object\u0027s memory\" or something similar.\n\nDoesn\u0027t have to be clarified right now.",
+      "range": {
+        "startLine": 50,
+        "startChar": 25,
+        "endLine": 51,
+        "endChar": 43
+      },
+      "revId": "5b82b04499e6325bf8b19da79fc0aa4bffc1ee8e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61c14fad_6ea7c943",
         "filename": "src/Vulkan/VkDestroy.h",
         "patchSetId": 1
