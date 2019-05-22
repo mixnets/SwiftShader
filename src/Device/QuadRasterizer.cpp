@@ -256,7 +256,9 @@ namespace sw
 
 	bool QuadRasterizer::interpolateZ() const
 	{
-		return state.depthTestActive || (spirvShader && spirvShader->hasBuiltinInput(spv::BuiltInPosition));
+		return state.depthTestActive ||
+		       (spirvShader && (spirvShader->hasBuiltinInput(spv::BuiltInPosition) ||
+		                        spirvShader->hasBuiltinInput(spv::BuiltInFragCoord)));
 	}
 
 	bool QuadRasterizer::interpolateW() const
