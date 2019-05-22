@@ -873,12 +873,8 @@ namespace sw
 						if(queryRef == 0)
 						{
 							query->state = vk::Query::FINISHED;
+							query->condition.notify_one();
 						}
-
-						// Manual unlocking is done before notifying, to avoid
-						// waking up the waiting thread only to block again
-						mutexLock.unlock();
-						query->condition.notify_one();
 					}
 
 					delete draw.queries;
