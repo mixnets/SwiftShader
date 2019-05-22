@@ -46,6 +46,53 @@
       "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb678684_5cd56dc8",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T18:47:08Z",
+      "side": 1,
+      "message": "nit: Checking .second doesn\u0027t seem clearer to me. It\u0027s not even obvious that it\u0027s a boolean. Maybe .first is the success code and .second is a pointer to the object (which coincidentally would work since it\u0027s initialized with the {}, unless the Chan can contain null pointers too). This code doesn\u0027t make that sort of mistakes obvious, while when returning a single boolean success code from a try(\u0026) function it\u0027s harder to get it wrong.\n\nAlso note that this implementation will construct a T object with the default constructor on failure, which may have unwanted side-effects (simply wasting some cycles is one), even though the object should never be used.\n\nLastly, I noticed that this method is only used in Queue::garbageCollect(), which will repeatedly lock and unlock the mutex until the queue is emtpy. It appears to me that it could just be cleared all at once. Possibly even without locking.\n\nAnyway, this is OK to land as-is. Just some things to potentially improve on later.",
+      "parentUuid": "ef73f900_98dd9967",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 37
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca0254e4_a00f1ecf",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T18:47:08Z",
+      "side": 1,
+      "message": "nit: Simpler syntax of {T{}, false} might work too.",
+      "range": {
+        "startLine": 83,
+        "startChar": 9,
+        "endLine": 83,
+        "endChar": 35
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
