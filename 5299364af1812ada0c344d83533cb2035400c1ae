@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8807560e_934f2d85",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T20:24:02Z",
+      "side": 1,
+      "message": "Consider mentioning that the actual problem is that \"atomic\u0026 operator\u003d( const atomic\u0026 )\" is deleted (can\u0027t assign atomic to atomic).",
+      "revId": "5299364af1812ada0c344d83533cb2035400c1ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d262184_34e18523",
+        "filename": "src/System/Thread.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T20:24:02Z",
+      "side": 1,
+      "message": "Am not an expert on atomic operations, so someone else will need to look at the diffs between former AtomicInt and this version more carefully. It _looks_ right to me. One question: did/does sw::atomicIncrement/Decrement return the value before the operation is applied? If so, the former post-increment/decrement operators would have been incorrect, whereas yours would be correct... if so, I hope we didn\u0027t rely on that!",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 16
+      },
+      "revId": "5299364af1812ada0c344d83533cb2035400c1ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
