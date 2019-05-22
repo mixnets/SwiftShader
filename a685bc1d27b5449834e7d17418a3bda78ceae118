@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2a040dd_723ceacd",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:24:33Z",
+      "side": 1,
+      "message": "Should we optimize with the double-check idiom? Can add:\n  if (core) { return; }\nbefore locking the mutex.",
+      "revId": "a685bc1d27b5449834e7d17418a3bda78ceae118",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
