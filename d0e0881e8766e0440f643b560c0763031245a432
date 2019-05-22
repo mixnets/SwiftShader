@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ffa0f8fd_30e57f6e",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-22T17:47:06Z",
+      "side": 1,
+      "message": "Just BuiltInFragCoord. There is no BuiltInPosition in the fragment shader, that was a bug.",
+      "revId": "d0e0881e8766e0440f643b560c0763031245a432",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
