@@ -34,6 +34,24 @@
       "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a9445cc_1e1e2803",
+        "filename": ".vscode/tasks.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T14:10:40Z",
+      "side": 1,
+      "message": "Not sure what you mean. You would have had to run cmake at least once to begin with, right, to generate the makefile/ninja file. After that, cmake . -build just runs whatever build command goes with the generator you used (make for makefile, ninja for ninja files).",
+      "parentUuid": "3e11fc85_f50ef7d9",
+      "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
