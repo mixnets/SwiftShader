@@ -22,6 +22,30 @@
       "revId": "f9b1922fb66ffcd63ab6ac10e7ff01c14b69f0b2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d86c2d9b_5301eaf6",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-22T18:46:59Z",
+      "side": 1,
+      "message": "Agreed.",
+      "parentUuid": "052da722_932dd4fa",
+      "range": {
+        "startLine": 30,
+        "startChar": 1,
+        "endLine": 30,
+        "endChar": 13
+      },
+      "revId": "f9b1922fb66ffcd63ab6ac10e7ff01c14b69f0b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
