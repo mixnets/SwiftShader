@@ -15,6 +15,7 @@
 #include "Reactor.hpp"
 
 #include <memory>
+#include <mutex>
 
 #ifndef rr_ReactorCoroutine_hpp
 #define rr_ReactorCoroutine_hpp
@@ -141,8 +142,9 @@ private:
 		std::unique_ptr<Stream<Return>> operator()(Arguments...);
 
 	protected:
-		std::unique_ptr<Nucleus> core;
-		std::shared_ptr<Routine> routine;
+		std::mutex mutex;
+		std::unique_ptr<Nucleus> core;    // guarded by mutex
+		std::shared_ptr<Routine> routine; // guarded by mutex
 		std::vector<Type*> arguments;
 	};
 
@@ -166,6 +168,7 @@ private:
 	template<typename Return, typename... Arguments>
 	void Coroutine<Return(Arguments...)>::finalize()
 	{
+		std::unique_lock<std::mutex> lock(mutex);
 		if(core != nullptr)
 		{
 			routine.reset(core->acquireCoroutine("coroutine", true));
