@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "052da722_932dd4fa",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T18:26:19Z",
+      "side": 1,
+      "message": "Terrifying.",
+      "range": {
+        "startLine": 30,
+        "startChar": 1,
+        "endLine": 30,
+        "endChar": 13
+      },
+      "revId": "f9b1922fb66ffcd63ab6ac10e7ff01c14b69f0b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
