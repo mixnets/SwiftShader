@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c35c85b7_6b066a1e",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1733,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Hmm, I agree, though whenever there\u0027s an \u0027else\u0027, I find the tag not that useful. Plus, this would be almost the only place in the entire CMakeLists.txt where we do this (there\u0027s one other place for if(LINUX). I\u0027ll leave it this way for now.",
+      "parentUuid": "a4b698e3_fca81c0c",
+      "range": {
+        "startLine": 1733,
+        "startChar": 4,
+        "endLine": 1733,
+        "endChar": 7
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50c6f7c2_5d760b80",
         "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-21T19:39:45Z",
       "side": 1,
       "message": "übernit: I\u0027m of the opinion that single statement blocks should still use brackets - I\u0027ve witnessed too many broken scoping issues that could have been avoided.\nIf number of lines are an issue, I have no personal objection to single line statements:\n\n  if (backtrace.size() \u003d\u003d 0) { return; }\n\nBut this is just my personal opinion, and you might want to get Nicolas\u0027 views before doing anything here.",
+      "range": {
+        "startLine": 121,
+        "startChar": 3,
+        "endLine": 121,
+        "endChar": 9
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7cff1e3_cf2015c8",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Done. I want to say that I am from the same school, and used to share this opinion, until I started using clang-format, which obviates the need for braces, since the formatter will clearly show you broken scope issues. However, we\u0027re not using clang-format, so I\u0027ll go ahead and add the braces.",
+      "parentUuid": "50c6f7c2_5d760b80",
       "range": {
         "startLine": 121,
         "startChar": 3,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "27b0c05b_f1fd35dd",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Will do:\n #endif // ENABLE_PRINT_EMIT_LOCATION\n\nAs was done in the  same file for ENABLE_RR_DEBUG_INFO:\n #endif // ENABLE_RR_DEBUG_INFO",
+      "parentUuid": "3c9d9e52_bba5885d",
+      "range": {
+        "startLine": 128,
+        "startChar": 0,
+        "endLine": 128,
+        "endChar": 6
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3003f914_af7f0d95",
         "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2019-05-21T19:39:45Z",
       "side": 1,
       "message": "übernit: The namespace bs is only used for one line. How about:\n\nfor (auto frame : boost::stacktrace::stacktrace())",
+      "range": {
+        "startLine": 447,
+        "startChar": 2,
+        "endLine": 447,
+        "endChar": 42
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ef33c36_0c24dfc5",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Was going to do that, but I think it\u0027s important to see that we\u0027re constructing a bs::frame by value from the bs::stacktrace() call, here, and using auto would somewhat hide that fact. It\u0027s also why I wrote the comment just above the for loop - to point out that bs::stacktrace() returns a vector of addresses, and it\u0027s the construction of a bs::frame that actually does the lookup and conversion to location information for that address.",
+      "parentUuid": "3003f914_af7f0d95",
       "range": {
         "startLine": 447,
         "startChar": 2,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "fde2456a_9b739398",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14e0f67b_7eb5856b",
+      "range": {
+        "startLine": 450,
+        "startChar": 4,
+        "endLine": 450,
+        "endChar": 12
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4338b285_d578f7b8",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 4
@@ -137,6 +257,30 @@
       "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "982c61ee_13ddea18",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3425,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:14:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4338b285_d578f7b8",
+      "range": {
+        "startLine": 3425,
+        "startChar": 6,
+        "endLine": 3425,
+        "endChar": 7
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
