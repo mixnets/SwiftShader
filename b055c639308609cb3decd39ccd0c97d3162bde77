@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "ef0f0cc5_11fa4a4c",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T19:43:15Z",
+      "side": 1,
+      "message": "Having the second parameter of the pair be a success code is a pretty standard pattern for C++:\n\n https://en.cppreference.com/w/cpp/container/unordered_map/emplace\n https://en.cppreference.com/w/cpp/container/unordered_map/insert\n\nAnd matches the Go syntax on which this type is based:\n\n https://golangbot.com/channels/#closingchannelsandforrangeloopsonchannels\n\n\u003e This code doesn\u0027t make that sort of mistakes obvious, while when returning a single boolean success code from a try(\u0026) function it\u0027s harder to get it wrong.\n\nAs far as I can tell, the return-by-argument approach is not particularly favoured with modern C++. Returning tuples, std::tie and the like is becoming more idiomatic. See the CppCoreGuidelines link I gave for some arguments. The Google C++ code style also starts with \"Prefer using return values rather than output parameters\" (https://google.github.io/styleguide/cppguide.html#Output_Parameters).\n\nMy personal dislike for return-by-argument:\n1) Unless you go adding comments or are explicit in naming, it is not obvious that a parameter is to be used as an output, input or both. For example, we have existing sampler code that uses undocumented output parameters, and this took me a good chunk of time mentally annotating each parameter as an in or out. Microsoft back in the day tried to improve this with macro annotations on the parameters (https://docs.microsoft.com/en-us/visualstudio/code-quality/annotating-function-parameters-and-return-values?view\u003dvs-2019), but that is just gross.\n2) It relies on assignment operator support, making returning something like a std::unique_ptr hard. (That said, I should probably fix this code up to use std::move).\n3) Having to pre-declare the output variable before the call is just icky to me, and I\u0027ve seen my fair share of people screwing up the logic around the conditional test and accidentally using the return-by-param value from a previous iteration. Returning both the value and success makes scoping screwups harder.\n\n\u003e Also note that this implementation will construct a T object with the default constructor on failure\n\nAgain, this matches the go behaviour of a chan.\nYeah, there might be some performance loss in default-constructing a throw-away value, but the go-ism is that it is perfectly valid to use the default constructed value, as you\u0027ve described with a nullptr.\n\n\u003e Lastly, I noticed that this method is only used in Queue::garbageCollect(), which will repeatedly lock and unlock the mutex until the queue is emtpy. It appears to me that it could just be cleared all at once. Possibly even without locking.\n\nTrue. However a micro-optimization in the grand scheme of things.\nI guess one solution to this could be to iterate over all items with a single lock held, but that makes some rather grand assumptions that the callback wouldn\u0027t attempt to write to the chan while the lock is held.\nLet\u0027s avoid premature optimization here until we see that this shows up anywhere in a profile.",
+      "parentUuid": "cb678684_5cd56dc8",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 37
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ca0254e4_a00f1ecf",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 1
@@ -84,6 +108,30 @@
       "writtenOn": "2019-05-22T18:47:08Z",
       "side": 1,
       "message": "nit: Simpler syntax of {T{}, false} might work too.",
+      "range": {
+        "startLine": 83,
+        "startChar": 9,
+        "endLine": 83,
+        "endChar": 35
+      },
+      "revId": "b055c639308609cb3decd39ccd0c97d3162bde77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11631e8c_65b7d9de",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T19:43:15Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ca0254e4_a00f1ecf",
       "range": {
         "startLine": 83,
         "startChar": 9,
