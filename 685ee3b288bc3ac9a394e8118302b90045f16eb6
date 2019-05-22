@@ -70,6 +70,24 @@
       "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "caeb70df_eea3d8d6",
+        "filename": ".vscode/tasks.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T14:14:11Z",
+      "side": 1,
+      "message": "My experience is that the overhead isn\u0027t noticeable. What\u0027s nice, too, is that you can also pass more args to cmake . -build, like \"-target clean\" to clean, \"-config RelWithDebInfo\" to build that specific target on multitarget generators (Mac, msvc), and there\u0027s also --clean-first (I think), that will do a \"rebuild\" (clean then build).",
+      "parentUuid": "0b2d4803_11661c2e",
+      "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
