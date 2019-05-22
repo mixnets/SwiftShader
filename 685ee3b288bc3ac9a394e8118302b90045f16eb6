@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72bd92cc_b7e5c8a5",
+        "filename": ".vscode/tasks.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T14:05:36Z",
+      "side": 1,
+      "message": "It would be more flexible to invoke \"cmake . -build\", which will build using whatever build system you specified. This means it would work on Mac and Windows as well (at least this command, we\u0027d have to change the cmake command per target).",
+      "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
