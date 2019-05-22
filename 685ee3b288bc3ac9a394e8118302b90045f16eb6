@@ -16,6 +16,24 @@
       "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e11fc85_f50ef7d9",
+        "filename": ".vscode/tasks.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-22T14:07:35Z",
+      "side": 1,
+      "message": "That would involve running CMake by hand first, right?",
+      "parentUuid": "72bd92cc_b7e5c8a5",
+      "revId": "685ee3b288bc3ac9a394e8118302b90045f16eb6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
