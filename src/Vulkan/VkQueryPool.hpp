@@ -34,10 +34,10 @@ struct Query
 
 	std::mutex mutex;
 	std::condition_variable condition;
-	State state;  // guarded by mutex
-	int64_t data; // guarded by mutex
-	std::atomic<int> reference;
-	VkQueryType type;
+	State state = UNAVAILABLE;  // guarded by mutex
+	int64_t data = 0; // guarded by mutex
+	std::atomic<int> reference = {0};
+	VkQueryType type = VK_QUERY_TYPE_MAX_ENUM;
 };
 
 class QueryPool : public Object<QueryPool, VkQueryPool>
