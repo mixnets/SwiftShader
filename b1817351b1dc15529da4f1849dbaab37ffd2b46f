@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f89d1f68_d4b19d5b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1744,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T19:25:27Z",
+      "side": 1,
+      "message": "Please indent\n\nI was very worried when I saw the -fexceptions under !WIN32, until I noticed it\u0027s still guarded by REACTOR_EMIT_DEBUG_INFO",
+      "range": {
+        "startLine": 1720,
+        "startChar": 4,
+        "endLine": 1744,
+        "endChar": 44
+      },
+      "revId": "b1817351b1dc15529da4f1849dbaab37ffd2b46f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

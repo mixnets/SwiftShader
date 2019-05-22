@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "960b8b5f_bc20171c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1733,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T19:25:27Z",
+      "side": 1,
+      "message": "Agreed this can be confusing since it can be mistaken for closing the WIN32 specific code. Less chance of confusion just omitting it.",
+      "parentUuid": "c35c85b7_6b066a1e",
+      "range": {
+        "startLine": 1733,
+        "startChar": 4,
+        "endLine": 1733,
+        "endChar": 7
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50c6f7c2_5d760b80",
         "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
         "patchSetId": 4
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Done. I want to say that I am from the same school, and used to share this opinion, until I started using clang-format, which obviates the need for braces, since the formatter will clearly show you broken scope issues. However, we\u0027re not using clang-format, so I\u0027ll go ahead and add the braces.",
       "parentUuid": "50c6f7c2_5d760b80",
+      "range": {
+        "startLine": 121,
+        "startChar": 3,
+        "endLine": 121,
+        "endChar": 9
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd05302a_2d78386d",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T19:25:27Z",
+      "side": 1,
+      "message": "While I think we should eventually use clang-format, I don\u0027t like relying on external tools to keep our code easily readable, maintainable, and correct. Also I\u0027m of the opinion that a return in the middle of a function should stand out a lot. It helps to easily understand the flow control and be more aware of any potential caveats with RAII.",
+      "parentUuid": "b7cff1e3_cf2015c8",
       "range": {
         "startLine": 121,
         "startChar": 3,
@@ -136,6 +184,29 @@
         "startChar": 0,
         "endLine": 128,
         "endChar": 6
+      },
+      "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46b0a0a1_41aff643",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-22T19:25:27Z",
+      "side": 1,
+      "message": "Nice touch to clarify the stack trace! \u003d)",
+      "range": {
+        "startLine": 198,
+        "startChar": 15,
+        "endLine": 198,
+        "endChar": 21
       },
       "revId": "ac454b5ad628debf02ddd1f5154cb5ec18d51b90",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
