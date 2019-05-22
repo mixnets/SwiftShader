@@ -16,6 +16,24 @@
       "revId": "a685bc1d27b5449834e7d17418a3bda78ceae118",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b98e21a8_77bea2ab",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-22T18:39:14Z",
+      "side": 1,
+      "message": "Oops, wrote that condition backwards. Basically:\n\n    if (core \u003d\u003d nullptr) { return; }\n\nOr, more commonly:\n\n\tif (core !\u003d nullptr)\n\t{\n\t\tstd::unique_lock\u003cstd::mutex\u003e lock(mutex);\n\t\tif(core !\u003d nullptr)\n\t\t{\n\t\t\troutine.reset(core-\u003eacquireCoroutine(\"coroutine\", true));\n\t\t\tcore.reset(nullptr);\n\t\t}\n\t}",
+      "parentUuid": "e2a040dd_723ceacd",
+      "revId": "a685bc1d27b5449834e7d17418a3bda78ceae118",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
