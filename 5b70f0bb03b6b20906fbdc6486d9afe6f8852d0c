@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6d5dbf0_86afb533",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-22T21:13:20Z",
+      "side": 1,
+      "message": "nit: convert width, height and depth to short and assert that we don\u0027t exceed the short range?",
+      "range": {
+        "startLine": 394,
+        "startChar": 0,
+        "endLine": 397,
+        "endChar": 51
+      },
+      "revId": "5b70f0bb03b6b20906fbdc6486d9afe6f8852d0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfa3946f_75be234f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-22T21:13:20Z",
+      "side": 1,
+      "message": "nit: shorts?",
+      "range": {
+        "startLine": 469,
+        "startChar": 81,
+        "endLine": 469,
+        "endChar": 113
+      },
+      "revId": "5b70f0bb03b6b20906fbdc6486d9afe6f8852d0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
