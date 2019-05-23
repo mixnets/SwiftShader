@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d47abc5e_e25ccc47",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-23T16:28:21Z",
+      "side": 1,
+      "message": "use the appropriate vector constructor so you dont have to memcpy?",
+      "revId": "3c78104c6e8bd999055bacbca40c3049a4e7597e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
