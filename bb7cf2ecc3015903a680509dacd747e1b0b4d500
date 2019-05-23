@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "6180e291_980481ef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T15:16:49Z",
+      "side": 1,
+      "message": "nit: This states that \"A WaitGroup waits for a collection of goroutines to finish\", but the same page doesn\u0027t explain what a goroutine is. Further digging describes it as a \"lightweight thread of execution\", but that still leaves me slightly uncertain about the intended corresponding C++/system concept.\n\nThe comment above the class declaration specifies it better.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 38
+      },
+      "revId": "bb7cf2ecc3015903a680509dacd747e1b0b4d500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f1445e0c_59386a3d",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 3
@@ -90,6 +113,29 @@
         "startChar": 0,
         "endLine": 19,
         "endChar": 17
+      },
+      "revId": "bb7cf2ecc3015903a680509dacd747e1b0b4d500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0a688c3_78585e2c",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T15:16:49Z",
+      "side": 1,
+      "message": "nit: This is very abstract. What\u0027s a task? What does it mean to begin it?\n\nThis appears to just be an atomic counter that threads can wait on to reach zero.",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 28
       },
       "revId": "bb7cf2ecc3015903a680509dacd747e1b0b4d500",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
