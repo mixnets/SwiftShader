@@ -22,6 +22,30 @@
       "revId": "45544137941313d811b8c98ec009d2a32bbbf6f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb48d46c_7e84814c",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-23T23:37:35Z",
+      "side": 1,
+      "message": "You raise a good point, and you\u0027ve got me scratching my head.\nI\u0027ll see if I can reproduce this with TSAN again and figure out why I thought this was needed.",
+      "parentUuid": "93e8ce2a_5d6c5022",
+      "range": {
+        "startLine": 175,
+        "startChar": 3,
+        "endLine": 175,
+        "endChar": 23
+      },
+      "revId": "45544137941313d811b8c98ec009d2a32bbbf6f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
