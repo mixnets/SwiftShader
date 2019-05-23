@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f8ee9b6_d67b7be7",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-23T13:56:35Z",
+      "side": 1,
+      "message": "You needed to add this destructor because of forward-declaring the type used by the unique_ptr, right? In any case, I recommend the more modern approach to defining the destructor here:\n\nDebugInfo::~DebugInfo() \u003d default;\n\nThe defaulted form means the type is_trivially_destructible, which could be useful in some cases. Regardless, I like it because it helps enforce the fact that we shouldn\u0027t write destructors at all, and rely on RAII types instead.\n\nMore info: https://stackoverflow.com/a/27762244",
+      "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
