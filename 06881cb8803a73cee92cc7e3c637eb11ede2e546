@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "d5d49412_22173afe",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T14:33:09Z",
+      "side": 1,
+      "message": "post-1.0-bikeshedding: I dislike introducing new namespaces for this. Their only purpose should be to avoid name clashes between independent code bases. That is, when you don\u0027t have control over different concepts being named the same. Within the same code base, one should simply use names that make the difference clearer. Note that this is not a hard-and-fast rule; Reactor isn\u0027t currently separate from SwiftShader, but should be, so it deserves its own namespace. Likewise some nomenclature is imposed by externally controlled APIs, e.g. in this case the Vulkan spec.\n\nsrc/System is a platform abstraction layer which in theory could see some reuse across different projects, but I think making it overly generic/abstract would harm SwiftShader\u0027s goals as a graphics driver.\n\nRegarding the name itself, Win32 calls these event objects, and Chromium calls it a WaitableEvent. I think we must make an effort to distinguish it from Vulkan\u0027s event concept.",
+      "parentUuid": "6669e7fd_2692ec99",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 11
+      },
+      "revId": "06881cb8803a73cee92cc7e3c637eb11ede2e546",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "01e81f09_6f2e9e5c",
         "filename": "src/System/Synchronization.hpp",
         "patchSetId": 3
