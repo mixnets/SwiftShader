@@ -22,6 +22,30 @@
       "revId": "e9492ab058a1f26d8fb5a5512e23570632b4f3a7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "264473c6_762082ce",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-23T18:14:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f09cad5d_2045e0f4",
+      "range": {
+        "startLine": 60,
+        "startChar": 12,
+        "endLine": 60,
+        "endChar": 29
+      },
+      "revId": "e9492ab058a1f26d8fb5a5512e23570632b4f3a7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
