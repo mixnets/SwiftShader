@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fb701e1_e8ebe798",
+        "filename": "src/Vulkan/VkFence.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T15:35:05Z",
+      "side": 0,
+      "message": "This is the real culprit, right?",
+      "range": {
+        "startLine": 58,
+        "startChar": 3,
+        "endLine": 58,
+        "endChar": 17
+      },
+      "revId": "bb7cf2ecc3015903a680509dacd747e1b0b4d500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
