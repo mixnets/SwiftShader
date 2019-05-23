@@ -645,18 +645,12 @@ namespace rr
 				ObjLayer::NotifyLoadedFtor(),
 				[](llvm::orc::VModuleKey, const llvm::object::ObjectFile &Obj, const llvm::RuntimeDyld::LoadedObjectInfo &L) {
 #ifdef ENABLE_RR_DEBUG_INFO
-					if (debugInfo != nullptr)
-					{
-						debugInfo->NotifyObjectEmitted(Obj, L);
-					}
+					DebugInfo::NotifyObjectEmitted(Obj, L);
 #endif // ENABLE_RR_DEBUG_INFO
 				},
 				[](llvm::orc::VModuleKey, const llvm::object::ObjectFile &Obj) {
 #ifdef ENABLE_RR_DEBUG_INFO
-					if (debugInfo != nullptr)
-					{
-						debugInfo->NotifyFreeingObject(Obj);
-					}
+					DebugInfo::NotifyFreeingObject(Obj);
 #endif // ENABLE_RR_DEBUG_INFO
 				}
 	  		),
@@ -971,6 +965,10 @@ namespace rr
 
 	Nucleus::~Nucleus()
 	{
+#ifdef ENABLE_RR_DEBUG_INFO
+		debugInfo.reset(nullptr);
+#endif // ENABLE_RR_DEBUG_INFO
+
 		::reactorJIT->endSession();
 
 		::codegenMutex.unlock();
