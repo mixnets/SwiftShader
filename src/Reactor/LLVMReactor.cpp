@@ -971,6 +971,10 @@ namespace rr
 
 	Nucleus::~Nucleus()
 	{
+#ifdef ENABLE_RR_DEBUG_INFO
+		debugInfo.reset(nullptr);
+#endif // ENABLE_RR_DEBUG_INFO
+
 		::reactorJIT->endSession();
 
 		::codegenMutex.unlock();

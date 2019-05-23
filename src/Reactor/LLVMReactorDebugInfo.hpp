@@ -71,6 +71,8 @@ namespace rr
 				llvm::Module *module,
 				llvm::Function *function);
 
+		~DebugInfo();
+
 		// Finalize debug info generation. Must be called before the LLVM module
 		// is built.
 		void Finalize();
@@ -168,7 +170,7 @@ namespace rr
 
 		void registerBasicTypes();
 
-		void emitPending(Scope &scope, IRBuilder *builder, llvm::DIBuilder *diBuilder);
+		void emitPending(Scope &scope, IRBuilder *builder);
 
 		// Returns the source location of the non-Reactor calling function.
 		Location getCallerLocation() const;
@@ -192,7 +194,7 @@ namespace rr
 		llvm::Module *module;
 		llvm::Function *function;
 
-		llvm::DIBuilder *diBuilder;
+		std::unique_ptr<llvm::DIBuilder> diBuilder;
 		llvm::DICompileUnit *diCU;
 		llvm::DISubprogram *diSubprogram;
 		llvm::DILocation *diRootLocation;
