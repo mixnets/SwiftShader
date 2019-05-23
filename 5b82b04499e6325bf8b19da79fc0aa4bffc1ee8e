@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8681f008_d8ffbd06",
+        "filename": "src/Vulkan/VkDestroy.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-23T17:22:01Z",
+      "side": 1,
+      "message": "Added to cleanup list.",
+      "parentUuid": "6e5f9135_fbef28d8",
+      "range": {
+        "startLine": 50,
+        "startChar": 25,
+        "endLine": 51,
+        "endChar": 43
+      },
+      "revId": "5b82b04499e6325bf8b19da79fc0aa4bffc1ee8e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61c14fad_6ea7c943",
         "filename": "src/Vulkan/VkDestroy.h",
         "patchSetId": 1
