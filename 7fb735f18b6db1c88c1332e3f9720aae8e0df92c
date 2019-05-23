@@ -22,6 +22,30 @@
       "revId": "7fb735f18b6db1c88c1332e3f9720aae8e0df92c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25d91102_dc2f1842",
+        "filename": "src/System/Resource.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-23T17:20:21Z",
+      "side": 1,
+      "message": "Good spot. Added to the cleanup list.",
+      "parentUuid": "75266e84_883d3f5e",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 30
+      },
+      "revId": "7fb735f18b6db1c88c1332e3f9720aae8e0df92c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
