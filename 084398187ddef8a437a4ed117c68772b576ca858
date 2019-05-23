@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94d9b61b_7660bb56",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1053,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T01:18:15Z",
+      "side": 1,
+      "message": "Move inside the block above so we don\u0027t attempt to erase end().",
+      "range": {
+        "startLine": 1053,
+        "startChar": 1,
+        "endLine": 1053,
+        "endChar": 31
+      },
+      "revId": "084398187ddef8a437a4ed117c68772b576ca858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
