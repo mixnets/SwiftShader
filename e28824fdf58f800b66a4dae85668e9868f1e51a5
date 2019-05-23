@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d94d955_becd91bf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T17:04:00Z",
+      "side": 1,
+      "message": "nit: Abstraction should never be a goal in and of itself. It appears to me that the issue you\u0027re trying to address is that the queue implementation uses a fairly heavyweight Vulkan queue object, while a more primitive synchronization object could be used. I\u0027m not entirely sure how an extra abstraction interface fits into that, which runs the risk of adding unnecessary overhead again.\n\nNot an issue for Pastel 1.0.",
+      "range": {
+        "startLine": 11,
+        "startChar": 4,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "e28824fdf58f800b66a4dae85668e9868f1e51a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db48a1bd_89412fa4",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T17:04:00Z",
+      "side": 1,
+      "message": "nit: This potentially adds overhead to what\u0027s supposed to be lightweight synchronization primitives.\n\nNot an issue for Pastel 1.0.",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 34,
+        "endChar": 9
+      },
+      "revId": "e28824fdf58f800b66a4dae85668e9868f1e51a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3586a81f_054dbcb2",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-23T17:04:00Z",
+      "side": 1,
+      "message": "nit: Could be confusing whether one should call add/done or start/finish. They\u0027re the same now, but they could potentially diverge in the future and it\u0027s easy to end up with a mismatch (especially start+done).",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 35
+      },
+      "revId": "e28824fdf58f800b66a4dae85668e9868f1e51a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
