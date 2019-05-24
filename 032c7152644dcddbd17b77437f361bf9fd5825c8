@@ -22,6 +22,30 @@
       "revId": "032c7152644dcddbd17b77437f361bf9fd5825c8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10cbbc08_2daad905",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2692,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-24T15:37:11Z",
+      "side": 0,
+      "message": "I\u0027ve removed because it\u0027s only used by the float/int path, which doesn\u0027t have any sRGB.",
+      "parentUuid": "8eb16485_841c0fb7",
+      "range": {
+        "startLine": 2686,
+        "startChar": 1,
+        "endLine": 2692,
+        "endChar": 2
+      },
+      "revId": "032c7152644dcddbd17b77437f361bf9fd5825c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
