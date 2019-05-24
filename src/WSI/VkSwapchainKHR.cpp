@@ -193,7 +193,8 @@ VkResult SwapchainKHR::getNextImage(uint64_t timeout, VkSemaphore semaphore, VkF
 
 			if(fence)
 			{
-				vk::Cast(fence)->complete();
+				vk::Cast(fence)->start();
+				vk::Cast(fence)->finish();
 			}
 
 			return VK_SUCCESS;

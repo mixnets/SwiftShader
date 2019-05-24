@@ -21,7 +21,7 @@
 namespace vk
 {
 
-class Fence : public Object<Fence, VkFence>, public sw::TaskEvents
+class Fence : public Object<Fence, VkFence>
 {
 public:
 	Fence() : signaled(sw::Event::ClearMode::Manual, false) {}
@@ -57,14 +57,13 @@ public:
 		return signaled.wait(timeout) ? VK_SUCCESS : VK_TIMEOUT;
 	}
 
-	// TaskEvents compliance
-	void start() override
+	void start()
 	{
 		ASSERT(!signaled);
 		wg.add();
 	}
 
-	void finish() override
+	void finish()
 	{
 		ASSERT(!signaled);
 		if (wg.done())

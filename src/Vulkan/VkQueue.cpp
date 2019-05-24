@@ -98,11 +98,11 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFen
 	Task task;
 	task.submitCount = submitCount;
 	task.pSubmits = DeepCopySubmitInfo(submitCount, pSubmits);
-	task.events = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
+	task.fence = (fence != VK_NULL_HANDLE) ? vk::Cast(fence) : nullptr;
 
-	if(task.events)
+	if(task.fence)
 	{
-		task.events->start();
+		task.fence->start();
 	}
 
 	pending.put(task);
@@ -128,7 +128,7 @@ void Queue::submitQueue(const Task& task)
 		{
 			CommandBuffer::ExecutionState executionState;
 			executionState.renderer = &renderer;
-			executionState.events = task.events;
+			executionState.fence = task.fence;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
 				vk::Cast(submitInfo.pCommandBuffers[j])->submit(executionState);
@@ -146,12 +146,12 @@ void Queue::submitQueue(const Task& task)
 		toDelete.put(task.pSubmits);
 	}
 
-	if(task.events)
+	if(task.fence)
 	{
 		// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
 		// is guaranteed complete by the time the fence signals.
 		renderer.synchronize();
-		task.events->finish();
+		task.fence->finish();
 	}
 }
 
@@ -178,15 +178,14 @@ void Queue::taskLoop()
 
 VkResult Queue::waitIdle()
 {
-	// Wait for task queue to flush.
-	sw::WaitGroup wg;
-	wg.add();
+	vk::Fence fence;
+	fence.start();
 
 	Task task;
-	task.events = &wg;
+	task.fence = &fence;
 	pending.put(task);
 
-	wg.wait();
+	fence.wait();
 
 	garbageCollect();
 

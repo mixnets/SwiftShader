@@ -184,7 +184,7 @@ namespace sw
 
 		references = -1;
 
-		events = nullptr;
+		fence = nullptr;
 
 		data = (DrawData*)allocate(sizeof(DrawData));
 		data->constants = &constants;
@@ -298,7 +298,7 @@ namespace sw
 		return false;
 	}
 
-	void Renderer::draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, TaskEvents *events, bool update)
+	void Renderer::draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex, vk::Fence *fence, bool update)
 	{
 		if(count == 0) { return; }
 
@@ -402,13 +402,13 @@ namespace sw
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
 
-		if(events)
+		if(fence)
 		{
-			events->start();
+			fence->start();
 		}
 
-		ASSERT(!draw->events);
-		draw->events = events;
+		ASSERT(!draw->fence);
+		draw->fence = fence;
 
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
@@ -878,10 +878,10 @@ namespace sw
 				draw.setupRoutine->unbind();
 				draw.pixelRoutine->unbind();
 
-				if(draw.events)
+				if(draw.fence)
 				{
-					draw.events->finish();
-					draw.events = nullptr;
+					draw.fence->finish();
+					draw.fence = nullptr;
 				}
 
 				sync->unlock();

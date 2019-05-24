@@ -55,7 +55,7 @@ private:
 	{
 		uint32_t submitCount = 0;
 		VkSubmitInfo* pSubmits = nullptr;
-		sw::TaskEvents* events = nullptr;
+		vk::Fence* fence = nullptr;
 
 		enum Type { KILL_THREAD, SUBMIT_QUEUE };
 		Type type = SUBMIT_QUEUE;
