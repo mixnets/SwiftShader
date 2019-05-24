@@ -22,6 +22,30 @@
       "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "318c88dd_9f0b2606",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 4668,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-24T21:46:08Z",
+      "side": 1,
+      "message": "This is the correct interpretation, though. The only images you can use with depth comparison have a single (depth) component.",
+      "parentUuid": "280d9439_9408addf",
+      "range": {
+        "startLine": 4668,
+        "startChar": 99,
+        "endLine": 4668,
+        "endChar": 100
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
