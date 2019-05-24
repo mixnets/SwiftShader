@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14d1e9cf_e46ff3da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-24T04:18:10Z",
+      "side": 1,
+      "message": "To point to a Chromium Monorail bug, use \"Bug chromium:966543\" syntax. Otherwise it creates a link to Buganizer.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 10
+      },
+      "revId": "18c253111a813f80c4186a04d730c23113bbf5c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
