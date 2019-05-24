@@ -1956,13 +1956,6 @@ namespace sw
 			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
 		}
 
-		if(postBlendSRGB || isSRGB(index))
-		{
-			sRGBtoLinear(pixel.x);
-			sRGBtoLinear(pixel.y);
-			sRGBtoLinear(pixel.z);
-		}
-
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
 		Vector4f sourceFactor;
 		Vector4f destFactor;
@@ -2681,13 +2674,5 @@ namespace sw
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 1))), 1);
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 2))), 2);
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 3))), 3);
-	}
-
-	Float4 PixelRoutine::sRGBtoLinear(const Float4 &x)   // Approximates x^2.2
-	{
-		Float4 linear = x * x;
-		linear = linear * Float4(0.73f) + linear * x * Float4(0.27f);
-
-		return Min(Max(linear, Float4(0.0f)), Float4(1.0f));
 	}
 }
