@@ -2726,6 +2726,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAcquireImageANDROID(VkDevice device, VkImage im
 	TRACE("(VkDevice device = %p, VkImage image = %p, int nativeFenceFd = %d, VkSemaphore semaphore = %p, VkFence fence = %p)",
 			device, image.get(), nativeFenceFd, semaphore.get(), fence.get());
 
+	if(nativeFenceFd)
+	{
+		sync_wait(nativeFenceFd, -1);
+	}
+
+	if(fence != VK_NULL_HANDLE)
+	{
+		vk::Cast(fence)->complete();
+	}
+
+	if(semaphore != VK_NULL_HANDLE)
+	{
+		vk::Cast(semaphore)->signal();
+	}
+
+	nativeFenceFd = -1;
+
 	return VK_SUCCESS;
 }
 
