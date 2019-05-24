@@ -3333,12 +3333,12 @@ namespace rr
 	};
 	template <> struct PrintValue::Ty<UInt>
 	{
-		static std::string fmt(const RValue<UInt>& v) { return "%u"; }
+		static std::string fmt(const RValue<UInt>& v) { return "0x%x"; }
 		static std::vector<Value*> val(const RValue<UInt>& v) { return {v.value}; }
 	};
 	template <> struct PrintValue::Ty<UInt4>
 	{
-		static std::string fmt(const RValue<UInt4>& v) { return "[%u, %u, %u, %u]"; }
+		static std::string fmt(const RValue<UInt4>& v) { return "[0x%x, 0x%x, 0x%x, 0x%x]"; }
 		static std::vector<Value*> val(const RValue<UInt4>& v);
 	};
 	template <> struct PrintValue::Ty<Short>
