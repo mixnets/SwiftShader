@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "64ad4ebf_1b760876",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3482,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-24T06:44:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa13302d_7d632874",
+      "range": {
+        "startLine": 3482,
+        "startChar": 22,
+        "endLine": 3482,
+        "endChar": 62
+      },
+      "revId": "9b34b1d2e0a491cdca8dbcb899272148c214dd2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "361a6ee6_00f2adec",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-24T01:01:40Z",
       "side": 1,
       "message": "nit: If it\u0027s no trouble, replace with TODO as this is not a bug.",
+      "range": {
+        "startLine": 3489,
+        "startChar": 63,
+        "endLine": 3489,
+        "endChar": 68
+      },
+      "revId": "9b34b1d2e0a491cdca8dbcb899272148c214dd2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0e978d5_8017535c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3489,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-24T06:44:39Z",
+      "side": 1,
+      "message": "This was probably your FIXME, copy and pasted.\nI\u0027ve changed them all here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/31843",
+      "parentUuid": "361a6ee6_00f2adec",
       "range": {
         "startLine": 3489,
         "startChar": 63,
