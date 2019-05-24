@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "33f6562f_16fee20c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-24T14:54:53Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/31843",
+      "range": {
+        "startLine": 277,
+        "startChar": 117,
+        "endLine": 277,
+        "endChar": 122
+      },
+      "revId": "e10db048f3b12180c37c9b673b859c61bf8c960b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
