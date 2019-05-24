@@ -802,6 +802,7 @@ namespace sw
 		//  LaneOffset=3: |  Word[3]  |  Word[3]  |  Word[3]  |  Word[3]
 		//
 		static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
+		static bool IsExplicitLayout(spv::StorageClass storageClass);
 
 		template<typename F>
 		int VisitInterfaceInner(Type::ID id, Decorations d, F f) const;
