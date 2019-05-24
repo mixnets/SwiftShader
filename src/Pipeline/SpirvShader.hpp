@@ -893,7 +893,7 @@ namespace sw
 		// existsPath returns true if there's a direct or indirect flow from
 		// the 'from' block to the 'to' block that does not pass through
 		// notPassingThrough.
-		bool existsPath(Block::ID from, Block::ID to, Block::ID notPassingThrough) const;
+		bool existsPath(Block::ID from, Block::ID to, Block::ID notPassingThrough = 0) const;
 
 		// Lookup the active lane mask for the edge from -> to.
 		// If from is unreachable, then a mask of all zeros is returned.

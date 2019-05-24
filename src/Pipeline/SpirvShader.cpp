@@ -2079,7 +2079,24 @@ namespace sw
 		auto blockId = state->currentBlock;
 		auto &block = getBlock(blockId);
 		auto mergeBlockId = block.mergeBlock;
+		auto continueBlockId = block.continueTarget;
 		auto &mergeBlock = getBlock(mergeBlockId);
+
+		if (!existsPath(state->currentBlock, mergeBlockId) &&
+		    !existsPath(state->currentBlock, continueBlockId))
+		{
+			// Both the merge block and the continue block are unreachable.
+			// glslang can generate this odd output with something like:
+			//
+			//   void main(void)
+			//   {
+			//      do { discard; } while(false);
+			//   }
+			//
+			// Treat as a non-loop.
+			EmitNonLoop(state);
+			return;
+		}
 
 		// Ensure all incoming non-back edge blocks have been generated.
 		auto depsDone = true;
@@ -6274,7 +6291,7 @@ namespace sw
 		}
 	}
 
-	bool SpirvShader::existsPath(Block::ID from, Block::ID to, Block::ID notPassingThrough) const
+	bool SpirvShader::existsPath(Block::ID from, Block::ID to, Block::ID notPassingThrough /* = 0 */) const
 	{
 		// TODO: Optimize: This can be cached on the block.
 		Block::Set seen;
