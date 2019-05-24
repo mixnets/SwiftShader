@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "a7930b72_8b37a296",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1958,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-24T15:04:22Z",
+      "side": 1,
+      "message": "Alexis already pointed out to me that we should probably eliminate postBlendSRGB altogether if it\u0027s not a Vulkan feature. I believe it was a DX8-era thing. Anyway, can land this partial removal as-is.",
+      "revId": "e10db048f3b12180c37c9b673b859c61bf8c960b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "33f6562f_16fee20c",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1

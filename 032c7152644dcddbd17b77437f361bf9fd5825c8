@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8eb16485_841c0fb7",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2692,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-24T15:04:22Z",
+      "side": 0,
+      "message": "Isn\u0027t this more accurate than the LUT approach? Possibly faster too. If it\u0027s not accurate enough, we should probably make it more accurate. For Pastel 1.0 I\u0027d even be OK using pow().",
+      "range": {
+        "startLine": 2686,
+        "startChar": 1,
+        "endLine": 2692,
+        "endChar": 2
+      },
+      "revId": "032c7152644dcddbd17b77437f361bf9fd5825c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
