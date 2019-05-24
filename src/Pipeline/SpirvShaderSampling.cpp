@@ -17,6 +17,7 @@
 #include "SamplerCore.hpp" // TODO: Figure out what's needed.
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
@@ -41,8 +42,8 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	static std::unordered_map<uint64_t, ImageSampler*> cache;
 	static std::mutex mutex;
 
-	// FIXME(b/129523279): Take instruction opcode and optional parameters into account (SamplerMethod / SamplerOption).
-	auto key = (static_cast<uint64_t>(imageDescriptor->imageViewId) << 32) | static_cast<uint64_t>(sampler->id);
+	static_assert(vk::MAX_DESCRIPTOR_SET_SAMPLERS <= 0xFFFF && vk::MAX_DESCRIPTOR_SET_SAMPLED_IMAGES <= 0xFFFF, "");
+	auto key = (static_cast<uint64_t>(inst) << 32) | (imageDescriptor->imageViewId << 16) | sampler->id;
 
 	std::unique_lock<std::mutex> lock(mutex);
 	auto it = cache.find(key);

@@ -166,12 +166,12 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		4, // maxPerStageDescriptorStorageImages
 		4, // maxPerStageDescriptorInputAttachments
 		128, // maxPerStageResources
-		96, // maxDescriptorSetSamplers
+		MAX_DESCRIPTOR_SET_SAMPLERS, //maxDescriptorSetSamplers
 		72, // maxDescriptorSetUniformBuffers
 		MAX_DESCRIPTOR_SET_UNIFORM_BUFFERS_DYNAMIC, // maxDescriptorSetUniformBuffersDynamic
 		24, // maxDescriptorSetStorageBuffers
 		MAX_DESCRIPTOR_SET_STORAGE_BUFFERS_DYNAMIC, // maxDescriptorSetStorageBuffersDynamic
-		96, // maxDescriptorSetSampledImages
+		MAX_DESCRIPTOR_SET_SAMPLED_IMAGES, // maxDescriptorSetSampledImages
 		24, // maxDescriptorSetStorageImages
 		4, // maxDescriptorSetInputAttachments
 		16, // maxVertexInputAttributes
