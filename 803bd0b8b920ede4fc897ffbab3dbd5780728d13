@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63ee6067_891eef6e",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-24T21:43:44Z",
+      "side": 1,
+      "message": "This static_assert isn\u0027t close to strong enough to guarantee that this is safe -- the number of distinct VkImageView or VkSampler objects which will exist throughout a process\u0027s lifetime has nothing to do with vk::MAX_DESCRIPTOR_SET_anything.\n\nPerhaps leave the FIXME here. This is better than not taking the instruction into account, but it\u0027s still not right.",
+      "revId": "803bd0b8b920ede4fc897ffbab3dbd5780728d13",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
