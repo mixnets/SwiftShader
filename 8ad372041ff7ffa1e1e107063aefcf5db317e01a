@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "280d9439_9408addf",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 4668,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-24T21:35:27Z",
+      "side": 1,
+      "message": "nit: This doesn\u0027t seem well documented by the SPIR-V spec. It states for OpImageDrefGather that it \"Gathers the requested depth-comparison from four texels\", but there\u0027s no Component argument like with OpImageGather.",
+      "range": {
+        "startLine": 4668,
+        "startChar": 99,
+        "endLine": 4668,
+        "endChar": 100
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
