@@ -52,6 +52,24 @@
       "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73bd3f40_9acb5470",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-26T12:56:08Z",
+      "side": 1,
+      "message": "Yes; however, that\u0027s not the issue here. When a class A has a unique_ptr\u003cB\u003e data member, and B is forward declared, A\u0027s destructor must have access to B\u0027s complete type. This is because unique_ptr\u0027s destructor invokes the deleter, which tries to delete B, and deleting an incomplete type is undefined behaviour. Incidentally, A\u0027s constructor _also_ needs to know B\u0027s full type for unique_ptr\u0027s constructor. So basically you must define both constructor and destructor in the cpp file, where you\u0027ve presumably included B.h.\n\nFor a deeper explanation, check out Howard Hinnant\u0027s explanation here: https://stackoverflow.com/a/6089065",
+      "parentUuid": "d830357d_211a35ed",
+      "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
