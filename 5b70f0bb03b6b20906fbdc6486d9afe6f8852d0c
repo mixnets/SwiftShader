@@ -94,6 +94,30 @@
       "revId": "5b70f0bb03b6b20906fbdc6486d9afe6f8852d0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1f2daa3_9b7ba1f2",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T18:32:30Z",
+      "side": 1,
+      "message": "Actually, you should probably ignore that until you review:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/31989",
+      "parentUuid": "5ff08d5c_9dd5622a",
+      "range": {
+        "startLine": 469,
+        "startChar": 81,
+        "endLine": 469,
+        "endChar": 113
+      },
+      "revId": "5b70f0bb03b6b20906fbdc6486d9afe6f8852d0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
