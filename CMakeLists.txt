@@ -1729,17 +1729,13 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
     target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
 
     if(REACTOR_EMIT_DEBUG_INFO)
-        add_library(Boost INTERFACE)
-        target_include_directories(Boost INTERFACE
-            "${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost"
-        )
         if(WIN32)
             # Boost stacktrace uses COM on Windows.
             # On Windows, cache COM instances in TLS for performance.
-            target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_WINDBG_CACHED)
+            target_compile_definitions(ReactorLLVM PRIVATE BOOST_STACKTRACE_USE_WINDBG_CACHED)
         else()
             # Boost stacktrace uses libbacktrace
-            target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_BACKTRACE)
+            target_compile_definitions(ReactorLLVM PRIVATE BOOST_STACKTRACE_USE_BACKTRACE)
 
             # Boost stacktrace uses exceptions, so force enable it
             set_cpp_flag("-fexceptions")
@@ -1753,7 +1749,11 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
             target_link_libraries(Libbacktrace ${OS_LIBS})
             target_link_libraries(ReactorLLVM Libbacktrace)
         endif()
-        target_link_libraries(ReactorLLVM Boost)
+
+        # Find Boost external package
+        find_package(Boost REQUIRED)
+        target_link_libraries(ReactorLLVM Boost::boost)
+
     endif(REACTOR_EMIT_DEBUG_INFO)
 
     set(Reactor ReactorLLVM)
