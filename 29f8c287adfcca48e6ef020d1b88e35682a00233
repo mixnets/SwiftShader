@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e3e7574_5d7bd6ce",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 530,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T17:59:14Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 530,
+        "startChar": 65,
+        "endLine": 530,
+        "endChar": 68
+      },
+      "revId": "29f8c287adfcca48e6ef020d1b88e35682a00233",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5b6d6b3_6524ab4e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 530,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T17:59:14Z",
+      "side": 1,
+      "message": "nit: \"% 2\" -\u003e \"\u0026 0x1\"",
+      "range": {
+        "startLine": 530,
+        "startChar": 31,
+        "endLine": 530,
+        "endChar": 34
+      },
+      "revId": "29f8c287adfcca48e6ef020d1b88e35682a00233",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64de946a_bbc7acb5",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T17:59:14Z",
+      "side": 1,
+      "message": "nit: \u003e\u003e\u003d 1",
+      "range": {
+        "startLine": 533,
+        "startChar": 24,
+        "endLine": 533,
+        "endChar": 28
+      },
+      "revId": "29f8c287adfcca48e6ef020d1b88e35682a00233",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e08f5d1_9ef62052",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T17:59:14Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 534,
+        "startChar": 25,
+        "endLine": 534,
+        "endChar": 29
+      },
+      "revId": "29f8c287adfcca48e6ef020d1b88e35682a00233",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
