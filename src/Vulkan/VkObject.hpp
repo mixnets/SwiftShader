@@ -29,7 +29,7 @@ namespace vk
 static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
 
 template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
-static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 {
 	*outObject = VK_NULL_HANDLE;
 
@@ -51,7 +51,7 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	auto object = new (objectMemory) T(pCreateInfo, memory, extendedInfo...);
+	auto object = new (objectMemory) T(pCreateInfo, memory, std::forward<ExtendedInfo>(extendedInfo)...);
 
 	if(!object)
 	{
@@ -73,9 +73,9 @@ public:
 	void destroy(const VkAllocationCallbacks* pAllocator) {} // Method defined by objects to delete their content, if necessary
 
 	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 	{
-		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
+		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, std::forward<ExtendedInfo>(extendedInfo)...);
 	}
 
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
@@ -120,9 +120,9 @@ public:
 	}
 
 	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 	{
-		return vk::Create<DispatchableObject<T, VkT>, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
+		return vk::Create<DispatchableObject<T, VkT>, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, std::forward<ExtendedInfo>(extendedInfo)...);
 	}
 
 	template<typename CreateInfo>
