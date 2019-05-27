@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "306231cb_d2393107",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2070,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T14:26:16Z",
+      "side": 1,
+      "message": "Ack. This is sort of intentionally non-optimal to more clearly stick to the spec\u0027s formulas. Will be eliminated when we refactor + optimize the whole thing post-1.0.",
+      "parentUuid": "d49a5cab_858791db",
+      "range": {
+        "startLine": 2070,
+        "startChar": 18,
+        "endLine": 2070,
+        "endChar": 37
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d43cdc60_1f6b0ad4",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "084f2386_34dbee8c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2078,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T14:26:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d43cdc60_1f6b0ad4",
+      "range": {
+        "startLine": 2078,
+        "startChar": 18,
+        "endLine": 2078,
+        "endChar": 37
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3827410_7fa59bb5",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 7
@@ -59,6 +107,30 @@
       "writtenOn": "2019-05-27T14:08:59Z",
       "side": 1,
       "message": "nit: This would be more readable in one line:\nxyz0 \u003d Int4(Floor((coord * Float4(dim)) - Float4(0.5f)));",
+      "range": {
+        "startLine": 2136,
+        "startChar": 4,
+        "endLine": 2139,
+        "endChar": 23
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be18fc49_9cb4dcb7",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T14:26:16Z",
+      "side": 1,
+      "message": "Agreed, but I simply copied these lines of code from relevant bits of the generic code path below. I intend for this special-case path (note the early return) to be refactored into a more coherent pipeline (see the TODO). Rewriting it as one line may actually make it harder to see where each calculation should happen.\n\n(Unrelatedly note that maxXYZ and Float4(dim) should also be pre-computed instead of computed on the fly.)",
+      "parentUuid": "d3827410_7fa59bb5",
       "range": {
         "startLine": 2136,
         "startChar": 4,
