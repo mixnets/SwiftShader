@@ -29,7 +29,7 @@ namespace vk
 static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
 
 template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
-static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 {
 	*outObject = VK_NULL_HANDLE;
 
@@ -73,7 +73,7 @@ public:
 	void destroy(const VkAllocationCallbacks* pAllocator) {} // Method defined by objects to delete their content, if necessary
 
 	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 	{
 		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
 	}
@@ -120,7 +120,7 @@ public:
 	}
 
 	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo&&... extendedInfo)
 	{
 		return vk::Create<DispatchableObject<T, VkT>, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
 	}
