@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05b69e91_304ccfa5",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-27T18:33:42Z",
+      "side": 1,
+      "message": "Needs just the \"std::forward\u003cExtendedInfo\u003e(extendedInfo)...\" here, and similarly below.",
+      "revId": "5cbda18a56b898028b652da3db58c9b19d736304",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
