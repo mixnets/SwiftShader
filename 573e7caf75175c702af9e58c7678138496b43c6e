@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bcea0769_415018e4",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 603,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T13:25:26Z",
+      "side": 1,
+      "message": "Similarly to https://swiftshader-review.googlesource.com/c/SwiftShader/+/31831 I wonder how this race occurs in the first place when pretty much everything is supposed to be guarded by ::codegenMutex already.",
+      "range": {
+        "startLine": 603,
+        "startChar": 32,
+        "endLine": 603,
+        "endChar": 48
+      },
+      "revId": "573e7caf75175c702af9e58c7678138496b43c6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
