@@ -22,6 +22,30 @@
       "revId": "d249327076a7c85ad5e61e03435db47ba8292914",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4267a48b_e9ba1a92",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T16:55:11Z",
+      "side": 1,
+      "message": "Ack, will look into that later.",
+      "parentUuid": "2ada671a_4a851a4d",
+      "range": {
+        "startLine": 406,
+        "startChar": 4,
+        "endLine": 406,
+        "endChar": 65
+      },
+      "revId": "d249327076a7c85ad5e61e03435db47ba8292914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
