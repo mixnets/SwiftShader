@@ -134,6 +134,34 @@ if (NOT TARGET libbacktrace)
     endif()
 endif()
 
+# Boost is downloaded if necessary
+set(BOOST_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost_1_70_0)
+function(DownloadBoost)
+    if (LINUX)
+        set(BOOST_URL https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz)
+    else()
+        set(BOOST_URL https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.zip)
+    endif()
+
+    if (NOT TARGET Boost::boost)
+        if(NOT EXISTS ${BOOST_THIRD_PARTY_DIR})
+            message(WARNING "
+          third_party/boost is missing.
+          Downloading and extracting boost:
+            ")
+
+            set(BOOST_ARCHIVE ${CMAKE_BINARY_DIR}/temp/boost_archive)
+            message(STATUS "Downloading ${BOOST_URL} to ${BOOST_ARCHIVE}...")
+            file(DOWNLOAD ${BOOST_URL} ${BOOST_ARCHIVE})
+            message(STATUS "Extracting ${BOOST_ARCHIVE} to ${BOOST_THIRD_PARTY_DIR}...")
+            execute_process(
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+                COMMAND cmake -E tar xf ${BOOST_ARCHIVE}
+            )
+        endif()
+    endif()
+endfunction()
+
 ###########################################################
 # Convenience macros
 ###########################################################
@@ -1729,17 +1757,13 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
     target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
 
     if(REACTOR_EMIT_DEBUG_INFO)
-        add_library(Boost INTERFACE)
-        target_include_directories(Boost INTERFACE
-            "${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost"
-        )
         if(WIN32)
             # Boost stacktrace uses COM on Windows.
             # On Windows, cache COM instances in TLS for performance.
-            target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_WINDBG_CACHED)
+            target_compile_definitions(ReactorLLVM PRIVATE BOOST_STACKTRACE_USE_WINDBG_CACHED)
         else()
             # Boost stacktrace uses libbacktrace
-            target_compile_definitions(Boost INTERFACE BOOST_STACKTRACE_USE_BACKTRACE)
+            target_compile_definitions(ReactorLLVM PRIVATE BOOST_STACKTRACE_USE_BACKTRACE)
 
             # Boost stacktrace uses exceptions, so force enable it
             set_cpp_flag("-fexceptions")
@@ -1753,7 +1777,13 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
             target_link_libraries(Libbacktrace ${OS_LIBS})
             target_link_libraries(ReactorLLVM Libbacktrace)
         endif()
-        target_link_libraries(ReactorLLVM Boost)
+
+        # Download boost and use it
+        DownloadBoost()
+        set(BOOST_INCLUDEDIR ${BOOST_THIRD_PARTY_DIR})
+        find_package(Boost REQUIRED)
+        target_link_libraries(ReactorLLVM Boost::boost)
+
     endif(REACTOR_EMIT_DEBUG_INFO)
 
     set(Reactor ReactorLLVM)
