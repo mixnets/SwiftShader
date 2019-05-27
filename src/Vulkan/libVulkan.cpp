@@ -177,13 +177,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 		return result;
 	}
 
-	vk::Instance::CreateInfo info =
-	{
-		pCreateInfo,
-		physicalDevice
-	};
-
-	result = vk::DispatchableInstance::Create(pAllocator, &info, pInstance);
+	result = vk::DispatchableInstance::Create(pAllocator, pCreateInfo, pInstance, physicalDevice);
 	if(result != VK_SUCCESS)
 	{
 		vk::destroy(physicalDevice, pAllocator);
@@ -237,6 +231,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 {
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkFormat format = %d, VkImageType type = %d, VkImageTiling tiling = %d, VkImageUsageFlags usage = %d, VkImageCreateFlags flags = %d, VkImageFormatProperties* pImageFormatProperties = %p)",
 			physicalDevice, (int)format, (int)type, (int)tiling, usage, flags, pImageFormatProperties);
+
+	// "If the combination of parameters to vkGetPhysicalDeviceImageFormatProperties is not supported by the implementation
+	//  for use in vkCreateImage, then all members of VkImageFormatProperties will be filled with zero."
+	memset(pImageFormatProperties, 0, sizeof(VkImageFormatProperties));
 
 	VkFormatProperties properties;
 	vk::Cast(physicalDevice)->getFormatProperties(format, &properties);
@@ -307,6 +305,31 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 			VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 			VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 	ASSERT(!(usage & ~(allRecognizedUsageBits)));
+
+	// "Images created with tiling equal to VK_IMAGE_TILING_LINEAR have further restrictions on their limits and capabilities
+	//  compared to images created with tiling equal to VK_IMAGE_TILING_OPTIMAL."
+	if(tiling == VK_IMAGE_TILING_LINEAR)
+	{
+		if(type != VK_IMAGE_TYPE_2D)
+		{
+			return VK_ERROR_FORMAT_NOT_SUPPORTED;
+		}
+
+		if(vk::Format(format).isDepth() || vk::Format(format).isStencil())
+		{
+			return VK_ERROR_FORMAT_NOT_SUPPORTED;
+		}
+	}
+
+	// "Images created with a format from one of those listed in Formats requiring sampler Y’CBCR conversion for VK_IMAGE_ASPECT_COLOR_BIT image views
+	//  have further restrictions on their limits and capabilities compared to images created with other formats."
+	if(vk::Format(format).isYcbcrFormat())
+	{
+		if(type != VK_IMAGE_TYPE_2D)
+		{
+			return VK_ERROR_FORMAT_NOT_SUPPORTED;
+		}
+	}
 
 	vk::Cast(physicalDevice)->getImageFormatProperties(format, type, tiling, usage, flags, pImageFormatProperties);
 
@@ -405,10 +428,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			{
 				const VkPhysicalDeviceSamplerYcbcrConversionFeatures* samplerYcbcrConversionFeatures = reinterpret_cast<const VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(extensionCreateInfo);
 
-				if(samplerYcbcrConversionFeatures->samplerYcbcrConversion == VK_TRUE)
-				{
-					return VK_ERROR_FEATURE_NOT_PRESENT;
-				}
+				// YCbCr conversion is supported.
+				// samplerYcbcrConversionFeatures->samplerYcbcrConversion can be VK_TRUE or VK_FALSE.
+				// No action needs to be taken on our end in either case; it's the apps responsibility that
+				// "To create a sampler Y’CbCr conversion, the samplerYcbcrConversion feature must be enabled."
+				(void)samplerYcbcrConversionFeatures->samplerYcbcrConversion;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES:
@@ -448,7 +472,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
-			UNIMPLEMENTED("extensionCreateInfo->sType");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
 			break;
 		}
 
@@ -479,13 +503,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		(void)queueFamilyPropertyCount; // Silence unused variable warning
 	}
 
-	vk::Device::CreateInfo deviceCreateInfo =
-	{
-		pCreateInfo,
-		physicalDevice
-	};
-
-	return vk::DispatchableDevice::Create(pAllocator, &deviceCreateInfo, pDevice);
+	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice));
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator)
@@ -687,7 +705,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceMemoryCommitment(VkDevice pDevice, VkDevic
 	auto memory = vk::Cast(pMemory);
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-	const auto& memoryProperties = vk::Cast(vk::Cast(pDevice)->getPhysicalDevice())->getMemoryProperties();
+	const auto& memoryProperties = vk::Cast(pDevice)->getPhysicalDevice()->getMemoryProperties();
 	uint32_t typeIndex = memory->getMemoryTypeIndex();
 	ASSERT(typeIndex < memoryProperties.memoryTypeCount);
 	ASSERT(memoryProperties.memoryTypes[typeIndex].propertyFlags & VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT);
@@ -997,13 +1015,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	vk::Image::CreateInfo imageCreateInfo =
-	{
-		pCreateInfo,
-		device
-	};
-
-	VkResult result = vk::Image::Create(pAllocator, &imageCreateInfo, pImage);
+	VkResult result = vk::Image::Create(pAllocator, pCreateInfo, pImage, vk::Cast(device));
 
 #ifdef __ANDROID__
 	if (swapchainImage)
@@ -1062,6 +1074,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 	}
 
 	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 
 	while(extensionCreateInfo)
 	{
@@ -1075,8 +1088,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		break;
 		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
 		{
-			const VkSamplerYcbcrConversionInfo* ycbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
-			if(ycbcrConversionInfo->conversion != VK_NULL_HANDLE)
+			const VkSamplerYcbcrConversionInfo* samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
+			ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
+
+			if(ycbcrConversion != VK_NULL_HANDLE)
 			{
 				ASSERT((pCreateInfo->components.r == VK_COMPONENT_SWIZZLE_IDENTITY) &&
 				       (pCreateInfo->components.g == VK_COMPONENT_SWIZZLE_IDENTITY) &&
@@ -1086,14 +1101,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		}
 		break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::ImageView::Create(pAllocator, pCreateInfo, pView);
+	return vk::ImageView::Create(pAllocator, pCreateInfo, pView, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks* pAllocator)
@@ -1262,12 +1277,33 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 	TRACE("(VkDevice device = %p, const VkSamplerCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSampler* pSampler = %p)",
 		    device, pCreateInfo, pAllocator, pSampler);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
 		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
 	}
 
-	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler);
+	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+
+	while(extensionCreateInfo)
+	{
+		switch(extensionCreateInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
+			{
+				const VkSamplerYcbcrConversionInfo* samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
+				ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
+			}
+			break;
+		default:
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
+			break;
+		}
+
+		extensionCreateInfo = extensionCreateInfo->pNext;
+	}
+
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks* pAllocator)
@@ -1293,7 +1329,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(VkDevice device, cons
 			ASSERT(!vk::Cast(device)->hasExtension(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME));
 			break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
@@ -1479,11 +1515,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(VkDevice device, const VkRende
 			// pViewMask is a 32 bit value. If maxFramebufferLayers > 32, it's impossible
 			// for pViewMask to contain a bit at an illegal position
 			// Note: Verify pViewMask values instead if we hit this assert
-			ASSERT(vk::Cast(vk::Cast(device)->getPhysicalDevice())->getProperties().limits.maxFramebufferLayers >= 32);
+			ASSERT(vk::Cast(device)->getPhysicalDevice()->getProperties().limits.maxFramebufferLayers >= 32);
 		}
 		break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
 		}
 
@@ -1990,7 +2026,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 {
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindImageMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
-	
+
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		if(pBindInfos[i].pNext)
@@ -2449,15 +2485,23 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue2(VkDevice device, const VkDeviceQueu
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversion* pYcbcrConversion)
 {
-	TRACE("()");
-	UNIMPLEMENTED("vkCreateSamplerYcbcrConversion");
-	return VK_SUCCESS;
+	TRACE("(VkDevice device = %p, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSamplerYcbcrConversion* pYcbcrConversion = %p)",
+		    device, pCreateInfo, pAllocator, pYcbcrConversion);
+
+	if(pCreateInfo->pNext)
+	{
+		UNIMPLEMENTED("pCreateInfo->pNext");
+	}
+
+	return vk::SamplerYcbcrConversion::Create(pAllocator, pCreateInfo, pYcbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks* pAllocator)
 {
-	TRACE("()");
-	UNIMPLEMENTED("vkDestroySamplerYcbcrConversion");
+	TRACE("(VkDevice device = %p, VkSamplerYcbcrConversion ycbcrConversion = %p, const VkAllocationCallbacks* pAllocator = %p)",
+	      device, ycbcrConversion.get(), pAllocator);
+
+	vk::destroy(ycbcrConversion, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorUpdateTemplate(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorUpdateTemplate* pDescriptorUpdateTemplate)

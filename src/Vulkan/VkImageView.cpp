@@ -19,10 +19,7 @@ namespace
 {
 	VkComponentMapping ResolveComponentMapping(VkComponentMapping m, vk::Format format)
 	{
-		if (m.r == VK_COMPONENT_SWIZZLE_IDENTITY) m.r = VK_COMPONENT_SWIZZLE_R;
-		if (m.g == VK_COMPONENT_SWIZZLE_IDENTITY) m.g = VK_COMPONENT_SWIZZLE_G;
-		if (m.b == VK_COMPONENT_SWIZZLE_IDENTITY) m.b = VK_COMPONENT_SWIZZLE_B;
-		if (m.a == VK_COMPONENT_SWIZZLE_IDENTITY) m.a = VK_COMPONENT_SWIZZLE_A;
+		m = vk::ResolveIdentityMapping(m);
 
 		// Replace non-present components with zero/one swizzles so that the sampler
 		// will give us correct interactions between channel replacement and texel replacement,
@@ -58,10 +55,11 @@ namespace vk
 
 std::atomic<uint32_t> ImageView::nextID(1);
 
-ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem) :
+ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion) :
 	image(Cast(pCreateInfo->image)), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
 	components(ResolveComponentMapping(pCreateInfo->components, format)),
-	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
+	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image)),
+	ycbcrConversion(ycbcrConversion)
 {
 }
 
@@ -180,7 +178,8 @@ void ImageView::resolve(ImageView* resolveAttachment)
 		resolveAttachment->subresourceRange.layerCount
 	};
 	region.dstOffset = { 0, 0, 0 };
-	region.extent = image->getMipLevelExtent(subresourceRange.baseMipLevel);
+	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                         subresourceRange.baseMipLevel);
 
 	image->copyTo(*(resolveAttachment->image), region);
 }
@@ -221,7 +220,8 @@ int ImageView::layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage) const
 
 VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 {
-	return image->getMipLevelExtent(subresourceRange.baseMipLevel + mipLevel);
+	return image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
 void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
@@ -235,6 +235,7 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBit
 		subresourceRange.baseArrayLayer + layer,
 		subresourceRange.layerCount
 	};
+
 	return getImage(usage)->getTexelPointer(offset, imageSubresourceLayers);
 }
 

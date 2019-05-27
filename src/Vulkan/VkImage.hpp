@@ -27,16 +27,10 @@ class DeviceMemory;
 class Image : public Object<Image, VkImage>
 {
 public:
-	struct CreateInfo
-	{
-		const VkImageCreateInfo* pCreateInfo;
-		const VkDevice device;
-	};
-
-	Image(const CreateInfo* pCreateInfo, void* mem);
+	Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device);
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	static size_t ComputeRequiredAllocationSize(const CreateInfo* pCreateInfo);
+	static size_t ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo);
 
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const;
@@ -60,7 +54,7 @@ public:
 	uint32_t                 getLastLayerIndex(const VkImageSubresourceRange& subresourceRange) const;
 	uint32_t                 getLastMipLevel(const VkImageSubresourceRange& subresourceRange) const;
 	VkSampleCountFlagBits    getSampleCountFlagBits() const { return samples; }
-	VkExtent3D               getMipLevelExtent(uint32_t mipLevel) const;
+	VkExtent3D               getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int                      rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int                      slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
@@ -71,8 +65,6 @@ public:
 
 	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
 	const Image*             getSampledImage(const vk::Format& imageViewFormat) const;
-
-	static Format            GetFormat(const vk::Format& format, VkImageAspectFlagBits aspect);
 
 private:
 	void copy(VkBuffer buffer, const VkBufferImageCopy& region, bool bufferIsSource);
@@ -87,10 +79,9 @@ private:
 	VkExtent3D imageExtentInBlocks(const VkExtent3D& extent, VkImageAspectFlagBits aspect) const;
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D& offset, VkImageAspectFlagBits aspect) const;
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferImageCopy& region) const;
-	int bytesPerTexel(VkImageAspectFlagBits flags) const;
 	VkFormat getClearFormat() const;
 	void clear(void* pixelData, VkFormat pixelFormat, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea);
-	int borderSize(VkImageAspectFlagBits aspect) const;
+	int borderSize() const;
 	void decodeETC2(const VkImageSubresourceRange& subresourceRange) const;
 
 	const Device *const      device = nullptr;
