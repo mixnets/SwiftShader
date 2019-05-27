@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "abbf0320_6cfd13e0",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-27T17:53:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e47fd6d2_ab8db566",
+      "range": {
+        "startLine": 734,
+        "startChar": 4,
+        "endLine": 734,
+        "endChar": 22
+      },
+      "revId": "38357cbcdb86700f3763a134c5e23b9bd96055df",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebf960ad_918383ad",
         "filename": "src/Vulkan/VkPhysicalDevice.hpp",
         "patchSetId": 5
