@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "d49a5cab_858791db",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2070,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T14:08:59Z",
+      "side": 1,
+      "message": "nit: This can be done more efficiently using (n \u003e\u003e 31). All 1s if negative, all 0s if positive. It would change it to CmpLT, though, not sure if you care about the 0 case.",
+      "range": {
+        "startLine": 2070,
+        "startChar": 18,
+        "endLine": 2070,
+        "endChar": 37
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d43cdc60_1f6b0ad4",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2078,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T14:08:59Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 2078,
+        "startChar": 18,
+        "endLine": 2078,
+        "endChar": 37
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3827410_7fa59bb5",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-27T14:08:59Z",
+      "side": 1,
+      "message": "nit: This would be more readable in one line:\nxyz0 \u003d Int4(Floor((coord * Float4(dim)) - Float4(0.5f)));",
+      "range": {
+        "startLine": 2136,
+        "startChar": 4,
+        "endLine": 2139,
+        "endChar": 23
+      },
+      "revId": "8ad372041ff7ffa1e1e107063aefcf5db317e01a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "280d9439_9408addf",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 7
