@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8e99b6c_ea228e06",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-28T16:26:30Z",
+      "side": 1,
+      "message": "sw::WaitGroup",
+      "range": {
+        "startLine": 7,
+        "startChar": 37,
+        "endLine": 7,
+        "endChar": 46
+      },
+      "revId": "bdc889822c6a2081349ee639443f23770387caa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53ba4e06_5d4ba40c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-28T16:26:30Z",
+      "side": 1,
+      "message": "While not technically fixing anything, you can probably tag this to: b/133127573",
+      "revId": "bdc889822c6a2081349ee639443f23770387caa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25a5c2ab_d229b8aa",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-28T16:26:30Z",
+      "side": 1,
+      "message": "Can just be an inline member (no pointer indirection needed)",
+      "range": {
+        "startLine": 252,
+        "startChar": 2,
+        "endLine": 252,
+        "endChar": 117
+      },
+      "revId": "bdc889822c6a2081349ee639443f23770387caa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
