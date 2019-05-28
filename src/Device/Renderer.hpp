@@ -40,7 +40,6 @@ namespace sw
 	struct DrawCall;
 	class PixelShader;
 	class VertexShader;
-	class SwiftConfig;
 	struct Task;
 	class TaskEvents;
 	class Resource;
@@ -60,30 +59,6 @@ namespace sw
 	extern TranscendentalPrecision rcpPrecision;
 	extern TranscendentalPrecision rsqPrecision;
 
-	struct Conventions  // FIXME(capn): Eliminate. Only support Vulkan 1.1 conventions.
-	{
-		bool halfIntegerCoordinates;
-		bool symmetricNormalizedDepth;
-		bool booleanFaceRegister;
-		bool fullPixelPositionRegister;
-	};
-
-	static const Conventions OpenGL =
-	{
-		true,    // halfIntegerCoordinates
-		true,    // symmetricNormalizedDepth
-		true,    // booleanFaceRegister
-		true,    // fullPixelPositionRegister
-	};
-
-	static const Conventions Direct3D =
-	{
-		false,   // halfIntegerCoordinates
-		false,   // symmetricNormalizedDepth
-		false,   // booleanFaceRegister
-		false,   // fullPixelPositionRegister
-	};
-
 	struct DrawData
 	{
 		const Constants *constants;
@@ -102,10 +77,6 @@ namespace sw
 		PixelProcessor::Stencil stencil[2];   // clockwise, counterclockwise
 		PixelProcessor::Factor factor;
 		unsigned int occlusion[16];   // Number of pixels passing depth test
-
-		#if PERF_PROFILE
-			int64_t cycles[PERF_TIMERS][16];
-		#endif
 
 		float4 Wx16;
 		float4 Hx16;
@@ -193,7 +164,7 @@ namespace sw
 		};
 
 	public:
-		Renderer(Conventions conventions, bool exactColorRounding);
+		Renderer();
 
 		virtual ~Renderer();
 
@@ -214,15 +185,6 @@ namespace sw
 		void advanceInstanceAttributes(Stream* inputs);
 
 		void synchronize();
-
-		#if PERF_HUD
-			// Performance timers
-			int getThreadCount();
-			int64_t getVertexTime(int thread);
-			int64_t getSetupTime(int thread);
-			int64_t getPixelTime(int thread);
-			void resetTimers();
-		#endif
 
 		static int getClusterCount() { return clusterCount; }
 
@@ -289,15 +251,7 @@ namespace sw
 
 		std::mutex schedulerMutex;
 
-		#if PERF_HUD
-			int64_t vertexTime[16];
-			int64_t setupTime[16];
-			int64_t pixelTime[16];
-		#endif
-
 		VertexTask *vertexTask[16];
-
-		SwiftConfig *swiftConfig;
 
 		std::list<vk::Query*> queries;
 		Resource *sync;
