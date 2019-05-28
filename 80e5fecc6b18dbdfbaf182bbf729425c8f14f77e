@@ -46,6 +46,30 @@
       "revId": "80e5fecc6b18dbdfbaf182bbf729425c8f14f77e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aebb5baa_369d9464",
+        "filename": "src/Shader/VertexProgram.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-28T20:08:45Z",
+      "side": 1,
+      "message": "Thanks for clarifying that! I now recall that might be the reason why these constructors hadn\u0027t been added yet.\n\nAlso note that in \"desktop\" GLSL, signed integers can be implicitly converted to unsigned integers, but the reverse is not true. It prevents this ambiguity, and may have other justifications. Ironically it\u0027s the inverse of what Reactor currently supports.\n\nAnd maybe we should avoid this ambiguity by adding even more constructor variants.\n\nI feel like this should be part of a much broader design discussion before we allow Reactor to be used outside of SwiftShader, but that\u0027s well beyond the scope of Pastel.",
+      "parentUuid": "8d5a8e1a_29364a75",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 13
+      },
+      "revId": "80e5fecc6b18dbdfbaf182bbf729425c8f14f77e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
