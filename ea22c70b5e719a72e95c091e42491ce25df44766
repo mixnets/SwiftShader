@@ -88,6 +88,24 @@
       "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5ff1c25_d9addb52",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-28T18:31:31Z",
+      "side": 1,
+      "message": "\u003e what\u0027s the benefit of defining a default destructor in the source file? \n\nGiven that you seem to understand the reasons why the implementation (hand-crafted or via a default) must be in the .cpp file, are you specifically asking what\u0027s the benefit of using:\n\n  DebugInfo::~DebugInfo() \u003d default;\n\ninstead of\n\n  DebugInfo::~DebugInfo() {}\n\nin a .cpp source file? I just want to be sure I understand your question properly here. If that is the question, I guess Antonio\u0027s original statement stands of regardless of where (.hpp or .cpp) you put the \u0027\u003d default\u0027:\n\n  \"I like it because it helps enforce the fact that we shouldn\u0027t write destructors at all, and rely on RAII types instead.\"\n\n\u003e Maybe if it\u0027s expected to be very big and called in multiple places it helps prevent inlining?\n\nEach compilation unit has no visibility into another\u0027s implementation of a destructor via \u0027\u003d default\u0027 or a hand-rolled impl (nor any other regular function). So ignoring any sort of link time optimization, there would be no possibility of inlining a destructor implemented in another .cpp file.",
+      "parentUuid": "448eb4c2_c9638bfc",
+      "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
