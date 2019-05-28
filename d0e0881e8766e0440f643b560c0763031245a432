@@ -16,6 +16,24 @@
       "revId": "d0e0881e8766e0440f643b560c0763031245a432",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74162c35_b5e2fedd",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-28T04:20:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffa0f8fd_30e57f6e",
+      "revId": "d0e0881e8766e0440f643b560c0763031245a432",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
