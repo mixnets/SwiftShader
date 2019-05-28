@@ -270,6 +270,23 @@ void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
 	}
 }
 
+	sw::TextureType convertTextureType(VkImageViewType imageViewType)
+	{
+		switch(imageViewType)
+		{
+		case VK_IMAGE_VIEW_TYPE_1D:         return sw::TEXTURE_1D;
+		case VK_IMAGE_VIEW_TYPE_2D:         return sw::TEXTURE_2D;
+		case VK_IMAGE_VIEW_TYPE_3D:         return sw::TEXTURE_3D;
+		case VK_IMAGE_VIEW_TYPE_CUBE:       return sw::TEXTURE_CUBE;
+		case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   return sw::TEXTURE_1D_ARRAY;
+		case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   return sw::TEXTURE_2D_ARRAY;
+	//	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: return sw::TEXTURE_CUBE_ARRAY;
+		default:
+			UNIMPLEMENTED("imageViewType %d", imageViewType);
+			return sw::TEXTURE_2D;
+		}
+	}
+
 void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
 {
 	DescriptorSetLayout* dstLayout = dstSet->header.layout;
@@ -306,7 +323,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			auto update = reinterpret_cast<VkBufferView const *>(src + entry.offset + entry.stride * i);
 			auto bufferView = Cast(*update);
 
-			imageSampler[i].type = VK_IMAGE_VIEW_TYPE_1D;
+			imageSampler[i].type = sw::TEXTURE_BUFFER;
 			imageSampler[i].imageViewId = bufferView->id;
 			imageSampler[i].swizzle = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
 			imageSampler[i].format = bufferView->getFormat();
@@ -323,7 +340,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 			sw::Mipmap &mipmap = imageSampler[i].texture.mipmap[0];
 			mipmap.buffer = bufferView->getPointer();
-			mipmap.width[0] = mipmap.width[1] = mipmap.width[2] = mipmap.width[3] = numElements;
+			mipmap.width[0] = mipmap.width[1] = mipmap.width[2] = mipmap.width[3] = static_cast<short>(numElements);
 			mipmap.height[0] = mipmap.height[1] = mipmap.height[2] = mipmap.height[3] = 1;
 			mipmap.depth[0] = mipmap.depth[1] = mipmap.depth[2] = mipmap.depth[3] = 1;
 			mipmap.pitchP.x = mipmap.pitchP.y = mipmap.pitchP.z = mipmap.pitchP.w = numElements;
@@ -358,7 +375,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			imageSampler[i].mipLevels = imageView->getSubresourceRange().levelCount;
 			imageSampler[i].sampleCount = imageView->getSampleCount();
-			imageSampler[i].type = imageView->getType();
+			imageSampler[i].type = convertTextureType(imageView->getType());
 			imageSampler[i].swizzle = imageView->getComponentMapping();
 			imageSampler[i].format = format;
 

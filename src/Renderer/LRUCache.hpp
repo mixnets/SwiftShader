@@ -29,7 +29,7 @@ namespace sw
 
 		Data *query(const Key &key) const;
 		Data *add(const Key &key, Data *data);
-	
+
 		int getSize() {return size;}
 		Key &getKey(int i) {return key[i];}
 
