@@ -70,6 +70,24 @@
       "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "448eb4c2_c9638bfc",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-28T18:12:19Z",
+      "side": 1,
+      "message": "Absolutely, I wasn\u0027t questioning why we need the destructor definition nor using the default implementation. Just seems more common to do it in the header, which helps to clarify that the destructor is not intended to have side-effects other than the default, and can lead to it being inlined.\n\nI guess my question is, what\u0027s the benefit of defining a default destructor in the source file? Maybe if it\u0027s expected to be very big and called in multiple places it helps prevent inlining?\n\nLGTM either way.",
+      "parentUuid": "73bd3f40_9acb5470",
+      "revId": "ea22c70b5e719a72e95c091e42491ce25df44766",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
