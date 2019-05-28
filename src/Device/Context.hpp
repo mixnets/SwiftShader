@@ -108,7 +108,6 @@ namespace sw
 		bool setWriteSRGB(bool sRGB);
 
 		bool depthWriteActive() const;
-		bool alphaTestActive() const;
 		bool depthBufferActive() const;
 		bool stencilActive() const;
 
