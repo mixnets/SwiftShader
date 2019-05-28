@@ -22,6 +22,30 @@
       "revId": "14cdc8be87ffdb45b77a383aee97db0fa175ae53",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd31d31b_5c86f20d",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:56:22Z",
+      "side": 1,
+      "message": "yFinal has the opposite parity of yMax. If yFinal is odd, then yMax is even, and we\u0027re safe to render quads. If yFinal is even, then yMax is odd, and we cannot render quads on the last line.",
+      "parentUuid": "6ca93f57_e0da2048",
+      "range": {
+        "startLine": 1690,
+        "startChar": 32,
+        "endLine": 1690,
+        "endChar": 35
+      },
+      "revId": "14cdc8be87ffdb45b77a383aee97db0fa175ae53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
