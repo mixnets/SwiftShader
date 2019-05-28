@@ -1684,10 +1684,19 @@ namespace sw
 					c23 |= masked;
 				}
 
+#ifdef __APPLE__
+				// On Mac we render directly to an IOSurface that isn't vertically padded. So we
+				// only render the bottom half of quads when it won't overflow the buffer.
+				If (this->yMax % 2 == 0 || this->y < this->yMax - 1)
+				{
+#endif
 				c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskD23Q) + xMask * 8);
 				value &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
 				c23 |= value;
 				*Pointer<Short4>(buffer) = c23;
+#ifdef __APPLE__
+				}
+#endif
 			}
 			break;
 		case FORMAT_A8B8G8R8:

@@ -40,6 +40,9 @@ namespace sw
 
 		UInt occlusion;
 
+		Int y;
+		Int yMax;
+
 #if PERF_PROFILE
 		Long cycles[PERF_TIMERS];
 #endif
