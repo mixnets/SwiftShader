@@ -35,6 +35,10 @@ swiftshader_source_set("swiftshader_opengl_common") {
 
   configs = [ ":swiftshader_opengl_common_private_config" ]
 
+  deps = [
+    "../../Renderer:swiftshader_renderer",
+  ]
+
   include_dirs = [
     "..",
     "../..",
