@@ -46,6 +46,30 @@
       "revId": "14cdc8be87ffdb45b77a383aee97db0fa175ae53",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bb31292_49ded6ab",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T20:12:58Z",
+      "side": 1,
+      "message": "Let me clarify this, because it\u0027s a bit confusing confused:\n1) The even height case always works, so y must always be even\n2) If y \u003d\u003d 20 \u0026\u0026 yFinal \u003d\u003d 21, then we do the following code, because height is actually 22.\n3) If y \u003d\u003d 22 \u0026\u0026 yFinal \u003d\u003d 22, then we don\u0027t do the following code, because height is actually 23, and the last line was already written to just above this code.\n\nA comment mentioning that yFinal is \"height - 1\" would be useful (if this is accurate).",
+      "parentUuid": "cd31d31b_5c86f20d",
+      "range": {
+        "startLine": 1690,
+        "startChar": 32,
+        "endLine": 1690,
+        "endChar": 35
+      },
+      "revId": "14cdc8be87ffdb45b77a383aee97db0fa175ae53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
