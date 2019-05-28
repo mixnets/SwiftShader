@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38c5a703_c52cea62",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T17:51:40Z",
+      "side": 1,
+      "message": "yMax - 1\n\nNit: You can rename this-\u003eyMax if you find this confusing with yMax, since they wouldn\u0027t have the same value.",
+      "range": {
+        "startLine": 280,
+        "startChar": 17,
+        "endLine": 280,
+        "endChar": 22
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7686a42b_2b914e98",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T17:51:40Z",
+      "side": 1,
+      "message": "% is expensive, use \u0026 instead. Also, yMax - 1 can be precomputed where the value is stored. So we get:\nIf (!(this-\u003eyMax \u0026 0x01) || (this-\u003ey \u003c this-\u003eyMax))",
+      "range": {
+        "startLine": 1690,
+        "startChar": 4,
+        "endLine": 1690,
+        "endChar": 56
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e83f590c_b3a77801",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1692,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T17:51:40Z",
+      "side": 1,
+      "message": "Put bracket below the #ifdef/#endif scope.",
+      "range": {
+        "startLine": 1691,
+        "startChar": 0,
+        "endLine": 1692,
+        "endChar": 6
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed4ed6b5_6d122af4",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1696,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T17:51:40Z",
+      "side": 1,
+      "message": "indent",
+      "range": {
+        "startLine": 1693,
+        "startChar": 0,
+        "endLine": 1696,
+        "endChar": 35
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de048510_213ea18f",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1699,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T17:51:40Z",
+      "side": 1,
+      "message": "Remove #ifdef APPLE here, just keep the bracket.",
+      "range": {
+        "startLine": 1697,
+        "startChar": 0,
+        "endLine": 1699,
+        "endChar": 6
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
