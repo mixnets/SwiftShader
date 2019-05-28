@@ -1002,7 +1002,7 @@ namespace sw
 		static sw::TextureType convertTextureType(VkImageViewType imageViewType);
 		static sw::FilterType convertFilterMode(const vk::Sampler *sampler);
 		static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
-		static sw::AddressingMode convertAddressingMode(int coordinateIndex, VkSamplerAddressMode addressMode, VkImageViewType imageViewType);
+		static sw::AddressingMode convertAddressingMode(int coordinateIndex, VkSamplerAddressMode addressMode, TextureType imageViewType);
 		static VkShaderStageFlagBits executionModelToStage(spv::ExecutionModel model);
 	};
 

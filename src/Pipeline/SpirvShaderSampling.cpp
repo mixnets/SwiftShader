@@ -28,7 +28,6 @@
 #include <spirv/unified1/spirv.hpp>
 #include <spirv/unified1/GLSL.std.450.h>
 
-#include <climits>
 #include <mutex>
 
 namespace sw {
@@ -52,7 +51,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	auto type = imageDescriptor->type;
 
 	Sampler samplerState = {};
-	samplerState.textureType = convertTextureType(type);
+	samplerState.textureType = type;
 	samplerState.textureFormat = imageDescriptor->format;
 	samplerState.textureFilter = convertFilterMode(sampler);
 	samplerState.border = sampler->borderColor;
@@ -67,9 +66,6 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
 	samplerState.compareOp = sampler->compareOp;
 	samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates == VK_TRUE);
-	samplerState.largeTexture = (imageDescriptor->extent.width  > SHRT_MAX) ||
-	                            (imageDescriptor->extent.height > SHRT_MAX) ||
-	                            (imageDescriptor->extent.depth  > SHRT_MAX);
 
 	if(sampler->anisotropyEnable != VK_FALSE)
 	{
@@ -164,23 +160,6 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 	return (ImageSampler*)function("sampler")->getEntry();
 }
 
-sw::TextureType SpirvShader::convertTextureType(VkImageViewType imageViewType)
-{
-	switch(imageViewType)
-	{
-	case VK_IMAGE_VIEW_TYPE_1D:         return TEXTURE_1D;
-	case VK_IMAGE_VIEW_TYPE_2D:         return TEXTURE_2D;
-	case VK_IMAGE_VIEW_TYPE_3D:         return TEXTURE_3D;
-	case VK_IMAGE_VIEW_TYPE_CUBE:       return TEXTURE_CUBE;
-	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:   return TEXTURE_1D_ARRAY;
-	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:   return TEXTURE_2D_ARRAY;
-//	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: return TEXTURE_CUBE_ARRAY;
-	default:
-		UNIMPLEMENTED("imageViewType %d", imageViewType);
-		return TEXTURE_2D;
-	}
-}
-
 sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 {
 	switch(sampler->magFilter)
@@ -223,18 +202,18 @@ sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 	}
 }
 
-sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSamplerAddressMode addressMode, VkImageViewType imageViewType)
+sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSamplerAddressMode addressMode, TextureType imageViewType)
 {
 	switch(imageViewType)
 	{
-	case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
+	case TEXTURE_CUBE_ARRAY:
 		UNSUPPORTED("SPIR-V ImageCubeArray Capability (imageViewType: %d)", int(imageViewType));
 		if(coordinateIndex == 3)
 		{
 			return ADDRESSING_LAYER;
 		}
 		// Fall through to CUBE case:
-	case VK_IMAGE_VIEW_TYPE_CUBE:
+	case TEXTURE_CUBE:
 		if(coordinateIndex >= 2)
 		{
 			// Cube faces are addressed as 2D images.
@@ -251,7 +230,7 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 		}
 		break;
 
-	case VK_IMAGE_VIEW_TYPE_1D:  // Treated as 2D texture with second coordinate 0.
+	case TEXTURE_1D:  // Treated as 2D texture with second coordinate 0.
 		if(coordinateIndex == 1)
 		{
 			return ADDRESSING_WRAP;
@@ -262,20 +241,20 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 		}
 		break;
 
-	case VK_IMAGE_VIEW_TYPE_3D:
+	case TEXTURE_3D:
 		if(coordinateIndex >= 3)
 		{
 			return ADDRESSING_UNUSED;
 		}
 		break;
 
-	case VK_IMAGE_VIEW_TYPE_1D_ARRAY:  // Treated as 2D texture with second coordinate 0.
+	case TEXTURE_1D_ARRAY:  // Treated as 2D texture with second coordinate 0.
 		if(coordinateIndex == 1)
 		{
 			return ADDRESSING_WRAP;
 		}
 		// Fall through to 2D_ARRAY case:
-	case VK_IMAGE_VIEW_TYPE_2D_ARRAY:
+	case TEXTURE_2D_ARRAY:
 		if(coordinateIndex == 2)
 		{
 			return ADDRESSING_LAYER;
@@ -285,12 +264,26 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, VkSam
 			return ADDRESSING_UNUSED;
 		}
 		// Fall through to 2D case:
-	case VK_IMAGE_VIEW_TYPE_2D:
+	case TEXTURE_2D:
 		if(coordinateIndex >= 2)
 		{
 			return ADDRESSING_UNUSED;
 		}
 		break;
+
+	case TEXTURE_BUFFER:
+		if(coordinateIndex == 0)
+		{
+			return ADDRESSING_BUFFERU;
+		}
+		else if(coordinateIndex == 1)
+		{
+			return ADDRESSING_BUFFERV;
+		}
+		else
+		{
+			return ADDRESSING_UNUSED;
+		}
 
 	default:
 		UNIMPLEMENTED("imageViewType %d", imageViewType);

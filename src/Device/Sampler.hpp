@@ -31,12 +31,16 @@ namespace sw
 	{
 		const void *buffer[6];
 
+		float4 fWidth;
+		float4 fHeight;
+		float4 fDepth;
+
 		short uHalf[4];
 		short vHalf[4];
 		short wHalf[4];
-		int4 width;
-		int4 height;
-		int4 depth;
+		short width[4];
+		short height[4];
+		short depth[4];
 		short onePitchP[4];
 		int4 pitchP;
 		int4 sliceP;
@@ -68,8 +72,9 @@ namespace sw
 		TEXTURE_1D_ARRAY,   // Treated as 2D texture with second coordinate 0.
 		TEXTURE_2D_ARRAY,
 		TEXTURE_CUBE_ARRAY,
+		TEXTURE_BUFFER,
 
-		TEXTURE_LAST = TEXTURE_CUBE_ARRAY
+		TEXTURE_LAST = TEXTURE_BUFFER
 	};
 
 	enum FilterType ENUM_UNDERLYING_TYPE_UNSIGNED_INT
@@ -104,8 +109,10 @@ namespace sw
 		ADDRESSING_SEAMLESS,   // Border of pixels
 		ADDRESSING_LAYER,
 		ADDRESSING_TEXELFETCH,
+		ADDRESSING_BUFFERU,
+		ADDRESSING_BUFFERV,
 
-		ADDRESSING_LAST = ADDRESSING_TEXELFETCH
+		ADDRESSING_LAST = ADDRESSING_BUFFERV
 	};
 
 	enum CompareFunc ENUM_UNDERLYING_TYPE_UNSIGNED_INT
@@ -150,7 +157,6 @@ namespace sw
 		VkCompareOp compareOp;
 		VkBorderColor border;
 		bool unnormalizedCoordinates;
-		bool largeTexture;
 
 		#if PERF_PROFILE
 		bool compressedFormat;
