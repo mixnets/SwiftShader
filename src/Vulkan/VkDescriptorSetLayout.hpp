@@ -35,7 +35,7 @@ struct alignas(16) SampledImageDescriptor
 	vk::Sampler sampler;
 
 	uint32_t imageViewId;
-	VkImageViewType type;
+	sw::TextureType type;
 	VkFormat format;
 	VkComponentMapping swizzle;
 	alignas(16) sw::Texture texture;

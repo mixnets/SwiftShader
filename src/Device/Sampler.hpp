@@ -34,9 +34,9 @@ namespace sw
 		short4 uHalf;
 		short4 vHalf;
 		short4 wHalf;
-		int4 width;
-		int4 height;
-		int4 depth;
+		short4 width;
+		short4 height;
+		short4 depth;
 		short4 onePitchP;
 		int4 pitchP;
 		int4 sliceP;
@@ -68,8 +68,9 @@ namespace sw
 		TEXTURE_1D_ARRAY,   // Treated as 2D texture with second coordinate 0.
 		TEXTURE_2D_ARRAY,
 		TEXTURE_CUBE_ARRAY,
+		TEXTURE_BUFFER,
 
-		TEXTURE_LAST = TEXTURE_CUBE_ARRAY
+		TEXTURE_LAST = TEXTURE_BUFFER
 	};
 
 	enum FilterType ENUM_UNDERLYING_TYPE_UNSIGNED_INT
@@ -105,8 +106,10 @@ namespace sw
 		ADDRESSING_CUBEFACE,   // Cube face layer
 		ADDRESSING_LAYER,      // Array layer
 		ADDRESSING_TEXELFETCH,
+		ADDRESSING_BUFFERU,
+		ADDRESSING_BUFFERV,
 
-		ADDRESSING_LAST = ADDRESSING_TEXELFETCH
+		ADDRESSING_LAST = ADDRESSING_BUFFERV
 	};
 
 	enum CompareFunc ENUM_UNDERLYING_TYPE_UNSIGNED_INT
@@ -152,7 +155,6 @@ namespace sw
 		VkCompareOp compareOp;
 		VkBorderColor border;
 		bool unnormalizedCoordinates;
-		bool largeTexture;
 
 		VkSamplerYcbcrModelConversion ycbcrModel;
 		bool studioSwing;    // Narrow range
