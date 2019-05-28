@@ -22,6 +22,30 @@
       "revId": "99c88f45faf61b9c500ef98ef3593fa277a5783c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "536f5c8c_f7566f14",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T11:56:19Z",
+      "side": 1,
+      "message": "I think the key point is that the location *may* be... (my understanding is that we get to pick what this is). In any case, if we were to do a more generic implementation, where would the point sprite coordinates information come from when we\u0027re inside PixelProgram::setBuiltins() (or PixelRoutine::quad(), which is the only call site)?",
+      "parentUuid": "5621eba1_295afccf",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 55
+      },
+      "revId": "99c88f45faf61b9c500ef98ef3593fa277a5783c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
