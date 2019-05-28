@@ -276,6 +276,8 @@ namespace sw
 					xRight[q] = Swizzle(xRight[q], 0xF5) - Short4(0, 1, 0, 1);
 				}
 
+				this->y = y;
+				this->yFinal = yMax - 1;
 				For(Int x = x0, x < x1, x += 2)
 				{
 					Short4 xxxx = Short4(x);
