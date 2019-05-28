@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ca93f57_e0da2048",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T19:35:16Z",
+      "side": 1,
+      "message": "0x1 -\u003e 0. You want to always do the following code when the height is even, not odd.\nAlso, add parentheses around each subcondition, like:\nIf (((this-\u003eyFinal \u0026 0x1) \u003d\u003d 0) || (this-\u003ey \u003c this-\u003eyFinal))",
+      "range": {
+        "startLine": 1690,
+        "startChar": 32,
+        "endLine": 1690,
+        "endChar": 35
+      },
+      "revId": "14cdc8be87ffdb45b77a383aee97db0fa175ae53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

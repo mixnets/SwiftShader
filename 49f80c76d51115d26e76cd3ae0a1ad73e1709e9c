@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "155377e8_5bb6fec1",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-28T19:35:16Z",
+      "side": 1,
+      "message": "No, your logic is upside down. \"this-\u003eyMax \u0026 0x01\" means \"I always write the last line if the height is odd\", which is the opposite of what you want.",
+      "parentUuid": "654a3054_af50acef",
+      "range": {
+        "startLine": 1690,
+        "startChar": 4,
+        "endLine": 1690,
+        "endChar": 56
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e83f590c_b3a77801",
         "filename": "src/Shader/PixelRoutine.cpp",
         "patchSetId": 1
