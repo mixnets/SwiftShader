@@ -22,6 +22,30 @@
       "revId": "80e5fecc6b18dbdfbaf182bbf729425c8f14f77e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d5a8e1a_29364a75",
+        "filename": "src/Shader/VertexProgram.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-28T19:26:49Z",
+      "side": 1,
+      "message": "We can do that as a follow up change if you like?\nThe only reason I had to change this line was that it became an ambiguous constructor call.",
+      "parentUuid": "d13ac58e_18b033ab",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 13
+      },
+      "revId": "80e5fecc6b18dbdfbaf182bbf729425c8f14f77e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
