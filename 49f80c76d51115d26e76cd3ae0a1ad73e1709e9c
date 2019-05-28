@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c0b50164_a2d8e9d0",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:01:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38c5a703_c52cea62",
+      "range": {
+        "startLine": 280,
+        "startChar": 17,
+        "endLine": 280,
+        "endChar": 22
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7686a42b_2b914e98",
         "filename": "src/Shader/PixelRoutine.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "654a3054_af50acef",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:01:57Z",
+      "side": 1,
+      "message": "If yMax is precomputed as yMax - 1, then it would actually be (this-\u003eyMax \u0026 0x01 || this-\u003ey \u003c this-\u003eyMax).",
+      "parentUuid": "7686a42b_2b914e98",
+      "range": {
+        "startLine": 1690,
+        "startChar": 4,
+        "endLine": 1690,
+        "endChar": 56
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "e46cb5d2_827f4ff2",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1692,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:01:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e83f590c_b3a77801",
+      "range": {
+        "startLine": 1691,
+        "startChar": 0,
+        "endLine": 1692,
+        "endChar": 6
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ed4ed6b5_6d122af4",
         "filename": "src/Shader/PixelRoutine.cpp",
         "patchSetId": 1
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "4ca63d97_b9d48d6f",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1696,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:01:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed4ed6b5_6d122af4",
+      "range": {
+        "startLine": 1693,
+        "startChar": 0,
+        "endLine": 1696,
+        "endChar": 35
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de048510_213ea18f",
         "filename": "src/Shader/PixelRoutine.cpp",
         "patchSetId": 1
@@ -114,6 +210,30 @@
       "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b67e4fe_ca27ed40",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1699,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-28T19:01:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de048510_213ea18f",
+      "range": {
+        "startLine": 1697,
+        "startChar": 0,
+        "endLine": 1699,
+        "endChar": 6
+      },
+      "revId": "49f80c76d51115d26e76cd3ae0a1ad73e1709e9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
