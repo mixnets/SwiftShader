@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "cd3dd874_c9dc1ba3",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:28:01Z",
+      "side": 1,
+      "message": "No need to do it as part of this change, though.",
+      "parentUuid": "3daf82e1_a4475889",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa88c722_c24abc54",
         "filename": "src/Device/ETC_Decoder.cpp",
         "patchSetId": 5
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "5c4e1dbb_8107285d",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:28:01Z",
+      "side": 1,
+      "message": "Okay, but it feels weird having a clamp function that returns a different type to what it takes in.",
+      "parentUuid": "d1ceb178_366b696d",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ee904f3_60d50f06",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 5
@@ -101,6 +137,24 @@
       "side": 1,
       "message": "Agreed, but I really like explicit casts.",
       "parentUuid": "7ee904f3_60d50f06",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "34ca4175_8c7f386f",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:28:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f21299c2_85765722",
       "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
