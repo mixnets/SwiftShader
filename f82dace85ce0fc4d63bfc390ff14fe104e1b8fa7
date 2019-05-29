@@ -70,6 +70,30 @@
       "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8eb6a24b_190d0dc9",
+        "filename": "src/Vulkan/VulkanPlatform.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 17183
+      },
+      "writtenOn": "2019-05-29T17:45:31Z",
+      "side": 1,
+      "message": "Removing alignas does in fact fix the problem locally, so it\u0027s definitely worth looking into.",
+      "parentUuid": "cc0fc02a_1f12bf5d",
+      "range": {
+        "startLine": 21,
+        "startChar": 25,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
