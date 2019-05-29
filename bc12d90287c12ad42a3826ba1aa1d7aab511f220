@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "1950a9f0_2ac90199",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-29T14:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53e50c56_a2269825",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23668f72_938e8f7e",
         "filename": "src/Renderer/QuadRasterizer.cpp",
         "patchSetId": 5
