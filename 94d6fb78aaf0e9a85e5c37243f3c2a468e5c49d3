@@ -22,6 +22,30 @@
       "revId": "94d6fb78aaf0e9a85e5c37243f3c2a468e5c49d3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6da7c9c8_f4c1bd7b",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-29T17:58:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dce84c83_c45bf1d0",
+      "range": {
+        "startLine": 1690,
+        "startChar": 38,
+        "endLine": 1690,
+        "endChar": 46
+      },
+      "revId": "94d6fb78aaf0e9a85e5c37243f3c2a468e5c49d3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
