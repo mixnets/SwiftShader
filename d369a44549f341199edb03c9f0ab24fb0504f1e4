@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f24513d4_a3983bfd",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-29T06:06:59Z",
+      "side": 1,
+      "message": "this is new.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 29
+      },
+      "revId": "d369a44549f341199edb03c9f0ab24fb0504f1e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
