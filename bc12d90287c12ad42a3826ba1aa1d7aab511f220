@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "5ca1edea_e779395b",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-29T14:58:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "23668f72_938e8f7e",
+      "range": {
+        "startLine": 117,
+        "startChar": 2,
+        "endLine": 117,
+        "endChar": 5
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "79a61d11_d6a20d4c",
         "filename": "src/Renderer/QuadRasterizer.cpp",
         "patchSetId": 5
@@ -91,6 +115,30 @@
       "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5cdac131_eae7405d",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-05-29T14:58:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79a61d11_d6a20d4c",
+      "range": {
+        "startLine": 280,
+        "startChar": 4,
+        "endLine": 280,
+        "endChar": 10
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
