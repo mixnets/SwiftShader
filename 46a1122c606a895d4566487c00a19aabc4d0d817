@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37806db9_98a6670d",
+        "filename": "src/Shader/PixelRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1690,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T18:03:13Z",
+      "side": 1,
+      "message": "Doesn\u0027t it suffice to have a single test for (y + 1) \u003c yMax ?",
+      "range": {
+        "startLine": 1690,
+        "startChar": 8,
+        "endLine": 1690,
+        "endChar": 49
+      },
+      "revId": "46a1122c606a895d4566487c00a19aabc4d0d817",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
