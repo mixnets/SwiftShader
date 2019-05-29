@@ -4252,6 +4252,11 @@ namespace rr
 		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
 	}
 
+	void Scatter(RValue<Pointer<UInt>> base, RValue<UInt4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
+	}
+
 	void Fence(std::memory_order memoryOrder)
 	{
 		ASSERT_MSG(memoryOrder == std::memory_order_acquire ||
