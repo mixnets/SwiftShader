@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "efd8a08e_ec6dfd86",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-29T14:58:01Z",
+      "side": 1,
+      "message": "This might be buggy with alphaToCoverage... but not a new issue.",
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
