@@ -134,6 +134,34 @@ if (NOT TARGET libbacktrace)
     endif()
 endif()
 
+# Boost
+set(BOOST_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost_1_70_0)
+function(DownloadBoost)
+    if (LINUX)
+        set(BOOST_URL https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz)
+    else()
+        set(BOOST_URL https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.zip)
+    endif()
+
+    if (NOT TARGET Boost::boost)
+        if(NOT EXISTS ${BOOST_THIRD_PARTY_DIR})
+            message(WARNING "            
+          third_party/boost is missing.
+          Downloading and extracting boost:
+            ")
+
+            set(BOOST_ARCHIVE ${CMAKE_BINARY_DIR}/temp/boost_archive)
+            message(STATUS "Downloading ${BOOST_URL} to ${BOOST_ARCHIVE}...")
+            file(DOWNLOAD ${BOOST_URL} ${BOOST_ARCHIVE})
+            message(STATUS "Extracting ${BOOST_ARCHIVE} to ${BOOST_THIRD_PARTY_DIR}...")
+            execute_process(
+                WORKING_DIRECTORY ${BOOST_THIRD_PARTY_DIR}/..
+                COMMAND cmake -E tar xf ${BOOST_ARCHIVE}
+            )
+        endif()
+    endif()
+endfunction()
+
 ###########################################################
 # Convenience macros
 ###########################################################
@@ -1750,7 +1778,9 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
             target_link_libraries(ReactorLLVM Libbacktrace)
         endif()
 
-        # Find Boost external package
+        # Find Boost in third_party folder
+        DownloadBoost()
+        set(BOOST_INCLUDEDIR ${BOOST_THIRD_PARTY_DIR})
         find_package(Boost REQUIRED)
         target_link_libraries(ReactorLLVM Boost::boost)
 
