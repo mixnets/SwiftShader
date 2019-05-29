@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30fbf509_de2f9adb",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T04:29:23Z",
+      "side": 0,
+      "message": "Might be worth keeping. Even though I believe the Vulkan spec states they\u0027re undefined if not written by the previous stage, as did the GL spec, we\u0027ve seen some drivers always initialize them to zero and make app errors less random.",
+      "range": {
+        "startLine": 43,
+        "startChar": 3,
+        "endLine": 49,
+        "endChar": 4
+      },
+      "revId": "51e9e5659a55c32ca77b8ee5878e3d737274984a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

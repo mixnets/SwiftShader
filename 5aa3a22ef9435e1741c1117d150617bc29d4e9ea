@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "832c3dad_2d3a9012",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1339,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T04:29:23Z",
+      "side": 1,
+      "message": "Probably can be removed by initializing everything in the constructor. Doesn\u0027t have to be done as part of this change.",
+      "range": {
+        "startLine": 1339,
+        "startChar": 1,
+        "endLine": 1339,
+        "endChar": 55
+      },
+      "revId": "5aa3a22ef9435e1741c1117d150617bc29d4e9ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "add57d93_c74cf3fc",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T04:29:23Z",
+      "side": 1,
+      "message": "CMake, Chromium, and Android files don\u0027t need any changes?",
+      "revId": "5aa3a22ef9435e1741c1117d150617bc29d4e9ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
