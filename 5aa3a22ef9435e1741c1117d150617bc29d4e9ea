@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "15d27827_10a3d13e",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1339,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T14:54:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "832c3dad_2d3a9012",
+      "range": {
+        "startLine": 1339,
+        "startChar": 1,
+        "endLine": 1339,
+        "endChar": 55
+      },
+      "revId": "5aa3a22ef9435e1741c1117d150617bc29d4e9ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "add57d93_c74cf3fc",
         "filename": "src/Vulkan/vulkan.vcxproj",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2019-05-29T04:29:23Z",
       "side": 1,
       "message": "CMake, Chromium, and Android files don\u0027t need any changes?",
+      "revId": "5aa3a22ef9435e1741c1117d150617bc29d4e9ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "acd1da42_3d169678",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T14:54:08Z",
+      "side": 1,
+      "message": "CMake and Android use *.cpp clauses, so no change needed.\nFixed Build.gn.",
+      "parentUuid": "add57d93_c74cf3fc",
       "revId": "5aa3a22ef9435e1741c1117d150617bc29d4e9ea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
