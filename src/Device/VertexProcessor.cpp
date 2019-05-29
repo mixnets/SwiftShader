@@ -85,6 +85,8 @@ namespace sw
 
 		state.shaderID = context->vertexShader->getSerialID();
 
+		state.textureSampling = context->vertexShader->getModes().ContainsImageSampleExplicitLod;
+
 		switch(context->topology)
 		{
 		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:

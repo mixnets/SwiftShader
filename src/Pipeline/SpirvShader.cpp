@@ -950,6 +950,19 @@ namespace sw
 			case spv::OpArrayLength:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
+
+				switch(opcode)
+				{
+				case spv::OpImageSampleExplicitLod:
+				case spv::OpImageSampleDrefExplicitLod:
+				case spv::OpImageSampleProjExplicitLod:
+				case spv::OpImageSampleProjDrefExplicitLod:
+					modes.ContainsImageSampleExplicitLod = true;
+					break;
+				default:
+					break;
+				}
+
 				break;
 
 			case spv::OpStore:

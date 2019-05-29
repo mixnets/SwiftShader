@@ -561,6 +561,10 @@ namespace sw
 			bool ContainsControlBarriers : 1;
 			bool NeedsCentroid : 1;
 
+			// TODO(b/133868964): Eliminate. This is not a SPIR-V execution mode.
+			// This indicates that OpImageSample*ExplicitLod instructions are present.
+			bool ContainsImageSampleExplicitLod : 1;
+
 			// Compute workgroup dimensions
 			int WorkgroupSizeX = 1, WorkgroupSizeY = 1, WorkgroupSizeZ = 1;
 		};

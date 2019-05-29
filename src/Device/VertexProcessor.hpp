@@ -50,7 +50,10 @@ namespace sw
 
 			uint64_t shaderID;
 
-			bool textureSampling           : 1;   // TODO: Eliminate by querying shader.
+			// Signifies that the vertex shader contains texture sampling instructions,
+			// which currently causes us to fall back to scalar processing to support divergent LOD.
+			bool textureSampling : 1;
+
 			unsigned char verticesPerPrimitive                : 2; // 1 (points), 2 (lines) or 3 (triangles)
 
 			struct Input
