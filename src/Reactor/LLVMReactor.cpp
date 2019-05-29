@@ -1433,7 +1433,28 @@ namespace rr
 		auto passthrough = ::llvm::Constant::getNullValue(elVecTy);
 		auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
 		auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_gather, { elVecTy, elPtrVecTy } );
-		return V(::builder->CreateCall(func, { elPtrs, align, i8Mask, passthrough }));
+		auto load = ::builder->CreateCall(func, { elPtrs, align, i8Mask, passthrough });
+
+		auto toEmulated = [&](Type* emulatedTy)
+		{
+			auto zero = ::llvm::Constant::getNullValue(load->getType());
+			llvm::SmallVector<uint32_t, 16> mask(T(emulatedTy)->getVectorNumElements());
+			std::iota(mask.begin(), mask.begin() + numEls, 0);
+			std::fill(mask.begin() + numEls, mask.end(), numEls);
+			return V(::builder->CreateShuffleVector(load, zero, mask));
+		};
+
+		// Filth to convert true LLVM types to 'emulated types'.
+		if (numEls == 4 && elTy == Short::getType()) // Short4, UShort4
+		{
+			return toEmulated(Short4::getType());
+		}
+		else if (numEls == 4 && elTy == Byte::getType()) // Byte4, SByte4
+		{
+			return toEmulated(Byte4::getType());
+		}
+
+		return V(load);
 	}
 
 	void Nucleus::createScatter(Value *base, Value *val, Value *offsets, Value *mask, unsigned int alignment)
