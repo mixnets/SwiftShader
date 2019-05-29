@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "222b3dfe_d77b5adf",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:11:46Z",
+      "side": 1,
+      "message": "Not something to be done in this change, but I assume we\u0027d eventually want to replace char/short/int with int8_t/int16t/int32_t, etc.?",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa88c722_c24abc54",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:11:46Z",
+      "side": 1,
+      "message": "Why did \u0027value\u0027s type change to int, rather than remain short?",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ee904f3_60d50f06",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-29T19:11:46Z",
+      "side": 1,
+      "message": "As in the previous code, only one operand of the divide needs to be cast to float; the other operand will be automatically promoted to float. So can be:\n\n  float yFactor  \u003d static_cast\u003cfloat\u003e(0x7FFF) / (state.studioSwing ? 219 * 0x0101 : 255 * 0x0101);\n  float uvFactor \u003d static_cast\u003cfloat\u003e(0x7FFF) / (state.studioSwing ? 224 * 0x0101 : 255 * 0x0101);",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
