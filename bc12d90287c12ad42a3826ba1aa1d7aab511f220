@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "cdb9362b_ceca01d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T03:58:23Z",
+      "side": 1,
+      "message": "Great commit description, love it, thanks!",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 26
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "53e50c56_a2269825",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
@@ -18,6 +41,52 @@
         "startChar": 0,
         "endLine": 18,
         "endChar": 19
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23668f72_938e8f7e",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T03:58:23Z",
+      "side": 1,
+      "message": "Remove so that this uses QuadRasterizer::y and we don\u0027t have to use this-\u003e syntax?",
+      "range": {
+        "startLine": 117,
+        "startChar": 2,
+        "endLine": 117,
+        "endChar": 5
+      },
+      "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79a61d11_d6a20d4c",
+        "filename": "src/Renderer/QuadRasterizer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T03:58:23Z",
+      "side": 1,
+      "message": "redundant? Also, yMax doesn\u0027t change within this Do/While loop, so it can be assigned once outside of it. Perhaps we should even just attempt to use yMax directly (making it a member of QuadRasterizer) instead of introducing another variable?",
+      "range": {
+        "startLine": 280,
+        "startChar": 4,
+        "endLine": 280,
+        "endChar": 10
       },
       "revId": "bc12d90287c12ad42a3826ba1aa1d7aab511f220",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
