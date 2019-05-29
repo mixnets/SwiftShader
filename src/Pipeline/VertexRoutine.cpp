@@ -41,48 +41,81 @@ namespace sw
 
 	void VertexRoutine::generate()
 	{
-		const bool textureSampling = state.textureSampling;
-
 		Pointer<Byte> cache = task + OFFSET(VertexTask,vertexCache);
 		Pointer<Byte> vertexCache = cache + OFFSET(VertexCache,vertex);
-		Pointer<Byte> tagCache = cache + OFFSET(VertexCache,tag);
+		Pointer<Int> tagCache = cache + OFFSET(VertexCache,tag);
 
-		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
+		Int vertexCount = *Pointer<Int>(task + OFFSET(VertexTask,vertexCount));
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 
+		struct Pending
+		{
+			SIMD::Int inputIndices = SIMD::Int(0);
+			SIMD::Int vertexOffsets = SIMD::Int(0);
+			SIMD::Int activeLaneMask = SIMD::Int(0);
+			UInt count = 0;
+		} pending;
+
+		// flush() computes the vertices contained in pending, writing the
+		// result to the output VertexRoutinePrototype::vertex buffer, and
+		// making a copy into the cache. flush() resets pending before
+		// returning.
+		auto flush = [&]()
+		{
+			readInput(pending.inputIndices);
+			program(pending.inputIndices, pending.activeLaneMask);
+			computeClipFlags();
+			writeVertex(vertex, pending.vertexOffsets, pending.activeLaneMask);
+
+			auto tagIndices = pending.inputIndices & SIMD::Int(VertexCache::TagMask);
+			auto tagOffsets = tagIndices * SIMD::Int(sizeof(VertexCache::tag[0]));
+			rr::Scatter(tagCache, pending.inputIndices, tagOffsets, pending.activeLaneMask, sizeof(VertexCache::tag[0]));
+			auto cacheOffsets = tagIndices * SIMD::Int(sizeof(Vertex));
+			copyVertex(
+				vertexCache, cacheOffsets,
+				vertex, pending.vertexOffsets,
+				pending.activeLaneMask);
+
+			pending = {};
+		};
+
+		Int vertexOffset = 0;
+
 		Do
 		{
-			UInt index = *Pointer<UInt>(batch);
-			UInt tagIndex = index & 0x0000003C;
-			UInt indexQ = !textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
+			Int index = *Pointer<UInt>(batch);
+			Int cacheIndex = index & VertexCache::TagMask;
 
-			If(*Pointer<UInt>(tagCache + tagIndex) != indexQ)
+			If(tagCache[cacheIndex] == index)
 			{
-				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
-
-				readInput(indexQ);
-				program(indexQ);
-				computeClipFlags();
-
-				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
-				writeCache(cacheLine0);
+				// Cache hit
+				copyVertex(vertex + vertexOffset, vertexCache + cacheIndex * sizeof(Vertex));
+			}
+			Else
+			{
+				// Cache miss. Add to pending.
+				pending.inputIndices = Insert(pending.inputIndices.xxyz, index, 0);
+				pending.vertexOffsets = Insert(pending.vertexOffsets.xxyz, vertexOffset, 0);
+				pending.activeLaneMask = Insert(pending.activeLaneMask.xxyz, Int(-1), 0);
+				pending.count++;
 			}
 
-			UInt cacheIndex = index & 0x0000003F;
-			Pointer<Byte> cacheLine = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
-			writeVertex(vertex, cacheLine);
-
-			vertex += sizeof(Vertex);
+			vertexOffset += sizeof(Vertex);
 			batch += sizeof(unsigned int);
 			vertexCount--;
+
+			If(pending.count == SIMD::Width || (pending.count > 0 && vertexCount == 0))
+			{
+				flush();
+			}
 		}
 		Until(vertexCount == 0)
 
 		Return();
 	}
 
-	void VertexRoutine::readInput(UInt &index)
+	void VertexRoutine::readInput(RValue<SIMD::Int> indices)
 	{
 		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i += 4)
 		{
@@ -95,7 +128,7 @@ namespace sw
 				Pointer<Byte> input = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, input) + sizeof(void *) * (i/4));
 				UInt stride = *Pointer<UInt>(data + OFFSET(DrawData, stride) + sizeof(unsigned int) * (i/4));
 
-				auto value = readStream(input, stride, state.input[i/4], index);
+				auto value = readStream(input, stride, state.input[i/4], indices);
 				routine.inputs[i] = value.x;
 				routine.inputs[i+1] = value.y;
 				routine.inputs[i+2] = value.z;
@@ -137,16 +170,15 @@ namespace sw
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + SignMask(finiteXYZ) * 4);
 	}
 
-	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index)
+	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, RValue<SIMD::Int> indices)
 	{
-		const bool textureSampling = state.textureSampling;
-
 		Vector4f v;
 
-		Pointer<Byte> source0 = buffer + index * stride;
-		Pointer<Byte> source1 = source0 + (!textureSampling ? stride : 0);
-		Pointer<Byte> source2 = source1 + (!textureSampling ? stride : 0);
-		Pointer<Byte> source3 = source2 + (!textureSampling ? stride : 0);
+		auto offsets = As<SIMD::UInt>(indices) * SIMD::UInt(stride);
+		Pointer<Byte> source0 = buffer + Extract(offsets, 0);
+		Pointer<Byte> source1 = buffer + Extract(offsets, 1);
+		Pointer<Byte> source2 = buffer + Extract(offsets, 2);
+		Pointer<Byte> source3 = buffer + Extract(offsets, 3);
 
 		bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || stream.normalized;
 
@@ -162,6 +194,7 @@ namespace sw
 				{
 					if(stream.count == 1)
 					{
+						// TODO: v.x = rr::Gather(Pointer<Float>(buffer), indices * stride, activeLaneMask, 4);
 						v.x.x = *Pointer<Float>(source0);
 						v.x.y = *Pointer<Float>(source1);
 						v.x.z = *Pointer<Float>(source2);
@@ -491,101 +524,102 @@ namespace sw
 		return v;
 	}
 
-	void VertexRoutine::writeCache(Pointer<Byte> &cacheLine)
+	void VertexRoutine::writeVertex(RValue<Pointer<Byte>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> activeLaneMask)
 	{
-		Vector4f v;
-
-		for (int i = 0; i < MAX_INTERFACE_COMPONENTS; i += 4)
+		for (int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
 		{
-			if (spirvShader->outputs[i].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-				spirvShader->outputs[i+1].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-				spirvShader->outputs[i+2].Type != SpirvShader::ATTRIBTYPE_UNUSED ||
-				spirvShader->outputs[i+3].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+			if (spirvShader->outputs[i].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 			{
-				v.x = routine.outputs[i];
-				v.y = routine.outputs[i+1];
-				v.z = routine.outputs[i+2];
-				v.w = routine.outputs[i+3];
-
-				transpose4x4(v.x, v.y, v.z, v.w);
-
-				*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 0, 16) = v.x;
-				*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 1, 16) = v.y;
-				*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 2, 16) = v.z;
-				*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 3, 16) = v.w;
+				rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,v[i])), routine.outputs[i], offsets, activeLaneMask, 16);
 			}
 		}
 
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 0) = (clipFlags >> 0)  & 0x0000000FF;
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 1) = (clipFlags >> 8)  & 0x0000000FF;
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 2) = (clipFlags >> 16) & 0x0000000FF;
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 3) = (clipFlags >> 24) & 0x0000000FF;
+		auto cf = (SIMD::Int(clipFlags) >> SIMD::Int(0, 8, 16, 24)) & SIMD::Int(0x0000000FF);
+		rr::Scatter(Pointer<Int>(base + OFFSET(Vertex,clipFlags)), cf, offsets, activeLaneMask, 4);
 
 		// Viewport transform
 		auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
 		assert(it != spirvShader->outputBuiltins.end());
 		assert(it->second.SizeInComponents == 4);
 		auto &pos = routine.getVariable(it->second.Id);
-		auto posX = pos[it->second.FirstComponent];
-		auto posY = pos[it->second.FirstComponent + 1];
-		auto posZ = pos[it->second.FirstComponent + 2];
-		auto posW = pos[it->second.FirstComponent + 3];
-
-		v.x = posX;
-		v.y = posY;
-		v.z = posZ;
-		v.w = posW;
+		Float4 posX = pos[it->second.FirstComponent];
+		Float4 posY = pos[it->second.FirstComponent + 1];
+		Float4 posZ = pos[it->second.FirstComponent + 2];
+		Float4 posW = pos[it->second.FirstComponent + 3];
 
 		// Write the builtin pos into the vertex; it's not going to be consumed by the FS, but may need to reproject if we have to clip.
-		Vector4f v2 = v;
-		transpose4x4(v2.x, v2.y, v2.z, v2.w);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,builtins.position.x)), posX, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,builtins.position.y)), posY, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,builtins.position.z)), posZ, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,builtins.position.w)), posW, offsets, activeLaneMask, 4);
 
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,builtins.position) + sizeof(Vertex) * 0, 16) = v2.x;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,builtins.position) + sizeof(Vertex) * 1, 16) = v2.y;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,builtins.position) + sizeof(Vertex) * 2, 16) = v2.z;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,builtins.position) + sizeof(Vertex) * 3, 16) = v2.w;
-
-		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
+		Float4 w = As<Float4>(As<Int4>(posW) | (As<Int4>(CmpEQ(posW, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;
 
-		v.x = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,X0x16)) + v.x * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Wx16))));
-		v.y = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,Y0x16)) + v.y * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Hx16))));
-		v.z = v.z * rhw;
-		v.w = rhw;
+		auto projX = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,X0x16)) + posX * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Wx16))));
+		auto projY = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,Y0x16)) + posY * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Hx16))));
+		auto projZ = posZ * rhw;
+		auto projW = rhw;
 
-		transpose4x4(v.x, v.y, v.z, v.w);
-
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,projected) + sizeof(Vertex) * 0, 16) = v.x;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,projected) + sizeof(Vertex) * 1, 16) = v.y;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,projected) + sizeof(Vertex) * 2, 16) = v.z;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,projected) + sizeof(Vertex) * 3, 16) = v.w;
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,projected.x)), projX, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,projected.y)), projY, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,projected.z)), projZ, offsets, activeLaneMask, 4);
+		rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,projected.w)), projW, offsets, activeLaneMask, 4);
 
 		it = spirvShader->outputBuiltins.find(spv::BuiltInPointSize);
 		if (it != spirvShader->outputBuiltins.end())
 		{
 			assert(it->second.SizeInComponents == 1);
 			auto psize = routine.getVariable(it->second.Id)[it->second.FirstComponent];
-			*Pointer<Float>(cacheLine + OFFSET(Vertex,builtins.pointSize) + sizeof(Vertex) * 0) = Extract(psize, 0);
-			*Pointer<Float>(cacheLine + OFFSET(Vertex,builtins.pointSize) + sizeof(Vertex) * 1) = Extract(psize, 1);
-			*Pointer<Float>(cacheLine + OFFSET(Vertex,builtins.pointSize) + sizeof(Vertex) * 2) = Extract(psize, 2);
-			*Pointer<Float>(cacheLine + OFFSET(Vertex,builtins.pointSize) + sizeof(Vertex) * 3) = Extract(psize, 3);
+			rr::Scatter(Pointer<Float>(base + OFFSET(Vertex,builtins.pointSize)), psize, offsets, activeLaneMask, 4);
 		}
 	}
 
-	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
+	template <typename COPY16>
+	void VertexRoutine::copyVertex(COPY16 copy16)
 	{
 		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
 		{
 			if(spirvShader->outputs[i].Type != SpirvShader::ATTRIBTYPE_UNUSED)
 			{
-				*Pointer<Int>(vertex + OFFSET(Vertex, v[i]), 4) = *Pointer<Int>(cache + OFFSET(Vertex, v[i]), 4);
+				copy16(OFFSET(Vertex, v[i]));
 			}
 		}
 
-		*Pointer<Int4>(vertex + OFFSET(Vertex,projected)) = *Pointer<Int4>(cache + OFFSET(Vertex,projected));
-		*Pointer<Int>(vertex + OFFSET(Vertex,clipFlags)) = *Pointer<Int>(cache + OFFSET(Vertex,clipFlags));
-		*Pointer<Int4>(vertex + OFFSET(Vertex,builtins.position)) = *Pointer<Int4>(cache + OFFSET(Vertex,builtins.position));
-		*Pointer<Int>(vertex + OFFSET(Vertex,builtins.pointSize)) = *Pointer<Int>(cache + OFFSET(Vertex,builtins.pointSize));
+		copy16(OFFSET(Vertex, projected.x));
+		copy16(OFFSET(Vertex, projected.y));
+		copy16(OFFSET(Vertex, projected.z));
+		copy16(OFFSET(Vertex, projected.w));
 
+		copy16(OFFSET(Vertex, clipFlags));
+
+		copy16(OFFSET(Vertex, builtins.position.x));
+		copy16(OFFSET(Vertex, builtins.position.y));
+		copy16(OFFSET(Vertex, builtins.position.z));
+		copy16(OFFSET(Vertex, builtins.position.w));
+
+		copy16(OFFSET(Vertex, builtins.pointSize));
+	}
+
+	void VertexRoutine::copyVertex(
+			RValue<Pointer<Byte>> dstBase,
+			RValue<SIMD::Int> dstOffsets,
+			RValue<Pointer<Byte>> srcBase,
+			RValue<SIMD::Int> srcOffsets,
+			RValue<SIMD::Int> activeLaneMask)
+	{
+		copyVertex([&] (int offset)
+		{
+			auto v = rr::Gather(Pointer<Int>(srcBase + offset), srcOffsets, activeLaneMask, 4);
+			rr::Scatter(Pointer<Int>(dstBase + offset), v, dstOffsets, activeLaneMask, 4);
+		});
+	}
+
+	void VertexRoutine::copyVertex(RValue<Pointer<Byte>> dst, RValue<Pointer<Byte>> src)
+	{
+		copyVertex([&] (int offset)
+		{
+			*Pointer<SIMD::Int>(dst + offset) = *Pointer<SIMD::Int>(src + offset);
+		});
 	}
 }
