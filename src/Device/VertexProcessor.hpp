@@ -27,10 +27,13 @@ namespace sw
 
 	struct VertexCache   // FIXME: Variable size
 	{
+		static constexpr uint32_t Size = 16;
+		static constexpr uint32_t TagMask = Size - 1;
+
 		void clear();
 
-		Vertex vertex[16][4];
-		unsigned int tag[16];
+		Vertex vertex[Size];
+		uint32_t tag[Size];
 
 		int drawCall;
 	};
