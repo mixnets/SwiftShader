@@ -4242,12 +4242,42 @@ namespace rr
 		return RValue<Int4>(Nucleus::createGather(base.value, Int::getType(), offsets.value, mask.value, alignment));
 	}
 
+	RValue<UInt4> Gather(RValue<Pointer<UInt>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<UInt4>(Nucleus::createGather(base.value, UInt::getType(), offsets.value, mask.value, alignment));
+	}
+
+	RValue<Short4> Gather(RValue<Pointer<Short>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<Short4>(Nucleus::createGather(base.value, Short::getType(), offsets.value, mask.value, alignment));
+	}
+
+	RValue<UShort4> Gather(RValue<Pointer<UShort>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<UShort4>(Nucleus::createGather(base.value, UShort::getType(), offsets.value, mask.value, alignment));
+	}
+
+	RValue<SByte4> Gather(RValue<Pointer<SByte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<SByte4>(Nucleus::createGather(base.value, SByte::getType(), offsets.value, mask.value, alignment));
+	}
+
+	RValue<Byte4> Gather(RValue<Pointer<Byte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<Byte4>(Nucleus::createGather(base.value, Byte::getType(), offsets.value, mask.value, alignment));
+	}
+
 	void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
 	{
 		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
 	}
 
 	void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
+	}
+
+	void Scatter(RValue<Pointer<UInt>> base, RValue<UInt4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
 	{
 		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
 	}

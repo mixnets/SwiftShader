@@ -62,15 +62,25 @@ namespace sw
 		SpirvShader const * const spirvShader;
 
 	private:
-		virtual void program(UInt &index) = 0;
+		virtual void program(RValue<SIMD::Int> indices, RValue<SIMD::Int> activeLaneMask) = 0;
 
 		typedef VertexProcessor::State::Input Stream;
 
-		Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index);
-		void readInput(UInt &index);
+		Vector4f readStream(RValue<Pointer<Byte>> buffer, RValue<SIMD::Int> offsets, RValue<SIMD::Int> activeLaneMask, const Stream &stream);
+		void readInput(RValue<SIMD::Int> indices, RValue<SIMD::Int> activeLaneMask);
 		void computeClipFlags();
-		void writeCache(Pointer<Byte> &cacheLine);
-		void writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cacheLine);
+		void writeVertex(RValue<Pointer<Byte>> base, RValue<SIMD::Int> offsets, RValue<SIMD::Int> activeLaneMask);
+
+		template <typename COPY16>
+		void copyVertex(COPY16 copy16);
+
+		void copyVertex(RValue<Pointer<Byte>> dst, RValue<Pointer<Byte>> src);
+		void copyVertex(
+			RValue<Pointer<Byte>> dstBase,
+			RValue<SIMD::Int> dstOffsets,
+			RValue<Pointer<Byte>> srcBase,
+			RValue<SIMD::Int> srcOffsets,
+			RValue<SIMD::Int> activeLaneMask);
 	};
 }
 
