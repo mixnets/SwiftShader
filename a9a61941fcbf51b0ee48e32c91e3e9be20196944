@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3daf82e1_a4475889",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T19:24:23Z",
+      "side": 1,
+      "message": "Ack. I originally wanted the decoded to be completely standalone, without a dependency on \u003ccstdint\u003e.\nThat\u0027s not relevant now, so we could absolutely do it.",
+      "parentUuid": "222b3dfe_d77b5adf",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa88c722_c24abc54",
         "filename": "src/Device/ETC_Decoder.cpp",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "d1ceb178_366b696d",
+        "filename": "src/Device/ETC_Decoder.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T19:24:23Z",
+      "side": 1,
+      "message": "We use the output of getSingleChannel() as the input here, which is an int.",
+      "parentUuid": "fa88c722_c24abc54",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ee904f3_60d50f06",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 5
@@ -50,6 +86,24 @@
       "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f21299c2_85765722",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T19:24:23Z",
+      "side": 1,
+      "message": "Agreed, but I really like explicit casts.",
+      "parentUuid": "7ee904f3_60d50f06",
+      "revId": "a9a61941fcbf51b0ee48e32c91e3e9be20196944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
