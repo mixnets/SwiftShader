@@ -69,6 +69,30 @@
       "revId": "57d55b98bf7bd42e84c3340d6b3e8388d7af1cea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ded22c2_cf20b471",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T14:38:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "95f5a789_3041c168",
+      "range": {
+        "startLine": 153,
+        "startChar": 44,
+        "endLine": 153,
+        "endChar": 53
+      },
+      "revId": "57d55b98bf7bd42e84c3340d6b3e8388d7af1cea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
