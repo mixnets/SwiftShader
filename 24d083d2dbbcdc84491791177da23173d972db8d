@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f03a70da_a9bec6ff",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-29T21:51:55Z",
+      "side": 1,
+      "message": "I think we should be using the EXPECTED_HASH option here.",
+      "range": {
+        "startLine": 160,
+        "startChar": 12,
+        "endLine": 160,
+        "endChar": 16
+      },
+      "revId": "24d083d2dbbcdc84491791177da23173d972db8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
