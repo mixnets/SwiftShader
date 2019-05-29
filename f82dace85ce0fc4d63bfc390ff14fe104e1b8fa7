@@ -22,6 +22,30 @@
       "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8e8413f_aae84894",
+        "filename": "src/Vulkan/VulkanPlatform.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T17:26:01Z",
+      "side": 1,
+      "message": "I\u0027ve illustrated the problem here: crbug.com/967831#c4 I think it\u0027s legit and this is an effective solution, for now.",
+      "parentUuid": "f6e4865e_3debb23c",
+      "range": {
+        "startLine": 21,
+        "startChar": 25,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
