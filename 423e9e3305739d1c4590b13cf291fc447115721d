@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f30c54a_4f5c62ec",
+        "filename": "third_party/boost/LICENSE_1_0.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-29T18:33:46Z",
+      "side": 1,
+      "message": "Does the download and unpack done by the next patch include the license file?",
+      "revId": "423e9e3305739d1c4590b13cf291fc447115721d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
