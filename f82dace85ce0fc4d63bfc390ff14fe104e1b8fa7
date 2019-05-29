@@ -46,6 +46,30 @@
       "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc0fc02a_1f12bf5d",
+        "filename": "src/Vulkan/VulkanPlatform.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-29T17:34:22Z",
+      "side": 1,
+      "message": "Fair enough. This is probably equivalent to removing the alignas statement altogether, but as long as it works, let\u0027s land it to unblock this.",
+      "parentUuid": "f8e8413f_aae84894",
+      "range": {
+        "startLine": 21,
+        "startChar": 25,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "f82dace85ce0fc4d63bfc390ff14fe104e1b8fa7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
