@@ -321,7 +321,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 		}
 	}
 
-	// "Images created with a format from one of those listed in Formats requiring sampler Y’CBCR conversion for VK_IMAGE_ASPECT_COLOR_BIT image views
+	// "Images created with a format from one of those listed in Formats requiring sampler Y'CBCR conversion for VK_IMAGE_ASPECT_COLOR_BIT image views
 	//  have further restrictions on their limits and capabilities compared to images created with other formats."
 	if(vk::Format(format).isYcbcrFormat())
 	{
@@ -431,7 +431,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				// YCbCr conversion is supported.
 				// samplerYcbcrConversionFeatures->samplerYcbcrConversion can be VK_TRUE or VK_FALSE.
 				// No action needs to be taken on our end in either case; it's the apps responsibility that
-				// "To create a sampler Y’CbCr conversion, the samplerYcbcrConversion feature must be enabled."
+				// "To create a sampler Y'CbCr conversion, the samplerYcbcrConversion feature must be enabled."
 				(void)samplerYcbcrConversionFeatures->samplerYcbcrConversion;
 			}
 			break;
