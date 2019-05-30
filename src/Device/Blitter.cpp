@@ -128,6 +128,8 @@ namespace sw
 				}
 			}
 		}
+
+		blitRoutine->unbind();
 	}
 
 	bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D* renderArea)
@@ -1549,6 +1551,8 @@ namespace sw
 			blitCache.add(state, blitRoutine);
 		}
 
+		blitRoutine->bind();
+
 		return blitRoutine;
 	}
 
@@ -1569,6 +1573,8 @@ namespace sw
 
 			cornerUpdateCache.add(state, cornerUpdateRoutine);
 		}
+
+		cornerUpdateRoutine->bind();
 
 		return cornerUpdateRoutine;
 	}
@@ -1637,6 +1643,8 @@ namespace sw
 				data.dest = (dst += bufferSlicePitch);
 			}
 		}
+
+		blitRoutine->unbind();
 	}
 
 	void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subresource, VkOffset3D offset, VkExtent3D extent, uint8_t *src, int bufferRowPitch, int bufferSlicePitch)
@@ -1703,6 +1711,8 @@ namespace sw
 				data.source = (src += bufferSlicePitch);
 			}
 		}
+
+		blitRoutine->unbind();
 	}
 
 	void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
@@ -1832,6 +1842,8 @@ namespace sw
 				dstOffset.z++;
 			}
 		}
+
+		blitRoutine->unbind();
 	}
 
 	void Blitter::computeCubeCorner(Pointer<Byte>& layer, Int& x0, Int& x1, Int& y0, Int& y1, Int& pitchB, const State& state)
@@ -1968,6 +1980,8 @@ namespace sw
 			extent.width
 		};
 		cornerUpdateFunction(&data);
+
+		cornerUpdateRoutine->unbind();
 	}
 
 	void Blitter::copyCubeEdge(vk::Image* image,
