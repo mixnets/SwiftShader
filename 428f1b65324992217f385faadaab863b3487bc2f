@@ -51,6 +51,24 @@
       "revId": "428f1b65324992217f385faadaab863b3487bc2f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5412c8e3_158fd5f0",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-30T20:51:39Z",
+      "side": 1,
+      "message": "This was also going to be my suggestion too.",
+      "parentUuid": "f0c2becb_fb50ad50",
+      "revId": "428f1b65324992217f385faadaab863b3487bc2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
