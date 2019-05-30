@@ -46,6 +46,30 @@
       "revId": "4e61a3c6fa08ef25f37a7c93f298d6e5e78b9ce5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4529d25e_b31bb1f5",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-30T17:11:16Z",
+      "side": 0,
+      "message": "I\u0027ll add a sync.wait(). Note that this destructor always gets called at the end of the Queue destructor, which should wait for all tasks to be completed.",
+      "parentUuid": "022f44ed_b6cf7cc5",
+      "range": {
+        "startLine": 258,
+        "startChar": 2,
+        "endLine": 259,
+        "endChar": 19
+      },
+      "revId": "4e61a3c6fa08ef25f37a7c93f298d6e5e78b9ce5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
