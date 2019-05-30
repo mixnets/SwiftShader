@@ -514,6 +514,8 @@ namespace rr
 	class Byte4 : public LValue<Byte4>
 	{
 	public:
+		using ElementType = Byte;
+
 		explicit Byte4(RValue<Byte8> cast);
 
 		Byte4() = default;
@@ -560,6 +562,8 @@ namespace rr
 	class SByte4 : public LValue<SByte4>
 	{
 	public:
+		using ElementType = SByte;
+
 		SByte4() = default;
 	//	SByte4(int x, int y, int z, int w);
 	//	SByte4(RValue<SByte4> rhs);
@@ -604,6 +608,8 @@ namespace rr
 	class Byte8 : public LValue<Byte8>
 	{
 	public:
+		using ElementType = Byte;
+
 		Byte8() = default;
 		Byte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7);
 		Byte8(RValue<Byte8> rhs);
@@ -658,6 +664,8 @@ namespace rr
 	class SByte8 : public LValue<SByte8>
 	{
 	public:
+		using ElementType = SByte;
+
 		SByte8() = default;
 		SByte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7);
 		SByte8(RValue<SByte8> rhs);
@@ -710,6 +718,8 @@ namespace rr
 	class Byte16 : public LValue<Byte16>
 	{
 	public:
+		using ElementType = Byte;
+
 		Byte16() = default;
 	//	Byte16(int x, int y, int z, int w);
 		Byte16(RValue<Byte16> rhs);
@@ -754,6 +764,8 @@ namespace rr
 	class SByte16 : public LValue<SByte16>
 	{
 	public:
+		using ElementType = SByte;
+
 		SByte16() = default;
 	//	SByte16(int x, int y, int z, int w);
 	//	SByte16(RValue<SByte16> rhs);
@@ -798,6 +810,8 @@ namespace rr
 	class Short2 : public LValue<Short2>
 	{
 	public:
+		using ElementType = Short;
+
 		explicit Short2(RValue<Short4> cast);
 
 		static Type *getType();
@@ -806,6 +820,8 @@ namespace rr
 	class UShort2 : public LValue<UShort2>
 	{
 	public:
+		using ElementType = UShort;
+
 		explicit UShort2(RValue<UShort4> cast);
 
 		static Type *getType();
@@ -814,6 +830,8 @@ namespace rr
 	class Short4 : public LValue<Short4>
 	{
 	public:
+		using ElementType = Short;
+
 		explicit Short4(RValue<Int> cast);
 		explicit Short4(RValue<Int4> cast);
 	//	explicit Short4(RValue<Float> cast);
@@ -893,6 +911,8 @@ namespace rr
 	class UShort4 : public LValue<UShort4>
 	{
 	public:
+		using ElementType = UShort;
+
 		explicit UShort4(RValue<Int4> cast);
 		explicit UShort4(RValue<Float4> cast, bool saturate = false);
 
@@ -954,6 +974,8 @@ namespace rr
 	class Short8 : public LValue<Short8>
 	{
 	public:
+		using ElementType = Short;
+
 		Short8() = default;
 		Short8(short c);
 		Short8(short c0, short c1, short c2, short c3, short c4, short c5, short c6, short c7);
@@ -1012,6 +1034,8 @@ namespace rr
 	class UShort8 : public LValue<UShort8>
 	{
 	public:
+		using ElementType = UShort;
+
 		UShort8() = default;
 		UShort8(unsigned short c);
 		UShort8(unsigned short c0, unsigned short c1, unsigned short c2, unsigned short c3, unsigned short c4, unsigned short c5, unsigned short c6, unsigned short c7);
@@ -1852,6 +1876,8 @@ namespace rr
 	class Int4 : public LValue<Int4>, public XYZW<Int4>
 	{
 	public:
+		using ElementType = Int;
+
 		explicit Int4(RValue<Byte4> cast);
 		explicit Int4(RValue<SByte4> cast);
 		explicit Int4(RValue<Float4> cast);
@@ -1952,6 +1978,8 @@ namespace rr
 	class UInt4 : public LValue<UInt4>, public XYZW<UInt4>
 	{
 	public:
+		using ElementType = UInt;
+
 		explicit UInt4(RValue<Float4> cast);
 
 		UInt4();
@@ -2155,6 +2183,8 @@ namespace rr
 	class Float4 : public LValue<Float4>, public XYZW<Float4>
 	{
 	public:
+		using ElementType = Float;
+
 		explicit Float4(RValue<Byte4> cast);
 		explicit Float4(RValue<SByte4> cast);
 		explicit Float4(RValue<Short4> cast);

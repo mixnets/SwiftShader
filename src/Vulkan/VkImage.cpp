@@ -590,6 +590,11 @@ bool Image::isCube() const
 	return (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
 }
 
+uint8_t* Image::base() const
+{
+	return reinterpret_cast<uint8_t*>(deviceMemory->getOffsetPointer(0));
+}
+
 uint8_t* Image::end() const
 {
 	return reinterpret_cast<uint8_t*>(deviceMemory->getOffsetPointer(deviceMemory->getCommittedMemoryInBytes() + 1));
