@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "61f07b01_1133953f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-30T20:32:00Z",
+      "side": 1,
+      "message": "Please open a bug for this. There will be more follow-up that I\u0027d like to track the history of.",
+      "revId": "428f1b65324992217f385faadaab863b3487bc2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6b8455e1_eca8d0b2",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 1
@@ -16,6 +33,24 @@
       "revId": "428f1b65324992217f385faadaab863b3487bc2f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0c2becb_fb50ad50",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-30T20:32:00Z",
+      "side": 1,
+      "message": "Suggestion noted for post-Pastel cleanup. Thanks!\n\nWe should probably also look into how to do the cache lookup, generating a routine, and binding it, atomically. Or better yet a safe way to allow other threads to still do lookups while one (or multiple) threads are busy generating code.",
+      "parentUuid": "6b8455e1_eca8d0b2",
+      "revId": "428f1b65324992217f385faadaab863b3487bc2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
