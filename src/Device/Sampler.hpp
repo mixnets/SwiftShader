@@ -29,7 +29,7 @@ namespace sw
 {
 	struct Mipmap
 	{
-		const void *buffer[6];
+		int32_t bufferOffset[6];
 
 		short4 uHalf;
 		short4 vHalf;
@@ -50,6 +50,7 @@ namespace sw
 		float4 width;
 		float4 height;
 		float4 depth;
+		void* bufferBase;
 	};
 
 	enum SamplerType
