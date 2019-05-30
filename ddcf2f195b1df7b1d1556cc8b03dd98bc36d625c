@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa428851_8663db74",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-30T16:57:10Z",
+      "side": 0,
+      "message": "Dropping this is a good clarity win even without the rest..",
+      "revId": "ddcf2f195b1df7b1d1556cc8b03dd98bc36d625c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
