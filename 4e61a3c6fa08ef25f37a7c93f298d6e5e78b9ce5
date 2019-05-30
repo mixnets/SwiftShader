@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e6cf4e6_c8146719",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-30T14:19:17Z",
+      "side": 0,
+      "message": "Don\u0027t we still need this before attempting to terminate the threads? See also https://swiftshader-review.googlesource.com/c/SwiftShader/+/24748/1/src/Renderer/Renderer.cpp#214",
+      "range": {
+        "startLine": 258,
+        "startChar": 2,
+        "endLine": 259,
+        "endChar": 19
+      },
+      "revId": "4e61a3c6fa08ef25f37a7c93f298d6e5e78b9ce5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
