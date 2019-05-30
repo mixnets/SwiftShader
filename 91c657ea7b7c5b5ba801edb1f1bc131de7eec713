@@ -46,6 +46,30 @@
       "revId": "91c657ea7b7c5b5ba801edb1f1bc131de7eec713",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86a23028_01dbb2d6",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1954,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-05-30T13:18:19Z",
+      "side": 1,
+      "message": "As I said yesterday... I feel we could do with a common IntrusivePtr base and smart-pointer for this codebase.",
+      "parentUuid": "47c7ea12_0cfed8ea",
+      "range": {
+        "startLine": 1954,
+        "startChar": 11,
+        "endLine": 1954,
+        "endChar": 30
+      },
+      "revId": "91c657ea7b7c5b5ba801edb1f1bc131de7eec713",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
