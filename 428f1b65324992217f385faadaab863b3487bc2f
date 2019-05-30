@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b8455e1_eca8d0b2",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-05-30T19:43:24Z",
+      "side": 1,
+      "message": "Instead of manually calling unbind, we can wrap this up in a unique_ptr with a custom deleter that invokes unbind() instead. getBlitRoutine would return this unique_ptr instead. This way we can stop worrying about whether we called unbind in all the right places.",
+      "revId": "428f1b65324992217f385faadaab863b3487bc2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
