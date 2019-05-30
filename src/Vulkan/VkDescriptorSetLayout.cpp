@@ -34,6 +34,14 @@ static bool UsesImmutableSamplers(const VkDescriptorSetLayoutBinding& binding)
 	        (binding.pImmutableSamplers != nullptr));
 }
 
+int32_t i32PtrOffset(const void* base, const void* ptr)
+{
+	auto diff = reinterpret_cast<const uint8_t*>(ptr) - reinterpret_cast<const uint8_t*>(base);
+	ASSERT_MSG(diff < INT32_MIN || diff > INT32_MAX,
+		"Pointer %p is too far away from base %p to be expressed as an int32", ptr, base);
+	return static_cast<int32_t>(diff);
+}
+
 }
 
 namespace vk
@@ -320,9 +328,10 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].texture.width = sw::replicate(numElements);
 			imageSampler[i].texture.height = sw::replicate(1);
 			imageSampler[i].texture.depth = sw::replicate(1);
+			imageSampler[i].texture.bufferBase = bufferView->getPointer();
 
 			sw::Mipmap &mipmap = imageSampler[i].texture.mipmap[0];
-			mipmap.buffer[0] = bufferView->getPointer();
+			mipmap.bufferOffset[0] = 0;
 			mipmap.width[0] = mipmap.width[1] = mipmap.width[2] = mipmap.width[3] = numElements;
 			mipmap.height[0] = mipmap.height[1] = mipmap.height[2] = mipmap.height[3] = 1;
 			mipmap.depth[0] = mipmap.depth[1] = mipmap.depth[2] = mipmap.depth[3] = 1;
@@ -373,11 +382,11 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 
 				const int level = 0;
 				VkOffset3D offset = {0, 0, 0};
-				texture->mipmap[0].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING);
-				texture->mipmap[1].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING);
+				texture->mipmap[0].bufferOffset[0] = i32PtrOffset(texture->bufferBase, imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_0_BIT, level, 0, ImageView::SAMPLING));
+				texture->mipmap[1].bufferOffset[0] = i32PtrOffset(texture->bufferBase, imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_1_BIT, level, 0, ImageView::SAMPLING));
 				if(format.getAspects() & VK_IMAGE_ASPECT_PLANE_2_BIT)
 				{
-					texture->mipmap[2].buffer[0] = imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING);
+					texture->mipmap[2].bufferOffset[0] = i32PtrOffset(texture->bufferBase, imageView->getOffsetPointer(offset, VK_IMAGE_ASPECT_PLANE_2_BIT, level, 0, ImageView::SAMPLING));
 				}
 
 				VkExtent3D extent = imageView->getMipLevelExtent(0);
@@ -414,13 +423,13 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 							VkOffset3D offset = {-1, -1, 0};
 
 							// TODO(b/129523279): Implement as 6 consecutive layers instead of separate pointers.
-							mipmap.buffer[face] = imageView->getOffsetPointer(offset, aspect, level, face, ImageView::SAMPLING);
+							mipmap.bufferOffset[face] = i32PtrOffset(texture->bufferBase, imageView->getOffsetPointer(offset, aspect, level, face, ImageView::SAMPLING));
 						}
 					}
 					else
 					{
 						VkOffset3D offset = {0, 0, 0};
-						mipmap.buffer[0] = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
+						mipmap.bufferOffset[0] = i32PtrOffset(texture->bufferBase, imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING));
 					}
 
 					VkExtent3D extent = imageView->getMipLevelExtent(level);
