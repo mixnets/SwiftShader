@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02ad21e2_1c606f7a",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1262,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-05-30T16:12:16Z",
+      "side": 1,
+      "message": "This is suspicious. onePitchP is a vector of (1, pitchInPixels, 1, pitchInPixels). Gathering it isn\u0027t going to do what you hoped.",
+      "revId": "057cad7759b6848bf54dc16199bf39770b7a4bb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
