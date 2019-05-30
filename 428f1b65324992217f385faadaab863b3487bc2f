@@ -69,6 +69,24 @@
       "revId": "428f1b65324992217f385faadaab863b3487bc2f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a6fbd71_52d39600",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-30T21:12:39Z",
+      "side": 1,
+      "message": "I\u0027ll do it now, it\u0027s super easy, np. I mostly wanted to know if it was safe/correct to use bind/unbind this way and it looks like it is, so I\u0027ll write a proper fix. bind/unbind use atomics internally, so they should be thread safe even without using a mutex for these unbind calls.",
+      "parentUuid": "5412c8e3_158fd5f0",
+      "revId": "428f1b65324992217f385faadaab863b3487bc2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
