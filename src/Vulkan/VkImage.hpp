@@ -60,6 +60,7 @@ public:
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
 	bool                     isCube() const;
 	bool                     is3DSlice() const;
+	uint8_t*                 base() const;
 	uint8_t*                 end() const;
 	VkDeviceSize             getLayerSize(VkImageAspectFlagBits aspect) const;
 

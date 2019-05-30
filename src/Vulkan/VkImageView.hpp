@@ -75,12 +75,13 @@ public:
 
 	const uint32_t id = nextID++;
 
+	const Image* getImage(Usage usage) const;
+
 private:
 	static std::atomic<uint32_t> nextID;
 	friend class BufferView;	// ImageView/BufferView share the ID space above.
 
 	bool                          imageTypesMatch(VkImageType imageType) const;
-	const Image*                  getImage(Usage usage) const;
 
 	Image *const                  image = nullptr;
 	const VkImageViewType         viewType = VK_IMAGE_VIEW_TYPE_2D;
