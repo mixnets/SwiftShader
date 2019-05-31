@@ -32,7 +32,7 @@ public:
 	// Image usage:
 	// RAW: Use the base image as is
 	// SAMPLING: Image used for texture sampling
-	enum Usage { RAW, SAMPLING };
+	enum class Usage { RAW, SAMPLING };
 
 	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
 	void destroy(const VkAllocationCallbacks* pAllocator);
@@ -44,11 +44,12 @@ public:
 	void resolve(ImageView* resolveAttachment);
 
 	VkImageViewType getType() const { return viewType; }
-	Format getFormat(Usage usage = RAW) const;
+	Format getFormat(Usage usage = Usage::RAW) const;
 	Format getFormat(VkImageAspectFlagBits aspect) const { return image->getFormat(aspect); }
-	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage = RAW) const;
-	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage = RAW) const;
-	int layerPitchBytes(VkImageAspectFlagBits aspect, Usage usage = RAW) const;
+	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage = Usage::RAW) const;
+	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage = Usage::RAW) const;
+	int layerPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage = Usage::RAW) const;
+	//int aspect
 	VkExtent3D getMipLevelExtent(uint32_t mipLevel) const;
 
 	int getSampleCount() const
@@ -63,7 +64,7 @@ public:
 		}
 	}
 
-	void *getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage = RAW) const;
+	void *getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage = Usage::RAW) const;
 	bool hasDepthAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT) != 0; }
 	bool hasStencilAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) != 0; }
 

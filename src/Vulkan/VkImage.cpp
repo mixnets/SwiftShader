@@ -124,8 +124,8 @@ void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubre
 	pLayout->offset = getMemoryOffset(aspect, pSubresource->mipLevel, pSubresource->arrayLayer);
 	pLayout->size = getMultiSampledLevelSize(aspect, pSubresource->mipLevel);
 	pLayout->rowPitch = rowPitchBytes(aspect, pSubresource->mipLevel);
+	pLayout->arrayPitch = getLayerSize(aspect, pSubresource->mipLevel);
 	pLayout->depthPitch = slicePitchBytes(aspect, pSubresource->mipLevel);
-	pLayout->arrayPitch = getLayerSize(aspect);
 }
 
 void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
@@ -358,7 +358,7 @@ void Image::copy(VkBuffer buf, const VkBufferImageCopy& region, bool bufferIsSou
 		bufferLayerSize = copySize * imageExtent.depth * imageExtent.height;
 	}
 
-	VkDeviceSize imageLayerSize = getLayerSize(aspect);
+	VkDeviceSize imageLayerSize = getLayerSize(aspect, 0);  FIXME: region.imageSubresource.mipLevel?
 	VkDeviceSize srcLayerSize = bufferIsSource ? bufferLayerSize : imageLayerSize;
 	VkDeviceSize dstLayerSize = bufferIsSource ? imageLayerSize : bufferLayerSize;
 
@@ -680,10 +680,10 @@ VkDeviceSize Image::getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLev
 		return slicePitchBytes(aspect, mipLevel);
 	}
 
-	return getLayerSize(aspect);
+	return getLayerSize(aspect, 0);
 }
 
-VkDeviceSize Image::getLayerSize(VkImageAspectFlagBits aspect) const
+VkDeviceSize Image::getLayerSize(VkImageAspectFlagBits aspect, uint32_t level) const
 {
 	VkDeviceSize layerSize = 0;
 
@@ -705,12 +705,13 @@ VkDeviceSize Image::getStorageSize(VkImageAspectFlags aspectMask) const
 
 	VkDeviceSize storageSize = 0;
 
-	if(aspectMask & VK_IMAGE_ASPECT_COLOR_BIT)   storageSize += getLayerSize(VK_IMAGE_ASPECT_COLOR_BIT);
-	if(aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)   storageSize += getLayerSize(VK_IMAGE_ASPECT_DEPTH_BIT);
-	if(aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_STENCIL_BIT);
-	if(aspectMask & VK_IMAGE_ASPECT_PLANE_0_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_0_BIT);
-	if(aspectMask & VK_IMAGE_ASPECT_PLANE_1_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_1_BIT);
-	if(aspectMask & VK_IMAGE_ASPECT_PLANE_2_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_2_BIT);
+	FIXME: assumes layer is full mipmap chain
+	if(aspectMask & VK_IMAGE_ASPECT_COLOR_BIT)   storageSize += getLayerSize(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+	if(aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)   storageSize += getLayerSize(VK_IMAGE_ASPECT_DEPTH_BIT, 0);
+	if(aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
+	if(aspectMask & VK_IMAGE_ASPECT_PLANE_0_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_0_BIT, 0);
+	if(aspectMask & VK_IMAGE_ASPECT_PLANE_1_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_1_BIT, 0);
+	if(aspectMask & VK_IMAGE_ASPECT_PLANE_2_BIT) storageSize += getLayerSize(VK_IMAGE_ASPECT_PLANE_2_BIT, 0);
 
 	return arrayLayers * storageSize;
 }
