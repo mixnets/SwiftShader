@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5aecca7_9d0ba30f",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-05-31T17:20:35Z",
+      "side": 1,
+      "message": "I realized that the required types could change as the code changed, so I just put all of the basic types here to avoid having to revisit this. This has no influence on anything whatsoever, as this code never gets executed.",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 41
+      },
+      "revId": "7b82ee6b8a7747dd48ed8662d819765ad256ff54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
