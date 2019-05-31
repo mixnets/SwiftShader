@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ea351e37_5ab3fa99",
+        "filename": "src/Device/Primitive.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-05-31T18:20:02Z",
+      "side": 1,
+      "message": "nit: It\u0027s a bit unfortunate that this consumes space even for non-point primitives. We can probably shove it in z.B and z.C since points are flat, but that needs a bit of extra care. LGTM",
+      "range": {
+        "startLine": 45,
+        "startChar": 2,
+        "endLine": 46,
+        "endChar": 20
+      },
+      "revId": "f6892c540719eeee0724810f6d4a6552274285e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
