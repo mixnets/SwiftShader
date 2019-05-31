@@ -2370,8 +2370,14 @@ namespace rr
 	// TODO: Use SIMD to template these.
 	RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 	RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	RValue<UInt4> Gather(RValue<Pointer<UInt>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	RValue<Short4> Gather(RValue<Pointer<Short>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	RValue<UShort4> Gather(RValue<Pointer<UShort>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	RValue<SByte4> Gather(RValue<Pointer<SByte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	RValue<Byte4> Gather(RValue<Pointer<Byte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 	void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 	void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
+	void Scatter(RValue<Pointer<UInt>> base, RValue<UInt4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 
 	template<typename T>
 	void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)

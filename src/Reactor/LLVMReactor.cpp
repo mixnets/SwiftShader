@@ -1412,7 +1412,7 @@ namespace rr
 		}
 	}
 
-	Value *Nucleus::createGather(Value *base, Type *elTy, Value *offsets, Value *mask, unsigned int alignment)
+	Value *Nucleus::createGather(Value *base, Type *elTy, Value *offsets, Value *mask, unsigned int alignment, Type *resultTy)
 	{
 		ASSERT(V(base)->getType()->isPointerTy());
 		ASSERT(V(offsets)->getType()->isVectorTy());
@@ -1433,7 +1433,20 @@ namespace rr
 		auto passthrough = ::llvm::Constant::getNullValue(elVecTy);
 		auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
 		auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_gather, { elVecTy, elPtrVecTy } );
-		return V(::builder->CreateCall(func, { elPtrs, align, i8Mask, passthrough }));
+		auto load = ::builder->CreateCall(func, { elPtrs, align, i8Mask, passthrough });
+
+		if (asInternalType(resultTy) != Type_LLVM)
+		{
+			// Expand result vector to the 'emulated' type.
+			llvm::SmallVector<uint32_t, 16> mask(T(resultTy)->getVectorNumElements());
+			std::iota(mask.begin(), mask.begin() + numEls, 0);
+			std::fill(mask.begin() + numEls, mask.end(), numEls);
+			auto zero = ::llvm::Constant::getNullValue(load->getType());
+			return V(::builder->CreateShuffleVector(load, zero, mask));
+		}
+
+		ASSERT(T(resultTy) == load->getType());
+		return V(load);
 	}
 
 	void Nucleus::createScatter(Value *base, Value *val, Value *offsets, Value *mask, unsigned int alignment)
