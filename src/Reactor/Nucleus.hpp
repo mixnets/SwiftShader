@@ -121,7 +121,7 @@ namespace rr
 		static Value *createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex);
 
 		// Scatter / Gather instructions
-		static Value *createGather(Value *base, Type *elementType, Value *offsets, Value *mask, unsigned int alignment);
+		static Value *createGather(Value *base, Type *elementType, Value *offsets, Value *mask, unsigned int alignment, Type *resultTy);
 		static void createScatter(Value *base, Value *value, Value *offsets, Value *mask, unsigned int alignment);
 
 		// Barrier instructions

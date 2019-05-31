@@ -4234,12 +4234,37 @@ namespace rr
 
 	RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
 	{
-		return RValue<Float4>(Nucleus::createGather(base.value, Float::getType(), offsets.value, mask.value, alignment));
+		return RValue<Float4>(Nucleus::createGather(base.value, Float::getType(), offsets.value, mask.value, alignment, Float4::getType()));
 	}
 
 	RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
 	{
-		return RValue<Int4>(Nucleus::createGather(base.value, Int::getType(), offsets.value, mask.value, alignment));
+		return RValue<Int4>(Nucleus::createGather(base.value, Int::getType(), offsets.value, mask.value, alignment, Int4::getType()));
+	}
+
+	RValue<UInt4> Gather(RValue<Pointer<UInt>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<UInt4>(Nucleus::createGather(base.value, UInt::getType(), offsets.value, mask.value, alignment, UInt4::getType()));
+	}
+
+	RValue<Short4> Gather(RValue<Pointer<Short>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<Short4>(Nucleus::createGather(base.value, Short::getType(), offsets.value, mask.value, alignment, Short4::getType()));
+	}
+
+	RValue<UShort4> Gather(RValue<Pointer<UShort>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<UShort4>(Nucleus::createGather(base.value, UShort::getType(), offsets.value, mask.value, alignment, UShort4::getType()));
+	}
+
+	RValue<SByte4> Gather(RValue<Pointer<SByte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<SByte4>(Nucleus::createGather(base.value, SByte::getType(), offsets.value, mask.value, alignment, SByte4::getType()));
+	}
+
+	RValue<Byte4> Gather(RValue<Pointer<Byte>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		return RValue<Byte4>(Nucleus::createGather(base.value, Byte::getType(), offsets.value, mask.value, alignment, Byte4::getType()));
 	}
 
 	void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
@@ -4248,6 +4273,11 @@ namespace rr
 	}
 
 	void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	{
+		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
+	}
+
+	void Scatter(RValue<Pointer<UInt>> base, RValue<UInt4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
 	{
 		Nucleus::createScatter(base.value, val.value, offsets.value, mask.value, alignment);
 	}
