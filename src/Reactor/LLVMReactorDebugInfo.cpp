@@ -127,7 +127,7 @@ namespace rr
 		Location currLocation = backtrace[backtrace.size() - 1];
 		if (currLocation != lastLocation)
 		{
-			rr::Print("rr> {0} [{1}:{2}]\n", currLocation.function.name.c_str(), currLocation.function.file.c_str(), currLocation.line);
+			rr::Print("rr> {0} [{1}:{2}]\n", currLocation.function.name, currLocation.function.file, currLocation.line);
 			lastLocation = std::move(currLocation);
 		}
 #endif // ENABLE_RR_EMIT_PRINT_LOCATION
@@ -448,21 +448,32 @@ namespace rr
 
 		std::vector<DebugInfo::Location> locations;
 
-		// Note that bs::stacktrace() effectively returns a vector of addresses; bs::frame construction is where
-		// the heavy lifting is done: resolving the function name, file and line number.
 		namespace bs = boost::stacktrace;
+
+		// Cache to avoid expensive stacktrace lookups, especially since our use-case results in looking up the
+		// same call stack addresses many times.
+		static std::unordered_map<bs::frame::native_frame_ptr_t, DebugInfo::Location> cache;
+
 		for (bs::frame frame : bs::stacktrace())
 		{
-			if (shouldSkipFile(frame.source_file()))
+			DebugInfo::Location location;
+			
+			auto iter = cache.find(frame.address());
+			if (iter == cache.end()) {
+				location.function.file = frame.source_file();
+				location.function.name = frame.name();
+				location.line = frame.source_line();
+				cache[frame.address()] = location;
+			} else {
+				location = iter->second;
+			}
+
+			if (shouldSkipFile(location.function.file))
 			{
 				continue;
 			}
 
-			DebugInfo::Location location;
-			location.function.file = frame.source_file();
-			location.function.name = frame.name();
-			location.line = frame.source_line();
-			locations.push_back(location);
+			locations.push_back(std::move(location));
 
 			if (limit > 0 && locations.size() >= limit)
 			{
