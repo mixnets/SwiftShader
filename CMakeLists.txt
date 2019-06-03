@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.7)
 
 project(SwiftShader C CXX)
 
@@ -351,7 +351,6 @@ else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wunused-lambda-capture"
             "-Wstring-conversion"
-            "-Wextra-semi"
             "-Wignored-qualifiers"
             # Silence errors caused by unknown warnings when building with older
             # versions of Clang. This demands checking that warnings added above
@@ -466,6 +465,11 @@ if(REACTOR_EMIT_PRINT_LOCATION)
     # This feature depends on REACTOR_EMIT_DEBUG_INFO, so enable it
     set(REACTOR_EMIT_DEBUG_INFO "On")
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
+endif()
+
+if(REACTOR_EMIT_DEBUG_INFO AND NOT ${REACTOR_BACKEND} STREQUAL "LLVM")
+    message(WARNING "REACTOR_EMIT_DEBUG_INFO is only supported on LLVM Reactor backend, disabling.")
+    set(REACTOR_EMIT_DEBUG_INFO "Off")
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
@@ -1654,7 +1658,7 @@ if(REACTOR_EMIT_DEBUG_INFO)
     elseif(LINUX)
         list(APPEND LIBBACKTRACE_LIST ${LIBBACKTRACE_DIR}/elf.c)
     elseif(APPLE)
-        message(FATAL_ERROR "libbacktrace does not support mach-o yet")
+        list(APPEND LIBBACKTRACE_LIST ${LIBBACKTRACE_DIR}/macho.c)
     endif()
 endif(REACTOR_EMIT_DEBUG_INFO)
 
@@ -1872,6 +1876,13 @@ if(${REACTOR_BACKEND} STREQUAL "LLVM")
 
             # Boost stacktrace uses exceptions, so force enable it
             set_cpp_flag("-fexceptions")
+
+            if(APPLE)
+                # Tell Boost::Stacktrace to use _Unwind_Backtrace from GNU
+                target_compile_definitions(ReactorLLVM PRIVATE _GNU_SOURCE)
+                # Must disable position independent execution so that libbacktrace can find dyld in memory
+                set_linker_flag("-Wl,-no_pie")
+            endif()
 
             add_library(Libbacktrace STATIC ${LIBBACKTRACE_LIST})
             set_target_properties(Libbacktrace PROPERTIES
@@ -2149,3 +2160,28 @@ if(BUILD_TESTS AND BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif()
+
+# Conditionally adds post-build steps to input target
+function(AddPostBuildSteps target_name)
+    # On Mac, we need to generate dSYM packages so that libbacktrace
+    # can extract the source file and line position.
+    if(REACTOR_EMIT_DEBUG_INFO AND APPLE)
+        get_target_property(target_type ${target} TYPE)
+        if (target_type STREQUAL "EXECUTABLE" OR target_type STREQUAL "SHARED_LIBRARY")
+            message("Adding post build step to generate dSYM for: ${target_name}")
+            add_custom_command(TARGET ${target_name} POST_BUILD
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                COMMAND dsymutil $<TARGET_FILE:${target_name}>
+                COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE:${target_name}>.dSYM ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/$<TARGET_FILE_NAME:${target_name}>.dSYM
+                COMMENT "Generating dSYM"
+                VERBATIM
+            )
+        endif()
+    endif()
+endfunction()
+
+# Add post build steps to all targets
+get_directory_property(targets_list BUILDSYSTEM_TARGETS)
+foreach(target ${targets_list})
+    AddPostBuildSteps(${target})
+endforeach()
