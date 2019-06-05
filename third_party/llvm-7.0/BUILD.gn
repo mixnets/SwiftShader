@@ -256,6 +256,7 @@ swiftshader_source_set("swiftshader_llvm") {
     "llvm/lib/MC/MCParser/MCAsmParser.cpp",
     "llvm/lib/MC/MCParser/MCAsmParserExtension.cpp",
     "llvm/lib/MC/MCParser/MCTargetAsmParser.cpp",
+    "llvm/lib/MC/MCWasmObjectTargetWriter.cpp",
     "llvm/lib/MC/MCRegisterInfo.cpp",
     "llvm/lib/MC/MCSchedule.cpp",
     "llvm/lib/MC/MCSection.cpp",
@@ -297,6 +298,8 @@ swiftshader_source_set("swiftshader_llvm") {
     "llvm/lib/ProfileData/InstrProf.cpp",
     "llvm/lib/Target/TargetLoweringObjectFile.cpp",
     "llvm/lib/Target/TargetMachine.cpp",
+    "llvm/lib/Target/TargetIntrinsicInfo.cpp",
+    "llvm/lib/Target/ARM/MCTargetDesc/ARMTargetStreamer.cpp",
     "stubs/Stubs.cpp",
   ]
 
