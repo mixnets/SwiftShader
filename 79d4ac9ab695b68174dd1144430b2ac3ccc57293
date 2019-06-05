@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e86fb93_4539dc73",
+        "filename": "src/OpenGL/compiler/Intermediate.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-05T21:09:35Z",
+      "side": 0,
+      "message": "I think this is still relevant",
+      "range": {
+        "startLine": 500,
+        "startChar": 54,
+        "endLine": 500,
+        "endChar": 80
+      },
+      "revId": "79d4ac9ab695b68174dd1144430b2ac3ccc57293",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
