@@ -16,6 +16,24 @@
       "revId": "36005aecab80b7b4e299445c11664d0cdccc8a79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e271e15_c4e0ea7e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 959,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-05T21:10:37Z",
+      "side": 1,
+      "message": "Yes, but there are currently not tests for it, and since we want to eliminate this workaround in the near future (and have tests at the same time) I don\u0027t think there\u0027s any point in making this cover more cases. It would make us overly comfortable about this being a non-issue.",
+      "parentUuid": "77363ec2_617b71ce",
+      "revId": "36005aecab80b7b4e299445c11664d0cdccc8a79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
