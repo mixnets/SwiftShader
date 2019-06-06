@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "148c4c8a_df3abaeb",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-06-06T18:22:53Z",
+      "side": 1,
+      "message": "What\u0027s up with these parens?",
+      "revId": "8c3698facdf3ca68d156af531cbff750aa6d7237",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
