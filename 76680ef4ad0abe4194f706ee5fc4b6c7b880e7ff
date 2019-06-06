@@ -16,6 +16,70 @@
       "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "232026ee_8a66e932",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-06T02:55:42Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "efd8a08e_ec6dfd86",
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb01b586_e39f5ac5",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-06T02:55:42Z",
+      "side": 1,
+      "message": "This can go too. We shouldn\u0027t support globally controlled precision.",
+      "range": {
+        "startLine": 48,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 45
+      },
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5419b08_aefbdd0a",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-06T02:55:42Z",
+      "side": 1,
+      "message": "Could use a comment that this is not demanded by the spec but makes the undefined behavior deterministic.",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 42,
+        "endChar": 4
+      },
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
