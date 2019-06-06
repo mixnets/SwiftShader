@@ -34,6 +34,24 @@
       "revId": "8c3698facdf3ca68d156af531cbff750aa6d7237",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d349309a_b9769dc8",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-06-06T18:29:13Z",
+      "side": 1,
+      "message": "Alright then :)",
+      "parentUuid": "17bd9a83_6f7243a3",
+      "revId": "8c3698facdf3ca68d156af531cbff750aa6d7237",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
