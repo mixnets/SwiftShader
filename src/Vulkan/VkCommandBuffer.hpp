@@ -32,6 +32,7 @@ namespace sw
 namespace vk
 {
 
+class Buffer;
 class Framebuffer;
 class Pipeline;
 class RenderPass;
@@ -159,7 +160,7 @@ public:
 
 		struct VertexInputBinding
 		{
-			VkBuffer buffer;
+			Buffer* buffer;
 			VkDeviceSize offset;
 		};
 		VertexInputBinding vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS] = {};
