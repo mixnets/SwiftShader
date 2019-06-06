@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb808dcd_6268eca7",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-06-06T21:48:22Z",
+      "side": 1,
+      "message": "No OUT_OF_DEVICE_MEMORY check here?",
+      "revId": "11500922cb3674284f37fb312a0cb7e2ab42d18f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d381fa13_13b8adb6",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-06-06T21:48:22Z",
+      "side": 1,
+      "message": "Note: I was thinking about refactoring the code to actually have this be part of the Image itself since it can also help simplify some Android code, specifically that ugly BackingMemory struct in libVulkan.cpp",
+      "revId": "11500922cb3674284f37fb312a0cb7e2ab42d18f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
