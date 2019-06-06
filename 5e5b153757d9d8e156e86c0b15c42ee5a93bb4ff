@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6370acf_1383b3cc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-06T13:44:45Z",
+      "side": 1,
+      "message": "GLSL",
+      "range": {
+        "startLine": 15,
+        "startChar": 28,
+        "endLine": 15,
+        "endChar": 31
+      },
+      "revId": "5e5b153757d9d8e156e86c0b15c42ee5a93bb4ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
