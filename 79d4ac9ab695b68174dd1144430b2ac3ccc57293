@@ -22,6 +22,30 @@
       "revId": "79d4ac9ab695b68174dd1144430b2ac3ccc57293",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27e5090f_d0f7c1dc",
+        "filename": "src/OpenGL/compiler/Intermediate.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-06-06T13:39:55Z",
+      "side": 0,
+      "message": "An array is not a scalar, vector, or matrix. So if you try to increment an array, the compiler will reject it.\n\nBut I\u0027ll add another unit test to make sure that we reject arrays.",
+      "parentUuid": "6e86fb93_4539dc73",
+      "range": {
+        "startLine": 500,
+        "startChar": 54,
+        "endLine": 500,
+        "endChar": 80
+      },
+      "revId": "79d4ac9ab695b68174dd1144430b2ac3ccc57293",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
