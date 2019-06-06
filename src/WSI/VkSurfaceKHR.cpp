@@ -14,10 +14,75 @@
 
 #include "VkSurfaceKHR.hpp"
 
+#include "Vulkan/VkDestroy.h"
+
 #include <algorithm>
 
 namespace vk
 {
+
+VkResult PresentImage::allocateImage(VkDevice device, const VkImageCreateInfo& createInfo)
+{
+	VkImage* vkImagePtr = reinterpret_cast<VkImage*>(allocate(sizeof(VkImage), REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
+	if(!vkImagePtr)
+	{
+		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+	}
+
+	VkResult status = vkCreateImage(device, &createInfo, nullptr, vkImagePtr);
+	if(status != VK_SUCCESS)
+	{
+		return status;
+	}
+
+	image = Cast(*vkImagePtr);
+	deallocate(vkImagePtr, DEVICE_MEMORY);
+
+	return status;
+}
+
+VkResult PresentImage::allocateAndBindImageMemory(VkDevice device, const VkMemoryAllocateInfo& allocateInfo)
+{
+	ASSERT(image);
+
+	VkDeviceMemory* vkDeviceMemoryPtr = reinterpret_cast<VkDeviceMemory*>(
+		allocate(sizeof(VkDeviceMemory), REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
+
+	VkResult status = vkAllocateMemory(device, &allocateInfo, nullptr, vkDeviceMemoryPtr);
+	if(status != VK_SUCCESS)
+	{
+		return status;
+	}
+
+	imageMemory = Cast(*vkDeviceMemoryPtr);
+	vkBindImageMemory(device, *image, *vkDeviceMemoryPtr, 0);
+
+	imageStatus = AVAILABLE;
+
+	return status;
+}
+
+void PresentImage::clear()
+{
+	if(imageMemory)
+	{
+		vk::destroy(static_cast<VkDeviceMemory>(*imageMemory), nullptr);
+		imageMemory = nullptr;
+	}
+
+	if(image)
+	{
+		vk::destroy(static_cast<VkImage>(*image), nullptr);
+		image = nullptr;
+	}
+
+	imageStatus = NONEXISTENT;
+}
+
+VkImage PresentImage::asVkImage() const
+{
+	return image ? static_cast<VkImage>(*image) : VK_NULL_HANDLE;
+}
 
 void SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
@@ -85,17 +150,17 @@ VkResult SurfaceKHR::getPresentModes(uint32_t *pPresentModeCount, VkPresentModeK
 
 void SurfaceKHR::associateSwapchain(VkSwapchainKHR swapchain)
 {
-	associatedSwapchain = swapchain;
+	associatedSwapchain = Cast(swapchain);
 }
 
 void SurfaceKHR::disassociateSwapchain()
 {
-	associatedSwapchain = VK_NULL_HANDLE;
+	associatedSwapchain = nullptr;
 }
 
-VkSwapchainKHR SurfaceKHR::getAssociatedSwapchain()
+bool SurfaceKHR::hasAssociatedSwapchain()
 {
-	return associatedSwapchain;
+	return (associatedSwapchain != nullptr);
 }
 
 }
