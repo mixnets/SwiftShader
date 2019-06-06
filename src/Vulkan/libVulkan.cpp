@@ -2664,7 +2664,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwa
 		return status;
 	}
 
-	status = vk::Cast(*pSwapchain)->createImages(device);
+	status = vk::Cast(*pSwapchain)->createImages(device, pCreateInfo);
 
 	if(status != VK_SUCCESS)
 	{
