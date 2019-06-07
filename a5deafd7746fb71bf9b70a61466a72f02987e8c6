@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "757ee99e_ae0c1a9d",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-06-07T18:33:44Z",
+      "side": 1,
+      "message": "Just realized this is technically platform-specific code in platform-agnostic space. In fact, it\u0027s possible that I originally made them vectors so that platform-specific code can add on to it.",
+      "revId": "a5deafd7746fb71bf9b70a61466a72f02987e8c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "98f3f92e_a5ce7dd1",
         "filename": "src/WSI/VkSurfaceKHR.cpp",
         "patchSetId": 6
