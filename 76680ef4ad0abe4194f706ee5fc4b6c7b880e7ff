@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "f7c3f9fb_86e64f3f",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-07T14:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb01b586_e39f5ac5",
+      "range": {
+        "startLine": 48,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 45
+      },
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5419b08_aefbdd0a",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 2
@@ -80,6 +104,30 @@
       "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "815402a1_dcb7683e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-07T14:55:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5419b08_aefbdd0a",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 42,
+        "endChar": 4
+      },
+      "revId": "76680ef4ad0abe4194f706ee5fc4b6c7b880e7ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
