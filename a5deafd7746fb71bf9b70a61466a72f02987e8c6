@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98f3f92e_a5ce7dd1",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-07T14:14:12Z",
+      "side": 1,
+      "message": "Yes, yes, I know, I\u0027ll add some smart pointer here to avoid doing this :) I\u0027ll add a smart pointer type in VkMemory.h which uses vk::allocate/vk::deallocate under the hood for convenience and use it here (and wherever it would improve the code) in a follow up.",
+      "range": {
+        "startLine": 50,
+        "startChar": 2,
+        "endLine": 50,
+        "endChar": 40
+      },
+      "revId": "a5deafd7746fb71bf9b70a61466a72f02987e8c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

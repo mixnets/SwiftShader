@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "54c77dd8_ba8361e9",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-07T14:14:12Z",
+      "side": 1,
+      "message": "Good catch! Fixed.",
+      "parentUuid": "cb808dcd_6268eca7",
+      "revId": "11500922cb3674284f37fb312a0cb7e2ab42d18f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d381fa13_13b8adb6",
         "filename": "src/WSI/VkSurfaceKHR.hpp",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "11500922cb3674284f37fb312a0cb7e2ab42d18f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6810348_8709dc54",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-07T14:14:12Z",
+      "side": 1,
+      "message": "Ok, thanks for the insight. I\u0027ll follow up on this in a different cl, since this one is already large enough. For now, my main concern was to remove VkImage and VkDeviceMemory from PresentImage and use the internal objects and also to provide an API for PresentImage which helps a bit to see how we use the class. It should be easy enough to start from this point and refactor it into Image, if that\u0027s the direction we choose to take. Thanks.",
+      "parentUuid": "d381fa13_13b8adb6",
+      "revId": "11500922cb3674284f37fb312a0cb7e2ab42d18f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
