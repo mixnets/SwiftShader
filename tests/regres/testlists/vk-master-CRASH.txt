@@ -1,0 +1,1 @@
+dEQP-VK.glsl.texture_functions.texture.samplercube_fixed_vertex
