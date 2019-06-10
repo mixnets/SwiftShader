@@ -70,6 +70,30 @@
       "revId": "1be22d7fbd458abe41b1cdb7a9b78d016484183e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85d01343_79dd07b2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-10T18:12:20Z",
+      "side": 1,
+      "message": "Ah, thanks! Please merge that with this one, I\u0027d rather not modify it twice in a row and risk any issues with downstream repos.",
+      "parentUuid": "8e99020e_6a861f7e",
+      "range": {
+        "startLine": 325,
+        "startChar": 89,
+        "endLine": 325,
+        "endChar": 90
+      },
+      "revId": "1be22d7fbd458abe41b1cdb7a9b78d016484183e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
