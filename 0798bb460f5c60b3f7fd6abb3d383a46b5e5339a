@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42feb57b_7ea02165",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-10T22:26:10Z",
+      "side": 1,
+      "message": "What if the shader invocation of the last vertex has side effects? Like incrementing a counter / performing a RMW into a descriptor bound buffer?\nIMHO executing bogus lanes of data (cloned or otherwise) without lane masking is broken and invalid behaviour. This is the reason for the different implementation in https://swiftshader-review.googlesource.com/c/SwiftShader/+/32148.\nLet\u0027s chat about this tomorrow.",
+      "range": {
+        "startLine": 946,
+        "startChar": 2,
+        "endLine": 949,
+        "endChar": 56
+      },
+      "revId": "0798bb460f5c60b3f7fd6abb3d383a46b5e5339a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1ecb031_9dae26f2",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-10T22:26:10Z",
+      "side": 1,
+      "message": "I find this all horribly complex to read.\nIf you\u0027re going to insist we go this way, can we have some comments to explain what\u0027s going on, and why you need to flip the order of writes?",
+      "range": {
+        "startLine": 55,
+        "startChar": 3,
+        "endLine": 57,
+        "endChar": 55
+      },
+      "revId": "0798bb460f5c60b3f7fd6abb3d383a46b5e5339a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
