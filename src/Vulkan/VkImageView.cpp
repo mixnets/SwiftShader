@@ -58,7 +58,7 @@ std::atomic<uint32_t> ImageView::nextID(1);
 ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion) :
 	image(Cast(pCreateInfo->image)), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
 	components(ResolveComponentMapping(pCreateInfo->components, format)),
-	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image)),
+	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image.get())),
 	ycbcrConversion(ycbcrConversion)
 {
 }
@@ -181,7 +181,7 @@ void ImageView::resolve(ImageView* resolveAttachment)
 	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
 	                                         subresourceRange.baseMipLevel);
 
-	image->copyTo(*(resolveAttachment->image), region);
+	image->copyTo(*(resolveAttachment->image.get()), region);
 }
 
 const Image* ImageView::getImage(Usage usage) const
@@ -189,7 +189,7 @@ const Image* ImageView::getImage(Usage usage) const
 	switch(usage)
 	{
 	case RAW:
-		return image;
+		return image.get();
 	case SAMPLING:
 		return image->getSampledImage(format);
 	default:
@@ -200,7 +200,7 @@ const Image* ImageView::getImage(Usage usage) const
 
 Format ImageView::getFormat(Usage usage) const
 {
-	return ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
+	return ((usage == RAW) || (getImage(usage) == image.get())) ? format : getImage(usage)->getFormat();
 }
 
 int ImageView::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel, Usage usage) const
