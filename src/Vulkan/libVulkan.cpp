@@ -968,7 +968,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyBufferView(VkDevice device, VkBufferView buf
 struct BackingMemory {
 	buffer_handle_t nativeHandle;
 	int stride;
-	VkDeviceMemory imageMemory;
+	VkDeviceMemory imageMemory = VK_NULL_HANDLE;
 	VkSwapchainImageUsageFlagsANDROID androidUsage;
 };
 
