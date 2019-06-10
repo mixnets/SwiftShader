@@ -696,6 +696,21 @@ void Context::setScissorParams(GLint x, GLint y, GLsizei width, GLsizei height)
 	mState.scissorY = y;
 	mState.scissorWidth = width;
 	mState.scissorHeight = height;
+
+	// Test for potential integer overflow in scissor calculations.
+	// Since width and height must be non-negative, if x or y is negative,
+	// then there's no potential for overflow.
+	GLint overflowTest = (x > 0 ? INT32_MAX - x : INT32_MAX);
+	if (overflowTest < width)
+	{
+		mState.scissorWidth = overflowTest;
+	}
+
+	overflowTest = (y > 0 ? INT32_MAX - y : INT32_MAX);
+	if (overflowTest < height)
+	{
+		mState.scissorHeight = overflowTest;
+	}
 }
 
 void Context::setColorMask(bool red, bool green, bool blue, bool alpha)
