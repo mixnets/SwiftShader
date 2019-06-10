@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "04a12b02_22f773df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-10T16:05:53Z",
+      "side": 1,
+      "message": "Done: b/134929443.",
+      "parentUuid": "5c52e091_fb66f839",
+      "range": {
+        "startLine": 10,
+        "startChar": 21,
+        "endLine": 10,
+        "endChar": 42
+      },
+      "revId": "647750e9b61bd1211a18a15c08a46f2e8a15fcac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7db4985_281bf486",
         "filename": "src/OpenGL/libEGL/libEGL.exports",
         "patchSetId": 1
@@ -36,6 +60,54 @@
       "writtenOn": "2019-06-10T15:51:40Z",
       "side": 1,
       "message": "Mac adds an underscore to each C export symbol, but we can still use dlsym() without the underscore? Just curious.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 1
+      },
+      "revId": "647750e9b61bd1211a18a15c08a46f2e8a15fcac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4420363_b59abef4",
+        "filename": "src/OpenGL/libEGL/libEGL.exports",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-10T16:05:53Z",
+      "side": 1,
+      "message": "Yeah. It\u0027s a weird mac thing. The symbols have the \u0027_\u0027 prefix, and the linker errors if these don\u0027t match. There\u0027s no change to the exported symbols (except for filtering).",
+      "parentUuid": "c7db4985_281bf486",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 1
+      },
+      "revId": "647750e9b61bd1211a18a15c08a46f2e8a15fcac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4da30ccb_5a127df2",
+        "filename": "src/OpenGL/libEGL/libEGL.exports",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-10T16:05:53Z",
+      "side": 1,
+      "message": "Comment removed by: Ben Clayton",
+      "parentUuid": "c7db4985_281bf486",
       "range": {
         "startLine": 2,
         "startChar": 0,
