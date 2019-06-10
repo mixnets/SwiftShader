@@ -694,6 +694,23 @@ void Context::setScissorParams(GLint x, GLint y, GLsizei width, GLsizei height)
 {
 	mState.scissorX = x;
 	mState.scissorY = y;
+
+	if (x > IMPLEMENTATION_MAX_RENDERBUFFER_SIZE)
+	{
+		width = 0;
+	} else
+	{
+		width = std::min<GLsizei>(width, IMPLEMENTATION_MAX_RENDERBUFFER_SIZE);
+	}
+
+	if (y > IMPLEMENTATION_MAX_RENDERBUFFER_SIZE)
+	{
+		height = 0;
+	} else
+	{
+		height = std::min<GLsizei>(height, IMPLEMENTATION_MAX_RENDERBUFFER_SIZE);
+	}
+
 	mState.scissorWidth = width;
 	mState.scissorHeight = height;
 }
