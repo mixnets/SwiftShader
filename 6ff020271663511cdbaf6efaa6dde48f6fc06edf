@@ -22,6 +22,29 @@
       "revId": "6ff020271663511cdbaf6efaa6dde48f6fc06edf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94e3bbc5_73c83518",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-10T18:27:33Z",
+      "side": 1,
+      "message": "Strictly speaking I don\u0027t think it\u0027s correct to set this to anything other than the provided value. The spec states for query functions that they \"return a value or values to which GL state has been set.\"\n\nSo testing for overflow should happen at a later point. Also note that when x or y are larger than the maximum viewport size then we don\u0027t render anything. So we can probably test for overflow cases without involving INT32_MAX.",
+      "range": {
+        "startLine": 706,
+        "startChar": 2,
+        "endLine": 706,
+        "endChar": 37
+      },
+      "revId": "6ff020271663511cdbaf6efaa6dde48f6fc06edf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
