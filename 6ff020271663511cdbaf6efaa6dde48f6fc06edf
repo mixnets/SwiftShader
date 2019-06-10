@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9d5a7603_94688e76",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-10T18:01:35Z",
+      "side": 1,
+      "message": "Wrong formatting again :) It\u0027s:\nBug chromium:969071",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 19
+      },
+      "revId": "6ff020271663511cdbaf6efaa6dde48f6fc06edf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
