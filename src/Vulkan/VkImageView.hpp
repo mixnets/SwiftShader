@@ -82,7 +82,7 @@ private:
 	bool                          imageTypesMatch(VkImageType imageType) const;
 	const Image*                  getImage(Usage usage) const;
 
-	Image *const                  image = nullptr;
+	ScopedRef<Image>              image;
 	const VkImageViewType         viewType = VK_IMAGE_VIEW_TYPE_2D;
 	const Format                  format;
 	const VkComponentMapping      components = {};

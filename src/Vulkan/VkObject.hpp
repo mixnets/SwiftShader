@@ -19,6 +19,7 @@
 #include "VkDebug.hpp"
 #include "VkMemory.h"
 
+#include <atomic>
 #include <new>
 #include <Vulkan/VulkanPlatform.h>
 #include <vulkan/vk_icd.h>
@@ -67,11 +68,74 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 	return VK_SUCCESS;
 }
 
+template<typename T>
+class ScopedRef {
+ public:
+  ScopedRef(T* obj) : object(obj) {
+    if (object)
+      object->Ref();
+  }
+   ~ScopedRef() {
+     reset();
+  }
+
+  T* get() {
+    return object;
+  }
+
+  const T* get() const {
+    return object;
+  }
+
+  void reset(T* obj = nullptr) {
+    if (object)
+      object->Unref();
+    object = obj;
+    if (object)
+      object->Ref();
+  }
+
+  const ScopedRef<T>& operator=(T* obj) {
+    reset(obj);
+    return *this;
+  }
+  const ScopedRef<T>& operator=(const ScopedRef<T>& obj) {
+    reset(obj.get());
+  }
+  const ScopedRef<T>& operator=(ScopedRef<T>&& obj) {
+    reset(obj.get());
+    obj.reset();
+  }
+  bool operator==(const T* obj) {
+    return object == obj;
+  }
+  bool operator==(const ScopedRef<T>& obj) {
+    return object == obj.objetc;
+  }
+  explicit operator bool () {
+    return !!object;
+  }
+
+  T* operator->() {
+    return object;
+  }
+
+  T* operator->() const {
+    return object;
+  }
+
+  private:
+    T* object;
+};
+
+
 template<typename T, typename VkT>
 class ObjectBase
 {
 public:
 	using VkType = VkT;
+
+  ~ObjectBase() { AssertNoRef(); }
 
 	void destroy(const VkAllocationCallbacks* pAllocator) {} // Method defined by objects to delete their content, if necessary
 
@@ -82,6 +146,21 @@ public:
 	}
 
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
+
+  void Ref() {
+    ++ref;
+  }
+
+  void Unref() {
+    auto v = ref.fetch_sub(1);
+    ASSERT(v >= 1);
+  }
+
+  void AssertNoRef() {
+    ASSERT(ref == 0);
+  }
+
+  std::atomic_size_t ref;
 };
 
 template<typename T, typename VkT>
