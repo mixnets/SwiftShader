@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c52e091_fb66f839",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-10T15:51:40Z",
+      "side": 1,
+      "message": "Awesome! We should definitely use this in the .gn build files as well if possible. Would you mind opening a bug so we can follow up on this?",
+      "range": {
+        "startLine": 10,
+        "startChar": 21,
+        "endLine": 10,
+        "endChar": 42
+      },
+      "revId": "647750e9b61bd1211a18a15c08a46f2e8a15fcac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7db4985_281bf486",
+        "filename": "src/OpenGL/libEGL/libEGL.exports",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-10T15:51:40Z",
+      "side": 1,
+      "message": "Mac adds an underscore to each C export symbol, but we can still use dlsym() without the underscore? Just curious.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 1
+      },
+      "revId": "647750e9b61bd1211a18a15c08a46f2e8a15fcac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
