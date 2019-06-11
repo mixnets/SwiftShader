@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53fa6a84_dc7d78cc",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1037,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-06-11T22:05:51Z",
+      "side": 1,
+      "message": "I\u0027m not sure why you need to dynamically allocate the space for the *handle* -- \n\nwhat prevents this from working?\n\nVkDeviceMemory memory \u003d VK_NULL_HANDLE;\nresult \u003d vkAllocateMemory(device, \u0026allocInfo, nullptr, \u0026memory);\nif (result !\u003d VK_SUCCESS)\n{\n    return result;\n}\n\nbackmem.imageMemory \u003d vk::Cast(memory);\nvkBindImageMemory(device, *pImage, memory, 0);\n\n\n\n\nCurrently if vkAllocateMemory fails, you leak the handle allocation.",
+      "revId": "9bf2bf1711dc93a1e78d35562a00e7939c680209",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
