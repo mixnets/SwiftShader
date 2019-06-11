@@ -62,7 +62,6 @@ uint32_t SurfaceKHR::getPresentModeCount() const
 	return static_cast<uint32_t>(presentModes.size());
 }
 
-
 VkResult SurfaceKHR::getPresentModes(uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) const
 {
 	uint32_t count = getPresentModeCount();

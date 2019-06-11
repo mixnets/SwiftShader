@@ -105,7 +105,7 @@ VkResult SwapchainKHR::createImages(VkDevice device)
 	}
 
 	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.format = createInfo.imageFormat;
+	imageInfo.format = VK_FORMAT_B8G8R8A8_UNORM;//createInfo.imageFormat;
 	imageInfo.extent.height = createInfo.imageExtent.height;
 	imageInfo.extent.width = createInfo.imageExtent.width;
 	imageInfo.extent.depth = 1;

@@ -178,6 +178,12 @@ namespace sw
 			case VK_FORMAT_R32G32B32A32_SINT:
 			case VK_FORMAT_R32G32B32A32_UINT:
 				break;
+			case VK_FORMAT_R8_SRGB:
+				c.x = Float4(0.0f);
+				c.y = Float4(0.0f);
+				c.z = Float4(0.0f);
+				c.w = Float4(1.0f);
+				break;
 			case VK_FORMAT_R8_SNORM:
 			case VK_FORMAT_R8G8_SNORM:
 			case VK_FORMAT_R8G8B8A8_SNORM:
@@ -206,16 +212,16 @@ namespace sw
 			}
 		}
 
-		if((state.swizzle.r != VK_COMPONENT_SWIZZLE_R) ||
-			(state.swizzle.g != VK_COMPONENT_SWIZZLE_G) ||
-			(state.swizzle.b != VK_COMPONENT_SWIZZLE_B) ||
-			(state.swizzle.a != VK_COMPONENT_SWIZZLE_A))
+	//	if((state.swizzle.r != VK_COMPONENT_SWIZZLE_R) ||
+	//		(state.swizzle.g != VK_COMPONENT_SWIZZLE_G) ||
+	//		(state.swizzle.b != VK_COMPONENT_SWIZZLE_B) ||
+	//		(state.swizzle.a != VK_COMPONENT_SWIZZLE_A))
 		{
 			const Vector4f col(c);
 			auto integer = hasUnnormalizedIntegerTexture();
-			applySwizzle(state.swizzle.r, c.x, col, integer);
+			applySwizzle(state.swizzle.r, c.z, col, integer);
 			applySwizzle(state.swizzle.g, c.y, col, integer);
-			applySwizzle(state.swizzle.b, c.z, col, integer);
+			applySwizzle(state.swizzle.b, c.x, col, integer);
 			applySwizzle(state.swizzle.a, c.w, col, integer);
 		}
 
@@ -2211,7 +2217,7 @@ namespace sw
 	}
 
 	void SamplerCore::sRGBtoLinear16_8_16(Short4 &c)
-	{
+	{return;
 		c = As<UShort4>(c) >> 8;
 
 		Pointer<Byte> LUT = Pointer<Byte>(constants + OFFSET(Constants,sRGBtoLinear8_16));

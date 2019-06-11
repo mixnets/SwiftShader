@@ -24,9 +24,10 @@ XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, vo
 	int screen = DefaultScreen(pDisplay);
 	gc = libX11->XDefaultGC(pDisplay, screen);
 
-	XVisualInfo xVisual;
+	XVisualInfo xVisual = {};
+	xVisual.red_mask = 0xFF;
 	Status status = libX11->XMatchVisualInfo(pDisplay, screen, 32, TrueColor, &xVisual);
-	bool match = (status != 0 && xVisual.blue_mask ==0xFF);
+	bool match = (status != 0 && xVisual.red_mask == 0xFF);
 	visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
 }
 
