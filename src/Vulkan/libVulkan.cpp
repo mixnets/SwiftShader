@@ -2541,7 +2541,7 @@ VKAPI_ATTR void VKAPI_CALL vkUpdateDescriptorSetWithTemplate(VkDevice device, Vk
 	TRACE("(VkDevice device = %p, VkDescriptorSet descriptorSet = %p, VkDescriptorUpdateTemplate descriptorUpdateTemplate = %p, const void* pData = %p)",
 	      device, descriptorSet.get(), descriptorUpdateTemplate.get(), pData);
 
-	vk::Cast(descriptorUpdateTemplate)->updateDescriptorSet(descriptorSet, pData);
+	vk::Cast(descriptorUpdateTemplate)->updateDescriptorSet(vk::Cast(device), descriptorSet, pData);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo* pExternalBufferInfo, VkExternalBufferProperties* pExternalBufferProperties)

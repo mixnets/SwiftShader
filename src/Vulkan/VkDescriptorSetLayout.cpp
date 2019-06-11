@@ -270,7 +270,7 @@ void SampledImageDescriptor::updateSampler(const vk::Sampler *sampler)
 	}
 }
 
-void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
+void DescriptorSetLayout::WriteDescriptorSet(Device* device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src)
 {
 	DescriptorSetLayout* dstLayout = dstSet->header.layout;
 	auto &binding = dstLayout->bindings[dstLayout->getBindingIndex(entry.dstBinding)];
@@ -295,6 +295,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			{
 				imageSampler[i].updateSampler(vk::Cast(update->sampler));
 			}
+			imageSampler[i].device = device;
 		}
 	}
 	else if (entry.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER)
@@ -320,6 +321,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].texture.width = sw::replicate(numElements);
 			imageSampler[i].texture.height = sw::replicate(1);
 			imageSampler[i].texture.depth = sw::replicate(1);
+			imageSampler[i].device = device;
 
 			sw::Mipmap &mipmap = imageSampler[i].texture.mipmap[0];
 			mipmap.buffer = bufferView->getPointer();
@@ -361,6 +363,7 @@ void DescriptorSetLayout::WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptor
 			imageSampler[i].type = imageView->getType();
 			imageSampler[i].swizzle = imageView->getComponentMapping();
 			imageSampler[i].format = format;
+			imageSampler[i].device = device;
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 
@@ -573,7 +576,7 @@ void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level,
 	mipmap.sliceP[3] = sliceP;
 }
 
-void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDescriptorSet)
+void DescriptorSetLayout::WriteDescriptorSet(Device* device, const VkWriteDescriptorSet& writeDescriptorSet)
 {
 	DescriptorSet* dstSet = vk::Cast(writeDescriptorSet.dstSet);
 	VkDescriptorUpdateTemplateEntry e;
@@ -612,7 +615,7 @@ void DescriptorSetLayout::WriteDescriptorSet(const VkWriteDescriptorSet& writeDe
 		UNIMPLEMENTED("descriptor type %u", writeDescriptorSet.descriptorType);
 	}
 
-	WriteDescriptorSet(dstSet, e, reinterpret_cast<char const *>(ptr));
+	WriteDescriptorSet(device, dstSet, e, reinterpret_cast<char const *>(ptr));
 }
 
 void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies)
