@@ -84,6 +84,8 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	vk::deallocate(queues, pAllocator);
 
 	delete blitter;
+
+	delete samplingRoutineCache;
 }
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo* pCreateInfo)
