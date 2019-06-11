@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac96a8da_d8e8307a",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-11T19:29:31Z",
+      "side": 1,
+      "message": "Note the substantial code cleanup / reduction in this function",
+      "range": {
+        "startLine": 171,
+        "startChar": 25,
+        "endLine": 171,
+        "endChar": 35
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a373d434_82aec43e",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-11T19:29:31Z",
+      "side": 1,
+      "message": "Note: This is just using gather / scatters for keeping with scalars (simplicity), when a SIMD load / store would work just as well here.\nAlternatively a memcpy intrinsic might be a good idea if this is a chunk of contiguous data.\n\nEither way, happy to optimize now or later if you think it is worth continuing.",
+      "range": {
+        "startLine": 432,
+        "startChar": 2,
+        "endLine": 432,
+        "endChar": 34
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

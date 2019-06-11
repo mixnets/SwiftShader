@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f926b7a2_a730872d",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-11T19:29:31Z",
+      "side": 0,
+      "message": "Note: No more transposing.",
+      "range": {
+        "startLine": 331,
+        "startChar": 4,
+        "endLine": 331,
+        "endChar": 16
+      },
+      "revId": "c0854a147a4914e7ca2cc5c93b0d5640728a923f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
