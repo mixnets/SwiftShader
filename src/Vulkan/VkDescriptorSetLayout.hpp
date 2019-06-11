@@ -25,6 +25,7 @@ namespace vk
 {
 
 class DescriptorSet;
+class Device;
 
 // TODO(b/129523279): Move to the Device or Pipeline layer.
 struct alignas(16) SampledImageDescriptor
@@ -78,10 +79,10 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 
 	static size_t GetDescriptorSize(VkDescriptorType type);
-	static void WriteDescriptorSet(const VkWriteDescriptorSet& descriptorWrites);
-	static void CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
+	static void WriteDescriptorSet(Device* device, const VkWriteDescriptorSet& descriptorWrites);
+	static void CopyDescriptorSet(Device* device, const VkCopyDescriptorSet& descriptorCopies);
 
-	static void WriteDescriptorSet(DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
+	static void WriteDescriptorSet(Device* device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
 	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP);
 
 	void initialize(VkDescriptorSet descriptorSet);

@@ -28,7 +28,7 @@ namespace vk
 class Sampler : public Object<Sampler, VkSampler>
 {
 public:
-	Sampler(const VkSamplerCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion) :
+	Sampler(const VkSamplerCreateInfo* pCreateInfo, void* mem, VkDevice device, const vk::SamplerYcbcrConversion *ycbcrConversion) :
 		magFilter(pCreateInfo->magFilter),
 		minFilter(pCreateInfo->minFilter),
 		mipmapMode(pCreateInfo->mipmapMode),
@@ -44,7 +44,8 @@ public:
 		maxLod(ClampLod(pCreateInfo->maxLod)),
 		borderColor(pCreateInfo->borderColor),
 		unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates),
-		ycbcrConversion(ycbcrConversion)
+		ycbcrConversion(ycbcrConversion),
+		device(Cast(device))
 	{
 	}
 
@@ -78,6 +79,7 @@ public:
 
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 
+	vk::Device* device = nullptr;
 private:
 	static std::atomic<uint32_t> nextID;
 };
