@@ -16,10 +16,12 @@
 #define VK_DEVICE_HPP_
 
 #include "VkObject.hpp"
+#include <mutex>
 
 namespace sw
 {
 	class Blitter;
+	class SamplingRoutineCache;
 }
 
 namespace vk
@@ -49,11 +51,22 @@ public:
 	                          uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies);
 	sw::Blitter* getBlitter() const { return blitter; }
 
+	class SamplingRoutineCacheBase
+	{
+	public:
+		virtual ~SamplingRoutineCacheBase() {}
+	};
+	void setSamplingRoutineCache(SamplingRoutineCacheBase* c) { samplingRoutineCache = c; }
+	SamplingRoutineCacheBase* getSamplingRoutineCache() const { return samplingRoutineCache; }
+	std::mutex& getSamplingRoutineCacheMutex() { return samplingRoutineCacheMutex; }
+
 private:
 	PhysicalDevice *physicalDevice = nullptr;
 	Queue* queues = nullptr;
 	uint32_t queueCount = 0;
 	sw::Blitter* blitter = nullptr;
+	SamplingRoutineCacheBase* samplingRoutineCache = nullptr;
+	std::mutex samplingRoutineCacheMutex;
 	uint32_t enabledExtensionCount = 0;
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
 	ExtensionName* extensions = nullptr;

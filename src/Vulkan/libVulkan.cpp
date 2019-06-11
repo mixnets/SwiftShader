@@ -1314,7 +1314,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion);
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, device, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks* pAllocator)
