@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6f7a9f1c_34d00931",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-11T14:15:59Z",
+      "side": 1,
+      "message": "The spec states that vertex shaders may execute multiple times: \"It is implementation-dependent when and if results of vertex shading are reused, and thus how many times the vertex shader will be executed. This is true also if the vertex shader contains stores or atomic operations\".",
+      "parentUuid": "42feb57b_7ea02165",
+      "range": {
+        "startLine": 946,
+        "startChar": 2,
+        "endLine": 949,
+        "endChar": 56
+      },
+      "revId": "0798bb460f5c60b3f7fd6abb3d383a46b5e5339a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c1ecb031_9dae26f2",
         "filename": "src/Pipeline/VertexRoutine.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-06-10T22:26:10Z",
       "side": 1,
       "message": "I find this all horribly complex to read.\nIf you\u0027re going to insist we go this way, can we have some comments to explain what\u0027s going on, and why you need to flip the order of writes?",
+      "range": {
+        "startLine": 55,
+        "startChar": 3,
+        "endLine": 57,
+        "endChar": 55
+      },
+      "revId": "0798bb460f5c60b3f7fd6abb3d383a46b5e5339a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78a1b9d3_d21e8cfa",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-11T14:15:59Z",
+      "side": 1,
+      "message": "This was not meant for review yet. I\u0027m just reviving https://swiftshader-review.googlesource.com/c/SwiftShader/+/4893 (but for Vulkan) to have a point of comparison. No insitance on anything, at this point. Anyway, yes, I\u0027ll clarify it iff we go this route.",
+      "parentUuid": "c1ecb031_9dae26f2",
       "range": {
         "startLine": 55,
         "startChar": 3,
