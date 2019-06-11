@@ -36,6 +36,22 @@ namespace
 namespace vk
 {
 
+rr::Routine* Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key& key) const
+{
+	return cache.query(hash(key));
+}
+
+void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key& key, rr::Routine* routine)
+{
+	ASSERT(routine);
+	cache.add(hash(key), routine);
+}
+
+std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutineCache::Key &key) const
+{
+	return (key.instruction << 16) ^ (key.sampler << 8) ^ key.imageView;
+}
+
 Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice *physicalDevice)
 	: physicalDevice(physicalDevice),
 	  queues(reinterpret_cast<Queue*>(mem)),
@@ -71,7 +87,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 	}
 
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
-	blitter = new sw::Blitter();
+	blitter.reset(new sw::Blitter());
 }
 
 void Device::destroy(const VkAllocationCallbacks* pAllocator)
@@ -82,8 +98,6 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	}
 
 	vk::deallocate(queues, pAllocator);
-
-	delete blitter;
 }
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo* pCreateInfo)
@@ -211,13 +225,27 @@ void Device::updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDe
 {
 	for(uint32_t i = 0; i < descriptorWriteCount; i++)
 	{
-		DescriptorSetLayout::WriteDescriptorSet(pDescriptorWrites[i]);
+		DescriptorSetLayout::WriteDescriptorSet(this, pDescriptorWrites[i]);
 	}
 
 	for(uint32_t i = 0; i < descriptorCopyCount; i++)
 	{
 		DescriptorSetLayout::CopyDescriptorSet(pDescriptorCopies[i]);
 	}
+}
+
+Device::SamplingRoutineCache* Device::getSamplingRoutineCache()
+{
+	if(!samplingRoutineCache.get())
+	{
+		samplingRoutineCache.reset(new SamplingRoutineCache());
+	}
+	return samplingRoutineCache.get();
+}
+
+std::mutex& Device::getSamplingRoutineCacheMutex()
+{
+	return samplingRoutineCacheMutex;
 }
 
 } // namespace vk
