@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "585e47c0_4a66a6e6",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T17:51:10Z",
+      "side": 1,
+      "message": "To be clear, I\u0027m suggesting you fold these two into a single function:\n\n  rr::Routine* getOrCreateSamplingRoutine(Key key, std::function\u003crr::Routine*()\u003e create);\n\nYou then don\u0027t need to expose the mutex, there\u0027s potential in the future for reducing the mutex lock down to the single requested routine, and there\u0027s no chance of accidentally forgetting to lock the mutex.",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 44
+      },
+      "revId": "998f397d80b59cc8521adf88a73e0cb3d851ccf8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
