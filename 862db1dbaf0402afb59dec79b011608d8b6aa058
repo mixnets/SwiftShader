@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d71aefc8_48b5739e",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-12T15:35:03Z",
+      "side": 1,
+      "message": "Aren\u0027t we also guaranteed because of the mutex just above it?\nAlso, it feels a bit icky to transfer implementation details of the sampler to the Device, but I can do it.",
+      "parentUuid": "030df99c_baa32dbf",
+      "range": {
+        "startLine": 87,
+        "startChar": 1,
+        "endLine": 92,
+        "endChar": 2
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b5c336d_42337b5f",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2019-06-12T07:29:04Z",
       "side": 1,
       "message": "not necessary for now, but again: this pattern of query, build, add on a shared entity is likely to bite us when Reactor finally loses its global mutex.\nHaving a query that takes a key and a function to build the entity is a simpler API to use, and can be made to only perform the build once, even if multiple threads request the same key.",
+      "range": {
+        "startLine": 94,
+        "startChar": 31,
+        "endLine": 94,
+        "endChar": 36
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc0497ec_c43ae7fa",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-12T15:35:03Z",
+      "side": 1,
+      "message": "There\u0027s a mutex on line 86, which should be enough",
+      "parentUuid": "3b5c336d_42337b5f",
       "range": {
         "startLine": 94,
         "startChar": 31,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "daae69f5_68e86a27",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-12T15:35:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7b904abb_8363dfca",
+      "range": {
+        "startLine": 88,
+        "startChar": 8,
+        "endLine": 88,
+        "endChar": 28
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fad38b67_5fd73a3a",
         "filename": "src/Vulkan/VkDevice.hpp",
         "patchSetId": 3
@@ -91,6 +163,30 @@
       "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25b69bdb_5205e878",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-12T15:35:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fad38b67_5fd73a3a",
+      "range": {
+        "startLine": 68,
+        "startChar": 1,
+        "endLine": 68,
+        "endChar": 25
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
