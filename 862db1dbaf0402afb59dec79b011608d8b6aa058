@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "030df99c_baa32dbf",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:29:04Z",
+      "side": 1,
+      "message": "This lazy-creation should probably be on the device. While we\u0027re guaranteed that this will not be run concurrently right now (due to Reactor), this looks like a race waiting to happen.",
+      "range": {
+        "startLine": 87,
+        "startChar": 1,
+        "endLine": 92,
+        "endChar": 2
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b5c336d_42337b5f",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:29:04Z",
+      "side": 1,
+      "message": "not necessary for now, but again: this pattern of query, build, add on a shared entity is likely to bite us when Reactor finally loses its global mutex.\nHaving a query that takes a key and a function to build the entity is a simpler API to use, and can be made to only perform the build once, even if multiple threads request the same key.",
+      "range": {
+        "startLine": 94,
+        "startChar": 31,
+        "endLine": 94,
+        "endChar": 36
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b904abb_8363dfca",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:29:04Z",
+      "side": 1,
+      "message": "Deleting objects that were not created by this class is icky. There\u0027s a completely non-obvious transfer of ownership with setSamplingRoutineCache(). See my earlier comment about Device being responsible for lazily creating the cache.",
+      "range": {
+        "startLine": 88,
+        "startChar": 8,
+        "endLine": 88,
+        "endChar": 28
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fad38b67_5fd73a3a",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:29:04Z",
+      "side": 1,
+      "message": "Consider using std::unique_ptr\u003c\u003e",
+      "range": {
+        "startLine": 68,
+        "startChar": 1,
+        "endLine": 68,
+        "endChar": 25
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
