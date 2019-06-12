@@ -22,6 +22,30 @@
       "revId": "998f397d80b59cc8521adf88a73e0cb3d851ccf8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca9ae21b_bab0f4e7",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-12T19:13:19Z",
+      "side": 1,
+      "message": "For now, I\u0027m using the same logic as Blitter does, which is to mutex lock around the entire query/generate/add section. We should refactor both this code and the Blitter code simultaneously when we get to it, but this is enough to get rid of the memory leak, which is what I\u0027d like to do ASAP.",
+      "parentUuid": "585e47c0_4a66a6e6",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 44
+      },
+      "revId": "998f397d80b59cc8521adf88a73e0cb3d851ccf8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
