@@ -42,9 +42,9 @@ unsigned int maxPrimitives = 1 << 21;
 namespace sw
 {
 	static const int batchSize = 128;
-	AtomicInt threadCount(1);
-	AtomicInt Renderer::unitCount(1);
-	AtomicInt Renderer::clusterCount(1);
+	std::atomic<int> threadCount(1);
+	std::atomic<int> Renderer::unitCount(1);
+	std::atomic<int> Renderer::clusterCount(1);
 
 	template<typename T>
 	inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, T indices, unsigned int start, unsigned int triangleCount)
@@ -613,7 +613,7 @@ namespace sw
 				count = draw->count;
 				int batch = draw->batchSize;
 
-				primitiveProgress[unit].drawCall = currentDraw;
+				primitiveProgress[unit].drawCall.store(currentDraw.load());
 				primitiveProgress[unit].firstPrimitive = primitive;
 				primitiveProgress[unit].primitiveCount = count - primitive >= batch ? batch : count - primitive;
 
@@ -699,7 +699,7 @@ namespace sw
 				}
 
 				primitiveProgress[unit].visible = visible;
-				primitiveProgress[unit].references = clusterCount;
+				primitiveProgress[unit].references.store(clusterCount.load());
 			}
 			break;
 		case Task::PIXELS:
