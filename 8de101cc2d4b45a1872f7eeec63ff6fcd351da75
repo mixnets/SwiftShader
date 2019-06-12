@@ -16,6 +16,24 @@
       "revId": "8de101cc2d4b45a1872f7eeec63ff6fcd351da75",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ca88e60_1bda16b4",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 6270
+      },
+      "writtenOn": "2019-06-12T00:17:10Z",
+      "side": 0,
+      "message": "No, gn knows how to handle .def files.  Moving it to inputs would break the build because we\u0027re not passing it explicitly as an ldflag like we do on Linux.",
+      "parentUuid": "1c607e9f_3520f3a5",
+      "revId": "8de101cc2d4b45a1872f7eeec63ff6fcd351da75",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
