@@ -31,10 +31,9 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkInstanceCreateInfo*) { return 0; }
 
 	uint32_t getPhysicalDeviceCount() const;
-	void getPhysicalDevices(uint32_t pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const;
+	void getPhysicalDevices(VkPhysicalDevice* pPhysicalDevices) const;
 	uint32_t getPhysicalDeviceGroupCount() const;
-	void getPhysicalDeviceGroups(uint32_t pPhysicalDeviceGroupCount,
-                                 VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const;
+	void getPhysicalDeviceGroups(VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const;
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;

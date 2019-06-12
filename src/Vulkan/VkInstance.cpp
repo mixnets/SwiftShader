@@ -34,11 +34,9 @@ uint32_t Instance::getPhysicalDeviceCount() const
 	return physicalDeviceCount;
 }
 
-void Instance::getPhysicalDevices(uint32_t pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const
+void Instance::getPhysicalDevices(VkPhysicalDevice* pPhysicalDevices) const
 {
-	ASSERT(pPhysicalDeviceCount == 1);
-
-	*pPhysicalDevices = physicalDevice;
+	pPhysicalDevices[0] = physicalDevice;
 }
 
 uint32_t Instance::getPhysicalDeviceGroupCount() const
@@ -46,11 +44,8 @@ uint32_t Instance::getPhysicalDeviceGroupCount() const
 	return physicalDeviceGroupCount;
 }
 
-void Instance::getPhysicalDeviceGroups(uint32_t pPhysicalDeviceGroupCount,
-                                       VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const
+void Instance::getPhysicalDeviceGroups(VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const
 {
-	ASSERT(pPhysicalDeviceGroupCount == 1);
-
 	pPhysicalDeviceGroupProperties->physicalDeviceCount = physicalDeviceCount;
 	pPhysicalDeviceGroupProperties->physicalDevices[0] = physicalDevice;
 	pPhysicalDeviceGroupProperties->subsetAllocation = VK_FALSE;

@@ -200,15 +200,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDevices(VkInstance instance, u
 	TRACE("(VkInstance instance = %p, uint32_t* pPhysicalDeviceCount = %p, VkPhysicalDevice* pPhysicalDevices = %p)",
 		    instance, pPhysicalDeviceCount, pPhysicalDevices);
 
-	if(!pPhysicalDevices)
+	auto deviceCount = vk::Cast(instance)->getPhysicalDeviceCount();
+	if (pPhysicalDevices)
 	{
-		*pPhysicalDeviceCount = vk::Cast(instance)->getPhysicalDeviceCount();
-	}
-	else
-	{
-		vk::Cast(instance)->getPhysicalDevices(*pPhysicalDeviceCount, pPhysicalDevices);
+		if (!*pPhysicalDeviceCount)
+		{
+			return VK_INCOMPLETE;
+		}
+
+		vk::Cast(instance)->getPhysicalDevices(pPhysicalDevices);
 	}
 
+	*pPhysicalDeviceCount = deviceCount;
 	return VK_SUCCESS;
 }
 
@@ -2080,14 +2083,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDeviceGroups(VkInstance instan
 	TRACE("VkInstance instance = %p, uint32_t* pPhysicalDeviceGroupCount = %p, VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties = %p",
 	      instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
 
-	if(!pPhysicalDeviceGroupProperties)
+	auto deviceGroupCount = vk::Cast(instance)->getPhysicalDeviceGroupCount();
+	if(pPhysicalDeviceGroupProperties)
 	{
-		*pPhysicalDeviceGroupCount = vk::Cast(instance)->getPhysicalDeviceGroupCount();
+		if (!*pPhysicalDeviceGroupCount)
+		{
+			return VK_INCOMPLETE;
+		}
+		vk::Cast(instance)->getPhysicalDeviceGroups(pPhysicalDeviceGroupProperties);
 	}
-	else
-	{
-		vk::Cast(instance)->getPhysicalDeviceGroups(*pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
-	}
+	*pPhysicalDeviceGroupCount = deviceGroupCount;
 
 	return VK_SUCCESS;
 }
