@@ -22,6 +22,30 @@
       "revId": "79dea3327b2709cf4c9ad62c4f78246c1774a3c6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f709db7c_4eb9a6aa",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-06-12T13:40:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f03bb82_ea70eee3",
+      "range": {
+        "startLine": 400,
+        "startChar": 2,
+        "endLine": 400,
+        "endChar": 58
+      },
+      "revId": "79dea3327b2709cf4c9ad62c4f78246c1774a3c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
