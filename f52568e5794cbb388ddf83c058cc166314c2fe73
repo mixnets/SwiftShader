@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1c26967_41062f32",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:16:36Z",
+      "side": 1,
+      "message": "argh, please consider avoiding implicit int -\u003e bool casts.",
+      "range": {
+        "startLine": 206,
+        "startChar": 6,
+        "endLine": 206,
+        "endChar": 28
+      },
+      "revId": "f52568e5794cbb388ddf83c058cc166314c2fe73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b80839c3_a3e0e2f0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:16:36Z",
+      "side": 1,
+      "message": "While it might be obvious to us, it may not be obvious to a new reader that we only ever return 1 device here. Perhaps we should rename the function to getPhysicalDevice?\nThat or add a comment.",
+      "range": {
+        "startLine": 211,
+        "startChar": 22,
+        "endLine": 211,
+        "endChar": 40
+      },
+      "revId": "f52568e5794cbb388ddf83c058cc166314c2fe73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09e15889_958b500f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2088,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T07:16:36Z",
+      "side": 1,
+      "message": "ditto from above.",
+      "range": {
+        "startLine": 2088,
+        "startChar": 0,
+        "endLine": 2088,
+        "endChar": 2
+      },
+      "revId": "f52568e5794cbb388ddf83c058cc166314c2fe73",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
