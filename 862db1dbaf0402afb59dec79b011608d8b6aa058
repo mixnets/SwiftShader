@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "97199449_e64fef51",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T17:45:54Z",
+      "side": 1,
+      "message": "You have a getter and setter called [g,s]etSamplingRoutineCache() - it\u0027s already pretty sampler specific.\nAre there ever going to be any other places that use getSamplingRoutineCacheMutex(), getSamplingRoutineCache() or getSamplingRoutineCache()? If not, I don\u0027t see any value in having anything more than a single (lazily created, or precreated) cache fetch-or-create function.",
+      "parentUuid": "d71aefc8_48b5739e",
+      "range": {
+        "startLine": 87,
+        "startChar": 1,
+        "endLine": 92,
+        "endChar": 2
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b5c336d_42337b5f",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 3
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "There\u0027s a mutex on line 86, which should be enough",
       "parentUuid": "3b5c336d_42337b5f",
+      "range": {
+        "startLine": 94,
+        "startChar": 31,
+        "endLine": 94,
+        "endChar": 36
+      },
+      "revId": "862db1dbaf0402afb59dec79b011608d8b6aa058",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc88c038_e807a103",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-12T17:45:54Z",
+      "side": 1,
+      "message": "Sorry I missed this on my commute in.\nMy argument still stands though. This feels like you\u0027re exposing the guts of a cache to an external class for no apparent gain.",
+      "parentUuid": "fc0497ec_c43ae7fa",
       "range": {
         "startLine": 94,
         "startChar": 31,
