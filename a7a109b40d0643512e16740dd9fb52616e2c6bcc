@@ -45,6 +45,30 @@
       "revId": "a7a109b40d0643512e16740dd9fb52616e2c6bcc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8691654c_f68704f8",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-06-13T14:32:53Z",
+      "side": 1,
+      "message": "This is operating on SIMD::Width lanes of one component. See :5310 etc below. We only call this for the r/g/b components.",
+      "parentUuid": "c0f7a3b4_3cffd9f3",
+      "range": {
+        "startLine": 277,
+        "startChar": 2,
+        "endLine": 277,
+        "endChar": 9
+      },
+      "revId": "a7a109b40d0643512e16740dd9fb52616e2c6bcc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
