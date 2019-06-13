@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47f4b16c_9695eb99",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 6112,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T20:01:13Z",
+      "side": 1,
+      "message": "Note: if this results in an unsigned integer overflow, ubsan might report a problem here.\nI think something like this might prevent that from happening:\nv \u003d static_cast\u003cint32_t\u003e(v) + static_cast\u003cint32_t\u003e(r);\nSame numerical result, afaik.\nIn any case, not a big deal.",
+      "range": {
+        "startLine": 6112,
+        "startChar": 5,
+        "endLine": 6112,
+        "endChar": 11
+      },
+      "revId": "0629b5aa766b811da4e2bc881ae9601da036db6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
