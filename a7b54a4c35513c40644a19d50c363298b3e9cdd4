@@ -94,6 +94,30 @@
       "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7953f31c_222fd4bb",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T18:22:38Z",
+      "side": 1,
+      "message": "If it\u0027s just a sign copy, then isn\u0027t it equivalent to:\nv \u003d (r \u0026 0x80000000) | ((static_cast\u003cint32_t\u003e(l) % static_cast\u003cint32_t\u003e(r)) \u0026 0x7FFFFFFF);",
+      "parentUuid": "6c3619eb_8068a6dc",
+      "range": {
+        "startLine": 6109,
+        "startChar": 4,
+        "endLine": 6110,
+        "endChar": 36
+      },
+      "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
