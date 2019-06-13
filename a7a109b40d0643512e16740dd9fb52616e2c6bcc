@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "187492bd_6c7cd761",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T14:29:17Z",
+      "side": 1,
+      "message": "note: With Vulkan we have to support all formats, so there\u0027s no C++ fallback path and we don\u0027t have to test any of these Booleans and can simplify the code quite a bit. Please consider for a follow-up patch.",
+      "range": {
+        "startLine": 1446,
+        "startChar": 12,
+        "endLine": 1446,
+        "endChar": 13
+      },
+      "revId": "a7a109b40d0643512e16740dd9fb52616e2c6bcc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0f7a3b4_3cffd9f3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T14:29:17Z",
+      "side": 1,
+      "message": "Don\u0027t we have to ensure the w/a component doesn\u0027t get sRGB converted?",
+      "range": {
+        "startLine": 277,
+        "startChar": 2,
+        "endLine": 277,
+        "endChar": 9
+      },
+      "revId": "a7a109b40d0643512e16740dd9fb52616e2c6bcc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
