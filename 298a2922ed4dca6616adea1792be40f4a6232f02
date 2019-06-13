@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e57fb376_3f937c2b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1352,
+      "author": {
+        "id": 22301
+      },
+      "writtenOn": "2019-06-13T14:51:02Z",
+      "side": 1,
+      "message": "You have `LoopDataPrefetch.cpp` and `SeperateConstOffsetFromGEP.cpp` listed in the files for aarch64, so I can delete them from there as well. Do you want that as a separate commit?",
+      "parentUuid": "b77a2e9d_c9ee8f66",
+      "range": {
+        "startLine": 1350,
+        "startChar": 0,
+        "endLine": 1352,
+        "endChar": 72
+      },
+      "revId": "298a2922ed4dca6616adea1792be40f4a6232f02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "869b8eda_ca4fb1fd",
         "filename": "third_party/llvm-7.0/BUILD.gn",
         "patchSetId": 2
