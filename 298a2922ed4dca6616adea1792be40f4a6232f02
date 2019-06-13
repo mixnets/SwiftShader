@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b77a2e9d_c9ee8f66",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1352,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T14:36:52Z",
+      "side": 1,
+      "message": "Please move to a proper spot with the other files from ${LLVM_DIR}/lib/Support and from ${LLVM_DIR}/lib/Transforms/Scalar above. Thanks.",
+      "range": {
+        "startLine": 1350,
+        "startChar": 0,
+        "endLine": 1352,
+        "endChar": 72
+      },
+      "revId": "298a2922ed4dca6616adea1792be40f4a6232f02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "869b8eda_ca4fb1fd",
+        "filename": "third_party/llvm-7.0/BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T14:36:52Z",
+      "side": 1,
+      "message": "Please move to line 959.",
+      "range": {
+        "startLine": 612,
+        "startChar": 0,
+        "endLine": 612,
+        "endChar": 34
+      },
+      "revId": "298a2922ed4dca6616adea1792be40f4a6232f02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
