@@ -22,6 +22,30 @@
       "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25d1f62a_52d84ffd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T17:16:16Z",
+      "side": 1,
+      "message": "It\u0027s probably equivalent to:\nv \u003d static_cast\u003cint32_t\u003e(l) % static_cast\u003cint32_t\u003e(r);\nif((v \u0026 0x80000000) !\u003d 0) v \u003d static_cast\u003cint32_t\u003e(v) + r;",
+      "parentUuid": "7be27988_77c5b66f",
+      "range": {
+        "startLine": 6109,
+        "startChar": 4,
+        "endLine": 6110,
+        "endChar": 36
+      },
+      "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
