@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "69de44b9_3938fee1",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-13T16:59:17Z",
+      "side": 1,
+      "message": "There\u0027s an UNIMPLEMENTED statement below that clarifies failures quite a bit. I\u0027d rather keep these checks, if possible.",
+      "parentUuid": "187492bd_6c7cd761",
+      "range": {
+        "startLine": 1446,
+        "startChar": 12,
+        "endLine": 1446,
+        "endChar": 13
+      },
+      "revId": "a7a109b40d0643512e16740dd9fb52616e2c6bcc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c0f7a3b4_3cffd9f3",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
