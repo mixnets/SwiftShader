@@ -6106,7 +6106,8 @@ namespace sw
 			case spv::OpSMod:
 				if (r == 0) r = UINT32_MAX;
 				if (l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
-				if (l * r < 0)
+				// Test if a signed-multiply would be negative.
+				if (((l * r) & 0x80000000) != 0)
 					v = static_cast<int32_t>(l) % static_cast<int32_t>(r) + r;
 				else
 					v = static_cast<int32_t>(l) % static_cast<int32_t>(r);
