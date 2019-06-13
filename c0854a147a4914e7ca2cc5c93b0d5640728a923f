@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9dac9b92_8215210f",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2378,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:27:39Z",
+      "side": 1,
+      "message": "I\u0027d rather not add gather intrinsics for small types here because there are no matching CPU instructions for it, not even in AVX-512. So this always ends up being scalarized by the JIT compiler. Reactor primitives should be implicitly assumed to be efficient (on recent CPUs), and higher-level functionality belongs in layers outside of it. Happy to have these added elsewhere as convenience functions though, with the knowledge that they should be avoided if possible because they\u0027re slow.",
+      "range": {
+        "startLine": 2374,
+        "startChar": 1,
+        "endLine": 2378,
+        "endChar": 128
+      },
+      "revId": "c0854a147a4914e7ca2cc5c93b0d5640728a923f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
