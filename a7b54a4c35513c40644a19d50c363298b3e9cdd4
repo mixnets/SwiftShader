@@ -166,6 +166,30 @@
       "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6015114a_2ceea044",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T19:10:28Z",
+      "side": 1,
+      "message": "Wait, l and r are still unsigned, so shouldn\u0027t it be \"if ((((int)l * (int)r) \u0026 0x80000000) !\u003d 0)\" ?",
+      "parentUuid": "802fdad2_db986757",
+      "range": {
+        "startLine": 6109,
+        "startChar": 4,
+        "endLine": 6110,
+        "endChar": 36
+      },
+      "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
