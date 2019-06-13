@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5908bd6b_99b5b8c9",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:44Z",
+      "side": 1,
+      "message": "I\u0027ll optimize this later to use aligned read/write.",
+      "range": {
+        "startLine": 568,
+        "startChar": 95,
+        "endLine": 568,
+        "endChar": 106
+      },
+      "revId": "0055483c5fdba505be3e7411cd9e9812d9c86ff3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
