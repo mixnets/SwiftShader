@@ -22,6 +22,30 @@
       "revId": "c0854a147a4914e7ca2cc5c93b0d5640728a923f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6912481c_492fcafe",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:23Z",
+      "side": 0,
+      "message": "Ack. 4x4 transpose is definitely more efficient than four microcoded gather operations though. It\u0027s eight shuffle instructions, which on the majority of CPUs can execute on two execution ports, while the loads can happen in parallel as well.\n\nAnyway, there must be a point at which gather becomes more efficient. We\u0027ll have to evaluate whether AVX2 or AVX-512 is the inflection point.",
+      "parentUuid": "f926b7a2_a730872d",
+      "range": {
+        "startLine": 331,
+        "startChar": 4,
+        "endLine": 331,
+        "endChar": 16
+      },
+      "revId": "c0854a147a4914e7ca2cc5c93b0d5640728a923f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

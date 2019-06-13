@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "d0aab2d9_2466fa2e",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:23Z",
+      "side": 1,
+      "message": "I suggest keeping it at 64.",
+      "range": {
+        "startLine": 30,
+        "startChar": 35,
+        "endLine": 30,
+        "endChar": 37
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb330650_2a0a8854",
+        "filename": "src/Pipeline/VertexProgram.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:23Z",
+      "side": 1,
+      "message": "Can be avoided by ensuring there\u0027s always multiple of the SIMD width vertices to process. This is important for performance because lots of vertex shaders don\u0027t have any branching, or relatively little, so most instructions can execute on all lanes without paying any cost for masking.",
+      "range": {
+        "startLine": 37,
+        "startChar": 60,
+        "endLine": 37,
+        "endChar": 74
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33a3295e_a8c1b2d2",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:23Z",
+      "side": 1,
+      "message": "Interesting approach. Would be good to know whether the extra bookkeeping pays off. https://swiftshader-review.googlesource.com/c/SwiftShader/+/32609 has a simpler approach which just processes the next four indices. It\u0027s possible some of those are already in the cache, but aside from conflict misses we\u0027re guaranteed four hits so it\u0027s still fast progress. Can also be incrementally improved on by removing duplicates and/or ones already in the cache, and evaluating these approaches before committing to them. In any case, change 32609 should be an improvement on our previous approach, as far as cache hit rate goes, offsetting the added cost of the cache scatter. So it\u0027s a lower risk approach for the short term.\n\nFWIW modern GPUs don\u0027t appear to take much advantage of vertex caching any more: https://www.tugraz.at/fileadmin/user_upload/Institute/ICG/Images/team_steinberger/Pipelines/HPG-2018_shading_rate-authorversion.opt.pdf\n\nAnyway, I\u0027d like to revisit your approach after Pastel 1.0.",
+      "range": {
+        "startLine": 52,
+        "startChar": 2,
+        "endLine": 59,
+        "endChar": 12
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ac96a8da_d8e8307a",
         "filename": "src/Pipeline/VertexRoutine.cpp",
         "patchSetId": 9
@@ -22,6 +91,30 @@
       "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4a2cf79_2507a5d4",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T17:29:23Z",
+      "side": 1,
+      "message": "Ack. Definitely looks worth doing something like this when we implement support for wider vectors.\n\nNote though that with a SIMD width of four it\u0027s more efficient to have four indices in GPR registers than to hold them in a vector register and require extracting them. So we\u0027ll probably want an abstraction that can select between such an approach for older CPUs and true gather for newer ones, based on some performance evaluation.\n\nAgain I prefer to hold off on this significant change until after Pastel 1.0.",
+      "parentUuid": "ac96a8da_d8e8307a",
+      "range": {
+        "startLine": 171,
+        "startChar": 25,
+        "endLine": 171,
+        "endChar": 35
+      },
+      "revId": "9fe6da883711852af66edfa5885c42eb4b9b4f7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
