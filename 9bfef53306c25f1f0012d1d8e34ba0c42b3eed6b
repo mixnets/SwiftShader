@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7047d835_c7e07d71",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-13T12:48:03Z",
+      "side": 1,
+      "message": "Please file a tracking bug at https://g.co/swiftshaderbugs and put the bug number here and in subsequent changes in the format \"Bug: b/#######\"\n\nThat way we can easily track related changes and any potential follow-ups. Thanks!",
+      "revId": "9bfef53306c25f1f0012d1d8e34ba0c42b3eed6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
