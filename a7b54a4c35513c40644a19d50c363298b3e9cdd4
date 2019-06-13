@@ -46,6 +46,30 @@
       "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c3619eb_8068a6dc",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6110,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-06-13T18:14:19Z",
+      "side": 1,
+      "message": "C\u0027s modulo doesn\u0027t have the same sign as a multiply:\n \n+-----+-----+-----+-----+------------+\n|  A  |  B  | A*B | A%B | A OpSMod B |\n+-----+-----+-----+-----+------------+\n|  10 |  3  |  30 |  1  |     1      |\n+-----+-----+-----+-----+------------+\n|  10 | -3  | -30 |  1  |    -2      |\n+-----+-----+-----+-----+------------+\n| -10 |  3  | -30 | -1  |     2      |\n+-----+-----+-----+-----+------------+\n| -10 | -3  |  30 | -1  |    -1      |\n+-----+-----+-----+-----+------------+\n\nAccording to the SPIR-V spec, OpSMod\u0027s result \"is the remainder r of Operand 1 divided by Operand 2 where if r !\u003d 0, the sign of r is the same as the sign of Operand 2.\"\n\nSo this code needs to test the sign of the multiply.",
+      "parentUuid": "7be27988_77c5b66f",
+      "range": {
+        "startLine": 6109,
+        "startChar": 4,
+        "endLine": 6110,
+        "endChar": 36
+      },
+      "revId": "a7b54a4c35513c40644a19d50c363298b3e9cdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
