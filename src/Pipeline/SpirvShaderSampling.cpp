@@ -164,23 +164,20 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 		}
 		else if(instruction.samplerMethod == Grad)
 		{
-			for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
+			for(uint32_t j = 0; j < instruction.grad; j++, i++)
 			{
 				dsx[j] = in[i];
 			}
 
-			for(uint32_t j = 0; j < instruction.gradComponents; j++, i++)
+			for(uint32_t j = 0; j < instruction.grad; j++, i++)
 			{
 				dsy[j] = in[i];
 			}
 		}
 
-		if(instruction.samplerOption == Offset)
+		for(uint32_t j = 0; j < instruction.offset; j++, i++)
 		{
-			for(uint32_t j = 0; j < instruction.offsetComponents; j++, i++)
-			{
-				offset[j] = in[i];
-			}
+			offset[j] = in[i];
 		}
 
 		SamplerCore s(constants, samplerState);
