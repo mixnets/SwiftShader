@@ -1949,14 +1949,14 @@ namespace sw
 		VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceLayers.aspectMask);
 		vk::Format format = image->getFormat(aspect);
 		VkSampleCountFlagBits samples = image->getSampleCountFlagBits();
-		State state(format, format, samples, samples, { 0xF });
+		State *state = new State(format, format, samples, samples, { 0xF });
 
 		if(samples != VK_SAMPLE_COUNT_1_BIT)
 		{
 			UNIMPLEMENTED("Multi-sampled cube: %d samples", static_cast<int>(samples));
 		}
 
-		Routine *cornerUpdateRoutine = getCornerUpdateRoutine(state);
+		Routine *cornerUpdateRoutine = getCornerUpdateRoutine(*state);
 		if(!cornerUpdateRoutine)
 		{
 			return;
@@ -1973,6 +1973,8 @@ namespace sw
 			extent.width
 		};
 		cornerUpdateFunction(&data);
+
+		delete state;
 	}
 
 	void Blitter::copyCubeEdge(vk::Image* image,

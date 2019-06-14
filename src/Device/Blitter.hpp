@@ -34,45 +34,75 @@ namespace sw
 	{
 		struct Options
 		{
-			Options() = default;
+			Options()
+				: writeMask(0xF), clearOperation(true), filter(false), convertSRGB(true), clampToEdge(false), unused(0) 
+			{
+			//	memset(this, 0, sizeof(*this));
+			}
 			Options(bool filter, bool convertSRGB)
-				: writeMask(0xF), clearOperation(false), filter(filter), convertSRGB(convertSRGB), clampToEdge(false) {}
+				: writeMask(0xF), clearOperation(false), filter(filter), convertSRGB(convertSRGB), clampToEdge(false), unused(0)
+			{
+			//	memset(this, 0, sizeof(*this));
+			}
 			Options(unsigned int writeMask)
-				: writeMask(writeMask), clearOperation(true), filter(false), convertSRGB(true), clampToEdge(false) {}
+				: writeMask(writeMask), clearOperation(true), filter(false), convertSRGB(true), clampToEdge(false), unused(0)
+			{
+			//	memset(this, 0, sizeof(*this));
+			}
 
 			union
 			{
 				struct
 				{
-					bool writeRed : 1;
-					bool writeGreen : 1;
-					bool writeBlue : 1;
-					bool writeAlpha : 1;
+					uint8_t writeRed : 1;
+					uint8_t writeGreen : 1;
+					uint8_t writeBlue : 1;
+					uint8_t writeAlpha : 1;
 				};
 
-				unsigned char writeMask;
+				uint8_t writeMask;
 			};
 
-			bool clearOperation : 1;
-			bool filter : 1;
-			bool convertSRGB : 1;
-			bool clampToEdge : 1;
+			uint8_t clearOperation : 1;
+			uint8_t filter : 1;
+			uint8_t convertSRGB : 1;
+			uint8_t clampToEdge : 1;
+			uint8_t unused : 4;
+			uint16_t unusedtoo = 0;
 		};
+
+		static_assert(sizeof(Options) == sizeof(uint32_t), "Ensure no bits are left uninitialized");
 
 		struct State : Options
 		{
-			State() = default;
-			State(const Options &options) : Options(options) {}
+			State()
+			{
+
+			//	memset(this, 0, sizeof(*this));
+			}
+			
+			State(const Options &options) : Options(options)
+			{
+			//	memset(this, 0, sizeof(*this));
+			}
+			
 			State(vk::Format sourceFormat, vk::Format destFormat, int srcSamples, int destSamples, const Options &options) :
-				Options(options), sourceFormat(sourceFormat), destFormat(destFormat), srcSamples(srcSamples), destSamples(destSamples) {}
+				Options(options), sourceFormat(sourceFormat), destFormat(destFormat), srcSamples(srcSamples), destSamples(destSamples)
+			{
+			//	memset(static_cast<Options*>(this), 0, sizeof(Options));
+			//	this->sourceFormat = VK_FORMAT_A8B8G8R8_UNORM_PACK32;
+			//	this->destFormat = VK_FORMAT_A8B8G8R8_UNORM_PACK32;
+			//	this->srcSamples = 1;
+			//	this->destSamples = 1;
+			}
 
 			bool operator==(const State &state) const
 			{
 				return memcmp(this, &state, sizeof(State)) == 0;
 			}
 
-			vk::Format sourceFormat;
-			vk::Format destFormat;
+			vk::Format sourceFormat = VK_FORMAT_UNDEFINED;
+			vk::Format destFormat = VK_FORMAT_UNDEFINED;
 			int srcSamples = 0;
 			int destSamples = 0;
 		};
