@@ -339,12 +339,16 @@ else()
     )
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        list(APPEND SWIFTSHADER_COMPILE_OPTIONS
-            "-Werror=unused-lambda-capture"
-            "-Werror=string-conversion"
-            "-Werror=extra-semi"
-            "-Werror=ignored-qualifiers"
-        )
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+        "-Werror=unused-lambda-capture"
+        "-Werror=string-conversion"
+        "-Werror=extra-semi"
+        "-Werror=ignored-qualifiers"
+        # Silence errors caused by unknown warnings when building with older
+        # versions of Clang. This demands checking that warnings added above
+        # are spelled correctly and work as intended!
+        "-Wno-unknown-warning-option"
+    )
     endif()
 
     # Remove xor, and, or and friends from the list of keywords, they are used
