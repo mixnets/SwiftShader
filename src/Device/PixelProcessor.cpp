@@ -37,11 +37,6 @@ namespace sw
 		return hash;
 	}
 
-	PixelProcessor::State::State()
-	{
-		memset(this, 0, sizeof(State));
-	}
-
 	bool PixelProcessor::State::operator==(const State &state) const
 	{
 		if(hash != state.hash)

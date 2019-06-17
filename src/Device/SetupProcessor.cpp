@@ -38,11 +38,6 @@ namespace sw
 		return hash;
 	}
 
-	SetupProcessor::State::State(int i)
-	{
-		memset(this, 0, sizeof(State));
-	}
-
 	bool SetupProcessor::State::operator==(const State &state) const
 	{
 		if(hash != state.hash)

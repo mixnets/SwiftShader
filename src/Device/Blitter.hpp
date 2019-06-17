@@ -59,7 +59,7 @@ namespace sw
 			bool clampToEdge : 1;
 		};
 
-		struct State : Options
+		struct State : CacheKey<State>, Options
 		{
 			State() = default;
 			State(const Options &options) : Options(options) {}

@@ -44,11 +44,6 @@ namespace sw
 		return hash;
 	}
 
-	VertexProcessor::State::State()
-	{
-		memset(this, 0, sizeof(State));
-	}
-
 	bool VertexProcessor::State::operator==(const State &state) const
 	{
 		if(hash != state.hash)
