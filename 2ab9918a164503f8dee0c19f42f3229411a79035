@@ -93,6 +93,30 @@
       "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80c9b7b5_5c61e0cd",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-17T19:56:42Z",
+      "side": 1,
+      "message": "I think the issue is either different compilers act differently, or that projects may use their own version of our 3rd party libraries, and these flags are going to apply to any headers that we include.\nBrian\u0027s issues may have been fixed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/29972. I vaguely remember that his issue was resolved, and I held off making these changes as I saw you were touching this file anyway.\n\nWhatever the case, I think it\u0027s kinder to everyone to treat these as warnings, but adhere to warnings-as-errors for our presubmits.",
+      "parentUuid": "5e552a40_dfa299c2",
+      "range": {
+        "startLine": 248,
+        "startChar": 17,
+        "endLine": 248,
+        "endChar": 25
+      },
+      "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
