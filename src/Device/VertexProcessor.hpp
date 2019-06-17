@@ -67,9 +67,9 @@ namespace sw
 			Input input[MAX_VERTEX_INPUTS];
 		};
 
-		struct State : States
+		struct State : CacheKey<State>, States
 		{
-			State();
+			State() = default;
 
 			bool operator==(const State &state) const;
 

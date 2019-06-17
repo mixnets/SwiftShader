@@ -68,9 +68,9 @@ namespace sw
 			VkFormat depthFormat;
 		};
 
-		struct State : States
+		struct State : CacheKey<State>, States
 		{
-			State();
+			State() = default;
 
 			bool operator==(const State &state) const;
 

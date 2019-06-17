@@ -51,9 +51,9 @@ namespace sw
 			SpirvShader::InterfaceComponent gradient[MAX_INTERFACE_COMPONENTS];
 		};
 
-		struct State : States
+		struct State : CacheKey<State>, States
 		{
-			State(int i = 0);
+			State() = default;
 
 			bool operator==(const State &states) const;
 

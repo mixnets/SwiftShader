@@ -17,11 +17,30 @@
 
 #include "System/Math.hpp"
 
+#include <cassert>
+#include <type_traits>
+
 namespace sw
 {
+	// LRUCache's key values should not contain any unitialized data, so they can be compared using memcmp().
+	// Having uninitialized data is a common mistake due to unused bitfield bits and alignment padding.
+	// Deriving the Key type from CacheKey<K> ensures full initialization.
+	template<typename Key>
+	struct CacheKey
+	{
+		CacheKey()
+		{
+			assert(static_cast<Key*>(this) == this);  // Must be the first base class.
+
+			memset(this, 0, sizeof(Key));
+		}
+	};
+
 	template<class Key, class Data>
 	class LRUCache
 	{
+		static_assert(std::is_base_of<CacheKey<Key>, Key>::value, "LRUCache key must be derived from CacheKey");
+
 	public:
 		LRUCache(int n);
 
@@ -29,7 +48,7 @@ namespace sw
 
 		Data *query(const Key &key) const;
 		Data *add(const Key &key, Data *data);
-	
+
 		int getSize() {return size;}
 		Key &getKey(int i) {return key[i];}
 
