@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69b3e1ff_2993fde3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-17T18:40:29Z",
+      "side": 1,
+      "message": "nit: I\u0027ve always found \"if(renderpass)\" to be more readable. Even goes beyond a style preference if we have some sort of custom smart pointer or other wrapper that has an overloaded operator bool but doesn\u0027t necessarily compare against nullptr.\n\nAnyway, fine for now as we\u0027ll do an overall style cleanup later.",
+      "range": {
+        "startLine": 380,
+        "startChar": 2,
+        "endLine": 380,
+        "endChar": 28
+      },
+      "revId": "7c7fb98cda48c02ac98f0d86630b4c3e3368a0ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "97dfb4db_29fe21b5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-17T18:40:29Z",
+      "side": 1,
+      "message": "That looks very unnatural considering the return value is a handle and VK_NULL_HANDLE should also be a handle in and of itself. Can we retain the POD traits with an operator which accepts this?\n\nAlternatively perhaps we can define our own VK_NULL_HANDLE (within the vk namespace)?",
+      "range": {
+        "startLine": 647,
+        "startChar": 13,
+        "endLine": 647,
+        "endChar": 31
+      },
+      "revId": "7c7fb98cda48c02ac98f0d86630b4c3e3368a0ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
