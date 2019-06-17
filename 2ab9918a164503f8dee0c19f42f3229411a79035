@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ce1363a8_e876aa93",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-17T19:35:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e724d32_8802f6f9",
+      "range": {
+        "startLine": 246,
+        "startChar": 8,
+        "endLine": 246,
+        "endChar": 56
+      },
+      "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "10383741_a291d2ce",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-04-30T12:27:28Z",
       "side": 1,
       "message": "As you\u0027re touching this code anyway, do you mind dropping the \u0027error\u003d\u0027 bit, as discussed here?\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/29810/6#message-de0432365b25c83372bac2f6528c79174aef0f6b",
+      "range": {
+        "startLine": 248,
+        "startChar": 17,
+        "endLine": 248,
+        "endChar": 25
+      },
+      "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e552a40_dfa299c2",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-17T19:35:22Z",
+      "side": 1,
+      "message": "Did this ever get addressed one way or another? Happy to make the change here, but since Kokoro tests all our changes with these warnings as errors it should be safe to keep this, no? Or is there platform-specific code that\u0027s affected that\u0027s untested by Kokoro, or are we forcing these compile options onto other projects?",
+      "parentUuid": "10383741_a291d2ce",
       "range": {
         "startLine": 248,
         "startChar": 17,
