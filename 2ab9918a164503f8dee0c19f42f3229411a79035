@@ -117,6 +117,30 @@
       "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d012146_977dfcea",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-17T20:36:39Z",
+      "side": 1,
+      "message": "Sounds good. Created b/135472272 as a follow-up.",
+      "parentUuid": "80c9b7b5_5c61e0cd",
+      "range": {
+        "startLine": 248,
+        "startChar": 17,
+        "endLine": 248,
+        "endChar": 25
+      },
+      "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
