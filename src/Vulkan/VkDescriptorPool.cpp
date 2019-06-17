@@ -35,7 +35,7 @@ inline uint64_t operator+(const VkDescriptorSet& lhs, size_t offset)
 
 inline void operator+=(VkDescriptorSet& lhs, size_t offset)
 {
-	lhs = static_cast<uint64_t>(toPtr(lhs) + offset);
+	lhs = { static_cast<uint64_t>(toPtr(lhs) + offset) };
 }
 
 inline uintptr_t operator-(const VkDescriptorSet& lhs, const VkDescriptorSet& rhs)
@@ -49,14 +49,14 @@ namespace vk
 {
 
 DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo* pCreateInfo, void* mem) :
-	pool(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(mem))),
+	pool({ static_cast<uint64_t>(reinterpret_cast<uintptr_t>(mem)) }),
 	poolSize(ComputeRequiredAllocationSize(pCreateInfo))
 {
 }
 
 void DescriptorPool::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	vk::deallocate(pool.get(), pAllocator);
+	vk::deallocate(static_cast<void*>(pool), pAllocator);
 }
 
 size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreateInfo* pCreateInfo)
@@ -78,7 +78,7 @@ VkResult DescriptorPool::allocateSets(uint32_t descriptorSetCount, const VkDescr
 	std::unique_ptr<size_t[]> layoutSizes(new size_t[descriptorSetCount]);
 	for(uint32_t i = 0; i < descriptorSetCount; i++)
 	{
-		pDescriptorSets[i] = VK_NULL_HANDLE;
+		pDescriptorSets[i] = { VK_NULL_HANDLE };
 		layoutSizes[i] = vk::Cast(pSetLayouts[i])->getDescriptorSetAllocationSize();
 	}
 
@@ -107,7 +107,7 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 	size_t freeSpace = poolSize - nextItemStart;
 	if(freeSpace >= size)
 	{
-		return pool + nextItemStart;
+		return { pool + nextItemStart };
 	}
 
 	// Second, look for space at the beginning of the pool
@@ -124,7 +124,7 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 	++nextIt;
 	for(auto it = itBegin; nextIt != itEnd; ++it, ++nextIt)
 	{
-		VkDescriptorSet freeSpaceStart(it->set + it->size);
+		VkDescriptorSet freeSpaceStart = { it->set + it->size };
 		freeSpace = nextIt->set - freeSpaceStart;
 		if(freeSpace >= size)
 		{
@@ -132,7 +132,7 @@ VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
 		}
 	}
 
-	return VK_NULL_HANDLE;
+	return { VK_NULL_HANDLE };
 }
 
 VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescriptorSet* pDescriptorSets)
@@ -177,7 +177,7 @@ VkResult DescriptorPool::allocateSets(size_t* sizes, uint32_t numAllocs, VkDescr
 			for(uint32_t j = 0; j < i; j++)
 			{
 				freeSet(pDescriptorSets[j]);
-				pDescriptorSets[j] = VK_NULL_HANDLE;
+				pDescriptorSets[j] = { VK_NULL_HANDLE };
 			}
 			return (computeTotalFreeSize() > totalSize) ? VK_ERROR_FRAGMENTED_POOL : VK_ERROR_OUT_OF_POOL_MEMORY;
 		}

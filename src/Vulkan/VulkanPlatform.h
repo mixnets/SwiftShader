@@ -17,26 +17,19 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <type_traits>
 
 template<typename T> class VkNonDispatchableHandle
 {
 public:
-	VkNonDispatchableHandle(uint64_t h) : handle(h)
+	operator void*() const
 	{
 		static_assert(sizeof(VkNonDispatchableHandle) == sizeof(uint64_t), "Size is not 64 bits!");
-	}
+		static_assert(std::is_pod<VkNonDispatchableHandle<T>>::value, "VkNonDispatchableHandle<T> is not POD!");
 
-	void* get() const
-	{
 		return reinterpret_cast<void*>(static_cast<uintptr_t>(handle));
 	}
 
-	operator void*() const
-	{
-		return get();
-	}
-
-private:
 	uint64_t handle;
 };
 

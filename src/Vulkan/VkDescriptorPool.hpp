@@ -44,12 +44,12 @@ namespace vk
 			bool operator<(const Node& node) const { return set < node.set; }
 			bool operator==(VkDescriptorSet other) const { return set == other; }
 
-			VkDescriptorSet set = VK_NULL_HANDLE;
+			VkDescriptorSet set = { VK_NULL_HANDLE };
 			size_t size = 0;
 		};
 		std::set<Node> nodes;
 
-		VkDescriptorSet pool = VK_NULL_HANDLE;
+		VkDescriptorSet pool = { VK_NULL_HANDLE };
 		size_t poolSize = 0;
 	};
 
