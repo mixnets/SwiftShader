@@ -1089,6 +1089,7 @@ namespace rr
 	{
 		llvm::FunctionType *functionType = llvm::FunctionType::get(T(ReturnType), T(Params), false);
 		::function = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, "", ::module);
+		::function->setDoesNotThrow();
 		::function->setCallingConv(llvm::CallingConv::C);
 
 		#if defined(_WIN32)
@@ -4340,6 +4341,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//
 	llvm::FunctionType *coroutineAwaitTy = llvm::FunctionType::get(boolTy, {handleTy, promisePtrTy}, false);
 	::coroutine.await = llvm::Function::Create(coroutineAwaitTy, llvm::GlobalValue::InternalLinkage, "coroutine_await", ::module);
+	::coroutine.await->setDoesNotThrow();
 	::coroutine.await->setCallingConv(llvm::CallingConv::C);
 	{
 		auto args = ::coroutine.await->arg_begin();
@@ -4373,6 +4375,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//
 	llvm::FunctionType *coroutineDestroyTy = llvm::FunctionType::get(voidTy, handleTy, false);
 	::coroutine.destroy = llvm::Function::Create(coroutineDestroyTy, llvm::GlobalValue::InternalLinkage, "coroutine_destroy", ::module);
+	::coroutine.destroy->setDoesNotThrow();
 	::coroutine.destroy->setCallingConv(llvm::CallingConv::C);
 	{
 		auto handle = ::coroutine.destroy->arg_begin();
@@ -4415,6 +4418,7 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//
 	llvm::FunctionType *functionType = llvm::FunctionType::get(handleTy, T(Params), false);
 	::function = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, "coroutine_begin", ::module);
+	::function->setDoesNotThrow();
 	::function->setCallingConv(llvm::CallingConv::C);
 
 #ifdef ENABLE_RR_DEBUG_INFO
