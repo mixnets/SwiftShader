@@ -218,6 +218,16 @@ namespace sw
 				c.z = Float4(cs.z) * Float4(1.0f / 0x7F00);
 				c.w = Float4(cs.w) * Float4(1.0f / 0x7F00);
 				break;
+			case VK_FORMAT_R8G8B8A8_UNORM:
+				cs.x &= Short4(0xff00u);
+				cs.y &= Short4(0xff00u);
+				cs.z &= Short4(0xff00u);
+				cs.w &= Short4(0xff00u);
+				c.x = Float4(As<UShort4>(cs.x)) * Float4(1.0f / 0xFF00);
+				c.y = Float4(As<UShort4>(cs.y)) * Float4(1.0f / 0xFF00);
+				c.z = Float4(As<UShort4>(cs.z)) * Float4(1.0f / 0xFF00);
+				c.w = Float4(As<UShort4>(cs.w)) * Float4(1.0f / 0xFF00);
+				break;
 			default:
 				for(int component = 0; component < textureComponentCount(); component++)
 				{
