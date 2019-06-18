@@ -22,6 +22,30 @@
       "revId": "c581d4e90d0aebb874695c6752e718b1b52cf360",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b16a6c9_b15bd4dd",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 913,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-18T19:23:16Z",
+      "side": 1,
+      "message": "Renamed to \u0027f\u0027, like all other callback parameters in this class.\nIf that\u0027s too generic, we should rename them all in a follow up change.",
+      "parentUuid": "438beae1_81b6114f",
+      "range": {
+        "startLine": 913,
+        "startChar": 34,
+        "endLine": 913,
+        "endChar": 37
+      },
+      "revId": "c581d4e90d0aebb874695c6752e718b1b52cf360",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
