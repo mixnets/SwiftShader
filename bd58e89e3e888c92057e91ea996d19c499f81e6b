@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "abb4516a_5895c0ed",
+        "filename": "src/Vulkan/VulkanPlatform.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T19:54:48Z",
+      "side": 1,
+      "message": "Could use a comment clarifying that VkNonDispatchabbleHandle must be POD to ensure it gets passed by value the same way as a uint64_t which is the upstream header\u0027s handle type.",
+      "revId": "bd58e89e3e888c92057e91ea996d19c499f81e6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
