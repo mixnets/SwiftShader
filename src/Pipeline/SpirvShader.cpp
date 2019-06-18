@@ -31,6 +31,14 @@
 
 #include <queue>
 
+// Set to 1 to write a GraphViz dot file containing a graph of the shader's
+// control flow to the given file path. Helpful for diagnosing control-flow
+// related issues.
+#if 0
+#define WRITE_CFG_GRAPHVIZ_DOT_FILEPATH "swiftshader.dot"
+#endif
+
+
 namespace
 {
 	constexpr float PI = 3.141592653589793f;
@@ -1146,6 +1154,13 @@ namespace sw
 		{
 			it.second.AssignBlockFields();
 		}
+
+#ifdef WRITE_CFG_GRAPHVIZ_DOT_FILEPATH
+#ifdef NDEBUG
+#error "WRITE_CFG_GRAPHVIZ_DOT_FILEPATH can only be used in debug builds"
+#endif // NDEBUG
+		WriteCFGDotFile(WRITE_CFG_GRAPHVIZ_DOT_FILEPATH);
+#endif // WRITE_CFG_GRAPHVIZ_DOT_FILEPATH
 	}
 
 	void SpirvShader::DeclareType(InsnIterator insn)
