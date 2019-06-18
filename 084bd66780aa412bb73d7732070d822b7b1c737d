@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5279d7e_f4a1129f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T16:49:24Z",
+      "side": 1,
+      "message": "Could mention that this is WARNINGS_AS_ERRORS.\n\nIt currently defaults to 1. Should we make it default to 0 and explicitly enable it in the Kokoro scripts? Your call.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "084bd66780aa412bb73d7732070d822b7b1c737d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
