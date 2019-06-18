@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "423c3380_edbb26cc",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-18T19:52:37Z",
+      "side": 1,
+      "message": "Agreed. Cleaned up a few cases.",
+      "parentUuid": "69b3e1ff_2993fde3",
+      "range": {
+        "startLine": 380,
+        "startChar": 2,
+        "endLine": 380,
+        "endChar": 28
+      },
+      "revId": "7c7fb98cda48c02ac98f0d86630b4c3e3368a0ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "97dfb4db_29fe21b5",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "7c7fb98cda48c02ac98f0d86630b4c3e3368a0ad",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef61a3bd_f9280c94",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-18T19:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97dfb4db_29fe21b5",
+      "range": {
+        "startLine": 647,
+        "startChar": 13,
+        "endLine": 647,
+        "endChar": 31
+      },
+      "revId": "7c7fb98cda48c02ac98f0d86630b4c3e3368a0ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
