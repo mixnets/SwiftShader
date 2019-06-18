@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6312add7_016f87fa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T17:01:04Z",
+      "side": 1,
+      "message": "Bug: swiftshader:122\nBug: b/129523279",
+      "revId": "7d5c62d619267cb6472151bdcaaeb81990e5820b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c06fcbb_ea78071f",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T17:01:04Z",
+      "side": 1,
+      "message": "curious: What is still falling back to the default now? 16-bit components?",
+      "range": {
+        "startLine": 192,
+        "startChar": 4,
+        "endLine": 192,
+        "endChar": 12
+      },
+      "revId": "7d5c62d619267cb6472151bdcaaeb81990e5820b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "851da43a_bd4ce0dc",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1494,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T17:01:04Z",
+      "side": 1,
+      "message": "nit: Might not be achievable without actually making things slower, so feel free to remove this TODO.",
+      "range": {
+        "startLine": 1494,
+        "startChar": 6,
+        "endLine": 1494,
+        "endChar": 52
+      },
+      "revId": "7d5c62d619267cb6472151bdcaaeb81990e5820b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
