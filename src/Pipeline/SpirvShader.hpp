@@ -1218,6 +1218,11 @@ namespace sw
 		// Helper for calling rr::Yield with res cast to an rr::Int.
 		void Yield(YieldResult res) const;
 
+		// WriteCFGDotFile writes a graphviz dot file of the shader's control
+		// flow to the given file path.
+		// This is a debug function and is a no-op in NDEBUG builds.
+		void WriteCFGDotFile(const char* path) const;
+
 		// OpcodeName() returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName() will only return the numerical code.
 		static std::string OpcodeName(spv::Op op);
