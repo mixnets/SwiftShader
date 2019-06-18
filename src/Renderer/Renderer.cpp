@@ -253,6 +253,11 @@ namespace sw
 				return;
 			}
 		#endif
+		// Don't render anything if the viewport is outside any potential render target.
+		if (viewport.y0 > OUTLINE_RESOLUTION && !context->transformFeedbackEnabled)
+		{
+			return;
+		}
 
 		context->drawType = drawType;
 
