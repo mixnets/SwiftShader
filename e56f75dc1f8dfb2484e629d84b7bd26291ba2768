@@ -70,6 +70,30 @@
       "revId": "e56f75dc1f8dfb2484e629d84b7bd26291ba2768",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6fe681a_e0bf9486",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T15:04:28Z",
+      "side": 1,
+      "message": "\u003e You\u0027d also need std::is_trivial\u003cKey\u003e.\n\nRight, it probably requires that for memset, while is_trivially_copyable suffices for memcpy. But we need the former.\n\n\u003e While is_trivial addresses all the corner cases I care about, I don\u0027t think you\u0027ll be able to use it.\n\u003e is_trivial gives false if the type has a non-default constructor, and Key has to derive from CacheKey, which contains this non-default constructor.\n\u003e Perhaps you could make the cache zero the key without inheritance with LRUCache::newKey() or something, but I still feel like fixing the initialiser on the cache key is the right thing to do.\n\nIt seems like the warning is overly sensitive. The member constructors are run after zeroing out the memory, so they\u0027re not skipped like what the warning is alerting us about. Anyway, I can see how checking that order would be an extra complication for the compiler to check before emitting the warning.\n\nThis should be no different from doing placement new into zeroed memory. Maybe there\u0027s a way to actually do exactly that...",
+      "parentUuid": "be033af7_b1722ecc",
+      "range": {
+        "startLine": 36,
+        "startChar": 3,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "e56f75dc1f8dfb2484e629d84b7bd26291ba2768",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
