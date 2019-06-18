@@ -141,6 +141,30 @@
       "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "446fac71_cced0439",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-18T12:49:06Z",
+      "side": 1,
+      "message": "Follow-up followed-up here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/32953",
+      "parentUuid": "3d012146_977dfcea",
+      "range": {
+        "startLine": 248,
+        "startChar": 17,
+        "endLine": 248,
+        "endChar": 25
+      },
+      "revId": "2ab9918a164503f8dee0c19f42f3229411a79035",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
