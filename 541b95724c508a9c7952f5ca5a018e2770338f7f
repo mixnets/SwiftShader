@@ -16,6 +16,24 @@
       "revId": "541b95724c508a9c7952f5ca5a018e2770338f7f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9bd447c_340ce866",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 22830
+      },
+      "writtenOn": "2019-06-18T20:56:15Z",
+      "side": 1,
+      "message": "There\u0027s currently no bug associated with the change.",
+      "parentUuid": "94c81544_67a837b8",
+      "revId": "541b95724c508a9c7952f5ca5a018e2770338f7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
