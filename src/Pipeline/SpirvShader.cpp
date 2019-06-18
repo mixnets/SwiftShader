@@ -31,6 +31,8 @@
 
 #include <queue>
 
+#define WRITE_CFG_DOT_FILE 0
+
 namespace
 {
 	constexpr float PI = 3.141592653589793f;
@@ -1014,6 +1016,10 @@ namespace sw
 		{
 			it.second.AssignBlockFields();
 		}
+
+#if WRITE_CFG_DOT_FILE
+		WriteCFGDotFile("cfg.dot");
+#endif
 	}
 
 	void SpirvShader::DeclareType(InsnIterator insn)
