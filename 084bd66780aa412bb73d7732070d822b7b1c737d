@@ -22,6 +22,30 @@
       "revId": "084bd66780aa412bb73d7732070d822b7b1c737d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e934de39_06ffee4c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-18T16:59:56Z",
+      "side": 1,
+      "message": "\u003e Could mention that this is WARNINGS_AS_ERRORS\n\nDone.\n\n\u003e It currently defaults to 1. Should we make it default to 0 and explicitly enable it in the Kokoro scripts?\n\nDocumented. I think it makes sense to leave it enabled by default. This means we\u0027ll more likely catch build failures locally than hitting them in Kokoro, and it was clear by the discussion in 29810 that the flag is easy enough to discover if downstream projects need to turn it off.",
+      "parentUuid": "b5279d7e_f4a1129f",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "084bd66780aa412bb73d7732070d822b7b1c737d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
