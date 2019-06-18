@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "2e199e90_46b0f196",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-18T17:08:40Z",
+      "side": 1,
+      "message": "Also any variation of 10 10 10 2, I think.",
+      "parentUuid": "2c06fcbb_ea78071f",
+      "range": {
+        "startLine": 192,
+        "startChar": 4,
+        "endLine": 192,
+        "endChar": 12
+      },
+      "revId": "7d5c62d619267cb6472151bdcaaeb81990e5820b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "851da43a_bd4ce0dc",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 1
@@ -53,6 +77,30 @@
       "writtenOn": "2019-06-18T17:01:04Z",
       "side": 1,
       "message": "nit: Might not be achievable without actually making things slower, so feel free to remove this TODO.",
+      "range": {
+        "startLine": 1494,
+        "startChar": 6,
+        "endLine": 1494,
+        "endChar": 52
+      },
+      "revId": "7d5c62d619267cb6472151bdcaaeb81990e5820b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9e24b33b_78735209",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1494,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-18T17:08:40Z",
+      "side": 1,
+      "message": "I can follow up on it, but in a separate cl, if possible, since this is a different thing in itself.",
+      "parentUuid": "851da43a_bd4ce0dc",
       "range": {
         "startLine": 1494,
         "startChar": 6,
