@@ -46,6 +46,30 @@
       "revId": "e56f75dc1f8dfb2484e629d84b7bd26291ba2768",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be033af7_b1722ecc",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-18T14:38:00Z",
+      "side": 1,
+      "message": "While is_trivial addresses all the corner cases I care about, I don\u0027t think you\u0027ll be able to use it.\nis_trivial gives false if the type has a non-default constructor, and Key has to derive from CacheKey, which contains this non-default constructor.\nPerhaps you could make the cache zero the key without inheritance with LRUCache::newKey() or something, but I still feel like fixing the initialiser on the cache key is the right thing to do.",
+      "parentUuid": "3fc88d0b_f6a1f2de",
+      "range": {
+        "startLine": 36,
+        "startChar": 3,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "e56f75dc1f8dfb2484e629d84b7bd26291ba2768",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
