@@ -29,6 +29,8 @@
 #include <spirv/unified1/spirv.hpp>
 #include <spirv/unified1/GLSL.std.450.h>
 
+#define WRITE_CFG_DOT_FILE 0
+
 namespace
 {
 	constexpr float PI = 3.141592653589793f;
@@ -982,6 +984,10 @@ namespace sw
 
 		ASSERT_MSG(entryPointFunctionId != 0, "Entry point '%s' not found", createInfo->pName);
 		AssignBlockFields();
+
+#if WRITE_CFG_DOT_FILE
+		WriteCFGDotFile("cfg.dot");
+#endif
 	}
 
 	void SpirvShader::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable)
