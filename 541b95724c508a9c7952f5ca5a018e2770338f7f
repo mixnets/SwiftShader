@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94c81544_67a837b8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-18T20:02:28Z",
+      "side": 1,
+      "message": "Feel free to add a bug ID here.\n\nFor chromium, the format is \"Bug: chromium:######\"\nFor Buganizer issues \"Bug: b/######\"",
+      "revId": "541b95724c508a9c7952f5ca5a018e2770338f7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
