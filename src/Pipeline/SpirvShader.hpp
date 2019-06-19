@@ -540,12 +540,16 @@ namespace sw
 
 		static_assert(sizeof(ImageInstruction) == sizeof(uint32_t), "ImageInstruction must be 32-bit");
 
-		int getSerialID() const
+		uint64_t getSerialID() const
 		{
-			return serialID;
+			// This method is for retrieving an ID that uniquely identifies the entry point.
+			// The block ID (OpLabel) of the entry point is as good as the function ID (OpFunction).
+			return shaderModuleSerialID | ((uint64_t)entryPointBlockId.value() << 32);
 		}
 
-		SpirvShader(VkPipelineShaderStageCreateInfo const *createInfo,
+		SpirvShader(uint32_t shaderModuleSerialID,
+			VkShaderStageFlagBits stage,
+			const char *entryPointName,
 					InsnStore const &insns,
 					vk::RenderPass *renderPass,
 					uint32_t subpassIndex);
@@ -740,8 +744,8 @@ namespace sw
 		}
 
 	private:
-		const int serialID;
-		static std::atomic<int> serialCounter;
+		const uint32_t shaderModuleSerialID;
+	//	static std::atomic<int> serialCounter;
 		Modes modes;
 		HandleMap<Type> types;
 		HandleMap<Object> defs;

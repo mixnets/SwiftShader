@@ -34,7 +34,7 @@ namespace sw
 		{
 			unsigned int computeHash();
 
-			int shaderID;
+			uint64_t shaderID;
 
 			VkCompareOp depthCompareMode;
 			bool depthWriteEnable;
@@ -131,7 +131,7 @@ namespace sw
 	protected:
 		const State update(const Context* context) const;
 		Routine *routine(const State &state, vk::PipelineLayout const *pipelineLayout,
-		                 SpirvShader const *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
+		                 SpirvShader const *fragmentShader, const vk::DescriptorSet::Bindings &descriptorSets);
 		void setRoutineCacheSize(int routineCacheSize);
 
 		// Other semi-constants

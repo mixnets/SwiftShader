@@ -38,7 +38,7 @@ namespace sw
 		return hash;
 	}
 
-	SetupProcessor::State::State(int i)
+	SetupProcessor::State::State()
 	{
 		memset(this, 0, sizeof(State));
 	}
@@ -69,13 +69,13 @@ namespace sw
 	{
 		State state;
 
-		bool vPosZW = (context->pixelShader && context->pixelShader->hasBuiltinInput(spv::BuiltInFragCoord));
+		bool vPosZW = (context->fragmentShader && context->fragmentShader->hasBuiltinInput(spv::BuiltInFragCoord));
 
 		state.isDrawPoint = context->isDrawPoint();
 		state.isDrawLine = context->isDrawLine();
 		state.isDrawTriangle = context->isDrawTriangle();
 		state.interpolateZ = context->depthBufferActive() || vPosZW;
-		state.interpolateW = context->pixelShader != nullptr;
+		state.interpolateW = (context->fragmentShader != nullptr);
 		state.frontFacingCCW = context->frontFacingCCW;
 		state.cullMode = context->cullMode;
 		state.twoSidedStencil = context->stencilActive() && context->twoSidedStencil;
@@ -84,11 +84,11 @@ namespace sw
 		state.multiSample = context->sampleCount;
 		state.rasterizerDiscard = context->rasterizerDiscard;
 
-		if (context->pixelShader)
+		if (context->fragmentShader)
 		{
 			for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 			{
-				state.gradient[interpolant] = context->pixelShader->inputs[interpolant];
+				state.gradient[interpolant] = context->fragmentShader->inputs[interpolant];
 			}
 		}
 

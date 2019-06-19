@@ -146,7 +146,7 @@ namespace sw
 
 		pipelineLayout = nullptr;
 
-		pixelShader = nullptr;
+		fragmentShader = nullptr;
 		vertexShader = nullptr;
 
 		instanceID = 0;
@@ -574,6 +574,6 @@ namespace sw
 
 	bool Context::colorUsed() const
 	{
-		return colorWriteActive() || (pixelShader && pixelShader->getModes().ContainsKill);
+		return colorWriteActive() || (fragmentShader && fragmentShader->getModes().ContainsKill);
 	}
 }
