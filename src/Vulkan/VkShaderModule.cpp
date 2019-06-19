@@ -18,8 +18,10 @@
 
 namespace vk
 {
+/*static*/
+	std::atomic<uint32_t> ShaderModule::serialCounter(1);    // Start at 1, 0 is invalid shader.
 
-ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, void* mem) : code(reinterpret_cast<uint32_t*>(mem))
+ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, void* mem) : serialID(newSerial()), code(reinterpret_cast<uint32_t*>(mem))
 {
 	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
 	wordCount = static_cast<uint32_t>(pCreateInfo->codeSize / sizeof(uint32_t));
@@ -33,6 +35,11 @@ void ShaderModule::destroy(const VkAllocationCallbacks* pAllocator)
 size_t ShaderModule::ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo* pCreateInfo)
 {
 	return pCreateInfo->codeSize;
+}
+
+uint32_t ShaderModule::newSerial()
+{
+	return serialCounter++;
 }
 
 } // namespace vk
