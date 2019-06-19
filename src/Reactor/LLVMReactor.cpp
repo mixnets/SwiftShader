@@ -968,6 +968,11 @@ namespace rr
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 		#endif
 
+		if (features.find("avx2") != features.end())
+		{
+			features["fast-gather"] = true;
+		}
+
 		for (auto &feature : features)
 		{
 			if (feature.second) { mattrs.push_back(feature.first()); }
