@@ -26,6 +26,9 @@
 #elif defined(__linux__)
 #    include "dlfcn.h"
 #    define OS_LINUX 1
+#elif defined(__Fuchsia__)
+#    include <zircon/dlfcn.h>
+#    define OS_FUCHSIA 1
 #else
 #    error Unimplemented platform
 #endif
@@ -78,6 +81,8 @@ bool Driver::loadSwiftShader()
 	return load("./build/Linux/libvk_swiftshader.so") ||
 	       load("swiftshader/libvulkan.so") ||
 	       load("libvk_swiftshader.so");
+#elif OS_FUCHSIA
+        return load("libvulkan_swiftshader.so");
 #elif OS_ANDROID
 	return load("libvk_swiftshader.so");
 #else
@@ -98,7 +103,7 @@ bool Driver::load(const char* path)
 {
 #if OS_WINDOWS
     dll = LoadLibraryA(path);
-#elif(OS_MAC || OS_LINUX || OS_ANDROID)
+#elif(OS_MAC || OS_LINUX || OS_ANDROID || OS_FUCHSIA)
     dll = dlopen(path, RTLD_LAZY | RTLD_LOCAL);
 #else
     return false;
@@ -138,7 +143,7 @@ void Driver::unload()
 
 #if OS_WINDOWS
     FreeLibrary((HMODULE)dll);
-#elif OS_LINUX
+#elif (OS_LINUX || OS_FUCHSIA)
     dlclose(dll);
 #endif
 
@@ -182,7 +187,7 @@ void* Driver::lookup(const char* name)
 {
 #if OS_WINDOWS
     return GetProcAddress((HMODULE)dll, name);
-#elif(OS_MAC || OS_LINUX || OS_ANDROID)
+#elif(OS_MAC || OS_LINUX || OS_ANDROID || OS_FUCHSIA)
     return dlsym(dll, name);
 #else
     return nullptr;

@@ -22,6 +22,11 @@ config("swiftshader_libvulkan_private_config") {
       "VK_USE_PLATFORM_XLIB_KHR",
       "VK_EXPORT=__attribute__((visibility(\"default\")))",
     ]
+  } else if (is_fuchsia) {
+    defines = [
+      "VK_USE_PLATFORM_FUCHSIA=1",
+      "VK_EXPORT=__attribute__((visibility(\"default\")))",
+    ]
   } else {
     defines = [ "VK_EXPORT=" ]
   }
@@ -105,8 +110,15 @@ swiftshader_shared_library("swiftshader_libvulkan") {
 
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
-  output_name = "libvulkan"
-  output_dir = "$root_out_dir/swiftshader"
+  if (is_fuchsia) {
+    # For Fuchsia, the packaging scripts are confused when generating a
+    # library with the same name as one of the SDK's system library, i.e.
+    # libvulkan.so is the name of the system Vulkan loader.
+    output_name = "libvulkan_swiftshader"
+  } else {
+    output_name = "libvulkan"
+    output_dir = "$root_out_dir/swiftshader"
+  }
 
   if (is_mac) {
     ldflags = [
@@ -114,7 +126,7 @@ swiftshader_shared_library("swiftshader_libvulkan") {
       "-Wl,-exported_symbols_list," +
           rebase_path("libvk_swiftshader.exports", root_build_dir),
     ]
-  } else if (is_linux) {
+  } else if (is_linux || is_fuchsia) {
     inputs = [
       "libvk_swiftshader.lds",
     ]
