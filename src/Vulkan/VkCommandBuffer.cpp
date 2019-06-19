@@ -519,6 +519,9 @@ struct DrawBase : public CommandBuffer::Command
 
 		sw::Context context = pipeline->getContext();
 
+		context.vertexShader = pipeline->vertexShader;
+		context.pixelShader = pipeline->fragmentShader;
+
 		executionState.bindVertexInputs(context, vertexOffset, firstInstance);
 
 		context.descriptorSets = pipelineState.descriptorSets;
@@ -532,6 +535,7 @@ struct DrawBase : public CommandBuffer::Command
 		                                     executionState.dynamicState.viewport : pipeline->getViewport());
 		executionState.renderer->setBlendConstant(pipeline->hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS) ?
 		                                          executionState.dynamicState.blendConstants : pipeline->getBlendConstants());
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS))
 		{
 			// If the depth bias clamping feature is not enabled, depthBiasClamp must be 0.0
@@ -540,6 +544,7 @@ struct DrawBase : public CommandBuffer::Command
 			context.depthBias = executionState.dynamicState.depthBiasConstantFactor;
 			context.slopeDepthBias = executionState.dynamicState.depthBiasSlopeFactor;
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BOUNDS) && context.depthBoundsTestEnable)
 		{
 			// Unless the VK_EXT_depth_range_unrestricted extension is enabled minDepthBounds and maxDepthBounds must be between 0.0 and 1.0, inclusive
@@ -548,16 +553,19 @@ struct DrawBase : public CommandBuffer::Command
 
 			UNIMPLEMENTED("depthBoundsTestEnable");
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.compareMask = executionState.dynamicState.compareMask[0];
 			context.backStencil.compareMask = executionState.dynamicState.compareMask[1];
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_WRITE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.writeMask = executionState.dynamicState.writeMask[0];
 			context.backStencil.writeMask = executionState.dynamicState.writeMask[1];
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_REFERENCE) && context.stencilEnable)
 		{
 			context.frontStencil.reference = executionState.dynamicState.reference[0];

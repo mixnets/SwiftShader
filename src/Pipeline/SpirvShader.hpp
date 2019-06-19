@@ -545,7 +545,7 @@ namespace sw
 			return serialID;
 		}
 
-		SpirvShader(VkPipelineShaderStageCreateInfo const *createInfo,
+		SpirvShader(int serialID, VkPipelineShaderStageCreateInfo const *createInfo,
 					InsnStore const &insns,
 					vk::RenderPass *renderPass,
 					uint32_t subpassIndex);
@@ -741,7 +741,7 @@ namespace sw
 
 	private:
 		const int serialID;
-		static std::atomic<int> serialCounter;
+	//	static std::atomic<int> serialCounter;
 		Modes modes;
 		HandleMap<Type> types;
 		HandleMap<Object> defs;

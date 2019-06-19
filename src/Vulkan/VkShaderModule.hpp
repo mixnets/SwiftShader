@@ -16,6 +16,8 @@
 #define VK_SHADER_MODULE_HPP_
 
 #include "VkObject.hpp"
+
+#include <atomic>
 #include <vector>
 
 namespace rr
@@ -37,7 +39,9 @@ public:
 	// guts' operations, and this copy.
 	std::vector<uint32_t> getCode() const { return std::vector<uint32_t>{ code, code + wordCount };}
 
-private:
+//private:
+	const int serialID;
+	static std::atomic<int> serialCounter;
 	uint32_t* code = nullptr;
 	uint32_t wordCount = 0;
 };

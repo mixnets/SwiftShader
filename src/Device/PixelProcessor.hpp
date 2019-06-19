@@ -35,6 +35,7 @@ namespace sw
 			unsigned int computeHash();
 
 			int shaderID;
+			// TODO: entry point should be part of state
 
 			VkCompareOp depthCompareMode;
 			bool depthWriteEnable;

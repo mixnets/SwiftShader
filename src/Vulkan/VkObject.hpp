@@ -18,10 +18,10 @@
 #include "VkConfig.h"
 #include "VkDebug.hpp"
 #include "VkMemory.h"
+#include "VulkanPlatform.h"
 
-#include <new>
-#include <Vulkan/VulkanPlatform.h>
 #include <vulkan/vk_icd.h>
+#include <new>
 
 namespace vk
 {

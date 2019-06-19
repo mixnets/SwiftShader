@@ -364,16 +364,14 @@ namespace sw
 
 	} // namespace SIMD
 
-	std::atomic<int> SpirvShader::serialCounter(1);    // Start at 1, 0 is invalid shader.
-
-	SpirvShader::SpirvShader(
+	SpirvShader::SpirvShader(int serialID,
 			VkPipelineShaderStageCreateInfo const *createInfo,
 			InsnStore const &insns,
 			vk::RenderPass *renderPass,
 			uint32_t subpassIndex)
 				: insns{insns}, inputs{MAX_INTERFACE_COMPONENTS},
 				outputs{MAX_INTERFACE_COMPONENTS},
-				serialID{serialCounter++}, modes{}
+				serialID(serialID), modes{}
 	{
 		ASSERT(insns.size() > 0);
 

@@ -451,23 +451,25 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, c
 			UNIMPLEMENTED("pStage->flags");
 		}
 
-		auto module = vk::Cast(pStage->module);
+		const ShaderModule *module = vk::Cast(pStage->module);
 		auto code = preprocessSpirv(module->getCode(), pStage->pSpecializationInfo);
 
 		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 		// TODO: also pass in any pipeline state which will affect shader compilation
-		auto spirvShader = new sw::SpirvShader{pStage, code, vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass};
+		auto spirvShader = new sw::SpirvShader(module->serialID, pStage, code, vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass);
 
 		switch (pStage->stage)
 		{
 		case VK_SHADER_STAGE_VERTEX_BIT:
 			ASSERT(vertexShader == nullptr);
-			context.vertexShader = vertexShader = spirvShader;
+		//	context.vertexShader =
+				vertexShader = spirvShader;
 			break;
 
 		case VK_SHADER_STAGE_FRAGMENT_BIT:
 			ASSERT(fragmentShader == nullptr);
-			context.pixelShader = fragmentShader = spirvShader;
+		//	context.pixelShader =
+				fragmentShader = spirvShader;
 			break;
 
 		default:
@@ -551,7 +553,7 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 	ASSERT(shader == nullptr);
 
 	// FIXME(b/119409619): use allocator.
-	shader = new sw::SpirvShader(&pCreateInfo->stage, code, nullptr, 0);
+	shader = new sw::SpirvShader(module->serialID, &pCreateInfo->stage, code, nullptr, 0);
 	vk::DescriptorSet::Bindings descriptorSets;  // FIXME(b/129523279): Delay code generation until invoke time.
 	program = new sw::ComputeProgram(shader, layout, descriptorSets);
 	program->generate();
