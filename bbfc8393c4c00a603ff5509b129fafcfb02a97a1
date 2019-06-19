@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71ad9718_668cbe04",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-19T18:22:56Z",
+      "side": 1,
+      "message": "note: VertexProcessor already had a 64-bit shaderID.",
+      "range": {
+        "startLine": 37,
+        "startChar": 3,
+        "endLine": 37,
+        "endChar": 11
+      },
+      "revId": "bbfc8393c4c00a603ff5509b129fafcfb02a97a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca334ccf_1e1f3498",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-19T18:22:56Z",
+      "side": 1,
+      "message": "note: We have a routine cache per pipeline stage, so we don\u0027t have to take this into account as lookup key state.",
+      "range": {
+        "startLine": 369,
+        "startChar": 25,
+        "endLine": 369,
+        "endChar": 38
+      },
+      "revId": "bbfc8393c4c00a603ff5509b129fafcfb02a97a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dce1a77e_a7b0fb43",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-19T18:22:56Z",
+      "side": 1,
+      "message": "note: I\u0027m thinking of assigning a (32-bit) serial ID to every entry point in the shader module instead. It would require parsing the binary for OpEntryPoint and allocating an array of IDs (or a map to immediately associate them with their names and stages). A bit inconvenient to do that at shader module creation time. Perhaps we can do it on the first vkCreate*Pipelines that uses the module since that\u0027s allowed to allocate extra memory.\n\nProbably doesn\u0027t gain us much aside from being a little less confusing about the difference between the codeSerialID passed into the SpirvShader constructor and the SpirvShader::getSerialID() return value.\n\nA struct containing both the serial ID and entry point ID might also already help in that regard.",
+      "range": {
+        "startLine": 547,
+        "startChar": 11,
+        "endLine": 547,
+        "endChar": 69
+      },
+      "revId": "bbfc8393c4c00a603ff5509b129fafcfb02a97a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

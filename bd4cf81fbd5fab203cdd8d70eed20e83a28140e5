@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "60de30a5_8c62ea2a",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-19T18:22:56Z",
+      "side": 0,
+      "message": "note: Was removed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/31348",
+      "range": {
+        "startLine": 156,
+        "startChar": 17,
+        "endLine": 156,
+        "endChar": 46
+      },
+      "revId": "bd4cf81fbd5fab203cdd8d70eed20e83a28140e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
