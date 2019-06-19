@@ -968,6 +968,11 @@ namespace rr
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 		#endif
 
+		if (features.find("avx2") != features.end())
+		{
+			features["fast-gather"] = true;
+		}
+
 		for (auto &feature : features)
 		{
 			if (feature.second) { mattrs.push_back(feature.first()); }
@@ -1044,7 +1049,7 @@ namespace rr
 		}
 #endif // ENABLE_RR_DEBUG_INFO
 
-		if(false)
+		if(true)
 		{
 			std::error_code error;
 			llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-unopt.txt", error);
