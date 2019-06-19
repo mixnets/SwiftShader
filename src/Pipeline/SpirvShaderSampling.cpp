@@ -126,7 +126,7 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 		Pointer<Byte> constants = function.Arg<4>();
 
 		SIMD::Float uvw[4];
-		SIMD::Float q;
+		SIMD::Float sampleOrDref;  // Sample index of a multisampled image access, or the depth compare operand.
 		SIMD::Float lodOrBias;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
 		Vector4f dsx;
 		Vector4f dsy;
@@ -141,7 +141,7 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 
 		if (instruction.isDref())
 		{
-			q = in[i];
+			sampleOrDref = in[i];
 			i++;
 		}
 
@@ -180,7 +180,10 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 			offset[j] = in[i];
 		}
 
-		// TODO(b/133868964): Handle 'Sample' operand.
+		if(instruction.sample != 0)
+		{
+			sampleOrDref = in[i];
+		}
 
 		SamplerCore s(constants, samplerState);
 
@@ -210,7 +213,7 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 					dPdy.y = Float(0.0f);
 				}
 
-				Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], q, lod[i], dPdx, dPdy, offset, samplerFunction);
+				Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], sampleOrDref, lod[i], dPdx, dPdy, offset, samplerFunction);
 
 				Pointer<Float> rgba = out;
 				rgba[0 * SIMD::Width + i] = Pointer<Float>(&sample.x)[i];
@@ -221,7 +224,7 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 		}
 		else
 		{
-			Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], q, lodOrBias.x, (dsx.x), (dsy.x), offset, samplerFunction);
+			Vector4f sample = s.sampleTexture(texture, sampler, uvw[0], uvw[1], uvw[2], sampleOrDref, lodOrBias.x, (dsx.x), (dsy.x), offset, samplerFunction);
 
 			Pointer<SIMD::Float> rgba = out;
 			rgba[0] = sample.x;

@@ -53,14 +53,14 @@ namespace sw
 	{
 	}
 
-	Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4f &offset, SamplerFunction function)
+	Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &sampleOrDref, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4f &offset, SamplerFunction function)
 	{
 		Vector4f c;
 
 		Float4 uuuu = u;
 		Float4 vvvv = v;
 		Float4 wwww = w;
-		Float4 qqqq = q;
+		Float4 qqqq = sampleOrDref;
 
 		Float lod;
 		Float anisotropy;
@@ -142,7 +142,7 @@ namespace sw
 		bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 		bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
 		                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable || state.largeTexture ||
-		                         borderModeActive() || (function == Gather);
+		                         borderModeActive() || (function == Gather) || (function == Fetch);
 
 		if(use32BitFiltering)
 		{
@@ -1208,18 +1208,18 @@ namespace sw
 
 		switch(mode)
 		{
-		case AddressingMode::ADDRESSING_WRAP:
+		case ADDRESSING_WRAP:
 			tmp = (tmp + whd * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % whd;
 			break;
-		case AddressingMode::ADDRESSING_CLAMP:
-		case AddressingMode::ADDRESSING_MIRROR:
-		case AddressingMode::ADDRESSING_MIRRORONCE:
-		case AddressingMode::ADDRESSING_BORDER: // FIXME: Implement and test ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE, ADDRESSING_BORDER
+		case ADDRESSING_CLAMP:
+		case ADDRESSING_MIRROR:
+		case ADDRESSING_MIRRORONCE:
+		case ADDRESSING_BORDER:  // TODO: Implement and test ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE, ADDRESSING_BORDER
 			tmp = Min(Max(tmp, Int4(0)), whd - Int4(1));
 			break;
 		case ADDRESSING_TEXELFETCH:
 			break;
-		case AddressingMode::ADDRESSING_SEAMLESS:
+		case ADDRESSING_SEAMLESS:
 			ASSERT(false);   // Cube sampling doesn't support offset.
 		default:
 			ASSERT(false);
@@ -1309,6 +1309,12 @@ namespace sw
 		if(state.addressingModeW != ADDRESSING_UNUSED)
 		{
 			indices += As<UInt4>(wwww);
+		}
+
+		if(function == Fetch && function.sample)
+		{
+			indices += sample * mipmap.sampleP;
+
 		}
 
 		if(borderModeActive())
@@ -2378,6 +2384,15 @@ namespace sw
 		return state.addressingModeU == ADDRESSING_BORDER ||
 		       state.addressingModeV == ADDRESSING_BORDER ||
 		       state.addressingModeW == ADDRESSING_BORDER;
+
+		Also when fetch?
+			"A texel is replaced if it is one (and only one) of"
+			"an invalid texel"
+			"3. Invalid Texel
+If the texel coordinates fail validation, and
+If the read is the result of an image fetch instruction, image read instruction, or atomic instruction,
+then the texel is an invalid texel and texel replacement is performed."
+
 	}
 
 	VkComponentSwizzle SamplerCore::gatherSwizzle() const
