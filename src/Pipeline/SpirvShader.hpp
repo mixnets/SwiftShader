@@ -72,9 +72,28 @@ namespace sw
 		struct Pointer
 		{
 			Pointer(rr::Pointer<Byte> base, rr::Int limit)
-				: base(base), limit(limit), dynamicOffsets(0), staticOffsets{}, hasDynamicOffsets(false) {}
+				: base(base),
+				  dynamicLimit(limit), staticLimit(0),
+				  dynamicOffsets(0), staticOffsets{},
+				  hasDynamicLimit(true), hasDynamicOffsets(false) {}
+
+			Pointer(rr::Pointer<Byte> base, size_t limit)
+				: base(base),
+				  dynamicLimit(0), staticLimit(limit),
+				  dynamicOffsets(0), staticOffsets{},
+				  hasDynamicLimit(false), hasDynamicOffsets(false) {}
+
 			Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset)
-				: base(base), limit(limit), dynamicOffsets(offset), staticOffsets{}, hasDynamicOffsets(true) {}
+				: base(base),
+				  dynamicLimit(limit), staticLimit(0),
+				  dynamicOffsets(offset), staticOffsets{},
+				  hasDynamicLimit(true), hasDynamicOffsets(true) {}
+
+			Pointer(rr::Pointer<Byte> base, size_t limit, SIMD::Int offset)
+				: base(base),
+				  dynamicLimit(0), staticLimit(limit),
+				  dynamicOffsets(offset), staticOffsets{},
+				  hasDynamicLimit(false), hasDynamicOffsets(true) {}
 
 			inline Pointer& operator += (Int i)
 			{
@@ -119,6 +138,16 @@ namespace sw
 				return dynamicOffsets + SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
 			}
 
+			inline SIMD::Int isInBounds(size_t accessSize) const
+			{
+				return CmpLT(offsets() + SIMD::Int(accessSize - 1), SIMD::Int(limit()));
+			}
+
+			inline Int limit() const
+			{
+				return dynamicLimit + staticLimit;
+			}
+
 			// Returns true if all offsets are sequential (N+0, N+1, N+2, N+3)
 			inline rr::Bool hasSequentialOffsets() const
 			{
@@ -161,14 +190,15 @@ namespace sw
 			rr::Pointer<rr::Byte> base;
 
 			// Upper (non-inclusive) limit for offsets from base.
-			rr::Int limit;
+			rr::Int dynamicLimit; // If hasDynamicLimit is false, dynamicLimit is zero.
+			size_t staticLimit;
 
 			// Per lane offsets from base.
 			SIMD::Int dynamicOffsets; // If hasDynamicOffsets is false, all dynamicOffsets are zero.
 			std::array<int32_t, SIMD::Width> staticOffsets;
 
-			// True if all dynamicOffsets are zero.
-			bool hasDynamicOffsets;
+			bool hasDynamicLimit; // True if all dynamicLimit is zero.
+			bool hasDynamicOffsets; // True if all dynamicOffsets are zero.
 		};
 
 		template <typename T> struct Element {};
