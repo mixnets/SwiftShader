@@ -88,12 +88,12 @@ public:
 	bool hasPrimitiveRestartEnable() const { return primitiveRestartEnable; }
 
 private:
-	sw::SpirvShader *vertexShader = nullptr;
-	sw::SpirvShader *fragmentShader = nullptr;
+	const sw::SpirvShader *vertexShader = nullptr;
+	const sw::SpirvShader *fragmentShader = nullptr;
 
 	uint32_t dynamicStateFlags = 0;
 	bool primitiveRestartEnable = false;
-	sw::Context context;
+	sw::Context context;  // TODO(b/132280877): eliminate
 	VkRect2D scissor;
 	VkViewport viewport;
 	sw::Color<float> blendConstants;

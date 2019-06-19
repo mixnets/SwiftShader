@@ -40,7 +40,7 @@ namespace sw
 
 		const SetupProcessor::State &state;
 
-		Routine *routine;
+		Routine *routine = nullptr;
 	};
 }
 

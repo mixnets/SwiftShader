@@ -169,13 +169,9 @@ namespace sw
 	{
 		State state;
 
-		if(context->pixelShader)
+		if(context->fragmentShader)
 		{
-			state.shaderID = context->pixelShader->getSerialID();
-		}
-		else
-		{
-			state.shaderID = 0;
+			state.shaderID = context->fragmentShader->getSerialID();
 		}
 
 		state.alphaToCoverage = context->alphaToCoverage;
@@ -220,9 +216,9 @@ namespace sw
 		state.multiSample = static_cast<unsigned int>(context->sampleCount);
 		state.multiSampleMask = context->multiSampleMask;
 
-		if(state.multiSample > 1 && context->pixelShader)
+		if(state.multiSample > 1 && context->fragmentShader)
 		{
-			state.centroid = context->pixelShader->getModes().NeedsCentroid;
+			state.centroid = context->fragmentShader->getModes().NeedsCentroid;
 		}
 
 		state.frontFaceCCW = context->frontFacingCCW;
@@ -234,14 +230,14 @@ namespace sw
 
 	Routine *PixelProcessor::routine(const State &state,
 		vk::PipelineLayout const *pipelineLayout,
-		SpirvShader const *pixelShader,
+		SpirvShader const *fragmentShader,
 		const vk::DescriptorSet::Bindings &descriptorSets)
 	{
 		Routine *routine = routineCache->query(state);
 
 		if(!routine)
 		{
-			QuadRasterizer *generator = new PixelProgram(state, pipelineLayout, pixelShader, descriptorSets);
+			QuadRasterizer *generator = new PixelProgram(state, pipelineLayout, fragmentShader, descriptorSets);
 			generator->generate();
 			routine = (*generator)("PixelRoutine_%0.8X", state.shaderID);
 			delete generator;

@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Device/Vertex.hpp>
 #include "SetupRoutine.hpp"
 
 #include "Constants.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Polygon.hpp"
 #include "Device/Renderer.hpp"
+#include "Device/Vertex.hpp"
 #include "Reactor/Reactor.hpp"
 
 namespace sw
 {
 	SetupRoutine::SetupRoutine(const SetupProcessor::State &state) : state(state)
 	{
-		routine = 0;
 	}
 
 	SetupRoutine::~SetupRoutine()

@@ -281,7 +281,7 @@ namespace sw
 
 			vertexRoutine = VertexProcessor::routine(vertexState, context->pipelineLayout, context->vertexShader, context->descriptorSets);
 			setupRoutine = SetupProcessor::routine(setupState);
-			pixelRoutine = PixelProcessor::routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
+			pixelRoutine = PixelProcessor::routine(pixelState, context->pipelineLayout, context->fragmentShader, context->descriptorSets);
 		}
 
 		int batch = batchSize / ms;

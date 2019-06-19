@@ -37,6 +37,7 @@ namespace sw
 
 		// value returns the numerical value of the identifier.
 		uint32_t value() const { return id; }
+
 	private:
 		uint32_t id;
 	};

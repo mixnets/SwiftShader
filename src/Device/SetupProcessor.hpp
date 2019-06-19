@@ -53,7 +53,7 @@ namespace sw
 
 		struct State : States
 		{
-			State(int i = 0);
+			State();
 
 			bool operator==(const State &states) const;
 

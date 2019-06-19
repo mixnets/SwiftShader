@@ -141,7 +141,7 @@ namespace sw
 		vk::PipelineLayout const *pipelineLayout;
 
 		// Shaders
-		const SpirvShader *pixelShader;
+		const SpirvShader *fragmentShader;
 		const SpirvShader *vertexShader;
 
 		// Instancing

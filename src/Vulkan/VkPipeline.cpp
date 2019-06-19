@@ -470,7 +470,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, c
 
 		case VK_SHADER_STAGE_FRAGMENT_BIT:
 			ASSERT(fragmentShader == nullptr);
-			context.pixelShader = fragmentShader = spirvShader;
+			context.fragmentShader = fragmentShader = spirvShader;
 			break;
 
 		default:
