@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3b78a22f_49f4808d",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-20T21:31:46Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t think we\u0027d need to have one per type. Just has to be large enough for the biggest one, and sufficiently aligned.\n\nI\u0027m intentionally trying to avoid unnecessary casts as this produces IR spam that is always going to have some overhead, makes reading the IR more difficult, and is likely to impact some of the smarts with other optimizations.\n\n\u003e It may not even have to be large enough. We merely need a valid area of memory. Anywhere in the stack should do. I noticed in the LLVM spec that it\u0027s legal to do a 0-size alloca, so it could be made to take up no space at all.\n\nWell, if the alloca is sized too small, the read will be OOB. While this is unlikely to cause a page fault for our particular use cases, it\u0027s making assumptions I\u0027d rather not. Consider an LLVM transform that adds stack bounds checking, and the temporary is placed at the end of the stack...\nThis approach also can be extended to conditional stores, which definitely requires the full type size.",
+      "parentUuid": "3d2b551f_176750e0",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 30
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "18c2f785_94063cb5",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 1
