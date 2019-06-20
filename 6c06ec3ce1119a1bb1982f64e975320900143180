@@ -68,6 +68,29 @@
       "revId": "6c06ec3ce1119a1bb1982f64e975320900143180",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "82966816_cf0d8254",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2803,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-20T20:41:56Z",
+      "side": 1,
+      "message": "Note: nothing to do in this cl, but I just realized that the result of getTransformFeedback() is sometimes null pointer checked and sometimes it\u0027s not in this file. Also, we sometimes explicitly call getTransformFeedback(mState.transformFeedback), which is what getTransformFeedback() does. Anyway, some inconsistencies, but I think this cl is fine.",
+      "range": {
+        "startLine": 2803,
+        "startChar": 21,
+        "endLine": 2803,
+        "endChar": 39
+      },
+      "revId": "6c06ec3ce1119a1bb1982f64e975320900143180",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
