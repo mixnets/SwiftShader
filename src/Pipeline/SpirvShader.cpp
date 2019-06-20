@@ -290,40 +290,34 @@ namespace sw
 		T Load(Pointer ptr, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
 		{
 			using EL = typename Element<T>::type;
-			auto offsets = ptr.offsets();
 			mask &= ptr.isInBounds(sizeof(float)); // Disable OOB reads.
+
+			if (ptr.hasStaticEqualOffsets())
+			{
+				// Load one, replicate.
+				auto p = rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], sizeof(float));
+				return T(rr::ConditionalLoad<EL>(AnyTrue(mask), p, sizeof(float), atomic, order));
+			}
+
 			if (!atomic && order == std::memory_order_relaxed)
 			{
-				if (ptr.hasStaticEqualOffsets())
-				{
-					// Load one, replicate.
-					// Be careful of the case where the post-bounds-check mask
-					// is 0, in which case we must not load.
-					T out = T(0);
-					If(AnyTrue(mask))
-					{
-						EL el = *rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment);
-						out = T(el);
-					}
-					return out;
-				}
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
 					return rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment);
 				}
-				return rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, alignment);
+				return rr::Gather(rr::Pointer<EL>(ptr.base), ptr.offsets(), mask, alignment);
 			}
 			else
 			{
+				auto offsets = ptr.offsets();
 				T out;
-				auto anyLanesDisabled = AnyFalse(mask);
-				If(ptr.hasEqualOffsets() && !anyLanesDisabled)
+				If(ptr.hasEqualOffsets() && AnyTrue(mask))
 				{
 					// Load one, replicate.
 					auto offset = Extract(offsets, 0);
 					out = T(rr::Load(rr::Pointer<EL>(&ptr.base[offset]), alignment, atomic, order));
 				}
-				Else If(ptr.hasSequentialOffsets(sizeof(float)) && !anyLanesDisabled)
+				Else If(ptr.hasSequentialOffsets(sizeof(float)) && !AnyFalse(mask))
 				{
 					// Load all elements in a single SIMD instruction.
 					auto offset = Extract(offsets, 0);
