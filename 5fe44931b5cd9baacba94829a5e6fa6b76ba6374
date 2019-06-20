@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93463a6d_fc8f4f2b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T19:47:30Z",
+      "side": 1,
+      "message": "nit: While very useful information, it belongs more in a tracking bug than in a commit message.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 85
+      },
+      "revId": "5fe44931b5cd9baacba94829a5e6fa6b76ba6374",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
