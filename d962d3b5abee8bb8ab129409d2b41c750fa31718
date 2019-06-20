@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f4329f77_e544ce26",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 6203,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T19:47:16Z",
+      "side": 1,
+      "message": "bikeshed: I associate this word with \"glitch\" or being part of a transition. I think they\u0027re more significant than that. Just call them local variables instead?",
+      "range": {
+        "startLine": 6203,
+        "startChar": 15,
+        "endLine": 6203,
+        "endChar": 24
+      },
+      "revId": "d962d3b5abee8bb8ab129409d2b41c750fa31718",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
