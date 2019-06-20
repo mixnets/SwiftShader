@@ -137,6 +137,7 @@ namespace rr
 	private:
 		static void materializeAll();
 		static void killUnmaterialized();
+		static void killTemporaries();
 
 		static std::unordered_set<Variable*> unmaterializedVariables;
 
@@ -157,6 +158,8 @@ namespace rr
 		{
 			return false;
 		}
+
+		static LValue<T>& getTemporary();
 	};
 
 	template<class T>
@@ -2369,10 +2372,10 @@ namespace rr
 	}
 
 	// TODO: Use SIMD to template these.
-	RValue<Float4> MaskedLoad(RValue<Pointer<Float4>> base, RValue<Int4> mask, unsigned int alignment);
-	RValue<Int4> MaskedLoad(RValue<Pointer<Int4>> base, RValue<Int4> mask, unsigned int alignment);
-	void MaskedStore(RValue<Pointer<Float4>> base, RValue<Float4> val, RValue<Int4> mask, unsigned int alignment);
-	void MaskedStore(RValue<Pointer<Int4>> base, RValue<Int4> val, RValue<Int4> mask, unsigned int alignment);
+	RValue<Float4> MaskedLoad(RValue<Pointer<Float4>> ptr, RValue<Int4> mask, unsigned int alignment);
+	RValue<Int4> MaskedLoad(RValue<Pointer<Int4>> ptr, RValue<Int4> mask, unsigned int alignment);
+	void MaskedStore(RValue<Pointer<Float4>> ptr, RValue<Float4> val, RValue<Int4> mask, unsigned int alignment);
+	void MaskedStore(RValue<Pointer<Int4>> ptr, RValue<Int4> val, RValue<Int4> mask, unsigned int alignment);
 
 	RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
 	RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment);
@@ -3004,6 +3007,22 @@ namespace rr
 		Value *falseValue = ifFalse.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, trueValue, falseValue));
+	}
+
+	template <typename T>
+	RValue<T> ConditionalLoad(Bool cond, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		Pointer<T> disabled = &LValue<T>::getTemporary();
+		Pointer<T> address = IfThenElse(cond, pointer, disabled);
+		return Load(address, alignment, atomic, memoryOrder);
+	}
+
+	template <typename T>
+	void ConditionalStore(Bool cond, RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
+	{
+		Pointer<T> disabled = &LValue<T>::getTemporary();
+		Pointer<T> address = IfThenElse(cond, pointer, disabled);
+		Store(value, address, alignment, atomic, memoryOrder);
 	}
 
 	template<typename Return, typename... Arguments>

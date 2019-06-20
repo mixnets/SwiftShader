@@ -15,11 +15,48 @@
 #include "Reactor.hpp"
 #include "Debug.hpp"
 
+#include <memory> // std::unique_ptr
+
 // Define REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION to non-zero to ensure all
 // variables have a stack location obtained throuch alloca().
 #ifndef REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION
 #define REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION 0
 #endif
+
+namespace
+{
+	template <typename T>
+	class Temporary
+	{
+	public:
+		operator T&()
+		{
+			if (!val)
+			{
+				val = std::unique_ptr<T>(new T);
+			}
+			return *val;
+		}
+	private:
+		std::unique_ptr<T> val;
+	};
+
+	class Temporaries
+	{
+	public:
+		Temporary<rr::Bool>   Bool;
+		Temporary<rr::Byte>   Byte;
+		Temporary<rr::SByte>  SByte;
+		Temporary<rr::Short>  Short;
+		Temporary<rr::UShort> UShort;
+		Temporary<rr::Int>    Int;
+		Temporary<rr::UInt>   UInt;
+		Temporary<rr::Long>   Long;
+		Temporary<rr::Float>  Float;
+	};
+
+	Temporaries temporaries;
+}
 
 namespace rr
 {
@@ -54,6 +91,18 @@ namespace rr
 	{
 		unmaterializedVariables.clear();
 	}
+
+	template<> LValue<Bool>& LValue<Bool>::getTemporary() { return temporaries.Bool; }
+	template<> LValue<Byte>& LValue<Byte>::getTemporary() { return temporaries.Byte; }
+	template<> LValue<SByte>& LValue<SByte>::getTemporary() { return temporaries.SByte; }
+	template<> LValue<Short>& LValue<Short>::getTemporary() { return temporaries.Short; }
+	template<> LValue<UShort>& LValue<UShort>::getTemporary() { return temporaries.UShort; }
+	template<> LValue<Int>& LValue<Int>::getTemporary() { return temporaries.Int; }
+	template<> LValue<UInt>& LValue<UInt>::getTemporary() { return temporaries.UInt; }
+	template<> LValue<Long>& LValue<Long>::getTemporary() { return temporaries.Long; }
+	template<> LValue<Float>& LValue<Float>::getTemporary() { return temporaries.Float; }
+
+	void Variable::killTemporaries() { temporaries = Temporaries{}; }
 
 	static Value *createSwizzle4(Value *val, unsigned char select)
 	{

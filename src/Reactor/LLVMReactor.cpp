@@ -1096,6 +1096,8 @@ namespace rr
 
 	Nucleus::~Nucleus()
 	{
+		Variable::killTemporaries();
+
 #ifdef ENABLE_RR_DEBUG_INFO
 		debugInfo.reset(nullptr);
 #endif // ENABLE_RR_DEBUG_INFO
@@ -1207,6 +1209,8 @@ namespace rr
 
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
 	{
+		Variable::killTemporaries();
+
 		::function = rr::createFunction("", T(ReturnType), T(Params));
 
 #ifdef ENABLE_RR_DEBUG_INFO
