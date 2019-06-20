@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "80f1e61a_fa7cb39a",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T12:45:54Z",
+      "side": 1,
+      "message": "You can use IMPLEMENTATION_MAX_RENDERBUFFER_SIZE when you move this test up to libGLESv2/Context.cpp. That constant is both the vertical and horizontal limit for OpenGL. OUTLINE_RESOLUTION is more of an implementation detail. Also, at the GL draw call level you might have more control over whether processing for transform feedback still needs to happen.",
+      "parentUuid": "f421fbd9_cc8f86cf",
+      "range": {
+        "startLine": 257,
+        "startChar": 15,
+        "endLine": 257,
+        "endChar": 17
+      },
+      "revId": "f518520e1ffa594e9ebccb8698dfdc1eb4d64a21",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "da21c56c_c9d6ddfb",
         "filename": "src/Renderer/Renderer.cpp",
         "patchSetId": 1
