@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac3269de_ff94acfb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:02:38Z",
+      "side": 1,
+      "message": "nit: Don\u0027t try to render to out-of-bounds viewports",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 34
+      },
+      "revId": "6c06ec3ce1119a1bb1982f64e975320900143180",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2ef26caf_61b61feb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:02:38Z",
+      "side": 1,
+      "message": "outside the maximum",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 43
+      },
+      "revId": "6c06ec3ce1119a1bb1982f64e975320900143180",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e80e1937_ac7fc7b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:02:38Z",
+      "side": 1,
+      "message": "Clarify that when transform feedback is in effect, the draw call still needs to happen but we make the effective viewport 0x0.\n\nAlso mention that this is to prevent overflow in viewport-dependent calculations.",
+      "range": {
+        "startLine": 10,
+        "startChar": 42,
+        "endLine": 10,
+        "endChar": 64
+      },
+      "revId": "6c06ec3ce1119a1bb1982f64e975320900143180",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
