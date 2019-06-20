@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c6e26b1_b902c1b8",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 502,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:21:43Z",
+      "side": 1,
+      "message": "volatile?",
+      "range": {
+        "startLine": 502,
+        "startChar": 44,
+        "endLine": 502,
+        "endChar": 45
+      },
+      "revId": "c119c885ec13595a42d7c7897ff3534c185a00ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a225c685_cfbb281d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:21:43Z",
+      "side": 1,
+      "message": "#ifdef __ANDROID__ ?\n\nI\u0027m a little surprised this builds on Windows. Might be because it\u0027s not instantiated, but still.",
+      "range": {
+        "startLine": 500,
+        "startChar": 0,
+        "endLine": 513,
+        "endChar": 2
+      },
+      "revId": "c119c885ec13595a42d7c7897ff3534c185a00ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
