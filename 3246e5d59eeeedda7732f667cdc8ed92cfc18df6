@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "3d2b551f_176750e0",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:44:01Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027d need to have one per type. Just has to be large enough for the biggest one, and sufficiently aligned.\n\nIt may not even have to be large enough. We merely need a valid area of memory. Anywhere in the stack should do. I noticed in the LLVM spec that it\u0027s legal to do a 0-size alloca, so it could be made to take up no space at all.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 30
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "18c2f785_94063cb5",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 1
@@ -37,6 +60,30 @@
       "side": 1,
       "message": "Because you\u0027d end up with a whole lotta-alloca, one per conditional load. LLVM can\u0027t fold these together.",
       "parentUuid": "18c2f785_94063cb5",
+      "range": {
+        "startLine": 3012,
+        "startChar": 25,
+        "endLine": 3012,
+        "endChar": 51
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7f884eb_b8698bc4",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3012,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:44:01Z",
+      "side": 1,
+      "message": "Since it\u0027s never written to, LLVM could in theory determine that it points to undef and so all similar loads could use the same address? Doesn\u0027t mean it will, so I see you point.",
+      "parentUuid": "cff377f2_23c766a3",
       "range": {
         "startLine": 3012,
         "startChar": 25,
