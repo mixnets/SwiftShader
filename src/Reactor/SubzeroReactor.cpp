@@ -573,6 +573,8 @@ namespace rr
 
 	Nucleus::~Nucleus()
 	{
+		Variable::killTemporaries();
+
 		delete ::routine;
 
 		delete ::allocator;
@@ -664,6 +666,8 @@ namespace rr
 
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
 	{
+		Variable::killTemporaries();
+
 		uint32_t sequenceNumber = 0;
 		::function = Ice::Cfg::create(::context, sequenceNumber).release();
 		::allocator = new Ice::CfgLocalAllocatorScope(::function);
