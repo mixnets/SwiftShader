@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18c2f785_94063cb5",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3012,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:06:39Z",
+      "side": 1,
+      "message": "Why not just a local variable here?",
+      "range": {
+        "startLine": 3012,
+        "startChar": 25,
+        "endLine": 3012,
+        "endChar": 51
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c7b7f2a_6e16f782",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3013,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-20T20:06:39Z",
+      "side": 1,
+      "message": "sneaky 8)",
+      "range": {
+        "startLine": 3013,
+        "startChar": 23,
+        "endLine": 3013,
+        "endChar": 58
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
