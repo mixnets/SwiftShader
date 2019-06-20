@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cff377f2_23c766a3",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3012,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-20T20:18:35Z",
+      "side": 1,
+      "message": "Because you\u0027d end up with a whole lotta-alloca, one per conditional load. LLVM can\u0027t fold these together.",
+      "parentUuid": "18c2f785_94063cb5",
+      "range": {
+        "startLine": 3012,
+        "startChar": 25,
+        "endLine": 3012,
+        "endChar": 51
+      },
+      "revId": "3246e5d59eeeedda7732f667cdc8ed92cfc18df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4c7b7f2a_6e16f782",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 1
