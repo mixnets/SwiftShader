@@ -163,18 +163,17 @@ namespace sw
 	void ComputeProgram::emit(SpirvRoutine* routine)
 	{
 		Pointer<Byte> data = Arg<0>();
-		Int workgroupX = Arg<1>();
-		Int workgroupY = Arg<2>();
-		Int workgroupZ = Arg<3>();
-		Pointer<Byte> workgroupMemory = Arg<4>();
-		Int firstSubgroup = Arg<5>();
-		Int subgroupCount = Arg<6>();
+		Int workgroupX = *Pointer<Int>(data + OFFSET(Data, workgroupX));
+		Int workgroupY = *Pointer<Int>(data + OFFSET(Data, workgroupY));
+		Int workgroupZ = *Pointer<Int>(data + OFFSET(Data, workgroupZ));
+		Int firstSubgroup = *Pointer<Int>(data + OFFSET(Data, firstSubgroup));
+		Int subgroupCount = *Pointer<Int>(data + OFFSET(Data, subgroupCount));
 
 		routine->descriptorSets = data + OFFSET(Data, descriptorSets);
 		routine->descriptorDynamicOffsets = data + OFFSET(Data, descriptorDynamicOffsets);
 		routine->pushConstants = data + OFFSET(Data, pushConstants);
 		routine->constants = *Pointer<Pointer<Byte>>(data + OFFSET(Data, constants));
-		routine->workgroupMemory = workgroupMemory;
+		routine->workgroupMemory = *Pointer<Pointer<Byte>>(data + OFFSET(Data, workgroupMemory));
 
 		Int invocationsPerWorkgroup = *Pointer<Int>(data + OFFSET(Data, invocationsPerWorkgroup));
 
@@ -241,12 +240,13 @@ namespace sw
 		data.subgroupsPerWorkgroup = subgroupsPerWorkgroup;
 		data.pushConstants = pushConstants;
 		data.constants = &sw::constants;
+		data.workgroupMemory = workgroupMemory.data();
 
-		for (uint32_t groupZ = baseGroupZ; groupZ < baseGroupZ + groupCountZ; groupZ++)
+		for (data.workgroupZ = baseGroupZ; data.workgroupZ < baseGroupZ + groupCountZ; data.workgroupZ++)
 		{
-			for (uint32_t groupY = baseGroupY; groupY < baseGroupY + groupCountY; groupY++)
+			for (data.workgroupY = baseGroupY; data.workgroupY < baseGroupY + groupCountY; data.workgroupY++)
 			{
-				for (uint32_t groupX = baseGroupX; groupX < baseGroupX + groupCountX; groupX++)
+				for (data.workgroupX = baseGroupX; data.workgroupX < baseGroupX + groupCountX; data.workgroupX++)
 				{
 
 					// TODO(bclayton): Split work across threads.
@@ -258,15 +258,18 @@ namespace sw
 						// Make a function call per subgroup so each subgroup
 						// can yield, bringing all subgroups to the barrier
 						// together.
-						for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
+						data.subgroupCount = 1;
+						for(data.firstSubgroup = 0; data.firstSubgroup < subgroupsPerWorkgroup; data.firstSubgroup++)
 						{
-							auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
+							auto coroutine = (*this)(&data);
 							coroutines.push(std::move(coroutine));
 						}
 					}
 					else
 					{
-						auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
+						data.firstSubgroup = 0;
+						data.subgroupCount = subgroupsPerWorkgroup;
+						auto coroutine = (*this)(&data);
 						coroutines.push(std::move(coroutine));
 					}
 

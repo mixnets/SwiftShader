@@ -37,14 +37,7 @@ namespace sw
 	struct Constants;
 
 	// ComputeProgram builds a SPIR-V compute shader.
-	class ComputeProgram : public Coroutine<SpirvShader::YieldResult(
-			void* data,
-			int32_t workgroupX,
-			int32_t workgroupY,
-			int32_t workgroupZ,
-			void* workgroupMemory,
-			int32_t firstSubgroup,
-			int32_t subgroupCount)>
+	class ComputeProgram : public Coroutine<SpirvShader::YieldResult(void* data)>
 	{
 	public:
 		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
@@ -79,6 +72,12 @@ namespace sw
 			uint32_t invocationsPerWorkgroup; // Total number of invocations per workgroup.
 			PushConstantStorage pushConstants;
 			const Constants *constants;
+			uint32_t workgroupX;
+			uint32_t workgroupY;
+			uint32_t workgroupZ;
+			void* workgroupMemory;
+			int32_t firstSubgroup;
+			int32_t subgroupCount;
 		};
 
 		SpirvShader const * const shader;
