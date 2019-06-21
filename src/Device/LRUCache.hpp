@@ -17,6 +17,9 @@
 
 #include "System/Math.hpp"
 
+#include <cstring>
+#include <type_traits>
+
 namespace sw
 {
 	template<class Key, class Data>
@@ -29,7 +32,7 @@ namespace sw
 
 		Data *query(const Key &key) const;
 		Data *add(const Key &key, Data *data);
-	
+
 		int getSize() {return size;}
 		Key &getKey(int i) {return key[i];}
 
@@ -42,6 +45,18 @@ namespace sw
 		Key *key;
 		Key **ref;
 		Data **data;
+	};
+
+	// Helper class for clearing the memory of objects at construction.
+	// Useful as the first base class or cache keys which may contain padding bytes or bits otherwise left uninitialized.
+	template<class T>
+	struct Memset
+	{
+		Memset(T *object, int val)
+		{
+			static_assert(std::is_base_of<Memset<T>, T>::value, "Memset<T> must only clear the memory of a type of which it is a base class");
+			memset(object, 0, sizeof(T));
+		}
 	};
 }
 
