@@ -51,12 +51,12 @@ void DescriptorPool::destroy(const VkAllocationCallbacks* pAllocator)
 
 size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreateInfo* pCreateInfo)
 {
-	size_t size = pCreateInfo->maxSets * sizeof(DescriptorSetHeader);
+	size_t size = pCreateInfo->maxSets * sw::align(sizeof(DescriptorSetHeader), 16);
 
 	for(uint32_t i = 0; i < pCreateInfo->poolSizeCount; i++)
 	{
 		size += pCreateInfo->pPoolSizes[i].descriptorCount *
-		        DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type);
+		        sw::align(DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type), 16);
 	}
 
 	return size;
@@ -101,7 +101,7 @@ uint8_t* DescriptorPool::findAvailableMemory(size_t size)
 	}
 
 	// Second, look for space at the beginning of the pool
-	const auto itBegin = nodes.end();
+	const auto itBegin = nodes.begin();
 	freeSpace = itBegin->set - pool;
 	if(freeSpace >= size)
 	{
@@ -215,7 +215,7 @@ size_t DescriptorPool::computeTotalFreeSize() const
 	totalFreeSize += poolSize - (itLast->set - pool) + itLast->size;
 
 	// Compute space at the beginning of the pool
-	const auto itBegin = nodes.end();
+	const auto itBegin = nodes.begin();
 	totalFreeSize += itBegin->set - pool;
 
 	// Finally, look between existing pool items
