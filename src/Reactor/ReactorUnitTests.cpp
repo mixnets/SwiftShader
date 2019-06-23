@@ -21,6 +21,44 @@
 
 using namespace rr;
 
+TEST(ReactorUnitTests, PointerArrayIndexing)
+{
+	Routine *routine = nullptr;
+
+	{
+		Function<Pointer<Int>(Pointer<Byte>)> function;
+		{
+			Pointer<Byte> x = function.Arg<0>();
+			Pointer<Pointer<Int>> p = x;
+
+			Pointer<Int> p1 = p[1];
+			//Pointer<Int> p1 = *Pointer<Pointer<Int>>(Pointer<Byte>(p) + 4);
+
+			Return(p1);
+		}
+
+		routine = function("one");
+
+		if(routine)
+		{
+			int* (*callable)(void*) = (int*(*)(void*))routine->getEntry();
+
+			int a[4] = { 100, 200, 300, 400 };
+
+			int *p[4];
+			p[0] = &a[0];
+			p[1] = &a[1];
+			p[2] = &a[2];
+			p[3] = &a[3];
+
+			int* result = callable(&p);
+			EXPECT_EQ(result, &a[1]);
+		}
+	}
+
+	delete routine;
+}
+
 int reference(int *p, int y)
 {
 	int x = p[-1];
