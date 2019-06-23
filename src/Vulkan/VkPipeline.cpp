@@ -176,6 +176,7 @@ std::vector<uint32_t> preprocessSpirv(
 
 	opt.RegisterPass(spvtools::CreateDeadBranchElimPass()); // Required for MergeReturnPass
 	opt.RegisterPass(spvtools::CreateMergeReturnPass());
+	opt.RegisterPass(spvtools::CreateIsolateFunctionCallsPass());
 	opt.RegisterPass(spvtools::CreateInlineExhaustivePass());
 	opt.RegisterPass(spvtools::CreateEliminateDeadFunctionsPass());
 
