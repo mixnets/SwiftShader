@@ -226,6 +226,12 @@ Optimizer::PassToken CreateStripReflectInfoPass();
 // functions are not needed because they will never be called.
 Optimizer::PassToken CreateEliminateDeadFunctionsPass();
 
+// Creates an isolate-function-calls pass.
+// An isolate-function-calls pass will split blocks containing function calls
+// on both sides of the call operation. This allows inliner performance to be
+// less sensitive to the size of the surrounding code.
+Optimizer::PassToken CreateIsolateFunctionCallsPass();
+
 // Creates a set-spec-constant-default-value pass from a mapping from spec-ids
 // to the default values in the form of string.
 // A set-spec-constant-default-value pass sets the default values for the
