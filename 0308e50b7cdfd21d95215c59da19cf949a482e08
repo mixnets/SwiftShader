@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f4ee578f_ee1a2e4a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-23T18:29:43Z",
+      "side": 1,
+      "message": "Would be good to get this up done so the CL description can link to the in-flight upstream review.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 48
+      },
+      "revId": "0308e50b7cdfd21d95215c59da19cf949a482e08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "674c1284_2e040533",
+        "filename": "third_party/SPIRV-Tools/source/opt/isolate_function_calls_pass.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-23T18:29:43Z",
+      "side": 1,
+      "message": "Nit: I\u0027d swap the order of these so that they\u0027re in logical order.",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 51
+      },
+      "revId": "0308e50b7cdfd21d95215c59da19cf949a482e08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2792c613_c3ca2164",
+        "filename": "third_party/SPIRV-Tools/source/opt/isolate_function_calls_pass.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-23T18:29:43Z",
+      "side": 1,
+      "message": "Remove?",
+      "range": {
+        "startLine": 42,
+        "startChar": 11,
+        "endLine": 42,
+        "endChar": 41
+      },
+      "revId": "0308e50b7cdfd21d95215c59da19cf949a482e08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
