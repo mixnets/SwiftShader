@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e7dd1430_86a9b2eb",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-24T14:19:33Z",
+      "side": 1,
+      "message": "I\u0027m not sure I follow, why there?",
+      "parentUuid": "248e5196_4391cdfa",
+      "range": {
+        "startLine": 128,
+        "startChar": 1,
+        "endLine": 152,
+        "endChar": 2
+      },
+      "revId": "d2e2f56a27abc829cc0e0dcecaf93411f9a4fda0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb9d2fe4_745dd4dd",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-06-24T14:14:17Z",
       "side": 1,
       "message": "Old comment but not sure this is relevant here.",
+      "range": {
+        "startLine": 605,
+        "startChar": 3,
+        "endLine": 605,
+        "endChar": 89
+      },
+      "revId": "d2e2f56a27abc829cc0e0dcecaf93411f9a4fda0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b90b3ffc_0c7ef80d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-24T14:19:33Z",
+      "side": 1,
+      "message": "I\u0027d say it is still relevant - assuming we want to track these allocation with the vulkan allocator. If we have a bunch of coroutines in flight at the same time, these could be somewhat bulky.",
+      "parentUuid": "cb9d2fe4_745dd4dd",
       "range": {
         "startLine": 605,
         "startChar": 3,
