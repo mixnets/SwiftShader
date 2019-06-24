@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "7b21da75_64562c4f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-24T14:53:19Z",
+      "side": 1,
+      "message": "They\u0027re highly generic functions, so ideally they\u0027d go into a Memory.cpp file or something like that. LLVMRoutine.cpp already does some memory management, so that seemed reasonable too. Just want to avoid making LLVMReactor.cpp larger and hiding these functions somewhere we\u0027d probably forget about them if we needed aligned memory allocation in Reactor again.\n\nZero objections to landing this as-is.",
+      "parentUuid": "e7dd1430_86a9b2eb",
+      "range": {
+        "startLine": 128,
+        "startChar": 1,
+        "endLine": 152,
+        "endChar": 2
+      },
+      "revId": "d2e2f56a27abc829cc0e0dcecaf93411f9a4fda0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb9d2fe4_745dd4dd",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
