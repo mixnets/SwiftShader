@@ -19,7 +19,7 @@
 #include "Reactor.hpp"
 #include "LLVMReactor.hpp"
 
-#include "boost/stacktrace.hpp"
+#include "backtrace.h"
 
 #include "llvm/Demangle/Demangle.h"
 #include "llvm/ExecutionEngine/JITEventListener.h"
@@ -438,41 +438,48 @@ namespace rr
 
 	DebugInfo::Backtrace DebugInfo::getCallerBacktrace(size_t limit /* = 0 */) const
 	{
-		auto shouldSkipFile = [](llvm::StringRef fileSR) {
-				return fileSR.empty() ||
-					fileSR.endswith_lower("ReactorDebugInfo.cpp") ||
-					fileSR.endswith_lower("Reactor.cpp") ||
-					fileSR.endswith_lower("Reactor.hpp") ||
-					fileSR.endswith_lower("stacktrace.hpp");
+		struct callbacks
+		{
+			static void onError(void *data, const char *msg, int errnum)
+			{
+				fprintf(stderr, "BACKTRACE ERROR %d: %s\n", errnum, msg);
+			}
+
+			static int onPCInfo(void *data, uintptr_t pc, const char *file, int line, const char *function)
+			{
+				if (file == nullptr) { return 0; }
+
+				auto const &fileSR = llvm::StringRef(file);
+				if (fileSR.endswith("ReactorDebugInfo.cpp") ||
+					fileSR.endswith("Reactor.cpp") ||
+					fileSR.endswith("Reactor.hpp"))
+				{
+					return 0;
+				}
+
+				auto cb = reinterpret_cast<callbacks*>(data);
+
+				Location location;
+				location.function.file = file;
+				location.function.name = function;
+				location.line = line;
+
+				cb->locations.push_back(location);
+				return (cb->limit == 0 || sizeof(cb->locations) < cb->limit) ? 0 : 1;
+			}
+
+			size_t limit;
+			std::vector<DebugInfo::Location> locations;
 		};
 
-		std::vector<DebugInfo::Location> locations;
+		callbacks callbacks;
+		callbacks.limit = limit;
+		static auto state = backtrace_create_state(nullptr, 0, &callbacks::onError, nullptr);
+		backtrace_full(state, 1, &callbacks::onPCInfo, &callbacks::onError, &callbacks);
 
-		// Note that bs::stacktrace() effectively returns a vector of addresses; bs::frame construction is where
-		// the heavy lifting is done: resolving the function name, file and line number.
-		namespace bs = boost::stacktrace;
-		for (bs::frame frame : bs::stacktrace())
-		{
-			if (shouldSkipFile(frame.source_file()))
-			{
-				continue;
-			}
+		std::reverse(callbacks.locations.begin(), callbacks.locations.end());
 
-			DebugInfo::Location location;
-			location.function.file = frame.source_file();
-			location.function.name = frame.name();
-			location.line = frame.source_line();
-			locations.push_back(location);
-
-			if (limit > 0 && locations.size() >= limit)
-			{
-				break;
-			}
-		}
-
-		std::reverse(locations.begin(), locations.end());
-
-		return locations;
+		return callbacks.locations;
 	}
 
 	llvm::DIType *DebugInfo::getOrCreateType(llvm::Type* type)
