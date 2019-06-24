@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b49439b_cb1bead1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-24T14:45:10Z",
+      "side": 1,
+      "message": "Tracker bug? Just curious who\u0027s reporting VS 2019 build issues.",
+      "range": {
+        "startLine": 9,
+        "startChar": 123,
+        "endLine": 9,
+        "endChar": 145
+      },
+      "revId": "84a6141db32ee90f2d8c17f2b156a427e104561b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
