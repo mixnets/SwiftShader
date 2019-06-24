@@ -292,21 +292,23 @@ namespace sw
 			using EL = typename Element<T>::type;
 			auto offsets = ptr.offsets();
 			mask &= ptr.isInBounds(sizeof(float)); // Disable OOB reads.
+
+			if (ptr.hasStaticEqualOffsets())
+			{
+				// Load one, replicate.
+				// Be careful of the case where the post-bounds-check mask
+				// is 0, in which case we must not load.
+				T out = T(0);
+				If(AnyTrue(mask))
+				{
+					auto src = rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], sizeof(float));
+					out = T(rr::Load(src, sizeof(float), atomic, order));
+				}
+				return out;
+			}
+
 			if (!atomic && order == std::memory_order_relaxed)
 			{
-				if (ptr.hasStaticEqualOffsets())
-				{
-					// Load one, replicate.
-					// Be careful of the case where the post-bounds-check mask
-					// is 0, in which case we must not load.
-					T out = T(0);
-					If(AnyTrue(mask))
-					{
-						EL el = *rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment);
-						out = T(el);
-					}
-					return out;
-				}
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
 					return rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment);
@@ -353,30 +355,35 @@ namespace sw
 			using EL = typename Element<T>::type;
 			auto offsets = ptr.offsets();
 			mask &= ptr.isInBounds(sizeof(float)); // Disable OOB writes.
+
+			if (ptr.hasStaticEqualOffsets())
+			{
+				If(AnyTrue(mask))
+				{
+					// All equal. One of these writes will win -- elect the winning lane.
+					auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+					auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
+					auto maskedVal = As<SIMD::Int>(val) & elect;
+					auto scalarVal = Extract(maskedVal, 0) |
+						Extract(maskedVal, 1) |
+						Extract(maskedVal, 2) |
+						Extract(maskedVal, 3);
+					auto dst = rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], sizeof(float));
+					rr::Store(As<EL>(scalarVal), dst, sizeof(float), atomic, order);
+				}
+				return;
+			}
+
 			if (!atomic && order == std::memory_order_relaxed)
 			{
-				if (ptr.hasStaticEqualOffsets())
-				{
-					If (AnyTrue(mask))
-					{
-						// All equal. One of these writes will win -- elect the winning lane.
-						auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-						auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
-						auto maskedVal = As<SIMD::Int>(val) & elect;
-						auto scalarVal = Extract(maskedVal, 0) |
-							Extract(maskedVal, 1) |
-							Extract(maskedVal, 2) |
-							Extract(maskedVal, 3);
-						*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], sizeof(float)) = As<EL>(scalarVal);
-					}
-					return;
-				}
-
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
-					return rr::MaskedStore(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), val, mask, sizeof(float));
+					rr::MaskedStore(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), val, mask, sizeof(float));
 				}
-				return rr::Scatter(rr::Pointer<EL>(ptr.base), val, offsets, mask, sizeof(float));
+				else
+				{
+					rr::Scatter(rr::Pointer<EL>(ptr.base), val, offsets, mask, sizeof(float));
+				}
 			}
 			else
 			{
