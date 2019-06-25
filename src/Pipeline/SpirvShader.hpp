@@ -1225,7 +1225,7 @@ namespace sw
 		Pointer<Int> descriptorDynamicOffsets;
 		Pointer<Byte> pushConstants;
 		Pointer<Byte> constants;
-		Int killMask = Int{0};
+		SIMD::Int killMask = 0;
 		SIMD::Int windowSpacePosition[2];
 
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
