@@ -46,6 +46,10 @@
 #include "WSI/XlibSurfaceKHR.hpp"
 #endif
 
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+#include "WSI/Win32SurfaceKHR.hpp"
+#endif
+
 #ifdef __ANDROID__
 #include <vulkan/vk_android_native_buffer.h>
 #include "System/GrallocAndroid.hpp"
@@ -104,6 +108,9 @@ static const VkExtensionProperties instanceExtensionProperties[] =
 #endif
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 	{ VK_KHR_XLIB_SURFACE_EXTENSION_NAME, VK_KHR_XLIB_SURFACE_SPEC_VERSION },
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+	{ VK_KHR_WIN32_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_SPEC_VERSION },
 #endif
 };
 
@@ -2579,6 +2586,16 @@ VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceXlibPresentationSupportKHR(VkP
 		  physicalDevice, int(queueFamilyIndex), dpy, visualID);
 
 	return VK_TRUE;
+}
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateWin32SurfaceKHR(VkInstance instance, const VkWin32SurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface)
+{
+	TRACE("(VkInstance instance = %p, VkWin32SurfaceCreateInfoKHR* pCreateInfo = %p, VkAllocationCallbacks* pAllocator = %p, VkSurface* pSurface = %p)",
+			instance, pCreateInfo, pAllocator, pSurface);
+
+	return vk::Win32SurfaceKHR::Create(pAllocator, pCreateInfo, pSurface);
 }
 #endif
 
