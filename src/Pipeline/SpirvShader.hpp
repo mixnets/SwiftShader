@@ -465,6 +465,10 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+
+				// An dynamic indirection to another object via the
+				// EmitState::aliases map.
+				Alias,
 			};
 
 			Kind kind = Kind::Unknown;
@@ -963,6 +967,7 @@ namespace sw
 
 			Intermediate const& getIntermediate(Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = intermediates.find(id);
 				ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 				return it->second;
@@ -976,11 +981,32 @@ namespace sw
 
 			SIMD::Pointer const& getPointer(Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = pointers.find(id);
 				ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
 				return it->second;
 			}
+
+			Array<SIMD::Float>& getVariable(SpirvShader::Object::ID id) const;
+
+			// createAlias() creates an alias for the object 'from' that points
+			// to 'to'.
+			void createAlias(Object::ID from, Object::ID to)
+			{
+				bool added = aliases.emplace(from, to).second;
+				ASSERT_MSG(added, "Alias %d created twice", from.value());
+			}
+
+			// resolve() returns the alias target for aliased object with the
+			// given id, or simply returns id if the object is not aliased.
+			Object::ID resolve(Object::ID id) const
+			{
+				auto it = aliases.find(id);
+				return (it != aliases.end()) ? resolve(it->second) : id;
+			}
+
 		private:
+			std::unordered_map<Object::ID, Object::ID> aliases;
 			std::unordered_map<Object::ID, Intermediate> intermediates;
 			std::unordered_map<Object::ID, SIMD::Pointer> pointers;
 		};
@@ -1034,10 +1060,28 @@ namespace sw
 			return it->second;
 		}
 
-		Object const &getObject(Object::ID id) const
+		// Returns the Object for the given Object::ID without resolving any
+		// Object aliases.
+		Object const &getObjectNoResolve(Object::ID id) const
 		{
 			auto it = defs.find(id);
 			ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
+			return it->second;
+		}
+
+		// Returns the Object for the given Object::ID, resolving any Object
+		// aliases.
+		Object const &getObject(Object::ID id, EmitState const *state) const
+		{
+			return getObjectNoResolve(state->resolve(id));
+		}
+
+		// Returns the DescriptorDecorations for the given Object::ID, resolving
+		// any Object aliases.
+		DescriptorDecorations const &getDescriptorDecorations(Object::ID id, EmitState const *state) const
+		{
+			auto it = descriptorDecorations.find(state->resolve(id));
+			ASSERT_MSG(it != descriptorDecorations.end(), "Unknown DescriptorDecorations %d", id.value());
 			return it->second;
 		}
 
