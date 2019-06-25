@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26d0a832_0c4a8a13",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3470,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-25T16:48:56Z",
+      "side": 1,
+      "message": "\u003cno-idea-dog/\u003e",
+      "range": {
+        "startLine": 3470,
+        "startChar": 107,
+        "endLine": 3470,
+        "endChar": 138
+      },
+      "revId": "404932edfca64b6eeb9e73c170c14a4d2ee936b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
