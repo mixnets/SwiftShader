@@ -923,6 +923,19 @@ namespace sw
 			{
 			}
 
+			// fork() returns a new EmitState initialized with this state's
+			// routine, function, active lane mask and descriptor sets, and the
+			// parent set to this.
+			// fork() is used to create a new context in which to emit inlined
+			// functions. This is required to avoid duplicate definitions of
+			// SSA values when the same function is inlined multiple times.
+			EmitState fork()
+			{
+				EmitState out(routine, function, activeLaneMask(), descriptorSets);
+				out.parent = this;
+				return out;
+			}
+
 			RValue<SIMD::Int> activeLaneMask() const
 			{
 				ASSERT(activeLaneMaskValue != nullptr);
@@ -952,6 +965,7 @@ namespace sw
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
+			EmitState *parent = nullptr;
 
 			const vk::DescriptorSet::Bindings &descriptorSets;
 
@@ -968,6 +982,7 @@ namespace sw
 			{
 				id = resolve(id);
 				auto it = intermediates.find(id);
+				if (it == intermediates.end() && parent != nullptr) { return parent->getIntermediate(id); }
 				ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 				return it->second;
 			}
@@ -982,6 +997,7 @@ namespace sw
 			{
 				id = resolve(id);
 				auto it = pointers.find(id);
+				if (it == pointers.end() && parent != nullptr) { return parent->getPointer(id); }
 				ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
 				return it->second;
 			}
@@ -1001,6 +1017,7 @@ namespace sw
 			Object::ID resolve(Object::ID id) const
 			{
 				auto it = aliases.find(id);
+				if (it == aliases.end() && parent != nullptr) { return parent->resolve(id); }
 				return (it != aliases.end()) ? resolve(it->second) : id;
 			}
 
