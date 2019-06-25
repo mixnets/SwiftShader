@@ -1249,9 +1249,9 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
-		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
-
 		using Variable = Array<SIMD::Float>;
+
+		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
 
 		vk::PipelineLayout const * const pipelineLayout;
 
@@ -1288,7 +1288,6 @@ namespace sw
 		friend class SpirvShader;
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> phis;
-
 	};
 
 }
