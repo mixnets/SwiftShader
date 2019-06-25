@@ -733,7 +733,7 @@ namespace sw
 				auto offset = 0u;
 				for (auto i = 0u; i < insn.wordCount() - 3; i++)
 				{
-					auto &constituent = getObject(insn.word(i + 3));
+					auto &constituent = getObjectNoResolve(insn.word(i + 3));
 					auto &constituentTy = getType(constituent.type);
 					for (auto j = 0u; j < constituentTy.sizeInComponents; j++)
 						object.constantValue[offset++] = constituent.constantValue[j];
@@ -1388,7 +1388,7 @@ namespace sw
 		Decorations d{};
 		ApplyDecorationsForId(&d, id);
 
-		auto def = getObject(id).definition;
+		auto def = getObjectNoResolve(id).definition;
 		ASSERT(def.opcode() == spv::OpVariable);
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
@@ -1466,7 +1466,7 @@ namespace sw
 	template<typename F>
 	void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, F f) const
 	{
-		auto typeId = getObject(id).type;
+		auto typeId = getObjectNoResolve(id).type;
 		auto const & type = getType(typeId);
 		if (IsExplicitLayout(type.storageClass))
 		{
@@ -1488,7 +1488,7 @@ namespace sw
 	SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const
 	{
 		auto routine = state->routine;
-		auto &object = getObject(id);
+		auto &object = getObject(id, state);
 		switch (object.kind)
 		{
 			case Object::Kind::Pointer:
@@ -1497,7 +1497,7 @@ namespace sw
 
 			case Object::Kind::DescriptorSet:
 			{
-				const auto &d = descriptorDecorations.at(id);
+				const auto &d = getDescriptorDecorations(id, state);
 				ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
 				ASSERT(d.Binding >= 0);
 
@@ -1535,7 +1535,7 @@ namespace sw
 	void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds) const
 	{
 		ApplyDecorationsForId(d, baseId);
-		auto &baseObject = getObject(baseId);
+		auto &baseObject = getObjectNoResolve(baseId);
 		ApplyDecorationsForId(d, baseObject.type);
 		auto typeId = getType(baseObject.type).element;
 
@@ -1575,9 +1575,7 @@ namespace sw
 
 	SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const
 	{
-		// Produce a offset into external memory in sizeof(float) units
-
-		auto &baseObject = getObject(baseId);
+		auto &baseObject = getObject(baseId, state);
 		Type::ID typeId = getType(baseObject.type).element;
 		Decorations d = {};
 		ApplyDecorationsForId(&d, baseObject.type);
@@ -1588,7 +1586,7 @@ namespace sw
 			auto type = getType(typeId).definition.opcode();
 			if (type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
 			{
-				ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant);
+				ASSERT(getObject(indexIds[0], state).kind == Object::Kind::Constant);
 				arrayIndex = GetConstScalarInt(indexIds[0]);
 
 				numIndexes--;
@@ -1622,7 +1620,7 @@ namespace sw
 			{
 				// TODO: b/127950082: Check bounds.
 				ASSERT(d.HasArrayStride);
-				auto & obj = getObject(indexIds[i]);
+				auto & obj = getObject(indexIds[i], state);
 				if (obj.kind == Object::Kind::Constant)
 				{
 					constantOffset += d.ArrayStride * GetConstScalarInt(indexIds[i]);
@@ -1640,7 +1638,7 @@ namespace sw
 				ASSERT(d.HasMatrixStride);
 				d.InsideMatrix = true;
 				auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
-				auto & obj = getObject(indexIds[i]);
+				auto & obj = getObject(indexIds[i], state);
 				if (obj.kind == Object::Kind::Constant)
 				{
 					constantOffset += columnStride * GetConstScalarInt(indexIds[i]);
@@ -1655,7 +1653,7 @@ namespace sw
 			case spv::OpTypeVector:
 			{
 				auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
-				auto & obj = getObject(indexIds[i]);
+				auto & obj = getObject(indexIds[i], state);
 				if (obj.kind == Object::Kind::Constant)
 				{
 					constantOffset += elemStride * GetConstScalarInt(indexIds[i]);
@@ -1680,7 +1678,7 @@ namespace sw
 	{
 		// TODO: avoid doing per-lane work in some cases if we can?
 		auto routine = state->routine;
-		auto &baseObject = getObject(baseId);
+		auto &baseObject = getObject(baseId, state);
 		Type::ID typeId = getType(baseObject.type).element;
 
 		auto ptr = state->getPointer(baseId);
@@ -1714,13 +1712,13 @@ namespace sw
 				if (getType(baseObject.type).storageClass == spv::StorageClassUniformConstant)
 				{
 					// indexing into an array of descriptors.
-					auto &obj = getObject(indexIds[i]);
+					auto &obj = getObject(indexIds[i], state);
 					if (obj.kind != Object::Kind::Constant)
 					{
 						UNSUPPORTED("SPIR-V SampledImageArrayDynamicIndexing Capability");
 					}
 
-					auto d = descriptorDecorations.at(baseId);
+					auto &d = getDescriptorDecorations(baseId, state);
 					ASSERT(d.DescriptorSet >= 0);
 					ASSERT(d.Binding >= 0);
 					auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
@@ -1730,7 +1728,7 @@ namespace sw
 				else
 				{
 					auto stride = getType(type.element).sizeInComponents * static_cast<uint32_t>(sizeof(float));
-					auto & obj = getObject(indexIds[i]);
+					auto & obj = getObject(indexIds[i], state);
 					if (obj.kind == Object::Kind::Constant)
 					{
 						ptr += stride * GetConstScalarInt(indexIds[i]);
@@ -2637,7 +2635,7 @@ namespace sw
 	{
 		auto routine = state->routine;
 		Object::ID resultId = insn.word(2);
-		auto &object = getObject(resultId);
+		auto &object = getObject(resultId, state);
 		auto &objectTy = getType(object.type);
 
 		switch (objectTy.storageClass)
@@ -2647,7 +2645,7 @@ namespace sw
 		case spv::StorageClassFunction:
 		{
 			ASSERT(objectTy.opcode() == spv::OpTypePointer);
-			auto base = &routine->getVariable(resultId)[0];
+			auto base = &state->getVariable(resultId)[0];
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * static_cast<uint32_t>(sizeof(float)) * SIMD::Width;
 			state->createPointer(resultId, SIMD::Pointer(base, size));
@@ -2665,7 +2663,7 @@ namespace sw
 		{
 			if (object.kind == Object::Kind::InterfaceVariable)
 			{
-				auto &dst = routine->getVariable(resultId);
+				auto &dst = state->getVariable(resultId);
 				int offset = 0;
 				VisitInterface(resultId,
 								[&](Decorations const &d, AttribType type) {
@@ -2674,7 +2672,7 @@ namespace sw
 								});
 			}
 			ASSERT(objectTy.opcode() == spv::OpTypePointer);
-			auto base = &routine->getVariable(resultId)[0];
+			auto base = &state->getVariable(resultId)[0];
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * static_cast<uint32_t>(sizeof(float)) * SIMD::Width;
 			state->createPointer(resultId, SIMD::Pointer(base, size));
@@ -2682,7 +2680,7 @@ namespace sw
 		}
 		case spv::StorageClassUniformConstant:
 		{
-			const auto &d = descriptorDecorations.at(resultId);
+			const auto &d = getDescriptorDecorations(resultId, state);
 			ASSERT(d.DescriptorSet >= 0);
 			ASSERT(d.Binding >= 0);
 
@@ -2707,7 +2705,7 @@ namespace sw
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		{
-			const auto &d = descriptorDecorations.at(resultId);
+			const auto &d = getDescriptorDecorations(resultId, state);
 			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
 			auto size = 0; // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
 			state->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet], size));
@@ -2726,7 +2724,7 @@ namespace sw
 		if (insn.wordCount() > 4)
 		{
 			Object::ID initializerId = insn.word(4);
-			if (getObject(initializerId).kind != Object::Kind::Constant)
+			if (getObject(initializerId, state).kind != Object::Kind::Constant)
 			{
 				UNIMPLEMENTED("Non-constant initializers not yet implemented");
 			}
@@ -2760,9 +2758,9 @@ namespace sw
 		bool atomic = (insn.opcode() == spv::OpAtomicLoad);
 		Object::ID resultId = insn.word(2);
 		Object::ID pointerId = insn.word(3);
-		auto &result = getObject(resultId);
+		auto &result = getObject(resultId, state);
 		auto &resultTy = getType(result.type);
-		auto &pointer = getObject(pointerId);
+		auto &pointer = getObject(pointerId, state);
 		auto &pointerTy = getType(pointer.type);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
 
@@ -2781,7 +2779,7 @@ namespace sw
 		if(atomic)
 		{
 			Object::ID semanticsId = insn.word(5);
-			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId, state).constantValue[0]);
 			memoryOrder = MemoryOrder(memorySemantics);
 		}
 
@@ -2806,8 +2804,8 @@ namespace sw
 		bool atomic = (insn.opcode() == spv::OpAtomicStore);
 		Object::ID pointerId = insn.word(1);
 		Object::ID objectId = insn.word(atomic ? 4 : 2);
-		auto &object = getObject(objectId);
-		auto &pointer = getObject(pointerId);
+		auto &object = getObject(objectId, state);
+		auto &pointer = getObject(pointerId, state);
 		auto &pointerTy = getType(pointer.type);
 		auto &elementTy = getType(pointerTy.element);
 		std::memory_order memoryOrder = std::memory_order_relaxed;
@@ -2815,7 +2813,7 @@ namespace sw
 		if(atomic)
 		{
 			Object::ID semanticsId = insn.word(3);
-			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+			auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId, state).constantValue[0]);
 			memoryOrder = MemoryOrder(memorySemantics);
 		}
 
@@ -2859,7 +2857,7 @@ namespace sw
 		const uint32_t *indexes = insn.wordPointer(4);
 		auto &type = getType(typeId);
 		ASSERT(type.sizeInComponents == 1);
-		ASSERT(getObject(resultId).kind == Object::Kind::Pointer);
+		ASSERT(getObject(resultId, state).kind == Object::Kind::Pointer);
 
 		if(type.storageClass == spv::StorageClassPushConstant ||
 		   type.storageClass == spv::StorageClassUniform ||
@@ -2886,7 +2884,7 @@ namespace sw
 		for (auto i = 0u; i < insn.wordCount() - 3; i++)
 		{
 			Object::ID srcObjectId = insn.word(3u + i);
-			auto & srcObject = getObject(srcObjectId);
+			auto & srcObject = getObject(srcObjectId, state);
 			auto & srcObjectTy = getType(srcObject.type);
 			GenericValue srcObjectAccess(this, state, srcObjectId);
 
@@ -2904,7 +2902,7 @@ namespace sw
 		Type::ID resultTypeId = insn.word(1);
 		auto &type = getType(resultTypeId);
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &newPartObject = getObject(insn.word(3));
+		auto &newPartObject = getObject(insn.word(3), state);
 		auto &newPartObjectTy = getType(newPartObject.type);
 		auto firstNewComponent = WalkLiteralAccessChain(resultTypeId, insn.wordCount() - 5, insn.wordPointer(5));
 
@@ -2934,7 +2932,7 @@ namespace sw
 	{
 		auto &type = getType(insn.word(1));
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &compositeObject = getObject(insn.word(3));
+		auto &compositeObject = getObject(insn.word(3), state);
 		Type::ID compositeTypeId = compositeObject.definition.word(1);
 		auto firstComponent = WalkLiteralAccessChain(compositeTypeId, insn.wordCount() - 4, insn.wordPointer(4));
 
@@ -2954,7 +2952,7 @@ namespace sw
 
 		// Note: number of components in result type, first half type, and second
 		// half type are all independent.
-		auto &firstHalfType = getType(getObject(insn.word(3)).type);
+		auto &firstHalfType = getType(getObject(insn.word(3), state).type);
 
 		GenericValue firstHalfAccess(this, state, insn.word(3));
 		GenericValue secondHalfAccess(this, state, insn.word(4));
@@ -2985,7 +2983,7 @@ namespace sw
 	{
 		auto &type = getType(insn.word(1));
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &srcType = getType(getObject(insn.word(3)).type);
+		auto &srcType = getType(getObject(insn.word(3), state).type);
 
 		GenericValue src(this, state, insn.word(3));
 		GenericValue index(this, state, insn.word(4));
@@ -3084,7 +3082,7 @@ namespace sw
 
 		auto numColumns = type.definition.word(3);
 		auto numRows = getType(type.definition.word(2)).definition.word(3);
-		auto numAdds = getType(getObject(insn.word(3)).type).definition.word(3);
+		auto numAdds = getType(getObject(insn.word(3), state).type).definition.word(3);
 
 		for (auto row = 0u; row < numRows; row++)
 		{
@@ -3330,7 +3328,7 @@ namespace sw
 	{
 		auto &type = getType(insn.word(1));
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &lhsType = getType(getObject(insn.word(3)).type);
+		auto &lhsType = getType(getObject(insn.word(3), state).type);
 		auto lhs = GenericValue(this, state, insn.word(3));
 		auto rhs = GenericValue(this, state, insn.word(4));
 
@@ -3534,7 +3532,7 @@ namespace sw
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &lhsType = getType(getObject(insn.word(3)).type);
+		auto &lhsType = getType(getObject(insn.word(3), state).type);
 		auto lhs = GenericValue(this, state, insn.word(3));
 		auto rhs = GenericValue(this, state, insn.word(4));
 
@@ -3850,7 +3848,7 @@ namespace sw
 		case GLSLstd450Length:
 		{
 			auto x = GenericValue(this, state, insn.word(5));
-			SIMD::Float d = Dot(getType(getObject(insn.word(5)).type).sizeInComponents, x, x);
+			SIMD::Float d = Dot(getType(getObject(insn.word(5), state).type).sizeInComponents, x, x);
 
 			dst.move(0, Sqrt(d));
 			break;
@@ -3858,7 +3856,7 @@ namespace sw
 		case GLSLstd450Normalize:
 		{
 			auto x = GenericValue(this, state, insn.word(5));
-			SIMD::Float d = Dot(getType(getObject(insn.word(5)).type).sizeInComponents, x, x);
+			SIMD::Float d = Dot(getType(getObject(insn.word(5), state).type).sizeInComponents, x, x);
 			SIMD::Float invLength = SIMD::Float(1.0f) / Sqrt(d);
 
 			for (auto i = 0u; i < type.sizeInComponents; i++)
@@ -3888,7 +3886,7 @@ namespace sw
 		{
 			auto val = GenericValue(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
-			auto ptrTy = getType(getObject(ptrId).type);
+			auto ptrTy = getType(getObject(ptrId, state).type);
 			auto ptr = GetPointerToData(ptrId, 0, state);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
 
@@ -4021,7 +4019,7 @@ namespace sw
 		{
 			auto val = GenericValue(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
-			auto ptrTy = getType(getObject(ptrId).type);
+			auto ptrTy = getType(getObject(ptrId, state).type);
 			auto ptr = GetPointerToData(ptrId, 0, state);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
 
@@ -4547,7 +4545,7 @@ namespace sw
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &srcType = getType(getObject(insn.word(3)).type);
+		auto &srcType = getType(getObject(insn.word(3), state).type);
 		auto src = GenericValue(this, state, insn.word(3));
 
 		SIMD::UInt result = src.UInt(0);
@@ -4566,7 +4564,7 @@ namespace sw
 		auto &type = getType(insn.word(1));
 		ASSERT(type.sizeInComponents == 1);
 		auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
-		auto &srcType = getType(getObject(insn.word(3)).type);
+		auto &srcType = getType(getObject(insn.word(3), state).type);
 		auto src = GenericValue(this, state, insn.word(3));
 
 		SIMD::UInt result = src.UInt(0);
@@ -4733,7 +4731,7 @@ namespace sw
 	SpirvShader::EmitResult SpirvShader::EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const
 	{
 		ImageInstruction instruction = {variant, Gather};
-		instruction.gatherComponent = !instruction.isDref() ? getObject(insn.word(5)).constantValue[0] : 0;
+		instruction.gatherComponent = !instruction.isDref() ? getObject(insn.word(5), state).constantValue[0] : 0;
 
 		return EmitImageSample(instruction, insn, state);
 	}
@@ -4773,7 +4771,7 @@ namespace sw
 		auto imageDescriptor = state->getPointer(sampledImageId).base; // vk::SampledImageDescriptor*
 
 		// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
-		auto &sampledImage = getObject(sampledImageId);
+		auto &sampledImage = getObject(sampledImageId, state);
 		auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ?
 				state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
 
@@ -4984,14 +4982,14 @@ namespace sw
 	void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const
 	{
 		auto routine = state->routine;
-		auto &image = getObject(imageId);
+		auto &image = getObject(imageId, state);
 		auto &imageType = getType(image.type);
 
 		ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
 		bool isArrayed = imageType.definition.word(5) != 0;
 		bool isCubeMap = imageType.definition.word(3) == spv::DimCube;
 
-		const DescriptorDecorations &d = descriptorDecorations.at(imageId);
+		const DescriptorDecorations &d = getDescriptorDecorations(imageId, state);
 		auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 		auto &bindingLayout = setLayout->getBindingLayout(d.Binding);
 
@@ -5056,7 +5054,7 @@ namespace sw
 		auto resultId = Object::ID(insn.word(2));
 		auto imageId = Object::ID(insn.word(3));
 
-		const DescriptorDecorations &d = descriptorDecorations.at(imageId);
+		const DescriptorDecorations &d = getDescriptorDecorations(imageId, state);
 		auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 		auto &bindingLayout = setLayout->getBindingLayout(d.Binding);
 
@@ -5085,12 +5083,12 @@ namespace sw
 		ASSERT(resultTy.sizeInComponents == 1);
 		auto resultId = Object::ID(insn.word(2));
 		auto imageId = Object::ID(insn.word(3));
-		auto imageTy = getType(getObject(imageId).type);
+		auto imageTy = getType(getObject(imageId, state).type);
 		ASSERT(imageTy.definition.opcode() == spv::OpTypeImage);
 		ASSERT(imageTy.definition.word(3) == spv::Dim2D);
 		ASSERT(imageTy.definition.word(6 /* MS */) == 1);
 
-		const DescriptorDecorations &d = descriptorDecorations.at(imageId);
+		const DescriptorDecorations &d = getDescriptorDecorations(imageId, state);
 		auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 		auto &bindingLayout = setLayout->getBindingLayout(d.Binding);
 
@@ -5189,7 +5187,7 @@ namespace sw
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
 		auto imageId = Object::ID(insn.word(3));
-		auto &image = getObject(imageId);
+		auto &image = getObject(imageId, state);
 		auto &imageType = getType(image.type);
 		Object::ID resultId = insn.word(2);
 
@@ -5213,7 +5211,7 @@ namespace sw
 		auto dim = static_cast<spv::Dim>(imageType.definition.word(3));
 
 		auto coordinate = GenericValue(this, state, insn.word(4));
-		const DescriptorDecorations &d = descriptorDecorations.at(imageId);
+		const DescriptorDecorations &d = getDescriptorDecorations(imageId, state);
 
 		// For subpass data, format in the instruction is spv::ImageFormatUnknown. Get it from
 		// the renderpass data instead. In all other cases, we can use the format in the instruction.
@@ -5470,7 +5468,7 @@ namespace sw
 	SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState *state) const
 	{
 		auto imageId = Object::ID(insn.word(1));
-		auto &image = getObject(imageId);
+		auto &image = getObject(imageId, state);
 		auto &imageType = getType(image.type);
 
 		ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
@@ -5600,7 +5598,7 @@ namespace sw
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
 		auto imageId = Object::ID(insn.word(3));
-		auto &image = getObject(imageId);
+		auto &image = getObject(imageId, state);
 		// Note: OpImageTexelPointer is unusual in that the image is passed by pointer.
 		// Look through to get the actual image type.
 		auto &imageType = getType(getType(image.type).element);
@@ -5642,7 +5640,7 @@ namespace sw
 		auto &resultType = getType(Type::ID(insn.word(1)));
 		Object::ID resultId = insn.word(2);
 		Object::ID semanticsId = insn.word(5);
-		auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId).constantValue[0]);
+		auto memorySemantics = static_cast<spv::MemorySemanticsMask>(getObject(semanticsId, state).constantValue[0]);
 		auto memoryOrder = MemoryOrder(memorySemantics);
 		// Where no value is provided (increment/decrement) use an implicit value of 1.
 		auto value = (insn.wordCount() == 7) ? GenericValue(this, state, insn.word(6)).UInt(0) : RValue<SIMD::UInt>(1);
@@ -5710,9 +5708,9 @@ namespace sw
 		auto &resultType = getType(Type::ID(insn.word(1)));
 		Object::ID resultId = insn.word(2);
 
-		auto memorySemanticsEqual = static_cast<spv::MemorySemanticsMask>(getObject(insn.word(5)).constantValue[0]);
+		auto memorySemanticsEqual = static_cast<spv::MemorySemanticsMask>(getObject(insn.word(5), state).constantValue[0]);
 		auto memoryOrderEqual = MemoryOrder(memorySemanticsEqual);
-		auto memorySemanticsUnequal = static_cast<spv::MemorySemanticsMask>(getObject(insn.word(6)).constantValue[0]);
+		auto memorySemanticsUnequal = static_cast<spv::MemorySemanticsMask>(getObject(insn.word(6), state).constantValue[0]);
 		auto memoryOrderUnequal = MemoryOrder(memorySemanticsUnequal);
 
 		auto value = GenericValue(this, state, insn.word(7));
@@ -5754,8 +5752,8 @@ namespace sw
 	{
 		Object::ID dstPtrId = insn.word(1);
 		Object::ID srcPtrId = insn.word(2);
-		auto &dstPtrTy = getType(getObject(dstPtrId).type);
-		auto &srcPtrTy = getType(getObject(srcPtrId).type);
+		auto &dstPtrTy = getType(getObject(dstPtrId, state).type);
+		auto &srcPtrTy = getType(getObject(srcPtrId, state).type);
 		ASSERT(dstPtrTy.element == srcPtrTy.element);
 
 		bool dstInterleavedByLane = IsStorageInterleavedByLane(dstPtrTy.storageClass);
@@ -5865,7 +5863,7 @@ namespace sw
 		ASSERT(resultType.sizeInComponents == 1);
 		ASSERT(resultType.definition.opcode() == spv::OpTypeInt);
 
-		auto &structPtrTy = getType(getObject(structPtrId).type);
+		auto &structPtrTy = getType(getObject(structPtrId, state).type);
 		auto &structTy = getType(structPtrTy.element);
 		auto &arrayTy = getType(structTy.definition.word(2 + arrayFieldIdx));
 		ASSERT(arrayTy.definition.opcode() == spv::OpTypeRuntimeArray);
@@ -5889,7 +5887,7 @@ namespace sw
 
 	uint32_t SpirvShader::GetConstScalarInt(Object::ID id) const
 	{
-		auto &scopeObj = getObject(id);
+		auto &scopeObj = getObjectNoResolve(id);
 		ASSERT(scopeObj.kind == Object::Kind::Constant);
 		ASSERT(getType(scopeObj.type).sizeInComponents == 1);
 		return scopeObj.constantValue[0];
@@ -5945,10 +5943,10 @@ namespace sw
 		case spv::OpSelect:
 		{
 			auto &result = CreateConstant(insn);
-			auto const &cond = getObject(insn.word(4));
+			auto const &cond = getObjectNoResolve(insn.word(4));
 			auto condIsScalar = (getType(cond.type).sizeInComponents == 1);
-			auto const &left = getObject(insn.word(5));
-			auto const &right = getObject(insn.word(6));
+			auto const &left = getObjectNoResolve(insn.word(5));
+			auto const &right = getObjectNoResolve(insn.word(6));
 
 			for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 			{
@@ -5961,7 +5959,7 @@ namespace sw
 		case spv::OpCompositeExtract:
 		{
 			auto &result = CreateConstant(insn);
-			auto const &compositeObject = getObject(insn.word(4));
+			auto const &compositeObject = getObjectNoResolve(insn.word(4));
 			auto firstComponent = WalkLiteralAccessChain(compositeObject.type, insn.wordCount() - 5, insn.wordPointer(5));
 
 			for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
@@ -5974,8 +5972,8 @@ namespace sw
 		case spv::OpCompositeInsert:
 		{
 			auto &result = CreateConstant(insn);
-			auto const &newPart = getObject(insn.word(4));
-			auto const &oldObject = getObject(insn.word(5));
+			auto const &newPart = getObjectNoResolve(insn.word(4));
+			auto const &oldObject = getObjectNoResolve(insn.word(5));
 			auto firstNewComponent = WalkLiteralAccessChain(result.type, insn.wordCount() - 6, insn.wordPointer(6));
 
 			// old components before
@@ -5999,8 +5997,8 @@ namespace sw
 		case spv::OpVectorShuffle:
 		{
 			auto &result = CreateConstant(insn);
-			auto const &firstHalf = getObject(insn.word(4));
-			auto const &secondHalf = getObject(insn.word(5));
+			auto const &firstHalf = getObjectNoResolve(insn.word(4));
+			auto const &secondHalf = getObjectNoResolve(insn.word(5));
 
 			for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 			{
@@ -6035,7 +6033,7 @@ namespace sw
 		auto &result = CreateConstant(insn);
 
 		auto opcode = static_cast<spv::Op>(insn.word(3));
-		auto const &lhs = getObject(insn.word(4));
+		auto const &lhs = getObjectNoResolve(insn.word(4));
 		auto size = getType(lhs.type).sizeInComponents;
 
 		for (auto i = 0u; i < size; i++)
@@ -6085,8 +6083,8 @@ namespace sw
 		auto &result = CreateConstant(insn);
 
 		auto opcode = static_cast<spv::Op>(insn.word(3));
-		auto const &lhs = getObject(insn.word(4));
-		auto const &rhs = getObject(insn.word(5));
+		auto const &lhs = getObjectNoResolve(insn.word(4));
+		auto const &rhs = getObjectNoResolve(insn.word(5));
 		auto size = getType(lhs.type).sizeInComponents;
 
 		for (auto i = 0u; i < size; i++)
@@ -6197,7 +6195,7 @@ namespace sw
 			case spv::OpVariable:
 			{
 				Object::ID resultId = insn.word(2);
-				auto &object = getObject(resultId);
+				auto &object = getObjectNoResolve(resultId);
 				auto &objectTy = getType(object.type);
 				if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassOutput)
 				{
@@ -6444,9 +6442,14 @@ namespace sw
 	}
 
 	SpirvShader::GenericValue::GenericValue(SpirvShader const *shader, EmitState const *state, SpirvShader::Object::ID objId) :
-			obj(shader->getObject(objId)),
+			obj(shader->getObject(objId, state)),
 			intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(objId) : nullptr),
 			type(obj.type) {}
+
+	Array<SIMD::Float>& SpirvShader::EmitState::getVariable(SpirvShader::Object::ID id) const
+	{
+		return routine->getVariable(resolve(id));
+	}
 
 	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
 		pipelineLayout(pipelineLayout)
