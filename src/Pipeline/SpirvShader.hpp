@@ -465,6 +465,10 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+
+				// An dynamic indirection to another object via the
+				// EmitState::aliases map.
+				Alias,
 			};
 
 			Kind kind = Kind::Unknown;
@@ -563,6 +567,7 @@ namespace sw
 			HandleMap<Block> blocks; // blocks belonging to this function.
 			Type::ID type; // type of the function.
 			Type::ID result; // return type.
+			std::vector<Object::ID> parameters; // function parameters.
 		};
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
@@ -920,6 +925,19 @@ namespace sw
 			{
 			}
 
+			// fork() returns a new EmitState initialized with this state's
+			// routine, function, active lane mask and descriptor sets, and the
+			// parent set to this.
+			// fork() is used to create a new context in which to emit inlined
+			// functions. This is required to avoid duplicate definitions of
+			// SSA values when the same function is inlined multiple times.
+			EmitState fork()
+			{
+				EmitState out(routine, function, activeLaneMask(), descriptorSets);
+				out.parent = this;
+				return out;
+			}
+
 			RValue<SIMD::Int> activeLaneMask() const
 			{
 				ASSERT(activeLaneMaskValue != nullptr);
@@ -945,10 +963,12 @@ namespace sw
 			SpirvRoutine *routine = nullptr; // The current routine being built.
 			Function::ID function; // The current function being built.
 			rr::Value *activeLaneMaskValue = nullptr; // The current active lane mask.
-			Block::ID currentBlock; // The current block being built.
+			Block::ID block; // The current block being built.
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
+			rr::Array<SIMD::Int> *returnValue;
+			EmitState *parent = nullptr;
 
 			const vk::DescriptorSet::Bindings &descriptorSets;
 
@@ -963,7 +983,9 @@ namespace sw
 
 			Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = intermediates.find(id);
+				if (it == intermediates.end() && parent != nullptr) { return parent->getIntermediate(id); }
 				ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 				return it->second;
 			}
@@ -976,11 +998,33 @@ namespace sw
 
 			SIMD::Pointer const& getPointer(SpirvShader::Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = pointers.find(id);
+				if (it == pointers.end() && parent != nullptr) { return parent->getPointer(id); }
 				ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
 				return it->second;
 			}
+
+			Array<SIMD::Float>& getVariable(SpirvShader::Object::ID id) const;
+
+			void createAlias(Object::ID from, Object::ID to)
+			{
+				bool added = aliases.emplace(from, to).second;
+				ASSERT_MSG(added, "Alias %d created twice", from.value());
+			}
+
+			SpirvShader::Object::ID resolve(SpirvShader::Object::ID id) const
+			{
+				auto it = aliases.find(id);
+				if (it == aliases.end())
+				{
+					return parent != nullptr ? parent->resolve(id) : id;
+				}
+				return resolve(it->second);
+			}
+
 		private:
+			std::unordered_map<Object::ID, Object::ID> aliases; // Parameter to argument bindings for the current function.
 			std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
 			std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
 		};
@@ -1034,11 +1078,20 @@ namespace sw
 			return it->second;
 		}
 
-		Object const &getObject(Object::ID id) const
+		// Returns the Object for the given Object::ID without resolving any
+		// Object aliases.
+		Object const &getObjectNoResolve(Object::ID id) const
 		{
 			auto it = defs.find(id);
 			ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
 			return it->second;
+		}
+
+		// Returns the Object for the given Object::ID, resolving any Object
+		// aliases.
+		Object const &getObject(Object::ID id, EmitState const *state) const
+		{
+			return getObjectNoResolve(state->resolve(id));
 		}
 
 		Function const &getFunction(Function::ID id) const
@@ -1107,6 +1160,7 @@ namespace sw
 		EmitResult EmitSwitch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitReturnValue(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitKill(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleImplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
@@ -1131,6 +1185,7 @@ namespace sw
 		EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
 
 		void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 		SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
@@ -1184,9 +1239,9 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
-		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
-
 		using Variable = Array<SIMD::Float>;
+
+		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
 
 		vk::PipelineLayout const * const pipelineLayout;
 
@@ -1200,7 +1255,7 @@ namespace sw
 		Pointer<Int> descriptorDynamicOffsets;
 		Pointer<Byte> pushConstants;
 		Pointer<Byte> constants;
-		Int killMask = Int{0};
+		SIMD::Int killMask = 0;
 		SIMD::Int windowSpacePosition[2];
 
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
@@ -1223,7 +1278,6 @@ namespace sw
 		friend class SpirvShader;
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> phis;
-
 	};
 
 }
