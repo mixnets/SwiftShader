@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d54ac73_1462ab2f",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-25T17:03:50Z",
+      "side": 1,
+      "message": "is this necessary?",
+      "range": {
+        "startLine": 467,
+        "startChar": 2,
+        "endLine": 467,
+        "endChar": 9
+      },
+      "revId": "c2e2e78f5caf69b148ca3d98c41295d9173959c4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83af3380_6622199f",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1013,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-25T17:03:50Z",
+      "side": 1,
+      "message": "Why do we create, assign and then ignore fragmentShader?",
+      "range": {
+        "startLine": 1013,
+        "startChar": 0,
+        "endLine": 1013,
+        "endChar": 22
+      },
+      "revId": "c2e2e78f5caf69b148ca3d98c41295d9173959c4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47b5b2db_4faf0a3f",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1134,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-25T17:03:50Z",
+      "side": 1,
+      "message": "fs?",
+      "range": {
+        "startLine": 1134,
+        "startChar": 13,
+        "endLine": 1134,
+        "endChar": 18
+      },
+      "revId": "c2e2e78f5caf69b148ca3d98c41295d9173959c4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffe363c5_9bc9592f",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1142,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-25T17:03:50Z",
+      "side": 1,
+      "message": "vs?",
+      "range": {
+        "startLine": 1142,
+        "startChar": 13,
+        "endLine": 1142,
+        "endChar": 18
+      },
+      "revId": "c2e2e78f5caf69b148ca3d98c41295d9173959c4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
