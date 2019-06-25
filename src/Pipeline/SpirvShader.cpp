@@ -6383,7 +6383,6 @@ namespace sw
 		}
 	}
 
-
 	void SpirvShader::Function::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable)
 	{
 		if (reachable.count(id) == 0)
@@ -6530,5 +6529,4 @@ namespace sw
 		pipelineLayout(pipelineLayout)
 	{
 	}
-
 }
