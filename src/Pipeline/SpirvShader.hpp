@@ -465,6 +465,10 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+
+				// An dynamic indirection to another object via the
+				// EmitState::aliases map.
+				Alias,
 			};
 
 			Kind kind = Kind::Unknown;
@@ -952,7 +956,7 @@ namespace sw
 
 			const vk::DescriptorSet::Bindings &descriptorSets;
 
-			Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
+			Intermediate& createIntermediate(Object::ID id, uint32_t size)
 			{
 				auto it = intermediates.emplace(std::piecewise_construct,
 						std::forward_as_tuple(id),
@@ -961,28 +965,50 @@ namespace sw
 				return it.first->second;
 			}
 
-			Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
+			Intermediate const& getIntermediate(Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = intermediates.find(id);
 				ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
 				return it->second;
 			}
 
-			void createPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
+			void createPointer(Object::ID id, SIMD::Pointer ptr)
 			{
 				bool added = pointers.emplace(id, ptr).second;
 				ASSERT_MSG(added, "Pointer %d created twice", id.value());
 			}
 
-			SIMD::Pointer const& getPointer(SpirvShader::Object::ID id) const
+			SIMD::Pointer const& getPointer(Object::ID id) const
 			{
+				id = resolve(id);
 				auto it = pointers.find(id);
 				ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
 				return it->second;
 			}
+
+			Array<SIMD::Float>& getVariable(SpirvShader::Object::ID id) const;
+
+			// createAlias() creates an alias for the object 'to' that points to
+			// 'from'.
+			void createAlias(Object::ID from, Object::ID to)
+			{
+				bool added = aliases.emplace(from, to).second;
+				ASSERT_MSG(added, "Alias %d created twice", from.value());
+			}
+
+			// resolve() returns the alias target for aliased object with the
+			// given id, or simply returns id if the object is not aliased.
+			Object::ID resolve(Object::ID id) const
+			{
+				auto it = aliases.find(id);
+				return (it != aliases.end()) ? it->second : id;
+			}
+
 		private:
-			std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
-			std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
+			std::unordered_map<Object::ID, Object::ID> aliases; // Parameter to argument bindings for the current function.
+			std::unordered_map<Object::ID, Intermediate> intermediates;
+			std::unordered_map<Object::ID, SIMD::Pointer> pointers;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.
@@ -1034,11 +1060,20 @@ namespace sw
 			return it->second;
 		}
 
-		Object const &getObject(Object::ID id) const
+		// Returns the Object for the given Object::ID without resolving any
+		// Object aliases.
+		Object const &getObjectNoResolve(Object::ID id) const
 		{
 			auto it = defs.find(id);
 			ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
 			return it->second;
+		}
+
+		// Returns the Object for the given Object::ID, resolving any Object
+		// aliases.
+		Object const &getObject(Object::ID id, EmitState const *state) const
+		{
+			return getObjectNoResolve(state->resolve(id));
 		}
 
 		Function const &getFunction(Function::ID id) const
