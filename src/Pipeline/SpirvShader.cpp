@@ -558,6 +558,7 @@ namespace sw
 			case spv::OpBranchConditional:
 			case spv::OpSwitch:
 			case spv::OpReturn:
+			case spv::OpReturnValue:
 			// fallthrough
 
 			// Termination instruction:
@@ -776,6 +777,19 @@ namespace sw
 				break;
 			}
 
+			case spv::OpFunctionParameter:
+			{
+				ASSERT_MSG(currentFunction != 0, "OpFunctionParameter found outside of a function");
+				Type::ID typeId = insn.word(1);
+				Object::ID resultId = insn.word(2);
+				auto &object = defs[resultId];
+				object.type = typeId;
+				object.kind = Object::Kind::Alias;
+				object.definition = insn;
+				functions[currentFunction].parameters.push_back(resultId);
+				break;
+			}
+
 			case spv::OpFunctionEnd:
 				currentFunction = 0;
 				break;
@@ -801,13 +815,6 @@ namespace sw
 			case spv::OpModuleProcessed:
 			case spv::OpString:
 				// No semantic impact
-				break;
-
-			case spv::OpFunctionParameter:
-			case spv::OpFunctionCall:
-				// These should have all been removed by preprocessing passes. If we see them here,
-				// our assumptions are wrong and we will probably generate wrong code.
-				UNREACHABLE("%s should have already been lowered.", OpcodeName(opcode).c_str());
 				break;
 
 			case spv::OpFConvert:
@@ -983,6 +990,7 @@ namespace sw
 			case spv::OpGroupNonUniformElect:
 			case spv::OpCopyObject:
 			case spv::OpArrayLength:
+			case spv::OpFunctionCall:
 				// Instructions that yield an intermediate value or divergent pointer
 				DefineResult(insn);
 				break;
@@ -2275,6 +2283,7 @@ namespace sw
 		case spv::OpExecutionMode:
 		case spv::OpMemoryModel:
 		case spv::OpFunction:
+		case spv::OpFunctionParameter:
 		case spv::OpFunctionEnd:
 		case spv::OpConstant:
 		case spv::OpConstantNull:
@@ -2498,6 +2507,9 @@ namespace sw
 		case spv::OpReturn:
 			return EmitReturn(insn, state);
 
+		case spv::OpReturnValue:
+			return EmitReturnValue(insn, state);
+
 		case spv::OpKill:
 			return EmitKill(insn, state);
 
@@ -2579,6 +2591,9 @@ namespace sw
 
 		case spv::OpArrayLength:
 			return EmitArrayLength(insn, state);
+
+		case spv::OpFunctionCall:
+			return EmitFunctionCall(insn, state);
 
 		default:
 			UNREACHABLE("%s", OpcodeName(opcode).c_str());
@@ -4611,6 +4626,27 @@ namespace sw
 		return EmitResult::Terminator;
 	}
 
+	SpirvShader::EmitResult SpirvShader::EmitReturnValue(InsnIterator insn, EmitState *state) const
+	{
+		ASSERT_MSG(state->returnValue != nullptr, "Reached OpReturnValue, but state has no return value storage");
+		auto valueId = Object::ID(insn.word(1));
+		auto value = GenericValue(this, state, valueId);
+		ASSERT(getFunction(state->function).result == value.type);
+		auto ty = getType(value.type);
+
+		auto &storage = *state->returnValue;
+		auto mask = state->activeLaneMask();
+		auto invMask = ~mask;
+
+		for (uint32_t i = 0; i < ty.sizeInComponents; i++)
+		{
+			storage[i] = (value.Int(i) & mask) | (storage[i] & invMask);
+		}
+
+		state->setActiveLaneMask(SIMD::Int(0));
+		return EmitResult::Terminator;
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitKill(InsnIterator insn, EmitState *state) const
 	{
 		state->routine->killMask |= state->activeLaneMask();
@@ -5836,6 +5872,45 @@ namespace sw
 		auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElTy.sizeInComponents * sizeof(float));
 
 		result.move(0, SIMD::Int(arrayLength));
+
+		return EmitResult::Continue;
+	}
+
+	SpirvShader::EmitResult SpirvShader::EmitFunctionCall(InsnIterator insn, EmitState *state) const
+	{
+		auto resultTyId = Type::ID(insn.word(1));
+		auto resultId = Object::ID(insn.word(2));
+		auto functionId = Function::ID(insn.word(3));
+		auto &function = getFunction(functionId);
+		auto &resultTy = getType(resultTyId);
+
+		EmitState funcState = state->fork();
+		funcState.function = functionId;
+
+		// Allocate storage for the inlined function's return value.
+		Array<SIMD::Int> result(resultTy.sizeInComponents);
+		funcState.returnValue = result.addr();
+
+		// Add this call's argument bindings.
+		for (size_t i = 0; i < function.parameters.size(); i++)
+		{
+			auto parameter = function.parameters[i];
+			auto argument = Object::ID(insn.word(4 + i));
+			funcState.createAlias(parameter, argument);
+		}
+
+		// Emit the function's blocks, inline.
+		EmitBlocks(function.entry, &funcState);
+
+		// Copy the return value to the call result.
+		auto &dst = state->createIntermediate(resultId, resultTy.sizeInComponents);
+		for (uint32_t i = 0; i < resultTy.sizeInComponents; i++)
+		{
+			dst.move(i, result[i]);
+		}
+
+		// Reconstruct the activeLaneMask from the kill mask.
+		state->setActiveLaneMask(state->activeLaneMask() & ~state->routine->killMask);
 
 		return EmitResult::Continue;
 	}
