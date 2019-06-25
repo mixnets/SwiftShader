@@ -54,7 +54,6 @@ namespace sw
 {
 	// Forward declarations.
 	class SpirvRoutine;
-	class GenericValue;
 
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
@@ -466,6 +465,11 @@ namespace sw
 				// A pointer to a vk::DescriptorSet*.
 				// Pointer held by SpirvRoutine::pointers.
 				DescriptorSet,
+
+				// A function parameter.
+				// Parameters are simply an indirection to another Object, via
+				// the EmitState::arguments map.
+				Parameter,
 			};
 
 			Kind kind = Kind::Unknown;
@@ -525,6 +529,17 @@ namespace sw
 		private:
 			InsnIterator begin_;
 			InsnIterator end_;
+		};
+
+		class Function
+		{
+		public:
+			using ID = SpirvID<Function>;
+
+			Block::ID block; // function entry point block.
+			Type::ID type; // type of the function.
+			Type::ID result; // return type.
+			std::vector<Object::ID> parameters; // function parameters.
 		};
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
@@ -609,7 +624,7 @@ namespace sw
 		// shader entry point represented by this object.
 		uint64_t getSerialID() const
 		{
-			return  ((uint64_t)entryPointBlockId.value() << 32) | codeSerialID;
+			return  ((uint64_t)entryPoint.value() << 32) | codeSerialID;
 		}
 
 		SpirvShader(uint32_t codeSerialID,
@@ -787,34 +802,14 @@ namespace sw
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> outputBuiltins;
 		WorkgroupMemory workgroupMemory;
 
-		Type const &getType(Type::ID id) const
-		{
-			auto it = types.find(id);
-			ASSERT_MSG(it != types.end(), "Unknown type %d", id.value());
-			return it->second;
-		}
-
-		Object const &getObject(Object::ID id) const
-		{
-			auto it = defs.find(id);
-			ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
-			return it->second;
-		}
-
-		Block const &getBlock(Block::ID id) const
-		{
-			auto it = blocks.find(id);
-			ASSERT_MSG(it != blocks.end(), "Unknown block %d", id.value());
-			return it->second;
-		}
-
 	private:
 		const uint32_t codeSerialID;
 		Modes modes;
 		HandleMap<Type> types;
 		HandleMap<Object> defs;
 		HandleMap<Block> blocks;
-		Block::ID entryPointBlockId; // Block of the entry point function.
+		HandleMap<Function> functions;
+		Function::ID entryPoint;
 
 		// Walks all reachable the blocks starting from id adding them to
 		// reachable.
@@ -902,31 +897,23 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		// Returns a SIMD::Pointer to the underlying data for the given pointer
-		// object.
-		// Handles objects of the following kinds:
-		//  • DescriptorSet
-		//  • DivergentPointer
-		//  • InterfaceVariable
-		//  • NonDivergentPointer
-		// Calling GetPointerToData with objects of any other kind will assert.
-		SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, SpirvRoutine *routine) const;
-
-		SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-		SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-
-		// Returns the *component* offset in the literal for the given access chain.
-		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
-
 		// EmitState holds control-flow state for the emit() pass.
 		class EmitState
 		{
 		public:
-			EmitState(SpirvRoutine *routine, RValue<SIMD::Int> activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets)
+			EmitState(SpirvRoutine *routine, Function::ID function, RValue<SIMD::Int> activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets)
 				: routine(routine),
+				  function(function),
 				  activeLaneMaskValue(activeLaneMask.value),
 				  descriptorSets(descriptorSets)
 			{
+			}
+
+			EmitState fork(Function::ID function)
+			{
+				EmitState out(routine, function, activeLaneMask(), descriptorSets);
+				out.parent = this;
+				return out;
 			}
 
 			RValue<SIMD::Int> activeLaneMask() const
@@ -952,13 +939,71 @@ namespace sw
 			void addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask);
 
 			SpirvRoutine *routine = nullptr; // The current routine being built.
+			Function::ID function; // The current function being built.
 			rr::Value *activeLaneMaskValue = nullptr; // The current active lane mask.
 			Block::ID currentBlock; // The current block being built.
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
+			EmitState *parent = nullptr;
 
 			const vk::DescriptorSet::Bindings &descriptorSets;
+
+			Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
+			{
+				auto it = intermediates.emplace(std::piecewise_construct,
+						std::forward_as_tuple(id),
+						std::forward_as_tuple(size));
+				ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
+				return it.first->second;
+			}
+
+			Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
+			{
+				id = resolve(id);
+				auto it = intermediates.find(id);
+				if (it == intermediates.end() && parent != nullptr) { return parent->getIntermediate(id); }
+				ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
+				return it->second;
+			}
+
+			void createPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
+			{
+				bool added = pointers.emplace(id, ptr).second;
+				ASSERT_MSG(added, "Pointer %d created twice", id.value());
+			}
+
+			SIMD::Pointer const& getPointer(SpirvShader::Object::ID id) const
+			{
+				id = resolve(id);
+				auto it = pointers.find(id);
+				if (it == pointers.end() && parent != nullptr) { return parent->getPointer(id); }
+				ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
+				return it->second;
+			}
+
+			Array<SIMD::Float>& getVariable(SpirvShader::Object::ID id) const;
+
+			void createAlias(Object::ID from, Object::ID to)
+			{
+				bool added = aliases.emplace(from, to).second;
+				ASSERT_MSG(added, "Alias %d created twice", from.value());
+			}
+
+			SpirvShader::Object::ID resolve(SpirvShader::Object::ID id) const
+			{
+				auto it = aliases.find(id);
+				if (it == aliases.end())
+				{
+					return parent != nullptr ? parent->resolve(id) : id;
+				}
+				return resolve(it->second);
+			}
+
+		private:
+			std::unordered_map<Object::ID, Object::ID> aliases; // Parameter to argument bindings for the current function.
+			std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
+			std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.
@@ -967,6 +1012,92 @@ namespace sw
 			Continue, // No termination instructions.
 			Terminator, // Reached a termination instruction.
 		};
+
+		// Generic wrapper over either per-lane intermediate value, or a constant.
+		// Constants are transparently widened to per-lane values in operator[].
+		// This is appropriate in most cases -- if we're not going to do something
+		// significantly different based on whether the value is uniform across lanes.
+		class GenericValue
+		{
+			SpirvShader::Object const &obj;
+			Intermediate const *intermediate;
+
+		public:
+			GenericValue(SpirvShader const *shader, EmitState const *state, SpirvShader::Object::ID objId);
+
+			RValue<SIMD::Float> Float(uint32_t i) const
+			{
+				if (intermediate != nullptr)
+				{
+					return intermediate->Float(i);
+				}
+				auto constantValue = reinterpret_cast<float *>(obj.constantValue.get());
+				return RValue<SIMD::Float>(constantValue[i]);
+			}
+
+			RValue<SIMD::Int> Int(uint32_t i) const
+			{
+				return As<SIMD::Int>(Float(i));
+			}
+
+			RValue<SIMD::UInt> UInt(uint32_t i) const
+			{
+				return As<SIMD::UInt>(Float(i));
+			}
+
+			SpirvShader::Type::ID const type;
+		};
+
+		Type const &getType(Type::ID id) const
+		{
+			auto it = types.find(id);
+			ASSERT_MSG(it != types.end(), "Unknown type %d", id.value());
+			return it->second;
+		}
+
+		Object const &getObjectX(Object::ID id) const
+		{
+			auto it = defs.find(id);
+			ASSERT_MSG(it != defs.end(), "Unknown object %d", id.value());
+			return it->second;
+		}
+
+		// Returns the Object for the given Object::ID, while also resolving
+		// parameter to argument bindings.
+		Object const &getObject(Object::ID id, EmitState const * state) const
+		{
+			return getObjectX(state->resolve(id));
+		}
+
+		Block const &getBlock(Block::ID id) const
+		{
+			auto it = blocks.find(id);
+			ASSERT_MSG(it != blocks.end(), "Unknown block %d", id.value());
+			return it->second;
+		}
+
+		Function const &getFunction(Function::ID id) const
+		{
+			auto it = functions.find(id);
+			ASSERT_MSG(it != functions.end(), "Unknown function %d", id.value());
+			return it->second;
+		}
+
+		// Returns a SIMD::Pointer to the underlying data for the given pointer
+		// object.
+		// Handles objects of the following kinds:
+		//  • DescriptorSet
+		//  • DivergentPointer
+		//  • InterfaceVariable
+		//  • NonDivergentPointer
+		// Calling GetPointerToData with objects of any other kind will assert.
+		SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const;
+
+		SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
+		SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
+
+		// Returns the *component* offset in the literal for the given access chain.
+		uint32_t WalkLiteralAccessChain(Type::ID id, uint32_t numIndexes, uint32_t const *indexes) const;
 
 		// existsPath returns true if there's a direct or indirect flow from
 		// the 'from' block to the 'to' block that does not pass through
@@ -1045,9 +1176,10 @@ namespace sw
 		EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
 
-		void GetImageDimensions(SpirvRoutine const *routine, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-		SIMD::Pointer GetTexelAddress(SpirvRoutine const *routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
+		void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
+		SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
 		uint32_t GetConstScalarInt(Object::ID id) const;
 		void EvalSpecConstantOp(InsnIterator insn);
 		void EvalSpecConstantUnaryOp(InsnIterator insn);
@@ -1098,13 +1230,14 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
-		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
-
 		using Variable = Array<SIMD::Float>;
+
+		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
 
 		vk::PipelineLayout const * const pipelineLayout;
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> variables;
+		std::unordered_map<SpirvShader::Object::ID, Variable> phis;
 
 		Variable inputs = Variable{MAX_INTERFACE_COMPONENTS};
 		Variable outputs = Variable{MAX_INTERFACE_COMPONENTS};
@@ -1129,85 +1262,6 @@ namespace sw
 			ASSERT_MSG(it != variables.end(), "Unknown variables %d", id.value());
 			return it->second;
 		}
-
-	private:
-		// The fields and accessors below are only accessible to SpirvShader
-		// and GenericValue as they are only used and exist between calls to
-		// SpirvShader::emitProlog() and SpirvShader::emitEpilog().
-		friend class SpirvShader;
-		friend class GenericValue;
-
-		std::unordered_map<SpirvShader::Object::ID, Intermediate> intermediates;
-		std::unordered_map<SpirvShader::Object::ID, SIMD::Pointer> pointers;
-		std::unordered_map<SpirvShader::Object::ID, Variable> phis;
-
-		void createPointer(SpirvShader::Object::ID id, SIMD::Pointer ptr)
-		{
-			bool added = pointers.emplace(id, ptr).second;
-			ASSERT_MSG(added, "Pointer %d created twice", id.value());
-		}
-
-		Intermediate& createIntermediate(SpirvShader::Object::ID id, uint32_t size)
-		{
-			auto it = intermediates.emplace(std::piecewise_construct,
-					std::forward_as_tuple(id),
-					std::forward_as_tuple(size));
-			ASSERT_MSG(it.second, "Intermediate %d created twice", id.value());
-			return it.first->second;
-		}
-
-		Intermediate const& getIntermediate(SpirvShader::Object::ID id) const
-		{
-			auto it = intermediates.find(id);
-			ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
-			return it->second;
-		}
-
-		SIMD::Pointer const& getPointer(SpirvShader::Object::ID id) const
-		{
-			auto it = pointers.find(id);
-			ASSERT_MSG(it != pointers.end(), "Unknown pointer %d", id.value());
-			return it->second;
-		}
-	};
-
-	class GenericValue
-	{
-		// Generic wrapper over either per-lane intermediate value, or a constant.
-		// Constants are transparently widened to per-lane values in operator[].
-		// This is appropriate in most cases -- if we're not going to do something
-		// significantly different based on whether the value is uniform across lanes.
-
-		SpirvShader::Object const &obj;
-		Intermediate const *intermediate;
-
-	public:
-		GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::Object::ID objId) :
-				obj(shader->getObject(objId)),
-				intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &routine->getIntermediate(objId) : nullptr),
-				type(obj.type) {}
-
-		RValue<SIMD::Float> Float(uint32_t i) const
-		{
-			if (intermediate != nullptr)
-			{
-				return intermediate->Float(i);
-			}
-			auto constantValue = reinterpret_cast<float *>(obj.constantValue.get());
-			return RValue<SIMD::Float>(constantValue[i]);
-		}
-
-		RValue<SIMD::Int> Int(uint32_t i) const
-		{
-			return As<SIMD::Int>(Float(i));
-		}
-
-		RValue<SIMD::UInt> UInt(uint32_t i) const
-		{
-			return As<SIMD::UInt>(Float(i));
-		}
-
-		SpirvShader::Type::ID const type;
 	};
 
 }
