@@ -337,6 +337,8 @@ else()
         "-Wreorder"
         "-Wsign-compare"
         "-Wmissing-braces"
+        # Warnings that should not be treated as errors:
+        "-Wno-error=class-memaccess"  # TODO(b/134932616): Reliably initializing cache keys requires memset().
     )
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -345,12 +347,15 @@ else()
             "-Wstring-conversion"
             "-Wextra-semi"
             "-Wignored-qualifiers"
-            # Silence errors caused by unknown warnings when building with older
-            # versions of Clang. This demands checking that warnings added above
-            # are spelled correctly and work as intended!
-            "-Wno-unknown-warning-option"
         )
     endif()
+
+    # Silence errors caused by unknown warnings when building with older
+    # compiler versions. This demands checking that warnings added above
+    # are spelled correctly and work as intended!
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+        "-Wno-unknown-warning-option"
+    )
 
     # Remove xor, and, or and friends from the list of keywords, they are used
     # by Reactor
