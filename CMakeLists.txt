@@ -1800,6 +1800,10 @@ if(WIN32)
     list(APPEND EGL_LIST ${OPENGL_DIR}/libEGL/libEGL.rc)
     list(APPEND GLES2_LIST ${OPENGL_DIR}/libGLESv2/libGLESv2.rc)
     list(APPEND GLES_CM_LIST ${OPENGL_DIR}/libGLES_CM/libGLES_CM.rc)
+    list(APPEND VULKAN_LIST
+        ${SOURCE_DIR}/WSI/Win32SurfaceKHR.cpp
+        ${SOURCE_DIR}/WSI/Win32SurfaceKHR.hpp
+    )
 elseif(LINUX)
     list(APPEND SWIFTSHADER_LIST
         ${SOURCE_DIR}/Main/FrameBufferX11.cpp
@@ -2034,6 +2038,15 @@ if(BUILD_VULKAN)
         COMPILE_DEFINITIONS "VK_EXPORT=;NO_SANITIZE_FUNCTION=;$<$<CONFIG:Debug>:DEBUGGER_WAIT_DIALOG>"
         PREFIX ""
     )
+
+    if(WIN32)
+        set_property(TARGET libvk_swiftshader APPEND
+                     PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_WIN32_KHR")
+    elseif(LINUX)
+        set_property(TARGET libvk_swiftshader APPEND
+                     PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_XLIB_KHR")
+    endif()
+
     set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
     target_link_libraries(libvk_swiftshader ${Reactor} Yarn ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
     add_custom_command(
