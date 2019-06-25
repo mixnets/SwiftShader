@@ -124,7 +124,7 @@ namespace sw
 		{
 			for (auto i = 0u; i < state.multiSample; i++)
 			{
-				cMask[i] &= ~routine.killMask;
+				cMask[i] &= ~SignMask(routine.killMask);
 			}
 		}
 
