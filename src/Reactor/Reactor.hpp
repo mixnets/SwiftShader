@@ -2412,6 +2412,10 @@ namespace rr
 		Reference<T> operator[](unsigned int index);
 		Reference<T> operator[](RValue<Int> index);
 		Reference<T> operator[](RValue<UInt> index);
+
+		// addr() returns the this pointer to this Array object.
+		// This function exists because operator&() is overloaded by LValue<T>.
+		inline Array* addr() { return this; }
 	};
 
 //	RValue<Array<T>> operator++(Array<T> &val, int);   // Post-increment
