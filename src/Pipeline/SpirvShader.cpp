@@ -4658,7 +4658,7 @@ namespace sw
 
 	SpirvShader::EmitResult SpirvShader::EmitKill(InsnIterator insn, EmitState *state) const
 	{
-		state->routine->killMask |= SignMask(state->activeLaneMask());
+		state->routine->killMask |= state->activeLaneMask();
 		state->setActiveLaneMask(SIMD::Int(0));
 		return EmitResult::Terminator;
 	}
