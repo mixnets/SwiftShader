@@ -6413,6 +6413,11 @@ namespace sw
 		}
 	}
 
+	SpirvShader::GenericValue::GenericValue(SpirvShader const *shader, SpirvRoutine const *routine, SpirvShader::Object::ID objId) :
+			obj(shader->getObject(objId)),
+			intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &routine->getIntermediate(objId) : nullptr),
+			type(obj.type) {}
+
 	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
 		pipelineLayout(pipelineLayout)
 	{
