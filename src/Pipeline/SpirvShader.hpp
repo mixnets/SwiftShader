@@ -567,6 +567,7 @@ namespace sw
 			HandleMap<Block> blocks; // blocks belonging to this function.
 			Type::ID type; // type of the function.
 			Type::ID result; // return type.
+			std::vector<Object::ID> parameters; // function parameters.
 		};
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
@@ -966,6 +967,7 @@ namespace sw
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
+			rr::Array<SIMD::Int> *returnValue;
 			EmitState *parent = nullptr;
 
 			const vk::DescriptorSet::Bindings &descriptorSets;
@@ -1159,6 +1161,7 @@ namespace sw
 		EmitResult EmitSwitch(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitUnreachable(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitReturn(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitReturnValue(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitKill(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitImageSampleImplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
@@ -1183,6 +1186,7 @@ namespace sw
 		EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
 
 		void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 		SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
