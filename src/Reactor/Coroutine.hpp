@@ -25,7 +25,7 @@ namespace rr
 	class StreamBase
 	{
 	protected:
-		StreamBase(std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
+		StreamBase(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
 			: routine(routine), handle(handle) {}
 
 		~StreamBase()
@@ -52,7 +52,7 @@ private:
 	class Stream : public StreamBase
 	{
 	public:
-		inline Stream(std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
+		inline Stream(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
 			: StreamBase(routine, handle) {}
 
 		// await() retrieves the next yielded value from the coroutine.
@@ -138,7 +138,7 @@ private:
 		// Starts execution of the coroutine and returns a unique_ptr to a
 		// Stream<> that exposes the await() function for obtaining yielded
 		// values.
-		std::unique_ptr<Stream<Return>> operator()(Arguments...);
+		std::unique_ptr<Stream<Return>> operator()(Arguments...) const;
 
 	protected:
 		std::unique_ptr<Nucleus> core;
@@ -175,9 +175,9 @@ private:
 
 	template<typename Return, typename... Arguments>
 	std::unique_ptr<Stream<Return>>
-	Coroutine<Return(Arguments...)>::operator()(Arguments... args)
+	Coroutine<Return(Arguments...)>::operator()(Arguments... args) const
 	{
-		finalize();
+		ASSERT(routine != nullptr);
 
 		using Sig = Nucleus::CoroutineBegin<Arguments...>;
 		auto pfn = (Sig*)routine->getEntry(Nucleus::CoroutineEntryBegin);

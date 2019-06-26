@@ -107,7 +107,7 @@ namespace sw
 		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
 		routine.killMask = 0;
 
-		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
+		spirvShader->emit(&routine, activeLaneMask);
 		spirvShader->emitEpilog(&routine);
 
 		for(int i = 0; i < RENDERTARGETS; i++)

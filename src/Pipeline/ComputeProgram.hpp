@@ -47,7 +47,7 @@ namespace sw
 			int32_t subgroupCount)>
 	{
 	public:
-		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
+		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout);
 
 		virtual ~ComputeProgram();
 
@@ -60,7 +60,7 @@ namespace sw
 			vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 			PushConstantStorage const &pushConstants,
 			uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
-			uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
+			uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 
 	protected:
 		void emit(SpirvRoutine* routine);
@@ -83,7 +83,6 @@ namespace sw
 
 		SpirvShader const * const shader;
 		vk::PipelineLayout const * const pipelineLayout;
-		const vk::DescriptorSet::Bindings &descriptorSets;
 	};
 
 } // namespace sw
