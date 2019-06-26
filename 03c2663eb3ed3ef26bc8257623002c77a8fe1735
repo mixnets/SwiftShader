@@ -22,6 +22,30 @@
       "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79a70cce_9b592147",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-26T14:22:01Z",
+      "side": 1,
+      "message": "Is this documented as a bug in LLVM that we can track?\n\nNot that I\u0027ve found.\n\nThe LLVM claim that floats are legal is here: https://llvm.org/docs/LangRef.html#id210.\n\nUnfortunately it\u0027s not uncommon for LLVM to break on code paths not exercised by clang, and as I highlighted in b/136037244, clang is always bitcasting to/from integer types.\nI would put my money on this being an ARM backend bug. Perhaps there\u0027s a pass to clean this up, but I didn\u0027t see one used when looking into how clang does things.",
+      "parentUuid": "fd2d38f1_aff23702",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 21
+      },
+      "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
