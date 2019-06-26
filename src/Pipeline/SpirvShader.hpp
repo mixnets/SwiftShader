@@ -616,7 +616,7 @@ namespace sw
 		            VkShaderStageFlagBits stage,
 		            const char *entryPointName,
 		            InsnStore const &insns,
-		            vk::RenderPass *renderPass,
+		            const vk::RenderPass *renderPass,
 		            uint32_t subpassIndex);
 
 		struct Modes
@@ -779,7 +779,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
+		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -922,10 +922,9 @@ namespace sw
 		class EmitState
 		{
 		public:
-			EmitState(SpirvRoutine *routine, RValue<SIMD::Int> activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets)
+			EmitState(SpirvRoutine *routine, RValue<SIMD::Int> activeLaneMask)
 				: routine(routine),
-				  activeLaneMaskValue(activeLaneMask.value),
-				  descriptorSets(descriptorSets)
+				  activeLaneMaskValue(activeLaneMask.value)
 			{
 			}
 
@@ -957,8 +956,6 @@ namespace sw
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
-
-			const vk::DescriptorSet::Bindings &descriptorSets;
 		};
 
 		// EmitResult is an enumerator of result values from the Emit functions.
