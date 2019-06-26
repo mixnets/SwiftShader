@@ -392,7 +392,7 @@ namespace sw
 			VkShaderStageFlagBits pipelineStage,
 			const char *entryPointName,
 			InsnStore const &insns,
-			vk::RenderPass *renderPass,
+			const vk::RenderPass *renderPass,
 			uint32_t subpassIndex)
 				: insns{insns}, inputs{MAX_INTERFACE_COMPONENTS},
 				outputs{MAX_INTERFACE_COMPONENTS},
@@ -1980,9 +1980,9 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
+	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask) const
 	{
-		EmitState state(routine, activeLaneMask, descriptorSets);
+		EmitState state(routine, activeLaneMask);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?

@@ -27,10 +27,9 @@ namespace
 
 namespace sw
 {
-	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets)
+	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout)
 		: shader(shader),
-		  pipelineLayout(pipelineLayout),
-		  descriptorSets(descriptorSets)
+		  pipelineLayout(pipelineLayout)
 	{
 	}
 
@@ -193,7 +192,7 @@ namespace sw
 
 			setSubgroupBuiltins(data, routine, workgroupID, localInvocationIndex, subgroupIndex);
 
-			shader->emit(routine, activeLaneMask, descriptorSets);
+			shader->emit(routine, activeLaneMask);
 		}
 	}
 
@@ -253,7 +252,7 @@ namespace sw
 					using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
 					std::queue<Coroutine> coroutines;
 
-					if (shader->getModes().ContainsControlBarriers)
+					if (modes.ContainsControlBarriers)
 					{
 						// Make a function call per subgroup so each subgroup
 						// can yield, bringing all subgroups to the barrier
