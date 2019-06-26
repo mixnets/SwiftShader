@@ -94,6 +94,30 @@
       "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2da290a6_822e5593",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-26T14:51:55Z",
+      "side": 1,
+      "message": "Looks like we\u0027re setting MArch to \"arm\". Should definitely try \"armv7a\"",
+      "parentUuid": "f4e45ff4_e69932b8",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 21
+      },
+      "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
