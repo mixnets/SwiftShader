@@ -844,6 +844,7 @@ namespace rr
 
 			passManager->add(llvm::createSROAPass());
 
+/*
 			for(int pass = 0; pass < 10 && optimization[pass] != Disabled; pass++)
 			{
 				switch(optimization[pass])
@@ -862,6 +863,7 @@ namespace rr
 					UNREACHABLE("optimization[pass]: %d, pass: %d", int(optimization[pass]), int(pass));
 				}
 			}
+ */
 
 			passManager->run(*::module);
 		}
