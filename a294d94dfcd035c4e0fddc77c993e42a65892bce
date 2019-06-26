@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4265dd8_a3d57504",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1023,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-26T16:41:26Z",
+      "side": 1,
+      "message": "TODO: This code path is no longer taken. Microarchitecture features are detected using llvm::sys::getHostCPUFeatures() above. Check if it detects ARMv7-a and NEON...",
+      "range": {
+        "startLine": 1023,
+        "startChar": 0,
+        "endLine": 1023,
+        "endChar": 5
+      },
+      "revId": "a294d94dfcd035c4e0fddc77c993e42a65892bce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
