@@ -27,6 +27,8 @@ else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
 
+SET(CMAKE_SYSTEM_PROCESSOR "arm")
+
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "aarch64")
@@ -92,7 +94,7 @@ option(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT funct
 option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" 0)
 
 if(ARCH STREQUAL "arm")
-    set(DEFAULT_REACTOR_BACKEND "Subzero")
+    set(DEFAULT_REACTOR_BACKEND "LLVM")
 else()
     set(DEFAULT_REACTOR_BACKEND "LLVM")
 endif()
@@ -382,6 +384,10 @@ else()
         set_cpp_flag("-fPIC")
         set_cpp_flag("-march=x86-64")
         set_cpp_flag("-mtune=generic")
+    endif()
+    if(ARCH STREQUAL "arm")
+        set_cpp_flag("-march=armv7-a")
+        set_cpp_flag("-mfpu=neon")
     endif()
     if(ARCH STREQUAL "mipsel")
         set_cpp_flag("-march=mips32r2")
@@ -1266,6 +1272,9 @@ elseif(ARCH STREQUAL "aarch64")
     )
 elseif(ARCH STREQUAL "arm")
     list(APPEND LLVM_LIST
+        ${LLVM_DIR}/lib/Analysis/LoopAccessAnalysis.cpp
+        ${LLVM_DIR}/lib/CodeGen/GlobalMerge.cpp
+        ${LLVM_DIR}/lib/MC/ConstantPools.cpp
         ${LLVM_DIR}/lib/Target/ARM/A15SDOptimizer.cpp
         ${LLVM_DIR}/lib/Target/ARM/ARMAsmPrinter.cpp
         ${LLVM_DIR}/lib/Target/ARM/ARMBaseInstrInfo.cpp
@@ -1322,6 +1331,7 @@ elseif(ARCH STREQUAL "arm")
         ${LLVM_DIR}/lib/Target/ARM/Thumb2SizeReduction.cpp
         ${LLVM_DIR}/lib/Target/ARM/ThumbRegisterInfo.cpp
         ${LLVM_DIR}/lib/Target/ARM/Utils/ARMBaseInfo.cpp
+        ${LLVM_DIR}/lib/Transforms/Scalar/LowerAtomic.cpp
     )
 elseif(ARCH STREQUAL "ppc64le")
     list(APPEND LLVM_LIST

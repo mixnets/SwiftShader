@@ -77,11 +77,10 @@ bool Driver::loadSwiftShader()
         return load("libvulkan.dylib");
     #endif
 #elif OS_LINUX
-    #if defined(STANDALONE)
-        return load("./build/Linux/libvk_swiftshader.so");
-    #else
-        return load("libvulkan.so");
-    #endif
+        return load("./build/Linux/libvk_swiftshader.so") ||
+               load("swiftshader/libvulkan.so") ||
+               load("libvulkan.so") ||
+               load("./libvk_swiftshader.so");
 #elif OS_ANDROID
     return load("libvk_swiftshader.so");
 #else

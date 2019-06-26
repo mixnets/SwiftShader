@@ -530,6 +530,20 @@ namespace rr
 		std::atomic_store_explicit<T>(reinterpret_cast<std::atomic<T>*>(ptr), *reinterpret_cast<T*>(val), atomicOrdering(ordering));
 	}
 
+	template<typename F>
+	static uint32_t sync_fetch_and_op(uint32_t *ptr, uint32_t val, F f)
+	{
+		// Build an arbitrary op out of looped CAS
+		for (;;)
+		{
+			uint32_t expected = *ptr;
+			uint32_t desired = f(expected, val);
+
+			if (expected == __sync_val_compare_and_swap_4(ptr, expected, desired))
+				return expected;
+		}
+	}
+
 	class ExternalFunctionSymbolResolver
 	{
 	private:
@@ -574,11 +588,21 @@ namespace rr
 				static void* coroutine_alloc_frame(size_t size) { return alignedAlloc(size, 16); }
 				static void coroutine_free_frame(void* ptr) { alignedFree(ptr); }
 
-#ifdef __ANDROID__
+//#ifdef __ANDROID__
 				// forwarders since we can't take address of builtins
 				static void sync_synchronize() { __sync_synchronize(); }
 				static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_add_4(ptr, val); }
-#endif
+				static uint32_t sync_fetch_and_and_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_and_4(ptr, val); }
+				static uint32_t sync_fetch_and_or_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_or_4(ptr, val); }
+				static uint32_t sync_fetch_and_xor_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_xor_4(ptr, val); }
+				static uint32_t sync_lock_test_and_set_4(uint32_t *ptr, uint32_t val) { return __sync_lock_test_and_set_4(ptr, val); }
+				static uint32_t sync_val_compare_and_swap_4(uint32_t *ptr, uint32_t expected, uint32_t desired) { return __sync_val_compare_and_swap_4(ptr, expected, desired); }
+
+				static uint32_t sync_fetch_and_max_4(uint32_t *ptr, uint32_t val) { return sync_fetch_and_op(ptr, val, [](int32_t a, int32_t b) { return std::max(a,b);}); }
+				static uint32_t sync_fetch_and_min_4(uint32_t *ptr, uint32_t val) { return sync_fetch_and_op(ptr, val, [](int32_t a, int32_t b) { return std::max(a,b);}); }
+				static uint32_t sync_fetch_and_umax_4(uint32_t *ptr, uint32_t val) { return sync_fetch_and_op(ptr, val, [](uint32_t a, uint32_t b) { return std::max(a,b);}); }
+				static uint32_t sync_fetch_and_umin_4(uint32_t *ptr, uint32_t val) { return sync_fetch_and_op(ptr, val, [](uint32_t a, uint32_t b) { return std::max(a,b);}); }
+//#endif
 			};
 
 			func_.emplace("nop", reinterpret_cast<void*>(F::nop));
@@ -642,11 +666,20 @@ namespace rr
 			func_.emplace("chkstk", reinterpret_cast<void*>(_chkstk));
 #endif
 
-#ifdef __ANDROID__
+//#ifdef __ANDROID__
 			func_.emplace("aeabi_unwind_cpp_pr0", reinterpret_cast<void*>(F::neverCalled));
 			func_.emplace("sync_synchronize", reinterpret_cast<void*>(F::sync_synchronize));
 			func_.emplace("sync_fetch_and_add_4", reinterpret_cast<void*>(F::sync_fetch_and_add_4));
-#endif
+			func_.emplace("sync_fetch_and_and_4", reinterpret_cast<void*>(F::sync_fetch_and_and_4));
+			func_.emplace("sync_fetch_and_or_4", reinterpret_cast<void*>(F::sync_fetch_and_and_4));
+			func_.emplace("sync_fetch_and_xor_4", reinterpret_cast<void*>(F::sync_fetch_and_xor_4));
+			func_.emplace("sync_lock_test_and_set_4", reinterpret_cast<void*>(F::sync_lock_test_and_set_4));
+			func_.emplace("sync_val_compare_and_swap_4", reinterpret_cast<void*>(F::sync_val_compare_and_swap_4));
+			func_.emplace("sync_fetch_and_max_4", reinterpret_cast<void*>(F::sync_fetch_and_max_4));
+			func_.emplace("sync_fetch_and_min_4", reinterpret_cast<void*>(F::sync_fetch_and_min_4));
+			func_.emplace("sync_fetch_and_umax_4", reinterpret_cast<void*>(F::sync_fetch_and_umax_4));
+			func_.emplace("sync_fetch_and_umin_4", reinterpret_cast<void*>(F::sync_fetch_and_umin_4));
+//#endif
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -999,7 +1032,7 @@ namespace rr
 		#elif defined(__powerpc64__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 			static const char arch[] = "ppc64le";
 		#else
-		#error "unknown architecture"
+			#error "unknown architecture"
 		#endif
 
 		llvm::SmallVector<std::string, 8> mattrs;
@@ -1008,17 +1041,32 @@ namespace rr
 
 		bool ok = llvm::sys::getHostCPUFeatures(features);
 
-		#if defined(__i386__) || defined(__x86_64__) || \
-		   (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
-		ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures returned false");
+		#if defined(__i386__) || defined(__x86_64__) || (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
+			ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures unexpectedly returned false");
 		#else
-		(void) ok; // getHostCPUFeatures always returns false on other platforms
+			(void)ok; // getHostCPUFeatures always returns false on other platforms
 		#endif
 
-		for (auto &feature : features)
+		for(auto &feature : features)
 		{
-			if (feature.second) { mattrs.push_back(feature.first()); }
+			if(feature.second)
+			{
+				mattrs.push_back(feature.first());
+			}
 		}
+
+		// ARMv7 (32-bit) builds running on ARM64 capable systems may not get
+		// the correct features from llvm::sys::getHostCPUFeatures(), due to
+		// depending on /proc/cpuinfo, which on some platforms does not list
+		// features already mandatory as part of ARMv8. The Android CDD demands
+		// /proc/cpuinfo to include ARMv7 features.
+		#if __ARM_ARCH == 7
+			// Assume ARMv7-A with NEON and hardware division in non-Thumb mode.
+			// Always present on ARMv8 capable CPUs.
+			mattrs.push_back("+armv7-a");
+			mattrs.push_back("+neon");
+			mattrs.push_back("+hwdiv-arm");
+		#endif
 
 #if 0
 #if defined(__i386__) || defined(__x86_64__)
@@ -1031,10 +1079,12 @@ namespace rr
 		mattrs.push_back(CPUID::supportsSSE4_1() ? "+sse4.1" : "-sse4.1");
 #elif defined(__arm__)
 #if __ARM_ARCH >= 8
+std::cerr << "v8" << std::endl;
 		mattrs.push_back("+armv8-a");
 #else
-		// armv7-a requires compiler-rt routines; otherwise, compiled kernel
-		// might fail to link.
+		mattrs.push_back("+armv7-a");
+		mattrs.push_back("+neon");
+		mattrs.push_back("+hwdiv-arm");
 #endif
 #endif
 #endif
