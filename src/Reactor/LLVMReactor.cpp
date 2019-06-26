@@ -346,6 +346,7 @@ namespace
 
 		void optimize()
 		{
+return;
 #ifdef ENABLE_RR_DEBUG_INFO
 			if (debugInfo != nullptr)
 			{
