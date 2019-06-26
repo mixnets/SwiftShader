@@ -702,9 +702,7 @@ namespace rr
 					}
 				})),
 			targetMachine(llvm::EngineBuilder()
-#ifdef ENABLE_RR_DEBUG_INFO
 				.setOptLevel(llvm::CodeGenOpt::None)
-#endif // ENABLE_RR_DEBUG_INFO
 				.setMArch(arch)
 				.setMAttrs(mattrs)
 				.setTargetOptions(targetOpts)
@@ -795,6 +793,8 @@ namespace rr
 
 		void optimize(llvm::Module *module)
 		{
+			return;
+
 #ifdef ENABLE_RR_DEBUG_INFO
 			if (debugInfo != nullptr)
 			{
