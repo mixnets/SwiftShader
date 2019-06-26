@@ -190,6 +190,30 @@
       "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "47546cc4_012355c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-26T15:04:48Z",
+      "side": 1,
+      "message": "So, yes, I think we need \"+v7\" in mattr if it isn\u0027t there already.\nThis should already be coming from the call to llvm::sys::getHostCPUFeatures() - this under the hood attempts to parse \u0027/proc/cpuinfo\u0027, which may not work on Android?",
+      "parentUuid": "0e2d89c0_3e90bde3",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 21
+      },
+      "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
