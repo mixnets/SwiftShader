@@ -1033,8 +1033,7 @@ namespace rr
 #if __ARM_ARCH >= 8
 		mattrs.push_back("+armv8-a");
 #else
-		// armv7-a requires compiler-rt routines; otherwise, compiled kernel
-		// might fail to link.
+		mattrs.push_back("+armv7-a");  // Assume at least ARMv7 with NEON support.
 #endif
 #endif
 #endif
