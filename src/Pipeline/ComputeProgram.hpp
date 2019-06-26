@@ -47,7 +47,7 @@ namespace sw
 			int32_t subgroupCount)>
 	{
 	public:
-		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);
+		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout);
 
 		virtual ~ComputeProgram();
 
@@ -83,7 +83,6 @@ namespace sw
 
 		SpirvShader const * const shader;
 		vk::PipelineLayout const * const pipelineLayout;
-		const vk::DescriptorSet::Bindings &descriptorSets;
 	};
 
 } // namespace sw
