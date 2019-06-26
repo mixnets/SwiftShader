@@ -55,7 +55,17 @@ namespace sw
 		Memset(T *object, int val)
 		{
 			static_assert(std::is_base_of<Memset<T>, T>::value, "Memset<T> must only clear the memory of a type of which it is a base class");
+
+			// GCC 8+ warns that
+			// "‘void* memset(void*, int, size_t)’ clearing an object of non-trivial type ‘T’;
+			//  use assignment or value-initialization instead [-Werror=class-memaccess]"
+			// This is benign iff it happens before any of the base or member constructrs are called.
+			#pragma GCC diagnostic push
+			#pragma GCC diagnostic ignored "-Wclass-memaccess"
+
 			memset(object, 0, sizeof(T));
+
+			#pragma GCC diagnostic pop
 		}
 	};
 
