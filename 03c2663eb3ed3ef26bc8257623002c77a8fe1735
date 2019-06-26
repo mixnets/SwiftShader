@@ -46,6 +46,30 @@
       "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0d18f7a5_9ec3f203",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-26T14:40:47Z",
+      "side": 1,
+      "message": "Related: https://github.com/android-ndk/ndk/issues/338#issuecomment-288185992",
+      "parentUuid": "79a70cce_9b592147",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 21
+      },
+      "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
