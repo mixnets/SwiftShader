@@ -142,6 +142,30 @@
       "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "53a11907_209c37e9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-26T14:55:40Z",
+      "side": 1,
+      "message": "Yeah, you might be on to something:\n\n\u003e llc -mtriple arm-linux-gnueabihf ./src/tmp/bang.ir\nSoftenFloatResult #0: t4: f32,ch \u003d AtomicLoad\u003c(dereferenceable load acquire 4 from %ir.2)\u003e t0, FrameIndex:i32\u003c0\u003e\n\nDo not know how to soften the result of this operator!\nUNREACHABLE executed at ../lib/CodeGen/SelectionDAG/LegalizeFloatTypes.cpp:59!\n\n\u003e llc -mtriple armv7-linux-gnueabihf ./src/tmp/bang.ir\n\n\u003cno crash\u003e",
+      "parentUuid": "d7377889_3ea4b104",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 21
+      },
+      "revId": "03c2663eb3ed3ef26bc8257623002c77a8fe1735",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
