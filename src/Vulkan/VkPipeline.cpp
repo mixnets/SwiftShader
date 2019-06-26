@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "VkPipeline.hpp"
+
+#include "VkDevice.hpp"
 #include "VkPipelineLayout.hpp"
 #include "VkShaderModule.hpp"
 #include "VkRenderPass.hpp"
@@ -224,10 +226,14 @@ std::vector<uint32_t> preprocessSpirv(
 namespace vk
 {
 
-Pipeline::Pipeline(PipelineLayout const *layout) : layout(layout) {}
+Pipeline::Pipeline(PipelineLayout const *layout, const Device *device)
+	: layout(layout),
+	  robustBufferAccess(device->getRobustBufferAccess())
+{
+}
 
-GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
-	: Pipeline(vk::Cast(pCreateInfo->layout))
+GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem, const Device *device)
+	: Pipeline(vk::Cast(pCreateInfo->layout), device)
 {
 	if(((pCreateInfo->flags &
 		~(VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT |
@@ -459,7 +465,9 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, c
 
 		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 		// TODO: also pass in any pipeline state which will affect shader compilation
-		auto spirvShader = new sw::SpirvShader(codeSerialID, pStage->stage, pStage->pName, code, vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass);
+		auto spirvShader = new sw::SpirvShader(codeSerialID, pStage->stage, pStage->pName, code,
+		                                       vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass,
+		                                       robustBufferAccess);
 
 		switch (pStage->stage)
 		{
@@ -527,8 +535,8 @@ bool GraphicsPipeline::hasDynamicState(VkDynamicState dynamicState) const
 	return (dynamicStateFlags & (1 << dynamicState)) != 0;
 }
 
-ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
-	: Pipeline(vk::Cast(pCreateInfo->layout))
+ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem, const Device *device)
+	: Pipeline(vk::Cast(pCreateInfo->layout), device)
 {
 }
 
@@ -559,7 +567,10 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 	uint32_t codeSerialID = (stage.pSpecializationInfo ? ShaderModule::nextSerialID() : module->getSerialID());
 
 	// TODO(b/119409619): use allocator.
-	shader = new sw::SpirvShader(codeSerialID, stage.stage, stage.pName, code, nullptr, 0);
+	shader = new sw::SpirvShader(codeSerialID, stage.stage, stage.pName, code,
+	                             nullptr, 0,
+	                             robustBufferAccess);
+
 	vk::DescriptorSet::Bindings descriptorSets;  // FIXME(b/129523279): Delay code generation until invoke time.
 	program = new sw::ComputeProgram(shader, layout, descriptorSets);
 	program->generate();
