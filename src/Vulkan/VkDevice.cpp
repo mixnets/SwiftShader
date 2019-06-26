@@ -39,7 +39,8 @@ namespace vk
 Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice *physicalDevice)
 	: physicalDevice(physicalDevice),
 	  queues(reinterpret_cast<Queue*>(mem)),
-	  enabledExtensionCount(pCreateInfo->enabledExtensionCount)
+	  enabledExtensionCount(pCreateInfo->enabledExtensionCount),
+	  robustBufferAccess(pCreateInfo->pEnabledFeatures ? pCreateInfo->pEnabledFeatures->robustBufferAccess : false)
 {
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
