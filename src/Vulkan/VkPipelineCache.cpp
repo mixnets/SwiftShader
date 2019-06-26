@@ -34,6 +34,12 @@ PipelineCache::PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void*
 	}
 }
 
+PipelineCache::~PipelineCache()
+{
+	spirvShaders.clear();
+	computePrograms.clear();
+}
+
 void PipelineCache::destroy(const VkAllocationCallbacks* pAllocator)
 {
 	vk::deallocate(data, pAllocator);
@@ -74,6 +80,29 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache* pSr
 	}
 
 	return VK_SUCCESS;
+}
+
+const std::shared_ptr<sw::SpirvShader>* PipelineCache::findSpirvShader(const PipelineCache::SpirvShaderKey& key) const
+{
+	auto it = spirvShaders.find(key);
+	return (it != spirvShaders.end()) ? &(it->second) : nullptr;
+}
+
+void PipelineCache::storeSpirvShader(const std::shared_ptr<sw::SpirvShader> &shader, const PipelineCache::SpirvShaderKey& key)
+{
+	spirvShaders[key] = shader;
+}
+
+const std::shared_ptr<sw::ComputeProgram>* PipelineCache::findComputeProgram(const PipelineCache::ComputeProgramKey& key) const
+{
+	auto it = computePrograms.find(key);
+	return (it != computePrograms.end()) ? &(it->second) : nullptr;
+}
+
+void PipelineCache::storeComputeProgram(const std::shared_ptr<sw::ComputeProgram> &computeProgram,
+                                        const PipelineCache::ComputeProgramKey& key)
+{
+	computePrograms[key] = computeProgram;
 }
 
 } // namespace vk
