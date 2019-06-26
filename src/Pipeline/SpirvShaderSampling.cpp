@@ -114,7 +114,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		Pointer<SIMD::Float> out = function.Arg<3>();
 		Pointer<Byte> constants = function.Arg<4>();
 
-		SIMD::Float uvw[4];
+		SIMD::Float uvw[4] = { 0, 0, 0, 0 };
 		SIMD::Float q;
 		SIMD::Float lodOrBias;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
 		Vector4f dsx;

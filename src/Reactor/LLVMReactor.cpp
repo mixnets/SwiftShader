@@ -418,7 +418,7 @@ namespace
 
 		void optimize(const rr::Config &cfg)
 		{
-
+return;
 #ifdef ENABLE_RR_DEBUG_INFO
 			if (debugInfo != nullptr)
 			{
