@@ -98,7 +98,7 @@ option(DCHECK_ALWAYS_ON "Check validation macros even in release builds" 0)
 option(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" 0)
 option(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" 0)
 option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" 0)
-option(REACTOR_CUSTOM_LLVM_MATTRS "Add or remove target machine attributes for LLVM JIT code generation" "")
+option(REACTOR_CUSTOM_LLVM_MATTRS "Add or remove target machine attributes for LLVM JIT code generation" "-avx512bitalg,-avx512bw,-avx512cd,-avx512dq,-avx512er,-avx512f,-avx512ifma,-avx512pf,-avx512vbmi,-avx512vbmi2,-avx512vl,-avx512vnni,-avx512vpopcntdq,-fast-gather")
 
 if(ARCH STREQUAL "arm")
     set(DEFAULT_REACTOR_BACKEND "Subzero")
