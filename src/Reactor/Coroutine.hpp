@@ -112,7 +112,7 @@ private:
 	class Coroutine<Return(Arguments...)>
 	{
 	public:
-		Coroutine();
+		Coroutine(OptimizationLevel optLevel = OptimizationLevel::Default);
 
 		template<int index>
 		using CArgumentType = typename std::tuple_element<index, std::tuple<Arguments...>>::type;
@@ -147,9 +147,9 @@ private:
 	};
 
 	template<typename Return, typename... Arguments>
-	Coroutine<Return(Arguments...)>::Coroutine() : routine{}
+	Coroutine<Return(Arguments...)>::Coroutine(OptimizationLevel optLevel /* = OptimizationLevel::Default */) : routine{}
 	{
-		core.reset(new Nucleus());
+		core.reset(new Nucleus(optLevel));
 
 		std::vector<Type*> types = {CToReactor<Arguments>::getType()...};
 		for(auto type : types)
@@ -168,7 +168,7 @@ private:
 	{
 		if(core != nullptr)
 		{
-			routine.reset(core->acquireCoroutine("coroutine", true));
+			routine.reset(core->acquireCoroutine("coroutine"));
 			core.reset(nullptr);
 		}
 	}

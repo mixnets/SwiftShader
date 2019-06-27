@@ -28,7 +28,8 @@ namespace
 namespace sw
 {
 	ComputeProgram::ComputeProgram(SpirvShader const *shader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets)
-		: shader(shader),
+		: ComputeProgramBase(vk::ReactorOptimizationLevel),
+		  shader(shader),
 		  pipelineLayout(pipelineLayout),
 		  descriptorSets(descriptorSets)
 	{

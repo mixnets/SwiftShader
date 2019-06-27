@@ -27,10 +27,12 @@ namespace vk
 
 namespace sw
 {
-	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<UInt>, Pointer<Byte>, Pointer<Byte>)>
+	using VertexRoutinePrototypeBase = Function<Void(Pointer<Byte>, Pointer<UInt>, Pointer<Byte>, Pointer<Byte>)>;
+
+	class VertexRoutinePrototype : public VertexRoutinePrototypeBase
 	{
 	public:
-		VertexRoutinePrototype() : vertex(Arg<0>()), batch(Arg<1>()), task(Arg<2>()), data(Arg<3>()) {}
+		VertexRoutinePrototype() : VertexRoutinePrototypeBase(vk::ReactorOptimizationLevel), vertex(Arg<0>()), batch(Arg<1>()), task(Arg<2>()), data(Arg<3>()) {}
 		virtual ~VertexRoutinePrototype() {}
 
 	protected:
