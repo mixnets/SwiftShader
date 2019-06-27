@@ -1304,7 +1304,7 @@ namespace sw
 
 	Routine *Blitter::generate(const State &state)
 	{
-		Function<Void(Pointer<Byte>)> function;
+		Function<Void(Pointer<Byte>)> function(vk::ReactorOptimizationLevel);
 		{
 			Pointer<Byte> blit(function.Arg<0>());
 
@@ -1866,7 +1866,7 @@ namespace sw
 			UNIMPLEMENTED("state.srcSamples %d", state.srcSamples);
 		}
 
-		Function<Void(Pointer<Byte>)> function;
+		Function<Void(Pointer<Byte>)> function(vk::ReactorOptimizationLevel);
 		{
 			Pointer<Byte> blit(function.Arg<0>());
 

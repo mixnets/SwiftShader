@@ -530,7 +530,7 @@ namespace rr
 		#endif
 	};
 
-	Nucleus::Nucleus()
+	Nucleus::Nucleus(OptimizationLevel optimizationLevel)
 	{
 		::codegenMutex.lock();   // Reactor is currently not thread safe
 
@@ -548,7 +548,14 @@ namespace rr
 			Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
 		#endif
 		Flags.setOutFileType(Ice::FT_Elf);
-		Flags.setOptLevel(Ice::Opt_2);
+		switch (optimizationLevel)
+		{
+			case OptimizationLevel::None: Flags.setOptLevel(Ice::Opt_0); break;
+			case OptimizationLevel::Less: Flags.setOptLevel(Ice::Opt_1); break;
+			case OptimizationLevel::Default: Flags.setOptLevel(Ice::Opt_2); break;
+			case OptimizationLevel::Aggressive: Flags.setOptLevel(Ice::Opt_2); break;
+			default: UNREACHABLE("Unknown OptimizationLevel %d", int(optimizationLevel));
+		}
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 		Flags.setVerbose(false ? Ice::IceV_Most : Ice::IceV_None);
 		Flags.setDisableHybridAssembly(true);
@@ -585,7 +592,7 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
+	Routine *Nucleus::acquireRoutine(const char *name)
 	{
 		if(basicBlock->getInsts().empty() || basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
 		{
@@ -3506,7 +3513,7 @@ namespace rr
 	void FlushDebug() {}
 
 	void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params) { UNIMPLEMENTED("createCoroutine"); }
-	Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations) { UNIMPLEMENTED("acquireCoroutine"); return nullptr; }
+	Routine* Nucleus::acquireCoroutine(const char *name) { UNIMPLEMENTED("acquireCoroutine"); return nullptr; }
 	void Nucleus::yield(Value* val) { UNIMPLEMENTED("Yield"); }
 
 }

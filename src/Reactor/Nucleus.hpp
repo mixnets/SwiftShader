@@ -47,14 +47,22 @@ namespace rr
 
 	extern Optimization optimization[10];
 
+	enum class OptimizationLevel
+	{
+		None,
+		Less,
+		Default,
+		Aggressive,
+	};
+
 	class Nucleus
 	{
 	public:
-		Nucleus();
+		Nucleus(OptimizationLevel optimizationLevel);
 
 		virtual ~Nucleus();
 
-		Routine *acquireRoutine(const char *name, bool runOptimizations = true);
+		Routine *acquireRoutine(const char *name);
 
 		static Value *allocateStackVariable(Type *type, int arraySize = 0);
 		static BasicBlock *createBasicBlock();
@@ -81,7 +89,7 @@ namespace rr
 		};
 
 		static void createCoroutine(Type *ReturnType, std::vector<Type*> &Params);
-		Routine *acquireCoroutine(const char *name, bool runOptimizations = true);
+		Routine *acquireCoroutine(const char *name);
 		static void yield(Value*);
 
 		// Terminators

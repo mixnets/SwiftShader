@@ -34,7 +34,7 @@ namespace sw
 
 	void SetupRoutine::generate()
 	{
-		Function<Int(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)> function;
+		Function<Int(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)> function(vk::ReactorOptimizationLevel);
 		{
 			Pointer<Byte> primitive(function.Arg<0>());
 			Pointer<Byte> tri(function.Arg<1>());

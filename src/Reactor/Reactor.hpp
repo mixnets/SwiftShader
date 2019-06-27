@@ -2452,7 +2452,7 @@ namespace rr
 		static_assert(sizeof(AssertFunctionSignatureIsValid<Return(Arguments...)>) >= 0, "Invalid function signature");
 
 	public:
-		Function();
+		Function(OptimizationLevel optLevel = OptimizationLevel::Default);
 
 		virtual ~Function();
 
@@ -3004,9 +3004,9 @@ namespace rr
 	}
 
 	template<typename Return, typename... Arguments>
-	Function<Return(Arguments...)>::Function()
+	Function<Return(Arguments...)>::Function(OptimizationLevel optLevel /* = OptimizationLevel::Default */)
 	{
-		core = new Nucleus();
+		core = new Nucleus(optLevel);
 
 		Type *types[] = {Arguments::getType()...};
 		for(Type *type : types)
@@ -3036,7 +3036,7 @@ namespace rr
 		vsnprintf(fullName, 1024, name, vararg);
 		va_end(vararg);
 
-		return core->acquireRoutine(fullName, true);
+		return core->acquireRoutine(fullName);
 	}
 
 	template<class T, class S>

@@ -21,10 +21,12 @@
 
 namespace sw
 {
-	class Rasterizer : public Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>
+	using RasterizerBase = Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>;
+
+	class Rasterizer : public RasterizerBase
 	{
 	public:
-		Rasterizer() : primitive(Arg<0>()), count(Arg<1>()), cluster(Arg<2>()), data(Arg<3>()) {}
+		Rasterizer() : RasterizerBase(vk::ReactorOptimizationLevel), primitive(Arg<0>()), count(Arg<1>()), cluster(Arg<2>()), data(Arg<3>()) {}
 		virtual ~Rasterizer() {}
 
 	protected:
