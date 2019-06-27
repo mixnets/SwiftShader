@@ -80,7 +80,10 @@ enum
 };
 
 // Optimization level to use for JIT functions.
-static constexpr auto ReactorOptimizationLevel = rr::OptimizationLevel::Default;
+// Optimizations are currently disabled as for dEQP tests, optimizing the code
+// often takes longer than the execution speedups up it provides.
+// TODO: Re-evaluate this level.
+static constexpr auto ReactorOptimizationLevel = rr::OptimizationLevel::None;
 
 }
 
