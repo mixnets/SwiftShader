@@ -147,15 +147,6 @@ SpirvShader::ImageSampler *SpirvShader::emitSamplerFunction(ImageInstruction ins
 
 		// TODO(b/134669567): Currently 1D textures are treated as 2D by setting the second coordinate to 0.
 		// Implement optimized 1D sampling.
-		if(samplerState.textureType == TEXTURE_1D)
-		{
-			uvw[1] = SIMD::Float(0);
-		}
-		else if(samplerState.textureType == TEXTURE_1D_ARRAY)
-		{
-			uvw[1] = SIMD::Float(0);
-			uvw[2] = in[1];  // Move 1D layer coordinate to 2D layer coordinate index.
-		}
 
 		if(instruction.samplerMethod == Lod || instruction.samplerMethod == Bias || instruction.samplerMethod == Fetch)
 		{
