@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44e35f6f_6505595a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-27T02:49:48Z",
+      "side": 1,
+      "message": "Please add a tracker bug which describes how to use it. We should work towards a coherent set of debugging tools for shaders (both for app developers and SwiftShader/Reactor issues) that is well documented.",
+      "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
