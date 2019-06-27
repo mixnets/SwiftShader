@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15e526e5_b53f84ec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-27T02:05:26Z",
+      "side": 1,
+      "message": "Please open a bug to keep changes related to integrating the Glass demo related.",
+      "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e46a4ba2_762dda7a",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-27T02:05:26Z",
+      "side": 1,
+      "message": "@sugoi: Looks like a bug to be writing these as signed? Also above and maybe other cases.",
+      "range": {
+        "startLine": 626,
+        "startChar": 2,
+        "endLine": 626,
+        "endChar": 27
+      },
+      "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
