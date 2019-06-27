@@ -73,13 +73,14 @@
 #define CreateCall2 CreateCall
 #define CreateCall3 CreateCall
 
-#include <unordered_map>
-
 #include <fstream>
 #include <iostream>
 #include <mutex>
 #include <numeric>
+#include <sstream>
+#include <string>
 #include <thread>
+#include <unordered_map>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -1038,6 +1039,20 @@ namespace rr
 #endif
 #endif
 #endif
+
+#ifdef RR_CUSTOM_LLVM_MATTRS
+		// Apply any custom modifications to the target machine attributes.
+		// RR_CUSTOM_LLVM_MATTRS is a string in the form: "attr1,+attr2,-attr3".
+		// This must come after all other appends to the mattrs vector.
+		{
+			std::stringstream ss(RR_CUSTOM_LLVM_MATTRS);
+			std::string feature;
+			while (std::getline(ss, feature, ','))
+			{
+				mattrs.push_back(feature);
+			}
+		}
+#endif // RR_CUSTOM_LLVM_MATTRS
 
 		llvm::TargetOptions targetOpts;
 		targetOpts.UnsafeFPMath = false;
