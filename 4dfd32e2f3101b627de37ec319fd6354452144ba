@@ -87,6 +87,30 @@
       "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "064d1147_3cb755e5",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-27T20:13:50Z",
+      "side": 1,
+      "message": "Oh, interesting, so I see some of the SRGB formats have been correctly bundled with the UNORM formats (all 4 channel formats seem to be ok). Only the 2 and 3 channel formats are sometimes wrongly bundled with the SNORM formats. It should be a trivial fix.",
+      "parentUuid": "8a511b82_ebd9f5c3",
+      "range": {
+        "startLine": 626,
+        "startChar": 2,
+        "endLine": 626,
+        "endChar": 27
+      },
+      "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
