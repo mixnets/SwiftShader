@@ -16,6 +16,24 @@
       "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76af9a6f_092d0c8d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-27T11:40:26Z",
+      "side": 1,
+      "message": "How do you want it exposed? As a preprocessor flag that you have to change in the .cpp file (as implemented in this PS), a CMake flag, or a runtime switch (env?)?\nDepending on how they\u0027re exposed, probably alters where we should put the documentation. For example if it\u0027s a runtime flag, I\u0027d probably recommend creating a .md file.",
+      "parentUuid": "44e35f6f_6505595a",
+      "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
