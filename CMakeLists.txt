@@ -90,6 +90,7 @@ option(DCHECK_ALWAYS_ON "Check validation macros even in release builds" 0)
 option(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" 0)
 option(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" 0)
 option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" 0)
+option(REACTOR_CUSTOM_LLVM_MATTRS "Add or remove target machine attributes for LLVM JIT code generation" "")
 
 if(ARCH STREQUAL "arm")
     set(DEFAULT_REACTOR_BACKEND "Subzero")
@@ -476,6 +477,10 @@ endif()
 
 if(REACTOR_VERIFY_LLVM_IR)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_LLVM_IR_VERIFICATION")
+endif()
+
+if (REACTOR_CUSTOM_LLVM_MATTRS)
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DRR_CUSTOM_LLVM_MATTRS=\"${REACTOR_CUSTOM_LLVM_MATTRS}\"")
 endif()
 
 if(WIN32)
