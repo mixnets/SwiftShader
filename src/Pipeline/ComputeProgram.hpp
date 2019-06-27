@@ -36,15 +36,17 @@ namespace sw
 	class DescriptorSetsLayout;
 	struct Constants;
 
-	// ComputeProgram builds a SPIR-V compute shader.
-	class ComputeProgram : public Coroutine<SpirvShader::YieldResult(
+	using ComputeProgramBase = Coroutine<SpirvShader::YieldResult(
 			void* data,
 			int32_t workgroupX,
 			int32_t workgroupY,
 			int32_t workgroupZ,
 			void* workgroupMemory,
 			int32_t firstSubgroup,
-			int32_t subgroupCount)>
+			int32_t subgroupCount)>;
+
+	// ComputeProgram builds a SPIR-V compute shader.
+	class ComputeProgram : public ComputeProgramBase
 	{
 	public:
 		ComputeProgram(SpirvShader const *spirvShader, vk::PipelineLayout const *pipelineLayout, const vk::DescriptorSet::Bindings &descriptorSets);

@@ -679,8 +679,23 @@ namespace rr
 		std::mutex mutex;
 		size_t emittedFunctionsNum;
 
+		static ::llvm::CodeGenOpt::Level toLLVM(OptimizationLevel level)
+		{
+			switch (level)
+			{
+				case OptimizationLevel::None:       return ::llvm::CodeGenOpt::None;
+				case OptimizationLevel::Less:       return ::llvm::CodeGenOpt::Less;
+				case OptimizationLevel::Default:    return ::llvm::CodeGenOpt::Default;
+				case OptimizationLevel::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
+				default: UNREACHABLE("Unknown OptimizationLevel %d", int(level));
+			}
+			return ::llvm::CodeGenOpt::Default;
+		}
+
 	public:
-		LLVMReactorJIT(const char *arch, const llvm::SmallVectorImpl<std::string>& mattrs,
+		LLVMReactorJIT(OptimizationLevel optimizationLevel,
+					   const char *arch,
+					   const llvm::SmallVectorImpl<std::string>& mattrs,
 					   const llvm::TargetOptions &targetOpts):
 			resolver(createLegacyLookupResolver(
 				session,
@@ -704,6 +719,8 @@ namespace rr
 			targetMachine(llvm::EngineBuilder()
 #ifdef ENABLE_RR_DEBUG_INFO
 				.setOptLevel(llvm::CodeGenOpt::None)
+#else
+				.setOptLevel(toLLVM(optimizationLevel))
 #endif // ENABLE_RR_DEBUG_INFO
 				.setMArch(arch)
 				.setMAttrs(mattrs)
@@ -730,7 +747,8 @@ namespace rr
 				}
 	  		),
 			compileLayer(objLayer, llvm::orc::SimpleCompiler(*targetMachine)),
-			emittedFunctionsNum(0)
+			emittedFunctionsNum(0),
+			optimizationLevel(optimizationLevel)
 		{
 		}
 
@@ -828,6 +846,8 @@ namespace rr
 
 			passManager->run(*::module);
 		}
+
+		const OptimizationLevel optimizationLevel;
 
 	private:
 		void releaseRoutineModule(llvm::orc::VModuleKey moduleKey)
@@ -969,7 +989,7 @@ namespace rr
 		return func;
 	}
 
-	Nucleus::Nucleus()
+	Nucleus::Nucleus(OptimizationLevel optimizationLevel)
 	{
 		::codegenMutex.lock();   // Reactor and LLVM are currently not thread safe
 
@@ -1046,7 +1066,16 @@ namespace rr
 
 		if(!::reactorJIT)
 		{
-			::reactorJIT = new LLVMReactorJIT(arch, mattrs, targetOpts);
+			::reactorJIT = new LLVMReactorJIT(optimizationLevel, arch, mattrs, targetOpts);
+		}
+		else if (::reactorJIT->optimizationLevel != optimizationLevel)
+		{
+			// Requesting a different optimization level to the one used to
+			// construct the JIT compiler.
+			// TODO: Should we create a different LLVMReactorJIT per opt level?
+			WARN("Cannot use specified optimization level (%d).\n"
+				 "LLVMReactor optimization level is fixed to the level set by the first constructed Nucleus (%d)",
+				 int(optimizationLevel), int(reactorJIT->optimizationLevel));
 		}
 
 		::reactorJIT->startSession();
@@ -1068,7 +1097,7 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
+	Routine *Nucleus::acquireRoutine(const char *name)
 	{
 		if(::builder->GetInsertBlock()->empty() || !::builder->GetInsertBlock()->back().isTerminator())
 		{
@@ -1106,10 +1135,7 @@ namespace rr
 		}
 #endif // defined(ENABLE_RR_LLVM_IR_VERIFICATION) || !defined(NDEBUG)
 
-		if(runOptimizations)
-		{
-			optimize();
-		}
+		optimize();
 
 		if(false)
 		{
@@ -4619,7 +4645,7 @@ void Nucleus::yield(Value* val)
 	::builder->SetInsertPoint(resumeBlock);
 }
 
-Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
+Routine* Nucleus::acquireCoroutine(const char *name)
 {
 	ASSERT_MSG(::coroutine.id != nullptr, "acquireCoroutine() called without a call to createCoroutine()");
 
@@ -4648,10 +4674,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
 	pm.add(llvm::createCoroCleanupPass());
 	pm.run(*::module);
 
-	if(runOptimizations)
-	{
-		optimize();
-	}
+	optimize();
 
 	if(false)
 	{
