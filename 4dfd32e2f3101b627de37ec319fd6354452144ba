@@ -39,6 +39,30 @@
       "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ef31933_095885d5",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-27T19:10:06Z",
+      "side": 1,
+      "message": "Yes, this looks correct, we should fix that. I\u0027m surprised that no test failed on this.",
+      "parentUuid": "e46a4ba2_762dda7a",
+      "range": {
+        "startLine": 626,
+        "startChar": 2,
+        "endLine": 626,
+        "endChar": 27
+      },
+      "revId": "4dfd32e2f3101b627de37ec319fd6354452144ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
