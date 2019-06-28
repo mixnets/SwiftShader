@@ -31,7 +31,7 @@
 
 #include <queue>
 
-#define SPIRVSHADER_DBG 0
+#define SPIRVSHADER_DBG 1
 
 #if SPIRVSHADER_DBG
 #define DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
@@ -5598,6 +5598,10 @@ namespace sw
 			dst.move(3, SIMD::Int(1));
 			break;
 		case VK_FORMAT_R16G16_SFLOAT:
+			RR_WATCH(packed[0],
+				halfToFloatBits(As<SIMD::UInt>(packed[0])& SIMD::UInt(0x0000FFFF)),
+				halfToFloatBits((As<SIMD::UInt>(packed[0])& SIMD::UInt(0xFFFF0000)) >> 16)
+			);
 			dst.move(0, halfToFloatBits(As<SIMD::UInt>(packed[0]) & SIMD::UInt(0x0000FFFF)));
 			dst.move(1, halfToFloatBits((As<SIMD::UInt>(packed[0]) & SIMD::UInt(0xFFFF0000)) >> 16));
 			dst.move(2, SIMD::Float(0));
