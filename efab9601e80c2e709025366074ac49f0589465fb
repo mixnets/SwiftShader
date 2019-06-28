@@ -45,6 +45,54 @@
       "revId": "efab9601e80c2e709025366074ac49f0589465fb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b9585e7_7cc035e2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-28T13:51:05Z",
+      "side": 1,
+      "message": "Never mind, I see you already mentioned denorm above.",
+      "parentUuid": "5193158e_36939442",
+      "range": {
+        "startLine": 9,
+        "startChar": 22,
+        "endLine": 9,
+        "endChar": 33
+      },
+      "revId": "efab9601e80c2e709025366074ac49f0589465fb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3918e30_584c10be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-06-28T13:51:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f05b579a_71245f7f",
+      "range": {
+        "startLine": 9,
+        "startChar": 47,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "efab9601e80c2e709025366074ac49f0589465fb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
