@@ -16,6 +16,24 @@
       "revId": "1834f8d14451c585005dd1bd640808771044ed66",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8aeb6fb0_3d21e239",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4601,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-06-28T18:02:57Z",
+      "side": 0,
+      "message": "See here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/33359 SpirvShader.cpp:5896",
+      "parentUuid": "fdae9be5_83f0ccff",
+      "revId": "1834f8d14451c585005dd1bd640808771044ed66",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
