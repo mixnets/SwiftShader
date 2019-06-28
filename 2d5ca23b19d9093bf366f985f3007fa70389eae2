@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3c5e767a_869cc625",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Actually, the argument isn\u0027t necessary at all, just using \"reset()\" will release ownership of the object. Fixed",
+      "parentUuid": "37339212_a8c3dba7",
+      "range": {
+        "startLine": 436,
+        "startChar": 20,
+        "endLine": 436,
+        "endChar": 50
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b4399df_d4b95e38",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "026f538c_231d6160",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b4399df_d4b95e38",
+      "range": {
+        "startLine": 470,
+        "startChar": 5,
+        "endLine": 486,
+        "endChar": 6
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "92a73187_fd20b7c4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9ae4bfc_73750ce2",
+      "range": {
+        "startLine": 497,
+        "startChar": 0,
+        "endLine": 497,
+        "endChar": 33
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e76092c0_3cf7bad8",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 6
@@ -91,6 +163,30 @@
       "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6552757_8cffa592",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e76092c0_3cf7bad8",
+      "range": {
+        "startLine": 506,
+        "startChar": 20,
+        "endLine": 506,
+        "endChar": 23
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "368dd11c_2f92a2a4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9366ed5d_a513e1a3",
+      "range": {
+        "startLine": 611,
+        "startChar": 1,
+        "endLine": 611,
+        "endChar": 14
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8a36e99_42b398eb",
         "filename": "src/Vulkan/VkPipelineCache.hpp",
         "patchSetId": 6
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "01f84ed9_05da67c3",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8a36e99_42b398eb",
+      "range": {
+        "startLine": 93,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 44
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85b9e2ff_df4ef4c2",
         "filename": "src/Vulkan/VkPipelineCache.hpp",
         "patchSetId": 6
@@ -160,6 +304,30 @@
       "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ac02def_98024b67",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T15:47:11Z",
+      "side": 1,
+      "message": "Done, although I wrote it a bit differently, using the format:\nif(a !\u003d b) { return a \u003c b; }\nIn order to avoid the costly memcmp as much as possible.",
+      "parentUuid": "85b9e2ff_df4ef4c2",
+      "range": {
+        "startLine": 125,
+        "startChar": 3,
+        "endLine": 132,
+        "endChar": 59
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
