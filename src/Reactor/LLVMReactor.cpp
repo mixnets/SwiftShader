@@ -144,17 +144,33 @@ namespace
 		llvm::StringMap<bool> features;
 		bool ok = llvm::sys::getHostCPUFeatures(features);
 
-#if defined(__i386__) || defined(__x86_64__) || \
-(defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
-		ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures returned false");
+#if defined(__i386__) || defined(__x86_64__) || (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
+		ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures unexpectedly returned false");
 #else
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 #endif
 
-		for (auto &feature : features)
+
+		for(auto &feature : features)
 		{
-			if (feature.second) { mattrs.push_back(feature.first()); }
+			if(feature.second)
+			{
+				mattrs.push_back(feature.first());
+			}
 		}
+
+// ARMv7 (32-bit) builds running on ARM64 capable systems may not get
+// the correct features from llvm::sys::getHostCPUFeatures(), due to
+// depending on /proc/cpuinfo, which on some platforms does not list
+// features already mandatory as part of ARMv8. The Android CDD demands
+// /proc/cpuinfo to include ARMv7 features.
+#if defined(__arm__) && __ARM_ARCH == 7
+		// Assume ARMv7-A with NEON and hardware division in non-Thumb mode.
+		// Always present on ARMv8 capable CPUs.
+		mattrs.push_back("+armv7-a");
+		mattrs.push_back("+neon");
+		mattrs.push_back("+hwdiv-arm");
+#endif
 
 #if 0
 #if defined(__i386__) || defined(__x86_64__)
@@ -823,7 +839,7 @@ namespace rr
 		std::atomic_store_explicit<T>(reinterpret_cast<std::atomic<T>*>(ptr), *reinterpret_cast<T*>(val), atomicOrdering(ordering));
 	}
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 	template<typename F>
 	static uint32_t sync_fetch_and_op(uint32_t volatile *ptr, uint32_t val, F f)
 	{
@@ -877,7 +893,7 @@ namespace rr
 			static void* coroutine_alloc_frame(size_t size) { return alignedAlloc(size, 16); }
 			static void coroutine_free_frame(void* ptr) { alignedFree(ptr); }
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 			// forwarders since we can't take address of builtins
 			static void sync_synchronize() { __sync_synchronize(); }
 			static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_add_4(ptr, val); }
@@ -965,7 +981,7 @@ namespace rr
 				functions.emplace("chkstk", reinterpret_cast<void*>(_chkstk));
 #endif
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 				functions.emplace("aeabi_unwind_cpp_pr0", reinterpret_cast<void*>(F::neverCalled));
 				functions.emplace("sync_synchronize", reinterpret_cast<void*>(F::sync_synchronize));
 				functions.emplace("sync_fetch_and_add_4", reinterpret_cast<void*>(F::sync_fetch_and_add_4));
@@ -979,7 +995,7 @@ namespace rr
 				functions.emplace("sync_fetch_and_min_4", reinterpret_cast<void*>(F::sync_fetch_and_min_4));
 				functions.emplace("sync_fetch_and_umax_4", reinterpret_cast<void*>(F::sync_fetch_and_umax_4));
 				functions.emplace("sync_fetch_and_umin_4", reinterpret_cast<void*>(F::sync_fetch_and_umin_4));
-	#endif
+#endif
 			}
 		};
 
