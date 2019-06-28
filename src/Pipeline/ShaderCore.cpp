@@ -554,8 +554,21 @@ namespace sw
 		static const uint32_t exp_infnan = 255 << 23;
 
 		UInt4 expmant = halfBits & UInt4(mask_nosign);
-		return As<UInt4>(As<Float4>(expmant << 13) * As<Float4>(UInt4(magic))) |
-		((halfBits ^ UInt4(expmant)) << 16) |
-		(CmpNLE(As<UInt4>(expmant), UInt4(was_infnan)) & UInt4(exp_infnan));
+		auto a =  As<UInt4>(As<Float4>(expmant << 13) * As<Float4>(UInt4(magic)));
+		auto b = ((halfBits ^ UInt4(expmant)) << 16);
+		auto c = (CmpNLE(As<UInt4>(expmant), UInt4(was_infnan)) & UInt4(exp_infnan));
+		RR_WATCH(
+			halfBits,
+			mask_nosign,
+			magic,
+			was_infnan,
+			exp_infnan,
+			expmant,
+			a,
+			b,
+			c,
+			a | b | c
+		);
+		return a | b | c;
 	}
 }
