@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37339212_a8c3dba7",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "nit: I\u0027m surprised this cast is necessary.",
+      "range": {
+        "startLine": 436,
+        "startChar": 20,
+        "endLine": 436,
+        "endChar": 50
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b4399df_d4b95e38",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "nit: Looks like this could be refactored into a setShader() private method, as it is also in createShader(). This is only going to grow once other shader types are supported.",
+      "range": {
+        "startLine": 470,
+        "startChar": 5,
+        "endLine": 486,
+        "endChar": 6
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9ae4bfc_73750ce2",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "nit: Maybe me being overly sensitive here, but there\u0027s a couple of things here that set of some internal alarm bells:\n\nAs soon as I see a smart pointer being returned by reference (const or non-const), I\u0027m now suddenly wondering whether that smart pointer reference could be changed during use. I\u0027d opt to either return a non-ref and let RVO do its thing (or just incur an insignificant ref twiddle cost).\n\nI don\u0027t naturally expect a function with the prefix \u0027create\u0027 to modify state. I see that this creates, assigns to internal fields, and returns. While more verbose, I would have made the caller do something like: createShader() followed by setShader().",
+      "range": {
+        "startLine": 497,
+        "startChar": 0,
+        "endLine": 497,
+        "endChar": 33
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e76092c0_3cf7bad8",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "std::make_shared will avoid another allocation for the std::shared_ptr count.",
+      "range": {
+        "startLine": 506,
+        "startChar": 20,
+        "endLine": 506,
+        "endChar": 23
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9366ed5d_a513e1a3",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "Should assert that program is nullptr? \nAll my comments above about ::createX() apply here too.",
+      "range": {
+        "startLine": 611,
+        "startChar": 1,
+        "endLine": 611,
+        "endChar": 14
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8a36e99_42b398eb",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "nit: one hell of a lot going into a single statement here. It is making my brain melt. Consider spitting into something more readable / debuggable / crash-stacktrace-friendly.",
+      "range": {
+        "startLine": 93,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 44
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85b9e2ff_df4ef4c2",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 1,
+      "message": "nit: Again, consider breaking this up into a sequence of if-then-return-true, if only to help if there\u0027s a crash report that lands on one of the lines:\n\n  if (pipelineStage \u003c other.pipelineStage) { return true; }\n  if (renderPass \u003c other.renderPass) { return true; }\n\netc",
+      "range": {
+        "startLine": 125,
+        "startChar": 3,
+        "endLine": 132,
+        "endChar": 59
+      },
+      "revId": "2d5ca23b19d9093bf366f985f3007fa70389eae2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

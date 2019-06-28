@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "312f53e1_a606d329",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T12:16:15Z",
+      "side": 0,
+      "message": "FYI: https://swiftshader-review.googlesource.com/c/SwiftShader/+/29588\nCandidate to move to a separate change to keep the diff down.",
+      "range": {
+        "startLine": 961,
+        "startChar": 3,
+        "endLine": 961,
+        "endChar": 53
+      },
+      "revId": "a25f5438fa270ecb0ca1c39bfee417ec621ff392",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
