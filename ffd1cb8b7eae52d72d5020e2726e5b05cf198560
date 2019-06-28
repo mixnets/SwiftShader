@@ -46,6 +46,30 @@
       "revId": "ffd1cb8b7eae52d72d5020e2726e5b05cf198560",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f6318577_b7602228",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1011,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-06-28T15:13:39Z",
+      "side": 1,
+      "message": "Thanks for clarifying - the rest of the codebase does not do this, so let\u0027s keep them omitted.",
+      "parentUuid": "ecfa30c6_59674618",
+      "range": {
+        "startLine": 1011,
+        "startChar": 1,
+        "endLine": 1011,
+        "endChar": 11
+      },
+      "revId": "ffd1cb8b7eae52d72d5020e2726e5b05cf198560",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
