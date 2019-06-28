@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ebdc81d9_c720ca7f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T17:21:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f040192_f8bf6780",
+      "range": {
+        "startLine": 500,
+        "startChar": 2,
+        "endLine": 500,
+        "endChar": 15
+      },
+      "revId": "2b43bf9aeecbff5b81823f7a10de4c27fd36af2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd9a2d5a_79de80d3",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2019-06-28T17:14:29Z",
       "side": 1,
       "message": "nit: It\u0027s a bit confusing to be setting up a \u0027key\u0027 even if no pipeline cache is present. Gathering everything that affects shader compilation into an object is valuable though for many other reasons like debugging and perhaps an on-disk cache in the future. So no objections there.\n\nI think we should consider renaming SpirvShaderKey to something ending in \u0027State\u0027. It\u0027s a detail, though an important one, that it\u0027s also used as the key for the cache.\n\nWe should also look into the interaction with our Reactor Routine caches. We still recompile all the SPIR-V as part of a vertex or pixel routine if any fixed-function state changed. So this pipeline cache implementation appears to mainly just avoid calling preprocessSpirv() over and over on the same SPIR-V?\n\nCan all be looked into post-Pastel.",
+      "range": {
+        "startLine": 515,
+        "startChar": 2,
+        "endLine": 518,
+        "endChar": 20
+      },
+      "revId": "2b43bf9aeecbff5b81823f7a10de4c27fd36af2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2295ceff_78639930",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T17:21:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fd9a2d5a_79de80d3",
       "range": {
         "startLine": 515,
         "startChar": 2,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "26da04f5_4ce81391",
+        "filename": "src/Vulkan/VkPipelineCache.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T17:21:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "773508a8_95f5ceb6",
+      "range": {
+        "startLine": 26,
+        "startChar": 3,
+        "endLine": 26,
+        "endChar": 11
+      },
+      "revId": "2b43bf9aeecbff5b81823f7a10de4c27fd36af2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "666890a5_83505e5a",
         "filename": "src/Vulkan/VkPipelineCache.hpp",
         "patchSetId": 7
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "5cc89e02_3ffae6a8",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T17:21:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "666890a5_83505e5a",
+      "range": {
+        "startLine": 69,
+        "startChar": 32,
+        "endLine": 69,
+        "endChar": 44
+      },
+      "revId": "2b43bf9aeecbff5b81823f7a10de4c27fd36af2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "18b3153b_e8857517",
         "filename": "src/Vulkan/VkPipelineCache.hpp",
         "patchSetId": 7
@@ -105,6 +201,30 @@
       "writtenOn": "2019-06-28T17:14:29Z",
       "side": 1,
       "message": "nit: Would probably be faster to use an unordered_map for these. It can do the lookup based on a hash computed once from this large amount of state, instead of potentially doing lots of comparisons on nearly-equal data.\n\nFor later.",
+      "range": {
+        "startLine": 131,
+        "startChar": 6,
+        "endLine": 131,
+        "endChar": 9
+      },
+      "revId": "2b43bf9aeecbff5b81823f7a10de4c27fd36af2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b54b820e_906f0297",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-06-28T17:21:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "18b3153b_e8857517",
       "range": {
         "startLine": 131,
         "startChar": 6,
