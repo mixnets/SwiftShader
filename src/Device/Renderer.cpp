@@ -1335,7 +1335,7 @@ namespace sw
 			PixelProcessor::setRoutineCacheSize(1024);
 			SetupProcessor::setRoutineCacheSize(1024);
 
-			threadCount = CPUID::processAffinity();
+			threadCount = 1; // CPUID::processAffinity();
 
 			CPUID::setEnableSSE4_1(true);
 			CPUID::setEnableSSSE3(true);
