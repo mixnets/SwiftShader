@@ -16,6 +16,24 @@
       "revId": "ec22ade35eae77e60d037e031d4c6296fc85733d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bdc86e6_a47b5940",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2418,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-06-28T19:29:06Z",
+      "side": 1,
+      "message": "Just avoids an alloca materialisation for the most common cases.\nMinor optimization I guess, but it was annoying I couldn\u0027t take the address of this object.",
+      "parentUuid": "98d0973a_4c00e6d8",
+      "revId": "ec22ade35eae77e60d037e031d4c6296fc85733d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
