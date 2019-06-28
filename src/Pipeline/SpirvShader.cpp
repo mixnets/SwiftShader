@@ -299,7 +299,7 @@ namespace sw
 					// Load one, replicate.
 					// Be careful of the case where the post-bounds-check mask
 					// is 0, in which case we must not load.
-					T out = T(0);
+					T out = T(123);
 					If(AnyTrue(mask))
 					{
 						EL el = *rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment);
@@ -332,7 +332,7 @@ namespace sw
 				Else
 				{
 					// Divergent offsets or masked lanes.
-					out = T(0);
+					out = T(456);
 					for (int i = 0; i < SIMD::Width; i++)
 					{
 						If(Extract(mask, i) != 0)
