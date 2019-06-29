@@ -258,7 +258,7 @@ namespace
 		using ObjLayer = llvm::orc::RTDyldObjectLinkingLayer;
 		using CompileLayer = llvm::orc::IRCompileLayer<ObjLayer, llvm::orc::SimpleCompiler>;
 	public:
-		JITSession() :
+		JITSession(rr::OptimizationLevel optLevel) :
 			resolver(createLegacyLookupResolver(
 				session,
 				[&](const std::string &name) {
@@ -280,6 +280,8 @@ namespace
 			targetMachine(llvm::EngineBuilder()
 #ifdef ENABLE_RR_DEBUG_INFO
 				.setOptLevel(llvm::CodeGenOpt::None)
+#else
+				.setOptLevel(toLLVM(optLevel))
 #endif // ENABLE_RR_DEBUG_INFO
 				.setMArch(JITGlobals::get()->arch)
 				.setMAttrs(JITGlobals::get()->mattrs)
@@ -362,6 +364,19 @@ namespace
 		}
 
 	private:
+		static ::llvm::CodeGenOpt::Level toLLVM(rr::OptimizationLevel level)
+		{
+			switch (level)
+			{
+				case rr::OptimizationLevel::None:       return ::llvm::CodeGenOpt::None;
+				case rr::OptimizationLevel::Less:       return ::llvm::CodeGenOpt::Less;
+				case rr::OptimizationLevel::Default:    return ::llvm::CodeGenOpt::Default;
+				case rr::OptimizationLevel::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
+				default: UNREACHABLE("Unknown OptimizationLevel %d", int(level));
+			}
+			return ::llvm::CodeGenOpt::Default;
+		}
+
 		std::shared_ptr<llvm::orc::SymbolResolver> resolver;
 		std::unique_ptr<llvm::TargetMachine> targetMachine;
 		llvm::orc::ExecutionSession session;
@@ -417,10 +432,10 @@ namespace
 			passManager->run(*module);
 		}
 
-		rr::LLVMRoutine *acquireRoutine(llvm::Function **funcs, size_t count)
+		rr::LLVMRoutine *acquireRoutine(rr::OptimizationLevel optLevel, llvm::Function **funcs, size_t count)
 		{
 			ASSERT(module);
-			auto session = new JITSession();
+			auto session = new JITSession(optLevel);
 			auto routine = session->acquireRoutine(std::move(module), funcs, count);
 			session->release();
 			return routine;
@@ -1181,7 +1196,7 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, bool runOptimizations)
+	Routine *Nucleus::acquireRoutine(const char *name, OptimizationLevel optimizationLevel)
 	{
 		if(jit->builder->GetInsertBlock()->empty() || !jit->builder->GetInsertBlock()->back().isTerminator())
 		{
@@ -1219,10 +1234,7 @@ namespace rr
 		}
 #endif // defined(ENABLE_RR_LLVM_IR_VERIFICATION) || !defined(NDEBUG)
 
-		if(runOptimizations)
-		{
-			optimize();
-		}
+		optimize();
 
 		if(false)
 		{
@@ -1231,7 +1243,7 @@ namespace rr
 			jit->module->print(file, 0);
 		}
 
-		LLVMRoutine *routine = jit->acquireRoutine(&jit->function, 1);
+		LLVMRoutine *routine = jit->acquireRoutine(optimizationLevel, &jit->function, 1);
 		jit.reset();
 
 		return routine;
@@ -4719,7 +4731,7 @@ void Nucleus::yield(Value* val)
 	jit->builder->SetInsertPoint(resumeBlock);
 }
 
-Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
+Routine* Nucleus::acquireCoroutine(const char *name, OptimizationLevel optimizationLevel)
 {
 	ASSERT_MSG(jit->coroutine.id != nullptr, "acquireCoroutine() called without a call to createCoroutine()");
 
@@ -4748,10 +4760,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
 	pm.add(llvm::createCoroCleanupPass());
 	pm.run(*jit->module);
 
-	if(runOptimizations)
-	{
-		optimize();
-	}
+	optimize();
 
 	if(false)
 	{
@@ -4764,7 +4773,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
 	funcs[Nucleus::CoroutineEntryBegin] = jit->function;
 	funcs[Nucleus::CoroutineEntryAwait] = jit->coroutine.await;
 	funcs[Nucleus::CoroutineEntryDestroy] = jit->coroutine.destroy;
-	Routine *routine = jit->acquireRoutine(funcs, Nucleus::CoroutineEntryCount);
+	Routine *routine = jit->acquireRoutine(optimizationLevel, funcs, Nucleus::CoroutineEntryCount);
 	jit.reset();
 
 	return routine;
