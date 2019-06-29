@@ -18,21 +18,20 @@
 #include "Routine.hpp"
 
 #include <cstdint>
+#include <functional>
 #include <stddef.h>
 #include <vector>
 
 namespace rr
 {
-	class LLVMReactorJIT;
 
 	class LLVMRoutine : public Routine
 	{
 	public:
 		LLVMRoutine(void **entries, size_t entry_count,
-					void (*callback)(LLVMReactorJIT *, uint64_t),
-		            LLVMReactorJIT *jit, uint64_t key)
+					std::function<void()> dtor)
 			: entries(entries, entries+entry_count),
-			  dtor(callback), reactorJIT(jit), moduleKey(key)
+			  dtor(dtor)
 		{ }
 
 		virtual ~LLVMRoutine();
@@ -45,9 +44,7 @@ namespace rr
 	private:
 		const std::vector<const void *> entries;
 
-		void (*dtor)(LLVMReactorJIT *, uint64_t);
-		LLVMReactorJIT *reactorJIT;
-		uint64_t moduleKey;
+		std::function<void()> dtor;
 	};
 }
 
