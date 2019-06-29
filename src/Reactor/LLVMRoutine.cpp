@@ -21,6 +21,6 @@ namespace rr
 {
 	LLVMRoutine::~LLVMRoutine()
 	{
-		dtor(reactorJIT, moduleKey);
+		dtor();
 	}
 }
