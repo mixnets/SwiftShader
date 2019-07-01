@@ -24,7 +24,7 @@
 namespace rr
 {
 	// Set of variables that do not have a stack location yet.
-	std::unordered_set<Variable*> Variable::unmaterializedVariables;
+	thread_local std::unordered_set<Variable*> Variable::unmaterializedVariables;
 
 	Variable::Variable(Type *type, int arraySize) : arraySize(arraySize), type(type)
 	{
