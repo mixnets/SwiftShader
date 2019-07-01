@@ -21,7 +21,6 @@
 #include "CPUID.hpp"
 #include "Thread.hpp"
 #include "ExecutableMemory.hpp"
-#include "MutexLock.hpp"
 
 #undef min
 #undef max
@@ -323,7 +322,7 @@ namespace
 			for (size_t i = 0; i < count; i++)
 			{
 				auto func = funcs[i];
-				static size_t numEmittedFunctions = 0;
+				static std::atomic<size_t> numEmittedFunctions(0);
 				std::string name = "f" + llvm::Twine(numEmittedFunctions++).str();
 				func->setName(name);
 				func->setLinkage(llvm::GlobalValue::ExternalLinkage);
@@ -475,8 +474,8 @@ namespace
 #endif
 	};
 
-	std::unique_ptr<JITBuilder> jit;
-	std::mutex codegenMutex;
+	// The JITBuilder for this thread.
+	thread_local std::unique_ptr<JITBuilder> jit;
 
 #ifdef ENABLE_RR_PRINT
 	std::string replace(std::string str, const std::string& substr, const std::string& replacement)
@@ -1191,8 +1190,6 @@ namespace rr
 
 	Nucleus::Nucleus()
 	{
-		::codegenMutex.lock();   // Reactor and LLVM are currently not thread safe
-
 		ASSERT(jit == nullptr);
 		jit.reset(new JITBuilder());
 	}
@@ -1200,7 +1197,6 @@ namespace rr
 	Nucleus::~Nucleus()
 	{
 		jit.reset();
-		::codegenMutex.unlock();
 	}
 
 	Routine *Nucleus::acquireRoutine(const char *name, OptimizationLevel optimizationLevel)

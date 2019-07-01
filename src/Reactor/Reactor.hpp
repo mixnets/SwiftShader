@@ -138,7 +138,7 @@ namespace rr
 		static void materializeAll();
 		static void killUnmaterialized();
 
-		static std::unordered_set<Variable*> unmaterializedVariables;
+		static thread_local std::unordered_set<Variable*> unmaterializedVariables;
 
 		Type *const type;
 		mutable Value *rvalue = nullptr;
