@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "635c034a_2827e483",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1537,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T21:37:53Z",
+      "side": 1,
+      "message": "One of the reasons I\u0027m interested in a global is because it would allow us to turn the knob at run-time and see the effect on framerate. So a static compile time define, while useful for some cases, doesn\u0027t solve that. And I\u0027d rather just pass it once instead of at every acquire of a Reactor routine.\n\nI don\u0027t think I understand your objections to a global variable.",
+      "parentUuid": "a0189e31_3da2586c",
+      "range": {
+        "startLine": 1537,
+        "startChar": 22,
+        "endLine": 1537,
+        "endChar": 46
+      },
+      "revId": "feef0f96f7b193ef7c8a15540fc0bfbed63b266a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0fffa76b_2ce3331c",
         "filename": "src/Vulkan/VkConfig.h",
         "patchSetId": 6
