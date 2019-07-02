@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ade41943_86f47944",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:49Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 110,
+        "startChar": 11,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9246c7c8_3304c966",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:49Z",
+      "side": 1,
+      "message": "I\u0027m not sure why this is reference counted. If I\u0027m not mistaken, each LLVMRoutine was/is associated with a session, and when it\u0027s deleted it frees the session data.",
+      "range": {
+        "startLine": 251,
+        "startChar": 4,
+        "endLine": 252,
+        "endChar": 36
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c814520e_242ed9c4",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:49Z",
+      "side": 1,
+      "message": "nit: builder is used a lot, so it might be preferable to avoid this pointer hop.",
+      "range": {
+        "startLine": 496,
+        "startChar": 6,
+        "endLine": 496,
+        "endChar": 18
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4dc7d29_a09f8e4d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:49Z",
+      "side": 1,
+      "message": "nit: While redundant, I liked the :: in front of globals to make the stand out more.",
+      "range": {
+        "startLine": 497,
+        "startChar": 6,
+        "endLine": 497,
+        "endChar": 9
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
