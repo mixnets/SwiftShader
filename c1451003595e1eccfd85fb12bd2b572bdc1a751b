@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2029240_d0ab58ce",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T08:06:53Z",
+      "side": 1,
+      "message": "Not sure if this is going to cause issues downstream.",
+      "range": {
+        "startLine": 1,
+        "startChar": 31,
+        "endLine": 1,
+        "endChar": 34
+      },
+      "revId": "c1451003595e1eccfd85fb12bd2b572bdc1a751b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
