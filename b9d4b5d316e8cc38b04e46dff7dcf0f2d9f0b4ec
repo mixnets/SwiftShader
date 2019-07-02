@@ -22,6 +22,30 @@
       "revId": "b9d4b5d316e8cc38b04e46dff7dcf0f2d9f0b4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a00cf2b_94624401",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T20:31:15Z",
+      "side": 1,
+      "message": "As I said via chat, I think this will be needed for our immediate milestone.\n\nWe\u0027ve picked a lot of the low hanging fruit, and while I\u0027d love to unearth more goodies, these are some very large performance gains which would be silly to ignore.\nIf I\u0027m wrong (which I\u0027d love to be), and we find some major gains, putting back the O2 optimization level is a one-liner change.\n\nLonger term, I believe background optimizing hot shaders is the right way to go, and with https://swiftshader-review.googlesource.com/c/SwiftShader/+/33484 and a decent job scheduler, this should be moderately easy to implement.",
+      "parentUuid": "cc2bcb7e_25c776e5",
+      "range": {
+        "startLine": 84,
+        "startChar": 3,
+        "endLine": 84,
+        "endChar": 9
+      },
+      "revId": "b9d4b5d316e8cc38b04e46dff7dcf0f2d9f0b4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
