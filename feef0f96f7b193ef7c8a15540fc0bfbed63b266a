@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "28d0e94b_75f21a07",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1537,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T22:45:32Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t think I understand your objections to a global variable\n\nSo my primary concerns are:\n\n• Where would the global initially be set?\n\nWe don\u0027t want to change the behavior of GLES, but it looks like we may need to reduce optimization for Vulkan.\nGLES exclusively uses the Renderer singleton, which has a clear initialisation point to take settings from the SwiftConfig. Okay, fair enough.\n\nVulkan has a Renderer per Queue, and so it doesn\u0027t have a single, one-off call point to set a default. Where would we put the initializer? Given that place, does it make sense to put it there, or does it add an odd, hacky dependency into reactor where there is no other reactor code?\n\n• If we expose an API (extern var, or function) to set this in Reactor, what is the documented behavior of trying to adjust this, mid-execution?\n\nYou said you want to be able to \"turn the knob at run-time\", so how should this be handled?\nDo we need to make this global variable atomic, or wrap it in a mutex? Reactor is a library, this sort of thing should be well defined.\n\n• Why wouldn\u0027t a user of Reactor want to be able to specify optimization levels per function?\n\nSeems like a pretty desirable feature to me.\n\n• How does someone test their app using Reactor with different optimization levels?\n\nThe user writes a bunch of tests that run in parallel.\nThe test would set the optimization global, create a rr::Function, do their thing.\nEven without 33484 landing, the reactor mutex lock happens after the global is set, meaning we\u0027re in undefined territory. Should the user move the assignment to between the rr::Function constructor and destructor? Are we going to document this?\n\n• How would we implement VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT, or a background optimizer with a single, global knob?\n\nYes, this is stuff we don\u0027t need right now, but I\u0027d prefer to take the more future-proof approach (i.e. these changes), then pollute Reactor with more global cruft.\n\n---\n\nThen there\u0027s just the standard bag of reasons why globals are generally considered bad practice (some highlighted above): Unconstrained scope, global/rr namespace pollution, breaking encapsulation, reducing code readability / clarity, static initialisation order issues, concurrency issues, reducing testability, increasing function impurity... and so on. Mutable globals are just Not Good, especially when exposed as part of a large library\u0027s public interface.\n\n\nAs for wanting to globally to adjust the Vulkan optimization settings - you have this - it is vk::ReactorOptimizationLevel. Drop the constexpr, wrap it in std::atomic\u003c\u003e and we have a thread-safe way of runtime adjusting the global Vulkan optimization setting - without the issues I list above.\n\n\u003e I\u0027d rather just pass it once instead of at every acquire of a Reactor routine.\n\nEvery _Vulkan Reactor_ function.\nAnd yes, that is just the price to pay for avoiding the above. Explicit API \u003e Convenient-but-with-heavy-baggage.",
+      "parentUuid": "635c034a_2827e483",
+      "range": {
+        "startLine": 1537,
+        "startChar": 22,
+        "endLine": 1537,
+        "endChar": 46
+      },
+      "revId": "feef0f96f7b193ef7c8a15540fc0bfbed63b266a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0fffa76b_2ce3331c",
         "filename": "src/Vulkan/VkConfig.h",
         "patchSetId": 6
