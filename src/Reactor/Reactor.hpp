@@ -60,8 +60,14 @@ namespace rr
 	{
 		bool CallSupported;       // Support for rr::Call()
 		bool CoroutinesSupported; // Support for rr::Coroutine<F>
+		// The below capabilities may be supported by the Reactor backend, but
+		// may not be performant to use.
+		bool HasFastMaskedLoad;      // Are MaskedLoad()s fast on this host device?
+		bool HasFastMaskedStore;     // Are MaskedStore()s fast on this host device?
+		bool HasFastGather;          // Are Gather()s fast on this host device?
+		bool HasFastScatter;         // Are Scatter()s fast on this host device?
 	};
-	extern const Capabilities Caps;
+	const Capabilities& GetCapabilities();
 
 	class Bool;
 	class Byte;

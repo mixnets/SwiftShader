@@ -1107,7 +1107,7 @@ TEST(ReactorUnitTests, PointersEqual)
 
 TEST(ReactorUnitTests, Call)
 {
-	if (!rr::Caps.CallSupported)
+	if (!rr::GetCapabilities().CallSupported)
 	{
 		SUCCEED() << "rr::Call() not supported";
 		return;
@@ -1384,7 +1384,7 @@ TYPED_TEST(GEPTest, PtrOffsets)
 
 TEST(ReactorUnitTests, Coroutines_Fibonacci)
 {
-	if (!rr::Caps.CoroutinesSupported)
+	if (!rr::GetCapabilities().CoroutinesSupported)
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
@@ -1425,7 +1425,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 
 TEST(ReactorUnitTests, Coroutines_Parameters)
 {
-	if (!rr::Caps.CoroutinesSupported)
+	if (!rr::GetCapabilities().CoroutinesSupported)
 	{
 		SUCCEED() << "Coroutines not supported";
 		return;
