@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "200b3c91_83ab655e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T19:33:01Z",
+      "side": 1,
+      "message": "It did occur to me that JITSession and LLVMRoutine is now a 1:1 relationship with this change, and I can fold them together. If you think it is worthwhile for me to pursue this path, I will do this.",
+      "parentUuid": "9246c7c8_3304c966",
+      "range": {
+        "startLine": 251,
+        "startChar": 4,
+        "endLine": 252,
+        "endChar": 36
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c814520e_242ed9c4",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "0ae883fa_3d8c5f8e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T19:33:01Z",
+      "side": 1,
+      "message": "Are you suggesting storing jit-\u003ebuilder into a local, or flattening out the structure into globals again? If it\u0027s the latter, it\u0027s certainly something I\u0027m trying to avoid. The former I\u0027m happy to do.",
+      "parentUuid": "c814520e_242ed9c4",
+      "range": {
+        "startLine": 496,
+        "startChar": 6,
+        "endLine": 496,
+        "endChar": 18
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4dc7d29_a09f8e4d",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -82,6 +130,30 @@
       "writtenOn": "2019-07-02T19:26:49Z",
       "side": 1,
       "message": "nit: While redundant, I liked the :: in front of globals to make the stand out more.",
+      "range": {
+        "startLine": 497,
+        "startChar": 6,
+        "endLine": 497,
+        "endChar": 9
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28ebe019_593015b6",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T19:33:01Z",
+      "side": 1,
+      "message": "Okay, I\u0027m not particularly fussed either way. I noticed that there was an almost even split of :: prefixing or not, and I went for the one that reduced noise. Can fix though.",
+      "parentUuid": "a4dc7d29_a09f8e4d",
       "range": {
         "startLine": 497,
         "startChar": 6,
