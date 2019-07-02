@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4d849e35_633bbbb4",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T20:21:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ade41943_86f47944",
+      "range": {
+        "startLine": 110,
+        "startChar": 11,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9246c7c8_3304c966",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Thanks for confirming they\u0027re 1:1. Let\u0027s clean up later.",
       "parentUuid": "200b3c91_83ab655e",
+      "range": {
+        "startLine": 251,
+        "startChar": 4,
+        "endLine": 252,
+        "endChar": 36
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ea515e9_84c6e971",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T20:21:17Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "68011195_7ee0539d",
       "range": {
         "startLine": 251,
         "startChar": 4,
@@ -167,6 +215,30 @@
     },
     {
       "key": {
+        "uuid": "a7a8cbc1_c5347731",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T20:21:17Z",
+      "side": 1,
+      "message": "There are two reasons why I strongly oppose these as globals:\n\n (1) The llvm context, module and builder all share the same life time (currently, module may outlive the other two in the future). They belong grouped together, so that you do not end up with bugs where one or more is not cleared between reactor function builds. This is particularly important for coroutines where there are an additional 8 fields that also have the same lifetimes.\n\n (2) When we finally kill the reactor mutex (https://swiftshader-review.googlesource.com/c/SwiftShader/+/33484), it gives us a single thing to TLS.",
+      "parentUuid": "62829213_8afde60d",
+      "range": {
+        "startLine": 496,
+        "startChar": 6,
+        "endLine": 496,
+        "endChar": 18
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4dc7d29_a09f8e4d",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -226,6 +298,30 @@
       "side": 1,
       "message": "No worries, just a style nit we can address later.",
       "parentUuid": "28ebe019_593015b6",
+      "range": {
+        "startLine": 497,
+        "startChar": 6,
+        "endLine": 497,
+        "endChar": 9
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9a152f3_db5b8feb",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-02T20:21:17Z",
+      "side": 1,
+      "message": "Ack. Happy to append a change on the end that unifies the code style.",
+      "parentUuid": "7f2b872a_e4b08261",
       "range": {
         "startLine": 497,
         "startChar": 6,
