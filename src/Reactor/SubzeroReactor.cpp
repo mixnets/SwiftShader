@@ -133,11 +133,11 @@ namespace
 
 namespace rr
 {
-	const Capabilities Caps =
+	const Capabilities& GetCapabilities()
 	{
-		false, // CallSupported
-		false, // CoroutinesSupported
-	};
+		static const Capabilities caps = {};
+		return caps;
+	}
 
 	enum EmulatedType
 	{
