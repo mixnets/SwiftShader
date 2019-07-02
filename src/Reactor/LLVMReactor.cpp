@@ -167,6 +167,10 @@ namespace
 		const char* const march;
 		const llvm::TargetOptions targetOptions;
 		const llvm::DataLayout dataLayout;
+		bool hasFastMaskedLoad = false;
+		bool hasFastMaskedStore = false;
+		bool hasFastGather = false;
+		bool hasFastScatter = false;
 
 		TargetMachineSPtr getTargetMachine(rr::Optimization::Level optlevel);
 
@@ -175,6 +179,7 @@ namespace
 		static llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level);
 		JITGlobals(const char *mcpu,
 		           const std::vector<std::string> &mattrs,
+		           const llvm::StringMap<bool> &features,
 		           const char *march,
 		           const llvm::TargetOptions &targetOptions,
 		           const llvm::DataLayout &dataLayout);
@@ -275,7 +280,7 @@ namespace
 
 		auto dataLayout = targetMachine->createDataLayout();
 
-		return JITGlobals(mcpu.data(), mattrs, march, targetOptions, dataLayout);
+		return JITGlobals(mcpu.data(), mattrs, features, march, targetOptions, dataLayout);
 	}
 
 	llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::Optimization::Level level)
@@ -293,6 +298,7 @@ namespace
 
 	JITGlobals::JITGlobals(const char* mcpu,
 	                       const std::vector<std::string> &mattrs,
+						   const llvm::StringMap<bool> &features,
 	                       const char* march,
 	                       const llvm::TargetOptions &targetOptions,
 	                       const llvm::DataLayout &dataLayout) :
@@ -302,6 +308,12 @@ namespace
 			targetOptions(targetOptions),
 			dataLayout(dataLayout)
 	{
+#if defined(__x86_64__) || defined(__i386__)
+		hasFastMaskedLoad = features.count("avx2") > 0;
+		hasFastMaskedStore = features.count("avx2") > 0;
+		hasFastGather = features.count("avx512f") > 0 || features.count("fast-gather") > 0;
+		hasFastScatter = features.count("avx512f") > 0;
+#endif
 	}
 
 	// JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
@@ -844,11 +856,21 @@ namespace
 
 namespace rr
 {
-	const Capabilities Caps =
+	const Capabilities& GetCapabilities()
 	{
-		true, // CallSupported
-		true, // CoroutinesSupported
-	};
+		static const Capabilities caps = []() {
+			Capabilities caps = {};
+			caps.CallSupported = true;
+			caps.CoroutinesSupported = true;
+			caps.HasFastMaskedLoad = JITGlobals::get()->hasFastMaskedLoad;
+			caps.HasFastMaskedStore = JITGlobals::get()->hasFastMaskedStore;
+			caps.HasFastGather = JITGlobals::get()->hasFastGather;
+			caps.HasFastScatter = JITGlobals::get()->hasFastScatter;
+			return caps;
+		}();
+
+		return caps;
+	}
 
 	static std::memory_order atomicOrdering(llvm::AtomicOrdering memoryOrder)
 	{
