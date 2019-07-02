@@ -129,6 +129,10 @@ namespace
 		const char* arch;
 		llvm::TargetOptions targetOptions;
 		llvm::DataLayout dataLayout = llvm::DataLayout("");
+		bool hasFastMaskedLoad = false;
+		bool hasFastMaskedStore = false;
+		bool hasFastGather = false;
+		bool hasFastScatter = false;
 
 	private:
 		JITGlobals();
@@ -211,6 +215,13 @@ namespace
 				.selectTarget());
 
 		dataLayout = targetMachine->createDataLayout();
+
+#if defined(__x86_64__) || defined(__i386__)
+		hasFastMaskedLoad = features["avx2"];
+		hasFastMaskedStore = features["avx2"];
+		hasFastGather = features["avx512f"] || features["fast-gather"];
+		hasFastScatter = features["avx512f"];
+#endif
 	}
 
 	// RefCounted is a base class for an intrusively ref-counted object.
@@ -821,11 +832,21 @@ namespace
 
 namespace rr
 {
-	const Capabilities Caps =
+	const Capabilities& GetCapabilities()
 	{
-		true, // CallSupported
-		true, // CoroutinesSupported
-	};
+		static const Capabilities caps = []() {
+			Capabilities caps = {};
+			caps.CallSupported = true;
+			caps.CoroutinesSupported = true;
+			caps.HasFastMaskedLoad = JITGlobals::get()->hasFastMaskedLoad;
+			caps.HasFastMaskedStore = JITGlobals::get()->hasFastMaskedStore;
+			caps.HasFastGather = JITGlobals::get()->hasFastGather;
+			caps.HasFastScatter = JITGlobals::get()->hasFastScatter;
+			return caps;
+		}();
+
+		return caps;
+	}
 
 	static std::memory_order atomicOrdering(llvm::AtomicOrdering memoryOrder)
 	{
