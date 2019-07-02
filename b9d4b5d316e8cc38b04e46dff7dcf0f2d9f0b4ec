@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc2bcb7e_25c776e5",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:31:53Z",
+      "side": 1,
+      "message": "While true for dEQP tests, it\u0027s unlikely to be the case for real-world applications. Let\u0027s keep this arrow in our quiver for a bit until it\u0027s clear we\u0027re out of other ideas.",
+      "range": {
+        "startLine": 84,
+        "startChar": 3,
+        "endLine": 84,
+        "endChar": 9
+      },
+      "revId": "b9d4b5d316e8cc38b04e46dff7dcf0f2d9f0b4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
