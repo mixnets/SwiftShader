@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c20eca48_b488e1e9",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1537,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:55Z",
+      "side": 1,
+      "message": "While setting the optimization level here instead of at the Function\u003c\u003e creation is infinitely better, I\u0027d still favor a one-time set-and-forget global function. It\u0027s easy to miss adding it to new uses of Reactor.",
+      "range": {
+        "startLine": 1537,
+        "startChar": 22,
+        "endLine": 1537,
+        "endChar": 46
+      },
+      "revId": "feef0f96f7b193ef7c8a15540fc0bfbed63b266a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0fffa76b_2ce3331c",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:26:55Z",
+      "side": 1,
+      "message": "Quotation marks, and move it above the Vulkan include to avoid accidentally depending on it.",
+      "range": {
+        "startLine": 22,
+        "startChar": 9,
+        "endLine": 22,
+        "endChar": 10
+      },
+      "revId": "feef0f96f7b193ef7c8a15540fc0bfbed63b266a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
