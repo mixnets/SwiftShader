@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "feebb841_d2af4a43",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T21:30:25Z",
+      "side": 1,
+      "message": "It just occurred to me that since the upgrade to LLVM 7.0 our Routine objects are no longer light-weight blocks of executable memory that can exist stand-alone from LLVM. :-(",
+      "parentUuid": "4ea515e9_84c6e971",
+      "range": {
+        "startLine": 251,
+        "startChar": 4,
+        "endLine": 252,
+        "endChar": 36
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c814520e_242ed9c4",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
