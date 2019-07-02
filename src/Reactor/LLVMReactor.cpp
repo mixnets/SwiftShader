@@ -1572,15 +1572,48 @@ namespace rr
 		ASSERT(V(mask)->getType()->isVectorTy());
 
 		auto numEls = V(mask)->getType()->getVectorNumElements();
-		auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
-		auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
 		auto elVecTy = ::llvm::VectorType::get(T(elTy), numEls);
-		auto elVecPtrTy = elVecTy->getPointerTo();
-		auto i8Mask = ::builder->CreateIntCast(V(mask), ::llvm::VectorType::get(i1Ty, numEls), false); // vec<int, int, ...> -> vec<bool, bool, ...>
-		auto passthrough = ::llvm::Constant::getNullValue(elVecTy);
-		auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
-		auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_load, { elVecTy, elVecPtrTy } );
-		return V(::builder->CreateCall(func, { V(ptr), align, i8Mask, passthrough }));
+
+		bool maskIsConstant = llvm::isa<llvm::Constant>(V(mask));
+		if (maskIsConstant && llvm::cast<llvm::Constant>(V(mask))->isAllOnesValue())
+		{
+			return createLoad(ptr, T(elVecTy), false, alignment);
+		}
+
+		if (false)
+		{
+			auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
+			auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
+			auto elVecPtrTy = elVecTy->getPointerTo();
+			auto i8Mask = ::builder->CreateIntCast(V(mask), ::llvm::VectorType::get(i1Ty, numEls), false); // vec<int, int, ...> -> vec<bool, bool, ...>
+			auto passthrough = ::llvm::Constant::getNullValue(elVecTy);
+			auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
+			auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_load, { elVecTy, elVecPtrTy } );
+			return V(::builder->CreateCall(func, { V(ptr), align, i8Mask, passthrough }));
+		}
+		else
+		{
+			auto elPtr = ::builder->CreatePointerCast(V(ptr), T(elTy)->getPointerTo());
+			auto outPtr = V(allocateStackVariable(T(elVecTy)));
+			::builder->CreateStore(::llvm::Constant::getNullValue(elVecTy), outPtr);
+
+			for (unsigned int elIdx = 0; elIdx < numEls; elIdx++)
+			{
+				auto maskEl = ::builder->CreateExtractElement(V(mask), elIdx);
+				auto maskNZ = ::builder->CreateIsNotNull(maskEl);
+				If(RValue<Bool>(V(maskNZ)))
+				{
+					auto idx = ::builder->getInt32(elIdx);
+					auto gep = ::builder->CreateGEP(T(elTy), elPtr, idx);
+					auto load = ::builder->CreateAlignedLoad(gep, alignment);
+					auto out = ::builder->CreateLoad(outPtr);
+					auto insert = ::builder->CreateInsertElement(out, load, idx);
+					::builder->CreateStore(insert, outPtr);
+				}
+			}
+
+			return V(::builder->CreateLoad(outPtr));
+		}
 	}
 
 	void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned int alignment)
@@ -1590,14 +1623,43 @@ namespace rr
 		ASSERT(V(mask)->getType()->isVectorTy());
 
 		auto numEls = V(mask)->getType()->getVectorNumElements();
-		auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
-		auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
 		auto elVecTy = V(val)->getType();
-		auto elVecPtrTy = elVecTy->getPointerTo();
-		auto i8Mask = ::builder->CreateIntCast(V(mask), ::llvm::VectorType::get(i1Ty, numEls), false); // vec<int, int, ...> -> vec<bool, bool, ...>
-		auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
-		auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_store, { elVecTy, elVecPtrTy } );
-		::builder->CreateCall(func, { V(val), V(ptr), align, i8Mask });
+
+		bool maskIsConstant = llvm::isa<llvm::Constant>(V(mask));
+		if (maskIsConstant && llvm::cast<llvm::Constant>(V(mask))->isAllOnesValue())
+		{
+			createStore(val, ptr, T(elVecTy), false, alignment);
+			return;
+		}
+
+		if (false)
+		{
+			auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
+			auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
+			auto elVecPtrTy = elVecTy->getPointerTo();
+			auto i8Mask = ::builder->CreateIntCast(V(mask), ::llvm::VectorType::get(i1Ty, numEls), false); // vec<int, int, ...> -> vec<bool, bool, ...>
+			auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
+			auto func = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::masked_store, { elVecTy, elVecPtrTy } );
+			::builder->CreateCall(func, { V(val), V(ptr), align, i8Mask });
+		}
+		else
+		{
+			auto elTy = elVecTy->getVectorElementType();
+			auto elPtr = ::builder->CreatePointerCast(V(ptr), elTy->getPointerTo());
+			auto dummyPtr = V(allocateStackVariable(T(elTy)));
+
+			for (unsigned int elIdx = 0; elIdx < numEls; elIdx++)
+			{
+				auto maskEl = ::builder->CreateExtractElement(V(mask), elIdx);
+				auto maskNZ = ::builder->CreateIsNotNull(maskEl);
+
+				auto idx = ::builder->getInt32(elIdx);
+				auto gep = ::builder->CreateGEP(elTy, elPtr, idx);
+				auto dst = ::builder->CreateSelect(maskNZ, gep, dummyPtr);
+				auto el = ::builder->CreateExtractElement(V(val), idx);
+				::builder->CreateAlignedStore(el, dst, alignment);
+			}
+		}
 	}
 
 	Value *Nucleus::createGather(Value *base, Type *elTy, Value *offsets, Value *mask, unsigned int alignment)
