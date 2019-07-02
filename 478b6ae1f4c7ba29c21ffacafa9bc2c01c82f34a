@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "68011195_7ee0539d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:54:02Z",
+      "side": 1,
+      "message": "Thanks for confirming they\u0027re 1:1. Let\u0027s clean up later.",
+      "parentUuid": "200b3c91_83ab655e",
+      "range": {
+        "startLine": 251,
+        "startChar": 4,
+        "endLine": 252,
+        "endChar": 36
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c814520e_242ed9c4",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -119,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "62829213_8afde60d",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:54:02Z",
+      "side": 1,
+      "message": "I\u0027m merely suggesting making builder global again. The other members of JITBuilder are accessed far less often. In fact the context can be retrieved from IRBuilder\u003c\u003e as well, and the module can be obtained as the current basic block\u0027s parent function\u0027s parent.\n\nOr perhaps JITBuilder could be derived from IRBuilder\u003c\u003e ? Just spitballing, we can look into this micro-optimization later.",
+      "parentUuid": "0ae883fa_3d8c5f8e",
+      "range": {
+        "startLine": 496,
+        "startChar": 6,
+        "endLine": 496,
+        "endChar": 18
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4dc7d29_a09f8e4d",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 8
@@ -154,6 +202,30 @@
       "side": 1,
       "message": "Okay, I\u0027m not particularly fussed either way. I noticed that there was an almost even split of :: prefixing or not, and I went for the one that reduced noise. Can fix though.",
       "parentUuid": "a4dc7d29_a09f8e4d",
+      "range": {
+        "startLine": 497,
+        "startChar": 6,
+        "endLine": 497,
+        "endChar": 9
+      },
+      "revId": "478b6ae1f4c7ba29c21ffacafa9bc2c01c82f34a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f2b872a_e4b08261",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-02T19:54:02Z",
+      "side": 1,
+      "message": "No worries, just a style nit we can address later.",
+      "parentUuid": "28ebe019_593015b6",
       "range": {
         "startLine": 497,
         "startChar": 6,
