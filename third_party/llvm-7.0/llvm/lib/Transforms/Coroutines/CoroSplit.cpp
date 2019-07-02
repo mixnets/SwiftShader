@@ -424,7 +424,6 @@ static void postSplitCleanup(Function &F) {
   removeUnreachableBlocks(F);
   legacy::FunctionPassManager FPM(F.getParent());
 
-  FPM.add(createVerifierPass());
   FPM.add(createSCCPPass());
   FPM.add(createCFGSimplificationPass());
   FPM.add(createEarlyCSEPass());
