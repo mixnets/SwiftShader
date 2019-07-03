@@ -291,12 +291,21 @@ namespace sw
 		{
 			using EL = typename Element<T>::type;
 
-			if (ptr.hasStaticSequentialOffsets(sizeof(float)) &&
-				ptr.isStaticAllInBounds(sizeof(float)))
+			if (ptr.isStaticAllInBounds(sizeof(float)))
 			{
-				// All elements sequential and in bounds.
-				// Perform regular load.
-				return rr::Load(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
+				// All elements are statically known to be in-bounds.
+				// We can avoid costly conditional on masks.
+
+				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
+				{
+					// Offsets are sequential. Perform regular load.
+					return rr::Load(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
+				}
+				if (ptr.hasStaticEqualOffsets())
+				{
+					// Load one, replicate.
+					return T(*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment));
+				}
 			}
 
 			auto offsets = ptr.offsets();
