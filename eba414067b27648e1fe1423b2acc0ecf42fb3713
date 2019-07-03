@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "bcaef2ad_67ff268b",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-03T17:13:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fbfb5b90_ad2a3f86",
+      "range": {
+        "startLine": 46,
+        "startChar": 36,
+        "endLine": 46,
+        "endChar": 64
+      },
+      "revId": "eba414067b27648e1fe1423b2acc0ecf42fb3713",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67d57cd5_e7810f64",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 2
@@ -71,6 +95,30 @@
       "writtenOn": "2019-07-03T14:47:28Z",
       "side": 1,
       "message": "note: Apparently vkCmdSetStencilCompareMask takes a uint32. There\u0027s no stencil format with more than 8 bits at the moment, but we may want to check that if the application passes 0xFFFFFFFF we do the right thing.",
+      "range": {
+        "startLine": 268,
+        "startChar": 23,
+        "endLine": 268,
+        "endChar": 42
+      },
+      "revId": "eba414067b27648e1fe1423b2acc0ecf42fb3713",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "822ebd3f_9fcb35fe",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-03T17:13:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "67d57cd5_e7810f64",
       "range": {
         "startLine": 268,
         "startChar": 23,
