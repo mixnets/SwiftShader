@@ -4232,14 +4232,14 @@ namespace rr
 		Nucleus::setInsertBlock(bodyBB);
 	}
 
-	RValue<Float4> MaskedLoad(RValue<Pointer<Float4>> base, RValue<Int4> mask, unsigned int alignment)
+	RValue<Float4> MaskedLoad(RValue<Pointer<Float4>> base, RValue<Int4> mask, unsigned int alignment, bool zeroDisabledLanes /* = false */)
 	{
-		return RValue<Float4>(Nucleus::createMaskedLoad(base.value, Float::getType(), mask.value, alignment));
+		return RValue<Float4>(Nucleus::createMaskedLoad(base.value, Float::getType(), mask.value, alignment, zeroDisabledLanes));
 	}
 
-	RValue<Int4> MaskedLoad(RValue<Pointer<Int4>> base, RValue<Int4> mask, unsigned int alignment)
+	RValue<Int4> MaskedLoad(RValue<Pointer<Int4>> base, RValue<Int4> mask, unsigned int alignment, bool zeroDisabledLanes /* = false */)
 	{
-		return RValue<Int4>(Nucleus::createMaskedLoad(base.value, Int::getType(), mask.value, alignment));
+		return RValue<Int4>(Nucleus::createMaskedLoad(base.value, Int::getType(), mask.value, alignment, zeroDisabledLanes));
 	}
 
 	void MaskedStore(RValue<Pointer<Float4>> base, RValue<Float4> val, RValue<Int4> mask, unsigned int alignment)
@@ -4252,14 +4252,14 @@ namespace rr
 		Nucleus::createMaskedStore(base.value, val.value, mask.value, alignment);
 	}
 
-	RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroDisabledLanes /* = false */)
 	{
-		return RValue<Float4>(Nucleus::createGather(base.value, Float::getType(), offsets.value, mask.value, alignment));
+		return RValue<Float4>(Nucleus::createGather(base.value, Float::getType(), offsets.value, mask.value, alignment, zeroDisabledLanes));
 	}
 
-	RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
+	RValue<Int4> Gather(RValue<Pointer<Int>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroDisabledLanes /* = false */)
 	{
-		return RValue<Int4>(Nucleus::createGather(base.value, Int::getType(), offsets.value, mask.value, alignment));
+		return RValue<Int4>(Nucleus::createGather(base.value, Int::getType(), offsets.value, mask.value, alignment, zeroDisabledLanes));
 	}
 
 	void Scatter(RValue<Pointer<Float>> base, RValue<Float4> val, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment)
