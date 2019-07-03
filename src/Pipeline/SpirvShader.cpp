@@ -296,8 +296,7 @@ namespace sw
 			{
 				// All elements sequential and in bounds.
 				// Perform regular load.
-				auto load = rr::Load(rr::Pointer<SIMD::Int>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
-				return As<T>(load & mask); // TODO: Mask here should be unnecessary, but keeps with MaskedLoad and Gather.
+				return rr::Load(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), alignment, atomic, order);
 			}
 
 			auto offsets = ptr.offsets();
