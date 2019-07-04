@@ -151,30 +151,6 @@ namespace
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 #endif
 
-		for (auto &feature : features)
-		{
-			if (feature.second) { mattrs.push_back(feature.first()); }
-		}
-
-#if 0
-#if defined(__i386__) || defined(__x86_64__)
-		mattrs.push_back(CPUID::supportsMMX()    ? "+mmx"    : "-mmx");
-		mattrs.push_back(CPUID::supportsCMOV()   ? "+cmov"   : "-cmov");
-		mattrs.push_back(CPUID::supportsSSE()    ? "+sse"    : "-sse");
-		mattrs.push_back(CPUID::supportsSSE2()   ? "+sse2"   : "-sse2");
-		mattrs.push_back(CPUID::supportsSSE3()   ? "+sse3"   : "-sse3");
-		mattrs.push_back(CPUID::supportsSSSE3()  ? "+ssse3"  : "-ssse3");
-		mattrs.push_back(CPUID::supportsSSE4_1() ? "+sse4.1" : "-sse4.1");
-#elif defined(__arm__)
-#if __ARM_ARCH >= 8
-		mattrs.push_back("+armv8-a");
-#else
-		// armv7-a requires compiler-rt routines; otherwise, compiled kernel
-		// might fail to link.
-#endif
-#endif
-#endif
-
 		// arch
 #if defined(__x86_64__)
 		arch = "x86-64";
@@ -184,6 +160,17 @@ namespace
 		arch = "arm64";
 #elif defined(__arm__)
 		arch = "arm";
+	#if __ARM_ARCH >= 8
+		feature["armv8-a"] = true;
+	#elif defined(__ARM_ARCH_7A__)
+		feature["armv7-a"] = true;
+	#elif defined(__ARM_ARCH_7S__)
+		feature["armv7s"] = true;
+	#endif
+
+	#if defined(__ARM_NEON__)
+		feature["neon"] = true;
+	#endif
 #elif defined(__mips__)
 #if defined(__mips64)
 		arch = "mips64el";
@@ -195,6 +182,11 @@ namespace
 #else
 		#error "unknown architecture"
 #endif
+
+		for (auto &feature : features)
+		{
+			if (feature.second) { mattrs.push_back(feature.first()); }
+		}
 
 		targetOptions.UnsafeFPMath = false;
 		// targetOpts.NoInfsFPMath = true;
