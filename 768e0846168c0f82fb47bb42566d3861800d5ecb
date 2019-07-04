@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a47ec86_31c21953",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1599,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-04T01:58:54Z",
+      "side": 1,
+      "message": "\u0027zeroMaskedLanes\u0027 instead, since this doesn\u0027t necessarily have anything to do with disabled ones?",
+      "range": {
+        "startLine": 1599,
+        "startChar": 100,
+        "endLine": 1599,
+        "endChar": 117
+      },
+      "revId": "768e0846168c0f82fb47bb42566d3861800d5ecb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
