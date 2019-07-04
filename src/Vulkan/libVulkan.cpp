@@ -81,8 +81,11 @@ bool HasExtensionProperty(const char* extensionName, const VkExtensionProperties
 // Reactor.
 void setReactorDefaultConfig()
 {
+	// Optimizations are currently disabled for dEQP tests, as optimizing the
+	// code often takes longer than the execution speedups up it provides.
+	// TODO: Re-evaluate this level.
 	auto cfg = rr::Config::Edit()
-		.set(rr::Optimization::Level::Default)
+		.set(rr::Optimization::Level::None)
 		.clearOptimizationPasses()
 		.add(rr::Optimization::Pass::ScalarReplAggregates)
 		.add(rr::Optimization::Pass::EarlyCSEPass)
