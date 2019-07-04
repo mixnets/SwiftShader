@@ -78,6 +78,7 @@ namespace rr
 	template<> struct CToReactorT<uint64_t>	{ using type = Long; };
 	template<> struct CToReactorT<uint32_t>	{ using type = UInt; };
 	template<> struct CToReactorT<float>   	{ using type = Float; };
+	//template<> struct CToReactorT<const char*> {using type = Pointer<Byte>; };
 
 	// CToReactorPtrT<T>::type resolves to the corresponding Reactor Pointer<>
 	// type for T*.

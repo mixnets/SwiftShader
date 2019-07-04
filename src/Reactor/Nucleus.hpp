@@ -202,7 +202,8 @@ namespace rr
 		static Value *createConstantShort(short i);
 		static Value *createConstantShort(unsigned short i);
 		static Value *createConstantFloat(float x);
-		static Value *createNullPointer(Type *type);
+		static Value *createNullPointer(Type *pointeeType);
+		static Value *createConstantPointer(const void *ptr, Type *pointeeType);
 		static Value *createConstantVector(const int64_t *constants, Type *type);
 		static Value *createConstantVector(const double *constants, Type *type);
 
