@@ -2325,6 +2325,8 @@ namespace rr
 		Pointer(RValue<Pointer<T>> rhs);
 		Pointer(const Pointer<T> &rhs);
 		Pointer(const Reference<Pointer<T>> &rhs);
+		Pointer(const void *ptr);     // Only supported for Pointer<Void>
+		Pointer(const char *string);  // Only supported for Pointer<Byte>
 
 		RValue<Pointer<T>> operator=(RValue<Pointer<T>> rhs);
 		RValue<Pointer<T>> operator=(const Pointer<T> &rhs);
@@ -2834,6 +2836,16 @@ namespace rr
 		LValue<Pointer<T>>::storeValue(value);
 	}
 
+	inline Pointer<Void>::Pointer(const void *ptr) : alignment(1)
+	{
+		storeValue(Nucleus::createConstantPointer(ptr, Void::getType()));
+	}
+
+	inline Pointer<Byte>::Pointer(const char *string) : alignment(1)
+	{
+		storeValue(Nucleus::createConstantPointer(string, Byte::getType()));
+	}
+
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(RValue<Pointer<T>> rhs)
 	{
@@ -3089,9 +3101,6 @@ namespace rr
 		return ReinterpretCast<T>(val);
 	}
 
-	// Returns a reactor pointer to the fixed-address ptr.
-	RValue<Pointer<Byte>> ConstantPointer(void const * ptr);
-
 	// Calls the function pointer fptr with the given arguments, return type
 	// and parameter types. Returns the call's return value if the function has
 	// a non-void return type.
@@ -3109,7 +3118,7 @@ namespace rr
 		static inline RReturn Call(Return(fptr)(Arguments...), CToReactor<Arguments>... args)
 		{
 			return RValue<RReturn>(rr::Call(
-				ConstantPointer(reinterpret_cast<void*>(fptr)),
+				Pointer<Byte>(reinterpret_cast<const void*>(fptr)),
 				RReturn::getType(),
 				{ ValueOf(args) ... },
 				{ CToReactor<Arguments>::getType() ... }));
@@ -3131,7 +3140,7 @@ namespace rr
 	public:
 		static inline void Call(void(fptr)(Arguments...), CToReactor<Arguments>... args)
 		{
-			rr::Call(ConstantPointer(reinterpret_cast<void*>(fptr)),
+			rr::Call(Pointer<Byte>(reinterpret_cast<const void*>(fptr)),
 				Void::getType(),
 				{ ValueOf(args) ... },
 				{ CToReactor<Arguments>::getType() ... });
@@ -3144,6 +3153,18 @@ namespace rr
 				{ ValueOf(args) ... },
 				{ CToReactor<Arguments>::getType() ... });
 		}
+
+		//static inline void Call(void(fptr)(Arguments...), CToReactor<Arguments>... args)
+		//{
+		//}
+
+		//static inline void Call(Pointer<Byte> fptr, CToReactor<Arguments>... args)
+		//{
+		//	rr::Call(fptr,
+		//		Void::getType(),
+		//		{ ValueOf(args) ... },
+		//		{ CToReactor<Arguments>::getType() ... });
+		//}
 	};
 
 	// Calls the function pointer fptr with the given arguments args.
@@ -3152,6 +3173,17 @@ namespace rr
 	{
 		return CallHelper<Return(Arguments...)>::Call(fptr, args...);
 	}
+
+	template<typename ... Arguments>
+	inline void Call(void(fptr)(Arguments...), CToReactor<Arguments>... args)
+	{
+		CallHelper<void(Arguments...)>::Call(fptr, args...);
+	}
+
+	//inline void Call(void(fptr)(const char *), const char * args)
+	//{
+	//	CallHelper<void(const char *)>::Call(fptr, args);
+	//}
 
 	// Calls the function pointer fptr with the signature FUNCTION_SIGNATURE and
 	// arguments.

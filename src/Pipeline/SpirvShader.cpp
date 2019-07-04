@@ -30,6 +30,7 @@
 #include <spirv/unified1/GLSL.std.450.h>
 
 #include <queue>
+#include <stdexcept>
 
 namespace
 {
@@ -281,6 +282,11 @@ namespace
 
 } // anonymous namespace
 
+static void ThrowOutOfRange(const char *what)
+{
+	throw std::out_of_range("wut");
+}
+
 namespace sw
 {
 	namespace SIMD
@@ -302,10 +308,16 @@ namespace sw
 
 			auto offsets = ptr.offsets();
 
-			if(robust)  // Disable OOB reads.
-			{
-				mask &= ptr.isInBounds(sizeof(float));
-			}
+			//if(robust)  // Disable OOB reads.
+			//{
+			//	mask &= ptr.isInBounds(sizeof(float));
+			//}
+			//else
+			//{
+			//	#ifndef NDEBUG
+					Call(ThrowOutOfRange, (const char *)"");
+			//	#endif
+			//}
 
 			if (!atomic && order == std::memory_order_relaxed)
 			{

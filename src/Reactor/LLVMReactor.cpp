@@ -2100,10 +2100,18 @@ namespace rr
 		return V(llvm::ConstantFP::get(T(Float::getType()), x));
 	}
 
-	Value *Nucleus::createNullPointer(Type *Ty)
+	Value *Nucleus::createNullPointer(Type *pointeeType)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(T(Ty), 0)));
+		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(T(pointeeType), 0)));
+	}
+
+	Value *Nucleus::createConstantPointer(const void *ptr, Type *pointeeType)
+	{
+		RR_DEBUG_INFO_UPDATE_LOC();
+		// This works for 32-bit pointers as well because 'inttoptr' is defined to truncate (and zero extend) if necessary.
+		auto ptrAsInt = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(*::context), reinterpret_cast<uintptr_t>(ptr));
+		return V(::builder->CreateIntToPtr(ptrAsInt, llvm::PointerType::get(T(pointeeType), 0)));
 	}
 
 	Value *Nucleus::createConstantVector(const int64_t *constants, Type *type)
