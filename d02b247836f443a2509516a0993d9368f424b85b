@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76110849_e3cacfc3",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-04T16:28:59Z",
+      "side": 1,
+      "message": "I\u0027m trying to remember why we didn\u0027t do that right away... Just being conservative, or unexpected issues that now no longer occur? +2 either way.",
+      "range": {
+        "startLine": 194,
+        "startChar": 27,
+        "endLine": 194,
+        "endChar": 47
+      },
+      "revId": "d02b247836f443a2509516a0993d9368f424b85b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
