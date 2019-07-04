@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07dc6b6b_7f543cbb",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-04T13:44:01Z",
+      "side": 1,
+      "message": "TODO: See if https://swiftshader-review.googlesource.com/c/SwiftShader/+/33748 works without making these assumptions.",
+      "range": {
+        "startLine": 1068,
+        "startChar": 6,
+        "endLine": 1068,
+        "endChar": 13
+      },
+      "revId": "1ecf2f70281aa40d794ab2a99a0931dbea5cb07d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
