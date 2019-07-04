@@ -22,6 +22,30 @@
       "revId": "768e0846168c0f82fb47bb42566d3861800d5ecb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8fd67c4_2c280cc8",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1599,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-04T07:21:55Z",
+      "side": 1,
+      "message": "I did consider this, but I felt that \u0027masked\u0027 didn\u0027t really indicate to me enabled/1 or disabled/0.\nI guess in this context it wouldn\u0027t make any sense to zero out the enabled lanes, and could all be clarified later with documentation (along with the rest of reeactor).\nDone.",
+      "parentUuid": "8a47ec86_31c21953",
+      "range": {
+        "startLine": 1599,
+        "startChar": 100,
+        "endLine": 1599,
+        "endChar": 117
+      },
+      "revId": "768e0846168c0f82fb47bb42566d3861800d5ecb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
