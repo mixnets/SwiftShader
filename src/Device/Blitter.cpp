@@ -1534,7 +1534,7 @@ namespace sw
 			}
 		}
 
-		return function(vk::ReactorConfig, "BlitRoutine");
+		return function("BlitRoutine");
 	}
 
 	Routine *Blitter::getBlitRoutine(const State &state)
@@ -1889,7 +1889,7 @@ namespace sw
 			}
 		}
 
-		return function(vk::ReactorConfig, "BlitRoutine");
+		return function("BlitRoutine");
 	}
 
 	void Blitter::updateBorders(vk::Image* image, const VkImageSubresourceLayers& subresourceLayers)
