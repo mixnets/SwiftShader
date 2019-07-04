@@ -105,6 +105,14 @@ namespace rr
 
 namespace
 {
+	// Default configuration settings. Must be accessed under mutex lock.
+	std::mutex defaultConfigLock;
+	rr::Config defaultConfig = rr::Config::Edit()
+		.set(rr::Optimization::Level::Default)
+		.add(rr::Optimization::Pass::ScalarReplAggregates)
+		.add(rr::Optimization::Pass::InstructionCombining)
+		.apply({});
+
 	class LLVMInitializer
 	{
 	protected:
@@ -223,7 +231,7 @@ namespace
 				std::unique_ptr<llvm::Module> module,
 				llvm::Function **funcs,
 				size_t count,
-				rr::OptimizationLevel optLevel) :
+				const rr::Config &config) :
 			resolver(createLegacyLookupResolver(
 				session,
 				[&](const std::string &name) {
@@ -246,7 +254,7 @@ namespace
 #ifdef ENABLE_RR_DEBUG_INFO
 				.setOptLevel(llvm::CodeGenOpt::None)
 #else
-				.setOptLevel(toLLVM(optLevel))
+				.setOptLevel(toLLVM(config.getOptimization().getLevel()))
 #endif // ENABLE_RR_DEBUG_INFO
 				.setMArch(JITGlobals::get()->arch)
 				.setMAttrs(JITGlobals::get()->mattrs)
@@ -312,15 +320,15 @@ namespace
 		}
 
 	private:
-		static ::llvm::CodeGenOpt::Level toLLVM(rr::OptimizationLevel level)
+		static ::llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level)
 		{
 			switch (level)
 			{
-				case rr::OptimizationLevel::None:       return ::llvm::CodeGenOpt::None;
-				case rr::OptimizationLevel::Less:       return ::llvm::CodeGenOpt::Less;
-				case rr::OptimizationLevel::Default:    return ::llvm::CodeGenOpt::Default;
-				case rr::OptimizationLevel::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
-				default: UNREACHABLE("Unknown OptimizationLevel %d", int(level));
+				case rr::Optimization::Level::None:       return ::llvm::CodeGenOpt::None;
+				case rr::Optimization::Level::Less:       return ::llvm::CodeGenOpt::Less;
+				case rr::Optimization::Level::Default:    return ::llvm::CodeGenOpt::Default;
+				case rr::Optimization::Level::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
+				default: UNREACHABLE("Unknown Optimization Level %d", int(level));
 			}
 			return ::llvm::CodeGenOpt::Default;
 		}
@@ -337,15 +345,17 @@ namespace
 	class JITBuilder
 	{
 	public:
-		JITBuilder():
+		JITBuilder(const rr::Config &config) :
+			config(config),
 			module(new llvm::Module("", context)),
 			builder(new llvm::IRBuilder<>(context))
 		{
 			module->setDataLayout(JITGlobals::get()->dataLayout);
 		}
 
-		void optimize()
+		void optimize(const rr::Config &cfg)
 		{
+
 #ifdef ENABLE_RR_DEBUG_INFO
 			if (debugInfo != nullptr)
 			{
@@ -356,36 +366,35 @@ namespace
 			std::unique_ptr<llvm::legacy::PassManager> passManager(
 				new llvm::legacy::PassManager());
 
-			passManager->add(llvm::createSROAPass());
-
-			for(int pass = 0; pass < 10 && rr::optimization[pass] != rr::Disabled; pass++)
+			for(auto pass : cfg.getOptimization().getPasses())
 			{
-				switch(rr::optimization[pass])
+				switch(pass)
 				{
-				case rr::Disabled:                                                                       break;
-				case rr::CFGSimplification:    passManager->add(llvm::createCFGSimplificationPass());    break;
-				case rr::LICM:                 passManager->add(llvm::createLICMPass());                 break;
-				case rr::AggressiveDCE:        passManager->add(llvm::createAggressiveDCEPass());        break;
-				case rr::GVN:                  passManager->add(llvm::createGVNPass());                  break;
-				case rr::InstructionCombining: passManager->add(llvm::createInstructionCombiningPass()); break;
-				case rr::Reassociate:          passManager->add(llvm::createReassociatePass());          break;
-				case rr::DeadStoreElimination: passManager->add(llvm::createDeadStoreEliminationPass()); break;
-				case rr::SCCP:                 passManager->add(llvm::createSCCPPass());                 break;
-				case rr::ScalarReplAggregates: passManager->add(llvm::createSROAPass());                 break;
+				case rr::Optimization::Pass::Disabled:                                                                       break;
+				case rr::Optimization::Pass::CFGSimplification:    passManager->add(llvm::createCFGSimplificationPass());    break;
+				case rr::Optimization::Pass::LICM:                 passManager->add(llvm::createLICMPass());                 break;
+				case rr::Optimization::Pass::AggressiveDCE:        passManager->add(llvm::createAggressiveDCEPass());        break;
+				case rr::Optimization::Pass::GVN:                  passManager->add(llvm::createGVNPass());                  break;
+				case rr::Optimization::Pass::InstructionCombining: passManager->add(llvm::createInstructionCombiningPass()); break;
+				case rr::Optimization::Pass::Reassociate:          passManager->add(llvm::createReassociatePass());          break;
+				case rr::Optimization::Pass::DeadStoreElimination: passManager->add(llvm::createDeadStoreEliminationPass()); break;
+				case rr::Optimization::Pass::SCCP:                 passManager->add(llvm::createSCCPPass());                 break;
+				case rr::Optimization::Pass::ScalarReplAggregates: passManager->add(llvm::createSROAPass());                 break;
 				default:
-					UNREACHABLE("optimization[pass]: %d, pass: %d", int(rr::optimization[pass]), int(pass));
+					UNREACHABLE("pass: %d", int(pass));
 				}
 			}
 
 			passManager->run(*module);
 		}
 
-		rr::Routine *acquireRoutine(llvm::Function **funcs, size_t count, rr::OptimizationLevel optLevel)
+		rr::Routine *acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg)
 		{
 			ASSERT(module);
-			return new JITRoutine(std::move(module), funcs, count, optLevel);
+			return new JITRoutine(std::move(module), funcs, count, cfg);
 		}
 
+		const rr::Config config;
 		llvm::LLVMContext context;
 		std::unique_ptr<llvm::Module> module;
 		std::unique_ptr<llvm::IRBuilder<>> builder;
@@ -996,8 +1005,6 @@ namespace rr
 		return it->second;
 	}
 
-	Optimization optimization[10] = {InstructionCombining, Disabled};
-
 	// The abstract Type* types are implemented as LLVM types, except that
 	// 64-bit vectors are emulated using 128-bit ones to avoid use of MMX in x86
 	// and VFP in ARM, and eliminate the overhead of converting them to explicit
@@ -1128,7 +1135,7 @@ namespace rr
 		::codegenMutex.lock();   // Reactor and LLVM are currently not thread safe
 
 		ASSERT(jit == nullptr);
-		jit.reset(new JITBuilder());
+		jit.reset(new JITBuilder(Nucleus::getDefaultConfig()));
 	}
 
 	Nucleus::~Nucleus()
@@ -1137,8 +1144,28 @@ namespace rr
 		::codegenMutex.unlock();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, OptimizationLevel optimizationLevel)
+	void Nucleus::setDefaultConfig(const Config &cfg)
 	{
+		std::unique_lock<std::mutex> lock(::defaultConfigLock);
+		::defaultConfig = cfg;
+	}
+
+	void Nucleus::adjustDefaultConfig(const Config::Edit &cfgEdit)
+	{
+		std::unique_lock<std::mutex> lock(::defaultConfigLock);
+		::defaultConfig = cfgEdit.apply(::defaultConfig);
+	}
+
+	Config Nucleus::getDefaultConfig()
+	{
+		std::unique_lock<std::mutex> lock(::defaultConfigLock);
+		return ::defaultConfig;
+	}
+
+	Routine *Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+	{
+		auto cfg = cfgEdit.apply(jit->config);
+
 		if(jit->builder->GetInsertBlock()->empty() || !jit->builder->GetInsertBlock()->back().isTerminator())
 		{
 			llvm::Type *type = jit->function->getReturnType();
@@ -1175,7 +1202,7 @@ namespace rr
 		}
 #endif // defined(ENABLE_RR_LLVM_IR_VERIFICATION) || !defined(NDEBUG)
 
-		optimize();
+		jit->optimize(cfg);
 
 		if(false)
 		{
@@ -1184,15 +1211,10 @@ namespace rr
 			jit->module->print(file, 0);
 		}
 
-		auto routine = jit->acquireRoutine(&jit->function, 1, optimizationLevel);
+		auto routine = jit->acquireRoutine(&jit->function, 1, cfg);
 		jit.reset();
 
 		return routine;
-	}
-
-	void Nucleus::optimize()
-	{
-		jit->optimize();
 	}
 
 	Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
@@ -4672,8 +4694,10 @@ void Nucleus::yield(Value* val)
 	jit->builder->SetInsertPoint(resumeBlock);
 }
 
-Routine* Nucleus::acquireCoroutine(const char *name, OptimizationLevel optimizationLevel)
+Routine* Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
+	auto cfg = cfgEdit.apply(jit->config);
+
 	ASSERT_MSG(jit->coroutine.id != nullptr, "acquireCoroutine() called without a call to createCoroutine()");
 
 	jit->builder->CreateBr(jit->coroutine.endBlock);
@@ -4701,7 +4725,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, OptimizationLevel optimizat
 	pm.add(llvm::createCoroCleanupPass());
 	pm.run(*jit->module);
 
-	optimize();
+	jit->optimize(cfg);
 
 	if(false)
 	{
@@ -4714,7 +4738,7 @@ Routine* Nucleus::acquireCoroutine(const char *name, OptimizationLevel optimizat
 	funcs[Nucleus::CoroutineEntryBegin] = jit->function;
 	funcs[Nucleus::CoroutineEntryAwait] = jit->coroutine.await;
 	funcs[Nucleus::CoroutineEntryDestroy] = jit->coroutine.destroy;
-	auto routine = jit->acquireRoutine(funcs, Nucleus::CoroutineEntryCount, optimizationLevel);
+	auto routine = jit->acquireRoutine(funcs, Nucleus::CoroutineEntryCount, cfg);
 	jit.reset();
 
 	return routine;
