@@ -200,7 +200,6 @@ std::vector<uint32_t> preprocessSpirv(
 	opt.RegisterPass(spvtools::CreateLocalAccessChainConvertPass());
 	opt.RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass());
 	opt.RegisterPass(spvtools::CreateLocalSingleStoreElimPass());
-	opt.RegisterPass(spvtools::CreateBlockMergePass());
 	opt.RegisterPass(spvtools::CreateLocalMultiStoreElimPass());
 	opt.RegisterPass(spvtools::CreateSSARewritePass());
 
