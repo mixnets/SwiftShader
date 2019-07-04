@@ -22,6 +22,30 @@
       "revId": "d02b247836f443a2509516a0993d9368f424b85b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9da56305_d82b38ed",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-04T16:56:07Z",
+      "side": 1,
+      "message": "Combination of Chris not wanting to rely too heavy on spirv-opt, and me not wanting to deviate too far from the original SPIR-V when implementing SpirvShader.",
+      "parentUuid": "76110849_e3cacfc3",
+      "range": {
+        "startLine": 194,
+        "startChar": 27,
+        "endLine": 194,
+        "endChar": 47
+      },
+      "revId": "d02b247836f443a2509516a0993d9368f424b85b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
