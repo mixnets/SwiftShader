@@ -239,12 +239,6 @@ namespace
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 #endif
 
-		std::vector<std::string> mattrs;
-		for (auto &feature : features)
-		{
-			if (feature.second) { mattrs.push_back(feature.first()); }
-		}
-
 		const char* march = nullptr;
 #if defined(__x86_64__)
 		march = "x86-64";
@@ -253,7 +247,17 @@ namespace
 #elif defined(__aarch64__)
 		march = "arm64";
 #elif defined(__arm__)
-		march = "arm";
+		arch = "arm";
+	#if __ARM_ARCH >= 8
+		feature["armv8-a"] = true;
+	#elif defined(__ARM_ARCH_7A__)
+		feature["armv7-a"] = true;
+	#elif defined(__ARM_ARCH_7S__)
+		feature["armv7s"] = true;
+	#endif
+	#if defined(__ARM_NEON__)
+		feature["neon"] = true;
+	#endif
 #elif defined(__mips__)
 #if defined(__mips64)
 		march = "mips64el";
@@ -265,6 +269,12 @@ namespace
 #else
 		#error "unknown architecture"
 #endif
+
+		std::vector<std::string> mattrs;
+		for (auto &feature : features)
+		{
+			if (feature.second) { mattrs.push_back(feature.first()); }
+		}
 
 		llvm::TargetOptions targetOptions;
 		targetOptions.UnsafeFPMath = false;
