@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30bc8073_c0f94790",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-04T07:36:44Z",
+      "side": 1,
+      "message": "Careful of using exceptions that bubble through JIT code.\nThis is something that GAPID was doing, and for some reason it is now completely broken on macOS. For some reason __cxa_throw() no longer can unwind through the JIT stack to find the catch handler, even when the JIT\u0027d functions are appropriately decorated with \u0027uwtable\u0027.",
+      "range": {
+        "startLine": 287,
+        "startChar": 1,
+        "endLine": 287,
+        "endChar": 24
+      },
+      "revId": "05d15d8fe08522284e74353c6f8f61382c6c262e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94066269_4898457c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-04T07:36:44Z",
+      "side": 1,
+      "message": "Something I was considering proposing was Log() / Fail() / Abort() function(s), that call into the debug macros. May be less problem prone than using exceptions.",
+      "range": {
+        "startLine": 318,
+        "startChar": 5,
+        "endLine": 318,
+        "endChar": 25
+      },
+      "revId": "05d15d8fe08522284e74353c6f8f61382c6c262e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fc99c7c_57375ea5",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2846,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-04T07:36:44Z",
+      "side": 1,
+      "message": "See CreateGlobalStringPtr(), there\u0027s examples of usage in Printv().\nThis makes a copy of the string - handy if / when we support caching precompiled binaries.",
+      "range": {
+        "startLine": 2846,
+        "startChar": 22,
+        "endLine": 2846,
+        "endChar": 43
+      },
+      "revId": "05d15d8fe08522284e74353c6f8f61382c6c262e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
