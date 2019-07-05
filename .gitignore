@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (e7d460 Update SPIRV-Tools to 37e8f79)
 # Ignored folders #
 /cache/
 /lib/
@@ -47,3 +48,8 @@ CMakeFiles/
 *.db
 *~
 CMakeCache.txt
+=======
+build
+out
+.DS_Store
+>>>>>>> BRANCH (2bc53c Squashed 'third_party/SPIRV-Headers/' changes from 79b6681aa)
