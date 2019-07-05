@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "31a94391_d2d3b9dd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-05T08:30:38Z",
+      "side": 1,
+      "message": "I wouldn\u0027t be so sure about that. IIRC this was always allocated as part of the coroutine frame, so this is a big win for reducing our peak memory usage for compute.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 54
+      },
+      "revId": "61c63f46a01113a1e09bb91e4999016d16175f15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f704a9c2_8a566988",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -16,6 +39,29 @@
       "revId": "61c63f46a01113a1e09bb91e4999016d16175f15",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cb561ce_df749313",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-05T08:30:38Z",
+      "side": 1,
+      "message": "Are all these fours SIMD::Width? (Just asking, I don\u0027t think you can sensibly use it until SIMD is moved to Reactor.hpp)",
+      "range": {
+        "startLine": 84,
+        "startChar": 42,
+        "endLine": 84,
+        "endChar": 43
+      },
+      "revId": "61c63f46a01113a1e09bb91e4999016d16175f15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
