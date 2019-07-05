@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb34afc1_a7a1263f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-05T01:22:58Z",
+      "side": 1,
+      "message": "I\u0027m on the fence about that, but this change LGTM independently of that.",
+      "range": {
+        "startLine": 11,
+        "startChar": 64,
+        "endLine": 11,
+        "endChar": 96
+      },
+      "revId": "177165f667ceccdf685f8835a6585d9e531b697c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
