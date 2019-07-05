@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (2b8044 Temporarily disable warnings-as-errors)
 # Ignored folders #
 /cache/
 /lib/
@@ -47,3 +48,8 @@ CMakeFiles/
 *.db
 *~
 CMakeCache.txt
+=======
+build
+out
+.DS_Store
+>>>>>>> BRANCH (0a6135 Squashed 'third_party/SPIRV-Headers/' changes from 79b6681aa)
