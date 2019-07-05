@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "862eeee2_51b0a943",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-05T01:32:29Z",
+      "side": 1,
+      "message": "Good refactoring even if we end up dealing with this differently.",
+      "range": {
+        "startLine": 12,
+        "startChar": 82,
+        "endLine": 12,
+        "endChar": 103
+      },
+      "revId": "222b92b4e2879b6e1232c604e01936d92b4cc803",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
