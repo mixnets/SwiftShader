@@ -22,6 +22,30 @@
       "revId": "17666423660ede614b81c3ea68cdab4639e6a611",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f93a35d1_b7825a9f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-05T08:14:15Z",
+      "side": 1,
+      "message": "I like \u0027self\u0027 - done.\n\nI had to keep this method on Array\u003c\u003e though as returning LValue\u003cT\u003e does not automatically upcast well for the particular use case I had.\nI added the self method to LValue\u003c\u003e too.",
+      "parentUuid": "7a007c4a_b892dbe4",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 99
+      },
+      "revId": "17666423660ede614b81c3ea68cdab4639e6a611",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
