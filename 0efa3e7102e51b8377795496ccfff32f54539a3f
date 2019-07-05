@@ -34,6 +34,24 @@
       "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da48e4d7_c0d65e17",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-05T02:10:35Z",
+      "side": 1,
+      "message": "As a debug feature I definitely think this belongs behind a preprocessor flag that\u0027s off by default in release builds.\n\nGeneral note: to avoid silently breaking usually #ifdefed out code I think this works too:\n\n#if !defined(ENABLE_FEATURE)\n#define ENABLE_FEATURE 0\n#endif\n\nif(ENABLE_FEATURE)\n{\n    feature\n}",
+      "parentUuid": "76af9a6f_092d0c8d",
+      "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
