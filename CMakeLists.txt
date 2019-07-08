@@ -1749,6 +1749,8 @@ file(GLOB_RECURSE VULKAN_LIST
     ${SOURCE_DIR}/System/Synchronization.hpp
     ${SOURCE_DIR}/System/Timer.cpp
     ${SOURCE_DIR}/System/Timer.hpp
+    ${SOURCE_DIR}/System/Trace.cpp
+    ${SOURCE_DIR}/System/Trace.hpp
     ${SOURCE_DIR}/Device/*.cpp
     ${SOURCE_DIR}/Device/*.hpp
     ${SOURCE_DIR}/Pipeline/*.cpp
