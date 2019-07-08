@@ -30,6 +30,7 @@
 #include "Common/Math.hpp"
 #include "Common/Timer.hpp"
 #include "Common/Debug.hpp"
+#include "Common/Trace.hpp"
 
 #undef max
 
@@ -247,6 +248,8 @@ namespace sw
 
 	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
 	{
+		SCOPED_EVENT("draw");
+
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
 			{
@@ -748,6 +751,8 @@ namespace sw
 		Renderer *renderer = static_cast<Parameters*>(parameters)->renderer;
 		int threadIndex = static_cast<Parameters*>(parameters)->threadIndex;
 
+	    NAME_THREAD("Renderer Thread %.2d", threadIndex);
+
 		if(logPrecision < IEEE)
 		{
 			CPUID::setFlushToZero(true);
@@ -763,8 +768,11 @@ namespace sw
 		{
 			taskLoop(threadIndex);
 
-			suspend[threadIndex]->signal();
-			resume[threadIndex]->wait();
+			{
+				SCOPED_EVENT("Idle");
+				suspend[threadIndex]->signal();
+				resume[threadIndex]->wait();
+			}
 		}
 	}
 
@@ -779,6 +787,8 @@ namespace sw
 
 	void Renderer::findAvailableTasks()
 	{
+		SCOPED_EVENT("findAvailableTasks");
+
 		// Find pixel tasks
 		for(int cluster = 0; cluster < clusterCount; cluster++)
 		{
@@ -863,6 +873,8 @@ namespace sw
 
 	void Renderer::scheduleTask(int threadIndex)
 	{
+		SCOPED_EVENT("scheduleTask");
+		
 		schedulerMutex.lock();
 
 		int curThreadsAwake = threadsAwake;
@@ -915,6 +927,8 @@ namespace sw
 		{
 		case Task::PRIMITIVES:
 			{
+				SCOPED_EVENT("Primitives");
+
 				int unit = task[threadIndex].primitiveUnit;
 
 				int input = primitiveProgress[unit].firstPrimitive;
@@ -947,6 +961,8 @@ namespace sw
 			break;
 		case Task::PIXELS:
 			{
+				SCOPED_EVENT("Pixels");
+
 				int unit = task[threadIndex].primitiveUnit;
 				int visible = primitiveProgress[unit].visible;
 
@@ -979,6 +995,8 @@ namespace sw
 
 	void Renderer::synchronize()
 	{
+		SCOPED_EVENT("synchronize");
+
 		sync->lock(sw::PUBLIC);
 		sync->unlock();
 	}
