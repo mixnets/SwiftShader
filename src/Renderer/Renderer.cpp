@@ -30,6 +30,7 @@
 #include "Common/Math.hpp"
 #include "Common/Timer.hpp"
 #include "Common/Debug.hpp"
+#include "Common/Trace.hpp"
 
 #undef max
 
@@ -247,6 +248,8 @@ namespace sw
 
 	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
 	{
+		SCOPED_EVENT("draw");
+
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
 			{
@@ -915,6 +918,8 @@ namespace sw
 		{
 		case Task::PRIMITIVES:
 			{
+				SCOPED_EVENT("Primitives");
+
 				int unit = task[threadIndex].primitiveUnit;
 
 				int input = primitiveProgress[unit].firstPrimitive;
@@ -947,6 +952,8 @@ namespace sw
 			break;
 		case Task::PIXELS:
 			{
+				SCOPED_EVENT("Pixels");
+
 				int unit = task[threadIndex].primitiveUnit;
 				int visible = primitiveProgress[unit].visible;
 
@@ -979,6 +986,8 @@ namespace sw
 
 	void Renderer::synchronize()
 	{
+		SCOPED_EVENT("synchronize");
+
 		sync->lock(sw::PUBLIC);
 		sync->unlock();
 	}
@@ -1121,6 +1130,7 @@ namespace sw
 
 	void Renderer::processPrimitiveVertices(int unit, unsigned int start, unsigned int triangleCount, unsigned int loop, int thread)
 	{
+		SCOPED_EVENT("processPrimitiveVertices");
 		Triangle *triangle = triangleBatch[unit];
 		int primitiveDrawCall = primitiveProgress[unit].drawCall;
 		DrawCall *draw = drawList[primitiveDrawCall & DRAW_COUNT_BITS];
