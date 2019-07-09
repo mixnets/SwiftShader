@@ -386,6 +386,7 @@ namespace
 				case rr::Optimization::Pass::DeadStoreElimination: passManager->add(llvm::createDeadStoreEliminationPass()); break;
 				case rr::Optimization::Pass::SCCP:                 passManager->add(llvm::createSCCPPass());                 break;
 				case rr::Optimization::Pass::ScalarReplAggregates: passManager->add(llvm::createSROAPass());                 break;
+				case rr::Optimization::Pass::EarlyCSEPass:         passManager->add(llvm::createEarlyCSEPass());             break;
 				default:
 					UNREACHABLE("pass: %d", int(pass));
 				}
