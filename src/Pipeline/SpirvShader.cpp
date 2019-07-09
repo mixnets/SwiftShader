@@ -385,17 +385,25 @@ namespace sw
 			{
 				if (ptr.hasStaticEqualOffsets())
 				{
-					If (AnyTrue(mask))
+					// All equal. One of these writes will win -- elect the winning lane.
+					auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+					auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
+					auto maskedVal = As<SIMD::Int>(val) & elect;
+					auto scalarVal = Extract(maskedVal, 0) |
+					                 Extract(maskedVal, 1) |
+					                 Extract(maskedVal, 2) |
+					                 Extract(maskedVal, 3);
+
+					if(!robust)
 					{
-						// All equal. One of these writes will win -- elect the winning lane.
-						auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-						auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
-						auto maskedVal = As<SIMD::Int>(val) & elect;
-						auto scalarVal = Extract(maskedVal, 0) |
-							Extract(maskedVal, 1) |
-							Extract(maskedVal, 2) |
-							Extract(maskedVal, 3);
 						*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment) = As<EL>(scalarVal);
+					}
+					else  // TODO(b/128636885): Fold into If(!robust || AnyTrue(mask))
+					{
+						If (AnyTrue(mask))
+						{
+							*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment) = As<EL>(scalarVal);
+						}
 					}
 				}
 				else if (ptr.hasStaticSequentialOffsets(sizeof(float)))
