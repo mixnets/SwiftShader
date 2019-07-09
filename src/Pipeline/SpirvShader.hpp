@@ -145,11 +145,11 @@ namespace sw
 				return dynamicOffsets + SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
 			}
 
-			inline SIMD::Int isInBounds(unsigned int accessSize) const
+			inline SIMD::Int isInBounds(unsigned int accessSize, OutOfBoundsBehavior robust) const
 			{
 				ASSERT(accessSize > 0);
 
-				if (isStaticAllInBounds(accessSize))
+				if (isStaticAllInBounds(accessSize, robust))
 				{
 					return SIMD::Int(0xffffffff);
 				}
@@ -168,12 +168,31 @@ namespace sw
 				return CmpLT(offsets() + SIMD::Int(accessSize - 1), SIMD::Int(limit()));
 			}
 
-			inline bool isStaticAllInBounds(unsigned int accessSize) const
+			inline bool isStaticAllInBounds(unsigned int accessSize, OutOfBoundsBehavior robust) const
 			{
-				if (hasDynamicOffsets || hasDynamicLimit)
+				if (hasDynamicOffsets)
 				{
 					return false;
 				}
+
+				if (hasDynamicLimit)
+				{
+					if (hasStaticEqualOffsets() || hasStaticSequentialOffsets(accessSize))
+					{
+						switch(robust)
+						{
+						case OutOfBoundsBehavior::UndefinedBehavior:
+							// With this robustness setting the application/compiler guarantees in-bounds accesses on active lanes,
+							// but since it can't know in advance which branches are taken this must be true even for inactives lanes.
+							return true;
+						case OutOfBoundsBehavior::Zero:
+						case OutOfBoundsBehavior::RobustBufferAccess:
+						case OutOfBoundsBehavior::UndefinedValue:
+							return false;
+						}
+					}
+				}
+
 				for (int i = 0; i < SIMD::Width; i++)
 				{
 					if (staticOffsets[i] + accessSize - 1 >= staticLimit)
@@ -181,6 +200,7 @@ namespace sw
 						return false;
 					}
 				}
+
 				return true;
 			}
 
@@ -255,7 +275,7 @@ namespace sw
 			SIMD::Int dynamicOffsets; // If hasDynamicOffsets is false, all dynamicOffsets are zero.
 			std::array<int32_t, SIMD::Width> staticOffsets;
 
-			bool hasDynamicLimit; // True if dynamicLimit is zero.
+			bool hasDynamicLimit; // True if dynamicLimit is non-zero.
 			bool hasDynamicOffsets; // True if all dynamicOffsets are zero.
 		};
 
