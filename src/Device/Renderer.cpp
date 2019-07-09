@@ -238,7 +238,7 @@ namespace sw
 			setupPrimitives = &DrawCall::setupPoints;
 		}
 
-		auto draw = drawCalls.take();
+		auto draw = drawCalls.borrow();
 		draw->id = nextDrawID++;
 
 		DrawData *data = draw->data;
@@ -393,9 +393,14 @@ namespace sw
 		draw->events = events;
 		draw->sync = &sync;
 
+		mt::Scheduler* scheduler = new mt::Scheduler();
+
 		draw->setup();
-		draw->run();
-		draw->teardown();
+		scheduler->run([draw, scheduler] ()
+		{
+			draw->run(scheduler);
+			draw->teardown();
+		});
 	}
 
 	void DrawCall::setup()
@@ -434,52 +439,62 @@ namespace sw
 		sync->done();
 	}
 
-	void DrawCall::run()
+	void DrawCall::run(mt::Scheduler *scheduler)
 	{
 		auto numBatches = (primitiveCount + primitivesPerBatch - 1) / primitivesPerBatch;
 
-		// TODO: Span across threads.
+		mt::WaitGroup batchWG;
+		batchWG.add(numBatches);
 		for (unsigned int batch = 0; batch < numBatches; batch++)
 		{
-			int firstPrimitive = batch * primitivesPerBatch;
-			int batchPrimitiveCount = std::min(firstPrimitive + primitivesPerBatch, primitiveCount);
-			auto batchData = batchDataPool.take();
-			auto &triangleBatch = batchData->triangles;
-			auto &primitiveBatch = batchData->primitives;
-			auto &vertexTask = batchData->vertexTask;
+			scheduler->run([&] {
+				auto batchData = batchDataPool.borrow();
+				int firstPrimitive = batch * primitivesPerBatch;
+				int batchPrimitiveCount = std::min(firstPrimitive + primitivesPerBatch, primitiveCount);
+				auto &triangleBatch = batchData->triangles;
+				auto &primitiveBatch = batchData->primitives;
+				auto &vertexTask = batchData->vertexTask;
 
-			unsigned int triangleIndices[BatchSize + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
-			processPrimitiveVertices(
-					triangleIndices,
-					data->indices,
-					indexType,
-					firstPrimitive,
-					batchPrimitiveCount,
-					topology);
+				unsigned int triangleIndices[BatchSize + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
+				processPrimitiveVertices(
+						triangleIndices,
+						data->indices,
+						indexType,
+						firstPrimitive,
+						batchPrimitiveCount,
+						topology);
 
-			vertexTask.primitiveStart = firstPrimitive;
-			vertexTask.vertexCount = batchPrimitiveCount * 3;
-			if(vertexTask.vertexCache.drawCall != id)
-			{
-				vertexTask.vertexCache.clear();
-				vertexTask.vertexCache.drawCall = id;
-			}
-			vertexPointer(&triangleBatch[0].v0, &triangleIndices[0][0], &vertexTask, data);
-
-			if(setupState.rasterizerDiscard)
-			{
-				return;
-			}
-
-			int visible = setupPrimitives(batchData.get(), this, batchPrimitiveCount);
-			if(visible > 0)
-			{
-				for (int cluster = 0; cluster < ClusterCount; cluster++)
+				vertexTask.primitiveStart = firstPrimitive;
+				vertexTask.vertexCount = batchPrimitiveCount * 3;
+				if(vertexTask.vertexCache.drawCall != id)
 				{
-					pixelPointer(&primitiveBatch[0], visible, cluster, data);
+					vertexTask.vertexCache.clear();
+					vertexTask.vertexCache.drawCall = id;
 				}
-			}
+				vertexPointer(&triangleBatch[0].v0, &triangleIndices[0][0], &vertexTask, data);
+
+				if(setupState.rasterizerDiscard)
+				{
+					return;
+				}
+
+				int visible = setupPrimitives(batchData.get(), this, batchPrimitiveCount);
+				if(visible > 0)
+				{
+					mt::WaitGroup clusterWG;
+					clusterWG.add(ClusterCount);
+					for (int cluster = 0; cluster < ClusterCount; cluster++)
+					{
+						scheduler->run([&] {
+							pixelPointer(&primitiveBatch[0], visible, cluster, data);
+							clusterWG.done();
+						});
+					}
+					clusterWG.wait();
+				}
+			});
 		}
+		batchWG.wait();
 	}
 
 	void Renderer::synchronize()

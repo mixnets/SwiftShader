@@ -122,7 +122,7 @@ namespace sw
 		~DrawCall();
 
 		void setup();
-		void run();
+		void run(mt::Scheduler *scheduler);
 		void teardown();
 
 		int id;
