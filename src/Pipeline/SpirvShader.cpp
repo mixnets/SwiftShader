@@ -400,7 +400,7 @@ namespace sw
 				}
 				else if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
-					if (ptr.isStaticAllInBounds(sizeof(float)))
+					if (!robust || ptr.isStaticAllInBounds(sizeof(float)))
 					{
 						// Pointer has no elements OOB, and the store is not atomic.
 						// Perform a RMW.
