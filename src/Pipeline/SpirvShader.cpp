@@ -291,7 +291,7 @@ namespace sw
 		{
 			using EL = typename Element<T>::type;
 
-			if (ptr.isStaticAllInBounds(sizeof(float)))
+			if (!robust || ptr.isStaticAllInBounds(sizeof(float)))
 			{
 				// All elements are statically known to be in-bounds.
 				// We can avoid costly conditional on masks.
