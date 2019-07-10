@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ac7d738f_a379fbd6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-10T08:35:14Z",
+      "side": 1,
+      "message": "Done, but I don\u0027t think we\u0027ll be able to fully consolidate the two public APIs. Yield !\u003d Return. See the bug for more info.",
+      "parentUuid": "b2b65fa9_52c2fe27",
+      "range": {
+        "startLine": 12,
+        "startChar": 7,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "9b3149655d5c927b6ed1dc678d71a9f571b505a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "afd4ff7d_f58eb694",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "9b3149655d5c927b6ed1dc678d71a9f571b505a8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2535ff44_87318cf3",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4498,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-10T08:35:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afd4ff7d_f58eb694",
+      "range": {
+        "startLine": 4498,
+        "startChar": 6,
+        "endLine": 4498,
+        "endChar": 13
+      },
+      "revId": "9b3149655d5c927b6ed1dc678d71a9f571b505a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "38dd70bb_0597ba54",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4628,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-10T08:35:14Z",
+      "side": 1,
+      "message": "Prefer to keep (expanded comment)",
+      "parentUuid": "ba95618c_dd9c7f59",
+      "range": {
+        "startLine": 4627,
+        "startChar": 1,
+        "endLine": 4628,
+        "endChar": 34
+      },
+      "revId": "9b3149655d5c927b6ed1dc678d71a9f571b505a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1bf41af6_4dd18612",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2019-07-10T03:18:04Z",
       "side": 1,
       "message": "Future work, but I wonder if this can now be merged with acquireFunction more easily.",
+      "range": {
+        "startLine": 4709,
+        "startChar": 18,
+        "endLine": 4709,
+        "endChar": 34
+      },
+      "revId": "9b3149655d5c927b6ed1dc678d71a9f571b505a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f79fd7f9_349b9d06",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4709,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-10T08:35:14Z",
+      "side": 1,
+      "message": "Yes, at least partially. The TL;DR is that a lot of this should probably be moved up into acquireRoutine().\n\nThe whole [jit-\u003efunction, jit-\u003ecoroutine.await, jit-\u003ecoroutine.destroy] triple is smelly, and should probably just be merged into an array of functions that acquireRoutine(s) resolves if not nullptr.\n\nThe !isCoroutine codepath should probably be moved out to a stubCoroutine() function or something to keep acquireCoroutine() as minimal as possible.\n\nThe ENABLE_RR_DEBUG_INFO block is common, and should be consolidatable. (More work needs to be done to support DebugInfo generation for multi-function modules).\n\nThe IR dumping could possibly be moved into a Config flag, and should be consolidatable.",
+      "parentUuid": "1bf41af6_4dd18612",
       "range": {
         "startLine": 4709,
         "startChar": 18,
