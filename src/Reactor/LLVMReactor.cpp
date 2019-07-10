@@ -72,12 +72,12 @@
 #define CreateCall3 CreateCall
 
 #include <unordered_map>
-
 #include <fstream>
 #include <iostream>
 #include <mutex>
 #include <numeric>
 #include <thread>
+#include <new>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -119,14 +119,30 @@ namespace
 		return config;
 	}
 
+	void silent_new_handler()
+	{
+	}
+
 	class LLVMInitializer
 	{
 	protected:
 		LLVMInitializer()
 		{
-			llvm::InitializeNativeTarget();
-			llvm::InitializeNativeTargetAsmPrinter();
-			llvm::InitializeNativeTargetAsmParser();
+			static bool initialize = false;
+
+			if(!initialized)
+			{
+				llvm::InitializeNativeTarget();
+				llvm::InitializeNativeTargetAsmPrinter();
+				llvm::InitializeNativeTargetAsmParser();
+
+				// LLVM installs a new handler at program startup / library loading,
+				// which catches all subsequent out-of-memory errors and aborts if
+				// exceptions are disabled.
+				std::set_new_handler(silent_new_handler);
+
+				initialize = true;
+			}
 		}
 	};
 
@@ -162,17 +178,33 @@ namespace
 		llvm::StringMap<bool> features;
 		bool ok = llvm::sys::getHostCPUFeatures(features);
 
-#if defined(__i386__) || defined(__x86_64__) || \
-(defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
-		ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures returned false");
+#if defined(__i386__) || defined(__x86_64__) || (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
+		ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures unexpectedly returned false");
 #else
 		(void) ok; // getHostCPUFeatures always returns false on other platforms
 #endif
 
-		for (auto &feature : features)
+
+		for(auto &feature : features)
 		{
-			if (feature.second) { mattrs.push_back(feature.first()); }
+			if(feature.second)
+			{
+				mattrs.push_back(feature.first());
+			}
 		}
+
+// ARMv7 (32-bit) builds running on ARM64 capable systems may not get
+// the correct features from llvm::sys::getHostCPUFeatures(), due to
+// depending on /proc/cpuinfo, which on some platforms does not list
+// features already mandatory as part of ARMv8. The Android CDD demands
+// /proc/cpuinfo to include ARMv7 features.
+#if defined(__arm__) && __ARM_ARCH == 7
+		// Assume ARMv7-A with NEON and hardware division in non-Thumb mode.
+		// Always present on ARMv8 capable CPUs.
+		mattrs.push_back("+armv7-a");
+		mattrs.push_back("+neon");
+		mattrs.push_back("+hwdiv-arm");
+#endif
 
 #if 0
 #if defined(__i386__) || defined(__x86_64__)
@@ -420,6 +452,8 @@ namespace
 			llvm::Value *handle = nullptr;
 			llvm::Value *id = nullptr;
 			llvm::Value *promise = nullptr;
+			llvm::Type *yieldType = nullptr;
+			llvm::BasicBlock *entryBlock = nullptr;
 			llvm::BasicBlock *suspendBlock = nullptr;
 			llvm::BasicBlock *endBlock = nullptr;
 			llvm::BasicBlock *destroyBlock = nullptr;
@@ -845,7 +879,7 @@ namespace rr
 		std::atomic_store_explicit<T>(reinterpret_cast<std::atomic<T>*>(ptr), *reinterpret_cast<T*>(val), atomicOrdering(ordering));
 	}
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 	template<typename F>
 	static uint32_t sync_fetch_and_op(uint32_t volatile *ptr, uint32_t val, F f)
 	{
@@ -899,7 +933,7 @@ namespace rr
 			static void* coroutine_alloc_frame(size_t size) { return alignedAlloc(size, 16); }
 			static void coroutine_free_frame(void* ptr) { alignedFree(ptr); }
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 			// forwarders since we can't take address of builtins
 			static void sync_synchronize() { __sync_synchronize(); }
 			static uint32_t sync_fetch_and_add_4(uint32_t *ptr, uint32_t val) { return __sync_fetch_and_add_4(ptr, val); }
@@ -987,7 +1021,7 @@ namespace rr
 				functions.emplace("chkstk", reinterpret_cast<void*>(_chkstk));
 #endif
 
-#ifdef __ANDROID__
+#if defined(__arm__) && (__ARM_ARCH == 7)
 				functions.emplace("aeabi_unwind_cpp_pr0", reinterpret_cast<void*>(F::neverCalled));
 				functions.emplace("sync_synchronize", reinterpret_cast<void*>(F::sync_synchronize));
 				functions.emplace("sync_fetch_and_add_4", reinterpret_cast<void*>(F::sync_fetch_and_add_4));
@@ -1001,7 +1035,7 @@ namespace rr
 				functions.emplace("sync_fetch_and_min_4", reinterpret_cast<void*>(F::sync_fetch_and_min_4));
 				functions.emplace("sync_fetch_and_umax_4", reinterpret_cast<void*>(F::sync_fetch_and_umax_4));
 				functions.emplace("sync_fetch_and_umin_4", reinterpret_cast<void*>(F::sync_fetch_and_umin_4));
-	#endif
+#endif
 			}
 		};
 
@@ -4492,22 +4526,19 @@ namespace {
 		SuspendActionDestroy = 1
 	};
 
-} // anonymous namespace
 
-namespace rr {
-
-void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
+void promoteFunctionToCoroutine()
 {
+	ASSERT(jit->coroutine.id == nullptr);
+
 	// Types
 	auto voidTy = ::llvm::Type::getVoidTy(jit->context);
 	auto i1Ty = ::llvm::Type::getInt1Ty(jit->context);
 	auto i8Ty = ::llvm::Type::getInt8Ty(jit->context);
 	auto i32Ty = ::llvm::Type::getInt32Ty(jit->context);
 	auto i8PtrTy = ::llvm::Type::getInt8PtrTy(jit->context);
-	auto promiseTy = T(YieldType);
+	auto promiseTy = jit->coroutine.yieldType;
 	auto promisePtrTy = promiseTy->getPointerTo();
-	auto handleTy = i8PtrTy;
-	auto boolTy = i1Ty;
 
 	// LLVM intrinsics
 	auto coro_id = ::llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::coro_id);
@@ -4526,6 +4557,8 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	auto freeFrameTy = ::llvm::FunctionType::get(voidTy, {i8PtrTy}, false);
 	auto freeFrame = jit->module->getOrInsertFunction("coroutine_free_frame", freeFrameTy);
 
+	auto oldInsertionPoint = jit->builder->saveIP();
+
 	// Build the coroutine_await() function:
 	//
 	//    bool coroutine_await(CoroutineHandle* handle, YieldType* out)
@@ -4542,7 +4575,6 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//        }
 	//    }
 	//
-	jit->coroutine.await = rr::createFunction("coroutine_await", boolTy, {handleTy, promisePtrTy});
 	{
 		auto args = jit->coroutine.await->arg_begin();
 		auto handle = args++;
@@ -4573,7 +4605,6 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//        llvm.coro.destroy(handle);
 	//    }
 	//
-	jit->coroutine.destroy = rr::createFunction("coroutine_destroy", voidTy, {handleTy});
 	{
 		auto handle = jit->coroutine.destroy->arg_begin();
 		jit->builder->SetInsertPoint(llvm::BasicBlock::Create(jit->context, "", jit->coroutine.destroy));
@@ -4613,20 +4644,17 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	//        return handle;
 	//    }
 	//
-	jit->function = rr::createFunction("coroutine_begin", handleTy, T(Params));
 
 #ifdef ENABLE_RR_DEBUG_INFO
-	jit->debugInfo = std::unique_ptr<DebugInfo>(new DebugInfo(jit->builder, jit->context, jit->module, jit->function));
+	jit->debugInfo = std::unique_ptr<rr::DebugInfo>(new rr::DebugInfo(jit->builder.get(), &jit->context, jit->module.get(), jit->function));
 #endif // ENABLE_RR_DEBUG_INFO
 
-	auto entryBlock = llvm::BasicBlock::Create(jit->context, "coroutine", jit->function);
 	jit->coroutine.suspendBlock = llvm::BasicBlock::Create(jit->context, "suspend", jit->function);
 	jit->coroutine.endBlock = llvm::BasicBlock::Create(jit->context, "end", jit->function);
 	jit->coroutine.destroyBlock = llvm::BasicBlock::Create(jit->context, "destroy", jit->function);
 
-	jit->builder->SetInsertPoint(entryBlock);
-	Variable::materializeAll();
-	jit->coroutine.promise = jit->builder->CreateAlloca(T(YieldType), nullptr, "promise");
+	jit->builder->SetInsertPoint(jit->coroutine.entryBlock, jit->coroutine.entryBlock->begin());
+	jit->coroutine.promise = jit->builder->CreateAlloca(promiseTy, nullptr, "promise");
 	jit->coroutine.id = jit->builder->CreateCall(coro_id, {
 		::llvm::ConstantInt::get(i32Ty, 0),
 		jit->builder->CreatePointerCast(jit->coroutine.promise, i8PtrTy),
@@ -4658,13 +4686,45 @@ void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
 	jit->builder->CreateCall(freeFrame, {memory});
 	jit->builder->CreateBr(jit->coroutine.suspendBlock);
 
-	// Switch back to the entry block for reactor codegen.
-	jit->builder->SetInsertPoint(entryBlock);
+	// Switch back to original insert point to continue building the coroutine.
+	jit->builder->restoreIP(oldInsertionPoint);
+}
+
+} // anonymous namespace
+
+namespace rr {
+
+void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
+{
+	// Coroutines are initially created as a regular function.
+	// Upon the first call to Yield(), the function is promoted to a true
+	// coroutine.
+	auto voidTy = ::llvm::Type::getVoidTy(jit->context);
+	auto i1Ty = ::llvm::Type::getInt1Ty(jit->context);
+	auto i8PtrTy = ::llvm::Type::getInt8PtrTy(jit->context);
+	auto handleTy = i8PtrTy;
+	auto boolTy = i1Ty;
+	auto promiseTy = T(YieldType);
+	auto promisePtrTy = promiseTy->getPointerTo();
+
+	jit->function = rr::createFunction("coroutine_begin", handleTy, T(Params));
+	jit->coroutine.await = rr::createFunction("coroutine_await", boolTy, {handleTy, promisePtrTy});
+	jit->coroutine.destroy = rr::createFunction("coroutine_destroy", voidTy, {handleTy});
+	jit->coroutine.yieldType = promiseTy;
+	jit->coroutine.entryBlock = llvm::BasicBlock::Create(jit->context, "function", jit->function);
+
+	jit->builder->SetInsertPoint(jit->coroutine.entryBlock);
 }
 
 void Nucleus::yield(Value* val)
 {
-	ASSERT_MSG(jit->coroutine.id != nullptr, "yield() can only be called when building a Coroutine");
+	if (jit->coroutine.id == nullptr)
+	{
+		// First call to yield().
+		// Promote the function to a full coroutine.
+		promoteFunctionToCoroutine();
+		ASSERT(jit->coroutine.id != nullptr);
+	}
 
 	//      promise = val;
 	//
@@ -4710,9 +4770,24 @@ void Nucleus::yield(Value* val)
 
 Routine* Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
-	ASSERT_MSG(jit->coroutine.id != nullptr, "acquireCoroutine() called without a call to createCoroutine()");
-
-	jit->builder->CreateBr(jit->coroutine.endBlock);
+	bool isCoroutine = jit->coroutine.id != nullptr;
+	if (isCoroutine)
+	{
+		jit->builder->CreateBr(jit->coroutine.endBlock);
+	}
+	else
+	{
+		// Coroutine without a Yield acts as a regular function.
+		// The 'coroutine_begin' function returns a nullptr for the coroutine
+		// handle.
+		jit->builder->CreateRet(llvm::Constant::getNullValue(jit->function->getReturnType()));
+		// The 'coroutine_await' function always returns false (coroutine done).
+		jit->builder->SetInsertPoint(llvm::BasicBlock::Create(jit->context, "", jit->coroutine.await));
+		jit->builder->CreateRet(llvm::Constant::getNullValue(jit->coroutine.await->getReturnType()));
+		// The 'coroutine_destroy' does nothing, returns void.
+		jit->builder->SetInsertPoint(llvm::BasicBlock::Create(jit->context, "", jit->coroutine.destroy));
+		jit->builder->CreateRetVoid();
+	}
 
 #ifdef ENABLE_RR_DEBUG_INFO
 	if (jit->debugInfo != nullptr)
@@ -4728,14 +4803,25 @@ Routine* Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit
 		jit->module->print(file, 0);
 	}
 
-	// Run manadory coroutine transforms.
-	llvm::legacy::PassManager pm;
-	pm.add(llvm::createCoroEarlyPass());
-	pm.add(llvm::createCoroSplitPass());
-	pm.add(llvm::createCoroElidePass());
-	pm.add(llvm::createBarrierNoopPass());
-	pm.add(llvm::createCoroCleanupPass());
-	pm.run(*jit->module);
+	if (isCoroutine)
+	{
+		// Run manadory coroutine transforms.
+		llvm::legacy::PassManager pm;
+		pm.add(llvm::createCoroEarlyPass());
+		pm.add(llvm::createCoroSplitPass());
+		pm.add(llvm::createCoroElidePass());
+		pm.add(llvm::createBarrierNoopPass());
+		pm.add(llvm::createCoroCleanupPass());
+		pm.run(*jit->module);
+	}
+
+#if defined(ENABLE_RR_LLVM_IR_VERIFICATION) || !defined(NDEBUG)
+	{
+		llvm::legacy::PassManager pm;
+		pm.add(llvm::createVerifierPass());
+		pm.run(*jit->module);
+	}
+#endif // defined(ENABLE_RR_LLVM_IR_VERIFICATION) || !defined(NDEBUG)
 
 	auto cfg = cfgEdit.apply(jit->config);
 	jit->optimize(cfg);
