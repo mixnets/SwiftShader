@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d29e9fb_925e6907",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-10T03:32:09Z",
+      "side": 1,
+      "message": "Also associate with same new bug as https://swiftshader-review.googlesource.com/c/SwiftShader/+/33950",
+      "revId": "a9bd0a8bf38090333843b61077a669c712d9e576",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
