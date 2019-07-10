@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ebf65c7a_59126a87",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-10T03:25:00Z",
+      "side": 1,
+      "message": "Move to a function where the lock is acquired and defaultConfig is created on first access? Chromium doesn\u0027t like static globals with complex constructors.",
+      "range": {
+        "startLine": 108,
+        "startChar": 36,
+        "endLine": 108,
+        "endChar": 70
+      },
+      "revId": "26f77e7bb1731f24ac3062fb02b796ad5b3c8ac5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
