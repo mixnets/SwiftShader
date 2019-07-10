@@ -287,7 +287,7 @@ namespace sw
 	{
 
 		template<typename T>
-		T Load(Pointer ptr, bool robust, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
+		T Load(Pointer ptr, OutOfBoundsBehavior robust, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
 		{
 			using EL = typename Element<T>::type;
 
@@ -307,9 +307,19 @@ namespace sw
 					return T(*rr::Pointer<EL>(ptr.base + ptr.staticOffsets[0], alignment));
 				}
 			}
-			else if(robust)  // Disable OOB reads.
+			else
 			{
-				mask &= ptr.isInBounds(sizeof(float));
+				switch(robust)
+				{
+				case OutOfBoundsBehavior::Zero:
+				case OutOfBoundsBehavior::RobustBufferAccess:
+				case OutOfBoundsBehavior::UndefinedValue:
+					mask &= ptr.isInBounds(sizeof(float));  // Disable out-of-bounds reads.
+					break;
+				case OutOfBoundsBehavior::UndefinedBehavior:
+					// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
+					break;
+				}
 			}
 
 			auto offsets = ptr.offsets();
@@ -329,11 +339,26 @@ namespace sw
 					}
 					return out;
 				}
+
+				bool zeroMaskedLanes = true;
+				switch(robust)
+				{
+				case OutOfBoundsBehavior::Zero:
+				case OutOfBoundsBehavior::RobustBufferAccess:
+					zeroMaskedLanes = true;
+					break;
+				case OutOfBoundsBehavior::UndefinedValue:
+				case OutOfBoundsBehavior::UndefinedBehavior:
+					zeroMaskedLanes = false;
+					break;
+				}
+
 				if (ptr.hasStaticSequentialOffsets(sizeof(float)))
 				{
-					return rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment, robust);
+					return rr::MaskedLoad(rr::Pointer<T>(ptr.base + ptr.staticOffsets[0]), mask, alignment, zeroMaskedLanes);
 				}
-				return rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, alignment, robust);
+
+				return rr::Gather(rr::Pointer<EL>(ptr.base), offsets, mask, alignment, zeroMaskedLanes);
 			}
 			else
 			{
@@ -370,15 +395,22 @@ namespace sw
 		}
 
 		template<typename T>
-		void Store(Pointer ptr, T val, bool robust, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
+		void Store(Pointer ptr, T val, OutOfBoundsBehavior robust, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
 		{
 			using EL = typename Element<T>::type;
 			constexpr size_t alignment = sizeof(float);
 			auto offsets = ptr.offsets();
 
-			if(robust)  // Disable OOB writes.
+			switch(robust)
 			{
-				mask &= ptr.isInBounds(sizeof(float));
+			case OutOfBoundsBehavior::Zero:
+			case OutOfBoundsBehavior::RobustBufferAccess:  // TODO: Allows writing anywhere within bounds. Could be faster than masking.
+			case OutOfBoundsBehavior::UndefinedValue:
+				mask &= ptr.isInBounds(sizeof(float));  // Disable out-of-bounds writes.
+				break;
+			case OutOfBoundsBehavior::UndefinedBehavior:
+				// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
+				break;
 			}
 
 			if (!atomic && order == std::memory_order_relaxed)
@@ -487,7 +519,7 @@ namespace sw
 			{
 			case spv::OpEntryPoint:
 			{
-				auto executionModel = spv::ExecutionModel(insn.word(1));
+				executionModel = spv::ExecutionModel(insn.word(1));
 				auto id = Function::ID(insn.word(2));
 				auto name = insn.string(3);
 				auto stage = executionModelToStage(executionModel);
@@ -1967,6 +1999,37 @@ namespace sw
 		object.definition = insn;
 	}
 
+	OutOfBoundsBehavior SpirvShader::EmitState::getOutOfBoundsBehavior(spv::StorageClass storageClass) const
+	{
+		switch(storageClass)
+		{
+		case spv::StorageClassUniform:
+		case spv::StorageClassStorageBuffer:
+			// Buffer resource access. robustBufferAccess feature applies.
+			return robustBufferAccess ? OutOfBoundsBehavior::RobustBufferAccess
+			                          : OutOfBoundsBehavior::UndefinedBehavior;
+			break;
+		case spv::StorageClassImage:
+			return OutOfBoundsBehavior::UndefinedValue;  // "The value returned by a read of an invalid texel is undefined"
+			break;
+		case spv::StorageClassInput:
+			if(executionModel == spv::ExecutionModelVertex)
+			{
+				// Vertex attributes follow robustBufferAccess rules.
+				return robustBufferAccess ? OutOfBoundsBehavior::RobustBufferAccess
+				                          : OutOfBoundsBehavior::UndefinedBehavior;
+			}
+			// Fall through to default case.
+		default:
+			// TODO(b/137183137): Optimize if the pointer resulted from OpInBoundsAccessChain.
+			// TODO(b/131224163): Optimize cases statically known to be within bounds.
+			return OutOfBoundsBehavior::UndefinedValue;
+			break;
+		}
+
+		return OutOfBoundsBehavior::Zero;
+	}
+
 	// emit-time
 
 	void SpirvShader::emitProlog(SpirvRoutine *routine) const
@@ -2004,7 +2067,7 @@ namespace sw
 
 	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
 	{
-		EmitState state(routine, entryPoint, activeLaneMask, descriptorSets, robustBufferAccess);
+		EmitState state(routine, entryPoint, activeLaneMask, descriptorSets, robustBufferAccess, executionModel);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?
@@ -2743,7 +2806,8 @@ namespace sw
 				{
 					auto p = ptr + offset;
 					if (interleavedByLane) { p = interleaveByLane(p); }
-					SIMD::Store(p, initialValue.Float(i), state->robust, state->activeLaneMask());
+					auto robust = OutOfBoundsBehavior::UndefinedBehavior;  // Local variables are always within bounds.
+					SIMD::Store(p, initialValue.Float(i), robust, state->activeLaneMask());
 				});
 				break;
 			}
@@ -2786,16 +2850,15 @@ namespace sw
 		}
 
 		auto ptr = GetPointerToData(pointerId, 0, state);
-
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
-
 		auto &dst = state->createIntermediate(resultId, resultTy.sizeInComponents);
+		auto robust = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
 		VisitMemoryObject(pointerId, [&](uint32_t i, uint32_t offset)
 		{
 			auto p = ptr + offset;
-			if (interleavedByLane) { p = interleaveByLane(p); }
-			dst.move(i, SIMD::Load<SIMD::Float>(p, state->robust, state->activeLaneMask(), atomic, memoryOrder));
+			if (interleavedByLane) { p = interleaveByLane(p); }  // TODO: Interleave once, then add offset?
+			dst.move(i, SIMD::Load<SIMD::Float>(p, robust, state->activeLaneMask(), atomic, memoryOrder));
 		});
 
 		return EmitResult::Continue;
@@ -2823,6 +2886,7 @@ namespace sw
 
 		auto ptr = GetPointerToData(pointerId, 0, state);
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
+		auto robust = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
 		if (object.kind == Object::Kind::Constant)
 		{
@@ -2832,7 +2896,7 @@ namespace sw
 			{
 				auto p = ptr + offset;
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, SIMD::Float(src[i]), state->robust, state->activeLaneMask(), atomic, memoryOrder);
+				SIMD::Store(p, SIMD::Float(src[i]), robust, state->activeLaneMask(), atomic, memoryOrder);
 			});
 		}
 		else
@@ -2843,7 +2907,7 @@ namespace sw
 			{
 				auto p = ptr + offset;
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, src.Float(i), state->robust, state->activeLaneMask(), atomic, memoryOrder);
+				SIMD::Store(p, src.Float(i), robust, state->activeLaneMask(), atomic, memoryOrder);
 			});
 		}
 
@@ -3891,6 +3955,11 @@ namespace sw
 			auto ptrTy = getType(getObject(ptrId).type);
 			auto ptr = GetPointerToData(ptrId, 0, state);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
+			// TODO: GLSL modf() takes an output parameter and thus the pointer is assumed
+			// to be in bounds even for inactive lanes.
+			// - Clarify the SPIR-V spec.
+			// - Eliminate lane masking and assume interleaving.
+			auto robust = OutOfBoundsBehavior::UndefinedBehavior;
 
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
@@ -3899,7 +3968,7 @@ namespace sw
 				dst.move(i, frac);
 				auto p = ptr + (i * sizeof(float));
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, whole, state->robust, state->activeLaneMask());
+				SIMD::Store(p, whole, robust, state->activeLaneMask());
 			}
 			break;
 		}
@@ -4024,6 +4093,11 @@ namespace sw
 			auto ptrTy = getType(getObject(ptrId).type);
 			auto ptr = GetPointerToData(ptrId, 0, state);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
+			// TODO: GLSL frexp() takes an output parameter and thus the pointer is assumed
+			// to be in bounds even for inactive lanes.
+			// - Clarify the SPIR-V spec.
+			// - Eliminate lane masking and assume interleaving.
+			auto robust = OutOfBoundsBehavior::UndefinedBehavior;
 
 			for (auto i = 0u; i < type.sizeInComponents; i++)
 			{
@@ -4035,7 +4109,7 @@ namespace sw
 
 				auto p = ptr + (i * sizeof(float));
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, exponent, state->robust, state->activeLaneMask());
+				SIMD::Store(p, exponent, robust, state->activeLaneMask());
 			}
 			break;
 		}
@@ -5244,6 +5318,7 @@ namespace sw
 		auto texelSize = vk::Format(vkFormat).bytes();
 		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
 		auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, sampleId, useStencilAspect);
+		auto robust = OutOfBoundsBehavior::UndefinedValue;  // "The value returned by a read of an invalid texel is undefined"
 
 		SIMD::Int packed[4];
 		// Round up texel size: for formats smaller than 32 bits per texel, we will emit a bunch
@@ -5251,7 +5326,7 @@ namespace sw
 		// TODO: specialize for small formats?
 		for (auto i = 0; i < (texelSize + 3)/4; i++)
 		{
-			packed[i] = SIMD::Load<SIMD::Int>(texelPtr, state->robust, state->activeLaneMask(), false, std::memory_order_relaxed, std::min(texelSize, 4));
+			packed[i] = SIMD::Load<SIMD::Int>(texelPtr, robust, state->activeLaneMask(), false, std::memory_order_relaxed, std::min(texelSize, 4));
 			texelPtr += sizeof(float);
 		}
 
@@ -5587,9 +5662,12 @@ namespace sw
 		auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
 		auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, 0, false);
 
+		// SPIR-V 1.4: "If the coordinates are outside the image, the memory location that is accessed is undefined."
+		auto robust = OutOfBoundsBehavior::UndefinedValue;
+
 		for (auto i = 0u; i < numPackedElements; i++)
 		{
-			SIMD::Store(texelPtr, packed[i], state->robust, state->activeLaneMask());
+			SIMD::Store(texelPtr, packed[i], robust, state->activeLaneMask());
 			texelPtr += sizeof(float);
 		}
 
@@ -5778,8 +5856,11 @@ namespace sw
 			if (dstInterleavedByLane) { dst = interleaveByLane(dst); }
 			if (srcInterleavedByLane) { src = interleaveByLane(src); }
 
-			auto value = SIMD::Load<SIMD::Float>(src, state->robust, state->activeLaneMask());
-			SIMD::Store(dst, value, state->robust, state->activeLaneMask());
+			// TODO(b/131224163): Optimize based on src/dst storage classes.
+			auto robust = OutOfBoundsBehavior::RobustBufferAccess;
+
+			auto value = SIMD::Load<SIMD::Float>(src, robust, state->activeLaneMask());
+			SIMD::Store(dst, value, robust, state->activeLaneMask());
 		});
 		return EmitResult::Continue;
 	}
