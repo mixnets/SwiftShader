@@ -204,7 +204,19 @@ namespace sw
 			pixelProgress[cluster].init();
 		}
 
-		updateConfiguration(true);
+		VertexProcessor::setRoutineCacheSize(1024);
+		PixelProcessor::setRoutineCacheSize(1024);
+		SetupProcessor::setRoutineCacheSize(1024);
+
+		threadCount = CPUID::processAffinity();
+
+		CPUID::setEnableSSE4_1(true);
+		CPUID::setEnableSSSE3(true);
+		CPUID::setEnableSSE3(true);
+		CPUID::setEnableSSE2(true);
+		CPUID::setEnableSSE(true);
+
+		initializeThreads();
 	}
 
 	Renderer::~Renderer()
@@ -261,8 +273,6 @@ namespace sw
 			}
 		}
 		#endif
-
-		updateConfiguration();
 
 		int ms = context->sampleCount;
 
@@ -1323,30 +1333,5 @@ namespace sw
 	void Renderer::setScissor(const VkRect2D &scissor)
 	{
 		this->scissor = scissor;
-	}
-
-	void Renderer::updateConfiguration(bool initialUpdate)
-	{
-		if(initialUpdate)
-		{
-			terminateThreads();
-
-			VertexProcessor::setRoutineCacheSize(1024);
-			PixelProcessor::setRoutineCacheSize(1024);
-			SetupProcessor::setRoutineCacheSize(1024);
-
-			threadCount = CPUID::processAffinity();
-
-			CPUID::setEnableSSE4_1(true);
-			CPUID::setEnableSSSE3(true);
-			CPUID::setEnableSSE3(true);
-			CPUID::setEnableSSE2(true);
-			CPUID::setEnableSSE(true);
-		}
-
-		if(!initialUpdate && !worker[0])
-		{
-			initializeThreads();
-		}
 	}
 }
