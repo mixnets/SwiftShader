@@ -318,7 +318,6 @@ if(MSVC)
         "/wd4141" # 'modifier' : used more than once
         "/wd4146" # unary minus operator applied to unsigned type, result still unsigned
         "/wd4244" # 'conversion' conversion from 'type1' to 'type2', possible loss of data
-        "/wd4267" # 'var' : conversion from 'size_t' to 'type', possible loss of data
         "/wd4291" # 'void X new(size_t,unsigned int,unsigned int)': no matching operator delete found; memory will not be freed if initialization throws an exception
         "/wd4309" # 'conversion' : truncation of constant value
         "/wd4624" # 'derived class' : destructor was implicitly defined as deleted because a base class destructor is inaccessible or deleted
