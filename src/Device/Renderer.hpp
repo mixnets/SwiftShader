@@ -198,7 +198,6 @@ namespace sw
 		bool setupLine(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
 		bool setupPoint(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
 
-		void updateConfiguration(bool initialUpdate = false);
 		void initializeThreads();
 		void terminateThreads();
 
