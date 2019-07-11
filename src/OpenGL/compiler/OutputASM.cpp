@@ -1868,6 +1868,11 @@ namespace glsl
 
 		if(node->getType() == ELoopDoWhile)
 		{
+			auto constantCondition = condition->getAsConstantUnion();
+			if(!body && constantCondition && constantCondition->getBConst(0) == false)
+			{
+				return false;
+			}
 			Temporary iterate(this);
 			emit(sw::Shader::OPCODE_MOV, &iterate, &True);
 

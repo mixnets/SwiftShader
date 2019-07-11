@@ -172,15 +172,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Fragment and vertex shaders code
 	const char* pszFragShader = "\
-		void main (void)\
+void f(){ do { } while(false);}\
+		void main(void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+mediump vec4 v = vec4(1.0, 1.0, 0.66 ,1.0);\
+f();\
+gl_FragColor = v;\
 		}";
 	const char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
+void f(){ do { } while(false);}\
 		void main(void)\
 		{\
+f();\
 			gl_Position = myPMVMatrix * myVertex;\
 		}";
 

@@ -401,7 +401,7 @@ namespace sw
 		html += "<h2><em>Compiler optimizations</em></h2>\n";
 		html += "<table>\n";
 
-		for(size_t pass = 0; pass < config.optimization.size(); pass++)
+		for(int pass = 0; pass < (int)config.optimization.size(); pass++)
 		{
 			html += "<tr><td>Optimization pass " + itoa(pass + 1) + ":</td><td><select name='optimization" + itoa(pass + 1) + "' title='An optimization pass for the shader compiler.'>\n";
 			html += "<option value='0'"   + (config.optimization[pass] == rr::Optimization::Pass::Disabled ? selected : empty) + ">Disabled" + (pass > 0 ? " (default)" : "") + "</option>\n";
@@ -738,7 +738,7 @@ namespace sw
 		config.enableSSSE3 = ini.getBoolean("Processor", "EnableSSSE3", true);
 		config.enableSSE4_1 = ini.getBoolean("Processor", "EnableSSE4_1", true);
 
-		for(size_t pass = 0; pass < config.optimization.size(); pass++)
+		for(int pass = 0; pass < (int)config.optimization.size(); pass++)
 		{
 			auto def = pass == 0 ? rr::Optimization::Pass::InstructionCombining : rr::Optimization::Pass::Disabled;
 			config.optimization[pass] = (rr::Optimization::Pass)ini.getInteger("Optimization", "OptimizationPass" + itoa(pass + 1), (int)def);
@@ -797,7 +797,7 @@ namespace sw
 		ini.addValue("Processor", "EnableSSSE3", itoa(config.enableSSSE3));
 		ini.addValue("Processor", "EnableSSE4_1", itoa(config.enableSSE4_1));
 
-		for(size_t pass = 0; pass < config.optimization.size(); pass++)
+		for(int pass = 0; pass < (int)config.optimization.size(); pass++)
 		{
 			ini.addValue("Optimization", "OptimizationPass" + itoa(pass + 1), itoa((int)config.optimization[pass]));
 		}
