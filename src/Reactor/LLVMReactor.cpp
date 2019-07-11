@@ -242,7 +242,8 @@ namespace
 				std::unique_ptr<llvm::Module> module,
 				llvm::Function **funcs,
 				size_t count,
-				const rr::Config &config) :
+				const rr::Config &config,
+				llvm::TargetMachine &targetMachine) :
 			resolver(createLegacyLookupResolver(
 				session,
 				[&](const std::string &name) {
@@ -261,18 +262,8 @@ namespace
 						return;
 					}
 				})),
-			targetMachine(llvm::EngineBuilder()
-#ifdef ENABLE_RR_DEBUG_INFO
-				.setOptLevel(llvm::CodeGenOpt::None)
-#else
-				.setOptLevel(toLLVM(config.getOptimization().getLevel()))
-#endif // ENABLE_RR_DEBUG_INFO
-				.setMCPU(JITGlobals::get()->mcpu)
-				.setMArch(JITGlobals::get()->march)
-				.setMAttrs(JITGlobals::get()->mattrs)
-				.setTargetOptions(JITGlobals::get()->targetOptions)
-				.selectTarget()),
-			compileLayer(objLayer, llvm::orc::SimpleCompiler(*targetMachine)),
+
+			compileLayer(objLayer, llvm::orc::SimpleCompiler(targetMachine)),
 			objLayer(
 				session,
 				[this](llvm::orc::VModuleKey) {
@@ -332,21 +323,7 @@ namespace
 		}
 
 	private:
-		static ::llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level)
-		{
-			switch (level)
-			{
-				case rr::Optimization::Level::None:       return ::llvm::CodeGenOpt::None;
-				case rr::Optimization::Level::Less:       return ::llvm::CodeGenOpt::Less;
-				case rr::Optimization::Level::Default:    return ::llvm::CodeGenOpt::Default;
-				case rr::Optimization::Level::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
-				default: UNREACHABLE("Unknown Optimization Level %d", int(level));
-			}
-			return ::llvm::CodeGenOpt::Default;
-		}
-
 		std::shared_ptr<llvm::orc::SymbolResolver> resolver;
-		std::unique_ptr<llvm::TargetMachine> targetMachine;
 		llvm::orc::ExecutionSession session;
 		CompileLayer compileLayer;
 		ObjLayer objLayer;
@@ -360,7 +337,18 @@ namespace
 		JITBuilder(const rr::Config &config) :
 			config(config),
 			module(new llvm::Module("", context)),
-			builder(new llvm::IRBuilder<>(context))
+			builder(new llvm::IRBuilder<>(context)),
+			targetMachine(llvm::EngineBuilder()
+#ifdef ENABLE_RR_DEBUG_INFO
+				.setOptLevel(llvm::CodeGenOpt::None)
+#else
+				.setOptLevel(toLLVM(config.getOptimization().getLevel()))
+#endif // ENABLE_RR_DEBUG_INFO
+				.setMCPU(JITGlobals::get()->mcpu)
+				.setMArch(JITGlobals::get()->march)
+				.setMAttrs(JITGlobals::get()->mattrs)
+				.setTargetOptions(JITGlobals::get()->targetOptions)
+				.selectTarget())
 		{
 			module->setDataLayout(JITGlobals::get()->dataLayout);
 		}
@@ -404,7 +392,7 @@ namespace
 		rr::Routine *acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg)
 		{
 			ASSERT(module);
-			return new JITRoutine(std::move(module), funcs, count, cfg);
+			return new JITRoutine(std::move(module), funcs, count, cfg, *targetMachine);
 		}
 
 		const rr::Config config;
@@ -412,6 +400,7 @@ namespace
 		std::unique_ptr<llvm::Module> module;
 		std::unique_ptr<llvm::IRBuilder<>> builder;
 		llvm::Function *function = nullptr;
+		std::unique_ptr<llvm::TargetMachine> targetMachine;
 
 		struct CoroutineState
 		{
@@ -429,6 +418,19 @@ namespace
 #ifdef ENABLE_RR_DEBUG_INFO
 		std::unique_ptr<rr::DebugInfo> debugInfo;
 #endif
+
+		static ::llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level)
+		{
+			switch (level)
+			{
+				case rr::Optimization::Level::None:       return ::llvm::CodeGenOpt::None;
+				case rr::Optimization::Level::Less:       return ::llvm::CodeGenOpt::Less;
+				case rr::Optimization::Level::Default:    return ::llvm::CodeGenOpt::Default;
+				case rr::Optimization::Level::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
+				default: UNREACHABLE("Unknown Optimization Level %d", int(level));
+			}
+			return ::llvm::CodeGenOpt::Default;
+		}
 	};
 
 	std::unique_ptr<JITBuilder> jit;
