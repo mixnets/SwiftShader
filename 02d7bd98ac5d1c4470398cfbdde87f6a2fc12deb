@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0113eb42_afb88dfb",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-11T14:54:55Z",
+      "side": 1,
+      "message": "You\u0027re probably going to have to also add:\n{VK_FORMAT_R8G8B8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},",
+      "range": {
+        "startLine": 27,
+        "startChar": 1,
+        "endLine": 27,
+        "endChar": 63
+      },
+      "revId": "02d7bd98ac5d1c4470398cfbdde87f6a2fc12deb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
