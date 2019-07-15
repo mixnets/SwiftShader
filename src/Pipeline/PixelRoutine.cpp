@@ -161,7 +161,7 @@ namespace sw
 					}
 				}
 
-				setBuiltins(x, y, z, w);
+				setBuiltins(x, y, z, w, cMask);
 			}
 
 			Bool alphaPass = true;

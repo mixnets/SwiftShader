@@ -20,7 +20,25 @@
 
 namespace sw
 {
-	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
+	// Union all cMask and return it as 4 booleans
+	Int4 PixelProgram::cMaskAny(Int cMask[4]) const
+	{
+		// See if at least 1 sample is used
+		Int cMaskUnion = cMask[0];
+		for(auto i = 1u; i < state.multiSample; i++)
+		{
+			cMaskUnion |= cMask[i];
+		}
+
+		// Convert to 4 booleans
+		Int4 laneBits = Int4(1, 2, 4, 8);
+		Int4 laneShiftsToMSB = Int4(31, 30, 29, 28);
+		Int4 maskAny(cMaskUnion);
+		maskAny = ((maskAny & laneBits) << laneShiftsToMSB) >> Int4(31);
+		return maskAny;
+	}
+
+	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w, Int cMask[4])
 	{
 		routine.windowSpacePosition[0] = x + SIMD::Int(0,1,0,1);
 		routine.windowSpacePosition[1] = y + SIMD::Int(0,0,1,1);
@@ -66,6 +84,13 @@ namespace sw
 			// Only a single physical device is supported.
 			routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 		}
+
+		it = spirvShader->inputBuiltins.find(spv::BuiltInHelperInvocation);
+		if(it != spirvShader->inputBuiltins.end())
+		{
+			ASSERT(it->second.SizeInComponents == 1);
+			routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<SIMD::Float>(cMaskAny(cMask));
+		}
 	}
 
 	void PixelProgram::applyShader(Int cMask[4])
@@ -102,9 +127,8 @@ namespace sw
 				routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = Float4(0);
 		}
 
-		// Note: all lanes initially active to facilitate derivatives etc. Actual coverage is
-		// handled separately, through the cMask.
-		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
+		// Note: Include coverage in initial active lane mask.
+		auto activeLaneMask = cMaskAny(cMask);
 		routine.killMask = 0;
 
 		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
