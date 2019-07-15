@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3cf84d70_b5f73881",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-15T14:48:41Z",
+      "side": 1,
+      "message": "All nits:\n- It\u0027s not a cache since it can grow indefinitely (not for this particular use, but for others).\n- It\u0027s only used for mapping Optimization::Level to llvm::TargetMachine, so no need to templatize it.\n- There\u0027s only four optimization levels. Don\u0027t really need a map for this.",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 124,
+        "endChar": 12
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc874a77_77d7f010",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-15T14:48:41Z",
+      "side": 1,
+      "message": "nit: Since JITGlobals is a singleton it can own the TargetMachine\u0027s for its entire lifetime and we can avoid the overhead of reference counting.",
+      "range": {
+        "startLine": 161,
+        "startChar": 33,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
