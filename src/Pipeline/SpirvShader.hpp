@@ -889,7 +889,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
+		void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, RValue<SIMD::Int> const &storesAndAtomicsMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -991,12 +991,14 @@ namespace sw
 			EmitState(SpirvRoutine *routine,
 					Function::ID function,
 					RValue<SIMD::Int> activeLaneMask,
+					RValue<SIMD::Int> storesAndAtomicsMask,
 					const vk::DescriptorSet::Bindings &descriptorSets,
 					bool robustBufferAccess,
 					spv::ExecutionModel executionModel)
 				: routine(routine),
 				  function(function),
 				  activeLaneMaskValue(activeLaneMask.value),
+				  storesAndAtomicsMaskValue(storesAndAtomicsMask.value),
 				  descriptorSets(descriptorSets),
 				  robustBufferAccess(robustBufferAccess),
 				  executionModel(executionModel)
@@ -1008,6 +1010,12 @@ namespace sw
 			{
 				ASSERT(activeLaneMaskValue != nullptr);
 				return RValue<SIMD::Int>(activeLaneMaskValue);
+			}
+
+			RValue<SIMD::Int> storesAndAtomicsMask() const
+			{
+				ASSERT(storesAndAtomicsMaskValue != nullptr);
+				return RValue<SIMD::Int>(storesAndAtomicsMaskValue);
 			}
 
 			void setActiveLaneMask(RValue<SIMD::Int> mask)
@@ -1030,6 +1038,7 @@ namespace sw
 			Function::ID function; // The current function being built.
 			Block::ID block; // The current block being built.
 			rr::Value *activeLaneMaskValue = nullptr; // The current active lane mask.
+			rr::Value *storesAndAtomicsMaskValue = nullptr; // The current atomics mask.
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
