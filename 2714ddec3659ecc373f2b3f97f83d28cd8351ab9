@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "62dc5b4e_688583fb",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-15T17:20:36Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t think that violates the definition of a cache.\n\nFair point. I guess my quibble is about using a word with such a broad meaning on what\u0027s essentially nothing more than a thread-safe unordered_map\u003c\u003e. I don\u0027t immediately have a better word for it though, other than something overly verbose, so LGTM.\n\n\u003e The only reason this was extracted out as a separate class was due to the lack of copy constructor on mutex.\n\nWhy do we need a copy constructor when this is part of a singleton?\n\n\u003e Switching to an array [...] not all enum cases are handled by a switch.\n\nNo need for an array. Just a switch would do:\n\nswitch(optimizationLevel)\n{\ndefault:\ncase OptimizationLevel::Default: { static TargetMachine tmDefault(Default); return tmDefault; }\ncase ...\n}\n\n\u003e The performance hit here is utterly negligible.\n\nTrue. I\u0027m just wary about death by a thousand cuts. unordered_map, mutex, and shared_ptr each add overhead that may add up to something measurable for some future use case of Reactor, or after a bunch of refactorings that keep adding more overhead for which it becomes hard to realize that it was avoidable in the first place.",
+      "parentUuid": "e6d02a0c_75d51b69",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 124,
+        "endChar": 12
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc874a77_77d7f010",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 1
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "I decided to opt for a shared_ptr to future-proof the Cache for eviction, say if we needed to parameterize the TargetMachine with more than just optimization level. Again, the actual overhead here of reference counting is utterly negligible.",
       "parentUuid": "cc874a77_77d7f010",
+      "range": {
+        "startLine": 161,
+        "startChar": 33,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8eaa8bb9_a6e6bcfd",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-15T17:20:36Z",
+      "side": 1,
+      "message": "In my experience future-proofing for the unknown more often than not leads to having unused functionality and making things harder to refactor later.",
+      "parentUuid": "02908199_297bd8c2",
       "range": {
         "startLine": 161,
         "startChar": 33,
