@@ -70,6 +70,30 @@
       "revId": "fa4b1075b030c522d7b2428efee129b59429ed99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7b59ad7_c3932fac",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2016,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-07-15T17:53:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c140320f_a3a09edf",
+      "range": {
+        "startLine": 2016,
+        "startChar": 2,
+        "endLine": 2016,
+        "endChar": 45
+      },
+      "revId": "fa4b1075b030c522d7b2428efee129b59429ed99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
