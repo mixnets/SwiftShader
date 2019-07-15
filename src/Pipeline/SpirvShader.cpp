@@ -2064,9 +2064,9 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
+	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, RValue<SIMD::Int> const &storesAndAtomicsMask, const vk::DescriptorSet::Bindings &descriptorSets) const
 	{
-		EmitState state(routine, entryPoint, activeLaneMask, descriptorSets, robustBufferAccess, executionModel);
+		EmitState state(routine, entryPoint, activeLaneMask, storesAndAtomicsMask, descriptorSets, robustBufferAccess, executionModel);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?
@@ -2887,6 +2887,7 @@ namespace sw
 		bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 		auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
+		auto mask = state->activeLaneMask() & state->storesAndAtomicsMask();
 		if (object.kind == Object::Kind::Constant)
 		{
 			// Constant source data.
@@ -2895,7 +2896,7 @@ namespace sw
 			{
 				auto p = ptr + offset;
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, SIMD::Float(src[i]), robustness, state->activeLaneMask(), atomic, memoryOrder);
+				SIMD::Store(p, SIMD::Float(src[i]), robustness, mask, atomic, memoryOrder);
 			});
 		}
 		else
@@ -2906,7 +2907,7 @@ namespace sw
 			{
 				auto p = ptr + offset;
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, src.Float(i), robustness, state->activeLaneMask(), atomic, memoryOrder);
+				SIMD::Store(p, src.Float(i), robustness, mask, atomic, memoryOrder);
 			});
 		}
 
@@ -5731,10 +5732,11 @@ namespace sw
 		auto ptr = state->getPointer(insn.word(3));
 		auto ptrOffsets = ptr.offsets();
 
-		SIMD::UInt x;
+		SIMD::UInt x(0);
+		auto mask = state->activeLaneMask() & state->storesAndAtomicsMask();
 		for (int j = 0; j < SIMD::Width; j++)
 		{
-			If(Extract(state->activeLaneMask(), j) != 0)
+			If(Extract(mask, j) != 0)
 			{
 				auto offset = Extract(ptrOffsets, j);
 				auto laneValue = Extract(value, j);
@@ -5802,10 +5804,11 @@ namespace sw
 		auto ptr = state->getPointer(insn.word(3));
 		auto ptrOffsets = ptr.offsets();
 
-		SIMD::UInt x;
+		SIMD::UInt x(0);
+		auto mask = state->activeLaneMask() & state->storesAndAtomicsMask();
 		for (int j = 0; j < SIMD::Width; j++)
 		{
-			If(Extract(state->activeLaneMask(), j) != 0)
+			If(Extract(mask, j) != 0)
 			{
 				auto offset = Extract(ptrOffsets, j);
 				auto laneValue = Extract(value.UInt(0), j);
