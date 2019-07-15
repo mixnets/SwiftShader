@@ -46,6 +46,30 @@
       "revId": "fa4b1075b030c522d7b2428efee129b59429ed99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c140320f_a3a09edf",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2016,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-15T17:30:09Z",
+      "side": 1,
+      "message": "This and the above two lines too. Keeps the creation of the \u0027triangle\u0027 for gradient setup closely together.\n\nWe\u0027ll also need this change in Device/Renderer.cpp",
+      "parentUuid": "0639af60_b2e150d5",
+      "range": {
+        "startLine": 2016,
+        "startChar": 2,
+        "endLine": 2016,
+        "endChar": 45
+      },
+      "revId": "fa4b1075b030c522d7b2428efee129b59429ed99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
