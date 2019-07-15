@@ -468,18 +468,13 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		{
 			const VkPipelineColorBlendAttachmentState& attachment = colorBlendState->pAttachments[i];
 			context.colorWriteMask[i] = attachment.colorWriteMask;
-		}
-
-		if(colorBlendState->attachmentCount > 0)
-		{
-			const VkPipelineColorBlendAttachmentState& attachment = colorBlendState->pAttachments[0];
-			context.alphaBlendEnable = (attachment.blendEnable == VK_TRUE);
-			context.blendOperationStateAlpha = attachment.alphaBlendOp;
-			context.blendOperationState = attachment.colorBlendOp;
-			context.destBlendFactorStateAlpha = attachment.dstAlphaBlendFactor;
-			context.destBlendFactorState = attachment.dstColorBlendFactor;
-			context.sourceBlendFactorStateAlpha = attachment.srcAlphaBlendFactor;
-			context.sourceBlendFactorState = attachment.srcColorBlendFactor;
+			context.alphaBlendEnable[i] = (attachment.blendEnable == VK_TRUE);
+			context.blendOperationStateAlpha[i] = attachment.alphaBlendOp;
+			context.blendOperationState[i] = attachment.colorBlendOp;
+			context.destBlendFactorStateAlpha[i] = attachment.dstAlphaBlendFactor;
+			context.destBlendFactorState[i] = attachment.dstColorBlendFactor;
+			context.sourceBlendFactorStateAlpha[i] = attachment.srcAlphaBlendFactor;
+			context.sourceBlendFactorState[i] = attachment.srcColorBlendFactor;
 		}
 	}
 

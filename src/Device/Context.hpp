@@ -52,14 +52,14 @@ namespace sw
 		bool stencilActive() const;
 
 		bool allTargetsColorClamp() const;
-		bool alphaBlendActive() const;
-		VkBlendFactor sourceBlendFactor() const;
-		VkBlendFactor destBlendFactor() const;
-		VkBlendOp blendOperation() const;
+		bool alphaBlendActive(int index) const;
+		VkBlendFactor sourceBlendFactor(int index) const;
+		VkBlendFactor destBlendFactor(int index) const;
+		VkBlendOp blendOperation(int index) const;
 
-		VkBlendFactor sourceBlendFactorAlpha() const;
-		VkBlendFactor destBlendFactorAlpha() const;
-		VkBlendOp blendOperationAlpha() const;
+		VkBlendFactor sourceBlendFactorAlpha(int index) const;
+		VkBlendFactor destBlendFactorAlpha(int index) const;
+		VkBlendOp blendOperationAlpha(int index) const;
 
 		VkPrimitiveTopology topology;
 
@@ -102,14 +102,14 @@ namespace sw
 		VkCompareOp depthCompareMode;
 		bool depthWriteEnable;
 
-		bool alphaBlendEnable;
-		VkBlendFactor sourceBlendFactorState;
-		VkBlendFactor destBlendFactorState;
-		VkBlendOp blendOperationState;
+		bool alphaBlendEnable[RENDERTARGETS];
+		VkBlendFactor sourceBlendFactorState[RENDERTARGETS];
+		VkBlendFactor destBlendFactorState[RENDERTARGETS];
+		VkBlendOp blendOperationState[RENDERTARGETS];
 
-		VkBlendFactor sourceBlendFactorStateAlpha;
-		VkBlendFactor destBlendFactorStateAlpha;
-		VkBlendOp blendOperationStateAlpha;
+		VkBlendFactor sourceBlendFactorStateAlpha[RENDERTARGETS];
+		VkBlendFactor destBlendFactorStateAlpha[RENDERTARGETS];
+		VkBlendOp blendOperationStateAlpha[RENDERTARGETS];
 
 		float lineWidth;
 

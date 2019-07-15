@@ -1064,7 +1064,7 @@ namespace sw
 
 	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x)
 	{
-		if(!state.alphaBlendActive)
+		if(!state.alphaBlendActive[index])
 		{
 			return;
 		}
@@ -1076,24 +1076,24 @@ namespace sw
 		Vector4s sourceFactor;
 		Vector4s destFactor;
 
-		blendFactor(sourceFactor, current, pixel, state.sourceBlendFactor);
-		blendFactor(destFactor, current, pixel, state.destBlendFactor);
+		blendFactor(sourceFactor, current, pixel, state.sourceBlendFactor[index]);
+		blendFactor(destFactor, current, pixel, state.destBlendFactor[index]);
 
-		if(state.sourceBlendFactor != VK_BLEND_FACTOR_ONE && state.sourceBlendFactor != VK_BLEND_FACTOR_ZERO)
+		if(state.sourceBlendFactor[index] != VK_BLEND_FACTOR_ONE && state.sourceBlendFactor[index] != VK_BLEND_FACTOR_ZERO)
 		{
 			current.x = MulHigh(As<UShort4>(current.x), As<UShort4>(sourceFactor.x));
 			current.y = MulHigh(As<UShort4>(current.y), As<UShort4>(sourceFactor.y));
 			current.z = MulHigh(As<UShort4>(current.z), As<UShort4>(sourceFactor.z));
 		}
 
-		if(state.destBlendFactor != VK_BLEND_FACTOR_ONE && state.destBlendFactor != VK_BLEND_FACTOR_ZERO)
+		if(state.destBlendFactor[index] != VK_BLEND_FACTOR_ONE && state.destBlendFactor[index] != VK_BLEND_FACTOR_ZERO)
 		{
 			pixel.x = MulHigh(As<UShort4>(pixel.x), As<UShort4>(destFactor.x));
 			pixel.y = MulHigh(As<UShort4>(pixel.y), As<UShort4>(destFactor.y));
 			pixel.z = MulHigh(As<UShort4>(pixel.z), As<UShort4>(destFactor.z));
 		}
 
-		switch(state.blendOperation)
+		switch(state.blendOperation[index])
 		{
 		case VK_BLEND_OP_ADD:
 			current.x = AddSat(As<UShort4>(current.x), As<UShort4>(pixel.x));
@@ -1134,23 +1134,23 @@ namespace sw
 			current.z = Short4(0x0000);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperation));
+			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperation[index]));
 		}
 
-		blendFactorAlpha(sourceFactor, current, pixel, state.sourceBlendFactorAlpha);
-		blendFactorAlpha(destFactor, current, pixel, state.destBlendFactorAlpha);
+		blendFactorAlpha(sourceFactor, current, pixel, state.sourceBlendFactorAlpha[index]);
+		blendFactorAlpha(destFactor, current, pixel, state.destBlendFactorAlpha[index]);
 
-		if(state.sourceBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.sourceBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
+		if(state.sourceBlendFactorAlpha[index] != VK_BLEND_FACTOR_ONE && state.sourceBlendFactorAlpha[index] != VK_BLEND_FACTOR_ZERO)
 		{
 			current.w = MulHigh(As<UShort4>(current.w), As<UShort4>(sourceFactor.w));
 		}
 
-		if(state.destBlendFactorAlpha != VK_BLEND_FACTOR_ONE && state.destBlendFactorAlpha != VK_BLEND_FACTOR_ZERO)
+		if(state.destBlendFactorAlpha[index] != VK_BLEND_FACTOR_ONE && state.destBlendFactorAlpha[index] != VK_BLEND_FACTOR_ZERO)
 		{
 			pixel.w = MulHigh(As<UShort4>(pixel.w), As<UShort4>(destFactor.w));
 		}
 
-		switch(state.blendOperationAlpha)
+		switch(state.blendOperationAlpha[index])
 		{
 		case VK_BLEND_OP_ADD:
 			current.w = AddSat(As<UShort4>(current.w), As<UShort4>(pixel.w));
@@ -1177,7 +1177,7 @@ namespace sw
 			current.w = Short4(0x0000);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperationAlpha));
+			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperationAlpha[index]));
 		}
 	}
 
@@ -1794,7 +1794,7 @@ namespace sw
 
 	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4f &oC, Int &x)
 	{
-		if(!state.alphaBlendActive)
+		if(!state.alphaBlendActive[index])
 		{
 			return;
 		}
@@ -1911,8 +1911,8 @@ namespace sw
 		Vector4f sourceFactor;
 		Vector4f destFactor;
 
-		blendFactor(sourceFactor, oC, pixel, state.sourceBlendFactor);
-		blendFactor(destFactor, oC, pixel, state.destBlendFactor);
+		blendFactor(sourceFactor, oC, pixel, state.sourceBlendFactor[index]);
+		blendFactor(destFactor, oC, pixel, state.destBlendFactor[index]);
 
 		oC.x *= sourceFactor.x;
 		oC.y *= sourceFactor.y;
@@ -1922,7 +1922,7 @@ namespace sw
 		pixel.y *= destFactor.y;
 		pixel.z *= destFactor.z;
 
-		switch(state.blendOperation)
+		switch(state.blendOperation[index])
 		{
 		case VK_BLEND_OP_ADD:
 			oC.x += pixel.x;
@@ -1963,16 +1963,16 @@ namespace sw
 			oC.z = Float4(0.0f);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperation));
+			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperation[index]));
 		}
 
-		blendFactorAlpha(sourceFactor, oC, pixel, state.sourceBlendFactorAlpha);
-		blendFactorAlpha(destFactor, oC, pixel, state.destBlendFactorAlpha);
+		blendFactorAlpha(sourceFactor, oC, pixel, state.sourceBlendFactorAlpha[index]);
+		blendFactorAlpha(destFactor, oC, pixel, state.destBlendFactorAlpha[index]);
 
 		oC.w *= sourceFactor.w;
 		pixel.w *= destFactor.w;
 
-		switch(state.blendOperationAlpha)
+		switch(state.blendOperationAlpha[index])
 		{
 		case VK_BLEND_OP_ADD:
 			oC.w += pixel.w;
@@ -2000,7 +2000,7 @@ namespace sw
 			oC.w = Float4(0.0f);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperationAlpha));
+			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendOperationAlpha[index]));
 		}
 	}
 
