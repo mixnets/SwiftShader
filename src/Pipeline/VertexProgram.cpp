@@ -90,7 +90,7 @@ namespace sw
 		}
 
 		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-		spirvShader->emit(&routine, activeLaneMask, descriptorSets);
+		spirvShader->emit(&routine, activeLaneMask, activeLaneMask, descriptorSets);
 
 		spirvShader->emitEpilog(&routine);
 	}
