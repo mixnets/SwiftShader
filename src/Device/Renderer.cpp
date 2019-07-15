@@ -795,6 +795,14 @@ namespace sw
 					draw.events = nullptr;
 				}
 
+				for(int index = 0; index < RENDERTARGETS; index++)
+				{
+					if(draw.renderTarget[index])
+					{
+						draw.renderTarget[index]->prepareForSampling();
+					}
+				}
+
 				sync.done();
 
 				draw.references = -1;

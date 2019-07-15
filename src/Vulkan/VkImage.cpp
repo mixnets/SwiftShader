@@ -731,6 +731,8 @@ const Image* Image::getSampledImage(const vk::Format& imageViewFormat) const
 void Image::blit(Image* dstImage, const VkImageBlit& region, VkFilter filter) const
 {
 	device->getBlitter()->blit(this, dstImage, region, filter);
+	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
+	                               region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
 }
 
 void Image::resolve(Image* dstImage, const VkImageResolve& region) const
@@ -751,6 +753,8 @@ void Image::resolve(Image* dstImage, const VkImageResolve& region) const
 	blitRegion.dstSubresource = region.dstSubresource;
 
 	device->getBlitter()->blit(this, dstImage, blitRegion, VK_FILTER_NEAREST);
+	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
+	                               region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
 }
 
 VkFormat Image::getClearFormat() const
@@ -784,6 +788,7 @@ uint32_t Image::getLastMipLevel(const VkImageSubresourceRange& subresourceRange)
 void Image::clear(void* pixelData, VkFormat pixelFormat, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea)
 {
 	device->getBlitter()->clear(pixelData, pixelFormat, this, viewFormat, subresourceRange, &renderArea);
+	prepareForSampling(subresourceRange);
 }
 
 void Image::clear(const VkClearColorValue& color, const VkImageSubresourceRange& subresourceRange)
@@ -794,6 +799,7 @@ void Image::clear(const VkClearColorValue& color, const VkImageSubresourceRange&
 	}
 
 	device->getBlitter()->clear((void*)color.float32, getClearFormat(), this, format, subresourceRange);
+	prepareForSampling(subresourceRange);
 }
 
 void Image::clear(const VkClearDepthStencilValue& color, const VkImageSubresourceRange& subresourceRange)
