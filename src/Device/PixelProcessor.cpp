@@ -195,21 +195,22 @@ namespace sw
 		state.occlusionEnabled = context->occlusionEnabled;
 		state.depthClamp = (context->depthBias != 0.0f) || (context->slopeDepthBias != 0.0f);
 
-		if(context->alphaBlendActive())
-		{
-			state.alphaBlendActive = true;
-			state.sourceBlendFactor = context->sourceBlendFactor();
-			state.destBlendFactor = context->destBlendFactor();
-			state.blendOperation = context->blendOperation();
-			state.sourceBlendFactorAlpha = context->sourceBlendFactorAlpha();
-			state.destBlendFactorAlpha = context->destBlendFactorAlpha();
-			state.blendOperationAlpha = context->blendOperationAlpha();
-		}
-
 		for(int i = 0; i < RENDERTARGETS; i++)
 		{
 			state.colorWriteMask |= context->colorWriteActive(i) << (4 * i);
 			state.targetFormat[i] = context->renderTargetInternalFormat(i);
+
+			if (context->alphaBlendActive(i))
+			{
+				state.alphaBlendActive[i] = true;
+				state.sourceBlendFactor[i] = context->sourceBlendFactor(i);
+				state.destBlendFactor[i] = context->destBlendFactor(i);
+				state.blendOperation[i] = context->blendOperation(i);
+				state.sourceBlendFactorAlpha[i] = context->sourceBlendFactorAlpha(i);
+				state.destBlendFactorAlpha[i] = context->destBlendFactorAlpha(i);
+				state.blendOperationAlpha[i] = context->blendOperationAlpha(i);
+			}
+
 		}
 
 		state.multiSample = static_cast<unsigned int>(context->sampleCount);
