@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e6d02a0c_75d51b69",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-15T15:46:29Z",
+      "side": 1,
+      "message": "\u003e It\u0027s not a cache since it can grow indefinitely (not for this particular use, but for others).\n\nI don\u0027t think that violates the definition of a cache.\n\n\u003e It\u0027s only used for mapping Optimization::Level to llvm::TargetMachine, so no need to templatize it.\n\nTrue, although actually substituting the KEY and VALUE for the real types actually makes the code less readable in this case (the weird edge case with hash needing to be int, the VALUE being quite lengthy). The only reason this was extracted out as a separate class was due to the lack of copy constructor on mutex.\n\n\u003e There\u0027s only four optimization levels. Don\u0027t really need a map for this.\n\nSwitching to an array would probably result declaring an upper bound on Optimization::Level which is chaff that\u0027ll can have knock-on effects like compiler warnings that not all enum cases are handled by a switch.\nThe performance hit here is utterly negligible.",
+      "parentUuid": "3cf84d70_b5f73881",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 124,
+        "endChar": 12
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc874a77_77d7f010",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-07-15T14:48:41Z",
       "side": 1,
       "message": "nit: Since JITGlobals is a singleton it can own the TargetMachine\u0027s for its entire lifetime and we can avoid the overhead of reference counting.",
+      "range": {
+        "startLine": 161,
+        "startChar": 33,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "2714ddec3659ecc373f2b3f97f83d28cd8351ab9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02908199_297bd8c2",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-15T15:46:29Z",
+      "side": 1,
+      "message": "I decided to opt for a shared_ptr to future-proof the Cache for eviction, say if we needed to parameterize the TargetMachine with more than just optimization level. Again, the actual overhead here of reference counting is utterly negligible.",
+      "parentUuid": "cc874a77_77d7f010",
       "range": {
         "startLine": 161,
         "startChar": 33,
