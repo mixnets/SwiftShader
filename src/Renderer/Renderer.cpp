@@ -2014,7 +2014,6 @@ namespace sw
 		triangle.v2 = triangle.v0;
 
 		triangle.v1.X += iround(16 * 0.5f * pSize);
-		triangle.v2.Y -= iround(16 * 0.5f * pSize) * (data.Hx16[0] > 0.0f ? 1 : -1);   // Both Direct3D and OpenGL expect (0, 0) in the top-left corner
 
 		Polygon polygon(P, 4);
 
@@ -2030,6 +2029,7 @@ namespace sw
 				}
 			}
 
+			triangle.v2.Y -= iround(16 * 0.5f * pSize) * (data.Hx16[0] > 0.0f ? 1 : -1);   // Both Direct3D and OpenGL expect (0, 0) in the top-left corner
 			return setupRoutine(&primitive, &triangle, &polygon, &data);
 		}
 
