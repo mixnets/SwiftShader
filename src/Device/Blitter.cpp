@@ -151,6 +151,8 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 			}
 		}
 	}
+
+	dest->prepareForSampling(subresourceRange);
 }
 
 bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
@@ -274,6 +276,8 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 			}
 		}
 	}
+
+	dest->prepareForSampling(subresourceRange);
 
 	return true;
 }
@@ -1869,6 +1873,8 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 			dstOffset.z++;
 		}
 	}
+
+	dst->prepareForSampling(srcSubresRange);
 }
 
 void Blitter::computeCubeCorner(Pointer<Byte> &layer, Int &x0, Int &x1, Int &y0, Int &y1, Int &pitchB, const State &state)

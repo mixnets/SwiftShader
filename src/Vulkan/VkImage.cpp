@@ -1003,7 +1003,7 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 		for(; subresourceLayers.mipLevel <= lastMipLevel; subresourceLayers.mipLevel++)
 		{
 			for(subresourceLayers.baseArrayLayer = 0;
-			    subresourceLayers.baseArrayLayer < arrayLayers;
+			    (subresourceLayers.baseArrayLayer + 6) <= arrayLayers;
 			    subresourceLayers.baseArrayLayer += 6)
 			{
 				device->getBlitter()->updateBorders(decompressedImage ? decompressedImage : this, subresourceLayers);
