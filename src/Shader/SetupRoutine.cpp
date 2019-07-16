@@ -665,7 +665,7 @@ namespace sw
 		#endif
 	}
 
-	Routine *SetupRoutine::getRoutine()
+	RoutineSPtr SetupRoutine::getRoutine()
 	{
 		return routine;
 	}

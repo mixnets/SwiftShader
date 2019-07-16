@@ -1088,9 +1088,9 @@ namespace sw
 		return state;
 	}
 
-	Routine *VertexProcessor::routine(const State &state)
+	RoutineSPtr VertexProcessor::routine(const State &state)
 	{
-		Routine *routine = routineCache->query(state);
+		RoutineSPtr routine = routineCache->query(state);
 
 		if(!routine)   // Create one
 		{

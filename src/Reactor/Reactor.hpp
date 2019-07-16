@@ -2464,8 +2464,8 @@ namespace rr
 			return Argument<typename std::tuple_element<index, std::tuple<Arguments...>>::type>(arg);
 		}
 
-		Routine *operator()(const char *name, ...);
-		Routine *operator()(const Config::Edit &cfg, const char *name, ...);
+		RoutineSPtr operator()(const char *name, ...);
+		RoutineSPtr operator()(const Config::Edit &cfg, const char *name, ...);
 
 	protected:
 		Nucleus *core;
@@ -3031,7 +3031,7 @@ namespace rr
 	}
 
 	template<typename Return, typename... Arguments>
-	Routine *Function<Return(Arguments...)>::operator()(const char *name, ...)
+	RoutineSPtr Function<Return(Arguments...)>::operator()(const char *name, ...)
 	{
 		char fullName[1024 + 1];
 
@@ -3044,7 +3044,7 @@ namespace rr
 	}
 
 	template<typename Return, typename... Arguments>
-	Routine *Function<Return(Arguments...)>::operator()(const Config::Edit &cfg, const char *name, ...)
+	RoutineSPtr Function<Return(Arguments...)>::operator()(const Config::Edit &cfg, const char *name, ...)
 	{
 		char fullName[1024 + 1];
 

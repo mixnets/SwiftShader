@@ -15,24 +15,20 @@
 #ifndef rr_Routine_hpp
 #define rr_Routine_hpp
 
+#include <memory>
+
 namespace rr
 {
 	class Routine
 	{
 	public:
-		Routine();
-
-		virtual ~Routine();
+		Routine() = default;
+		virtual ~Routine() = default;
 
 		virtual const void *getEntry(int index = 0) = 0;
-
-		// Reference counting
-		void bind();
-		void unbind();
-
-	private:
-		volatile int bindCount;
 	};
+
+	using RoutineSPtr = std::shared_ptr<Routine>;
 }
 
 #endif   // rr_Routine_hpp

@@ -43,7 +43,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	std::unique_lock<std::mutex> lock(imageDescriptor->device->getSamplingRoutineCacheMutex());
 	vk::Device::SamplingRoutineCache* cache = imageDescriptor->device->getSamplingRoutineCache();
 
-	rr::Routine* routine = cache->query(key);
+	rr::RoutineSPtr routine = cache->query(key);
 	if(routine)
 	{
 		return (ImageSampler*)(routine->getEntry());
@@ -90,7 +90,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	return (ImageSampler*)(routine->getEntry());
 }
 
-rr::Routine *SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
+rr::RoutineSPtr SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
 {
 	// TODO(b/129523279): Hold a separate mutex lock for the sampler being built.
 	rr::Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)> function;

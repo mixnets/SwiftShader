@@ -67,7 +67,7 @@ namespace sw
 
 	protected:
 		State update(const sw::Context* context) const;
-		Routine *routine(const State &state);
+		RoutineSPtr routine(const State &state);
 
 		void setRoutineCacheSize(int cacheSize);
 
