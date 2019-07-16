@@ -401,10 +401,10 @@ namespace
 			passManager->run(*module);
 		}
 
-		rr::Routine *acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg)
+		std::shared_ptr<rr::Routine> acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg)
 		{
 			ASSERT(module);
-			return new JITRoutine(std::move(module), funcs, count, cfg);
+			return std::make_shared<JITRoutine>(std::move(module), funcs, count, cfg);
 		}
 
 		const rr::Config config;
@@ -1176,7 +1176,7 @@ namespace rr
 		return ::defaultConfig();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+	std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 	{
 		auto cfg = cfgEdit.apply(jit->config);
 
@@ -4708,7 +4708,7 @@ void Nucleus::yield(Value* val)
 	jit->builder->SetInsertPoint(resumeBlock);
 }
 
-Routine* Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
 	ASSERT_MSG(jit->coroutine.id != nullptr, "acquireCoroutine() called without a call to createCoroutine()");
 
