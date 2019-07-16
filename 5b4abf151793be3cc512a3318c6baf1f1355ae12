@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9c504698_fd8fe92a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-16T20:54:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c958616c_079e0f18",
+      "range": {
+        "startLine": 20,
+        "startChar": 6,
+        "endLine": 20,
+        "endChar": 15
+      },
+      "revId": "5b4abf151793be3cc512a3318c6baf1f1355ae12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "058705d8_eed0c540",
         "filename": "src/WSI/MacOSSurfaceMVK.h",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "5b4abf151793be3cc512a3318c6baf1f1355ae12",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e10b1251_e5cada11",
+        "filename": "src/WSI/MacOSSurfaceMVK.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-16T20:54:56Z",
+      "side": 1,
+      "message": "Not necessarily, MacOS is probably the exception here. If you look at the .mm file, you\u0027ll see a line with \"auto drawable \u003d metalLayer-\u003egetNextDrawable()\". The metal layer actually manages an array of textures and takes care of providing an interface to get the next available drawable texture. Because of this, we don\u0027t need to bind a specific texture to a specific image and we always copy the image into the texture before presenting, so there\u0027s no need for the swapchain to have the same number of images as the number of textures in the metal layer.\n\nIf we find another platform which exhibits this behavior, then I think we should provide a default implementation in the base class, but it may not be necessary at the moment.",
+      "parentUuid": "058705d8_eed0c540",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 61
+      },
+      "revId": "5b4abf151793be3cc512a3318c6baf1f1355ae12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
