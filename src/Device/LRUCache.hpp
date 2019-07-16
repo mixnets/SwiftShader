@@ -30,8 +30,8 @@ namespace sw
 
 		~LRUCache();
 
-		Data *query(const Key &key) const;
-		Data *add(const Key &key, Data *data);
+		Data query(const Key &key) const;
+		Data add(const Key &key, const Data &data);
 
 		int getSize() {return size;}
 		Key &getKey(int i) {return key[i];}
@@ -44,7 +44,7 @@ namespace sw
 
 		Key *key;
 		Key **ref;
-		Data **data;
+		Data *data;
 	};
 
 	// Helper class for clearing the memory of objects at construction.
@@ -100,12 +100,10 @@ namespace sw
 
 		key = new Key[size];
 		ref = new Key*[size];
-		data = new Data*[size];
+		data = new Data[size];
 
 		for(int i = 0; i < size; i++)
 		{
-			data[i] = nullptr;
-
 			ref[i] = &key[i];
 		}
 	}
@@ -119,21 +117,12 @@ namespace sw
 		delete[] ref;
 		ref = nullptr;
 
-		for(int i = 0; i < size; i++)
-		{
-			if(data[i])
-			{
-				data[i]->unbind();
-				data[i] = nullptr;
-			}
-		}
-
 		delete[] data;
 		data = nullptr;
 	}
 
 	template<class Key, class Data>
-	Data *LRUCache<Key, Data>::query(const Key &key) const
+	Data LRUCache<Key, Data>::query(const Key &key) const
 	{
 		for(int i = top; i > top - fill; i--)
 		{
@@ -141,14 +130,14 @@ namespace sw
 
 			if(key == *ref[j])
 			{
-				Data *hit = data[j];
+				Data hit = data[j];
 
 				if(i != top)
 				{
 					// Move one up
 					int k = (j + 1) & mask;
 
-					Data *swapD = data[k];
+					Data swapD = data[k];
 					data[k] = data[j];
 					data[j] = swapD;
 
@@ -165,20 +154,12 @@ namespace sw
 	}
 
 	template<class Key, class Data>
-	Data *LRUCache<Key, Data>::add(const Key &key, Data *data)
+	Data LRUCache<Key, Data>::add(const Key &key, const Data &data)
 	{
 		top = (top + 1) & mask;
 		fill = fill + 1 < size ? fill + 1 : size;
 
 		*ref[top] = key;
-
-		data->bind();
-
-		if(this->data[top])
-		{
-			this->data[top]->unbind();
-		}
-
 		this->data[top] = data;
 
 		return data;

@@ -36,12 +36,12 @@ namespace
 namespace vk
 {
 
-rr::Routine* Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key& key) const
+std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key& key) const
 {
 	return cache.query(hash(key));
 }
 
-void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key& key, rr::Routine* routine)
+void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key& key, const std::shared_ptr<rr::Routine>& routine)
 {
 	ASSERT(routine);
 	cache.add(hash(key), routine);
