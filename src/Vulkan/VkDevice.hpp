@@ -68,12 +68,12 @@ public:
 			uint32_t imageView;
 		};
 
-		rr::Routine* query(const Key& key) const;
-		void add(const Key& key, rr::Routine* routine);
+		rr::RoutineSPtr query(const Key& key) const;
+		void add(const Key& key, const rr::RoutineSPtr& routine);
 
 	private:
 		std::size_t hash(const Key &key) const;
-		sw::LRUCache<std::size_t, rr::Routine> cache;
+		sw::LRUCache<std::size_t, rr::RoutineSPtr> cache;
 	};
 
 	SamplingRoutineCache* getSamplingRoutineCache();

@@ -71,7 +71,7 @@ namespace
 	Ice::Cfg *function = nullptr;
 	Ice::CfgNode *basicBlock = nullptr;
 	Ice::CfgLocalAllocatorScope *allocator = nullptr;
-	rr::Routine *routine = nullptr;
+	rr::RoutineSPtr routine;
 
 	std::mutex codegenMutex;
 
@@ -627,7 +627,7 @@ namespace rr
 		return ::defaultConfig();
 	}
 
-	Routine *Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+	RoutineSPtr Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 	{
 		if(basicBlock->getInsts().empty() || basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
 		{
@@ -663,7 +663,7 @@ namespace rr
 		Routine *handoffRoutine = ::routine;
 		::routine = nullptr;
 
-		return handoffRoutine;
+		return std::shared_ptr<Routine>(handoffRoutine);
 	}
 
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
