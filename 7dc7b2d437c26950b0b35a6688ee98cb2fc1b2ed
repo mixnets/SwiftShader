@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75a44e03_d8353983",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-16T16:26:10Z",
+      "side": 1,
+      "message": "You might want to also associate this with b/137524292",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 15
+      },
+      "revId": "7dc7b2d437c26950b0b35a6688ee98cb2fc1b2ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
