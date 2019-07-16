@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "25ac7caf_8aa219d6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-16T15:52:12Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3ef52dac_4e3af8d3",
+      "revId": "998f397d80b59cc8521adf88a73e0cb3d851ccf8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "585e47c0_4a66a6e6",
         "filename": "src/Vulkan/VkDevice.hpp",
         "patchSetId": 6
