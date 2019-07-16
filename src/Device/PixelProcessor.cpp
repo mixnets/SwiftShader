@@ -227,12 +227,12 @@ namespace sw
 		return state;
 	}
 
-	Routine *PixelProcessor::routine(const State &state,
+	RoutineSPtr PixelProcessor::routine(const State &state,
 		vk::PipelineLayout const *pipelineLayout,
 		SpirvShader const *pixelShader,
 		const vk::DescriptorSet::Bindings &descriptorSets)
 	{
-		Routine *routine = routineCache->query(state);
+		RoutineSPtr routine = routineCache->query(state);
 
 		if(!routine)
 		{

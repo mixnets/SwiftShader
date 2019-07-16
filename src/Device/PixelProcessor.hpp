@@ -129,7 +129,7 @@ namespace sw
 
 	protected:
 		const State update(const Context* context) const;
-		Routine *routine(const State &state, vk::PipelineLayout const *pipelineLayout,
+		RoutineSPtr routine(const State &state, vk::PipelineLayout const *pipelineLayout,
 		                 SpirvShader const *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
 		void setRoutineCacheSize(int routineCacheSize);
 

@@ -223,9 +223,9 @@ namespace sw
 		return state;
 	}
 
-	Routine *SetupProcessor::routine(const State &state)
+	RoutineSPtr SetupProcessor::routine(const State &state)
 	{
-		Routine *routine = routineCache->query(state);
+		RoutineSPtr routine = routineCache->query(state);
 
 		if(!routine)
 		{

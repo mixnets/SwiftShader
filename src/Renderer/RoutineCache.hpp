@@ -24,7 +24,7 @@ namespace sw
 	using namespace rr;
 
 	template<class State>
-	using RoutineCache = LRUCache<State, Routine>;
+	using RoutineCache = LRUCache<State, RoutineSPtr>;
 }
 
 #endif   // sw_RoutineCache_hpp
