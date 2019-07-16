@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c958616c_079e0f18",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-16T20:41:22Z",
+      "side": 1,
+      "message": "Let\u0027s make that bug specifically about implementing VK_MVK_macos_surface. It would be confusing to see commits for different platforms.",
+      "range": {
+        "startLine": 20,
+        "startChar": 6,
+        "endLine": 20,
+        "endChar": 15
+      },
+      "revId": "5b4abf151793be3cc512a3318c6baf1f1355ae12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "058705d8_eed0c540",
+        "filename": "src/WSI/MacOSSurfaceMVK.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-16T20:41:22Z",
+      "side": 1,
+      "message": "Why are these empty for this implementation, and not the Xlib one? Should the base class have a default empty implementation?",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 61
+      },
+      "revId": "5b4abf151793be3cc512a3318c6baf1f1355ae12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
