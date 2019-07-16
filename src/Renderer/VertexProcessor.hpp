@@ -284,7 +284,7 @@ namespace sw
 		const Matrix &getViewTransform();
 
 		const State update(DrawType drawType);
-		Routine *routine(const State &state);
+		RoutineSPtr routine(const State &state);
 
 		bool isFixedFunction();
 		void setRoutineCacheSize(int cacheSize);
