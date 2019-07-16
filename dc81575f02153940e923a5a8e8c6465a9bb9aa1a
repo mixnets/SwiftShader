@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca7ea9fb_b23a7e3a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-16T15:28:38Z",
+      "side": 1,
+      "message": "Let\u0027s open a new tracker bug for this, since that one\u0027s already considered Fixed and this change is going to have some follow-up. Call it \"Fix sampling routine lifetime management\" or something like that.",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 20,
+        "endChar": 15
+      },
+      "revId": "dc81575f02153940e923a5a8e8c6465a9bb9aa1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

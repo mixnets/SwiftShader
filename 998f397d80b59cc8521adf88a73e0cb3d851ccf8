@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3ef52dac_4e3af8d3",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-16T15:28:38Z",
+      "side": 1,
+      "message": "Many months ago, before our realization that sampler and image view descriptors can be mixed and matched, we considered having the descriptor essentially *be* the routine function pointer (with most of the state backed in already).\n\nSo instead of storing a single function pointer, providing access to the routine cache through the descriptor doesn\u0027t seem unreasonable. We could even have a distinct cache per descriptor, although we\u0027d lose the ability to keep the total number of routines reasonable, and we wouldn\u0027t be able to reuse routines for state that\u0027s identical.\n\nEither way this LGTM for now.",
+      "parentUuid": "54ce6f70_8618cb5d",
+      "revId": "998f397d80b59cc8521adf88a73e0cb3d851ccf8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "585e47c0_4a66a6e6",
         "filename": "src/Vulkan/VkDevice.hpp",
         "patchSetId": 6
