@@ -1209,7 +1209,7 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
-		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
+		SpirvRoutine(vk::PipelineLayout const *pipelineLayout, int inputInterfaceSize, int outputInterfaceSize);
 
 		using Variable = Array<SIMD::Float>;
 
@@ -1217,8 +1217,8 @@ namespace sw
 
 		std::unordered_map<SpirvShader::Object::ID, Variable> variables;
 
-		Variable inputs = Variable{MAX_INTERFACE_COMPONENTS};
-		Variable outputs = Variable{MAX_INTERFACE_COMPONENTS};
+		Variable inputs;
+		Variable outputs;
 
 		Pointer<Byte> workgroupMemory;
 		Pointer<Pointer<Byte>> descriptorSets;
