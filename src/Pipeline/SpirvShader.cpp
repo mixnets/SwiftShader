@@ -6448,8 +6448,8 @@ namespace sw
 			intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(objId) : nullptr),
 			type(obj.type) {}
 
-	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
-		pipelineLayout(pipelineLayout)
+	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout, int inputInterfaceSize, int outputInterfaceSize) :
+		pipelineLayout(pipelineLayout), inputs{inputInterfaceSize}, outputs{outputInterfaceSize}
 	{
 	}
 

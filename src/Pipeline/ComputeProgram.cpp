@@ -40,7 +40,7 @@ namespace sw
 
 	void ComputeProgram::generate()
 	{
-		SpirvRoutine routine(pipelineLayout);
+		SpirvRoutine routine(pipelineLayout, 0, 0);
 		shader->emitProlog(&routine);
 		emit(&routine);
 		shader->emitEpilog(&routine);

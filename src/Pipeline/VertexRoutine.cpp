@@ -27,7 +27,7 @@ namespace sw
 			const VertexProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,
 			SpirvShader const *spirvShader)
-		: routine(pipelineLayout),
+		: routine(pipelineLayout, MAX_INTERFACE_COMPONENTS, MAX_INTERFACE_COMPONENTS),
 		  state(state),
 		  spirvShader(spirvShader)
 	{
