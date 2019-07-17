@@ -30,7 +30,7 @@ namespace sw
 			SpirvShader const *spirvShader,
 			const vk::DescriptorSet::Bindings &descriptorSets)
 		: QuadRasterizer(state, spirvShader),
-		  routine(pipelineLayout),
+		  routine(pipelineLayout, MAX_INTERFACE_COMPONENTS, 4 * RENDERTARGETS),
 		  descriptorSets(descriptorSets)
 	{
 		if (spirvShader)
