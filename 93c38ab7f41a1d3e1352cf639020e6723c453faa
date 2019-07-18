@@ -74,6 +74,30 @@
     },
     {
       "key": {
+        "uuid": "203f3139_26165f1c",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-18T20:07:57Z",
+      "side": 1,
+      "message": "If I\u0027m interpreting this correctly, your concern would be that an application may disable robustBufferAccess, do an out-of-bounds access that we *could* statically detect, and yet this function would return that it is within bounds?\n\nI don\u0027t think such case matters. The spec states the app *must* not do this, or it will face undefined behavior.\n\nJust to be clear, I don\u0027t think the distinction matters - when it comes to naming things. What this function really tries to answer is \"should we do bounds checking\"?\nI do care about SwiftShader actually detecting when the app violates the requirements, as a debugging feature. I\u0027ll definitely follow up on this.",
+      "parentUuid": "d5506c3d_cf55b3aa",
+      "range": {
+        "startLine": 171,
+        "startChar": 15,
+        "endLine": 171,
+        "endChar": 34
+      },
+      "revId": "93c38ab7f41a1d3e1352cf639020e6723c453faa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ae446ef_bfa42918",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 4
@@ -134,6 +158,30 @@
       "side": 1,
       "message": "I\u0027m going to have to come back to this - this has reached a level of complexity my brain cannot cope with tonight. Another attempt at explaining this might help.",
       "parentUuid": "4eb9052e_64a7dbfd",
+      "range": {
+        "startLine": 184,
+        "startChar": 11,
+        "endLine": 184,
+        "endChar": 49
+      },
+      "revId": "93c38ab7f41a1d3e1352cf639020e6723c453faa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "603076cc_a9901040",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-18T20:07:57Z",
+      "side": 1,
+      "message": "I had to sort my thoughts as well. Hopefully my last e-mail helped you too. I do think my conclusion on your question here is correct, but for the case where none of the execution lanes are active we could end up accessing out of bounds.\n\nGiven that the tests don\u0027t exercise that case, and it is presumably rare in practice, I\u0027d like to land this as-is to obtain the test speed gains, and make it my top priority to follow up with a fix for the edge cases (and provide tests).",
+      "parentUuid": "b35bbbed_342f9e12",
       "range": {
         "startLine": 184,
         "startChar": 11,
