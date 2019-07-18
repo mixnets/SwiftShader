@@ -98,6 +98,30 @@
     },
     {
       "key": {
+        "uuid": "2ddcaa7f_dc293682",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-18T21:48:09Z",
+      "side": 1,
+      "message": "\u003e If I\u0027m interpreting this correctly, your concern would be that an application may disable robustBufferAccess, do an out-of-bounds access that we *could* statically detect, and yet this function would return that it is within bounds?\n\nYes.\n\n\u003e I don\u0027t think such case matters. The spec states the app *must* not do this, or it will face undefined behavior.\n\nI just don\u0027t like a function called \u0027isStaticAllInBounds\u0027 to do anything other than telling you whether you are in bounds.\nBeing in-bounds was well defined - it\u0027s an address between SIMD::Pointer::base and SIMD::Pointer::base+SIMD::Pointer::limit()-1. I feel we\u0027re pointlessly muddying this definition for the sake of a function rename (or keeping this as-is and adding another, better named function).\n\nIt\u0027s like having a function called \u0027isThisAFish\u0027 that also takes a \u0027IfNotAFish\u0027 parameter and will also sometimes return true for Crustaceans. If you want to write a function that tests whether something is food for a penguin, name it \u0027isPenguinFood\u0027.\n\nGiven that we\u0027ve talked about pushing SIMD::Pointer down into Reactor, it also seems like a bad move to start pushing Vulkan concepts directly into it.",
+      "parentUuid": "203f3139_26165f1c",
+      "range": {
+        "startLine": 171,
+        "startChar": 15,
+        "endLine": 171,
+        "endChar": 34
+      },
+      "revId": "93c38ab7f41a1d3e1352cf639020e6723c453faa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ae446ef_bfa42918",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 4
@@ -182,6 +206,30 @@
       "side": 1,
       "message": "I had to sort my thoughts as well. Hopefully my last e-mail helped you too. I do think my conclusion on your question here is correct, but for the case where none of the execution lanes are active we could end up accessing out of bounds.\n\nGiven that the tests don\u0027t exercise that case, and it is presumably rare in practice, I\u0027d like to land this as-is to obtain the test speed gains, and make it my top priority to follow up with a fix for the edge cases (and provide tests).",
       "parentUuid": "b35bbbed_342f9e12",
+      "range": {
+        "startLine": 184,
+        "startChar": 11,
+        "endLine": 184,
+        "endChar": 49
+      },
+      "revId": "93c38ab7f41a1d3e1352cf639020e6723c453faa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06fbbeed_5fb030d8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-18T21:48:09Z",
+      "side": 1,
+      "message": "Heh. I came to the conclusion last night that this was free from OOB reads (I thought it just the writes that could cause issues).\n\nHowever, now that you\u0027ve said this, and I\u0027ve gone through this for the 4th time, I think I see what you mean. Arbitrary memory loads are quite scary.\n\n\u003e Given that the tests don\u0027t exercise that case, and it is presumably rare in practice, I\u0027d like to land this as-is to obtain the test speed gains, and make it my top priority to follow up with a fix for the edge cases (and provide tests).\n\nHumm... okay. This is your call. Do we have a bug tracker for this?",
+      "parentUuid": "603076cc_a9901040",
       "range": {
         "startLine": 184,
         "startChar": 11,
