@@ -169,6 +169,30 @@
     },
     {
       "key": {
+        "uuid": "0549c12f_a26d7547",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-18T20:07:27Z",
+      "side": 1,
+      "message": "It\u0027s definitely good to be picky about this. Good naming is important to avoid misunderstandings. And I generally agree clarity trumps succinctness. I just think it\u0027s worth spending a bit of time trying to find names that capture the full intent instead of using more verbose phrases. The latter run the risk of still not being entire clear/unambiguous, despite appearing that way. What happens on out-of-bounds loads in inactive lanes, for example? Do we treat them the same as out-of-bounds on active lanes, or can they have undefined values? How do we describe robustBufferAccess\u0027s 16-byte rule, in an enum name?\n\nI\u0027m not entirely convinced that more verbose enum names that still leave some aspects unclear would save time writing/reviewing this code. This is complex matter either way and verbosity and extensive commenting can give a false sense of knowing what the code actually does under all circumstances. Admittedly the commit message of the next change in this stack is an example of that and reaches a false conclusion.\n\nAnyway, I definitely take your wariness to heart and generally feel the same way about this code. I\u0027ll eagerly act on any future suggestion that manages to improve on  it without adding other pitfalls.",
+      "parentUuid": "5fa9595b_5638a71b",
+      "range": {
+        "startLine": 58,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 31
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3688f461_e938b3c7",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -229,6 +253,30 @@
       "side": 1,
       "message": "\u003e I think it\u0027s important to state the required behavior, not the current implementation\n\nI guess we disagree there.\nWe have the Vulkan spec to state the required behavior, and very little documentation for a whole lot of very complex code.\n\nThere\u0027s a clear distinction between the wording of a spec which has a lot of wiggle room, and having an actual concrete implementation documented. You\u0027ve already demonstrated that there\u0027s more than one way to implement RobustBufferAccess, so why would you not want to document how these two modes (might in the future) differ?\n\n\u003e If we used \"Zero\" in most places we could incorrectly conclude that something doesn\u0027t have any optimization opportunity left.\n\nYes, this is why my first suggestion was to simply document \"that this currently behaves the same as Zero\".\n\nHaving this sort of information at hand greatly helps with readability, IMO.",
       "parentUuid": "c1e70f98_44a7efd6",
+      "range": {
+        "startLine": 61,
+        "startChar": 2,
+        "endLine": 61,
+        "endChar": 20
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aba7dfdb_e38f3d2d",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-18T20:07:27Z",
+      "side": 1,
+      "message": "\u003e We have the Vulkan spec to state the required behavior, and very little documentation for a whole lot of very complex code.\n\nOkay, I definitely agree on the latter. I just don\u0027t think the solution is to use enum names that describe our current implementation.\n\n\u003e Having this sort of information at hand greatly helps with readability, IMO.\n\nAgreed, if we can actually keep that up-to-date. There\u0027s a very significant chance of the comments no longer reflecting reality very quickly, or being incomplete and someone relying on the behavior implied by the enum name instead of what it actually intended to guarantee for spec behavior. That would lead to all sorts of confusion.\n\nPerhaps the longer-term solution is to have two sets of enums: one describing the spec requirement, and one our implementation, and having a centralized conversion from the former to the latter which decides which implementation is chosen based on various circumstances?\n\nIt seems a tiny bit overkill to me, at least in the short term, as we can currently essentially do that conversion in the SIMD::Load\u003c\u003e and Store\u003c\u003e functions. I guess your argument is to essentially do that conversion early instead of late. Doing it in the middle could be the ultimate answer. Let\u0027s give that a try later?",
+      "parentUuid": "8372a121_ee9b75c7",
       "range": {
         "startLine": 61,
         "startChar": 2,
@@ -349,6 +397,30 @@
       "side": 1,
       "message": "I just don\u0027t understand the emphasis in repeating the spec over proper documentation of implementation.\n\nClarity on what \u0027secure\u0027 means would be nice.",
       "parentUuid": "fa2b2d32_236afc7e",
+      "range": {
+        "startLine": 62,
+        "startChar": 56,
+        "endLine": 62,
+        "endChar": 66
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a503b634_79ad7aa0",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-18T20:07:27Z",
+      "side": 1,
+      "message": "\u003e I just don\u0027t understand the emphasis in repeating the spec over proper documentation of implementation.\n\nWe need to know for each load and store what level of robustness must be guaranteed spec-wise, so I wanted to express that through the enum. Doesn\u0027t mean I don\u0027t want the effective implementation of each of them to be documented. As suggested above we could make that distinction more explicit with a second set of enums in a future change.\n\n\u003e Clarity on what \u0027secure\u0027 means would be nice.\n\nJust in the general data security sense. robustBufferAccess also doesn\u0027t define what value you\u0027ll get exactly, but it won\u0027t leak data.",
+      "parentUuid": "abe8c40b_e5b73b86",
       "range": {
         "startLine": 62,
         "startChar": 56,
