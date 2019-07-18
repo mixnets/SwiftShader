@@ -638,4 +638,13 @@ void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet& descripto
 	memcpy(memToWrite, memToRead, writeSize);
 }
 
+int x = (([](){
+
+	printf("sizeof SampledImageDescriptor = %zu\n", sizeof(SampledImageDescriptor));
+	printf("sizeof sw::Mipmap = %zu\n", sizeof(sw::Mipmap));
+	printf("sizeof sw::Texture = %zu\n", sizeof(sw::Texture));
+	printf("sizeof sw::Sampler = %zu\n", sizeof(sw::Sampler));
+
+})(), 0);
+
 } // namespace vk

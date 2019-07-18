@@ -263,17 +263,17 @@ namespace sw
 
 		if(state.textureFilter != FILTER_GATHER)
 		{
-			if((state.swizzle.r != VK_COMPONENT_SWIZZLE_R) ||
-			   (state.swizzle.g != VK_COMPONENT_SWIZZLE_G) ||
-			   (state.swizzle.b != VK_COMPONENT_SWIZZLE_B) ||
-			   (state.swizzle.a != VK_COMPONENT_SWIZZLE_A))
+			if((state.swizzleR != VK_COMPONENT_SWIZZLE_R) ||
+			   (state.swizzleG != VK_COMPONENT_SWIZZLE_G) ||
+			   (state.swizzleB != VK_COMPONENT_SWIZZLE_B) ||
+			   (state.swizzleA != VK_COMPONENT_SWIZZLE_A))
 			{
 				const Vector4f col(c);
 				bool integer = hasUnnormalizedIntegerTexture();
-				applySwizzle(state.swizzle.r, c.x, col, integer);
-				applySwizzle(state.swizzle.g, c.y, col, integer);
-				applySwizzle(state.swizzle.b, c.z, col, integer);
-				applySwizzle(state.swizzle.a, c.w, col, integer);
+				applySwizzle((VkComponentSwizzle)state.swizzleR, c.x, col, integer);
+				applySwizzle((VkComponentSwizzle)state.swizzleG, c.y, col, integer);
+				applySwizzle((VkComponentSwizzle)state.swizzleB, c.z, col, integer);
+				applySwizzle((VkComponentSwizzle)state.swizzleA, c.w, col, integer);
 			}
 		}
 		else  // Gather
@@ -2402,10 +2402,10 @@ namespace sw
 	{
 		switch(state.gatherComponent)
 		{
-		case 0: return state.swizzle.r;
-		case 1: return state.swizzle.g;
-		case 2: return state.swizzle.b;
-		case 3: return state.swizzle.a;
+		case 0: return (VkComponentSwizzle)state.swizzleR;
+		case 1: return (VkComponentSwizzle)state.swizzleG;
+		case 2: return (VkComponentSwizzle)state.swizzleB;
+		case 3: return (VkComponentSwizzle)state.swizzleA;
 		default:
 			UNREACHABLE("Invalid component");
 			return VK_COMPONENT_SWIZZLE_R;

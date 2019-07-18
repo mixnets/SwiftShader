@@ -91,25 +91,33 @@ namespace sw
 
 	struct Sampler
 	{
-		VkImageViewType textureType;
 		vk::Format textureFormat;
-		FilterType textureFilter;
-		AddressingMode addressingModeU;
-		AddressingMode addressingModeV;
-		AddressingMode addressingModeW;
-		MipmapType mipmapFilter;
-		VkComponentMapping swizzle;
-		int gatherComponent;
-		bool highPrecisionFiltering;
-		bool compareEnable;
-		VkCompareOp compareOp;
-		VkBorderColor border;
-		bool unnormalizedCoordinates;
-		bool largeTexture;
+		uint32_t swizzleR : 3;
+		uint32_t swizzleG : 3;
+		uint32_t swizzleB : 3;
+		uint32_t swizzleA : 3;
 
-		VkSamplerYcbcrModelConversion ycbcrModel;
-		bool studioSwing;    // Narrow range
-		bool swappedChroma;  // Cb/Cr components in reverse order
+		uint32_t textureType : 3;
+		FilterType textureFilter : 3;
+		AddressingMode addressingModeU : 4;
+		AddressingMode addressingModeV : 4;
+		AddressingMode addressingModeW : 4;
+
+		MipmapType mipmapFilter : 2;
+		uint32_t gatherComponent : 2;
+
+		uint32_t compareOp : 3;
+		uint32_t border : 3;
+
+		bool highPrecisionFiltering : 1;
+		bool compareEnable : 1;
+		bool unnormalizedCoordinates : 1;
+		bool largeTexture : 1;
+		bool studioSwing : 1;    // Narrow range
+		bool swappedChroma : 1;  // Cb/Cr components in reverse order
+
+		uint32_t ycbcrModel : 3;
+
 	};
 }
 

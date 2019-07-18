@@ -62,7 +62,10 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.addressingModeW = convertAddressingMode(2, sampler->addressModeW, type);
 
 	samplerState.mipmapFilter = convertMipmapMode(sampler);
-	samplerState.swizzle = imageDescriptor->swizzle;
+	samplerState.swizzleR = imageDescriptor->swizzle.r;
+	samplerState.swizzleG = imageDescriptor->swizzle.g;
+	samplerState.swizzleB = imageDescriptor->swizzle.b;
+	samplerState.swizzleA = imageDescriptor->swizzle.a;
 	samplerState.gatherComponent = instruction.gatherComponent;
 	samplerState.highPrecisionFiltering = false;
 	samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
