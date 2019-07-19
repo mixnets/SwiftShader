@@ -60,6 +60,11 @@
 
 #include "Reactor/Nucleus.hpp"
 
+#include "Yarn/Scheduler.hpp"
+#include "Yarn/Thread.hpp"
+
+#include "System/CPUID.hpp"
+
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -98,12 +103,40 @@ void setReactorDefaultConfig()
 	rr::Nucleus::adjustDefaultConfig(cfg);
 }
 
+void setCPUDefaults()
+{
+	sw::CPUID::setEnableSSE4_1(true);
+	sw::CPUID::setEnableSSSE3(true);
+	sw::CPUID::setEnableSSE3(true);
+	sw::CPUID::setEnableSSE2(true);
+	sw::CPUID::setEnableSSE(true);
+}
+
+std::unique_ptr<yarn::Scheduler> createScheduler()
+{
+	auto scheduler = new yarn::Scheduler();
+	scheduler->setThreadInitializer([] {
+		sw::CPUID::setFlushToZero(true);
+		sw::CPUID::setDenormalsAreZero(true);
+	});
+	scheduler->setWorkerThreadCount(std::min<size_t>(yarn::Thread::numLogicalCPUs(), 16));
+	return std::unique_ptr<yarn::Scheduler>(scheduler);
+}
+
+void bindScheduler()
+{
+	static auto scheduler = createScheduler();
+	scheduler->bind();
+}
+
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
 // initialization of the swiftshader driver.
 void initializeLibrary()
 {
 	static bool doOnce = [] {
 		setReactorDefaultConfig();
+		setCPUDefaults();
+		bindScheduler();
 		return true;
 	}();
 	(void)doOnce;
@@ -531,6 +564,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 
 		ASSERT(queueCreateInfo.queueFamilyIndex < queueFamilyPropertyCount);
 		(void)queueFamilyPropertyCount; // Silence unused variable warning
+	}
+
+	if (yarn::Scheduler::get() == nullptr)
+	{
+		// Each device requires a bound scheduler.
+		bindScheduler();
 	}
 
 	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures);

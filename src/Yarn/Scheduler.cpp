@@ -47,11 +47,11 @@ inline T take(std::queue<T>& queue)
 
 inline void nop()
 {
-    #if defined(_WIN32)
-        __nop();
-    #else
-        __asm__ __volatile__ ("nop");
-    #endif
+#if defined(_WIN32)
+    __nop();
+#else
+    __asm__ __volatile__ ("nop");
+#endif
 }
 
 } // anonymous namespace
@@ -85,15 +85,17 @@ void Scheduler::unbind()
 {
     YARN_ASSERT(bound != nullptr, "No scheduler bound");
 
+    std::unique_ptr<Worker> worker;
     {
         std::unique_lock<std::mutex> lock(bound->singleThreadedWorkerMutex);
         auto tid = std::this_thread::get_id();
         auto it = bound->singleThreadedWorkers.find(tid);
         YARN_ASSERT(it != bound->singleThreadedWorkers.end(), "singleThreadedWorker not found");
-        it->second->stop();
+        worker = std::move(it->second);
         bound->singleThreadedWorkers.erase(tid);
     }
-
+    worker->flush();
+    worker->stop();
     bound = nullptr;
 }
 
@@ -108,14 +110,15 @@ Scheduler::Scheduler()
 Scheduler::~Scheduler()
 {
     setWorkerThreadCount(0);
+    decltype(singleThreadedWorkers) workers;
     {
         std::unique_lock<std::mutex> lock(singleThreadedWorkerMutex);
-        for (auto& it : singleThreadedWorkers)
-        {
-            it.second->flush();
-            it.second->stop();
-        }
-        singleThreadedWorkers = decltype(singleThreadedWorkers)();
+        std::swap(workers, singleThreadedWorkers);
+    }
+    for (auto& it : singleThreadedWorkers)
+    {
+        it.second->flush();
+        it.second->stop();
     }
 }
 
@@ -413,6 +416,12 @@ void Scheduler::Worker::run()
     {
     case Mode::MultiThreaded:
     {
+#if 0 // Enable to pin the worker to a physical CPU.
+        Thread::AffinityMask mask;
+        mask.set(id, true);
+        Thread::setAffinity(mask);
+#endif
+
         YARN_NAME_THREAD("Thread<%.2d> Fiber<%.2d>", int(id), Fiber::current()->id);
         {
             std::unique_lock<std::mutex> lock(work.mutex);
