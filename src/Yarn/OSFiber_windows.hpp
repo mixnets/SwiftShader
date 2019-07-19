@@ -38,7 +38,7 @@ public:
     inline void switchTo(OSFiber*);
 
 private:
-	static void WINAPI run(void* self);
+	static inline void WINAPI run(void* self);
 	LPVOID fiber = nullptr;
 	bool isFiberFromThread = false;
 	std::function<void()> target;
