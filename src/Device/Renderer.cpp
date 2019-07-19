@@ -19,7 +19,6 @@
 #include "Polygon.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Pipeline/Constants.hpp"
-#include "System/CPUID.hpp"
 #include "System/Memory.hpp"
 #include "System/Half.hpp"
 #include "System/Math.hpp"
@@ -32,6 +31,10 @@
 #include "Pipeline/SpirvShader.hpp"
 #include "Vertex.hpp"
 
+#include "Yarn/Defer.hpp"
+#include "Yarn/Trace.hpp"
+#include "Yarn/WaitGroup.hpp"
+
 #undef max
 
 #ifndef NDEBUG
@@ -41,11 +44,6 @@ unsigned int maxPrimitives = 1 << 21;
 
 namespace sw
 {
-	static const int batchSize = 128;
-	std::atomic<int> threadCount(1);
-	std::atomic<int> Renderer::unitCount(1);
-	std::atomic<int> Renderer::clusterCount(1);
-
 	template<typename T>
 	inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, T indices, unsigned int start, unsigned int triangleCount)
 	{
@@ -137,101 +135,27 @@ namespace sw
 		return true;
 	}
 
-	struct Parameters
-	{
-		Renderer *renderer;
-		int threadIndex;
-	};
-
 	DrawCall::DrawCall()
 	{
-		queries = 0;
-
-		references = -1;
-
-		events = nullptr;
-
 		data = (DrawData*)allocate(sizeof(DrawData));
 		data->constants = &constants;
 	}
 
 	DrawCall::~DrawCall()
 	{
-		delete queries;
-
 		deallocate(data);
 	}
 
 	Renderer::Renderer()
 	{
-		for(int i = 0; i < 16; i++)
-		{
-			vertexTask[i] = nullptr;
-
-			worker[i] = nullptr;
-			resume[i] = nullptr;
-			suspend[i] = nullptr;
-		}
-
-		threadsAwake = 0;
-		resumeApp = new Event();
-
-		currentDraw = 0;
-		nextDraw = 0;
-
-		qHead = 0;
-		qSize = 0;
-
-		for(int i = 0; i < 16; i++)
-		{
-			triangleBatch[i] = nullptr;
-			primitiveBatch[i] = nullptr;
-		}
-
-		for(int draw = 0; draw < DRAW_COUNT; draw++)
-		{
-			drawCall[draw] = new DrawCall();
-			drawList[draw] = drawCall[draw];
-		}
-
-		for(int unit = 0; unit < 16; unit++)
-		{
-			primitiveProgress[unit].init();
-		}
-
-		for(int cluster = 0; cluster < 16; cluster++)
-		{
-			pixelProgress[cluster].init();
-		}
-
-		updateConfiguration(true);
+		VertexProcessor::setRoutineCacheSize(1024);
+		PixelProcessor::setRoutineCacheSize(1024);
+		SetupProcessor::setRoutineCacheSize(1024);
 	}
 
 	Renderer::~Renderer()
 	{
-		sync.wait();
-		terminateThreads();
-
-		delete resumeApp;
-		resumeApp = nullptr;
-
-		for(int draw = 0; draw < DRAW_COUNT; draw++)
-		{
-			delete drawCall[draw];
-			drawCall[draw] = nullptr;
-		}
-	}
-
-	// This object has to be mem aligned
-	void* Renderer::operator new(size_t size)
-	{
-		ASSERT(size == sizeof(Renderer)); // This operator can't be called from a derived class
-		return sw::allocate(sizeof(Renderer), 16);
-	}
-
-	void Renderer::operator delete(void * mem)
-	{
-		sw::deallocate(mem);
+		tickets.take().wait();
 	}
 
 	bool Renderer::hasQueryOfType(VkQueryType type) const
@@ -251,6 +175,9 @@ namespace sw
 	{
 		if(count == 0) { return; }
 
+		auto id = nextDrawID++;
+		SCOPED_EVENT("draw %d", id);
+
 		#ifndef NDEBUG
 		{
 			unsigned int minPrimitives = 1;
@@ -262,8 +189,6 @@ namespace sw
 		}
 		#endif
 
-		updateConfiguration();
-
 		int ms = context->sampleCount;
 
 		if(!context->multiSampleMask)
@@ -271,10 +196,16 @@ namespace sw
 			return;
 		}
 
-		sync.add();
+		yarn::Pool<sw::DrawCall>::Loan draw;
+		{
+			SCOPED_EVENT("drawCallPool.borrow()");
+			draw = drawCallPool.borrow();
+		}
+		draw->id = id;
 
 		if(update)
 		{
+			SCOPED_EVENT("update");
 			vertexState = VertexProcessor::update(context);
 			setupState = SetupProcessor::update(context);
 			pixelState = PixelProcessor::update(context);
@@ -284,64 +215,40 @@ namespace sw
 			pixelRoutine = PixelProcessor::routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
 		}
 
-		int batch = batchSize / ms;
-
-		int (Renderer::*setupPrimitives)(int batch, int count);
+		DrawCall::SetupFunction setupPrimitives = nullptr;
 
 		if(context->isDrawTriangle())
 		{
-			setupPrimitives = &Renderer::setupTriangles;
+			setupPrimitives = &DrawCall::setupTriangles;
 		}
 		else if(context->isDrawLine())
 		{
-			setupPrimitives = &Renderer::setupLines;
+			setupPrimitives = &DrawCall::setupLines;
 		}
 		else   // Point draw
 		{
-			setupPrimitives = &Renderer::setupPoints;
+			setupPrimitives = &DrawCall::setupPoints;
 		}
-
-		DrawCall *draw = nullptr;
-
-		do
-		{
-			for(int i = 0; i < DRAW_COUNT; i++)
-			{
-				if(drawCall[i]->references == -1)
-				{
-					draw = drawCall[i];
-					drawList[nextDraw & DRAW_COUNT_BITS] = draw;
-
-					break;
-				}
-			}
-
-			if(!draw)
-			{
-				resumeApp->wait();
-			}
-		}
-		while(!draw);
 
 		DrawData *data = draw->data;
 
 		if(queries.size() != 0)
 		{
-			draw->queries = new std::list<vk::Query*>();
 			for(auto &query : queries)
 			{
-				query->start();
-				draw->queries->push_back(query);
+				draw->queries.push_back(query);
 			}
 		}
 
+		draw->batchDataPool = &batchDataPool;
+		draw->numPrimitives = count;
+		draw->numPrimitivesPerBatch = BatchSize / ms;
+		draw->numBatches = (count + draw->numPrimitivesPerBatch - 1) / draw->numPrimitivesPerBatch;
+		draw->numBatchWorkers = std::min<unsigned int>(draw->numBatches, DrawCall::BatchData::MaxInstances);
+		draw->numBatchWorkers = std::min<unsigned int>(draw->numBatchWorkers, yarn::Scheduler::get()->getWorkerThreadCount());
+		draw->batchTickets = tickets.takeN(draw->numBatches);
 		draw->topology = context->topology;
 		draw->indexType = indexType;
-		draw->batchSize = batch;
-
-		vertexRoutine->bind();
-		setupRoutine->bind();
-		pixelRoutine->bind();
 
 		draw->vertexRoutine = vertexRoutine;
 		draw->setupRoutine = setupRoutine;
@@ -354,14 +261,6 @@ namespace sw
 
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
-
-		if(events)
-		{
-			events->start();
-		}
-
-		ASSERT(!draw->events);
-		draw->events = events;
 
 		for(int i = 0; i < MAX_INTERFACE_COMPONENTS/4; i++)
 		{
@@ -407,7 +306,7 @@ namespace sw
 
 		if(pixelState.occlusionEnabled)
 		{
-			for(int cluster = 0; cluster < clusterCount; cluster++)
+			for(int cluster = 0; cluster < ClusterCount; cluster++)
 			{
 				data->occlusion[cluster] = 0;
 			}
@@ -485,370 +384,210 @@ namespace sw
 			data->pushConstants = context->pushConstants;
 		}
 
-		draw->primitive = 0;
-		draw->count = count;
+		draw->events = events;
 
-		draw->references = (count + batch - 1) / batch;
+		DrawCall::run(draw);
+	}
 
-		schedulerMutex.lock();
-		++nextDraw; // Atomic
-		schedulerMutex.unlock();
+	void DrawCall::setup()
+	{
+		vertexRoutine->bind();
+		setupRoutine->bind();
+		pixelRoutine->bind();
 
-		#ifndef NDEBUG
-		if(threadCount == 1)   // Use main thread for draw execution
+		for(auto &query : queries)
 		{
-			threadsAwake = 1;
-			task[0].type = Task::RESUME;
-
-			taskLoop(0);
+			query->start();
 		}
-		else
-		#endif
+
+		if(events)
 		{
-			if(!threadsAwake)
+			events->start();
+		}
+	}
+
+	void DrawCall::teardown()
+	{
+		if(events)
+		{
+			events->finish();
+			events = nullptr;
+		}
+
+		for(auto &query : queries)
+		{
+			switch(query->getType())
 			{
-				suspend[0]->wait();
-
-				threadsAwake = 1;
-				task[0].type = Task::RESUME;
-
-				resume[0]->signal();
-			}
-		}
-	}
-
-	void Renderer::threadFunction(void *parameters)
-	{
-		Renderer *renderer = static_cast<Parameters*>(parameters)->renderer;
-		int threadIndex = static_cast<Parameters*>(parameters)->threadIndex;
-
-		CPUID::setFlushToZero(true);
-		CPUID::setDenormalsAreZero(true);
-
-		renderer->threadLoop(threadIndex);
-	}
-
-	void Renderer::threadLoop(int threadIndex)
-	{
-		while(!exitThreads)
-		{
-			taskLoop(threadIndex);
-
-			suspend[threadIndex]->signal();
-			resume[threadIndex]->wait();
-		}
-	}
-
-	void Renderer::taskLoop(int threadIndex)
-	{
-		while(task[threadIndex].type != Task::SUSPEND)
-		{
-			scheduleTask(threadIndex);
-			executeTask(threadIndex);
-		}
-	}
-
-	void Renderer::findAvailableTasks()
-	{
-		// Find pixel tasks
-		for(int cluster = 0; cluster < clusterCount; cluster++)
-		{
-			if(!pixelProgress[cluster].executing)
-			{
-				for(int unit = 0; unit < unitCount; unit++)
+			case VK_QUERY_TYPE_OCCLUSION:
+				for(int cluster = 0; cluster < ClusterCount; cluster++)
 				{
-					if(primitiveProgress[unit].references > 0)   // Contains processed primitives
+					query->add(data->occlusion[cluster]);
+				}
+				break;
+			default:
+				break;
+			}
+
+			query->finish();
+		}
+		queries.clear();
+
+		vertexRoutine->unbind();
+		setupRoutine->unbind();
+		pixelRoutine->unbind();
+	}
+
+	void DrawCall::run(const yarn::Loan<DrawCall>& draw)
+	{
+		draw->setup();
+
+		auto finally = yarn::make_shared_finally([draw]
+		{
+			SCOPED_EVENT("draw %d -- FINISH", draw->id);
+			draw->teardown();
+		});
+
+		for (unsigned int batchWorker = 0; batchWorker < draw->numBatchWorkers; batchWorker++)
+		{
+			yarn::Pool<sw::DrawCall::BatchData>::Loan batchData;
+
+			{
+				SCOPED_EVENT("batchDataPool->borrow()");
+				batchData = draw->batchDataPool->borrow();
+			}
+
+			yarn::schedule([draw, batchWorker, batchData, finally] {
+				auto const numPrimitives = draw->numPrimitives;
+				auto const numPrimitivesPerBatch = draw->numPrimitivesPerBatch;
+				auto const numBatches = draw->numBatches;
+				auto const numBatchWorkers = draw->numBatchWorkers;
+				auto const drawID = draw->id;
+				auto const topology = draw->topology;
+
+				for (unsigned int batch = batchWorker; batch < numBatches; batch += numBatchWorkers)
+				{
+					auto ticket = std::move(draw->batchTickets[batch]);
+
+					int batchFirstPrimitive = batch * numPrimitivesPerBatch;
+					int numBatchPrimitives = std::min(batchFirstPrimitive + numPrimitivesPerBatch, numPrimitives) - batchFirstPrimitive;
+					auto& triangleBatch = batchData->triangles;
+					auto& primitiveBatch = batchData->primitives;
+					auto& vertexTask = batchData->vertexTask;
+
+					SCOPED_EVENT("draw %d, batch %d");
+
+					unsigned int triangleIndices[BatchSize + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
 					{
-						if(pixelProgress[cluster].drawCall == primitiveProgress[unit].drawCall)
+						SCOPED_EVENT("processPrimitiveVertices");
+						processPrimitiveVertices(
+							triangleIndices,
+							draw->data->indices,
+							draw->indexType,
+							batchFirstPrimitive,
+							numBatchPrimitives,
+							topology);
+					}
+
+					vertexTask.primitiveStart = batchFirstPrimitive;
+					vertexTask.vertexCount = numBatchPrimitives * 3;
+					if (vertexTask.vertexCache.drawCall != drawID)
+					{
+						vertexTask.vertexCache.clear();
+						vertexTask.vertexCache.drawCall = drawID;
+					}
+
+					{
+						SCOPED_EVENT("VERTEX");
+						draw->vertexPointer(&triangleBatch.front().v0, &triangleIndices[0][0], &vertexTask, draw->data);
+					}
+
+					if (draw->setupState.rasterizerDiscard)
+					{
+						continue;
+					}
+
+					int visible;
+					{
+						SCOPED_EVENT("PRIMITIVES");
+						visible = draw->setupPrimitives(&triangleBatch, &primitiveBatch, draw.get(), numBatchPrimitives);
+					}
+					if (visible <= 0)
+					{
+						continue;
+					}
+
+					{
+						SCOPED_EVENT("BARRIER");
+						ticket.wait();
+					}
+
+					{
+						SCOPED_EVENT("PIXEL");
+						if (topology != VK_PRIMITIVE_TOPOLOGY_POINT_LIST)
 						{
-							if(pixelProgress[cluster].processedPrimitives == primitiveProgress[unit].firstPrimitive)   // Previous primitives have been rendered
+							yarn::WaitGroup wg(ClusterCount);
+							for (int cluster = 0; cluster < ClusterCount; cluster++)
 							{
-								Task &task = taskQueue[qHead];
-								task.type = Task::PIXELS;
-								task.primitiveUnit = unit;
-								task.pixelCluster = cluster;
-
-								pixelProgress[cluster].executing = true;
-
-								// Commit to the task queue
-								qHead = (qHead + 1) & TASK_COUNT_BITS;
-								++qSize; // Atomic
-
-								break;
+								yarn::schedule([draw, batchData, visible, batch, cluster, wg] {
+									defer(wg.done());
+									SCOPED_EVENT("draw %d, batch %d, cluster %d", draw->id, batch, cluster); (void)batch;
+									auto& primitiveBatch = batchData->primitives;
+									draw->pixelPointer(&primitiveBatch.front(), visible, cluster, draw->data);
+								});
+							}
+							wg.wait();
+						}
+						else
+						{
+							for (int cluster = 0; cluster < ClusterCount; cluster++)
+							{
+								draw->pixelPointer(&primitiveBatch.front(), visible, cluster, draw->data);
 							}
 						}
 					}
 				}
-			}
-		}
-
-		// Find primitive tasks
-		if(currentDraw == nextDraw)
-		{
-			return;   // No more primitives to process
-		}
-
-		for(int unit = 0; unit < unitCount; unit++)
-		{
-			DrawCall *draw = drawList[currentDraw & DRAW_COUNT_BITS];
-
-			int primitive = draw->primitive;
-			int count = draw->count;
-
-			if(primitive >= count)
-			{
-				++currentDraw; // Atomic
-
-				if(currentDraw == nextDraw)
-				{
-					return;   // No more primitives to process
-				}
-
-				draw = drawList[currentDraw & DRAW_COUNT_BITS];
-			}
-
-			if(!primitiveProgress[unit].references)   // Task not already being executed and not still in use by a pixel unit
-			{
-				primitive = draw->primitive;
-				count = draw->count;
-				int batch = draw->batchSize;
-
-				primitiveProgress[unit].drawCall = currentDraw.load();
-				primitiveProgress[unit].firstPrimitive = primitive;
-				primitiveProgress[unit].primitiveCount = count - primitive >= batch ? batch : count - primitive;
-
-				draw->primitive += batch;
-
-				Task &task = taskQueue[qHead];
-				task.type = Task::PRIMITIVES;
-				task.primitiveUnit = unit;
-
-				primitiveProgress[unit].references = -1;
-
-				// Commit to the task queue
-				qHead = (qHead + 1) & TASK_COUNT_BITS;
-				++qSize; // Atomic
-			}
-		}
-	}
-
-	void Renderer::scheduleTask(int threadIndex)
-	{
-		schedulerMutex.lock();
-
-		int curThreadsAwake = threadsAwake;
-
-		if((int)qSize < threadCount - curThreadsAwake + 1)
-		{
-			findAvailableTasks();
-		}
-
-		if(qSize != 0)
-		{
-			task[threadIndex] = taskQueue[(qHead - qSize) & TASK_COUNT_BITS];
-			--qSize; // Atomic
-
-			if(curThreadsAwake != threadCount)
-			{
-				int wakeup = qSize - curThreadsAwake + 1;
-
-				for(int i = 0; i < threadCount && wakeup > 0; i++)
-				{
-					if(task[i].type == Task::SUSPEND)
-					{
-						suspend[i]->wait();
-						task[i].type = Task::RESUME;
-						resume[i]->signal();
-
-						++threadsAwake; // Atomic
-						wakeup--;
-					}
-				}
-			}
-		}
-		else
-		{
-			task[threadIndex].type = Task::SUSPEND;
-
-			--threadsAwake; // Atomic
-		}
-
-		schedulerMutex.unlock();
-	}
-
-	void Renderer::executeTask(int threadIndex)
-	{
-		switch(task[threadIndex].type.load())
-		{
-		case Task::PRIMITIVES:
-			{
-				int unit = task[threadIndex].primitiveUnit;
-
-				int input = primitiveProgress[unit].firstPrimitive;
-				int count = primitiveProgress[unit].primitiveCount;
-				DrawCall *draw = drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
-				int (Renderer::*setupPrimitives)(int batch, int count) = draw->setupPrimitives;
-
-				processPrimitiveVertices(unit, input, count, draw->count, threadIndex);
-
-				int visible = 0;
-
-				if(!draw->setupState.rasterizerDiscard)
-				{
-					visible = (this->*setupPrimitives)(unit, count);
-				}
-
-				primitiveProgress[unit].visible = visible;
-				primitiveProgress[unit].references = clusterCount.load();
-			}
-			break;
-		case Task::PIXELS:
-			{
-				int unit = task[threadIndex].primitiveUnit;
-				int visible = primitiveProgress[unit].visible;
-
-				if(visible > 0)
-				{
-					int cluster = task[threadIndex].pixelCluster;
-					Primitive *primitive = primitiveBatch[unit];
-					DrawCall *draw = drawList[pixelProgress[cluster].drawCall & DRAW_COUNT_BITS];
-					DrawData *data = draw->data;
-					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
-
-					pixelRoutine(primitive, visible, cluster, data);
-				}
-
-				finishRendering(task[threadIndex]);
-			}
-			break;
-		case Task::RESUME:
-			break;
-		case Task::SUSPEND:
-			break;
-		default:
-			ASSERT(false);
+			});
 		}
 	}
 
 	void Renderer::synchronize()
 	{
-		sync.wait();
+		SCOPED_EVENT("synchronize");
+		tickets.take().wait();
 	}
 
-	void Renderer::finishRendering(Task &pixelTask)
+	void DrawCall::processPrimitiveVertices(
+		unsigned int triangleIndicesOut[BatchSize + 1][3],
+		const void *primitiveIndices,
+		VkIndexType indexType,
+		unsigned int start,
+		unsigned int triangleCount,
+		VkPrimitiveTopology topology)
 	{
-		int unit = pixelTask.primitiveUnit;
-		int cluster = pixelTask.pixelCluster;
-
-		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
-		DrawData &data = *draw.data;
-		int primitive = primitiveProgress[unit].firstPrimitive;
-		int count = primitiveProgress[unit].primitiveCount;
-		int processedPrimitives = primitive + count;
-
-		pixelProgress[cluster].processedPrimitives = processedPrimitives;
-
-		if(pixelProgress[cluster].processedPrimitives >= draw.count)
-		{
-			++pixelProgress[cluster].drawCall; // Atomic
-			pixelProgress[cluster].processedPrimitives = 0;
-		}
-
-		int ref = --primitiveProgress[unit].references; // Atomic
-
-		if(ref == 0)
-		{
-			ref = --draw.references; // Atomic
-
-			if(ref == 0)
-			{
-				if(draw.queries)
-				{
-					for(auto &query : *(draw.queries))
-					{
-						switch(query->getType())
-						{
-						case VK_QUERY_TYPE_OCCLUSION:
-							for(int cluster = 0; cluster < clusterCount; cluster++)
-							{
-								query->add(data.occlusion[cluster]);
-							}
-							break;
-						default:
-							break;
-						}
-
-						query->finish();
-					}
-
-					delete draw.queries;
-					draw.queries = nullptr;
-				}
-
-				draw.vertexRoutine->unbind();
-				draw.setupRoutine->unbind();
-				draw.pixelRoutine->unbind();
-
-				if(draw.events)
-				{
-					draw.events->finish();
-					draw.events = nullptr;
-				}
-
-				sync.done();
-
-				draw.references = -1;
-				resumeApp->signal();
-			}
-		}
-
-		pixelProgress[cluster].executing = false;
-	}
-
-	void Renderer::processPrimitiveVertices(int unit, unsigned int start, unsigned int triangleCount, unsigned int loop, int thread)
-	{
-		Triangle *triangle = triangleBatch[unit];
-		int primitiveDrawCall = primitiveProgress[unit].drawCall;
-		DrawCall *draw = drawList[primitiveDrawCall & DRAW_COUNT_BITS];
-		DrawData *data = draw->data;
-		VertexTask *task = vertexTask[thread];
-
-		const void *indices = data->indices;
-		VertexProcessor::RoutinePointer vertexRoutine = draw->vertexPointer;
-
-		if(task->vertexCache.drawCall != primitiveDrawCall)
-		{
-			task->vertexCache.clear();
-			task->vertexCache.drawCall = primitiveDrawCall;
-		}
-
-		unsigned int batch[128 + 1][3];  // One extra for SIMD width overrun. TODO: Adjust to dynamic batch size.
-		VkPrimitiveTopology topology = static_cast<VkPrimitiveTopology>(static_cast<int>(draw->topology));
-
-		if(!indices)
+		if(!primitiveIndices)
 		{
 			struct LinearIndex
 			{
 				unsigned int operator[](unsigned int i) { return i; }
 			};
 
-			if(!setBatchIndices(batch, topology, LinearIndex(), start, triangleCount))
+			if(!setBatchIndices(triangleIndicesOut, topology, LinearIndex(), start, triangleCount))
 			{
 				return;
 			}
 		}
 		else
 		{
-			switch(draw->indexType.load())
+			switch(indexType)
 			{
 			case VK_INDEX_TYPE_UINT16:
-				if(!setBatchIndices(batch, topology, static_cast<const uint16_t*>(indices), start, triangleCount))
+				if(!setBatchIndices(triangleIndicesOut, topology, static_cast<const uint16_t*>(primitiveIndices), start, triangleCount))
 				{
 					return;
 				}
 				break;
 			case VK_INDEX_TYPE_UINT32:
-				if(!setBatchIndices(batch, topology, static_cast<const uint32_t*>(indices), start, triangleCount))
+				if(!setBatchIndices(triangleIndicesOut, topology, static_cast<const uint32_t*>(primitiveIndices), start, triangleCount))
 				{
 					return;
 				}
@@ -861,26 +600,20 @@ namespace sw
 		}
 
 		// Repeat the last index to allow for SIMD width overrun.
-		batch[triangleCount][0] = batch[triangleCount - 1][2];
-		batch[triangleCount][1] = batch[triangleCount - 1][2];
-		batch[triangleCount][2] = batch[triangleCount - 1][2];
-
-		task->primitiveStart = start;
-		task->vertexCount = triangleCount * 3;
-		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
+		triangleIndicesOut[triangleCount][0] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount][1] = triangleIndicesOut[triangleCount - 1][2];
+		triangleIndicesOut[triangleCount][2] = triangleIndicesOut[triangleCount - 1][2];
 	}
 
-	int Renderer::setupTriangles(int unit, int count)
+	int DrawCall::setupTriangles(TriangleBatch *triangleBatch, PrimitiveBatch *primitiveBatch, const DrawCall *drawCall, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-
-		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
-		SetupProcessor::State &state = draw.setupState;
-		const SetupProcessor::RoutinePointer &setupRoutine = draw.setupPointer;
+		Triangle *triangle = &triangleBatch->front();
+		Primitive *primitive = &primitiveBatch->front();
+		auto &state = drawCall->setupState;
+		auto setupRoutine = drawCall->setupPointer;
 
 		int ms = state.multiSample;
-		const DrawData *data = draw.data;
+		const DrawData *data = drawCall->data;
 		int visible = 0;
 
 		for(int i = 0; i < count; i++, triangle++)
@@ -897,7 +630,7 @@ namespace sw
 
 				if(clipFlagsOr != Clipper::CLIP_FINITE)
 				{
-					if(!Clipper::Clip(polygon, clipFlagsOr, draw))
+					if(!Clipper::Clip(polygon, clipFlagsOr, *drawCall))
 					{
 						continue;
 					}
@@ -914,20 +647,18 @@ namespace sw
 		return visible;
 	}
 
-	int Renderer::setupLines(int unit, int count)
+	int DrawCall::setupLines(TriangleBatch *triangleBatch, PrimitiveBatch *primitiveBatch, const DrawCall *drawCall, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
+		Triangle *triangle = &triangleBatch->front();
+		Primitive *primitive = &primitiveBatch->front();
+		auto &state = drawCall->setupState;
+
 		int visible = 0;
-
-		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
-		SetupProcessor::State &state = draw.setupState;
-
 		int ms = state.multiSample;
 
 		for(int i = 0; i < count; i++)
 		{
-			if(setupLine(*primitive, *triangle, draw))
+			if(setupLine(*primitive, *triangle, *drawCall))
 			{
 				primitive += ms;
 				visible++;
@@ -939,20 +670,18 @@ namespace sw
 		return visible;
 	}
 
-	int Renderer::setupPoints(int unit, int count)
+	int DrawCall::setupPoints(TriangleBatch *triangleBatch, PrimitiveBatch *primitiveBatch, const DrawCall *drawCall, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
+		Triangle *triangle = &triangleBatch->front();
+		Primitive *primitive = &primitiveBatch->front();
+		auto &state = drawCall->setupState;
+
 		int visible = 0;
-
-		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
-		SetupProcessor::State &state = draw.setupState;
-
 		int ms = state.multiSample;
 
 		for(int i = 0; i < count; i++)
 		{
-			if(setupPoint(*primitive, *triangle, draw))
+			if(setupPoint(*primitive, *triangle, *drawCall))
 			{
 				primitive += ms;
 				visible++;
@@ -964,11 +693,11 @@ namespace sw
 		return visible;
 	}
 
-	bool Renderer::setupLine(Primitive &primitive, Triangle &triangle, const DrawCall &draw)
+	bool DrawCall::setupLine(Primitive &primitive, Triangle &triangle, const DrawCall &draw)
 	{
 		const SetupProcessor::RoutinePointer &setupRoutine = draw.setupPointer;
-		const SetupProcessor::State &state = draw.setupState;
 		const DrawData &data = *draw.data;
+		auto &state = draw.setupState;
 
 		float lineWidth = data.lineWidth;
 
@@ -1158,7 +887,7 @@ namespace sw
 		return false;
 	}
 
-	bool Renderer::setupPoint(Primitive &primitive, Triangle &triangle, const DrawCall &draw)
+	bool DrawCall::setupPoint(Primitive &primitive, Triangle &triangle, const DrawCall &draw)
 	{
 		const SetupProcessor::RoutinePointer &setupRoutine = draw.setupPointer;
 		const DrawData &data = *draw.data;
@@ -1221,76 +950,6 @@ namespace sw
 		return false;
 	}
 
-	void Renderer::initializeThreads()
-	{
-		unitCount = ceilPow2(threadCount);
-		clusterCount = ceilPow2(threadCount);
-
-		for(int i = 0; i < unitCount; i++)
-		{
-			triangleBatch[i] = (Triangle*)allocate(batchSize * sizeof(Triangle));
-			primitiveBatch[i] = (Primitive*)allocate(batchSize * sizeof(Primitive));
-		}
-
-		for(int i = 0; i < threadCount; i++)
-		{
-			vertexTask[i] = (VertexTask*)allocate(sizeof(VertexTask));
-			vertexTask[i]->vertexCache.drawCall = -1;
-
-			task[i].type = Task::SUSPEND;
-
-			resume[i] = new Event();
-			suspend[i] = new Event();
-
-			Parameters parameters;
-			parameters.threadIndex = i;
-			parameters.renderer = this;
-
-			exitThreads = false;
-			worker[i] = new std::thread(threadFunction, &parameters);
-
-			suspend[i]->wait();
-			suspend[i]->signal();
-		}
-	}
-
-	void Renderer::terminateThreads()
-	{
-		while(threadsAwake != 0)
-		{
-			std::this_thread::yield();
-		}
-
-		for(int thread = 0; thread < threadCount; thread++)
-		{
-			if(worker[thread])
-			{
-				exitThreads = true;
-				resume[thread]->signal();
-				worker[thread]->join();
-
-				delete worker[thread];
-				worker[thread] = 0;
-				delete resume[thread];
-				resume[thread] = 0;
-				delete suspend[thread];
-				suspend[thread] = 0;
-			}
-
-			deallocate(vertexTask[thread]);
-			vertexTask[thread] = 0;
-		}
-
-		for(int i = 0; i < 16; i++)
-		{
-			deallocate(triangleBatch[i]);
-			triangleBatch[i] = 0;
-
-			deallocate(primitiveBatch[i]);
-			primitiveBatch[i] = 0;
-		}
-	}
-
 	void Renderer::addQuery(vk::Query *query)
 	{
 		queries.push_back(query);
@@ -1324,28 +983,4 @@ namespace sw
 		this->scissor = scissor;
 	}
 
-	void Renderer::updateConfiguration(bool initialUpdate)
-	{
-		if(initialUpdate)
-		{
-			terminateThreads();
-
-			VertexProcessor::setRoutineCacheSize(1024);
-			PixelProcessor::setRoutineCacheSize(1024);
-			SetupProcessor::setRoutineCacheSize(1024);
-
-			threadCount = CPUID::processAffinity();
-
-			CPUID::setEnableSSE4_1(true);
-			CPUID::setEnableSSSE3(true);
-			CPUID::setEnableSSE3(true);
-			CPUID::setEnableSSE2(true);
-			CPUID::setEnableSSE(true);
-		}
-
-		if(!initialUpdate && !worker[0])
-		{
-			initializeThreads();
-		}
-	}
 }
