@@ -217,6 +217,30 @@
     },
     {
       "key": {
+        "uuid": "5f231515_666eade8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-19T14:20:27Z",
+      "side": 1,
+      "message": "I\u0027m not sure if what you\u0027re asking for can be satisfied, without painting ourselves into a corner. There\u0027s going to be lots of changes to this code in the near future, so I absolutely want to avoid documenting/commenting it in a way that becomes the law of the land versus what the spec actually mandates. Admittedly this can be frustrating to review a particular implementation at a given time. I\u0027ve opened b/137889966 to document things once the dust settles. Also, b/137896828 should help with ensuring a particular implementation is spec-compliant.",
+      "parentUuid": "c744c247_b2b995f7",
+      "range": {
+        "startLine": 58,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 31
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3688f461_e938b3c7",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -325,6 +349,30 @@
       "side": 1,
       "message": "\u003e Agreed, if we can actually keep that up-to-date. There\u0027s a very significant chance of the comments no longer reflecting reality very quickly, or being incomplete and someone relying on the behavior implied by the enum name instead of what it actually intended to guarantee for spec behavior. That would lead to all sorts of confusion.\n\nMeh. While documentation can go out of date, I don\u0027t feel that\u0027s a compelling argument for not writing it in the first place.\n\n\u003e Perhaps the longer-term solution is to have two sets of enums...\n\nYeah, seems overkill to me too. If we can find a middle ground with keeping the enum names, but adding documentation stating the implementation, I\u0027m happy.",
       "parentUuid": "aba7dfdb_e38f3d2d",
+      "range": {
+        "startLine": 61,
+        "startChar": 2,
+        "endLine": 61,
+        "endChar": 20
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a88a352a_cff61c2e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-19T14:20:27Z",
+      "side": 1,
+      "message": "\u003e While documentation can go out of date, I don\u0027t feel that\u0027s a compelling argument for not writing it in the first place.\n\nFrankly I think it\u0027s futile to document a specific implementation when we already know it\u0027s going to change in the near future. In the longer term, yes, it should definitely be documented (b/137889966).",
+      "parentUuid": "6afb53a8_b04e4935",
       "range": {
         "startLine": 61,
         "startChar": 2,
@@ -493,6 +541,30 @@
       "side": 1,
       "message": "\u003e We need to know for each load and store what level of robustness must be guaranteed spec-wise, so I wanted to express that through the enum. Doesn\u0027t mean I don\u0027t want the effective implementation of each of them to be documented. As suggested above we could make that distinction more explicit with a second set of enums in a future change.\n\nOkay. As I stated above, I\u0027m not massively fussed about the enum names, just would like to have some better docs.\n\n\u003e Just in the general data security sense.\n\nSecurity can range from reading random bytes, to crashing the system, to escalated privilege exploits, to being able to read stored credit-card details, to being able to install root kits... etc, etc. (I sat next to a guy who worked in platform security, they love to talk about this stuff). One that we can clarify in a later change.",
       "parentUuid": "a503b634_79ad7aa0",
+      "range": {
+        "startLine": 62,
+        "startChar": 56,
+        "endLine": 62,
+        "endChar": 66
+      },
+      "revId": "013938b34ca13f0f7dd02d2f5548114dd51469a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0b0cc8c_5433a799",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-19T14:20:27Z",
+      "side": 1,
+      "message": "\u003e As I stated above, I\u0027m not massively fussed about the enum names, just would like to have some better docs.\n\nUnderstood/agreed for longer term.\n\n\u003e Security can range from reading random bytes, to crashing the system, to escalated privilege exploits, to being able to read stored credit-card details, to being able to install root kits... etc, etc. (I sat next to a guy who worked in platform security, they love to talk about this stuff). One that we can clarify in a later change.\n\nIn the context of this enum we\u0027re clearly just talking about the security aspect of an out-of-bounds access. And while that can have escalated consequences based on other factors, my only intent with this comment was to alert security folks that we may want to avoid this one altogether for security-sensitive applications. Their knowledge of graphics APIs is usually profoundly limited, so we mainly want to highlight the juicy bits.\n\nSpecifically I\u0027m not sure how to satisfy your request for more clarify here. It depends on the use case what it means to be secure or not.",
+      "parentUuid": "5065c9cf_0e9e4d54",
       "range": {
         "startLine": 62,
         "startChar": 56,
