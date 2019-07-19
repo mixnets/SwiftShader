@@ -19,10 +19,13 @@
 #include "PixelProcessor.hpp"
 #include "SetupProcessor.hpp"
 #include "Plane.hpp"
+#include "Primitive.hpp"
 #include "Blitter.hpp"
 #include "Device/Config.hpp"
-#include "System/Synchronization.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
+
+#include "Yarn/Pool.hpp"
+#include "Yarn/WaitGroup.hpp"
 
 #include <atomic>
 #include <list>
@@ -43,7 +46,13 @@ namespace sw
 	struct Task;
 	class TaskEvents;
 	class Resource;
+	class Renderer;
 	struct Constants;
+
+	static const int BatchSize = 128;
+	static const int ClusterCount = 8;
+	using TriangleBatch = std::array<Triangle, BatchSize>;
+	using PrimitiveBatch = std::array<Primitive, BatchSize>;
 
 	struct DrawData
 	{
@@ -62,7 +71,7 @@ namespace sw
 
 		PixelProcessor::Stencil stencil[2];   // clockwise, counterclockwise
 		PixelProcessor::Factor factor;
-		unsigned int occlusion[16];   // Number of pixels passing depth test
+		unsigned int occlusion[ClusterCount];   // Number of pixels passing depth test
 
 		float4 Wx16;
 		float4 Hx16;
@@ -98,70 +107,81 @@ namespace sw
 		PushConstantStorage pushConstants;
 	};
 
+	struct DrawCall
+	{
+		struct BatchData
+		{
+			static constexpr int MaxInstances = 16;
+			using Pool = yarn::FixedSizePool<BatchData, MaxInstances, yarn::PoolPolicy::Preserve>;
+
+			TriangleBatch triangles;
+			PrimitiveBatch primitives;
+			VertexTask vertexTask;
+		};
+
+		static constexpr int MaxInstances = 16;
+		using Pool = yarn::FixedSizePool<DrawCall, MaxInstances, yarn::PoolPolicy::Preserve>;
+		using SetupFunction = int(*)(BatchData *batchData, const DrawCall *drawCall, int count);
+
+		DrawCall();
+		~DrawCall();
+
+		void setup();
+		void run();
+		void teardown();
+
+		int id;
+
+		BatchData::Pool *batchDataPool;
+		unsigned int primitiveCount;
+		unsigned int primitivesPerBatch;
+
+		VkPrimitiveTopology topology;
+		VkIndexType indexType;
+
+		Routine *vertexRoutine;
+		Routine *setupRoutine;
+		Routine *pixelRoutine;
+
+		VertexProcessor::RoutinePointer vertexPointer;
+		SetupProcessor::RoutinePointer setupPointer;
+		PixelProcessor::RoutinePointer pixelPointer;
+
+		SetupFunction setupPrimitives;
+		SetupProcessor::State setupState;
+
+		vk::ImageView *renderTarget[RENDERTARGETS];
+		vk::ImageView *depthBuffer;
+		vk::ImageView *stencilBuffer;
+		TaskEvents *events;
+		yarn::WaitGroup *sync;
+
+		std::list<vk::Query*> queries;
+
+		DrawData *data;
+
+		static void processPrimitiveVertices(
+				unsigned int triangleIndicesOut[BatchSize + 1][3],
+				const void *primitiveIndices,
+				VkIndexType indexType,
+				unsigned int start,
+				unsigned int triangleCount,
+				VkPrimitiveTopology topology);
+
+		static int setupTriangles(BatchData *batchData, const DrawCall *drawCall, int count);
+		static int setupLines(BatchData *batchData, const DrawCall *drawCall, int count);
+		static int setupPoints(BatchData *batchData, const DrawCall *drawCall, int count);
+
+		static bool setupLine(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
+		static bool setupPoint(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
+	};
+
 	class Renderer : public VertexProcessor, public PixelProcessor, public SetupProcessor
 	{
-		struct Task
-		{
-			enum Type
-			{
-				PRIMITIVES,
-				PIXELS,
-
-				RESUME,
-				SUSPEND
-			};
-
-			void operator=(const Task& task)
-			{
-				type = task.type.load();
-				primitiveUnit = task.primitiveUnit.load();
-				pixelCluster = task.pixelCluster.load();
-			}
-
-			std::atomic<int> type;
-			std::atomic<int> primitiveUnit;
-			std::atomic<int> pixelCluster;
-		};
-
-		struct PrimitiveProgress
-		{
-			void init()
-			{
-				drawCall = 0;
-				firstPrimitive = 0;
-				primitiveCount = 0;
-				visible = 0;
-				references = 0;
-			}
-
-			std::atomic<int> drawCall;
-			std::atomic<int> firstPrimitive;
-			std::atomic<int> primitiveCount;
-			std::atomic<int> visible;
-			std::atomic<int> references;
-		};
-
-		struct PixelProgress
-		{
-			void init()
-			{
-				drawCall = 0;
-				processedPrimitives = 0;
-				executing = false;
-			}
-
-			std::atomic<int> drawCall;
-			std::atomic<int> processedPrimitives;
-			std::atomic<int> executing;
-		};
-
 	public:
 		Renderer();
 
 		virtual ~Renderer();
-
-		void *operator new(size_t size);
-		void operator delete(void * mem);
 
 		bool hasQueryOfType(VkQueryType type) const;
 
@@ -178,74 +198,17 @@ namespace sw
 
 		void synchronize();
 
-		static int getClusterCount() { return clusterCount; }
-
 	private:
-		static void threadFunction(void *parameters);
-		void threadLoop(int threadIndex);
-		void taskLoop(int threadIndex);
-		void findAvailableTasks();
-		void scheduleTask(int threadIndex);
-		void executeTask(int threadIndex);
-		void finishRendering(Task &pixelTask);
-
-		void processPrimitiveVertices(int unit, unsigned int start, unsigned int count, unsigned int loop, int thread);
-
-		int setupTriangles(int batch, int count);
-		int setupLines(int batch, int count);
-		int setupPoints(int batch, int count);
-
-		bool setupLine(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
-		bool setupPoint(Primitive &primitive, Triangle &triangle, const DrawCall &draw);
-
-		void updateConfiguration(bool initialUpdate = false);
-		void initializeThreads();
-		void terminateThreads();
-
 		VkViewport viewport;
 		VkRect2D scissor;
 
-		Triangle *triangleBatch[16];
-		Primitive *primitiveBatch[16];
+		DrawCall::Pool drawCallPool;
+		DrawCall::BatchData::Pool batchDataPool;
 
-		std::atomic<int> exitThreads;
-		std::atomic<int> threadsAwake;
-		std::thread *worker[16];
-		Event *resume[16];         // Events for resuming threads
-		Event *suspend[16];        // Events for suspending threads
-		Event *resumeApp;          // Event for resuming the application thread
-
-		PrimitiveProgress primitiveProgress[16];
-		PixelProgress pixelProgress[16];
-		Task task[16];   // Current tasks for threads
-
-		enum {
-			DRAW_COUNT = 16,   // Number of draw calls buffered (must be power of 2)
-			DRAW_COUNT_BITS = DRAW_COUNT - 1,
-		};
-		DrawCall *drawCall[DRAW_COUNT];
-		DrawCall *drawList[DRAW_COUNT];
-
-		std::atomic<int> currentDraw;
-		std::atomic<int> nextDraw;
-
-		enum {
-			TASK_COUNT = 32,   // Size of the task queue (must be power of 2)
-			TASK_COUNT_BITS = TASK_COUNT - 1,
-		};
-		Task taskQueue[TASK_COUNT];
-		std::atomic<int> qHead;
-		std::atomic<int> qSize;
-
-		static std::atomic<int> unitCount;
-		static std::atomic<int> clusterCount;
-
-		std::mutex schedulerMutex;
-
-		VertexTask *vertexTask[16];
+		std::atomic<int> nextDrawID = {0};
 
 		std::list<vk::Query*> queries;
-		WaitGroup sync;
+		yarn::WaitGroup sync;
 
 		VertexProcessor::State vertexState;
 		SetupProcessor::State setupState;
@@ -256,40 +219,6 @@ namespace sw
 		Routine *pixelRoutine;
 	};
 
-	struct DrawCall
-	{
-		DrawCall();
-
-		~DrawCall();
-
-		std::atomic<int> topology;
-		std::atomic<int> indexType;
-		std::atomic<int> batchSize;
-
-		Routine *vertexRoutine;
-		Routine *setupRoutine;
-		Routine *pixelRoutine;
-
-		VertexProcessor::RoutinePointer vertexPointer;
-		SetupProcessor::RoutinePointer setupPointer;
-		PixelProcessor::RoutinePointer pixelPointer;
-
-		int (Renderer::*setupPrimitives)(int batch, int count);
-		SetupProcessor::State setupState;
-
-		vk::ImageView *renderTarget[RENDERTARGETS];
-		vk::ImageView *depthBuffer;
-		vk::ImageView *stencilBuffer;
-		TaskEvents *events;
-
-		std::list<vk::Query*> *queries;
-
-		std::atomic<int> primitive;    // Current primitive to enter pipeline
-		std::atomic<int> count;        // Number of primitives to render
-		std::atomic<int> references;   // Remaining references to this draw call, 0 when done drawing, -1 when resources unlocked and slot is free
-
-		DrawData *data;
-	};
 }
 
 #endif   // sw_Renderer_hpp
