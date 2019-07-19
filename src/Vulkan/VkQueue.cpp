@@ -19,6 +19,8 @@
 #include "WSI/VkSwapchainKHR.hpp"
 #include "Device/Renderer.hpp"
 
+#include "Yarn/Trace.hpp"
+
 #include <cstring>
 
 namespace
@@ -74,9 +76,9 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 namespace vk
 {
 
-Queue::Queue() : renderer()
+Queue::Queue()
 {
-	queueThread = std::thread(TaskLoop, this);
+	queueThread = std::thread(&Queue::taskLoop, this, yarn::Scheduler::get());
 }
 
 Queue::~Queue()
@@ -108,11 +110,6 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, Fence
 	pending.put(task);
 
 	return VK_SUCCESS;
-}
-
-void Queue::TaskLoop(vk::Queue* queue)
-{
-	queue->taskLoop();
 }
 
 void Queue::submitQueue(const Task& task)
@@ -155,8 +152,11 @@ void Queue::submitQueue(const Task& task)
 	}
 }
 
-void Queue::taskLoop()
+void Queue::taskLoop(yarn::Scheduler* scheduler)
 {
+	NAME_THREAD("Queue<%p>", this);
+	scheduler->bind();
+
 	while(true)
 	{
 		Task task = pending.take();

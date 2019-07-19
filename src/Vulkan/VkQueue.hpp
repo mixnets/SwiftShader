@@ -63,8 +63,7 @@ private:
 		Type type = SUBMIT_QUEUE;
 	};
 
-	static void TaskLoop(vk::Queue* queue);
-	void taskLoop();
+	void taskLoop(yarn::Scheduler* scheduler);
 	void garbageCollect();
 	void submitQueue(const Task& task);
 
