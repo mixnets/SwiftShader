@@ -20,7 +20,6 @@
 #include "Device/Renderer.hpp"
 
 #include "Yarn/Defer.hpp"
-#include "Yarn/Scheduler.hpp"
 #include "Yarn/Thread.hpp"
 #include "Yarn/Trace.hpp"
 

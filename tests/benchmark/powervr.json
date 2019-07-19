@@ -1,0 +1,44 @@
+[
+    {
+        "name":     "pvr-bumpmap",
+        "app":      "${POWERVR_BIN}/VulkanBumpmap",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    },
+    {
+        "name":     "pvr-deferredshading",
+        "app":      "${POWERVR_BIN}/VulkanDeferredShading",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    },
+    {
+        "name":     "pvr-glass",
+        "app":      "${POWERVR_BIN}/VulkanGlass",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    },
+    {
+        "name":     "pvr-gnomehorde",
+        "app":      "${POWERVR_BIN}/VulkanGnomeHorde",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    },
+    {
+        "name":     "pvr-multithreading",
+        "app":      "${POWERVR_BIN}/VulkanMultithreading",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    },
+    {
+        "name":     "pvr-particlesystem",
+        "app":      "${POWERVR_BIN}/VulkanParticleSystem",
+        "args":     ["-fps"],
+        "duration": "1m",
+        "parse":    "FPS ([0-9]+\\.[0-9]+)"
+    }
+]
