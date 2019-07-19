@@ -15,4 +15,37 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#include "Yarn/Scheduler.hpp"
+
+struct SchedulerParams
+{
+    int numWorkerThreads;
+
+    friend std::ostream& operator<<(std::ostream& os, const SchedulerParams& params) {
+        return os << "SchedulerParams{" <<
+            "numWorkerThreads: " << params.numWorkerThreads <<
+            "}";
+    }
+};
+
 class WithoutBoundScheduler : public testing::Test {};
+
+class WithBoundScheduler : public testing::TestWithParam<SchedulerParams>
+{
+public:
+    void SetUp() override
+    {
+        auto &params = GetParam();
+
+        auto scheduler = new yarn::Scheduler();
+        scheduler->bind();
+        scheduler->setWorkerThreadCount(params.numWorkerThreads);
+    }
+
+    void TearDown() override
+    {
+        auto scheduler = yarn::Scheduler::get();
+        scheduler->unbind();
+        delete scheduler;
+    }
+};

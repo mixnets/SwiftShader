@@ -12,19 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Yarn_test.hpp"
+#ifndef yarn_fiber_hpp
+#define yarn_fiber_hpp
 
-INSTANTIATE_TEST_SUITE_P(SchedulerParams, WithBoundScheduler, testing::Values(
-    SchedulerParams{0},
-    SchedulerParams{1},
-    SchedulerParams{2},
-    SchedulerParams{4},
-    SchedulerParams{8},
-    SchedulerParams{64}
-));
+#include "Scheduler.hpp"
 
-int main(int argc, char **argv)
+#include <stddef.h>
+#include <stdint.h>
+
+namespace yarn {
+
+class OSFiber;
+
+class Fiber
 {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+public:
+	~Fiber();
+
+	void schedule();
+    void yield();
+	void switchTo(Fiber*);
+
+    static Fiber* current();
+	static Fiber* create(uint32_t id, size_t stackSize, const std::function<void()>& func);
+	static Fiber* createFromCurrentThread(uint32_t id);
+
+	OSFiber* const impl;
+	uint32_t const id;
+
+private:
+	Fiber(OSFiber*, uint32_t id);
+	Scheduler::Worker* const worker;
+};
+
+} // namespace yarn
+
+#endif  // yarn_fiber_hpp
