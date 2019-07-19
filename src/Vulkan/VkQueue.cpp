@@ -19,6 +19,9 @@
 #include "WSI/VkSwapchainKHR.hpp"
 #include "Device/Renderer.hpp"
 
+#include "Yarn/Trace.hpp"
+#include "Yarn/Thread.hpp"
+
 #include <cstring>
 
 namespace
@@ -76,7 +79,9 @@ namespace vk
 
 Queue::Queue(Device* device) : device(device)
 {
-	queueThread = std::thread(&Queue::taskLoop, this);
+	auto scheduler = yarn::Scheduler::get();
+	ASSERT(scheduler != nullptr);
+	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
 }
 
 Queue::~Queue()
@@ -155,8 +160,11 @@ void Queue::submitQueue(const Task& task)
 	}
 }
 
-void Queue::taskLoop()
+void Queue::taskLoop(yarn::Scheduler* scheduler)
 {
+	yarn::Thread::setName("Queue<%p>", this);
+	scheduler->bind();
+
 	while(true)
 	{
 		Task task = pending.take();
