@@ -299,7 +299,7 @@ namespace sw
 
 	Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, Float &lod)
 	{
-		Short4 offset = *Pointer<Short4>(mipmap + halfOffset);
+		Short4 offset = Short4(Int(*Pointer<Short>(mipmap + halfOffset)));
 
 		if(state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT)
 		{
@@ -890,11 +890,11 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z0, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
-		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
+		Int4 pitchP = Int4(*Pointer<Int>(mipmap + OFFSET(Mipmap, pitchP)));
 		y0 *= pitchP;
 		if(state.addressingModeW != ADDRESSING_UNUSED)
 		{
-			z0 *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
+			z0 *= Int4(*Pointer<Int>(mipmap + OFFSET(Mipmap, sliceP)));
 		}
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
@@ -966,8 +966,8 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z1, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
-		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
-		Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
+		Int4 pitchP = Int4(*Pointer<Int>(mipmap + OFFSET(Mipmap, pitchP)));
+		Int4 sliceP = Int4(*Pointer<Int>(mipmap + OFFSET(Mipmap, sliceP)));
 		y0 *= pitchP;
 		z0 *= sliceP;
 
