@@ -34,7 +34,7 @@ namespace sw
 	{
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 		occlusion = 0;
-		int clusterCount = Renderer::getClusterCount();
+		int clusterCount = ClusterCount;
 
 		Do
 		{
@@ -192,7 +192,7 @@ namespace sw
 				}
 			}
 
-			int clusterCount = Renderer::getClusterCount();
+			int clusterCount = ClusterCount;
 
 			for(int index = 0; index < RENDERTARGETS; index++)
 			{
