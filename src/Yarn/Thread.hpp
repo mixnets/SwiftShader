@@ -24,6 +24,9 @@ namespace yarn {
 class Thread
 {
 public:
+    using AffinityMask = std::bitset<1024>;
+    static void setAffinity(const AffinityMask& mask);
+
     // setName() sets the name of the currently executing thread for displaying
     // in a debugger.
     static void setName(const char* fmt, ...);

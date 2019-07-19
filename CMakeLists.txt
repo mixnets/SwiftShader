@@ -79,8 +79,6 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
 
-option(BUILD_YARN "Build yarn" 0)
-
 option(BUILD_EGL "Build the EGL library" 1)
 option(BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
 option(BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
@@ -1769,18 +1767,16 @@ file(GLOB_RECURSE VULKAN_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
 
-if(BUILD_YARN)
-    file(GLOB YARN_FULL_LIST
-        ${YARN_DIR}/*.cpp
-        ${YARN_DIR}/*.hpp
-        ${YARN_DIR}/*.s
-        ${YARN_DIR}/*.c
-    )
-    set(YARN_LIST ${YARN_FULL_LIST})
-    set(YARN_TEST_LIST ${YARN_FULL_LIST})
-    list(FILTER YARN_LIST EXCLUDE REGEX ".*_test\\..*")
-    list(FILTER YARN_TEST_LIST INCLUDE REGEX ".*_test\\..*")
-endif(BUILD_YARN)
+file(GLOB YARN_FULL_LIST
+    ${YARN_DIR}/*.cpp
+    ${YARN_DIR}/*.hpp
+    ${YARN_DIR}/*.s
+    ${YARN_DIR}/*.c
+)
+set(YARN_LIST ${YARN_FULL_LIST})
+set(YARN_TEST_LIST ${YARN_FULL_LIST})
+list(FILTER YARN_LIST EXCLUDE REGEX ".*_test\\..*")
+list(FILTER YARN_TEST_LIST INCLUDE REGEX ".*_test\\..*")
 
 ###########################################################
 # Append OS specific files to lists
@@ -1865,16 +1861,14 @@ endif()
 # SwiftShader Targets
 ###########################################################
 
-if(BUILD_YARN)
-    add_library(Yarn STATIC ${YARN_LIST})
-    set_target_properties(Yarn PROPERTIES
-        POSITION_INDEPENDENT_CODE 1
-        FOLDER "Core"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-        COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
-    )
-    target_link_libraries(Yarn ${OS_LIBS})
-endif(BUILD_YARN)
+add_library(Yarn STATIC ${YARN_LIST})
+set_target_properties(Yarn PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    FOLDER "Core"
+    COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+    COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
+)
+target_link_libraries(Yarn ${OS_LIBS})
 
 add_library(SwiftShader STATIC ${SWIFTSHADER_LIST})
 set_target_properties(SwiftShader PROPERTIES
@@ -2036,7 +2030,7 @@ if(BUILD_VULKAN)
         PREFIX ""
     )
     set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
-    target_link_libraries(libvk_swiftshader ${Reactor} ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
+    target_link_libraries(libvk_swiftshader ${Reactor} Yarn ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
     add_custom_command(
         TARGET libvk_swiftshader
         POST_BUILD
@@ -2130,6 +2124,30 @@ if(BUILD_TESTS)
 endif()
 
 if(BUILD_TESTS)
+    # Yarn
+    file(GLOB YARN_TEST_LIST
+        ${YARN_DIR}/*_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+    )
+
+    set(YARN_TEST_INCLUDE_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+
+    add_executable(yarn-unittests ${YARN_TEST_LIST})
+    set_target_properties(yarn-unittests PROPERTIES
+        INCLUDE_DIRECTORIES "${YARN_TEST_INCLUDE_DIR}"
+        FOLDER "Tests"
+        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+        COMPILE_DEFINITIONS "STANDALONE"
+    )
+
+    target_link_libraries(yarn-unittests Yarn ${OS_LIBS})
+
+    # GLES
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
@@ -2155,31 +2173,7 @@ if(BUILD_TESTS)
     if(ANDROID)
         target_link_libraries(gles-unittests -landroid)
     endif()
-endif(BUILD_TESTS)
-
-if(BUILD_TESTS AND BUILD_YARN)
-    file(GLOB YARN_TEST_LIST
-        ${YARN_DIR}/*_test.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
-    )
-
-    set(YARN_TEST_INCLUDE_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-    )
-
-    add_executable(yarn-unittests ${YARN_TEST_LIST})
-    set_target_properties(yarn-unittests PROPERTIES
-        INCLUDE_DIRECTORIES "${YARN_TEST_INCLUDE_DIR}"
-        FOLDER "Tests"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-        COMPILE_DEFINITIONS "STANDALONE"
-    )
-
-    target_link_libraries(yarn-unittests Yarn ${OS_LIBS})
-endif(BUILD_TESTS AND BUILD_YARN)
+endif()
 
 if(BUILD_TESTS AND BUILD_VULKAN)
     set(VK_UNITTESTS_LIST

@@ -388,6 +388,12 @@ void Scheduler::Worker::run()
     {
         YARN_NAME_THREAD("Thread<%.2d> Fiber<%.2d>", int(id), Fiber::current()->id);
 
+#if 0 // Enable to pin the worker to a physical CPU.
+        Thread::AffinityMask mask;
+        mask.set(id, true);
+        Thread::setAffinity(mask);
+#endif
+
         std::unique_lock<std::mutex> lock(work.mutex);
         work.added.wait(lock, [this] { return work.num > 0 || shutdown; });
         while (!shutdown)
