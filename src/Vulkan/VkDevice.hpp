@@ -21,6 +21,8 @@
 #include <memory>
 #include <mutex>
 
+#include "Yarn/Scheduler.hpp"
+
 namespace sw
 {
 	class Blitter;
@@ -80,6 +82,7 @@ public:
 	std::mutex& getSamplingRoutineCacheMutex();
 
 private:
+	yarn::Scheduler scheduler;
 	PhysicalDevice *const physicalDevice = nullptr;
 	Queue *const queues = nullptr;
 	uint32_t queueCount = 0;
