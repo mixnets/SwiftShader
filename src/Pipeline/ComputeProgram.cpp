@@ -18,6 +18,10 @@
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
+#include "Yarn/Defer.hpp"
+#include "Yarn/Trace.hpp"
+#include "Yarn/WaitGroup.hpp"
+
 #include <queue>
 
 namespace
@@ -40,6 +44,8 @@ namespace sw
 
 	void ComputeProgram::generate()
 	{
+		SCOPED_EVENT("ComputeProgram::generate");
+
 		SpirvRoutine routine(pipelineLayout);
 		shader->emitProlog(&routine);
 		emit(&routine);
@@ -220,11 +226,6 @@ namespace sw
 		auto invocationsPerWorkgroup = modes.WorkgroupSizeX * modes.WorkgroupSizeY * modes.WorkgroupSizeZ;
 		auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
-		// We're sharing a buffer here across all workgroups.
-		// We can only do this because we know a single workgroup is in flight
-		// at any time.
-		std::vector<uint8_t> workgroupMemory(shader->workgroupMemory.size());
-
 		Data data;
 		data.descriptorSets = descriptorSets;
 		data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -242,50 +243,65 @@ namespace sw
 		data.pushConstants = pushConstants;
 		data.constants = &sw::constants;
 
+		yarn::WaitGroup wg;
+
+		uint32_t batchCount = 8;
+
 		for (uint32_t groupZ = baseGroupZ; groupZ < baseGroupZ + groupCountZ; groupZ++)
 		{
 			for (uint32_t groupY = baseGroupY; groupY < baseGroupY + groupCountY; groupY++)
 			{
-				for (uint32_t groupX = baseGroupX; groupX < baseGroupX + groupCountX; groupX++)
+				for (uint32_t batchID = 0; batchID < batchCount; batchID++)
 				{
-
-					// TODO(bclayton): Split work across threads.
-					using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
-					std::queue<Coroutine> coroutines;
-
-					if (modes.ContainsControlBarriers)
+					wg.add(1);
+					yarn::schedule([&, batchID, groupY, groupZ]
 					{
-						// Make a function call per subgroup so each subgroup
-						// can yield, bringing all subgroups to the barrier
-						// together.
-						for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
+						defer(wg.done());
+						std::vector<uint8_t> workgroupMemory(shader->workgroupMemory.size());
+
+						for (uint32_t groupX = baseGroupX + batchID; groupX < baseGroupX + groupCountX; groupX += batchCount)
 						{
-							auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
-							coroutines.push(std::move(coroutine));
+							SCOPED_EVENT("groupX: %d, groupY: %d, groupZ: %d", groupX, groupY, groupZ);
+
+							using Coroutine = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
+							std::queue<Coroutine> coroutines;
+
+							if (modes.ContainsControlBarriers)
+							{
+								// Make a function call per subgroup so each subgroup
+								// can yield, bringing all subgroups to the barrier
+								// together.
+								for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
+								{
+									auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
+									coroutines.push(std::move(coroutine));
+								}
+							}
+							else
+							{
+								auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
+								coroutines.push(std::move(coroutine));
+							}
+
+							while (coroutines.size() > 0)
+							{
+								auto coroutine = std::move(coroutines.front());
+								coroutines.pop();
+
+								SpirvShader::YieldResult result;
+								if (coroutine->await(result))
+								{
+									// TODO: Consider result (when the enum is more than 1 entry).
+									coroutines.push(std::move(coroutine));
+								}
+							}
 						}
-					}
-					else
-					{
-						auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
-						coroutines.push(std::move(coroutine));
-					}
-
-					while (coroutines.size() > 0)
-					{
-						auto coroutine = std::move(coroutines.front());
-						coroutines.pop();
-
-						SpirvShader::YieldResult result;
-						if (coroutine->await(result))
-						{
-							// TODO: Consider result (when the enum is more than 1 entry).
-							coroutines.push(std::move(coroutine));
-						}
-					}
-
+					});
 				} // groupX
 			} // groupY
 		} // groupZ
+
+		wg.wait();
 	}
 
 } // namespace sw
