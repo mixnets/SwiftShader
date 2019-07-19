@@ -14,6 +14,8 @@
 
 #include "Thread.hpp"
 
+#include "Trace.hpp"
+
 #include <cstdarg>
 
 #if defined(_WIN32)
@@ -51,6 +53,20 @@ void Thread::setName(const char* fmt, ...)
     wchar_t wname[1024];
     mbstowcs(wname, name, 1024);
     setThreadDescription(GetCurrentThread(), wname);
+    NAME_THREAD("%s", name);
+}
+
+void Thread::setAffinity(const AffinityMask& mask)
+{
+    DWORD_PTR imask = 0;
+    for (uint64_t i = 0; i < mask.size(); i++)
+    {
+        if (mask[i])
+        {
+            imask |= 1ULL << i;
+        }
+    }
+    SetThreadAffinityMask(GetCurrentThread(), imask);
 }
 
 unsigned int Thread::numLogicalCPUs()
@@ -88,6 +104,36 @@ void Thread::setName(const char* fmt, ...)
 #else
     pthread_setname_np(pthread_self(), name);
 #endif
+
+    NAME_THREAD("%s", name);
+}
+
+void Thread::setAffinity(const AffinityMask& mask)
+{
+#if defined(__APPLE__)
+    integer_t imask = 0;
+    for (uint64_t i = 0; i < mask.size(); i++)
+    {
+        if (mask[i])
+        {
+            imask |= 1 << i;
+        }
+    }
+    thread_affinity_policy_data_t policy = { imask };
+    auto thread = pthread_mach_thread_np(pthread_self());
+    thread_policy_set(thread, THREAD_AFFINITY_POLICY, (thread_policy_t)&policy, 1);
+#else // defined(__APPLE__)
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    for (uint64_t i = 0; i < mask.size(); i++)
+    {
+        if (mask[i])
+        {
+            CPU_SET(i, &set);
+        }
+    }
+    sched_setaffinity(0, sizeof(cpu_set_t), &set);
+#endif // defined(__APPLE__)
 }
 
 unsigned int Thread::numLogicalCPUs()

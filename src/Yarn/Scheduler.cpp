@@ -18,9 +18,19 @@
 #include "Defer.hpp"
 #include "Fiber.hpp"
 #include "Thread.hpp"
+#include "Trace.hpp"
 
 #if defined(_WIN32)
 #include <intrin.h> // __nop()
+#endif
+
+// Enable to trace scheduler events.
+#define ENABLE_TRACE_EVENTS 0
+
+#if ENABLE_TRACE_EVENTS
+#define TRACE(...) SCOPED_EVENT(__VA_ARGS__)
+#else
+#define TRACE(...)
 #endif
 
 namespace
@@ -326,6 +336,14 @@ void Scheduler::Worker::run()
     {
     case Mode::MultiThreaded:
     {
+        NAME_THREAD("Thread<%.2d> Fiber<%.2d>", int(id), Fiber::current()->id);
+
+#if 0 // Enable to pin the worker to a physical CPU.
+        Thread::AffinityMask mask;
+        mask.set(id, true);
+        Thread::setAffinity(mask);
+#endif
+
         std::unique_lock<std::mutex> lock(work.mutex);
         work.added.wait(lock, [this] { return work.num > 0 || shutdown; });
         while (!shutdown)
@@ -363,6 +381,7 @@ void Scheduler::Worker::waitForWork(std::unique_lock<std::mutex> &lock)
 
 void Scheduler::Worker::spinForWork()
 {
+    TRACE("SPIN");
     Task stolen;
 
     constexpr auto duration = std::chrono::milliseconds(1);

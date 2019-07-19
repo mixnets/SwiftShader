@@ -17,6 +17,7 @@
 #include "Fiber.hpp"
 
 #include "Debug.hpp"
+#include "Trace.hpp"
 
 #include <functional>
 #include <memory>
@@ -50,6 +51,7 @@ void Fiber::schedule()
 
 void Fiber::yield()
 {
+	SCOPED_EVENT("YIELD");
 	worker->yield(this);
 }
 
