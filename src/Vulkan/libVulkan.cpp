@@ -60,6 +60,11 @@
 
 #include "Reactor/Nucleus.hpp"
 
+#include "Yarn/Scheduler.hpp"
+#include "Yarn/Thread.hpp"
+
+#include "System/CPUID.hpp"
+
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -98,12 +103,34 @@ void setReactorDefaultConfig()
 	rr::Nucleus::adjustDefaultConfig(cfg);
 }
 
+void setCPUDefaults()
+{
+	sw::CPUID::setEnableSSE4_1(true);
+	sw::CPUID::setEnableSSSE3(true);
+	sw::CPUID::setEnableSSE3(true);
+	sw::CPUID::setEnableSSE2(true);
+	sw::CPUID::setEnableSSE(true);
+}
+
+void bindScheduler()
+{
+	static yarn::Scheduler scheduler;
+	scheduler.setThreadInitializer([] {
+		sw::CPUID::setFlushToZero(true);
+		sw::CPUID::setDenormalsAreZero(true);
+	});
+	scheduler.setWorkerThreadCount(yarn::Thread::numLogicalCPUs());
+	scheduler.bind();
+}
+
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
 // initialization of the swiftshader driver.
 void initializeLibrary()
 {
 	static bool doOnce = [] {
 		setReactorDefaultConfig();
+		setCPUDefaults();
+		bindScheduler();
 		return true;
 	}();
 	(void)doOnce;
