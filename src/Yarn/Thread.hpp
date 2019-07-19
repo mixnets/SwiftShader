@@ -1,4 +1,4 @@
-// Copyright 2019 The yarniftShader Authors. All Rights Reserved.
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,30 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Debug.hpp"
+#ifndef yarn_thread_hpp
+#define yarn_thread_hpp
 
-#include "Scheduler.hpp"
+#include <bitset>
 
-#include <cstdlib>
+namespace yarn {
 
-#include <stdarg.h>
-#include <stdio.h>
-
-namespace yarn
+class Thread
 {
+public:
+    using AffinityMask = std::bitset<1024>;
 
-void fatal(const char* msg, ...)
-{
-    va_list vararg;
-    va_start(vararg, msg);
-    vfprintf(stderr, msg, vararg);
-    va_end(vararg);
-    abort();
-}
+    static void setName(const char* fmt, ...);
+    static void setAffinity(const AffinityMask& mask);
+    static unsigned int numLogicalCPUs();
+};
 
-void assert_has_bound_scheduler(const char* feature)
-{
-    YARN_ASSERT(Scheduler::get() != nullptr, "%s requires a yarn::Scheduler to be bound", feature);
-}
+} // namespace yarn
 
-}  // namespace yarn
+#endif  // yarn_thread_hpp
