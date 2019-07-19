@@ -299,7 +299,7 @@ namespace sw
 
 	Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count, Float &lod)
 	{
-		Short4 offset = *Pointer<Short4>(mipmap + halfOffset);
+		Short4 offset = Short4(Int(*Pointer<Short>(mipmap + halfOffset)));
 
 		if(state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT)
 		{

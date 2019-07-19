@@ -1226,12 +1226,12 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z0, fv, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
-		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
-		y0 *= pitchP;
+		Int pitchP = *Pointer<Int>(mipmap + OFFSET(Mipmap, pitchP));
+		y0 *= Int4(pitchP);
 		if(hasThirdCoordinate())
 		{
-			Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
-			z0 *= sliceP;
+			Int sliceP = *Pointer<Int>(mipmap + OFFSET(Mipmap, sliceP), 16);
+			z0 *= Int4(sliceP);
 		}
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
@@ -1240,7 +1240,7 @@ namespace sw
 		}
 		else
 		{
-			y1 *= pitchP;
+			y1 *= Int4(pitchP);
 
 			Vector4f c0 = sampleTexel(x0, y0, z0, q, mipmap, buffer, function);
 			Vector4f c1 = sampleTexel(x1, y0, z0, q, mipmap, buffer, function);

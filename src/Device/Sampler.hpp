@@ -31,15 +31,15 @@ namespace sw
 	{
 		const void *buffer;
 
-		short4 uHalf;
-		short4 vHalf;
-		short4 wHalf;
+		short uHalf;
+		short vHalf;
+		short wHalf;
 		int4 width;
 		int4 height;
 		int4 depth;
 		short4 onePitchP;
-		int4 pitchP;
-		int4 sliceP;
+		int pitchP;
+		int sliceP;
 	};
 
 	struct Texture
