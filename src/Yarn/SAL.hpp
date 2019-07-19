@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Yarn_test.hpp"
+// Stubs SAL annotation macros for platforms that do not support them.
+// See https://docs.microsoft.com/en-us/visualstudio/code-quality/annotating-locking-behavior?view=vs-2019
 
-INSTANTIATE_TEST_SUITE_P(SchedulerParams, WithBoundScheduler, testing::Values(
-    SchedulerParams{0},
-    SchedulerParams{1},
-    SchedulerParams{2},
-    SchedulerParams{4},
-    SchedulerParams{8},
-    SchedulerParams{64}
-));
+#ifndef yarn_sal_hpp
+#define yarn_sal_hpp
 
-int main(int argc, char **argv)
-{
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+#ifndef _Requires_lock_held_
+#define _Requires_lock_held_(x)
+#endif
+
+#ifndef _Requires_lock_not_held_
+#define _Requires_lock_not_held_(x)
+#endif
+
+#endif // yarn_sal_hpp
