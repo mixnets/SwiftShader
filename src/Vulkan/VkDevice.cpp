@@ -58,6 +58,9 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 	  enabledExtensionCount(pCreateInfo->enabledExtensionCount),
 	  enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{})  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
 {
+	scheduler.setWorkerThreadCount(4);
+	scheduler.bind();
+
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
 		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
@@ -99,6 +102,8 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	}
 
 	vk::deallocate(queues, pAllocator);
+
+	scheduler.unbind();
 }
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo* pCreateInfo)
