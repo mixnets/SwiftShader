@@ -12,19 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Yarn_test.hpp"
+#ifndef yarn_thread_hpp
+#define yarn_thread_hpp
 
-INSTANTIATE_TEST_SUITE_P(SchedulerParams, WithBoundScheduler, testing::Values(
-    SchedulerParams{0},
-    SchedulerParams{1},
-    SchedulerParams{2},
-    SchedulerParams{4},
-    SchedulerParams{8},
-    SchedulerParams{64}
-));
+#include <bitset>
 
-int main(int argc, char **argv)
+namespace yarn {
+
+class Thread
 {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+public:
+    using AffinityMask = std::bitset<1024>;
+    static void setAffinity(const AffinityMask& mask);
+
+    // setName() sets the name of the currently executing thread for displaying
+    // in a debugger.
+    static void setName(const char* fmt, ...);
+
+    // numLogicalCPUs() returns the number of available logical CPU cores for
+    // the system.
+    static unsigned int numLogicalCPUs();
+};
+
+} // namespace yarn
+
+#endif  // yarn_thread_hpp
