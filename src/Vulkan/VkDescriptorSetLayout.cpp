@@ -327,8 +327,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device* device, DescriptorSet *dstS
 			mipmap.width[0] = mipmap.width[1] = mipmap.width[2] = mipmap.width[3] = numElements;
 			mipmap.height[0] = mipmap.height[1] = mipmap.height[2] = mipmap.height[3] = 1;
 			mipmap.depth[0] = mipmap.depth[1] = mipmap.depth[2] = mipmap.depth[3] = 1;
-			mipmap.pitchP.x = mipmap.pitchP.y = mipmap.pitchP.z = mipmap.pitchP.w = numElements;
-			mipmap.sliceP.x = mipmap.sliceP.y = mipmap.sliceP.z = mipmap.sliceP.w = 0;
+			mipmap.pitchP = numElements;
+			mipmap.sliceP = 0;
 			mipmap.onePitchP[0] = mipmap.onePitchP[2] = 1;
 			mipmap.onePitchP[1] = mipmap.onePitchP[3] = static_cast<short>(numElements);
 		}
@@ -529,20 +529,9 @@ void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level,
 	short halfTexelV = 0x8000 / height;
 	short halfTexelW = 0x8000 / depth;
 
-	mipmap.uHalf[0] =
-	mipmap.uHalf[1] =
-	mipmap.uHalf[2] =
-	mipmap.uHalf[3] = halfTexelU;
-
-	mipmap.vHalf[0] =
-	mipmap.vHalf[1] =
-	mipmap.vHalf[2] =
-	mipmap.vHalf[3] = halfTexelV;
-
-	mipmap.wHalf[0] =
-	mipmap.wHalf[1] =
-	mipmap.wHalf[2] =
-	mipmap.wHalf[3] = halfTexelW;
+	mipmap.uHalf = halfTexelU;
+	mipmap.vHalf = halfTexelV;
+	mipmap.wHalf = halfTexelW;
 
 	mipmap.width[0] =
 	mipmap.width[1] =
@@ -564,15 +553,8 @@ void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level,
 	mipmap.onePitchP[2] = 1;
 	mipmap.onePitchP[3] = static_cast<short>(pitchP);
 
-	mipmap.pitchP[0] = pitchP;
-	mipmap.pitchP[1] = pitchP;
-	mipmap.pitchP[2] = pitchP;
-	mipmap.pitchP[3] = pitchP;
-
-	mipmap.sliceP[0] = sliceP;
-	mipmap.sliceP[1] = sliceP;
-	mipmap.sliceP[2] = sliceP;
-	mipmap.sliceP[3] = sliceP;
+	mipmap.pitchP = pitchP;
+	mipmap.sliceP = sliceP;
 }
 
 void DescriptorSetLayout::WriteDescriptorSet(Device* device, const VkWriteDescriptorSet& writeDescriptorSet)
