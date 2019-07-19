@@ -62,7 +62,7 @@ std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutine
 	return (key.instruction << 16) ^ (key.sampler << 8) ^ key.imageView;
 }
 
-Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures)
+Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, yarn::Scheduler *scheduler)
 	: physicalDevice(physicalDevice),
 	  queues(reinterpret_cast<Queue*>(mem)),
 	  enabledExtensionCount(pCreateInfo->enabledExtensionCount),
@@ -81,7 +81,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 
 		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
 		{
-			new (&queues[queueID]) Queue(this);
+			new (&queues[queueID]) Queue(this, scheduler);
 		}
 	}
 
