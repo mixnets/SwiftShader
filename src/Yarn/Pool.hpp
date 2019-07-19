@@ -1,0 +1,381 @@
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#ifndef yarn_pool_hpp
+#define yarn_pool_hpp
+
+#include "ConditionVariable.hpp"
+
+#include <atomic>
+#include <mutex>
+
+namespace yarn {
+
+enum class PoolPolicy
+{
+	// Call the Pool items constructor on borrow(), and destruct the item
+	// when the item is returned.
+	Reconstruct,
+
+	// Construct and destruct all items once for the lifetime of the Pool.
+	// Items will keep their state between loans.
+	Preserve,
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Pool<T>
+////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+class Pool
+{
+protected:
+	struct Item;
+	class Storage;
+
+public:
+	class Loan
+	{
+	public:
+		inline Loan() = default;
+		inline Loan(Item*, const std::shared_ptr<Storage>&);
+		inline Loan(const Loan&);
+		inline Loan(Loan&&);
+		inline ~Loan();
+		inline Loan& operator = (const Loan&);
+		inline Loan& operator = (Loan&&);
+		inline T& operator * ();
+		inline T* operator -> () const;
+		inline T* get() const;
+
+	private:
+		void release();
+		Item *item = nullptr;
+		std::shared_ptr<Storage> storage;
+	};
+
+protected:
+	class Storage
+	{
+	public:
+		virtual ~Storage() = default;
+		virtual void return_(Item*) = 0;
+	};
+
+	struct Item
+	{
+		inline T* get();
+		inline void construct();
+		inline void destruct();
+
+		using Data = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
+		Data data;
+		std::atomic<int> refcount = {0};
+		Item *next = nullptr;
+	};
+};
+
+template <typename T>
+using Loan = typename Pool<T>::Loan;
+
+////////////////////////////////////////////////////////////////////////////////
+// Pool<T>::Item
+////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+T* Pool<T>::Item::get()
+{
+	return reinterpret_cast<T*>(&data);
+}
+
+template <typename T>
+void Pool<T>::Item::construct()
+{
+	new (&data) T();
+}
+
+template <typename T>
+void Pool<T>::Item::destruct()
+{
+	get()->~T();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Pool<T>::Loan
+////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+Pool<T>::Loan::Loan(Item* item, const std::shared_ptr<Storage>& storage) : item(item), storage(storage)
+{
+	item->refcount++;
+}
+
+template <typename T>
+Pool<T>::Loan::Loan(const Loan& other) : item(other.item), storage(other.storage)
+{
+	if (item != nullptr)
+	{
+		item->refcount++;
+	}
+}
+
+template <typename T>
+Pool<T>::Loan::Loan(Loan&& other) : item(other.item), storage(other.storage)
+{
+	other.item = nullptr;
+	other.storage = nullptr;
+}
+
+template <typename T>
+Pool<T>::Loan::~Loan()
+{
+	release();
+}
+
+template <typename T>
+void Pool<T>::Loan::release()
+{
+	if (item != nullptr)
+	{
+		auto refs = --item->refcount;
+		YARN_ASSERT(refs >= 0, "release() called on zero-ref pool item");
+		if (refs == 0)
+		{
+			storage->return_(item);
+		}
+		item = nullptr;
+		storage = nullptr;
+	}
+}
+
+template <typename T>
+typename Pool<T>::Loan& Pool<T>::Loan::operator = (const Pool<T>::Loan& rhs)
+{
+	release();
+	if (rhs.item != nullptr)
+	{
+		item = rhs.item;
+		storage = rhs.storage;
+		rhs.item->refcount++;
+	}
+	return *this;
+}
+
+template <typename T>
+typename Pool<T>::Loan& Pool<T>::Loan::operator = (Pool<T>::Loan&& rhs)
+{
+	release();
+	std::swap(item, rhs.item);
+	std::swap(storage, rhs.storage);
+	return *this;
+}
+
+template <typename T>
+T& Pool<T>::Loan::operator * () { return *item->get(); }
+
+template <typename T>
+T* Pool<T>::Loan::operator -> () const { return item->get(); }
+
+template <typename T>
+T* Pool<T>::Loan::get() const { return item->get(); }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// FixedSizePool
+////////////////////////////////////////////////////////////////////////////////
+template <typename T, int N, PoolPolicy POLICY = PoolPolicy::Reconstruct>
+class FixedSizePool : public Pool<T>
+{
+public:
+	using Item = typename Pool<T>::Item;
+	using Loan = typename Pool<T>::Loan;
+
+	inline Loan borrow();
+	inline std::pair<Loan, bool> tryBorrow();
+
+private:
+	class Storage : public Pool<T>::Storage
+	{
+	public:
+		inline Storage();
+		inline ~Storage();
+		inline void return_(Item*) override;
+
+		std::mutex mutex;
+		ConditionVariable returned;
+		int numWaiting = 0;
+		Item items[N];
+		Item *free = nullptr;
+	};
+	std::shared_ptr<Storage> storage = std::make_shared<Storage>();
+};
+
+template <typename T, int N, PoolPolicy POLICY>
+FixedSizePool<T, N, POLICY>::Storage::Storage()
+{
+	for (int i = 0; i < N; i++)
+	{
+		if (POLICY == PoolPolicy::Preserve)
+		{
+			items[i].construct();
+		}
+		items[i].next = this->free;
+		this->free = &items[i];
+	}
+}
+
+template <typename T, int N, PoolPolicy POLICY>
+FixedSizePool<T, N, POLICY>::Storage::~Storage()
+{
+	if (POLICY == PoolPolicy::Preserve)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			items[i].destruct();
+		}
+	}
+}
+
+template <typename T, int N, PoolPolicy POLICY>
+typename FixedSizePool<T, N, POLICY>::Loan FixedSizePool<T, N, POLICY>::borrow()
+{
+	std::unique_lock<std::mutex> lock(storage->mutex);
+	storage->numWaiting++;
+	storage->returned.wait(lock, [&] { return storage->free != nullptr; });
+	storage->numWaiting--;
+	auto item = storage->free;
+	storage->free = storage->free->next;
+	lock.unlock();
+	if (POLICY == PoolPolicy::Reconstruct)
+	{
+		item->construct();
+	}
+	return Loan(item, storage);
+}
+
+template <typename T, int N, PoolPolicy POLICY>
+std::pair<typename FixedSizePool<T, N, POLICY>::Loan, bool> FixedSizePool<T, N, POLICY>::tryBorrow()
+{
+	std::unique_lock<std::mutex> lock(storage->mutex);
+	if (storage->free == nullptr)
+	{
+		return std::make_pair(Loan(), false);
+	}
+	auto item = storage->free;
+	storage->free = storage->free->next;
+	item->pool = this;
+	lock.unlock();
+	if (POLICY == PoolPolicy::Reconstruct)
+	{
+		item->construct();
+	}
+	return std::make_pair(Loan(item, storage), true);
+}
+
+template <typename T, int N, PoolPolicy POLICY>
+void FixedSizePool<T, N, POLICY>::Storage::return_(Item* item)
+{
+	if (POLICY == PoolPolicy::Reconstruct)
+	{
+		item->destruct();
+	}
+	std::unique_lock<std::mutex> lock(mutex);
+	auto notify = numWaiting > 0;
+	item->next = free;
+	free = item;
+	lock.unlock();
+	if (notify) { returned.notify_one(); }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// UnboundedPool
+////////////////////////////////////////////////////////////////////////////////
+template <typename T, PoolPolicy POLICY = PoolPolicy::Reconstruct>
+class UnboundedPool : public Pool<T>
+{
+public:
+	using Item = typename Pool<T>::Item;
+	using Loan = typename Pool<T>::Loan;
+
+	inline Loan borrow();
+
+private:
+	class Storage : public Pool<T>::Storage
+	{
+	public:
+		inline ~Storage();
+		inline void return_(Item*) override;
+
+		std::mutex mutex;
+		std::vector<Item*> items;
+		Item *free = nullptr;
+	};
+	std::shared_ptr<Storage> storage = std::make_shared<Storage>();
+};
+
+template <typename T, PoolPolicy POLICY>
+UnboundedPool<T, POLICY>::Storage::~Storage()
+{
+	for (auto item : items)
+	{
+		if (POLICY == PoolPolicy::Preserve)
+		{
+			item->destruct();
+		}
+		delete item;
+	}
+}
+
+template <typename T, PoolPolicy POLICY>
+Loan<T> UnboundedPool<T, POLICY>::borrow()
+{
+	std::unique_lock<std::mutex> lock(storage->mutex);
+	if (storage->free == nullptr)
+	{
+		auto count = std::max<size_t>(storage->items.size(), 32);
+		for (size_t i = 0; i < count; i++)
+		{
+			auto item = new Item();
+			if (POLICY == PoolPolicy::Preserve)
+			{
+				item->construct();
+			}
+			storage->items.push_back(item);
+			item->next = storage->free;
+			storage->free = item;
+		}
+	}
+	auto item = storage->free;
+	storage->free = storage->free->next;
+	lock.unlock();
+	if (POLICY == PoolPolicy::Reconstruct)
+	{
+		item->construct();
+	}
+	return Loan(item, storage);
+}
+
+template <typename T, PoolPolicy POLICY>
+void UnboundedPool<T, POLICY>::Storage::return_(Item* item)
+{
+	if (POLICY == PoolPolicy::Reconstruct)
+	{
+		item->destruct();
+	}
+	std::unique_lock<std::mutex> lock(mutex);
+	item->next = free;
+	free = item;
+	lock.unlock();
+}
+
+} // namespace yarn
+
+#endif  // yarn_pool_hpp
