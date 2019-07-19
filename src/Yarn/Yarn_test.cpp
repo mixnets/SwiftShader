@@ -1,4 +1,4 @@
-// Copyright 2019 The yarniftShader Authors. All Rights Reserved.
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,30 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Debug.hpp"
+#include "Yarn_test.hpp"
 
-#include "Scheduler.hpp"
+INSTANTIATE_TEST_SUITE_P(SchedulerParams, WithBoundScheduler, testing::Values(
+    SchedulerParams{0},
+    SchedulerParams{1},
+    SchedulerParams{2},
+    SchedulerParams{4},
+    SchedulerParams{8},
+    SchedulerParams{64}
+));
 
-#include <cstdlib>
-
-#include <stdarg.h>
-#include <stdio.h>
-
-namespace yarn
+int main(int argc, char **argv)
 {
-
-void fatal(const char* msg, ...)
-{
-    va_list vararg;
-    va_start(vararg, msg);
-    vfprintf(stderr, msg, vararg);
-    va_end(vararg);
-    abort();
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
-
-void assert_has_bound_scheduler(const char* feature)
-{
-    YARN_ASSERT(Scheduler::get() != nullptr, "%s requires a yarn::Scheduler to be bound", feature);
-}
-
-}  // namespace yarn

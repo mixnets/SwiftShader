@@ -23,10 +23,13 @@ if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 %MSBUILD% /p:Configuration=%CONFIG% SwiftShader.sln
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 
-REM Run the unit tests. They must be run from project root
+REM Run the unit tests. Some must be run from project root
 cd %SRC%
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 SET SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG=1
+
+build\Debug\yarn-unittests.exe
+if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 
 build\Debug\gles-unittests.exe
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
