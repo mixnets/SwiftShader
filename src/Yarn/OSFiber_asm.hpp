@@ -64,7 +64,7 @@ public:
     inline void switchTo(OSFiber*);
 
 private:
-    static void run(OSFiber* self);
+    static inline void run(OSFiber* self);
 
     yarn_fiber_context context;
     std::function<void()> target;

@@ -14,17 +14,30 @@
 
 #include "Yarn_test.hpp"
 
-INSTANTIATE_TEST_SUITE_P(SchedulerParams, WithBoundScheduler, testing::Values(
-    SchedulerParams{0},
-    SchedulerParams{1},
-    SchedulerParams{2},
-    SchedulerParams{4},
-    SchedulerParams{8},
-    SchedulerParams{64}
-));
+#include "Yarn/TicketQueue.hpp"
 
-int main(int argc, char **argv)
+TEST_P(WithBoundScheduler, TicketQueue)
 {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+    yarn::Ticket::Queue queue;
+
+    constexpr int count = 1000;
+    std::atomic<int> next = {0};
+    int result[count] = {};
+
+    for (int i = 0; i < count; i++)
+    {
+        auto ticket = queue.take();
+        yarn::schedule([ticket, i, &result, &next] {
+            ticket.wait();
+            result[next++] = i;
+            ticket.done();
+        });
+    }
+
+    queue.take().wait();
+
+    for (int i = 0; i < count; i++)
+    {
+        ASSERT_EQ(result[i], i);
+    }
 }
