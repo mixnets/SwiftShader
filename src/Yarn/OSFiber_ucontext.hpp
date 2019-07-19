@@ -30,6 +30,19 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif // defined(__clang__)
 
+/*
+TODO: In theory, we should be using annotations to tell sanitizers that we're
+switching stacks. However, so far we've seen no false-positives.
+
+#ifdef(_asan_enabled_)
+extern "C"
+{
+	extern void __sanitizer_start_switch_fiber(void **fake_stack_save, const void *bottom, size_t size);
+	extern void __sanitizer_finish_switch_fiber(void *fake_stack_save, const void **bottom_old, size_t *size_old);
+}
+#endif // _asan_enabled_
+*/
+
 namespace yarn {
 
 class OSFiber
