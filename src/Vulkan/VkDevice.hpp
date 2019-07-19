@@ -70,9 +70,10 @@ public:
 
 		rr::Routine* query(const Key& key) const;
 		void add(const Key& key, rr::Routine* routine);
+		static std::size_t hash(const Key &key);
 
 	private:
-		std::size_t hash(const Key &key) const;
+
 		sw::LRUCache<std::size_t, rr::Routine> cache;
 	};
 

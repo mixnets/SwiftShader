@@ -33,12 +33,21 @@ namespace sw {
 
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler)
 {
+	static std::atomic<rr::Routine *> prevSamplerFunction[16];
+
 	ImageInstruction instruction(inst);
 	ASSERT(imageDescriptor->imageViewId != 0 && (sampler->id != 0 || instruction.samplerMethod == Fetch));
 
 	vk::Device::SamplingRoutineCache::Key key = {inst, imageDescriptor->imageViewId, sampler->id};
+	auto hash = vk::Device::SamplingRoutineCache::hash(key);
 
 	ASSERT(imageDescriptor->device);
+
+	rr::Routine *prev = prevSamplerFunction[hash & 15];
+	if (prev && prev->tag == hash)
+	{
+		return (ImageSampler *) (prev->getEntry());
+	}
 
 	std::unique_lock<std::mutex> lock(imageDescriptor->device->getSamplingRoutineCacheMutex());
 	vk::Device::SamplingRoutineCache* cache = imageDescriptor->device->getSamplingRoutineCache();
@@ -90,6 +99,8 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	routine = emitSamplerRoutine(instruction, samplerState);
 
 	cache->add(key, routine);
+	routine->tag = hash;
+	prevSamplerFunction[hash & 15] = routine;
 	return (ImageSampler*)(routine->getEntry());
 }
 

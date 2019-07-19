@@ -47,7 +47,7 @@ void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::K
 	cache.add(hash(key), routine);
 }
 
-std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutineCache::Key &key) const
+std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutineCache::Key &key)
 {
 	return (key.instruction << 16) ^ (key.sampler << 8) ^ key.imageView;
 }

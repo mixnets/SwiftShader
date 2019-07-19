@@ -15,6 +15,8 @@
 #ifndef rr_Routine_hpp
 #define rr_Routine_hpp
 
+#include <cstdlib>
+
 namespace rr
 {
 	class Routine
@@ -29,6 +31,7 @@ namespace rr
 		// Reference counting
 		void bind();
 		void unbind();
+		size_t tag;
 
 	private:
 		volatile int bindCount;
