@@ -262,6 +262,7 @@ endif()
 ###########################################################
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(YARN_DIR ${SOURCE_DIR}/Yarn)
 set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
 set(OPENGL_COMPILER_DIR ${OPENGL_DIR}/compiler)
 set(VULKAN_DIR ${SOURCE_DIR}/Vulkan)
@@ -303,6 +304,7 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
+    add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)  # Disable MSVC warnings about std::aligned_storage being broken before VS 2017 15.8
 
     if(WARNINGS_AS_ERRORS)
         set_cpp_flag("/WX") # Treat all warnings as errors
@@ -1762,6 +1764,11 @@ file(GLOB_RECURSE VULKAN_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
 
+file(GLOB YARN_LIST
+    ${YARN_DIR}/*.cpp
+    ${YARN_DIR}/*.hpp
+)
+
 ###########################################################
 # Append OS specific files to lists
 ###########################################################
@@ -1844,6 +1851,15 @@ endif()
 ###########################################################
 # SwiftShader Targets
 ###########################################################
+
+add_library(Yarn STATIC ${YARN_LIST})
+set_target_properties(Yarn PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    FOLDER "Core"
+    COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+    COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION=;"
+)
+target_link_libraries(Yarn ${OS_LIBS})
 
 add_library(SwiftShader STATIC ${SWIFTSHADER_LIST})
 set_target_properties(SwiftShader PROPERTIES
@@ -2005,7 +2021,7 @@ if(BUILD_VULKAN)
         PREFIX ""
     )
     set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
-    target_link_libraries(libvk_swiftshader ${Reactor} ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
+    target_link_libraries(libvk_swiftshader ${Reactor} Yarn ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
     add_custom_command(
         TARGET libvk_swiftshader
         POST_BUILD
@@ -2099,6 +2115,31 @@ if(BUILD_TESTS)
 endif()
 
 if(BUILD_TESTS)
+    # Yarn
+    set(YARN_UNITTESTS_LIST
+        ${YARN_DIR}/tests/main.cpp
+        ${YARN_DIR}/tests/tests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+    )
+
+    set(YARN_UNITTESTS_INCLUDE_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+
+    add_executable(yarn-unittests ${YARN_UNITTESTS_LIST})
+    set_target_properties(yarn-unittests PROPERTIES
+        INCLUDE_DIRECTORIES "${YARN_UNITTESTS_INCLUDE_DIR}"
+        FOLDER "Tests"
+        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+        COMPILE_DEFINITIONS "STANDALONE"
+    )
+
+    target_link_libraries(yarn-unittests Yarn ${OS_LIBS})
+
+    # GLES
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
