@@ -68,7 +68,7 @@ private:
 	void garbageCollect();
 	void submitQueue(const Task& task);
 
-	sw::Renderer renderer;
+	std::unique_ptr<sw::Renderer> renderer;
 	sw::Chan<Task> pending;
 	sw::Chan<VkSubmitInfo*> toDelete;
 	std::thread queueThread;
