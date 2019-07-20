@@ -117,6 +117,11 @@ void Queue::TaskLoop(vk::Queue* queue)
 
 void Queue::submitQueue(const Task& task)
 {
+	if (renderer == nullptr)
+	{
+		renderer.reset(new sw::Renderer());
+	}
+
 	for(uint32_t i = 0; i < task.submitCount; i++)
 	{
 		auto& submitInfo = task.pSubmits[i];
@@ -127,7 +132,7 @@ void Queue::submitQueue(const Task& task)
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = &renderer;
+			executionState.renderer = renderer.get();
 			executionState.events = task.events;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
@@ -150,7 +155,7 @@ void Queue::submitQueue(const Task& task)
 	{
 		// TODO: fix renderer signaling so that work submitted separately from (but before) a fence
 		// is guaranteed complete by the time the fence signals.
-		renderer.synchronize();
+		renderer->synchronize();
 		task.events->finish();
 	}
 }
