@@ -24,7 +24,6 @@
 namespace sw
 {
 	class Blitter;
-	class SamplingRoutineCache;
 }
 
 namespace vk
@@ -70,14 +69,17 @@ public:
 
 		rr::Routine* query(const Key& key) const;
 		void add(const Key& key, rr::Routine* routine);
+		static std::size_t hash(const Key &key);
+		void asMap(std::unordered_map<size_t, rr::Routine*>* map) { cache.asMap(map); }
 
 	private:
-		std::size_t hash(const Key &key) const;
 		sw::LRUCache<std::size_t, rr::Routine> cache;
 	};
 
-	SamplingRoutineCache* getSamplingRoutineCache();
+	SamplingRoutineCache* getSamplingRoutineCache() const;
 	std::mutex& getSamplingRoutineCacheMutex();
+	rr::Routine* findInConstCache(const SamplingRoutineCache::Key& key) const;
+	void updateSamplingRoutineConstCache();
 
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
@@ -85,6 +87,7 @@ private:
 	uint32_t queueCount = 0;
 	std::unique_ptr<sw::Blitter> blitter;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
+	std::unordered_map<size_t, rr::Routine*> samplingRoutineConstCache;
 	std::mutex samplingRoutineCacheMutex;
 	uint32_t enabledExtensionCount = 0;
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
