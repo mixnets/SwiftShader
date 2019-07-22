@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "296b03a9_0519182d",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-07-22T15:12:15Z",
+      "side": 1,
+      "message": "Should take ref to slot here so we don\u0027t need the \u0026 15 everywhere else.",
+      "revId": "7ad31fd863331c38034df0cc51dfa1e35f020849",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
