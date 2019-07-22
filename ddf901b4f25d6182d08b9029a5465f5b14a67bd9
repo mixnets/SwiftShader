@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38d01d03_a2ae7f3d",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-22T18:02:21Z",
+      "side": 1,
+      "message": "Hey, can we change this to a uint64_t or uint32_t (here an everywhere else in the file)? It bugs me a little that the key size is platform dependent...",
+      "range": {
+        "startLine": 72,
+        "startChar": 9,
+        "endLine": 72,
+        "endChar": 20
+      },
+      "revId": "ddf901b4f25d6182d08b9029a5465f5b14a67bd9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
