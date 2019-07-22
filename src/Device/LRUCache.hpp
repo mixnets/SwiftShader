@@ -19,6 +19,7 @@
 
 #include <cstring>
 #include <type_traits>
+#include <unordered_map>
 
 namespace sw
 {
@@ -36,11 +37,14 @@ namespace sw
 		int getSize() {return size;}
 		Key &getKey(int i) {return key[i];}
 
+		void asMap(std::unordered_map<Key, Data*>* map);
+
 	private:
 		int size;
 		int mask;
 		int top;
 		int fill;
+		bool changed = false;
 
 		Key *key;
 		Key **ref;
@@ -181,7 +185,35 @@ namespace sw
 
 		this->data[top] = data;
 
+		this->changed = true;
+
 		return data;
+	}
+
+	template<class Key, class Data>
+	void LRUCache<Key, Data>::asMap(std::unordered_map<Key, Data*>* map)
+	{
+		if(changed)
+		{
+			auto it = map->begin();
+			auto itEnd = map->end();
+			for(; it != itEnd; ++it)
+			{
+				it->second->unbind();
+			}
+			map->clear();
+
+			for(int i = 0; i < size; i++)
+			{
+				if(data[i])
+				{
+					data[i]->bind();
+					(*map)[*ref[i]] = data[i];
+				}
+			}
+
+			changed = false;
+		}
 	}
 }
 

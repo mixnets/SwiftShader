@@ -47,7 +47,7 @@ void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::K
 	cache.add(hash(key), routine);
 }
 
-std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutineCache::Key &key) const
+std::size_t Device::SamplingRoutineCache::hash(const vk::Device::SamplingRoutineCache::Key &key)
 {
 	return (key.instruction << 16) ^ (key.sampler << 8) ^ key.imageView;
 }
@@ -71,7 +71,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 
 		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
 		{
-			new (&queues[queueID]) Queue();
+			new (&queues[queueID]) Queue(this);
 		}
 	}
 
@@ -89,6 +89,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 	blitter.reset(new sw::Blitter());
+	samplingRoutineCache.reset(new SamplingRoutineCache());
 }
 
 void Device::destroy(const VkAllocationCallbacks* pAllocator)
@@ -99,6 +100,14 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	}
 
 	vk::deallocate(queues, pAllocator);
+
+	auto it = samplingRoutineConstCache.begin();
+	auto itEnd = samplingRoutineConstCache.end();
+	for(; it != itEnd; ++it)
+	{
+		it->second->unbind();
+	}
+	samplingRoutineConstCache.clear();
 }
 
 size_t Device::ComputeRequiredAllocationSize(const VkDeviceCreateInfo* pCreateInfo)
@@ -235,13 +244,21 @@ void Device::updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDe
 	}
 }
 
-Device::SamplingRoutineCache* Device::getSamplingRoutineCache()
+Device::SamplingRoutineCache* Device::getSamplingRoutineCache() const
 {
-	if(!samplingRoutineCache.get())
-	{
-		samplingRoutineCache.reset(new SamplingRoutineCache());
-	}
 	return samplingRoutineCache.get();
+}
+
+rr::Routine* Device::findInConstCache(const SamplingRoutineCache::Key& key) const
+{
+	auto it = samplingRoutineConstCache.find(SamplingRoutineCache::hash(key));
+	return (it != samplingRoutineConstCache.end()) ? it->second : nullptr;
+}
+
+void Device::updateSamplingRoutineConstCache()
+{
+	std::unique_lock<std::mutex> lock(samplingRoutineCacheMutex);
+	samplingRoutineCache->asMap(&samplingRoutineConstCache);
 }
 
 std::mutex& Device::getSamplingRoutineCacheMutex()
