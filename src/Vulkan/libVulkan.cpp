@@ -118,7 +118,7 @@ void bindScheduler()
 		sw::CPUID::setFlushToZero(true);
 		sw::CPUID::setDenormalsAreZero(true);
 	});
-	scheduler.setWorkerThreadCount(sw::CPUID::processAffinity());
+	scheduler.setWorkerThreadCount(std::min(sw::CPUID::processAffinity(), 4));
 	scheduler.bind();
 }
 
