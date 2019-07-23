@@ -25,6 +25,8 @@
 #include <queue>
 #include <thread>
 
+#include "blockingconcurrentqueue.h"
+
 // SAL annotations. See https://docs.microsoft.com/en-us/visualstudio/code-quality/annotating-locking-behavior?view=vs-2019
 #ifndef _Requires_lock_held_
 #define _Requires_lock_held_(x)
@@ -79,9 +81,10 @@ private:
         Worker(Scheduler *scheduler, Mode mode, uint32_t id);
         ~Worker();
 
-        void yield(Fiber* fiber);
-        void enqueue(Fiber* fiber);
-        void enqueue(bool atFront, Task&& task);
+        void yield(Fiber*fiber);
+        void enqueue(Fiber*fiber);
+        void enqueue(Task &&task);
+
         void flush();
 
         static Worker* getCurrent();
@@ -94,13 +97,12 @@ private:
         void switchToFiber(Fiber*);
         int numActiveFibers();
         void run();
-        void runUntilIdle(std::unique_lock<std::mutex> &lock);
+        void process(const Task& task);
 
         struct Work
         {
-            TaskQueue tasks;
-            std::condition_variable added;
-            std::mutex mutex;
+            moodycamel::ConcurrentQueue<Fiber*> fibers;
+            moodycamel::BlockingConcurrentQueue<Task> tasks;
         };
 
         static thread_local Worker* current;
