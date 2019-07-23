@@ -111,25 +111,24 @@ size_t Scheduler::getWorkerThreadCount()
 
 void Scheduler::enqueue(Task&& task)
 {
-    while(true)
+    do
     {
         auto numThreads = workerThreadCount.load();
         if (numThreads > 0)
         {
             auto idx = nextEnqueueIndex++ % numThreads;
             auto thread = workerThreads[idx].load();
-            if (thread != nullptr)
+            if (thread == nullptr)
             {
-                thread->enqueue(false, std::move(task));
-                return;
+                continue;
             }
+            thread->enqueue(std::move(task));
         }
         else
         {
-            singleThreadedWorker.enqueue(false, std::move(task));
-            return;
+            singleThreadedWorker.enqueue(std::move(task));
         }
-    }
+    } while(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,12 +173,8 @@ Scheduler::Worker::~Worker()
     switch (mode)
     {
     case Mode::MultiThreaded:
-        {
-            std::unique_lock<std::mutex> lock(work.mutex);
-            shutdown = true;
-        }
-        work.added.notify_all();
-        thread.join(); // Must be called outside of the lock of work.mutex.
+        enqueue([this] { shutdown = true; });
+        thread.join();
         break;
 
     case Mode::SingleThreaded:
@@ -210,7 +205,7 @@ void Scheduler::Worker::yield(Fiber *from)
 
 void Scheduler::Worker::enqueue(Fiber* fiber)
 {
-    enqueue(true, [this, fiber] {
+    enqueue([this, fiber] {
         // We only need one fiber to process the work queue, so place this
         // fiber into the cache so it can be reused, and switch to the
         // newly unblocked fiber.
@@ -219,27 +214,19 @@ void Scheduler::Worker::enqueue(Fiber* fiber)
     });
 }
 
-void Scheduler::Worker::enqueue(bool atFront, Task&& task)
+void Scheduler::Worker::enqueue(Task&& task)
 {
-    std::unique_lock<std::mutex> lock(work.mutex);
-    auto wasIdle = work.tasks.size() == 0;
-    if (atFront)
-    {
-        work.tasks.push_front(std::move(task));
-    }
-    else
-    {
-        work.tasks.push_back(std::move(task));
-    }
-    lock.unlock();
-    if (wasIdle) { work.added.notify_one(); }
+    work.tasks.enqueue(std::move(task));
 }
 
 void Scheduler::Worker::flush()
 {
     YARN_ASSERT(mode == Mode::SingleThreaded, "flush() can only be used on a single-threaded worker");
-    std::unique_lock<std::mutex> lock(work.mutex);
-    runUntilIdle(lock);
+    Task task;
+    while (work.tasks.try_dequeue(task))
+    {
+        task();
+    }
 }
 
 void Scheduler::Worker::run()
@@ -248,13 +235,11 @@ void Scheduler::Worker::run()
     {
     case Mode::MultiThreaded:
     {
-        std::unique_lock<std::mutex> lock(work.mutex);
         while (!shutdown || numActiveFibers() > 0)
         {
-            work.added.wait(lock, [&] {
-                return work.tasks.size() > 0 || (shutdown && numActiveFibers() == 0);
-            });
-            runUntilIdle(lock);
+            Task task;
+            work.tasks.wait_dequeue(task);
+            task();
         }
         break;
     }
@@ -267,25 +252,6 @@ void Scheduler::Worker::run()
     }
 
     switchToFiber(mainFiber.get());
-}
-
-void Scheduler::Worker::runUntilIdle(std::unique_lock<std::mutex> &lock)
-{
-    while (work.tasks.size() > 0)
-    {
-        auto task = std::move(work.tasks.front());
-        work.tasks.pop_front();
-        lock.unlock();
-
-        // Run the task.
-        task();
-
-        // std::function<> can carry arguments with complex destructors.
-        // Ensure these are destructed outside of the lock.
-        task = Task();
-
-        lock.lock();
-    }
 }
 
 Fiber* Scheduler::Worker::createWorkerFiber()
