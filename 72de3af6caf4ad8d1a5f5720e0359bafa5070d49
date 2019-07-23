@@ -46,6 +46,30 @@
       "revId": "72de3af6caf4ad8d1a5f5720e0359bafa5070d49",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb05dc71_f92cb25c",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-23T18:27:12Z",
+      "side": 1,
+      "message": "Ok, I moved the map in here in a new class, tell me if anything else needs to be cleaned up in the new patch.",
+      "parentUuid": "ab23c0e9_19af93ce",
+      "range": {
+        "startLine": 196,
+        "startChar": 2,
+        "endLine": 196,
+        "endChar": 11
+      },
+      "revId": "72de3af6caf4ad8d1a5f5720e0359bafa5070d49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
