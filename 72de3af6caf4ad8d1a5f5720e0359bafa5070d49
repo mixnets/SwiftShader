@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c05de3eb_1d76829d",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-23T11:35:36Z",
+      "side": 1,
+      "message": "This is weird from an API point of view - you\u0027re only updating the map parameter only if the cache has changed from the last call to \u0027asMap\u0027. This means there is a 1:1 cache \u003c-\u003e map relationship.\n\nHow about storing the map in the struct, and returning a pointer to it? Then there\u0027s no requirement to keep the callee and caller state in sync.\n\nIf putting the map into here is not preferable, then you can use a incremental generation id (using std::atomic) so that the user knows whether the map needs to be rebuilt.",
+      "range": {
+        "startLine": 196,
+        "startChar": 2,
+        "endLine": 196,
+        "endChar": 11
+      },
+      "revId": "72de3af6caf4ad8d1a5f5720e0359bafa5070d49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
