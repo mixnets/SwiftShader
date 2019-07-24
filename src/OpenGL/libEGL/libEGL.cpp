@@ -936,7 +936,6 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 	   (read != EGL_NO_SURFACE && readSurface->hasClientBuffer()))
 	{
 		// Make current is not supported on IOSurface pbuffers.
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
 	}
 
 	if((draw != EGL_NO_SURFACE) ^ (read != EGL_NO_SURFACE))
