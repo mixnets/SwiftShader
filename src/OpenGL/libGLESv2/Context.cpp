@@ -4092,6 +4092,19 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 	sw::SliceRect sourceRect;
 	sw::SliceRect destRect;
+
+	// Clip the rectangles to their buffer's bounds while they're still integers
+	// to avoid overflow issues when we convert these to floating point values.
+	srcX0 = clamp<int>(srcX0, 0, readBufferWidth);
+	srcX1 = clamp<int>(srcX1, 0, readBufferWidth);
+	srcY0 = clamp<int>(srcY0, 0, readBufferHeight);
+	srcY1 = clamp<int>(srcY1, 0, readBufferHeight);
+
+	dstX0 = clamp<int>(dstX0, 0, drawBufferWidth);
+	dstX1 = clamp<int>(dstX1, 0, drawBufferWidth);
+	dstY0 = clamp<int>(dstY0, 0, drawBufferHeight);
+	dstY1 = clamp<int>(dstY1, 0, drawBufferHeight);
+
 	bool flipX = (srcX0 < srcX1) ^ (dstX0 < dstX1);
 	bool flipY = (srcY0 < srcY1) ^ (dstY0 < dstY1);
 
@@ -4138,6 +4151,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 		destRect.y0 = dstY1;
 		destRect.y1 = dstY0;
 	}
+
 
 	sw::RectF sourceScissoredRect(static_cast<float>(sourceRect.x0), static_cast<float>(sourceRect.y0),
 	                              static_cast<float>(sourceRect.x1), static_cast<float>(sourceRect.y1));
