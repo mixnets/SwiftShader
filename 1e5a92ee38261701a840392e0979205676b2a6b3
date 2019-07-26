@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5ad57b6_3f9c0d13",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4096,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-07-26T20:03:30Z",
+      "side": 1,
+      "message": "Is it ok to have this here and also have ClipSrcRect function calls later? Or is that redundant?",
+      "revId": "1e5a92ee38261701a840392e0979205676b2a6b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
