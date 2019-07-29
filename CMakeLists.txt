@@ -1,7 +1,17 @@
 ﻿cmake_minimum_required(VERSION 2.8)
 
+<<<<<<< HEAD   (782a98 Temporarily disable warnings-as-errors)
 project(SwiftShader C CXX)
+=======
+#
+# The SPIR-V headers from the SPIR-V Registry
+# https://www.khronos.org/registry/spir-v/
+#
+cmake_minimum_required(VERSION 3.0)
+project(SPIRV-Headers VERSION 1.4.1)
+>>>>>>> BRANCH (f3e056 Squashed 'third_party/SPIRV-Headers/' changes from 79b6681aa)
 
+<<<<<<< HEAD   (782a98 Temporarily disable warnings-as-errors)
 # On Windows we use custom solution and project files, except for certain third-
 # party projects which use CMake-generated ones. They are manually (re)generated
 # and made path relative using build/cmake.sh, so they can be checked into the
@@ -10,6 +20,30 @@ project(SwiftShader C CXX)
 if(WIN32)
     # Disable automatically regenerating project files on CMakeLists.txt changes.
     set(CMAKE_SUPPRESS_REGENERATION true)
+=======
+# There are two ways to use this project.
+#
+# Using this source tree directly from a CMake-based project:
+#   1. Add an add_subdirectory directive to include this sub directory.
+#   2. Use ${SPIRV-Headers_SOURCE_DIR}/include} in a target_include_directories
+#      command.
+#
+# Installing the headers first, then using them with an implicit include
+# directory.  To install the headers:
+#   1. mkdir build ; cd build
+#   2. cmake ..
+#   3. cmake --build . --target install
+
+# legacy
+add_custom_target(install-headers
+    COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv
+        $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/include/spirv)
+
+option(SPIRV_HEADERS_SKIP_EXAMPLES "Skip building examples"
+      ${SPIRV_HEADERS_SKIP_EXAMPLES})
+if(NOT ${SPIRV_HEADERS_SKIP_EXAMPLES})
+  set(SPIRV_HEADERS_ENABLE_EXAMPLES ON)
+>>>>>>> BRANCH (f3e056 Squashed 'third_party/SPIRV-Headers/' changes from 79b6681aa)
 endif()
 
 ###########################################################
@@ -2148,3 +2182,58 @@ if(BUILD_TESTS AND BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif()
+
+include(GNUInstallDirs)
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+# Installation
+
+set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${version_config}"
+    COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+    "cmake/Config.cmake.in"
+    "${project_config}"
+    INSTALL_DESTINATION "${config_install_dir}"
+)
+
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT "${TARGETS_EXPORT_NAME}"
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+    DIRECTORY include/spirv
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}"
+)
+
+install(
+    EXPORT "${TARGETS_EXPORT_NAME}"
+    NAMESPACE "${namespace}"
+    DESTINATION "${config_install_dir}"
+)
+
