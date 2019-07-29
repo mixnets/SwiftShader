@@ -40,9 +40,6 @@
     <ClCompile Include="$(SolutionDir)src\Device\SetupProcessor.cpp">
       <Filter>src\Device</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)src\Device\SwiftConfig.cpp">
-      <Filter>src\Device</Filter>
-    </ClCompile>
     <ClCompile Include="$(SolutionDir)src\Device\Vector.cpp">
       <Filter>src\Device</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
       <Filter>src\System</Filter>
     </ClCompile>
     <ClCompile Include="$(SolutionDir)src\System\Memory.cpp">
-      <Filter>src\System</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)src\System\Resource.cpp">
       <Filter>src\System</Filter>
     </ClCompile>
     <ClCompile Include="$(SolutionDir)src\System\Socket.cpp">
@@ -267,9 +261,6 @@
     <ClInclude Include="$(SolutionDir)src\Device\Stream.hpp">
       <Filter>src\Device</Filter>
     </ClInclude>
-    <ClInclude Include="$(SolutionDir)src\Device\SwiftConfig.hpp">
-      <Filter>src\Device</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)src\Device\Triangle.hpp">
       <Filter>src\Device</Filter>
     </ClInclude>
@@ -333,16 +324,10 @@
     <ClInclude Include="$(SolutionDir)src\System\Memory.hpp">
       <Filter>src\System</Filter>
     </ClInclude>
-    <ClInclude Include="$(SolutionDir)src\System\Resource.hpp">
-      <Filter>src\System</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)src\System\Socket.hpp">
       <Filter>src\System</Filter>
     </ClInclude>
     <ClInclude Include="$(SolutionDir)src\System\Synchronization.hpp">
-      <Filter>src\System</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)src\System\Thread.hpp">
       <Filter>src\System</Filter>
     </ClInclude>
     <ClInclude Include="$(SolutionDir)src\System\Timer.hpp">
@@ -450,6 +435,9 @@
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkShaderModule.hpp">
       <Filter>src\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="$(SolutionDir)src\Vulkan\VulkanPlatform.h">
+      <Filter>src\Vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="$(SolutionDir)src\Vulkan\resource.h">
       <Filter>src\Vulkan</Filter>
     </ClInclude>
@@ -462,22 +450,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{DEA3D2D6-9E81-34FB-B37F-BFD0AF986E84}</UniqueIdentifier>
+      <UniqueIdentifier>{EA33FFB4-9737-3B88-8F44-5989A0954CDA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Device">
-      <UniqueIdentifier>{14BC453F-FC97-3B73-BAAC-9617C0262299}</UniqueIdentifier>
+      <UniqueIdentifier>{653BECCA-AC87-3D5A-A3CE-DA704EBBBC5B}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Pipeline">
-      <UniqueIdentifier>{1902A7BC-34C4-3881-A0EF-6D6B70C0F6E9}</UniqueIdentifier>
+      <UniqueIdentifier>{9B99795D-B545-3F5B-8D5A-42F2931529EE}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\System">
-      <UniqueIdentifier>{78961295-BF27-3F30-9489-2B94D8E55999}</UniqueIdentifier>
+      <UniqueIdentifier>{8B816B00-08F7-3769-BF7E-8364415D5248}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Vulkan">
-      <UniqueIdentifier>{96F7476B-506B-3E99-8756-D84EF9946B56}</UniqueIdentifier>
+      <UniqueIdentifier>{C0523004-B038-30E9-9A61-331DFA018B2D}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\WSI">
-      <UniqueIdentifier>{AEFC2729-E50F-387D-A1EE-F61A80E4424D}</UniqueIdentifier>
+      <UniqueIdentifier>{CC51427A-0A10-39BF-851D-E4122C34DBAA}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
