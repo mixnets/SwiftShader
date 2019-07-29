@@ -158,8 +158,16 @@ set(BOOST_VER 1.70.0)
 set(BOOST_HASH_TARGZ "882b48708d211a5f48e60b0124cf5863c1534cd544ecd0664bb534a4b5d506e9")
 set(BOOST_HASH_ZIP   "48f379b2e90dd1084429aae87d6bdbde9670139fa7569ee856c8c86dd366039d")
 
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
 string(REPLACE "." "_" BOOST_VER_FNAME ${BOOST_VER})
 set(BOOST_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/boost_${BOOST_VER_FNAME})
+=======
+option(SPIRV_BUILD_COMPRESSION "Build SPIR-V compressing codec" OFF)
+if(SPIRV_BUILD_COMPRESSION)
+  message(FATAL_ERROR "SPIR-V compression codec has been removed from SPIR-V tools. "
+          "Please remove SPIRV_BUILD_COMPRESSION from your build options.")
+endif(SPIRV_BUILD_COMPRESSION)
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
 
 function(DownloadBoost)
     if (LINUX)
@@ -191,12 +199,47 @@ function(DownloadBoost)
             )
         endif()
     endif()
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
+=======
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      set(SPIRV_USE_SANITIZER "" CACHE STRING
+        "Use the clang sanitizer [address|memory|thread|...]")
+      if(NOT "${SPIRV_USE_SANITIZER}" STREQUAL "")
+        target_compile_options(${TARGET} PRIVATE
+          -fsanitize=${SPIRV_USE_SANITIZER})
+        set_target_properties(${TARGET} PROPERTIES
+          LINK_FLAGS -fsanitize=${SPIRV_USE_SANITIZER})
+      endif()
+      target_compile_options(${TARGET} PRIVATE
+         -ftemplate-depth=1024)
+    else()
+      target_compile_options(${TARGET} PRIVATE
+         -Wno-missing-field-initializers)
+    endif()
+  endif()
+
+  if (MSVC)
+    # Specify /EHs for exception handling. This makes using SPIRV-Tools as
+    # dependencies in other projects easier.
+    target_compile_options(${TARGET} PRIVATE /EHs)
+  endif()
+
+  # For MinGW cross compile, statically link to the C++ runtime.
+  # But it still depends on MSVCRT.dll.
+  if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+      set_target_properties(${TARGET} PROPERTIES
+        LINK_FLAGS -static -static-libgcc -static-libstdc++)
+    endif()
+  endif()
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
 endfunction()
 
 ###########################################################
 # Convenience macros
 ###########################################################
 
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
 # Recursively calls source_group on the files of the directory
 # so that Visual Studio has the files in a folder tree
 macro(group_all_sources directory)
@@ -210,6 +253,10 @@ macro(group_all_sources directory)
         endif()
     endforeach()
 endmacro()
+=======
+# Tests require Python3
+find_host_package(PythonInterp 3 REQUIRED)
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
 
 # Takes target library and a directory where the export map is
 # and add the linker options so that only the API symbols are
@@ -479,10 +526,15 @@ if(REACTOR_VERIFY_LLVM_IR)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_LLVM_IR_VERIFICATION")
 endif()
 
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
 if(WIN32)
     add_definitions(-DWINVER=0x501 -DNOMINMAX -DSTRICT)
     set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "" "lib")
 endif()
+=======
+set(SPIRV_LIBRARIES "-lSPIRV-Tools -lSPIRV-Tools-link -lSPIRV-Tools-opt")
+set(SPIRV_SHARED_LIBRARIES "-lSPIRV-Tools-shared")
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
 
 ###########################################################
 # LLVM

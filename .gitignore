@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
 # Ignored folders #
 /cache/
 /lib/
@@ -7,6 +8,26 @@
 .vs
 .vscode/ipch
 CMakeFiles/
+=======
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build/
+/buildtools/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
 
 # Per user vscode config files.
 .vscode/launch.json
@@ -46,4 +67,11 @@ CMakeFiles/
 *.opendb
 *.db
 *~
+<<<<<<< HEAD   (9fca49 Update SPIRV-Headers to e4322e3b)
 CMakeCache.txt
+=======
+
+# C-Lion
+/.idea/
+/cmake-build-*/
+>>>>>>> BRANCH (b73b76 Squashed 'third_party/SPIRV-Tools/' changes from d14db341b..)
