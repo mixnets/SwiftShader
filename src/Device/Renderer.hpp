@@ -51,7 +51,7 @@ namespace sw
 	struct Constants;
 
 	static const int BatchSize = 128;
-	static const int ClusterCount = 8;
+	static const int MaxClusterCount = 32;
 	using TriangleBatch = std::array<Triangle, BatchSize>;
 	using PrimitiveBatch = std::array<Primitive, BatchSize>;
 
@@ -72,7 +72,7 @@ namespace sw
 
 		PixelProcessor::Stencil stencil[2];   // clockwise, counterclockwise
 		PixelProcessor::Factor factor;
-		unsigned int occlusion[ClusterCount];   // Number of pixels passing depth test
+		unsigned int occlusion[MaxClusterCount];   // Number of pixels passing depth test
 
 		float4 Wx16;
 		float4 Hx16;
@@ -150,6 +150,8 @@ namespace sw
 		VertexProcessor::RoutinePointer vertexPointer;
 		SetupProcessor::RoutinePointer setupPointer;
 		PixelProcessor::RoutinePointer pixelPointer;
+
+		std::atomic<uint32_t>* pixelCost;
 
 		SetupFunction setupPrimitives;
 		SetupProcessor::State setupState;

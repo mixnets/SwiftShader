@@ -869,6 +869,8 @@ namespace sw
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> outputBuiltins;
 		WorkgroupMemory workgroupMemory;
 
+		std::atomic<uint32_t> cost = {4};
+
 	private:
 		const uint32_t codeSerialID;
 		Modes modes;

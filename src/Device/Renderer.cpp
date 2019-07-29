@@ -260,6 +260,8 @@ namespace sw
 		draw->setupPrimitives = setupPrimitives;
 		draw->setupState = setupState;
 
+		draw->pixelCost = const_cast<std::atomic<uint32_t>*>(&context->pixelShader->cost);
+
 		data->descriptorSets = context->descriptorSets;
 		data->descriptorDynamicOffsets = context->descriptorDynamicOffsets;
 
@@ -307,7 +309,7 @@ namespace sw
 
 		if(pixelState.occlusionEnabled)
 		{
-			for(int cluster = 0; cluster < ClusterCount; cluster++)
+			for(int cluster = 0; cluster < MaxClusterCount; cluster++)
 			{
 				data->occlusion[cluster] = 0;
 			}
@@ -420,7 +422,7 @@ namespace sw
 			switch(query->getType())
 			{
 			case VK_QUERY_TYPE_OCCLUSION:
-				for(int cluster = 0; cluster < ClusterCount; cluster++)
+				for(int cluster = 0; cluster < MaxClusterCount; cluster++)
 				{
 					query->add(data->occlusion[cluster]);
 				}
@@ -523,17 +525,20 @@ namespace sw
 					}
 
 					{
-						SCOPED_EVENT("PIXEL");
-						if (topology != VK_PRIMITIVE_TOPOLOGY_POINT_LIST)
+						int cost = draw->pixelCost->load();
+						int clusterCount = std::min<int>(sw::ceilPow2(cost), MaxClusterCount);
+						SCOPED_EVENT("PIXEL (cost: %d)", cost);
+						auto start = std::chrono::high_resolution_clock::now();
+						if (clusterCount > 1)
 						{
-							yarn::WaitGroup wg(ClusterCount);
-							for (int cluster = 0; cluster < ClusterCount; cluster++)
+							yarn::WaitGroup wg(clusterCount);
+							for (int cluster = 0; cluster < clusterCount; cluster++)
 							{
-								yarn::schedule([draw, batchData, visible, batch, cluster, wg] {
+								yarn::schedule([=] {
 									defer(wg.done());
-									SCOPED_EVENT("draw %d, batch %d, cluster %d", draw->id, batch, cluster); (void)batch;
+									SCOPED_EVENT("draw %d, batch %d, cluster %d, cost: %d", draw->id, batch, cluster, cost); (void)batch;
 									auto& primitiveBatch = batchData->primitives;
-									draw->pixelPointer(&primitiveBatch.front(), visible, cluster, draw->data);
+									draw->pixelPointer(&primitiveBatch.front(), visible, cluster, clusterCount, draw->data);
 								});
 							}
 							SCOPED_EVENT("WAIT CLUSTER");
@@ -541,10 +546,17 @@ namespace sw
 						}
 						else
 						{
-							for (int cluster = 0; cluster < ClusterCount; cluster++)
-							{
-								draw->pixelPointer(&primitiveBatch.front(), visible, cluster, draw->data);
-							}
+							draw->pixelPointer(&primitiveBatch.front(), visible, 0, 1, draw->data);
+						}
+						auto end = std::chrono::high_resolution_clock::now();
+						auto timeTaken = end - start;
+						if (timeTaken > std::chrono::microseconds(500))
+						{
+							*draw->pixelCost = std::min<int>(cost + 1, MaxClusterCount);
+						}
+						else if (timeTaken < std::chrono::microseconds(10))
+						{
+							*draw->pixelCost = std::max<int>(cost - 1, 1);
 						}
 					}
 				}
