@@ -21,6 +21,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(SolutionDir)src\Reactor\Reactor.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
     <ClInclude Include="$(SolutionDir)src\Reactor\LLVMReactor.hpp">
       <Filter>src\Reactor</Filter>
     </ClInclude>
@@ -45,10 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{DEA3D2D6-9E81-34FB-B37F-BFD0AF986E84}</UniqueIdentifier>
+      <UniqueIdentifier>{EA33FFB4-9737-3B88-8F44-5989A0954CDA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Reactor">
-      <UniqueIdentifier>{C4284086-7947-37B8-8969-2B6EDD9600E7}</UniqueIdentifier>
+      <UniqueIdentifier>{2D1CC3CD-A101-37BB-A4DA-E5CE2B5C97BC}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

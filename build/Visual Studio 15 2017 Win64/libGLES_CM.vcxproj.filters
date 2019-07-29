@@ -137,22 +137,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{281137F3-F765-344F-81A1-5EAF572A72BC}</UniqueIdentifier>
+      <UniqueIdentifier>{5AA4B8DC-ED78-3953-99EA-AAF19E519EF9}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{DEA3D2D6-9E81-34FB-B37F-BFD0AF986E84}</UniqueIdentifier>
+      <UniqueIdentifier>{EA33FFB4-9737-3B88-8F44-5989A0954CDA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Common">
-      <UniqueIdentifier>{FAA9C190-0FDA-392B-AF51-6AEAE07F8689}</UniqueIdentifier>
+      <UniqueIdentifier>{50323BD0-3236-3965-8AC7-0C858C70CE28}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\OpenGL">
-      <UniqueIdentifier>{E5C7B40E-5A13-3879-96D8-1EE4034C9A56}</UniqueIdentifier>
+      <UniqueIdentifier>{65A38E5F-A85C-394C-9E54-954E819EB801}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\OpenGL\common">
-      <UniqueIdentifier>{3ECA53F9-EAEB-3EFF-9CEA-43BDE5879E0F}</UniqueIdentifier>
+      <UniqueIdentifier>{3EB7C3A7-480E-3B34-9881-80FCB760031A}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\OpenGL\libGLES_CM">
-      <UniqueIdentifier>{CE323C6F-53E8-3A35-9320-41CE8B702FEB}</UniqueIdentifier>
+      <UniqueIdentifier>{3E0928D2-9C6A-3DFE-82FD-158C236AA608}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

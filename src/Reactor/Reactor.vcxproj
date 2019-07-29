@@ -308,7 +308,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\build\Visual Studio 15 2017 Win64\llvm.vcxproj">
-      <Project>{2f30a9cf-6135-3db8-a898-cc2638959596}</Project>
+      <Project>{fc835a26-1277-3bf0-9778-e34a42c027e2}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
