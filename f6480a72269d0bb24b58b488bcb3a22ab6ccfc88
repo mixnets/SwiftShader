@@ -22,6 +22,30 @@
       "revId": "f6480a72269d0bb24b58b488bcb3a22ab6ccfc88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9a94f9b_41d7a1c0",
+        "filename": "src/OpenGL/libGLESv2/Shader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-29T21:36:49Z",
+      "side": 1,
+      "message": "glReleaseShaderCompiler() only releases some global resources, which can be re-allocated on the next glCompileShader(). I believe this behavior is correctly implemented and doesn\u0027t require reference counting.",
+      "parentUuid": "d142f6a2_4bd146dc",
+      "range": {
+        "startLine": 303,
+        "startChar": 1,
+        "endLine": 303,
+        "endChar": 41
+      },
+      "revId": "f6480a72269d0bb24b58b488bcb3a22ab6ccfc88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
