@@ -46,6 +46,30 @@
       "revId": "f6480a72269d0bb24b58b488bcb3a22ab6ccfc88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24895e5d_b3d59ede",
+        "filename": "src/OpenGL/libGLESv2/Shader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-07-30T00:19:32Z",
+      "side": 1,
+      "message": "Fair enough",
+      "parentUuid": "a9a94f9b_41d7a1c0",
+      "range": {
+        "startLine": 303,
+        "startChar": 1,
+        "endLine": 303,
+        "endChar": 41
+      },
+      "revId": "f6480a72269d0bb24b58b488bcb3a22ab6ccfc88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
