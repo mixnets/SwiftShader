@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff44ff30_f6222118",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-30T15:39:27Z",
+      "side": 1,
+      "message": "I don\u0027t have a system running an older version of macOS, but I tested that unrecognized flags are ignored on 10.14. The man pages also don\u0027t mention any errors for unsupported flags and this is probably intentional for forward compatibility like this.",
+      "range": {
+        "startLine": 246,
+        "startChar": 47,
+        "endLine": 246,
+        "endChar": 54
+      },
+      "revId": "5a93cda8a22eec4c113b385931c5639b59028627",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
