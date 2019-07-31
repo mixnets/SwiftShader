@@ -2356,6 +2356,12 @@ namespace rr
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<Int> offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset);
 
+	template <typename T>
+	RValue<Bool> operator==(Pointer<T> &lhs, Pointer<T> &rhs)
+	{
+		return Nucleus::createPtrEQ(lhs.getBaseAddress(), rhs.getBaseAddress());
+	}
+
 	template<typename T>
 	RValue<T> Load(RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 	{
