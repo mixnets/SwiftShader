@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fa8ae47_70cfc65a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-31T20:27:33Z",
+      "side": 1,
+      "message": "typo: complements",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "530c5312_318db7ac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-31T20:27:33Z",
+      "side": 1,
+      "message": "Awesome, this confirms it\u0027s equally effective, as expected. It looks though that the constant cache is still helping out too, meaning this demo has at least one case where a sampling instruction isn\u0027t statically using the same descriptors. Would be interesting to know where exactly that is, so we can use it as a test case when we start doing sampler call inlining. Whenever you have time.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 36
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1082a4a3_e8372afc",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1257,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-31T20:27:33Z",
+      "side": 1,
+      "message": "Should be null initialized to avoid the case where they happen to match the descriptor pointers and we call an uninitialized sampler function.",
+      "range": {
+        "startLine": 1256,
+        "startChar": 3,
+        "endLine": 1257,
+        "endChar": 25
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

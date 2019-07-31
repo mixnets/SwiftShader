@@ -214,6 +214,30 @@
     },
     {
       "key": {
+        "uuid": "3aad4ab5_cca041cd",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-07-31T20:27:33Z",
+      "side": 1,
+      "message": "Ack, really just a note to myself to document this when the dust settles.",
+      "parentUuid": "8d5a99cd_3cc52c58",
+      "range": {
+        "startLine": 1254,
+        "startChar": 9,
+        "endLine": 1254,
+        "endChar": 21
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ee5219a1_f3bc9db0",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 6
