@@ -72,6 +72,54 @@
     },
     {
       "key": {
+        "uuid": "14633a59_8008fe57",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02663668_a62010f9",
+      "range": {
+        "startLine": 9,
+        "startChar": 37,
+        "endLine": 9,
+        "endChar": 68
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2684d74_a8563122",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94c8eee9_401f8d67",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "47c21e7f_040f66b3",
         "filename": "/COMMIT_MSG",
         "patchSetId": 6
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "b1eff427_99ce7687",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47c21e7f_040f66b3",
+      "range": {
+        "startLine": 11,
+        "startChar": 7,
+        "endLine": 11,
+        "endChar": 16
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af3e6c5_12905e4f",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 6
@@ -106,6 +178,30 @@
       "writtenOn": "2019-07-31T17:30:24Z",
       "side": 1,
       "message": "nit: We\u0027re risking some confusion with several things being called a sampler cache.",
+      "range": {
+        "startLine": 1254,
+        "startChar": 9,
+        "endLine": 1254,
+        "endChar": 21
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d5a99cd_3cc52c58",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1254,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "*shrug* They\u0027re both sampler caches, and are namespaced differently.",
+      "parentUuid": "1af3e6c5_12905e4f",
       "range": {
         "startLine": 1254,
         "startChar": 9,
@@ -141,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "a17bec47_4c1a6747",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "Good spot. Removed.",
+      "parentUuid": "ee5219a1_f3bc9db0",
+      "range": {
+        "startLine": 1256,
+        "startChar": 7,
+        "endLine": 1256,
+        "endChar": 17
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f4238f3d_d7cad46a",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 6
@@ -161,6 +281,30 @@
       "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd31263c_d7694238",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1227,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-07-31T19:44:00Z",
+      "side": 1,
+      "message": "Added unit tests, appears to work.",
+      "parentUuid": "f4238f3d_d7cad46a",
+      "range": {
+        "startLine": 1227,
+        "startChar": 9,
+        "endLine": 1227,
+        "endChar": 25
+      },
+      "revId": "142e1568e5aeb49008dc1616639680f406c0e84a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
