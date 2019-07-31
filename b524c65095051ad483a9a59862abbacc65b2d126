@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "f28465b7_5a6e6871",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-31T20:32:46Z",
+      "side": 1,
+      "message": "\u003e meaning this demo has at least one case where a sampling instruction isn\u0027t statically using the same descriptors\n\nNot necessarily. Each start of the shader invocation clears the cache, so we\u0027ll hit the \"L2 cache\" at least once. This will still likely cause thread contention.",
+      "parentUuid": "530c5312_318db7ac",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 36
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1082a4a3_e8372afc",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 7
@@ -59,6 +83,30 @@
       "writtenOn": "2019-07-31T20:27:33Z",
       "side": 1,
       "message": "Should be null initialized to avoid the case where they happen to match the descriptor pointers and we call an uninitialized sampler function.",
+      "range": {
+        "startLine": 1256,
+        "startChar": 3,
+        "endLine": 1257,
+        "endChar": 25
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "464ceb69_5de6ea5b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1257,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-07-31T20:32:46Z",
+      "side": 1,
+      "message": "Yeah... I\u0027m not sure how to do that. Will try and find a solution tomorrow.",
+      "parentUuid": "1082a4a3_e8372afc",
       "range": {
         "startLine": 1256,
         "startChar": 3,
