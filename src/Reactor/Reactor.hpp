@@ -29,9 +29,9 @@
 
 #undef Bool // b/127920555
 
-#if !defined(NDEBUG)
+//#if !defined(NDEBUG)
 #define ENABLE_RR_PRINT 1 // Enables RR_PRINT(), RR_WATCH()
-#endif // !defined(NDEBUG)
+//#endif // !defined(NDEBUG)
 
 #ifdef ENABLE_RR_DEBUG_INFO
 	// Functions used for generating JIT debug info.
@@ -2355,6 +2355,12 @@ namespace rr
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, int offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<Int> offset);
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset);
+
+	template <typename T>
+	RValue<Bool> operator==(Pointer<T> &lhs, Pointer<T> &rhs)
+	{
+		return Nucleus::createPtrEQ(lhs.getBaseAddress(), rhs.getBaseAddress());
+	}
 
 	template<typename T>
 	RValue<T> Load(RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
