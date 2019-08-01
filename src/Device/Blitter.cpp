@@ -256,9 +256,9 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::read(Float4 &c, Pointer<Byte> element, const State &state)
+	Float4 Blitter::readFloat4(Pointer<Byte> element, const State &state)
 	{
-		c = Float4(0.0f, 0.0f, 0.0f, 1.0f);
+		Float4 c(0.0f, 0.0f, 0.0f, 1.0f);
 
 		switch(state.sourceFormat)
 		{
@@ -283,6 +283,7 @@ namespace sw
 			c.x = Float(Int(*Pointer<Short>(element)));
 			c.w = float(0x7FFF);
 			break;
+		case VK_FORMAT_R16_UNORM:
 		case VK_FORMAT_R16_UINT:
 			c.x = Float(Int(*Pointer<UShort>(element)));
 			c.w = float(0xFFFF);
@@ -444,13 +445,13 @@ namespace sw
 			c.x = Float(Int(*Pointer<Byte>(element)));
 			break;
 		default:
-			return false;
+			UNSUPPORTED("Blitter source format %d", (int)state.sourceFormat);
 		}
 
-		return true;
+		return c;
 	}
 
-	bool Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
+	void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	{
 		bool writeR = state.writeRed;
 		bool writeG = state.writeGreen;
@@ -602,6 +603,73 @@ namespace sw
 			if(writeG) { *Pointer<Half>(element + 2) = Half(c.y); }
 		case VK_FORMAT_R16_SFLOAT:
 			if(writeR) { *Pointer<Half>(element) = Half(c.x); }
+			break;
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+			// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
+			// Since the Half float format also has a 5 bit exponent, we can convert these formats to half by
+			// copy/pasting the bits so the the exponent bits and top mantissa bits are aligned to the half format.
+			// In this case, we have:
+			//              B B B B B B B B B B G G G G G G G G G G G R R R R R R R R R R R
+			// 1st Short:                                  |xxxxxxxxxx---------------------|
+			// 2nd Short:                  |xxxx---------------------xxxxxx|
+			// 3rd Short: |--------------------xxxxxxxxxxxx|
+			// These memory reads overlap, but each of them contains an entire channel, so we can read this without
+			// any int -> short conversion.
+		//	c.x = Float(As<Half>((*Pointer<UShort>(element + 0) & UShort(0x07FF)) << UShort(4)));
+
+			{
+
+				UInt r = (UInt(As<UShort>(Half(c.x))) & 0x00007FF0) >> 4;
+				UInt g = (UInt(As<UShort>(Half(c.y))) & 0x00007FF0) << 7;
+				UInt b = (UInt(As<UShort>(Half(c.z))) & 0x00007FE0) << 17;
+
+				UInt rgb = r | g | b;
+
+				UInt old = *Pointer<UInt>(element);
+
+				unsigned int mask = (writeR ? 0x000007FF : 0) |
+				                    (writeG ? 0x003FF800 : 0) |
+				                    (writeB ? 0xFFC00000 : 0);
+
+				*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
+			}
+
+		//	c.y = Float(As<Half>((*Pointer<UShort>(element + 1) & UShort(0x3FF8)) << UShort(1)));
+		//	c.z = Float(As<Half>((*Pointer<UShort>(element + 2) & UShort(0xFFC0)) >> UShort(1)));
+			break;
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
+			{
+				// B is the exponent bias (15)
+				constexpr int g_sharedexp_bias = 15;
+
+				// N is the number of mantissa bits per component (9)
+				constexpr int g_sharedexp_mantissabits = 9;
+
+				// Emax is the maximum allowed biased exponent value (31)
+				constexpr int g_sharedexp_maxexponent = 31;
+
+				constexpr float g_sharedexp_max =
+					((static_cast<float>(1 << g_sharedexp_mantissabits) - 1) /
+						static_cast<float>(1 << g_sharedexp_mantissabits)) *
+					static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
+
+				Float red_c = Max(0, Min(g_sharedexp_max, c.x));
+				Float green_c = Max(0, Min(g_sharedexp_max, c.y));
+				Float blue_c = Max(0, Min(g_sharedexp_max, c.z));
+
+				Float max_c = Max(Max(red_c, green_c), blue_c);
+				Float exp_p = Max(-g_sharedexp_bias - 1, Floor(Log2(max_c))) + (g_sharedexp_bias + 1);
+				Int max_s = RoundInt(max_c / Exp2(exp_p - g_sharedexp_bias - g_sharedexp_mantissabits));
+				Int exp_s = Int(IfThenElse((max_s < (1 << g_sharedexp_mantissabits)), exp_p, Float(exp_p + 1)));
+
+				Float norm = 1.0f / Exp2(Float(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits));
+				UInt R = RoundInt(red_c * norm);
+				UInt G = RoundInt(green_c * norm);
+				UInt B = RoundInt(blue_c * norm);
+				UInt E = exp_s;
+
+				*Pointer<UInt>(element) = (E << 27) | (B << 18) | (G << 9) | R;
+			}
 			break;
 		case VK_FORMAT_B8G8R8A8_SNORM:
 			if(writeB) { *Pointer<SByte>(element) = SByte(RoundInt(Float(c.z))); }
@@ -911,14 +979,14 @@ namespace sw
 			*Pointer<Byte>(element) = Byte(RoundInt(Float(c.x)));
 			break;
 		default:
-			return false;
+			UNSUPPORTED("Blitter destination format %d", (int)state.destFormat);
+			break;
 		}
-		return true;
 	}
 
-	bool Blitter::read(Int4 &c, Pointer<Byte> element, const State &state)
+	Int4 Blitter::readInt4(Pointer<Byte> element, const State &state)
 	{
-		c = Int4(0, 0, 0, 1);
+		Int4 c(0, 0, 0, 1);
 
 		switch(state.sourceFormat)
 		{
@@ -974,13 +1042,13 @@ namespace sw
 			c = Insert(c, *Pointer<Int>(element), 0);
 			break;
 		default:
-			return false;
+			UNSUPPORTED("Blitter source format %d", (int)state.sourceFormat);
 		}
 
-		return true;
+		return c;
 	}
 
-	bool Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
+	void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	{
 		bool writeR = state.writeRed;
 		bool writeG = state.writeGreen;
@@ -1201,15 +1269,14 @@ namespace sw
 			if(writeR) { *Pointer<UInt>(element) = As<UInt>(Extract(c, 0)); }
 			break;
 		default:
-			return false;
+			UNSUPPORTED("Blitter destination format %d", (int)state.destFormat);
 		}
-
-		return true;
 	}
 
-	bool Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScaled)
+	void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScaled)
 	{
 		float4 scale, unscale;
+
 		if(state.clearOperation &&
 		   state.sourceFormat.isNonNormalizedInteger() &&
 		   !state.destFormat.isNonNormalizedInteger())
@@ -1225,18 +1292,15 @@ namespace sw
 				unscale = replicate(static_cast<float>(0xFFFFFFFF));
 				break;
 			default:
-				return false;
+				UNSUPPORTED("Blitter source format %d", (int)state.sourceFormat);
 			}
 		}
-		else if(!state.sourceFormat.getScale(unscale))
+		else
 		{
-			return false;
+			unscale = state.sourceFormat.getScale();
 		}
 
-		if(!state.destFormat.getScale(scale))
-		{
-			return false;
-		}
+		scale = state.destFormat.getScale();
 
 		bool srcSRGB = state.sourceFormat.isSRGBformat();
 		bool dstSRGB = state.destFormat.isSRGBformat();
@@ -1262,8 +1326,6 @@ namespace sw
 			                          state.destFormat.isUnsignedComponent(2) ? 0.0f : -scale.z,
 			                          state.destFormat.isUnsignedComponent(3) ? 0.0f : -scale.w));
 		}
-
-		return true;
 	}
 
 	Int Blitter::ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout)
@@ -1344,24 +1406,15 @@ namespace sw
 			{
 				if(intBoth) // Integer types
 				{
-					if(!read(constantColorI, source, state))
-					{
-						return nullptr;
-					}
+					constantColorI = readInt4(source, state);
 					hasConstantColorI = true;
 				}
 				else
 				{
-					if(!read(constantColorF, source, state))
-					{
-						return nullptr;
-					}
+					constantColorF = readFloat4(source, state);
 					hasConstantColorF = true;
 
-					if(!ApplyScaleAndClamp(constantColorF, state))
-					{
-						return nullptr;
-					}
+					ApplyScaleAndClamp(constantColorF, state);
 				}
 			}
 
@@ -1377,26 +1430,19 @@ namespace sw
 
 					if(hasConstantColorI)
 					{
-						if(!write(constantColorI, d, state))
-						{
-							return nullptr;
-						}
+						write(constantColorI, d, state);
 					}
 					else if(hasConstantColorF)
 					{
 						for(int s = 0; s < state.destSamples; s++)
 						{
-							if(!write(constantColorF, d, state))
-							{
-								return nullptr;
-							}
+							write(constantColorF, d, state);
 
 							d += *Pointer<Int>(blit + OFFSET(BlitData, dSliceB));
 						}
 					}
 					else if(intBoth) // Integer types do not support filtering
 					{
-						Int4 color; // When both formats are true integer types, we don't go to float to avoid losing precision
 						Int X = Int(x);
 						Int Y = Int(y);
 
@@ -1408,15 +1454,9 @@ namespace sw
 
 						Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-						if(!read(color, s, state))
-						{
-							return nullptr;
-						}
-
-						if(!write(color, d, state))
-						{
-							return nullptr;
-						}
+						// When both formats are true integer types, we don't go to float to avoid losing precision
+						Int4 color = readInt4(s, state);
+						write(color, d, state);
 					}
 					else
 					{
@@ -1436,29 +1476,24 @@ namespace sw
 
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							if(!read(color, s, state))
-							{
-								return nullptr;
-							}
+							color = readFloat4(s, state);
 
 							if(state.srcSamples > 1) // Resolve multisampled source
 							{
 								if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 								{
-									if(!ApplyScaleAndClamp(color, state)) return nullptr;
+									ApplyScaleAndClamp(color, state);
 									preScaled = true;
 								}
 								Float4 accum = color;
 								for(int sample = 1; sample < state.srcSamples; sample++)
 								{
 									s += *Pointer<Int>(blit + OFFSET(BlitData, sSliceB));
-									if(!read(color, s, state))
-									{
-										return nullptr;
-									}
+									color = readFloat4(s, state);
+
 									if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 									{
-										if(!ApplyScaleAndClamp(color, state)) return nullptr;
+										ApplyScaleAndClamp(color, state);
 										preScaled = true;
 									}
 									accum += color;
@@ -1493,17 +1528,17 @@ namespace sw
 							Pointer<Byte> s10 = source + ComputeOffset(X0, Y1, sPitchB, srcBytes, srcQuadLayout);
 							Pointer<Byte> s11 = source + ComputeOffset(X1, Y1, sPitchB, srcBytes, srcQuadLayout);
 
-							Float4 c00; if(!read(c00, s00, state)) return nullptr;
-							Float4 c01; if(!read(c01, s01, state)) return nullptr;
-							Float4 c10; if(!read(c10, s10, state)) return nullptr;
-							Float4 c11; if(!read(c11, s11, state)) return nullptr;
+							Float4 c00 = readFloat4(s00, state);
+							Float4 c01 = readFloat4(s01, state);
+							Float4 c10 = readFloat4(s10, state);
+							Float4 c11 = readFloat4(s11, state);
 
 							if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 							{
-								if(!ApplyScaleAndClamp(c00, state)) return nullptr;
-								if(!ApplyScaleAndClamp(c01, state)) return nullptr;
-								if(!ApplyScaleAndClamp(c10, state)) return nullptr;
-								if(!ApplyScaleAndClamp(c11, state)) return nullptr;
+								ApplyScaleAndClamp(c00, state);
+								ApplyScaleAndClamp(c01, state);
+								ApplyScaleAndClamp(c10, state);
+								ApplyScaleAndClamp(c11, state);
 								preScaled = true;
 							}
 
@@ -1516,17 +1551,11 @@ namespace sw
 							        (c10 * ix + c11 * fx) * fy;
 						}
 
-						if(!ApplyScaleAndClamp(color, state, preScaled))
-						{
-							return nullptr;
-						}
+						ApplyScaleAndClamp(color, state, preScaled);
 
 						for(int s = 0; s < state.destSamples; s++)
 						{
-							if(!write(color, d, state))
-							{
-								return nullptr;
-							}
+							write(color, d, state);
 
 							d += *Pointer<Int>(blit + OFFSET(BlitData,dSliceB));
 						}
@@ -1546,13 +1575,6 @@ namespace sw
 		if(!blitRoutine)
 		{
 			blitRoutine = generate(state);
-
-			if(!blitRoutine)
-			{
-				UNIMPLEMENTED("blitRoutine");
-				return nullptr;
-			}
-
 			blitCache.add(state, blitRoutine);
 		}
 
@@ -1567,13 +1589,6 @@ namespace sw
 		if(!cornerUpdateRoutine)
 		{
 			cornerUpdateRoutine = generateCornerUpdate(state);
-
-			if(!cornerUpdateRoutine)
-			{
-				UNIMPLEMENTED("cornerUpdateRoutine");
-				return nullptr;
-			}
-
 			cornerUpdateCache.add(state, cornerUpdateRoutine);
 		}
 
@@ -1846,15 +1861,13 @@ namespace sw
 		int bytes = state.sourceFormat.bytes();
 		bool quadLayout = state.sourceFormat.hasQuadLayout();
 
-		Float4 c0;
-		read(c0, layer + ComputeOffset(x0, y1, pitchB, bytes, quadLayout), state);
-		Float4 c1;
-		read(c1, layer + ComputeOffset(x1, y0, pitchB, bytes, quadLayout), state);
-		c0 += c1;
-		read(c1, layer + ComputeOffset(x1, y1, pitchB, bytes, quadLayout), state);
-		c0 += c1;
-		c0 *= Float4(1.0f / 3.0f);
-		write(c0, layer + ComputeOffset(x0, y0, pitchB, bytes, quadLayout), state);
+		Float4 c = readFloat4(layer + ComputeOffset(x0, y1, pitchB, bytes, quadLayout), state) +
+		           readFloat4(layer + ComputeOffset(x1, y0, pitchB, bytes, quadLayout), state) +
+		           readFloat4(layer + ComputeOffset(x1, y1, pitchB, bytes, quadLayout), state);
+
+		c *= Float4(1.0f / 3.0f);
+
+		write(c, layer + ComputeOffset(x0, y0, pitchB, bytes, quadLayout), state);
 	}
 
 	std::shared_ptr<Routine> Blitter::generateCornerUpdate(const State& state)
@@ -2010,7 +2023,7 @@ namespace sw
 		int h = extent.height;
 		if(w != h)
 		{
-			UNIMPLEMENTED("Cube doesn't have square faces : (%d, %d)", w, h);
+			UNSUPPORTED("Cube doesn't have square faces : (%d, %d)", w, h);
 		}
 
 		// Src is expressed in the regular [0, width-1], [0, height-1] space
