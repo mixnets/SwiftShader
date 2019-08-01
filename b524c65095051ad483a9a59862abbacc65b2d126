@@ -140,6 +140,30 @@
       "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a5ffd4c_af552d2f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1257,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-01T01:46:25Z",
+      "side": 1,
+      "message": "Heh, I forgot about that. There was some hardening work when SwiftShader was initially integrated into Chrome for WebGL fallback, to weed out random crashes we couldn\u0027t reproduce locally. Looks like it never was reverted back to C behavior.\n\nThis makes me comfortable to land this as-is, and follow up with a patch to add operator\u003d(nullptr_t) and remove the default initialization.",
+      "parentUuid": "444ce3a9_110ede2b",
+      "range": {
+        "startLine": 1256,
+        "startChar": 3,
+        "endLine": 1257,
+        "endChar": 25
+      },
+      "revId": "b524c65095051ad483a9a59862abbacc65b2d126",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
