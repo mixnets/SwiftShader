@@ -281,9 +281,11 @@ namespace sw
 			c.w = float(0xFF);
 			break;
 		case VK_FORMAT_R16_SINT:
+		case VK_FORMAT_R16_SNORM:
 			c.x = Float(Int(*Pointer<Short>(element)));
 			c.w = float(0x7FFF);
 			break;
+		case VK_FORMAT_R16_UNORM:
 		case VK_FORMAT_R16_UINT:
 			c.x = Float(Int(*Pointer<UShort>(element)));
 			c.w = float(0xFFFF);
@@ -603,6 +605,28 @@ namespace sw
 			if(writeG) { *Pointer<Half>(element + 2) = Half(c.y); }
 		case VK_FORMAT_R16_SFLOAT:
 			if(writeR) { *Pointer<Half>(element) = Half(c.x); }
+			break;
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+			{
+				// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
+				// Since the 16-bit half-precision float format also has a 5 bit exponent, we can extract these minifloats from them.
+			
+				// TODO: Handle negative values, Inf, and NaN.
+				// TODO: Perform rounding before truncating the mantissa.
+				UInt r = (UInt(As<UShort>(Half(c.x))) & 0x00007FF0) >> 4;
+				UInt g = (UInt(As<UShort>(Half(c.y))) & 0x00007FF0) << 7;
+				UInt b = (UInt(As<UShort>(Half(c.z))) & 0x00007FE0) << 17;
+
+				UInt rgb = r | g | b;
+
+				UInt old = *Pointer<UInt>(element);
+
+				unsigned int mask = (writeR ? 0x000007FF : 0) |
+				                    (writeG ? 0x003FF800 : 0) |
+				                    (writeB ? 0xFFC00000 : 0);
+
+				*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
+			}
 			break;
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 			{
