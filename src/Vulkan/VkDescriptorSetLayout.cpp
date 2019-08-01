@@ -108,7 +108,7 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 		return sizeof(BufferDescriptor);
 	default:
-		UNIMPLEMENTED("Unsupported Descriptor Type");
+		UNSUPPORTED("VkDescriptorType %d", (int)type);
 		return 0;
 	}
 }
@@ -611,7 +611,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device* device, const VkWriteDescri
 		break;
 
 	default:
-		UNIMPLEMENTED("descriptor type %u", writeDescriptorSet.descriptorType);
+		UNSUPPORTED("Descriptor type %d", (int)writeDescriptorSet.descriptorType);
 	}
 
 	WriteDescriptorSet(device, dstSet, e, reinterpret_cast<char const *>(ptr));

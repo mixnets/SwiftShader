@@ -42,7 +42,7 @@ namespace sw
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 			break;
 		default:
-			UNIMPLEMENTED("topology %d", int(topology));
+			UNSUPPORTED("topology %d", int(topology));
 		}
 		return false;
 	}
@@ -60,7 +60,7 @@ namespace sw
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 			break;
 		default:
-			UNIMPLEMENTED("topology %d", int(topology));
+			UNSUPPORTED("topology %d", int(topology));
 		}
 		return false;
 	}
@@ -78,7 +78,7 @@ namespace sw
 		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
 			break;
 		default:
-			UNIMPLEMENTED("topology %d", int(topology));
+			UNSUPPORTED("topology %d", int(topology));
 		}
 		return false;
 	}

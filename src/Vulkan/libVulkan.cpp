@@ -418,7 +418,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	if(pCreateInfo->enabledLayerCount)
 	{
 		// "The ppEnabledLayerNames and enabledLayerCount members of VkDeviceCreateInfo are deprecated and their values must be ignored by implementations."
-		UNIMPLEMENTED("pCreateInfo->enabledLayerCount");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+		DEPRECATED("pCreateInfo->enabledLayerCount");
 	}
 
 	uint32_t extensionPropertiesCount = sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]);
@@ -806,7 +806,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceSparseImageFormatProperties(VkPhys
 VKAPI_ATTR VkResult VKAPI_CALL vkQueueBindSparse(VkQueue queue, uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence)
 {
 	TRACE("()");
-	UNIMPLEMENTED("vkQueueBindSparse");
+	UNSUPPORTED("vkQueueBindSparse");
 	return VK_SUCCESS;
 }
 

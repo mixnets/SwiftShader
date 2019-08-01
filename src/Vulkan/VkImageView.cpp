@@ -117,12 +117,12 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 
 	if(!imageTypesMatch(image->getImageType()))
 	{
-		UNIMPLEMENTED("imageTypesMatch");
+		INVALID("imageTypesMatch");
 	}
 
 	if(!format.isCompatible(image->getFormat()))
 	{
-		UNIMPLEMENTED("incompatible formats");
+		INVALID("incompatible formats");
 	}
 
 	VkImageSubresourceRange sr = subresourceRange;
@@ -136,12 +136,12 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 
 	if(!imageTypesMatch(image->getImageType()))
 	{
-		UNIMPLEMENTED("imageTypesMatch");
+		INVALID("imageTypesMatch");
 	}
 
 	if(!format.isCompatible(image->getFormat()))
 	{
-		UNIMPLEMENTED("incompatible formats");
+		INVALID("incompatible formats");
 	}
 
 	VkImageSubresourceRange sr;
@@ -193,7 +193,7 @@ const Image* ImageView::getImage(Usage usage) const
 	case SAMPLING:
 		return image->getSampledImage(format);
 	default:
-		UNIMPLEMENTED("usage %d", int(usage));
+		UNREACHABLE("usage %d", int(usage));
 		return nullptr;
 	}
 }

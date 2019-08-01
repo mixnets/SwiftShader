@@ -170,7 +170,7 @@ void Queue::taskLoop()
 			submitQueue(task);
 			break;
 		default:
-			UNIMPLEMENTED("task.type %d", static_cast<int>(task.type));
+			UNREACHABLE("Queue::Task::Type %d", static_cast<int>(task.type));
 			break;
 		}
 	}

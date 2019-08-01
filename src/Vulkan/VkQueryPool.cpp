@@ -95,7 +95,7 @@ namespace vk
 		//  pipelineStatistics member of the VkQueryPoolCreateInfo structure."
 		if(type == VK_QUERY_TYPE_PIPELINE_STATISTICS)
 		{
-			UNIMPLEMENTED("pCreateInfo->queryType");
+			UNSUPPORTED("VkPhysicalDeviceFeatures::pipelineStatisticsQuery");
 		}
 
 		// Construct all queries
@@ -184,7 +184,7 @@ namespace vk
 
 		if(flags != 0)
 		{
-			UNIMPLEMENTED("flags");
+			UNSUPPORTED("VkQueryControlFlags %d", (int)flags);
 		}
 
 		pool[query].prepare(type);

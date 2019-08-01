@@ -415,7 +415,7 @@ bool Format::isFloatFormat() const
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:
 		return true;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -521,7 +521,7 @@ VkFormat Format::getDecompressedFormat() const
 	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
 		return VK_FORMAT_R16G16_SNORM;
 	default:
-		UNIMPLEMENTED("format: %d", int(format));
+		UNSUPPORTED("format: %d", int(format));
 		return VK_FORMAT_UNDEFINED;
 	}
 }
@@ -1197,7 +1197,7 @@ int Format::componentCount() const
 	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 		return 4;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return 1;
@@ -1358,7 +1358,7 @@ bool Format::isUnsignedComponent(int component) const
 	case VK_FORMAT_R64G64B64_SFLOAT:
 		return component >= 3;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1583,7 +1583,7 @@ int Format::bytes() const
 		// TODO: ASSERT to ensure this is only called per-aspect?
 		return 1;  // Y plane only
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return 0;
@@ -1923,7 +1923,7 @@ bool Format::has16bitTextureFormat() const
 	case VK_FORMAT_D16_UNORM:
 		return false;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -1988,7 +1988,7 @@ bool Format::has8bitTextureComponents() const
 	case VK_FORMAT_D16_UNORM:
 		return false;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -2053,7 +2053,7 @@ bool Format::has16bitTextureComponents() const
 	case VK_FORMAT_D16_UNORM:
 		return true;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -2118,7 +2118,7 @@ bool Format::has32bitIntegerTextureComponents() const
 	case VK_FORMAT_R32G32B32A32_UINT:
 		return true;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;
@@ -2184,7 +2184,7 @@ bool Format::isRGBComponent(int component) const
 	case VK_FORMAT_D16_UNORM:
 		return false;
 	default:
-		UNIMPLEMENTED("Format: %d", int(format));
+		UNSUPPORTED("Format: %d", int(format));
 	}
 
 	return false;

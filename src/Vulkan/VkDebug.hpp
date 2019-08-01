@@ -114,6 +114,17 @@ namespace vk
 #undef UNREACHABLE
 #define UNREACHABLE(format, ...) DABORT("UNREACHABLE: " format, ##__VA_ARGS__)
 
+// A macro to indicate invalid application behavior.
+// Note that Vulkan ICDs are not expected to perform validation. This macro is
+// for detecting cases not caught by validation layers or applications behaving
+// differently 
+#undef INVALID
+#define INVALID(format, ...) DABORT("INVALID: " format, ##__VA_ARGS__)
+
+// A macro to indicate the application uses deprecated functionality.
+#undef DEPRECATED
+#define DEPRECATED(format, ...) DABORT("DEPRECATED: " format, ##__VA_ARGS__)
+
 // A macro asserting a condition and performing a return.
 #undef ASSERT_OR_RETURN
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)

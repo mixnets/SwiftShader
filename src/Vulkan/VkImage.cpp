@@ -44,7 +44,7 @@ namespace
 		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 			return ETC_Decoder::ETC_RGBA;
 		default:
-			UNIMPLEMENTED("format: %d", int(format));
+			UNSUPPORTED("format: %d", int(format));
 			return ETC_Decoder::ETC_RGBA;
 		}
 	}
@@ -790,7 +790,7 @@ void Image::clear(const VkClearColorValue& color, const VkImageSubresourceRange&
 {
 	if(!(subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT))
 	{
-		UNIMPLEMENTED("aspectMask");
+		INVALID("aspectMask");
 	}
 
 	device->getBlitter()->clear((void*)color.float32, getClearFormat(), this, format, subresourceRange);
@@ -801,7 +801,7 @@ void Image::clear(const VkClearDepthStencilValue& color, const VkImageSubresourc
 	if((subresourceRange.aspectMask & ~(VK_IMAGE_ASPECT_DEPTH_BIT |
 	                                    VK_IMAGE_ASPECT_STENCIL_BIT)) != 0)
 	{
-		UNIMPLEMENTED("aspectMask");
+		INVALID("aspectMask");
 	}
 
 	if(subresourceRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)
@@ -825,7 +825,7 @@ void Image::clear(const VkClearValue& clearValue, const vk::Format& viewFormat, 
 	     (subresourceRange.aspectMask & (VK_IMAGE_ASPECT_DEPTH_BIT |
 	                                     VK_IMAGE_ASPECT_STENCIL_BIT))))
 	{
-		UNIMPLEMENTED("subresourceRange");
+		INVALID("aspectMask");
 	}
 
 	if(subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT)
