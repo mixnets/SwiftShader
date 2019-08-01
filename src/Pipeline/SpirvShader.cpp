@@ -298,7 +298,7 @@ namespace
 		case spv::ImageFormatRg32ui: return VK_FORMAT_R32G32_UINT;
 
 		default:
-			UNIMPLEMENTED("SPIR-V ImageFormat %u", format);
+			UNSUPPORTED("SPIR-V ImageFormat %u", format);
 			return VK_FORMAT_UNDEFINED;
 		}
 	}
@@ -748,8 +748,7 @@ namespace sw
 					break;
 				}
 				case spv::StorageClassAtomicCounter:
-				case spv::StorageClassImage:
-					UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
+					UNSUPPORTED("StorageClass %d unexpected", (int)storageClass);
 					break;
 
 				case spv::StorageClassCrossWorkgroup:
@@ -760,8 +759,9 @@ namespace sw
 					UNSUPPORTED("SPIR-V GenericPointer Capability (StorageClassGeneric)");
 					break;
 
+				case spv::StorageClassImage:  // Not a valid variable's storage class.
 				default:
-					UNREACHABLE("Unexpected StorageClass %d", storageClass); // See Appendix A of the Vulkan spec.
+					UNREACHABLE("Unexpected OpVariable Storage Class %d", (int)storageClass);  // See Appendix A of the Vulkan spec.
 					break;
 				}
 				break;
@@ -1146,7 +1146,7 @@ namespace sw
 			}
 
 			default:
-				UNIMPLEMENTED("%s", OpcodeName(opcode).c_str());
+				UNSUPPORTED("Unexpected SPIR-V opcode %s", OpcodeName(opcode).c_str());
 			}
 		}
 
@@ -4976,7 +4976,7 @@ namespace sw
 		{
 			return EmitImageSample({variant, Grad}, insn, state);
 		}
-		else UNIMPLEMENTED("Image Operands %x", imageOperands);
+		else UNSUPPORTED("Image Operands %x", imageOperands);
 		return EmitResult::Continue;
 	}
 
@@ -5719,7 +5719,7 @@ namespace sw
 			dst.move(3, SIMD::Float((packed[0] >> 15) & SIMD::Int(0x1)));
 			break;
 		default:
-			UNIMPLEMENTED("VkFormat %d", int(vkFormat));
+			UNSUPPORTED("VkFormat %d", int(vkFormat));
 			break;
 		}
 
@@ -5841,7 +5841,7 @@ namespace sw
 		case spv::ImageFormatRg8ui:
 		case spv::ImageFormatR16ui:
 		case spv::ImageFormatR8ui:
-			UNIMPLEMENTED("spv::ImageFormat %d", int(format));
+			UNSUPPORTED("spv::ImageFormat %d", int(format));
 			break;
 
 		default:
@@ -6340,7 +6340,7 @@ namespace sw
 		}
 
 		default:
-			UNIMPLEMENTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()).c_str());
+			UNSUPPORTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()).c_str());
 		}
 		return EmitResult::Continue;
 	}

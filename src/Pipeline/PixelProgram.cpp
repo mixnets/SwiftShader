@@ -281,7 +281,7 @@ namespace sw
 				}
 				break;
 			default:
-				UNIMPLEMENTED("VkFormat: %d", int(format));
+				UNSUPPORTED("VkFormat: %d", int(format));
 			}
 		}
 	}
@@ -346,7 +346,7 @@ namespace sw
 			case VK_FORMAT_A2B10G10R10_UINT_PACK32:
 				break;
 			default:
-				UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
+				UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 			}
 		}
 	}

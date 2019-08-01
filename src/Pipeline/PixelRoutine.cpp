@@ -322,7 +322,7 @@ namespace sw
 			value ^= Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
 			break;
 		default:
-			UNIMPLEMENTED("VkCompareOp: %d", int(stencilCompareMode));
+			UNSUPPORTED("VkCompareOp: %d", int(stencilCompareMode));
 		}
 	}
 
@@ -398,7 +398,7 @@ namespace sw
 			zTest = CmpLT(zValue, Z);
 			break;
 		default:
-			UNIMPLEMENTED("VkCompareOp: %d", int(state.depthCompareMode));
+			UNSUPPORTED("VkCompareOp: %d", int(state.depthCompareMode));
 		}
 
 		switch(state.depthCompareMode)
@@ -498,7 +498,7 @@ namespace sw
 			zTest = Int4(CmpGT(Z, zValue));
 			break;
 		default:
-			UNIMPLEMENTED("VkCompareOp: %d", int(state.depthCompareMode));
+			UNSUPPORTED("VkCompareOp: %d", int(state.depthCompareMode));
 		}
 
 		switch(state.depthCompareMode)
@@ -811,7 +811,7 @@ namespace sw
 			output = bufferValue - Byte8(1, 1, 1, 1, 1, 1, 1, 1);
 			break;
 		default:
-			UNIMPLEMENTED("VkStencilOp: %d", int(operation));
+			UNSUPPORTED("VkStencilOp: %d", int(operation));
 		}
 	}
 
@@ -892,7 +892,7 @@ namespace sw
 			blendFactor.z = *Pointer<Short4>(data + OFFSET(DrawData,factor.invBlendConstant4W[3]));
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendFactor: %d", int(blendFactorActive));
+			UNSUPPORTED("VkBlendFactor: %d", int(blendFactorActive));
 		}
 	}
 
@@ -942,7 +942,7 @@ namespace sw
 			blendFactor.w = *Pointer<Short4>(data + OFFSET(DrawData,factor.invBlendConstant4W[3]));
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
+			UNSUPPORTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
 		}
 	}
 
@@ -1095,7 +1095,7 @@ namespace sw
 			pixel.w = Short4(v >> 16) & Short4(0xC000u);
 		} break;
 		default:
-			UNIMPLEMENTED("VkFormat %d", state.targetFormat[index]);
+			UNSUPPORTED("VkFormat %d", state.targetFormat[index]);
 		}
 
 		if(isSRGB(index))
@@ -1176,7 +1176,7 @@ namespace sw
 			current.z = Short4(0x0000);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
+			UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
 		}
 
 		blendFactorAlpha(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactorAlpha);
@@ -1219,7 +1219,7 @@ namespace sw
 			current.w = Short4(0x0000);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
+			UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
 		}
 	}
 
@@ -1381,7 +1381,7 @@ namespace sw
 			break;
 		}
 		default:
-			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
+			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 		}
 
 		Short4 c01 = current.z;
@@ -1690,7 +1690,7 @@ namespace sw
 			}
 			break;
 		default:
-			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
+			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 		}
 	}
 
@@ -1776,7 +1776,7 @@ namespace sw
 			break;
 
 		default:
-			UNIMPLEMENTED("VkBlendFactor: %d", int(blendFactorActive));
+			UNSUPPORTED("VkBlendFactor: %d", int(blendFactorActive));
 		}
 	}
 
@@ -1826,7 +1826,7 @@ namespace sw
 			blendFactor.w = *Pointer<Float4>(data + OFFSET(DrawData,factor.invBlendConstant4F[3]));
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
+			UNSUPPORTED("VkBlendFactor: %d", int(blendFactorAlphaActive));
 		}
 	}
 
@@ -1942,7 +1942,7 @@ namespace sw
 			pixel.w.w = Float(*Pointer<Half>(buffer + 8 * x + 0xe));
 			break;
 		default:
-			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
+			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 		}
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
@@ -2001,7 +2001,7 @@ namespace sw
 			oC.z = Float4(0.0f);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
+			UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperation));
 		}
 
 		blendFactorAlpha(sourceFactor, oC, pixel, state.blendState[index].sourceBlendFactorAlpha);
@@ -2038,7 +2038,7 @@ namespace sw
 			oC.w = Float4(0.0f);
 			break;
 		default:
-			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
+			UNSUPPORTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
 		}
 	}
 
@@ -2082,7 +2082,7 @@ namespace sw
 			transpose4x4(oC.x, oC.y, oC.z, oC.w);
 			break;
 		default:
-			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
+			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 		}
 
 		int rgbaWriteMask = state.colorWriteActive(index);
@@ -2603,7 +2603,7 @@ namespace sw
 			}
 			break;
 		default:
-			UNIMPLEMENTED("VkFormat: %d", int(targetFormat));
+			UNSUPPORTED("VkFormat: %d", int(targetFormat));
 		}
 	}
 

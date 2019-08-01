@@ -553,7 +553,7 @@ struct DrawBase : public CommandBuffer::Command
 			ASSERT(executionState.dynamicState.maxDepthBounds >= 0.0f &&
 				   executionState.dynamicState.maxDepthBounds <= 1.0f);
 
-			UNIMPLEMENTED("depthBoundsTestEnable");
+			UNSUPPORTED("VkPhysicalDeviceFeatures::depthBounds");
 		}
 		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && context.stencilEnable)
 		{
@@ -591,7 +591,7 @@ struct DrawBase : public CommandBuffer::Command
 					processPrimitiveRestart(static_cast<uint32_t *>(indexBuffer), count, pipeline, indexBuffers);
 					break;
 				default:
-					UNIMPLEMENTED("executionState.indexType %d", int(executionState.indexType));
+					UNSUPPORTED("executionState.indexType %d", int(executionState.indexType));
 				}
 			}
 			else
@@ -1277,7 +1277,7 @@ void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline
 			addCommand<PipelineBind>(pipelineBindPoint, pipeline);
 			break;
 		default:
-			UNIMPLEMENTED("pipelineBindPoint");
+			UNSUPPORTED("pipelineBindPoint");
 	}
 }
 
@@ -1326,7 +1326,7 @@ void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, 
 {
 	if(firstViewport != 0 || viewportCount > 1)
 	{
-		UNIMPLEMENTED("viewport");
+		UNSUPPORTED("VkPhysicalDeviceFeatures::multiViewport");
 	}
 
 	for(uint32_t i = 0; i < viewportCount; i++)
@@ -1339,7 +1339,7 @@ void CommandBuffer::setScissor(uint32_t firstScissor, uint32_t scissorCount, con
 {
 	if(firstScissor != 0 || scissorCount > 1)
 	{
-		UNIMPLEMENTED("scissor");
+		UNSUPPORTED("VkPhysicalDeviceFeatures::multiViewport");
 	}
 
 	for(uint32_t i = 0; i < scissorCount; i++)
