@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62aee7ec_f90e5656",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-01T22:46:06Z",
+      "side": 1,
+      "message": "nit: I read this like it was suggesting that this change improves on the cache-hits that would otherwise be omitted due to resetting between calls, which it doesn\u0027t.\nWhile I think everything here is correct, it might be worth mentioning that this simply avoids two redundant pointer stores at the entry point of the shader.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 29
+      },
+      "revId": "7f869d791e1e95ab85b7488977cb34952c9430ad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
