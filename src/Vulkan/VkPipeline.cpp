@@ -91,7 +91,7 @@ sw::StreamType getStreamType(VkFormat format)
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 		return sw::STREAMTYPE_FLOAT;
 	default:
-		UNIMPLEMENTED("format");
+		UNSUPPORTED("format");
 	}
 
 	return sw::STREAMTYPE_BYTE;
@@ -151,7 +151,7 @@ unsigned char getNumberOfChannels(VkFormat format)
 	case VK_FORMAT_R32G32B32A32_SFLOAT:
 		return 4;
 	default:
-		UNIMPLEMENTED("format");
+		UNSUPPORTED("format");
 	}
 
 	return 0;
@@ -292,7 +292,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	      VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT)) != 0) ||
 	   (pCreateInfo->pTessellationState != nullptr))
 	{
-		UNIMPLEMENTED("pCreateInfo settings");
+		UNSUPPORTED("pCreateInfo settings");
 	}
 
 	if(pCreateInfo->pDynamicState)
@@ -315,7 +315,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 				dynamicStateFlags |= (1 << dynamicState);
 				break;
 			default:
-				UNIMPLEMENTED("dynamic state");
+				UNSUPPORTED("dynamic state");
 			}
 		}
 	}
@@ -323,7 +323,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineVertexInputStateCreateInfo* vertexInputState = pCreateInfo->pVertexInputState;
 	if(vertexInputState->flags != 0)
 	{
-		UNIMPLEMENTED("vertexInputState->flags");
+		UNSUPPORTED("VkPipelineVertexInputStateCreateFlags %x", (int)vertexInputState->flags);
 	}
 
 	// Context must always have a PipelineLayout set.
@@ -356,7 +356,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineInputAssemblyStateCreateInfo* assemblyState = pCreateInfo->pInputAssemblyState;
 	if(assemblyState->flags != 0)
 	{
-		UNIMPLEMENTED("pCreateInfo->pInputAssemblyState settings");
+		UNSUPPORTED("VkPipelineInputAssemblyStateCreateFlags %x", (int)assemblyState->flags);
 	}
 
 	primitiveRestartEnable = (assemblyState->primitiveRestartEnable != VK_FALSE);
@@ -365,11 +365,15 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineViewportStateCreateInfo* viewportState = pCreateInfo->pViewportState;
 	if(viewportState)
 	{
-		if((viewportState->flags != 0) ||
-			(viewportState->viewportCount != 1) ||
+		if(viewportState->flags != 0)
+		{
+			UNSUPPORTED("VkPipelineViewportStateCreateFlags %x", (int)viewportState->flags);
+		}
+
+		if((viewportState->viewportCount != 1) ||
 			(viewportState->scissorCount != 1))
 		{
-			UNIMPLEMENTED("pCreateInfo->pViewportState settings");
+			UNSUPPORTED("VkPhysicalDeviceFeatures::multiViewport");
 		}
 
 		if(!hasDynamicState(VK_DYNAMIC_STATE_SCISSOR))
@@ -387,7 +391,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	if((rasterizationState->flags != 0) ||
 	   (rasterizationState->depthClampEnable != VK_FALSE))
 	{
-		UNIMPLEMENTED("pCreateInfo->pRasterizationState settings");
+		UNSUPPORTED("pCreateInfo->pRasterizationState settings");
 	}
 
 	context.rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable == VK_TRUE);
@@ -438,7 +442,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 			context.sampleCount = 4;
 			break;
 		default:
-			UNIMPLEMENTED("Unsupported sample count");
+			UNSUPPORTED("Unsupported sample count");
 		}
 
 		if (multisampleState->pSampleMask)
@@ -449,10 +453,10 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		context.alphaToCoverage = (multisampleState->alphaToCoverageEnable == VK_TRUE);
 
 		if((multisampleState->flags != 0) ||
-			(multisampleState->sampleShadingEnable != VK_FALSE) ||
-			(multisampleState->alphaToOneEnable != VK_FALSE))
+		   (multisampleState->sampleShadingEnable != VK_FALSE) ||
+		   (multisampleState->alphaToOneEnable != VK_FALSE))
 		{
-			UNIMPLEMENTED("multisampleState");
+			UNSUPPORTED("multisampleState");
 		}
 	}
 	else
@@ -463,10 +467,14 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineDepthStencilStateCreateInfo* depthStencilState = pCreateInfo->pDepthStencilState;
 	if(depthStencilState)
 	{
-		if((depthStencilState->flags != 0) ||
-		   (depthStencilState->depthBoundsTestEnable != VK_FALSE))
+		if(depthStencilState->flags != 0)
 		{
-			UNIMPLEMENTED("depthStencilState");
+			UNSUPPORTED("VkPipelineDepthStencilStateCreateFlags %x", (int)depthStencilState->flags);
+		}
+
+		if(depthStencilState->depthBoundsTestEnable != VK_FALSE)
+		{
+			UNSUPPORTED("VkPhysicalDeviceFeatures::depthBounds");
 		}
 
 		context.depthBoundsTestEnable = (depthStencilState->depthBoundsTestEnable == VK_TRUE);
@@ -485,10 +493,14 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineColorBlendStateCreateInfo* colorBlendState = pCreateInfo->pColorBlendState;
 	if(colorBlendState)
 	{
-		if((colorBlendState->flags != 0) ||
-		   ((colorBlendState->logicOpEnable != VK_FALSE)))
+		if(colorBlendState->flags != 0)
 		{
-			UNIMPLEMENTED("colorBlendState");
+			UNSUPPORTED("VkPipelineColorBlendStateCreateFlags %x", (int)colorBlendState->flags);
+		}
+
+		if(colorBlendState->logicOpEnable != VK_FALSE)
+		{
+			UNSUPPORTED("VkPhysicalDeviceFeatures::logicOp");
 		}
 
 		if(!hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS))
@@ -566,7 +578,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, c
 	{
 		if (pStage->flags != 0)
 		{
-			UNIMPLEMENTED("pStage->flags");
+			UNSUPPORTED("VkPipelineShaderStageCreateFlags %x", pStage->flags);
 		}
 
 		const ShaderModule *module = vk::Cast(pStage->module);
@@ -618,7 +630,7 @@ uint32_t GraphicsPipeline::computePrimitiveCount(uint32_t vertexCount) const
 	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 		return std::max<uint32_t>(vertexCount, 2) - 2;
 	default:
-		UNIMPLEMENTED("context.topology %d", int(context.topology));
+		UNSUPPORTED("context.topology %d", int(context.topology));
 	}
 
 	return 0;

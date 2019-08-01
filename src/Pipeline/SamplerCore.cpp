@@ -1912,7 +1912,7 @@ namespace sw
 				break;
 			}
 			default:
-				UNIMPLEMENTED("Format %d", VkFormat(state.textureFormat));
+				UNSUPPORTED("Format %d", VkFormat(state.textureFormat));
 			}
 		}
 		else
@@ -2023,7 +2023,7 @@ namespace sw
 			borderA = Int4(1);
 			break;
 		default:
-			UNIMPLEMENTED("sint/uint/sfloat border: %u", state.border);
+			UNSUPPORTED("sint/uint/sfloat border: %u", state.border);
 		}
 
 		Vector4f out;
