@@ -2337,6 +2337,7 @@ namespace rr
 		Reference<T> operator[](RValue<UInt> index);
 
 		static Type *getType();
+		static RValue<Pointer<T>> Null();
 
 	private:
 		const int alignment;
@@ -2913,6 +2914,12 @@ namespace rr
 	Type *Pointer<T>::getType()
 	{
 		return Nucleus::getPointerType(T::getType());
+	}
+
+	template<class T>
+	RValue<Pointer<T>> Pointer<T>::Null()
+	{
+		return RValue<Pointer<T>>(Nucleus::createNullPointer(T::getType()));
 	}
 
 	template<class T, int S>
