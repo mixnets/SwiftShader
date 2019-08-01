@@ -2817,10 +2817,7 @@ namespace rr
 	}
 
 	template<class T>
-	Pointer<T>::Pointer() : alignment(1)
-	{
-		LValue<Pointer<T>>::storeValue(Nucleus::createNullPointer(T::getType()));
-	}
+	Pointer<T>::Pointer() : alignment(1) {}
 
 	template<class T>
 	Pointer<T>::Pointer(RValue<Pointer<T>> rhs) : alignment(1)
