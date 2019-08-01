@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9859eb22_d75b9599",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1258,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-01T14:20:03Z",
+      "side": 1,
+      "message": "It suffices to only initialize imageDescriptor.",
+      "range": {
+        "startLine": 1257,
+        "startChar": 3,
+        "endLine": 1258,
+        "endChar": 36
+      },
+      "revId": "9c4464fa0f555e671818a218025f6a665a693005",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
