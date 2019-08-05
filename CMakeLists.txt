@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 2.8)
 
-project(SwiftShader C CXX)
+project(SwiftShader C CXX ASM)
 
 # On Windows we use custom solution and project files, except for certain third-
 # party projects which use CMake-generated ones. They are manually (re)generated
@@ -11,6 +11,8 @@ if(WIN32)
     # Disable automatically regenerating project files on CMakeLists.txt changes.
     set(CMAKE_SUPPRESS_REGENERATION true)
 endif()
+
+SET(CMAKE_ASM_FLAGS "-x assembler-with-cpp -DBUILD_ASM=1")
 
 ###########################################################
 # Detect system
@@ -1767,6 +1769,8 @@ file(GLOB_RECURSE VULKAN_LIST
 file(GLOB YARN_LIST
     ${YARN_DIR}/*.cpp
     ${YARN_DIR}/*.hpp
+    ${YARN_DIR}/*.s
+    ${YARN_DIR}/*.c
 )
 
 ###########################################################
