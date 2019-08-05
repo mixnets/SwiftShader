@@ -20,8 +20,6 @@
 #include "Thread.hpp"
 #include "Trace.hpp"
 
-#include <assert.h>
-
 #if 0
 #define TRACE(...) SCOPED_EVENT(__VA_ARGS__)
 #else
@@ -248,7 +246,7 @@ Scheduler::Worker* Scheduler::Worker::getCurrent()
 
 void Scheduler::Worker::yield(Fiber *from)
 {
-    assert(currentFiber == from);
+    YARN_ASSERT(currentFiber == from, "Attempting to call yield from a non-current fiber");
     // Current fiber is yielding as it is blocked.
 
     std::unique_lock<std::mutex> lock(work.mutex);
