@@ -17,6 +17,7 @@
 
 #include "Debug.hpp"
 
+#include <array>
 #include <atomic>
 #include <condition_variable>
 #include <functional>
