@@ -12,6 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// A dummy function and file.
-// Will be removed once there's some library code to compile.
-void dummy() {}
+#include "Defer.hpp"
+
+#include "Yarn_test.hpp"
+
+TEST(WithoutBoundScheduler, Defer)
+{
+    bool deferCalled = false;
+    {
+        defer(deferCalled = true);
+    }
+    ASSERT_TRUE(deferCalled);
+}
+
+TEST(WithoutBoundScheduler, DeferOrder)
+{
+    int counter = 0;
+    int a = 0, b = 0, c = 0;
+    {
+        defer(a = ++counter);
+        defer(b = ++counter);
+        defer(c = ++counter);
+    }
+    ASSERT_EQ(a, 3);
+    ASSERT_EQ(b, 2);
+    ASSERT_EQ(c, 1);
+}
