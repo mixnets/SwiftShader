@@ -15,6 +15,8 @@
 #ifndef sw_Half_hpp
 #define sw_Half_hpp
 
+#include "Math.hpp"
+
 #include <algorithm>
 #include <cmath>
 
@@ -58,6 +60,8 @@ namespace sw
 	public:
 		RGB9E5(float rgb[3])
 		{
+			// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion
+
 			// B is the exponent bias (15)
 			constexpr int g_sharedexp_bias = 15;
 
@@ -72,19 +76,52 @@ namespace sw
 					static_cast<float>(1 << g_sharedexp_mantissabits)) *
 				static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
 
+			// Clamp components to valid range.
 			const float red_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[0]));
 			const float green_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[1]));
 			const float blue_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[2]));
 
-			const float max_c = std::max<float>(std::max<float>(red_c, green_c), blue_c);
-			const float exp_p = std::max<float>(-g_sharedexp_bias - 1, floor(log2(max_c))) + 1 + g_sharedexp_bias;
-			const int max_s = static_cast<int>(floor((max_c / exp2(exp_p - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
-			const int exp_s = static_cast<int>((max_s < exp2(g_sharedexp_mantissabits)) ? exp_p : exp_p + 1);
+			if(false)  // Reference implementation.
+			{
+				const float max_c = std::max<float>(std::max<float>(red_c, green_c), blue_c);
+				const float exp_p = std::max<float>(-g_sharedexp_bias - 1, floor(log2(max_c))) + 1 + g_sharedexp_bias;
+				const int max_s = static_cast<int>(floor((max_c / exp2(exp_p - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
+				const int exp_s = static_cast<int>((max_s < exp2(g_sharedexp_mantissabits)) ? exp_p : exp_p + 1);
 
-			R = static_cast<unsigned int>(floor((red_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
-			G = static_cast<unsigned int>(floor((green_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
-			B = static_cast<unsigned int>(floor((blue_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
-			E = exp_s;
+				R = static_cast<unsigned int>(floor((red_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
+				G = static_cast<unsigned int>(floor((green_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
+				B = static_cast<unsigned int>(floor((blue_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)) + 0.5f));
+				E = exp_s;
+			}
+			else  // Fast implementation.
+			{
+				// Mask off 9 mantissa bits (leading 1 is implicit), after rounding.
+				const float red_r = bit_cast<float>((bit_cast<int>(red_c) + 0x00004000) & 0xFFFF8000);
+				const float green_r = bit_cast<float>((bit_cast<int>(green_c) + 0x00004000) & 0xFFFF8000);
+				const float blue_r = bit_cast<float>((bit_cast<int>(blue_c) + 0x00004000) & 0xFFFF8000);
+
+				// The largest component determines the shared exponent.
+				// Exponent can't be lower than 0 (after bias subtraction) so also use
+				// the mimimum representable (taking the 2.0 factor below into account).
+				float max_c = std::max(std::max(red_r, green_r), std::max(blue_r, 1.0f / 0x10000));
+
+				// The IEEE-754 single-precision format has an implicit leading 1 bit,
+				// but this shared component format does not. We can force the IEEE format
+				// to expose the leading 1 by adding the next larger power of 2, so its
+				// leading 1 takes up the implicit spot and the original mantissa (including
+				// its leading 1) are shifted down one bit. Computing the next power of 2 is
+				// done by multiplying by 2.0 and masking off the mantissa bits. Adding this
+				// value also accomplishes 'denormalization' when the biased exponent is
+				// smaller than 0.
+				float range = bit_cast<float>(bit_cast<int>(max_c * 2.0f) & 0xFF800000);
+
+				// Extract the 9 mantissa bits with exposed leading 1 (or denormalization),
+				// and 5 exponent bits.
+				R = (bit_cast<unsigned int>(red_r + range) >> (23 - g_sharedexp_mantissabits)) & 0x1FF;
+				G = (bit_cast<unsigned int>(green_r + range) >> (23 - g_sharedexp_mantissabits)) & 0x1FF;
+				B = (bit_cast<unsigned int>(blue_r + range) >> (23 - g_sharedexp_mantissabits)) & 0x1FF;
+				E = (bit_cast<unsigned int>(range) >> 23) - 127 + g_sharedexp_bias;
+			}
 		}
 
 		operator unsigned int() const

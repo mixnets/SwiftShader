@@ -16,7 +16,6 @@
 #define sw_Math_hpp
 
 #include "Types.hpp"
-#include "Half.hpp"
 
 #include "Vulkan/VkDebug.hpp"
 
