@@ -192,7 +192,6 @@ namespace sw
 			state.depthFormat = context->depthBuffer->getFormat();
 		}
 
-		state.occlusionEnabled = context->occlusionEnabled;
 		state.depthClamp = (context->depthBias != 0.0f) || (context->slopeDepthBias != 0.0f);
 
 		if(context->alphaBlendActive())

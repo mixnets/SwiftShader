@@ -47,8 +47,6 @@ namespace sw
 			VkStencilOpState backStencil;
 
 			bool depthTestActive;
-			bool occlusionEnabled;
-			bool perspective;
 			bool depthClamp;
 
 			bool alphaBlendActive;

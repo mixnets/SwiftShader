@@ -199,11 +199,7 @@ namespace sw
 						if(state.multiSampleMask & (1 << q))
 						{
 							writeDepth(zBuffer, q, x, z[q], zMask[q]);
-
-							if(state.occlusionEnabled)
-							{
-								occlusion += *Pointer<UInt>(constants + OFFSET(Constants,occlusionCount) + 4 * (zMask[q] & sMask[q]));
-							}
+							occlusion += *Pointer<UInt>(constants + OFFSET(Constants,occlusionCount) + 4 * (zMask[q] & sMask[q]));
 						}
 					}
 

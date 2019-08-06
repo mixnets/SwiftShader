@@ -402,12 +402,9 @@ namespace sw
 			else ASSERT(false);
 		}
 
-		if(pixelState.occlusionEnabled)
+		for(int cluster = 0; cluster < clusterCount; cluster++)
 		{
-			for(int cluster = 0; cluster < clusterCount; cluster++)
-			{
-				data->occlusion[cluster] = 0;
-			}
+			data->occlusion[cluster] = 0;
 		}
 
 		// Viewport

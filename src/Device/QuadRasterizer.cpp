@@ -56,12 +56,9 @@ namespace sw
 		}
 		Until(count == 0)
 
-		if(state.occlusionEnabled)
-		{
-			UInt clusterOcclusion = *Pointer<UInt>(data + OFFSET(DrawData,occlusion) + 4 * cluster);
-			clusterOcclusion += occlusion;
-			*Pointer<UInt>(data + OFFSET(DrawData,occlusion) + 4 * cluster) = clusterOcclusion;
-		}
+		UInt clusterOcclusion = *Pointer<UInt>(data + OFFSET(DrawData,occlusion) + 4 * cluster);
+		clusterOcclusion += occlusion;
+		*Pointer<UInt>(data + OFFSET(DrawData,occlusion) + 4 * cluster) = clusterOcclusion;
 
 		Return();
 	}
