@@ -18,6 +18,8 @@
 #include "Driver.hpp"
 #include "Device.hpp"
 
+#include "System/Half.hpp"
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -40,6 +42,12 @@ class SwiftShaderVulkanTest : public testing::Test
 
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
+	float rgb[3] = {1.0, 1.5, 0.5};
+	float rgb2[3] = {0, 0, 0};
+	sw::RGB9E5 rgbe(rgb);
+	unsigned int u32 = rgbe;
+	rgbe.toRGB32F(rgb2);
+
     Driver driver;
     ASSERT_TRUE(driver.loadSwiftShader());
 

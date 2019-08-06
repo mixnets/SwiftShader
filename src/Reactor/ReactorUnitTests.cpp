@@ -18,6 +18,8 @@
 #include "gtest/gtest.h"
 
 #include <tuple>
+#include <cmath>
+#include <algorithm>
 
 using namespace rr;
 
@@ -36,8 +38,138 @@ int reference(int *p, int y)
 	return sum;
 }
 
+#include <algorithm>
+#include <cmath>
+
+namespace sw
+{
+		template<typename destType, typename sourceType>
+	destType bit_cast2(const sourceType &source)
+	{
+		union
+		{
+			sourceType s;
+			destType d;
+		} sd;
+		sd.s = source;
+		return sd.d;
+	}
+
+	class half
+	{
+	public:
+		half() = default;
+		explicit half(float f);
+
+		operator float() const;
+
+		half &operator=(half h);
+		half &operator=(float f);
+
+	private:
+		unsigned short fp16i;
+	};
+
+	inline half shortAsHalf(short s)
+	{
+		union
+		{
+			half h;
+			short s;
+		} hs;
+
+		hs.s = s;
+
+		return hs.h;
+	}
+
+	class RGB9E5
+	{
+		unsigned int R : 9;
+		unsigned int G : 9;
+		unsigned int B : 9;
+		unsigned int E : 5;
+
+	public:
+		// B is the exponent bias (15)
+		static constexpr int g_sharedexp_bias = 15;
+
+		// N is the number of mantissa bits per component (9)
+		static constexpr int g_sharedexp_mantissabits = 9;
+
+		// Emax is the maximum allowed biased exponent value (31)
+		static constexpr int g_sharedexp_maxexponent = 31;
+
+		RGB9E5(float rgb[3])
+		{
+			constexpr float g_sharedexp_max =
+				((static_cast<float>(1 << g_sharedexp_mantissabits) - 1) /
+					static_cast<float>(1 << g_sharedexp_mantissabits)) *
+				static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
+
+			const float red_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[0]));
+			const float green_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[1]));
+			const float blue_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[2]));
+
+			const float max_c = std::max<float>(std::max<float>(red_c, green_c), blue_c);
+			const float exp_p = std::max<float>(-g_sharedexp_bias - 1, floor(log2(max_c))) + (g_sharedexp_bias + 1);
+			const int max_s = static_cast<int>(round(max_c / exp2(exp_p - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			const int exp_s = static_cast<int>((max_s < (1 << g_sharedexp_mantissabits)) ? exp_p : exp_p + 1);
+
+			R = static_cast<unsigned int>(round(red_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			G = static_cast<unsigned int>(round(green_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			B = static_cast<unsigned int>(round(blue_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			E = exp_s;
+
+			{
+				float q = bit_cast2<float>((bit_cast2<unsigned int>(std::max(max_c, 1.0f/0x0F00000)*2) & 0xFF800000) + 0x4F00);
+				unsigned int rr = (bit_cast2<unsigned int>(red_c + q) >> (23 - 9)) & 0x1FF;
+				unsigned int gg = (bit_cast2<unsigned int>(green_c + q) >> (23 - 9)) & 0x1FF;
+				unsigned int bb = (bit_cast2<unsigned int>(blue_c + q) >> (23 - 9)) & 0x1FF;
+
+				unsigned int ee = (((bit_cast2<unsigned int>(q) & 0x7FE00000) >> 23) - 127 + 15);
+
+				gg = bb;
+			}
+		}
+
+		operator unsigned int() const
+		{
+			return *reinterpret_cast<const unsigned int*>(this);
+		}
+
+		void toRGB16F(half rgb[3]) const
+		{
+			constexpr int offset = g_sharedexp_bias + g_sharedexp_mantissabits;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
+
+			const float factor = (1u << E) * (1.0f / (1 << offset));
+			rgb[0] = half(R * factor);
+			rgb[1] = half(G * factor);
+			rgb[2] = half(B * factor);
+		}
+
+		void toRGB32F(float rgb[3]) const
+		{
+			constexpr int offset = g_sharedexp_bias + g_sharedexp_mantissabits;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
+
+			const float factor = (1u << E) * (1.0f / (1 << offset));
+			rgb[0] = R * factor;
+			rgb[1] = G * factor;
+			rgb[2] = B * factor;
+		}
+	};
+	}
+
 TEST(ReactorUnitTests, Sample)
 {
+	{
+	float rgb[3] = {1.0f / 0x8010, 1.0f / 0x8010, 0.0};
+	float rgb2[3] = {0, 0, 0};
+	sw::RGB9E5 rgbe(rgb);
+	unsigned int u32 = rgbe;
+	rgbe.toRGB32F(rgb2);
+	}
+
 	std::shared_ptr<Routine> routine;
 
 	{

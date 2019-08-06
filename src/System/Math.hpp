@@ -68,7 +68,7 @@ namespace sw
 		return min(min(a, b), min(c, d));
 	}
 
-	template <typename destType, typename sourceType>
+	template<typename destType, typename sourceType>
 	destType bit_cast(const sourceType &source)
 	{
 		union

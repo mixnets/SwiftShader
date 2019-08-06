@@ -15,11 +15,25 @@
 #ifndef sw_Half_hpp
 #define sw_Half_hpp
 
+#include "System/Math.hpp"
+
 #include <algorithm>
 #include <cmath>
 
 namespace sw
 {
+		template<typename destType, typename sourceType>
+	destType bit_cast2(const sourceType &source)
+	{
+		union
+		{
+			sourceType s;
+			destType d;
+		} sd;
+		sd.s = source;
+		return sd.d;
+	}
+
 	class half
 	{
 	public:
@@ -56,17 +70,17 @@ namespace sw
 		unsigned int E : 5;
 
 	public:
+		// B is the exponent bias (15)
+		static constexpr int g_sharedexp_bias = 15;
+
+		// N is the number of mantissa bits per component (9)
+		static constexpr int g_sharedexp_mantissabits = 9;
+
+		// Emax is the maximum allowed biased exponent value (31)
+		static constexpr int g_sharedexp_maxexponent = 31;
+
 		RGB9E5(float rgb[3])
 		{
-			// B is the exponent bias (15)
-			constexpr int g_sharedexp_bias = 15;
-
-			// N is the number of mantissa bits per component (9)
-			constexpr int g_sharedexp_mantissabits = 9;
-
-			// Emax is the maximum allowed biased exponent value (31)
-			constexpr int g_sharedexp_maxexponent = 31;
-
 			constexpr float g_sharedexp_max =
 				((static_cast<float>(1 << g_sharedexp_mantissabits) - 1) /
 					static_cast<float>(1 << g_sharedexp_mantissabits)) *
@@ -85,6 +99,13 @@ namespace sw
 			G = static_cast<unsigned int>(round(green_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
 			B = static_cast<unsigned int>(round(blue_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
 			E = exp_s;
+
+			{
+				float q = bit_cast2<float>(bit_cast2<unsigned int>(max_c*2) & 0xFF800000);
+				unsigned int rr = (bit_cast2<unsigned int>(red_c + q) >> (23 - 9)) & 0x1FF;
+				unsigned int gg = (bit_cast2<unsigned int>(green_c + q) >> (24 - 9)) & 0x1FF;
+				unsigned int bb = (bit_cast2<unsigned int>(blue_c + q) >> (23 - 9)) & 0x1FF;
+			}
 		}
 
 		operator unsigned int() const
@@ -94,12 +115,22 @@ namespace sw
 
 		void toRGB16F(half rgb[3]) const
 		{
-			constexpr int offset = 24;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
+			constexpr int offset = g_sharedexp_bias + g_sharedexp_mantissabits;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
 
 			const float factor = (1u << E) * (1.0f / (1 << offset));
 			rgb[0] = half(R * factor);
 			rgb[1] = half(G * factor);
 			rgb[2] = half(B * factor);
+		}
+
+		void toRGB32F(float rgb[3]) const
+		{
+			constexpr int offset = g_sharedexp_bias + g_sharedexp_mantissabits;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
+
+			const float factor = (1u << E) * (1.0f / (1 << offset));
+			rgb[0] = R * factor;
+			rgb[1] = G * factor;
+			rgb[2] = B * factor;
 		}
 	};
 
