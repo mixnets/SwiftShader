@@ -18,6 +18,8 @@
 #include "gtest/gtest.h"
 
 #include <tuple>
+#include <cmath>
+#include <algorithm>
 
 using namespace rr;
 
@@ -36,8 +38,170 @@ int reference(int *p, int y)
 	return sum;
 }
 
+#include <algorithm>
+#include <cmath>
+
+namespace sw
+{
+		template<typename destType, typename sourceType>
+	destType bit_cast2(const sourceType &source)
+	{
+		union
+		{
+			sourceType s;
+			destType d;
+		} sd;
+		sd.s = source;
+		return sd.d;
+	}
+
+	class half
+	{
+	public:
+		half() = default;
+		explicit half(float f);
+
+		operator float() const;
+
+		half &operator=(half h);
+		half &operator=(float f);
+
+	private:
+		unsigned short fp16i;
+	};
+
+	inline half shortAsHalf(short s)
+	{
+		union
+		{
+			half h;
+			short s;
+		} hs;
+
+		hs.s = s;
+
+		return hs.h;
+	}
+
+	class RGB9E5
+	{
+		unsigned int R : 9;
+		unsigned int G : 9;
+		unsigned int B : 9;
+		unsigned int E : 5;
+
+	public:
+		// B is the exponent bias (15)
+		static constexpr int g_sharedexp_bias = 15;
+
+		// N is the number of mantissa bits per component (9)
+		static constexpr int g_sharedexp_mantissabits = 9;
+
+		// Emax is the maximum allowed biased exponent value (31)
+		static constexpr int g_sharedexp_maxexponent = 31;
+
+		RGB9E5(float rgb[3])
+		{
+			constexpr float g_sharedexp_max =
+				((static_cast<float>(1 << g_sharedexp_mantissabits) - 1) /
+					static_cast<float>(1 << g_sharedexp_mantissabits)) *
+				static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
+
+			float red_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[0]));
+			 float green_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[1]));
+			 float blue_c = std::max<float>(0, std::min(g_sharedexp_max, rgb[2]));
+
+			const float max_c = std::max<float>(std::max<float>(red_c, green_c), blue_c);
+			const float exp_p = std::max<float>(-g_sharedexp_bias - 1, floor(log2(max_c))) + (g_sharedexp_bias + 1);
+			const int max_s = static_cast<int>(round(max_c / exp2(exp_p - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			const int exp_s = static_cast<int>((max_s < (1 << g_sharedexp_mantissabits)) ? exp_p : exp_p + 1);
+
+			R = static_cast<unsigned int>(round(red_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			G = static_cast<unsigned int>(round(green_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			B = static_cast<unsigned int>(round(blue_c / exp2(exp_s - g_sharedexp_bias - g_sharedexp_mantissabits)));
+			E = exp_s;
+
+			{
+				red_c = bit_cast2<float>((bit_cast2<int>(red_c) + 0x00004000) & 0xFFFF8000);
+				green_c = bit_cast2<float>((bit_cast2<int>(green_c) + 0x00004000) & 0xFFFF8000);
+				blue_c = bit_cast2<float>((bit_cast2<int>(blue_c) + 0x00004000) & 0xFFFF8000);
+
+			const float max_c = std::max<float>(std::max<float>(red_c, green_c), blue_c);
+
+				float min = 1.0f / 0x10000;
+				int max_ci = (int&)max_c;
+				float max_q = std::max(max_c, min);
+				int max_qi = (int&)max_q;
+				float max_2 = max_q * 2.0f;
+				int max_2i = (int&)max_2;
+				float q = bit_cast2<float>((bit_cast2<unsigned int>(max_2) & 0xFF800000) + 0x0000);
+				int qi = (int&)q;
+				float red_q = red_c + q;
+				int red_qi = (int&)red_q;
+				unsigned int rr = (bit_cast2<unsigned int>(red_q) >> (23 - 9)) & 0x1FF;
+				unsigned int gg = (bit_cast2<unsigned int>(green_c + q) >> (23 - 9)) & 0x1FF;
+				unsigned int bb = (bit_cast2<unsigned int>(blue_c + q) >> (23 - 9)) & 0x1FF;
+
+				unsigned int ee = std::max(   (((bit_cast2< int>(max_2) & 0x7FE00000) >> 23) - 127 + 15)   , 0);
+
+				static int ok = 0;
+				static int off1 = 0;
+				static int off_1 = 0;
+				static int mkay = 0;
+				static int bad = 0;
+
+				if((R != rr) || (E != ee))
+				{
+					if((E == ee) && (R + 1 == rr))
+					{
+						off1++;
+					}
+					else if((E == ee) && (R == rr + 1))
+					{
+						off_1++;
+					}
+					else
+					{
+						if((exp_s == ee + 1) && (R == 0x100 && rr == 0x1FF))
+						{
+							mkay++;
+						}
+						else
+						{
+							gg = bb;
+							bad++;
+						}
+					}
+				}
+				else ok++;
+
+				if((bit_cast2<int>(rgb[0]) & 0xFFFFFF) == 0)
+				{
+					printf("%e, %e, %d, %d, %d, %d, %d\n", rgb[0], rgb[1], ok, bad, off1, off_1, mkay);
+
+					gg = bb;
+				}
+			}
+		}
+
+		operator unsigned int() const
+		{
+			return *reinterpret_cast<const unsigned int*>(this);
+		}
+	};
+	}
+
 TEST(ReactorUnitTests, Sample)
 {
+	for(int j = 0x00000000; j < 0xFFFF0000; j += 1700)  // 0x33000000, 0x32fffc00, 0x33bfff00, 0x3F800000
+	for(int i = 0x00000000; i < 0xFFFF0000; i += 9700)  // 0x33000000, 0x32fffc00, 0x33bfff00, 0x3F800000
+	{
+		float r = (float&)i;
+		float g = (float&)j;
+	float rgb[3] = {r, g, 0.0};
+	sw::RGB9E5 rgbe(rgb);
+	}
+
 	std::shared_ptr<Routine> routine;
 
 	{
