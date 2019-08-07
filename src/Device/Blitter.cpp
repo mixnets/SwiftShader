@@ -16,6 +16,7 @@
 
 #include "Pipeline/ShaderCore.hpp"
 #include "Reactor/Reactor.hpp"
+#include "System/Half.hpp"
 #include "System/Memory.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImage.hpp"
@@ -602,6 +603,56 @@ namespace sw
 			if(writeG) { *Pointer<Half>(element + 2) = Half(c.y); }
 		case VK_FORMAT_R16_SFLOAT:
 			if(writeR) { *Pointer<Half>(element) = Half(c.x); }
+			break;
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
+			{
+				ASSERT(writeRGBA);  // Can't sensibly write just part of this format.
+
+				// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion
+
+				constexpr int N = 9;       // number of mantissa bits per component
+				constexpr int B = 15;      // exponent bias
+				constexpr int E_max = 31;  // maximum possible biased exponent value
+
+				// Maximum representable value.
+				constexpr float sharedexp_max = ((static_cast<float>(1 << N) - 1) / static_cast<float>(1 << N)) * static_cast<float>(1 << (E_max - B));
+
+				// Clamp components to valid range.
+				Float red_c = Max(0, Min(sharedexp_max, c.x));
+				Float green_c = Max(0, Min(sharedexp_max, c.y));
+				Float blue_c = Max(0, Min(sharedexp_max, c.z));
+
+				// Mask off 9 mantissa bits (leading 1 is implicit), after rounding.
+				Float red_r = As<Float>((As<Int>(red_c) + 0x00004000) & 0xFFFF8000);
+				Float green_r = As<Float>((As<Int>(green_c) + 0x00004000) & 0xFFFF8000);
+				Float blue_r = As<Float>((As<Int>(blue_c) + 0x00004000) & 0xFFFF8000);
+
+				// The largest component determines the shared exponent.
+				// Exponent can't be lower than 0 (after bias subtraction) so also use
+				// the mimimum representable (taking the 2.0 factor below into account).
+				Float max_c = Max(Max(red_r, green_r), Max(blue_r, 1.0f / 0x10000));
+
+				// The IEEE-754 single-precision format has an implicit leading 1 bit,
+				// but this shared component format does not. We can force the IEEE format
+				// to expose the leading 1 by adding the next larger power of 2, so its
+				// leading 1 takes up the implicit spot and the original mantissa (including
+				// its leading 1) are shifted down one bit. Computing the next power of 2 is
+				// done by multiplying by 2.0 and masking off the mantissa bits. Adding this
+				// value also accomplishes 'denormalization' when the biased exponent is
+				// smaller than 0.
+				Float range = As<Float>(As<UInt>(max_c * 2.0f) & 0xFF800000);
+
+				// Extract the 9 mantissa bits with exposed leading 1 (or denormalization),
+				// and 5 exponent bits.
+				UInt R9 = (As<UInt>(red_r + range) >> (23 - N)) & 0x1FF;
+				UInt G9 = (As<UInt>(green_r + range) >> (23 - N)) & 0x1FF;
+				UInt B9 = (As<UInt>(blue_r + range) >> (23 - N)) & 0x1FF;
+				UInt E5 = (As<UInt>(range) >> 23) - 127 + B;
+
+				UInt E5B9G9R9 = (E5 << 27) | (B9 << 18) | (G9 << 9) | R9;
+
+				*Pointer<UInt>(element) = E5B9G9R9;
+			}
 			break;
 		case VK_FORMAT_B8G8R8A8_SNORM:
 			if(writeB) { *Pointer<SByte>(element) = SByte(RoundInt(Float(c.z))); }
