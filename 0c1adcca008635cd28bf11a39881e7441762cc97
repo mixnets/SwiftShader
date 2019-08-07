@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8cb0a628_c6e62573",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-07T19:59:17Z",
+      "side": 0,
+      "message": "LGTM but we\u0027ll want to be able to detect when someone attempts to read from an unbound attribute so we can quickly triage crashes. I\u0027ll add it to 2.0\u0027s \"paranoid mode\" ideas.",
+      "range": {
+        "startLine": 88,
+        "startChar": 2,
+        "endLine": 92,
+        "endChar": 3
+      },
+      "revId": "0c1adcca008635cd28bf11a39881e7441762cc97",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
