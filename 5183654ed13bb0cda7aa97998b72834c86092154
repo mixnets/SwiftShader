@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "359dfb02_767b0fe0",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 2151,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-08T14:28:44Z",
+      "side": 1,
+      "message": "does gtest / gmock use pthreads?",
+      "range": {
+        "startLine": 2151,
+        "startChar": 45,
+        "endLine": 2151,
+        "endChar": 52
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c01c0830_6bcdce5a",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-08T14:28:44Z",
+      "side": 1,
+      "message": "Perhaps we can replace this with a OS / libc deterministic random number generator?\nI wrote a bog-basic one for the yarn::Scheduler you could steal: https://swiftshader.googlesource.com/SwiftShader/+/refs/changes/12/34812/4/src/Yarn/Scheduler.hpp#248\nI\u0027m just thinking if this fails, it might not be possible to reproduce the issue locally.",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 74,
+        "endChar": 6
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "095e0d09_4cd12a2f",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-08T14:28:44Z",
+      "side": 1,
+      "message": "you can suffix this with details, which would also help with reproduction / understanding the issue:\n\n  EXPECT_EQ(ref, val) \u003c\u003c \"x:\" \u003c\u003c x \u003c \" y:\" \u003c\u003c y \u003c\u003c \" z:\" \u003c\u003c z;",
+      "range": {
+        "startLine": 89,
+        "startChar": 2,
+        "endLine": 89,
+        "endChar": 11
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "258db65d_d872c82e",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-08T14:28:44Z",
+      "side": 1,
+      "message": "This is a very large count to iterate over in single increments! :)",
+      "range": {
+        "startLine": 99,
+        "startChar": 25,
+        "endLine": 99,
+        "endChar": 43
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
