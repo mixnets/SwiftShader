@@ -1038,9 +1038,22 @@ namespace sw
 				return it->second;
 			}
 
+			rr::BasicBlock *getBasicBlock(Block::ID id)
+			{
+				auto bb = basicBlocks.find(id);
+
+				if(bb == basicBlocks.end())
+				{
+					return basicBlocks.emplace(id, Nucleus::createBasicBlock()).first->second;
+				}
+
+				return bb->second;
+			}
+
 		private:
 			std::unordered_map<Object::ID, Intermediate> intermediates;
 			std::unordered_map<Object::ID, SIMD::Pointer> pointers;
+			std::unordered_map<Block::ID, rr::BasicBlock*> basicBlocks;
 
 			const bool robustBufferAccess = true;  // Emit robustBufferAccess safe code.
 			const spv::ExecutionModel executionModel = spv::ExecutionModelMax;

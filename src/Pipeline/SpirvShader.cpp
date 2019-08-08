@@ -2093,7 +2093,11 @@ namespace sw
 		pending.push_front(id);
 		while (pending.size() > 0)
 		{
-			auto id = pending.front();
+			Block::ID id = pending.front();
+
+			rr::BasicBlock *bb = state->getBasicBlock(id);
+			Nucleus::createBr(bb);
+			Nucleus::setInsertBlock(bb);
 
 			auto const &block = function.getBlock(id);
 			if (id == ignore)
@@ -4657,6 +4661,9 @@ namespace sw
 	{
 		auto target = Block::ID(insn.word(1));
 		state->addActiveLaneMaskEdge(state->block, target, state->activeLaneMask());
+
+		Nucleus::createBr(state->getBasicBlock(target));
+
 		return EmitResult::Terminator;
 	}
 
@@ -4673,7 +4680,13 @@ namespace sw
 		auto cond = GenericValue(this, state, condId);
 		ASSERT_MSG(getType(cond.type).sizeInComponents == 1, "Condition must be a Boolean type scalar");
 
+		rr::BasicBlock *trueBlock = state->getBasicBlock(trueBlockId);
+		rr::BasicBlock *falseBlock = state->getBasicBlock(falseBlockId);
+
 		// TODO: Optimize for case where all lanes take same path.
+	//	Nucleus::createBr(trueBlock);
+
+
 
 		state->addOutputActiveLaneMaskEdge(trueBlockId, cond.Int(0));
 		state->addOutputActiveLaneMaskEdge(falseBlockId, ~cond.Int(0));
