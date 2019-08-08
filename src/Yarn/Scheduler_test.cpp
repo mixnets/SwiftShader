@@ -14,6 +14,8 @@
 
 #include "Yarn_test.hpp"
 
+#include "Yarn/WaitGroup.hpp"
+
 TEST(WithoutBoundScheduler, SchedulerConstructAndDestruct)
 {
     auto scheduler = new yarn::Scheduler();
@@ -43,4 +45,21 @@ TEST_P(WithBoundScheduler, DestructWithPendingTasks)
     {
         yarn::schedule([] {});
     }
+}
+
+TEST_P(WithBoundScheduler, DestructWithPendingFibers)
+{
+    yarn::WaitGroup wg(1);
+    for (int i = 0; i < 10000; i++)
+    {
+        yarn::schedule([=] { wg.wait(); });
+    }
+    wg.done();
+
+    auto scheduler = yarn::Scheduler::get();
+    scheduler->unbind();
+    delete scheduler;
+
+    // Rebind a new scheduler so WithBoundScheduler::TearDown() is happy.
+    (new yarn::Scheduler())->bind();
 }
