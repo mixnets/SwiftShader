@@ -1600,12 +1600,12 @@ public:
   {
     return ::vkCreateImage( device, pCreateInfo, pAllocator, pImage);
   }
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VkResult vkCreateImagePipeSurfaceFUCHSIA( VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface  ) const
   {
     return ::vkCreateImagePipeSurfaceFUCHSIA( instance, pCreateInfo, pAllocator, pSurface);
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
   VkResult vkCreateImageView( VkDevice device, const VkImageViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImageView* pView  ) const
   {
     return ::vkCreateImageView( device, pCreateInfo, pAllocator, pView);
@@ -2869,15 +2869,15 @@ public:
   using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK, VkMacOSSurfaceCreateFlagsMVK>;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   enum class ImagePipeSurfaceCreateFlagBitsFUCHSIA
   {
   };
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA, VkImagePipeSurfaceCreateFlagsFUCHSIA>;
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   enum class CommandPoolTrimFlagBits
   {
@@ -12359,7 +12359,7 @@ public:
   static_assert( sizeof( XcbSurfaceCreateInfoKHR ) == sizeof( VkXcbSurfaceCreateInfoKHR ), "struct and wrapper have different size!" );
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   struct ImagePipeSurfaceCreateInfoFUCHSIA
   {
     ImagePipeSurfaceCreateInfoFUCHSIA( ImagePipeSurfaceCreateFlagsFUCHSIA flags_ = ImagePipeSurfaceCreateFlagsFUCHSIA(),
@@ -12429,7 +12429,7 @@ public:
     zx_handle_t imagePipeHandle;
   };
   static_assert( sizeof( ImagePipeSurfaceCreateInfoFUCHSIA ) == sizeof( VkImagePipeSurfaceCreateInfoFUCHSIA ), "struct and wrapper have different size!" );
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   struct DebugMarkerMarkerInfoEXT
   {
@@ -47595,7 +47595,7 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
     template<typename Dispatch = DispatchLoaderStatic>
     Result createImagePipeSurfaceFUCHSIA( const ImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d = Dispatch() ) const;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -47606,7 +47606,7 @@ public:
     typename ResultValueType<UniqueHandle<SurfaceKHR,Dispatch>>::type createImagePipeSurfaceFUCHSIAUnique( const ImagePipeSurfaceCreateInfoFUCHSIA & createInfo, Optional<const AllocationCallbacks> allocator = nullptr, Dispatch const &d = Dispatch() ) const;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     template<typename Dispatch = DispatchLoaderStatic>
     Result createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, DebugReportCallbackEXT* pCallback, Dispatch const &d = Dispatch() ) const;
@@ -48037,7 +48037,7 @@ public:
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Instance::createImagePipeSurfaceFUCHSIA( const ImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const AllocationCallbacks* pAllocator, SurfaceKHR* pSurface, Dispatch const &d) const
   {
@@ -48063,7 +48063,7 @@ public:
   }
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   template<typename Dispatch>
   VULKAN_HPP_INLINE Result Instance::createDebugReportCallbackEXT( const DebugReportCallbackCreateInfoEXT* pCreateInfo, const AllocationCallbacks* pAllocator, DebugReportCallbackEXT* pCallback, Dispatch const &d) const
@@ -49165,19 +49165,19 @@ public:
   }
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VULKAN_HPP_INLINE std::string to_string(ImagePipeSurfaceCreateFlagBitsFUCHSIA)
   {
     return "(void)";
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
   VULKAN_HPP_INLINE std::string to_string(ImagePipeSurfaceCreateFlagsFUCHSIA)
   {
     return "{}";
   }
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   VULKAN_HPP_INLINE std::string to_string(CommandPoolTrimFlagBits)
   {
@@ -52535,9 +52535,9 @@ public:
     PFN_vkCreateIOSSurfaceMVK vkCreateIOSSurfaceMVK = 0;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
     PFN_vkCreateImage vkCreateImage = 0;
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
     PFN_vkCreateImagePipeSurfaceFUCHSIA vkCreateImagePipeSurfaceFUCHSIA = 0;
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
     PFN_vkCreateImageView vkCreateImageView = 0;
     PFN_vkCreateIndirectCommandsLayoutNVX vkCreateIndirectCommandsLayoutNVX = 0;
     PFN_vkCreateInstance vkCreateInstance = 0;
@@ -52935,9 +52935,9 @@ public:
       vkCreateIOSSurfaceMVK = PFN_vkCreateIOSSurfaceMVK(instance.getProcAddr( "vkCreateIOSSurfaceMVK"));
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
       vkCreateImage = PFN_vkCreateImage(device ? device.getProcAddr( "vkCreateImage") : instance.getProcAddr( "vkCreateImage"));
-#ifdef VK_USE_PLATFORM_FUCHSIA_FUCHSIA
+#ifdef VK_USE_PLATFORM_FUCHSIA
       vkCreateImagePipeSurfaceFUCHSIA = PFN_vkCreateImagePipeSurfaceFUCHSIA(instance.getProcAddr( "vkCreateImagePipeSurfaceFUCHSIA"));
-#endif /*VK_USE_PLATFORM_FUCHSIA_FUCHSIA*/
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
       vkCreateImageView = PFN_vkCreateImageView(device ? device.getProcAddr( "vkCreateImageView") : instance.getProcAddr( "vkCreateImageView"));
       vkCreateIndirectCommandsLayoutNVX = PFN_vkCreateIndirectCommandsLayoutNVX(device ? device.getProcAddr( "vkCreateIndirectCommandsLayoutNVX") : instance.getProcAddr( "vkCreateIndirectCommandsLayoutNVX"));
       vkCreateInstance = PFN_vkCreateInstance(instance.getProcAddr( "vkCreateInstance"));
