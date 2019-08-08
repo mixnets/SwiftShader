@@ -14,6 +14,8 @@
 
 #include "Thread.hpp"
 
+#include "Trace.hpp"
+
 #include <cstdarg>
 
 #if defined(_WIN32)
@@ -89,6 +91,8 @@ void Thread::setName(const char* fmt, ...)
 #else
     pthread_setname_np(pthread_self(), name);
 #endif
+
+    YARN_NAME_THREAD("%s", name);
 }
 
 unsigned int Thread::numLogicalCPUs()
