@@ -285,7 +285,7 @@ void Scheduler::Worker::start()
                 initFunc();
             }
 
-            scheduler->bind();
+            Scheduler::bound = scheduler;
             Worker::current = this;
             mainFiber.reset(Fiber::createFromCurrentThread(0));
             currentFiber = mainFiber.get();

@@ -88,9 +88,10 @@ TEST_P(WithBoundScheduler, FibersResumeOnSameStdThread)
 
     yarn::WaitGroup fence(1);
     yarn::WaitGroup wg(1000);
+    std::vector<std::thread> threads;
     for (int i = 0; i < 1000; i++)
     {
-        std::thread([=] {
+        threads.push_back(std::thread([=] {
             scheduler->bind();
 
             auto threadID = std::this_thread::get_id();
@@ -99,9 +100,14 @@ TEST_P(WithBoundScheduler, FibersResumeOnSameStdThread)
             wg.done();
 
             scheduler->unbind();
-        }).detach();
+        }));
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(10)); // just to try and get some tasks to yield.
     fence.done();
     wg.wait();
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
 }
