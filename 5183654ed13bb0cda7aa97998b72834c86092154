@@ -25,6 +25,40 @@
     },
     {
       "key": {
+        "uuid": "1eb2c1bb_0cb773e3",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-08-08T14:40:39Z",
+      "side": 1,
+      "message": "If r, g, or b are NaN, then std::max/min will propagate NaN. I believe this will result in undefined behavior when converting from float to unsigned int. Perhaps this should use clamp_s from src/Common/Math.hpp to guarantee that the values in red_c et al are between 0 and g_sharedexp_max.",
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3acd359_dc4b5f9e",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-08-08T14:40:39Z",
+      "side": 1,
+      "message": "I believe you could just do: (bit_cast\u003cint\u003e(max_s) \u0026 0x7F800000) ^ 0x7F800000) \u003c\u003c (g_sharedexp_mantissabits - 2). Since an integer multiply by a power of two is equivalent to a left shift",
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c01c0830_6bcdce5a",
         "filename": "tests/MathUnitTests/unittests.cpp",
         "patchSetId": 8
