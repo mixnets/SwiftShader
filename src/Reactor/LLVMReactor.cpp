@@ -4916,7 +4916,7 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 	}
 #endif // ENABLE_RR_DEBUG_INFO
 
-	if(false)
+	if(true)
 	{
 		std::error_code error;
 		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-unopt.txt", error);
@@ -4946,7 +4946,7 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 	auto cfg = cfgEdit.apply(jit->config);
 	jit->optimize(cfg);
 
-	if(false)
+	if(true)
 	{
 		std::error_code error;
 		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-opt.txt", error);
