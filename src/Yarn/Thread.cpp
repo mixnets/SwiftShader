@@ -51,6 +51,7 @@ void Thread::setName(const char* fmt, ...)
     wchar_t wname[1024];
     mbstowcs(wname, name, 1024);
     setThreadDescription(GetCurrentThread(), wname);
+    NAME_THREAD("%s", name);
 }
 
 unsigned int Thread::numLogicalCPUs()
