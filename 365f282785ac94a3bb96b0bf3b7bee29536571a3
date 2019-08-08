@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a25a72d6_d8a6c8ea",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-08T13:45:48Z",
+      "side": 1,
+      "message": "Do you have a bug ID we can associate with this?",
+      "revId": "365f282785ac94a3bb96b0bf3b7bee29536571a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce4d9549_5b0a33e5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-08T13:45:48Z",
+      "side": 1,
+      "message": "note: I\u0027d eventually like to eliminate the need for this. See https://swiftshader-review.googlesource.com/c/SwiftShader/+/31529/15/src/Vulkan/libVulkan.cpp#80\n\nLGTM for now.",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 10
+      },
+      "revId": "365f282785ac94a3bb96b0bf3b7bee29536571a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
