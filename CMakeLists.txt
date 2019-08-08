@@ -339,6 +339,10 @@ else()
         "-Wmissing-braces"
     )
 
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+            "-Wno-class-memaccess"  # memset/memcmp used on non-trivial class object
+        )
+
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wunused-lambda-capture"

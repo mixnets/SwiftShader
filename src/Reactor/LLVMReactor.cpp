@@ -1091,7 +1091,7 @@ namespace rr
 		}
 #endif // ENABLE_RR_DEBUG_INFO
 
-		if(false)
+		if(true)
 		{
 			std::error_code error;
 			llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-unopt.txt", error);
@@ -1111,7 +1111,7 @@ namespace rr
 			optimize();
 		}
 
-		if(false)
+		if(true)
 		{
 			std::error_code error;
 			llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-opt.txt", error);
