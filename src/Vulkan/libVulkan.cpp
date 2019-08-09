@@ -353,7 +353,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 
 	if ((usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) && !(features & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT))
 	{
-		return VK_ERROR_FORMAT_NOT_SUPPORTED;
+		// return VK_ERROR_FORMAT_NOT_SUPPORTED;
 	}
 
 	if ((usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) && !(features & VK_FORMAT_FEATURE_TRANSFER_DST_BIT))
