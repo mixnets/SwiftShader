@@ -104,6 +104,24 @@
       "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f10fd73_d86cc5e4",
+        "filename": "tests/VulkanUnitTests/Driver.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T17:27:40Z",
+      "side": 1,
+      "message": "\"libvk_swiftshader.so\" would be more in line with naming expectations for the ICD.",
+      "parentUuid": "73bfb833_6a7dd202",
+      "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
