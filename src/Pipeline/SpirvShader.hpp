@@ -727,6 +727,8 @@ namespace sw
 		{
 			bool Matrix : 1;
 			bool Shader : 1;
+			bool ClipDistance : 1;
+			bool CullDistance : 1;
 			bool InputAttachment : 1;
 			bool Sampled1D : 1;
 			bool Image1D : 1;
@@ -735,12 +737,12 @@ namespace sw
 			bool ImageQuery : 1;
 			bool DerivativeControl : 1;
 			bool GroupNonUniform : 1;
-			bool MultiView : 1;
-			bool DeviceGroup : 1;
 			bool GroupNonUniformVote : 1;
 			bool GroupNonUniformBallot : 1;
 			bool GroupNonUniformShuffle : 1;
 			bool GroupNonUniformShuffleRelative : 1;
+			bool DeviceGroup : 1;
+			bool MultiView : 1;
 		};
 
 		Capabilities const &getUsedCapabilities() const
