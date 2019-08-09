@@ -812,6 +812,8 @@ namespace sw
 				case spv::CapabilityGroupNonUniform: capabilities.GroupNonUniform = true; break;
 				case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 				case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
+				case spv::CapabilityClipDistance: capabilities.ClipDistance = true; break;
+				case spv::CapabilityCullDistance: capabilities.CullDistance = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
