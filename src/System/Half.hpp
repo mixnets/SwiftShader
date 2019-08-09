@@ -81,6 +81,7 @@ namespace sw
 					static_cast<float>(1 << g_sharedexp_mantissabits)) *
 				static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
 
+			// FIXME(b/138944025): Must map NaN to zero.
 			// Clamp components to valid range.
 			const float red_c = std::max<float>(0, std::min(g_sharedexp_max, r));
 			const float green_c = std::max<float>(0, std::min(g_sharedexp_max, g));
