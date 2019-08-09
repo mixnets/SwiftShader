@@ -39,6 +39,7 @@ unsigned int RGB9E5_reference(float r, float g, float b)
 			static_cast<float>(1 << g_sharedexp_mantissabits)) *
 		static_cast<float>(1 << (g_sharedexp_maxexponent - g_sharedexp_bias));
 
+	// FIXME(b/138944025): Must map NaN to zero.
 	const float red_c = std::max<float>(0, std::min(g_sharedexp_max, r));
 	const float green_c = std::max<float>(0, std::min(g_sharedexp_max, g));
 	const float blue_c = std::max<float>(0, std::min(g_sharedexp_max, b));
