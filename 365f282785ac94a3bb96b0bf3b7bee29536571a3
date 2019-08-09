@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3550b790_1eac6cb1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-09T07:57:36Z",
+      "side": 1,
+      "message": "Not for Swiftshader itself, but we have an internal Fuchsia one (SCN-1422) for porting Swiftshader as a Vulkan ICD on Fuchsia.\nSince it is not public, I\u0027m unsure you can access it though. Do you want me to add a reference to it here?",
+      "parentUuid": "a25a72d6_d8a6c8ea",
+      "revId": "365f282785ac94a3bb96b0bf3b7bee29536571a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ce4d9549_5b0a33e5",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
