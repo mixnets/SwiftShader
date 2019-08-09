@@ -642,6 +642,7 @@ namespace sw
 				// Maximum representable value.
 				constexpr float sharedexp_max = ((static_cast<float>(1 << N) - 1) / static_cast<float>(1 << N)) * static_cast<float>(1 << (E_max - B));
 
+				// FIXME(b/138944025): Must map NaN to zero.
 				// Clamp components to valid range.
 				Float red_c = Max(0, Min(sharedexp_max, c.x));
 				Float green_c = Max(0, Min(sharedexp_max, c.y));
