@@ -162,6 +162,46 @@ namespace sw
 				}
 
 				setBuiltins(x, y, z, w, cMask);
+
+				for (uint32_t i = 0; i < MAX_CLIP_DISTANCES; i++)
+				{
+					auto distance = interpolate(xxxx, DclipDistance[i], rhw,
+												primitive + OFFSET(Primitive, clipDistance[i]),
+												false, true, false);
+
+					auto clipMask = SignMask(CmpGE(distance, SIMD::Float(0)));
+					for (auto ms = 0u; ms < state.multiSample; ms++)
+					{
+						cMask[ms] &= clipMask;
+					}
+
+					if (spirvShader->getUsedCapabilities().ClipDistance)
+					{
+						auto it = spirvShader->inputBuiltins.find(spv::BuiltInClipDistance);
+						if(it != spirvShader->inputBuiltins.end())
+						{
+							if (i < it->second.SizeInComponents)
+							{
+								routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = distance;
+							}
+						}
+					}
+				}
+
+				if (spirvShader->getUsedCapabilities().CullDistance)
+				{
+					auto it = spirvShader->inputBuiltins.find(spv::BuiltInCullDistance);
+					if(it != spirvShader->inputBuiltins.end())
+					{
+						for (uint32_t i = 0; i < it->second.SizeInComponents; i++)
+						{
+							routine.getVariable(it->second.Id)[it->second.FirstComponent + i] =
+									interpolate(xxxx, DcullDistance[i], rhw,
+												primitive + OFFSET(Primitive, cullDistance[i]),
+												false, true, false);
+						}
+					}
+				}
 			}
 
 			Bool alphaPass = true;
