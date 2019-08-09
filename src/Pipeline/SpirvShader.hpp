@@ -735,6 +735,8 @@ namespace sw
 			bool GroupNonUniform : 1;
 			bool MultiView : 1;
 			bool DeviceGroup : 1;
+			bool ClipDistance : 1;
+			bool CullDistance : 1;
 		};
 
 		Capabilities const &getCapabilities() const
