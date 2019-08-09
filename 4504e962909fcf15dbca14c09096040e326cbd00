@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10d111f9_4d9d079b",
+        "filename": "tests/VulkanUnitTests/Driver.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-09T08:14:14Z",
+      "side": 1,
+      "message": "NOTE: libvk_swiftshader seems to be the library name used by the CMakeLists.txt and Android.bp and Vistual Studio build files, while the BUILD.gn uses swiftshader/libvulkan instead. I\u0027m not sure why this different exists but didn\u0027t try to address it here. If you prefer to rename the Fuchsia specific library libvk_swiftshader.so, let me know.",
+      "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
