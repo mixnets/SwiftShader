@@ -802,6 +802,8 @@ namespace sw
 				{
 				case spv::CapabilityMatrix:
 				case spv::CapabilityShader:
+				case spv::CapabilityClipDistance:
+				case spv::CapabilityCullDistance:
 				case spv::CapabilityInputAttachment:
 				case spv::CapabilitySampled1D:
 				case spv::CapabilityImage1D:
@@ -809,9 +811,9 @@ namespace sw
 				case spv::CapabilityImageBuffer:
 				case spv::CapabilityImageQuery:
 				case spv::CapabilityDerivativeControl:
+				case spv::CapabilityGroupNonUniform:
 				case spv::CapabilityMultiView:
 				case spv::CapabilityDeviceGroup:
-				case spv::CapabilityGroupNonUniform:
 					break;
 
 				default:
