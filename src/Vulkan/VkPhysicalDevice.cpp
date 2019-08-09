@@ -44,7 +44,7 @@ const VkPhysicalDeviceFeatures& PhysicalDevice::getFeatures() const
 		VK_TRUE,   // drawIndirectFirstInstance
 		VK_FALSE,  // depthClamp
 		VK_FALSE,  // depthBiasClamp
-		VK_FALSE,  // fillModeNonSolid
+		VK_TRUE,  // fillModeNonSolid
 		VK_FALSE,  // depthBounds
 		VK_FALSE,  // wideLines
 		VK_FALSE,  // largePoints
@@ -68,7 +68,7 @@ const VkPhysicalDeviceFeatures& PhysicalDevice::getFeatures() const
 		VK_FALSE,  // shaderSampledImageArrayDynamicIndexing
 		VK_FALSE,  // shaderStorageBufferArrayDynamicIndexing
 		VK_FALSE,  // shaderStorageImageArrayDynamicIndexing
-		VK_FALSE,  // shaderClipDistance
+		VK_TRUE,  // shaderClipDistance
 		VK_FALSE,  // shaderCullDistance
 		VK_FALSE,  // shaderFloat64
 		VK_FALSE,  // shaderInt64
