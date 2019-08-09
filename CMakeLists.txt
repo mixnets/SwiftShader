@@ -1690,6 +1690,9 @@ file(GLOB_RECURSE EGL_LIST
     ${SOURCE_DIR}/Common/SharedLibrary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
 )
+if(MSVC)
+    list(APPEND EGL_LIST ${OPENGL_DIR}/libEGL/libEGL.rc)
+endif()
 
 file(GLOB_RECURSE GLES2_LIST
     ${OPENGL_DIR}/libGLESv2/*.cpp
@@ -1704,6 +1707,9 @@ file(GLOB_RECURSE GLES2_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES3/*.h
 )
+if(MSVC)
+    list(APPEND GLES2_LIST ${OPENGL_DIR}/libGLESv2/libGLESv2.rc)
+endif()
 
 file(GLOB_RECURSE GLES_CM_LIST
     ${OPENGL_DIR}/libGLES_CM/*.cpp
@@ -1717,6 +1723,9 @@ file(GLOB_RECURSE GLES_CM_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/*.h
 )
+if(MSVC)
+    list(APPEND GLES_CM_LIST ${OPENGL_DIR}/libGLES_CM/libGLES_CM.rc)
+endif()
 
 file(GLOB_RECURSE OPENGL_COMPILER_LIST
     ${OPENGL_COMPILER_DIR}/*.cpp
@@ -1761,6 +1770,9 @@ file(GLOB_RECURSE VULKAN_LIST
     ${SOURCE_DIR}/WSI/VkSwapchainKHR.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
+if(MSVC)
+    list(APPEND VULKAN_LIST ${VULKAN_DIR}/Vulkan.rc)
+endif()
 
 ###########################################################
 # Append OS specific files to lists
