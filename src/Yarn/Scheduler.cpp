@@ -219,49 +219,49 @@ void Scheduler::onBeginSpinning(int workerId)
 // Fiber
 ////////////////////////////////////////////////////////////////////////////////
 Scheduler::Fiber::Fiber(OSFiber* impl, uint32_t id) :
-	id(id), impl(impl), worker(Scheduler::Worker::getCurrent())
+    id(id), impl(impl), worker(Scheduler::Worker::getCurrent())
 {
-	YARN_ASSERT(worker != nullptr, "No Scheduler::Worker bound");
+    YARN_ASSERT(worker != nullptr, "No Scheduler::Worker bound");
 }
 
 Scheduler::Fiber::~Fiber()
 {
-	delete impl;
+    delete impl;
 }
 
 Scheduler::Fiber* Scheduler::Fiber::current()
 {
-	auto worker = Scheduler::Worker::getCurrent();
-	return worker != nullptr ? worker->getCurrentFiber() : nullptr;
+    auto worker = Scheduler::Worker::getCurrent();
+    return worker != nullptr ? worker->getCurrentFiber() : nullptr;
 }
 
 void Scheduler::Fiber::schedule()
 {
-	worker->enqueue(this);
+    worker->enqueue(this);
 }
 
 void Scheduler::Fiber::yield()
 {
-	YARN_SCOPED_EVENT("YIELD");
-	worker->yield(this);
+    YARN_SCOPED_EVENT("YIELD");
+    worker->yield(this);
 }
 
 void Scheduler::Fiber::switchTo(Fiber* to)
 {
-	if (to != this)
-	{
-		impl->switchTo(to->impl);
-	}
+    if (to != this)
+    {
+        impl->switchTo(to->impl);
+    }
 }
 
 Scheduler::Fiber* Scheduler::Fiber::create(uint32_t id, size_t stackSize, const std::function<void()>& func)
 {
-	return new Fiber(OSFiber::createFiber(stackSize, func), id);
+    return new Fiber(OSFiber::createFiber(stackSize, func), id);
 }
 
 Scheduler::Fiber* Scheduler::Fiber::createFromCurrentThread(uint32_t id)
 {
-	return new Fiber(OSFiber::createFiberFromCurrentThread(), id);
+    return new Fiber(OSFiber::createFiberFromCurrentThread(), id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -429,17 +429,21 @@ void Scheduler::Worker::run()
             runUntilIdle(lock);
         }
         Worker::current = nullptr;
+        switchToFiber(mainFiber.get());
         break;
     }
     case Mode::SingleThreaded:
-        flush();
+        while (!shutdown)
+        {
+            flush();
+            idleFibers.emplace(currentFiber);
+            switchToFiber(mainFiber.get());
+        }
         break;
 
     default:
         YARN_ASSERT(false, "Unknown mode: %d", int(mode));
     }
-
-    switchToFiber(mainFiber.get());
 }
 
 _Requires_lock_held_(lock)
