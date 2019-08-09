@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fc6392a7_1ff0abee",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 2151,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "Yes, doesn\u0027t build without this.",
+      "parentUuid": "359dfb02_767b0fe0",
+      "range": {
+        "startLine": 2151,
+        "startChar": 45,
+        "endLine": 2151,
+        "endChar": 52
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1eb2c1bb_0cb773e3",
         "filename": "src/System/Half.hpp",
         "patchSetId": 8
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "52dce966_73c22e0c",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "Great point! This affects potentially this patch as well as Reactor\u0027s Min/Max, so I\u0027ll follow up with another patch to deal with it.",
+      "parentUuid": "1eb2c1bb_0cb773e3",
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3acd359_dc4b5f9e",
         "filename": "src/System/Half.hpp",
         "patchSetId": 8
@@ -56,6 +98,24 @@
       "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd358907_f04e477a",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "That would multiply the integer representation by the power of 2. Instead we want to multiply the floating-point representation.\n\nThe equivalent would be to add (g_sharedexp_mantissabits - 2) \u003c\u003c 23 to the integer representation, if we\u0027re certain not to overflow the exponent (which in this case we are).",
+      "parentUuid": "c3acd359_dc4b5f9e",
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "978681dd_4e62e2d2",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "Ack. rand() being implementation dependent is indeed suboptimal. That said, the exhaustive test below should provide full coverage, at least for the single-component case. For all three it\u0027s not realistic to be exhaustive but I think the likelihood of fiddling with these formulas and passing these tests on one valid rand() implementation but not another is vanishingly small.\n\nDefinitely worth keeping in mind for tests with lower coverage though.\n\nUltimately perhaps this should be a feature request for gtest?",
+      "parentUuid": "c01c0830_6bcdce5a",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 74,
+        "endChar": 6
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "095e0d09_4cd12a2f",
         "filename": "tests/MathUnitTests/unittests.cpp",
         "patchSetId": 8
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "85019402_44be202b",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "Ack. I had some ugly printfs in my initial testing. gtest output would have potentially been cleaner. Anyway, I don\u0027t expect there\u0027s much room for improvement left here, and if/when we do refactor it it\u0027s probably only valuable to know if it broke at all and not so much for a particular value.",
+      "parentUuid": "095e0d09_4cd12a2f",
+      "range": {
+        "startLine": 89,
+        "startChar": 2,
+        "endLine": 89,
+        "endChar": 11
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "258db65d_d872c82e",
         "filename": "tests/MathUnitTests/unittests.cpp",
         "patchSetId": 8
@@ -125,6 +233,30 @@
       "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49e2888a_dda134a8",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T20:19:36Z",
+      "side": 1,
+      "message": "Only takes a 4 GHz processor 1 second to count to 2^32. 8-)\n\nThe slow part here is the math function calls in the reference implementation, but in a release build it\u0027s still reasonable to run this to the end.",
+      "parentUuid": "258db65d_d872c82e",
+      "range": {
+        "startLine": 99,
+        "startChar": 25,
+        "endLine": 99,
+        "endChar": 43
+      },
+      "revId": "5183654ed13bb0cda7aa97998b72834c86092154",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
