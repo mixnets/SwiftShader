@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9eba15d2_01e51187",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T19:17:53Z",
+      "side": 1,
+      "message": "This was added after https://swiftshader-review.googlesource.com/c/SwiftShader/+/25308/5/src/WSI/VkSurfaceKHR.cpp#32 , but TRANSFER_SRC was not included.\n\nCorentin, any reason why implementations may typically have one but not the other?",
+      "range": {
+        "startLine": 120,
+        "startChar": 83,
+        "endLine": 120,
+        "endChar": 114
+      },
+      "revId": "b2b1b10791ae359a494b71780cd5e04e648b712b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
