@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "479c0e16_6f7055de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-08-09T10:54:21Z",
+      "side": 1,
+      "message": "If Fuchsia has a standard gdb debugger, it would be great to try a debug build (-g) with \u0027ENABLE_RR_DEBUG_INFO\u0027 defined to 1 (-DENABLE_RR_DEBUG_INFO\u003d1).\n\nIf you then run the unit tests again inside gdb, the JIT\u0027d code should have debug symbols to map back to the offending Reactor code.",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 16
+      },
+      "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10d111f9_4d9d079b",
         "filename": "tests/VulkanUnitTests/Driver.cpp",
         "patchSetId": 1
