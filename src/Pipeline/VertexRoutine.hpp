@@ -55,6 +55,7 @@ namespace sw
 		Pointer<Byte> constants;
 
 		Int clipFlags;
+		Int cullMask;
 
 		SpirvRoutine routine;
 
@@ -69,6 +70,7 @@ namespace sw
 		Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> &batch);
 		void readInput(Pointer<UInt> &batch);
 		void computeClipFlags();
+		void computeCullMask();
 		void writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> &batch);
 		void writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cacheEntry);
 	};
