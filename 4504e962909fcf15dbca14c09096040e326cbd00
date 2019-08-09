@@ -62,6 +62,24 @@
       "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73bfb833_6a7dd202",
+        "filename": "tests/VulkanUnitTests/Driver.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 17183
+      },
+      "writtenOn": "2019-08-09T15:02:39Z",
+      "side": 1,
+      "message": "I chose libvulkan because GL swiftshader also matches the name of the native loader [1]. If there is a consensus on what the name should be, I would be happy to adjust it.\n\n[1] https://cs.chromium.org/chromium/src/ui/gl/init/gl_initializer_x11.cc?rcl\u003df4d4d11198654263a5a2fff4ccfc3237aa40b9b0\u0026l\u003d42",
+      "parentUuid": "10d111f9_4d9d079b",
+      "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
