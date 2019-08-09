@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "fe9cee1e_97382885",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T13:24:22Z",
+      "side": 1,
+      "message": "Will SwiftShader be used as an ICD, or as a replacement for the Vulkan loader, or something custom?\n\nThe loader library names are strictly defined, but ICD names are arbitrary as far as I\u0027m aware. However, https://vulkan.lunarg.com/doc/view/1.0.21.0/windows/LoaderAndLayerInterface.html uses \"vk_vendora.dll\" as an example, and some IHVs adhere to this pattern (with \"lib\" prepended on Linux) so we\u0027ve been attempting to do the same. \"libvulkan_swiftshader\" could be confused to be a variant of a loader.",
+      "range": {
+        "startLine": 114,
+        "startChar": 4,
+        "endLine": 116,
+        "endChar": 59
+      },
+      "revId": "4504e962909fcf15dbca14c09096040e326cbd00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10d111f9_4d9d079b",
         "filename": "tests/VulkanUnitTests/Driver.cpp",
         "patchSetId": 1
