@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "da874317_a95458be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-09T13:01:11Z",
+      "side": 1,
+      "message": "No, that\u0027s fine. It\u0027s a very minor change. For larger changes it can be useful to file a public or private Buganizer issue that we can reference in the commit message. Can help tremendously years down the line to figure out the true intent of some code.",
+      "parentUuid": "3550b790_1eac6cb1",
+      "revId": "365f282785ac94a3bb96b0bf3b7bee29536571a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ce4d9549_5b0a33e5",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
