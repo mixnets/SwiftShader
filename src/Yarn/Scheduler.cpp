@@ -84,7 +84,6 @@ void Scheduler::bind()
 void Scheduler::unbind()
 {
     YARN_ASSERT(bound != nullptr, "No scheduler bound");
-
     std::unique_ptr<Worker> worker;
     {
         std::unique_lock<std::mutex> lock(bound->singleThreadedWorkerMutex);
@@ -109,17 +108,11 @@ Scheduler::Scheduler()
 
 Scheduler::~Scheduler()
 {
-    setWorkerThreadCount(0);
-    decltype(singleThreadedWorkers) workers;
     {
         std::unique_lock<std::mutex> lock(singleThreadedWorkerMutex);
-        std::swap(workers, singleThreadedWorkers);
+        YARN_ASSERT(singleThreadedWorkers.size() == 0, "Scheduler still bound on %d threads", int(singleThreadedWorkers.size()));
     }
-    for (auto& it : singleThreadedWorkers)
-    {
-        it.second->flush();
-        it.second->stop();
-    }
+    setWorkerThreadCount(0);
 }
 
 void Scheduler::setThreadInitializer(const std::function<void()>& func)
@@ -416,12 +409,6 @@ void Scheduler::Worker::run()
     {
     case Mode::MultiThreaded:
     {
-#if 0 // Enable to pin the worker to a physical CPU.
-        Thread::AffinityMask mask;
-        mask.set(id, true);
-        Thread::setAffinity(mask);
-#endif
-
         YARN_NAME_THREAD("Thread<%.2d> Fiber<%.2d>", int(id), Fiber::current()->id);
         {
             std::unique_lock<std::mutex> lock(work.mutex);

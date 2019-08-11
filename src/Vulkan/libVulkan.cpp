@@ -112,21 +112,15 @@ void setCPUDefaults()
 	sw::CPUID::setEnableSSE(true);
 }
 
-std::unique_ptr<yarn::Scheduler> createScheduler()
+yarn::Scheduler* getOrCreateScheduler()
 {
-	auto scheduler = new yarn::Scheduler();
+	static auto scheduler = std::unique_ptr<yarn::Scheduler>(new yarn::Scheduler());
 	scheduler->setThreadInitializer([] {
 		sw::CPUID::setFlushToZero(true);
 		sw::CPUID::setDenormalsAreZero(true);
 	});
 	scheduler->setWorkerThreadCount(std::min<size_t>(yarn::Thread::numLogicalCPUs(), 16));
-	return std::unique_ptr<yarn::Scheduler>(scheduler);
-}
-
-void bindScheduler()
-{
-	static auto scheduler = createScheduler();
-	scheduler->bind();
+	return scheduler.get();
 }
 
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
@@ -136,7 +130,6 @@ void initializeLibrary()
 	static bool doOnce = [] {
 		setReactorDefaultConfig();
 		setCPUDefaults();
-		bindScheduler();
 		return true;
 	}();
 	(void)doOnce;
@@ -566,13 +559,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		(void)queueFamilyPropertyCount; // Silence unused variable warning
 	}
 
-	if (yarn::Scheduler::get() == nullptr)
-	{
-		// Each device requires a bound scheduler.
-		bindScheduler();
-	}
-
-	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures);
+	auto scheduler = getOrCreateScheduler();
+	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures, scheduler);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator)
