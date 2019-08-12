@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a527ed2_366c15e7",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-12T13:17:28Z",
+      "side": 1,
+      "message": "Fine for now to test conformance, but we should avoid adding all this cost when it\u0027s unused.",
+      "range": {
+        "startLine": 160,
+        "startChar": 5,
+        "endLine": 160,
+        "endChar": 49
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "427c164f_142ef908",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-12T13:17:28Z",
+      "side": 1,
+      "message": "Doesn\u0027t it suffice to have just one bit be 0 (i.e. be behind one of the planes) to cull the triangle?",
+      "range": {
+        "startLine": 857,
+        "startChar": 48,
+        "endLine": 857,
+        "endChar": 52
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f0484e9_b8217c08",
+        "filename": "src/Device/Vertex.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-12T13:17:28Z",
+      "side": 1,
+      "message": "note: No need to address now, but we\u0027re going to want to trim the vertex size down to the components that are actually used, in the not too distant future.",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fada8ae0_37f237d0",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-12T13:17:28Z",
+      "side": 1,
+      "message": "Rename to getUsedCapabilities() ?",
+      "range": {
+        "startLine": 140,
+        "startChar": 19,
+        "endLine": 140,
+        "endChar": 34
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
