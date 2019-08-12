@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7dab2a62_d3dd6a6a",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-12T13:51:36Z",
+      "side": 1,
+      "message": "Completely agree.",
+      "parentUuid": "6a527ed2_366c15e7",
+      "range": {
+        "startLine": 160,
+        "startChar": 5,
+        "endLine": 160,
+        "endChar": 49
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "427c164f_142ef908",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2019-08-12T13:17:28Z",
       "side": 1,
       "message": "Doesn\u0027t it suffice to have just one bit be 0 (i.e. be behind one of the planes) to cull the triangle?",
+      "range": {
+        "startLine": 857,
+        "startChar": 48,
+        "endLine": 857,
+        "endChar": 52
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e72e8a0_377fd564",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-12T13:51:36Z",
+      "side": 1,
+      "message": "14.6. Built-In Variables:\n\n\u003e If any member of this array is assigned a negative value *for all vertices belonging to a primitive*, then the primitive is discarded before rasterization.",
+      "parentUuid": "427c164f_142ef908",
       "range": {
         "startLine": 857,
         "startChar": 48,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "e94a2782_70a7323a",
+        "filename": "src/Device/Vertex.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-12T13:51:36Z",
+      "side": 1,
+      "message": "Yes, completely agree. This is something that Chris and I have been discussing.",
+      "parentUuid": "8f0484e9_b8217c08",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fada8ae0_37f237d0",
         "filename": "src/Pipeline/VertexRoutine.cpp",
         "patchSetId": 4
@@ -91,6 +163,30 @@
       "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f0cff85_205a111a",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-12T13:51:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fada8ae0_37f237d0",
+      "range": {
+        "startLine": 140,
+        "startChar": 19,
+        "endLine": 140,
+        "endChar": 34
+      },
+      "revId": "85934d58abf55608bcae086d67bda8a7bca94f87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
