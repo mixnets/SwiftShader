@@ -193,7 +193,9 @@ namespace sw
 
 		void processPrimitiveVertices(int unit, unsigned int start, unsigned int count, unsigned int loop, int thread);
 
-		int setupTriangles(int batch, int count);
+		int setupFillTriangles(int batch, int count);
+		int setupLineTriangles(int batch, int count);
+		int setupPointTriangles(int batch, int count);
 		int setupLines(int batch, int count);
 		int setupPoints(int batch, int count);
 

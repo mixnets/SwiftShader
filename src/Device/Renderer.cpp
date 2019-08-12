@@ -274,11 +274,27 @@ namespace sw
 
 		int (Renderer::*setupPrimitives)(int batch, int count);
 
-		if(context->isDrawTriangle())
+		if(context->isDrawTriangle(false))
 		{
-			setupPrimitives = &Renderer::setupTriangles;
+			switch(context->polygonMode)
+			{
+			case VK_POLYGON_MODE_FILL:
+				setupPrimitives = &Renderer::setupFillTriangles;
+				break;
+			case VK_POLYGON_MODE_LINE:
+				setupPrimitives = &Renderer::setupLineTriangles;
+				batch /= 3;
+				break;
+			case VK_POLYGON_MODE_POINT:
+				setupPrimitives = &Renderer::setupPointTriangles;
+				batch /= 3;
+				break;
+			default:
+				UNSUPPORTED("polygon mode: %d", int(context->polygonMode));
+				return;
+			}
 		}
-		else if(context->isDrawLine())
+		else if(context->isDrawLine(false))
 		{
 			setupPrimitives = &Renderer::setupLines;
 		}
@@ -398,7 +414,7 @@ namespace sw
 			float F = viewport.maxDepth;
 			float Z = F - N;
 
-			if(context->isDrawTriangle())
+			if(context->isDrawTriangle(true))
 			{
 				N += context->depthBias;
 			}
@@ -832,7 +848,7 @@ namespace sw
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
-	int Renderer::setupTriangles(int unit, int count)
+	int Renderer::setupFillTriangles(int unit, int count)
 	{
 		Triangle *triangle = triangleBatch[unit];
 		Primitive *primitive = primitiveBatch[unit];
@@ -871,6 +887,98 @@ namespace sw
 					visible++;
 				}
 			}
+		}
+
+		return visible;
+	}
+
+	int Renderer::setupLineTriangles(int unit, int count)
+	{
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = primitiveBatch[unit];
+		int visible = 0;
+
+		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
+		SetupProcessor::State &state = draw.setupState;
+
+		const Vertex &v0 = triangle[0].v0;
+		const Vertex &v1 = triangle[0].v1;
+		const Vertex &v2 = triangle[0].v2;
+
+		float d = (v0.projected.y * v1.projected.x - v0.projected.x * v1.projected.y) * v2.projected.w +
+		          (v0.projected.x * v2.projected.y - v0.projected.y * v2.projected.x) * v1.projected.w +
+		          (v2.projected.x * v1.projected.y - v1.projected.x * v2.projected.y) * v0.projected.w;
+
+		bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? d > 0.0f : d < 0.0f;
+		if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
+		{
+			if(frontFacing) return 0;
+		}
+		if(state.cullMode & VK_CULL_MODE_BACK_BIT)
+		{
+			if(!frontFacing) return 0;
+		}
+
+		// Copy attributes
+		triangle[1].v0 = v1;
+		triangle[1].v1 = v2;
+		triangle[2].v0 = v2;
+		triangle[2].v1 = v0;
+
+		for(int i = 0; i < 3; i++)
+		{
+			if(setupLine(*primitive, *triangle, draw))
+			{
+				primitive++;
+				visible++;
+			}
+
+			triangle++;
+		}
+
+		return visible;
+	}
+
+	int Renderer::setupPointTriangles(int unit, int count)
+	{
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = primitiveBatch[unit];
+		int visible = 0;
+
+		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
+		SetupProcessor::State &state = draw.setupState;
+
+		const Vertex &v0 = triangle[0].v0;
+		const Vertex &v1 = triangle[0].v1;
+		const Vertex &v2 = triangle[0].v2;
+
+		float d = (v0.projected.y * v1.projected.x - v0.projected.x * v1.projected.y) * v2.projected.w +
+		          (v0.projected.x * v2.projected.y - v0.projected.y * v2.projected.x) * v1.projected.w +
+		          (v2.projected.x * v1.projected.y - v1.projected.x * v2.projected.y) * v0.projected.w;
+
+		bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? d > 0.0f : d < 0.0f;
+		if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
+		{
+			if(frontFacing) return 0;
+		}
+		if(state.cullMode & VK_CULL_MODE_BACK_BIT)
+		{
+			if(!frontFacing) return 0;
+		}
+
+		// Copy attributes
+		triangle[1].v0 = v1;
+		triangle[2].v0 = v2;
+
+		for(int i = 0; i < 3; i++)
+		{
+			if(setupPoint(*primitive, *triangle, draw))
+			{
+				primitive++;
+				visible++;
+			}
+
+			triangle++;
 		}
 
 		return visible;

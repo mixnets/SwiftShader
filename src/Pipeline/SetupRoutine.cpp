@@ -46,10 +46,11 @@ namespace sw
 			const bool point = state.isDrawPoint;
 			const bool line = state.isDrawLine;
 			const bool triangle = state.isDrawTriangle;
+			const bool solidTriangle = state.isDrawSolidTriangle;
 
 			const int V0 = OFFSET(Triangle,v0);
-			const int V1 = (triangle || line) ? OFFSET(Triangle,v1) : OFFSET(Triangle,v0);
-			const int V2 = triangle ? OFFSET(Triangle,v2) : (line ? OFFSET(Triangle,v1) : OFFSET(Triangle,v0));
+			const int V1 = (solidTriangle || line) ? OFFSET(Triangle,v1) : OFFSET(Triangle,v0);
+			const int V2 = solidTriangle ? OFFSET(Triangle,v2) : (line ? OFFSET(Triangle,v1) : OFFSET(Triangle,v0));
 
 			Pointer<Byte> v0 = tri + V0;
 			Pointer<Byte> v1 = tri + V1;
@@ -69,7 +70,7 @@ namespace sw
 			Int d = 1;     // Winding direction
 
 			// Culling
-			if(triangle)
+			if(solidTriangle)
 			{
 				Float x0 = Float(X[0]);
 				Float x1 = Float(X[1]);
