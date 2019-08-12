@@ -22,6 +22,30 @@
       "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83d30c70_13d002a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-12T14:02:38Z",
+      "side": 1,
+      "message": "\u003e While this is currently true for SwiftShader, we\u0027ll want to be a little careful about this and not exceed expectations of a more typical implementation\n\nThis is a new to me.\nWhat\u0027s a typical implementation? If you want to apply artificial constraints, I\u0027d argue that the user should be able to enable them, but they shouldn\u0027t be defaults.\n\n\u003e We currently \u0027swap\u0027 our swapchain by blitting, and when we start using video memory directly we may no longer be able to read from it.\n\nSure. But we don\u0027t do that yet.",
+      "parentUuid": "c4785ebf_43645362",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 59
+      },
+      "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
