@@ -48,6 +48,8 @@ namespace sw
 			bool slopeDepthBias            : 1;
 			unsigned int multiSample       : 3;   // 1, 2 or 4
 			bool rasterizerDiscard         : 1;
+			unsigned int numClipDistances  : 4; // [0 - 8]
+			unsigned int numCullDistances  : 4; // [0 - 8]
 
 			SpirvShader::InterfaceComponent gradient[MAX_INTERFACE_COMPONENTS];
 		};
