@@ -2085,7 +2085,7 @@ namespace sw
 
 	void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, const vk::DescriptorSet::Bindings &descriptorSets) const
 	{
-		EmitState state(routine, entryPoint, activeLaneMask, descriptorSets, robustBufferAccess, executionModel);
+		EmitState state(routine, entryPoint, activeLaneMask, robustBufferAccess, executionModel);
 
 		// Emit everything up to the first label
 		// TODO: Separate out dispatch of block from non-block instructions?

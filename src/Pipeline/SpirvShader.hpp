@@ -964,13 +964,11 @@ namespace sw
 			EmitState(SpirvRoutine *routine,
 					Function::ID function,
 					RValue<SIMD::Int> activeLaneMask,
-					const vk::DescriptorSet::Bindings &descriptorSets,
 					bool robustBufferAccess,
 					spv::ExecutionModel executionModel)
 				: routine(routine),
 				  function(function),
 				  activeLaneMaskValue(activeLaneMask.value),
-				  descriptorSets(descriptorSets),
 				  robustBufferAccess(robustBufferAccess),
 				  executionModel(executionModel)
 			{
@@ -1006,8 +1004,6 @@ namespace sw
 			Block::Set visited; // Blocks already built.
 			std::unordered_map<Block::Edge, RValue<SIMD::Int>, Block::Edge::Hash> edgeActiveLaneMasks;
 			std::deque<Block::ID> *pending;
-
-			const vk::DescriptorSet::Bindings &descriptorSets;
 
 			OutOfBoundsBehavior getOutOfBoundsBehavior(spv::StorageClass storageClass) const;
 
