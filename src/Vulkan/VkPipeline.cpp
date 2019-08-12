@@ -379,8 +379,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 
 	const VkPipelineRasterizationStateCreateInfo* rasterizationState = pCreateInfo->pRasterizationState;
 	if((rasterizationState->flags != 0) ||
-	   (rasterizationState->depthClampEnable != VK_FALSE) ||
-	   (rasterizationState->polygonMode != VK_POLYGON_MODE_FILL))
+	   (rasterizationState->depthClampEnable != VK_FALSE))
 	{
 		UNIMPLEMENTED("pCreateInfo->pRasterizationState settings");
 	}
@@ -388,6 +387,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	context.rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable == VK_TRUE);
 	context.cullMode = rasterizationState->cullMode;
 	context.frontFace = rasterizationState->frontFace;
+	context.polygonMode = rasterizationState->polygonMode;
 	context.depthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasConstantFactor : 0.0f;
 	context.slopeDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasSlopeFactor : 0.0f;
 

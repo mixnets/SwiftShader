@@ -41,6 +41,7 @@ namespace sw
 			bool isDrawPoint               : 1;
 			bool isDrawLine                : 1;
 			bool isDrawTriangle            : 1;
+			bool isDrawSolidTriangle       : 1;
 			bool interpolateZ              : 1;
 			bool interpolateW              : 1;
 			VkFrontFace frontFace          : BITS(VK_FRONT_FACE_MAX_ENUM);

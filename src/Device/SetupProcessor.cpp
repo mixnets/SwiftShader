@@ -69,9 +69,10 @@ namespace sw
 
 		bool vPosZW = (context->pixelShader && context->pixelShader->hasBuiltinInput(spv::BuiltInFragCoord));
 
-		state.isDrawPoint = context->isDrawPoint();
-		state.isDrawLine = context->isDrawLine();
-		state.isDrawTriangle = context->isDrawTriangle();
+		state.isDrawPoint = context->isDrawPoint(false);
+		state.isDrawLine = context->isDrawLine(false);
+		state.isDrawTriangle = context->isDrawTriangle(false);
+		state.isDrawSolidTriangle = context->isDrawTriangle(true);
 		state.interpolateZ = context->depthBufferActive() || vPosZW;
 		state.interpolateW = context->pixelShader != nullptr;
 		state.frontFace = context->frontFace;
