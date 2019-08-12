@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b9d0134_2d719fb0",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-08-12T14:59:00Z",
+      "side": 1,
+      "message": "There should *always* be a vertex shader.",
+      "revId": "82c1fec2650eedc1653acbc38d292891185afb5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
