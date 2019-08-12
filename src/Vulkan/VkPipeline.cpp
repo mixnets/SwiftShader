@@ -378,8 +378,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 
 	const VkPipelineRasterizationStateCreateInfo* rasterizationState = pCreateInfo->pRasterizationState;
 	if((rasterizationState->flags != 0) ||
-	   (rasterizationState->depthClampEnable != VK_FALSE) ||
-	   (rasterizationState->polygonMode != VK_POLYGON_MODE_FILL))
+	   (rasterizationState->depthClampEnable != VK_FALSE))
 	{
 		UNIMPLEMENTED("pCreateInfo->pRasterizationState settings");
 	}
