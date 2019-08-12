@@ -43,9 +43,9 @@ namespace sw
 
 		void init();
 
-		bool isDrawPoint() const;
-		bool isDrawLine() const;
-		bool isDrawTriangle() const;
+		bool isDrawPoint(bool polygonModeAware) const;
+		bool isDrawLine(bool polygonModeAware) const;
+		bool isDrawTriangle(bool polygonModeAware) const;
 
 		bool depthWriteActive() const;
 		bool depthBufferActive() const;
@@ -70,6 +70,7 @@ namespace sw
 		// Pixel processor states
 		VkCullModeFlags cullMode;
 		VkFrontFace frontFace;
+		VkPolygonMode polygonMode;
 
 		float depthBias;
 		float slopeDepthBias;
