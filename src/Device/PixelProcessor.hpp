@@ -39,6 +39,9 @@ namespace sw
 
 			uint64_t shaderID;
 
+			unsigned int numClipDistances;
+			unsigned int numCullDistances;
+
 			VkCompareOp depthCompareMode;
 			bool depthWriteEnable;
 			bool quadLayoutDepthBuffer;
