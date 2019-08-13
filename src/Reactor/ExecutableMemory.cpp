@@ -16,6 +16,10 @@
 
 #include "Debug.hpp"
 
+#if defined(LINUX_ENABLE_NAMED_MMAP)
+#include "System/MemFdLinux.hpp"
+#endif
+
 #if defined(_WIN32)
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN
@@ -90,38 +94,13 @@ void *allocateRaw(size_t bytes, size_t alignment)
 }
 
 #if defined(LINUX_ENABLE_NAMED_MMAP)
-// Create a file descriptor for anonymous memory with the given
-// name. Returns -1 on failure.
-// TODO: remove once libc wrapper exists.
-int memfd_create(const char* name, unsigned int flags)
-{
-	#if __aarch64__
-	#define __NR_memfd_create 279
-	#elif __arm__
-	#define __NR_memfd_create 279
-	#elif __powerpc64__
-	#define __NR_memfd_create 360
-	#elif __i386__
-	#define __NR_memfd_create 356
-	#elif __x86_64__
-	#define __NR_memfd_create 319
-	#endif /* __NR_memfd_create__ */
-	#ifdef __NR_memfd_create
-		// In the event of no system call this returns -1 with errno set
-		// as ENOSYS.
-		return syscall(__NR_memfd_create, name, flags);
-	#else
-		return -1;
-	#endif
-}
-
 // Returns a file descriptor for use with an anonymous mmap, if
 // memfd_create fails, -1 is returned. Note, the mappings should be
 // MAP_PRIVATE so that underlying pages aren't shared.
 int anonymousFd()
 {
-	static int fd = memfd_create("SwiftShader JIT", 0);
-	return fd;
+	static MemFdLinux memfd("SwiftShader JIT", 0);
+	return memfd.fd;
 }
 
 // Ensure there is enough space in the "anonymous" fd for length.
