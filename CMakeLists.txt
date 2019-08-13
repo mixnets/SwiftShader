@@ -1793,6 +1793,8 @@ elseif(LINUX)
     )
 
     list(APPEND VULKAN_LIST
+        ${SOURCE_DIR}/System/MemFdLinux.cpp
+        ${SOURCE_DIR}/System/MemFdLinux.hpp
         ${SOURCE_DIR}/WSI/libX11.cpp
         ${SOURCE_DIR}/WSI/libX11.hpp
         ${SOURCE_DIR}/WSI/XlibSurfaceKHR.cpp
