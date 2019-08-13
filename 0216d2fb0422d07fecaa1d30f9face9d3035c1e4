@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23f5ff65_91f9eac5",
+        "filename": "src/Yarn/Scheduler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-13T20:32:33Z",
+      "side": 1,
+      "message": "nit: This would potentially perform better with exponential backoff.",
+      "range": {
+        "startLine": 450,
+        "startChar": 8,
+        "endLine": 450,
+        "endChar": 73
+      },
+      "revId": "0216d2fb0422d07fecaa1d30f9face9d3035c1e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
