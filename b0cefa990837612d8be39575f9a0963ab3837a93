@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae3cb6f_9abc9658",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-13T18:08:57Z",
+      "side": 1,
+      "message": "Since this doesn\u0027t appear to affect prior functionality in any way I think it\u0027s fine to land this if it helps Fuchsia develop features and we update to the canonical Khronos headers once it\u0027s stabilized and upstreamed. I just want to avoid having a SwiftShader-specific fork indefinitely.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 55
+      },
+      "revId": "b0cefa990837612d8be39575f9a0963ab3837a93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
