@@ -22,6 +22,30 @@
       "revId": "7f3d33707fb0884d6f5c761df5296f1823e44279",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6bdf6aa0_e4f91e70",
+        "filename": "src/Yarn/Utils.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-13T16:57:11Z",
+      "side": 1,
+      "message": "This is actually intentional. You don\u0027t really want to yield if you don\u0027t have to (it will always come with overhead costs), so to decrease the chance of the main fiber from yielding, we schedule all the work first and keep the main-fiber work \u0027full-fat\u0027.",
+      "parentUuid": "35b4339d_7cdcfed3",
+      "range": {
+        "startLine": 40,
+        "startChar": 25,
+        "endLine": 40,
+        "endChar": 71
+      },
+      "revId": "7f3d33707fb0884d6f5c761df5296f1823e44279",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
