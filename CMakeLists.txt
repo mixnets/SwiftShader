@@ -1760,6 +1760,12 @@ file(GLOB_RECURSE VULKAN_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
 
+if (LINUX OR ANDROID)
+    list(APPEND VULKAN_LIST
+        ${SOURCE_DIR}/System/Linux/MemFd.cpp
+	${SOURCE_DIR}/System/Linux/MemFd.hpp)
+endif(LINUX OR ANDROID)
+
 file(GLOB YARN_FULL_LIST
     ${YARN_DIR}/*.cpp
     ${YARN_DIR}/*.hpp
