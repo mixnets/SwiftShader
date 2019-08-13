@@ -27,7 +27,12 @@ DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo* pCreateInfo, void* mem) :
 
 void DeviceMemory::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	vk::deallocate(buffer, DEVICE_MEMORY);
+	deallocateExternal();
+
+	if (buffer)
+	{
+		vk::deallocate(buffer, DEVICE_MEMORY);
+	}
 }
 
 size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo* pCreateInfo)
@@ -38,7 +43,13 @@ size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo* p
 
 VkResult DeviceMemory::allocate()
 {
-	if(!buffer)
+	VkResult result = allocateExternal();
+	if (result != VK_SUCCESS)
+	{
+		return result;
+	}
+
+	if (!buffer)
 	{
 		buffer = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY);
 	}
@@ -69,5 +80,12 @@ void* DeviceMemory::getOffsetPointer(VkDeviceSize pOffset) const
 
 	return reinterpret_cast<char*>(buffer) + pOffset;
 }
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_NONE
+
+VkResult DeviceMemory::allocateExternal() { return VK_SUCCESS; }
+void DeviceMemory::deallocateExternal() {}
+
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_NONE
 
 } // namespace vk

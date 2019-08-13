@@ -15,7 +15,12 @@
 #ifndef VK_DEVICE_MEMORY_HPP_
 #define VK_DEVICE_MEMORY_HPP_
 
+#include "VkConfig.h"
 #include "VkObject.hpp"
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+#include "System/MemFdLinux.hpp"
+#endif
 
 namespace vk
 {
@@ -24,6 +29,11 @@ class DeviceMemory : public Object<DeviceMemory, VkDeviceMemory>
 {
 public:
 	DeviceMemory(const VkMemoryAllocateInfo* pCreateInfo, void* mem);
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+	VkResult importMemoryFd(int fd);
+	int exportMemoryFd() const;
+#endif
 
 	static size_t ComputeRequiredAllocationSize(const VkMemoryAllocateInfo* pCreateInfo);
 
@@ -35,6 +45,17 @@ public:
 	uint32_t getMemoryTypeIndex() const { return memoryTypeIndex; }
 
 private:
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+    MemFdLinux memfd;
+#endif
+
+	// If importMemoryXXX() was called before allocate(), this should map the
+	// corresponding external memory buffer.
+	VkResult allocateExternal();
+
+	// Unmap external memory buffer if needed, and close underlying handle.
+	void deallocateExternal();
+
 	void*        buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t     memoryTypeIndex = 0;

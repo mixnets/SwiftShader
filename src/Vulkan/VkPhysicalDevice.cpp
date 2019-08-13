@@ -20,6 +20,70 @@
 #include <limits>
 #include <cstring>
 
+namespace
+{
+
+void setExternalMemoryProperties(const VkExternalMemoryHandleTypeFlagBits handleType,
+								 VkExternalMemoryProperties* properties)
+{
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+	if (handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR)
+	{
+		properties->compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
+		properties->exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
+		properties->externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT |
+											 VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
+		return;
+	}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	if (handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+	{
+		properties->compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA;
+		properties->exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA;
+		properties->externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT |
+											 VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
+		return;
+	}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+
+	properties->compatibleHandleTypes = 0;
+	properties->exportFromImportedHandleTypes = 0;
+	properties->externalMemoryFeatures = 0;
+}
+
+void setExternalSemaphoreProperties(const VkExternalSemaphoreHandleTypeFlagBits handleType,
+									VkExternalSemaphoreProperties* properties)
+{
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE == SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+	if (handleType == VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR) {
+		properties->compatibleHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
+		properties->exportFromImportedHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
+		properties->externalSemaphoreFeatures = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT |
+												VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT;
+		return;
+	}
+#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	if (handleType == VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA)
+	{
+		properties->compatibleHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA;
+		properties->exportFromImportedHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA;
+		properties->externalSemaphoreFeatures = VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT |
+												VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT;
+		return;
+	}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+
+	properties->compatibleHandleTypes = 0;
+	properties->exportFromImportedHandleTypes = 0;
+	properties->externalSemaphoreFeatures = 0;
+}
+
+}  // namespace
+
 namespace vk
 {
 
@@ -319,9 +383,7 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupProperties* propertie
 
 void PhysicalDevice::getProperties(const VkExternalMemoryHandleTypeFlagBits* handleType, VkExternalImageFormatProperties* properties) const
 {
-	properties->externalMemoryProperties.compatibleHandleTypes = 0;
-	properties->externalMemoryProperties.exportFromImportedHandleTypes = 0;
-	properties->externalMemoryProperties.externalMemoryFeatures = 0;
+	setExternalMemoryProperties(*handleType, &properties->externalMemoryProperties);
 }
 
 void PhysicalDevice::getProperties(VkSamplerYcbcrConversionImageFormatProperties* properties) const
@@ -338,9 +400,9 @@ void PhysicalDevice::getProperties(VkPhysicalDevicePresentationPropertiesANDROID
 
 void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalBufferInfo* pExternalBufferInfo, VkExternalBufferProperties* pExternalBufferProperties) const
 {
-	pExternalBufferProperties->externalMemoryProperties.compatibleHandleTypes = 0;
-	pExternalBufferProperties->externalMemoryProperties.exportFromImportedHandleTypes = 0;
-	pExternalBufferProperties->externalMemoryProperties.externalMemoryFeatures = 0;
+	setExternalMemoryProperties(
+			pExternalBufferInfo->handleType,
+			&pExternalBufferProperties->externalMemoryProperties);
 }
 
 void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalFenceInfo* pExternalFenceInfo, VkExternalFenceProperties* pExternalFenceProperties) const
@@ -352,9 +414,7 @@ void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalFenceInfo* pExt
 
 void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalSemaphoreInfo* pExternalSemaphoreInfo, VkExternalSemaphoreProperties* pExternalSemaphoreProperties) const
 {
-	pExternalSemaphoreProperties->compatibleHandleTypes = 0;
-	pExternalSemaphoreProperties->exportFromImportedHandleTypes = 0;
-	pExternalSemaphoreProperties->externalSemaphoreFeatures = 0;
+	setExternalSemaphoreProperties(pExternalSemaphoreInfo->handleType, pExternalSemaphoreProperties);
 }
 
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const

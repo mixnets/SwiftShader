@@ -15,7 +15,12 @@
 #ifndef VK_SEMAPHORE_HPP_
 #define VK_SEMAPHORE_HPP_
 
+#include "VkConfig.h"
 #include "VkObject.hpp"
+
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE == SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+#include "System/MemFdLinux.hpp"
+#endif
 
 namespace vk
 {
@@ -23,31 +28,31 @@ namespace vk
 class Semaphore : public Object<Semaphore, VkSemaphore>
 {
 public:
-	Semaphore(const VkSemaphoreCreateInfo* pCreateInfo, void* mem) {}
+	Semaphore(const VkSemaphoreCreateInfo* pCreateInfo, void* mem);
+	~Semaphore();
 
-	static size_t ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo* pCreateInfo)
-	{
-		return 0;
-	}
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE == SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+	class MappedSemaphore;
 
-	void wait()
-	{
-		// Semaphores are noop for now
-	}
+	// Import an external semaphore handle. If |fd| is -1, the function will
+	// allocate a new external semaphore instead of importing it.
+	VkResult importSemaphoreFd(int fd);
 
-	void wait(const VkPipelineStageFlags& flag)
-	{
-		// VkPipelineStageFlags is the pipeline stage at which the semaphore wait will occur
+	// Return a copy of the external semaphore's file descriptor.
+	int exportSemaphoreFd() const;
+#endif
 
-		// Semaphores are noop for now
-	}
+	static size_t ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo* pCreateInfo);
 
-	void signal()
-	{
-		// Semaphores are noop for now
-	}
+	void wait();
+	void wait(const VkPipelineStageFlags& flag);
+	void signal();
 
 private:
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE == SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+    MemFdLinux memfd;
+	MappedSemaphore* semaphore = nullptr;
+#endif
 };
 
 static inline Semaphore* Cast(VkSemaphore object)

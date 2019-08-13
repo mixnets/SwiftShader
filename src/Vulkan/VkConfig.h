@@ -78,6 +78,30 @@ enum
 	MAX_POINT_SIZE = 1,		// Large points are not supported. If/when we turn this on, must be >= 64.
 };
 
-}
+// External memory and semaphore support.
+// Define SWIFTSHADER_EXTERNAL_<OBJECT>_TYPE as a macro constant that determines
+// the platform-specific implementation type.
+
+#define SWIFTSHADER_EXTERNAL_MEMORY_NONE        0
+#define SWIFTSHADER_EXTERNAL_MEMORY_MEMFD       1
+#define SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO  2
+
+#define SWIFTSHADER_EXTERNAL_SEMAPHORE_NONE           0
+#define SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD          1
+#define SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE  2
+
+#if VK_USE_PLATFORM_XLIB_KHR || VK_USE_PLATFORM_ANDROID_KHR
+// On Linux and Android, external memory and semaphores can be implemented using a memfd regions.
+#  define SWIFTSHADER_EXTERNAL_MEMORY_TYPE    SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+#  define SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE SWIFTSHADER_EXTERNAL_SEMAPHORE_MEMFD
+#elif VK_USE_PLATFORM_FUCHSIA
+// On Fuchsia, implement external memory with a Zircon VMO, and semaphore with a Zircon event.
+#  define SWIFTSHADER_EXTERNAL_MEMORY_TYPE    SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+#  define SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
+#else
+#  define SWIFTSHADER_EXTERNAL_MEMORY_TYPE    SWIFTSHADER_EXTERNAL_MEMORY_NONE
+#  define SWIFTSHADER_EXTERNAL_SEMAPHORE_TYPE SWIFTSHADER_EXTERNAL_SEMAPHORE_NONE
+#endif
+};
 
 #endif // VK_CONFIG_HPP_

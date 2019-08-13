@@ -103,6 +103,22 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "resource.h",
   ]
 
+  if (is_linux || is_android) {
+    sources += [
+      "VkDeviceMemoryMemFd.cpp",
+      "VkSemaphoreMemFd.cpp",
+    ]
+  } else if (is_fuchsia) {
+    sources += [
+      "VkDeviceMemoryFuchsia.cpp",
+      "VkSemaphoreFuchsia.cpp",
+    ]
+  } else {
+    sources += [
+      "VkSemaphore.cpp",
+    ]
+  }
+
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
   output_name = "libvulkan"

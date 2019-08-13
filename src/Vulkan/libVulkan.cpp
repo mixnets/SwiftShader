@@ -655,7 +655,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 {
 	TRACE("(VkDevice device = %p, const VkMemoryAllocateInfo* pAllocateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkDeviceMemory* pMemory = %p)",
 		    device, pAllocateInfo, pAllocator, pMemory);
-
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+    int memory_fd = -1;
+	bool import_fd = false;
+#endif
 	const VkBaseInStructure* allocationInfo = reinterpret_cast<const VkBaseInStructure*>(pAllocateInfo->pNext);
 	while(allocationInfo)
 	{
@@ -670,6 +673,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			// This extension controls on which physical devices the memory gets allocated.
 			// SwiftShader only has a single physical device, so this extension does nothing in this case.
 			break;
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR: {
+			const auto* importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(allocationInfo);
+			import_fd = true;
+			if (importInfo->handleType != 0)
+			{
+				ASSERT(importInfo->handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT);
+				memory_fd = importInfo->fd;
+			}
+			break;
+		}
+#endif
 		default:
 			UNIMPLEMENTED("allocationInfo->sType");
 			break;
@@ -683,7 +698,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 	{
 		return result;
 	}
-
+#if SWIFTSHADER_EXTERNAL_MEMORY_TYPE == SWIFTSHADER_EXTERNAL_MEMORY_MEMFD
+	if (import_fd)
+	{
+		result = vk::Cast(*pMemory)->importMemoryFd(memory_fd);
+		if (result != VK_SUCCESS)
+		{
+			return result;
+		}
+	}
+#endif
 	// Make sure the memory allocation is done now so that OOM errors can be checked now
 	result = vk::Cast(*pMemory)->allocate();
 	if(result != VK_SUCCESS)
