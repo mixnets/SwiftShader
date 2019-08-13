@@ -22,6 +22,30 @@
       "revId": "b0cefa990837612d8be39575f9a0963ab3837a93",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7c60c6a_a6b71c90",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:14:48Z",
+      "side": 1,
+      "message": "Oh, that\u0027s very kind, I was not expecting this! But I suspect this is going to be more painful than necessary. What about putting all the extra definitions in a separate header (e.g. vulkan/vulkan_fuchsia_extras.h) then?\n\nThis should make updating the rest of the headers in the future much easier.",
+      "parentUuid": "1ae3cb6f_9abc9658",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 55
+      },
+      "revId": "b0cefa990837612d8be39575f9a0963ab3837a93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
