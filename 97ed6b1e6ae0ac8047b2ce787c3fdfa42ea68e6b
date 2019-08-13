@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c8cfe78_d687b7f8",
+        "filename": "src/Yarn/Defer.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-13T20:33:05Z",
+      "side": 1,
+      "message": "note: Prevents multiple defer() per line, but that\u0027s probably a good thing. __COUNTER__ is a semi-portable way allow it.",
+      "range": {
+        "startLine": 40,
+        "startChar": 42,
+        "endLine": 40,
+        "endChar": 50
+      },
+      "revId": "97ed6b1e6ae0ac8047b2ce787c3fdfa42ea68e6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
