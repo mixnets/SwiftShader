@@ -647,6 +647,7 @@ cc_defaults {
         "System/Configurator.cpp",
         "System/Half.cpp",
         "System/Math.cpp",
+        "System/MemFdLinux.cpp",
         "System/Memory.cpp",
         "System/Socket.cpp",
         "System/Timer.cpp",

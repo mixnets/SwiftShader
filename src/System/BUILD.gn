@@ -33,6 +33,12 @@ swiftshader_source_set("System") {
     "Timer.cpp",
     "Timer.hpp",
   ]
+  if (is_linux || is_android) {
+    sources += [
+      "MemFdLinux.cpp",
+      "MemFdLinux.hpp",
+    ]
+  }
 
   include_dirs = [ ".." ]
 }
