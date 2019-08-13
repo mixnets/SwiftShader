@@ -1,0 +1,98 @@
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include "MemFd.hpp"
+#include "../Debug.hpp"
+
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+
+#define MFD_CLOEXEC       0x0001U
+
+#if __aarch64__
+#define __NR_memfd_create 279
+#elif __arm__
+#define __NR_memfd_create 279
+#elif __powerpc64__
+#define __NR_memfd_create 360
+#elif __i386__
+#define __NR_memfd_create 356
+#elif __x86_64__
+#define __NR_memfd_create 319
+#endif /* __NR_memfd_create__ */
+
+namespace linux
+{
+
+MemFd::~MemFd()
+{
+	close();
+}
+
+void MemFd::importFd(int fd)
+{
+	close();
+	this->fd = fd;
+}
+
+int MemFd::exportFd() const
+{
+	if (fd < 0)
+	{
+		return -1;
+	}
+
+	// Duplicate file descriptor while setting the clo-on-exec flag (Linux specific).
+	return ::fcntl(fd, F_DUPFD_CLOEXEC, 0);
+}
+
+bool MemFd::allocate(const char* name, size_t size)
+{
+	close();
+
+#ifndef __NR_memfd_create
+	sw::trace("memfd_create() not supported on this system!");
+	return false;
+#else
+	// In the event of no system call this returns -1 with errno set
+	// as ENOSYS.
+	fd = syscall(__NR_memfd_create, name, MFD_CLOEXEC);
+	if (fd < 0)
+	{
+		sw::trace("memfd_create() returned %d: %s", errno, strerror(errno));
+		return false;
+	}
+	// Ensure there is enough space.
+	if (size > 0 && ::ftruncate(fd, size) < 0)
+	{
+		sw::trace("ftruncate() %lld returned %d: %s", (long long)size, errno, strerror(errno));
+		::close(fd);
+		fd = -1;
+		return false;
+	}
+#endif
+	return true;
+}
+
+void MemFd::close()
+{
+	if (fd != -1)
+	{
+		::close(fd);
+	}
+}
+
+}  // namespace linux
