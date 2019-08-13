@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f0c6d05c_e3ed5e0a",
+        "filename": "src/Yarn/Pool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-13T20:31:50Z",
+      "side": 1,
+      "message": "nit: We should probably be able to specify both a static upper limit on the pool size and a dynamic actual size. The legacy Renderer supports up to 16 clusters but when there\u0027s only N cores it\u0027s limited to that number. This reduces the number of pending tasks and thus task switching overhead is lower and data locality improved.\n\nAnyway, that\u0027s something that can be added later.",
+      "range": {
+        "startLine": 217,
+        "startChar": 22,
+        "endLine": 217,
+        "endChar": 27
+      },
+      "revId": "39c7e88de9c1dd020bc0e713b7fbd74f9c6e9c06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
