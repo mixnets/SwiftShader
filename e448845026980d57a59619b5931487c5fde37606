@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9be74b76_01c46e28",
+        "filename": "src/Yarn/ConditionVariable.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-13T20:32:05Z",
+      "side": 1,
+      "message": "nit: I suspect this could easily be exceeded. Perhaps make it a template parameter of ConditionVariable too (with 4 as default)?\n\nAnyway, nothing wrong with this as-is and can be tuned later.",
+      "range": {
+        "startLine": 49,
+        "startChar": 42,
+        "endLine": 49,
+        "endChar": 43
+      },
+      "revId": "e448845026980d57a59619b5931487c5fde37606",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
