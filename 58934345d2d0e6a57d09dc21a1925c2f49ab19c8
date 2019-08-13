@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67b64ab4_e1494362",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:03:29Z",
+      "side": 1,
+      "message": "Hmm,, the Fuchsia bits should not be in this CL but a future one, I\u0027ll remove them. However one question for the reviewers, what would be the recommended way to test at compile time in #ifdef statements for the implementation type.\n\nFor now, the code does something like:\n\n  #if SWIFTSHADER_EXTERNAL_MEMORY_TYPE \u003d\u003d SWIFTSHADER_EXTERNAL_MEMORY_MEMFD\n  ...\n  #endif  // SWIFTSHADER_EXTERNAL_MEMORY_TYPE\n\nAnd there is also a test like this in VkDeviceMemory.cpp:\n\n  #if SWIFTSHADER_EXTERNAL_MEMORY_TYPE \u003d\u003d SWIFTSHADER_EXTERNAL_MEMORY_NONE\n  ...\n  #endif\n\nAlternatives would be to only define the SWIFTSHADER_EXTERNAL_MEMORY_XXX macros when the corresponding implementation is defined. Let me know your preferences.",
+      "revId": "58934345d2d0e6a57d09dc21a1925c2f49ab19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b6f273a_97adcb7f",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:03:29Z",
+      "side": 1,
+      "message": "Should probably be called importOrCreateMemoryFd() for clarity.",
+      "revId": "58934345d2d0e6a57d09dc21a1925c2f49ab19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2279efa_aca4b9d2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:03:29Z",
+      "side": 1,
+      "message": "I\u0027m not sure about formatting. Do you use a tool like clang-format to deal with this?",
+      "revId": "58934345d2d0e6a57d09dc21a1925c2f49ab19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a73969ba_700a4e1b",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:03:29Z",
+      "side": 1,
+      "message": "Same here: should be importOrCreateSemaphoreFd() for clarity.",
+      "revId": "58934345d2d0e6a57d09dc21a1925c2f49ab19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cab246f1_7bab0919",
+        "filename": "src/Vulkan/VkSemaphoreMemFd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-08-13T18:03:29Z",
+      "side": 1,
+      "message": "Question: shall we implement non-regular semaphores as well for everything to work?",
+      "revId": "58934345d2d0e6a57d09dc21a1925c2f49ab19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
