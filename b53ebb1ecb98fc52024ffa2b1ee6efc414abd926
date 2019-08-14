@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2ae430e_07aedb6c",
+        "filename": "src/System/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-14T14:00:59Z",
+      "side": 1,
+      "message": "I\u0027d like to work towards being able to use a wildcard to build all source files under System instead of listing them explicitly, by placing platform-specific files in a subdirectory. So if you could put these in the src/System/Linux subdirectory that would be great. Also would allow dropping Linux from the file names.",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 23
+      },
+      "revId": "b53ebb1ecb98fc52024ffa2b1ee6efc414abd926",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
