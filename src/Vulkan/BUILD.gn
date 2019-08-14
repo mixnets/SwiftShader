@@ -116,6 +116,10 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     sources += [
       "VkSemaphoreImplWin32.hpp",
     ]
+  } else if (is_linux || is_android) {
+    sources += [
+      "VkSemaphoreImplLinux.hpp",
+    ]
   } else {
     sources += [
       "VkSemaphoreImplPosix.hpp",

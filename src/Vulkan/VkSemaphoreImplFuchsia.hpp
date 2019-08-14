@@ -29,7 +29,10 @@ public:
 	Impl(const VkSemaphoreCreateInfo* pCreateInfo)
 	{
 		// TODO: external semaphore support!
-		(void)pCreateInfo;
+		if (pCreateInfo->pNext)
+		{
+			UNIMPLEMENTED("pCreateInfo->pNext");
+		}
 
 		zx_status_t status = zx_event_create(0, &handle);
 		if (status != ZX_OK)

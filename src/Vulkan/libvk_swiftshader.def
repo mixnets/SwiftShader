@@ -187,6 +187,9 @@ EXPORTS
 	vkGetPhysicalDeviceExternalFencePropertiesKHR
 	; VK_KHR_external_memory_capabilities
 	vkGetPhysicalDeviceExternalBufferPropertiesKHR
+	; VK_KHR_external_semaphore_fd
+	vkGetSemaphoreFdKHR
+	vkImportSemaphoreFdKHR
 	; VK_KHR_external_semaphore_capabilities
 	vkGetPhysicalDeviceExternalSemaphorePropertiesKHR
 	; VK_KHR_get_memory_requirements2

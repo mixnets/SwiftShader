@@ -27,7 +27,10 @@ public:
 	Impl(const VkSemaphoreCreateInfo* pCreateInfo)
 	{
 		// TODO: external semaphore support!
-		(void)pCreateInfo;
+		if (pCreateInfo->pNext)
+		{
+			UNIMPLEMENTED("pCreateInfo->pNext");
+		}
 
 		handle = CreateSemaphore(NULL, 0, 1, NULL);
 	}
