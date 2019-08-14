@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "57c92f7d_90688eae",
+        "filename": "src/Yarn/Containers.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T06:58:28Z",
+      "side": 1,
+      "message": "See the comments at starting at line 15. The TL;DR is that unlike all other types in this library, yarn::containers::vector is not thread safe, and I don\u0027t want to give the illusion that it is.\nI considered putting this in a \u0027details\u0027 namespace (https://stackoverflow.com/questions/26546265/what-is-the-detail-namespace-commonly-used-for), but decided that it was useful to expose.",
+      "parentUuid": "0564a4d8_816500a9",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 22
+      },
+      "revId": "d1aced7ee3c57985fd0d8b14486c197892adecd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "22c6a152_594d3910",
         "filename": "src/Yarn/Containers.hpp",
         "patchSetId": 11
@@ -36,6 +60,30 @@
       "writtenOn": "2019-08-13T20:32:14Z",
       "side": 1,
       "message": "nit: This is very similar to llvm::SmallVector, so perhaps to better discern it from std::vector, especially when removing the namespace as suggested above, it could be renamed to yarn::small_vector",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 12
+      },
+      "revId": "d1aced7ee3c57985fd0d8b14486c197892adecd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d50daaeb_24d71a03",
+        "filename": "src/Yarn/Containers.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T06:58:28Z",
+      "side": 1,
+      "message": "Yes, it is heavily inspired by SmallVector, I just never liked its name.\nI could default BASE_CAPACITY to 4 or 8, and then it could be treated like yet-another-vector-class.",
+      "parentUuid": "22c6a152_594d3910",
       "range": {
         "startLine": 43,
         "startChar": 0,
