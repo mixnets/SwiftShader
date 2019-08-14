@@ -38,6 +38,11 @@ public:
 	VkResult importFd(int fd);
 #endif
 
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
+	zx_handle_t exportHandle() const;
+	VkResult importHandle(zx_handle_t handle);
+#endif
+
 private:
 	class Impl;
 
