@@ -98,6 +98,8 @@ private:
 	VkImageTiling            tiling = VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags        usage = (VkImageUsageFlags)0;
 	Image*                   decompressedImage = nullptr;
+
+	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };
 
 static inline Image* Cast(VkImage object)

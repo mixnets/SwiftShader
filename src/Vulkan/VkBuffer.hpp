@@ -49,6 +49,8 @@ private:
 	VkSharingMode         sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t              queueFamilyIndexCount = 0;
 	uint32_t*             queueFamilyIndices = nullptr;
+
+	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };
 
 static inline Buffer* Cast(VkBuffer object)
