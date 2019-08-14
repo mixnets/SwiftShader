@@ -233,6 +233,9 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
 	{ VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_FD_SPEC_VERSION },
 #endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+	{ VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_MEMORY_FD_SPEC_VERSION },
+#endif
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
 	{ VK_FUCHSIA_EXTERNAL_SEMAPHORE_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_SEMAPHORE_SPEC_VERSION },
 #endif
@@ -779,8 +782,26 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			// This extension controls on which physical devices the memory gets allocated.
 			// SwiftShader only has a single physical device, so this extension does nothing in this case.
 			break;
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR: {
+			auto* importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(allocationInfo);
+			if (importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			{
+				UNIMPLEMENTED("importInfo->handleType %u", importInfo->handleType);
+			}
+			break;
+		}
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO: {
+			auto* exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(allocationInfo);
+			if (exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			{
+				UNIMPLEMENTED("exportInfo->handleTypes %u", exportInfo->handleTypes);
+			}
+			break;
+		}
+#endif
 		default:
-			UNIMPLEMENTED("allocationInfo->sType");
+			UNIMPLEMENTED("allocationInfo->sType %u", allocationInfo->sType);
 			break;
 		}
 
@@ -811,6 +832,44 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, 
 
 	vk::destroy(memory, pAllocator);
 }
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* getFdInfo, int* pFd)
+{
+	TRACE("(VkDevice device = %p, const VkMemoryGetFdInfoKHR* getFdInfo = %p, int* pFd = %p",
+		  device, getFdInfo, pFd);
+
+	if (getFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("pGetFdInfo->handleType");
+	}
+	return vk::Cast(getFdInfo->memory)->exportFd(pFd);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR* pMemoryFdProperties)
+{
+	TRACE("(VkDevice device = %p, VkExternalMemoryHandleTypeFlagBits handleType = %x, int fd = %d, VkMemoryFdPropertiesKHR* pMemoryFdProperties = %p)",
+		  device, handleType, fd, pMemoryFdProperties);
+
+	if (handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("handleType");
+	}
+
+	if (fd < 0)
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+
+	const VkPhysicalDeviceMemoryProperties& memoryProperties =
+			vk::Cast(device)->getPhysicalDevice()->getMemoryProperties();
+
+	// All SwiftShader memory types support this!
+	pMemoryFdProperties->memoryTypeBits = (1U << memoryProperties.memoryTypeCount) - 1U;
+
+	return VK_SUCCESS;
+}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
 {
@@ -869,9 +928,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(VkDevice device, VkBuffer buff
 	TRACE("(VkDevice device = %p, VkBuffer buffer = %p, VkDeviceMemory memory = %p, VkDeviceSize memoryOffset = %d)",
 		    device, static_cast<void*>(buffer), static_cast<void*>(memory), int(memoryOffset));
 
-	vk::Cast(buffer)->bind(vk::Cast(memory), memoryOffset);
-
-	return VK_SUCCESS;
+	return vk::Cast(buffer)->bind(vk::Cast(memory), memoryOffset);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset)
@@ -879,9 +936,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(VkDevice device, VkImage image,
 	TRACE("(VkDevice device = %p, VkImage image = %p, VkDeviceMemory memory = %p, VkDeviceSize memoryOffset = %d)",
 		    device, static_cast<void*>(image), static_cast<void*>(memory), int(memoryOffset));
 
-	vk::Cast(image)->bind(vk::Cast(memory), memoryOffset);
-
-	return VK_SUCCESS;
+	return vk::Cast(image)->bind(vk::Cast(memory), memoryOffset);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements(VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements)
@@ -1141,9 +1196,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 	TRACE("(VkDevice device = %p, const VkBufferCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkBuffer* pBuffer = %p)",
 		    device, pCreateInfo, pAllocator, pBuffer);
 
-	if(pCreateInfo->pNext)
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while (nextInfo)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext");
+		switch (nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO:
+			// Do nothing. Should be handled by vk::Buffer::Create().
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::Buffer::Create(pAllocator, pCreateInfo, pBuffer);
@@ -1221,6 +1285,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		}
 		break;
 #endif
+		case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
+			// Do nothing. Should be handled by vk::Image::Create()
+			break;
 		case VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR:
 			/* Do nothing. We don't actually need the swapchain handle yet; we'll do all the work in vkBindImageMemory2. */
 			break;
@@ -2237,6 +2304,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindBufferMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
 
+	VkResult ret = VK_SUCCESS;
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		if(pBindInfos[i].pNext)
@@ -2244,10 +2312,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 			UNIMPLEMENTED("pBindInfos[%d].pNext", i);
 		}
 
-		vk::Cast(pBindInfos[i].buffer)->bind(vk::Cast(pBindInfos[i].memory), pBindInfos[i].memoryOffset);
+		ret = vk::Cast(pBindInfos[i].buffer)->bind(vk::Cast(pBindInfos[i].memory), pBindInfos[i].memoryOffset);
+		if (ret != VK_SUCCESS)
+			break;
 	}
 
-	return VK_SUCCESS;
+	return ret;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo* pBindInfos)
@@ -2255,6 +2325,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindImageMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
 
+	VkResult ret = VK_SUCCESS;
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		vk::DeviceMemory *memory = vk::Cast(pBindInfos[i].memory);
@@ -2285,10 +2356,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 			extInfo = extInfo->pNext;
 		}
 
-		vk::Cast(pBindInfos[i].image)->bind(memory, offset);
+		ret = vk::Cast(pBindInfos[i].image)->bind(memory, offset);
+		if (ret != VK_SUCCESS)
+			break;
 	}
 
-	return VK_SUCCESS;
+	return ret;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags* pPeerMemoryFeatures)
