@@ -220,6 +220,10 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 	// (from KHR_swapchain v70) to vkBindImageMemory2.
 	{ VK_ANDROID_NATIVE_BUFFER_EXTENSION_NAME, 7 },
 #endif
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+	{ VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_MEMORY_FD_SPEC_VERSION },
+#endif
 };
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance)
@@ -769,6 +773,44 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, 
 	vk::destroy(memory, pAllocator);
 }
 
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* getFdInfo, int* pFd)
+{
+	TRACE("(VkDevice device = %p, const VkMemoryGetFdInfoKHR* getFdInfo = %p, int* pFd = %p",
+		  device, getFdInfo, pFd);
+
+	if (getFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("pGetFdInfo->handleType");
+	}
+	return vk::Cast(getFdInfo->memory)->exportFd(pFd);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR* pMemoryFdProperties)
+{
+	TRACE("(VkDevice device = %p, VkExternalMemoryHandleTypeFlagBits handleType = %x, int fd = %d, VkMemoryFdPropertiesKHR* pMemoryFdProperties = %p)",
+		  device, handleType, fd, pMemoryFdProperties);
+
+	if (handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("handleType");
+	}
+
+	if (fd < 0)
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+
+	const VkPhysicalDeviceMemoryProperties& memoryProperties =
+			vk::Cast(device)->getPhysicalDevice()->getMemoryProperties();
+
+	// All SwiftShader memory types support this!
+	pMemoryFdProperties->memoryTypeBits = (1U << memoryProperties.memoryTypeCount) - 1U;
+
+	return VK_SUCCESS;
+}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
 {
 	TRACE("(VkDevice device = %p, VkDeviceMemory memory = %p, VkDeviceSize offset = %d, VkDeviceSize size = %d, VkMemoryMapFlags flags = %d, void** ppData = %p)",
@@ -826,9 +868,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(VkDevice device, VkBuffer buff
 	TRACE("(VkDevice device = %p, VkBuffer buffer = %p, VkDeviceMemory memory = %p, VkDeviceSize memoryOffset = %d)",
 		    device, static_cast<void*>(buffer), static_cast<void*>(memory), int(memoryOffset));
 
-	vk::Cast(buffer)->bind(vk::Cast(memory), memoryOffset);
-
-	return VK_SUCCESS;
+	return vk::Cast(buffer)->bind(vk::Cast(memory), memoryOffset);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset)
@@ -836,9 +876,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory(VkDevice device, VkImage image,
 	TRACE("(VkDevice device = %p, VkImage image = %p, VkDeviceMemory memory = %p, VkDeviceSize memoryOffset = %d)",
 		    device, static_cast<void*>(image), static_cast<void*>(memory), int(memoryOffset));
 
-	vk::Cast(image)->bind(vk::Cast(memory), memoryOffset);
-
-	return VK_SUCCESS;
+	return vk::Cast(image)->bind(vk::Cast(memory), memoryOffset);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements(VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements)
@@ -2129,6 +2167,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindBufferMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
 
+	VkResult ret = VK_SUCCESS;
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		if(pBindInfos[i].pNext)
@@ -2136,10 +2175,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 			UNIMPLEMENTED("pBindInfos[%d].pNext", i);
 		}
 
-		vk::Cast(pBindInfos[i].buffer)->bind(vk::Cast(pBindInfos[i].memory), pBindInfos[i].memoryOffset);
+		ret = vk::Cast(pBindInfos[i].buffer)->bind(vk::Cast(pBindInfos[i].memory), pBindInfos[i].memoryOffset);
+		if (ret != VK_SUCCESS)
+			break;
 	}
 
-	return VK_SUCCESS;
+	return ret;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo* pBindInfos)
@@ -2147,6 +2188,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 	TRACE("(VkDevice device = %p, uint32_t bindInfoCount = %d, const VkBindImageMemoryInfo* pBindInfos = %p)",
 	      device, bindInfoCount, pBindInfos);
 
+	VkResult ret = VK_SUCCESS;
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
 		vk::DeviceMemory *memory = vk::Cast(pBindInfos[i].memory);
@@ -2177,10 +2219,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 			extInfo = extInfo->pNext;
 		}
 
-		vk::Cast(pBindInfos[i].image)->bind(memory, offset);
+		ret = vk::Cast(pBindInfos[i].image)->bind(memory, offset);
+		if (ret != VK_SUCCESS)
+			break;
 	}
 
-	return VK_SUCCESS;
+	return ret;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags* pPeerMemoryFeatures)
