@@ -19,10 +19,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
+#include <xcb/xcb.h>
 
 struct LibX11exports
 {
-	LibX11exports(void *libX11, void *libXext);
+	LibX11exports(void *libX11, void *libXext, void *libXbc);
 
 	Display *(*XOpenDisplay)(char *display_name);
 	Status (*XGetWindowAttributes)(Display *display, Window w, XWindowAttributes *window_attributes_return);
@@ -46,6 +47,14 @@ struct LibX11exports
 	Bool (*XShmAttach)(Display *display, XShmSegmentInfo *shminfo);
 	Bool (*XShmDetach)(Display *display, XShmSegmentInfo *shminfo);
 	int (*XShmPutImage)(Display *display, Drawable d, GC gc, XImage *image, int src_x, int src_y, int dest_x, int dest_y, unsigned int width, unsigned int height, bool send_event);
+
+	xcb_void_cookie_t (*xcb_create_gc)(xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const void *value_list);
+	int (*xcb_flush)(xcb_connection_t *c);
+	xcb_void_cookie_t (*xcb_free_gc)(xcb_connection_t *c, xcb_gcontext_t gc);
+	uint32_t (*xcb_generate_id)(xcb_connection_t *c);
+	xcb_get_geometry_cookie_t (*xcb_get_geometry)(xcb_connection_t *c, xcb_drawable_t drawable);
+	xcb_get_geometry_reply_t* (*xcb_get_geometry_reply)(xcb_connection_t *c, xcb_get_geometry_cookie_t cookie, xcb_generic_error_t **e);
+	xcb_void_cookie_t (*xcb_put_image)(xcb_connection_t *c, uint8_t format, xcb_drawable_t drawable, xcb_gcontext_t gc, uint16_t width,uint16_t height, int16_t dst_x, int16_t dst_y, uint8_t left_pad, uint8_t depth, uint32_t data_len, const uint8_t* data);
 };
 
 #undef Bool // b/127920555
