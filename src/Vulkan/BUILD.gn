@@ -97,6 +97,7 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "VkRenderPass.hpp",
     "VkSampler.cpp",
     "VkSampler.hpp",
+    "VkSemaphore.cpp",
     "VkSemaphore.hpp",
     "VkShaderModule.cpp",
     "VkShaderModule.hpp",
@@ -107,6 +108,19 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "main.cpp",
     "resource.h",
   ]
+  if (is_fuchsia) {
+    sources += [
+      "VkSemaphoreImplFuchsia.hpp",
+    ]
+  } else if (is_win) {
+    sources += [
+      "VkSemaphoreImplWin32.hpp",
+    ]
+  } else {
+    sources += [
+      "VkSemaphoreImplPosix.hpp",
+    ]
+  }
 
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
