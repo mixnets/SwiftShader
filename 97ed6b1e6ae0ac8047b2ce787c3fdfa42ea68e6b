@@ -22,6 +22,30 @@
       "revId": "97ed6b1e6ae0ac8047b2ce787c3fdfa42ea68e6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "222a06c4_817fb034",
+        "filename": "src/Yarn/Defer.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T06:50:27Z",
+      "side": 1,
+      "message": "Ack. Last time I checked, __LINE__ was supported on every major compiler, but __COUNTER__ was still only partially supported. That was 5 odd years ago though.\nI think it would be rather odd to put multiple defers on the same line. There\u0027s nothing stopping you putting multiple statements, or a whole block in a single defer.",
+      "parentUuid": "9c8cfe78_d687b7f8",
+      "range": {
+        "startLine": 40,
+        "startChar": 42,
+        "endLine": 40,
+        "endChar": 50
+      },
+      "revId": "97ed6b1e6ae0ac8047b2ce787c3fdfa42ea68e6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
