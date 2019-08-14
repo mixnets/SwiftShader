@@ -35,7 +35,7 @@ public:
 
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const;
-	void bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset);
+	VkResult bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset);
 	void copyTo(Image* dstImage, const VkImageCopy& pRegion) const;
 	void copyTo(Buffer* dstBuffer, const VkBufferImageCopy& region);
 	void copyFrom(Buffer* srcBuffer, const VkBufferImageCopy& region);
@@ -98,6 +98,8 @@ private:
 	VkImageTiling            tiling = VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags        usage = (VkImageUsageFlags)0;
 	Image*                   decompressedImage = nullptr;
+
+	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };
 
 static inline Image* Cast(VkImage object)
