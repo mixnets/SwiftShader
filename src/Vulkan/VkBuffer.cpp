@@ -31,6 +31,15 @@ Buffer::Buffer(const VkBufferCreateInfo* pCreateInfo, void* mem) :
 		queueFamilyIndices = reinterpret_cast<uint32_t*>(mem);
 		memcpy(queueFamilyIndices, pCreateInfo->pQueueFamilyIndices, sizeof(uint32_t) * queueFamilyIndexCount);
 	}
+
+	const auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	for (; nextInfo != nullptr; nextInfo = nextInfo->pNext)
+	{
+		if (nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO) {
+			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryBufferCreateInfo*>(nextInfo);
+			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
+		}
+	}
 }
 
 void Buffer::destroy(const VkAllocationCallbacks* pAllocator)
@@ -68,9 +77,14 @@ const VkMemoryRequirements Buffer::getMemoryRequirements() const
 	return memoryRequirements;
 }
 
-void Buffer::bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset)
+VkResult Buffer::bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
+	if (!pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes))
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
 	memory = pDeviceMemory->getOffsetPointer(pMemoryOffset);
+	return VK_SUCCESS;
 }
 
 void Buffer::copyFrom(const void* srcMemory, VkDeviceSize pSize, VkDeviceSize pOffset)
