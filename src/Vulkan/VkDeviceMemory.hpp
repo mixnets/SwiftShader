@@ -27,6 +27,10 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkMemoryAllocateInfo* pCreateInfo);
 
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+	int exportFd() const;
+#endif
+
 	void destroy(const VkAllocationCallbacks* pAllocator);
 	VkResult allocate();
 	VkResult map(VkDeviceSize offset, VkDeviceSize size, void** ppData);
@@ -35,9 +39,20 @@ public:
 	uint32_t getMemoryTypeIndex() const { return memoryTypeIndex; }
 
 private:
+	// Internal implementation class for external memory. Platform-specific.
+	class External;
+
+	// If this is external memory, map the underlying buffer to |buffer|.
+	void allocateExternal();
+
+	// If this is external memory, unmap the underlying buffer and return
+	// true. Otherwise, return false (and let the caller deallocate |buffer|).
+	bool deallocateExternal();
+
 	void*        buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t     memoryTypeIndex = 0;
+	External*    external = nullptr;
 };
 
 static inline DeviceMemory* Cast(VkDeviceMemory object)
