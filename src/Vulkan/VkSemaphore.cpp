@@ -18,6 +18,8 @@
 #include "VkSemaphoreImplFuchsia.hpp"
 #elif defined(_WIN32)
 #include "VkSemaphoreImplWin32.hpp"
+#elif defined(__linux__) || defined(__ANDROID__)
+#include "VkSemaphoreImplLinux.hpp"
 #else
 #include "VkSemaphoreImplPosix.hpp"
 #endif

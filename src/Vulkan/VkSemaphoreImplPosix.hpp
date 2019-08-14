@@ -23,25 +23,7 @@ namespace posix {
 
 class Semaphore {
 public:
-    // NOTE: |process_shared == true| will be useful in the future for
-    // external semaphore support.
-	Semaphore(bool process_shared = false)
-	{
-		if (process_shared)
-		{
-			pthread_mutexattr_t mattr;
-			pthread_mutexattr_init(&mattr);
-			pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
-			pthread_mutex_init(&mutex, &mattr);
-			pthread_mutexattr_destroy(&mattr);
-
-			pthread_condattr_t cattr;
-			pthread_condattr_init(&cattr);
-			pthread_condattr_setpshared(&cattr, PTHREAD_PROCESS_SHARED);
-			pthread_cond_init(&cond, &cattr);
-			pthread_condattr_destroy(&cattr);
-		}
-	}
+	Semaphore() = default;
 
 	~Semaphore()
 	{
@@ -58,7 +40,7 @@ public:
 		}
 		// From Vulkan 1.1.119 spec, section 6.4.2:
 		// Unlike fences or events, the act of waiting for a semaphore also
-		// unsignals that semaphore. 
+		// unsignals that semaphore.
 		signaled = false;
 		pthread_mutex_unlock(&mutex);
 	}
@@ -82,15 +64,17 @@ private:
 namespace vk
 {
 
-// NOTE: For now the implementation only stores a single semaphore.
-// but external semaphores will requires the Semaphore to be stored in
-// a shared memory region page instead.
+// External posix semaphores require a shared memory region that can be shared
+// across processes. For Linux, see VkSemaphoreImplLinux.h which uses a memfd
+// backed region. This header is a fallback for other systems.
 class Semaphore::Impl {
 public:
 	Impl(const VkSemaphoreCreateInfo* pCreateInfo)
 	{
-		// TODO: external semaphore support.
-		(void)pCreateInfo;
+		if (pCreateInfo->pNext)
+		{
+			UNIMPLEMENTED("pCreateInfo->pNext");
+		}
 	}
 
 	void wait()
@@ -107,9 +91,9 @@ public:
 	{
 		semaphore.signal();
 	}
-	
+
 private:
-	posix::Semaphore  semaphore;
+	posix::Semaphore semaphore;
 };
 
 }  // namespace vk
