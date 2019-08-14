@@ -760,6 +760,45 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, 
 	vk::destroy(memory, pAllocator);
 }
 
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* getFdInfo, int* pFd)
+{
+	TRACE("(VkDevice device = %p, const VkMemoryGetFdInfoKHR* getFdInfo = %p, int* pFd = %p",
+		  device, getFdInfo, pFd);
+
+	if (getFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("pGetFdInfo->handleType");
+	}
+	*pFd = vk::Cast(getFdInfo->memory)->exportFd();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR* pMemoryFdProperties)
+{
+	TRACE("(VkDevice device = %p, VkExternalMemoryHandleTypeFlagBits handleType = %x, int fd = %d, VkMemoryFdPropertiesKHR* pMemoryFdProperties = %p)",
+		  device, handleType, fd, pMemoryFdProperties);
+
+	if (handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+	{
+		UNIMPLEMENTED("handleType");
+	}
+
+	if (fd < 0)
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+
+	const VkPhysicalDeviceMemoryProperties& memoryProperties =
+			vk::Cast(device)->getPhysicalDevice()->getMemoryProperties();
+
+	// All SwiftShader memory types support this!
+	pMemoryFdProperties->memoryTypeBits = (1U << memoryProperties.memoryTypeCount) - 1U;
+
+	return VK_SUCCESS;
+}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
 {
 	TRACE("(VkDevice device = %p, VkDeviceMemory memory = %p, VkDeviceSize offset = %d, VkDeviceSize size = %d, VkMemoryMapFlags flags = %d, void** ppData = %p)",
