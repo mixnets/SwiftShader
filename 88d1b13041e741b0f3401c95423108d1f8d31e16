@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "346cfdb8_af67e469",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6205,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-08-14T02:25:24Z",
+      "side": 1,
+      "message": "Should we mention that we\u0027re choosing \u0027produce 0\u0027 as our undefined behavior if the delta is bad?",
+      "revId": "88d1b13041e741b0f3401c95423108d1f8d31e16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
