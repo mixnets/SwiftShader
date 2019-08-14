@@ -179,6 +179,9 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
 	{ VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_FD_SPEC_VERSION },
 #endif
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
+	{ VK_FUCHSIA_EXTERNAL_SEMAPHORE_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_SEMAPHORE_SPEC_VERSION },
+#endif
 };
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance)
@@ -919,6 +922,36 @@ VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreFdKHR(VkDevice device, const VkI
 	return vk::Cast(pImportSemaphoreInfo->semaphore)->importFd(pImportSemaphoreInfo->fd);
 }
 #endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
+VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkSemaphoreGetZirconHandleInfoFUCHSIA* pGetHandleInfo, zx_handle_t* pZirconHandle)
+{
+	TRACE("(VkDevice device = %p, const VkSemaphoreGetZirconHandleInfoFUCHSIA* pGetHandleInfo = %p, zx_handle_t* pZirconHandle = %p)",
+	      device, static_cast<const void*>(pGetHandleInfo), static_cast<void*>(pZirconHandle));
+
+	if (pGetHandleInfo->handleType != VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA)
+	{
+		UNIMPLEMENTED("pGetHandleInfo->handleType");
+	}
+
+	*pZirconHandle = vk::Cast(pGetHandleInfo->semaphore)->exportHandle();
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA* pImportSemaphoreInfo)
+{
+	TRACE("(VkDevice device = %p, const VkImportSemaphoreZirconHandleInfoFUCHSIA* pImportSemaphoreInfo = %p",
+	      device, static_cast<const void*>(pImportSemaphoreInfo));
+
+	if (pImportSemaphoreInfo->handleType != VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA)
+	{
+		UNIMPLEMENTED("pImportSemaphoreInfo->handleType");
+	}
+
+	return vk::Cast(pImportSemaphoreInfo->semaphore)->importHandle(pImportSemaphoreInfo->handle);
+}
+#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateEvent(VkDevice device, const VkEventCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkEvent* pEvent)
 {

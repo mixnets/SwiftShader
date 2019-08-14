@@ -46,6 +46,23 @@ public:
 		zx_handle_close(handle);
 	}
 
+	zx_handle_t exportHandle() const
+	{
+		zx_handle_t new_handle = ZX_HANDLE_INVALID;
+		zx_status_t status = zx_handle_duplicate(handle, ZX_RIGHT_SAME_RIGHTS, &new_handle);
+		if (status != ZX_OK)
+		{
+			ABORT("zx_handle_duplicate() returned %d", status);
+		}
+		return new_handle;
+	}
+
+	void importHandle(zx_handle_t new_handle)
+	{
+		zx_handle_close(handle);
+		handle = new_handle;
+	}
+
 	void wait()
 	{
 		zx_signals_t observed = 0;
@@ -84,6 +101,21 @@ public:
 private:
 	zx_handle_t handle = ZX_HANDLE_INVALID;
 };
+
+zx_handle_t Semaphore::exportHandle() const
+{
+	return impl->exportHandle();
+}
+
+VkResult Semaphore::importHandle(zx_handle_t handle)
+{
+	if (handle == ZX_HANDLE_INVALID)
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+	impl->importHandle(handle);
+	return VK_SUCCESS;
+}
 
 }  // namespace vk
 
