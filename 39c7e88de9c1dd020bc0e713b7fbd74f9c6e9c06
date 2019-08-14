@@ -22,6 +22,30 @@
       "revId": "39c7e88de9c1dd020bc0e713b7fbd74f9c6e9c06",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01551582_61747672",
+        "filename": "src/Yarn/Pool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T07:04:32Z",
+      "side": 1,
+      "message": "I\u0027m not sure I follow. BoundedPool has a fixed, static capacity. UnboundedPool has a dynamic, unbounded capacity.\n\nAre you asking for a hybrid of the two? Something that dynamically allocates up to a limit, then blocks like a BoundedPool?",
+      "parentUuid": "f0c6d05c_e3ed5e0a",
+      "range": {
+        "startLine": 217,
+        "startChar": 22,
+        "endLine": 217,
+        "endChar": 27
+      },
+      "revId": "39c7e88de9c1dd020bc0e713b7fbd74f9c6e9c06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
