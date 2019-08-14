@@ -46,6 +46,30 @@
       "revId": "0216d2fb0422d07fecaa1d30f9face9d3035c1e4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d64f4db_2f288d26",
+        "filename": "src/Yarn/Scheduler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-14T02:51:41Z",
+      "side": 1,
+      "message": "The x86 instruction? Yeah could be worth a try. Historically I\u0027ve never seen that have any significant benefit in practice though. It was introduced in Pentium 4 HT and I suspect it had an effect back then but newer cores may be able to detect spin loops and/or not clog up the execution ports with nops.\n\nThat said, it has intentionally become much slower on the Skylake architecture: https://www.reddit.com/r/hardware/comments/8s011f/skylakex_cpus_have_140cycle_pause_latency_with/ That might be a good thing when used correctly, so it\u0027s worth checking.",
+      "parentUuid": "284a4175_04e3838d",
+      "range": {
+        "startLine": 450,
+        "startChar": 8,
+        "endLine": 450,
+        "endChar": 73
+      },
+      "revId": "0216d2fb0422d07fecaa1d30f9face9d3035c1e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
