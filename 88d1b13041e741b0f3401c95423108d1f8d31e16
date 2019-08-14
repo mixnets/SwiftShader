@@ -16,6 +16,24 @@
       "revId": "88d1b13041e741b0f3401c95423108d1f8d31e16",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "055ad669_6a9a70f7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6205,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T06:00:02Z",
+      "side": 1,
+      "message": "Not entirely true.\nIf the delta is [0-3] but still OOB, you\u0027d get an input \u0027x\u0027. If it is \u003c 0 or \u003e 3, you\u0027d get a 0.\n\nCan document in a follow-up change if you think it\u0027s worthwhile.",
+      "parentUuid": "346cfdb8_af67e469",
+      "revId": "88d1b13041e741b0f3401c95423108d1f8d31e16",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
