@@ -16,32 +16,52 @@
 
 #include "System/SharedLibrary.hpp"
 
+#include <memory>
+
 #define Bool int
 
-LibX11exports::LibX11exports(void *libX11, void *libXext)
-{
-	XOpenDisplay = (Display *(*)(char*))getProcAddress(libX11, "XOpenDisplay");
-	XGetWindowAttributes = (Status (*)(Display*, Window, XWindowAttributes*))getProcAddress(libX11, "XGetWindowAttributes");
-	XDefaultScreenOfDisplay = (Screen *(*)(Display*))getProcAddress(libX11, "XDefaultScreenOfDisplay");
-	XWidthOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XWidthOfScreen");
-	XHeightOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XHeightOfScreen");
-	XPlanesOfScreen = (int (*)(Screen*))getProcAddress(libX11, "XPlanesOfScreen");
-	XDefaultGC = (GC (*)(Display*, int))getProcAddress(libX11, "XDefaultGC");
-	XDefaultDepth = (int (*)(Display*, int))getProcAddress(libX11, "XDefaultDepth");
-	XMatchVisualInfo = (Status (*)(Display*, int, int, int, XVisualInfo*))getProcAddress(libX11, "XMatchVisualInfo");
-	XDefaultVisual = (Visual *(*)(Display*, int screen_number))getProcAddress(libX11, "XDefaultVisual");
-	XSetErrorHandler = (int (*(*)(int (*)(Display*, XErrorEvent*)))(Display*, XErrorEvent*))getProcAddress(libX11, "XSetErrorHandler");
-	XSync = (int (*)(Display*, Bool))getProcAddress(libX11, "XSync");
-	XCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, int, char*, unsigned int, unsigned int, int, int))getProcAddress(libX11, "XCreateImage");
-	XCloseDisplay = (int (*)(Display*))getProcAddress(libX11, "XCloseDisplay");
-	XPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int))getProcAddress(libX11, "XPutImage");
-	XDrawString = (int (*)(Display*, Drawable, GC, int, int, char*, int))getProcAddress(libX11, "XDrawString");
+namespace {
 
-	XShmQueryExtension = (Bool (*)(Display*))getProcAddress(libXext, "XShmQueryExtension");
-	XShmCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, char*, XShmSegmentInfo*, unsigned int, unsigned int))getProcAddress(libXext, "XShmCreateImage");
-	XShmAttach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmAttach");
-	XShmDetach = (Bool (*)(Display*, XShmSegmentInfo*))getProcAddress(libXext, "XShmDetach");
-	XShmPutImage = (int (*)(Display*, Drawable, GC, XImage*, int, int, int, int, unsigned int, unsigned int, bool))getProcAddress(libXext, "XShmPutImage");
+template <typename FPTR>
+void getFuncAddress(void *lib, const char *name, FPTR *out)
+{
+	*out = reinterpret_cast<FPTR>(getProcAddress(lib, name));
+}
+
+} // anonymous namespace
+
+LibX11exports::LibX11exports(void *libX11, void *libXext, void *libXbc)
+{
+	getFuncAddress(libX11, "XOpenDisplay", &XOpenDisplay);
+	getFuncAddress(libX11, "XGetWindowAttributes", &XGetWindowAttributes);
+	getFuncAddress(libX11, "XDefaultScreenOfDisplay", &XDefaultScreenOfDisplay);
+	getFuncAddress(libX11, "XWidthOfScreen", &XWidthOfScreen);
+	getFuncAddress(libX11, "XHeightOfScreen", &XHeightOfScreen);
+	getFuncAddress(libX11, "XPlanesOfScreen", &XPlanesOfScreen);
+	getFuncAddress(libX11, "XDefaultGC", &XDefaultGC);
+	getFuncAddress(libX11, "XDefaultDepth", &XDefaultDepth);
+	getFuncAddress(libX11, "XMatchVisualInfo", &XMatchVisualInfo);
+	getFuncAddress(libX11, "XDefaultVisual", &XDefaultVisual);
+	getFuncAddress(libX11, "XSetErrorHandler", &XSetErrorHandler);
+	getFuncAddress(libX11, "XSync", &XSync);
+	getFuncAddress(libX11, "XCreateImage", &XCreateImage);
+	getFuncAddress(libX11, "XCloseDisplay", &XCloseDisplay);
+	getFuncAddress(libX11, "XPutImage", &XPutImage);
+	getFuncAddress(libX11, "XDrawString", &XDrawString);
+
+	getFuncAddress(libXext, "XShmQueryExtension", &XShmQueryExtension);
+	getFuncAddress(libXext, "XShmCreateImage", &XShmCreateImage);
+	getFuncAddress(libXext, "XShmAttach", &XShmAttach);
+	getFuncAddress(libXext, "XShmDetach", &XShmDetach);
+	getFuncAddress(libXext, "XShmPutImage", &XShmPutImage);
+
+	getFuncAddress(libXbc, "xcb_create_gc", &xcb_create_gc);
+	getFuncAddress(libXbc, "xcb_flush", &xcb_flush);
+	getFuncAddress(libXbc, "xcb_free_gc", &xcb_free_gc);
+	getFuncAddress(libXbc, "xcb_generate_id", &xcb_generate_id);
+	getFuncAddress(libXbc, "xcb_get_geometry", &xcb_get_geometry);
+	getFuncAddress(libXbc, "xcb_get_geometry_reply", &xcb_get_geometry_reply);
+	getFuncAddress(libXbc, "xcb_put_image", &xcb_put_image);
 }
 
 LibX11exports *LibX11::operator->()
@@ -51,34 +71,23 @@ LibX11exports *LibX11::operator->()
 
 LibX11exports *LibX11::loadExports()
 {
-	static void *libX11 = nullptr;
-	static void *libXext = nullptr;
-	static LibX11exports *libX11exports = nullptr;
-
-	if(!libX11)
+	static auto exports = []
 	{
-		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))   // Search the global scope for pre-loaded X11 library.
-		{
-			libX11exports = new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
-			libX11 = (void*)-1;   // No need to load it.
-		}
-		else
-		{
-			libX11 = loadLibrary("libX11.so");
+		auto libX11 = getProcAddress(RTLD_DEFAULT, "XOpenDisplay") ?
+		              RTLD_DEFAULT : loadLibrary("libX11.so");
+		auto libXext = getProcAddress(RTLD_DEFAULT, "XShmQueryExtension") ?
+		              RTLD_DEFAULT : loadLibrary("libXext.so");
+		auto libXcb = getProcAddress(RTLD_DEFAULT, "xcb_create_gc") ?
+		              RTLD_DEFAULT : loadLibrary("libXcb.so");
 
-			if(libX11)
-			{
-				libXext = loadLibrary("libXext.so");
-				libX11exports = new LibX11exports(libX11, libXext);
-			}
-			else
-			{
-				libX11 = (void*)-1;   // Don't attempt loading more than once.
-			}
-		}
-	}
+		if (!libX11) { libX11 = RTLD_DEFAULT; }
+		if (!libXext) { libXext = RTLD_DEFAULT; }
+		if (!libXcb) { libXcb = RTLD_DEFAULT; }
 
-	return libX11exports;
+		return std::unique_ptr<LibX11exports>(new LibX11exports(libX11, libXext, libXcb));
+	}();
+
+	return exports.get();
 }
 
 LibX11 libX11;
