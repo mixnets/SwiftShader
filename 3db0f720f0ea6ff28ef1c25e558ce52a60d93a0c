@@ -46,6 +46,30 @@
       "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5003c555_72fec083",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-08-14T22:51:48Z",
+      "side": 1,
+      "message": "You have to be able to blend into it, so you have to be able to read.",
+      "parentUuid": "83d30c70_13d002a3",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 59
+      },
+      "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
