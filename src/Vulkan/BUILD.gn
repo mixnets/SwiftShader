@@ -113,6 +113,16 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "resource.h",
   ]
 
+  if (is_linux || is_android) {
+    sources += [
+      "VkDeviceMemoryExternalLinux.hpp",
+    ]
+  } else {
+    sources += [
+      "VkDeviceMemoryExternalNone.hpp",
+    ]
+  }
+
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
   output_name = "libvk_swiftshader"
