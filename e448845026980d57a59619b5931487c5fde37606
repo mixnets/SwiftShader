@@ -22,6 +22,30 @@
       "revId": "e448845026980d57a59619b5931487c5fde37606",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3422be4a_39638ab1",
+        "filename": "src/Yarn/ConditionVariable.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T07:01:45Z",
+      "side": 1,
+      "message": "I find that there\u0027s either a limit of one, or a whole unbounded number. Given that ConditionVariable is usually nested inside another synchronization primitive, we\u0027d need to bubble that parameter up to that type for it to be useful. While that could be a good power-feature, I\u0027d rather keep the API simple(r) until we can prove it is worth the additional complexity.",
+      "parentUuid": "9be74b76_01c46e28",
+      "range": {
+        "startLine": 49,
+        "startChar": 42,
+        "endLine": 49,
+        "endChar": 43
+      },
+      "revId": "e448845026980d57a59619b5931487c5fde37606",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
