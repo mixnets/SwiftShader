@@ -31,7 +31,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkBufferCreateInfo* pCreateInfo);
 
 	const VkMemoryRequirements getMemoryRequirements() const;
-	void bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset);
+	VkResult bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset);
 	void copyFrom(const void* srcMemory, VkDeviceSize size, VkDeviceSize offset);
 	void copyTo(void* dstMemory, VkDeviceSize size, VkDeviceSize offset) const;
 	void copyTo(Buffer* dstBuffer, const VkBufferCopy& pRegion) const;
@@ -49,6 +49,8 @@ private:
 	VkSharingMode         sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t              queueFamilyIndexCount = 0;
 	uint32_t*             queueFamilyIndices = nullptr;
+
+	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };
 
 static inline Buffer* Cast(VkBuffer object)
