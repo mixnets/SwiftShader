@@ -70,6 +70,30 @@
       "revId": "0216d2fb0422d07fecaa1d30f9face9d3035c1e4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b213e261_dc5c16b5",
+        "filename": "src/Yarn/Scheduler.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-14T06:52:45Z",
+      "side": 1,
+      "message": "\u003e nit: This would potentially perform better with exponential backoff.\n\nYou would think so, but my experiments say otherwise.\nI\u0027ve tried a whole lot of variations here, and this gave peak performance for the two machines I was testing on.\nHappy to revisit at a later date, but I\u0027d rather not spend another day tweaking this function right now.",
+      "parentUuid": "7d64f4db_2f288d26",
+      "range": {
+        "startLine": 450,
+        "startChar": 8,
+        "endLine": 450,
+        "endChar": 73
+      },
+      "revId": "0216d2fb0422d07fecaa1d30f9face9d3035c1e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
