@@ -70,6 +70,30 @@
       "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4dcfdef0_3339c0c5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-15T14:55:10Z",
+      "side": 1,
+      "message": "\u003e You have to be able to blend into it, so you have to be able to read.\n\nThat\u0027s a pretty compelling argument.",
+      "parentUuid": "5003c555_72fec083",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 59
+      },
+      "revId": "3db0f720f0ea6ff28ef1c25e558ce52a60d93a0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
