@@ -282,9 +282,6 @@ set(HELLO2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_SDK/Examples/Begi
 # Compile flags
 ###########################################################
 
-# Run assembly files through the C preprocessor.
-SET(CMAKE_ASM_FLAGS "-x assembler-with-cpp")
-
 # Flags for project code (non 3rd party)
 set(SWIFTSHADER_COMPILE_OPTIONS "")
 
