@@ -343,6 +343,9 @@ if(MSVC)
         "/we5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
     )
 
+    # Don't allow MSVC-specific permissive compiler behavior.
+    set_cpp_flag("/permissive-")
+
 else()
     set_cpp_flag("--std=c++11")
     set_cpp_flag("-fno-exceptions")
