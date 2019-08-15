@@ -602,10 +602,6 @@ cc_library_static {
     cflags: [
         "-Wno-unused-parameter",
     ],
-
-    asflags: [
-        "-DBUILD_ASM",
-    ],
 }
 
 
