@@ -22,6 +22,30 @@
       "revId": "bd0dcef12a2024fb9b76b9ce084949a13619eb55",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9e50746_ecc8716e",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4151,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-08-16T17:58:38Z",
+      "side": 1,
+      "message": "I was worried that if it were a GL ERROR, then people would think it ties back to the spec. Is that still ok?",
+      "parentUuid": "1515bb2b_7f20cce9",
+      "range": {
+        "startLine": 4151,
+        "startChar": 3,
+        "endLine": 4151,
+        "endChar": 10
+      },
+      "revId": "bd0dcef12a2024fb9b76b9ce084949a13619eb55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
