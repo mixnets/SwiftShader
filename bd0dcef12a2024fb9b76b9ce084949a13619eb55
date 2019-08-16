@@ -46,6 +46,30 @@
       "revId": "bd0dcef12a2024fb9b76b9ce084949a13619eb55",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91a43c99_e42f4c8a",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4151,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-16T18:10:28Z",
+      "side": 1,
+      "message": "Indeed it\u0027s definitely a \u0027grey zone\u0027 but returning silently is arguably not what the spec prescribes either. GL_INVALID_OPERATION is defined as \"Operation illegal in current state\" and this is quite accurate in this case.",
+      "parentUuid": "d9e50746_ecc8716e",
+      "range": {
+        "startLine": 4151,
+        "startChar": 3,
+        "endLine": 4151,
+        "endChar": 10
+      },
+      "revId": "bd0dcef12a2024fb9b76b9ce084949a13619eb55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
