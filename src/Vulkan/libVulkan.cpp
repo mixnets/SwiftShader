@@ -123,7 +123,12 @@ yarn::Scheduler* getOrCreateScheduler()
 		sw::CPUID::setFlushToZero(true);
 		sw::CPUID::setDenormalsAreZero(true);
 	});
-	scheduler->setWorkerThreadCount(std::min<size_t>(yarn::Thread::numLogicalCPUs(), 16));
+	auto numThreads = yarn::Thread::numLogicalCPUs();
+	if (auto maxThreads = getenv("SWIFTSHADER_MAX_THREADS"))
+	{
+		numThreads = std::min<unsigned int>(numThreads, atoi(maxThreads));
+	}
+	scheduler->setWorkerThreadCount(std::min<size_t>(numThreads, 16));
 	return scheduler.get();
 }
 
