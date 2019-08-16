@@ -1,0 +1,11 @@
+[
+    {
+        "name": "pvr-glass",
+        "app": "${POWERVR_BIN}/VulkanGlass",
+        "args": [
+            "--fps"
+        ],
+        "duration": "15s",
+        "parse": "FPS:([0-9]+)"
+    }
+]
