@@ -1307,6 +1307,11 @@ namespace sw
 
 			threadCount = CPUID::processAffinity();
 
+			if (auto maxThreads = getenv("SWIFTSHADER_MAX_THREADS"))
+			{
+				threadCount = std::min<int>(threadCount, atoi(maxThreads));
+			}
+
 			CPUID::setEnableSSE4_1(true);
 			CPUID::setEnableSSSE3(true);
 			CPUID::setEnableSSE3(true);
