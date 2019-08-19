@@ -182,6 +182,9 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_HANDLE
 	{ VK_FUCHSIA_EXTERNAL_SEMAPHORE_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_SEMAPHORE_SPEC_VERSION },
 #endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+	{ "VK_KHR_external_memory_fd", 1 },
+#endif
 };
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance)
@@ -676,6 +679,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			// This extension controls on which physical devices the memory gets allocated.
 			// SwiftShader only has a single physical device, so this extension does nothing in this case.
 			break;
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
+            break;
 		default:
 			UNIMPLEMENTED("allocationInfo->sType");
 			break;
@@ -1127,6 +1133,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 
 	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
 
+    bool externalImage = false;
+
 #ifdef __ANDROID__
 	BackingMemory backmem;
 	bool swapchainImage = false;
@@ -1152,6 +1160,15 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		}
 		break;
 #endif
+        case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
+        {
+            const VkExternalMemoryImageCreateInfo* extMemImgCi =
+                reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(extensionCreateInfo);
+            externalImage = true;
+            (void)extMemImgCi;
+            break;
+        }
+
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNIMPLEMENTED("extensionCreateInfo->sType");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
@@ -1162,6 +1179,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 	}
 
 	VkResult result = vk::Image::Create(pAllocator, pCreateInfo, pImage, vk::Cast(device));
+
+    if (externalImage) {
+        fprintf(stderr, "%s: external img\n", __func__);
+    }
 
 #ifdef __ANDROID__
 	if (swapchainImage)
