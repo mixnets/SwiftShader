@@ -959,165 +959,56 @@ namespace sw
 			return false;
 		}
 
-		if(state.multiSample > 1)   // Rectangle
+		float4 P[4];
+		int C[4];
+
+		P[0] = P0;
+		P[1] = P1;
+		P[2] = P1;
+		P[3] = P0;
+
+		float scale = lineWidth * 0.5f / sqrt(dx*dx + dy*dy);
+
+		dx *= scale;
+		dy *= scale;
+
+		float dx0h = dx * P0.w / H;
+		float dy0w = dy * P0.w / W;
+
+		float dx1h = dx * P1.w / H;
+		float dy1w = dy * P1.w / W;
+
+		P[0].x += -dy0w;
+		P[0].y += +dx0h;
+		C[0] = Clipper::ComputeClipFlags(P[0]);
+
+		P[1].x += -dy1w;
+		P[1].y += +dx1h;
+		C[1] = Clipper::ComputeClipFlags(P[1]);
+
+		P[2].x += +dy1w;
+		P[2].y += -dx1h;
+		C[2] = Clipper::ComputeClipFlags(P[2]);
+
+		P[3].x += +dy0w;
+		P[3].y += -dx0h;
+		C[3] = Clipper::ComputeClipFlags(P[3]);
+
+		if((C[0] & C[1] & C[2] & C[3]) == Clipper::CLIP_FINITE)
 		{
-			float4 P[4];
-			int C[4];
+			Polygon polygon(P, 4);
 
-			P[0] = P0;
-			P[1] = P1;
-			P[2] = P1;
-			P[3] = P0;
+			int clipFlagsOr = C[0] | C[1] | C[2] | C[3];
 
-			float scale = lineWidth * 0.5f / sqrt(dx*dx + dy*dy);
-
-			dx *= scale;
-			dy *= scale;
-
-			float dx0h = dx * P0.w / H;
-			float dy0w = dy * P0.w / W;
-
-			float dx1h = dx * P1.w / H;
-			float dy1w = dy * P1.w / W;
-
-			P[0].x += -dy0w;
-			P[0].y += +dx0h;
-			C[0] = Clipper::ComputeClipFlags(P[0]);
-
-			P[1].x += -dy1w;
-			P[1].y += +dx1h;
-			C[1] = Clipper::ComputeClipFlags(P[1]);
-
-			P[2].x += +dy1w;
-			P[2].y += -dx1h;
-			C[2] = Clipper::ComputeClipFlags(P[2]);
-
-			P[3].x += +dy0w;
-			P[3].y += -dx0h;
-			C[3] = Clipper::ComputeClipFlags(P[3]);
-
-			if((C[0] & C[1] & C[2] & C[3]) == Clipper::CLIP_FINITE)
+			if(clipFlagsOr != Clipper::CLIP_FINITE)
 			{
-				Polygon polygon(P, 4);
-
-				int clipFlagsOr = C[0] | C[1] | C[2] | C[3];
-
-				if(clipFlagsOr != Clipper::CLIP_FINITE)
+				if(!Clipper::Clip(polygon, clipFlagsOr, draw))
 				{
-					if(!Clipper::Clip(polygon, clipFlagsOr, draw))
-					{
-						return false;
-					}
+					return false;
 				}
-
-				return setupRoutine(&primitive, &triangle, &polygon, &data);
 			}
-		}
-		else   // Diamond test convention
-		{
-			float4 P[8];
-			int C[8];
 
-			P[0] = P0;
-			P[1] = P0;
-			P[2] = P0;
-			P[3] = P0;
-			P[4] = P1;
-			P[5] = P1;
-			P[6] = P1;
-			P[7] = P1;
-
-			float dx0 = lineWidth * 0.5f * P0.w / W;
-			float dy0 = lineWidth * 0.5f * P0.w / H;
-
-			float dx1 = lineWidth * 0.5f * P1.w / W;
-			float dy1 = lineWidth * 0.5f * P1.w / H;
-
-			P[0].x += -dx0;
-			C[0] = Clipper::ComputeClipFlags(P[0]);
-
-			P[1].y += +dy0;
-			C[1] = Clipper::ComputeClipFlags(P[1]);
-
-			P[2].x += +dx0;
-			C[2] = Clipper::ComputeClipFlags(P[2]);
-
-			P[3].y += -dy0;
-			C[3] = Clipper::ComputeClipFlags(P[3]);
-
-			P[4].x += -dx1;
-			C[4] = Clipper::ComputeClipFlags(P[4]);
-
-			P[5].y += +dy1;
-			C[5] = Clipper::ComputeClipFlags(P[5]);
-
-			P[6].x += +dx1;
-			C[6] = Clipper::ComputeClipFlags(P[6]);
-
-			P[7].y += -dy1;
-			C[7] = Clipper::ComputeClipFlags(P[7]);
-
-			if((C[0] & C[1] & C[2] & C[3] & C[4] & C[5] & C[6] & C[7]) == Clipper::CLIP_FINITE)
-			{
-				float4 L[6];
-
-				if(dx > -dy)
-				{
-					if(dx > dy)   // Right
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[3];
-					}
-					else   // Down
-					{
-						L[0] = P[0];
-						L[1] = P[4];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[2];
-						L[5] = P[3];
-					}
-				}
-				else
-				{
-					if(dx > dy)   // Up
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[2];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[4];
-					}
-					else   // Left
-					{
-						L[0] = P[1];
-						L[1] = P[2];
-						L[2] = P[3];
-						L[3] = P[7];
-						L[4] = P[4];
-						L[5] = P[5];
-					}
-				}
-
-				Polygon polygon(L, 6);
-
-				int clipFlagsOr = C[0] | C[1] | C[2] | C[3] | C[4] | C[5] | C[6] | C[7];
-
-				if(clipFlagsOr != Clipper::CLIP_FINITE)
-				{
-					if(!Clipper::Clip(polygon, clipFlagsOr, draw))
-					{
-						return false;
-					}
-				}
-
-				return setupRoutine(&primitive, &triangle, &polygon, &data);
-			}
+			return setupRoutine(&primitive, &triangle, &polygon, &data);
 		}
 
 		return false;
