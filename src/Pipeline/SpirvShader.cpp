@@ -4909,23 +4909,28 @@ namespace sw
 	{
 		Type::ID resultTypeId = insn.word(1);
 		Object::ID resultId = insn.word(2);
-		Object::ID sampledImageId = insn.word(3);
+		Object::ID sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
 		Object::ID coordinateId = insn.word(4);
 		auto &resultType = getType(resultTypeId);
 
 		auto &result = state->createIntermediate(resultId, resultType.sizeInComponents);
 		auto imageDescriptor = state->getPointer(sampledImageId).base; // vk::SampledImageDescriptor*
 
-		// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
+		// If using a sampler, look through the OpSampledImage instruction to find the sampler descriptor.
 		auto &sampledImage = getObject(sampledImageId);
 		auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ?
-				state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
+				state->getPointer(sampledImage.definition.word(4)).base : Pointer<Byte>(nullptr);
 
 		auto coordinate = GenericValue(this, state, coordinateId);
 		auto &coordinateType = getType(coordinate.type);
 
 		Pointer<Byte> sampler = samplerDescriptor + OFFSET(vk::SampledImageDescriptor, sampler); // vk::Sampler*
 		Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);  // sw::Texture*
+
+		if(sampledImage.opcode() != spv::OpSampledImage)
+		{
+			sampler = Pointer<Byte>(nullptr);
+		}
 
 		uint32_t imageOperands = spv::ImageOperandsMaskNone;
 		bool lodOrBias = false;

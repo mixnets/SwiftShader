@@ -34,9 +34,10 @@ namespace sw {
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler)
 {
 	ImageInstruction instruction(inst);
-	ASSERT(imageDescriptor->imageViewId != 0 && (sampler->id != 0 || instruction.samplerMethod == Fetch));
+	const auto samplerId = sampler ? sampler->id : 0;
+	ASSERT(imageDescriptor->imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 
-	vk::Device::SamplingRoutineCache::Key key = {inst, imageDescriptor->imageViewId, sampler->id};
+	vk::Device::SamplingRoutineCache::Key key = {inst, imageDescriptor->imageViewId, samplerId};
 
 	ASSERT(imageDescriptor->device);
 
@@ -59,34 +60,40 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	Sampler samplerState = {};
 	samplerState.textureType = type;
 	samplerState.textureFormat = imageDescriptor->format;
-	samplerState.textureFilter = (instruction.samplerMethod == Gather) ? FILTER_GATHER : convertFilterMode(sampler);
-	samplerState.border = sampler->borderColor;
 
-	samplerState.addressingModeU = convertAddressingMode(0, sampler->addressModeU, type);
-	samplerState.addressingModeV = convertAddressingMode(1, sampler->addressModeV, type);
-	samplerState.addressingModeW = convertAddressingMode(2, sampler->addressModeW, type);
-
-	samplerState.mipmapFilter = convertMipmapMode(sampler);
 	samplerState.swizzle = imageDescriptor->swizzle;
 	samplerState.gatherComponent = instruction.gatherComponent;
 	samplerState.highPrecisionFiltering = false;
-	samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
-	samplerState.compareOp = sampler->compareOp;
-	samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates == VK_TRUE);
 	samplerState.largeTexture = (imageDescriptor->extent.width  > SHRT_MAX) ||
 	                            (imageDescriptor->extent.height > SHRT_MAX) ||
 	                            (imageDescriptor->extent.depth  > SHRT_MAX);
 
-	if(sampler->ycbcrConversion)
+	if(sampler)
 	{
-		samplerState.ycbcrModel = sampler->ycbcrConversion->ycbcrModel;
-		samplerState.studioSwing = (sampler->ycbcrConversion->ycbcrRange == VK_SAMPLER_YCBCR_RANGE_ITU_NARROW);
-		samplerState.swappedChroma = (sampler->ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
-	}
+		samplerState.textureFilter = (instruction.samplerMethod == Gather) ? FILTER_GATHER : convertFilterMode(sampler);
+		samplerState.border = sampler->borderColor;
 
-	if(sampler->anisotropyEnable != VK_FALSE)
-	{
-		UNSUPPORTED("anisotropyEnable");
+		samplerState.addressingModeU = convertAddressingMode(0, sampler->addressModeU, type);
+		samplerState.addressingModeV = convertAddressingMode(1, sampler->addressModeV, type);
+		samplerState.addressingModeW = convertAddressingMode(2, sampler->addressModeW, type);
+
+		samplerState.mipmapFilter = convertMipmapMode(sampler);
+
+		samplerState.compareEnable = (sampler->compareEnable == VK_TRUE);
+		samplerState.compareOp = sampler->compareOp;
+		samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates == VK_TRUE);
+
+		if(sampler->ycbcrConversion)
+		{
+			samplerState.ycbcrModel = sampler->ycbcrConversion->ycbcrModel;
+			samplerState.studioSwing = (sampler->ycbcrConversion->ycbcrRange == VK_SAMPLER_YCBCR_RANGE_ITU_NARROW);
+			samplerState.swappedChroma = (sampler->ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
+		}
+
+		if(sampler->anisotropyEnable != VK_FALSE)
+		{
+			UNSUPPORTED("anisotropyEnable");
+		}
 	}
 
 	routine = emitSamplerRoutine(instruction, samplerState);
