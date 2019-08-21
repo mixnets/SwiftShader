@@ -41,6 +41,8 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 	subpasses = reinterpret_cast<VkSubpassDescription*>(hostMemory);
 	memcpy(subpasses, pCreateInfo->pSubpasses, subpassesSize);
 	hostMemory += subpassesSize;
+	uint32_t *masks = reinterpret_cast<uint32_t *>(hostMemory);
+	hostMemory += pCreateInfo->subpassCount * sizeof(uint32_t);
 
 	if(pCreateInfo->attachmentCount > 0)
 	{
@@ -140,6 +142,34 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 		dependencies = reinterpret_cast<VkSubpassDependency*>(hostMemory);
 		memcpy(dependencies, pCreateInfo->pDependencies, dependenciesSize);
 	}
+
+	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while (extensionCreateInfo)
+	{
+		switch (extensionCreateInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO:
+		{
+			// Renderpass uses multiview if this structure is present AND some subpass specifies
+			// a nonzero view mask
+			auto const *multiviewCreateInfo = reinterpret_cast<VkRenderPassMultiviewCreateInfo const *>(extensionCreateInfo);
+			for (auto i = 0u; i < pCreateInfo->subpassCount; i++)
+			{
+				masks[i] = multiviewCreateInfo->pViewMasks[i];
+				// This is now a multiview renderpass, so make the masks available
+				if (masks[i])
+					viewMasks = masks;
+			}
+
+			break;
+		}
+		default:
+			/* Unknown structure in pNext chain must be ignored */
+			break;
+		}
+
+		extensionCreateInfo = extensionCreateInfo->pNext;
+	}
 }
 
 void RenderPass::destroy(const VkAllocationCallbacks* pAllocator)
@@ -166,7 +196,8 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo* p
 		}
 		subpassesSize += sizeof(VkSubpassDescription) +
 		                 sizeof(VkAttachmentReference) * nbAttachments +
-		                 sizeof(uint32_t) * subpass.preserveAttachmentCount;
+		                 sizeof(uint32_t) * subpass.preserveAttachmentCount +
+		                 sizeof(uint32_t);			// view mask
 	}
 	size_t dependenciesSize = pCreateInfo->dependencyCount * sizeof(VkSubpassDependency);
 

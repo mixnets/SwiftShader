@@ -24,6 +24,12 @@ namespace sw
 	{
 		routine.setImmutableInputBuiltins(spirvShader);
 
+		routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
+		{
+			assert(builtin.SizeInComponents == 1);
+			value[builtin.FirstComponent] = As<Float4>(Int4((*Pointer<Int>(data + OFFSET(DrawData, viewID)))));
+		});
+
 		routine.setInputBuiltin(spirvShader, spv::BuiltInFragCoord, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
 		{
 			assert(builtin.SizeInComponents == 4);

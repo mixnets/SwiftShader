@@ -76,6 +76,11 @@ public:
 		return attachmentFirstUse[i] >= 0;
 	}
 
+	uint32_t getViewMask() const
+	{
+		return viewMasks ? viewMasks[currentSubpass] : 1;
+	}
+
 private:
 	uint32_t                 attachmentCount = 0;
 	VkAttachmentDescription* attachments = nullptr;
@@ -85,6 +90,7 @@ private:
 	VkSubpassDependency*     dependencies = nullptr;
 	uint32_t                 currentSubpass = 0;
 	int*                     attachmentFirstUse = nullptr;
+	uint32_t*                viewMasks = nullptr;
 };
 
 static inline RenderPass* Cast(VkRenderPass object)
