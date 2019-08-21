@@ -72,7 +72,6 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	                            (imageDescriptor->extent.height > SHRT_MAX) ||
 	                            (imageDescriptor->extent.depth  > SHRT_MAX);
 
-
 	if(sampler)
 	{
 		samplerState.textureFilter = (instruction.samplerMethod == Gather) ? FILTER_GATHER : convertFilterMode(sampler);
