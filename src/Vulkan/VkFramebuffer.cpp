@@ -17,6 +17,7 @@
 #include "VkRenderPass.hpp"
 #include <algorithm>
 #include <memory.h>
+#include <System/Math.hpp>
 
 namespace vk
 {
@@ -113,7 +114,20 @@ void Framebuffer::resolve(const RenderPass* renderPass)
 			uint32_t resolveAttachment = subpass.pResolveAttachments[i].attachment;
 			if(resolveAttachment != VK_ATTACHMENT_UNUSED)
 			{
-				attachments[subpass.pColorAttachments[i].attachment]->resolve(attachments[resolveAttachment]);
+				if (renderPass->isMultiView())
+				{
+					auto viewMask = renderPass->getViewMask();
+					while (viewMask)
+					{
+						int view = sw::log2i(viewMask);
+						viewMask &= ~(1 << view);
+						attachments[subpass.pColorAttachments[i].attachment]->resolve(attachments[resolveAttachment], view);
+					}
+				}
+				else
+				{
+					attachments[subpass.pColorAttachments[i].attachment]->resolve(attachments[resolveAttachment]);
+				}
 			}
 		}
 	}
