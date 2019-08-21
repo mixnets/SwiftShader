@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "877fdb71_e69f4828",
+        "filename": "src/OpenGL/libEGL/Surface.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-21T19:22:30Z",
+      "side": 1,
+      "message": "I assume IOSurface always has blue as the lowest byte?",
+      "range": {
+        "startLine": 254,
+        "startChar": 27,
+        "endLine": 254,
+        "endChar": 29
+      },
+      "revId": "24e1db3755dbcded5912c517fef805dc66835bfc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
