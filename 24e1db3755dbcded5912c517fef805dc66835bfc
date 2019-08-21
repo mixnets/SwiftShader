@@ -22,6 +22,30 @@
       "revId": "24e1db3755dbcded5912c517fef805dc66835bfc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d9588e3_6097ffee",
+        "filename": "src/OpenGL/libEGL/Surface.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 28460
+      },
+      "writtenOn": "2019-08-21T19:26:57Z",
+      "side": 1,
+      "message": "Yep, the IOSurface\u0027s actual format for GL_RGB and GL_BGRA_EXT (X8R8G8B8) is the same but we\u0027re just emulating RGB semantics on top of it.",
+      "parentUuid": "877fdb71_e69f4828",
+      "range": {
+        "startLine": 254,
+        "startChar": 27,
+        "endLine": 254,
+        "endChar": 29
+      },
+      "revId": "24e1db3755dbcded5912c517fef805dc66835bfc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
