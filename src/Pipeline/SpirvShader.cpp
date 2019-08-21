@@ -1131,6 +1131,7 @@ namespace sw
 				if (!strcmp(ext, "SPV_KHR_16bit_storage")) break;
 				if (!strcmp(ext, "SPV_KHR_variable_pointers")) break;
 				if (!strcmp(ext, "SPV_KHR_device_group")) break;
+				if (!strcmp(ext, "SPV_KHR_multiview")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 				break;
 			}
