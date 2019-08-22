@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "de3f5ed1_ba37425e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-22T13:53:31Z",
+      "side": 1,
+      "message": "Bug: b/139862810",
+      "revId": "2e77a5c8c1bfed56854d3197643e3791e9d541cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9503ecc9_08b9c89a",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-22T13:53:31Z",
+      "side": 1,
+      "message": "Probably of no consequence, but the spec requires 1^27 + 1 as the minimum. Did you intentionally make it one larger?",
+      "range": {
+        "startLine": 299,
+        "startChar": 41,
+        "endLine": 299,
+        "endChar": 47
+      },
+      "revId": "2e77a5c8c1bfed56854d3197643e3791e9d541cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
