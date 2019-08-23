@@ -5626,7 +5626,7 @@ namespace sw
 			dst.move(3, SIMD::Float(1));
 			break;
 		default:
-			UNIMPLEMENTED("spv::ImageFormat %d", int(vkFormat));
+			UNIMPLEMENTED("VkFormat %d", int(vkFormat));
 			break;
 		}
 
