@@ -599,6 +599,8 @@ struct DrawBase : public CommandBuffer::Command
 			indexBuffers.push_back({pipeline->computePrimitiveCount(count), nullptr});
 		}
 
+		// FIXME: split state update from draw function so we don't have to track this
+		bool firstDraw = true;
 		for (uint32_t instance = firstInstance; instance != firstInstance + instanceCount; instance++)
 		{
 			// FIXME: reconsider instances/views nesting.
@@ -612,7 +614,8 @@ struct DrawBase : public CommandBuffer::Command
 				{
 					executionState.renderer->draw(&context, executionState.indexType, indexBuffer.first, vertexOffset,
 												  executionState.events, instance, viewID, indexBuffer.second,
-												  executionState.pushConstants);
+												  executionState.pushConstants, firstDraw);
+					firstDraw = false;
 				}
 			}
 
