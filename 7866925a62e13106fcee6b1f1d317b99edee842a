@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5759d4ba_7b004657",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-27T18:34:13Z",
+      "side": 1,
+      "message": "nit: !renderer",
+      "range": {
+        "startLine": 115,
+        "startChar": 5,
+        "endLine": 115,
+        "endChar": 24
+      },
+      "revId": "7866925a62e13106fcee6b1f1d317b99edee842a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
