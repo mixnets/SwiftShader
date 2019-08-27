@@ -22,6 +22,30 @@
       "revId": "7866925a62e13106fcee6b1f1d317b99edee842a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9179dba_436c5201",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-27T22:29:28Z",
+      "side": 1,
+      "message": "argh, I really dislike treating pointers as bools. It makes reading the expression unnecessarily unclear to the type.\nThat said, I respect consistency over personal opinion, so I\u0027ll follow up with review changes in another CL.",
+      "parentUuid": "5759d4ba_7b004657",
+      "range": {
+        "startLine": 115,
+        "startChar": 5,
+        "endLine": 115,
+        "endChar": 24
+      },
+      "revId": "7866925a62e13106fcee6b1f1d317b99edee842a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
