@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a054d66_139c6fbe",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-27T22:44:56Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/35568/3/src/Pipeline/ComputeProgram.cpp#23",
+      "parentUuid": "370aa2aa_09c85ac5",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 26
+      },
+      "revId": "2e747d2e74cdcb29698ad4515ca689114dfd4ff8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4c4809b_7c5a4072",
         "filename": "src/Device/Renderer.hpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "67ed68e7_1d199de7",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-27T22:44:56Z",
+      "side": 1,
+      "message": "Good spot! I think this is an artifact left over from a previous reshuffle. Removed.",
+      "parentUuid": "e4c4809b_7c5a4072",
+      "range": {
+        "startLine": 51,
+        "startChar": 1,
+        "endLine": 51,
+        "endChar": 16
+      },
+      "revId": "2e747d2e74cdcb29698ad4515ca689114dfd4ff8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d2c34f1_592a030f",
         "filename": "src/Device/Renderer.hpp",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2019-08-27T20:04:31Z",
       "side": 1,
       "message": "nit: Probably could use a name which clarifies that these are draw sequencing tickets.",
+      "range": {
+        "startLine": 223,
+        "startChar": 22,
+        "endLine": 223,
+        "endChar": 29
+      },
+      "revId": "2e747d2e74cdcb29698ad4515ca689114dfd4ff8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a768b3fb_c8ee0845",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-27T22:44:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d2c34f1_592a030f",
       "range": {
         "startLine": 223,
         "startChar": 22,
