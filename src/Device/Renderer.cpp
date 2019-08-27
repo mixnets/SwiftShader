@@ -283,11 +283,11 @@ namespace sw
 				break;
 			case VK_POLYGON_MODE_LINE:
 				setupPrimitives = &Renderer::setupWireframeTriangles;
-				batch = 1;
+				batch /= 3;
 				break;
 			case VK_POLYGON_MODE_POINT:
 				setupPrimitives = &Renderer::setupPointTriangles;
-				batch = 1;
+				batch /= 3;
 				break;
 			default:
 				UNSUPPORTED("polygon mode: %d", int(context->polygonMode));
@@ -901,39 +901,42 @@ namespace sw
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
 		SetupProcessor::State &state = draw.setupState;
 
-		const Vertex &v0 = triangle[0].v0;
-		const Vertex &v1 = triangle[0].v1;
-		const Vertex &v2 = triangle[0].v2;
-
-		float d = (v0.position.y * v1.position.x - v0.position.x * v1.position.y) * v2.position.w +
-		          (v0.position.x * v2.position.y - v0.position.y * v2.position.x) * v1.position.w +
-		          (v2.position.x * v1.position.y - v1.position.x * v2.position.y) * v0.position.w;
-
-		bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? d > 0.0f : d < 0.0f;
-		if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
+		for(int i = 0; i < count; i++)
 		{
-			if(frontFacing) return 0;
-		}
-		if(state.cullMode & VK_CULL_MODE_BACK_BIT)
-		{
-			if(!frontFacing) return 0;
-		}
+			const Vertex &v0 = triangle[i].v0;
+			const Vertex &v1 = triangle[i].v1;
+			const Vertex &v2 = triangle[i].v2;
 
-		// Copy attributes
-		triangle[1].v0 = v1;
-		triangle[1].v1 = v2;
-		triangle[2].v0 = v2;
-		triangle[2].v1 = v0;
+			float d = (v0.y * v1.x - v0.x * v1.y) * v2.w +
+			          (v0.x * v2.y - v0.y * v2.x) * v1.w +
+			          (v2.x * v1.y - v1.x * v2.y) * v0.w;
 
-		for(int i = 0; i < 3; i++)
-		{
-			if(setupLine(*primitive, *triangle, draw))
+			bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? (d > 0) : (d < 0);
+			if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
 			{
-				primitive++;
-				visible++;
+				if(frontFacing) continue;
+			}
+			if(state.cullMode & VK_CULL_MODE_BACK_BIT)
+			{
+				if(!frontFacing) continue;
 			}
 
-			triangle++;
+			Triangle line[3];
+			line[0].v0 = v0;
+			line[0].v1 = v1;
+			line[1].v0 = v1;
+			line[1].v1 = v2;
+			line[2].v0 = v2;
+			line[2].v1 = v0;
+
+			for(int i = 0; i < 3; i++)
+			{
+				if(setupLine(*primitive, line[i], draw))
+				{
+					primitive++;
+					visible++;
+				}
+			}
 		}
 
 		return visible;
@@ -948,37 +951,39 @@ namespace sw
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall & DRAW_COUNT_BITS];
 		SetupProcessor::State &state = draw.setupState;
 
-		const Vertex &v0 = triangle[0].v0;
-		const Vertex &v1 = triangle[0].v1;
-		const Vertex &v2 = triangle[0].v2;
-
-		float d = (v0.position.y * v1.position.x - v0.position.x * v1.position.y) * v2.position.w +
-		          (v0.position.x * v2.position.y - v0.position.y * v2.position.x) * v1.position.w +
-		          (v2.position.x * v1.position.y - v1.position.x * v2.position.y) * v0.position.w;
-
-		bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? d > 0.0f : d < 0.0f;
-		if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
+		for(int i = 0; i < count; i++)
 		{
-			if(frontFacing) return 0;
-		}
-		if(state.cullMode & VK_CULL_MODE_BACK_BIT)
-		{
-			if(!frontFacing) return 0;
-		}
+			const Vertex &v0 = triangle[i].v0;
+			const Vertex &v1 = triangle[i].v1;
+			const Vertex &v2 = triangle[i].v2;
 
-		// Copy attributes
-		triangle[1].v0 = v1;
-		triangle[2].v0 = v2;
+			float d = (v0.y * v1.x - v0.x * v1.y) * v2.w +
+			          (v0.x * v2.y - v0.y * v2.x) * v1.w +
+			          (v2.x * v1.y - v1.x * v2.y) * v0.w;
 
-		for(int i = 0; i < 3; i++)
-		{
-			if(setupPoint(*primitive, *triangle, draw))
+			bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? (d > 0) : (d < 0);
+			if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
 			{
-				primitive++;
-				visible++;
+				if(frontFacing) continue;
+			}
+			if(state.cullMode & VK_CULL_MODE_BACK_BIT)
+			{
+				if(!frontFacing) continue;
 			}
 
-			triangle++;
+			Triangle point[3];
+			triangle[0].v0 = v0;
+			triangle[1].v0 = v1;
+			triangle[2].v0 = v2;
+
+			for(int i = 0; i < 3; i++)
+			{
+				if(setupPoint(*primitive, point[i], draw))
+				{
+					primitive++;
+					visible++;
+				}
+			}
 		}
 
 		return visible;
