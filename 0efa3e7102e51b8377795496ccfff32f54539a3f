@@ -52,6 +52,24 @@
       "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93b4b808_809c1840",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-28T16:35:10Z",
+      "side": 1,
+      "message": "Reworked things a little. I\u0027m not sure about putting the documentation into a tracker bug - it doesn\u0027t seem like an obvious place to go hunting to find documentation.\nInstead added some basic docs to the top of SpirvShader.cpp.\n\nUsed an if() based on a constexpr for the body of SpirvShader_dbg.cpp.",
+      "parentUuid": "da48e4d7_c0d65e17",
+      "revId": "0efa3e7102e51b8377795496ccfff32f54539a3f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
