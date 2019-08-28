@@ -61,19 +61,24 @@ bool Driver::loadSwiftShader()
 	#elif defined(NDEBUG)
 		#if defined(_WIN64)
 			return load("./build/Release_x64/vk_swiftshader.dll") ||
+			       load("./build/Release/vk_swiftshader.dll") ||
+			       load("./vk_swiftshader.dll");
 		#else
 			return load("./build/Release_Win32/vk_swiftshader.dll") ||
-		#endif
-			       load("./build/Release/libvk_swiftshader.dll") ||
+			       load("./build/Release/vk_swiftshader.dll") ||
+			       load("./vk_swiftshader.dll");
+		#endif       
 	#else
 		#if defined(_WIN64)
 			return load("./build/Debug_x64/vk_swiftshader.dll") ||
+			       load("./build/Debug/vk_swiftshader.dll") ||
+			       load("./vk_swiftshader.dll");
 		#else
 			return load("./build/Debug_Win32/vk_swiftshader.dll") ||
+			       load("./build/Debug/vk_swiftshader.dll") ||
+			       load("./vk_swiftshader.dll");
 		#endif
-			       load("./build/Debug/libvk_swiftshader.dll") ||
-	#endif
-			       load("./libvk_swiftshader.dll");
+	#endif  
 #elif OS_MAC
 	return load("./build/Darwin/libvk_swiftshader.dylib") ||
 	       load("swiftshader/libvk_swiftshader.dylib") ||

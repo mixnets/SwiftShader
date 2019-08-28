@@ -214,8 +214,8 @@ macro(set_shared_library_export_map TARGET DIR)
     elseif(APPLE)
         # The exported symbols list only exports the API functions and
         # hides all the others.
-        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS "-exported_symbols_list ${DIR}/${TARGET}.exports")
-        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_DEPENDS "${DIR}/${TARGET}.exports;")
+        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS "-exported_symbols_list ${DIR}/lib${TARGET}.exports")
+        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_DEPENDS "${DIR}/lib${TARGET}.exports;")
         # Don't allow undefined symbols, unless it's a Sanitizer build.
         if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-undefined,error")
@@ -223,8 +223,8 @@ macro(set_shared_library_export_map TARGET DIR)
     elseif(LINUX)
         # The version script only exports the API functions and
         # hides all the others.
-        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${DIR}/${TARGET}.lds")
-        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_DEPENDS "${DIR}/${TARGET}.lds;")
+        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${DIR}/lib${TARGET}.lds")
+        set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_DEPENDS "${DIR}/lib${TARGET}.lds;")
 
         # Don't allow symbols to be overridden by another module.
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY COMPILE_FLAGS " -fvisibility=protected")
@@ -2019,8 +2019,9 @@ if(BUILD_VULKAN)
         add_subdirectory(third_party/SPIRV-Tools)
     endif()
 
-    add_library(libvk_swiftshader SHARED ${VULKAN_LIST})
-    set_target_properties(libvk_swiftshader PROPERTIES
+    add_library(vk_swiftshader SHARED ${VULKAN_LIST})
+
+    set_target_properties(vk_swiftshader PROPERTIES
         INCLUDE_DIRECTORIES "${VULKAN_INCLUDE_DIR}"
         FOLDER "Vulkan"
         COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
@@ -2029,32 +2030,31 @@ if(BUILD_VULKAN)
     )
 
     if(WIN32)
-        set_property(TARGET libvk_swiftshader APPEND
+        set_property(TARGET vk_swiftshader APPEND
                      PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_WIN32_KHR")
     elseif(LINUX)
-        set_property(TARGET libvk_swiftshader APPEND
+        set_property(TARGET vk_swiftshader APPEND
                      PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_XLIB_KHR")
     elseif(APPLE)
-        set_property(TARGET libvk_swiftshader APPEND
+        set_property(TARGET vk_swiftshader APPEND
                      PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_MACOS_MVK")
     endif()
 
-    set_shared_library_export_map(libvk_swiftshader ${SOURCE_DIR}/Vulkan)
-    target_link_libraries(libvk_swiftshader ${Reactor} Yarn ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
+    set_shared_library_export_map(vk_swiftshader ${SOURCE_DIR}/Vulkan)
+    target_link_libraries(vk_swiftshader ${Reactor} Yarn ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
     add_custom_command(
-        TARGET libvk_swiftshader
+        TARGET vk_swiftshader
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:libvk_swiftshader>/translator
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libvk_swiftshader> $<TARGET_FILE_DIR:libvk_swiftshader>/translator/${LIB_PREFIX}Vulkan_translator${CMAKE_SHARED_LIBRARY_SUFFIX}
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:vk_swiftshader>/translator
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> $<TARGET_FILE_DIR:vk_swiftshader>/translator/${LIB_PREFIX}Vulkan_translator${CMAKE_SHARED_LIBRARY_SUFFIX}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libvk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
     )
 
     # The vk_swiftshader_icd.json manifest file will point to ICD_LIBRARY_PATH.
     # Set ICD_LIBRARY_PATH to be a relative path similar to "./libvk_swiftshader.so", so both files can be moved.
     # A relative path is relative to the manifest file.
-    # Note that the library name is always "libvk_swiftshader"; we do not use the platform-specific prefix.
-    set(ICD_LIBRARY_PATH "libvk_swiftshader${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    set(ICD_LIBRARY_PATH "${CMAKE_SHARED_LIBRARY_PREFIX}vk_swiftshader${CMAKE_SHARED_LIBRARY_SUFFIX}")
     if(WIN32)
         # The path is output to a JSON file, which requires backslashes to be escaped.
         set(ICD_LIBRARY_PATH ".\\\\${ICD_LIBRARY_PATH}")
@@ -2229,6 +2229,8 @@ if(BUILD_TESTS AND BUILD_VULKAN)
     )
 
     add_executable(vk-unittests ${VK_UNITTESTS_LIST})
+	add_dependencies(vk-unittests vk_swiftshader)
+
     set_target_properties(vk-unittests PROPERTIES
         INCLUDE_DIRECTORIES "${VK_UNITTESTS_INCLUDE_DIR}"
         FOLDER "Tests"
