@@ -43,6 +43,8 @@ unsigned int minPrimitives = 1;
 unsigned int maxPrimitives = 1 << 21;
 #endif
 
+static constexpr uint32_t UNINITIALIZED_CLIP_FLAGS = 0xbadf00d;
+
 namespace sw
 {
 	template<typename T>
@@ -421,6 +423,13 @@ namespace sw
 			batch->firstPrimitive = batch->id * numPrimitivesPerBatch;
 			batch->numPrimitives = std::min(batch->firstPrimitive + numPrimitivesPerBatch, numPrimitives) - batch->firstPrimitive;
 
+			for (auto &tri : batch->triangles)
+			{
+				tri.v0.clipFlags = UNINITIALIZED_CLIP_FLAGS;
+				tri.v1.clipFlags = UNINITIALIZED_CLIP_FLAGS;
+				tri.v2.clipFlags = UNINITIALIZED_CLIP_FLAGS;
+			}
+
 			for (int cluster = 0; cluster < MaxClusterCount; cluster++)
 			{
 				batch->clusterTickets[cluster] = std::move(clusterQueues[cluster].take());
@@ -581,6 +590,10 @@ namespace sw
 			Vertex &v0 = triangles->v0;
 			Vertex &v1 = triangles->v1;
 			Vertex &v2 = triangles->v2;
+
+			ASSERT_MSG(v0.clipFlags != UNINITIALIZED_CLIP_FLAGS, "v0 holds uninitialized clip flags");
+			ASSERT_MSG(v1.clipFlags != UNINITIALIZED_CLIP_FLAGS, "v0 holds uninitialized clip flags");
+			ASSERT_MSG(v2.clipFlags != UNINITIALIZED_CLIP_FLAGS, "v0 holds uninitialized clip flags");
 
 			if((v0.clipFlags & v1.clipFlags & v2.clipFlags) == Clipper::CLIP_FINITE)
 			{
