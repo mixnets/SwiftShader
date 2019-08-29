@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f97495e_e6c4ee80",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-29T14:22:13Z",
+      "side": 1,
+      "message": "Alexis, do we have a tracker bug on our end for SWANGLE work that can be added here?",
+      "revId": "a770ea88c58791fc5bddbe0948399e223dacb5e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
