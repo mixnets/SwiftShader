@@ -29,6 +29,7 @@
 #include "source/opt/dead_insert_elim_pass.h"
 #include "source/opt/dead_variable_elimination.h"
 #include "source/opt/decompose_initialized_variables_pass.h"
+#include "source/opt/desc_sroa.h"
 #include "source/opt/eliminate_dead_constant_pass.h"
 #include "source/opt/eliminate_dead_functions_pass.h"
 #include "source/opt/eliminate_dead_members_pass.h"
@@ -37,10 +38,12 @@
 #include "source/opt/fold_spec_constant_op_and_composite_pass.h"
 #include "source/opt/freeze_spec_constant_value_pass.h"
 #include "source/opt/generate_webgpu_initializers_pass.h"
+#include "source/opt/graphics_robust_access_pass.h"
 #include "source/opt/if_conversion.h"
 #include "source/opt/inline_exhaustive_pass.h"
 #include "source/opt/inline_opaque_pass.h"
 #include "source/opt/inst_bindless_check_pass.h"
+#include "source/opt/inst_buff_addr_check_pass.h"
 #include "source/opt/legalize_vector_shuffle_pass.h"
 #include "source/opt/licm_pass.h"
 #include "source/opt/local_access_chain_convert_pass.h"
@@ -74,5 +77,6 @@
 #include "source/opt/upgrade_memory_model.h"
 #include "source/opt/vector_dce.h"
 #include "source/opt/workaround1209.h"
+#include "source/opt/wrap_opkill.h"
 
 #endif  // SOURCE_OPT_PASSES_H_
