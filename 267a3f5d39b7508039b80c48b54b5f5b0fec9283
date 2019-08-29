@@ -45,6 +45,30 @@
       "revId": "267a3f5d39b7508039b80c48b54b5f5b0fec9283",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b9b278f_4d512050",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-08-29T16:46:15Z",
+      "side": 1,
+      "message": "Agreed. Will do now.",
+      "parentUuid": "b492b495_635bf78c",
+      "range": {
+        "startLine": 55,
+        "startChar": 3,
+        "endLine": 61,
+        "endChar": 48
+      },
+      "revId": "267a3f5d39b7508039b80c48b54b5f5b0fec9283",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
