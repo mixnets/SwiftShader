@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e45daa3_3e20a75e",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-29T15:53:36Z",
+      "side": 1,
+      "message": "Please add bound checking ASSERTs on these functions, and/or add a single accessor with the bounds checking that returns a struct ref (see my next comment)",
+      "range": {
+        "startLine": 158,
+        "startChar": 1,
+        "endLine": 158,
+        "endChar": 2
+      },
+      "revId": "267a3f5d39b7508039b80c48b54b5f5b0fec9283",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b492b495_635bf78c",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-29T15:53:36Z",
+      "side": 1,
+      "message": "Maybe put these in an arrayed struct? Then everything per-render target is together, and you can do whole-struct assignment copying.",
+      "range": {
+        "startLine": 55,
+        "startChar": 3,
+        "endLine": 61,
+        "endChar": 48
+      },
+      "revId": "267a3f5d39b7508039b80c48b54b5f5b0fec9283",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
