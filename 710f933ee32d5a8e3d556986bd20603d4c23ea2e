@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99f4fd31_667ad81f",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-29T17:45:36Z",
+      "side": 1,
+      "message": "Any reason why you prefer to use init() over field initializers?\nUsing an initializer mades forgetting hard / impossible, and where you\u0027d call init(), you can just assign with {}.",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
