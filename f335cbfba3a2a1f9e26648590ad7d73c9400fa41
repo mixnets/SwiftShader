@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e8a467f_216ed316",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-29T19:08:34Z",
+      "side": 1,
+      "message": "ANGLE",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 6
+      },
+      "revId": "f335cbfba3a2a1f9e26648590ad7d73c9400fa41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8be4599a_7ae6342a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-29T19:08:34Z",
+      "side": 1,
+      "message": "Let\u0027s add some more justification here:\n\nSection 32.3. Required Format Support of the Vulkan 1.1 spec dictates that all formats which must support VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT, also support VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_IMAGE_USAGE_TRANSFER_DST_BIT, and VK_IMAGE_USAGE_SAMPLE_BIT.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 47
+      },
+      "revId": "f335cbfba3a2a1f9e26648590ad7d73c9400fa41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a2d4ccf_0064ab99",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-29T19:08:34Z",
+      "side": 1,
+      "message": "Also b/139479506",
+      "range": {
+        "startLine": 14,
+        "startChar": 6,
+        "endLine": 14,
+        "endChar": 15
+      },
+      "revId": "f335cbfba3a2a1f9e26648590ad7d73c9400fa41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
