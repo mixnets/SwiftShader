@@ -94,6 +94,30 @@
       "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16f44029_0d978342",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-08-29T18:29:07Z",
+      "side": 1,
+      "message": "Apparently, having field initializers and constructing an object from an argument list are not compatible (RegressionBot compilation failure). I\u0027ll go back to patch 6.",
+      "parentUuid": "d7534495_f8c2dd56",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
