@@ -22,6 +22,30 @@
       "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "341c7944_6439ca30",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-08-29T17:52:43Z",
+      "side": 1,
+      "message": "I thought it would be misleading because PixelProcessor::States does a memset to 0, but I can do it anyway if you want.",
+      "parentUuid": "99f4fd31_667ad81f",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
