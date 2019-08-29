@@ -70,6 +70,30 @@
       "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d7534495_f8c2dd56",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-08-29T17:59:45Z",
+      "side": 1,
+      "message": "I made the change anyway. I think it\u0027s also fine and it\u0027s better for sw::Context.",
+      "parentUuid": "bdb13155_aa4271e1",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
