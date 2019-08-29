@@ -46,6 +46,30 @@
       "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdb13155_aa4271e1",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-08-29T17:55:29Z",
+      "side": 1,
+      "message": "Ah, that\u0027s a good counter argument. Okay.",
+      "parentUuid": "341c7944_6439ca30",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "710f933ee32d5a8e3d556986bd20603d4c23ea2e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
