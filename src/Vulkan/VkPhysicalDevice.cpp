@@ -56,7 +56,7 @@ const VkPhysicalDeviceFeatures& PhysicalDevice::getFeatures() const
 		VK_FALSE,  // textureCompressionBC
 		VK_FALSE,  // occlusionQueryPrecise
 		VK_FALSE,  // pipelineStatisticsQuery
-		VK_FALSE,  // vertexPipelineStoresAndAtomics
+		VK_TRUE,   // vertexPipelineStoresAndAtomics
 		VK_FALSE,  // fragmentStoresAndAtomics
 		VK_FALSE,  // shaderTessellationAndGeometryPointSize
 		VK_FALSE,  // shaderImageGatherExtended
