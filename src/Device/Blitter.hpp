@@ -15,10 +15,10 @@
 #ifndef sw_Blitter_hpp
 #define sw_Blitter_hpp
 
-#include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Vulkan/VkFormat.h"
+#include "System/Hash.hpp"
 
 #include <mutex>
 #include <cstring>
@@ -35,7 +35,8 @@ namespace sw
 	{
 		struct Options
 		{
-			Options() = default;
+			Options()
+				: writeMask(0), clearOperation(false), filter(false), convertSRGB(false), clampToEdge(false) {}
 			Options(bool filter, bool convertSRGB)
 				: writeMask(0xF), clearOperation(false), filter(filter), convertSRGB(convertSRGB), clampToEdge(false) {}
 			Options(unsigned int writeMask)
@@ -58,25 +59,26 @@ namespace sw
 			bool filter : 1;
 			bool convertSRGB : 1;
 			bool clampToEdge : 1;
+
+			SW_DECLARE_COMPARABLE(Options,
+				writeMask, clearOperation, filter, convertSRGB, clampToEdge);
 		};
 
-		struct State : Memset<State>, Options
+		struct State
 		{
-			State() : Memset(this, 0) {}
-			State(const Options &options) : Memset(this, 0), Options(options) {}
+			State() {}
+			State(const Options &options) : options(options) {}
 			State(vk::Format sourceFormat, vk::Format destFormat, int srcSamples, int destSamples, const Options &options) :
-				Memset(this, 0), Options(options), sourceFormat(sourceFormat), destFormat(destFormat), srcSamples(srcSamples), destSamples(destSamples) {}
+				options(options), sourceFormat(sourceFormat), destFormat(destFormat), srcSamples(srcSamples), destSamples(destSamples) {}
 
-			bool operator==(const State &state) const
-			{
-				static_assert(is_memcmparable<State>::value, "Cannot memcmp State");
-				return memcmp(this, &state, sizeof(State)) == 0;
-			}
-
+			Options options;
 			vk::Format sourceFormat;
 			vk::Format destFormat;
 			int srcSamples = 0;
 			int destSamples = 0;
+
+			SW_DECLARE_COMPARABLE(State,
+				options, sourceFormat, destFormat, srcSamples, destSamples);
 		};
 
 		struct BlitData
