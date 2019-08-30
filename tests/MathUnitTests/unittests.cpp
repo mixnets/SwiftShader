@@ -13,11 +13,13 @@
 // limitations under the License.
 
 #include "System/Half.hpp"
+#include "System/Hash.hpp"
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
 #include <cstdlib>
+#include <unordered_map>
 
 using namespace sw;
 
@@ -118,4 +120,93 @@ TEST(MathTest, SharedExponentExhaustive)
 
 		EXPECT_EQ(ref, val);
 	}
+}
+
+TEST(MathTest, FastHashPOD)
+{
+	EXPECT_EQ(sw::FastHash::hash(static_cast<unsigned int>(99)), sw::FastHash::hash(static_cast<unsigned int>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<int>(99)), sw::FastHash::hash(static_cast<int>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<uint8_t>(99)), sw::FastHash::hash(static_cast<uint8_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<int8_t>(99)), sw::FastHash::hash(static_cast<int8_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<uint16_t>(99)), sw::FastHash::hash(static_cast<uint16_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<int16_t>(99)), sw::FastHash::hash(static_cast<int16_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<uint32_t>(99)), sw::FastHash::hash(static_cast<uint32_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<int32_t>(99)), sw::FastHash::hash(static_cast<int32_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<uint64_t>(99)), sw::FastHash::hash(static_cast<uint64_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(static_cast<int64_t>(99)), sw::FastHash::hash(static_cast<int64_t>(99)));
+	EXPECT_EQ(sw::FastHash::hash(99.0f), sw::FastHash::hash(99.0f));
+	EXPECT_EQ(sw::FastHash::hash(99.0), sw::FastHash::hash(99.0));
+
+	EXPECT_NE(sw::FastHash::hash(static_cast<unsigned int>(98)), sw::FastHash::hash(static_cast<unsigned int>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<int>(98)), sw::FastHash::hash(static_cast<int>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<uint8_t>(98)), sw::FastHash::hash(static_cast<uint8_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<int8_t>(98)), sw::FastHash::hash(static_cast<int8_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<uint16_t>(98)), sw::FastHash::hash(static_cast<uint16_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<int16_t>(98)), sw::FastHash::hash(static_cast<int16_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<uint32_t>(98)), sw::FastHash::hash(static_cast<uint32_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<int32_t>(98)), sw::FastHash::hash(static_cast<int32_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<uint64_t>(98)), sw::FastHash::hash(static_cast<uint64_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(static_cast<int64_t>(98)), sw::FastHash::hash(static_cast<int64_t>(99)));
+	EXPECT_NE(sw::FastHash::hash(98.0f), sw::FastHash::hash(99.0f));
+	EXPECT_NE(sw::FastHash::hash(98.0), sw::FastHash::hash(99.0));
+}
+
+TEST(MathTest, FastHashString)
+{
+	EXPECT_EQ(sw::FastHash::hash("abc"), sw::FastHash::hash("abc"));
+	EXPECT_EQ(sw::FastHash::hash(std::string("abc")), sw::FastHash::hash(std::string("abc")));
+
+	EXPECT_NE(sw::FastHash::hash("abc"), sw::FastHash::hash("def"));
+	EXPECT_NE(sw::FastHash::hash(std::string("abc")), sw::FastHash::hash(std::string("def")));
+}
+
+struct Hashable
+{
+	int i = 0;
+	int8_t i8 = 0;
+	uint32_t u32 = 0;
+	int64_t i64 = 0;
+	float f32 = 0;
+	std::string s;
+
+	SW_DECLARE_COMPARABLE(Hashable, i, i8, u32, i64, f32, s);
+};
+
+TEST(MathTest, FastHashHashable)
+{
+	Hashable a = {};
+	a.i = 10;
+	a.i8 = 20;
+	a.u32 = 30;
+	a.i64 = 40;
+	a.f32 = 50;
+
+	EXPECT_EQ(sw::FastHash::hash(a), sw::FastHash::hash(a));
+
+	Hashable b = a;
+	b.i64 = 1;
+	EXPECT_NE(sw::FastHash::hash(a), sw::FastHash::hash(b));
+}
+
+TEST(MathTest, FastHashAsStdHash)
+{
+	std::unordered_map<Hashable, bool, sw::FastHash> map;
+
+	Hashable a = {}, b = {}, c = {};
+	map[a] = true;
+	map[b] = true;
+	EXPECT_EQ(map.size(), 1U);
+
+	c.s = "and now for something completely different";
+	map[c] = true;
+	EXPECT_EQ(map.size(), 2U);
+}
+
+TEST(MathTest, FastHashArrays)
+{
+	std::array<int, 5> a = { 1, 2, 3, 4, 5 };
+	std::array<int, 5> b = { 1, 2, 9, 4, 5 };
+
+	EXPECT_EQ(sw::FastHash::hash(a), sw::FastHash::hash(a));
+	EXPECT_NE(sw::FastHash::hash(a), sw::FastHash::hash(b));
 }

@@ -472,10 +472,10 @@ namespace sw
 
 	void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 	{
-		bool writeR = state.writeRed;
-		bool writeG = state.writeGreen;
-		bool writeB = state.writeBlue;
-		bool writeA = state.writeAlpha;
+		bool writeR = state.options.writeRed;
+		bool writeG = state.options.writeGreen;
+		bool writeB = state.options.writeBlue;
+		bool writeA = state.options.writeAlpha;
 		bool writeRGBA = writeR && writeG && writeB && writeA;
 
 		switch(state.destFormat)
@@ -1070,10 +1070,10 @@ namespace sw
 
 	void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 	{
-		bool writeR = state.writeRed;
-		bool writeG = state.writeGreen;
-		bool writeB = state.writeBlue;
-		bool writeA = state.writeAlpha;
+		bool writeR = state.options.writeRed;
+		bool writeG = state.options.writeGreen;
+		bool writeB = state.options.writeBlue;
+		bool writeA = state.options.writeAlpha;
 		bool writeRGBA = writeR && writeG && writeB && writeA;
 
 		switch(state.destFormat)
@@ -1297,7 +1297,7 @@ namespace sw
 	{
 		float4 scale, unscale;
 
-		if(state.clearOperation &&
+		if(state.options.clearOperation &&
 		   state.sourceFormat.isNonNormalizedInteger() &&
 		   !state.destFormat.isNonNormalizedInteger())
 		{
@@ -1325,7 +1325,7 @@ namespace sw
 		bool srcSRGB = state.sourceFormat.isSRGBformat();
 		bool dstSRGB = state.destFormat.isSRGBformat();
 
-		if(state.convertSRGB && ((srcSRGB && !preScaled) || dstSRGB))   // One of the formats is sRGB encoded.
+		if(state.options.convertSRGB && ((srcSRGB && !preScaled) || dstSRGB))   // One of the formats is sRGB encoded.
 		{
 			value *= preScaled ? Float4(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z, 1.0f / scale.w) : // Unapply scale
 			                     Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w); // Apply unscale
@@ -1422,7 +1422,7 @@ namespace sw
 			Int4 constantColorI;
 			bool hasConstantColorF = false;
 			Float4 constantColorF;
-			if(state.clearOperation)
+			if(state.options.clearOperation)
 			{
 				if(intBoth) // Integer types
 				{
@@ -1440,12 +1440,12 @@ namespace sw
 
 			For(Int j = y0d, j < y1d, j++)
 			{
-				Float y = state.clearOperation ? RValue<Float>(y0) : y0 + Float(j) * h;
+				Float y = state.options.clearOperation ? RValue<Float>(y0) : y0 + Float(j) * h;
 				Pointer<Byte> destLine = dest + (dstQuadLayout ? j & Int(~1) : RValue<Int>(j)) * dPitchB;
 
 				For(Int i = x0d, i < x1d, i++)
 				{
-					Float x = state.clearOperation ? RValue<Float>(x0) : x0 + Float(i) * w;
+					Float x = state.options.clearOperation ? RValue<Float>(x0) : x0 + Float(i) * w;
 					Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
 
 					if(hasConstantColorI)
@@ -1466,7 +1466,7 @@ namespace sw
 						Int X = Int(x);
 						Int Y = Int(y);
 
-						if(state.clampToEdge)
+						if(state.options.clampToEdge)
 						{
 							X = Clamp(X, 0, sWidth - 1);
 							Y = Clamp(Y, 0, sHeight - 1);
@@ -1483,12 +1483,12 @@ namespace sw
 						Float4 color;
 
 						bool preScaled = false;
-						if(!state.filter || intSrc)
+						if(!state.options.filter || intSrc)
 						{
 							Int X = Int(x);
 							Int Y = Int(y);
 
-							if(state.clampToEdge)
+							if(state.options.clampToEdge)
 							{
 								X = Clamp(X, 0, sWidth - 1);
 								Y = Clamp(Y, 0, sHeight - 1);
@@ -1500,7 +1500,7 @@ namespace sw
 
 							if(state.srcSamples > 1) // Resolve multisampled source
 							{
-								if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+								if(state.options.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 								{
 									ApplyScaleAndClamp(color, state);
 									preScaled = true;
@@ -1511,7 +1511,7 @@ namespace sw
 									s += *Pointer<Int>(blit + OFFSET(BlitData, sSliceB));
 									color = readFloat4(s, state);
 
-									if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+									if(state.options.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 									{
 										ApplyScaleAndClamp(color, state);
 										preScaled = true;
@@ -1526,7 +1526,7 @@ namespace sw
 							Float X = x;
 							Float Y = y;
 
-							if(state.clampToEdge)
+							if(state.options.clampToEdge)
 							{
 								X = Min(Max(x, 0.5f), Float(sWidth) - 0.5f);
 								Y = Min(Max(y, 0.5f), Float(sHeight) - 0.5f);
@@ -1553,7 +1553,7 @@ namespace sw
 							Float4 c10 = readFloat4(s10, state);
 							Float4 c11 = readFloat4(s11, state);
 
-							if(state.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+							if(state.options.convertSRGB && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
 							{
 								ApplyScaleAndClamp(c00, state);
 								ApplyScaleAndClamp(c01, state);
@@ -1789,11 +1789,11 @@ namespace sw
 		bool doFilter = (filter != VK_FILTER_NEAREST);
 		State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 		            { doFilter, doFilter || (src->getSampleCountFlagBits() > 1) });
-		state.clampToEdge = (region.srcOffsets[0].x < 0) ||
-		                    (region.srcOffsets[0].y < 0) ||
-		                    (static_cast<uint32_t>(region.srcOffsets[1].x) > srcExtent.width) ||
-		                    (static_cast<uint32_t>(region.srcOffsets[1].y) > srcExtent.height) ||
-		                    (doFilter && ((x0 < 0.5f) || (y0 < 0.5f)));
+		state.options.clampToEdge = (region.srcOffsets[0].x < 0) ||
+		                            (region.srcOffsets[0].y < 0) ||
+		                            (static_cast<uint32_t>(region.srcOffsets[1].x) > srcExtent.width) ||
+		                            (static_cast<uint32_t>(region.srcOffsets[1].y) > srcExtent.height) ||
+		                            (doFilter && ((x0 < 0.5f) || (y0 < 0.5f)));
 
 		auto blitRoutine = getBlitRoutine(state);
 		if(!blitRoutine)
