@@ -25,6 +25,7 @@
 #include "Common/Types.hpp"
 #include "Device/Config.hpp"
 #include "Device/Sampler.hpp"
+#include "System/Hash.hpp"
 
 #include <spirv/unified1/spirv.hpp>
 
@@ -852,6 +853,8 @@ namespace sw
 				: Type{ATTRIBTYPE_UNUSED}, DecorationBits{0}
 			{
 			}
+
+			SW_DECLARE_COMPARABLE(InterfaceComponent, Type, DecorationBits);
 		};
 
 		struct BuiltinMapping

@@ -17,8 +17,9 @@
 
 #include "Color.hpp"
 #include "Context.hpp"
-#include "Memset.hpp"
 #include "RoutineCache.hpp"
+
+#include <System/Hash.hpp>
 
 namespace sw
 {
@@ -28,40 +29,56 @@ namespace sw
 	struct DrawData;
 	struct Primitive;
 
+	struct ComparableVkStencilOpState : public VkStencilOpState
+	{
+		inline ComparableVkStencilOpState& operator = (const VkStencilOpState& rhs)
+		{
+			*static_cast<VkStencilOpState*>(this) = rhs;
+			return *this;
+		}
+
+		SW_DECLARE_COMPARABLE(ComparableVkStencilOpState,
+			failOp, passOp, depthFailOp, compareOp, compareMask, writeMask, reference);
+	};
+
 	class PixelProcessor
 	{
 	public:
-		struct States : Memset<States>
+		struct States
 		{
-			States() : Memset(this, 0) {}
+			uint64_t shaderID = 0;
 
-			uint32_t computeHash();
+			VkCompareOp depthCompareMode = VK_COMPARE_OP_NEVER;
+			bool depthWriteEnable = false;
+			bool quadLayoutDepthBuffer = false;
 
-			uint64_t shaderID;
+			bool stencilActive = 0;
+			ComparableVkStencilOpState frontStencil = {};
+			ComparableVkStencilOpState backStencil = {};
 
-			VkCompareOp depthCompareMode;
-			bool depthWriteEnable;
-			bool quadLayoutDepthBuffer;
+			bool depthTestActive = false;
+			bool occlusionEnabled = false;
+			bool perspective = false;
+			bool depthClamp = false;
 
-			bool stencilActive;
-			VkStencilOpState frontStencil;
-			VkStencilOpState backStencil;
+			std::array<BlendState, RENDERTARGETS> blendState = {};
 
-			bool depthTestActive;
-			bool occlusionEnabled;
-			bool perspective;
-			bool depthClamp;
+			unsigned int colorWriteMask = 0;
+			std::array<VkFormat, RENDERTARGETS> targetFormat = {};
+			unsigned int multiSample = 0;
+			unsigned int multiSampleMask = 0;
+			bool alphaToCoverage = false;
+			bool centroid = false;
+			VkFrontFace frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+			VkFormat depthFormat = VK_FORMAT_UNDEFINED;
 
-			BlendState blendState[RENDERTARGETS];
-
-			unsigned int colorWriteMask;
-			VkFormat targetFormat[RENDERTARGETS];
-			unsigned int multiSample;
-			unsigned int multiSampleMask;
-			bool alphaToCoverage;
-			bool centroid;
-			VkFrontFace frontFace;
-			VkFormat depthFormat;
+			SW_DECLARE_COMPARABLE(States,
+				shaderID, depthCompareMode, depthWriteEnable,
+				quadLayoutDepthBuffer, stencilActive, frontStencil, backStencil,
+				depthTestActive, occlusionEnabled, perspective, depthClamp,
+				blendState, colorWriteMask, targetFormat, multiSample,
+				multiSampleMask, alphaToCoverage, centroid, frontFace,
+				depthFormat);
 		};
 
 		struct State : States
