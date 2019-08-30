@@ -108,9 +108,9 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "Vulkan.rc",
     "VulkanPlatform.h",
     "libVulkan.cpp",
-    "vk_swiftshader.def",
     "main.cpp",
     "resource.h",
+    "vk_swiftshader.def",
   ]
 
   configs = [ ":swiftshader_libvulkan_private_config" ]
@@ -133,13 +133,13 @@ swiftshader_shared_library("swiftshader_libvulkan") {
   }
 
   deps = [
+    "${swiftshader_spirv_tools_dir}:SPIRV-Tools",
     "../Device",
     "../Pipeline",
     "../Reactor:swiftshader_llvm_reactor",
     "../System",
     "../WSI",
     "../Yarn",
-    "$swiftshader_spirv_tools_dir:SPIRV-Tools",
   ]
 
   include_dirs = [
