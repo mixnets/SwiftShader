@@ -18,6 +18,7 @@
 #include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Config.hpp"
+#include "Memset.hpp"
 #include "Stream.hpp"
 #include "System/Types.hpp"
 
@@ -36,10 +37,8 @@ namespace sw
 		unsigned char data[vk::MAX_PUSH_CONSTANT_SIZE];
 	};
 
-	struct BlendState
+	struct BlendState : Memset<BlendState>
 	{
-		void init();
-
 		bool alphaBlendEnable;
 		VkBlendFactor sourceBlendFactor;
 		VkBlendFactor destBlendFactor;
