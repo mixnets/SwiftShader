@@ -10,9 +10,14 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX ON)
 elseif(WIN32)
 elseif(APPLE)
+    
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
+
+set(CMAKE_MACOSX_RPATH ON)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X deployment version" FORCE)
+    set(CMAKE_OSX_SYSROOT "10.11" CACHE STRING "Minimum OS X deployment version" FORCE)
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -33,8 +38,6 @@ else()
         set(ARCH "x86")
     endif()
 endif()
-
-set(CMAKE_MACOSX_RPATH ON)
 
 if ((CMAKE_GENERATOR MATCHES "Visual Studio") AND (CMAKE_GENERATOR_TOOLSET STREQUAL ""))
   message(WARNING "Visual Studio generators use the x86 host compiler by "
