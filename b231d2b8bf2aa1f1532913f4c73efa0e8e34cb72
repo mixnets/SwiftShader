@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "d24e1469_c221a6f5",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-08-30T18:40:07Z",
+      "side": 1,
+      "message": "We\u0027re being too clever here. There\u0027s just the explicit control (8.11.2):\n\nIf the fragment shader specifies the EarlyFragmentTests OpExecutionMode, the per-fragment tests described in Early Fragment Test Mode are performed prior to fragment shader execution. Otherwise, they are performed after fragment shader execution\n\n\nLet\u0027s clean this up properly in a follow-up?",
+      "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa9dbd61_396849a1",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 17
