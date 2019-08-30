@@ -53,13 +53,17 @@ namespace sw
 		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
 		{
 			auto index = start;
+			auto batchPtr = &(batch[0][0]);
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index];
-				batch[i][1] = indices[index];
-				batch[i][2] = indices[index];
+				*batchPtr++ = indices[index++];
+			}
 
-				index += 1;
+			// Repeat the last index to allow for SIMD width overrun.
+			index--;
+			for(unsigned int i = 0; i < 3; i++)
+			{
+				*batchPtr++ = indices[index];
 			}
 			break;
 		}
@@ -484,7 +488,7 @@ namespace sw
 
 		auto& vertexTask = batch->vertexTask;
 		vertexTask.primitiveStart = batch->firstPrimitive;
-		vertexTask.vertexCount = batch->numPrimitives * 3;
+		vertexTask.vertexCount = batch->numPrimitives * ((draw->topology == VK_PRIMITIVE_TOPOLOGY_POINT_LIST) ? 1 : 3);
 		if (vertexTask.vertexCache.drawCall != draw->id)
 		{
 			vertexTask.vertexCache.clear();
@@ -578,10 +582,13 @@ namespace sw
 			}
 		}
 
-		// Repeat the last index to allow for SIMD width overrun.
-		triangleIndicesOut[triangleCount][0] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][1] = triangleIndicesOut[triangleCount - 1][2];
-		triangleIndicesOut[triangleCount][2] = triangleIndicesOut[triangleCount - 1][2];
+		if (topology != VK_PRIMITIVE_TOPOLOGY_POINT_LIST)
+		{
+			// Repeat the last index to allow for SIMD width overrun.
+			triangleIndicesOut[triangleCount][0] = triangleIndicesOut[triangleCount - 1][2];
+			triangleIndicesOut[triangleCount][1] = triangleIndicesOut[triangleCount - 1][2];
+			triangleIndicesOut[triangleCount][2] = triangleIndicesOut[triangleCount - 1][2];
+		}
 	}
 
 	int DrawCall::setupSolidTriangles(Triangle *triangles, Primitive *primitives, const DrawCall *drawCall, int count)
