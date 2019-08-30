@@ -14,23 +14,19 @@
 
 import("../swiftshader.gni")
 
-swiftshader_source_set("Yarn") {
+swiftshader_source_set("Yarn_headers") {
   sources = [
-    "ConditionVariable.hpp",
     "Containers.hpp",
-    "Debug.cpp",
     "Debug.hpp",
     "Defer.hpp",
     "Finally.hpp",
     "OSFiber.hpp",
     "Pool.hpp",
     "SAL.hpp",
-    "Scheduler.cpp",
+    "ConditionVariable.hpp",
     "Scheduler.hpp",
-    "Thread.cpp",
     "Thread.hpp",
     "Ticket.hpp",
-    "Trace.cpp",
     "Trace.hpp",
     "Utils.hpp",
     "WaitGroup.hpp",
@@ -40,7 +36,18 @@ swiftshader_source_set("Yarn") {
     sources += [
       "OSFiber_windows.hpp",
     ]
-  } else {
+  }
+}
+
+swiftshader_source_set("Yarn") {
+  sources = [
+    "Debug.cpp",
+    "Scheduler.cpp",
+    "Thread.cpp",
+    "Trace.cpp",
+  ]
+
+  if (!is_win) {
     sources += [
       "OSFiber_aarch64.c",
       "OSFiber_asm_aarch64.h",
@@ -61,4 +68,6 @@ swiftshader_source_set("Yarn") {
   include_dirs = [
     "..",
   ]
+
+  public_deps = [ ":Yarn_headers" ]
 }
