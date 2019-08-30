@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3c79d202_b1a6d2e8",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-30T19:19:52Z",
+      "side": 1,
+      "message": "Please open a bug",
+      "parentUuid": "c2d430a1_246aa14f",
+      "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa9dbd61_396849a1",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 17
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "I\u0027m already working on it locally.",
       "parentUuid": "aa9dbd61_396849a1",
+      "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cb08ad9_20b2c3df",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2978,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-30T19:19:52Z",
+      "side": 1,
+      "message": "Would it be feasible to have dEQP coverage for that?",
+      "parentUuid": "48607ad0_77915525",
       "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
