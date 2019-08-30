@@ -79,8 +79,17 @@ namespace sw
 					As<Float4>(indices + Int4(*Pointer<Int>(data + OFFSET(DrawData, baseVertex))));
 		}
 
+		// Prevent duplicate vertices from using atomics multiple times
+		Int4 storesAndAtomicsMask(0xFFFFFFFF);
+		storesAndAtomicsMask.y = IfThenElse((batch[1] == batch[0]), Int(0x0), Int(0xFFFFFFFF));
+		storesAndAtomicsMask.z = IfThenElse((batch[2] == batch[0]) ||
+		                                    (batch[2] == batch[1]), Int(0x0), Int(0xFFFFFFFF));
+		storesAndAtomicsMask.w = IfThenElse((batch[3] == batch[0]) &&
+		                                    (batch[3] == batch[1]) &&
+		                                    (batch[3] == batch[2]), Int(0x0), Int(0xFFFFFFFF));
+
 		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-		spirvShader->emit(&routine, activeLaneMask, activeLaneMask, descriptorSets);
+		spirvShader->emit(&routine, activeLaneMask, storesAndAtomicsMask, descriptorSets);
 
 		spirvShader->emitEpilog(&routine);
 	}
