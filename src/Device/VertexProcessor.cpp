@@ -31,19 +31,6 @@ namespace sw
 		}
 	}
 
-	uint32_t VertexProcessor::States::computeHash()
-	{
-		uint32_t *state = reinterpret_cast<uint32_t*>(this);
-		uint32_t hash = 0;
-
-		for(unsigned int i = 0; i < sizeof(States) / sizeof(uint32_t); i++)
-		{
-			hash ^= state[i];
-		}
-
-		return hash;
-	}
-
 	bool VertexProcessor::State::operator==(const State &state) const
 	{
 		if(hash != state.hash)
@@ -51,8 +38,7 @@ namespace sw
 			return false;
 		}
 
-		static_assert(is_memcmparable<State>::value, "Cannot memcmp States");
-		return memcmp(static_cast<const States*>(this), static_cast<const States*>(&state), sizeof(States)) == 0;
+		return *static_cast<const States*>(this) ==  *static_cast<const States*>(&state);
 	}
 
 	VertexProcessor::VertexProcessor()
@@ -89,7 +75,7 @@ namespace sw
 			state.input[i].attribType = context->vertexShader->inputs[i*4].Type;
 		}
 
-		state.hash = state.computeHash();
+		state.hash = state.States::hash<sw::FastHash>();
 
 		return state;
 	}

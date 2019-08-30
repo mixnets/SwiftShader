@@ -17,10 +17,10 @@
 
 #include "Context.hpp"
 #include "Matrix.hpp"
-#include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
+#include "System/Hash.hpp"
 
 namespace sw
 {
@@ -53,16 +53,14 @@ namespace sw
 	class VertexProcessor
 	{
 	public:
-		struct States : Memset<States>
+		struct States
 		{
-			States() : Memset(this, 0) {}
-
-			uint32_t computeHash();
-
-			uint64_t shaderID;
+			uint64_t shaderID = 0;
 
 			struct Input
 			{
+				Input() : type(STREAMTYPE_COLOR), count(0), normalized(false), attribType(0) {}
+
 				operator bool() const   // Returns true if stream contains data
 				{
 					return count != 0;
@@ -72,9 +70,14 @@ namespace sw
 				unsigned int count : 3;
 				bool normalized    : 1;
 				unsigned int attribType : BITS(SpirvShader::ATTRIBTYPE_LAST);
+
+				SW_DECLARE_COMPARABLE(Input,
+					type, count, normalized, attribType);
 			};
 
-			Input input[MAX_INTERFACE_COMPONENTS / 4];
+			std::array<Input, MAX_INTERFACE_COMPONENTS / 4> input = {};
+
+			SW_DECLARE_COMPARABLE(States, shaderID, input);
 		};
 
 		struct State : States
