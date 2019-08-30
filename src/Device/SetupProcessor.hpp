@@ -17,9 +17,10 @@
 
 #include <Pipeline/SpirvShader.hpp>
 #include "Context.hpp"
-#include "Memset.hpp"
 #include "RoutineCache.hpp"
+
 #include "System/Types.hpp"
+#include "System/Hash.hpp"
 
 namespace sw
 {
@@ -33,11 +34,13 @@ namespace sw
 	class SetupProcessor
 	{
 	public:
-		struct States : Memset<States>
+		struct States
 		{
-			States() : Memset(this, 0) {}
-
-			uint32_t computeHash();
+			States() : isDrawPoint(false), isDrawLine(false),
+				isDrawTriangle(false), interpolateZ(false), interpolateW(false),
+				frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE),
+				cullMode(VK_CULL_MODE_NONE), slopeDepthBias(false),
+				multiSample(0), rasterizerDiscard(false) {}
 
 			bool isDrawPoint               : 1;
 			bool isDrawLine                : 1;
@@ -50,7 +53,12 @@ namespace sw
 			unsigned int multiSample       : 3;   // 1, 2 or 4
 			bool rasterizerDiscard         : 1;
 
-			SpirvShader::InterfaceComponent gradient[MAX_INTERFACE_COMPONENTS];
+			std::array<SpirvShader::InterfaceComponent, MAX_INTERFACE_COMPONENTS> gradient = {};
+
+			SW_DECLARE_COMPARABLE(States,
+				isDrawPoint, isDrawLine, isDrawTriangle, interpolateZ,
+				interpolateW, frontFace, cullMode, slopeDepthBias, multiSample,
+				rasterizerDiscard);
 		};
 
 		struct State : States
