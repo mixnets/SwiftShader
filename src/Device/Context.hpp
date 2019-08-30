@@ -19,6 +19,8 @@
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Config.hpp"
 #include "Stream.hpp"
+
+#include "System/Hash.hpp"
 #include "System/Types.hpp"
 
 namespace vk
@@ -38,15 +40,18 @@ namespace sw
 
 	struct BlendState
 	{
-		void init();
+		bool alphaBlendEnable = false;
+		VkBlendFactor sourceBlendFactor = VK_BLEND_FACTOR_ONE;
+		VkBlendFactor destBlendFactor = VK_BLEND_FACTOR_ZERO;
+		VkBlendOp blendOperation = VK_BLEND_OP_ADD;
+		VkBlendFactor sourceBlendFactorAlpha = VK_BLEND_FACTOR_ONE;
+		VkBlendFactor destBlendFactorAlpha = VK_BLEND_FACTOR_ZERO;
+		VkBlendOp blendOperationAlpha = VK_BLEND_OP_ADD;
 
-		bool alphaBlendEnable;
-		VkBlendFactor sourceBlendFactor;
-		VkBlendFactor destBlendFactor;
-		VkBlendOp blendOperation;
-		VkBlendFactor sourceBlendFactorAlpha;
-		VkBlendFactor destBlendFactorAlpha;
-		VkBlendOp blendOperationAlpha;
+		SW_DECLARE_COMPARABLE(BlendState,
+				alphaBlendEnable, sourceBlendFactor, destBlendFactor,
+				blendOperation, sourceBlendFactorAlpha, destBlendFactorAlpha,
+				blendOperationAlpha);
 	};
 
 	class Context
