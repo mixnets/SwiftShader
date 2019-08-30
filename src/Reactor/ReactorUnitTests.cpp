@@ -40,6 +40,9 @@ TEST(ReactorUnitTests, Sample)
 {
 	std::shared_ptr<Routine> routine;
 
+	auto sNaN = std::numeric_limits<float>::signaling_NaN();
+	auto sNaNi = *reinterpret_cast<uint32_t*>(&sNaN);
+
 	{
 		Function<Int(Pointer<Int>, Int)> function;
 		{
@@ -47,6 +50,9 @@ TEST(ReactorUnitTests, Sample)
 			Int x = p[-1];
 			Int y = function.Arg<1>();
 			Int z = 4;
+
+			Float4 f = RValue<Float4>(*reinterpret_cast<float*>(&sNaNi));
+			*Pointer<Float>(p) = f.x;
 
 			For(Int i = 0, i < 10, i++)
 			{
@@ -70,6 +76,7 @@ TEST(ReactorUnitTests, Sample)
 			int one[2] = {1, 0};
 			int result = callable(&one[1], 2);
 			EXPECT_EQ(result, reference(&one[1], 2));
+			EXPECT_EQ(one[1], sNaNi);
 		}
 	}
 
