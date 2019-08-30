@@ -261,6 +261,7 @@ namespace sw
 		for(int i = 0; i < MAX_INTERFACE_COMPONENTS/4; i++)
 		{
 			data->input[i] = context->input[i].buffer;
+			data->robustnessSize[i] = context->input[i].robustnessSize;
 			data->stride[i] = context->input[i].vertexStride;
 		}
 
@@ -1031,15 +1032,19 @@ namespace sw
 		occlusionQuery = nullptr;
 	}
 
-	void Renderer::advanceInstanceAttributes(Stream* inputs)
+	void Renderer::advanceInstanceAttributes(Stream* inputs, bool robustBufferAccess)
 	{
 		for(uint32_t i = 0; i < vk::MAX_VERTEX_INPUT_BINDINGS; i++)
 		{
 			auto &attrib = inputs[i];
-			if (attrib.count && attrib.instanceStride)
+			if (attrib.count && attrib.instanceStride && (!robustBufferAccess || (attrib.instanceStride < attrib.robustnessSize)))
 			{
 				// Under the casts: attrib.buffer += attrib.instanceStride
 				attrib.buffer = (void const *)((uintptr_t)attrib.buffer + attrib.instanceStride);
+				if(robustBufferAccess)
+				{
+					attrib.robustnessSize -= attrib.instanceStride;
+				}
 			}
 		}
 	}

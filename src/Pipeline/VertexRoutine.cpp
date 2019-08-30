@@ -89,8 +89,13 @@ namespace sw
 			{
 				Pointer<Byte> input = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, input) + sizeof(void*) * (i / 4));
 				UInt stride = *Pointer<UInt>(data + OFFSET(DrawData, stride) + sizeof(uint32_t) * (i / 4));
+				UInt robustnessSize(0);
+				if(state.robustBufferAccess)
+				{
+					robustnessSize = *Pointer<UInt>(data + OFFSET(DrawData, robustnessSize) + sizeof(uint32_t) * (i / 4));
+				}
 
-				auto value = readStream(input, stride, state.input[i / 4], batch);
+				auto value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize);
 				routine.inputs[i + 0] = value.x;
 				routine.inputs[i + 1] = value.y;
 				routine.inputs[i + 2] = value.z;
@@ -132,14 +137,29 @@ namespace sw
 		clipFlags |= Pointer<Int>(constants + OFFSET(Constants,fini))[SignMask(finiteXYZ)];
 	}
 
-	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> &batch)
+	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> &batch,
+	                                   bool robustBufferAccess, UInt & robustnessSize)
 	{
 		Vector4f v;
 
-		Pointer<Byte> source0 = buffer + batch[0] * stride;
-		Pointer<Byte> source1 = buffer + batch[1] * stride;
-		Pointer<Byte> source2 = buffer + batch[2] * stride;
-		Pointer<Byte> source3 = buffer + batch[3] * stride;
+		UInt4 indices(0);
+		indices.x = batch[0];
+		indices.y = batch[1];
+		indices.z = batch[2];
+		indices.w = batch[3];
+		indices *= UInt4(stride);
+
+		UInt4 inBounds(0);
+		if (robustBufferAccess)
+		{
+			inBounds = CmpLT(indices, UInt4(robustnessSize));
+			indices &= inBounds;
+		}
+
+		Pointer<Byte> source0 = buffer + indices.x;
+		Pointer<Byte> source1 = buffer + indices.y;
+		Pointer<Byte> source2 = buffer + indices.z;
+		Pointer<Byte> source3 = buffer + indices.w;
 
 		bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || stream.normalized;
 
@@ -480,6 +500,14 @@ namespace sw
 		if(stream.count < 2) v.y = Float4(0.0f);
 		if(stream.count < 3) v.z = Float4(0.0f);
 		if(stream.count < 4) v.w = isNativeFloatAttrib ? As<Float4>(Float4(1.0f)) : As<Float4>(Int4(1));
+
+		if(robustBufferAccess)
+		{
+			v.x = As<Float4>(As<UInt4>(v.x) & inBounds);
+			v.y = As<Float4>(As<UInt4>(v.y) & inBounds);
+			v.z = As<Float4>(As<UInt4>(v.z) & inBounds);
+			v.w = As<Float4>(As<UInt4>(v.w) & inBounds);
+		}
 
 		return v;
 	}
