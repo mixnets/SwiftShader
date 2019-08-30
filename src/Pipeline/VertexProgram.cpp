@@ -63,24 +63,40 @@ namespace sw
 	{
 	}
 
-	void VertexProgram::program(Pointer<UInt> &batch)
+	void VertexProgram::program(Pointer<UInt> &batch, Pointer<UInt>& tagCache)
 	{
+		Int4 indices;
+		indices = Insert(indices, As<Int>(batch[0]), 0);
+		indices = Insert(indices, As<Int>(batch[1]), 1);
+		indices = Insert(indices, As<Int>(batch[2]), 2);
+		indices = Insert(indices, As<Int>(batch[3]), 3);
+
 		auto it = spirvShader->inputBuiltins.find(spv::BuiltInVertexIndex);
 		if (it != spirvShader->inputBuiltins.end())
 		{
 			assert(it->second.SizeInComponents == 1);
 
-			Int4 indices;
-			indices = Insert(indices, As<Int>(batch[0]), 0);
-			indices = Insert(indices, As<Int>(batch[1]), 1);
-			indices = Insert(indices, As<Int>(batch[2]), 2);
-			indices = Insert(indices, As<Int>(batch[3]), 3);
 			routine.getVariable(it->second.Id)[it->second.FirstComponent] =
 					As<Float4>(indices + Int4(*Pointer<Int>(data + OFFSET(DrawData, baseVertex))));
 		}
 
+		// Check if any of the indices are already cached
+		Int4 cacheIndices = indices & Int4(VertexCache::TAG_MASK);
+		cacheIndices = Insert(cacheIndices, As<Int>(tagCache[cacheIndices.x]), 0);
+		cacheIndices = Insert(cacheIndices, As<Int>(tagCache[cacheIndices.y]), 1);
+		cacheIndices = Insert(cacheIndices, As<Int>(tagCache[cacheIndices.z]), 2);
+		cacheIndices = Insert(cacheIndices, As<Int>(tagCache[cacheIndices.w]), 3);
+		Int4 storesAndAtomicsMask = CmpNEQ(indices, cacheIndices);
+
+		// Prevent duplicate vertices from using atomics multiple times
+		Int4 batchDuplicates = CmpNEQ(indices.xxyy, indices.yzzz); // Compares [0,1], [0,2], [1, 2]
+		storesAndAtomicsMask.y = Int(storesAndAtomicsMask.y) & batchDuplicates.x;
+		storesAndAtomicsMask.z = Int(storesAndAtomicsMask.z) & batchDuplicates.y & batchDuplicates.z;
+		batchDuplicates = CmpNEQ(indices.xyzz, indices.wwww); // Compares [0,3], [1,3], [2, 3]
+		storesAndAtomicsMask.w = Int(storesAndAtomicsMask.w) & batchDuplicates.x & batchDuplicates.y & batchDuplicates.z;
+
 		auto activeLaneMask = SIMD::Int(0xFFFFFFFF);
-		spirvShader->emit(&routine, activeLaneMask, activeLaneMask, descriptorSets);
+		spirvShader->emit(&routine, activeLaneMask, storesAndAtomicsMask, descriptorSets);
 
 		spirvShader->emitEpilog(&routine);
 	}

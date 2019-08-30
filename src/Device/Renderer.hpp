@@ -66,6 +66,7 @@ namespace sw
 		vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 
 		const void *input[MAX_INTERFACE_COMPONENTS / 4];
+		unsigned int robustnessSize[MAX_INTERFACE_COMPONENTS / 4];
 		unsigned int stride[MAX_INTERFACE_COMPONENTS / 4];
 		const void *indices;
 
@@ -209,7 +210,7 @@ namespace sw
 		void addQuery(vk::Query *query);
 		void removeQuery(vk::Query *query);
 
-		void advanceInstanceAttributes(Stream* inputs);
+		void advanceInstanceAttributes(Stream* inputs, bool robustBufferAccess);
 
 		void synchronize();
 

@@ -34,7 +34,7 @@ namespace sw
 		virtual ~VertexProgram();
 
 	private:
-		void program(Pointer<UInt> &batch) override;
+		void program(Pointer<UInt> &batch, Pointer<UInt>& tagCache) override;
 
 		const vk::DescriptorSet::Bindings &descriptorSets;
 	};
