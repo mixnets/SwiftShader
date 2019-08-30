@@ -473,8 +473,62 @@ if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
 endif()
 
+<<<<<<< HEAD   (18c9ac Optimize non-solid polygon rasterization)
 if(REACTOR_VERIFY_LLVM_IR)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_LLVM_IR_VERIFICATION")
+=======
+# Precompiled header macro. Parameters are source file list and filename for pch cpp file.
+macro(spvtools_pch SRCS PCHPREFIX)
+  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio")
+    set(PCH_NAME "$(IntDir)\\${PCHPREFIX}.pch")
+    # make source files use/depend on PCH_NAME
+    set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yu${PCHPREFIX}.h /FI${PCHPREFIX}.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
+    # make PCHPREFIX.cpp file compile and generate PCH_NAME
+    set_source_files_properties("${PCHPREFIX}.cpp" PROPERTIES COMPILE_FLAGS "/Yc${PCHPREFIX}.h /Fp${PCH_NAME} /Zm300" OBJECT_OUTPUTS "${PCH_NAME}")
+    list(APPEND ${SRCS} "${PCHPREFIX}.cpp")
+  endif()
+endmacro(spvtools_pch)
+
+add_subdirectory(external)
+
+# Warning about extra semi-colons.
+#
+# This is not supported on all compilers/versions. so enabling only
+# for clang, since that works for all versions that our bots run.
+#
+# This is intentionally done after adding the external subdirectory,
+# so we don't enforce this flag on our dependencies, some of which do
+# not pass it.
+#
+# If the minimum version of CMake supported is updated to 3.0 or
+# later, then check_cxx_compiler_flag could be used instead.
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    add_compile_options("-Wextra-semi")
+endif()
+
+add_subdirectory(source)
+add_subdirectory(tools)
+
+add_subdirectory(test)
+add_subdirectory(examples)
+
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  install(
+    FILES
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/libspirv.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/optimizer.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/linker.hpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/instrument.hpp
+    DESTINATION
+      ${CMAKE_INSTALL_INCLUDEDIR}/spirv-tools/)
+endif(ENABLE_SPIRV_TOOLS_INSTALL)
+
+if (NOT "${SPIRV_SKIP_TESTS}")
+  add_test(NAME spirv-tools-copyrights
+           COMMAND ${PYTHON_EXECUTABLE} utils/check_copyright.py
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+>>>>>>> BRANCH (ca40c9 Squashed 'third_party/SPIRV-Tools/' changes from 9559cdbdf..)
 endif()
 
 if(WIN32)
