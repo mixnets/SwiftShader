@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c0fdb976_7987a014",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-30T12:51:22Z",
+      "side": 1,
+      "message": "b/140285568\n\nDo we have tracking bugs for the other ones, or shall I create them?",
+      "range": {
+        "startLine": 5,
+        "startChar": 22,
+        "endLine": 5,
+        "endChar": 38
+      },
+      "revId": "d83c34d5537eb4a7085b63942a0f9e4bba4672ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
