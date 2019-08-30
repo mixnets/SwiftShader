@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5fa6f7c8_6b7d6814",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-08-30T13:15:01Z",
+      "side": 1,
+      "message": "Please provide more details, starting with a tracker bug (if there isn\u0027t one already) which explains the intent and long-term goal of this feature. I\u0027d like to avoid having a mishmash of debug features, and this one seems like it would get superseded by a more full-fledged SPIR-V debugger. If so, I\u0027d like it to be documented whether this feature will be deprecated or if you think it will still serve a purpose.\n\nAlso please mention the flag name in this message, and where things get printed.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "f41d100fd8167d1a9e983ad2ecfdc89dc93182cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
