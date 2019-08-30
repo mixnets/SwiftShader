@@ -19,6 +19,8 @@
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Config.hpp"
 #include "Stream.hpp"
+
+#include "System/Hash.hpp"
 #include "System/Types.hpp"
 
 namespace vk
@@ -38,15 +40,18 @@ namespace sw
 
 	struct BlendState
 	{
-		void init();
+		bool alphaBlendEnable = false;
+		VkBlendFactor sourceBlendFactor = VK_BLEND_FACTOR_ONE;
+		VkBlendFactor destBlendFactor = VK_BLEND_FACTOR_ZERO;
+		VkBlendOp blendOperation = VK_BLEND_OP_ADD;
+		VkBlendFactor sourceBlendFactorAlpha = VK_BLEND_FACTOR_ONE;
+		VkBlendFactor destBlendFactorAlpha = VK_BLEND_FACTOR_ZERO;
+		VkBlendOp blendOperationAlpha = VK_BLEND_OP_ADD;
 
-		bool alphaBlendEnable;
-		VkBlendFactor sourceBlendFactor;
-		VkBlendFactor destBlendFactor;
-		VkBlendOp blendOperation;
-		VkBlendFactor sourceBlendFactorAlpha;
-		VkBlendFactor destBlendFactorAlpha;
-		VkBlendOp blendOperationAlpha;
+		SW_DECLARE_COMPARABLE(BlendState,
+				alphaBlendEnable, sourceBlendFactor, destBlendFactor,
+				blendOperation, sourceBlendFactorAlpha, destBlendFactorAlpha,
+				blendOperationAlpha);
 	};
 
 	class Context
@@ -69,18 +74,18 @@ namespace sw
 		void setBlendState(int index, BlendState state);
 		BlendState getBlendState(int index) const;
 
-		VkPrimitiveTopology topology;
+		VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 
-		bool stencilEnable;
-		VkStencilOpState frontStencil;
-		VkStencilOpState backStencil;
+		bool stencilEnable = false;
+		VkStencilOpState frontStencil = {};
+		VkStencilOpState backStencil = {};
 
 		// Pixel processor states
-		VkCullModeFlags cullMode;
-		VkFrontFace frontFace;
+		VkCullModeFlags cullMode = VK_CULL_MODE_FRONT_BIT;
+		VkFrontFace frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
-		float depthBias;
-		float slopeDepthBias;
+		float depthBias = 0.0f;
+		float slopeDepthBias = 0.0f;
 
 		VkFormat renderTargetInternalFormat(int index) const;
 		int colorWriteActive(int index) const;
@@ -89,32 +94,32 @@ namespace sw
 		vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 		Stream input[MAX_INTERFACE_COMPONENTS / 4];
 
-		vk::ImageView *renderTarget[RENDERTARGETS];
-		vk::ImageView *depthBuffer;
-		vk::ImageView *stencilBuffer;
+		std::array<vk::ImageView*, RENDERTARGETS> renderTarget = {};
+		vk::ImageView *depthBuffer = nullptr;
+		vk::ImageView *stencilBuffer = nullptr;
 
-		vk::PipelineLayout const *pipelineLayout;
+		vk::PipelineLayout const *pipelineLayout = nullptr;
 
 		// Shaders
-		const SpirvShader *pixelShader;
-		const SpirvShader *vertexShader;
+		const SpirvShader *pixelShader = nullptr;
+		const SpirvShader *vertexShader = nullptr;
 
-		bool occlusionEnabled;
+		bool occlusionEnabled = false;
 
 		// Pixel processor states
-		bool rasterizerDiscard;
-		bool depthBoundsTestEnable;
-		bool depthBufferEnable;
-		VkCompareOp depthCompareMode;
-		bool depthWriteEnable;
+		bool rasterizerDiscard = false;
+		bool depthBoundsTestEnable = false;
+		bool depthBufferEnable = false;
+		VkCompareOp depthCompareMode = VK_COMPARE_OP_LESS;
+		bool depthWriteEnable = false;
 
-		float lineWidth;
+		float lineWidth = 1.0f;
 
-		int colorWriteMask[RENDERTARGETS];   // RGBA
-		unsigned int sampleMask;
-		unsigned int multiSampleMask;
-		int sampleCount;
-		bool alphaToCoverage;
+		std::array<int, RENDERTARGETS> colorWriteMask;   // RGBA
+		unsigned int sampleMask = 0xFFFFFFFF;
+		unsigned int multiSampleMask = 0;
+		int sampleCount = 0;
+		bool alphaToCoverage = false;
 
 	private:
 		bool colorWriteActive() const;
