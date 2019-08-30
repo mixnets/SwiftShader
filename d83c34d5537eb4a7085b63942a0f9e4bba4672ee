@@ -46,6 +46,23 @@
       "revId": "d83c34d5537eb4a7085b63942a0f9e4bba4672ee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8cb97a0_9e2eab6f",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 85815,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-08-30T18:05:07Z",
+      "side": 1,
+      "message": "sugoi@, these are your independent blend tests :)",
+      "revId": "d83c34d5537eb4a7085b63942a0f9e4bba4672ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
