@@ -60,6 +60,9 @@ swiftshader_source_set("Yarn") {
       "OSFiber_asm_x86.h",
       "OSFiber_x64.c",
       "OSFiber_x86.c",
+      "OSFiber_ppc64.c",
+      "OSFiber_asm_ppc64.h",
+      "OSFiber_asm_ppc64.S",
     ]
   }
 
