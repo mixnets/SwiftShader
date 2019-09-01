@@ -7,3 +7,4 @@
 
 Google Inc.
 The ANGLE Project Authors <angleproject@googlegroups.com>
+Shawn Anastasio <shawnanastasio@gmail.com>
