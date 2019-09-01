@@ -2978,12 +2978,12 @@ namespace sw
 		if (object.kind == Object::Kind::Constant)
 		{
 			// Constant source data.
-			auto src = reinterpret_cast<float *>(object.constantValue.get());
+			const uint32_t *src = object.constantValue.get();
 			VisitMemoryObject(pointerId, [&](uint32_t i, uint32_t offset)
 			{
 				auto p = ptr + offset;
 				if (interleavedByLane) { p = interleaveByLane(p); }
-				SIMD::Store(p, SIMD::Float(src[i]), robustness, state->activeLaneMask(), atomic, memoryOrder);
+				SIMD::Store(p, SIMD::Int(src[i]), robustness, state->activeLaneMask(), atomic, memoryOrder);
 			});
 		}
 		else
