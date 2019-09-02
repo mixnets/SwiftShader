@@ -123,6 +123,24 @@
       "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c959005_192b5426",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 2978,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-02T07:31:27Z",
+      "side": 1,
+      "message": "Yes. Some of the edges are pretty subtle to test, but I will add a task for Siru.",
+      "parentUuid": "2cb08ad9_20b2c3df",
+      "revId": "b231d2b8bf2aa1f1532913f4c73efa0e8e34cb72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
