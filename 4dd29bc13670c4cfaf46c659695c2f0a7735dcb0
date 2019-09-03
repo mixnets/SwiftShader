@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5e21b1f_cf4701bc",
+        "filename": "src/Yarn/WaitGroup.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-03T15:56:18Z",
+      "side": 1,
+      "message": "sorry for the misformatting. Do you use a formatting tool? It looks like you don\u0027t use tabs, unlike the rest of the SwiftShader sources.",
+      "revId": "4dd29bc13670c4cfaf46c659695c2f0a7735dcb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
