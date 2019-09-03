@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef marl_blocking_call_h
+#define marl_blocking_call_h
+
 #include "defer.h"
 #include "waitgroup.h"
 
 #include <thread>
 #include <type_traits>
+#include <utility>
 
 namespace marl {
 namespace detail {
@@ -30,7 +34,7 @@ class OnNewThread {
     WaitGroup wg(1);
     auto thread = std::thread([&] {
       defer(wg.done());
-      result = f(args...);
+      result = f(std::forward<Args>(args)...);
     });
     wg.wait();
     thread.join();
@@ -46,7 +50,7 @@ class OnNewThread<void> {
     WaitGroup wg(1);
     auto thread = std::thread([&] {
       defer(wg.done());
-      f(args...);
+      f(std::forward<Args>(args)...);
     });
     wg.wait();
     thread.join();
@@ -78,3 +82,5 @@ auto inline blocking_call(F&& f, Args&&... args) -> decltype(f(args...)) {
 }
 
 }  // namespace marl
+
+#endif  // marl_blocking_call_h
