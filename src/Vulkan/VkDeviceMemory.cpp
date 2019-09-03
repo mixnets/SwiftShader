@@ -16,28 +16,58 @@
 
 #include "VkConfig.h"
 
+#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#include "VkDeviceMemoryExternalLinux.hpp"
+#else
+#include "VkDeviceMemoryExternalNone.hpp"
+#endif
+
 namespace vk
 {
 
 DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo* pCreateInfo, void* mem) :
-	size(pCreateInfo->allocationSize), memoryTypeIndex(pCreateInfo->memoryTypeIndex)
+	size(pCreateInfo->allocationSize), memoryTypeIndex(pCreateInfo->memoryTypeIndex),
+	external(reinterpret_cast<External *>(mem))
 {
 	ASSERT(size);
+
+	if (external)
+	{
+		new (external) External(pCreateInfo);
+	}
 }
 
 void DeviceMemory::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	vk::deallocate(buffer, DEVICE_MEMORY);
+	if (external)
+	{
+		if (buffer)
+		{
+			external->unmap(buffer, size);
+			buffer = nullptr;
+		}
+		external->~External();
+		vk::deallocate(external, pAllocator);
+	}
+
+	if (buffer)
+	{
+		vk::deallocate(buffer, DEVICE_MEMORY);
+	}
 }
 
 size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo* pCreateInfo)
 {
-	// buffer is "GPU memory", so we use device memory for it
-	return 0;
+	return External::ComputeRequiredAllocationSize(pCreateInfo);
 }
 
 VkResult DeviceMemory::allocate()
 {
+	if (external && !buffer)
+	{
+		buffer = external->map(size);
+	}
+
 	if(!buffer)
 	{
 		buffer = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY);
