@@ -83,6 +83,15 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
     "VkShaderModule.hpp",
     "VulkanPlatform.h",
   ]
+  if (is_linux || is_android) {
+    sources += [
+      "VkSemaphoreExternalLinux.hpp",
+    ]
+  } else {
+    sources += [
+      "VkSemaphoreExternalNone.hpp",
+    ]
+  }
 }
 
 swiftshader_shared_library("swiftshader_libvulkan") {
@@ -113,6 +122,7 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "VkQueue.cpp",
     "VkRenderPass.cpp",
     "VkSampler.cpp",
+    "VkSemaphore.cpp",
     "VkShaderModule.cpp",
     "Vulkan.rc",
     "libVulkan.cpp",
