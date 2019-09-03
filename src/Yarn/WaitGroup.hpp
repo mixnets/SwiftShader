@@ -48,6 +48,9 @@ namespace yarn {
 //      // Block until all tasks have completed.
 //      wg.wait();
 //  }
+//
+// IMPORTANT NOTE: Unlike ConditionVariable, WaitGroup is a copyable object
+// that can be shared safely between different fibers and threads.
 class WaitGroup
 {
 public:
@@ -65,13 +68,12 @@ public:
     inline void wait() const;
 
 private:
-    struct Data
-    {
-        std::atomic<unsigned int> count = { 0 };
+    struct Data {
+        unsigned int count = 0;
         ConditionVariable condition;
         std::mutex mutex;
     };
-    const std::shared_ptr<Data> data = std::make_shared<Data>();
+    std::shared_ptr<Data> data = std::make_shared<Data>();
 };
 
 inline WaitGroup::WaitGroup(unsigned int initialCount /* = 0 */)
@@ -81,20 +83,27 @@ inline WaitGroup::WaitGroup(unsigned int initialCount /* = 0 */)
 
 void WaitGroup::add(unsigned int count /* = 1 */) const
 {
+    std::unique_lock<std::mutex> lock(data->mutex);
     data->count += count;
 }
 
 bool WaitGroup::done() const
 {
+    std::unique_lock<std::mutex> lock(data->mutex);
+    bool result = false;
     YARN_ASSERT(data->count > 0, "yarn::WaitGroup::done() called too many times");
     auto count = --data->count;
     if (count == 0)
     {
-        std::unique_lock<std::mutex> lock(data->mutex);
+        // Technical note: this notify_all() called is performed with the
+        // mutex acquired. This is slightly less efficient than doing it after
+        // releasing the lock, but avoids subtle ordering issues that can lead
+        // to runtime crashes if one cannot guarantee that the WaitGroup
+        // instance still exists when this specific call is performed.
         data->condition.notify_all();
-        return true;
+        result = true;
     }
-    return false;
+    return result;
 }
 
 void WaitGroup::wait() const

@@ -48,35 +48,38 @@ private:
     std::mutex mutex;
     containers::vector<Scheduler::Fiber*, 4> waiting;
     std::condition_variable condition;
-    std::atomic<int> numWaiting = { 0 };
-    std::atomic<int> numWaitingOnCondition = { 0 };
+    int numWaiting = 0;
+    int numWaitingOnCondition = 0;
 };
 
 void ConditionVariable::notify_one()
 {
-    if (numWaiting == 0) { return; }
+    // Technical note: notify_one() is supposed to only wake a single waiter,
+    // but if both fibers and threads are waiting on this instance, it is
+    // impossible to determine safely which one should be selected. This
+    // implementation will simply wake up both a fiber and a thread in this
+    // case. This causes spurious wakeups, but avoids potential starvations.
     std::unique_lock<std::mutex> lock(mutex);
+    if (numWaiting == 0) { return; }
     if (waiting.size() > 0)
     {
         auto fiber = waiting.back();
         waiting.pop_back();
         fiber->schedule();
     }
-    lock.unlock();
     if (numWaitingOnCondition > 0) { condition.notify_one(); }
 }
 
 void ConditionVariable::notify_all()
 {
-    if (numWaiting == 0) { return; }
     std::unique_lock<std::mutex> lock(mutex);
+    if (numWaiting == 0) { return; }
     while (waiting.size() > 0)
     {
         auto fiber = waiting.back();
         waiting.pop_back();
         fiber->schedule();
     }
-    lock.unlock();
     if (numWaitingOnCondition > 0) { condition.notify_all(); }
 }
 
@@ -87,7 +90,6 @@ void ConditionVariable::wait(std::unique_lock<std::mutex>& dataLock, Predicate p
     {
         return;
     }
-    numWaiting++;
     if (auto fiber = Scheduler::Fiber::current())
     {
         // Currently executing on a scheduler fiber.
@@ -95,6 +97,7 @@ void ConditionVariable::wait(std::unique_lock<std::mutex>& dataLock, Predicate p
         while (!pred())
         {
             mutex.lock();
+            numWaiting++;
             waiting.push_back(fiber);
             mutex.unlock();
 
@@ -107,11 +110,18 @@ void ConditionVariable::wait(std::unique_lock<std::mutex>& dataLock, Predicate p
     {
         // Currently running outside of the scheduler.
         // Delegate to the std::condition_variable.
+        mutex.lock();
+        numWaiting++;
         numWaitingOnCondition++;
+        mutex.unlock();
+
         condition.wait(dataLock, pred);
+
+        mutex.lock();
         numWaitingOnCondition--;
+        numWaiting--;
+        mutex.unlock();
     }
-    numWaiting--;
 }
 
 } // namespace yarn
