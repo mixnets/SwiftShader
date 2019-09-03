@@ -15,6 +15,7 @@
 #ifndef VK_SEMAPHORE_HPP_
 #define VK_SEMAPHORE_HPP_
 
+#include "VkConfig.h"
 #include "VkObject.hpp"
 
 namespace vk
@@ -37,7 +38,13 @@ public:
 
 	void signal();
 
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+	VkResult importFd(int fd);
+	int exportFd();
+#endif
+
 private:
+	class External;
 	class Impl;
 	Impl* impl = nullptr;
 };
