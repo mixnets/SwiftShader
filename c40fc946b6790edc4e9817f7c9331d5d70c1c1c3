@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57754927_ca7dee11",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-03T15:36:44Z",
+      "side": 1,
+      "message": "arg, there should be a destroy() method here, not a destructor.",
+      "revId": "c40fc946b6790edc4e9817f7c9331d5d70c1c1c3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
