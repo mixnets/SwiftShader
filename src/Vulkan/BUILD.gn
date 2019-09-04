@@ -121,7 +121,11 @@ swiftshader_shared_library("swiftshader_libvulkan") {
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
   output_name = "libvk_swiftshader"
-  output_dir = "$root_out_dir/swiftshader"
+  if (!is_fuchsia) {
+    # NOTE: The Fuchsia packaging scripts to not work with the library
+    # is not under $root_out_dir/lib/.
+    output_dir = "$root_out_dir/swiftshader"
+  }
 
   if (is_mac) {
     ldflags = [
