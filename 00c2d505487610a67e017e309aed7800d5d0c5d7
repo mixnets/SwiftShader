@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "853fef3f_fea6f3d4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-04T15:40:40Z",
+      "side": 1,
+      "message": "You can just use:\nBug chromium:1000668",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 66
+      },
+      "revId": "00c2d505487610a67e017e309aed7800d5d0c5d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
