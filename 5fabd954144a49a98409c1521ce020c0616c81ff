@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc0ece28_344d6c3e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-04T14:23:38Z",
+      "side": 1,
+      "message": "Perhaps create a tracker bug so that if we fix the scripts we have something to link back to?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 9
+      },
+      "revId": "5fabd954144a49a98409c1521ce020c0616c81ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
