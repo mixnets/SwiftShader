@@ -22,6 +22,30 @@
       "revId": "5fabd954144a49a98409c1521ce020c0616c81ff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85516b1b_dd13213d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-04T14:34:03Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll create a Chromium bug for this then and update this!",
+      "parentUuid": "bc0ece28_344d6c3e",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 9
+      },
+      "revId": "5fabd954144a49a98409c1521ce020c0616c81ff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
