@@ -22,6 +22,30 @@
       "revId": "9bb6fdb9ed7d7be8dbdd24bc8afe0073663c82e2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e89436f_dc69837b",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3822,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-04T19:30:31Z",
+      "side": 1,
+      "message": "Tan() several functions earlier in the file is done this way as well.\n\nVery happy to do this at the SpirvShader level if Nicolas would prefer that.",
+      "parentUuid": "22acdf92_1141440b",
+      "range": {
+        "startLine": 3817,
+        "startChar": 1,
+        "endLine": 3822,
+        "endChar": 43
+      },
+      "revId": "9bb6fdb9ed7d7be8dbdd24bc8afe0073663c82e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
