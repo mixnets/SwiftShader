@@ -18,6 +18,8 @@
 
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
 #include "VkSemaphoreExternalLinux.hpp"
+#elif SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
+#include "VkSemaphoreExternalFuchsia.hpp"
 #else
 #include "VkSemaphoreExternalNone.hpp"
 #endif
@@ -216,5 +218,28 @@ VkResult Semaphore::exportFd(int* pFd) const
 	return impl->external->exportFd(pFd);
 }
 #endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
+VkResult Semaphore::importHandle(zx_handle_t handle)
+{
+	std::unique_lock<std::mutex> lock(impl->mutex);
+	if (!impl->external)
+	{
+		impl->allocateExternalNoInit();
+	}
+	impl->external->importHandle(handle);
+	return VK_SUCCESS;
+}
+
+zx_handle_t Semaphore::exportHandle() const
+{
+	std::unique_lock<std::mutex> lock(impl->mutex);
+	if (!impl->external)
+	{
+		ABORT("Cannot export non-external semaphore");
+	}
+	return impl->external->exportHandle();
+}
+#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
 
 }  // namespace vk
