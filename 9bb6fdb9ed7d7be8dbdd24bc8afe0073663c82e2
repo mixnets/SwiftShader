@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22acdf92_1141440b",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3822,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-04T19:28:45Z",
+      "side": 1,
+      "message": "I\u0027m not sure what Nicolas\u0027 opinion is here, but the surrounding functions are all intrinsics.\nIt seems a little odd to me that we\u0027d roll our own version inside LLVMReactor instead of obviously doing it outside at SpirvShader level or somewhere in between.",
+      "range": {
+        "startLine": 3817,
+        "startChar": 1,
+        "endLine": 3822,
+        "endChar": 43
+      },
+      "revId": "9bb6fdb9ed7d7be8dbdd24bc8afe0073663c82e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
