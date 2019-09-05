@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "814f45ae_07aa7d7d",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-05T19:33:53Z",
+      "side": 1,
+      "message": "Can this be added in 32 bit only?",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 92
+      },
+      "revId": "6a6ba1143249ecbd75c51fe55b50bb1e48abd82f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
