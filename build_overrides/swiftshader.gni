@@ -19,4 +19,5 @@ swiftshader_standalone = true
 swiftshader_dir = "//"
 
 # Paths to SwiftShader dependencies
+swiftshader_marl_dir = "//third_party/marl"
 swiftshader_spirv_tools_dir = "//third_party/SPIRV-Tools"

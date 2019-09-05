@@ -61,10 +61,10 @@ swiftshader_source_set("Device") {
   ]
 
   deps = [
+    "${swiftshader_marl_dir}:Marl_headers",
     "../Pipeline:Pipeline_headers",
     "../System:System_headers",
     "../Vulkan:swiftshader_libvulkan_headers",
-    "../Yarn:Yarn_headers",
   ]
 
   public_deps = [
