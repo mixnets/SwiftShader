@@ -1,7 +1,10 @@
 [submodule "third_party/googletest"]
 	path = third_party/googletest
 	url = https://github.com/google/googletest.git
+<<<<<<< HEAD   (60a0dc Regres: Update test lists @ 4d838a8c)
 
 [submodule "third_party/libbacktrace/src"]
 	path = third_party/libbacktrace/src
 	url = https://github.com/ianlancetaylor/libbacktrace.git
+=======
+>>>>>>> BRANCH (fe71eb Squashed 'third_party/marl/' content from commit d3b8558ce)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (60a0dc Regres: Update test lists @ 4d838a8c)
 # SwiftShader
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://travis-ci.org/google/swiftshader.svg?branch=master)](https://travis-ci.org/google/swiftshader) [![Build status](https://ci.appveyor.com/api/projects/status/yrmyvb34j22jg1uj?svg=true)](https://ci.appveyor.com/project/c0d1f1ed/swiftshader)
@@ -111,3 +112,26 @@ Disclaimer
 1. Trademarks are the property of their respective owners.
 2. We do not claim official conformance with any graphics APIs at this moment.
 3. This is not an official Google product.
+=======
+# Marl
+
+Marl is a hybrid thread / fiber task scheduler written in C++ 11.
+
+## About
+
+Marl is a C++ 11 library that provides a fluent interface for running tasks across a number of threads.
+
+Marl uses a combination of fibers and threads to allow efficient execution of tasks that can block, while keeping a fixed number of hardware threads.
+
+Marl supports Windows, macOS, Linux, Fuchsia and Android (arm, aarch64, ppc64 (ELFv2), x86 and x64).
+
+Marl has no dependencies on other libraries (with exception on googletest fo building the optional unit tests).
+
+Marl is in early development and will have breaking API changes.
+
+
+**More documentation and examples coming soon.**
+
+
+Note: This is not an officially supported Google product
+>>>>>>> BRANCH (fe71eb Squashed 'third_party/marl/' content from commit d3b8558ce)
