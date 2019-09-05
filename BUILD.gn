@@ -56,6 +56,7 @@ config("swiftshader_config") {
     if (!is_clang) {
       cflags += [
         "/wd4309", # Truncation of constant value. See PixelRoutine.cpp casts of signed shorts.
+        "/wd4316", # object allocated on the heap may not be aligned. See Renderer and Pool.
       ]
     }
   } else {
