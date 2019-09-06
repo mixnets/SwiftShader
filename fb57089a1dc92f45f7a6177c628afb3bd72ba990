@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87a1ff74_0274408a",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "Nit: extra space",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 0
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7070a6a4_7a641b22",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "Nit: extra space",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 0
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a14df67_75efc0b5",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "I\u0027d rather have a function with a smaller name. All functions in here (assuming we add more) could be called \"Stringify\" and be specialized based on the input argument instead of having a different name.\n\nAlso, this could use \"const char*\" directly, we never use the std::string object in practice.",
+      "range": {
+        "startLine": 20,
+        "startChar": 12,
+        "endLine": 20,
+        "endChar": 37
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5438a16a_8b318f44",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "There should at least be some sort of assert/warning here if a value is not found.\nVulkan headers might change in the future.",
+      "range": {
+        "startLine": 446,
+        "startChar": 8,
+        "endLine": 446,
+        "endChar": 23
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e929e6dd_c89cf3f3",
+        "filename": "src/Vulkan/VkStringify.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "unlike other names in this library. Should probably be something like:\nVK_STRINGIFY_HPP_",
+      "range": {
+        "startLine": 17,
+        "startChar": 8,
+        "endLine": 17,
+        "endChar": 26
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40438d4a_a3ce1eb3",
+        "filename": "tests/VulkanUnitTests/Device.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "I don\u0027t think functions should be made public for the purpose of writing tests. Tests should use the Vulkan API, as much as possible.",
+      "range": {
+        "startLine": 139,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 50
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ae2b063_08bb3cda",
+        "filename": "tests/VulkanUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "vkEnumeratePhysicalDevices?",
+      "range": {
+        "startLine": 139,
+        "startChar": 13,
+        "endLine": 139,
+        "endChar": 39
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca07c56d_521abd7b",
+        "filename": "tests/VulkanUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-06T18:02:46Z",
+      "side": 1,
+      "message": "vkGetPhysicalDeviceQueueFamilyProperties?",
+      "range": {
+        "startLine": 145,
+        "startChar": 31,
+        "endLine": 145,
+        "endChar": 65
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
