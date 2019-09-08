@@ -22,6 +22,30 @@
       "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33ff3a7a_5fe8f568",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-08T13:41:47Z",
+      "side": 1,
+      "message": "The problematic OpVariable instructions are outside of any block, so we compile them regardless of whether they are actually used by the current entrypoint.\n\nThere is an assert at the point of use if we were to actually try to use these out of bounds descriptors.",
+      "parentUuid": "3c97b484_102dba5a",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 71
+      },
+      "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
