@@ -1467,35 +1467,24 @@ namespace sw
 			{
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
+				Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
 
-				if(bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
+				Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants,maskD01Q) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					c01 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
-					c01 |= masked;
+					mask01 &= channelMask;
 				}
-
-				c01 &= *Pointer<Short4>(constants + OFFSET(Constants,maskD01Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
-				c01 |= value;
-				*Pointer<Short4>(buffer) = c01;
+				*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
 
 				buffer += *Pointer<Int>(data + OFFSET(DrawData,colorPitchB[index]));
 				value = *Pointer<Short4>(buffer);
 
-				if(bgraWriteMask != 0x0000000F)   // FIXME: Need for masking when XRGB && Fh?
+				Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants,maskD23Q) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
-					c23 |= masked;
+					mask23 &= channelMask;
 				}
-
-				c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskD23Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
-				c23 |= value;
-				*Pointer<Short4>(buffer) = c23;
+				*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
 			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
@@ -1505,37 +1494,24 @@ namespace sw
 			{
 				Pointer<Byte> buffer = cBuffer + x * 4;
 				Short4 value = *Pointer<Short4>(buffer);
+				Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
 
-				bool masked = (rgbaWriteMask != 0x0000000F); // FIXME: Need for masking when XBGR && Fh?
-
-				if(masked)
+				Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants,maskD01Q) + xMask * 8);
+				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					c01 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
-					c01 |= masked;
+					mask01 &= channelMask;
 				}
-
-				c01 &= *Pointer<Short4>(constants + OFFSET(Constants,maskD01Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
-				c01 |= value;
-				*Pointer<Short4>(buffer) = c01;
+				*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
 
 				buffer += *Pointer<Int>(data + OFFSET(DrawData,colorPitchB[index]));
 				value = *Pointer<Short4>(buffer);
 
-				if(masked)
+				Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants,maskD23Q) + xMask * 8);
+				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
-					c23 |= masked;
+					mask23 &= channelMask;
 				}
-
-				c23 &= *Pointer<Short4>(constants + OFFSET(Constants,maskD23Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
-				c23 |= value;
-				*Pointer<Short4>(buffer) = c23;
+				*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
 			break;
 		case VK_FORMAT_R8G8_UNORM:
