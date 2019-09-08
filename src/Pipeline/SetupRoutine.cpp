@@ -291,10 +291,15 @@ namespace sw
 				conditionalRotate2(wMax == w2, v0, v1, v2);
 			}
 
-			*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)) =
-				*Pointer<Float>(v0 + OFFSET(Vertex, x));
-			*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)) =
-				*Pointer<Float>(v0 + OFFSET(Vertex, y));
+			if (point)
+			{
+				Float rhw = *Pointer<Float>(v0 + OFFSET(Vertex, projected.w));
+				Float Xf = Float(1/16.0f) * (*Pointer<Float>(data + OFFSET(DrawData,X0x16)) + *Pointer<Float>(v0 + OFFSET(Vertex, x)) * rhw * *Pointer<Float>(data + OFFSET(DrawData,Wx16)));
+				Float Yf = Float(1/16.0f) * (*Pointer<Float>(data + OFFSET(DrawData,Y0x16)) + *Pointer<Float>(v0 + OFFSET(Vertex, y)) * rhw * *Pointer<Float>(data + OFFSET(DrawData,Hx16)));
+
+				*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)) = Xf;
+				*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)) = Yf;
+			}
 
 			Float w0 = *Pointer<Float>(v0 + OFFSET(Vertex, w));
 			Float w1 = *Pointer<Float>(v1 + OFFSET(Vertex, w));
