@@ -80,7 +80,16 @@ find_library(XCB xcb)
 ###########################################################
 # Options
 ###########################################################
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
+=======
+option(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option(MARL_BUILD_TESTS "Build tests" OFF)
+option(MARL_ASAN "Build marl with address sanitizer" OFF)
+option(MARL_TSAN "Build marl with thread sanitizer" OFF)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
 endif()
@@ -261,6 +270,11 @@ endmacro()
 if(USE_GROUP_SOURCES)
     group_all_sources(src)
 endif()
+=======
+if(MARL_ASAN AND MARL_TSAN)
+    message(FATAL_ERROR "MARL_ASAN and MARL_TSAN are mutually exclusive")
+endif(MARL_ASAN AND MARL_TSAN)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
 ###########################################################
 # Directories
@@ -296,6 +310,7 @@ macro(set_cpp_flag FLAG)
     endif()
 endmacro()
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 macro(set_linker_flag FLAG)
     if(${ARGC} GREATER 1)
         set(CMAKE_EXE_LINKER_FLAGS ${ARGV1} "${CMAKE_EXE_LINKER_FLAGS ${ARGV1}} ${FLAG}")
@@ -310,10 +325,51 @@ if(MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
     add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)  # Disable MSVC warnings about std::aligned_storage being broken before VS 2017 15.8
+=======
+###########################################################
+# File lists
+###########################################################
+file(GLOB MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+    ${MARL_SRC_DIR}/osfiber_aarch64.c
+    ${MARL_SRC_DIR}/osfiber_arm.c
+    ${MARL_SRC_DIR}/osfiber_ppc64.c
+    ${MARL_SRC_DIR}/osfiber_x64.c
+    ${MARL_SRC_DIR}/osfiber_x86.c
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+    )
+endif(NOT MSVC)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
     if(WARNINGS_AS_ERRORS)
         set_cpp_flag("/WX") # Treat all warnings as errors
     endif()
+=======
+file(GLOB MARL_TEST_LIST
+    ${MARL_SRC_DIR}/blockingcall_test.cpp
+    ${MARL_SRC_DIR}/conditionvariable_test.cpp
+    ${MARL_SRC_DIR}/containers_test.cpp
+    ${MARL_SRC_DIR}/defer_test.cpp
+    ${MARL_SRC_DIR}/marl_test.cpp
+    ${MARL_SRC_DIR}/marl_test.h
+    ${MARL_SRC_DIR}/osfiber_test.cpp
+    ${MARL_SRC_DIR}/pool_test.cpp
+    ${MARL_SRC_DIR}/scheduler_test.cpp
+    ${MARL_SRC_DIR}/ticket_test.cpp
+    ${MARL_SRC_DIR}/waitgroup_test.cpp
+)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
     # Disable specific warnings
     # TODO: Not all of these should be disabled, but for now, we want a warning-free msvc build. Remove these one by one
@@ -485,9 +541,49 @@ if(WIN32)
 endif()
 
 ###########################################################
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 # LLVM
+=======
+# Functions
 ###########################################################
 
+function(marl_set_target_options target)
+    # Enable all warnings
+    if(NOT MSVC)
+        target_compile_options(${target} PRIVATE "-Wall")
+    endif()
+
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} "-fsanitize=memory")
+    endif()
+
+    target_include_directories(${target} PRIVATE ${MARL_INCLUDE_DIR})
+endfunction(marl_set_target_options)
+
+###########################################################
+# Targets
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
+###########################################################
+
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/AliasAnalysis.cpp
     ${LLVM_DIR}/lib/Analysis/AliasAnalysisSummary.cpp
@@ -1083,8 +1179,15 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/ValueMapper.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/VNCoercion.cpp
     ${LLVM_DIR}/../stubs/Stubs.cpp
+=======
+# marl
+add_library(marl STATIC ${MARL_LIST})
+set_target_properties(marl PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 )
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
     list(APPEND LLVM_LIST
         ${LLVM_DIR}/lib/Target/X86/AsmParser/X86AsmInstrumentation.cpp
@@ -1371,6 +1474,9 @@ elseif(ARCH STREQUAL "ppc64le")
         ${LLVM_DIR}/lib/Target/PowerPC/TargetInfo/PowerPCTargetInfo.cpp
     )
 endif()
+=======
+marl_set_target_options(marl)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
 if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND LLVM_LIST
@@ -1487,9 +1593,16 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         ${SUBZERO_DIR}/src/IceVariableSplitting.cpp
     )
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
     # FIXME: Shouldn't depend on external source files directly.
     list(APPEND SUBZERO_LIST
         ${SOURCE_DIR}/Common/Memory.cpp
+=======
+    set(MARL_TEST_INCLUDE_DIR
+        ${GOOGLETEST_DIR}/googletest/include/
+        ${GOOGLETEST_DIR}/googlemock/include/
+        ${GOOGLETEST_DIR}/googletest/
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
     )
 
     if(ARCH STREQUAL "x86_64")
@@ -2133,20 +2246,46 @@ if(BUILD_TESTS)
         COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
         FOLDER "Tests"
     )
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
+=======
 
+    marl_set_target_options(marl-unittests)
+
+    target_link_libraries(marl-unittests marl "${MARL_OS_LIBS}")
+endif(MARL_BUILD_TESTS)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
+
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
     if(NOT WIN32 AND ${REACTOR_BACKEND} STREQUAL "Subzero")
         target_link_libraries(ReactorUnitTests ${Reactor} pthread dl)
     else()
         target_link_libraries(ReactorUnitTests ${Reactor})
     endif()
 endif()
+=======
+# examples
+if(MARL_BUILD_EXAMPLES)
+    function(build_example target)
+        add_executable(${target} "${CMAKE_CURRENT_SOURCE_DIR}/examples/${target}.cpp")
+        set_target_properties(${target} PROPERTIES
+            FOLDER "Examples"
+        )
+        marl_set_target_options(${target})
+        target_link_libraries(${target} marl "${MARL_OS_LIBS}")
+    endfunction(build_example)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
+<<<<<<< HEAD   (cebb96 GN: Expose XCB surface extension on Linux.)
 if(BUILD_TESTS)
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
     )
+=======
+    build_example(fractal)
+    build_example(primes)
+>>>>>>> BRANCH (23c75c Squashed 'third_party/marl/' changes from d3b8558ce..59068ee)
 
     set(GLES_UNITTESTS_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
