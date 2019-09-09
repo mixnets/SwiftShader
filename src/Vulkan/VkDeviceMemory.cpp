@@ -18,6 +18,8 @@
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 #include "VkDeviceMemoryExternalLinux.hpp"
+#elif SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+#include "VkDeviceMemoryExternalFuchsia.hpp"
 #else
 #include "VkDeviceMemoryExternalNone.hpp"
 #endif
