@@ -372,6 +372,17 @@ static const std::vector<std::pair<const char*, std::unordered_map<std::string, 
 		}
 	},
 #endif
+
+#if VK_USE_PLATFORM_FUCHSIA
+	// VK_FUCHSIA_external_memory
+	{
+		VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME,
+		{
+			MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandleFUCHSIA),
+			MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandlePropertiesFUCHSIA),
+		}
+	},
+#endif
 };
 
 #undef MAKE_VULKAN_DEVICE_ENTRY
