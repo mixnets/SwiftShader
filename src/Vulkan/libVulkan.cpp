@@ -236,6 +236,9 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 #if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 	{ VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_MEMORY_FD_SPEC_VERSION },
 #endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	{ VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_MEMORY_SPEC_VERSION },
+#endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
 };
 
@@ -797,6 +800,24 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			break;
 		}
 #endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+		case VK_STRUCTURE_TYPE_TEMP_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: {
+			auto* importInfo = reinterpret_cast<const VkImportMemoryZirconHandleInfoFUCHSIA *>(allocationInfo);
+			if (importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+			{
+				UNIMPLEMENTED("importInfo->handleType %u", importInfo->handleType);
+			}
+			break;
+		}
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO: {
+			auto* exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(allocationInfo);
+			if (exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+			{
+				UNIMPLEMENTED("exportInfo->handleTypes %u", exportInfo->handleTypes);
+			}
+			break;
+		}
+#endif
 		default:
 			UNIMPLEMENTED("allocationInfo->sType %u", allocationInfo->sType);
 			break;
@@ -867,6 +888,43 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExt
 	return VK_SUCCESS;
 }
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryZirconHandleFUCHSIA(VkDevice device, const VkMemoryGetZirconHandleInfoFUCHSIA* pGetHandleInfo, zx_handle_t* pHandle)
+{
+	TRACE("(VkDevice device = %p, const VkMemoryGetZirconHandleInfoFUCHSIA* pGetHandleInfo = %p, zx_handle_t* pHandle = %p",
+		  device, pGetHandleInfo, pHandle);
+
+	if (pGetHandleInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+	{
+		UNIMPLEMENTED("pGetFdInfo->handleType");
+	}
+	return vk::Cast(pGetHandleInfo->memory)->exportHandle(pHandle);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t handle, VkMemoryZirconHandlePropertiesFUCHSIA* pMemoryZirconHandleProperties)
+{
+	TRACE("(VkDevice device = %p, VkExternalMemoryHandleTypeFlagBits handleType = %x, zx_handle_t handle = %d, VkMemoryZirconHandlePropertiesFUCHSIA* pMemoryZirconHandleProperties = %p)",
+		  device, handleType, handle, pMemoryZirconHandleProperties);
+
+	if (handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+	{
+		UNIMPLEMENTED("handleType");
+	}
+
+	if (handle == ZX_HANDLE_INVALID)
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+
+	const VkPhysicalDeviceMemoryProperties& memoryProperties =
+			vk::Cast(device)->getPhysicalDevice()->getMemoryProperties();
+
+	// All SwiftShader memory types support this!
+	pMemoryZirconHandleProperties->memoryTypeBits = (1U << memoryProperties.memoryTypeCount) - 1U;
+
+	return VK_SUCCESS;
+}
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
 
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
 {
