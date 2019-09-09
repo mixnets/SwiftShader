@@ -15,6 +15,7 @@
 #ifndef VK_DEVICE_MEMORY_HPP_
 #define VK_DEVICE_MEMORY_HPP_
 
+#include "VkConfig.h"
 #include "VkObject.hpp"
 
 namespace vk
@@ -30,7 +31,9 @@ public:
 #if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 	int exportFd() const;
 #endif
-
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+    zx_handle_t exportHandle() const;
+#endif
 	void destroy(const VkAllocationCallbacks* pAllocator);
 	VkResult allocate();
 	VkResult map(VkDeviceSize offset, VkDeviceSize size, void** ppData);
