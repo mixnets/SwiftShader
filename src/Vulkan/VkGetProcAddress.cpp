@@ -355,6 +355,17 @@ static const std::vector<std::pair<const char*, std::unordered_map<std::string, 
 		}
 	},
 #endif
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	// VK_FUCHSIA_external_memory
+	{
+		VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME,
+		{
+			MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandleFUCHSIA),
+			MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandlePropertiesFUCHSIA),
+		}
+	},
+#endif
 };
 
 #undef MAKE_VULKAN_DEVICE_ENTRY
