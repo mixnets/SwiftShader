@@ -43,6 +43,13 @@ public:
 	}
 #endif
 
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	virtual VkResult exportHandle(zx_handle_t* pHandle) const
+	{
+		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+	}
+#endif
+
 protected:
 	ExternalBase() = default;
 };
@@ -124,6 +131,9 @@ public:
 #if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 #include "VkDeviceMemoryExternalLinux.hpp"
 #endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+#include "VkDeviceMemoryExternalFuchsia.hpp"
+#endif
 
 namespace vk
 {
@@ -133,6 +143,12 @@ static void findTraits(const VkMemoryAllocateInfo* pAllocateInfo,
 {
 #if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
 	if (parseCreateInfo<LinuxMemfdExternalMemory>(pAllocateInfo, pTraits))
+	{
+		return;
+	}
+#endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+	if (parseCreateInfo<zircon::VmoExternalMemory>(pAllocateInfo, pTraits))
 	{
 		return;
 	}
@@ -224,6 +240,13 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 VkResult DeviceMemory::exportFd(int* pFd) const
 {
 	return external->exportFd(pFd);
+}
+#endif
+
+#if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
+VkResult DeviceMemory::exportHandle(zx_handle_t* pHandle) const
+{
+	return external->exportHandle(pHandle);
 }
 #endif
 
