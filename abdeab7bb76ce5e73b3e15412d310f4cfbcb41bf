@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "722ef419_b15da0b9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-10T16:50:08Z",
+      "side": 1,
+      "message": "I\u0027m not sure this is correct. Xf and Yf are stated to be in \"framebuffer coordinates\", and \"subPixelPrecisionBits is the number of bits of subpixel precision in framebuffer coordinates xf and yf\".\n\nThe spec\u0027s formulas for PointCoord require that \"(xf,yf) is the exact, unrounded framebuffer coordinate of the vertex for the point\", but I think this refers to not being rounded to integer coordinates.\n\nI believe the expectation is that PointCoord never goes outside of the [0, 1] range, to avoid issues with texture seams and such. This requires the use of sub-pixel fixed-point coordinates instead of full-precision floating-point ones.",
+      "range": {
+        "startLine": 17,
+        "startChar": 2,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "abdeab7bb76ce5e73b3e15412d310f4cfbcb41bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
