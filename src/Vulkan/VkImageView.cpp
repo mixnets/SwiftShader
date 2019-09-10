@@ -54,7 +54,29 @@ VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange ran
 
 namespace vk {
 
-std::atomic<uint32_t> ImageView::nextID(1);
+	int MakeImageViewKey(VkImageViewType type, VkFormat format, VkComponentMapping mapping)
+	{
+		union {
+			int m;
+			struct {
+				int type:3;
+				int format:8;
+				int r:3;
+				int g:3;
+				int b:3;
+				int a:3;
+			};
+		} x;
+
+		x.m = 0;
+		x.type = type;
+		x.format = format;
+		x.r = mapping.r;
+		x.g = mapping.g;
+		x.b = mapping.b;
+		x.a = mapping.a;
+		return x.m;
+	}
 
 ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
     : image(vk::Cast(pCreateInfo->image))
@@ -64,6 +86,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
     , ycbcrConversion(ycbcrConversion)
 {
+	id = MakeImageViewKey(viewType, format, components);
 }
 
 size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo)
