@@ -164,6 +164,30 @@
     },
     {
       "key": {
+        "uuid": "94b1a685_e3edd984",
+        "filename": "tests/VulkanUnitTests/Device.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-10T17:41:06Z",
+      "side": 1,
+      "message": "Oh, I misread, I thought they were actually from a Vulkan Device object. Nothing to see here, carry on.",
+      "parentUuid": "24b245b2_fbdbf305",
+      "range": {
+        "startLine": 139,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 50
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2ae2b063_08bb3cda",
         "filename": "tests/VulkanUnitTests/unittests.cpp",
         "patchSetId": 1
