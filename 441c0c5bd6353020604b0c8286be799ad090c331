@@ -46,6 +46,29 @@
       "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf99b707_91ba0e8e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2879,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-10T18:37:00Z",
+      "side": 1,
+      "message": "This indexes a pointer to vk::DescriptorSet::Bindings, which is an std::array of size MAX_BOUND_DESCRIPTOR_SETS.\n\nWe may be running into the same issue above.",
+      "range": {
+        "startLine": 2879,
+        "startChar": 57,
+        "endLine": 2879,
+        "endChar": 88
+      },
+      "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
