@@ -140,6 +140,30 @@
     },
     {
       "key": {
+        "uuid": "24b245b2_fbdbf305",
+        "filename": "tests/VulkanUnitTests/Device.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-09-10T15:15:23Z",
+      "side": 1,
+      "message": "These are functions from the VulkanUnitTests directory that make direct calls to the Vulkan API.  Not using them would just mean replicating code. I don\u0027t think I understand why it\u0027s wrong to expose these utilities when they\u0027re already used by the unit tests.",
+      "parentUuid": "40438d4a_a3ce1eb3",
+      "range": {
+        "startLine": 139,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 50
+      },
+      "revId": "fb57089a1dc92f45f7a6177c628afb3bd72ba990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2ae2b063_08bb3cda",
         "filename": "tests/VulkanUnitTests/unittests.cpp",
         "patchSetId": 1
