@@ -69,6 +69,30 @@
       "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a152884_88ad2582",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2879,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-10T19:11:03Z",
+      "side": 1,
+      "message": "Right -- this JITs a load from the array. If we don\u0027t ever touch this variable it doesn\u0027t happen.\n\nI could substitute nullptr here if out of bounds so you have a more obvious bogus value rather than whatever the wild read gives you?",
+      "parentUuid": "cf99b707_91ba0e8e",
+      "range": {
+        "startLine": 2879,
+        "startChar": 57,
+        "endLine": 2879,
+        "endChar": 88
+      },
+      "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
