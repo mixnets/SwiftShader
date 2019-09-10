@@ -93,6 +93,30 @@
       "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43444afc_861d8e8e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2879,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-10T19:34:04Z",
+      "side": 1,
+      "message": "Yes, that\u0027s much preferred.",
+      "parentUuid": "9a152884_88ad2582",
+      "range": {
+        "startLine": 2879,
+        "startChar": 57,
+        "endLine": 2879,
+        "endChar": 88
+      },
+      "revId": "441c0c5bd6353020604b0c8286be799ad090c331",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
