@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bdfc121_06b8523e",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-11T20:07:34Z",
+      "side": 1,
+      "message": "It looks like having one platform-specific implementation for DeviceMemory::External limits us to a single type of external memory? Is that assumption expected to hold true? VkExternalMemoryProperties has members which are bitmasks of supported external memory types.\n\nMaking it an abstract interface instead would support multiple types, including using it as the interface for regular device memory as suggested previously. The cost of the virtual calls is probably negligible and comparable to the cost of testing whether the memory is external or not.",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 6
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a72b0791_f4e39b54",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-11T20:07:34Z",
+      "side": 1,
+      "message": "Don\u0027t appear to be implemented here or in the next change?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 27
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5723988_ee0acb8a",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-11T20:07:34Z",
+      "side": 1,
+      "message": "I wonder if it would generally be more elegant if device memory was also just a type of \u0027External\u0027. Obviously we would have to rename that class, but it would make things more uniform I think.",
+      "range": {
+        "startLine": 57,
+        "startChar": 14,
+        "endLine": 57,
+        "endChar": 21
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08cc4480_2ed42e13",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalLinux.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-11T20:07:34Z",
+      "side": 1,
+      "message": "We typically don\u0027t want to abort the entire process for situations the application may be able to recover from. Can we return VK_ERROR_OUT_OF_HOST_MEMORY instead?",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 96,
+        "endChar": 9
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3d2fef9_e2828a7b",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalLinux.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-11T20:07:34Z",
+      "side": 1,
+      "message": "Also possibly better to generate VK_ERROR_OUT_OF_HOST_MEMORY here.",
+      "range": {
+        "startLine": 116,
+        "startChar": 3,
+        "endLine": 116,
+        "endChar": 8
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
