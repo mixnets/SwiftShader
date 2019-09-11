@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1cba64b1_268dfc84",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-11T14:23:33Z",
+      "side": 1,
+      "message": "Ok",
+      "parentUuid": "ac953f02_c16fb0b2",
+      "range": {
+        "startLine": 1040,
+        "startChar": 50,
+        "endLine": 1040,
+        "endChar": 68
+      },
+      "revId": "f37b32e5c9522cb892260190b0f128cd777904ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "82155b28_993250a8",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2019-09-11T13:16:09Z",
       "side": 1,
       "message": "What about cases where part of the stride is inside the buffer and part outside?",
+      "range": {
+        "startLine": 1043,
+        "startChar": 60,
+        "endLine": 1043,
+        "endChar": 83
+      },
+      "revId": "f37b32e5c9522cb892260190b0f128cd777904ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9c87320_05672fdc",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-11T14:23:33Z",
+      "side": 1,
+      "message": "The stride can be larger than the amount of data to read. We\u0027d actually need to compute how much we have to read to be correct.",
+      "parentUuid": "82155b28_993250a8",
       "range": {
         "startLine": 1043,
         "startChar": 60,
@@ -106,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "ec00e057_e2404f97",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-11T14:23:33Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8efe0ce2_fcd4064b",
+      "range": {
+        "startLine": 91,
+        "startChar": 5,
+        "endLine": 91,
+        "endChar": 65
+      },
+      "revId": "f37b32e5c9522cb892260190b0f128cd777904ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa440daf_d84b20b4",
         "filename": "src/Pipeline/VertexRoutine.cpp",
         "patchSetId": 5
@@ -117,6 +189,30 @@
       "writtenOn": "2019-09-11T13:16:09Z",
       "side": 1,
       "message": "We don\u0027t have to zero the data for robust buffer access.",
+      "range": {
+        "startLine": 506,
+        "startChar": 35,
+        "endLine": 506,
+        "endChar": 36
+      },
+      "revId": "f37b32e5c9522cb892260190b0f128cd777904ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68fcb5f9_0349423f",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-11T14:23:33Z",
+      "side": 1,
+      "message": "At this point, we may have read something out of bound if the input is a 0 sized buffer.\nZeroing the data is to make sure we definitely can\u0027t output garbage.",
+      "parentUuid": "fa440daf_d84b20b4",
       "range": {
         "startLine": 506,
         "startChar": 35,
