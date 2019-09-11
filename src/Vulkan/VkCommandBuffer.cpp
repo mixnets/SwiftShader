@@ -530,8 +530,7 @@ struct DrawBase : public CommandBuffer::Command
 		executionState.renderer->setViewport(pipeline->hasDynamicState(VK_DYNAMIC_STATE_VIEWPORT) ?
 											 executionState.dynamicState.viewport : pipeline->getViewport());
 		executionState.renderer->setBlendConstant(pipeline->hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS) ?
-												  executionState.dynamicState.blendConstants
-																											  : pipeline->getBlendConstants());
+												  executionState.dynamicState.blendConstants : pipeline->getBlendConstants());
 		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS))
 		{
 			// If the depth bias clamping feature is not enabled, depthBiasClamp must be 0.0

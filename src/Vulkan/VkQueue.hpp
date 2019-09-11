@@ -74,7 +74,7 @@ private:
 	void submitQueue(const Task& task);
 
 	Device* device;
-	std::unique_ptr<sw::Renderer> renderer;
+	sw::Renderer* renderer = nullptr;
 	sw::Chan<Task> pending;
 	sw::Chan<VkSubmitInfo*> toDelete;
 	std::thread queueThread;

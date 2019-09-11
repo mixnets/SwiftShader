@@ -94,6 +94,11 @@ Queue::~Queue()
 	ASSERT_MSG(pending.count() == 0, "queue has work after worker thread shutdown");
 
 	garbageCollect();
+
+	if(renderer)
+	{
+		vk::deallocate(renderer, vk::DEVICE_MEMORY);
+	}
 }
 
 VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, Fence* fence)
@@ -117,9 +122,18 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, Fence
 
 void Queue::submitQueue(const Task& task)
 {
-	if (renderer == nullptr)
+	if(!renderer)
 	{
-		renderer.reset(new sw::Renderer(device));
+		void *rendererAlignedMemory = vk::allocate(sizeof(sw::Renderer), vk::REQUIRED_MEMORY_ALIGNMENT,
+		                                           vk::DEVICE_MEMORY, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
+		if(rendererAlignedMemory)
+		{
+			renderer = new (rendererAlignedMemory) sw::Renderer(device);
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	for(uint32_t i = 0; i < task.submitCount; i++)
@@ -132,7 +146,7 @@ void Queue::submitQueue(const Task& task)
 
 		{
 			CommandBuffer::ExecutionState executionState;
-			executionState.renderer = renderer.get();
+			executionState.renderer = renderer;
 			executionState.events = task.events;
 			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 			{
