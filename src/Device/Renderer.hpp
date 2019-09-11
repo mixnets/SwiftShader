@@ -196,6 +196,9 @@ namespace sw
 
 		virtual ~Renderer();
 
+		void *operator new(size_t size);
+        void operator delete(void *mem);
+
 		bool hasOcclusionQuery() const { return occlusionQuery != nullptr; }
 
 		void draw(const sw::Context* context, VkIndexType indexType, unsigned int count, int baseVertex,
