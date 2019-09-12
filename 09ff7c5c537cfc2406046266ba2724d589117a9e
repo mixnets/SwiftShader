@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3038f11b_7bad7a73",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:43:42Z",
+      "side": 1,
+      "message": "It appears to me that zx_status_t is an int32_t. Please cast to int to correctly match %d.",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 48
+      },
+      "revId": "09ff7c5c537cfc2406046266ba2724d589117a9e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d649a368_dc381f6d",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:43:42Z",
+      "side": 1,
+      "message": "nit: stray tab at end of line.",
+      "revId": "09ff7c5c537cfc2406046266ba2724d589117a9e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
