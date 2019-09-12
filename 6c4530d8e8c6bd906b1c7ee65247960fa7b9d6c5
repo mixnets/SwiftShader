@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a3fbb58f_f7ed4bae",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-12T17:17:03Z",
+      "side": 1,
+      "message": "As far as I can tell, this takes care of the Renderer, but not of the Pool objects mentioned in the other issue. We can re-test once this is landed.",
+      "parentUuid": "e91dd0f8_b6467cb5",
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "82cb1463_bfa5988d",
         "filename": "src/Device/PixelProcessor.cpp",
         "patchSetId": 3
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "94004d3f_8342081d",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-12T17:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82cb1463_bfa5988d",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 59
+      },
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "abbb904e_b678535d",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 3
@@ -62,6 +104,30 @@
       "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a09ea406_6838d23a",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-12T17:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abbb904e_b678535d",
+      "range": {
+        "startLine": 166,
+        "startChar": 40,
+        "endLine": 166,
+        "endChar": 69
+      },
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
