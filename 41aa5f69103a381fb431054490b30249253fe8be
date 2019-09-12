@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "936e16e2_fab5d4cb",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:55:15Z",
+      "side": 1,
+      "message": "Aren\u0027t we leaking the actual thread allocation here (missing a call to delete, or letting the unique_ptr actually do the deletion for you)?",
+      "range": {
+        "startLine": 78,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99f604fe_e19068c0",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:55:15Z",
+      "side": 1,
+      "message": "This looks to be overridden at L98?",
+      "range": {
+        "startLine": 88,
+        "startChar": 3,
+        "endLine": 88,
+        "endChar": 30
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37894396_7dd87d19",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:55:15Z",
+      "side": 1,
+      "message": "Did you try marl::blocking_call?\nIf so, do you have any figures for how much performance gain this gives over blocking_call()?\nIf this gives substantial wins, I wonder if we should apply optimizations to marl so that other projects get the same wins.",
+      "range": {
+        "startLine": 232,
+        "startChar": 4,
+        "endLine": 232,
+        "endChar": 40
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
