@@ -62,6 +62,30 @@
       "revId": "9a8e43e0475e29b3db78b413a0c5e5144e9a7931",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32aa9387_e6fe26f6",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-12T17:44:54Z",
+      "side": 1,
+      "message": "I think this requires a rework of this function. If we really can\u0027t read anything OOB, we need to check how many bytes to read and prevent reading any extra byte. Since we process 4 vertices simultaneously, each read operation has to be guarded based on the amount of bytes left in the buffer.",
+      "parentUuid": "b20de238_567526f3",
+      "range": {
+        "startLine": 504,
+        "startChar": 2,
+        "endLine": 510,
+        "endChar": 3
+      },
+      "revId": "9a8e43e0475e29b3db78b413a0c5e5144e9a7931",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
