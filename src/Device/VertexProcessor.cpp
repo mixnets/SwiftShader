@@ -78,6 +78,7 @@ namespace sw
 		State state;
 
 		state.shaderID = context->vertexShader->getSerialID();
+		state.robustBufferAccess = context->robustBufferAccess;
 
 		for(int i = 0; i < MAX_INTERFACE_COMPONENTS / 4; i++)
 		{
