@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bde095bd_62920a09",
+        "filename": "BUILD.gn",
+        "patchSetId": 12
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:49:13Z",
+      "side": 1,
+      "message": "NOTE: This may not be the best place to put this. Let me know if you want to move it elsewhere.",
+      "revId": "55a77babacf4f5618feb2f8b8ceb10aa0bc5ffee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
