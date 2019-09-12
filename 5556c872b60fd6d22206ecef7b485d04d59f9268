@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b72b0417_6e23a91b",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T04:01:59Z",
+      "side": 1,
+      "message": "nit: While you\u0027re here, fix using spaces for alignment.",
+      "range": {
+        "startLine": 529,
+        "startChar": 2,
+        "endLine": 529,
+        "endChar": 11
+      },
+      "revId": "5556c872b60fd6d22206ecef7b485d04d59f9268",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ea2d7b47_aa4d7d0c",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T04:01:59Z",
+      "side": 1,
+      "message": "Can we instead revert to having custom allocators for Renderer, which got removed here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/35572/4/src/Device/Renderer.hpp#b165 ?",
+      "range": {
+        "startLine": 127,
+        "startChar": 2,
+        "endLine": 136,
+        "endChar": 3
+      },
+      "revId": "5556c872b60fd6d22206ecef7b485d04d59f9268",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
