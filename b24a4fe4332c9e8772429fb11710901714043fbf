@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7552bcec_2a9e3632",
+        "filename": "src/System/Linux/MemFd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "Yes, that works too.",
+      "parentUuid": "c5419523_258ac188",
+      "range": {
+        "startLine": 55,
+        "startChar": 9,
+        "endLine": 55,
+        "endChar": 11
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "098653c2_7baf64c2",
         "filename": "src/System/Linux/MemFd.cpp",
         "patchSetId": 11
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "f5b7949d_37562a81",
+        "filename": "src/System/Linux/MemFd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "098653c2_7baf64c2",
+      "range": {
+        "startLine": 82,
+        "startChar": 2,
+        "endLine": 83,
+        "endChar": 10
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7de057b7_17f3d2fb",
         "filename": "src/System/Linux/MemFd.cpp",
         "patchSetId": 11
@@ -59,6 +107,30 @@
       "writtenOn": "2019-09-11T19:32:10Z",
       "side": 1,
       "message": "https://linux.die.net/man/2/close states that \"Not checking the return value of close() is a common but nevertheless serious programming error.\"\n\nCan we do better here? At least have an assert to be alerted of unexpected failures?",
+      "range": {
+        "startLine": 94,
+        "startChar": 2,
+        "endLine": 94,
+        "endChar": 14
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "190f2a6b_25cfc2cf",
+        "filename": "src/System/Linux/MemFd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "I\u0027ve added an assert, but generally speaking this is not an error on Linux (see https://lwn.net/Articles/576478/).",
+      "parentUuid": "7de057b7_17f3d2fb",
       "range": {
         "startLine": 94,
         "startChar": 2,
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "d91fe54f_edbe35c7",
+        "filename": "src/System/Linux/MemFd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "Good catch, thanks! Done. I\u0027ve added a set of unit-tests as well to verify correct behaviour.",
+      "parentUuid": "5b13179c_e43cf56f",
+      "range": {
+        "startLine": 95,
+        "startChar": 1,
+        "endLine": 95,
+        "endChar": 2
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ff236470_3d622787",
         "filename": "src/System/Linux/MemFd.hpp",
         "patchSetId": 11
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "2d03d8f4_036572d8",
+        "filename": "src/System/Linux/MemFd.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "It\u0027s actually 3.17 (according to the memfd_create manpage), thanks for the correction. Fixed.",
+      "parentUuid": "ff236470_3d622787",
+      "range": {
+        "startLine": 22,
+        "startChar": 39,
+        "endLine": 22,
+        "endChar": 43
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "93521384_bcb8e746",
         "filename": "src/System/Linux/MemFd.hpp",
         "patchSetId": 11
@@ -128,6 +248,30 @@
       "writtenOn": "2019-09-11T19:32:10Z",
       "side": 1,
       "message": "Make these private to be more RAII safe?",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 13
+      },
+      "revId": "b24a4fe4332c9e8772429fb11710901714043fbf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1116ee0c_56f62140",
+        "filename": "src/System/Linux/MemFd.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-12T09:48:38Z",
+      "side": 1,
+      "message": "The |fd| was exposed to allow an mmap() call on it easily. I\u0027ve made it private and added map/unmap methods instead. I think it\u0027s cleaner because there is no file descriptor ownership to worry about anymore.",
+      "parentUuid": "93521384_bcb8e746",
       "range": {
         "startLine": 45,
         "startChar": 0,
