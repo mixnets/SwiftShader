@@ -75,6 +75,7 @@ namespace sw
 			};
 
 			Input input[MAX_INTERFACE_COMPONENTS / 4];
+			bool robustBufferAccess : 1;
 		};
 
 		struct State : States
