@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e91dd0f8_b6467cb5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T14:53:08Z",
+      "side": 1,
+      "message": "Is this also the proper fix for b/140575360, allowing https://swiftshader-review.googlesource.com/c/SwiftShader/+/36048 to be reverted?",
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82cb1463_bfa5988d",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T14:53:08Z",
+      "side": 1,
+      "message": "Please file a bug to check whether Vulkan requires clamping behavior here. Note that our fixed-point blend factors are 0.16 format so they can\u0027t represent negative blend values, which may be a bug if it\u0027s not supposed to clamp.\n\nChange the first FIXME to a TODO(b/###), and add the above bug ID to both.",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 59
+      },
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abbb904e_b678535d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T14:53:08Z",
+      "side": 1,
+      "message": "This allocation is unrelated to any Vulkan objects, and this alignment may change in the future for things like wide vector support, while the Renderer\u0027s members currently only require 16-byte alignment and this is unlikely to increase (note AVX-512 can broadcast scalars from memory to every lane for free).",
+      "range": {
+        "startLine": 166,
+        "startChar": 40,
+        "endLine": 166,
+        "endChar": 69
+      },
+      "revId": "6c4530d8e8c6bd906b1c7ee65247960fa7b9d6c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

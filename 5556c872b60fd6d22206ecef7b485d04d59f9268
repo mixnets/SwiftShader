@@ -93,6 +93,30 @@
       "revId": "5556c872b60fd6d22206ecef7b485d04d59f9268",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20a3ba17_c127a4ad",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T14:53:08Z",
+      "side": 1,
+      "message": "Thanks. CCing Ben to check if there was a particular reason the custom allocator was removed as part of the marl work, beyond that it appeared to work without (until now). I vaguely recall discussing it, but maybe it was all in my head.\n\nRegarding the use of vk::allocator, I\u0027m not sure that\u0027s a good idea since this alignment requirement has little relationship to other Vulkan data alignments. I\u0027d just use sw::allocate here.",
+      "parentUuid": "fc5ce371_163d263b",
+      "range": {
+        "startLine": 127,
+        "startChar": 2,
+        "endLine": 136,
+        "endChar": 3
+      },
+      "revId": "5556c872b60fd6d22206ecef7b485d04d59f9268",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
