@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "415963c2_8c3bae4d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:21:32Z",
+      "side": 1,
+      "message": "aligned to 16 bytes.",
+      "range": {
+        "startLine": 162,
+        "startChar": 26,
+        "endLine": 162,
+        "endChar": 37
+      },
+      "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be81fc61_8a71ba83",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-12T21:21:32Z",
+      "side": 1,
+      "message": "Would be nice to avoid the memset cost here, but okay.",
+      "range": {
+        "startLine": 166,
+        "startChar": 9,
+        "endLine": 166,
+        "endChar": 21
+      },
+      "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
