@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a44a8b3_51778895",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T15:01:52Z",
+      "side": 1,
+      "message": "Also b/131224163",
+      "revId": "9a8e43e0475e29b3db78b413a0c5e5144e9a7931",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbee37e9_0ee53471",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T15:01:52Z",
+      "side": 1,
+      "message": "Let\u0027s initialize this to false.",
+      "range": {
+        "startLine": 110,
+        "startChar": 25,
+        "endLine": 110,
+        "endChar": 26
+      },
+      "revId": "9a8e43e0475e29b3db78b413a0c5e5144e9a7931",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b20de238_567526f3",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-12T15:01:52Z",
+      "side": 1,
+      "message": "Following up on https://swiftshader-review.googlesource.com/c/SwiftShader/+/35789/5/src/Pipeline/VertexRoutine.cpp#506\n\n\u003e At this point, we may have read something out of bound if the input is a 0 sized buffer. Zeroing the data is to make sure we definitely can\u0027t output garbage.\n\nWith robustBufferAccess enabled, we\u0027re not allowed to read out of bounds at all. Not even for a 0 sized buffer.\n\nSee the section of the spec that starts with \"Vertex input attributes are considered out of bounds if...\"\n\nNote also we might be able to take advantage of the rule that states \"If any buffer access is determined to be out of bounds, then any other access of the same type (load, store, or atomic) to the same buffer that accesses an address less than 16 bytes away from the out of bounds address may also be considered out of bounds.\"",
+      "range": {
+        "startLine": 504,
+        "startChar": 2,
+        "endLine": 510,
+        "endChar": 3
+      },
+      "revId": "9a8e43e0475e29b3db78b413a0c5e5144e9a7931",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
