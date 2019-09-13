@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9cd5c407_5ab9e933",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T12:46:04Z",
+      "side": 1,
+      "message": "Bug: b/73656151\n\nReminder to take care of refactoring this mess. Sorry for this.",
+      "revId": "4427c618ec17de443f1c993b9fc4f2a863053a15",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
