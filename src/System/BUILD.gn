@@ -27,11 +27,6 @@ swiftshader_source_set("System_headers") {
     "Socket.hpp",
     "Timer.hpp",
   ]
-  if (is_linux || is_android) {
-    sources += [
-      "Linux/MemFd.hpp",
-    ]
-  }
 }
 
 swiftshader_source_set("System") {
@@ -44,11 +39,6 @@ swiftshader_source_set("System") {
     "Memory.cpp",
     "Timer.cpp",
   ]
-  if (is_linux || is_android) {
-    sources += [
-      "Linux/MemFd.cpp",
-    ]
-  }
 
   include_dirs = [ ".." ]
   public_deps = [
