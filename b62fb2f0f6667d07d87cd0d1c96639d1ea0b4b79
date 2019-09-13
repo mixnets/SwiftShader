@@ -46,6 +46,30 @@
       "revId": "b62fb2f0f6667d07d87cd0d1c96639d1ea0b4b79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51452c4c_42122566",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-09-13T15:14:49Z",
+      "side": 1,
+      "message": "Yes, you are both right! That makes sense. Actually, what\u0027s interesting is that there\u0027s a general solution since C++11 that we can use now, and that is to make use of std:tuple to do the compare for us: https://stackoverflow.com/a/37269108\n\nSo I could rewrite this as:\n\nreturn std::tie(shader, layout) \u003c std::tie(other.shader, other.layout);\n\nThis should produce the same code as what Alexis suggested, but would be generalized and a pattern we could (and should, I think) use everywhere.",
+      "parentUuid": "fd7f359c_5d2d50a9",
+      "range": {
+        "startLine": 108,
+        "startChar": 10,
+        "endLine": 108,
+        "endChar": 60
+      },
+      "revId": "b62fb2f0f6667d07d87cd0d1c96639d1ea0b4b79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
