@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6282f6cf_51e44ab7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T20:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0073fc6f_6e14e3ff",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 32
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f88d53cf_2409c5d8",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d3a0501_089b1260",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T20:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f88d53cf_2409c5d8",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 17
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "29a617b9_257b98f4",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T20:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "05a181e5_36104251",
+      "range": {
+        "startLine": 491,
+        "startChar": 52,
+        "endLine": 491,
+        "endChar": 102
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "481cc1ad_f8a1374d",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 3
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "39e6aa88_2889803c",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T20:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "481cc1ad_f8a1374d",
+      "range": {
+        "startLine": 585,
+        "startChar": 2,
+        "endLine": 585,
+        "endChar": 51
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "82cb5fe7_3438b132",
         "filename": "src/Device/VertexProcessor.cpp",
         "patchSetId": 3
@@ -105,6 +201,30 @@
       "writtenOn": "2019-09-13T18:03:19Z",
       "side": 1,
       "message": "What about non-solid rasterization?",
+      "range": {
+        "startLine": 81,
+        "startChar": 18,
+        "endLine": 81,
+        "endChar": 71
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57bd31b6_4f2abbb5",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T20:30:41Z",
+      "side": 1,
+      "message": "Non-solid rasterization does not affect vertex processing",
+      "parentUuid": "82cb5fe7_3438b132",
       "range": {
         "startLine": 81,
         "startChar": 18,
