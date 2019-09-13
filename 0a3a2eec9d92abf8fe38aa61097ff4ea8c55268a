@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0073fc6f_6e14e3ff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T18:03:19Z",
+      "side": 1,
+      "message": "Please clarify that it affects these tests because they wrongly assume vertices won\u0027t be processed more than once.\n\nThe above only mentions this as an optimization, but it\u0027s also a workaround for the above, and we should still push for these tests to get fixed.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 32
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f88d53cf_2409c5d8",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T18:03:19Z",
+      "side": 1,
+      "message": "Let\u0027s try to make this a little more self-explanatory by calling it \u0027pointBatch\u0027?",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 17
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05a181e5_36104251",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T18:03:19Z",
+      "side": 1,
+      "message": "Could use a small comment clarifying that we\u0027re only using batch compaction for points, not lines.",
+      "range": {
+        "startLine": 491,
+        "startChar": 52,
+        "endLine": 491,
+        "endChar": 102
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "481cc1ad_f8a1374d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T18:03:19Z",
+      "side": 1,
+      "message": "Could use a comment clarifying that setBatchIndices takes care of the point case and it\u0027s different due to the compaction.",
+      "range": {
+        "startLine": 585,
+        "startChar": 2,
+        "endLine": 585,
+        "endChar": 51
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82cb5fe7_3438b132",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T18:03:19Z",
+      "side": 1,
+      "message": "What about non-solid rasterization?",
+      "range": {
+        "startLine": 81,
+        "startChar": 18,
+        "endLine": 81,
+        "endChar": 71
+      },
+      "revId": "0a3a2eec9d92abf8fe38aa61097ff4ea8c55268a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
