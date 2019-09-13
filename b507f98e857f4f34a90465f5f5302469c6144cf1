@@ -45,6 +45,76 @@
       "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "679dcd85_f9698243",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T13:57:05Z",
+      "side": 1,
+      "message": "alignof(Renderer)",
+      "range": {
+        "startLine": 166,
+        "startChar": 40,
+        "endLine": 166,
+        "endChar": 42
+      },
+      "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60e5327f_43f65284",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T13:57:05Z",
+      "side": 1,
+      "message": "b/140991626",
+      "parentUuid": "be81fc61_8a71ba83",
+      "range": {
+        "startLine": 166,
+        "startChar": 9,
+        "endLine": 166,
+        "endChar": 21
+      },
+      "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bde8772a_19e98049",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-13T13:57:05Z",
+      "side": 1,
+      "message": "alignas(16)\n\nAs pointed out by Ben, this ensures it\u0027s aligned even when Renderer wasn\u0027t (stand-alone) heap allocated, and allows us to use alignof(Renderer) in the custom allocator.",
+      "range": {
+        "startLine": 192,
+        "startChar": 1,
+        "endLine": 192,
+        "endChar": 7
+      },
+      "revId": "b507f98e857f4f34a90465f5f5302469c6144cf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
