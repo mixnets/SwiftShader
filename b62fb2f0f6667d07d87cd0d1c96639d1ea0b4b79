@@ -22,6 +22,30 @@
       "revId": "b62fb2f0f6667d07d87cd0d1c96639d1ea0b4b79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd7f359c_5d2d50a9",
+        "filename": "src/Vulkan/VkPipelineCache.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-13T14:32:33Z",
+      "side": 1,
+      "message": "Should it be something like:\nreturn (shader !\u003d other.shader) ? (shader \u003c other.shader) : (layout \u003c other.layout);",
+      "parentUuid": "c9798d44_07a0ea6a",
+      "range": {
+        "startLine": 108,
+        "startChar": 10,
+        "endLine": 108,
+        "endChar": 60
+      },
+      "revId": "b62fb2f0f6667d07d87cd0d1c96639d1ea0b4b79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
