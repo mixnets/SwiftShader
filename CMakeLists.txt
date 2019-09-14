@@ -80,6 +80,15 @@ find_library(XCB xcb)
 ###########################################################
 # Options
 ###########################################################
+<<<<<<< HEAD   (308476 Renderer alignment fix)
+=======
+option(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option(MARL_BUILD_TESTS "Build tests" OFF)
+option(MARL_ASAN "Build marl with address sanitizer" OFF)
+option(MARL_TSAN "Build marl with thread sanitizer" OFF)
+option(MARL_INSTALL "Create marl install target" OFF)
+>>>>>>> BRANCH (73634a Squashed 'third_party/marl/' changes from 59068ee4c..bf3e230)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
@@ -296,6 +305,7 @@ macro(set_cpp_flag FLAG)
     endif()
 endmacro()
 
+<<<<<<< HEAD   (308476 Renderer alignment fix)
 macro(set_linker_flag FLAG)
     if(${ARGC} GREATER 1)
         set(CMAKE_EXE_LINKER_FLAGS ${ARGV1} "${CMAKE_EXE_LINKER_FLAGS ${ARGV1}} ${FLAG}")
@@ -333,8 +343,32 @@ if(MSVC)
         "/wd4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
         "/wd5030" # attribute 'attribute' is not recognized
         "/wd5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
+=======
+###########################################################
+# File lists
+###########################################################
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+    ${MARL_SRC_DIR}/osfiber_aarch64.c
+    ${MARL_SRC_DIR}/osfiber_arm.c
+    ${MARL_SRC_DIR}/osfiber_ppc64.c
+    ${MARL_SRC_DIR}/osfiber_x64.c
+    ${MARL_SRC_DIR}/osfiber_x86.c
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+>>>>>>> BRANCH (73634a Squashed 'third_party/marl/' changes from 59068ee4c..bf3e230)
     )
 
+<<<<<<< HEAD   (308476 Renderer alignment fix)
     # Treat specific warnings as errors
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS
         "/we4018" # 'expression' : signed/unsigned mismatch
@@ -482,6 +516,17 @@ endif()
 if(WIN32)
     add_definitions(-DWINVER=0x501 -DNOMINMAX -DSTRICT)
     set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "" "lib")
+=======
+###########################################################
+# OS libraries
+###########################################################
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(MARL_OS_LIBS Kernel32)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(MARL_OS_LIBS pthread)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(MARL_OS_LIBS)
+>>>>>>> BRANCH (73634a Squashed 'third_party/marl/' changes from 59068ee4c..bf3e230)
 endif()
 
 ###########################################################
@@ -1378,6 +1423,7 @@ if(REACTOR_EMIT_DEBUG_INFO)
     )
 endif(REACTOR_EMIT_DEBUG_INFO)
 
+<<<<<<< HEAD   (308476 Renderer alignment fix)
 set(LLVM_INCLUDE_DIR "")
 
 if(WIN32)
@@ -1485,6 +1531,47 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         ${SUBZERO_DIR}/src/IceTimerTree.cpp
         ${SUBZERO_DIR}/src/IceTypes.cpp
         ${SUBZERO_DIR}/src/IceVariableSplitting.cpp
+=======
+# install
+if(MARL_INSTALL)
+    include(GNUInstallDirs)
+
+    install(DIRECTORY ${MARL_INCLUDE_DIR}/marl
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        USE_SOURCE_PERMISSIONS
+    )
+
+    install(TARGETS marl
+        EXPORT marl-targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    install(EXPORT marl-targets
+        FILE marl-config.cmake
+        NAMESPACE marl::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+endif(MARL_INSTALL)
+
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (73634a Squashed 'third_party/marl/' changes from 59068ee4c..bf3e230)
     )
 
     # FIXME: Shouldn't depend on external source files directly.
