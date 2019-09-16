@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "a0ee3134_a4dd81ac",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-16T19:32:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef7a87d5_f629dacb",
+      "range": {
+        "startLine": 158,
+        "startChar": 2,
+        "endLine": 158,
+        "endChar": 3
+      },
+      "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8cdf2b6a_48142c52",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 5
@@ -68,6 +92,30 @@
       "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7303dc77_8a000cf8",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-16T19:32:03Z",
+      "side": 1,
+      "message": "The check for read size later is done in VertexRoutine::readStream().\nThis offset points to the beginning of the buffer we intend to read and is correct, no element within the buffer\u0027s bounds will be treated as out of bounds.",
+      "parentUuid": "8cdf2b6a_48142c52",
+      "range": {
+        "startLine": 422,
+        "startChar": 3,
+        "endLine": 424,
+        "endChar": 63
+      },
+      "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
