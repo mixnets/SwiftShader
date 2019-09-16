@@ -31,7 +31,7 @@ MARL_ASM_SYMBOL(marl_fiber_swap):
     // Store special purpose registers
     str x16, [x0, #MARL_REG_r16]
     str x17, [x0, #MARL_REG_r17]
-    str x18, [x0, #MARL_REG_r18]
+    //str x18, [x0, #MARL_REG_r18]
 
     // Store callee-preserved registers
     str x19, [x0, #MARL_REG_r19]
@@ -66,7 +66,7 @@ MARL_ASM_SYMBOL(marl_fiber_swap):
     // Load special purpose registers
     ldr x16, [x7, #MARL_REG_r16]
     ldr x17, [x7, #MARL_REG_r17]
-    ldr x18, [x7, #MARL_REG_r18]
+   // ldr x18, [x7, #MARL_REG_r18]
 
     // Load callee-preserved registers
     ldr x19, [x7, #MARL_REG_r19]
