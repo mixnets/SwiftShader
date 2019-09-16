@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "700cebc2_bb83387c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-16T19:14:19Z",
+      "side": 1,
+      "message": "uber-nit: is\n\n\u0027was\u0027 makes it sound as if it has already been fixed before, and (if I wasn\u0027t aware of this CL\u0027s history) I would have expected to see a \u0027but\u0027 for things this CL addresses.",
+      "range": {
+        "startLine": 10,
+        "startChar": 24,
+        "endLine": 10,
+        "endChar": 28
+      },
+      "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef7a87d5_f629dacb",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-16T19:14:19Z",
+      "side": 1,
+      "message": "Please add:\n\n// TODO(b/141124876): Optimize for wide-vector gather operations.",
+      "range": {
+        "startLine": 158,
+        "startChar": 2,
+        "endLine": 158,
+        "endChar": 3
+      },
+      "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cdf2b6a_48142c52",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-16T19:14:19Z",
+      "side": 1,
+      "message": "Please add a comment here that this doesn\u0027t take the size of the access into account, only the size of the stride. Some elements which are still be within the buffer\u0027s bounds may therefore be treated as out of bounds. This is probably exceedingly rare, which justifies cutting this corner, but I\u0027d still like to see it fixed eventually or worst case documented.\n\nPlease open a bug for it and mention it in the comment.",
+      "range": {
+        "startLine": 422,
+        "startChar": 3,
+        "endLine": 424,
+        "endChar": 63
+      },
+      "revId": "f9515bea85fcdc05f380c24a9634288fe270954a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
