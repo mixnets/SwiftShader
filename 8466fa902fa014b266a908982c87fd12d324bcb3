@@ -22,6 +22,30 @@
       "revId": "8466fa902fa014b266a908982c87fd12d324bcb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f8fed56_cedcd6fd",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-16T17:33:31Z",
+      "side": 1,
+      "message": "I\u0027ll just fix it now by using a different mask for activeLaneMask and storesAndAtomicsMask.",
+      "parentUuid": "a7a6edfd_8e1fd4f9",
+      "range": {
+        "startLine": 82,
+        "startChar": 24,
+        "endLine": 82,
+        "endChar": 29
+      },
+      "revId": "8466fa902fa014b266a908982c87fd12d324bcb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
