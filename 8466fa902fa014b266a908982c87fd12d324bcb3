@@ -46,6 +46,30 @@
       "revId": "8466fa902fa014b266a908982c87fd12d324bcb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ba20c82_2226e980",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-16T17:37:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f8fed56_cedcd6fd",
+      "range": {
+        "startLine": 82,
+        "startChar": 24,
+        "endLine": 82,
+        "endChar": 29
+      },
+      "revId": "8466fa902fa014b266a908982c87fd12d324bcb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
