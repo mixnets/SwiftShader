@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7dbcca2_c7a98094",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-16T16:55:34Z",
+      "side": 1,
+      "message": "I\u0027m a little surprised and concerned that this is still crashing.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 40
+      },
+      "revId": "5d443fbfe35a04735425c7ef75bf4d69c8b9f167",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
