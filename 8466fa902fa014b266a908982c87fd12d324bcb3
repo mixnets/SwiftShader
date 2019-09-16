@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7a6edfd_8e1fd4f9",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-16T17:29:30Z",
+      "side": 1,
+      "message": "In the future we should do this conditionally based on the presence of atomic stores. As noted at https://swiftshader-review.googlesource.com/c/SwiftShader/+/35789/7#message-d40bacc3983b70d0c6accaacd3cb9065cf00ca99 it\u0027s useful to know that all lanes are active at the start of the shader.\n\nFor now please just add:\n// TODO(b/141112296): Set all lanes to active for shaders that don\u0027t contain atomic operations.",
+      "range": {
+        "startLine": 82,
+        "startChar": 24,
+        "endLine": 82,
+        "endChar": 29
+      },
+      "revId": "8466fa902fa014b266a908982c87fd12d324bcb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
