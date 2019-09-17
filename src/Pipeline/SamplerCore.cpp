@@ -1815,11 +1815,22 @@ namespace sw
 			case VK_FORMAT_R32_SINT:
 			case VK_FORMAT_R32_UINT:
 			case VK_FORMAT_D32_SFLOAT:
+			case VK_FORMAT_D32_SFLOAT_S8_UINT:
 				// FIXME: Optimal shuffling?
 				c.x.x = *Pointer<Float>(buffer + index[0] * 4);
 				c.x.y = *Pointer<Float>(buffer + index[1] * 4);
 				c.x.z = *Pointer<Float>(buffer + index[2] * 4);
 				c.x.w = *Pointer<Float>(buffer + index[3] * 4);
+				if(state.textureFormat == VK_FORMAT_D32_SFLOAT_S8_UINT)
+				{
+					// Move to stencil buffer and read stencil
+					Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
+					Pointer<Byte> stencilBuffer = buffer + sliceP.x;
+					c.y.x = *Pointer<Float>(stencilBuffer + index[0]);
+					c.y.y = *Pointer<Float>(stencilBuffer + index[1]);
+					c.y.z = *Pointer<Float>(stencilBuffer + index[2]);
+					c.y.w = *Pointer<Float>(stencilBuffer + index[3]);
+				}
 				break;
 			case VK_FORMAT_R32G32_SFLOAT:
 			case VK_FORMAT_R32G32_SINT:
