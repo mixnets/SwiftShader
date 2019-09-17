@@ -917,10 +917,14 @@ namespace sw
 				break;
 
 			case spv::OpFunctionParameter:
-			case spv::OpFunctionCall:
 				// These should have all been removed by preprocessing passes. If we see them here,
 				// our assumptions are wrong and we will probably generate wrong code.
 				UNREACHABLE("%s should have already been lowered.", OpcodeName(opcode).c_str());
+				break;
+
+			// The only supported function is a single OpKill wrapped
+			// in a function, as a result of the "wrap OpKill" pass
+			case spv::OpFunctionCall:
 				break;
 
 			case spv::OpFConvert:
@@ -2692,6 +2696,11 @@ namespace sw
 
 		case spv::OpReturn:
 			return EmitReturn(insn, state);
+
+		// The only supported function is a single OpKill wrapped
+		// in a function, as a result of the "wrap OpKill" pass
+		case spv::OpFunctionCall:
+			// fall through
 
 		case spv::OpKill:
 			return EmitKill(insn, state);
