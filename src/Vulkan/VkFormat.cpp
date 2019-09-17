@@ -196,6 +196,7 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 	case VK_IMAGE_ASPECT_STENCIL_BIT:
 		switch(format)
 		{
+		case VK_FORMAT_S8_UINT:
 		case VK_FORMAT_D16_UNORM_S8_UINT:
 		case VK_FORMAT_D24_UNORM_S8_UINT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
