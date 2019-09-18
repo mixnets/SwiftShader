@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4b96e5e_49442b34",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 928,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-18T06:07:13Z",
+      "side": 1,
+      "message": "Let\u0027s assert here that the only instruction in the function are an OpKill followed by an OpReturn.\nWe don\u0027t want to silently eat other function types that might leak through.\nA link to a bug would also be great for tracking this.",
+      "range": {
+        "startLine": 928,
+        "startChar": 4,
+        "endLine": 928,
+        "endChar": 6
+      },
+      "revId": "f34127fa79b7514f6a084b613789cae777b355a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58aeebe3_9b938f1f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2703,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-09-18T06:07:13Z",
+      "side": 1,
+      "message": "You\u0027re really lucky here that EmitKill does nothing with the instruction.\nWould be far nicer to actually call EmitKill with the OpKill instruction in the target function.\nPlease also add the reference bug number here so the hacks are tracked.",
+      "range": {
+        "startLine": 2703,
+        "startChar": 4,
+        "endLine": 2703,
+        "endChar": 18
+      },
+      "revId": "f34127fa79b7514f6a084b613789cae777b355a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
