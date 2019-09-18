@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "336a6846_5932ac2a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 928,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-18T20:08:44Z",
+      "side": 1,
+      "message": "Done, but I put these things inside a new EmitFunctionCall function I added.",
+      "parentUuid": "a4b96e5e_49442b34",
+      "range": {
+        "startLine": 928,
+        "startChar": 4,
+        "endLine": 928,
+        "endChar": 6
+      },
+      "revId": "f34127fa79b7514f6a084b613789cae777b355a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "58aeebe3_9b938f1f",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "f34127fa79b7514f6a084b613789cae777b355a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4914ca58_3e62c171",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2703,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-18T20:08:44Z",
+      "side": 1,
+      "message": "Done, inside the EmitFunctionCall function.",
+      "parentUuid": "58aeebe3_9b938f1f",
+      "range": {
+        "startLine": 2703,
+        "startChar": 4,
+        "endLine": 2703,
+        "endChar": 18
+      },
+      "revId": "f34127fa79b7514f6a084b613789cae777b355a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
