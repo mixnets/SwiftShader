@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fdb963c3_b1c2af46",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-18T21:34:28Z",
+      "side": 1,
+      "message": "Let\u0027s add a SWANGLE bug reference here",
+      "revId": "d23e092fbd1be9dfce29318120bfd6ca5a83f539",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
