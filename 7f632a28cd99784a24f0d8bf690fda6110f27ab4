@@ -93,6 +93,30 @@
       "revId": "7f632a28cd99784a24f0d8bf690fda6110f27ab4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "878de213_1636aa04",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-18T19:05:35Z",
+      "side": 1,
+      "message": "I will drop the comment.",
+      "parentUuid": "bc719f1e_1db6712c",
+      "range": {
+        "startLine": 1068,
+        "startChar": 3,
+        "endLine": 1068,
+        "endChar": 19
+      },
+      "revId": "7f632a28cd99784a24f0d8bf690fda6110f27ab4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
