@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c4bd6217_8bcc0b0a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-18T19:01:23Z",
+      "side": 1,
+      "message": "OK :)",
+      "parentUuid": "8d2dfa41_66c1cbb2",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "7f632a28cd99784a24f0d8bf690fda6110f27ab4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d99ba3f_fbd2b0a1",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-09-18T18:56:55Z",
       "side": 1,
       "message": "Looks fairly optimal to me. LLVM can probably combine the consecutive loads into one. Did you have anything else in mind?\n\nnit: It\u0027s usually best to add some details suggestions to a comment like this. I used to have lots of these in older code, and no recollection of what I meant to do. 8-)",
+      "range": {
+        "startLine": 1068,
+        "startChar": 3,
+        "endLine": 1068,
+        "endChar": 19
+      },
+      "revId": "7f632a28cd99784a24f0d8bf690fda6110f27ab4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc719f1e_1db6712c",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-18T19:01:23Z",
+      "side": 1,
+      "message": "Just the loads bothered me. The code for other formats above is more tricky, but I\u0027m not sure how much benefit there is.",
+      "parentUuid": "3d99ba3f_fbd2b0a1",
       "range": {
         "startLine": 1068,
         "startChar": 3,
