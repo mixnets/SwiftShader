@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31a15b34_553eda27",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4849,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-18T20:47:04Z",
+      "side": 1,
+      "message": "nit: Not sure if Squeegee (go/todo) is picky about it, but we typically don\u0027t add a space here.",
+      "range": {
+        "startLine": 4849,
+        "startChar": 9,
+        "endLine": 4849,
+        "endChar": 10
+      },
+      "revId": "2fb224005a7ee356b80bcbf53a91127b3e79551e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3da10cd_3b55c322",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4863,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-18T20:47:04Z",
+      "side": 1,
+      "message": "Note that in release mode when a function other than a wrapped OpKill somehow didn\u0027t get inlined, this would attempt to emit all its instructions. Probably in random block order too.\n\nLet\u0027s make sure we return immediately if it\u0027s not a wrapped OpKill (still asserting in debug).",
+      "range": {
+        "startLine": 4855,
+        "startChar": 2,
+        "endLine": 4863,
+        "endChar": 3
+      },
+      "revId": "2fb224005a7ee356b80bcbf53a91127b3e79551e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
