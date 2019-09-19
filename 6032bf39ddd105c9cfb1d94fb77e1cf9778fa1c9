@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6ffb87d_a821ff85",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1827,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-19T16:10:04Z",
+      "side": 1,
+      "message": "This doesn\u0027t make any sense. You need to sample the correct aspect, not both.",
+      "revId": "6032bf39ddd105c9cfb1d94fb77e1cf9778fa1c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
