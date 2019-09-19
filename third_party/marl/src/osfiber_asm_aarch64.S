@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+#include "osfiber_asm_aarch64.h"
+
 #if defined(__aarch64__)
 
 #define MARL_BUILD_ASM 1
-#include "osfiber_asm_aarch64.h"
 
 // void marl_fiber_swap(marl_fiber_context* from, const marl_fiber_context* to)
 // x0: from

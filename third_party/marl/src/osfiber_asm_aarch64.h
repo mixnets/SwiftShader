@@ -16,28 +16,26 @@
 #define MARL_REG_r1 0x08
 #define MARL_REG_r16 0x10
 #define MARL_REG_r17 0x18
-#define MARL_REG_r18 0x20
-#define MARL_REG_r19 0x28
-#define MARL_REG_r20 0x30
-#define MARL_REG_r21 0x38
-#define MARL_REG_r22 0x40
-#define MARL_REG_r23 0x48
-#define MARL_REG_r24 0x50
-#define MARL_REG_r25 0x58
-#define MARL_REG_r26 0x60
-#define MARL_REG_r27 0x68
-#define MARL_REG_r28 0x70
-#define MARL_REG_r29 0x78
-#define MARL_REG_v8 0x80
-#define MARL_REG_v9 0x88
-#define MARL_REG_v10 0x90
-#define MARL_REG_v11 0x98
-#define MARL_REG_v12 0xa0
-#define MARL_REG_v13 0xa8
-#define MARL_REG_v14 0xb0
-#define MARL_REG_v15 0xb8
-#define MARL_REG_SP 0xc0
-#define MARL_REG_LR 0xc8
+#define MARL_REG_r19 0x20
+#define MARL_REG_r20 0x28
+#define MARL_REG_r21 0x30
+#define MARL_REG_r22 0x38
+#define MARL_REG_r23 0x40
+#define MARL_REG_r24 0x48
+#define MARL_REG_r25 0x50
+#define MARL_REG_r26 0x58
+#define MARL_REG_r27 0x60
+#define MARL_REG_r28 0x68
+#define MARL_REG_v8 0x70
+#define MARL_REG_v9 0x78
+#define MARL_REG_v10 0x80
+#define MARL_REG_v11 0x88
+#define MARL_REG_v12 0x90
+#define MARL_REG_v13 0x98
+#define MARL_REG_v14 0xa0
+#define MARL_REG_v15 0xa8
+#define MARL_REG_SP 0xb8
+#define MARL_REG_LR 0xc0
 
 #if defined(__APPLE__)
 #define MARL_ASM_SYMBOL(x) _##x
@@ -59,7 +57,9 @@ struct marl_fiber_context {
   // special purpose registers
   uintptr_t r16;
   uintptr_t r17;
-  uintptr_t r18;  // platform specific (maybe inter-procedural state)
+
+  // r18 is the 'platform register', if needed; otherwise a temporary register.
+  // Since it's either reserved or caller-saved, we should not save/restore it.
 
   // callee-saved registers
   uintptr_t r19;
@@ -96,8 +96,6 @@ static_assert(offsetof(marl_fiber_context, r1) == MARL_REG_r1,
 static_assert(offsetof(marl_fiber_context, r16) == MARL_REG_r16,
               "Bad register offset");
 static_assert(offsetof(marl_fiber_context, r17) == MARL_REG_r17,
-              "Bad register offset");
-static_assert(offsetof(marl_fiber_context, r18) == MARL_REG_r18,
               "Bad register offset");
 static_assert(offsetof(marl_fiber_context, r19) == MARL_REG_r19,
               "Bad register offset");
