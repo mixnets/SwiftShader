@@ -22,6 +22,30 @@
       "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42e3c804_e3e53d5d",
+        "filename": "src/swiftshader.gni",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-09-19T17:30:53Z",
+      "side": 1,
+      "message": "I initially named it \"swiftshader_optimized_debug\", but felt that wasn\u0027t clear as well. I went for this naming since \"is_debug\" is a gn variable, so I figured appending \"optimized\" would mean this is a debug build that\u0027s optimized. When you look at the conditional statement, it seems more clear as well:\n\nif (is_debug \u0026\u0026 swiftshader_is_debug_optimized) { ...\n\nHowever, I\u0027m open to alternative names for this variable.",
+      "parentUuid": "6e5b6d24_4634d9f7",
+      "range": {
+        "startLine": 23,
+        "startChar": 2,
+        "endLine": 23,
+        "endChar": 33
+      },
+      "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
