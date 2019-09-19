@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a44036e9_bc805917",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-19T21:32:50Z",
+      "side": 1,
+      "message": "This doesnt do what you want. `getImage(usage) \u003d\u003d image` is true for D+S.\n\nYou can do this at descriptor write time easily:\nimageSampler[i].format \u003d format.getAspectFormat(static_cast\u003cVkImageAspectFlagBits\u003e(imageView-\u003egetSubresourceRange().aspectMask));",
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
