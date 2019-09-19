@@ -16,6 +16,23 @@
       "revId": "6032bf39ddd105c9cfb1d94fb77e1cf9778fa1c9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33c7c792_78be7f0f",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1831,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-19T16:55:14Z",
+      "side": 1,
+      "message": "Stencil aspect is quad layout, not linear.",
+      "revId": "6032bf39ddd105c9cfb1d94fb77e1cf9778fa1c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
