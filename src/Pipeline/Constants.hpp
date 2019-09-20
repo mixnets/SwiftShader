@@ -86,6 +86,9 @@ namespace sw
 		float4 X[4];
 		float4 Y[4];
 
+		int yMinMultiSampleOffset;
+		int yMaxMultiSampleOffset;
+
 		dword maxX[16];
 		dword maxY[16];
 		dword maxZ[16];
