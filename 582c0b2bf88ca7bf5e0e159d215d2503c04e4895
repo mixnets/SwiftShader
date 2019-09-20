@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "042762b3_6981ebe5",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-20T14:59:57Z",
+      "side": 1,
+      "message": "I\u0027m not super comfortable with changing the ImageView format at construction, as it would mess with subsequent format.isCompatible() calls.",
+      "parentUuid": "d3accbfa_d194b38f",
+      "range": {
+        "startLine": 215,
+        "startChar": 7,
+        "endLine": 215,
+        "endChar": 25
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a44036e9_bc805917",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 6
