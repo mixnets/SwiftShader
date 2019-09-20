@@ -122,13 +122,13 @@ void setCPUDefaults()
 
 marl::Scheduler* getOrCreateScheduler()
 {
-	static auto scheduler = std::unique_ptr<marl::Scheduler>(new marl::Scheduler());
+	static auto scheduler = new marl::Scheduler();
 	scheduler->setThreadInitializer([] {
 		sw::CPUID::setFlushToZero(true);
 		sw::CPUID::setDenormalsAreZero(true);
 	});
 	scheduler->setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
-	return scheduler.get();
+	return scheduler;
 }
 
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
