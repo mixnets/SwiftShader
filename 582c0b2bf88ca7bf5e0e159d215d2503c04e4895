@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "de58088a_cd230193",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:42:07Z",
+      "side": 1,
+      "message": "No longer just for testing?",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "56b170e5_3ec38ef1",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 6
