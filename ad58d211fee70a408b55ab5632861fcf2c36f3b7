@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50649574_5e4d5518",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T19:54:34Z",
+      "side": 1,
+      "message": "It\u0027s useful when using auto to still indicate whether a pointer, reference, or rvalue reference is expected, to avoid unexpected behavior (see go/totw/44#tip-of-the-week-44-qualifying-auto) and also avoid some confusion about -\u003e accessors being used below.",
+      "range": {
+        "startLine": 125,
+        "startChar": 8,
+        "endLine": 125,
+        "endChar": 12
+      },
+      "revId": "ad58d211fee70a408b55ab5632861fcf2c36f3b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
