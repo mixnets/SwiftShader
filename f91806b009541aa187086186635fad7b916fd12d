@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd54ea4c_ec1b329b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "This is about fixing support for OpKill as non-terminator\n\nEnabling the WrapOpKill pass is just part of the implementation details to achieve that.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 22
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30dc7ea2_56fba762",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4849,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "full support",
+      "range": {
+        "startLine": 4849,
+        "startChar": 28,
+        "endLine": 4849,
+        "endChar": 35
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb219fa4_f5cf4c9c",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4851,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "SPIRV-Tools pass",
+      "range": {
+        "startLine": 4851,
+        "startChar": 53,
+        "endLine": 4851,
+        "endChar": 57
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85d1c0c0_b4af157f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4860,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "insnNumber \u003e 1",
+      "range": {
+        "startLine": 4860,
+        "startChar": 19,
+        "endLine": 4860,
+        "endChar": 23
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31f6ee7f_d085d5e7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4862,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "UNSUPPORTED is for optional features and when this macro is hit it means the app misbehaves or validation failed. UNIMPLEMENTED should be used instead, which is for functionality we should still implement.",
+      "range": {
+        "startLine": 4862,
+        "startChar": 5,
+        "endLine": 4862,
+        "endChar": 16
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84ee3d21_4d5fa4e1",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4867,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:12:41Z",
+      "side": 1,
+      "message": "UNIMPLEMENTED",
+      "range": {
+        "startLine": 4867,
+        "startChar": 5,
+        "endLine": 4867,
+        "endChar": 16
+      },
+      "revId": "f91806b009541aa187086186635fad7b916fd12d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
