@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fa26e6e4_9a360d5c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-20T13:55:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de58088a_cd230193",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 4
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "56b170e5_3ec38ef1",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1aad75e_39d0819a",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-20T13:55:07Z",
+      "side": 1,
+      "message": "2 reasons:\n1) To support an ImageView with a compatible (VK_FORMAT_R8_UNORM) type and an internal YUV Image\n2) To be able to call getAspectFormat(aspect) on its own result and not crash, if we need to call it in multiple places",
+      "parentUuid": "56b170e5_3ec38ef1",
+      "range": {
+        "startLine": 215,
+        "startChar": 7,
+        "endLine": 215,
+        "endChar": 25
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -98,6 +146,24 @@
       "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d88a362_374db704",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-20T13:55:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8c1242be_070a3d81",
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
