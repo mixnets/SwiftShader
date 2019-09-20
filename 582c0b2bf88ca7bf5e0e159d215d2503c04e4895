@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "5e90f79b_0d7d1871",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T17:25:16Z",
+      "side": 1,
+      "message": "OK, let\u0027s land this as-is to enable depth-stencil sampling, and then check if we can refactor this while keeping the new tests passing.",
+      "parentUuid": "042762b3_6981ebe5",
+      "range": {
+        "startLine": 215,
+        "startChar": 7,
+        "endLine": 215,
+        "endChar": 25
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a44036e9_bc805917",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 6
