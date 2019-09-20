@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "56b170e5_3ec38ef1",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:41:12Z",
+      "side": 1,
+      "message": "If I recall correctly VK_IMAGE_ASPECT_PLANE_0_BIT should only be used with multi-planar format, i.e. YCbCr. Why is this added?",
+      "range": {
+        "startLine": 215,
+        "startChar": 7,
+        "endLine": 215,
+        "endChar": 25
+      },
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a44036e9_bc805917",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 6
@@ -31,6 +54,24 @@
       "side": 1,
       "message": "Nevermind, I misread the parens. Yes, this works.",
       "parentUuid": "a44036e9_bc805917",
+      "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c1242be_070a3d81",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-20T03:41:12Z",
+      "side": 1,
+      "message": "Let\u0027s make this more easily readable by first retrieving the format of the underlying image and putting that in a local imageFormat variable, then getting the sub-format of the image view\u0027s aspect from it.",
+      "parentUuid": "cddf03e8_c22eecff",
       "revId": "582c0b2bf88ca7bf5e0e159d215d2503c04e4895",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
