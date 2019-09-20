@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4de2fd20_c2228d1f",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-20T15:40:09Z",
+      "side": 1,
+      "message": "Ah yes, good catch! I\u0027ll fix it.",
+      "parentUuid": "936e16e2_fab5d4cb",
+      "range": {
+        "startLine": 78,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "99f604fe_e19068c0",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 10
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "38866028_8af42354",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-20T15:40:09Z",
+      "side": 1,
+      "message": "It is but I put this here for clarity. I can remove it if you prefer.",
+      "parentUuid": "99f604fe_e19068c0",
+      "range": {
+        "startLine": 88,
+        "startChar": 3,
+        "endLine": 88,
+        "endChar": 30
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "37894396_7dd87d19",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 10
@@ -59,6 +107,30 @@
       "writtenOn": "2019-09-12T21:55:15Z",
       "side": 1,
       "message": "Did you try marl::blocking_call?\nIf so, do you have any figures for how much performance gain this gives over blocking_call()?\nIf this gives substantial wins, I wonder if we should apply optimizations to marl so that other projects get the same wins.",
+      "range": {
+        "startLine": 232,
+        "startChar": 4,
+        "endLine": 232,
+        "endChar": 40
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2609f16c_4f51795f",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-20T15:40:09Z",
+      "side": 1,
+      "message": "I didn\u0027t benchmark it at the time, but my hunch was that creating and destroying an std::thread on every call could be costly, hence the current design.\n\nI have recently wrote a small benchmark to better measure this (available as sso://user/digit/thread-bench, sorry for the Google-only internal link), and on my workstation, the results show that explicit thread creation/destruction is about three times slower than simple event signalling:\n\n  2019-09-20 17:28:27\n  Running bazel-bin/src/thread_benchmark\n  Run on (28 X 3500 MHz CPU s)\n  CPU Caches:\n    L1 Data 32K (x28)\n    L1 Instruction 32K (x28)\n    L2 Unified 256K (x28)\n    L3 Unified 35840K (x2)\n  Load Average: 0.28, 0.40, 0.65\n  ***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and \n  will incur extra overhead.\n  ---------------------------------------------------------------------------------------------\n  Benchmark                                                   Time             CPU   Iterations\n  ---------------------------------------------------------------------------------------------\n  BM_BackgroundThreadBackAndForth/real_time               11766 ns         7908 ns        57692\n  BM_ThreadSimpleCreationDestruction\u003c0\u003e/real_time         40938 ns        23882 ns        17031\n  BM_ThreadSimpleCreationDestruction\u003c10\u003e/real_time        42481 ns        24467 ns        17485\n  BM_ThreadSimpleCreationDestruction\u003c100\u003e/real_time       41795 ns        24465 ns        17156\n  BM_ThreadCreationSignalDestruction\u003c0\u003e/real_time         42090 ns        24042 ns        17088\n  BM_ThreadCreationSignalDestruction\u003c10\u003e/real_time        41958 ns        24835 ns        17401\n  BM_ThreadCreationSignalDestruction\u003c100\u003e/real_time       41305 ns        23717 ns        16921\n  BM_PthreadSimpleCreationDestruction\u003c0\u003e/real_time        39689 ns        23582 ns        17451\n  BM_PthreadSimpleCreationDestruction\u003c10\u003e/real_time       38428 ns        22713 ns        18350\n  BM_PthreadSimpleCreationDestruction\u003c100\u003e/real_time      38832 ns        23304 ns        17906\n\nNote: The CPU time is the time taken by the main thread only (which is what matters here).\n\nOn this topic, I was tempted to make this class specific to the Linux implementation. That\u0027s because other platforms like Win32 and Fuchsia allow waiting on several objects at the same time, which allows for a more efficient  resource usage (e.g. up to 63 semaphores at the same time in a single background thread for Win32, or 7 for Fuchsia, at the cost of some complexity though). However, I\u0027m not sure this is necessary here, but this may be something you might want to look at for Marl.",
+      "parentUuid": "37894396_7dd87d19",
       "range": {
         "startLine": 232,
         "startChar": 4,
