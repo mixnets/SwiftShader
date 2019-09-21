@@ -1,2 +1,3 @@
 dEQP-VK.api.info.android.no_layers
+dEQP-VK.api.object_management.max_concurrent.device_group
 dEQP-VK.glsl.builtin_var.simple.pointcoord_uniform_frag
