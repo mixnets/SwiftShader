@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c15a5ca_a873b69d",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-22T05:56:40Z",
+      "side": 1,
+      "message": "Potentially caused by https://swiftshader-review.googlesource.com/c/SwiftShader/+/36548. Verifying with https://swiftshader-review.googlesource.com/c/SwiftShader/+/36568",
+      "revId": "a4083127cbeaddc87defa4cd5d0a62d83d554f12",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
