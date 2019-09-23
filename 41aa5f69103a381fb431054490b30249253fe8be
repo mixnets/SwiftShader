@@ -140,6 +140,30 @@
       "revId": "41aa5f69103a381fb431054490b30249253fe8be",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc3089a5_c14941a2",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-23T12:42:36Z",
+      "side": 1,
+      "message": "I found a way to simplify the code (i.e. remove the background thread), by introducing a tryWait() method on the external semaphore. This way, marl::blocking_call() is only invoked when waiting is really needed. This assumes that the code of creating/destroy the std::thread is negligible compared to the actual wait(). Please have a look at the latest patch.",
+      "parentUuid": "2609f16c_4f51795f",
+      "range": {
+        "startLine": 232,
+        "startChar": 4,
+        "endLine": 232,
+        "endChar": 40
+      },
+      "revId": "41aa5f69103a381fb431054490b30249253fe8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
