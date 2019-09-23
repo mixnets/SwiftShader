@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e071047a_17c78798",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-23T12:40:48Z",
+      "side": 1,
+      "message": "On Fuchsia, which is always 64-bit, int32_t is always equal to int (and PRI32d defined as \"d\").\nI can do a cast, or use/define a formatting macro if you prefer, but the whole platform simply uses \"%d\" to print status codes, so I\u0027m unsure this is worth it :-/",
+      "parentUuid": "3038f11b_7bad7a73",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 48
+      },
+      "revId": "09ff7c5c537cfc2406046266ba2724d589117a9e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d649a368_dc381f6d",
         "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
         "patchSetId": 5
@@ -39,6 +63,24 @@
       "revId": "09ff7c5c537cfc2406046266ba2724d589117a9e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54de9f7_189f13f1",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-23T12:40:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d649a368_dc381f6d",
+      "revId": "09ff7c5c537cfc2406046266ba2724d589117a9e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
