@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "a1ffd222_7c61ea9d",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-24T03:00:11Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll change the code to support multiple implementations then. I assume a base class with virtual methods that implements the non-external case, plus derived classes for the handle-type-specific ones too then. I\u0027ll try to come up with something simple that doesn\u0027t require changing too many build files.",
+      "parentUuid": "6ca27886_1c85a284",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 6
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a72b0791_f4e39b54",
         "filename": "src/Vulkan/VkDeviceMemory.hpp",
         "patchSetId": 11
@@ -60,6 +84,30 @@
       "writtenOn": "2019-09-11T20:07:34Z",
       "side": 1,
       "message": "Don\u0027t appear to be implemented here or in the next change?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 27
+      },
+      "revId": "dd3e3c03bc157a72cd6bbdd84bc7dd3a6a580ca3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d1ad6c1_8b12738a",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-09-24T03:00:11Z",
+      "side": 1,
+      "message": "Actually, these are left overs from a previous CL. I\u0027ll remove them.",
+      "parentUuid": "a72b0791_f4e39b54",
       "range": {
         "startLine": 50,
         "startChar": 0,
