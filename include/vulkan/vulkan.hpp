@@ -22724,10 +22724,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ConformanceVersionKHR
   {
-    ConformanceVersionKHR( uint8_t major_ = 0,
-                           uint8_t minor_ = 0,
-                           uint8_t subminor_ = 0,
-                           uint8_t patch_ = 0 )
+    ConformanceVersionKHR( uint8_t major_ = 1,
+                           uint8_t minor_ = 1,
+                           uint8_t subminor_ = 3,
+                           uint8_t patch_ = 3 )
       : major( major_ )
       , minor( minor_ )
       , subminor( subminor_ )
