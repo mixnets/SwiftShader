@@ -94,6 +94,30 @@
       "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3d53ad4_42eb407a",
+        "filename": "src/swiftshader.gni",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-09-24T20:11:20Z",
+      "side": 1,
+      "message": "Thoughts? Nicolas, do I go for \"swiftshader_enable_optimization\" as Jamie suggested?",
+      "parentUuid": "d1f3cab4_0bdfa8b9",
+      "range": {
+        "startLine": 23,
+        "startChar": 2,
+        "endLine": 23,
+        "endChar": 33
+      },
+      "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
