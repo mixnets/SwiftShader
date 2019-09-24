@@ -290,17 +290,41 @@ namespace sw
 			sRGBtoLinear12_16[i] = (unsigned short)(clamp(sw::sRGBtoLinear((float)i / 0x0FFF) * 0xFFFF + 0.5f, 0.0f, (float)0xFFFF));
 		}
 
+		// VK_SAMPLE_COUNT_4_BIT
+		// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#primsrast-multisampling
+		constexpr float samplePositions[][2] = {
+			{0.375, 0.125},
+			{0.875, 0.375},
+			{0.125, 0.625},
+			{0.625, 0.875},
+		};
+
+		// Vulkan spec sample positions are corner-relative, while ours are center-relative, so subtract .5
+		constexpr float4 X[4] = {
+			sw::replicate(samplePositions[0][0] - 0.5f),
+			sw::replicate(samplePositions[1][0] - 0.5f),
+			sw::replicate(samplePositions[2][0] - 0.5f),
+			sw::replicate(samplePositions[3][0] - 0.5f),
+		};
+
+		constexpr float4 Y[4] = {
+			sw::replicate(samplePositions[0][1] - 0.5f),
+			sw::replicate(samplePositions[1][1] - 0.5f),
+			sw::replicate(samplePositions[2][1] - 0.5f),
+			sw::replicate(samplePositions[3][1] - 0.5f),
+		};
+
 		for(int q = 0; q < 4; q++)
 		{
 			for(int c = 0; c < 16; c++)
 			{
 				for(int i = 0; i < 4; i++)
 				{
-					const float X[4] = {+0.3125f, -0.3125f, -0.1250f, +0.1250f};
-					const float Y[4] = {+0.1250f, -0.1250f, +0.3125f, -0.3125f};
+					//const float X[4] = {+0.3125f, -0.3125f, -0.1250f, +0.1250f};
+					//const float Y[4] = {+0.1250f, -0.1250f, +0.3125f, -0.3125f};
 
-					sampleX[q][c][i] = c & (1 << i) ? X[q] : 0.0f;
-					sampleY[q][c][i] = c & (1 << i) ? Y[q] : 0.0f;
+					sampleX[q][c][i] = c & (1 << i) ? X[q][0] : 0.0f;
+					sampleY[q][c][i] = c & (1 << i) ? Y[q][0] : 0.0f;
 					weight[c][i] = c & (1 << i) ? 1.0f : 0.0f;
 				}
 			}
@@ -312,15 +336,15 @@ namespace sw
 		memcpy(&this->Xf, &Xf, sizeof(Xf));
 		memcpy(&this->Yf, &Yf, sizeof(Yf));
 
-		static const float4 X[4] = {{-0.3125f, -0.3125f, -0.3125f, -0.3125f},
-					                {+0.3125f, +0.3125f, +0.3125f, +0.3125f},
-					                {+0.1250f, +0.1250f, +0.1250f, +0.1250f},
-					                {-0.1250f, -0.1250f, -0.1250f, -0.1250f}};
+		//static const float4 X[4] = {{-0.3125f, -0.3125f, -0.3125f, -0.3125f},
+		//			                {+0.3125f, +0.3125f, +0.3125f, +0.3125f},
+		//			                {+0.1250f, +0.1250f, +0.1250f, +0.1250f},
+		//			                {-0.1250f, -0.1250f, -0.1250f, -0.1250f}};
 
-		static const float4 Y[4] = {{-0.1250f, -0.1250f, -0.1250f, -0.1250f},
-		                            {+0.1250f, +0.1250f, +0.1250f, +0.1250f},
-		                            {-0.3125f, -0.3125f, -0.3125f, -0.3125f},
-		                            {+0.3125f, +0.3125f, +0.3125f, +0.3125f}};
+		//static const float4 Y[4] = {{-0.1250f, -0.1250f, -0.1250f, -0.1250f},
+		//                            {+0.1250f, +0.1250f, +0.1250f, +0.1250f},
+		//                            {-0.3125f, -0.3125f, -0.3125f, -0.3125f},
+		//                            {+0.3125f, +0.3125f, +0.3125f, +0.3125f}};
 
 		memcpy(&this->X, &X, sizeof(X));
 		memcpy(&this->Y, &Y, sizeof(Y));
