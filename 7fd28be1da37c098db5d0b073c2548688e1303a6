@@ -118,6 +118,30 @@
       "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be49f040_c82272e1",
+        "filename": "src/swiftshader.gni",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-24T21:05:02Z",
+      "side": 1,
+      "message": "How about swiftshader_optimized_debug_build? I agree with your earlier comment that setting swiftshader_enable_optimization for release build would not make sense. \u003c/bikeshed\u003e",
+      "parentUuid": "b3d53ad4_42eb407a",
+      "range": {
+        "startLine": 23,
+        "startChar": 2,
+        "endLine": 23,
+        "endChar": 33
+      },
+      "revId": "7fd28be1da37c098db5d0b073c2548688e1303a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
