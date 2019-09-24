@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "548a2850_24da1306",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-24T16:13:52Z",
+      "side": 1,
+      "message": "Let\u0027s also reference\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/36548",
+      "revId": "0778fd9b35b4c7664ab523b00c3f5705ffa00c38",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f66f8089_a5ac591a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-24T16:13:52Z",
+      "side": 1,
+      "message": "timeout flakes",
+      "range": {
+        "startLine": 11,
+        "startChar": 26,
+        "endLine": 11,
+        "endChar": 32
+      },
+      "revId": "0778fd9b35b4c7664ab523b00c3f5705ffa00c38",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f059bdd_d665f7fd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-24T16:13:52Z",
+      "side": 1,
+      "message": "Bug: b/141380274",
+      "revId": "0778fd9b35b4c7664ab523b00c3f5705ffa00c38",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
