@@ -80,7 +80,18 @@ find_library(XCB xcb)
 ###########################################################
 # Options
 ###########################################################
+<<<<<<< HEAD   (e3a598 Regres: Update test lists @ 1f89f58f)
+=======
+option(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option(MARL_BUILD_TESTS "Build tests" OFF)
+option(MARL_ASAN "Build marl with address sanitizer" OFF)
+option(MARL_MSAN "Build marl with memory sanitizer" OFF)
+option(MARL_TSAN "Build marl with thread sanitizer" OFF)
+option(MARL_INSTALL "Create marl install target" OFF)
+>>>>>>> BRANCH (07ed7c Squashed 'third_party/marl/' changes from 5f31df137..12872a0)
 
+<<<<<<< HEAD   (e3a598 Regres: Update test lists @ 1f89f58f)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
 endif()
@@ -262,6 +273,8 @@ if(USE_GROUP_SOURCES)
     group_all_sources(src)
 endif()
 
+=======
+>>>>>>> BRANCH (07ed7c Squashed 'third_party/marl/' changes from 5f31df137..12872a0)
 ###########################################################
 # Directories
 ###########################################################
@@ -296,6 +309,7 @@ macro(set_cpp_flag FLAG)
     endif()
 endmacro()
 
+<<<<<<< HEAD   (e3a598 Regres: Update test lists @ 1f89f58f)
 macro(set_linker_flag FLAG)
     if(${ARGC} GREATER 1)
         set(CMAKE_EXE_LINKER_FLAGS ${ARGV1} "${CMAKE_EXE_LINKER_FLAGS ${ARGV1}} ${FLAG}")
@@ -333,6 +347,29 @@ if(MSVC)
         "/wd4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
         "/wd5030" # attribute 'attribute' is not recognized
         "/wd5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
+=======
+###########################################################
+# File lists
+###########################################################
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+>>>>>>> BRANCH (07ed7c Squashed 'third_party/marl/' changes from 5f31df137..12872a0)
     )
 
     # Treat specific warnings as errors
@@ -488,6 +525,7 @@ endif()
 # LLVM
 ###########################################################
 
+<<<<<<< HEAD   (e3a598 Regres: Update test lists @ 1f89f58f)
 set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/AliasAnalysis.cpp
     ${LLVM_DIR}/lib/Analysis/AliasAnalysisSummary.cpp
@@ -1083,6 +1121,55 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/ValueMapper.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/VNCoercion.cpp
     ${LLVM_DIR}/../stubs/Stubs.cpp
+=======
+function(marl_set_target_options target)
+    # Enable all warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE
+            "-W4"
+            "/wd4127" # conditional expression is constant
+        )
+    else()
+        target_compile_options(${target} PRIVATE "-Wall")
+    endif()
+
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} "-fsanitize=thread")
+    endif()
+
+    target_include_directories(${target} PRIVATE ${MARL_INCLUDE_DIR})
+endfunction(marl_set_target_options)
+
+###########################################################
+# Targets
+###########################################################
+
+# marl
+add_library(marl STATIC ${MARL_LIST})
+set_target_properties(marl PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+>>>>>>> BRANCH (07ed7c Squashed 'third_party/marl/' changes from 5f31df137..12872a0)
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
@@ -1524,10 +1611,29 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         message(FATAL_ERROR "Architecture '${ARCH}' not supported by Subzero")
     endif()
 
+<<<<<<< HEAD   (e3a598 Regres: Update test lists @ 1f89f58f)
     file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
         ${SUBZERO_LLVM_DIR}/*.cpp
         ${SUBZERO_LLVM_DIR}/*.c
         ${SUBZERO_LLVM_DIR}/*.h
+=======
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/memory_test.cpp
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (07ed7c Squashed 'third_party/marl/' changes from 5f31df137..12872a0)
     )
 
     set(SUBZERO_REACTOR_LIST
