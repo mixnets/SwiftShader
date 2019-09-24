@@ -1,4 +1,5 @@
 dEQP-VK.api.object_management.max_concurrent.instance
+dEQP-VK.api.object_management.multiple_unique_resources.device
 dEQP-VK.api.object_management.multiple_unique_resources.device_group
 dEQP-VK.api.object_management.multiple_unique_resources.instance
 dEQP-VK.api.object_management.multithreaded_per_thread_device.buffer_storage_large
@@ -41,5 +42,5 @@ dEQP-VK.api.object_management.multithreaded_per_thread_device.render_pass
 dEQP-VK.api.object_management.multithreaded_per_thread_device.sampler
 dEQP-VK.api.object_management.multithreaded_per_thread_device.semaphore
 dEQP-VK.api.object_management.multithreaded_per_thread_device.shader_module
-dEQP-VK.api.object_management.multithreaded_per_thread_resources.device
 dEQP-VK.api.object_management.multithreaded_per_thread_resources.device_group
+dEQP-VK.api.object_management.multithreaded_per_thread_resources.instance
