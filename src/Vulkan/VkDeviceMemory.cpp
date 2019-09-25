@@ -41,6 +41,10 @@ VkResult DeviceMemory::allocate()
 	if(!buffer)
 	{
 		buffer = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY);
+
+		// Pedantic mode: we're going to scribble all over this buffer!
+		for(uint32_t *p = buffer; p < (uint32_t *)((char*)buffer + size); p++)
+			*p = 0xdeadbeef;
 	}
 
 	if(!buffer)
