@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e2defb21_f28bf0ef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-25T21:38:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72ad8ccd_37f4ab97",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "152d7681aaea90b59219ff1b4ca76798ba7d186c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d743001e_7fbd0104",
         "filename": "src/Device/Config.hpp",
         "patchSetId": 2
@@ -69,6 +93,30 @@
       "revId": "152d7681aaea90b59219ff1b4ca76798ba7d186c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6dd9d13_d67484a7",
+        "filename": "src/Device/Config.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-25T21:38:47Z",
+      "side": 1,
+      "message": "Done. b/141637688",
+      "parentUuid": "314c1909_ad94d6ec",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "152d7681aaea90b59219ff1b4ca76798ba7d186c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
