@@ -34,6 +34,24 @@
       "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6808c469_d81ba17b",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-25T20:34:39Z",
+      "side": 1,
+      "message": "I\u0027d be inclined to use MAX_INTERFACE_COMPONENTS for maxVertexOutputComponents and maxFragmentInputComponents for now. We may need to revisit later for bloat reduction or when we decide to do GS.",
+      "parentUuid": "baf93861_e0577bd6",
+      "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
