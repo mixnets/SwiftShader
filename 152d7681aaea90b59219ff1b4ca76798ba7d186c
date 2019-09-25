@@ -22,6 +22,30 @@
       "revId": "152d7681aaea90b59219ff1b4ca76798ba7d186c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "314c1909_ad94d6ec",
+        "filename": "src/Device/Config.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-25T21:25:40Z",
+      "side": 1,
+      "message": "We need to look into compacting our vertex size when not all components are used, though. Please file a tracking bug for that.",
+      "parentUuid": "d743001e_7fbd0104",
+      "range": {
+        "startLine": 60,
+        "startChar": 29,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "152d7681aaea90b59219ff1b4ca76798ba7d186c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
