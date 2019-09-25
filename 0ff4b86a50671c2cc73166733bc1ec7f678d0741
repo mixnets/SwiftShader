@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8e24b4e_71e9ab39",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-09-25T20:24:08Z",
+      "side": 1,
+      "message": "You must increase MAX_INTERFACE_COMPONENTS to account for this, otherwise things are going to be sized wrong.",
+      "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
