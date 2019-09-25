@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fea13f86_d02a7698",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-25T20:40:49Z",
+      "side": 1,
+      "message": "We specifically need this value increased by 2. See:\nhttps://cs.chromium.org/chromium/src/third_party/angle/src/libANGLE/renderer/vulkan/vk_caps_utils.cpp?l\u003d229",
+      "parentUuid": "8c5411ed_0ca57cf3",
+      "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8e24b4e_71e9ab39",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -69,6 +87,24 @@
       "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd46f722_9d8ea11c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-09-25T20:40:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6808c469_d81ba17b",
+      "revId": "0ff4b86a50671c2cc73166733bc1ec7f678d0741",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
