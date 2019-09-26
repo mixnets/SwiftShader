@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1ee5f54_4963ada6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-26T16:49:11Z",
+      "side": 1,
+      "message": "uber-nit: Git recommends keeping the title line short (~50 char limit)",
+      "revId": "84f6f21150f765505e70ee70c80b88c6bd07f815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22c0125a_9de67d18",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-26T16:49:11Z",
+      "side": 1,
+      "message": "nag: Bug ID please",
+      "revId": "84f6f21150f765505e70ee70c80b88c6bd07f815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
