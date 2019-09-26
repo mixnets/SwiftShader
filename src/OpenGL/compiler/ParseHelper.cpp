@@ -3650,6 +3650,21 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 							}
 						}
 					}
+					else if(op == EOpMax || op == EOpMin)
+					{
+						// Special case for min/max where both arguments are the same symbol
+						TIntermSequence &parameters = paramNode->getAsAggregate()->getSequence();
+						TIntermTyped *left = parameters[0]->getAsTyped();
+						TIntermTyped *right = parameters[1]->getAsTyped();
+
+						TIntermSymbol *leftSymbol = left->getAsSymbolNode();
+						TIntermSymbol *rightSymbol = right->getAsSymbolNode();
+
+						if (leftSymbol && rightSymbol && leftSymbol->getId() == rightSymbol->getId())
+						{
+							callNode = left;
+						}
+					}
 					else
 					{
 						if(fnCandidate->getParamCount() == 2)
