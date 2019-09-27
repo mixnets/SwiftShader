@@ -309,8 +309,13 @@ namespace
 	// settings and no Reactor routine directly links against another.
 	class JITRoutine : public rr::Routine
 	{
+#if LLVM_VERSION_MAJOR >= 8
+		using ObjLayer = llvm::orc::LegacyRTDyldObjectLinkingLayer;
+		using CompileLayer = llvm::orc::LegacyIRCompileLayer<ObjLayer, llvm::orc::SimpleCompiler>;
+#else
 		using ObjLayer = llvm::orc::RTDyldObjectLinkingLayer;
 		using CompileLayer = llvm::orc::IRCompileLayer<ObjLayer, llvm::orc::SimpleCompiler>;
+#endif
 	public:
 		JITRoutine(
 				std::unique_ptr<llvm::Module> module,
@@ -611,61 +616,6 @@ namespace
 		return jit->builder->CreateCall(trunc, ARGS(x));
 	}
 
-	// Packed add/sub saturatation
-	llvm::Value *lowerPSAT(llvm::Value *x, llvm::Value *y, bool isAdd, bool isSigned)
-	{
-		llvm::VectorType *ty = llvm::cast<llvm::VectorType>(x->getType());
-		llvm::VectorType *extTy = llvm::VectorType::getExtendedElementVectorType(ty);
-
-		unsigned numBits = ty->getScalarSizeInBits();
-
-		llvm::Value *max, *min, *extX, *extY;
-		if (isSigned)
-		{
-			max = llvm::ConstantInt::get(extTy, (1LL << (numBits - 1)) - 1, true);
-			min = llvm::ConstantInt::get(extTy, (-1LL << (numBits - 1)), true);
-			extX = jit->builder->CreateSExt(x, extTy);
-			extY = jit->builder->CreateSExt(y, extTy);
-		}
-		else
-		{
-			ASSERT_MSG(numBits <= 64, "numBits: %d", int(numBits));
-			uint64_t maxVal = (numBits == 64) ? ~0ULL : (1ULL << numBits) - 1;
-			max = llvm::ConstantInt::get(extTy, maxVal, false);
-			min = llvm::ConstantInt::get(extTy, 0, false);
-			extX = jit->builder->CreateZExt(x, extTy);
-			extY = jit->builder->CreateZExt(y, extTy);
-		}
-
-		llvm::Value *res = isAdd ? jit->builder->CreateAdd(extX, extY)
-		                         : jit->builder->CreateSub(extX, extY);
-
-		res = lowerPMINMAX(res, min, llvm::ICmpInst::ICMP_SGT);
-		res = lowerPMINMAX(res, max, llvm::ICmpInst::ICMP_SLT);
-
-		return jit->builder->CreateTrunc(res, ty);
-	}
-
-	llvm::Value *lowerPUADDSAT(llvm::Value *x, llvm::Value *y)
-	{
-		return lowerPSAT(x, y, true, false);
-	}
-
-	llvm::Value *lowerPSADDSAT(llvm::Value *x, llvm::Value *y)
-	{
-		return lowerPSAT(x, y, true, true);
-	}
-
-	llvm::Value *lowerPUSUBSAT(llvm::Value *x, llvm::Value *y)
-	{
-		return lowerPSAT(x, y, false, false);
-	}
-
-	llvm::Value *lowerPSSUBSAT(llvm::Value *x, llvm::Value *y)
-	{
-		return lowerPSAT(x, y, false, true);
-	}
-
 	llvm::Value *lowerSQRT(llvm::Value *x)
 	{
 		llvm::Function *sqrt = llvm::Intrinsic::getDeclaration(
@@ -816,6 +766,61 @@ namespace
 		return ret;
 	}
 #endif  // !defined(__i386__) && !defined(__x86_64__)
+
+	// Packed add/sub saturatation
+	llvm::Value *lowerPSAT(llvm::Value *x, llvm::Value *y, bool isAdd, bool isSigned)
+	{
+		llvm::VectorType *ty = llvm::cast<llvm::VectorType>(x->getType());
+		llvm::VectorType *extTy = llvm::VectorType::getExtendedElementVectorType(ty);
+
+		unsigned numBits = ty->getScalarSizeInBits();
+
+		llvm::Value *max, *min, *extX, *extY;
+		if (isSigned)
+		{
+			max = llvm::ConstantInt::get(extTy, (1LL << (numBits - 1)) - 1, true);
+			min = llvm::ConstantInt::get(extTy, (-1LL << (numBits - 1)), true);
+			extX = jit->builder->CreateSExt(x, extTy);
+			extY = jit->builder->CreateSExt(y, extTy);
+		}
+		else
+		{
+			ASSERT_MSG(numBits <= 64, "numBits: %d", int(numBits));
+			uint64_t maxVal = (numBits == 64) ? ~0ULL : (1ULL << numBits) - 1;
+			max = llvm::ConstantInt::get(extTy, maxVal, false);
+			min = llvm::ConstantInt::get(extTy, 0, false);
+			extX = jit->builder->CreateZExt(x, extTy);
+			extY = jit->builder->CreateZExt(y, extTy);
+		}
+
+		llvm::Value *res = isAdd ? jit->builder->CreateAdd(extX, extY)
+		                         : jit->builder->CreateSub(extX, extY);
+
+		res = lowerPMINMAX(res, min, llvm::ICmpInst::ICMP_SGT);
+		res = lowerPMINMAX(res, max, llvm::ICmpInst::ICMP_SLT);
+
+		return jit->builder->CreateTrunc(res, ty);
+	}
+
+	llvm::Value *lowerPUADDSAT(llvm::Value *x, llvm::Value *y)
+	{
+		return lowerPSAT(x, y, true, false);
+	}
+
+	llvm::Value *lowerPSADDSAT(llvm::Value *x, llvm::Value *y)
+	{
+		return lowerPSAT(x, y, true, true);
+	}
+
+	llvm::Value *lowerPUSUBSAT(llvm::Value *x, llvm::Value *y)
+	{
+		return lowerPSAT(x, y, false, false);
+	}
+
+	llvm::Value *lowerPSSUBSAT(llvm::Value *x, llvm::Value *y)
+	{
+		return lowerPSAT(x, y, false, true);
+	}
 
 	llvm::Value *lowerMulHigh(llvm::Value *x, llvm::Value *y, bool sext)
 	{
@@ -2306,21 +2311,13 @@ namespace rr
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::paddusb(x, y);
-#else
 		return As<Byte8>(V(lowerPUADDSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::psubusb(x, y);
-#else
 		return As<Byte8>(V(lowerPUSUBSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<Int> SignMask(RValue<Byte8> x)
@@ -2360,21 +2357,13 @@ namespace rr
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::paddsb(x, y);
-#else
 		return As<SByte8>(V(lowerPSADDSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::psubsb(x, y);
-#else
 		return As<SByte8>(V(lowerPSSUBSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<Int> SignMask(RValue<SByte8> x)
@@ -2507,21 +2496,13 @@ namespace rr
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::paddsw(x, y);
-#else
 		return As<Short4>(V(lowerPSADDSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<Short4> SubSat(RValue<Short4> x, RValue<Short4> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::psubsw(x, y);
-#else
 		return As<Short4>(V(lowerPSSUBSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
@@ -2653,21 +2634,13 @@ namespace rr
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::paddusw(x, y);
-#else
 		return As<UShort4>(V(lowerPUADDSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
 		RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::psubusw(x, y);
-#else
 		return As<UShort4>(V(lowerPUSUBSAT(V(x.value), V(y.value))));
-#endif
 	}
 
 	RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
@@ -4091,62 +4064,6 @@ namespace rr
 		RValue<Int4> pabsd(RValue<Int4> x)
 		{
 			return RValue<Int4>(V(lowerPABS(V(x.value))));
-		}
-
-		RValue<Short4> paddsw(RValue<Short4> x, RValue<Short4> y)
-		{
-			llvm::Function *paddsw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_padds_w);
-
-			return As<Short4>(V(jit->builder->CreateCall2(paddsw, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<Short4> psubsw(RValue<Short4> x, RValue<Short4> y)
-		{
-			llvm::Function *psubsw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubs_w);
-
-			return As<Short4>(V(jit->builder->CreateCall2(psubsw, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<UShort4> paddusw(RValue<UShort4> x, RValue<UShort4> y)
-		{
-			llvm::Function *paddusw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_paddus_w);
-
-			return As<UShort4>(V(jit->builder->CreateCall2(paddusw, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<UShort4> psubusw(RValue<UShort4> x, RValue<UShort4> y)
-		{
-			llvm::Function *psubusw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubus_w);
-
-			return As<UShort4>(V(jit->builder->CreateCall2(psubusw, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<SByte8> paddsb(RValue<SByte8> x, RValue<SByte8> y)
-		{
-			llvm::Function *paddsb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_padds_b);
-
-			return As<SByte8>(V(jit->builder->CreateCall2(paddsb, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<SByte8> psubsb(RValue<SByte8> x, RValue<SByte8> y)
-		{
-			llvm::Function *psubsb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubs_b);
-
-			return As<SByte8>(V(jit->builder->CreateCall2(psubsb, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<Byte8> paddusb(RValue<Byte8> x, RValue<Byte8> y)
-		{
-			llvm::Function *paddusb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_paddus_b);
-
-			return As<Byte8>(V(jit->builder->CreateCall2(paddusb, ARGS(V(x.value), V(y.value)))));
-		}
-
-		RValue<Byte8> psubusb(RValue<Byte8> x, RValue<Byte8> y)
-		{
-			llvm::Function *psubusb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubus_b);
-
-			return As<Byte8>(V(jit->builder->CreateCall2(psubusb, ARGS(V(x.value), V(y.value)))));
 		}
 
 		RValue<UShort4> pavgw(RValue<UShort4> x, RValue<UShort4> y)
