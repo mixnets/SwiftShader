@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2320fa5_6e91806a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-27T16:26:54Z",
+      "side": 1,
+      "message": "Let\u0027s not do both at the same time. Please create a follow-up change for it. If we need to revert, it\u0027s a smaller change that we can verify does nothing more, nothing less. Also, if there\u0027s an issue in the first patch, we at least know it\u0027s not due to the change in subpixel bits. Also, we can more easily check if this will cause issues with golden images in google3 and Chromium, by making a small local change for them instead of already having landed it upstream and failing to merge into either of them.",
+      "range": {
+        "startLine": 7,
+        "startChar": 48,
+        "endLine": 7,
+        "endChar": 65
+      },
+      "revId": "1d5cb268a237f6280a1deaabca4ff9719be8139b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
