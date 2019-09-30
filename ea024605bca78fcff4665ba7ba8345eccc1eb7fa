@@ -16,6 +16,24 @@
       "revId": "ea024605bca78fcff4665ba7ba8345eccc1eb7fa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf2971d1_0edb589e",
+        "filename": "src/Device/Renderer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-09-30T13:12:35Z",
+      "side": 1,
+      "message": "Yes, typo. Thanks!",
+      "parentUuid": "2489da11_230ef408",
+      "revId": "ea024605bca78fcff4665ba7ba8345eccc1eb7fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
