@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e07eda6_9fcddf08",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-09-30T15:10:53Z",
+      "side": 1,
+      "message": "Making these constexpr allows me to use these in Constants.cpp to create constexpr tables.",
+      "revId": "eecd997da11c87061d0aa49d382fd17b855cf52c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
