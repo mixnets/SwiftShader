@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27a053d3_4427dc0e",
+        "filename": "tests/regres/testlists/vk-master-NOT_SUPPORTED.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 118298,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-09-30T15:43:00Z",
+      "side": 0,
+      "message": "Enabled by increasing varying count in https://swiftshader-review.googlesource.com/c/SwiftShader/+/36668",
+      "range": {
+        "startLine": 118294,
+        "startChar": 0,
+        "endLine": 118298,
+        "endChar": 58
+      },
+      "revId": "faa2a365b5c0e90a5e1156c01a3acb4246632316",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
