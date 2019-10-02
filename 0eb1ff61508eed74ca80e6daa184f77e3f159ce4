@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a29808f_c46d312f",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-02T20:24:04Z",
+      "side": 1,
+      "message": "nit: The spec calls these \u0027locations\u0027 not \u0027positions\u0027\n\nIt\u0027s probably worth appending \u00274\u0027 to the name to make it clear that this is for the 4-sample case. We\u0027ll likely add tables for other sample counts too at some point.",
+      "range": {
+        "startLine": 295,
+        "startChar": 18,
+        "endLine": 295,
+        "endChar": 33
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5194e56c_a7dafeb2",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-02T20:24:04Z",
+      "side": 1,
+      "message": "No need to change anything here, but it\u0027s an interesting observation that we have an implementation-specific coordinate system here. I couldn\u0027t find anything in the Vulkan spec that corresponds directly with it. \u0027Framebuffer coordinates\u0027 has (0, 0) in the upper left corner of the upper left pixel.\n\nIn the context of b/134584057 it might be worth to later investigate if we can use Vulkan\u0027s definition of framebuffer coordinates directly instead.",
+      "range": {
+        "startLine": 303,
+        "startChar": 16,
+        "endLine": 303,
+        "endChar": 25
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b95d346b_2a29043d",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-02T20:24:04Z",
+      "side": 1,
+      "message": "These will also need to be generated from the sample locations as well.",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 336,
+        "endChar": 59
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
