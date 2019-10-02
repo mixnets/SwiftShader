@@ -1032,6 +1032,7 @@ namespace sw
 		case VK_FORMAT_R8G8_UINT:
 			c = Insert(c, Int(*Pointer<Byte>(element + 1)), 1);
 		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_S8_UINT:
 			c = Insert(c, Int(*Pointer<Byte>(element)), 0);
 			break;
 		case VK_FORMAT_R16G16B16A16_SINT:
@@ -1086,6 +1087,7 @@ namespace sw
 		case VK_FORMAT_R8G8B8_UINT:
 		case VK_FORMAT_R8G8_UINT:
 		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_S8_UINT:
 		case VK_FORMAT_R8G8B8A8_USCALED:
 		case VK_FORMAT_R8G8B8_USCALED:
 		case VK_FORMAT_R8G8_USCALED:
@@ -1214,6 +1216,7 @@ namespace sw
 		case VK_FORMAT_R8G8_USCALED:
 			if(writeG) { *Pointer<Byte>(element + 1) = Byte(Extract(c, 1)); }
 		case VK_FORMAT_R8_UINT:
+		case VK_FORMAT_S8_UINT:
 		case VK_FORMAT_R8_USCALED:
 			if(writeR) { *Pointer<Byte>(element) = Byte(Extract(c, 0)); }
 			break;

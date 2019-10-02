@@ -1280,6 +1280,12 @@ namespace sw
 			                   texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeV);
 		}
 
+		if(hasQuadLayout())
+		{
+			uuuu = ((vvvv & Short4(1)) << 1) | ((uuuu << 1) - (uuuu & Short4(1)));
+			vvvv &= Short4(0xFFFEu);
+		}
+
 		Short4 uuu2 = uuuu;
 		uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
 		uuu2 = As<Short4>(UnpackHigh(uuu2, vvvv));
@@ -1491,6 +1497,7 @@ namespace sw
 					{
 					case VK_FORMAT_R8_SINT:
 					case VK_FORMAT_R8_UINT:
+					case VK_FORMAT_S8_UINT:
 						{
 							Int zero(0);
 							c.x = Unpack(As<Byte4>(c0), As<Byte4>(zero));
@@ -2384,6 +2391,11 @@ namespace sw
 	bool SamplerCore::has32bitIntegerTextureComponents() const
 	{
 		return state.textureFormat.has32bitIntegerTextureComponents();
+	}
+
+	bool SamplerCore::hasQuadLayout() const
+	{
+		return state.textureFormat.hasQuadLayout();
 	}
 
 	bool SamplerCore::isYcbcrFormat() const
