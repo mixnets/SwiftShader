@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c779ef9_fd1764c2",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-02T20:33:21Z",
+      "side": 1,
+      "message": "This can be misread as toFloatingPoint. With p being a constexpr, can we have something like fixed_point\u003cint\u003e(float) added to Math.hpp to do the conversion instead?",
+      "range": {
+        "startLine": 336,
+        "startChar": 7,
+        "endLine": 336,
+        "endChar": 11
+      },
+      "revId": "4c7e99e2209720ebf0b699a014306fc1413f0b3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
