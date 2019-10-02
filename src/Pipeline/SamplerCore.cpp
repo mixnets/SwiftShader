@@ -895,6 +895,11 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z0, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
+		if(hasQuadLayout())
+		{
+			applyQuadLayout(x0, y0);
+		}
+
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
 		if(state.addressingModeW != ADDRESSING_UNUSED)
@@ -908,6 +913,11 @@ namespace sw
 		}
 		else
 		{
+			if(hasQuadLayout())
+			{
+				applyQuadLayout(x1, y1);
+			}
+
 			y1 *= pitchP;
 
 			Vector4f c00 = sampleTexel(x0, y0, z0, q, mipmap, buffer, function);
@@ -971,6 +981,11 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z1, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
+		if(hasQuadLayout())
+		{
+			applyQuadLayout(x0, y0);
+		}
+
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
 		y0 *= pitchP;
@@ -982,6 +997,11 @@ namespace sw
 		}
 		else
 		{
+			if(hasQuadLayout())
+			{
+				applyQuadLayout(x1, y1);
+			}
+
 			y1 *= pitchP;
 			z1 *= sliceP;
 
@@ -1280,6 +1300,11 @@ namespace sw
 			                   texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeV);
 		}
 
+		if(hasQuadLayout())
+		{
+			applyQuadLayout(uuuu, vvvv);
+		}
+
 		Short4 uuu2 = uuuu;
 		uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
 		uuu2 = As<Short4>(UnpackHigh(uuu2, vvvv));
@@ -1491,6 +1516,7 @@ namespace sw
 					{
 					case VK_FORMAT_R8_SINT:
 					case VK_FORMAT_R8_UINT:
+					case VK_FORMAT_S8_UINT:
 						{
 							Int zero(0);
 							c.x = Unpack(As<Byte4>(c0), As<Byte4>(zero));
@@ -2048,6 +2074,18 @@ namespace sw
 		return Int4(~0);
 	}
 
+	void SamplerCore::applyQuadLayout(Int4& x, Int4& y) const
+	{
+		x = ((x + (y & Int4(1))) << 1) - (x & Int4(1));
+		y >>= 1;
+	}
+
+	void SamplerCore::applyQuadLayout(Short4& x, Short4& y) const
+	{
+		x = ((x + (y & Short4(1))) << 1) - (x & Short4(1));
+		y >>= 1;
+	}
+
 	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte> &mipmap)
 	{
 		if(addressingMode == ADDRESSING_UNUSED)
@@ -2384,6 +2422,11 @@ namespace sw
 	bool SamplerCore::has32bitIntegerTextureComponents() const
 	{
 		return state.textureFormat.has32bitIntegerTextureComponents();
+	}
+
+	bool SamplerCore::hasQuadLayout() const
+	{
+		return state.textureFormat.hasQuadLayout();
 	}
 
 	bool SamplerCore::isYcbcrFormat() const
