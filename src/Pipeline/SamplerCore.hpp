@@ -90,6 +90,8 @@ namespace sw
 		Short4 address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap);
 		void address(Float4 &uw, Int4& xyz0, Int4& xyz1, Float4& f, Pointer<Byte>& mipmap, Float4 &texOffset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
 		Int4 computeFilterOffset(Float &lod);
+		void applyQuadLayout(Int4& x, Int4& y) const;
+		void applyQuadLayout(Short4& x, Short4& y) const;
 
 		void convertSigned15(Float4 &cf, Short4 &ci);
 		void convertUnsigned16(Float4 &cf, Short4 &ci);
@@ -104,6 +106,7 @@ namespace sw
 		bool has8bitTextureComponents() const;
 		bool has16bitTextureComponents() const;
 		bool has32bitIntegerTextureComponents() const;
+		bool hasQuadLayout() const;
 		bool isYcbcrFormat() const;
 		bool isRGBComponent(int component) const;
 		bool borderModeActive() const;
