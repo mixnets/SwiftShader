@@ -306,7 +306,7 @@ public:
   void push_back(const T &Elt) {
     if (LLVM_UNLIKELY(this->EndX >= this->CapacityX))
       this->grow();
-    memcpy(this->end(), &Elt, sizeof(T));
+    ::new ((void*) this->end()) T(Elt);
     this->setEnd(this->end()+1);
   }
 
