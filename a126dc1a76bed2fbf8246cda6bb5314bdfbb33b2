@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "1a32ac54_ba5237bd",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:48:00Z",
+      "side": 1,
+      "message": "A benefit of not using in-place storage would be to allow several concurrent implementations of external semaphores in the same process. I\u0027ve actually implemented something similar for external memory at https://swiftshader-review.googlesource.com/c/SwiftShader/+/35152\n\nWe could use a similar method but it adds some complexity to the whole thing, so this CL goes for what works with the less headaches, but let me know if you insist on this.",
+      "parentUuid": "6df4bfd1_bd788c0f",
+      "range": {
+        "startLine": 74,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ebf3bce2_237f9d57",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 11
