@@ -22,6 +22,30 @@
       "revId": "6533a5ba7c61ba5b038bcf5dfc3c384250c5b537",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd7f683a_eba656fa",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T12:02:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fe2aca27_2a9e2664",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 64
+      },
+      "revId": "6533a5ba7c61ba5b038bcf5dfc3c384250c5b537",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
