@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83b9e247_8e8b96da",
+        "filename": "third_party/llvm-subzero/include/llvm/ADT/SmallVector.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-03T20:26:50Z",
+      "side": 1,
+      "message": "Upstream LLLVM uses memcpy(reinterpret_cast\u003cvoid *\u003e(this-\u003eend()), \u0026Elt, sizeof(T)); here for the POD-like T version of SmallVectorTemplateBase\u003c\u003e.\n\nI\u0027m not sure if that\u0027s for a specific reason or not, but it\u0027s probably best to keep the diff with upstream minimal to avoid surprises.",
+      "range": {
+        "startLine": 309,
+        "startChar": 4,
+        "endLine": 309,
+        "endChar": 39
+      },
+      "revId": "0fd47f29964887d8f00687557a6f3e4e5a970c45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42d1a1c6_e732dbeb",
+        "filename": "third_party/subzero/src/IceRangeSpec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-03T20:26:50Z",
+      "side": 1,
+      "message": "nit: Looks a bit odd to me for integer types. Initialize with \u003d 0 for readability?",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 29
+      },
+      "revId": "0fd47f29964887d8f00687557a6f3e4e5a970c45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
