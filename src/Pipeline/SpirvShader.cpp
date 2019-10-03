@@ -849,6 +849,7 @@ namespace sw
 				case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 				case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 				case spv::CapabilityGroupNonUniformVote: capabilities.GroupNonUniformVote = true; break;
+				case spv::CapabilityGroupNonUniformArithmetic: capabilities.GroupNonUniformArithmetic = true; break;
 				case spv::CapabilityGroupNonUniformBallot: capabilities.GroupNonUniformBallot = true; break;
 				case spv::CapabilityGroupNonUniformShuffle: capabilities.GroupNonUniformShuffle = true; break;
 				case spv::CapabilityGroupNonUniformShuffleRelative: capabilities.GroupNonUniformShuffleRelative = true; break;
@@ -1112,6 +1113,10 @@ namespace sw
 			case spv::OpGroupNonUniformShuffleXor:
 			case spv::OpGroupNonUniformShuffleUp:
 			case spv::OpGroupNonUniformShuffleDown:
+			case spv::OpGroupNonUniformIAdd:
+			case spv::OpGroupNonUniformFAdd:
+			case spv::OpGroupNonUniformIMul:
+			case spv::OpGroupNonUniformFMul:
 			case spv::OpCopyObject:
 			case spv::OpArrayLength:
 				// Instructions that yield an intermediate value or divergent pointer
@@ -2791,6 +2796,10 @@ namespace sw
 		case spv::OpGroupNonUniformShuffleXor:
 		case spv::OpGroupNonUniformShuffleUp:
 		case spv::OpGroupNonUniformShuffleDown:
+		case spv::OpGroupNonUniformIAdd:
+		case spv::OpGroupNonUniformFAdd:
+		case spv::OpGroupNonUniformIMul:
+		case spv::OpGroupNonUniformFMul:
 			return EmitGroupNonUniform(insn, state);
 
 		case spv::OpArrayLength:
@@ -6325,6 +6334,110 @@ namespace sw
 			{
 				SIMD::Int v = value.Int(i);
 				dst.move(i, (d0 & v.xyzw) | (d1 & v.yzww) | (d2 & v.zwww) | (d3 & v.wwww));
+			}
+			break;
+		}
+
+		case spv::OpGroupNonUniformIAdd:
+		{
+			GenericValue value(this, state, insn.word(5));
+			SIMD::UInt c = SIMD::Int(0, ~0u, 0, 0);
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				SIMD::UInt v = value.UInt(i) & As<SIMD::UInt>(state->activeLaneMask());
+				switch (insn.word(4))
+				{
+				case spv::GroupOperationReduce:
+					dst.move(i, SIMD::UInt(UInt(v.x) + UInt(v.y) + UInt(v.z) + UInt(v.w)));
+					break;
+				case spv::GroupOperationInclusiveScan:
+					dst.move(i, v + (v.xxyz & c.xyyy) + (v.xxxy & c.xxyy) + (v.xxxx & c.xxxy));
+					break;
+				case spv::GroupOperationExclusiveScan:
+					dst.move(i, (v.xxyz & c.xyyy) + (v.xxxy & c.xxyy) + (v.xxxx & c.xxxy));
+					break;
+				default:
+					UNIMPLEMENTED("EmitGroupNonUniform op: %s Group operation: %d", OpcodeName(type.opcode()).c_str(), insn.word(4));
+				}
+			}
+			break;
+		}
+
+		case spv::OpGroupNonUniformFAdd:
+		{
+			GenericValue value(this, state, insn.word(5));
+			SIMD::UInt c = SIMD::Int(0, ~0u, 0, 0);
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				SIMD::UInt v = value.UInt(i) & As<SIMD::UInt>(state->activeLaneMask());
+				switch (insn.word(4))
+				{
+				case spv::GroupOperationReduce:
+					dst.move(i, SIMD::Float(As<Float>(UInt(v.x)) + As<Float>(UInt(v.y)) + As<Float>(UInt(v.z)) + As<Float>(UInt(v.w))));
+					break;
+				case spv::GroupOperationInclusiveScan:
+					dst.move(i, As<SIMD::Float>(v) + As<SIMD::Float>(v.xxyz & c.xyyy) + As<SIMD::Float>(v.xxxy & c.xxyy) + As<SIMD::Float>(v.xxxx & c.xxxy));
+					break;
+				case spv::GroupOperationExclusiveScan:
+					dst.move(i, As<SIMD::Float>(v.xxyz & c.xyyy) + As<SIMD::Float>(v.xxxy & c.xxyy) + As<SIMD::Float>(v.xxxx & c.xxxy));
+					break;
+				default:
+					UNIMPLEMENTED("EmitGroupNonUniform op: %s Group operation: %d", OpcodeName(type.opcode()).c_str(), insn.word(4));
+				}
+			}
+			break;
+		}
+
+		case spv::OpGroupNonUniformIMul:
+		{
+			GenericValue value(this, state, insn.word(5));
+			SIMD::UInt c = SIMD::Int(0, ~0u, 1, 0);
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				auto mask = As<SIMD::UInt>(state->activeLaneMask());
+				SIMD::UInt v = (value.UInt(i) & mask) | (SIMD::UInt(1) & ~mask);
+				switch (insn.word(4))
+				{
+				case spv::GroupOperationReduce:
+					dst.move(i, SIMD::UInt(UInt(v.x) * UInt(v.y) * UInt(v.z) * UInt(v.w)));
+					break;
+				case spv::GroupOperationInclusiveScan:
+					dst.move(i, v * ((v.xxyz & c.xyyy) | c.zxxx) * ((v.xxxy & c.xxyy) | c.zzxx) * ((v.xxxx & c.xxxy) | c.zzzx));
+					break;
+				case spv::GroupOperationExclusiveScan:
+					dst.move(i, ((v.xxyz & c.xyyy) | c.zxxx) * ((v.xxxy & c.xxyy) | c.zzxx) * ((v.xxxx & c.xxxy) | c.zzzx));
+					break;
+				default:
+					UNIMPLEMENTED("EmitGroupNonUniform op: %s Group operation: %d", OpcodeName(type.opcode()).c_str(), insn.word(4));
+				}
+			}
+			break;
+		}
+
+		case spv::OpGroupNonUniformFMul:
+		{
+			GenericValue value(this, state, insn.word(5));
+			SIMD::UInt c = SIMD::Int(0, ~0u, 0 /* replaced by float 1 */, 0);
+			c.z = As<UInt>(Float(1));
+			for (auto i = 0u; i < type.sizeInComponents; i++)
+			{
+				auto mask = As<SIMD::UInt>(state->activeLaneMask());
+				SIMD::UInt v = (value.UInt(i) & mask) | (As<SIMD::UInt>(SIMD::Float(1)) & ~mask);
+				SIMD::Float fv = As<SIMD::Float>(v);
+				switch (insn.word(4))
+				{
+				case spv::GroupOperationReduce:
+					dst.move(i, SIMD::Float(Float(fv.x) * Float(fv.y) * Float(fv.z) * Float(fv.w)));
+					break;
+				case spv::GroupOperationInclusiveScan:
+					dst.move(i, fv * As<SIMD::Float>((v.xxyz & c.xyyy) | c.zxxx) * As<SIMD::Float>((v.xxxy & c.xxyy) | c.zzxx) * As<SIMD::Float>((v.xxxx & c.xxxy) | c.zzzx));
+					break;
+				case spv::GroupOperationExclusiveScan:
+					dst.move(i, As<SIMD::Float>((v.xxyz & c.xyyy) | c.zxxx) * As<SIMD::Float>((v.xxxy & c.xxyy) | c.zzxx) * As<SIMD::Float>((v.xxxx & c.xxxy) | c.zzzx));
+					break;
+				default:
+					UNIMPLEMENTED("EmitGroupNonUniform op: %s Group operation: %d", OpcodeName(type.opcode()).c_str(), insn.word(4));
+				}
 			}
 			break;
 		}
