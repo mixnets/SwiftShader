@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dd5d17bd_856bccac",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "Will do :)",
+      "parentUuid": "8e4a6810_294e6b9e",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 29
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1298c9be_5b417d53",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 11
@@ -36,6 +60,30 @@
       "writtenOn": "2019-10-03T10:52:28Z",
       "side": 1,
       "message": "nit: perhaps use a std::unique_ptr with a custom deleter?",
+      "range": {
+        "startLine": 74,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6df4bfd1_bd788c0f",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "I\u0027ve tried to make ComputeRequiredAllocationSize() return the actual total allocation size required for the Impl + optional External instance. That\u0027s why the External is stored inside Impl and initialized/destroyed in-place.\n\nI can replace that with an std::unique_ptr\u003c\u003e if you prefer, but this would break this computation. Is this something important for Swiftshader? I could also just use a simple new to allocate Impl as well then.\n\nApart from that, I feel that a std::unique_ptr\u003c\u003e with a custom deleter that does not delete anything would make the code a little bit more difficult to understand (i.e. it\u0027s really counter-intuitive), hence why I\u0027d prefer to avoid it if we use in-place init/destroy.",
+      "parentUuid": "1298c9be_5b417d53",
       "range": {
         "startLine": 74,
         "startChar": 2,
@@ -94,6 +142,53 @@
     },
     {
       "key": {
+        "uuid": "62201e28_674fe3de",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "Yes, will remove :)",
+      "parentUuid": "ad260f99_a89f85f1",
+      "range": {
+        "startLine": 87,
+        "startChar": 2,
+        "endLine": 87,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ea91c52_ec8c089c",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "It looks like marl::blocking_call() uses its own WaitGroup to wait on the result, I think I can simplify that to avoid the signalInternal() / waitInternal() then.\n\nIn the meantime, I\u0027ve replaced that with an explicit std::thread() creation + signaling of the internal semaphore.",
+      "range": {
+        "startLine": 114,
+        "startChar": 4,
+        "endLine": 114,
+        "endChar": 18
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "23757dbb_21c2eeda",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 11
@@ -140,6 +235,30 @@
     },
     {
       "key": {
+        "uuid": "dc3f4be7_5bb7cd7e",
+        "filename": "src/Vulkan/VkSemaphoreExternalLinux.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "This would not work, since the reference count must be visible to all processes that share the semaphore.\n\nstd::make_shared places the reference-count in a heap-allocated control block that cannot be shared through multiple processes.\n\n(Similarly, std::mutex and std::condition_variable cannot be process-shared, hence the use of Pthread primitives here).\n\nAlso lock contention should not be an issue here, the reference count is only accessed when importing/exporting semaphores, which should happen very rarely compared to wait()/signal().",
+      "parentUuid": "0e6a58d5_228bd348",
+      "range": {
+        "startLine": 71,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 2
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d62c1306_92f0d152",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 11
@@ -151,6 +270,30 @@
       "writtenOn": "2019-10-03T10:52:28Z",
       "side": 1,
       "message": "chrisforbes@ or sugoi@ - are you happy with this guard being dropped?",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 23
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "585761c7_77d2845f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-03T11:41:05Z",
+      "side": 1,
+      "message": "for the record, this is necessary to be able to parse the pNext chain in Create() below (the previous implementation ignored it).",
+      "parentUuid": "d62c1306_92f0d152",
       "range": {
         "startLine": 926,
         "startChar": 1,
