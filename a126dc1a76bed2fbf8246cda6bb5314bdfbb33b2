@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e4a6810_294e6b9e",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "remove?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 29
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1298c9be_5b417d53",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "nit: perhaps use a std::unique_ptr with a custom deleter?",
+      "range": {
+        "startLine": 74,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebf3bce2_237f9d57",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "übernit: I\u0027m not sure comment markup is used anywhere else in SwiftShader.",
+      "range": {
+        "startLine": 83,
+        "startChar": 25,
+        "endLine": 83,
+        "endChar": 26
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad260f99_a89f85f1",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "nit: stray tab?",
+      "range": {
+        "startLine": 87,
+        "startChar": 2,
+        "endLine": 87,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23757dbb_21c2eeda",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "Looks like we could do with a marl::Event. Created a marl feature request to track this: https://github.com/google/marl/issues/46.\nNote: I\u0027ve used \u0027Event\u0027 instead of \u0027Semaphore\u0027 as a semaphore is often associated with a count.",
+      "range": {
+        "startLine": 136,
+        "startChar": 2,
+        "endLine": 139,
+        "endChar": 64
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e6a58d5_228bd348",
+        "filename": "src/Vulkan/VkSemaphoreExternalLinux.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "nit: Consider using std::make_shared? Less lock-contention, less code to maintain.",
+      "range": {
+        "startLine": 71,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 2
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d62c1306_92f0d152",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T10:52:28Z",
+      "side": 1,
+      "message": "chrisforbes@ or sugoi@ - are you happy with this guard being dropped?",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 23
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
