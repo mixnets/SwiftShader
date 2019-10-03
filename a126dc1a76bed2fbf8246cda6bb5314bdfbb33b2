@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "5b54143f_307732ea",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T12:06:31Z",
+      "side": 1,
+      "message": "Fair argument, no need to change.\nI do wonder if SwiftShader should provide a cleaner way to create smart-pointer for objects stored in the block of memory passed into these constructors.\nNot one to worry about now.",
+      "parentUuid": "1a32ac54_ba5237bd",
+      "range": {
+        "startLine": 74,
+        "startChar": 2,
+        "endLine": 78,
+        "endChar": 3
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebf3bce2_237f9d57",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 11
@@ -213,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "658e327c_c958cbd7",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T12:06:31Z",
+      "side": 1,
+      "message": "\u003e It looks like marl::blocking_call() uses its own WaitGroup to wait on the result, I think I can simplify that to avoid the signalInternal() / waitInternal() then.\n\nmarl::blocking_call() blocks for the function to finish, so yes, the wait does seem unnecessary.  \n\n\u003e In the meantime, I\u0027ve replaced that with an explicit std::thread() creation + signaling of the internal semaphore.\n\nHave you pushed these changes somewhere? What\u0027s the benefit of this over using blocking_call?\nNote: We haven\u0027t had a need for it yet, but I may add additional logic to blocking_call() so that the scheduler is bound on the new thread - without this the new thread will assert if you try to schedule additional tasks. Not something we\u0027re doing here, but subtleties I\u0027d like to keep inside marl. If you\u0027re concerned with performance, I\u0027d be happy to upstream a thread-pool approach like the one you originally implemented. We\u0027d just have to have a think about thread lifetime, when they get reaped, etc.",
+      "parentUuid": "8ea91c52_ec8c089c",
+      "range": {
+        "startLine": 114,
+        "startChar": 4,
+        "endLine": 114,
+        "endChar": 18
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "23757dbb_21c2eeda",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 11
@@ -283,6 +331,30 @@
     },
     {
       "key": {
+        "uuid": "68365e1d_12976dd5",
+        "filename": "src/Vulkan/VkSemaphoreExternalLinux.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T12:06:31Z",
+      "side": 1,
+      "message": "Okay, sorry I ignored the fact this is process shared.",
+      "parentUuid": "dc3f4be7_5bb7cd7e",
+      "range": {
+        "startLine": 71,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 2
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d62c1306_92f0d152",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 11
@@ -318,6 +390,30 @@
       "side": 1,
       "message": "for the record, this is necessary to be able to parse the pNext chain in Create() below (the previous implementation ignored it).",
       "parentUuid": "d62c1306_92f0d152",
+      "range": {
+        "startLine": 926,
+        "startChar": 1,
+        "endLine": 926,
+        "endChar": 23
+      },
+      "revId": "a126dc1a76bed2fbf8246cda6bb5314bdfbb33b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ba329d8_9df8c3a1",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-03T12:06:31Z",
+      "side": 1,
+      "message": "Yup - its that we\u0027re no longer calling UNIMPLEMENTED() for pNext types that we aren\u0027t handling (only VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO currently).\nI\u0027m not too sure what our policy is here.",
+      "parentUuid": "585761c7_77d2845f",
       "range": {
         "startLine": 926,
         "startChar": 1,
