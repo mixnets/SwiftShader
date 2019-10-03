@@ -738,6 +738,7 @@ namespace sw
 			bool MultiView : 1;
 			bool DeviceGroup : 1;
 			bool GroupNonUniformVote : 1;
+			bool GroupNonUniformArithmetic : 1;
 			bool GroupNonUniformBallot : 1;
 			bool GroupNonUniformShuffle : 1;
 			bool GroupNonUniformShuffleRelative : 1;
