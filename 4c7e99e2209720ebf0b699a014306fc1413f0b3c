@@ -22,6 +22,30 @@
       "revId": "4c7e99e2209720ebf0b699a014306fc1413f0b3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "148f359f_a26fac95",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-04T17:13:52Z",
+      "side": 1,
+      "message": "As discussed, I renamed it \"toFixedPoint\" and added a comment describing it. We can look into making a fixed_point class in the future if we see a need for it.",
+      "parentUuid": "4c779ef9_fd1764c2",
+      "range": {
+        "startLine": 336,
+        "startChar": 7,
+        "endLine": 336,
+        "endChar": 11
+      },
+      "revId": "4c7e99e2209720ebf0b699a014306fc1413f0b3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
