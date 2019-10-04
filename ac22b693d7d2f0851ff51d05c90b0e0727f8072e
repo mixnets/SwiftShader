@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a72b123_cd1f6204",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-04T20:54:49Z",
+      "side": 1,
+      "message": "Nit: My understanding is that the Constants struct is a handy place to store vectors and retrieve them inside the program. These are just scalar constants, couldn\u0027t they just be constexpr constants like SUBPIXEL_PRECISION_BITS, SUBPIXEL_PRECISION_FACTOR or SUBPIXEL_PRECISION_MASK?",
+      "range": {
+        "startLine": 89,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 28
+      },
+      "revId": "ac22b693d7d2f0851ff51d05c90b0e0727f8072e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
