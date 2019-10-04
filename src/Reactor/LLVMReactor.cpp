@@ -4061,16 +4061,12 @@ namespace rr
 
 		RValue<Float4> maxps(RValue<Float4> x, RValue<Float4> y)
 		{
-			llvm::Function *maxps = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse_max_ps);
-
-			return RValue<Float4>(V(jit->builder->CreateCall2(maxps, ARGS(V(x.value), V(y.value)))));
+			return RValue<Float4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse_max_ps, V(x.value), V(y.value))));
 		}
 
 		RValue<Float4> minps(RValue<Float4> x, RValue<Float4> y)
 		{
-			llvm::Function *minps = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse_min_ps);
-
-			return RValue<Float4>(V(jit->builder->CreateCall2(minps, ARGS(V(x.value), V(y.value)))));
+			return RValue<Float4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse_min_ps, V(x.value), V(y.value))));
 		}
 
 		RValue<Float> roundss(RValue<Float> val, unsigned char imm)
@@ -4120,9 +4116,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<Short4>(V(lowerPSADDSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *paddsw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_padds_w);
-
-				return As<Short4>(V(jit->builder->CreateCall2(paddsw, ARGS(V(x.value), V(y.value)))));
+				return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_padds_w, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4131,9 +4125,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<Short4>(V(lowerPSSUBSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *psubsw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubs_w);
-
-				return As<Short4>(V(jit->builder->CreateCall2(psubsw, ARGS(V(x.value), V(y.value)))));
+				return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psubs_w, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4142,9 +4134,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<UShort4>(V(lowerPUADDSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *paddusw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_paddus_w);
-
-				return As<UShort4>(V(jit->builder->CreateCall2(paddusw, ARGS(V(x.value), V(y.value)))));
+				return As<UShort4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_paddus_w, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4153,9 +4143,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<UShort4>(V(lowerPUSUBSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *psubusw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubus_w);
-
-				return As<UShort4>(V(jit->builder->CreateCall2(psubusw, ARGS(V(x.value), V(y.value)))));
+				return As<UShort4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psubus_w, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4164,9 +4152,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<SByte8>(V(lowerPSADDSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *paddsb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_padds_b);
-
-				return As<SByte8>(V(jit->builder->CreateCall2(paddsb, ARGS(V(x.value), V(y.value)))));
+				return As<SByte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_padds_b, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4175,9 +4161,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<SByte8>(V(lowerPSSUBSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *psubsb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubs_b);
-
-				return As<SByte8>(V(jit->builder->CreateCall2(psubsb, ARGS(V(x.value), V(y.value)))));
+				return As<SByte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psubs_b, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4186,9 +4170,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<Byte8>(V(lowerPUADDSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *paddusb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_paddus_b);
-
-				return As<Byte8>(V(jit->builder->CreateCall2(paddusb, ARGS(V(x.value), V(y.value)))));
+				return As<Byte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_paddus_b, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4197,9 +4179,7 @@ namespace rr
 			#if LLVM_VERSION_MAJOR >= 8
 				return As<Byte8>(V(lowerPUSUBSAT(V(x.value), V(y.value))));
 			#else
-				llvm::Function *psubusb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psubus_b);
-
-				return As<Byte8>(V(jit->builder->CreateCall2(psubusb, ARGS(V(x.value), V(y.value)))));
+				return As<Byte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psubus_b, V(x.value), V(y.value))));
 			#endif
 		}
 
@@ -4240,39 +4220,29 @@ namespace rr
 
 		RValue<Short4> packssdw(RValue<Int2> x, RValue<Int2> y)
 		{
-			llvm::Function *packssdw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_packssdw_128);
-
-			return As<Short4>(V(jit->builder->CreateCall2(packssdw, ARGS(V(x.value), V(y.value)))));
+			return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_packssdw_128, V(x.value), V(y.value))));
 		}
 
 		RValue<Short8> packssdw(RValue<Int4> x, RValue<Int4> y)
 		{
-			llvm::Function *packssdw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_packssdw_128);
-
-			return RValue<Short8>(V(jit->builder->CreateCall2(packssdw, ARGS(V(x.value), V(y.value)))));
+			return RValue<Short8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_packssdw_128, V(x.value), V(y.value))));
 		}
 
 		RValue<SByte8> packsswb(RValue<Short4> x, RValue<Short4> y)
 		{
-			llvm::Function *packsswb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_packsswb_128);
-
-			return As<SByte8>(V(jit->builder->CreateCall2(packsswb, ARGS(V(x.value), V(y.value)))));
+			return As<SByte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_packsswb_128, V(x.value), V(y.value))));
 		}
 
 		RValue<Byte8> packuswb(RValue<Short4> x, RValue<Short4> y)
 		{
-			llvm::Function *packuswb = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_packuswb_128);
-
-			return As<Byte8>(V(jit->builder->CreateCall2(packuswb, ARGS(V(x.value), V(y.value)))));
+			return As<Byte8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_packuswb_128, V(x.value), V(y.value))));
 		}
 
 		RValue<UShort8> packusdw(RValue<Int4> x, RValue<Int4> y)
 		{
 			if(CPUID::supportsSSE4_1())
 			{
-				llvm::Function *packusdw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse41_packusdw);
-
-				return RValue<UShort8>(V(jit->builder->CreateCall2(packusdw, ARGS(V(x.value), V(y.value)))));
+				return RValue<UShort8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse41_packusdw, V(x.value), V(y.value))));
 			}
 			else
 			{
@@ -4285,86 +4255,62 @@ namespace rr
 
 		RValue<UShort4> psrlw(RValue<UShort4> x, unsigned char y)
 		{
-			llvm::Function *psrlw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrli_w);
-
-			return As<UShort4>(V(jit->builder->CreateCall2(psrlw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<UShort4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrli_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<UShort8> psrlw(RValue<UShort8> x, unsigned char y)
 		{
-			llvm::Function *psrlw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrli_w);
-
-			return RValue<UShort8>(V(jit->builder->CreateCall2(psrlw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<UShort8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrli_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Short4> psraw(RValue<Short4> x, unsigned char y)
 		{
-			llvm::Function *psraw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrai_w);
-
-			return As<Short4>(V(jit->builder->CreateCall2(psraw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrai_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Short8> psraw(RValue<Short8> x, unsigned char y)
 		{
-			llvm::Function *psraw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrai_w);
-
-			return RValue<Short8>(V(jit->builder->CreateCall2(psraw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<Short8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrai_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Short4> psllw(RValue<Short4> x, unsigned char y)
 		{
-			llvm::Function *psllw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pslli_w);
-
-			return As<Short4>(V(jit->builder->CreateCall2(psllw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pslli_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Short8> psllw(RValue<Short8> x, unsigned char y)
 		{
-			llvm::Function *psllw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pslli_w);
-
-			return RValue<Short8>(V(jit->builder->CreateCall2(psllw, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<Short8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pslli_w, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int2> pslld(RValue<Int2> x, unsigned char y)
 		{
-			llvm::Function *pslld = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pslli_d);
-
-			return As<Int2>(V(jit->builder->CreateCall2(pslld, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<Int2>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pslli_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 		{
-			llvm::Function *pslld = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pslli_d);
-
-			return RValue<Int4>(V(jit->builder->CreateCall2(pslld, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<Int4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pslli_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int2> psrad(RValue<Int2> x, unsigned char y)
 		{
-			llvm::Function *psrad = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrai_d);
-
-			return As<Int2>(V(jit->builder->CreateCall2(psrad, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<Int2>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrai_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int4> psrad(RValue<Int4> x, unsigned char y)
 		{
-			llvm::Function *psrad = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrai_d);
-
-			return RValue<Int4>(V(jit->builder->CreateCall2(psrad, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<Int4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrai_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<UInt2> psrld(RValue<UInt2> x, unsigned char y)
 		{
-			llvm::Function *psrld = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrli_d);
-
-			return As<UInt2>(V(jit->builder->CreateCall2(psrld, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return As<UInt2>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrli_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<UInt4> psrld(RValue<UInt4> x, unsigned char y)
 		{
-			llvm::Function *psrld = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_psrli_d);
-
-			return RValue<UInt4>(V(jit->builder->CreateCall2(psrld, ARGS(V(x.value), V(Nucleus::createConstantInt(y))))));
+			return RValue<UInt4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_psrli_d, V(x.value), V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int4> pmaxsd(RValue<Int4> x, RValue<Int4> y)
@@ -4389,44 +4335,32 @@ namespace rr
 
 		RValue<Short4> pmulhw(RValue<Short4> x, RValue<Short4> y)
 		{
-			llvm::Function *pmulhw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmulh_w);
-
-			return As<Short4>(V(jit->builder->CreateCall2(pmulhw, ARGS(V(x.value), V(y.value)))));
+			return As<Short4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmulh_w, V(x.value), V(y.value))));
 		}
 
 		RValue<UShort4> pmulhuw(RValue<UShort4> x, RValue<UShort4> y)
 		{
-			llvm::Function *pmulhuw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmulhu_w);
-
-			return As<UShort4>(V(jit->builder->CreateCall2(pmulhuw, ARGS(V(x.value), V(y.value)))));
+			return As<UShort4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmulhu_w, V(x.value), V(y.value))));
 		}
 
 		RValue<Int2> pmaddwd(RValue<Short4> x, RValue<Short4> y)
 		{
-			llvm::Function *pmaddwd = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmadd_wd);
-
-			return As<Int2>(V(jit->builder->CreateCall2(pmaddwd, ARGS(V(x.value), V(y.value)))));
+			return As<Int2>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmadd_wd, V(x.value), V(y.value))));
 		}
 
 		RValue<Short8> pmulhw(RValue<Short8> x, RValue<Short8> y)
 		{
-			llvm::Function *pmulhw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmulh_w);
-
-			return RValue<Short8>(V(jit->builder->CreateCall2(pmulhw, ARGS(V(x.value), V(y.value)))));
+			return RValue<Short8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmulh_w, V(x.value), V(y.value))));
 		}
 
 		RValue<UShort8> pmulhuw(RValue<UShort8> x, RValue<UShort8> y)
 		{
-			llvm::Function *pmulhuw = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmulhu_w);
-
-			return RValue<UShort8>(V(jit->builder->CreateCall2(pmulhuw, ARGS(V(x.value), V(y.value)))));
+			return RValue<UShort8>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmulhu_w, V(x.value), V(y.value))));
 		}
 
 		RValue<Int4> pmaddwd(RValue<Short8> x, RValue<Short8> y)
 		{
-			llvm::Function *pmaddwd = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::x86_sse2_pmadd_wd);
-
-			return RValue<Int4>(V(jit->builder->CreateCall2(pmaddwd, ARGS(V(x.value), V(y.value)))));
+			return RValue<Int4>(V(jit->builder->CreateBinaryIntrinsic(llvm::Intrinsic::x86_sse2_pmadd_wd, V(x.value), V(y.value))));
 		}
 
 		RValue<Int> movmskps(RValue<Float4> x)
