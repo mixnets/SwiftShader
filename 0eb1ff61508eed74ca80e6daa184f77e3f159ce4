@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1f62f96a_74f29506",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-04T17:13:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a29808f_c46d312f",
+      "range": {
+        "startLine": 295,
+        "startChar": 18,
+        "endLine": 295,
+        "endChar": 33
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5194e56c_a7dafeb2",
         "filename": "src/Pipeline/Constants.cpp",
         "patchSetId": 5
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "df8178c2_0fcf9aad",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-04T17:13:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "5194e56c_a7dafeb2",
+      "range": {
+        "startLine": 303,
+        "startChar": 16,
+        "endLine": 303,
+        "endChar": 25
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b95d346b_2a29043d",
         "filename": "src/Pipeline/Constants.cpp",
         "patchSetId": 5
@@ -59,6 +107,30 @@
       "writtenOn": "2019-10-02T20:24:04Z",
       "side": 1,
       "message": "These will also need to be generated from the sample locations as well.",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 336,
+        "endChar": 59
+      },
+      "revId": "0eb1ff61508eed74ca80e6daa184f77e3f159ce4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a8b6050_56889211",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-04T17:13:41Z",
+      "side": 1,
+      "message": "As discussed, this commit still only supports 4-bit, so I felt that leaving the hard-coded values as is still made sense. However, in the next change, where I generalized and made it possible to configure precision bits (4 or 8), this was was modified accordingly.",
+      "parentUuid": "b95d346b_2a29043d",
       "range": {
         "startLine": 335,
         "startChar": 0,
