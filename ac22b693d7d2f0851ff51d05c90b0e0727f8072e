@@ -22,6 +22,30 @@
       "revId": "ac22b693d7d2f0851ff51d05c90b0e0727f8072e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a32832c6_e3cbfb15",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-10-04T21:15:23Z",
+      "side": 1,
+      "message": "Great point! I see it\u0027s being loaded dynamically as data in SetupRoutine, but could really be a constant that we bake in and doesn\u0027t consume space here in Constants.",
+      "parentUuid": "2a72b123_cd1f6204",
+      "range": {
+        "startLine": 89,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 28
+      },
+      "revId": "ac22b693d7d2f0851ff51d05c90b0e0727f8072e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
