@@ -16,6 +16,7 @@
 
 #include "System/Math.hpp"
 #include "System/Half.hpp"
+#include "Vulkan/VkConfig.h"
 
 #include <cstring>
 
@@ -332,14 +333,30 @@ namespace sw
 			}
 		}
 
-		const int Xf[4] = {-5, +5, +2, -2};   // Fragment offsets
-		const int Yf[4] = {-2, +2, -5, +5};   // Fragment offsets
+		// Convert floating value v to fixed point with p digits after the decimal point
+		auto toFixedPoint = [](float v, int p) {
+			return static_cast<int>(v * (1 << p));
+		};
+
+		constexpr auto subPixB = vk::SUBPIXEL_PRECISION_BITS;
+
+		// Reorder sample points for fragment offset computation
+		const int Xf[4] = { toFixedPoint(X[2][0], subPixB), toFixedPoint(X[1][0], subPixB), toFixedPoint(X[3][0], subPixB), toFixedPoint(X[0][0], subPixB) };
+		const int Yf[4] = { toFixedPoint(Y[2][0], subPixB), toFixedPoint(Y[1][0], subPixB), toFixedPoint(Y[3][0], subPixB), toFixedPoint(Y[0][0], subPixB) };
 
 		memcpy(&this->Xf, &Xf, sizeof(Xf));
 		memcpy(&this->Yf, &Yf, sizeof(Yf));
 
 		memcpy(&this->X, &X, sizeof(X));
 		memcpy(&this->Y, &Y, sizeof(Y));
+
+		// Compute the yMin and yMax multisample offsets so that they are just
+		// large enough (+/- max range - epsilon) to include sample points
+		{
+			const float yMax = sw::max(Y[0][0], Y[1][0], Y[2][0], Y[3][0]);
+			yMinMultiSampleOffset = toFixedPoint(1, subPixB) - toFixedPoint(yMax, subPixB) - 1;
+			yMaxMultiSampleOffset = toFixedPoint(1, subPixB) + toFixedPoint(yMax, subPixB) - 1;
+		}
 
 		const dword maxX[16] = {0x00000000, 0x00000001, 0x00000100, 0x00000101, 0x00010000, 0x00010001, 0x00010100, 0x00010101, 0x01000000, 0x01000001, 0x01000100, 0x01000101, 0x01010000, 0x01010001, 0x01010100, 0x01010101};
 		const dword maxY[16] = {0x00000000, 0x00000002, 0x00000200, 0x00000202, 0x00020000, 0x00020002, 0x00020200, 0x00020202, 0x02000000, 0x02000002, 0x02000200, 0x02000202, 0x02020000, 0x02020002, 0x02020200, 0x02020202};
