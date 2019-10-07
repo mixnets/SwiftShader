@@ -1569,10 +1569,61 @@ Buffer *Context::getGenericUniformBuffer() const
 
 GLsizei Context::getRequiredBufferSize(GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type) const
 {
-	GLsizei inputWidth = (mState.unpackParameters.rowLength == 0) ? width : mState.unpackParameters.rowLength;
-	GLsizei inputPitch = gl::ComputePitch(inputWidth, format, type, mState.unpackParameters.alignment);
-	GLsizei inputHeight = (mState.unpackParameters.imageHeight == 0) ? height : mState.unpackParameters.imageHeight;
-	return inputPitch * inputHeight * depth;
+	GLint alignment;
+	GLint pixelsPerRow;
+	GLint rowsPerImage;
+	GLint skipPixels;
+	GLint skipRows;
+	GLint skipImages;
+
+	GLsizei column = width;
+	GLsizei row = height - 1;
+	GLsizei img = depth - 1;
+
+	alignment = mState.unpackParameters.alignment;
+
+	if (mState.unpackParameters.rowLength > 0)
+	{
+		pixelsPerRow = mState.unpackParameters.rowLength;
+	}
+	else
+	{
+		pixelsPerRow = width;
+	}
+
+	if (mState.unpackParameters.imageHeight > 0)
+	{
+		rowsPerImage = mState.unpackParameters.imageHeight;
+	}
+	else
+	{
+		rowsPerImage = height;
+	}
+
+	skipPixels = mState.unpackParameters.skipPixels;
+	skipRows   = mState.unpackParameters.skipRows;
+	skipImages = mState.unpackParameters.skipImages;
+
+	GLintptr bytesPerPixel, bytesPerRow, bytesPerImage;
+
+	bytesPerPixel = gl::ComputePixelSize(format, type);
+
+	GLint remainder = bytesPerPixel % alignment;
+	bytesPerRow   = pixelsPerRow * bytesPerPixel;
+	if (remainder > 0)
+		bytesPerRow += (alignment - remainder);
+
+	bytesPerImage = rowsPerImage * bytesPerRow;
+
+	return (skipImages + img)    * bytesPerImage
+		 + (skipRows + row)      * bytesPerRow
+		 + (skipPixels + column) * bytesPerPixel;
+
+	//GLint bytesPerPixel = BytesPerPixel(format, type);
+	//GLsizei inputWidth = (mState.unpackParameters.rowLength == 0) ? width : mState.unpackParameters.rowLength;
+	//GLsizei inputPitch = gl::ComputePitch(inputWidth, format, type, mState.unpackParameters.alignment);
+	//GLsizei inputHeight = (mState.unpackParameters.imageHeight == 0) ? height : mState.unpackParameters.imageHeight;
+	//return inputPitch * inputHeight * depth;
 }
 
 GLenum Context::getPixels(const GLvoid **pixels, GLenum type, GLsizei imageSize) const
@@ -1598,7 +1649,8 @@ GLenum Context::getPixels(const GLvoid **pixels, GLenum type, GLsizei imageSize)
 			return GL_INVALID_OPERATION;
 		}
 
-		if(mState.pixelUnpackBuffer->size() - offset < static_cast<size_t>(imageSize))
+		// If the read/write goes beyong the end of the buffer
+		if (imageSize + offset > mState.pixelUnpackBuffer->size())
 		{
 			return GL_INVALID_OPERATION;
 		}
