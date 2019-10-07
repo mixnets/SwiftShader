@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d8e96db_d8b15552",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 13
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-10-07T19:05:38Z",
+      "side": 1,
+      "message": "This line has to be \u0027Test: \u0027 for the script to use it...",
+      "revId": "3b9605ecec7b3aefaaf4fdcb2f51ba8aacad97e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
