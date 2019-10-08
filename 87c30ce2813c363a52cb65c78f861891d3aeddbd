@@ -93,6 +93,30 @@
       "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3c8a8e6_5d8162cc",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-08T17:00:39Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this blocking_call be calling signalInternal() after external-\u003ewait()?",
+      "parentUuid": "3485791f_88408ad4",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 102,
+        "endChar": 7
+      },
+      "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
