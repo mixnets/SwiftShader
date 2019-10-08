@@ -22,6 +22,30 @@
       "revId": "330f17002f283bd3c8ea84b2f6bee4a279f08fb1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e03564f_1f4e0352",
+        "filename": "src/Vulkan/VkSemaphoreExternalLinux.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-08T15:14:03Z",
+      "side": 1,
+      "message": "Thanks a ton, I don\u0027t understand why this passes the tests on my workstation though :-/\n\nFor now I prefer to keep things simple, since this is very low-level code.",
+      "parentUuid": "58b958ee_2e93b49a",
+      "range": {
+        "startLine": 108,
+        "startChar": 2,
+        "endLine": 108,
+        "endChar": 20
+      },
+      "revId": "330f17002f283bd3c8ea84b2f6bee4a279f08fb1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
