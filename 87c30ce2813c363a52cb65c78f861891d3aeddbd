@@ -117,6 +117,30 @@
       "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b083fe2_5f64acba",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-08T17:11:49Z",
+      "side": 1,
+      "message": "Confirmed this does _not_ fix the deadlock.",
+      "parentUuid": "f3c8a8e6_5d8162cc",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 102,
+        "endChar": 7
+      },
+      "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
