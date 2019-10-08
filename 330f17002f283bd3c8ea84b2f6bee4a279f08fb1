@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "58b958ee_2e93b49a",
+        "filename": "src/Vulkan/VkSemaphoreExternalLinux.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-08T13:34:00Z",
+      "side": 1,
+      "message": "This timeouts are due to the mutex never being unlocked in this function.\nI\u0027d strongly recommend #including \"marl/defer.h\" and adding:\n\n  defer(pthread_mutex_unlock(\u0026mutex));\n\nbelow every call to\n\n  pthread_mutex_lock(\u0026mutex);\n\n\nThat way, you can\u0027t accidentally return without unlocking, and its easier to see them as a pair so you don\u0027t forget to unlock at all.",
+      "range": {
+        "startLine": 108,
+        "startChar": 2,
+        "endLine": 108,
+        "endChar": 20
+      },
+      "revId": "330f17002f283bd3c8ea84b2f6bee4a279f08fb1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
