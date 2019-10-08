@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7c258c74_e5d95add",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-08T16:13:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3cbf4c86_12584447",
+      "range": {
+        "startLine": 96,
+        "startChar": 24,
+        "endLine": 96,
+        "endChar": 32
+      },
+      "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e1f62b7_bb6f9937",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 15
@@ -36,6 +60,30 @@
       "writtenOn": "2019-10-08T15:57:22Z",
       "side": 1,
       "message": "This is where dEQP-VK.api.external.semaphore.opaque_fd.transference_temporary is getting stuck.\nShout if you cannot reproduce this timeout.",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 102,
+        "endChar": 7
+      },
+      "revId": "87c30ce2813c363a52cb65c78f861891d3aeddbd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3485791f_88408ad4",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-10-08T16:13:01Z",
+      "side": 1,
+      "message": "I cannot reproduce it, as I said, all tests pass on my machine !?! No idea why :-(\nI just uploaded a CL that uses a background std::thread() to see if this solves the issue.",
+      "parentUuid": "3e1f62b7_bb6f9937",
       "range": {
         "startLine": 100,
         "startChar": 4,
