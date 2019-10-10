@@ -33,6 +33,24 @@
       "revId": "3661a9a660cdb16153d0ef6792476909fa293872",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8532fe8c_5a333136",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2077,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-10T19:04:31Z",
+      "side": 1,
+      "message": "They\u0027re not exactly the same. The one in Blitter.cpp doesn\u0027t overwrite the input values, so I\u0027m not going to add temporary values to call this template. I can add the template function in this file, that will remove the need for the extra functions in the header file.",
+      "parentUuid": "09cc2764_00939ca7",
+      "revId": "3661a9a660cdb16153d0ef6792476909fa293872",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
