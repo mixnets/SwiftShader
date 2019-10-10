@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9774886b_cf1c0ff8",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1577,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T18:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ac6cb00_790e3d08",
+      "range": {
+        "startLine": 1577,
+        "startChar": 23,
+        "endLine": 1577,
+        "endChar": 60
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c93fde36_6704196c",
         "filename": "src/OpenGL/libGLESv2/Context.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b190884f_d17c7877",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T18:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c93fde36_6704196c",
+      "range": {
+        "startLine": 1578,
+        "startChar": 23,
+        "endLine": 1578,
+        "endChar": 62
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "5fe529b2_bd1c7cb1",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1584,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T18:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "348a20f4_09d6f626",
+      "range": {
+        "startLine": 1582,
+        "startChar": 0,
+        "endLine": 1584,
+        "endChar": 65
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0be4e14_6da783ec",
         "filename": "src/OpenGL/libGLESv2/Context.cpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-10-10T17:35:50Z",
       "side": 1,
       "message": "why does this ignore the unpack parameters?",
+      "range": {
+        "startLine": 1586,
+        "startChar": 1,
+        "endLine": 1587,
+        "endChar": 18
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b64fe7a3_6649613c",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1587,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T18:29:45Z",
+      "side": 1,
+      "message": "I believe height can only be 0 if this is a 1D image, so setting bytesPerRow to 0 should be fine because there are no rows in a 1D image.",
+      "parentUuid": "a0be4e14_6da783ec",
       "range": {
         "startLine": 1586,
         "startChar": 1,
@@ -114,6 +210,30 @@
       "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e77b5b4_64c8f765",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T18:29:45Z",
+      "side": 1,
+      "message": "Width and height here are different from the unpack parameters. The unpack parameters are about how many pixels/rows it takes to advance to the next row/image in the pixel buffer. The width and height are not of the pixel buffer itself, but of the subsection within the pixelbuffer.\n\nImagine a 70-byte pixel buffer that has packing parameters setting its row length to 10 and height to 7. Then we read a 3 pixel wide, 5 pixel tall rectangle from the upper-left corner of the buffer. So the last byte of the buffer we\u0027ll need to read will be:\n\n(4 rows) * bytesPerRow + (3 pixels) * bytesPerPixel;\n\nWhere bytesPerRow is 10*bytesPerPixel, and the 10 comes from the packing parameters.\n\nWe\u0027ll read the full first 4 rows. That number is determined by the height of the subimage we\u0027re reading from the buffer. The bytesPerRow accounts for the unpackParameters as seen on line 1577. Then we\u0027ll read 3 pixels into the final row. And that number is determined by the width of the subimage, not the unpackParameters.\n\nFor comparison, look at mesa\u0027s _mesa_valida_pbo_access: https://cs.corp.google.com/chromeos_public/src/third_party/mesa/src/mesa/main/pbo.c?type\u003dcs\u0026g\u003d0\u0026l\u003d67\n\nand _mesa_image_offset: https://cs.corp.google.com/chromeos_public/src/third_party/mesa/src/mesa/main/image.c?type\u003dcs\u0026q\u003d_mesa_image_offset\u0026g\u003d0\u0026l\u003d116",
+      "parentUuid": "b956666b_6a57ec4c",
+      "range": {
+        "startLine": 1593,
+        "startChar": 0,
+        "endLine": 1594,
+        "endChar": 73
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
