@@ -234,6 +234,30 @@
       "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "560bb36d_a16199bc",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-10T18:48:40Z",
+      "side": 1,
+      "message": "Looking at the validation code, they have:\n   if (width \u003d\u003d 0 || height \u003d\u003d 0 || depth \u003d\u003d 0)\n      return GL_TRUE;\n\n2 questions:\n1) Would it be worth having the following lines at the top of the function? Might be clearer.\nif (width \u003d\u003d 0 || height \u003d\u003d 0 || depth \u003d\u003d 0)\n      return 0;\n\n2) In what case is height/depth 0 and the associated bytesPerRow/bytesPerImage non 0?",
+      "parentUuid": "8e77b5b4_64c8f765",
+      "range": {
+        "startLine": 1593,
+        "startChar": 0,
+        "endLine": 1594,
+        "endChar": 73
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
