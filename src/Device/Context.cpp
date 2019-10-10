@@ -110,6 +110,7 @@ namespace sw
 
 		cullMode = VK_CULL_MODE_FRONT_BIT;
 		frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		provokeMode = VK_PROVOKE_MODE_FIRST_VERTEX_CONVENTION;
 
 		depthBias = 0.0f;
 		slopeDepthBias = 0.0f;

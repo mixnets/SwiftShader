@@ -359,6 +359,27 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		UNIMPLEMENTED("pCreateInfo->pInputAssemblyState settings");
 	}
 
+	if(assemblyState->pNext)
+	{
+		const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(assemblyState->pNext);
+		while(extensionCreateInfo)
+		{
+			switch(extensionCreateInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_PIPELINE_PROVOKE_MODE_CREATE_INFO_GOOGLE:
+			{
+				const VkPipelineProvokeModeCreateInfo* provokeModeCreateInfo = reinterpret_cast<const VkPipelineProvokeModeCreateInfo*>(extensionCreateInfo);
+				context.provokeMode = provokeModeCreateInfo->provokeMode;
+			}
+			break;
+			default:
+				UNIMPLEMENTED("assemblyState->pNext");
+			}
+
+			extensionCreateInfo = extensionCreateInfo->pNext;
+		}
+	}
+
 	primitiveRestartEnable = (assemblyState->primitiveRestartEnable != VK_FALSE);
 	context.topology = assemblyState->topology;
 

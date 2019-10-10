@@ -150,6 +150,7 @@ namespace sw
 		unsigned int numBatches;
 
 		VkPrimitiveTopology topology;
+		VkProvokeMode provokeMode;
 		VkIndexType indexType;
 
 		std::shared_ptr<Routine> vertexRoutine;
@@ -178,7 +179,8 @@ namespace sw
 				VkIndexType indexType,
 				unsigned int start,
 				unsigned int triangleCount,
-				VkPrimitiveTopology topology);
+				VkPrimitiveTopology topology,
+				VkProvokeMode provokeMode);
 
 		static int setupSolidTriangles(Triangle* triangles, Primitive* primitives, const DrawCall* drawCall, int count);
 		static int setupWireframeTriangles(Triangle* triangles, Primitive* primitives, const DrawCall* drawCall, int count);

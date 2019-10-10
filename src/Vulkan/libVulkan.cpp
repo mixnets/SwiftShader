@@ -228,6 +228,7 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 	// (from KHR_swapchain v70) to vkBindImageMemory2.
 	{ VK_ANDROID_NATIVE_BUFFER_EXTENSION_NAME, 7 },
 #endif
+	{ VK_GOOGLE_PROVOKING_VERTEX_EXTENSION_NAME, VK_GOOGLE_PROVOKING_VERTEX_SPEC_VERSION },
 };
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance)
