@@ -50,6 +50,29 @@ public:
 
 #include <vulkan/vulkan.h>
 
+#ifndef VK_EXT_provoking_vertex
+#define VK_EXT_provoking_vertex 1
+#define VK_EXT_PROVOKING_VERTEX_SPEC_VERSION 1
+#define VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME "VK_EXT_provoking_vertex"
+
+typedef enum VkProvokingVertexModeEXT {
+    VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT = 0,
+    VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT = 1,
+    VK_PROVOKING_VERTEX_MODE_BEGIN_RANGE = VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT ,
+    VK_PROVOKING_VERTEX_MODE_END_RANGE = VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT ,
+    VK_PROVOKING_VERTEX_MODE_RANGE_SIZE = (VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT  - VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT + 1),
+    VK_PROVOKING_VERTEX_MODE_MAX_ENUM = 0x7FFFFFFF
+} VkProvokingVertexModeEXT;
+
+constexpr VkStructureType VK_STRUCTURE_TYPE_PIPELINE_PROVOKING_VERTEX_MODE_CREATE_INFO_EXT = static_cast<VkStructureType>(1000092001);
+
+typedef struct VkPipelineProvokingVertexModeCreateInfoEXT  {
+	VkStructureType sType;
+	const void* pNext;
+	VkProvokingVertexModeEXT provokingVertexMode;
+} VkPipelineProvokingVertexModeCreateInfoEXT;
+#endif // VK_EXT_provoking_vertex
+
 #ifdef Bool
 #undef Bool // b/127920555
 #undef None
