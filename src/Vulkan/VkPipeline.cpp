@@ -390,6 +390,28 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		UNIMPLEMENTED("pCreateInfo->pRasterizationState settings");
 	}
 
+	if(rasterizationState->pNext)
+	{
+		const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(rasterizationState->pNext);
+		while(extensionCreateInfo)
+		{
+			switch(extensionCreateInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT:
+			{
+				const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT* provokingVertexModeCreateInfo =
+					reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT*>(extensionCreateInfo);
+				context.provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
+			}
+			break;
+			default:
+				UNIMPLEMENTED("assemblyState->pNext");
+			}
+
+			extensionCreateInfo = extensionCreateInfo->pNext;
+		}
+	}
+
 	context.rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable == VK_TRUE);
 	context.cullMode = rasterizationState->cullMode;
 	context.frontFace = rasterizationState->frontFace;
