@@ -50,6 +50,25 @@ public:
 
 #include <vulkan/vulkan.h>
 
+#define VK_GOOGLE_provoking_vertex 1
+#define VK_GOOGLE_PROVOKING_VERTEX_SPEC_VERSION 1
+#define VK_GOOGLE_PROVOKING_VERTEX_EXTENSION_NAME "VK_GOOGLE_provoking_vertex"
+
+typedef enum VkProvokeMode {
+	VK_PROVOKE_MODE_FIRST_VERTEX_CONVENTION = 0,
+	VK_PROVOKE_MODE_LAST_VERTEX_CONVENTION = 1,
+	VK_PROVOKE_MODE_BEGIN_RANGE = VK_PROVOKE_MODE_FIRST_VERTEX_CONVENTION,
+	VK_PROVOKE_MODE_END_RANGE = VK_PROVOKE_MODE_LAST_VERTEX_CONVENTION,
+	VK_PROVOKE_MODE_RANGE_SIZE = (VK_PROVOKE_MODE_LAST_VERTEX_CONVENTION - VK_PROVOKE_MODE_FIRST_VERTEX_CONVENTION + 1),
+	VK_PROVOKE_MODE_MAX_ENUM = 0x7FFFFFFF
+} VkProvokeMode;
+
+typedef struct VkPipelineProvokeModeCreateInfo {
+	VkStructureType sType;
+	const void* pNext;
+	VkProvokeMode provokeMode;
+} VkPipelineProvokeModeCreateInfo;
+
 #ifdef Bool
 #undef Bool // b/127920555
 #undef None

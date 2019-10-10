@@ -46,8 +46,35 @@ unsigned int maxPrimitives = 1 << 21;
 namespace sw
 {
 	template<typename T>
-	inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, T indices, unsigned int start, unsigned int triangleCount)
+	inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, VkProvokeMode provokeMode, T indices, unsigned int start, unsigned int triangleCount)
 	{
+		static const int DefaultVertexIndices[3] = { 0, 1, 2 };
+		static const int LineLastVertexIndices[3] = { 1, 0, 1 };
+		static const int TriangleLastVertexIndices[3] = { 2, 0, 1 };
+		const int* vertexIndices = DefaultVertexIndices;
+
+		if(provokeMode == VK_PROVOKE_MODE_LAST_VERTEX_CONVENTION)
+		{
+			switch(topology)
+			{
+			case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
+				// Nothing to do
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+			case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
+				vertexIndices = LineLastVertexIndices;
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
+				vertexIndices = TriangleLastVertexIndices;
+				break;
+			default:
+				ASSERT(false);
+				return false;
+			}
+		}
+
 		switch(topology)
 		{
 		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
@@ -72,9 +99,9 @@ namespace sw
 			auto index = 2 * start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index + 0];
-				batch[i][1] = indices[index + 1];
-				batch[i][2] = indices[index + 1];
+				batch[i][vertexIndices[0]] = indices[index + 0];
+				batch[i][vertexIndices[1]] = indices[index + 1];
+				batch[i][vertexIndices[2]] = indices[index + 1];
 
 				index += 2;
 			}
@@ -85,9 +112,9 @@ namespace sw
 			auto index = start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index + 0];
-				batch[i][1] = indices[index + 1];
-				batch[i][2] = indices[index + 1];
+				batch[i][vertexIndices[0]] = indices[index + 0];
+				batch[i][vertexIndices[1]] = indices[index + 1];
+				batch[i][vertexIndices[2]] = indices[index + 1];
 
 				index += 1;
 			}
@@ -98,9 +125,9 @@ namespace sw
 			auto index = 3 * start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index + 0];
-				batch[i][1] = indices[index + 1];
-				batch[i][2] = indices[index + 2];
+				batch[i][vertexIndices[0]] = indices[index + 0];
+				batch[i][vertexIndices[1]] = indices[index + 1];
+				batch[i][vertexIndices[2]] = indices[index + 2];
 
 				index += 3;
 			}
@@ -111,9 +138,9 @@ namespace sw
 			auto index = start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index + 0];
-				batch[i][1] = indices[index + ((start + i) & 1) + 1];
-				batch[i][2] = indices[index + (~(start + i) & 1) + 1];
+				batch[i][vertexIndices[0]] = indices[index + 0];
+				batch[i][vertexIndices[1]] = indices[index + ((start + i) & 1) + 1];
+				batch[i][vertexIndices[2]] = indices[index + (~(start + i) & 1) + 1];
 
 				index += 1;
 			}
@@ -124,9 +151,9 @@ namespace sw
 			auto index = start + 1;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
-				batch[i][0] = indices[index + 0];
-				batch[i][1] = indices[index + 1];
-				batch[i][2] = indices[0];
+				batch[i][vertexIndices[0]] = indices[index + 0];
+				batch[i][vertexIndices[1]] = indices[index + 1];
+				batch[i][vertexIndices[2]] = indices[0];
 
 				index += 1;
 			}
@@ -260,6 +287,7 @@ namespace sw
 		draw->numPrimitivesPerBatch = numPrimitivesPerBatch;
 		draw->numBatches = (count + draw->numPrimitivesPerBatch - 1) / draw->numPrimitivesPerBatch;
 		draw->topology = context->topology;
+		draw->provokeMode = context->provokeMode;
 		draw->indexType = indexType;
 
 		draw->vertexRoutine = vertexRoutine;
@@ -497,7 +525,8 @@ namespace sw
 				draw->indexType,
 				batch->firstPrimitive,
 				batch->numPrimitives,
-				draw->topology);
+				draw->topology,
+				draw->provokeMode);
 		}
 
 		auto& vertexTask = batch->vertexTask;
@@ -560,7 +589,8 @@ namespace sw
 		VkIndexType indexType,
 		unsigned int start,
 		unsigned int triangleCount,
-		VkPrimitiveTopology topology)
+		VkPrimitiveTopology topology,
+		VkProvokeMode provokeMode)
 	{
 		if(!primitiveIndices)
 		{
@@ -569,7 +599,7 @@ namespace sw
 				unsigned int operator[](unsigned int i) { return i; }
 			};
 
-			if(!setBatchIndices(triangleIndicesOut, topology, LinearIndex(), start, triangleCount))
+			if(!setBatchIndices(triangleIndicesOut, topology, provokeMode, LinearIndex(), start, triangleCount))
 			{
 				return;
 			}
@@ -579,13 +609,13 @@ namespace sw
 			switch(indexType)
 			{
 			case VK_INDEX_TYPE_UINT16:
-				if(!setBatchIndices(triangleIndicesOut, topology, static_cast<const uint16_t*>(primitiveIndices), start, triangleCount))
+				if(!setBatchIndices(triangleIndicesOut, topology, provokeMode, static_cast<const uint16_t*>(primitiveIndices), start, triangleCount))
 				{
 					return;
 				}
 				break;
 			case VK_INDEX_TYPE_UINT32:
-				if(!setBatchIndices(triangleIndicesOut, topology, static_cast<const uint32_t*>(primitiveIndices), start, triangleCount))
+				if(!setBatchIndices(triangleIndicesOut, topology, provokeMode, static_cast<const uint32_t*>(primitiveIndices), start, triangleCount))
 				{
 					return;
 				}

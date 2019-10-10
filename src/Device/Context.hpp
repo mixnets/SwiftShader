@@ -88,6 +88,7 @@ namespace sw
 		BlendState getBlendState(int index) const;
 
 		VkPrimitiveTopology topology;
+		VkProvokeMode provokeMode;
 
 		bool stencilEnable;
 		VkStencilOpState frontStencil;
