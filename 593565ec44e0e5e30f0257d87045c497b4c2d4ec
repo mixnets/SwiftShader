@@ -282,6 +282,30 @@
       "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3de14ec8_04e26df1",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-10T19:08:01Z",
+      "side": 1,
+      "message": "We didn\u0027t assert before this change, so I don\u0027t think we should. If this is expected by GL to validly return 0, then it should return 0.",
+      "parentUuid": "7ea45668_38d7ce1f",
+      "range": {
+        "startLine": 1593,
+        "startChar": 0,
+        "endLine": 1594,
+        "endChar": 73
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
