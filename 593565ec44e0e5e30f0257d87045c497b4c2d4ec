@@ -258,6 +258,30 @@
       "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ea45668_38d7ce1f",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-10T19:02:36Z",
+      "side": 1,
+      "message": "Looking at the callers of this function, it looks like they always specify non-zero dimensions (height of 1 for 1D, depth of 1 for 2D), so I could probably not check for zero and still be safe.\n\nAnd if someone does specify a width, heighth, or depth of 0, then one of the callers should have caught it fairly early since no work would have to be done. Perhaps I should just include an assert?",
+      "parentUuid": "560bb36d_a16199bc",
+      "range": {
+        "startLine": 1593,
+        "startChar": 0,
+        "endLine": 1594,
+        "endChar": 73
+      },
+      "revId": "593565ec44e0e5e30f0257d87045c497b4c2d4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
