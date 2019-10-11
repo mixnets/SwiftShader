@@ -22,6 +22,30 @@
       "revId": "0b5d1908b2ee21436a8dfc5febf465d2205cf93c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca763543_b29c4215",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1587,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-10-11T19:55:34Z",
+      "side": 1,
+      "message": "It seems weird to me to call ComputePitch if we also need to get bytesPerPixel. It felt like I would be double calculating stuff. And I personally have an easier time reading this code as it is now than I do when I replace that with a call to ComputePitch. It\u0027s easier to tell what this is intending to do and how it\u0027s accomplishing that when all the multiplies are kept next to each other.",
+      "parentUuid": "2e07b0da_0cda778d",
+      "range": {
+        "startLine": 1587,
+        "startChar": 23,
+        "endLine": 1587,
+        "endChar": 98
+      },
+      "revId": "0b5d1908b2ee21436a8dfc5febf465d2205cf93c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
