@@ -694,6 +694,12 @@ public:
     (void)ArgNum;
     return RegNumT();
   }
+  // Given the argument position and the count of this argument type, return the
+  // register index to assign it to.
+  static SizeT getArgIndex(SizeT argPos, SizeT argTypeCount) {
+    (void)argPos;
+    return argTypeCount;
+  };
 
   /// The number of bits in a byte
   static constexpr uint32_t X86_CHAR_BIT = 8;
