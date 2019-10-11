@@ -742,6 +742,14 @@ public:
     assert(Ty == IceType_i64 || Ty == IceType_i32);
     return getGprForType(Ty, GprForArgNum[ArgNum]);
   }
+  // Given the argument position and the count of this argument type, return the
+  // register index to assign it to.
+  static SizeT getArgIndex(SizeT argPos, SizeT argTypeCount) {
+    // Microsoft x64 ABI: register is selected by arg position (e.g. 1st int as
+    // 2nd param goes into 2nd int reg)
+    return argPos;
+  };
+
 #else
   // System V x86-64 calling convention:
   //
@@ -773,6 +781,12 @@ public:
                   "Mismatch between MAX_GPR_ARGS and GprForArgNum.");
     assert(Ty == IceType_i64 || Ty == IceType_i32);
     return getGprForType(Ty, GprForArgNum[ArgNum]);
+  }
+  // Given the argument position and the count of this argument type, return the
+  // register index to assign it to.
+  static SizeT getArgIndex(SizeT argPos, SizeT argTypeCount) {
+	  (void)argPos;
+	  return argTypeCount;
   }
 #endif
 
