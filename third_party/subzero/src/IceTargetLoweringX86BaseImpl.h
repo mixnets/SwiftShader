@@ -986,8 +986,17 @@ TargetX86Base<TraitsType>::stackVarToAsmOperand(const Variable *Var) const {
   }
   int32_t Offset = Var->getStackOffset();
   auto BaseRegNum = Var->getBaseRegNum();
-  if (Var->getBaseRegNum().hasNoValue())
-    BaseRegNum = getFrameOrStackReg();
+  if (Var->getBaseRegNum().hasNoValue()) {
+    // If the stack pointer needs alignment, we must use the frame pointer for
+    // arguments. For locals, getFrameOrStackReg will return the stack pointer
+    // in this case.
+    if (needsStackPointerAlignment() && Var->getIsArg()) {
+		assert(hasFramePointer());
+		BaseRegNum = getFrameReg();
+    } else {
+      BaseRegNum = getFrameOrStackReg();
+    }
+  }
   return X86Address(Traits::getEncodedGPR(BaseRegNum), Offset,
                     AssemblerFixup::NoFixup);
 }
@@ -3414,7 +3423,7 @@ void TargetX86Base<TraitsType>::lowerFcmpAndConsumer(const InstFcmp *Fcmp,
   //   ucomiss b, c       /* but swap b,c order if SwapOperands==true */
   //   setcc a, C1
   InstFcmp::FCond Condition = Fcmp->getCondition();
-  assert(Condition < Traits::TableFcmpSize);
+  assert(static_cast<size_t>(Condition) < Traits::TableFcmpSize);
   if (Traits::TableFcmp[Condition].SwapScalarOperands)
     std::swap(Src0, Src1);
   const bool HasC1 = (Traits::TableFcmp[Condition].C1 != Traits::Cond::Br_None);
@@ -3495,7 +3504,7 @@ void TargetX86Base<TraitsType>::lowerFcmpVector(const InstFcmp *Fcmp) {
     llvm::report_fatal_error("Expected vector compare");
 
   InstFcmp::FCond Condition = Fcmp->getCondition();
-  assert(Condition < Traits::TableFcmpSize);
+  assert(static_cast<size_t>(Condition) < Traits::TableFcmpSize);
 
   if (Traits::TableFcmp[Condition].SwapVectorOperands)
     std::swap(Src0, Src1);
@@ -3721,7 +3730,7 @@ TargetX86Base<TraitsType>::lowerIcmp64(const InstIcmp *Icmp,
   Operand *Src1 = legalize(Icmp->getSrc(1));
   Variable *Dest = Icmp->getDest();
   InstIcmp::ICond Condition = Icmp->getCondition();
-  assert(Condition < Traits::TableIcmp64Size);
+  assert(static_cast<size_t>(Condition) < Traits::TableIcmp64Size);
   Operand *Src0LoRM = nullptr;
   Operand *Src0HiRM = nullptr;
   // Legalize the portions of Src0 that are going to be needed.
