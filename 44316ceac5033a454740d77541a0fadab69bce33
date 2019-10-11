@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a0323ce_187a2feb",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 997,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-11T20:04:47Z",
+      "side": 1,
+      "message": "nit: indentation",
+      "range": {
+        "startLine": 997,
+        "startChar": 0,
+        "endLine": 997,
+        "endChar": 6
+      },
+      "revId": "44316ceac5033a454740d77541a0fadab69bce33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
