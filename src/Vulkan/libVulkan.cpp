@@ -2299,7 +2299,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageSparseMemoryRequirements2(VkDevice device, 
 		UNIMPLEMENTED("pInfo->pNext || pSparseMemoryRequirements->pNext");
 	}
 
-	vkGetImageSparseMemoryRequirements(device, pInfo->image, pSparseMemoryRequirementCount, &(pSparseMemoryRequirements->memoryRequirements));
+	if(!pSparseMemoryRequirements)
+	{
+		vkGetImageSparseMemoryRequirements(device, pInfo->image, pSparseMemoryRequirementCount, nullptr);
+	}
+	else
+	{
+		uint32_t count = 1;
+		for(uint32_t i = 0; i < *pSparseMemoryRequirementCount; i++)
+		{
+			vkGetImageSparseMemoryRequirements(device, pInfo->image, &count, &(pSparseMemoryRequirements[i].memoryRequirements));
+		}
+	}
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2* pFeatures)
@@ -2567,8 +2578,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalD
 		UNIMPLEMENTED("pQueueFamilyProperties->pNext");
 	}
 
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount,
-		pQueueFamilyProperties ? &(pQueueFamilyProperties->queueFamilyProperties) : nullptr);
+	if(!pQueueFamilyProperties)
+	{
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, nullptr);
+	}
+	else
+	{
+		uint32_t count = 1;
+		for(uint32_t i = 0; i < *pQueueFamilyPropertyCount; i++)
+		{
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, &(pQueueFamilyProperties[i].queueFamilyProperties));
+		}
+	}
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2* pMemoryProperties)
@@ -2593,9 +2614,22 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceSparseImageFormatProperties2(VkPhy
 		UNIMPLEMENTED("pProperties->pNext");
 	}
 
-	vkGetPhysicalDeviceSparseImageFormatProperties(physicalDevice, pFormatInfo->format, pFormatInfo->type,
-	                                               pFormatInfo->samples, pFormatInfo->usage, pFormatInfo->tiling,
-	                                               pPropertyCount, pProperties ? &(pProperties->properties) : nullptr);
+	if(!pProperties)
+	{
+		vkGetPhysicalDeviceSparseImageFormatProperties(physicalDevice, pFormatInfo->format, pFormatInfo->type,
+	                                                   pFormatInfo->samples, pFormatInfo->usage, pFormatInfo->tiling,
+	                                                   pPropertyCount, nullptr);
+	}
+	else
+	{
+		uint32_t count = 1;
+		for(uint32_t i = 0; i < *pPropertyCount; i++)
+		{
+			vkGetPhysicalDeviceSparseImageFormatProperties(physicalDevice, pFormatInfo->format, pFormatInfo->type,
+	                                                       pFormatInfo->samples, pFormatInfo->usage, pFormatInfo->tiling,
+	                                                       &count, &(pProperties[i].properties));
+		}
+	}
 }
 
 VKAPI_ATTR void VKAPI_CALL vkTrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags)
