@@ -1591,6 +1591,63 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 	EXPECT_EQ(out, 99);
 }
 
+TEST(ReactorUnitTests, Intrinsics_Ctlz)
+{
+	// ctlz: counts number of leading zeros
+
+	{
+		Function<UInt(UInt x)> function;
+		{
+			UInt x = function.Arg<0>();
+			Return(rr::Ctlz(x, false));
+		}
+		auto routine = function("one");
+		auto callable = (uint32_t(*)(uint32_t))routine->getEntry();
+
+
+		for (int i = 0; i < 31; ++i) {
+			uint32_t result = callable(1 << i);
+			EXPECT_EQ(result, 31 - i);
+		}
+
+		// Input 0 should return 32 for isZeroUndef == false
+		{
+			uint32_t result = callable(0);
+			EXPECT_EQ(result, 32);
+		}
+	}
+
+	{
+		Function<Void(Pointer<UInt4>, UInt x)> function;
+		{
+			Pointer<UInt4> out = function.Arg<0>();
+			UInt x = function.Arg<1>();
+			*out = rr::Ctlz(UInt4(x), false);
+		}
+		auto routine = function("one");
+		auto callable = (void(*)(uint32_t*, uint32_t))routine->getEntry();
+
+		uint32_t x[4];
+
+		for (int i = 0; i < 31; ++i) {
+			callable(x, 1 << i);
+			EXPECT_EQ(x[0], 31 - i);
+			EXPECT_EQ(x[1], 31 - i);
+			EXPECT_EQ(x[2], 31 - i);
+			EXPECT_EQ(x[3], 31 - i);
+		}
+
+		// Input 0 should return 32 for isZeroUndef == false
+		{
+			callable(x, 0);
+			EXPECT_EQ(x[0], 32);
+			EXPECT_EQ(x[1], 32);
+			EXPECT_EQ(x[2], 32);
+			EXPECT_EQ(x[3], 32);
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);

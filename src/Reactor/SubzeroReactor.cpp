@@ -3549,8 +3549,44 @@ namespace rr
 	RValue<Float4> Log(RValue<Float4> x) { UNIMPLEMENTED("Subzero Log()"); return Float4(0); }
 	RValue<Float4> Exp2(RValue<Float4> x) { UNIMPLEMENTED("Subzero Exp2()"); return Float4(0); }
 	RValue<Float4> Log2(RValue<Float4> x) { UNIMPLEMENTED("Subzero Log2()"); return Float4(0); }
-	RValue<UInt> Ctlz(RValue<UInt> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Ctlz()"); return UInt(0); }
-	RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Ctlz()"); return UInt4(0); }
+
+	RValue<UInt> Ctlz(RValue<UInt> x, bool isZeroUndef) 
+	{
+		if (emulateIntrinsics)
+		{
+			UNIMPLEMENTED("Subzero Ctlz()"); return UInt(0);
+		}
+		else
+		{
+			Ice::Variable* result = ::function->makeVariable(Ice::IceType_i32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::Ctlz, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F };
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto ctlz = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+			ctlz->addArg(x.value);
+			::basicBlock->appendInst(ctlz);
+
+			return RValue<UInt>(V(result));
+		}
+	}
+	
+	RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef)
+	{
+		if (emulateIntrinsics)
+		{
+			UNIMPLEMENTED("Subzero Ctlz()"); return UInt4(0);
+		}
+		else
+		{
+			// TODO(amaiorano): implement vectorized ctlz in Subzero
+			UInt4 result;
+			result = Insert(result, Ctlz(Extract(x, 0), isZeroUndef), 0);
+			result = Insert(result, Ctlz(Extract(x, 1), isZeroUndef), 1);
+			result = Insert(result, Ctlz(Extract(x, 2), isZeroUndef), 2);
+			result = Insert(result, Ctlz(Extract(x, 3), isZeroUndef), 3);
+			return result;
+		}
+	}
+
 	RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Cttz()"); return UInt(0); }
 	RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Cttz()"); return UInt4(0); }
 
