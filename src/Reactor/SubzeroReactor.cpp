@@ -3577,7 +3577,7 @@ namespace rr
 		}
 		else
 		{
-			// TODO(amaiorano): implement vectorized ctlz in Subzero
+			// TODO(amaiorano): implement vectorized version in Subzero
 			UInt4 result;
 			result = Insert(result, Ctlz(Extract(x, 0), isZeroUndef), 0);
 			result = Insert(result, Ctlz(Extract(x, 1), isZeroUndef), 1);
@@ -3587,8 +3587,42 @@ namespace rr
 		}
 	}
 
-	RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Cttz()"); return UInt(0); }
-	RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef) { UNIMPLEMENTED("Subzero Cttz()"); return UInt4(0); }
+	RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef)
+	{
+		if (emulateIntrinsics)
+		{
+			UNIMPLEMENTED("Subzero Cttz()"); return UInt(0);
+		}
+		else
+		{
+			Ice::Variable* result = ::function->makeVariable(Ice::IceType_i32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::Cttz, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F };
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto ctlz = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+			ctlz->addArg(x.value);
+			::basicBlock->appendInst(ctlz);
+
+			return RValue<UInt>(V(result));
+		}
+	}
+	
+	RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef)
+	{
+		if (emulateIntrinsics)
+		{
+			UNIMPLEMENTED("Subzero Cttz()"); return UInt4(0);
+		}
+		else
+		{
+			// TODO(amaiorano): implement vectorized version in Subzero
+			UInt4 result;
+			result = Insert(result, Cttz(Extract(x, 0), isZeroUndef), 0);
+			result = Insert(result, Cttz(Extract(x, 1), isZeroUndef), 1);
+			result = Insert(result, Cttz(Extract(x, 2), isZeroUndef), 2);
+			result = Insert(result, Cttz(Extract(x, 3), isZeroUndef), 3);
+			return result;
+		}
+	}
 
 	void EmitDebugLocation() {}
 	void EmitDebugVariable(Value* value) {}
