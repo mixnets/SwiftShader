@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5fb9f619_0e865a63",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632Traits.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 697,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-16T13:13:36Z",
+      "side": 1,
+      "message": "Done. Totally agree, argPosByType is a better name.",
+      "parentUuid": "bf4fda53_469d21e0",
+      "range": {
+        "startLine": 697,
+        "startChar": 3,
+        "endLine": 697,
+        "endChar": 77
+      },
+      "revId": "0a5bb28145e7dfcb5fe4a0d00948b733694c4ea6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad5f645_fe6924bc",
         "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-10-16T11:47:00Z",
       "side": 1,
       "message": "It\u0027s not immediately clear to me why this is done here instead of where XmmArgs.push_back() is called. Something to do with InstStore::create perhaps? *shrug*",
+      "range": {
+        "startLine": 2730,
+        "startChar": 35,
+        "endLine": 2730,
+        "endChar": 54
+      },
+      "revId": "0a5bb28145e7dfcb5fe4a0d00948b733694c4ea6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ddda675_0da4d734",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 2730,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-16T13:13:36Z",
+      "side": 1,
+      "message": "Yeah, I\u0027m not sure either. There\u0027s a comment above that says \"We make sure legalize() is called on each argument at this point, to allow availabilityGet() to work.\", which might also be related. Perhaps it\u0027s just to make the code clearer, separating the classifying of args that go to registers vs. stack, and then actually legalizing them.",
+      "parentUuid": "9ad5f645_fe6924bc",
       "range": {
         "startLine": 2730,
         "startChar": 35,
