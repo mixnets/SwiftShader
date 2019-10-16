@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb3745e3_432d78b1",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2311,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-10-16T01:43:29Z",
+      "side": 1,
+      "message": "No, this doesn\u0027t do what you want at all...",
+      "revId": "51f477c5926a9f6ce415c604ebdafac0279fe4b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
