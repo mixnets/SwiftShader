@@ -34,6 +34,24 @@
       "revId": "51f477c5926a9f6ce415c604ebdafac0279fe4b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f45de194_b10eb51d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2311,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-16T03:30:58Z",
+      "side": 1,
+      "message": "Ok, then I\u0027ll have to create a temp structure array and copy it back into the original structure array.",
+      "parentUuid": "f02fd2ed_46b78e09",
+      "revId": "51f477c5926a9f6ce415c604ebdafac0279fe4b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
