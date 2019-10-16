@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb435902_5102f092",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-16T11:21:16Z",
+      "side": 1,
+      "message": "nit: Maybe split these into separate tests? Just helps identify which one(s) is failing without having to dig through line number mappings. That or append the EXPECT_EQ() call with a message describing the particular subtest:\n\n  EXPECT_EQ(result, 3.f) \u003c\u003c \"2 mixed type args\";",
+      "range": {
+        "startLine": 1112,
+        "startChar": 4,
+        "endLine": 1112,
+        "endChar": 17
+      },
+      "revId": "7db594d8b8eda6127430bf4fff9c7950bda4f351",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
