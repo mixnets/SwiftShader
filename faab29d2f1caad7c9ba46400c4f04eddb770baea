@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b56d7f8b_80a0555f",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 993,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-16T11:52:37Z",
+      "side": 1,
+      "message": "It\u0027s not clear to me in your CL description why we need to special case for needsStackPointerAlignment(). Can we not always use the frame pointer when Var-\u003egetIsArg()?",
+      "range": {
+        "startLine": 993,
+        "startChar": 8,
+        "endLine": 993,
+        "endChar": 36
+      },
+      "revId": "faab29d2f1caad7c9ba46400c4f04eddb770baea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
