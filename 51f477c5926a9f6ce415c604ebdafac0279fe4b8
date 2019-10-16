@@ -16,6 +16,24 @@
       "revId": "51f477c5926a9f6ce415c604ebdafac0279fe4b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f02fd2ed_46b78e09",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2311,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-10-16T01:44:32Z",
+      "side": 1,
+      "message": "(there is no way for GetImageSparseMemoryRequirements to know that you want the i\u0027th value)",
+      "parentUuid": "cb3745e3_432d78b1",
+      "revId": "51f477c5926a9f6ce415c604ebdafac0279fe4b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
