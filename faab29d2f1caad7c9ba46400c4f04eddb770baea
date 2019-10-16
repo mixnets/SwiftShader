@@ -22,6 +22,30 @@
       "revId": "faab29d2f1caad7c9ba46400c4f04eddb770baea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d49818ec_b410b7cf",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 993,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-16T13:13:58Z",
+      "side": 1,
+      "message": "No, we can\u0027t assume we\u0027ll always use a frame pointer for arguments. In fact, this is why there\u0027s a getFrameOrStackReg function; however, the truth is this function no longer does the right thing when needsStackPointerAlignment() is true. When this \"needsStackPointerAlignment()\" was added, I think it was assumed that all args would be immediately lowered to registers in addProlog, and that locals would be lowered later. I thought about different ways to redo that change, but in the end, I decided on extending the hack by adding this check here. Another way to write this would have been:\n\n    if (Var-\u003egetIsArg()) {\n      BaseRegNum \u003d hasFramePointer() ? getFrameReg() : getStackReg();\n    } else {\n      BaseRegNum \u003d getFrameOrStackReg();\n    }\n\nBasically, if you look at getFrameOrStackReg, it effectively does \"hasFramePointer() ? getFrameReg() : getStackReg();\" if you ignore the needsStackPointerAlignment() call. I almost went for this, but I don\u0027t like copy-pasting the logic from getFrameOrStackReg here. Instead, I add context by specifically doing something special when needsStackPointerAlignment() is true, which ties this hack together with the other code that uses needsStackPointerAlignment().",
+      "parentUuid": "b56d7f8b_80a0555f",
+      "range": {
+        "startLine": 993,
+        "startChar": 8,
+        "endLine": 993,
+        "endChar": 36
+      },
+      "revId": "faab29d2f1caad7c9ba46400c4f04eddb770baea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
