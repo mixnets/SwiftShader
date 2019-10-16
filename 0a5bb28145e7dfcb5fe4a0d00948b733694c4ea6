@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf4fda53_469d21e0",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632Traits.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 697,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-16T11:47:00Z",
+      "side": 1,
+      "message": "argTypeCount confused me a little - this isn\u0027t the full argument count by type (which would be constant across calls to getArgIndex() for a given function signature), it\u0027s the index of the argument in the set of arguments of the same type, right?\n\nmaybe rename to argPosByType?",
+      "range": {
+        "startLine": 697,
+        "startChar": 3,
+        "endLine": 697,
+        "endChar": 77
+      },
+      "revId": "0a5bb28145e7dfcb5fe4a0d00948b733694c4ea6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ad5f645_fe6924bc",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 2730,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-16T11:47:00Z",
+      "side": 1,
+      "message": "It\u0027s not immediately clear to me why this is done here instead of where XmmArgs.push_back() is called. Something to do with InstStore::create perhaps? *shrug*",
+      "range": {
+        "startLine": 2730,
+        "startChar": 35,
+        "endLine": 2730,
+        "endChar": 54
+      },
+      "revId": "0a5bb28145e7dfcb5fe4a0d00948b733694c4ea6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
