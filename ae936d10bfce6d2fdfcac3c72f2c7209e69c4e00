@@ -22,6 +22,30 @@
       "revId": "ae936d10bfce6d2fdfcac3c72f2c7209e69c4e00",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d2595ad_a15a2f3e",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 978,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-16T15:54:53Z",
+      "side": 1,
+      "message": "As discussed, yes we should; although we don\u0027t run msan on x86-32 presently (and perhaps ever). In any case, what I\u0027ll do in a future change is refactor the code in this file so that we use a \"getConstantPointer\" wrapper that allocates either 32-bit or 64-bit depending on the target.",
+      "parentUuid": "233c5ed5_73087b9b",
+      "range": {
+        "startLine": 976,
+        "startChar": 0,
+        "endLine": 978,
+        "endChar": 62
+      },
+      "revId": "ae936d10bfce6d2fdfcac3c72f2c7209e69c4e00",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
