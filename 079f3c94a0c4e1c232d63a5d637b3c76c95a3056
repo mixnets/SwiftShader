@@ -16,6 +16,24 @@
       "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b0d10ed_d5bd6d0e",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-17T19:22:07Z",
+      "side": 1,
+      "message": "Yes, but our Bresenham lines implementation doesn\u0027t support multisampling, so we still need to use Rectangle lines when multisampling is enabled.",
+      "parentUuid": "ed497343_2b32b595",
+      "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
