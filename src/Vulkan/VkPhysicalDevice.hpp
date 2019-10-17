@@ -43,6 +43,7 @@ public:
 	void getFeatures(VkPhysicalDeviceMultiviewFeatures* features) const;
 	void getFeatures(VkPhysicalDeviceProtectedMemoryFeatures* features) const;
 	void getFeatures(VkPhysicalDeviceShaderDrawParameterFeatures* features) const;
+	void getFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT* features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const;
 
 	const VkPhysicalDeviceProperties& getProperties() const;
