@@ -34,6 +34,24 @@
       "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3589f083_ae391f35",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-17T19:27:35Z",
+      "side": 1,
+      "message": "Ah, okay. Maybe would be clearer to simply invert the checks:\n\n    (draw.lineRasterizationMode !\u003d VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT) || (draw.setupState.multiSample \u003e 1)\n\nor maybe:\n\n    const bool drawBresenhamLines \u003d (draw.lineRasterizationMode \u003d\u003d VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT) \u0026\u0026 (draw.setupState.multiSample \u003d\u003d 1);\n\n    if (!drawBresenhamLines)\n    {\n        ...",
+      "parentUuid": "6b0d10ed_d5bd6d0e",
+      "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
