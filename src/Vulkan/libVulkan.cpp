@@ -217,6 +217,8 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 	// Only 1.1 core version of this is supported. The extension has additional requirements
 	//{ VK_KHR_VARIABLE_POINTERS_EXTENSION_NAME, VK_KHR_VARIABLE_POINTERS_SPEC_VERSION },
 	{ VK_EXT_QUEUE_FAMILY_FOREIGN_EXTENSION_NAME, VK_EXT_QUEUE_FAMILY_FOREIGN_SPEC_VERSION },
+	// The following extension is only used to add support for Bresenham lines
+	{ VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME, VK_EXT_LINE_RASTERIZATION_SPEC_VERSION },
 #ifndef __ANDROID__
 	// We fully support the KHR_swapchain v70 additions, so just track the spec version.
 	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_KHR_SWAPCHAIN_SPEC_VERSION },
@@ -2382,6 +2384,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physica
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDeviceShaderDrawParameterFeatures*>(extensionFeatures);
+				vk::Cast(physicalDevice)->getFeatures(&features);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT:
+			{
+				auto& features = *reinterpret_cast<VkPhysicalDeviceLineRasterizationFeaturesEXT*>(extensionFeatures);
 				vk::Cast(physicalDevice)->getFeatures(&features);
 			}
 			break;

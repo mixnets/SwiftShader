@@ -261,6 +261,7 @@ namespace sw
 		draw->numBatches = (count + draw->numPrimitivesPerBatch - 1) / draw->numPrimitivesPerBatch;
 		draw->topology = context->topology;
 		draw->indexType = indexType;
+		draw->lineRasterizationMode = context->lineRasterizationMode;
 
 		draw->vertexRoutine = vertexRoutine;
 		draw->setupRoutine = setupRoutine;
@@ -813,7 +814,10 @@ namespace sw
 			return false;
 		}
 
-		if(true)   // Rectangle centered on the line segment
+		// We use rectangular lines for non Bresenham lines and
+		// for Bresenham lines when multiSampling is enabled
+		if((draw.setupState.multiSample > 1) ||
+		   (draw.lineRasterizationMode != VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT))   // Rectangle centered on the line segment
 		{
 			float4 P[4];
 			int C[4];
