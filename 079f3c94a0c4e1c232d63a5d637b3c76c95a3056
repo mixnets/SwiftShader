@@ -52,6 +52,24 @@
       "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68f87862_105ea67d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-17T20:18:07Z",
+      "side": 1,
+      "message": "I added a comment",
+      "parentUuid": "3589f083_ae391f35",
+      "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
