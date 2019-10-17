@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed497343_2b32b595",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-17T19:20:11Z",
+      "side": 1,
+      "message": "Why do we now check if multiSample \u003e 1? We used to always enter this code block before, even when multiSample \u003d\u003d 1, right?",
+      "revId": "079f3c94a0c4e1c232d63a5d637b3c76c95a3056",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
