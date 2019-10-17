@@ -134,6 +134,16 @@ void PhysicalDevice::getFeatures(VkPhysicalDeviceShaderDrawParameterFeatures* fe
 	features->shaderDrawParameters = VK_FALSE;
 }
 
+void PhysicalDevice::getFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT* features) const
+{
+	features->rectangularLines = VK_TRUE;
+    features->bresenhamLines = VK_TRUE;
+    features->smoothLines = VK_FALSE;
+    features->stippledRectangularLines = VK_FALSE;
+    features->stippledBresenhamLines = VK_FALSE;
+    features->stippledSmoothLines = VK_FALSE;
+}
+
 VkSampleCountFlags PhysicalDevice::getSampleCounts() const
 {
 	return VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT;
