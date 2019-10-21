@@ -22,6 +22,30 @@
       "revId": "8c74de179f8c8aca7bd556b161f02d8b49134752",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "050a23c1_36db6346",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1794,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-21T19:57:37Z",
+      "side": 1,
+      "message": "Actually, I think I have a fix that makes more sense, but along the same lines. Line 1331, instead of:\n\n    if(state.allowSRGBConversion \u0026\u0026 ((srcSRGB \u0026\u0026 !preScaled) || dstSRGB))   // One of the formats is sRGB encoded.\n\nI change it to:\n\n    if(state.allowSRGBConversion \u0026\u0026 (srcSRGB !\u003d dstSRGB) \u0026\u0026 ((srcSRGB \u0026\u0026 !preScaled) || dstSRGB))   // One of the formats is sRGB encoded.\n\nBasically, as the comment says, we want to perform the conversion only if one of the formats is sRGB encoded (not both). Will test some more locally, and upload if it works.",
+      "parentUuid": "af84ff7c_afa20369",
+      "range": {
+        "startLine": 1794,
+        "startChar": 33,
+        "endLine": 1794,
+        "endChar": 37
+      },
+      "revId": "8c74de179f8c8aca7bd556b161f02d8b49134752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
