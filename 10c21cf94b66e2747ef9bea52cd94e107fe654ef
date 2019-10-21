@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44dfd30f_730960e8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-21T15:51:04Z",
+      "side": 1,
+      "message": "I know I\u0027m missing the \"Bug:\" entry. Not sure what to point it at, though. There\u0027s the Angle Chromium issue https://bugs.chromium.org/p/angleproject/issues/detail?id\u003d4011. Or perhaps create a SwiftShader bug for it?",
+      "revId": "10c21cf94b66e2747ef9bea52cd94e107fe654ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
