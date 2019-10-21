@@ -34,6 +34,29 @@
       "revId": "10c21cf94b66e2747ef9bea52cd94e107fe654ef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d116224_39329ac4",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-21T16:21:45Z",
+      "side": 1,
+      "message": "Just curious:\nAt this point, with the constructors being explicit, you could change all the {} by (), right?\nIs there a difference?",
+      "range": {
+        "startLine": 71,
+        "startChar": 68,
+        "endLine": 71,
+        "endChar": 82
+      },
+      "revId": "10c21cf94b66e2747ef9bea52cd94e107fe654ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
