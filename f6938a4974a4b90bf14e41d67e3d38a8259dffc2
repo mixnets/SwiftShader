@@ -57,6 +57,24 @@
       "revId": "f6938a4974a4b90bf14e41d67e3d38a8259dffc2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34b69a8c_09f6f4e2",
+        "filename": "tests/regres/deqp-patches/deqp-x11.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-21T15:44:49Z",
+      "side": 1,
+      "message": "That\u0027s a shame. Well I don\u0027t suppose tcuLnxX11.cpp changes that often, so this patch will probably survice updates to deqp versions.",
+      "parentUuid": "9dfdc19d_2959ccaa",
+      "revId": "f6938a4974a4b90bf14e41d67e3d38a8259dffc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
