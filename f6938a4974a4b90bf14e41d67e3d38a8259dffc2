@@ -22,6 +22,23 @@
       "revId": "f6938a4974a4b90bf14e41d67e3d38a8259dffc2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09b46616_396430ec",
+        "filename": "tests/regres/deqp-patches/deqp-x11.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-21T15:39:54Z",
+      "side": 1,
+      "message": "It\u0027s good that we can apply patches to dEQP, but this specific patch looks like something we\u0027ll have to generate every time we update dEQP. Have you tried to land this fix on the official repo?",
+      "revId": "f6938a4974a4b90bf14e41d67e3d38a8259dffc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
