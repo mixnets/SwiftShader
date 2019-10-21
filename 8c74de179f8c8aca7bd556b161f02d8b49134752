@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af84ff7c_afa20369",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1794,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-21T19:39:17Z",
+      "side": 1,
+      "message": "That\u0027s interesting, because the failing cases should have no conversion at all, since the color space is the same in the source and destination formats. Maybe instead of using \"true\" here, it could be whether Format::isSRGBformat() is different for source and destination formats.",
+      "range": {
+        "startLine": 1794,
+        "startChar": 33,
+        "endLine": 1794,
+        "endChar": 37
+      },
+      "revId": "8c74de179f8c8aca7bd556b161f02d8b49134752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
