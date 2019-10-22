@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40d3cb55_1bfbd609",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-22T18:36:11Z",
+      "side": 1,
+      "message": "You\u0027re missing a line in your commit message with:\nBug: \u003cbug ID\u003e\nI can create an issue for you if you don\u0027t have one.",
+      "revId": "2dbff890f8993a1abb65cec1cd4f4c89927f9be9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
