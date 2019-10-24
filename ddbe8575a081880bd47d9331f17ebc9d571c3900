@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44fbae23_5b282bc9",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-24T22:14:39Z",
+      "side": 1,
+      "message": "I wonder if it would be more clear to derive from VkStencilOpState, and have operator\u003d(const VkStencilOpState \u0026rhs) copy all of it, and then clear reference to 0. Something like:\n\n    struct StencilOpState : vkStencilOpState\n    {\n        void operator\u003d(const VkStencilOpState \u0026rhs)\n        {\n            static_cast\u003cvkStencilOpState\u0026\u003e(*this) \u003d rhs;\n            reference \u003d 0; // Clear to avoid generating a different program\n        }\n    }\n\nI just like seeing the explicit reset of \"reference\" to 0, I think. But I\u0027m not sure.",
+      "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
