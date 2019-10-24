@@ -34,6 +34,24 @@
       "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40cd42af_92df4aeb",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-24T23:06:30Z",
+      "side": 1,
+      "message": "You\u0027re referring to States in general, right? Not sure what you\u0027d pack in StencilOpState as you can\u0027t pack enums like VkStencilOp without creating a new type to wrap that, right? And we can\u0027t pack the two mask fields.",
+      "parentUuid": "ab9969fc_cf84a66d",
+      "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
