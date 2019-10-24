@@ -16,6 +16,24 @@
       "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab9969fc_cf84a66d",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-24T22:53:31Z",
+      "side": 1,
+      "message": "Since this structure is repeatedly entirely memcmp\u0027d when looking for a match, I\u0027d like to have it as small as possible. We could even start packing it tighter, like packing 8 bools in a byte.",
+      "parentUuid": "44fbae23_5b282bc9",
+      "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
