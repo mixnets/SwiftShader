@@ -88,6 +88,24 @@
       "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6438e494_20ee3f38",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-25T19:09:31Z",
+      "side": 1,
+      "message": "I\u0027ll land it to get the perf gains. We can revisit this later if necessary.",
+      "parentUuid": "0e7e769c_16520ce7",
+      "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
