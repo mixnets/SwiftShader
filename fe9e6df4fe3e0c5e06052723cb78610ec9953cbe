@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb7ae5df_cd298178",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-10-25T19:00:05Z",
+      "side": 1,
+      "message": "This is unnecessary, will remove",
+      "revId": "fe9e6df4fe3e0c5e06052723cb78610ec9953cbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
