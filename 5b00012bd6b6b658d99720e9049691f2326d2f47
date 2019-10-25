@@ -16,6 +16,24 @@
       "revId": "5b00012bd6b6b658d99720e9049691f2326d2f47",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "208eb59d_6f42e420",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-25T14:52:26Z",
+      "side": 1,
+      "message": "That\u0027s normal, zMask is the depth mask (z is used because we usually think of the render target in (x,y) coordinates and the depth is z). This function\u0027s purpose is to set the zMask.",
+      "parentUuid": "3d233914_904638d9",
+      "revId": "5b00012bd6b6b658d99720e9049691f2326d2f47",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
