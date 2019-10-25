@@ -34,6 +34,24 @@
       "revId": "5b00012bd6b6b658d99720e9049691f2326d2f47",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "955d48d4_74af2669",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-25T14:57:10Z",
+      "side": 1,
+      "message": "Perfect, now it\u0027s clear from the parameter list that this is the only output parameter.",
+      "parentUuid": "208eb59d_6f42e420",
+      "revId": "5b00012bd6b6b658d99720e9049691f2326d2f47",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
