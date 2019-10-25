@@ -70,6 +70,24 @@
       "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e7e769c_16520ce7",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-25T19:01:07Z",
+      "side": 1,
+      "message": "Okay, so deriving from VkStencilOpState wouldn\u0027t be that bad since we can\u0027t pack it anyway. We\u0027d only pay the size cost of the \u0027reference\u0027 member. Anyway, it\u0027s up to you. I\u0027ll +2 it.",
+      "parentUuid": "516287bc_e2a2c22a",
+      "revId": "ddbe8575a081880bd47d9331f17ebc9d571c3900",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
