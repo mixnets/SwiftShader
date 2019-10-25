@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d233914_904638d9",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-25T13:55:07Z",
+      "side": 1,
+      "message": "In const-qualifying all the things, I discovered that this zMask parameter gets modified in this function. Is this correct? If not, this was a potentially dangerous side-effect of this call. Note that this also happens in depthTest16, and means we also pass a non-const zMask to depthTest.",
+      "revId": "5b00012bd6b6b658d99720e9049691f2326d2f47",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
