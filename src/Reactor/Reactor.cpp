@@ -4358,3 +4358,24 @@ namespace rr
 	}
 
 }
+
+#include <algorithm>
+
+//TODO: move to Signature.cpp
+rr::Signature::Signature(Type* returnType, std::vector<Type*> argTypes)
+	: returnType(returnType), argTypes(move(argTypes))
+{
+	// Remove Void from args as Signatures created from ret(void) become ret()
+	this->argTypes.erase(std::remove(this->argTypes.begin(), this->argTypes.end(), rr::Void::getType()), this->argTypes.end());
+}
+
+void rr::Signature::assertEquals(const Signature& rhs)
+{
+	ASSERT_MSG(returnType == rhs.returnType, "Signatures: return types do not match");
+	ASSERT_MSG(argTypes.size() == rhs.argTypes.size(), "Signatures: number of arguments do not match");
+	for (size_t i = 0; i < argTypes.size(); ++i)
+	{
+		ASSERT_MSG(argTypes[i] == rhs.argTypes[i], "Signatures: arguments at index %u do not match", i);
+	}
+}
+

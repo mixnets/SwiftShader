@@ -1437,7 +1437,7 @@ namespace sw
 
 		criticalSection.unlock();
 
-		void (*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+		void (*blitFunction)(const BlitData *data) = blitRoutine->getEntry<void(const BlitData*)>();
 
 		BlitData data;
 

@@ -66,7 +66,8 @@ TEST(ReactorUnitTests, Sample)
 
 		if(routine)
 		{
-			int (*callable)(int*, int) = (int(*)(int*,int))routine->getEntry();
+			auto callable = routine->getEntry<int(*)(int*, int)>();
+
 			int one[2] = {1, 0};
 			int result = callable(&one[1], 2);
 			EXPECT_EQ(result, reference(&one[1], 2));
@@ -103,7 +104,7 @@ TEST(ReactorUnitTests, Uninitialized)
 
 		if(routine)
 		{
-			int (*callable)() = (int(*)())routine->getEntry();
+			auto callable = routine->getEntry<int(void)>();
 			int result = callable();
 			EXPECT_EQ(result, result);   // Anything is fine, just don't crash
 		}
@@ -133,7 +134,7 @@ TEST(ReactorUnitTests, Unreachable)
 
 		if(routine)
 		{
-			int (*callable)(int) = (int(*)(int))routine->getEntry();
+			auto callable = routine->getEntry<int(int)>();
 			int result = callable(16);
 			EXPECT_EQ(result, 20);
 		}
@@ -160,7 +161,7 @@ TEST(ReactorUnitTests, VariableAddress)
 
 		if(routine)
 		{
-			int (*callable)(int) = (int(*)(int))routine->getEntry();
+			auto callable = routine->getEntry<int(int)>();
 			int result = callable(16);
 			EXPECT_EQ(result, 20);
 		}
@@ -203,7 +204,7 @@ TEST(ReactorUnitTests, SubVectorLoadStore)
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-			int (*callable)(void*, void*) = (int(*)(void*,void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*,void*)>();
 			callable(in, out);
 
 			for(int row = 0; row < 5; row++)
@@ -258,7 +259,7 @@ TEST(ReactorUnitTests, VectorConstant)
 			                      25, 26, 27, 28, 29, 30, 31, 32, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      33, 34, 35, 36, 37, 38, 39, 40, -1, -1, -1, -1, -1, -1, -1, -1};
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(out);
 
 			for(int row = 0; row < 4; row++)
@@ -300,7 +301,7 @@ TEST(ReactorUnitTests, Concatenate)
 			int8_t out[16 * 5] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-			int (*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(out);
 
 			for(int row = 0; row < 2; row++)
@@ -370,7 +371,7 @@ TEST(ReactorUnitTests, Swizzle)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			for(int i = 0; i < 256; i++)
@@ -498,7 +499,7 @@ TEST(ReactorUnitTests, Branching)
 
 		if(routine)
 		{
-			int(*callable)() = (int(*)())routine->getEntry();
+			auto callable = routine->getEntry<int()>();
 			int result = callable();
 
 			EXPECT_EQ(result, 1000402222);
@@ -540,7 +541,7 @@ TEST(ReactorUnitTests, MinMax)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x00000000u);
@@ -629,7 +630,7 @@ TEST(ReactorUnitTests, NotNeg)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0xAAAAAAAAu);
@@ -709,7 +710,7 @@ TEST(ReactorUnitTests, VectorCompare)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x00000000u);
@@ -805,7 +806,7 @@ TEST(ReactorUnitTests, SaturatedAddAndSubtract)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x08080808u);
@@ -887,7 +888,7 @@ TEST(ReactorUnitTests, Unpack)
 			in[0][0] = 0xABCDEF12u;
 			in[0][1] = 0x34567890u;
 
-			int(*callable)(void*,void*) = (int(*)(void*,void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*,void*)>();
 			callable(&in, &out);
 
 			EXPECT_EQ(out[0][0], 0x78EF9012u);
@@ -936,7 +937,7 @@ TEST(ReactorUnitTests, Pack)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x0201FEFFu);
@@ -1004,7 +1005,7 @@ TEST(ReactorUnitTests, MulHigh)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x00080002u);
@@ -1062,7 +1063,7 @@ TEST(ReactorUnitTests, MulAdd)
 
 			memset(&out, 0, sizeof(out));
 
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 			callable(&out);
 
 			EXPECT_EQ(out[0][0], 0x000AE34Au);
@@ -1089,7 +1090,7 @@ TEST(ReactorUnitTests, PointersEqual)
 	}
 
 	auto routine = function("one");
-	auto equal = (int(*)(void*, void*))routine->getEntry();
+	auto equal = routine->getEntry<int(void*, void*)>();
 	int* a = reinterpret_cast<int*>(uintptr_t(0x0000000000000000));
 	int* b = reinterpret_cast<int*>(uintptr_t(0x00000000F0000000));
 	int* c = reinterpret_cast<int*>(uintptr_t(0xF000000000000000));
@@ -1117,7 +1118,7 @@ TEST(ReactorUnitTests, Args_2Mixed)
 
 	if (auto routine = function("one"))
 	{
-		auto callable = (float(*)(int, float))routine->getEntry();
+		auto callable = routine->getEntry<float(int, float)>();
 		float result = callable(1, 2.f);
 		EXPECT_EQ(result, 3.f);
 	}
@@ -1137,7 +1138,7 @@ TEST(ReactorUnitTests, Args_4Mixed)
 
 	if (auto routine = function("one"))
 	{
-		auto callable = (float(*)(int, float, int, float))routine->getEntry();
+		auto callable = routine->getEntry<float(int, float, int, float)>();
 		float result = callable(1, 2.f, 3, 4.f);
 		EXPECT_EQ(result, 10.f);
 	}
@@ -1158,7 +1159,7 @@ TEST(ReactorUnitTests, Args_5Mixed)
 
 	if (auto routine = function("one"))
 	{
-		auto callable = (float(*)(int, float, int, float, int))routine->getEntry();
+		auto callable = routine->getEntry<float(int, float, int, float, int)>();
 		float result = callable(1, 2.f, 3, 4.f, 5);
 		EXPECT_EQ(result, 15.f);
 	}
@@ -1184,7 +1185,7 @@ TEST(ReactorUnitTests, Args_GreaterThan5Mixed)
 
 	if (auto routine = function("one"))
 	{
-		auto callable = (float(*)(int, float, int, float, int, float, int, float, int, float))routine->getEntry();
+		auto callable = routine->getEntry<float(int, float, int, float, int, float, int, float, int, float)>();
 		float result = callable(1, 2.f, 3, 4.f, 5, 6.f, 7, 8.f, 9, 10.f);
 		EXPECT_EQ(result, 55.f);
 	}
@@ -1226,7 +1227,7 @@ TEST(ReactorUnitTests, Call)
 
 		if(routine)
 		{
-			int(*callable)(void*) = (int(*)(void*))routine->getEntry();
+			auto callable = routine->getEntry<int(void*)>();
 
 			Class c;
 
@@ -1280,8 +1281,8 @@ TEST(ReactorUnitTests, CallExternalCallRoutine)
 		return function("one");
 	}();
 
-	auto callable2 = (float(*)(float, int))routine2->getEntry();
-	auto callable1 = (float(*)(void*, float, int))routine1->getEntry();
+	auto callable2 = routine2->getEntry<float(float, int)>();
+	auto callable1 = routine1->getEntry<float(void*, float, int)>();
 
 	float result = callable1((void*)callable2, 12.f, 13);
 	EXPECT_EQ(result, 25.f);
@@ -1362,9 +1363,9 @@ TEST(ReactorUnitTests, PreserveXMMRegisters)
                            -1.0f, 15.0f, -15.0f, 0.0f };
 
         float result[4];
-        void (*callable)(float*, float*) = (void(*)(float*,float*))routine->getEntry();
+        auto callable = routine->getEntry<void(uint8_t*,uint8_t*)>();
 
-        callable(input, result);
+        callable(reinterpret_cast<uint8_t*>(input), reinterpret_cast<uint8_t*>(result));
 
         EXPECT_EQ(result[0], 0.0f);
         EXPECT_EQ(result[1], 120.0f);
@@ -1417,7 +1418,7 @@ TYPED_TEST(CToReactorCastTest, Casts)
 
 		if(routine)
 		{
-			auto callable = (int(*)(CType))routine->getEntry();
+			auto callable = routine->getEntry<int(CType)>();
 			CType in = {};
 			EXPECT_EQ(callable(in), 1);
 		}
@@ -1435,34 +1436,34 @@ public:
 
 using GEPTestTypes = ::testing::Types
 	<
-		std::pair<bool,        Bool>,
-		std::pair<int8_t,      Byte>,
-		std::pair<int8_t,      SByte>,
-		std::pair<int8_t[4],   Byte4>,
-		std::pair<int8_t[4],   SByte4>,
-		std::pair<int8_t[8],   Byte8>,
-		std::pair<int8_t[8],   SByte8>,
-		std::pair<int8_t[16],  Byte16>,
-		std::pair<int8_t[16],  SByte16>,
-		std::pair<int16_t,     Short>,
-		std::pair<int16_t,     UShort>,
-		std::pair<int16_t[2],  Short2>,
-		std::pair<int16_t[2],  UShort2>,
-		std::pair<int16_t[4],  Short4>,
-		std::pair<int16_t[4],  UShort4>,
-		std::pair<int16_t[8],  Short8>,
-		std::pair<int16_t[8],  UShort8>,
-		std::pair<int,         Int>,
-		std::pair<int,         UInt>,
-		std::pair<int[2],      Int2>,
-		std::pair<int[2],      UInt2>,
-		std::pair<int[4],      Int4>,
-		std::pair<int[4],      UInt4>,
-		std::pair<int64_t,     Long>,
-		std::pair<int16_t,     Half>,
-		std::pair<float,       Float>,
-		std::pair<float[2],    Float2>,
-		std::pair<float[4],    Float4>
+		std::pair<bool,            Bool>,
+		std::pair<int8_t,          Byte>,
+		std::pair<int8_t,          SByte>,
+		std::pair<uint8_t[4],      Byte4>,
+		std::pair<int8_t[4],       SByte4>,
+		std::pair<uint8_t[8],      Byte8>,
+		std::pair<int8_t[8],       SByte8>,
+		std::pair<uint8_t[16],     Byte16>,
+		std::pair<int8_t[16],      SByte16>,
+		std::pair<int16_t,         Short>,
+		std::pair<uint16_t,        UShort>,
+		std::pair<int16_t[2],      Short2>,
+		std::pair<uint16_t[2],     UShort2>,
+		std::pair<int16_t[4],      Short4>,
+		std::pair<uint16_t[4],     UShort4>,
+		std::pair<int16_t[8],      Short8>,
+		std::pair<uint16_t[8],     UShort8>,
+		std::pair<int,             Int>,
+		std::pair<unsigned int,    UInt>,
+		std::pair<int[2],          Int2>,
+		std::pair<unsigned int[2], UInt2>,
+		std::pair<int[4],          Int4>,
+		std::pair<unsigned int[4], UInt4>,
+		std::pair<uint64_t,        Long>,
+		std::pair<int16_t,         Half>,
+		std::pair<float,           Float>,
+		std::pair<float[2],        Float2>,
+		std::pair<float[4],        Float4>
 	>;
 
 TYPED_TEST_SUITE(GEPTest, GEPTestTypes);
@@ -1486,7 +1487,7 @@ TYPED_TEST(GEPTest, PtrOffsets)
 
 		if(routine)
 		{
-			auto callable = (CType*(*)(CType*, unsigned int))routine->getEntry();
+			auto callable = routine->getEntry<CType*(CType*, unsigned int)>();
 
 			union PtrInt {
 				CType* p;

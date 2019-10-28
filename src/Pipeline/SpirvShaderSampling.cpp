@@ -43,7 +43,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 	if(auto routine = imageDescriptor->device->findInConstCache(key))
 	{
-		return (ImageSampler*)(routine->getEntry());
+		return routine->getEntry<ImageSampler>();
 	}
 
 	std::unique_lock<std::mutex> lock(imageDescriptor->device->getSamplingRoutineCacheMutex());
@@ -52,7 +52,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	auto routine = cache->query(key);
 	if(routine)
 	{
-		return (ImageSampler*)(routine->getEntry());
+		return routine->getEntry<ImageSampler>();
 	}
 
 	auto type = imageDescriptor->type;
@@ -100,7 +100,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	routine = emitSamplerRoutine(instruction, samplerState);
 
 	cache->add(key, routine);
-	return (ImageSampler*)(routine->getEntry());
+	return routine->getEntry<ImageSampler>();
 }
 
 std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)

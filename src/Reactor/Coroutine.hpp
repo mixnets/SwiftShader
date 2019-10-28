@@ -30,13 +30,13 @@ namespace rr
 
 		~StreamBase()
 		{
-			auto pfn = (Nucleus::CoroutineDestroy*)routine->getEntry(Nucleus::CoroutineEntryDestroy);
+			auto pfn = routine->getEntryUnchecked<Nucleus::CoroutineDestroy>(Nucleus::CoroutineEntryDestroy);
 			pfn(handle);
 		}
 
 		bool await(void* out)
 		{
-			auto pfn = (Nucleus::CoroutineAwait*)routine->getEntry(Nucleus::CoroutineEntryAwait);
+			auto pfn = routine->getEntryUnchecked<Nucleus::CoroutineAwait>(Nucleus::CoroutineEntryAwait);
 			return pfn(handle, out);
 		}
 
@@ -180,7 +180,7 @@ private:
 		finalize();
 
 		using Sig = Nucleus::CoroutineBegin<Arguments...>;
-		auto pfn = (Sig*)routine->getEntry(Nucleus::CoroutineEntryBegin);
+		auto pfn = routine->getEntryUnchecked<Sig>(Nucleus::CoroutineEntryBegin);
 		auto handle = pfn(args...);
 		return std::unique_ptr<Stream<Return>>(new Stream<Return>(routine, handle));
 	}

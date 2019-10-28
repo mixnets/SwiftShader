@@ -363,9 +363,9 @@ namespace sw
 			draw->vertexRoutine = vertexRoutine;
 			draw->setupRoutine = setupRoutine;
 			draw->pixelRoutine = pixelRoutine;
-			draw->vertexPointer = (VertexProcessor::RoutinePointer)vertexRoutine->getEntry();
-			draw->setupPointer = (SetupProcessor::RoutinePointer)setupRoutine->getEntry();
-			draw->pixelPointer = (PixelProcessor::RoutinePointer)pixelRoutine->getEntry();
+			draw->vertexPointer = vertexRoutine->getEntry<VertexProcessor::RoutinePointer>();
+			draw->setupPointer = setupRoutine->getEntry<SetupProcessor::RoutinePointer>();
+			draw->pixelPointer = pixelRoutine->getEntry<PixelProcessor::RoutinePointer>();
 			draw->setupPrimitives = setupPrimitives;
 			draw->setupState = setupState;
 

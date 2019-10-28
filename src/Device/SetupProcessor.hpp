@@ -60,7 +60,7 @@ namespace sw
 			uint32_t hash;
 		};
 
-		typedef bool (*RoutinePointer)(Primitive *primitive, const Triangle *triangle, const Polygon *polygon, const DrawData *draw);
+		typedef int (*RoutinePointer)(Primitive *primitive, const Triangle *triangle, const Polygon *polygon, const DrawData *draw);
 
 		SetupProcessor();
 

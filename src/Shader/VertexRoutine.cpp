@@ -53,7 +53,7 @@ namespace sw
 
 		Do
 		{
-			UInt index = *Pointer<UInt>(batch);
+			UInt index = *batch;
 			UInt tagIndex = index & 0x0000003C;
 			UInt indexQ = !textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
 
@@ -87,7 +87,7 @@ namespace sw
 			}
 
 			vertex += sizeof(Vertex);
-			batch += sizeof(unsigned int);
+			batch = Pointer<UInt>(Pointer<Byte>(batch) + sizeof(uint32_t));
 			vertexCount--;
 		}
 		Until(vertexCount == 0)
