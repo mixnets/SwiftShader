@@ -68,6 +68,9 @@ namespace rr
 #undef ABORT
 #define ABORT(message, ...) rr::abort("%s:%d ABORT: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
+// TEMP TEMP TEMP!!! Just enable this for Kokoro and Regres
+#define DCHECK_ALWAYS_ON
+
 // A macro that delegates to:
 //   ABORT() in debug builds (!NDEBUG || DCHECK_ALWAYS_ON)
 // or

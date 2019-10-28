@@ -22,7 +22,7 @@
 
 namespace sw
 {
-	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)>
+	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<UInt>, Pointer<Byte>, Pointer<Byte>)>
 	{
 	public:
 		VertexRoutinePrototype() : vertex(Arg<0>()), batch(Arg<1>()), task(Arg<2>()), data(Arg<3>()) {}
@@ -30,7 +30,7 @@ namespace sw
 
 	protected:
 		Pointer<Byte> vertex;
-		Pointer<Byte> batch;
+		Pointer<UInt> batch;
 		Pointer<Byte> task;
 		Pointer<Byte> data;
 	};

@@ -2296,34 +2296,41 @@ namespace rr
 		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numElements)));
 	}
 
+
+	llvm::LLVMContext& getTypeContext()
+	{
+		static llvm::LLVMContext defaultContext;
+		return jit ? jit->context : defaultContext;
+	}
+
 	Type *Void::getType()
 	{
-		return T(llvm::Type::getVoidTy(jit->context));
+		return T(llvm::Type::getVoidTy(getTypeContext()));
 	}
 
 	Type *Bool::getType()
 	{
-		return T(llvm::Type::getInt1Ty(jit->context));
+		return T(llvm::Type::getInt1Ty(getTypeContext()));
 	}
 
 	Type *Byte::getType()
 	{
-		return T(llvm::Type::getInt8Ty(jit->context));
+		return T(llvm::Type::getInt8Ty(getTypeContext()));
 	}
 
 	Type *SByte::getType()
 	{
-		return T(llvm::Type::getInt8Ty(jit->context));
+		return T(llvm::Type::getInt8Ty(getTypeContext()));
 	}
 
 	Type *Short::getType()
 	{
-		return T(llvm::Type::getInt16Ty(jit->context));
+		return T(llvm::Type::getInt16Ty(getTypeContext()));
 	}
 
 	Type *UShort::getType()
 	{
-		return T(llvm::Type::getInt16Ty(jit->context));
+		return T(llvm::Type::getInt16Ty(getTypeContext()));
 	}
 
 	Type *Byte4::getType()
@@ -2890,12 +2897,12 @@ namespace rr
 
 	Type *Int::getType()
 	{
-		return T(llvm::Type::getInt32Ty(jit->context));
+		return T(llvm::Type::getInt32Ty(getTypeContext()));
 	}
 
 	Type *Long::getType()
 	{
-		return T(llvm::Type::getInt64Ty(jit->context));
+		return T(llvm::Type::getInt64Ty(getTypeContext()));
 	}
 
 	UInt::UInt(RValue<Float> cast)
@@ -2969,7 +2976,7 @@ namespace rr
 
 	Type *UInt::getType()
 	{
-		return T(llvm::Type::getInt32Ty(jit->context));
+		return T(llvm::Type::getInt32Ty(getTypeContext()));
 	}
 
 //	Int2::Int2(RValue<Int> cast)
@@ -3407,7 +3414,7 @@ namespace rr
 
 	Type *Half::getType()
 	{
-		return T(llvm::Type::getInt16Ty(jit->context));
+		return T(llvm::Type::getInt16Ty(getTypeContext()));
 	}
 
 	RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
@@ -3533,7 +3540,7 @@ namespace rr
 
 	Type *Float::getType()
 	{
-		return T(llvm::Type::getFloatTy(jit->context));
+		return T(llvm::Type::getFloatTy(getTypeContext()));
 	}
 
 	Type *Float2::getType()

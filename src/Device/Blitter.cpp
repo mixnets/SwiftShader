@@ -75,7 +75,7 @@ namespace sw
 			return;
 		}
 
-		void(*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+		auto blitFunction = blitRoutine->getEntry<void(const BlitData*)>();
 
 		VkImageSubresourceLayers subresLayers =
 		{
@@ -1641,7 +1641,7 @@ namespace sw
 			return;
 		}
 
-		void(*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+		auto blitFunction = blitRoutine->getEntry<void(const BlitData*)>();
 
 		BlitData data =
 		{
@@ -1707,7 +1707,7 @@ namespace sw
 			return;
 		}
 
-		void(*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+		auto blitFunction = blitRoutine->getEntry<void(const BlitData*)>();
 
 		BlitData data =
 		{
@@ -1825,7 +1825,7 @@ namespace sw
 			return;
 		}
 
-		void(*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+		auto blitFunction = blitRoutine->getEntry<void(const BlitData*)>();
 
 		BlitData data =
 		{
@@ -2021,7 +2021,7 @@ namespace sw
 			return;
 		}
 
-		void(*cornerUpdateFunction)(const CubeBorderData *data) = (void(*)(const CubeBorderData*))cornerUpdateRoutine->getEntry();
+		auto cornerUpdateFunction = cornerUpdateRoutine->getEntry<void(const CubeBorderData*)>();
 
 		VkExtent3D extent = image->getMipLevelExtent(aspect, subresourceLayers.mipLevel);
 		CubeBorderData data =

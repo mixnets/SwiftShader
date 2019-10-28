@@ -30,14 +30,33 @@ namespace rr
 	class Void;
 	class Bool;
 	class Byte;
+	class Byte2;
+	class Byte4;
+	class Byte8;
+	class Byte16;
 	class SByte;
+	class SByte4;
+	class SByte8;
+	class SByte16;
 	class Short;
+	class Short2;
+	class Short4;
+	class Short8;
 	class UShort;
+	class UShort2;
+	class UShort4;
+	class UShort8;
 	class Int;
+	class Int2;
+	class Int4;
 	class UInt;
+	class UInt2;
+	class UInt4;
 	class Long;
 	class Half;
 	class Float;
+	class Float2;
+	class Float4;
 
 	template<class T> class Pointer;
 	template<class T> class LValue;
@@ -68,16 +87,43 @@ namespace rr
 	template<typename T> using CToReactor = typename CToReactorT<T>::type;
 
 	// CToReactorT specializations for POD types.
-	template<> struct CToReactorT<void>    	{ using type = Void; };
-	template<> struct CToReactorT<bool>    	{ using type = Bool; };
-	template<> struct CToReactorT<uint8_t> 	{ using type = Byte; };
-	template<> struct CToReactorT<int8_t>  	{ using type = SByte; };
-	template<> struct CToReactorT<int16_t> 	{ using type = Short; };
-	template<> struct CToReactorT<uint16_t>	{ using type = UShort; };
-	template<> struct CToReactorT<int32_t> 	{ using type = Int; };
-	template<> struct CToReactorT<uint64_t>	{ using type = Long; };
-	template<> struct CToReactorT<uint32_t>	{ using type = UInt; };
-	template<> struct CToReactorT<float>   	{ using type = Float; };
+	template<> struct CToReactorT<void>            { using type = Void; };
+	template<> struct CToReactorT<bool>            { using type = Bool; };
+
+	template<> struct CToReactorT<uint8_t>         { using type = Byte; };
+	template<> struct CToReactorT<uint8_t[4]>      { using type = Byte4; };
+	template<> struct CToReactorT<uint8_t[8]>      { using type = Byte8; };
+	template<> struct CToReactorT<uint8_t[16]>     { using type = Byte16; };
+
+	template<> struct CToReactorT<int8_t>          { using type = SByte; };
+	template<> struct CToReactorT<int8_t[4]>       { using type = SByte4; };
+	template<> struct CToReactorT<int8_t[8]>       { using type = SByte8; };
+	template<> struct CToReactorT<int8_t[16]>      { using type = SByte16; };
+
+	template<> struct CToReactorT<uint16_t>        { using type = UShort; };
+	template<> struct CToReactorT<uint16_t[2]>     { using type = UShort2; };
+	template<> struct CToReactorT<uint16_t[4]>     { using type = UShort4; };
+	template<> struct CToReactorT<uint16_t[8]>     { using type = UShort8; };
+
+	template<> struct CToReactorT<int16_t>         { using type = Short; };
+	template<> struct CToReactorT<int16_t[2]>      { using type = Short2; };
+	template<> struct CToReactorT<int16_t[4]>      { using type = Short4; };
+	template<> struct CToReactorT<int16_t[8]>      { using type = Short8; };
+
+	template<> struct CToReactorT<int32_t>         { using type = Int; };
+	template<> struct CToReactorT<uint64_t>        { using type = Long; };
+	template<> struct CToReactorT<uint32_t>        { using type = UInt; };
+
+	template<> struct CToReactorT<int[2]>          { using type = Int2; };
+	template<> struct CToReactorT<int[4]>          { using type = Int4; };
+
+	template<> struct CToReactorT<unsigned int[2]> { using type = UInt2; };
+	template<> struct CToReactorT<unsigned int[4]> { using type = UInt4; };
+
+	template<> struct CToReactorT<float>           { using type = Float; };
+	template<> struct CToReactorT<float[2]>        { using type = Float2; };
+	template<> struct CToReactorT<float[4]>        { using type = Float4; };
+
 
 	// CToReactorPtrT<T>::type resolves to the corresponding Reactor Pointer<>
 	// type for T*.

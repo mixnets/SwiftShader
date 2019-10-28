@@ -153,7 +153,7 @@ namespace sw
 		{
 			blitState = updateState;
 			blitRoutine = copyRoutine(blitState);
-			blitFunction = (void(*)(void*, void*, Cursor*))blitRoutine->getEntry();
+			blitFunction = blitRoutine->getEntry<void(void*, void*, Cursor*)>();
 		}
 
 		blitFunction(framebuffer, renderbuffer, &cursor);
