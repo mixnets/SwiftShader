@@ -2648,6 +2648,9 @@ namespace rr
 	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
+		Type* t = T::getType();
+		auto cast = Nucleus::createBitCast(rvalue, T::getType());
+		auto same = cast == rvalue;
 		assert(Nucleus::createBitCast(rvalue, T::getType()) == rvalue);   // Run-time type should match T, so bitcast is no-op.
 
 		value = rvalue;
@@ -3098,7 +3101,9 @@ namespace rr
 		vsnprintf(fullName, 1024, name, vararg);
 		va_end(vararg);
 
-		return core->acquireRoutine(fullName, Config::Edit::None);
+		auto routine = core->acquireRoutine(fullName, Config::Edit::None);
+		routine->setSignature(Signature::Create<Return, Arguments...>());
+		return routine;
 	}
 
 	template<typename Return, typename... Arguments>
@@ -3111,7 +3116,9 @@ namespace rr
 		vsnprintf(fullName, 1024, name, vararg);
 		va_end(vararg);
 
-		return core->acquireRoutine(fullName, cfg);
+		auto routine = core->acquireRoutine(fullName, cfg);
+		routine->setSignature(Signature::Create<Return, Arguments...>());
+		return Routine;
 	}
 
 	template<class T, class S>
