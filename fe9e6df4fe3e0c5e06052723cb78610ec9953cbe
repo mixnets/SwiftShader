@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e6846f4d_c11c370a",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-10-28T14:42:21Z",
+      "side": 1,
+      "message": "Just an ANGLE style difference, fixed",
+      "parentUuid": "7ab420a3_1560e09e",
+      "range": {
+        "startLine": 38,
+        "startChar": 32,
+        "endLine": 38,
+        "endChar": 34
+      },
+      "revId": "fe9e6df4fe3e0c5e06052723cb78610ec9953cbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fb7ae5df_cd298178",
         "filename": "src/WSI/BUILD.gn",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "fe9e6df4fe3e0c5e06052723cb78610ec9953cbe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2212a9be_64f860d1",
+        "filename": "src/WSI/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-10-28T14:42:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb7ae5df_cd298178",
+      "revId": "fe9e6df4fe3e0c5e06052723cb78610ec9953cbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
