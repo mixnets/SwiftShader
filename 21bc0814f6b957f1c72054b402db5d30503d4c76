@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ee8a124_8bf58896",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-28T18:57:26Z",
+      "side": 1,
+      "message": "I believe you meant \"extensionCreateInfo-\u003esType\"?",
+      "range": {
+        "startLine": 408,
+        "startChar": 19,
+        "endLine": 408,
+        "endChar": 39
+      },
+      "revId": "21bc0814f6b957f1c72054b402db5d30503d4c76",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
