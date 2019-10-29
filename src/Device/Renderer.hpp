@@ -153,11 +153,10 @@ namespace sw
 		VkIndexType indexType;
 		VkLineRasterizationModeEXT lineRasterizationMode;
 
-		std::shared_ptr<Routine> vertexRoutine;
+		VertexProcessor::RoutineType vertexRoutine;
 		std::shared_ptr<Routine> setupRoutine;
 		std::shared_ptr<Routine> pixelRoutine;
 
-		VertexProcessor::RoutinePointer vertexPointer;
 		SetupProcessor::RoutinePointer setupPointer;
 		PixelProcessor::RoutinePointer pixelPointer;
 
@@ -235,7 +234,7 @@ namespace sw
 		SetupProcessor::State setupState;
 		PixelProcessor::State pixelState;
 
-		std::shared_ptr<Routine> vertexRoutine;
+		VertexProcessor::RoutineType vertexRoutine;
 		std::shared_ptr<Routine> setupRoutine;
 		std::shared_ptr<Routine> pixelRoutine;
 
