@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7bc12a94_bc96fe0c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2427,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-29T18:33:59Z",
+      "side": 1,
+      "message": "Since you\u0027re passing a pointer to getFeatures, it might be clearer to not dereference the casted pointer:\n\n    auto* features \u003d reinterpret_cast\u003cVkPhysicalDeviceProvokingVertexFeaturesEXT*\u003e(extensionFeatures);\n    vk::Cast(physicalDevice)-\u003egetFeatures(features);",
+      "revId": "777ea387a754fc61ca0077f98109e4616a16fdc0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
