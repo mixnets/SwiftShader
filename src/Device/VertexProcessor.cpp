@@ -96,7 +96,7 @@ namespace sw
 	void VertexProcessor::setRoutineCacheSize(int cacheSize)
 	{
 		delete routineCache;
-		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536));
+		routineCache = new RoutineCacheType(clamp(cacheSize, 1, 65536));
 	}
 
 	const VertexProcessor::State VertexProcessor::update(const sw::Context* context)
@@ -122,7 +122,7 @@ namespace sw
 		return state;
 	}
 
-	std::shared_ptr<Routine> VertexProcessor::routine(const State &state,
+	VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
 	                                                  vk::PipelineLayout const *pipelineLayout,
 	                                                  SpirvShader const *vertexShader,
 	                                                  const vk::DescriptorSet::Bindings &descriptorSets)

@@ -21,6 +21,7 @@
 #include "RoutineCache.hpp"
 #include "Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
+//#include "Pipeline/VertexRoutine.hpp"
 
 namespace sw
 {
@@ -49,6 +50,8 @@ namespace sw
 		unsigned int primitiveStart;
 		VertexCache vertexCache;
 	};
+
+	using VertexRoutineFunction = FunctionT<void(Vertex* /*output*/, unsigned int* /*batch*/, VertexTask* /*vertexTask*/, DrawData* /*draw*/)>;
 
 	class VertexProcessor
 	{
@@ -88,7 +91,7 @@ namespace sw
 			uint32_t hash;
 		};
 
-		typedef void (*RoutinePointer)(Vertex *output, unsigned int *batch, VertexTask *vertexTask, DrawData *draw);
+		using RoutineType = VertexRoutineFunction::RoutineType;
 
 		VertexProcessor();
 
@@ -96,13 +99,15 @@ namespace sw
 
 	protected:
 		const State update(const sw::Context* context);
-		std::shared_ptr<Routine> routine(const State &state, vk::PipelineLayout const *pipelineLayout,
+		RoutineType routine(const State &state, vk::PipelineLayout const *pipelineLayout,
 		                                 SpirvShader const *vertexShader, const vk::DescriptorSet::Bindings &descriptorSets);
 
 		void setRoutineCacheSize(int cacheSize);
 
 	private:
-		RoutineCache<State> *routineCache;
+		using RoutineCacheType = RoutineCacheT<State, VertexRoutineFunction::CFunctionType>;
+		RoutineCacheType *routineCache;
+		
 	};
 }
 
