@@ -28,6 +28,8 @@ namespace sw
 	struct DrawData;
 	struct Primitive;
 
+	using RasterizerFunction = FunctionT<void(const Primitive* primitive, int count, int cluster, int clusterCount, DrawData* draw)>;
+
 	class PixelProcessor
 	{
 	public:
@@ -114,7 +116,7 @@ namespace sw
 		};
 
 	public:
-		typedef void (*RoutinePointer)(const Primitive *primitive, int count, int cluster, int clusterCount, DrawData *draw);
+		using RoutineType = RasterizerFunction::RoutineType;
 
 		PixelProcessor();
 
@@ -124,7 +126,7 @@ namespace sw
 
 	protected:
 		const State update(const Context* context) const;
-		std::shared_ptr<Routine> routine(const State &state, vk::PipelineLayout const *pipelineLayout,
+		RoutineType routine(const State &state, vk::PipelineLayout const *pipelineLayout,
 		                                 SpirvShader const *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
 		void setRoutineCacheSize(int routineCacheSize);
 
@@ -132,7 +134,8 @@ namespace sw
 		Factor factor;
 
 	private:
-		RoutineCache<State> *routineCache;
+		using RoutineCacheType = RoutineCacheT<State, RasterizerFunction::CFunctionType>;
+		RoutineCacheType *routineCache;
 	};
 }
 
