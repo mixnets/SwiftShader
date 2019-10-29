@@ -155,10 +155,9 @@ namespace sw
 
 		VertexProcessor::RoutineType vertexRoutine;
 		std::shared_ptr<Routine> setupRoutine;
-		std::shared_ptr<Routine> pixelRoutine;
+		PixelProcessor::RoutineType pixelRoutine;
 
 		SetupProcessor::RoutinePointer setupPointer;
-		PixelProcessor::RoutinePointer pixelPointer;
 
 		SetupFunction setupPrimitives;
 		SetupProcessor::State setupState;
@@ -236,7 +235,7 @@ namespace sw
 
 		VertexProcessor::RoutineType vertexRoutine;
 		std::shared_ptr<Routine> setupRoutine;
-		std::shared_ptr<Routine> pixelRoutine;
+		PixelProcessor::RoutineType pixelRoutine;
 
 		vk::Device* device;
 	};
