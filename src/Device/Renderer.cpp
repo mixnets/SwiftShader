@@ -266,7 +266,6 @@ namespace sw
 		draw->vertexRoutine = vertexRoutine;
 		draw->setupRoutine = setupRoutine;
 		draw->pixelRoutine = pixelRoutine;
-		draw->vertexPointer = (VertexProcessor::RoutinePointer)vertexRoutine->getEntry();
 		draw->setupPointer = (SetupProcessor::RoutinePointer)setupRoutine->getEntry();
 		draw->pixelPointer = (PixelProcessor::RoutinePointer)pixelRoutine->getEntry();
 		draw->setupPrimitives = setupPrimitives;
@@ -430,7 +429,7 @@ namespace sw
 			occlusionQuery->finish();
 		}
 
-		vertexRoutine.reset();
+		vertexRoutine = {};
 		setupRoutine.reset();
 		pixelRoutine.reset();
 	}
@@ -511,7 +510,7 @@ namespace sw
 			vertexTask.vertexCache.drawCall = draw->id;
 		}
 
-		draw->vertexPointer(&batch->triangles.front().v0, &triangleIndices[0][0], &vertexTask, draw->data);
+		draw->vertexRoutine(&batch->triangles.front().v0, &triangleIndices[0][0], &vertexTask, draw->data);
 	}
 
 	void DrawCall::processPrimitives(DrawCall* draw, BatchData* batch)
