@@ -49,8 +49,8 @@ void ManagedStaticBase::RegisterManagedStatic(void *(*Creator)(),
       StaticList = this;
     }
   } else {
-    assert(!Ptr && !DeleterFn && !Next &&
-           "Partially initialized ManagedStatic!?");
+    //assert(!Ptr && !DeleterFn && !Next &&
+    //       "Partially initialized ManagedStatic!?");
     Ptr = Creator();
     DeleterFn = Deleter;
 
