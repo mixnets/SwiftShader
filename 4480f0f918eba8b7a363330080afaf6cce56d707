@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce64e4bd_19ca2f47",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-30T14:18:33Z",
+      "side": 1,
+      "message": "Mis-aligned parameters.\nSwiftShader\u0027s style is to use natural tab-indents for the current scope, then whitespace for alignment (so just add more whitespaces).",
+      "range": {
+        "startLine": 126,
+        "startChar": 52,
+        "endLine": 128,
+        "endChar": 54
+      },
+      "revId": "4480f0f918eba8b7a363330080afaf6cce56d707",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea8ba904_a3f4ad44",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-30T14:18:33Z",
+      "side": 1,
+      "message": "I do not believe you need to comment these parameter names out.",
+      "range": {
+        "startLine": 53,
+        "startChar": 54,
+        "endLine": 53,
+        "endChar": 56
+      },
+      "revId": "4480f0f918eba8b7a363330080afaf6cce56d707",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1413e544_da80a1a0",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-10-30T14:18:33Z",
+      "side": 1,
+      "message": "Trim white space at EOL. In this particular case, just remove this blank line?",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 2
+      },
+      "revId": "4480f0f918eba8b7a363330080afaf6cce56d707",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
