@@ -22,6 +22,30 @@
       "revId": "873a4613c19c19cb5a1724f39dbb2a6108477f8a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa68a877_e33dcce5",
+        "filename": "src/Device/SetupProcessor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-10-30T14:50:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85671710_aa74d948",
+      "range": {
+        "startLine": 33,
+        "startChar": 48,
+        "endLine": 33,
+        "endChar": 50
+      },
+      "revId": "873a4613c19c19cb5a1724f39dbb2a6108477f8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
