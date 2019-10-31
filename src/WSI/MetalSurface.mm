@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MacOSSurfaceMVK.h"
+#include "MetalSurface.h"
 #include "Vulkan/VkDeviceMemory.hpp"
 #include "Vulkan/VkImage.hpp"
 
@@ -25,31 +25,37 @@ namespace vk {
 class MetalLayer
 {
 public:
-    void init(const void* pView) API_AVAILABLE(macosx(10.11))
-    {
-        view = nullptr;
-        layer = nullptr;
+    MetalLayer() : view(nullptr), layer(nullptr) {}
 
+    void initWithLayer(const void* pLayer) API_AVAILABLE(macosx(10.11))
+    {
+        id<NSObject> obj = (id<NSObject>)pLayer;
+
+        if(!NSThread.isMainThread)
+        {
+            UNREACHABLE("MetalLayer::init(): not called from main thread");
+        }
+        if ([obj isKindOfClass: [CAMetalLayer class]])
+        {
+            layer = (CAMetalLayer*)[obj retain];
+            layer.framebufferOnly = false;
+        }
+        else
+        {
+            UNREACHABLE("MetalLayer::init(): view doesn't have metal backed layer");
+        }
+    }
+
+    void initWithView(const void* pView) API_AVAILABLE(macosx(10.11))
+    {
         id<NSObject> obj = (id<NSObject>)pView;
 
         if([obj isKindOfClass: [NSView class]])
         {
-            if(!NSThread.isMainThread)
-            {
-                UNREACHABLE("MetalLayer::init(): not called from main thread");
-            }
             view = (NSView*)[obj retain];
 
             obj = view.layer;
-            if ([obj isKindOfClass: [CAMetalLayer class]])
-            {
-                layer = (CAMetalLayer*)[obj retain];
-                layer.framebufferOnly = false;
-            }
-            else
-            {
-                UNREACHABLE("MetalLayer::init(): view doesn't have metal backed layer");
-            }
+            initWithLayer(obj);
         }
     }
 
@@ -59,7 +65,6 @@ public:
         {
             [layer release];
         }
-
         if(view)
         {
             [view release];
@@ -97,13 +102,12 @@ private:
     CAMetalLayer* layer API_AVAILABLE(macosx(10.11));
 };
 
-MacOSSurfaceMVK::MacOSSurfaceMVK(const VkMacOSSurfaceCreateInfoMVK *pCreateInfo, void *mem) API_AVAILABLE(macosx(10.11)) :
-    metalLayer(reinterpret_cast<MetalLayer*>(mem))
+MetalSurface::MetalSurface(const void *pCreateInfo, void *mem) : metalLayer(reinterpret_cast<MetalLayer*>(mem))
 {
-    metalLayer->init(pCreateInfo->pView);
+
 }
 
-void MacOSSurfaceMVK::destroySurface(const VkAllocationCallbacks *pAllocator) API_AVAILABLE(macosx(10.11))
+void MetalSurface::destroySurface(const VkAllocationCallbacks *pAllocator) API_AVAILABLE(macosx(10.11))
 {
     if(metalLayer)
     {
@@ -113,12 +117,12 @@ void MacOSSurfaceMVK::destroySurface(const VkAllocationCallbacks *pAllocator) AP
     vk::deallocate(metalLayer, pAllocator);
 }
 
-size_t MacOSSurfaceMVK::ComputeRequiredAllocationSize(const VkMacOSSurfaceCreateInfoMVK *pCreateInfo) API_AVAILABLE(macosx(10.11))
+size_t MetalSurface::ComputeRequiredAllocationSize(const void *pCreateInfo) API_AVAILABLE(macosx(10.11))
 {
     return sizeof(MetalLayer);
 }
 
-void MacOSSurfaceMVK::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const API_AVAILABLE(macosx(10.11))
+void MetalSurface::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const API_AVAILABLE(macosx(10.11))
 {
     SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
 
@@ -128,7 +132,7 @@ void MacOSSurfaceMVK::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceC
     pSurfaceCapabilities->maxImageExtent = extent;
 }
 
-VkResult MacOSSurfaceMVK::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
+VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
 {
     auto drawable = metalLayer->getNextDrawable();
     if(drawable)
@@ -142,5 +146,19 @@ VkResult MacOSSurfaceMVK::present(PresentImage* image) API_AVAILABLE(macosx(10.1
     }
     return VK_SUCCESS;
 }
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+MetalSurfaceEXT::MetalSurfaceEXT(const VkMetalSurfaceCreateInfoEXT *pCreateInfo, void *mem) API_AVAILABLE(macosx(10.11))
+{
+    metalLayer->initWithLayer(pCreateInfo->pLayer);
+}
+#endif
+
+#ifdef VK_USE_PLATFORM_MACOS_MVK
+MacOSSurfaceMVK::MacOSSurfaceMVK(const VkMacOSSurfaceCreateInfoMVK *pCreateInfo, void *mem) API_AVAILABLE(macosx(10.11))
+{
+    metalLayer->initWithView(pCreateInfo->pView);
+}
+#endif
 
 }
