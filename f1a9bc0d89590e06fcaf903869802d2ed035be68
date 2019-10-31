@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1281e14c_83b64f4a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-31T21:56:05Z",
+      "side": 1,
+      "message": "should this use the pAllocator parameter?",
+      "range": {
+        "startLine": 1201,
+        "startChar": 52,
+        "endLine": 1201,
+        "endChar": 65
+      },
+      "revId": "f1a9bc0d89590e06fcaf903869802d2ed035be68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a2f4dde_3d20e3fb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1224,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-31T21:56:05Z",
+      "side": 1,
+      "message": "should this use the pAllocator parameter?",
+      "range": {
+        "startLine": 1224,
+        "startChar": 44,
+        "endLine": 1224,
+        "endChar": 57
+      },
+      "revId": "f1a9bc0d89590e06fcaf903869802d2ed035be68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e487ab5_66ff998e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3040,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-10-31T21:56:05Z",
+      "side": 1,
+      "message": "Is this more correct, or is this bogus? I\u0027m not certain, but it seems like GRALLOC1 isn\u0027t guaranteed.",
+      "range": {
+        "startLine": 3036,
+        "startChar": 0,
+        "endLine": 3040,
+        "endChar": 6
+      },
+      "revId": "f1a9bc0d89590e06fcaf903869802d2ed035be68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
