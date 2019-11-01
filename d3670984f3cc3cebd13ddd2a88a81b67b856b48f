@@ -22,6 +22,30 @@
       "revId": "d3670984f3cc3cebd13ddd2a88a81b67b856b48f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b1c27aa_1c84a728",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1852,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-11-01T18:40:21Z",
+      "side": 1,
+      "message": "Oops I only tested with ninja",
+      "parentUuid": "00fde96b_9e9e5e30",
+      "range": {
+        "startLine": 1849,
+        "startChar": 0,
+        "endLine": 1852,
+        "endChar": 43
+      },
+      "revId": "d3670984f3cc3cebd13ddd2a88a81b67b856b48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
