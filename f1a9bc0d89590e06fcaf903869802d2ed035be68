@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "ce4c87f1_eff4270d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 33445
+      },
+      "writtenOn": "2019-11-01T00:28:56Z",
+      "side": 1,
+      "message": "FYI ... I cherry-picked this CL and tested it on a Pixel 3a (a.k.a. Sargo).  This assert fired a number of times for the tests that crashed.  I haven\u0027t looked into why.",
+      "revId": "f1a9bc0d89590e06fcaf903869802d2ed035be68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1281e14c_83b64f4a",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
