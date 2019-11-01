@@ -1369,34 +1369,34 @@ public:
 
 using GEPTestTypes = ::testing::Types
 	<
-		std::pair<bool,        Bool>,
-		std::pair<int8_t,      Byte>,
-		std::pair<int8_t,      SByte>,
-		std::pair<int8_t[4],   Byte4>,
-		std::pair<int8_t[4],   SByte4>,
-		std::pair<int8_t[8],   Byte8>,
-		std::pair<int8_t[8],   SByte8>,
-		std::pair<int8_t[16],  Byte16>,
-		std::pair<int8_t[16],  SByte16>,
-		std::pair<int16_t,     Short>,
-		std::pair<int16_t,     UShort>,
-		std::pair<int16_t[2],  Short2>,
-		std::pair<int16_t[2],  UShort2>,
-		std::pair<int16_t[4],  Short4>,
-		std::pair<int16_t[4],  UShort4>,
-		std::pair<int16_t[8],  Short8>,
-		std::pair<int16_t[8],  UShort8>,
-		std::pair<int,         Int>,
-		std::pair<int,         UInt>,
-		std::pair<int[2],      Int2>,
-		std::pair<int[2],      UInt2>,
-		std::pair<int[4],      Int4>,
-		std::pair<int[4],      UInt4>,
-		std::pair<int64_t,     Long>,
-		std::pair<int16_t,     Half>,
-		std::pair<float,       Float>,
-		std::pair<float[2],    Float2>,
-		std::pair<float[4],    Float4>
+	std::pair<bool,            CToReactor<bool>>,
+	std::pair<uint8_t,         CToReactor<uint8_t>>,
+	std::pair<int8_t,          CToReactor<int8_t>>,
+	std::pair<uint8_t[4],      CToReactor<uint8_t[4]>>,
+	std::pair<int8_t[4],       CToReactor<int8_t[4]>>,
+	std::pair<uint8_t[8],      CToReactor<uint8_t[8]>>,
+	std::pair<int8_t[8],       CToReactor<int8_t[8]>>,
+	std::pair<uint8_t[16],     CToReactor<uint8_t[16]>>,
+	std::pair<int8_t[16],      CToReactor<int8_t[16]>>,
+	std::pair<int16_t,         CToReactor<int16_t>>,
+	std::pair<uint16_t,        CToReactor<uint16_t>>,
+	std::pair<int16_t[2],      CToReactor<int16_t[2]>>,
+	std::pair<uint16_t[2],     CToReactor<uint16_t[2]>>,
+	std::pair<int16_t[4],      CToReactor<int16_t[4]>>,
+	std::pair<uint16_t[4],     CToReactor<uint16_t[4]>>,
+	std::pair<int16_t[8],      CToReactor<int16_t[8]>>,
+	std::pair<uint16_t[8],     CToReactor<uint16_t[8]>>,
+	std::pair<int,             CToReactor<int>>,
+	std::pair<unsigned int,    CToReactor<unsigned int>>,
+	std::pair<int[2],          CToReactor<int[2]>>,
+	std::pair<unsigned int[2], CToReactor<unsigned int[2]>>,
+	std::pair<int[4],          CToReactor<int[4]>>,
+	std::pair<unsigned int[4], CToReactor<unsigned int[4]>>,
+	std::pair<uint64_t,        CToReactor<uint64_t>>,
+	std::pair<int16_t,         CToReactor<int16_t>>,
+	std::pair<float,           CToReactor<float>>,
+	std::pair<float[2],        CToReactor<float[2]>>,
+	std::pair<float[4],        CToReactor<float[4]>>
 	>;
 
 TYPED_TEST_SUITE(GEPTest, GEPTestTypes);
@@ -1406,21 +1406,19 @@ TYPED_TEST(GEPTest, PtrOffsets)
 	using CType = typename TestFixture::CType;
 	using ReactorType = typename TestFixture::ReactorType;
 
-	std::shared_ptr<Routine> routine;
-
 	{
-		Function< Pointer<ReactorType>(Pointer<ReactorType>, Int) > function;
+		FunctionT< CType*(CType*, unsigned int) > function;
 		{
 			Pointer<ReactorType> pointer = function.template Arg<0>();
-			Int index = function.template Arg<1>();
+			UInt index = function.template Arg<1>();
 			Return(&pointer[index]);
 		}
 
-		routine = function("one");
+		auto routine = function("one");
 
 		if(routine)
 		{
-			auto callable = (CType*(*)(CType*, unsigned int))routine->getEntry();
+			//auto callable = (CType*(*)(CType*, unsigned int))routine->getEntry();
 
 			union PtrInt {
 				CType* p;
@@ -1436,7 +1434,7 @@ TYPED_TEST(GEPTest, PtrOffsets)
 				reference.p = &base.p[i];
 
 				PtrInt result;
-				result.p = callable(base.p, i);
+				result.p = routine(base.p, i);
 
 				auto expect = reference.i - base.i;
 				auto got = result.i - base.i;
