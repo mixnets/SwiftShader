@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0f9f5e2b_62b9613a",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-11-01T18:52:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f245f895_ac6d9283",
+      "range": {
+        "startLine": 28,
+        "startChar": 9,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "cd3c4eb9ee68be03e76cf392f29251c0cf67fd92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5b7e985e_6bf5e0ef",
         "filename": "src/WSI/MetalSurface.mm",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "cd3c4eb9ee68be03e76cf392f29251c0cf67fd92",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d4488c2_3c86dbe7",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-11-01T18:52:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b7e985e_6bf5e0ef",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 17
+      },
+      "revId": "cd3c4eb9ee68be03e76cf392f29251c0cf67fd92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
