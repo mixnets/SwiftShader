@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00fde96b_9e9e5e30",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1852,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T18:28:00Z",
+      "side": 1,
+      "message": "This looks wrong. Didn\u0027t you rename the old ones?",
+      "range": {
+        "startLine": 1849,
+        "startChar": 0,
+        "endLine": 1852,
+        "endChar": 43
+      },
+      "revId": "d3670984f3cc3cebd13ddd2a88a81b67b856b48f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
