@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "337b14dc_637aca4a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3097,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-01T16:13:54Z",
+      "side": 0,
+      "message": "Nobody is actually setting *pNativeFenceFd \u003d -1?\n\nWe should explicitly do that, rather than assuming the caller has initialized the value.",
+      "revId": "e1cda3916ceef4721aa5075cb470919e9595e3cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
