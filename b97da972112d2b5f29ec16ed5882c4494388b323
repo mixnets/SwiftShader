@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55fba5a6_6679cc5c",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T19:24:42Z",
+      "side": 1,
+      "message": "This constructor is never called. See below.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 51
+      },
+      "revId": "b97da972112d2b5f29ec16ed5882c4494388b323",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33404312_04466070",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 6
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T19:24:42Z",
+      "side": 1,
+      "message": "Allocated memory gets reinterpret_casted to MetalLayer. This doesn\u0027t call the constructor.",
+      "range": {
+        "startLine": 105,
+        "startChar": 65,
+        "endLine": 105,
+        "endChar": 111
+      },
+      "revId": "b97da972112d2b5f29ec16ed5882c4494388b323",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fca03db_c86dbfd7",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T19:24:42Z",
+      "side": 1,
+      "message": "That\u0027s a MetalSurface private member, it\u0027s not accessible here.",
+      "range": {
+        "startLine": 153,
+        "startChar": 4,
+        "endLine": 153,
+        "endChar": 14
+      },
+      "revId": "b97da972112d2b5f29ec16ed5882c4494388b323",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd6099f2_d56c4aa0",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 6
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T19:24:42Z",
+      "side": 1,
+      "message": "Same.",
+      "range": {
+        "startLine": 160,
+        "startChar": 4,
+        "endLine": 160,
+        "endChar": 14
+      },
+      "revId": "b97da972112d2b5f29ec16ed5882c4494388b323",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
