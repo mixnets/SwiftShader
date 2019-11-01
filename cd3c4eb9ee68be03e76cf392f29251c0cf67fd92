@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f245f895_ac6d9283",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T18:41:56Z",
+      "side": 1,
+      "message": "When this is called directly, instead of being called from initWithView, the \"view\" member is never initialized",
+      "range": {
+        "startLine": 28,
+        "startChar": 9,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "cd3c4eb9ee68be03e76cf392f29251c0cf67fd92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b7e985e_6bf5e0ef",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T18:41:56Z",
+      "side": 1,
+      "message": "nit: whitespace change",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 17
+      },
+      "revId": "cd3c4eb9ee68be03e76cf392f29251c0cf67fd92",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
