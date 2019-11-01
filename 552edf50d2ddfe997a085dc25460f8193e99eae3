@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd7d06a1_d5697643",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T15:27:49Z",
+      "side": 1,
+      "message": "renamed to prepareForExternalUseANDROID for clarity.",
+      "range": {
+        "startLine": 114,
+        "startChar": 16,
+        "endLine": 114,
+        "endChar": 44
+      },
+      "revId": "552edf50d2ddfe997a085dc25460f8193e99eae3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57ee7193_c344b631",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-01T15:27:49Z",
+      "side": 1,
+      "message": "There was no unlock in the original code. That seems very odd to me, so I added one. Correct me if I\u0027m wrong.",
+      "range": {
+        "startLine": 142,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 6
+      },
+      "revId": "552edf50d2ddfe997a085dc25460f8193e99eae3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
