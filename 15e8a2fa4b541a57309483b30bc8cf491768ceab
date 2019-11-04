@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23c8b573_2df3a867",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-04T21:09:32Z",
+      "side": 1,
+      "message": "I think this form is a bit unclear as it could be misinterpreted as listing a bug that is still in need of fixing, or it could occur in the message title or elsewhere. I notice GitHub allows it, but it has a number of other forms that wouldn\u0027t be a good fit for us (e.g. \"Closes: X\" won\u0027t actually close anything) so I don\u0027t think we should use it for guidance.\n\nDefinitely a fan of adding \u0027Fixes:\u0027 since it indicates that it is supposed to fully fix a bug and allow it to be closed.\n\nWe can always add \u0027Fix:\u0027 later if there\u0027s stronger demand/justification for it?",
+      "range": {
+        "startLine": 7,
+        "startChar": 15,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "15e8a2fa4b541a57309483b30bc8cf491768ceab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
