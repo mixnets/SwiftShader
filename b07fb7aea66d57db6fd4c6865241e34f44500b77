@@ -22,6 +22,30 @@
       "revId": "b07fb7aea66d57db6fd4c6865241e34f44500b77",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3777f2f2_5dad800b",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 7
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2019-11-04T19:13:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "486a4391_6569b6a1",
+      "range": {
+        "startLine": 163,
+        "startChar": 17,
+        "endLine": 163,
+        "endChar": 32
+      },
+      "revId": "b07fb7aea66d57db6fd4c6865241e34f44500b77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
