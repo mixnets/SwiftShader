@@ -39,6 +39,13 @@ Buffer::Buffer(const VkBufferCreateInfo* pCreateInfo, void* mem) :
 			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryBufferCreateInfo*>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
 		}
+#if VK_USE_PLATFORM_FUCHSIA
+		if (nextInfo->sType == VK_STRUCTURE_TYPE_BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA) {
+			const auto* importInfo = reinterpret_cast<const VkBufferCollectionBufferCreateInfoFUCHSIA *>(nextInfo);
+			fuchsiaBufferCollectionHandle = importInfo->collection;
+			fuchsiaBufferCollectionIndex  = importInfo->index;
+		}
+#endif  // VK_USE_PLATFORM_FUCHSIA
 	}
 }
 
@@ -83,6 +90,17 @@ VkResult Buffer::bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset)
 	{
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 	}
+
+#if VK_USE_PLATFORM_FUCHSIA
+	if (fuchsiaBufferCollectionHandle != VK_NULL_HANDLE)
+	{
+		VkResult result = pDeviceMemory->checkBufferCollection(fuchsiaBufferCollectionHandle,
+															   fuchsiaBufferCollectionIndex);
+		if (result != VK_SUCCESS)
+			return result;
+	}
+#endif  // VK_USE_PLATFORM_FUCHSIA
+
 	memory = pDeviceMemory->getOffsetPointer(pMemoryOffset);
 	return VK_SUCCESS;
 }
