@@ -50,6 +50,14 @@ public:
 	}
 #endif
 
+#if VK_USE_PLATFORM_FUCHSIA
+	virtual bool checkBufferCollection(VkBufferCollectionFUCHSIA collection,
+									   uint32_t                  index) const
+	{
+		return (collection == VK_NULL_HANDLE);
+	}
+#endif
+
 protected:
 	ExternalBase() = default;
 };
@@ -134,6 +142,9 @@ public:
 #if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
 #include "VkDeviceMemoryExternalFuchsia.hpp"
 #endif
+#if VK_USE_PLATFORM_FUCHSIA
+#include "VkDeviceMemoryBufferCollectionFuchsia.hpp"
+#endif
 
 namespace vk
 {
@@ -149,6 +160,12 @@ static void findTraits(const VkMemoryAllocateInfo* pAllocateInfo,
 #endif
 #if SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_VMO
 	if (parseCreateInfo<zircon::VmoExternalMemory>(pAllocateInfo, pTraits))
+	{
+		return;
+	}
+#endif
+#if VK_USE_PLATFORM_FUCHSIA
+	if (parseCreateInfo<fuchsia::BufferCollectionMemory>(pAllocateInfo, pTraits))
 	{
 		return;
 	}
@@ -247,6 +264,13 @@ VkResult DeviceMemory::exportFd(int* pFd) const
 VkResult DeviceMemory::exportHandle(zx_handle_t* pHandle) const
 {
 	return external->exportHandle(pHandle);
+}
+#endif
+
+#if VK_USE_PLATFORM_FUCHSIA
+bool DeviceMemory::checkBufferCollection(VkBufferCollectionFUCHSIA collection, uint32_t index) const
+{
+	return external->checkBufferCollection(collection, index);
 }
 #endif
 

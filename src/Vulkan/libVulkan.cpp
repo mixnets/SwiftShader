@@ -65,6 +65,10 @@
 #include "commit.h"
 #endif
 
+#if VK_USE_PLATFORM_FUCHSIA
+#include "VkBufferCollectionFUCHSIA.hpp"
+#endif
+
 #include "WSI/VkSwapchainKHR.hpp"
 
 #include "Reactor/Nucleus.hpp"
@@ -260,6 +264,9 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 	{ VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_MEMORY_SPEC_VERSION },
 #endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
+#if VK_USE_PLATFORM_FUCHSIA
+	{ VK_FUCHSIA_BUFFER_COLLECTION_EXTENSION_NAME, VK_FUCHSIA_BUFFER_COLLECTION_SPEC_VERSION },
+#endif
 };
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance)
@@ -1382,6 +1389,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		case VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR:
 			/* Do nothing. We don't actually need the swapchain handle yet; we'll do all the work in vkBindImageMemory2. */
 			break;
+#if VK_USE_PLATFORM_FUCHSIA
+		case VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA:
+			// Do nothing. Should be handled by vk::Image::Create()
+			break;
+#endif
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNIMPLEMENTED("extensionCreateInfo->sType");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
@@ -3330,5 +3342,48 @@ VKAPI_ATTR VkResult VKAPI_CALL vkQueueSignalReleaseImageANDROID(VkQueue queue, u
 	return vk::Cast(image)->prepareForExternalUseANDROID();
 }
 #endif // __ANDROID__
+
+#if VK_USE_PLATFORM_FUCHSIA
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferCollectionFUCHSIA(
+	VkDevice                                    device,
+	const VkBufferCollectionCreateInfoFUCHSIA*  pCreateInfo,
+	const VkAllocationCallbacks*                pAllocator,
+	VkBufferCollectionFUCHSIA*                  pCollection)
+{
+	return vk::BufferCollectionFUCHSIA::Create(pAllocator, pCreateInfo, pCollection);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionConstraintsFUCHSIA(
+	VkDevice                                    device,
+	VkBufferCollectionFUCHSIA                   collection,
+	const VkImageCreateInfo*                    pImageInfo)
+{
+	return vk::Cast(collection)->setConstraints(pImageInfo);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionBufferConstraintsFUCHSIA(
+	VkDevice                                    device,
+	VkBufferCollectionFUCHSIA                   collection,
+	const VkBufferConstraintsInfoFUCHSIA*       pBufferConstraintsInfo)
+{
+	return vk::Cast(collection)->setBufferConstraints(pBufferConstraintsInfo);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroyBufferCollectionFUCHSIA(
+	VkDevice                                    device,
+	VkBufferCollectionFUCHSIA                   collection,
+	const VkAllocationCallbacks*                pAllocator)
+{
+	vk::destroy(collection, pAllocator);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetBufferCollectionPropertiesFUCHSIA(
+	VkDevice                                    device,
+	VkBufferCollectionFUCHSIA                   collection,
+	VkBufferCollectionPropertiesFUCHSIA*        pProperties)
+{
+	return vk::Cast(collection)->getProperties(device, pProperties);
+}
+#endif  // VK_USE_PLATFORM_FUCHSIA
 
 }

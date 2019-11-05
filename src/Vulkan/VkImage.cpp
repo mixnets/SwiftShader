@@ -24,6 +24,10 @@
 #include "System/GrallocAndroid.hpp"
 #endif
 
+#if VK_USE_PLATFORM_FUCHSIA
+#include <zircon/syscalls.h>
+#endif
+
 namespace
 {
 	ETC_Decoder::InputType GetInputType(const vk::Format& format)
@@ -79,11 +83,18 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device) :
 	const auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
 	for (; nextInfo != nullptr; nextInfo = nextInfo->pNext)
 	{
-		if (nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO)
-		{
+		if (nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO) {
 			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
 		}
+#if VK_USE_PLATFORM_FUCHSIA
+		if (nextInfo->sType == VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA)
+		{
+			const auto* importInfo = reinterpret_cast<const VkBufferCollectionImageCreateInfoFUCHSIA *>(nextInfo);
+			fuchsiaBufferCollectionHandle = importInfo->collection;
+			fuchsiaBufferCollectionIndex  = importInfo->index;
+		}
+#endif  // VK_USE_PLATFORM_FUCHSIA
 	}
 }
 
@@ -112,60 +123,30 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 
 bool Image::canBindToMemory(DeviceMemory* pDeviceMemory) const
 {
-	return pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes);
+	if (!pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes))
+	{
+		return false;
+	}
+#if VK_USE_PLATFORM_FUCHSIA
+	if (!pDeviceMemory->checkBufferCollection(fuchsiaBufferCollectionHandle, fuchsiaBufferCollectionIndex))
+	{
+		return false;
+	}
+#endif
+	return true;
 }
 
 void Image::bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
 	deviceMemory = pDeviceMemory;
 	memoryOffset = pMemoryOffset;
+
 	if(decompressedImage)
 	{
 		decompressedImage->deviceMemory = deviceMemory;
 		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
 	}
 }
-
-#ifdef __ANDROID__
-VkResult Image::prepareForExternalUseANDROID() const
-{
-	void* nativeBuffer = nullptr;
-	VkExtent3D extent = getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-
-	if(GrallocModule::getInstance()->lock(backingMemory.nativeHandle, GRALLOC_USAGE_SW_WRITE_OFTEN, 0, 0, extent.width, extent.height, &nativeBuffer) != 0)
-	{
-		return VK_ERROR_OUT_OF_DATE_KHR;
-	}
-
-	if(!nativeBuffer)
-	{
-		return VK_ERROR_OUT_OF_DATE_KHR;
-	}
-
-	int imageRowBytes = rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	int bufferRowBytes = backingMemory.stride * getFormat().bytes();
-	ASSERT(imageRowBytes <= bufferRowBytes);
-
-	uint8_t* srcBuffer = static_cast<uint8_t*>(deviceMemory->getOffsetPointer(0));
-	uint8_t* dstBuffer = static_cast<uint8_t*>(nativeBuffer);
-	for(uint32_t i = 0; i < extent.height; i++)
-	{
-		memcpy(dstBuffer + (i * bufferRowBytes), srcBuffer + (i * imageRowBytes), imageRowBytes);
-	}
-
-	if(GrallocModule::getInstance()->unlock(backingMemory.nativeHandle) != 0)
-	{
-		return VK_ERROR_OUT_OF_DATE_KHR;
-	}
-
-	return VK_SUCCESS;
-}
-
-VkDeviceMemory Image::getExternalMemory() const
-{
-	return backingMemory.externalMemory ? *deviceMemory : VkDeviceMemory{ VK_NULL_HANDLE };
-}
-#endif
 
 void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const
 {
