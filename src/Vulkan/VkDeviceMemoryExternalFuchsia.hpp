@@ -14,6 +14,7 @@
 
 #include "VkStringify.hpp"
 
+#include "VkBufferCollectionFUCHSIA.hpp"
 #include "System/Debug.hpp"
 
 #include <zircon/process.h>
@@ -21,6 +22,11 @@
 
 namespace zircon {
 
+// External memory implementation class for Fuchsia. This uses a Zircon VMO
+// object handle internally, and also supports buffers that come out of a
+// fuchsia.sysmem.BufferCollection, which is essentially a set of swapchain
+// image buffers whose format / size / properties are negociated between
+// different parties (out of the Vulkan ICD implementation).
 class VmoExternalMemory : public vk::DeviceMemory::ExternalBase
 {
 public:
@@ -32,6 +38,10 @@ public:
 		bool importHandle = false;
 		bool exportHandle = false;
 		zx_handle_t handle = ZX_HANDLE_INVALID;
+
+		bool importBufferCollection = false;
+		VkBufferCollectionFUCHSIA bufferCollection = { VK_NULL_HANDLE };
+		uint32_t bufferCollectionIndex = 0;
 
 		AllocateInfo() = default;
 
@@ -66,7 +76,14 @@ public:
 						exportHandle = true;
 						break;
 					}
-
+					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA:
+					{
+						const auto *importInfo = reinterpret_cast<const VkImportMemoryBufferCollectionFUCHSIA *>(extInfo);
+						importBufferCollection = true;
+						bufferCollection = importInfo->collection;
+						bufferCollectionIndex = importInfo->index;
+						break;
+					}
 					default:
 						WARN("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
 				}
@@ -80,7 +97,7 @@ public:
 	static bool supportsAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
 	{
 		AllocateInfo info(pAllocateInfo);
-		return info.importHandle || info.exportHandle;
+		return info.importHandle || info.exportHandle || info.importBufferCollection;
 	}
 
 	explicit VmoExternalMemory(const VkMemoryAllocateInfo *pAllocateInfo)
@@ -95,7 +112,20 @@ public:
 
 	VkResult allocate(size_t size, void **pBuffer) override
 	{
-		if(allocateInfo.importHandle)
+		uint64_t vmoOffset = 0;
+
+		if(allocateInfo.importBufferCollection)
+		{
+			auto collection = vk::BufferCollectionFUCHSIA::Cast(allocateInfo.bufferCollection);
+			VkResult result = collection->takeBufferVmo(allocateInfo.bufferCollectionIndex,
+			                                            &vmoHandle, &vmoOffset);
+			if(result != VK_SUCCESS)
+			{
+				TRACE("BufferCollectionFUCHSIA::getBufferVmo() returned %d", result);
+				return result;
+			}
+		}
+		else if(allocateInfo.importHandle)
 		{
 			// NOTE: handle ownership is passed to the VkDeviceMemory.
 			vmoHandle = allocateInfo.handle;
@@ -117,7 +147,7 @@ public:
 		                                 ZX_VM_PERM_READ | ZX_VM_PERM_WRITE,
 		                                 0,  // vmar_offset
 		                                 vmoHandle,
-		                                 0,  // vmo_offset
+		                                 vmoOffset,
 		                                 size,
 		                                 &addr);
 		if(status != ZX_OK)
@@ -159,6 +189,14 @@ public:
 			return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 		}
 		return VK_SUCCESS;
+	}
+
+	bool checkBufferCollection(VkBufferCollectionFUCHSIA collection,
+	                           uint32_t index) const override
+	{
+		return allocateInfo.importBufferCollection &&
+		       collection == allocateInfo.bufferCollection &&
+		       index == allocateInfo.bufferCollectionIndex;
 	}
 
 private:
