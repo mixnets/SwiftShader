@@ -95,6 +95,8 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
     ]
   } else if (is_fuchsia) {
     sources += [
+      "fuchsia/VkBufferCollectionFUCHSIA.hpp",
+      "VkDeviceMemoryBufferCollectionFuchsia.hpp",
       "VkSemaphoreExternalFuchsia.hpp",
     ]
   } else {
@@ -141,6 +143,11 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "vk_swiftshader.def",
   ]
 
+  if (is_fuchsia) {
+    sources += [
+      "fuchsia/VkBufferCollectionFUCHSIA.cpp",
+    ]
+  }
   configs = [ ":swiftshader_libvulkan_private_config" ]
 
   # TODO(capn): Use the same ICD name on both Windows and non-Windows.
@@ -173,6 +180,13 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "../System",
     "../WSI",
   ]
+
+  if (is_fuchsia) {
+    deps += [
+      "//third_party/fuchsia-sdk/sdk:fdio",
+      "//third_party/fuchsia-sdk/sdk:sysmem",
+    ]
+  }
 
   include_dirs = [
     "..",
