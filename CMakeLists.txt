@@ -868,6 +868,7 @@ if(SWIFTSHADER_BUILD_VULKAN)
         set(VULKAN_API_LIBRARY_NAME "libvulkan.so")
         set_property(TARGET vk_swiftshader APPEND
                      PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_FUCHSIA")
+
         # On Fuchsia, the Vulkan ICD is loaded into a process sandbox that doesn't
         # have system libraries available, so ensure it does not depend on libc++.so.
         set_property(TARGET vk_swiftshader APPEND
@@ -884,6 +885,9 @@ if(SWIFTSHADER_BUILD_VULKAN)
     endif()
     if(SWIFTSHADER_ENABLE_ASTC)
         list(APPEND VK_SWIFTSHADER_LIBS astc-encoder)
+    endif()
+    if(FUCHSIA)
+	    list(APPEND VK_SWIFTSHADER_LIBS Fuchsia::fuchsia.sysmem Fuchsia::fdio)
     endif()
     target_link_libraries(vk_swiftshader ${VK_SWIFTSHADER_LIBS})
 
