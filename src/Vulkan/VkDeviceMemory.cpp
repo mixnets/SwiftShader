@@ -56,6 +56,12 @@ public:
 	{
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 	}
+
+	virtual bool checkBufferCollection(VkBufferCollectionFUCHSIA collection,
+	                                   uint32_t index) const
+	{
+		return (collection == VK_NULL_HANDLE);
+	}
 #endif
 
 protected:
@@ -227,6 +233,7 @@ private:
 #endif
 
 #if VK_USE_PLATFORM_FUCHSIA
+#	include "VkDeviceMemoryBufferCollectionFuchsia.hpp"
 #	include "VkDeviceMemoryExternalFuchsia.hpp"
 #endif
 
@@ -249,6 +256,10 @@ static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
 #endif
 #if VK_USE_PLATFORM_FUCHSIA
 	if(parseCreateInfo<zircon::VmoExternalMemory>(pAllocateInfo, pTraits))
+	{
+		return;
+	}
+	if(parseCreateInfo<fuchsia::BufferCollectionMemory>(pAllocateInfo, pTraits))
 	{
 		return;
 	}
@@ -369,6 +380,11 @@ VkResult DeviceMemory::getAhbProperties(const struct AHardwareBuffer *buffer, Vk
 VkResult DeviceMemory::exportHandle(zx_handle_t *pHandle) const
 {
 	return external->exportHandle(pHandle);
+}
+
+bool DeviceMemory::checkBufferCollection(VkBufferCollectionFUCHSIA collection, uint32_t index) const
+{
+	return external->checkBufferCollection(collection, index);
 }
 #endif
 
