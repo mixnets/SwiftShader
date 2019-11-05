@@ -143,7 +143,6 @@ namespace rr
 
 	Bool::Bool(Argument<Bool> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -219,7 +218,6 @@ namespace rr
 
 	Byte::Byte(Argument<Byte> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -477,7 +475,6 @@ namespace rr
 
 	SByte::SByte(Argument<SByte> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -723,7 +720,6 @@ namespace rr
 
 	Short::Short(Argument<Short> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -962,7 +958,6 @@ namespace rr
 
 	UShort::UShort(Argument<UShort> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -2178,7 +2173,6 @@ namespace rr
 
 	Int::Int(Argument<Int> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -2618,7 +2612,6 @@ namespace rr
 
 	UInt::UInt(Argument<UInt> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
@@ -3832,7 +3825,6 @@ namespace rr
 
 	Float::Float(Argument<Float> argument)
 	{
-		materialize();  // FIXME(b/129757459)
 		storeValue(argument.value);
 	}
 
