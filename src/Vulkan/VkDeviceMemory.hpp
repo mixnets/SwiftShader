@@ -33,6 +33,7 @@ public:
 #endif
 #if VK_USE_PLATFORM_FUCHSIA
     VkResult exportHandle(zx_handle_t* pHandle) const;
+	bool checkBufferCollection(VkBufferCollectionFUCHSIA collection, uint32_t index) const;
 #endif
 	void destroy(const VkAllocationCallbacks* pAllocator);
 	VkResult allocate();
