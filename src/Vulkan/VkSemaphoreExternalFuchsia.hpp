@@ -102,7 +102,7 @@ public:
 		zx_signals_t observed = 0;
 		zx_status_t status = zx_object_wait_one(
 		    handle, ZX_EVENT_SIGNALED, zx_clock_get_monotonic(), &observed);
-		if(status != ZX_OK)
+		if(status != ZX_OK && status != ZX_ERR_TIMED_OUT)
 		{
 			ABORT("zx_object_wait_one() returned %d", status);
 		}
