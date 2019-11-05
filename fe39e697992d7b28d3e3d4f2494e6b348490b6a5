@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6675da89_e14119c2",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-05T21:34:46Z",
+      "side": 1,
+      "message": "Nit: you may want to add the ones we added in include/vulkan/vk_ext_provoking_vertex.h:\nVK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT\nVK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT\nVK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT",
+      "range": {
+        "startLine": 451,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 45
+      },
+      "revId": "fe39e697992d7b28d3e3d4f2494e6b348490b6a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
