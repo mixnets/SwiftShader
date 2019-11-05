@@ -20,6 +20,10 @@
 #include "Device/ETC_Decoder.hpp"
 #include <cstring>
 
+#if VK_USE_PLATFORM_FUCHSIA
+#include <zircon/syscalls.h>
+#endif
+
 namespace
 {
 	ETC_Decoder::InputType GetInputType(const vk::Format& format)
@@ -79,6 +83,13 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device) :
 			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
 		}
+#if VK_USE_PLATFORM_FUCHSIA
+		if (nextInfo->sType == VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA) {
+			const auto* importInfo = reinterpret_cast<const VkBufferCollectionImageCreateInfoFUCHSIA*>(nextInfo);
+			fuchsiaBufferCollectionHandle = importInfo->collection;
+			fuchsiaBufferCollectionIndex  = importInfo->index;
+		}
+#endif  // VK_USE_PLATFORM_FUCHSIA
 	}
 }
 
@@ -114,6 +125,17 @@ VkResult Image::bind(DeviceMemory* pDeviceMemory, VkDeviceSize pMemoryOffset)
 	{
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 	}
+
+#if VK_USE_PLATFORM_FUCHSIA
+	if (fuchsiaBufferCollectionHandle != VK_NULL_HANDLE)
+	{
+		VkResult result = pDeviceMemory->checkBufferCollection(fuchsiaBufferCollectionHandle,
+															   fuchsiaBufferCollectionIndex);
+		if (result != VK_SUCCESS)
+			return result;
+	}
+#endif
+
 	if(decompressedImage)
 	{
 		decompressedImage->deviceMemory = deviceMemory;

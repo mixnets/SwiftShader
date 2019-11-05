@@ -51,6 +51,11 @@ private:
 	uint32_t*             queueFamilyIndices = nullptr;
 
 	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
+
+#if VK_USE_PLATFORM_FUCHSIA
+	VkBufferCollectionFUCHSIA fuchsiaBufferCollectionHandle = { VK_NULL_HANDLE };
+	uint32_t                  fuchsiaBufferCollectionIndex = 0;
+#endif
 };
 
 static inline Buffer* Cast(VkBuffer object)
