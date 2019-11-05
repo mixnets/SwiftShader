@@ -1463,7 +1463,7 @@ endif(LINUX)
 # Subzero
 ###########################################################
 
-if(${REACTOR_BACKEND} STREQUAL "Subzero")
+if(1) #${REACTOR_BACKEND} STREQUAL "Subzero")
     set(SUBZERO_LIST
         ${SUBZERO_DIR}/src/IceAssembler.cpp
         ${SUBZERO_DIR}/src/IceCfg.cpp
@@ -1989,7 +1989,7 @@ if(BUILD_GLESv2)
         set_target_properties(libGLESv2 PROPERTIES SUFFIX "_swiftshader.so")
     endif ()
     set_shared_library_export_map(libGLESv2 ${SOURCE_DIR}/OpenGL/libGLESv2)
-    target_link_libraries(libGLESv2 SwiftShader ${Reactor} GLCompiler ${OS_LIBS})
+    target_link_libraries(libGLESv2 SwiftShader ReactorSubzero GLCompiler ${OS_LIBS})
     add_custom_command(
         TARGET libGLESv2
         POST_BUILD
@@ -2013,7 +2013,7 @@ if(BUILD_GLES_CM)
         set_target_properties(libGLES_CM PROPERTIES SUFFIX "_swiftshader.so")
     endif ()
     set_shared_library_export_map(libGLES_CM ${SOURCE_DIR}/OpenGL/libGLES_CM)
-    target_link_libraries(libGLES_CM SwiftShader ${Reactor} GLCompiler ${OS_LIBS})
+    target_link_libraries(libGLES_CM SwiftShader ReactorSubzero GLCompiler ${OS_LIBS})
     add_custom_command(
         TARGET libGLES_CM
         POST_BUILD
