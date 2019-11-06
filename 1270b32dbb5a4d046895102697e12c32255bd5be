@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8195653_e2c4561e",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-06T17:24:17Z",
+      "side": 1,
+      "message": "nit: line-end whitespace",
+      "range": {
+        "startLine": 147,
+        "startChar": 99,
+        "endLine": 147,
+        "endChar": 110
+      },
+      "revId": "1270b32dbb5a4d046895102697e12c32255bd5be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
