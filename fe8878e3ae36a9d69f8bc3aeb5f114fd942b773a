@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4bd93640_3bb379b0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-06T16:43:43Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s beneficial. It means platforms other than Android carry some of its implementation overhead. Also, it\u0027s confusing to see code not under __ANDROID__ guards serve no purpose on these other platforms. It makes one question what that code is used for, only to find it\u0027s unused, and it would be a bug to use it.\n\nI think this change looks OK with everything moved under __ANDROID__ guards. Not breaking this Android code with desktop-related changes is an infra task, and not something we should try to accomplish with these confusing Android-but-not-Android constructs.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 44
+      },
+      "revId": "fe8878e3ae36a9d69f8bc3aeb5f114fd942b773a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f38ee419_d9971011",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-06T16:43:43Z",
+      "side": 1,
+      "message": "Can we use VkNativeBufferANDROID for this instead?",
+      "range": {
+        "startLine": 32,
+        "startChar": 7,
+        "endLine": 32,
+        "endChar": 20
+      },
+      "revId": "fe8878e3ae36a9d69f8bc3aeb5f114fd942b773a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
