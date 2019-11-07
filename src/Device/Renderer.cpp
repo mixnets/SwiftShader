@@ -350,6 +350,14 @@ namespace sw
 			data->depthNear = N;
 		}
 
+		// Scissor
+		{
+			data->scissorX0 = max<int>(0, scissor.offset.x);
+			data->scissorX1 = max<int>(0, scissor.offset.x + scissor.extent.width);
+			data->scissorY0 = max<int>(0, scissor.offset.y);
+			data->scissorY1 = max<int>(0, scissor.offset.y + scissor.extent.height);
+		}
+
 		// Target
 		{
 			for(int index = 0; index < RENDERTARGETS; index++)
@@ -358,6 +366,12 @@ namespace sw
 
 				if(draw->renderTarget[index])
 				{
+					VkExtent3D extent = context->renderTarget[index]->getMipLevelExtent(0);
+					data->scissorX0 = min<int>(data->scissorX0, extent.width);
+					data->scissorX1 = min<int>(data->scissorX1, extent.width);
+					data->scissorY0 = min<int>(data->scissorY0, extent.height);
+					data->scissorY1 = min<int>(data->scissorY1, extent.height);
+
 					data->colorBuffer[index] = (unsigned int*)context->renderTarget[index]->getOffsetPointer({0, 0, 0}, VK_IMAGE_ASPECT_COLOR_BIT, 0, data->viewID);
 					data->colorPitchB[index] = context->renderTarget[index]->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 					data->colorSliceB[index] = context->renderTarget[index]->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
@@ -380,14 +394,6 @@ namespace sw
 				data->stencilPitchB = context->stencilBuffer->rowPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 				data->stencilSliceB = context->stencilBuffer->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 			}
-		}
-
-		// Scissor
-		{
-			data->scissorX0 = scissor.offset.x;
-			data->scissorX1 = scissor.offset.x + scissor.extent.width;
-			data->scissorY0 = scissor.offset.y;
-			data->scissorY1 = scissor.offset.y + scissor.extent.height;
 		}
 
 		// Push constants
