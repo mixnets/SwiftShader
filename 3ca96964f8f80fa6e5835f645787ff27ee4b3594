@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "1a0d5b81_c44fe33a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T21:34:02Z",
+      "side": 1,
+      "message": "Thanks, that\u0027s convincing justification!",
+      "parentUuid": "4ecabfe2_81db77e5",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "545ff79b_7247af39",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
