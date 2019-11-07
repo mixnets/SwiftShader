@@ -110,9 +110,12 @@ option(LESS_DEBUG_INFO "Generate less debug info to reduce file size" 0)
 set(BUILD_MARL ${BUILD_VULKAN})
 
 set(DEFAULT_REACTOR_BACKEND "LLVM")
-
 set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
+
+set(DEFAULT_REACTOR_LLVM_VERSION "8.0")
+set(REACTOR_LLVM_VERSION ${DEFAULT_REACTOR_LLVM_VERSION} CACHE STRING "Version of LLVM to build Reactor against")
+set_property(CACHE REACTOR_LLVM_VERSION PROPERTY STRINGS 7.0 8.0)
 
 # LLVM disallows calling cmake . from the main LLVM dir, the reason is that
 # it builds header files that could overwrite the orignal ones. Here we
@@ -271,8 +274,8 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
 set(OPENGL_COMPILER_DIR ${OPENGL_DIR}/compiler)
 set(VULKAN_DIR ${SOURCE_DIR}/Vulkan)
-set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-8.0/llvm)
-set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-8.0/configs)
+set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-${REACTOR_LLVM_VERSION}/llvm)
+set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-${REACTOR_LLVM_VERSION}/configs)
 set(LIBBACKTRACE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
 set(LIBBACKTRACE_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/config)
 set(LIBBACKTRACE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
@@ -475,6 +478,11 @@ if(REACTOR_EMIT_PRINT_LOCATION)
     # This feature depends on REACTOR_EMIT_DEBUG_INFO, so enable it
     set(REACTOR_EMIT_DEBUG_INFO "On")
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
+endif()
+
+if(REACTOR_EMIT_DEBUG_INFO AND NOT REACTOR_LLVM_VERSION EQUAL 7.0)
+  message(WARNING "REACTOR_EMIT_DEBUG_INFO only supported on LLVM 7 backend right now. Disabling.")
+  set(REACTOR_EMIT_DEBUG_INFO 0)
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
