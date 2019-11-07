@@ -45,6 +45,30 @@
       "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50891570_062e7809",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-07T19:34:40Z",
+      "side": 1,
+      "message": "This is not correct. There are width/height fields in the VkFramebufferCreateInfo for this purpose.\n\nIf the app specifies framebuffer dimensions too large for the attachments, they get UB (and validation picks this up): \n\n* If flags does not include VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR, each element of pAttachments must have dimensions at least as large as the corresponding framebuffer dimension",
+      "parentUuid": "6bfb84b0_96b432cb",
+      "range": {
+        "startLine": 370,
+        "startChar": 5,
+        "endLine": 373,
+        "endChar": 64
+      },
+      "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
