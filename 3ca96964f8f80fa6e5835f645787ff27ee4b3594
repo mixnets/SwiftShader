@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "4ecabfe2_81db77e5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 33117
+      },
+      "writtenOn": "2019-11-07T21:27:20Z",
+      "side": 1,
+      "message": "On mobile, 565 is a performance and resource win on many devices.\nI am not aware of any requirement for 565 support on Android, but every device I\u0027ve seen supports it and there are many apps that will use it to reduce resource impact on the device.\nSwiftShader isn\u0027t as useful as a development vehicle for ANGLE on Android if we can\u0027t support common features like this. I would love to see it go away as well, but the ecosystem isn\u0027t ready yet.",
+      "parentUuid": "8b6df8f0_b6b1e326",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "545ff79b_7247af39",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
