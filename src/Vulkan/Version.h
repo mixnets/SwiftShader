@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef Version_h
+#define Version_h
+
+#include "commit.h"
+
 #define MAJOR_VERSION 5
 #define MINOR_VERSION 0
 #define PATCH_VERSION 0
@@ -22,3 +27,11 @@
 
 #define REVISION_STRING MACRO_STRINGIFY(BUILD_REVISION)
 #define VERSION_STRING MACRO_STRINGIFY(MAJOR_VERSION) "." MACRO_STRINGIFY(MINOR_VERSION) "." MACRO_STRINGIFY(PATCH_VERSION)
+
+#define SWIFTSHADER_VERSION_STRING      \
+    MACRO_STRINGIFY(MAJOR_VERSION) "."  \
+    MACRO_STRINGIFY(MINOR_VERSION) "."  \
+    MACRO_STRINGIFY(PATCH_VERSION) "."  \
+    SWIFTSHADER_COMMIT_HASH
+
+#endif // Version_h

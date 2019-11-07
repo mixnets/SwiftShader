@@ -59,6 +59,7 @@
 #endif
 
 #ifdef __ANDROID__
+#include <android/log.h>
 #include <vulkan/vk_android_native_buffer.h>
 #include "System/GrallocAndroid.hpp"
 #include <sync/sync.h>
@@ -80,6 +81,19 @@
 
 namespace
 {
+
+// Output SwiftShader's version information
+void outputBuildVersionInformation()
+{
+#ifdef ENABLE_BUILD_VERSION_OUTPUT
+#ifdef __ANDROID__
+    // TODO(b/144093703): Don't call __android_log_print() directly
+    __android_log_print(ANDROID_LOG_INFO, "SwiftShader", "SwiftShader Version: %s", SWIFTSHADER_VERSION_STRING);
+#else
+    TRACE("SwiftShader Version: %s", SWIFTSHADER_VERSION_STRING);
+#endif  // __ANDROID__
+#endif  // SWS_ENABLE_GIT_HASH_VERSION
+}
 
 bool HasExtensionProperty(const char* extensionName, const VkExtensionProperties* extensionProperties, uint32_t extensionPropertiesCount)
 {
@@ -144,6 +158,7 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 void initializeLibrary()
 {
 	static bool doOnce = [] {
+	    outputBuildVersionInformation();
 		setReactorDefaultConfig();
 		setCPUDefaults();
 		return true;
