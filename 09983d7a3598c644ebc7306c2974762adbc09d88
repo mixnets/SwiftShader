@@ -69,6 +69,30 @@
       "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6012927c_047b3370",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-07T20:09:58Z",
+      "side": 1,
+      "message": "Done. IIUC, if VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR is passed, then the other parameters don\u0027t matter, except for some compatibility info.",
+      "parentUuid": "50891570_062e7809",
+      "range": {
+        "startLine": 370,
+        "startChar": 5,
+        "endLine": 373,
+        "endChar": 64
+      },
+      "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
