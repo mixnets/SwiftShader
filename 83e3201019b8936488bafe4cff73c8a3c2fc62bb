@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e92ebff9_b658e3f8",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15991,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-07T17:22:17Z",
+      "side": 1,
+      "message": "This happened to run in an environment where layers weren\u0027t available?",
+      "revId": "83e3201019b8936488bafe4cff73c8a3c2fc62bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
