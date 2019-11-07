@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "14fcf460_97814d0e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T19:20:14Z",
+      "side": 1,
+      "message": "nit: Kokoro looks for \"Bug:\", including the colon, so that you can mention \"Bug blah\" elsewhere in the message without it being interpreted as the main bug this is associated with. Also note other metadata like Change-Id: and Reviewed-by: have a colon.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 3
+      },
+      "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6bfb84b0_96b432cb",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 1
