@@ -1531,10 +1531,200 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         message(FATAL_ERROR "Architecture '${ARCH}' not supported by Subzero")
     endif()
 
-    file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
-        ${SUBZERO_LLVM_DIR}/*.cpp
-        ${SUBZERO_LLVM_DIR}/*.c
-        ${SUBZERO_LLVM_DIR}/*.h
+    set(SUBZERO_DEPENDENCIES_LIST
+        ${SUBZERO_LLVM_DIR}/build/Android/include/llvm/Config/abi-breaking.h
+        ${SUBZERO_LLVM_DIR}/build/Android/include/llvm/Config/config.h
+        ${SUBZERO_LLVM_DIR}/build/Android/include/llvm/Config/llvm-config.h
+        ${SUBZERO_LLVM_DIR}/build/Android/include/llvm/Support/DataTypes.h
+        ${SUBZERO_LLVM_DIR}/build/Fuchsia/include/llvm/Config/abi-breaking.h
+        ${SUBZERO_LLVM_DIR}/build/Fuchsia/include/llvm/Config/config.h
+        ${SUBZERO_LLVM_DIR}/build/Fuchsia/include/llvm/Config/llvm-config.h
+        ${SUBZERO_LLVM_DIR}/build/Fuchsia/include/llvm/Support/DataTypes.h
+        ${SUBZERO_LLVM_DIR}/build/Linux/include/llvm/Config/abi-breaking.h
+        ${SUBZERO_LLVM_DIR}/build/Linux/include/llvm/Config/config.h
+        ${SUBZERO_LLVM_DIR}/build/Linux/include/llvm/Config/llvm-config.h
+        ${SUBZERO_LLVM_DIR}/build/Linux/include/llvm/Support/DataTypes.h
+        ${SUBZERO_LLVM_DIR}/build/MacOS/include/llvm/Config/abi-breaking.h
+        ${SUBZERO_LLVM_DIR}/build/MacOS/include/llvm/Config/config.h
+        ${SUBZERO_LLVM_DIR}/build/MacOS/include/llvm/Config/llvm-config.h
+        ${SUBZERO_LLVM_DIR}/build/MacOS/include/llvm/Support/DataTypes.h
+        ${SUBZERO_LLVM_DIR}/build/Windows/include/llvm/Config/abi-breaking.h
+        ${SUBZERO_LLVM_DIR}/build/Windows/include/llvm/Config/config.h
+        ${SUBZERO_LLVM_DIR}/build/Windows/include/llvm/Config/llvm-config.h
+        ${SUBZERO_LLVM_DIR}/build/Windows/include/llvm/Support/DataTypes.h
+        ${SUBZERO_LLVM_DIR}/include/llvm-c/ErrorHandling.h
+        ${SUBZERO_LLVM_DIR}/include/llvm-c/Support.h
+        ${SUBZERO_LLVM_DIR}/include/llvm-c/Types.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/APFloat.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/APInt.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ArrayRef.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/BitVector.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/DenseMap.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/DenseMapInfo.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/EpochTracker.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/FoldingSet.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/Hashing.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/IntrusiveRefCntPtr.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/None.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/Optional.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/PointerIntPair.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/PointerUnion.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/STLExtras.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/SmallPtrSet.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/SmallSet.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/SmallString.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/Statistic.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/StringExtras.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/StringMap.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/StringRef.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/StringSwitch.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/Triple.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/Twine.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/edit_distance.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist_base.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist_iterator.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist_node.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist_node_base.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/ilist_node_options.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/iterator.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/iterator_range.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/simple_ilist.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/ADT/SmallVector.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Demangle/Demangle.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Argument.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Attributes.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/BasicBlock.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/CallingConv.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Constant.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/DebugLoc.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/DerivedTypes.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Function.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/GlobalObject.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/GlobalValue.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Instruction.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Intrinsics.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/LLVMContext.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Metadata.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/OperandTraits.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/SymbolTableListTraits.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/TrackingMDRef.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Type.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Use.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/User.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IR/Value.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/IRReader/IRReader.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ARMBuildAttributes.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/AlignOf.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Allocator.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Atomic.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/CBindingWrapping.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/COFF.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Casting.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Chrono.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/CommandLine.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Compiler.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ConvertUTF.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/DataStream.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Debug.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ELF.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Endian.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Errc.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Errno.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Error.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ErrorHandling.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ErrorOr.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FileSystem.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FileUtilities.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Format.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FormatCommon.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FormatProviders.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FormatVariadic.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/FormatVariadicDetails.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Host.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MD5.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MachO.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/ManagedStatic.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MathExtras.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Memory.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MemoryBuffer.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MemoryObject.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Mutex.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/MutexGuard.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/NativeFormatting.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Options.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Path.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/PointerLikeTypeTraits.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Process.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Program.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Regex.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/SMLoc.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Signals.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/SourceMgr.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/StreamingMemoryObject.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/StringSaver.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/SwapByteOrder.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/TargetParser.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Threading.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/TimeValue.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Timer.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/UniqueLock.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/Valgrind.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/WindowsError.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/YAMLParser.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/YAMLTraits.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/circular_raw_ostream.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/raw_os_ostream.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/raw_ostream.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/thread.h
+        ${SUBZERO_LLVM_DIR}/include/llvm/Support/type_traits.h
+        ${SUBZERO_LLVM_DIR}/lib/Demangle/ItaniumDemangle.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/APInt.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Atomic.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/CommandLine.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/ConvertUTF.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/ConvertUTFWrapper.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Debug.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Errno.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/ErrorHandling.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/FoldingSet.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Hashing.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Host.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/ManagedStatic.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/MemoryBuffer.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Mutex.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/NativeFormatting.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Path.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Process.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Program.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Regex.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Signals.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/SmallPtrSet.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/SmallVector.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/StringExtras.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/StringMap.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/StringRef.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/StringSaver.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/TargetParser.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Threading.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Timer.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Triple.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Twine.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/Unix/Unix.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/Windows/WindowsSupport.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/circular_raw_ostream.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/raw_os_ostream.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/raw_ostream.cpp
+        ${SUBZERO_LLVM_DIR}/lib/Support/regcclass.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/regcname.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/regcomp.c
+        ${SUBZERO_LLVM_DIR}/lib/Support/regerror.c
+        ${SUBZERO_LLVM_DIR}/lib/Support/regex2.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/regex_impl.h
+        ${SUBZERO_LLVM_DIR}/lib/Support/regexec.c
+        ${SUBZERO_LLVM_DIR}/lib/Support/regfree.c
+        ${SUBZERO_LLVM_DIR}/lib/Support/regstrlcpy.c
+        ${SUBZERO_LLVM_DIR}/lib/Support/regutils.h
     )
 
     set(SUBZERO_REACTOR_LIST
@@ -1614,16 +1804,115 @@ set(VULKAN_INCLUDE_DIR
 # File Lists
 ###########################################################
 
-file(GLOB_RECURSE SWIFTSHADER_LIST
-    ${SOURCE_DIR}/Common/*.cpp
-    ${SOURCE_DIR}/Common/*.h
-    ${SOURCE_DIR}/Common/*.hpp
-    ${SOURCE_DIR}/Renderer/*.cpp
-    ${SOURCE_DIR}/Renderer/*.h
-    ${SOURCE_DIR}/Renderer/*.hpp
-    ${SOURCE_DIR}/Shader/*.cpp
-    ${SOURCE_DIR}/Shader/*.h
-    ${SOURCE_DIR}/Shader/*.hpp
+set(SWIFTSHADER_LIST
+    ${SOURCE_DIR}/Common/CPUID.cpp
+    ${SOURCE_DIR}/Common/CPUID.hpp
+    ${SOURCE_DIR}/Common/Configurator.cpp
+    ${SOURCE_DIR}/Common/Configurator.hpp
+    ${SOURCE_DIR}/Common/Debug.cpp
+    ${SOURCE_DIR}/Common/Debug.hpp
+    ${SOURCE_DIR}/Common/DebugAndroid.cpp
+    ${SOURCE_DIR}/Common/DebugAndroid.hpp
+    ${SOURCE_DIR}/Common/GrallocAndroid.cpp
+    ${SOURCE_DIR}/Common/GrallocAndroid.hpp
+    ${SOURCE_DIR}/Common/Half.cpp
+    ${SOURCE_DIR}/Common/Half.hpp
+    ${SOURCE_DIR}/Common/Math.cpp
+    ${SOURCE_DIR}/Common/Math.hpp
+    ${SOURCE_DIR}/Common/Memory.cpp
+    ${SOURCE_DIR}/Common/Memory.hpp
+    ${SOURCE_DIR}/Common/MutexLock.hpp
+    ${SOURCE_DIR}/Common/RecursiveLock.hpp
+    ${SOURCE_DIR}/Common/Resource.cpp
+    ${SOURCE_DIR}/Common/Resource.hpp
+    ${SOURCE_DIR}/Common/SharedLibrary.cpp
+    ${SOURCE_DIR}/Common/SharedLibrary.hpp
+    ${SOURCE_DIR}/Common/Socket.cpp
+    ${SOURCE_DIR}/Common/Socket.hpp
+    ${SOURCE_DIR}/Common/Thread.cpp
+    ${SOURCE_DIR}/Common/Thread.hpp
+    ${SOURCE_DIR}/Common/Timer.cpp
+    ${SOURCE_DIR}/Common/Timer.hpp
+    ${SOURCE_DIR}/Common/Types.hpp
+    ${SOURCE_DIR}/Common/Version.h
+)
+list(REMOVE_ITEM SWIFTSHADER_LIST
+    ${SOURCE_DIR}/Common/DebugAndroid.cpp
+    ${SOURCE_DIR}/Common/DebugAndroid.hpp
+    ${SOURCE_DIR}/Common/GrallocAndroid.cpp
+    ${SOURCE_DIR}/Common/GrallocAndroid.hpp
+)
+list(APPEND SWIFTSHADER_LIST
+    ${SOURCE_DIR}/Renderer/Clipper.cpp
+    ${SOURCE_DIR}/Renderer/Clipper.hpp
+    ${SOURCE_DIR}/Renderer/Color.cpp
+    ${SOURCE_DIR}/Renderer/Color.hpp
+    ${SOURCE_DIR}/Renderer/Context.cpp
+    ${SOURCE_DIR}/Renderer/Context.hpp
+    ${SOURCE_DIR}/Renderer/ETC_Decoder.cpp
+    ${SOURCE_DIR}/Renderer/ETC_Decoder.hpp
+    ${SOURCE_DIR}/Renderer/Matrix.cpp
+    ${SOURCE_DIR}/Renderer/Matrix.hpp
+    ${SOURCE_DIR}/Renderer/Plane.cpp
+    ${SOURCE_DIR}/Renderer/Plane.hpp
+    ${SOURCE_DIR}/Renderer/Point.cpp
+    ${SOURCE_DIR}/Renderer/Point.hpp
+    ${SOURCE_DIR}/Renderer/Polygon.hpp
+    ${SOURCE_DIR}/Renderer/Primitive.hpp
+    ${SOURCE_DIR}/Renderer/QuadRasterizer.cpp
+    ${SOURCE_DIR}/Renderer/QuadRasterizer.hpp
+    ${SOURCE_DIR}/Renderer/Rasterizer.hpp
+    ${SOURCE_DIR}/Renderer/Sampler.cpp
+    ${SOURCE_DIR}/Renderer/Sampler.hpp
+    ${SOURCE_DIR}/Renderer/Stream.hpp
+    ${SOURCE_DIR}/Renderer/Surface.cpp
+    ${SOURCE_DIR}/Renderer/Surface.hpp
+    ${SOURCE_DIR}/Renderer/TextureStage.cpp
+    ${SOURCE_DIR}/Renderer/TextureStage.hpp
+    ${SOURCE_DIR}/Renderer/Triangle.hpp
+    ${SOURCE_DIR}/Renderer/Vector.cpp
+    ${SOURCE_DIR}/Renderer/Vector.hpp
+    ${SOURCE_DIR}/Renderer/Vertex.hpp
+    ${SOURCE_DIR}/Renderer/Blitter.cpp
+    ${SOURCE_DIR}/Renderer/Renderer.cpp
+    ${SOURCE_DIR}/Renderer/Renderer.hpp
+    ${SOURCE_DIR}/Renderer/RoutineCache.hpp
+    ${SOURCE_DIR}/Renderer/Blitter.hpp
+    ${SOURCE_DIR}/Renderer/LRUCache.hpp
+    ${SOURCE_DIR}/Renderer/PixelProcessor.cpp
+    ${SOURCE_DIR}/Renderer/PixelProcessor.hpp
+    ${SOURCE_DIR}/Renderer/SetupProcessor.cpp
+    ${SOURCE_DIR}/Renderer/SetupProcessor.hpp
+    ${SOURCE_DIR}/Renderer/VertexProcessor.cpp
+    ${SOURCE_DIR}/Renderer/VertexProcessor.hpp
+)
+list(APPEND SWIFTSHADER_LIST
+    ${SOURCE_DIR}/Shader/Constants.cpp
+    ${SOURCE_DIR}/Shader/Constants.hpp
+    ${SOURCE_DIR}/Shader/PixelPipeline.cpp
+    ${SOURCE_DIR}/Shader/PixelPipeline.hpp
+    ${SOURCE_DIR}/Shader/PixelProgram.hpp
+    ${SOURCE_DIR}/Shader/PixelRoutine.cpp
+    ${SOURCE_DIR}/Shader/PixelRoutine.hpp
+    ${SOURCE_DIR}/Shader/PixelShader.cpp
+    ${SOURCE_DIR}/Shader/PixelShader.hpp
+    ${SOURCE_DIR}/Shader/SamplerCore.cpp
+    ${SOURCE_DIR}/Shader/SamplerCore.hpp
+    ${SOURCE_DIR}/Shader/Shader.cpp
+    ${SOURCE_DIR}/Shader/Shader.hpp
+    ${SOURCE_DIR}/Shader/ShaderCore.cpp
+    ${SOURCE_DIR}/Shader/ShaderCore.hpp
+    ${SOURCE_DIR}/Shader/VertexPipeline.cpp
+    ${SOURCE_DIR}/Shader/VertexPipeline.hpp
+    ${SOURCE_DIR}/Shader/VertexProgram.hpp
+    ${SOURCE_DIR}/Shader/VertexRoutine.cpp
+    ${SOURCE_DIR}/Shader/VertexRoutine.hpp
+    ${SOURCE_DIR}/Shader/VertexShader.cpp
+    ${SOURCE_DIR}/Shader/VertexShader.hpp
+    ${SOURCE_DIR}/Shader/SetupRoutine.cpp
+    ${SOURCE_DIR}/Shader/SetupRoutine.hpp
+    ${SOURCE_DIR}/Shader/PixelProgram.cpp
+    ${SOURCE_DIR}/Shader/VertexProgram.cpp
 )
 list(APPEND SWIFTSHADER_LIST
     ${SOURCE_DIR}/Main/Config.cpp
@@ -1632,12 +1921,6 @@ list(APPEND SWIFTSHADER_LIST
     ${SOURCE_DIR}/Main/FrameBuffer.hpp
     ${SOURCE_DIR}/Main/SwiftConfig.cpp
     ${SOURCE_DIR}/Main/SwiftConfig.hpp
-)
-list(REMOVE_ITEM SWIFTSHADER_LIST
-    ${SOURCE_DIR}/Common/DebugAndroid.cpp
-    ${SOURCE_DIR}/Common/DebugAndroid.hpp
-    ${SOURCE_DIR}/Common/GrallocAndroid.cpp
-    ${SOURCE_DIR}/Common/GrallocAndroid.hpp
 )
 
 if(REACTOR_EMIT_DEBUG_INFO)
@@ -1686,62 +1969,297 @@ set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/ExecutableMemory.hpp
 )
 
-file(GLOB_RECURSE EGL_LIST
-    ${OPENGL_DIR}/libEGL/*.cpp
-    ${OPENGL_DIR}/libEGL/*.h
-    ${OPENGL_DIR}/libEGL/*.hpp
+set(OPENGL_COMMON_SOURCES_LIST
+    ${OPENGL_DIR}/common/MatrixStack.cpp
+    ${OPENGL_DIR}/common/MatrixStack.hpp
+    ${OPENGL_DIR}/common/NameSpace.hpp
+    ${OPENGL_DIR}/common/Object.cpp
+    ${OPENGL_DIR}/common/Object.hpp
+    ${OPENGL_DIR}/common/Surface.hpp
+    ${OPENGL_DIR}/common/debug.cpp
+    ${OPENGL_DIR}/common/debug.h
+    ${OPENGL_DIR}/common/Image.cpp
+    ${OPENGL_DIR}/common/Image.hpp
+    ${SOURCE_DIR}/Common/SharedLibrary.cpp
+    ${SOURCE_DIR}/Common/SharedLibrary.hpp
+)
+
+set(EGL_LIST
+    ${OPENGL_DIR}/libEGL/Config.cpp
+    ${OPENGL_DIR}/libEGL/Config.h
+    ${OPENGL_DIR}/libEGL/Context.hpp
+    ${OPENGL_DIR}/libEGL/Display.h
+    ${OPENGL_DIR}/libEGL/OSXUtils.hpp
+    ${OPENGL_DIR}/libEGL/Surface.hpp
+    ${OPENGL_DIR}/libEGL/Sync.hpp
+    ${OPENGL_DIR}/libEGL/Texture.hpp
+    ${OPENGL_DIR}/libEGL/main.h
+    ${OPENGL_DIR}/libEGL/resource.h
+    ${OPENGL_DIR}/libEGL/Display.cpp
+    ${OPENGL_DIR}/libEGL/Surface.cpp
+    ${OPENGL_DIR}/libEGL/libEGL.hpp
+    ${OPENGL_DIR}/libEGL/libEGL.cpp
+    ${OPENGL_DIR}/libEGL/main.cpp
     ${OPENGL_DIR}/common/Object.cpp
     ${OPENGL_DIR}/common/Object.hpp
     ${OPENGL_DIR}/common/debug.cpp
     ${OPENGL_DIR}/common/debug.h
     ${SOURCE_DIR}/Common/SharedLibrary.cpp
     ${SOURCE_DIR}/Common/SharedLibrary.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/khrplatform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/EGL/egl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/EGL/eglext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/EGL/eglplatform.h
 )
 
-file(GLOB_RECURSE GLES2_LIST
-    ${OPENGL_DIR}/libGLESv2/*.cpp
-    ${OPENGL_DIR}/libGLESv2/*.h
-    ${OPENGL_DIR}/libGLESv2/*.hpp
-    ${OPENGL_DIR}/common/*.cpp
-    ${OPENGL_DIR}/common/*.h
-    ${OPENGL_DIR}/common/*.hpp
-    ${SOURCE_DIR}/Common/SharedLibrary.cpp
-    ${SOURCE_DIR}/Common/SharedLibrary.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES3/*.h
+set(GLES2_LIST
+    ${OPENGL_DIR}/libGLESv2/Buffer.cpp
+    ${OPENGL_DIR}/libGLESv2/Buffer.h
+    ${OPENGL_DIR}/libGLESv2/Fence.cpp
+    ${OPENGL_DIR}/libGLESv2/Fence.h
+    ${OPENGL_DIR}/libGLESv2/Framebuffer.h
+    ${OPENGL_DIR}/libGLESv2/IndexDataManager.cpp
+    ${OPENGL_DIR}/libGLESv2/IndexDataManager.h
+    ${OPENGL_DIR}/libGLESv2/Program.cpp
+    ${OPENGL_DIR}/libGLESv2/Program.h
+    ${OPENGL_DIR}/libGLESv2/Query.cpp
+    ${OPENGL_DIR}/libGLESv2/Query.h
+    ${OPENGL_DIR}/libGLESv2/Renderbuffer.cpp
+    ${OPENGL_DIR}/libGLESv2/Renderbuffer.h
+    ${OPENGL_DIR}/libGLESv2/ResourceManager.cpp
+    ${OPENGL_DIR}/libGLESv2/ResourceManager.h
+    ${OPENGL_DIR}/libGLESv2/Sampler.h
+    ${OPENGL_DIR}/libGLESv2/TransformFeedback.cpp
+    ${OPENGL_DIR}/libGLESv2/TransformFeedback.h
+    ${OPENGL_DIR}/libGLESv2/VertexArray.cpp
+    ${OPENGL_DIR}/libGLESv2/VertexArray.h
+    ${OPENGL_DIR}/libGLESv2/VertexDataManager.cpp
+    ${OPENGL_DIR}/libGLESv2/VertexDataManager.h
+    ${OPENGL_DIR}/libGLESv2/entry_points.cpp
+    ${OPENGL_DIR}/libGLESv2/main.cpp
+    ${OPENGL_DIR}/libGLESv2/main.h
+    ${OPENGL_DIR}/libGLESv2/mathutil.h
+    ${OPENGL_DIR}/libGLESv2/resource.h
+    ${OPENGL_DIR}/libGLESv2/Shader.cpp
+    ${OPENGL_DIR}/libGLESv2/Shader.h
+    ${OPENGL_DIR}/libGLESv2/Device.hpp
+    ${OPENGL_DIR}/libGLESv2/entry_points.h
+    ${OPENGL_DIR}/libGLESv2/libGLESv2.cpp
+    ${OPENGL_DIR}/libGLESv2/libGLESv2.hpp
+    ${OPENGL_DIR}/libGLESv2/libGLESv3.cpp
+    ${OPENGL_DIR}/libGLESv2/Context.cpp
+    ${OPENGL_DIR}/libGLESv2/Context.h
+    ${OPENGL_DIR}/libGLESv2/Device.cpp
+    ${OPENGL_DIR}/libGLESv2/Framebuffer.cpp
+    ${OPENGL_DIR}/libGLESv2/Texture.cpp
+    ${OPENGL_DIR}/libGLESv2/Texture.h
+    ${OPENGL_DIR}/libGLESv2/utilities.cpp
+    ${OPENGL_DIR}/libGLESv2/utilities.h
+    ${OPENGL_COMMON_SOURCES_LIST}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/khrplatform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/gl2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/gl2ext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/gl2platform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES3/gl3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES3/gl3platform.h
 )
 
-file(GLOB_RECURSE GLES_CM_LIST
-    ${OPENGL_DIR}/libGLES_CM/*.cpp
-    ${OPENGL_DIR}/libGLES_CM/*.h
-    ${OPENGL_DIR}/libGLES_CM/*.hpp
-    ${OPENGL_DIR}/common/*.cpp
-    ${OPENGL_DIR}/common/*.h
-    ${OPENGL_DIR}/common/*.hpp
-    ${SOURCE_DIR}/Common/SharedLibrary.cpp
-    ${SOURCE_DIR}/Common/SharedLibrary.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/*.h
+set(GLES_CM_LIST
+    ${OPENGL_DIR}/libGLES_CM/Buffer.cpp
+    ${OPENGL_DIR}/libGLES_CM/Buffer.h
+    ${OPENGL_DIR}/libGLES_CM/Context.cpp
+    ${OPENGL_DIR}/libGLES_CM/Context.h
+    ${OPENGL_DIR}/libGLES_CM/Device.cpp
+    ${OPENGL_DIR}/libGLES_CM/Device.hpp
+    ${OPENGL_DIR}/libGLES_CM/Framebuffer.cpp
+    ${OPENGL_DIR}/libGLES_CM/Framebuffer.h
+    ${OPENGL_DIR}/libGLES_CM/IndexDataManager.cpp
+    ${OPENGL_DIR}/libGLES_CM/IndexDataManager.h
+    ${OPENGL_DIR}/libGLES_CM/Renderbuffer.cpp
+    ${OPENGL_DIR}/libGLES_CM/Renderbuffer.h
+    ${OPENGL_DIR}/libGLES_CM/ResourceManager.cpp
+    ${OPENGL_DIR}/libGLES_CM/ResourceManager.h
+    ${OPENGL_DIR}/libGLES_CM/Texture.cpp
+    ${OPENGL_DIR}/libGLES_CM/Texture.h
+    ${OPENGL_DIR}/libGLES_CM/VertexDataManager.cpp
+    ${OPENGL_DIR}/libGLES_CM/VertexDataManager.h
+    ${OPENGL_DIR}/libGLES_CM/main.h
+    ${OPENGL_DIR}/libGLES_CM/mathutil.h
+    ${OPENGL_DIR}/libGLES_CM/resource.h
+    ${OPENGL_DIR}/libGLES_CM/utilities.cpp
+    ${OPENGL_DIR}/libGLES_CM/utilities.h
+    ${OPENGL_DIR}/libGLES_CM/libGLES_CM.cpp
+    ${OPENGL_DIR}/libGLES_CM/libGLES_CM.hpp
+    ${OPENGL_DIR}/libGLES_CM/main.cpp
+    ${OPENGL_COMMON_SOURCES_LIST}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/khrplatform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/gl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/glext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/glplatform.h
 )
 
-file(GLOB_RECURSE OPENGL_COMPILER_LIST
-    ${OPENGL_COMPILER_DIR}/*.cpp
-    ${OPENGL_COMPILER_DIR}/*.h
-    ${OPENGL_COMPILER_DIR}/*.hpp
+set(OPENGL_COMPILER_LIST
+    ${OPENGL_COMPILER_DIR}/AnalyzeCallDepth.cpp
+    ${OPENGL_COMPILER_DIR}/AnalyzeCallDepth.h
+    ${OPENGL_COMPILER_DIR}/BaseTypes.h
+    ${OPENGL_COMPILER_DIR}/Common.h
+    ${OPENGL_COMPILER_DIR}/Compiler.cpp
+    ${OPENGL_COMPILER_DIR}/Compiler.h
+    ${OPENGL_COMPILER_DIR}/ConstantUnion.h
+    ${OPENGL_COMPILER_DIR}/Diagnostics.cpp
+    ${OPENGL_COMPILER_DIR}/Diagnostics.h
+    ${OPENGL_COMPILER_DIR}/DirectiveHandler.cpp
+    ${OPENGL_COMPILER_DIR}/DirectiveHandler.h
+    ${OPENGL_COMPILER_DIR}/ExtensionBehavior.h
+    ${OPENGL_COMPILER_DIR}/InfoSink.cpp
+    ${OPENGL_COMPILER_DIR}/InfoSink.h
+    ${OPENGL_COMPILER_DIR}/Initialize.cpp
+    ${OPENGL_COMPILER_DIR}/Initialize.h
+    ${OPENGL_COMPILER_DIR}/InitializeGlobals.h
+    ${OPENGL_COMPILER_DIR}/InitializeParseContext.cpp
+    ${OPENGL_COMPILER_DIR}/InitializeParseContext.h
+    ${OPENGL_COMPILER_DIR}/IntermTraverse.cpp
+    ${OPENGL_COMPILER_DIR}/MMap.h
+    ${OPENGL_COMPILER_DIR}/OutputASM.h
+    ${OPENGL_COMPILER_DIR}/ParseHelper.h
+    ${OPENGL_COMPILER_DIR}/PoolAlloc.cpp
+    ${OPENGL_COMPILER_DIR}/PoolAlloc.h
+    ${OPENGL_COMPILER_DIR}/Pragma.h
+    ${OPENGL_COMPILER_DIR}/SymbolTable.cpp
+    ${OPENGL_COMPILER_DIR}/SymbolTable.h
+    ${OPENGL_COMPILER_DIR}/TranslatorASM.cpp
+    ${OPENGL_COMPILER_DIR}/TranslatorASM.h
+    ${OPENGL_COMPILER_DIR}/Types.h
+    ${OPENGL_COMPILER_DIR}/ValidateLimitations.cpp
+    ${OPENGL_COMPILER_DIR}/ValidateLimitations.h
+    ${OPENGL_COMPILER_DIR}/ValidateSwitch.cpp
+    ${OPENGL_COMPILER_DIR}/ValidateSwitch.h
+    ${OPENGL_COMPILER_DIR}/debug.cpp
+    ${OPENGL_COMPILER_DIR}/debug.h
+    ${OPENGL_COMPILER_DIR}/glslang.h
+    ${OPENGL_COMPILER_DIR}/glslang_lex.cpp
+    ${OPENGL_COMPILER_DIR}/glslang_tab.cpp
+    ${OPENGL_COMPILER_DIR}/glslang_tab.h
+    ${OPENGL_COMPILER_DIR}/intermOut.cpp
+    ${OPENGL_COMPILER_DIR}/intermediate.h
+    ${OPENGL_COMPILER_DIR}/localintermediate.h
+    ${OPENGL_COMPILER_DIR}/osinclude.h
+    ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
+    ${OPENGL_COMPILER_DIR}/ossource_win.cpp
+    ${OPENGL_COMPILER_DIR}/parseConst.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/DiagnosticsBase.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/DiagnosticsBase.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/DirectiveHandlerBase.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/DirectiveHandlerBase.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/DirectiveParser.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/DirectiveParser.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/ExpressionParser.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/ExpressionParser.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Input.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Input.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Lexer.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Lexer.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Macro.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Macro.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/MacroExpander.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/MacroExpander.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Preprocessor.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Preprocessor.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/SourceLocation.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Token.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Token.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/Tokenizer.cpp
+    ${OPENGL_COMPILER_DIR}/preprocessor/Tokenizer.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/length_limits.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/numeric_lex.h
+    ${OPENGL_COMPILER_DIR}/preprocessor/pp_utils.h
+    ${OPENGL_COMPILER_DIR}/util.cpp
+    ${OPENGL_COMPILER_DIR}/util.h
+    ${OPENGL_COMPILER_DIR}/OutputASM.cpp
+    ${OPENGL_COMPILER_DIR}/Intermediate.cpp
+    ${OPENGL_COMPILER_DIR}/ParseHelper.cpp
 )
-file(GLOB_RECURSE OPENGL_COMPILER_OS_SPECIFIC_LIST
-    ${OPENGL_COMPILER_DIR}/ossource*.cpp
-    ${OPENGL_COMPILER_DIR}/ossource*.h
-    ${OPENGL_COMPILER_DIR}/ossource*.hpp
+set(OPENGL_COMPILER_OS_SPECIFIC_LIST
+    ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
+    ${OPENGL_COMPILER_DIR}/ossource_win.cpp
 )
 list(REMOVE_ITEM OPENGL_COMPILER_LIST ${OPENGL_COMPILER_OS_SPECIFIC_LIST})
 
-file(GLOB_RECURSE VULKAN_LIST
-    ${VULKAN_DIR}/*.cpp
-    ${VULKAN_DIR}/*.h
-    ${VULKAN_DIR}/*.hpp
+set(SRC_DEVICE_LIST
+)
+
+set(VULKAN_LIST
+    ${VULKAN_DIR}/Version.h
+    ${VULKAN_DIR}/VkBufferView.cpp
+    ${VULKAN_DIR}/VkBufferView.hpp
+    ${VULKAN_DIR}/VkCommandPool.cpp
+    ${VULKAN_DIR}/VkCommandPool.hpp
+    ${VULKAN_DIR}/VkDebug.cpp
+    ${VULKAN_DIR}/VkDebug.hpp
+    ${VULKAN_DIR}/VkDescriptorPool.cpp
+    ${VULKAN_DIR}/VkDescriptorPool.hpp
+    ${VULKAN_DIR}/VkDescriptorSet.hpp
+    ${VULKAN_DIR}/VkDescriptorUpdateTemplate.cpp
+    ${VULKAN_DIR}/VkDescriptorUpdateTemplate.hpp
+    ${VULKAN_DIR}/VkEvent.hpp
+    ${VULKAN_DIR}/VkFence.hpp
+    ${VULKAN_DIR}/VkGetProcAddress.h
+    ${VULKAN_DIR}/VkInstance.cpp
+    ${VULKAN_DIR}/VkInstance.hpp
+    ${VULKAN_DIR}/VkMemory.cpp
+    ${VULKAN_DIR}/VkMemory.h
+    ${VULKAN_DIR}/VkObject.hpp
+    ${VULKAN_DIR}/VkPipeline.hpp
+    ${VULKAN_DIR}/VkPipelineLayout.cpp
+    ${VULKAN_DIR}/VkPipelineLayout.hpp
+    ${VULKAN_DIR}/VkPromotedExtensions.cpp
+    ${VULKAN_DIR}/VkQueryPool.cpp
+    ${VULKAN_DIR}/VkQueryPool.hpp
+    ${VULKAN_DIR}/VkSampler.cpp
+    ${VULKAN_DIR}/VkSampler.hpp
+    ${VULKAN_DIR}/VkShaderModule.cpp
+    ${VULKAN_DIR}/VkShaderModule.hpp
+    ${VULKAN_DIR}/main.cpp
+    ${VULKAN_DIR}/resource.h
+    ${VULKAN_DIR}/VkPipelineCache.cpp
+    ${VULKAN_DIR}/VkCommandBuffer.hpp
+    ${VULKAN_DIR}/VkDescriptorSetLayout.cpp
+    ${VULKAN_DIR}/VkDescriptorSetLayout.hpp
+    ${VULKAN_DIR}/VkFormat.h
+    ${VULKAN_DIR}/VkFramebuffer.cpp
+    ${VULKAN_DIR}/VkFramebuffer.hpp
+    ${VULKAN_DIR}/VkImageView.hpp
+    ${VULKAN_DIR}/VkRenderPass.cpp
+    ${VULKAN_DIR}/VkRenderPass.hpp
+    ${VULKAN_DIR}/VkCommandBuffer.cpp
+    ${VULKAN_DIR}/VkDevice.cpp
+    ${VULKAN_DIR}/VkDevice.hpp
+    ${VULKAN_DIR}/VkFormat.cpp
+    ${VULKAN_DIR}/VkImageView.cpp
+    ${VULKAN_DIR}/VkPipelineCache.hpp
+    ${VULKAN_DIR}/VkSemaphoreExternalLinux.hpp
+    ${VULKAN_DIR}/VkSemaphoreExternalNone.hpp
+    ${VULKAN_DIR}/VkQueue.cpp
+    ${VULKAN_DIR}/VkQueue.hpp
+    ${VULKAN_DIR}/VkPhysicalDevice.hpp
+    ${VULKAN_DIR}/VkPipeline.cpp
+    ${VULKAN_DIR}/VulkanPlatform.h
+    ${VULKAN_DIR}/VkSemaphore.cpp
+    ${VULKAN_DIR}/VkSemaphore.hpp
+    ${VULKAN_DIR}/VkSemaphoreExternalFuchsia.hpp
+    ${VULKAN_DIR}/VkBuffer.cpp
+    ${VULKAN_DIR}/VkBuffer.hpp
+    ${VULKAN_DIR}/VkConfig.h
+    ${VULKAN_DIR}/VkDestroy.h
+    ${VULKAN_DIR}/VkDeviceMemory.cpp
+    ${VULKAN_DIR}/VkDeviceMemory.hpp
+    ${VULKAN_DIR}/VkGetProcAddress.cpp
+    ${VULKAN_DIR}/VkImage.cpp
+    ${VULKAN_DIR}/VkImage.hpp
+    ${VULKAN_DIR}/VkPhysicalDevice.cpp
+    ${VULKAN_DIR}/libVulkan.cpp
+)
+list(APPEND VULKAN_LIST
     ${SOURCE_DIR}/System/Build.hpp
     ${SOURCE_DIR}/System/CPUID.cpp
     ${SOURCE_DIR}/System/CPUID.hpp
@@ -1760,22 +2278,110 @@ file(GLOB_RECURSE VULKAN_LIST
     ${SOURCE_DIR}/System/Synchronization.hpp
     ${SOURCE_DIR}/System/Timer.cpp
     ${SOURCE_DIR}/System/Timer.hpp
-    ${SOURCE_DIR}/Device/*.cpp
-    ${SOURCE_DIR}/Device/*.hpp
-    ${SOURCE_DIR}/Pipeline/*.cpp
-    ${SOURCE_DIR}/Pipeline/*.hpp
+)
+if (LINUX OR ANDROID)
+    list(APPEND VULKAN_LIST
+        ${SOURCE_DIR}/System/Linux/MemFd.cpp
+        ${SOURCE_DIR}/System/Linux/MemFd.hpp
+    )
+endif(LINUX OR ANDROID)
+
+list(APPEND VULKAN_LIST
+    ${SOURCE_DIR}/Device/Clipper.cpp
+    ${SOURCE_DIR}/Device/Clipper.hpp
+    ${SOURCE_DIR}/Device/Color.cpp
+    ${SOURCE_DIR}/Device/Color.hpp
+    ${SOURCE_DIR}/Device/Config.cpp
+    ${SOURCE_DIR}/Device/ETC_Decoder.cpp
+    ${SOURCE_DIR}/Device/ETC_Decoder.hpp
+    ${SOURCE_DIR}/Device/Matrix.cpp
+    ${SOURCE_DIR}/Device/Matrix.hpp
+    ${SOURCE_DIR}/Device/Plane.cpp
+    ${SOURCE_DIR}/Device/Plane.hpp
+    ${SOURCE_DIR}/Device/Point.cpp
+    ${SOURCE_DIR}/Device/Point.hpp
+    ${SOURCE_DIR}/Device/Polygon.hpp
+    ${SOURCE_DIR}/Device/QuadRasterizer.hpp
+    ${SOURCE_DIR}/Device/Triangle.hpp
+    ${SOURCE_DIR}/Device/Vector.cpp
+    ${SOURCE_DIR}/Device/Vector.hpp
+    ${SOURCE_DIR}/Device/Sampler.hpp
+    ${SOURCE_DIR}/Device/Memset.hpp
+    ${SOURCE_DIR}/Device/Primitive.hpp
+    ${SOURCE_DIR}/Device/QuadRasterizer.cpp
+    ${SOURCE_DIR}/Device/Vertex.hpp
+    ${SOURCE_DIR}/Device/Config.hpp
+    ${SOURCE_DIR}/Device/Stream.hpp
+    ${SOURCE_DIR}/Device/Context.cpp
+    ${SOURCE_DIR}/Device/Context.hpp
+    ${SOURCE_DIR}/Device/Blitter.cpp
+    ${SOURCE_DIR}/Device/Blitter.hpp
+    ${SOURCE_DIR}/Device/LRUCache.hpp
+    ${SOURCE_DIR}/Device/PixelProcessor.cpp
+    ${SOURCE_DIR}/Device/PixelProcessor.hpp
+    ${SOURCE_DIR}/Device/Rasterizer.hpp
+    ${SOURCE_DIR}/Device/Renderer.cpp
+    ${SOURCE_DIR}/Device/Renderer.hpp
+    ${SOURCE_DIR}/Device/RoutineCache.hpp
+    ${SOURCE_DIR}/Device/SetupProcessor.cpp
+    ${SOURCE_DIR}/Device/SetupProcessor.hpp
+    ${SOURCE_DIR}/Device/VertexProcessor.cpp
+    ${SOURCE_DIR}/Device/VertexProcessor.hpp
+)
+list(APPEND VULKAN_LIST
+    ${SOURCE_DIR}/Pipeline/ShaderCore.cpp
+    ${SOURCE_DIR}/Pipeline/ShaderCore.hpp
+    ${SOURCE_DIR}/Pipeline/SpirvID.hpp
+    ${SOURCE_DIR}/Pipeline/SpirvShader_dbg.cpp
+    ${SOURCE_DIR}/Pipeline/ComputeProgram.hpp
+    ${SOURCE_DIR}/Pipeline/SpirvShaderSampling.cpp
+    ${SOURCE_DIR}/Pipeline/ComputeProgram.cpp
+    ${SOURCE_DIR}/Pipeline/PixelProgram.cpp
+    ${SOURCE_DIR}/Pipeline/PixelProgram.hpp
+    ${SOURCE_DIR}/Pipeline/Constants.cpp
+    ${SOURCE_DIR}/Pipeline/Constants.hpp
+    ${SOURCE_DIR}/Pipeline/SamplerCore.cpp
+    ${SOURCE_DIR}/Pipeline/SamplerCore.hpp
+    ${SOURCE_DIR}/Pipeline/SpirvShader.cpp
+    ${SOURCE_DIR}/Pipeline/SpirvShader.hpp
+    ${SOURCE_DIR}/Pipeline/VertexProgram.cpp
+    ${SOURCE_DIR}/Pipeline/VertexProgram.hpp
+    ${SOURCE_DIR}/Pipeline/VertexRoutine.cpp
+    ${SOURCE_DIR}/Pipeline/PixelRoutine.cpp
+    ${SOURCE_DIR}/Pipeline/PixelRoutine.hpp
+    ${SOURCE_DIR}/Pipeline/SetupRoutine.cpp
+    ${SOURCE_DIR}/Pipeline/SetupRoutine.hpp
+    ${SOURCE_DIR}/Pipeline/VertexRoutine.hpp
+)
+list(APPEND VULKAN_LIST
     ${SOURCE_DIR}/WSI/VkSurfaceKHR.cpp
     ${SOURCE_DIR}/WSI/VkSurfaceKHR.hpp
     ${SOURCE_DIR}/WSI/VkSwapchainKHR.cpp
     ${SOURCE_DIR}/WSI/VkSwapchainKHR.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
-
-if (LINUX OR ANDROID)
-    list(APPEND VULKAN_LIST
-        ${SOURCE_DIR}/System/Linux/MemFd.cpp
-	${SOURCE_DIR}/System/Linux/MemFd.hpp)
-endif(LINUX OR ANDROID)
+list(APPEND VULKAN_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vk_layer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vk_platform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vk_sdk_platform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_fuchsia_extras.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vk_icd.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_android.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_core.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_fuchsia.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_ggp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_ios.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_macos.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_metal.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_vi.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_wayland.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_win32.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_xcb.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_xlib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan_xlib_xrandr.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vk_ext_provoking_vertex.h
+)
 
 ###########################################################
 # Append OS specific files to lists
