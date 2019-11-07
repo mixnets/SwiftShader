@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7eac1b70_a6eff321",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T15:25:09Z",
+      "side": 1,
+      "message": "Is this a strict necessity? If so, do you have a link to a document stating that?\n\nI vaguely recall EGL guaranteeing 565 window surface support, but I can\u0027t seem to find the exact spec text for it immediately. I just want to make sure we dot our i\u0027s and cross or t\u0027s, and aren\u0027t missing some conditions or other mandatory formats.",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "545ff79b_7247af39",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T15:25:09Z",
+      "side": 1,
+      "message": "Under what situation are you running into this? We shouldn\u0027t typically change LLVM code. It\u0027s more likely we need to change some LLVM setup code in Reactor or build config.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 13
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
