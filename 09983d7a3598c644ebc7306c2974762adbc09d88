@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bfb84b0_96b432cb",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T19:17:29Z",
+      "side": 1,
+      "message": "I\u0027m not sure if this is entirely correct. Looping over the render targets results in the smallest overlapping rectangle to be used as scissor rect. Instead it might be the intention that each render target should have its own limits respected. That said, \"Rasterization does not produce fragments outside of the framebuffer\" is a bit vague. Please double-check if Vulkan allows attachments of different sizes. I vaguely recall that we looked at this before but I don\u0027t remember the outcome. Let\u0027s document it in the code if this is correct, or add a TODO if it needs follow-up.",
+      "range": {
+        "startLine": 370,
+        "startChar": 5,
+        "endLine": 373,
+        "endChar": 64
+      },
+      "revId": "09983d7a3598c644ebc7306c2974762adbc09d88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
