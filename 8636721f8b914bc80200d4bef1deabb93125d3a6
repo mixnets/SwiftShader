@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb5bf3b2_321ac8d5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T18:35:13Z",
+      "side": 1,
+      "message": "nit: log? output is pretty vague",
+      "range": {
+        "startLine": 86,
+        "startChar": 5,
+        "endLine": 86,
+        "endChar": 11
+      },
+      "revId": "8636721f8b914bc80200d4bef1deabb93125d3a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfbc5e91_c6619d30",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T18:35:13Z",
+      "side": 1,
+      "message": "What\u0027s the proper solution for that?",
+      "range": {
+        "startLine": 90,
+        "startChar": 26,
+        "endLine": 90,
+        "endChar": 67
+      },
+      "revId": "8636721f8b914bc80200d4bef1deabb93125d3a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6045cd5e_32d0cafd",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T18:35:13Z",
+      "side": 1,
+      "message": "ENABLE_BUILD_VERSION_OUTPUT",
+      "range": {
+        "startLine": 95,
+        "startChar": 11,
+        "endLine": 95,
+        "endChar": 38
+      },
+      "revId": "8636721f8b914bc80200d4bef1deabb93125d3a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc1af049_55a05360",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T18:35:13Z",
+      "side": 1,
+      "message": "This doesn\u0027t do anything except on Android. This can be confusing since it doesn\u0027t do what the name implies on other platforms. Maybe guard this call with __ANDROID__ here, and in outputBuildVersionInformation have an #else #error in case someone tries to call it from a platform for which it doesn\u0027t have an implementation.",
+      "range": {
+        "startLine": 161,
+        "startChar": 5,
+        "endLine": 161,
+        "endChar": 37
+      },
+      "revId": "8636721f8b914bc80200d4bef1deabb93125d3a6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
