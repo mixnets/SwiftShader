@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9c774e89_52b313d5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 33117
+      },
+      "writtenOn": "2019-11-07T15:55:33Z",
+      "side": 1,
+      "message": "565 is still a relatively common format for apps to use in Android. Since we\u0027ve seen issues specific to that format we\u0027d like SwiftShader to support as well so that we can repro such issues entirely in SW.",
+      "parentUuid": "7eac1b70_a6eff321",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "545ff79b_7247af39",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e354a270_4942419f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 33117
+      },
+      "writtenOn": "2019-11-07T15:55:33Z",
+      "side": 1,
+      "message": "This was fixed shortly after I did this. I\u0027ll remove this part of the change.",
+      "parentUuid": "545ff79b_7247af39",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 13
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
