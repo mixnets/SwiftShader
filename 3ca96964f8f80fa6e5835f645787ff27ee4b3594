@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "8b6df8f0_b6b1e326",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T18:16:46Z",
+      "side": 1,
+      "message": "Understood, but my question was more about why dEQP \"wants\" it. I just want to check that this is not an invalid assumption, so that Android devices which choose to remove support for it can get certified, and ANGLE supports them too.\n\nAlso note that EGL red/green/blue/alpha attributes only specify the minimum required bit depth. Implementations can return configs with higher bit depth per component. So we\u0027ll want to determine if that\u0027s desired or not. Personally I wouldn\u0027t mind if 565 went the way of the dodo, especially as a surface format, and I imagine some vendors feel the same way so they may not expose it through Vulkan. As a reference implementation, I think SwiftShader should also set an example as a clean, forward-looking implementation and not one that supports outdated functionality.",
+      "parentUuid": "9c774e89_52b313d5",
+      "range": {
+        "startLine": 9,
+        "startChar": 13,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3ca96964f8f80fa6e5835f645787ff27ee4b3594",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "545ff79b_7247af39",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
