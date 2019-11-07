@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e3aacbd1_f75ad8cd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T21:05:07Z",
+      "side": 1,
+      "message": "Note this could also be addressed by moving platform-specific source files to subdirectories.\n\nIn my opinion that makes things cleaner. If we have 5 files for abstract classes and 5 platforms with concrete implementations, that\u0027s 30 files and possibly some others bunched together which are non-trivial to navigate and relate. It\u0027s neater when they\u0027re under subdirectories.",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 14,
+        "endChar": 21
+      },
+      "revId": "b30cb026b8fffe98600ffc0040e8588e71e79b9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50079497_ba44b17f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T21:05:07Z",
+      "side": 1,
+      "message": "In my opinion that\u0027s a minor issue that always quickly gets resolved. Having to individually add files to 4+ build systems on the other hand can seriously deter people from splitting the code into more files, resulting in functionality that gets added to already bulging files and not maintaining good conceptual separation.",
+      "range": {
+        "startLine": 16,
+        "startChar": 2,
+        "endLine": 20,
+        "endChar": 68
+      },
+      "revId": "b30cb026b8fffe98600ffc0040e8588e71e79b9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccd0091b_d65fdcad",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-07T21:05:07Z",
+      "side": 1,
+      "message": "Please open one so we can centralize the discussion and associate related changes with the same bug (other build files have globs too).",
+      "range": {
+        "startLine": 27,
+        "startChar": 5,
+        "endLine": 27,
+        "endChar": 9
+      },
+      "revId": "b30cb026b8fffe98600ffc0040e8588e71e79b9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
