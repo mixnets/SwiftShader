@@ -22,6 +22,30 @@
       "revId": "d726fe756d7fc72eb6373dcdf601ec3bad8d1e51",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76da0c10_d966adc1",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 33086
+      },
+      "writtenOn": "2019-11-08T16:09:30Z",
+      "side": 1,
+      "message": "Oops, will do.   I guess I didn\u0027t notice how much this actually changed.   I noticed it was using spaces while I was editing so I just did the global \"convert indents to tabs\" at the end to fix it, but that seems to have done a lot more than I expected.\n\nIs there a clang-format (or equivalent) available somewhere?",
+      "parentUuid": "8d5d4df9_662d4849",
+      "range": {
+        "startLine": 326,
+        "startChar": 2,
+        "endLine": 326,
+        "endChar": 3
+      },
+      "revId": "d726fe756d7fc72eb6373dcdf601ec3bad8d1e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
