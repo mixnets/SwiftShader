@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09209103_ee18fa7d",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T21:53:13Z",
+      "side": 1,
+      "message": "assert() is a no-op in release builds (as in not even the arguments will be evaluated). This is causing the Kokoro build failures as `request` and `size` are unused in release builds.\n\nUse ASSERT() which always evaluates the expression, regardless of whether it uses the argument or not. Better yet, move the logic out of the assert:\n\n  int res \u003d sysctl(request, sizeof(request) / sizeof(*request), \u0026info, \u0026size, NULL, 0);\n  ASSERT_MSG(res \u003d\u003d 0, \"sysctl returned %d\", res);",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 74,
+        "endChar": 7
+      },
+      "revId": "0c027808c29d8253a7e7d544ea2cfa7839a68c4e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
