@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "948030fa_51c1a82f",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1174,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:49:53Z",
+      "side": 1,
+      "message": "\u003e but more const char* \u003c-\u003e Pointer\u003cByte\u003e, which I\u0027d assume you would permit?\nYes, this is fine, as it mimics C/C++ (cast any pointer to void* can be done implicitly).",
+      "parentUuid": "25de6c34_ed94e6b7",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7a78c52_1e933cf1",
         "filename": "src/Reactor/Traits.hpp",
         "patchSetId": 3
@@ -136,6 +154,24 @@
       "side": 1,
       "message": "See Reactor.cpp:\n\n  // TODO: Long has no constructor that takes a uint64_t\n\nI opted for commenting it out as the missing constructor is also commented out. I\u0027d give a reason for commenting out this function if the constructor had a reason for it also being commented out!",
       "parentUuid": "d7a78c52_1e933cf1",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e5b1ce83_35ebfb91",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:49:53Z",
+      "side": 1,
+      "message": "Sure, but I\u0027d put the same comment: // TODO: Long has no constructor that takes a uint64_t\nThis way, if we ever do add that constructor, we can fix these.",
+      "parentUuid": "0bfa4c4e_0897d82c",
       "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -174,6 +210,24 @@
       "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c6c53b9_44bf3086",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:49:53Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7b74e4bf_9337ddf1",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
