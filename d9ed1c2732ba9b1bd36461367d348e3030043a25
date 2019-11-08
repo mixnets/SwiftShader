@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69dcfc91_d99d2362",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 0,
+      "message": "Comment: CToReactorT -\u003e CToReactor",
+      "revId": "d9ed1c2732ba9b1bd36461367d348e3030043a25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

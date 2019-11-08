@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d906a3df_5350db1c",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4360,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "Would it be worth having the base template\u0027s cast return type(v) and use CToReactorT\u003cT\u003e for the return type , and another one for T* that returns ConstantPointer(v) and Pointer\u003cByte\u003e? This would generate all of these automatically, right? Or is it better to keep these explicit so that we get a compile error if T is not supported?",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9fb8773_ef7f2b40",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3269,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "This is better than before, both naming CArgs vs RArgs, and perfect forwarding.",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4851b93e_5462801a",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1174,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "I\u0027m glad we have this test, but I think moving forward, one of our goals should be to make implicit casts go away in Reactor.",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7a78c52_1e933cf1",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "Why is this cast commented?",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f046f907_d699e19a",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "Comment, same as above",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2e0c92c_a2a64961",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T17:05:52Z",
+      "side": 1,
+      "message": "And here",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
