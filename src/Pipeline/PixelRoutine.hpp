@@ -54,7 +54,7 @@ namespace sw
 		void alphaToCoverage(Int cMask[4], Float4 &alpha);
 
 		// Raster operations
-		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x);
+		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x, uint16_t one[3]);
 		void writeColor(int index, Pointer<Byte> &cBuffer, Int &i, Vector4s &current, Int &sMask, Int &zMask, Int &cMask);
 		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4f &oC, Int &x);
 		void writeColor(int index, Pointer<Byte> &cBuffer, Int &i, Vector4f &oC, Int &sMask, Int &zMask, Int &cMask);
@@ -72,7 +72,7 @@ namespace sw
 		Bool depthTest(Pointer<Byte> &zBuffer, int q, Int &x, Float4 &z, Int &sMask, Int &zMask, Int &cMask);
 
 		// Raster operations
-		void blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive);
+		void blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive, uint16_t one[3]);
 		void blendFactorAlpha(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorAlphaActive);
 		void readPixel(int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &pixel);
 		void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive);

@@ -815,7 +815,7 @@ namespace sw
 		}
 	}
 
-	void PixelRoutine::blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive)
+	void PixelRoutine::blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive, uint16_t one[3])
 	{
 		switch(blendFactorActive)
 		{
@@ -831,9 +831,9 @@ namespace sw
 			blendFactor.z = current.z;
 			break;
 		case VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR:
-			blendFactor.x = Short4(0xFFFFu) - current.x;
-			blendFactor.y = Short4(0xFFFFu) - current.y;
-			blendFactor.z = Short4(0xFFFFu) - current.z;
+			blendFactor.x = Short4(one[0]) - current.x;
+			blendFactor.y = Short4(one[1]) - current.y;
+			blendFactor.z = Short4(one[2]) - current.z;
 			break;
 		case VK_BLEND_FACTOR_DST_COLOR:
 			blendFactor.x = pixel.x;
@@ -841,9 +841,9 @@ namespace sw
 			blendFactor.z = pixel.z;
 			break;
 		case VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR:
-			blendFactor.x = Short4(0xFFFFu) - pixel.x;
-			blendFactor.y = Short4(0xFFFFu) - pixel.y;
-			blendFactor.z = Short4(0xFFFFu) - pixel.z;
+			blendFactor.x = Short4(one[0]) - pixel.x;
+			blendFactor.y = Short4(one[1]) - pixel.y;
+			blendFactor.z = Short4(one[2]) - pixel.z;
 			break;
 		case VK_BLEND_FACTOR_SRC_ALPHA:
 			blendFactor.x = current.w;
@@ -1088,7 +1088,7 @@ namespace sw
 		}
 	}
 
-	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x)
+	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x, uint16_t one[3])
 	{
 		if(!state.blendState[index].alphaBlendEnable)
 		{
@@ -1102,8 +1102,8 @@ namespace sw
 		Vector4s sourceFactor;
 		Vector4s destFactor;
 
-		blendFactor(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactor);
-		blendFactor(destFactor, current, pixel, state.blendState[index].destBlendFactor);
+		blendFactor(sourceFactor, current, pixel, state.blendState[index].sourceBlendFactor, one);
+		blendFactor(destFactor, current, pixel, state.blendState[index].destBlendFactor, one);
 
 		if(state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ONE && state.blendState[index].sourceBlendFactor != VK_BLEND_FACTOR_ZERO)
 		{

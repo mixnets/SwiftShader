@@ -209,6 +209,20 @@ namespace sw
 			}
 
 			auto format = state.targetFormat[index];
+			uint16_t one[3] = { 0xFFFFu, 0xFFFFu, 0xFFFFu };
+			if(format == VK_FORMAT_A1R5G5B5_UNORM_PACK16)
+			{
+				one[0] = 0xFBFFu;
+				one[1] = 0xFBFFu;
+				one[2] = 0xFBFFu;
+			}
+			else if(format == VK_FORMAT_R5G6B5_UNORM_PACK16)
+			{
+				one[0] = 0xFBFFu;
+				one[1] = 0xFDFFu;
+				one[2] = 0xFBFFu;
+			}
+
 			switch(format)
 			{
 			case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
@@ -229,31 +243,14 @@ namespace sw
 					Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
 					Vector4s color;
 
-					if(format == VK_FORMAT_A1R5G5B5_UNORM_PACK16)
-					{
-						color.x = UShort4(c[index].x * Float4(0xFBFF), false);
-						color.y = UShort4(c[index].y * Float4(0xFBFF), false);
-						color.z = UShort4(c[index].z * Float4(0xFBFF), false);
-						color.w = UShort4(c[index].w * Float4(0xFFFF), false);
-					}
-					else if(format == VK_FORMAT_R5G6B5_UNORM_PACK16)
-					{
-						color.x = UShort4(c[index].x * Float4(0xFBFF), false);
-						color.y = UShort4(c[index].y * Float4(0xFDFF), false);
-						color.z = UShort4(c[index].z * Float4(0xFBFF), false);
-						color.w = UShort4(c[index].w * Float4(0xFFFF), false);
-					}
-					else
-					{
-						color.x = convertFixed16(c[index].x, false);
-						color.y = convertFixed16(c[index].y, false);
-						color.z = convertFixed16(c[index].z, false);
-						color.w = convertFixed16(c[index].w, false);
-					}
+					color.x = UShort4(c[index].x * Float4(one[0]), false);
+					color.y = UShort4(c[index].y * Float4(one[1]), false);
+					color.z = UShort4(c[index].z * Float4(one[2]), false);
+					color.w = convertFixed16(c[index].w, false);
 
 					if(state.multiSampleMask & (1 << q))
 					{
-						alphaBlend(index, buffer, color, x);
+						alphaBlend(index, buffer, color, x, one);
 						writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 					}
 				}
