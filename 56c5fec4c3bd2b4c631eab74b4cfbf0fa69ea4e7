@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d5f839b_84389aa8",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T22:09:09Z",
+      "side": 1,
+      "message": "style-nit: open on next line",
+      "range": {
+        "startLine": 38,
+        "startChar": 79,
+        "endLine": 38,
+        "endChar": 80
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7af0227a_ff478a3d",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T22:09:09Z",
+      "side": 1,
+      "message": "Is there a way we can have these validated at an earlier point so we don\u0027t have to return error codes  from this method? Feels a bit weird that a bind could fail, when the memory has already been allocated.",
+      "range": {
+        "startLine": 82,
+        "startChar": 21,
+        "endLine": 82,
+        "endChar": 50
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5472a35_ec6ca22a",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T22:09:09Z",
+      "side": 1,
+      "message": "nit: Probably just a pet peeve of mine, but I strongly dislike naming anything impl. Also note that DeviceMemory::Impl is an abstract base class, so it\u0027s not an implementation, as the name implies.\n\nSince it\u0027s used to allocate and deallocate memory, maybe just call it Allocator?",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 11
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a40f16d_20e72c20",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T22:09:09Z",
+      "side": 1,
+      "message": "We use UNIMPLEMENTED() only for well-known functionality which still must be implemented. For unknown functionality which is likely to indicate a app bug we use UNSUPPORTED().\n\nIn other words a fully implemented feature should not use UNIMPLEMENTED() anywhere, even if hitting such a path might be due to something we may want to implement to satisfy an apps\u0027 desired requirements.\n\n(We violate this distinction ourselves in a few places, but I\u0027m trying to clean it up in https://swiftshader-review.googlesource.com/c/SwiftShader/+/34608)",
+      "range": {
+        "startLine": 790,
+        "startChar": 4,
+        "endLine": 790,
+        "endChar": 17
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ccba1af9_5ab7162d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 2317,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T22:09:09Z",
+      "side": 1,
+      "message": "We generally prefer curly brackets to be used for single-line statements as well, to avoid bugs when additional statements are added. See other examples above where we compare call results against VK_SUCCESS.\n\nAlso I think immediately returning instead of breaking is preferable, since there\u0027s nothing we could possibly have to do after this loop when one of these calls fails, so just bail out immediately. Note that if code was added after this loop, it probably assumes success but it\u0027s easy to forget to handle the non-success case or forget to adjust this to not break and execute that code. Note the last line can then also simply return VK_SUCCESS which further helps to show that this is the code path in case of success.",
+      "range": {
+        "startLine": 2316,
+        "startChar": 2,
+        "endLine": 2317,
+        "endChar": 9
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
