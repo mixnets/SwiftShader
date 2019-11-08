@@ -16,6 +16,24 @@
       "revId": "83e3201019b8936488bafe4cff73c8a3c2fc62bb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f09311ce_f4c4e37a",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15991,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T15:07:54Z",
+      "side": 1,
+      "message": "I don\u0027t think the env has changed at all - Regres has been churning on my workstation for a couple weeks now, and I haven\u0027t really touched it. I guess it\u0027s a flake.",
+      "parentUuid": "e92ebff9_b658e3f8",
+      "revId": "83e3201019b8936488bafe4cff73c8a3c2fc62bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
