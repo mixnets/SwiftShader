@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c11a62c_9cfa589e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T18:17:07Z",
+      "side": 1,
+      "message": "Grammar: will _allow_ us _to_ move...",
+      "revId": "26bd9ddfbc8a0e7c4df340d240c078154e5b0abd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad9d2a48_78fc7bad",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3318,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T18:17:07Z",
+      "side": 1,
+      "message": "Comment needs updating too, as it mentions \"el\"",
+      "revId": "26bd9ddfbc8a0e7c4df340d240c078154e5b0abd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c20cca23_738a3630",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3345,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T18:17:07Z",
+      "side": 1,
+      "message": "This is much nicer too.",
+      "revId": "26bd9ddfbc8a0e7c4df340d240c078154e5b0abd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35d2dbbe_26df7a8e",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3410,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T18:17:07Z",
+      "side": 1,
+      "message": "Nit: I think \"with a\" should be \"via\", otherwise it sounds like it returns the specialization as well.",
+      "revId": "26bd9ddfbc8a0e7c4df340d240c078154e5b0abd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ae4e18c_fa98c6a5",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3424,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-08T18:17:07Z",
+      "side": 1,
+      "message": "Btw, C++17 has a constexpr std::string_view, and C++20 adds constexpr std::string. I know that doesn\u0027t change anything here, since the point was to move the code into the specializations, but eventually it might be possible to make fmt constexpr again, and invoke at compile time.",
+      "revId": "26bd9ddfbc8a0e7c4df340d240c078154e5b0abd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
