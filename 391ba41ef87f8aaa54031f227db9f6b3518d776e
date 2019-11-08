@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69ab07da_cc2e337b",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T15:24:02Z",
+      "side": 1,
+      "message": "This isn\u0027t used outside of this compilation unit, so place into an anonymous namespace at the top of the file.",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 23
+      },
+      "revId": "391ba41ef87f8aaa54031f227db9f6b3518d776e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9d6005c_85795caf",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T15:24:02Z",
+      "side": 1,
+      "message": "This does not compile on macOS.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 122,
+        "endChar": 3
+      },
+      "revId": "391ba41ef87f8aaa54031f227db9f6b3518d776e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7bca6982_fbc692fc",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T15:24:02Z",
+      "side": 1,
+      "message": "Note: This is not thread safe.\nIt can be easily made to be thread safe (and immutable!) by using the static initializer:\n\n      static const std::map\u003cVkStructureType, const char*\u003e strings \u003d {\n  #define INSERT_ELEMENT(p) std::make_pair(p, #p)\n      INSERT_ELEMENT(VK_STRUCTURE_TYPE_APPLICATION_INFO),\n      INSERT_ELEMENT(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO),\n      ...\n      INSERT_ELEMENT(VK_STRUCTURE_TYPE_RANGE_SIZE),\n      INSERT_ELEMENT(VK_STRUCTURE_TYPE_MAX_ENUM),\n  #undef INSERT_ELEMENT\n      };\n      auto it \u003d strings.find(value);\n      if (it !\u003d strings.end())\n      {\n          return it-\u003esecond;\n      }\n      return \"\";\n\nNote, there\u0027s no need to use std::string either - the string literals aren\u0027t going anywhere.",
+      "range": {
+        "startLine": 32,
+        "startChar": 54,
+        "endLine": 33,
+        "endChar": 27
+      },
+      "revId": "391ba41ef87f8aaa54031f227db9f6b3518d776e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "371159f3_02f24a2a",
+        "filename": "src/Vulkan/VkStringify.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T15:24:02Z",
+      "side": 1,
+      "message": "Place in namespace vk.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 45
+      },
+      "revId": "391ba41ef87f8aaa54031f227db9f6b3518d776e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
