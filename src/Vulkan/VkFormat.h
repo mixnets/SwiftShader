@@ -71,6 +71,11 @@ public:
 	bool has32bitIntegerTextureComponents() const;
 	bool isRGBComponent(int component) const;
 
+	uint8_t bitsR() const;
+	uint8_t bitsG() const;
+	uint8_t bitsB() const;
+	uint8_t bitsA() const;
+
 private:
 	VkFormat compatibleFormat() const;
 	int sliceBUnpadded(int width, int height, int border, bool target) const;

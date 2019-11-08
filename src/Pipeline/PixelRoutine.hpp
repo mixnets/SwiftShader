@@ -54,7 +54,7 @@ namespace sw
 		void alphaToCoverage(Int cMask[4], Float4 &alpha);
 
 		// Raster operations
-		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x);
+		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x, uint8_t rgbBits[3]);
 		void writeColor(int index, Pointer<Byte> &cBuffer, Int &i, Vector4s &current, Int &sMask, Int &zMask, Int &cMask);
 		void alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4f &oC, Int &x);
 		void writeColor(int index, Pointer<Byte> &cBuffer, Int &i, Vector4f &oC, Int &sMask, Int &zMask, Int &cMask);
@@ -83,6 +83,9 @@ namespace sw
 		void sRGBtoLinear16_12_16(Vector4s &c);
 		void linearToSRGB16_12_16(Vector4s &c);
 		Float4 sRGBtoLinear(const Float4 &x);
+
+		void toFullRange(Vector4s &c, uint8_t rgbBits[3]);
+		void toLowerRange(Vector4s& c, uint8_t rgbBits[3]);
 
 		Bool depthTest32F(Pointer<Byte> &zBuffer, int q, Int &x, Float4 &z, Int &sMask, Int &zMask, Int &cMask);
 		Bool depthTest16(Pointer<Byte> &zBuffer, int q, Int &x, Float4 &z, Int &sMask, Int &zMask, Int &cMask);

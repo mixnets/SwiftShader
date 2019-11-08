@@ -1088,15 +1088,53 @@ namespace sw
 		}
 	}
 
-	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x)
+	void PixelRoutine::toFullRange(Vector4s& c, uint8_t rgbBits[3])
+	{
+		// For formats with less than 8 bits per component, expand the range to [0, 0xFFFF]
+		// by adding the proportional amount missing based on the current pixel value
+		if(rgbBits[0] < 8)
+		{
+			c.x += As<Short4>(MulHigh(UShort4(1 << (16 - rgbBits[0])), As<UShort4>(c.x)));
+		}
+		if(rgbBits[1] < 8)
+		{
+			c.y += As<Short4>(MulHigh(UShort4(1 << (16 - rgbBits[1])), As<UShort4>(c.y)));
+		}
+		if(rgbBits[2] < 8)
+		{
+			c.z += As<Short4>(MulHigh(UShort4(1 << (16 - rgbBits[2])), As<UShort4>(c.z)));
+		}
+	}
+
+	void PixelRoutine::toLowerRange(Vector4s& c, uint8_t rgbBits[3])
+	{
+		// For formats with less than 8 bits per component, reduce the range
+		// from [0, 0xFFFF] to [0, 0xFFFF - 1 << (16 - rgbBits[n])]
+		if(rgbBits[0] < 8)
+		{
+			c.x = As<Short4>(MulHigh(UShort4(0xFFFFu - (1 << (16 - rgbBits[0]))), As<UShort4>(c.x)));
+		}
+		if(rgbBits[1] < 8)
+		{
+			c.y = As<Short4>(MulHigh(UShort4(0xFFFFu - (1 << (16 - rgbBits[1]))), As<UShort4>(c.y)));
+		}
+		if(rgbBits[2] < 8)
+		{
+			c.z = As<Short4>(MulHigh(UShort4(0xFFFFu - (1 << (16 - rgbBits[2]))), As<UShort4>(c.z)));
+		}
+	}
+
+	void PixelRoutine::alphaBlend(int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x, uint8_t rgbBits[3])
 	{
 		if(!state.blendState[index].alphaBlendEnable)
 		{
+			toLowerRange(current, rgbBits);
 			return;
 		}
 
 		Vector4s pixel;
 		readPixel(index, cBuffer, x, pixel);
+		toFullRange(pixel, rgbBits);
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
 		Vector4s sourceFactor;
@@ -1205,6 +1243,8 @@ namespace sw
 		default:
 			UNIMPLEMENTED("VkBlendOp: %d", int(state.blendState[index].blendOperationAlpha));
 		}
+
+		toLowerRange(current, rgbBits);
 	}
 
 	void PixelRoutine::writeColor(int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &current, Int &sMask, Int &zMask, Int &cMask)
