@@ -46,6 +46,30 @@
       "revId": "15e8a2fa4b541a57309483b30bc8cf491768ceab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "024b26d5_7a584ba4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-08T07:09:14Z",
+      "side": 1,
+      "message": "Thanks for that reference. See gitwatcher2/configs.py for the full list it actually supports though. Looks like that Android doc just mentions a few favorites. Personally I\u0027d still prefer only allowing the unambiguous form.",
+      "parentUuid": "df5d96f0_7a7951fa",
+      "range": {
+        "startLine": 7,
+        "startChar": 15,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "15e8a2fa4b541a57309483b30bc8cf491768ceab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
