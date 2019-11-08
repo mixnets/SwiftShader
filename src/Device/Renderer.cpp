@@ -814,10 +814,10 @@ namespace sw
 			return false;
 		}
 
-		// TODO(b/142965928): Bresenham lines should render the same with or without
-		//                    multisampling, which will require a special case in the
-		//                    code when multisampling is on. For now, we just use
-		//                    rectangular lines when multisampling is enabled.
+		// FIXME(b/142965928): Bresenham lines should render the same with or without
+		//                     multisampling, which will require a special case in the
+		//                     code when multisampling is on. For now, we just use
+		//                     rectangular lines when multisampling is enabled.
 
 		// We use rectangular lines for non Bresenham lines and
 		// for Bresenham lines when multiSampling is enabled
@@ -876,11 +876,9 @@ namespace sw
 				return draw.setupRoutine(&primitive, &triangle, &polygon, &data);
 			}
 		}
-		else   // Diamond test convention
+		else   // Parallelogram approximating Bresenham line
 		{
 			float4 P[8];
-			int C[8];
-
 			P[0] = P0;
 			P[1] = P0;
 			P[2] = P0;
@@ -897,79 +895,61 @@ namespace sw
 			float dy1 = lineWidth * 0.5f * P1.w / H;
 
 			P[0].x += -dx0;
-			C[0] = Clipper::ComputeClipFlags(P[0]);
-
 			P[1].y += +dy0;
-			C[1] = Clipper::ComputeClipFlags(P[1]);
-
 			P[2].x += +dx0;
-			C[2] = Clipper::ComputeClipFlags(P[2]);
-
 			P[3].y += -dy0;
-			C[3] = Clipper::ComputeClipFlags(P[3]);
-
 			P[4].x += -dx1;
-			C[4] = Clipper::ComputeClipFlags(P[4]);
-
 			P[5].y += +dy1;
-			C[5] = Clipper::ComputeClipFlags(P[5]);
-
 			P[6].x += +dx1;
-			C[6] = Clipper::ComputeClipFlags(P[6]);
-
 			P[7].y += -dy1;
-			C[7] = Clipper::ComputeClipFlags(P[7]);
 
-			if((C[0] & C[1] & C[2] & C[3] & C[4] & C[5] & C[6] & C[7]) == Clipper::CLIP_FINITE)
+			float4 L[4];
+
+			if (dx > -dy)
 			{
-				float4 L[6];
-
-				if(dx > -dy)
+				if (dx > dy)   // Right
 				{
-					if(dx > dy)   // Right
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[3];
-					}
-					else   // Down
-					{
-						L[0] = P[0];
-						L[1] = P[4];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[2];
-						L[5] = P[3];
-					}
+					L[0] = P[1];
+					L[1] = P[5];
+					L[2] = P[7];
+					L[3] = P[3];
 				}
-				else
+				else   // Down
 				{
-					if(dx > dy)   // Up
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[2];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[4];
-					}
-					else   // Left
-					{
-						L[0] = P[1];
-						L[1] = P[2];
-						L[2] = P[3];
-						L[3] = P[7];
-						L[4] = P[4];
-						L[5] = P[5];
-					}
+					L[0] = P[0];
+					L[1] = P[4];
+					L[2] = P[6];
+					L[3] = P[2];
 				}
+			}
+			else
+			{
+				if (dx > dy)   // Up
+				{
+					L[0] = P[0];
+					L[1] = P[2];
+					L[2] = P[6];
+					L[3] = P[4];
+				}
+				else   // Left
+				{
+					L[0] = P[1];
+					L[1] = P[3];
+					L[2] = P[7];
+					L[3] = P[5];
+				}
+			}
 
-				Polygon polygon(L, 6);
+			int C0 = Clipper::ComputeClipFlags(L[0]);
+			int C1 = Clipper::ComputeClipFlags(L[1]);
+			int C2 = Clipper::ComputeClipFlags(L[2]);
+			int C3 = Clipper::ComputeClipFlags(L[3]);
 
-				int clipFlagsOr = C[0] | C[1] | C[2] | C[3] | C[4] | C[5] | C[6] | C[7];
+			if((C0 & C1 & C2 & C3) == Clipper::CLIP_FINITE)
+			{
+				Polygon polygon(L, 4);
+
+				int clipFlagsOr = C0 | C1 | C2 | C3;
 
 				if(clipFlagsOr != Clipper::CLIP_FINITE)
 				{

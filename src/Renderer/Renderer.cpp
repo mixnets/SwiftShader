@@ -1846,9 +1846,10 @@ namespace sw
 		}
 		else   // Diamond test convention
 		{
-			float4 P[8];
-			int C[8];
+			// FOR TESTING ONLY
+			// DO NOT SUBMIT
 
+			float4 P[8];
 			P[0] = P0;
 			P[1] = P0;
 			P[2] = P0;
@@ -1865,83 +1866,65 @@ namespace sw
 			float dy1 = lineWidth * 0.5f * P1.w / H;
 
 			P[0].x += -dx0;
-			C[0] = clipper->computeClipFlags(P[0]);
-
 			P[1].y += +dy0;
-			C[1] = clipper->computeClipFlags(P[1]);
-
 			P[2].x += +dx0;
-			C[2] = clipper->computeClipFlags(P[2]);
-
 			P[3].y += -dy0;
-			C[3] = clipper->computeClipFlags(P[3]);
-
 			P[4].x += -dx1;
-			C[4] = clipper->computeClipFlags(P[4]);
-
 			P[5].y += +dy1;
-			C[5] = clipper->computeClipFlags(P[5]);
-
 			P[6].x += +dx1;
-			C[6] = clipper->computeClipFlags(P[6]);
-
 			P[7].y += -dy1;
-			C[7] = clipper->computeClipFlags(P[7]);
 
-			if((C[0] & C[1] & C[2] & C[3] & C[4] & C[5] & C[6] & C[7]) == Clipper::CLIP_FINITE)
+			float4 L[4];
+
+			if (dx > -dy)
 			{
-				float4 L[6];
-
-				if(dx > -dy)
+				if (dx > dy)   // Right
 				{
-					if(dx > dy)   // Right
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[3];
-					}
-					else   // Down
-					{
-						L[0] = P[0];
-						L[1] = P[4];
-						L[2] = P[5];
-						L[3] = P[6];
-						L[4] = P[2];
-						L[5] = P[3];
-					}
+					L[0] = P[1];
+					L[1] = P[5];
+					L[2] = P[7];
+					L[3] = P[3];
 				}
-				else
+				else   // Down
 				{
-					if(dx > dy)   // Up
-					{
-						L[0] = P[0];
-						L[1] = P[1];
-						L[2] = P[2];
-						L[3] = P[6];
-						L[4] = P[7];
-						L[5] = P[4];
-					}
-					else   // Left
-					{
-						L[0] = P[1];
-						L[1] = P[2];
-						L[2] = P[3];
-						L[3] = P[7];
-						L[4] = P[4];
-						L[5] = P[5];
-					}
+					L[0] = P[0];
+					L[1] = P[4];
+					L[2] = P[6];
+					L[3] = P[2];
 				}
-
-				Polygon polygon(L, 6);
-
-				int clipFlagsOr = C[0] | C[1] | C[2] | C[3] | C[4] | C[5] | C[6] | C[7] | draw.clipFlags;
-
-				if(clipFlagsOr != Clipper::CLIP_FINITE)
+			}
+			else
+			{
+				if (dx > dy)   // Up
 				{
-					if(!clipper->clip(polygon, clipFlagsOr, draw))
+					L[0] = P[0];
+					L[1] = P[2];
+					L[2] = P[6];
+					L[3] = P[4];
+				}
+				else   // Left
+				{
+					L[0] = P[1];
+					L[1] = P[3];
+					L[2] = P[7];
+					L[3] = P[5];
+				}
+			}
+
+			int C0 = clipper->computeClipFlags(L[0]);
+			int C1 = clipper->computeClipFlags(L[1]);
+			int C2 = clipper->computeClipFlags(L[2]);
+			int C3 = clipper->computeClipFlags(L[3]);
+
+			if ((C0 & C1 & C2 & C3) == Clipper::CLIP_FINITE)
+			{
+				Polygon polygon(L, 4);
+
+				int clipFlagsOr = C0 | C1 | C2 | C3;
+
+				if (clipFlagsOr != Clipper::CLIP_FINITE)
+				{
+					if (!clipper->clip(polygon, clipFlagsOr, draw))
 					{
 						return false;
 					}
