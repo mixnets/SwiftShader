@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5e515874_8a2faafc",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4360,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "I\u0027m sticking with the reactor pattern of being explicit.\nTake for example the TODO below where Long has a missing uint64_t constructor.\n\nIf Reactor.hpp was refactored to be more templated and less hand-rolled, I\u0027d definitely go the other way.",
+      "parentUuid": "d906a3df_5350db1c",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a9fb8773_ef7f2b40",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8c93f563_3ac7f5d1",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3269,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a9fb8773_ef7f2b40",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4851b93e_5462801a",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2019-11-08T17:05:52Z",
       "side": 1,
       "message": "I\u0027m glad we have this test, but I think moving forward, one of our goals should be to make implicit casts go away in Reactor.",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25de6c34_ed94e6b7",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1174,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "We discussed this at length via IM. Putting our discussion down here.\n\nWe could introduce another flavor of Pointer\u003c\u003e, say one that wraps pointers to C types (i.e. Pointer\u003cClass\u003e).\nEven if we did this, we\u0027d need to tighten Reactor\u0027s very relaxed set of implicit casts for it to be useful. For example, this is currently perfectly legal:\n\n  Pointer\u003cint\u003e pi;\n  Pointer\u003cfloat\u003e pf \u003d pi;\n\nSo, introducing new types would not give us any additional safety right now.\n\nIn terms of \u0027making implicit casts go away\u0027, sure, but the \u0027CallImplicitCast\u0027 isn\u0027t trying to demonstrate the implicit casting of Class* \u003c-\u003e Pointer\u003cByte\u003e, but more const char* \u003c-\u003e Pointer\u003cByte\u003e, which I\u0027d assume you would permit?\n\nThe only reason I\u0027m explicitly going via Pointer\u003cByte\u003e in this test is that Argument\u003cT\u003e needs to go via a LValue for stuff to compile (which seems like an oversight in reactor). Ideally this test would use:\n\n \n\tFunctionT\u003cvoid(Class *c, const char *s)\u003e function;\n\t{\n\t\tCall(Class::Callback, function.Arg\u003c0\u003e(), function.Arg\u003c1\u003e());\n\t}\n\nBut that won\u0027t compile. Note that I can\u0027t use auto either.\n\nAnyway, this CL is not actually changing anything to do with T* \u003c-\u003e Pointer\u003cByte\u003e conversion rules. We have already been use this implicit cast in SpirvShader for a number of months (see calls to getImageSampler).\n\nBasically, I don\u0027t disagree with wanting tighter casting rules, but I don\u0027t think this CL is making this any worse. It simply allows you to specify the casting rules between C to Reactor, instead of relying exclusively on reactor type constructors.",
+      "parentUuid": "4851b93e_5462801a",
       "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "0bfa4c4e_0897d82c",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "See Reactor.cpp:\n\n  // TODO: Long has no constructor that takes a uint64_t\n\nI opted for commenting it out as the missing constructor is also commented out. I\u0027d give a reason for commenting out this function if the constructor had a reason for it also being commented out!",
+      "parentUuid": "d7a78c52_1e933cf1",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f046f907_d699e19a",
         "filename": "src/Reactor/Traits.hpp",
         "patchSetId": 3
@@ -81,6 +153,24 @@
       "writtenOn": "2019-11-08T17:05:52Z",
       "side": 1,
       "message": "Comment, same as above",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b74e4bf_9337ddf1",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "Good spot. Done.",
+      "parentUuid": "f046f907_d699e19a",
       "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -101,6 +191,24 @@
       "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "981bf05e_a3067271",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-08T17:36:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a2e0c92c_a2a64961",
+      "revId": "e85ad6a75fd1515b28de4d5b5996e4e5e4ef2ef2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
