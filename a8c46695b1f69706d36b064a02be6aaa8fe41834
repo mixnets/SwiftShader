@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "dc33f4c4_efb31580",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1093,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-11T21:25:27Z",
+      "side": 1,
+      "message": "Obsolete in new patch",
+      "parentUuid": "b36d58fc_b7e87d18",
+      "range": {
+        "startLine": 1093,
+        "startChar": 5,
+        "endLine": 1093,
+        "endChar": 38
+      },
+      "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e671eaa0_c8abab6d",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 3
@@ -69,6 +93,30 @@
       "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "027be111_d6d27727",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1131,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-11T21:25:27Z",
+      "side": 1,
+      "message": "Obsolete in new patch",
+      "parentUuid": "e671eaa0_c8abab6d",
+      "range": {
+        "startLine": 1131,
+        "startChar": 3,
+        "endLine": 1131,
+        "endChar": 15
+      },
+      "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "2253049a_ff6e9364",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-11T21:25:27Z",
+      "side": 1,
+      "message": "Obsolete in new patch",
+      "parentUuid": "986ed0c1_68beb521",
+      "range": {
+        "startLine": 57,
+        "startChar": 80,
+        "endLine": 57,
+        "endChar": 98
+      },
+      "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3c6f2be4_33ffb341",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 3
@@ -106,6 +178,30 @@
       "writtenOn": "2019-11-11T16:28:48Z",
       "side": 1,
       "message": "note: No change required now, but we have several switch statements again for each format, and it\u0027s easy to make mistakes during refactorings. We should look into replacing this with a table that provides easier overview.",
+      "range": {
+        "startLine": 2258,
+        "startChar": 1,
+        "endLine": 2258,
+        "endChar": 7
+      },
+      "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3d59cfe_6a8425b1",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2258,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-11T21:25:27Z",
+      "side": 1,
+      "message": "Obsolete in new patch",
+      "parentUuid": "3c6f2be4_33ffb341",
       "range": {
         "startLine": 2258,
         "startChar": 1,
@@ -138,6 +234,30 @@
       "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58f66304_e92edeae",
+        "filename": "src/Vulkan/VkFormat.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-11T21:25:27Z",
+      "side": 1,
+      "message": "Obsolete in new patch",
+      "parentUuid": "49a5fb0f_4035acc8",
+      "range": {
+        "startLine": 74,
+        "startChar": 9,
+        "endLine": 74,
+        "endChar": 14
+      },
+      "revId": "a8c46695b1f69706d36b064a02be6aaa8fe41834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
