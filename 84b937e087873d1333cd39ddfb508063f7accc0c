@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38f77d50_20010418",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 998,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-11T20:07:49Z",
+      "side": 1,
+      "message": "Note this could be optimized a bit; we only need 4 points each for x-major or y-major lines. But performance isn\u0027t an important consideration for this change and it\u0027s faster than the connecting diamonds rasterization anyway. All of this code will be deprecated when we do a coverage-based rasterizer.",
+      "range": {
+        "startLine": 998,
+        "startChar": 3,
+        "endLine": 998,
+        "endChar": 15
+      },
+      "revId": "84b937e087873d1333cd39ddfb508063f7accc0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
