@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5fadb4b0_ac41a976",
+        "filename": "tests/regres/testlists/vk-master-CRASH.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-12T15:30:12Z",
+      "side": 1,
+      "message": "This is suspicious. Something has made all the fence tests flaky.",
+      "revId": "afab0967289c6488e418c97379508a52da0a8837",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
