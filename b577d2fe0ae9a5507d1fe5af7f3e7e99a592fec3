@@ -16,6 +16,24 @@
       "revId": "b577d2fe0ae9a5507d1fe5af7f3e7e99a592fec3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b4c0e1f_732ca04a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-12T17:26:55Z",
+      "side": 1,
+      "message": "Nope, Regres has a special exceptions.",
+      "parentUuid": "18bd8d3e_fa66e500",
+      "revId": "b577d2fe0ae9a5507d1fe5af7f3e7e99a592fec3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
