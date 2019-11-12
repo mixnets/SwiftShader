@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "8e99adce_759a9210",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 975,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-12T13:46:31Z",
+      "side": 1,
+      "message": "I\u0027m pretty sure it would, since my original fix was pretty much doing that.\nBut I think if we get VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR and (0xFFFF - pixel) isn\u0027t exactly 0 when pixel is at its maximum value, this might be an issue if a little bit of an unintended colour bleeds into the result, so I\u0027d rather play it safe.",
+      "parentUuid": "cd2e28c2_7e30ef45",
+      "range": {
+        "startLine": 975,
+        "startChar": 46,
+        "endLine": 975,
+        "endChar": 52
+      },
+      "revId": "7aa49b7979742ec63362e205c838381b6882d484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4669d092_7415f1bd",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 4
@@ -53,6 +77,30 @@
       "writtenOn": "2019-11-12T02:33:58Z",
       "side": 1,
       "message": "May suffer from this too? Doesn\u0027t seem like dEQP cares though.",
+      "range": {
+        "startLine": 1092,
+        "startChar": 3,
+        "endLine": 1092,
+        "endChar": 46
+      },
+      "revId": "7aa49b7979742ec63362e205c838381b6882d484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "103f3a97_1efe2d81",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1092,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-12T13:46:31Z",
+      "side": 1,
+      "message": "Yeah, anything over 8 bits of precision yields a result within dEQP\u0027s tolerance.\nStill, I can fix it if you want, it would be better to get the full range.",
+      "parentUuid": "4669d092_7415f1bd",
       "range": {
         "startLine": 1092,
         "startChar": 3,
