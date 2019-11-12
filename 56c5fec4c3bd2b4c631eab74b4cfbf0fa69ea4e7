@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9eeeef72_9907b1ea",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-12T22:32:58Z",
+      "side": 1,
+      "message": "Fixed here and elsewhere. Thanks.",
+      "parentUuid": "5d5f839b_84389aa8",
+      "range": {
+        "startLine": 38,
+        "startChar": 79,
+        "endLine": 38,
+        "endChar": 80
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7af0227a_ff478a3d",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 28
@@ -36,6 +60,30 @@
       "writtenOn": "2019-11-08T22:09:09Z",
       "side": 1,
       "message": "Is there a way we can have these validated at an earlier point so we don\u0027t have to return error codes  from this method? Feels a bit weird that a bind could fail, when the memory has already been allocated.",
+      "range": {
+        "startLine": 82,
+        "startChar": 21,
+        "endLine": 82,
+        "endChar": 50
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e22b4c13_1f40183a",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-12T22:32:58Z",
+      "side": 1,
+      "message": "I\u0027ve added a canBindToMemory() const method to both vk::Image and vk::Buffer to do the check before the bind. This allows validating all inputs in vkBind{Image,Buffer}Memory2 before trying to bind any input image or buffer, so there is that :)",
+      "parentUuid": "7af0227a_ff478a3d",
       "range": {
         "startLine": 82,
         "startChar": 21,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "ca6b658e_6fd4c421",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-12T22:32:58Z",
+      "side": 1,
+      "message": "I see your point. I\u0027ve replaced that with ExternalBase. Allocator sounds a bit ambiguous due to its proximity with the pAllocator parameters used for VkAllocationCallback.",
+      "parentUuid": "d5472a35_ec6ca22a",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 11
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5a40f16d_20e72c20",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 28
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "d531dbc9_92740037",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-12T22:32:58Z",
+      "side": 1,
+      "message": "Oh thanks for the clarification. I wouldn\u0027t have expected this since UNSUPPORTED() is not used in this source file for now. I\u0027ve also moved the handleType/handleTypes verifications to the DeviceMemory::Create() call for consistency.",
+      "parentUuid": "5a40f16d_20e72c20",
+      "range": {
+        "startLine": 790,
+        "startChar": 4,
+        "endLine": 790,
+        "endChar": 17
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ccba1af9_5ab7162d",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 28
@@ -105,6 +201,30 @@
       "writtenOn": "2019-11-08T22:09:09Z",
       "side": 1,
       "message": "We generally prefer curly brackets to be used for single-line statements as well, to avoid bugs when additional statements are added. See other examples above where we compare call results against VK_SUCCESS.\n\nAlso I think immediately returning instead of breaking is preferable, since there\u0027s nothing we could possibly have to do after this loop when one of these calls fails, so just bail out immediately. Note that if code was added after this loop, it probably assumes success but it\u0027s easy to forget to handle the non-success case or forget to adjust this to not break and execute that code. Note the last line can then also simply return VK_SUCCESS which further helps to show that this is the code path in case of success.",
+      "range": {
+        "startLine": 2316,
+        "startChar": 2,
+        "endLine": 2317,
+        "endChar": 9
+      },
+      "revId": "56c5fec4c3bd2b4c631eab74b4cfbf0fa69ea4e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62e0ff47_e964ccfb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 2317,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-12T22:32:58Z",
+      "side": 1,
+      "message": "Thanks. Fixed here and elsewhere. Is there a clang-format file that could be used to ensure these mis-formatting happen? That would also help for curly braces placement, tabs, etc. I try to do my best but I\u0027m only human :)",
+      "parentUuid": "ccba1af9_5ab7162d",
       "range": {
         "startLine": 2316,
         "startChar": 2,
