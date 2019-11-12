@@ -346,6 +346,7 @@ func (r *regres) getOrBuildDEQP(test *test) (deqp, error) {
 
 	cfg := struct {
 		Remote  string   `json:"remote"`
+		Branch  string   `json:"branch"`
 		SHA     string   `json:"sha"`
 		Patches []string `json:"patches"`
 	}{}
@@ -372,8 +373,13 @@ func (r *regres) getOrBuildDEQP(test *test) (deqp, error) {
 			}
 		}()
 
-		log.Printf("Checking out deqp %s @ %s into %s\n", cfg.Remote, cfg.SHA, cacheDir)
-		if err := git.Checkout(cacheDir, cfg.Remote, git.ParseHash(cfg.SHA)); err != nil {
+		log.Printf("Checking out deqp %s branch %s into %s\n", cfg.Remote, cfg.Branch, cacheDir)
+		if err := git.CheckoutRemoteBranch(cacheDir, cfg.Remote, cfg.Branch); err != nil {
+			return deqp{}, cause.Wrap(err, "Couldn't build deqp %s @ %s", cfg.Remote, cfg.SHA)
+		}
+
+		log.Printf("Checking out deqp %s commit %s \n", cfg.Remote, cfg.SHA)
+		if err := git.CheckoutCommit(cacheDir, git.ParseHash(cfg.SHA)); err != nil {
 			return deqp{}, cause.Wrap(err, "Couldn't build deqp %s @ %s", cfg.Remote, cfg.SHA)
 		}
 
@@ -801,7 +807,7 @@ func (t *test) checkout() error {
 	}
 	log.Printf("Checking out '%s'\n", t.commit)
 	os.RemoveAll(t.srcDir)
-	if err := git.Checkout(t.srcDir, gitURL, t.commit); err != nil {
+	if err := git.CheckoutRemoteCommit(t.srcDir, gitURL, t.commit); err != nil {
 		return cause.Wrap(err, "Checking out commit '%s'", t.commit)
 	}
 	log.Printf("Checked out commit '%s'\n", t.commit)
