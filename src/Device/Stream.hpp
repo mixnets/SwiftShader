@@ -39,7 +39,7 @@ namespace sw
 	struct Stream
 	{
 		const void *buffer = nullptr;
-		unsigned int robustnessSize = 0;
+		int robustnessLimits[2] = { 0, 0 };
 		unsigned int vertexStride = 0;
 		unsigned int instanceStride = 0;
 		StreamType type = STREAMTYPE_FLOAT;

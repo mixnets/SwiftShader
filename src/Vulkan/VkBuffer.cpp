@@ -115,7 +115,7 @@ void Buffer::update(VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* p
 	memcpy(getOffsetPointer(dstOffset), pData, dataSize);
 }
 
-void* Buffer::getOffsetPointer(VkDeviceSize offset) const
+void* Buffer::getOffsetPointer(int offset) const
 {
 	return reinterpret_cast<uint8_t*>(memory) + offset;
 }

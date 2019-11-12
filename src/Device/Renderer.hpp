@@ -66,7 +66,7 @@ namespace sw
 		vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 
 		const void *input[MAX_INTERFACE_COMPONENTS / 4];
-		unsigned int robustnessSize[MAX_INTERFACE_COMPONENTS / 4];
+		unsigned int robustnessLimits[MAX_INTERFACE_COMPONENTS / 4][2];
 		unsigned int stride[MAX_INTERFACE_COMPONENTS / 4];
 		const void *indices;
 

@@ -94,13 +94,13 @@ namespace sw
 			{
 				Pointer<Byte> input = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, input) + sizeof(void*) * (i / 4));
 				UInt stride = *Pointer<UInt>(data + OFFSET(DrawData, stride) + sizeof(uint32_t) * (i / 4));
-				UInt robustnessSize(0);
+				Pointer<Int> robustnessLimits;
 				if(state.robustBufferAccess)
 				{
-					robustnessSize = *Pointer<UInt>(data + OFFSET(DrawData, robustnessSize) + sizeof(uint32_t) * (i / 4));
+					robustnessLimits = Pointer<Int>(data + OFFSET(DrawData, robustnessLimits[i / 4][0]));
 				}
 
-				auto value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessSize);
+				auto value = readStream(input, stride, state.input[i / 4], batch, state.robustBufferAccess, robustnessLimits);
 				routine.inputs[i + 0] = value.x;
 				routine.inputs[i + 1] = value.y;
 				routine.inputs[i + 2] = value.z;
@@ -143,7 +143,7 @@ namespace sw
 	}
 
 	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> &batch,
-	                                   bool robustBufferAccess, UInt & robustnessSize)
+	                                   bool robustBufferAccess, Pointer<Int>& robustnessLimits)
 	{
 		Vector4f v;
 		UInt4 offsets = *Pointer<UInt4>(As<Pointer<UInt4>>(batch)) * UInt4(stride);
@@ -157,12 +157,18 @@ namespace sw
 		if (robustBufferAccess)
 		{
 			// TODO(b/141124876): Optimize for wide-vector gather operations.
-			UInt4 limits = offsets + UInt4(stream.bytesPerAttrib());
+			Int4 limits = offsets + UInt4(stream.bytesPerAttrib());
 			Pointer<Byte> zeroSource = As<Pointer<Byte>>(&zero);
-			source0 = IfThenElse(limits.x <= robustnessSize, source0, zeroSource);
-			source1 = IfThenElse(limits.y <= robustnessSize, source1, zeroSource);
-			source2 = IfThenElse(limits.z <= robustnessSize, source2, zeroSource);
-			source3 = IfThenElse(limits.w <= robustnessSize, source3, zeroSource);
+			Int begin = robustnessLimits[0];
+			Int end = robustnessLimits[1];
+			source0 = IfThenElse((limits.x > begin) && (limits.x <= end),
+			                     source0, zeroSource);
+			source1 = IfThenElse((limits.y > begin) && (limits.y <= end),
+			                     source1, zeroSource);
+			source2 = IfThenElse((limits.z > begin) && (limits.z <= end),
+			                     source2, zeroSource);
+			source3 = IfThenElse((limits.w > begin) && (limits.w <= end),
+			                     source3, zeroSource);
 		}
 
 		bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || stream.normalized;
