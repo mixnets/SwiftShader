@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6001e09_bed110f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T02:33:58Z",
+      "side": 1,
+      "message": "Bug: b/24332884 too to keep this history related",
+      "revId": "7aa49b7979742ec63362e205c838381b6882d484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd2e28c2_7e30ef45",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 975,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T02:33:58Z",
+      "side": 1,
+      "message": "Just curious: does only doubling the range from 5 to 10 top bits suffice to pass the tests?",
+      "range": {
+        "startLine": 975,
+        "startChar": 46,
+        "endLine": 975,
+        "endChar": 52
+      },
+      "revId": "7aa49b7979742ec63362e205c838381b6882d484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4669d092_7415f1bd",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1092,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T02:33:58Z",
+      "side": 1,
+      "message": "May suffer from this too? Doesn\u0027t seem like dEQP cares though.",
+      "range": {
+        "startLine": 1092,
+        "startChar": 3,
+        "endLine": 1092,
+        "endChar": 46
+      },
+      "revId": "7aa49b7979742ec63362e205c838381b6882d484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
