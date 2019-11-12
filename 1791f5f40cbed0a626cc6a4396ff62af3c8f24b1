@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7621c2c_bf746e06",
+        "filename": "tests/regres/git/git.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T15:31:13Z",
+      "side": 1,
+      "message": "nit: Add a comment here that this might not be enough and \u0027server does not allow request for unadvertised object\u0027 can result?",
+      "range": {
+        "startLine": 123,
+        "startChar": 31,
+        "endLine": 123,
+        "endChar": 33
+      },
+      "revId": "1791f5f40cbed0a626cc6a4396ff62af3c8f24b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33ca0534_2078197c",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T15:31:13Z",
+      "side": 1,
+      "message": "nit: check out deqp branch",
+      "range": {
+        "startLine": 378,
+        "startChar": 44,
+        "endLine": 378,
+        "endChar": 50
+      },
+      "revId": "1791f5f40cbed0a626cc6a4396ff62af3c8f24b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28ddcb1f_4987cf86",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T15:31:13Z",
+      "side": 1,
+      "message": "nit: check out deqp commit",
+      "range": {
+        "startLine": 383,
+        "startChar": 44,
+        "endLine": 383,
+        "endChar": 50
+      },
+      "revId": "1791f5f40cbed0a626cc6a4396ff62af3c8f24b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a77b963d_7d3dc375",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-12T15:31:13Z",
+      "side": 1,
+      "message": "nit: build deqp",
+      "range": {
+        "startLine": 401,
+        "startChar": 44,
+        "endLine": 401,
+        "endChar": 69
+      },
+      "revId": "1791f5f40cbed0a626cc6a4396ff62af3c8f24b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
