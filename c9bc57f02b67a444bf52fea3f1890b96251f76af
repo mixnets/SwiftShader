@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d28da6e6_e8970b97",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-12T12:53:41Z",
+      "side": 1,
+      "message": "Another nitpick: Again, this is not thread safe (not that I think it particularly matters for the real world cases, but TSAN might spew errors when this is actually called on multiple threads). The TSAN-happy way to do this would be to use a std::atomic\u003cbool\u003e:\n\n  static std::atomic\u003cbool\u003e asserted \u003d { false };\n  ...\n  if (IsUnderDebugger() \u0026\u0026 !asserted.exchange(true)) {\n     assertv(format, vararg);\n  } else if (!asserted) {\n     tracev(format, vararg);\n  }",
+      "range": {
+        "startLine": 149,
+        "startChar": 2,
+        "endLine": 149,
+        "endChar": 18
+      },
+      "revId": "c9bc57f02b67a444bf52fea3f1890b96251f76af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef63c785_441ae18e",
+        "filename": "src/Vulkan/VkDebug.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-12T12:53:41Z",
+      "side": 1,
+      "message": "The documentation for this function says:\n\n // Outputs text to the debugging log, and asserts once if a debugger is attached.\n\nHowever, I see a call to warn(), not a assert.\nWhat actually is the desired behaviour here? To break in the debugger? If so, it seems like you\u0027d want to use an asm int 3 (for x86/x64), or __builtin_debugtrap() (clang only). This project is a good reference point for all the various architecture instructions for debug trapping: github.com/scottt/debugbreak\n\nI am also wondering if we really want to go adding yet another form of debug macro - there\u0027s already enough to overwhelm most people looking at Debug.hpp.\n\nI wonder if it would be preferable to add the debug trap functionality to warn(), possibly under a compile time or runtime flag? More a question for Nicolas.",
+      "range": {
+        "startLine": 150,
+        "startChar": 2,
+        "endLine": 150,
+        "endChar": 23
+      },
+      "revId": "c9bc57f02b67a444bf52fea3f1890b96251f76af",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
