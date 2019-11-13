@@ -405,7 +405,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device* device, DescriptorSet *dstS
 					{
 						// Obtain the pointer to the corner of the level including the border, for seamless sampling.
 						// This is taken into account in the sampling routine, which can't handle negative texel coordinates.
-						VkOffset3D offset = {-1, -1, 0};
+						VkOffset3D offset = {-format.border(), -format.border(), 0};
 						mipmap.buffer = imageView->getOffsetPointer(offset, aspect, level, 0, ImageView::SAMPLING);
 					}
 					else

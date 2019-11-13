@@ -2049,8 +2049,10 @@ namespace sw
 		               ((srcEdge == LEFT) && (dstEdge == BOTTOM));
 
 		VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(srcSubresourceLayers.aspectMask);
-		int bytes = image->getFormat(aspect).bytes();
+		vk::Format format = image->getFormat(aspect);
+		int bytes = format.bytes();
 		int pitchB = image->rowPitchBytes(aspect, srcSubresourceLayers.mipLevel);
+		bool quadLayout = format.hasQuadLayout();
 
 		VkExtent3D extent = image->getMipLevelExtent(aspect, srcSubresourceLayers.mipLevel);
 		int w = extent.width;
@@ -2063,31 +2065,51 @@ namespace sw
 		// Src is expressed in the regular [0, width-1], [0, height-1] space
 		bool srcHorizontal = ((srcEdge == TOP) || (srcEdge == BOTTOM));
 		int srcDelta = srcHorizontal ? bytes : pitchB;
-		VkOffset3D srcOffset = { (srcEdge == RIGHT) ? (w - 1) : 0, (srcEdge == BOTTOM) ? (h - 1) : 0, 0 };
+		int srcX = (srcEdge == RIGHT) ? w - 1 : 0;
+		int srcY = (srcEdge == BOTTOM) ? w - 1 : 0;
+		// Always request the image memory from the origin when using quadLayout
+		VkOffset3D srcOffset = { quadLayout ? 0 : srcX, quadLayout ? 0 : srcY, 0 };
 
 		// Dst contains borders, so it is expressed in the [-1, width], [-1, height] space
 		bool dstHorizontal = ((dstEdge == TOP) || (dstEdge == BOTTOM));
 		int dstDelta = (dstHorizontal ? bytes : pitchB) * (reverse ? -1 : 1);
-		VkOffset3D dstOffset = { (dstEdge == RIGHT) ? w : -1, (dstEdge == BOTTOM) ? h : -1, 0 };
-
 		// Don't write in the corners
-		if(dstHorizontal)
-		{
-			dstOffset.x += reverse ? w : 1;
-		}
-		else
-		{
-			dstOffset.y += reverse ? h : 1;
-		}
+		int dstX = ((dstEdge == RIGHT) ? w : -1) + (dstHorizontal ? (reverse ? w : 1) : 0);
+		int dstY = ((dstEdge == BOTTOM) ? h : -1) + (dstHorizontal ? 0 : (reverse ? h : 1));
+		int border = format.border();
+		// Always request the image memory from the origin when using quadLayout
+		VkOffset3D dstOffset = { quadLayout ? -border : dstX, quadLayout ? -border : dstY, 0 };
 
 		const uint8_t* src = static_cast<const uint8_t*>(image->getTexelPointer(srcOffset, srcSubresourceLayers));
 		uint8_t *dst = static_cast<uint8_t*>(image->getTexelPointer(dstOffset, dstSubresourceLayers));
 		ASSERT((src < image->end()) && ((src + (w * srcDelta)) < image->end()));
 		ASSERT((dst < image->end()) && ((dst + (w * dstDelta)) < image->end()));
 
-		for(int i = 0; i < w; ++i, dst += dstDelta, src += srcDelta)
+		if(quadLayout)
 		{
-			memcpy(dst, src, bytes);
+			dstX += border;
+			dstY += border;
+
+			int srcDX = srcHorizontal ? ((srcEdge == RIGHT) ? -1 : 1) : 0;
+			int srcDY = srcHorizontal ? 0 : ((srcEdge == BOTTOM) ? -1 : 1);
+			int dstDX = dstHorizontal ? (((dstEdge == RIGHT) ^ reverse) ? -1 : 1) : 0;
+			int dstDY = dstHorizontal ? 0 : (((dstEdge == BOTTOM) ^ reverse) ? -1 : 1);
+
+			for(int i = 0; i < w; ++i, srcX += srcDX, srcY += srcDY, dstX += dstDX, dstY += dstDY)
+			{
+				int srcOffset = format.computeOffset(srcX, srcY, pitchB, bytes);
+				int dstOffset = format.computeOffset(dstX, dstY, pitchB, bytes);
+				ASSERT((src + srcOffset) < image->end());
+				ASSERT((dst + dstOffset) < image->end());
+				memcpy(dst + dstOffset, src + srcOffset, bytes);
+			}
+		}
+		else
+		{
+			for(int i = 0; i < w; ++i, dst += dstDelta, src += srcDelta)
+			{
+				memcpy(dst, src, bytes);
+			}
 		}
 	}
 }

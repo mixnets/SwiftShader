@@ -2291,7 +2291,7 @@ namespace sw
 
 			if(addressingMode == ADDRESSING_SEAMLESS)  // Adjust for border.
 			{
-				xyz0 += Int4(1);
+				xyz0 += Int4(state.textureFormat.border());
 			}
 
 			xyz1 = xyz0 - filter;   // Increment
