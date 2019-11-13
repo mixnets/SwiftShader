@@ -1647,9 +1647,27 @@ int Format::bytes() const
 	return 0;
 }
 
-int Format::pitchB(int width, int border, bool target) const
+int Format::border() const
 {
-	width += 2 * border;
+	return hasQuadLayout() ? 2 : 1;
+}
+
+int Format::computeOffset(int x, int y, int pitchB, int bytes)
+{
+	if(hasQuadLayout())
+	{
+		// (x & ~1) * 2 + (x & 1) == (x - (x & 1)) * 2 + (x & 1) == x * 2 - (x & 1) * 2 + (x & 1) == x * 2 - (x & 1)
+		return (y & ~1) * pitchB + ((((y & 1) + x) << 1) - (x & 1)) * bytes;
+	}
+	else
+	{
+		return y * pitchB + x * bytes;
+	}
+}
+
+int Format::pitchB(int width, bool hasBorder, bool target) const
+{
+	width += hasBorder ? 2 * border() : 0;
 
 	// Render targets require 2x2 quads
 	if(target || isDepth() || isStencil())
@@ -1712,9 +1730,9 @@ int Format::pitchB(int width, int border, bool target) const
 	}
 }
 
-int Format::sliceBUnpadded(int width, int height, int border, bool target) const
+int Format::sliceBUnpadded(int width, int height, bool hasBorder, bool target) const
 {
-	height += 2 * border;
+	height += hasBorder ? 2 * border() : 0;
 
 	// Render targets require 2x2 quads
 	if(target || isDepth() || isStencil())
@@ -1738,7 +1756,7 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+		return pitchB(width, hasBorder, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
 	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_6x5_UNORM_BLOCK:
@@ -1747,39 +1765,39 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 	case VK_FORMAT_ASTC_8x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
+		return pitchB(width, hasBorder, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
 	case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_8x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x6_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x6_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
+		return pitchB(width, hasBorder, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
 	case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x8_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x8_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
+		return pitchB(width, hasBorder, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
 	case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
+		return pitchB(width, hasBorder, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
+		return pitchB(width, hasBorder, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		// "Images in this format must be defined with a width and height that is a multiple of two."
-		return pitchB(width, border, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
+		return pitchB(width, hasBorder, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
 	default:
-		return pitchB(width, border, target) * height;   // Pitch computed per row
+		return pitchB(width, hasBorder, target) * height;   // Pitch computed per row
 	}
 }
 
-int Format::sliceB(int width, int height, int border, bool target) const
+int Format::sliceB(int width, int height, bool hasBorder, bool target) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border, target) + 15);
+	return sw::align<16>(sliceBUnpadded(width, height, hasBorder, target) + 15);
 }
 
 sw::float4 Format::getScale() const

@@ -107,7 +107,7 @@ private:
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferImageCopy& region) const;
 	VkFormat getClearFormat() const;
 	void clear(void* pixelData, VkFormat pixelFormat, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D& renderArea);
-	int borderSize() const;
+	bool hasBorder() const;
 	void decodeETC2(const VkImageSubresourceRange& subresourceRange) const;
 
 	const Device *const      device = nullptr;
