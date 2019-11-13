@@ -253,8 +253,8 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		-0.5, // minInterpolationOffset
 		0.5, // maxInterpolationOffset
 		4, // subPixelInterpolationOffsetBits
-		4096, // maxFramebufferWidth
-		4096, // maxFramebufferHeight
+		8196, // maxFramebufferWidth
+		8196, // maxFramebufferHeight
 		256, // maxFramebufferLayers
 		sampleCounts, // framebufferColorSampleCounts
 		sampleCounts, // framebufferDepthSampleCounts
