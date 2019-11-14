@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38344739_1200df9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-14T16:53:24Z",
+      "side": 1,
+      "message": "Please mention this fixes dEQP-VK.api.image_clearing.dedicated_allocation.clear_depth_stencil_attachment.multiple_layers.d32_sfloat_s8_uint_separate_layouts_stencil_200x180 incorrectly assuming VK_KHR_create_renderpass2 is supported.\n\n(assuming that\u0027s the case)",
+      "revId": "42632b1a5eb54c4428fad448f8d5b948ec11264f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
