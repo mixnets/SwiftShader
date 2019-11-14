@@ -253,8 +253,8 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		-0.5, // minInterpolationOffset
 		0.5, // maxInterpolationOffset
 		4, // subPixelInterpolationOffsetBits
-		4096, // maxFramebufferWidth
-		4096, // maxFramebufferHeight
+		0xFFFFu >> vk::SUBPIXEL_PRECISION_BITS, // maxFramebufferWidth (represented in a fixed point unsigned short)
+		0xFFFFu >> vk::SUBPIXEL_PRECISION_BITS, // maxFramebufferHeight (represented in a fixed point unsigned short)
 		256, // maxFramebufferLayers
 		sampleCounts, // framebufferColorSampleCounts
 		sampleCounts, // framebufferDepthSampleCounts
@@ -283,6 +283,13 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		64, // optimalBufferCopyRowPitchAlignment
 		256, // nonCoherentAtomSize
 	};
+
+	// If SUBPIXEL_PRECISION_BITS > 4, then maxFramebufferWidth and maxFramebufferHeight
+	// will be lower than 4096, which is not spec compliant in Vulkan.
+	static_assert(vk::SUBPIXEL_PRECISION_BITS <= 4, "maxFramebufferWidth and maxFramebufferHeight are too low");
+	// If SUBPIXEL_PRECISION_BITS < 4, then subPixelPrecisionBits will be lower than 4,
+	// which is not spec compliant in Vulkan.
+	static_assert(vk::SUBPIXEL_PRECISION_BITS >= 4, "subPixelPrecisionBits is too low");
 
 	return limits;
 }
