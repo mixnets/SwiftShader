@@ -82,6 +82,11 @@ constexpr int SUBPIXEL_PRECISION_BITS = 4;
 constexpr float SUBPIXEL_PRECISION_FACTOR = static_cast<float>(1 << SUBPIXEL_PRECISION_BITS);
 constexpr int SUBPIXEL_PRECISION_MASK = 0xFFFFFFFF >> (32 - SUBPIXEL_PRECISION_BITS);
 
+// Currently, the outline buffer uses unsigned short values, so
+// the maximum framebuffer width and height are bounded by that
+constexpr int MAX_ALLOWED_FRAMEBUFFER_SIZE_BITS = 16;
+constexpr int MAX_ALLOWED_FRAMEBUFFER_SIZE = 1u << 16;
+
 }
 
 #if VK_USE_PLATFORM_XLIB_KHR || VK_USE_PLATFORM_ANDROID_KHR

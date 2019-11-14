@@ -284,6 +284,26 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		256, // nonCoherentAtomSize
 	};
 
+	// Currently, the outline buffer uses unsigned short values, so
+	// the maximum framebuffer width and height are bounded by that
+	assert((limits.maxFramebufferWidth <= std::min(vk::MAX_ALLOWED_FRAMEBUFFER_SIZE, sw::OUTLINE_RESOLUTION)) &&
+		   (limits.maxFramebufferHeight <= std::min(vk::MAX_ALLOWED_FRAMEBUFFER_SIZE, sw::OUTLINE_RESOLUTION)));
+
+	// Given the upper limit for framebuffer size, the rest of the bits may be
+	// used as subpixel precision bits. When using fixed point arithmetic, we
+	// get only half of those bits, because, for example, when using 24.8
+	// fixed point, an operation can yield 16.16 fixed point, like so :
+	//     24.8 * 24.8 = 16.16
+	// So the maximum number of subpixel precision bits is half of the number
+	// of bits used for the integer portion, like so:
+	static_assert(vk::SUBPIXEL_PRECISION_BITS <=
+	              ((32 - std::min(BITS(sw::OUTLINE_RESOLUTION), vk::MAX_ALLOWED_FRAMEBUFFER_SIZE_BITS)) >> 1),
+	              "subPixelPrecisionBits is too high");
+
+	// If SUBPIXEL_PRECISION_BITS < 4, then subPixelPrecisionBits will be lower than 4,
+	// which is not spec compliant in Vulkan.
+	static_assert(vk::SUBPIXEL_PRECISION_BITS >= 4, "subPixelPrecisionBits is too low");
+
 	return limits;
 }
 
