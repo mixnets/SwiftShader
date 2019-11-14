@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "eedc9bb3_c9747ba9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-14T21:19:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e2b95f00_75d6591d",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c23e297a_b1084d05",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b17e64d_2fb63a65",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-14T21:19:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c23e297a_b1084d05",
+      "range": {
+        "startLine": 9,
+        "startChar": 46,
+        "endLine": 9,
+        "endChar": 51
+      },
+      "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "871e2ab3_225b341e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-14T21:19:31Z",
+      "side": 1,
+      "message": "I think that would require specialized code everywhere getTexelPointer() is called, to make sure we go to (-1,-1) and offset whatever we\u0027re doing by 1, including the clear functions. With an offset of 2, the stencil can be treated as a regular stencil for any of the non-cube uses.",
+      "parentUuid": "f664be26_efaa0797",
+      "range": {
+        "startLine": 16,
+        "startChar": 2,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c9671a16_9b6d3675",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9df99976_1f1c5500",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2068,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-14T21:19:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c9671a16_9b6d3675",
+      "range": {
+        "startLine": 2068,
+        "startChar": 34,
+        "endLine": 2068,
+        "endChar": 39
+      },
+      "revId": "2ac3375425bccff32f0c5b920d14d592f9c6a076",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
