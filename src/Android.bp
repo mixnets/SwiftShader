@@ -629,3 +629,27 @@ cc_library_shared {
         "libvk_swiftshader_defaults",
     ],
 }
+
+java_defaults {
+    name: "SwiftShaderDefaults",
+    sdk_version: "system_28",
+    min_sdk_version: "28",
+    compile_multilib: "both",
+    use_embedded_native_libs: true,
+}
+
+android_app {
+    name: "SwiftShaderDebug",
+    defaults: [ "SwiftShaderDefaults" ],
+    jni_libs: [
+        "vulkan.pastel.debug",
+    ],
+}
+
+android_app {
+    name: "SwiftShader",
+    defaults: [ "SwiftShaderDefaults" ],
+    jni_libs: [
+        "vulkan.pastel",
+    ],
+}
