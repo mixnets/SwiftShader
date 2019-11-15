@@ -1531,10 +1531,30 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         message(FATAL_ERROR "Architecture '${ARCH}' not supported by Subzero")
     endif()
 
+<<<<<<< HEAD   (102fd1 PixelRoutine: const-qualify reference parameters)
     file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
         ${SUBZERO_LLVM_DIR}/*.cpp
         ${SUBZERO_LLVM_DIR}/*.c
         ${SUBZERO_LLVM_DIR}/*.h
+=======
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/event_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/memory_test.cpp
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (6dd9ff Squashed 'third_party/marl/' changes from 49e4e3141..14e4d86)
     )
 
     set(SUBZERO_REACTOR_LIST
