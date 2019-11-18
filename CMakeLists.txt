@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.6.3)
 
 project(SwiftShader C CXX ASM)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 # On Windows we use custom solution and project files, except for certain third-
 # party projects which use CMake-generated ones. They are manually (re)generated
 # and made path relative using build/cmake.sh, so they can be checked into the
@@ -10,6 +11,43 @@ project(SwiftShader C CXX ASM)
 if(WIN32)
     # Disable automatically regenerating project files on CMakeLists.txt changes.
     set(CMAKE_SUPPRESS_REGENERATION true)
+=======
+# There are two ways to use this project.
+#
+# Using this source tree directly from a CMake-based project:
+#   1. Add an add_subdirectory directive to include this sub directory.
+#   2. Use ${SPIRV-Headers_SOURCE_DIR}/include} in a target_include_directories
+#      command.
+#
+# Installing the headers first, then using them with an implicit include
+# directory.  To install the headers:
+#   1. mkdir build ; cd build
+#   2. cmake ..
+#   3. cmake --build . --target install
+
+# legacy
+add_custom_target(install-headers
+    COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv
+        $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/include/spirv)
+
+option(SPIRV_HEADERS_SKIP_EXAMPLES "Skip building examples"
+      ${SPIRV_HEADERS_SKIP_EXAMPLES})
+
+option(SPIRV_HEADERS_SKIP_INSTALL "Skip install"
+      ${SPIRV_HEADERS_SKIP_INSTALL})
+
+if(NOT ${SPIRV_HEADERS_SKIP_EXAMPLES})
+  set(SPIRV_HEADERS_ENABLE_EXAMPLES ON)
+endif()
+
+if(NOT ${SPIRV_HEADERS_SKIP_INSTALL})
+  set(SPIRV_HEADERS_ENABLE_INSTALL ON)
+endif()
+
+if (SPIRV_HEADERS_ENABLE_EXAMPLES)
+  message(STATUS "Building SPIRV-Header examples")
+  add_subdirectory(example)
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 endif()
 
 ###########################################################
@@ -1379,14 +1417,24 @@ elseif(ARCH STREQUAL "ppc64le")
     )
 endif()
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND LLVM_LIST
         ${LLVM_DIR}/lib/Demangle/ItaniumDemangle.cpp
     )
 endif(REACTOR_EMIT_DEBUG_INFO)
+=======
+if (SPIRV_HEADERS_ENABLE_INSTALL)
+    message(STATUS "Installing SPIRV-Header")
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 set(LLVM_INCLUDE_DIR "")
+=======
+    set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
 elseif(LINUX)
@@ -1399,7 +1447,11 @@ elseif(ANDROID)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/android/include)
     list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/android/include)
 endif()
+=======
+    set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 list(APPEND LLVM_INCLUDE_DIR
     ${LLVM_DIR}/include
     ${LLVM_DIR}/lib/Target/AArch64
@@ -1416,7 +1468,14 @@ list(APPEND LLVM_INCLUDE_DIR
     ${LLVM_CONFIG_DIR}/common/lib/Target/X86
     ${LLVM_CONFIG_DIR}/common/lib/Transforms/InstCombine
 )
+=======
+    set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+    set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
+    set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+    set(namespace "${PROJECT_NAME}::")
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 # Suppress known LLVM warnings
 set(LLVM_COMPILE_OPTIONS)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -1453,7 +1512,15 @@ set_target_properties(llvm PROPERTIES
     COMPILE_DEFINITIONS "__STDC_CONSTANT_MACROS; __STDC_LIMIT_MACROS;"
     FOLDER "LLVM"
 )
+=======
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        "${version_config}"
+        COMPATIBILITY SameMajorVersion
+    )
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 # Add required libraries for LLVM
 if(LINUX)
     target_link_libraries(llvm dl)
@@ -1604,12 +1671,31 @@ set(OPENGL_INCLUDE_DIR
     ${OPENGL_DIR}
     ${COMMON_INCLUDE_DIR}
 )
+=======
+    configure_package_config_file(
+        "cmake/Config.cmake.in"
+        "${project_config}"
+        INSTALL_DESTINATION "${config_install_dir}"
+    )
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 set(VULKAN_INCLUDE_DIR
     ${COMMON_INCLUDE_DIR}
     ${MARL_INCLUDE_DIR}
 )
+=======
+    install(
+        TARGETS ${PROJECT_NAME}
+        EXPORT "${TARGETS_EXPORT_NAME}"
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 ###########################################################
 # File Lists
 ###########################################################
@@ -1639,7 +1725,14 @@ list(REMOVE_ITEM SWIFTSHADER_LIST
     ${SOURCE_DIR}/Common/GrallocAndroid.cpp
     ${SOURCE_DIR}/Common/GrallocAndroid.hpp
 )
+=======
+    install(
+        DIRECTORY include/spirv
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 if(REACTOR_EMIT_DEBUG_INFO)
     set(LIBBACKTRACE_LIST
         ${LIBBACKTRACE_DIR}/atomic.c
@@ -1685,7 +1778,14 @@ set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/ExecutableMemory.cpp
     ${SOURCE_DIR}/Reactor/ExecutableMemory.hpp
 )
+=======
+    install(
+        FILES "${project_config}" "${version_config}"
+        DESTINATION "${config_install_dir}"
+    )
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
 
+<<<<<<< HEAD   (aba102 Remove the now unused sw::Event.)
 file(GLOB_RECURSE EGL_LIST
     ${OPENGL_DIR}/libEGL/*.cpp
     ${OPENGL_DIR}/libEGL/*.h
@@ -2238,3 +2338,11 @@ if(BUILD_TESTS AND BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif(BUILD_TESTS AND BUILD_VULKAN)
+=======
+    install(
+        EXPORT "${TARGETS_EXPORT_NAME}"
+        NAMESPACE "${namespace}"
+        DESTINATION "${config_install_dir}"
+    )
+endif()
+>>>>>>> BRANCH (0f9a2d Squashed 'third_party/SPIRV-Headers/' changes from e4322e3be)
