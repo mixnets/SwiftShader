@@ -140,8 +140,36 @@ if (NOT TARGET gtest)
       Running 'git submodule update --init' to download it:
         ")
 
+<<<<<<< HEAD   (60bf3b Update SPIRV-Headers to 0f9a2dc9)
         execute_process(COMMAND git submodule update --init)
     endif()
+=======
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 11)
+
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+else()
+  message(FATAL_ERROR "Your platform '${CMAKE_SYSTEM_NAME}' is not supported!")
+>>>>>>> BRANCH (d552f6 Squashed 'third_party/SPIRV-Tools/' changes from 65e362b7a..)
 endif()
 
 if (NOT TARGET libbacktrace)
@@ -471,10 +499,42 @@ else()
     endif()
 endif()
 
+<<<<<<< HEAD   (60bf3b Update SPIRV-Headers to 0f9a2dc9)
 if(REACTOR_EMIT_PRINT_LOCATION)
     # This feature depends on REACTOR_EMIT_DEBUG_INFO, so enable it
     set(REACTOR_EMIT_DEBUG_INFO "On")
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
+=======
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  if(WIN32)
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} ${TARGET}/cmake)
+    endmacro()
+  else()
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} lib/cmake/${TARGET})
+    endmacro()
+  endif()
+
+  macro(spvtools_generate_config_file TARGET)
+    file(WRITE ${CMAKE_BINARY_DIR}/${TARGET}Config.cmake
+      "include(CMakeFindDependencyMacro)\n"
+      "find_dependency(${SPIRV_TOOLS})\n"
+      "include(\${CMAKE_CURRENT_LIST_DIR}/${TARGET}Targets.cmake)\n"
+      "set(${TARGET}_LIBRARIES ${TARGET})\n"
+      "get_target_property(${TARGET}_INCLUDE_DIRS ${TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
+  endmacro()
+endif()
+
+# Defaults to OFF if the user didn't set it.
+option(SPIRV_SKIP_EXECUTABLES
+  "Skip building the executable and tests along with the library"
+  ${SPIRV_SKIP_EXECUTABLES})
+option(SPIRV_SKIP_TESTS
+  "Skip building tests along with the library" ${SPIRV_SKIP_TESTS})
+if ("${SPIRV_SKIP_EXECUTABLES}")
+  set(SPIRV_SKIP_TESTS ON)
+>>>>>>> BRANCH (d552f6 Squashed 'third_party/SPIRV-Tools/' changes from 65e362b7a..)
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)

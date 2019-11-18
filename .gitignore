@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (60bf3b Update SPIRV-Headers to 0f9a2dc9)
 # Ignored folders #
 /cache/
 /lib/
@@ -9,6 +10,31 @@
 CMakeFiles/
 .idea/
 cmake-build-debug/
+=======
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build/
+/buildtools/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/external/protobuf
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-spirv-tools
+bazel-testlogs
+>>>>>>> BRANCH (d552f6 Squashed 'third_party/SPIRV-Tools/' changes from 65e362b7a..)
 
 # Per user vscode config files.
 .vscode/launch.json
