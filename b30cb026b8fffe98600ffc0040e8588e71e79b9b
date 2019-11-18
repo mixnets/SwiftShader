@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "884049c1_06dc031e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-18T15:14:08Z",
+      "side": 1,
+      "message": "Not with recursive globs, because they pick all files, including those from all sub-directories (this approach was tried in patch #2 of this CL and failed for this exact reason).\n\nOn the other hand, putting these files under platform-specific directories is neater from a code organization point of view.",
+      "parentUuid": "e3aacbd1_f75ad8cd",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 14,
+        "endChar": 21
+      },
+      "revId": "b30cb026b8fffe98600ffc0040e8588e71e79b9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50079497_ba44b17f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -59,6 +83,30 @@
       "writtenOn": "2019-11-07T21:05:07Z",
       "side": 1,
       "message": "Please open one so we can centralize the discussion and associate related changes with the same bug (other build files have globs too).",
+      "range": {
+        "startLine": 27,
+        "startChar": 5,
+        "endLine": 27,
+        "endChar": 9
+      },
+      "revId": "b30cb026b8fffe98600ffc0040e8588e71e79b9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1fb06fcb_bfb773d1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-18T15:14:08Z",
+      "side": 1,
+      "message": "Done: I\u0027ve created https://b.corp.google.com/issues/144687651 to list possible options. My main recommendation is to replace GLOB_RECURSE with GLOB and use platform-specific sub-directories, if we want to keep glob patterns.",
+      "parentUuid": "ccd0091b_d65fdcad",
       "range": {
         "startLine": 27,
         "startChar": 5,
