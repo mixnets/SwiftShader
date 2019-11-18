@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4f7f83e6_00709a85",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-18T21:46:50Z",
+      "side": 1,
+      "message": "nit: open bracket is on new line.",
+      "range": {
+        "startLine": 231,
+        "startChar": 40,
+        "endLine": 231,
+        "endChar": 41
+      },
+      "revId": "e99dcafb432b43ec1518ec742b70500258c91f43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
