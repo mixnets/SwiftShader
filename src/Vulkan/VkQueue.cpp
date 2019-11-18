@@ -228,6 +228,9 @@ VkResult Queue::present(const VkPresentInfoKHR* presentInfo)
 	for(uint32_t i = 0; i < presentInfo->swapchainCount; i++)
 	{
 		VkResult result = vk::Cast(presentInfo->pSwapchains[i])->present(presentInfo->pImageIndices[i]);
+		if (presentInfo->pResults != nullptr) {
+			presentInfo->pResults[i] = result;
+		}
 		if (result != VK_SUCCESS)
 			return result;
 	}
