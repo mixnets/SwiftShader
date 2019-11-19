@@ -52,8 +52,7 @@ namespace sw
 
 	void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 	{
-		// TODO: consider shader which modifies sample mask in general
-		const bool earlyDepthTest = !spirvShader || (spirvShader->getModes().EarlyFragmentTests && !spirvShader->getModes().DepthReplacing && !state.alphaToCoverage);
+		const bool earlyFragmentTests = !spirvShader || spirvShader->getModes().EarlyFragmentTests;
 
 		Int zMask[4];   // Depth mask
 		Int sMask[4];   // Stencil mask
@@ -91,7 +90,7 @@ namespace sw
 
 		Bool depthPass = false;
 
-		if(earlyDepthTest)
+		if(earlyFragmentTests)
 		{
 			for(unsigned int q = 0; q < state.multiSample; q++)
 			{
@@ -99,7 +98,7 @@ namespace sw
 			}
 		}
 
-		If(depthPass || Bool(!earlyDepthTest))
+		If(depthPass || Bool(!earlyFragmentTests))
 		{
 			Float4 yyyy = Float4(Float(y)) + *Pointer<Float4>(primitive + OFFSET(Primitive,yQuad), 16);
 
@@ -168,8 +167,7 @@ namespace sw
 
 			if (spirvShader)
 			{
-				bool earlyFragTests = (spirvShader && spirvShader->getModes().EarlyFragmentTests);
-				applyShader(cMask, earlyFragTests ? sMask : cMask, earlyDepthTest ? zMask : cMask);
+				applyShader(cMask, earlyFragmentTests ? sMask : cMask, earlyFragmentTests ? zMask : cMask);
 			}
 
 			alphaPass = alphaTest(cMask);
@@ -185,7 +183,7 @@ namespace sw
 
 			If(alphaPass)
 			{
-				if(!earlyDepthTest)
+				if(!earlyFragmentTests)
 				{
 					for(unsigned int q = 0; q < state.multiSample; q++)
 					{
@@ -193,7 +191,7 @@ namespace sw
 					}
 				}
 
-				If(depthPass || Bool(earlyDepthTest))
+				If(depthPass || Bool(earlyFragmentTests))
 				{
 					for(unsigned int q = 0; q < state.multiSample; q++)
 					{
