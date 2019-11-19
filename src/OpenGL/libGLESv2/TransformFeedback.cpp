@@ -14,7 +14,7 @@
 
 // TransformFeedback.cpp: Implements the es2::TransformFeedback class
 
-#include "TransformFeedback.h"
+#include "OpenGL/libGLESv2/TransformFeedback.h"
 
 namespace es2
 {

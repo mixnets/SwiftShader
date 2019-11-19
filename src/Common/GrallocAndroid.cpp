@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GrallocAndroid.hpp"
-#include "Debug.hpp"
+#include "Common/GrallocAndroid.hpp"
+#include "Common/Debug.hpp"
 
 #ifdef HAVE_GRALLOC1
 #include <sync/sync.h>

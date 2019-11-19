@@ -15,10 +15,10 @@
 #ifndef sw_VertexProgram_hpp
 #define sw_VertexProgram_hpp
 
-#include "VertexRoutine.hpp"
-#include "ShaderCore.hpp"
+#include "Shader/VertexRoutine.hpp"
+#include "Shader/ShaderCore.hpp"
 
-#include "SamplerCore.hpp"
+#include "Shader/SamplerCore.hpp"
 #include "Renderer/Stream.hpp"
 #include "Common/Types.hpp"
 

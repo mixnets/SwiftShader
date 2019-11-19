@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SwiftConfig.hpp"
+#include "Main/SwiftConfig.hpp"
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 #include "Common/Configurator.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Version.h"

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SpirvShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
-#include "SamplerCore.hpp" // TODO: Figure out what's needed.
+#include "Pipeline/SamplerCore.hpp" // TODO: Figure out what's needed.
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSetLayout.hpp"

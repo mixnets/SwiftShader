@@ -15,7 +15,7 @@
 #ifndef sw_VertexPipeline_hpp
 #define sw_VertexPipeline_hpp
 
-#include "VertexRoutine.hpp"
+#include "Shader/VertexRoutine.hpp"
 
 #include "Renderer/Context.hpp"
 #include "Renderer/VertexProcessor.hpp"

@@ -92,8 +92,8 @@
 #pragma warning(disable: 4701)
 #endif
 
-#include "SymbolTable.h"
-#include "ParseHelper.h"
+#include "OpenGL/compiler/SymbolTable.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 #define YYENABLE_NLS 0
 

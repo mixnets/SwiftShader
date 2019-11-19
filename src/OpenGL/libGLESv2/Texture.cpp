@@ -16,17 +16,17 @@
 // Texture2D, TextureCubeMap, Texture3D and Texture2DArray. Implements GL texture objects
 // and related functionality. [OpenGL ES 2.0.24] section 3.7 page 63.
 
-#include "Texture.h"
+#include "OpenGL/libGLESv2/Texture.h"
 
-#include "main.h"
-#include "mathutil.h"
-#include "Framebuffer.h"
-#include "Device.hpp"
-#include "Sampler.h"
-#include "Shader.h"
-#include "libEGL/Display.h"
-#include "common/Surface.hpp"
-#include "common/debug.h"
+#include "OpenGL/libGLESv2/main.h"
+#include "OpenGL/libGLESv2/mathutil.h"
+#include "OpenGL/libGLESv2/Framebuffer.h"
+#include "OpenGL/libGLESv2/Device.hpp"
+#include "OpenGL/libGLESv2/Sampler.h"
+#include "OpenGL/libGLESv2/Shader.h"
+#include "OpenGL/libEGL/Display.h"
+#include "OpenGL/common/Surface.hpp"
+#include "OpenGL/common/debug.h"
 
 #include <algorithm>
 

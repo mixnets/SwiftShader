@@ -19,11 +19,11 @@
 #ifndef LIBGLESV2_TEXTURE_H_
 #define LIBGLESV2_TEXTURE_H_
 
-#include "Renderbuffer.h"
-#include "common/Object.hpp"
-#include "utilities.h"
-#include "libEGL/Texture.hpp"
-#include "common/debug.h"
+#include "OpenGL/libGLESv2/Renderbuffer.h"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/libGLESv2/utilities.h"
+#include "OpenGL/libEGL/Texture.hpp"
+#include "OpenGL/common/debug.h"
 
 #include <GLES2/gl2.h>
 

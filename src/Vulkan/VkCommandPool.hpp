@@ -15,7 +15,7 @@
 #ifndef VK_COMMAND_POOL_HPP_
 #define VK_COMMAND_POOL_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include <set>
 
 namespace vk

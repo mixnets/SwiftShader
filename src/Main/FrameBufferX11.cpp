@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "FrameBufferX11.hpp"
+#include "Main/FrameBufferX11.hpp"
 
-#include "libX11.hpp"
+#include "Main/libX11.hpp"
 #include "Common/Timer.hpp"
 
 #include <sys/ipc.h>

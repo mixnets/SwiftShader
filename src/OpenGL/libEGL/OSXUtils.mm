@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OSXUtils.hpp"
+#include "OpenGL/libEGL/OSXUtils.hpp"
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 
 #import <Cocoa/Cocoa.h>
 

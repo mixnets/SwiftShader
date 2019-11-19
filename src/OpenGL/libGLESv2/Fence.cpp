@@ -14,9 +14,9 @@
 
 // Fence.cpp: Implements the Fence class, which supports the GL_NV_fence extension.
 
-#include "Fence.h"
+#include "OpenGL/libGLESv2/Fence.h"
 
-#include "main.h"
+#include "OpenGL/libGLESv2/main.h"
 #include "Common/Thread.hpp"
 
 namespace es2

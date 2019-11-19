@@ -43,10 +43,10 @@ IF YOU MODIFY THIS FILE YOU ALSO NEED TO RUN generate_parser.sh.
 #pragma warning(disable: 4005)
 #endif
 
-#include "Tokenizer.h"
+#include "OpenGL/compiler/preprocessor/Tokenizer.h"
 
-#include "DiagnosticsBase.h"
-#include "Token.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
 
 #if defined(__GNUC__)
 // Triggered by the auto-generated yy_fatal_error function.

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDeviceMemory.hpp"
+#include "Vulkan/VkDeviceMemory.hpp"
 
-#include "VkConfig.h"
+#include "Vulkan/VkConfig.h"
 
 namespace vk
 {

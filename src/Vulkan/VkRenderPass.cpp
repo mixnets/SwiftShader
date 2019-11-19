@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkRenderPass.hpp"
+#include "Vulkan/VkRenderPass.hpp"
 #include <cstring>
 
 namespace vk

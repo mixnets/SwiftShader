@@ -14,8 +14,8 @@
 
 #include <limits>
 
-#include "util.h"
-#include "preprocessor/numeric_lex.h"
+#include "OpenGL/compiler/util.h"
+#include "OpenGL/compiler/preprocessor/numeric_lex.h"
 
 bool atof_clamp(const char *str, float *value)
 {

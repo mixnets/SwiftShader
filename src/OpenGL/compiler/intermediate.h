@@ -24,9 +24,9 @@
 #ifndef __INTERMEDIATE_H
 #define __INTERMEDIATE_H
 
-#include "Common.h"
-#include "Types.h"
-#include "ConstantUnion.h"
+#include "OpenGL/compiler/Common.h"
+#include "OpenGL/compiler/Types.h"
+#include "OpenGL/compiler/ConstantUnion.h"
 
 //
 // Operators used by the high-level (parse tree) representation.

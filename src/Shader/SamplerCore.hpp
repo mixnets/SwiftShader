@@ -15,7 +15,7 @@
 #ifndef sw_SamplerCore_hpp
 #define sw_SamplerCore_hpp
 
-#include "PixelRoutine.hpp"
+#include "Shader/PixelRoutine.hpp"
 #include "Reactor/Reactor.hpp"
 
 namespace sw

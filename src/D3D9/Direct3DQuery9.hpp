@@ -15,9 +15,9 @@
 #ifndef D3D9_Direct3DQuery9_hpp
 #define D3D9_Direct3DQuery9_hpp
 
-#include "Unknown.hpp"
+#include "D3D9/Unknown.hpp"
 
-#include "Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 
 #include <d3d9.h>
 

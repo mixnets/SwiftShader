@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Clipper.hpp"
+#include "Renderer/Clipper.hpp"
 
-#include "Polygon.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Polygon.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Common/Debug.hpp"
 
 namespace sw

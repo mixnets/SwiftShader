@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SharedLibrary.hpp"
+#include "Common/SharedLibrary.hpp"
 
 #if defined(_WIN32)
 std::string getModuleDirectory()

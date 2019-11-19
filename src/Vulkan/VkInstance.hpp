@@ -15,7 +15,7 @@
 #ifndef VK_INSTANCE_HPP_
 #define VK_INSTANCE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 namespace vk
 {

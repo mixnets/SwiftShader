@@ -19,10 +19,10 @@
 #ifndef INCLUDE_DISPLAY_H_
 #define INCLUDE_DISPLAY_H_
 
-#include "Config.h"
-#include "Sync.hpp"
+#include "OpenGL/libEGL/Config.h"
+#include "OpenGL/libEGL/Sync.hpp"
 #include "Common/RecursiveLock.hpp"
-#include "common/NameSpace.hpp"
+#include "OpenGL/common/NameSpace.hpp"
 
 #include <set>
 

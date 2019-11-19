@@ -15,7 +15,7 @@
 #ifndef VK_RENDER_PASS_HPP_
 #define VK_RENDER_PASS_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include <vector>
 

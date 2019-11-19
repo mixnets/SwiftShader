@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexRoutine.hpp"
+#include "Shader/VertexRoutine.hpp"
 
-#include "VertexShader.hpp"
-#include "Constants.hpp"
+#include "Shader/VertexShader.hpp"
+#include "Shader/Constants.hpp"
 #include "Renderer/Vertex.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Common/Half.hpp"

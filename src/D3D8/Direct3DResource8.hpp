@@ -15,7 +15,7 @@
 #ifndef D3D8_Direct3DResource8_hpp
 #define D3D8_Direct3DResource8_hpp
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
 #include <d3d8.h>
 

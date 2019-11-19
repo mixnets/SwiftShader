@@ -15,8 +15,8 @@
 #ifndef COMPILER_TRANSLATORASM_H_
 #define COMPILER_TRANSLATORASM_H_
 
-#include "Compiler.h"
-#include "OutputASM.h"
+#include "OpenGL/compiler/Compiler.h"
+#include "OpenGL/compiler/OutputASM.h"
 
 namespace glsl
 {

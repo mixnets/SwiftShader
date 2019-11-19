@@ -15,8 +15,8 @@
 #ifndef sw_VertexRoutine_hpp
 #define sw_VertexRoutine_hpp
 
-#include "ShaderCore.hpp"
-#include "SpirvShader.hpp"
+#include "Pipeline/ShaderCore.hpp"
+#include "Pipeline/SpirvShader.hpp"
 #include "Device/Color.hpp"
 #include "Device/VertexProcessor.hpp"
 

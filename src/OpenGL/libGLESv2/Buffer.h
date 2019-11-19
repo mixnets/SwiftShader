@@ -19,7 +19,7 @@
 #ifndef LIBGLESV2_BUFFER_H_
 #define LIBGLESV2_BUFFER_H_
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 #include "Common/Resource.hpp"
 
 #include <GLES2/gl2.h>

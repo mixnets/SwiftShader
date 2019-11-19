@@ -16,13 +16,13 @@
 // display on which graphics are drawn. Implements EGLDisplay.
 // [EGL 1.4] section 2.1.2 page 3.
 
-#include "Display.h"
+#include "OpenGL/libEGL/Display.h"
 
-#include "main.h"
-#include "libEGL/Surface.hpp"
-#include "libEGL/Context.hpp"
-#include "common/Image.hpp"
-#include "common/debug.h"
+#include "OpenGL/libEGL/main.h"
+#include "OpenGL/libEGL/Surface.hpp"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/common/debug.h"
 #include "Common/RecursiveLock.hpp"
 
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)

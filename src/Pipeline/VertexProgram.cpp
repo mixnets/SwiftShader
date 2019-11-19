@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexProgram.hpp"
+#include "Pipeline/VertexProgram.hpp"
 
-#include "SamplerCore.hpp"
+#include "Pipeline/SamplerCore.hpp"
 #include "Device/Renderer.hpp"
 #include "Device/Vertex.hpp"
 #include "System/Half.hpp"

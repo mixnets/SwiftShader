@@ -15,7 +15,7 @@
 #ifndef sw_ShaderCore_hpp
 #define sw_ShaderCore_hpp
 
-#include "Shader.hpp"
+#include "Shader/Shader.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Common/Debug.hpp"
 

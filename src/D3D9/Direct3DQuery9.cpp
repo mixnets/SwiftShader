@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DQuery9.hpp"
+#include "D3D9/Direct3DQuery9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Timer.hpp"
-#include "Renderer.hpp"
-#include "Debug.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "Common/Timer.hpp"
+#include "Renderer/Renderer.hpp"
+#include "D3D9/Debug.hpp"
 
 #include <assert.h>
 

@@ -17,8 +17,8 @@
 
 #include "Renderer/Color.hpp"
 #include "Renderer/VertexProcessor.hpp"
-#include "ShaderCore.hpp"
-#include "VertexShader.hpp"
+#include "Shader/ShaderCore.hpp"
+#include "Shader/VertexShader.hpp"
 
 namespace sw
 {

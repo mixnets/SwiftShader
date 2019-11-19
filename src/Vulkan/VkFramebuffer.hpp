@@ -15,7 +15,7 @@
 #ifndef VK_FRAMEBUFFER_HPP_
 #define VK_FRAMEBUFFER_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 namespace vk
 {

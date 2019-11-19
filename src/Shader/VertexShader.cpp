@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexShader.hpp"
+#include "Shader/VertexShader.hpp"
 
 #include "Renderer/Vertex.hpp"
 #include "Common/Debug.hpp"

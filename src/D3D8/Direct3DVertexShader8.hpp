@@ -15,10 +15,10 @@
 #ifndef D3D8_Direct3DVertexShader8_hpp
 #define D3D8_Direct3DVertexShader8_hpp
 
-#include "VertexShader.hpp"
-#include "Direct3DVertexDeclaration8.hpp"
+#include "Shader/VertexShader.hpp"
+#include "D3D8/Direct3DVertexDeclaration8.hpp"
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
 namespace D3D8
 {

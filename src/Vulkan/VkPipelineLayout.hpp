@@ -15,7 +15,7 @@
 #ifndef VK_PIPELINE_LAYOUT_HPP_
 #define VK_PIPELINE_LAYOUT_HPP_
 
-#include "VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 
 namespace vk
 {

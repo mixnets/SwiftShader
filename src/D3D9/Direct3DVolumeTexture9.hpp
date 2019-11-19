@@ -15,9 +15,9 @@
 #ifndef D3D9_Direct3DVolumeTexture9_hpp
 #define D3D9_Direct3DVolumeTexture9_hpp
 
-#include "Direct3DBaseTexture9.hpp"
+#include "D3D9/Direct3DBaseTexture9.hpp"
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 #include <d3d9.h>
 

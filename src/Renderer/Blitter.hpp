@@ -15,8 +15,8 @@
 #ifndef sw_Blitter_hpp
 #define sw_Blitter_hpp
 
-#include "Surface.hpp"
-#include "RoutineCache.hpp"
+#include "Renderer/Surface.hpp"
+#include "Renderer/RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
 
 #include <string.h>

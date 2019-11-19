@@ -15,7 +15,7 @@
 #ifndef sw_Half_hpp
 #define sw_Half_hpp
 
-#include "Math.hpp"
+#include "System/Math.hpp"
 
 #include <algorithm>
 #include <cmath>

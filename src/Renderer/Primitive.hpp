@@ -15,7 +15,7 @@
 #ifndef sw_Primitive_hpp
 #define sw_Primitive_hpp
 
-#include "Vertex.hpp"
+#include "Renderer/Vertex.hpp"
 #include "Main/Config.hpp"
 
 namespace sw

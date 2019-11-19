@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Resource.hpp"
+#include "Common/Resource.hpp"
 
-#include "Memory.hpp"
-#include "Debug.hpp"
+#include "Common/Memory.hpp"
+#include "Common/Debug.hpp"
 
 namespace sw
 {

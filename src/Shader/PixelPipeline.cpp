@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelPipeline.hpp"
-#include "SamplerCore.hpp"
+#include "Shader/PixelPipeline.hpp"
+#include "Shader/SamplerCore.hpp"
 #include "Renderer/Renderer.hpp"
 
 namespace sw

@@ -15,7 +15,7 @@
 // main.cpp: DLL entry point.
 
 #if defined(_WIN32)
-#include "resource.h"
+#include "Vulkan/resource.h"
 #include <windows.h>
 
 #ifdef DEBUGGER_WAIT_DIALOG

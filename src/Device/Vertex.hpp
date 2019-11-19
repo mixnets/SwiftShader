@@ -15,7 +15,7 @@
 #ifndef Vertex_hpp
 #define Vertex_hpp
 
-#include "Color.hpp"
+#include "Device/Color.hpp"
 #include "System/Types.hpp"
 #include "Device/Config.hpp"
 

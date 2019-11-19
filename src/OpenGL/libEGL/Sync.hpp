@@ -17,7 +17,7 @@
 #ifndef LIBEGL_SYNC_H_
 #define LIBEGL_SYNC_H_
 
-#include "Context.hpp"
+#include "OpenGL/libEGL/Context.hpp"
 
 #include <EGL/eglext.h>
 

@@ -15,8 +15,8 @@
 #ifndef sw_PixelProgram_hpp
 #define sw_PixelProgram_hpp
 
-#include "PixelRoutine.hpp"
-#include "SamplerCore.hpp"
+#include "Shader/PixelRoutine.hpp"
+#include "Shader/SamplerCore.hpp"
 
 #include <unordered_map>
 

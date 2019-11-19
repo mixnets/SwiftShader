@@ -15,9 +15,9 @@
 #ifndef COMPILER_DIRECTIVE_HANDLER_H_
 #define COMPILER_DIRECTIVE_HANDLER_H_
 
-#include "ExtensionBehavior.h"
-#include "Pragma.h"
-#include "preprocessor/DirectiveHandlerBase.h"
+#include "OpenGL/compiler/ExtensionBehavior.h"
+#include "OpenGL/compiler/Pragma.h"
+#include "OpenGL/compiler/preprocessor/DirectiveHandlerBase.h"
 
 class TDiagnostics;
 

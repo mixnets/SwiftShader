@@ -15,7 +15,7 @@
 #ifndef D3D9_Direct3D9_hpp
 #define D3D9_Direct3D9_hpp
 
-#include "Unknown.hpp"
+#include "D3D9/Unknown.hpp"
 
 #include <stdio.h>
 #include <d3d9.h>

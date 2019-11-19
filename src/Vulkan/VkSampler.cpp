@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "VkSampler.hpp"
+#include "Vulkan/VkSampler.hpp"
 
 namespace vk
 {

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Renderer.hpp"
+#include "Device/Renderer.hpp"
 
-#include "Clipper.hpp"
-#include "Primitive.hpp"
-#include "Polygon.hpp"
+#include "Device/Clipper.hpp"
+#include "Device/Primitive.hpp"
+#include "Device/Polygon.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Pipeline/Constants.hpp"
 #include "System/Memory.hpp"
@@ -30,7 +30,7 @@
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkQueryPool.hpp"
 #include "Pipeline/SpirvShader.hpp"
-#include "Vertex.hpp"
+#include "Device/Vertex.hpp"
 
 #include "marl/containers.h"
 #include "marl/defer.h"

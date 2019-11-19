@@ -15,8 +15,8 @@
 #ifndef VK_SEMAPHORE_HPP_
 #define VK_SEMAPHORE_HPP_
 
-#include "VkConfig.h"
-#include "VkObject.hpp"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkObject.hpp"
 
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
 #include <zircon/types.h>

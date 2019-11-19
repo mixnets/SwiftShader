@@ -14,13 +14,13 @@
 
 // debug.cpp: Debugging utilities.
 
-#include "debug.h"
+#include "OpenGL/compiler/debug.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "InitializeParseContext.h"
-#include "ParseHelper.h"
+#include "OpenGL/compiler/InitializeParseContext.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 #ifdef TRACE_ENABLED
 namespace sh {

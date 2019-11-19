@@ -41,4 +41,9 @@ swiftshader_source_set("swiftshader_opengl_preprocessor") {
   ]
 
   configs = [ ":swiftshader_opengl_preprocessor_private_config" ]
+  
+  include_dirs = [
+    "../../..",
+    "../../../../include",
+  ]
 }

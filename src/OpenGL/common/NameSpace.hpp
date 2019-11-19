@@ -18,8 +18,8 @@
 #ifndef gl_NameSpace_hpp
 #define gl_NameSpace_hpp
 
-#include "Object.hpp"
-#include "debug.h"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/debug.h"
 
 #include <map>
 

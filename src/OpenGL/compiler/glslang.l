@@ -52,11 +52,11 @@ WHICH GENERATES THE GLSL ES LEXER (glslang_lex.cpp).
 }
 
 %{
-#include "glslang.h"
-#include "ParseHelper.h"
-#include "preprocessor/Token.h"
-#include "util.h"
-#include "glslang_tab.h"
+#include "OpenGL/compiler/glslang.h"
+#include "OpenGL/compiler/ParseHelper.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
+#include "OpenGL/compiler/util.h"
+#include "OpenGL/compiler/glslang_tab.h"
 
 /* windows only pragma */
 #ifdef _MSC_VER

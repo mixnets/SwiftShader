@@ -15,9 +15,9 @@
 #ifndef _COMPILER_INCLUDED_
 #define _COMPILER_INCLUDED_
 
-#include "ExtensionBehavior.h"
-#include "InfoSink.h"
-#include "SymbolTable.h"
+#include "OpenGL/compiler/ExtensionBehavior.h"
+#include "OpenGL/compiler/InfoSink.h"
+#include "OpenGL/compiler/SymbolTable.h"
 
 enum ShCompileOptions
 {

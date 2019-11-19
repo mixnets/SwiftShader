@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DSwapChain8.hpp"
+#include "D3D8/Direct3DSwapChain8.hpp"
 
-#include "Direct3DDevice8.hpp"
-#include "Config.hpp"
-#include "Configurator.hpp"
-#include "Debug.hpp"
+#include "D3D8/Direct3DDevice8.hpp"
+#include "Main/Config.hpp"
+#include "Common/Configurator.hpp"
+#include "D3D8/Debug.hpp"
 
-#include "FrameBufferDD.hpp"
-#include "FrameBufferGDI.hpp"
+#include "Main/FrameBufferDD.hpp"
+#include "Main/FrameBufferGDI.hpp"
 
 namespace D3D8
 {

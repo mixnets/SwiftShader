@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 
-#include "Clipper.hpp"
-#include "Surface.hpp"
-#include "Primitive.hpp"
-#include "Polygon.hpp"
+#include "Renderer/Clipper.hpp"
+#include "Renderer/Surface.hpp"
+#include "Renderer/Primitive.hpp"
+#include "Renderer/Polygon.hpp"
 #include "Main/FrameBuffer.hpp"
 #include "Main/SwiftConfig.hpp"
 #include "Reactor/Reactor.hpp"

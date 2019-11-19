@@ -17,9 +17,9 @@
 #ifndef LIBGLESV2_TRANSFORM_FEEDBACK_H_
 #define LIBGLESV2_TRANSFORM_FEEDBACK_H_
 
-#include "Buffer.h"
-#include "Context.h"
-#include "common/Object.hpp"
+#include "OpenGL/libGLESv2/Buffer.h"
+#include "OpenGL/libGLESv2/Context.h"
+#include "OpenGL/common/Object.hpp"
 #include "Renderer/Renderer.hpp"
 
 #include <GLES2/gl2.h>

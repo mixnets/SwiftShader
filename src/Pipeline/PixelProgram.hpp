@@ -15,7 +15,7 @@
 #ifndef sw_PixelProgram_hpp
 #define sw_PixelProgram_hpp
 
-#include "PixelRoutine.hpp"
+#include "Pipeline/PixelRoutine.hpp"
 
 namespace sw
 {
