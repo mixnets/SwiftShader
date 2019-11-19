@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c05ba3bb_e95c0dac",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 34792
+      },
+      "writtenOn": "2019-11-19T01:55:04Z",
+      "side": 1,
+      "message": "Ownership of the handle passed in is transferred to Vulkan, so I think you don\u0027t want to duplicate here (leaves the passed in handle dangling).",
+      "range": {
+        "startLine": 98,
+        "startChar": 44,
+        "endLine": 98,
+        "endChar": 63
+      },
+      "revId": "9f9d1d7ace40e9bf721b5fd4a53e779ff03b7b81",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b31c51e_a726f9a9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 34792
+      },
+      "writtenOn": "2019-11-19T01:55:04Z",
+      "side": 1,
+      "message": "Consider updating commit msg or move Semaphore changes to a separate CL",
+      "range": {
+        "startLine": 1183,
+        "startChar": 39,
+        "endLine": 1183,
+        "endChar": 48
+      },
+      "revId": "9f9d1d7ace40e9bf721b5fd4a53e779ff03b7b81",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
