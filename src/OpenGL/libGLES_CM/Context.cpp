@@ -15,20 +15,20 @@
 // Context.cpp: Implements the es1::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
-#include "Context.h"
+#include "OpenGL/libGLES_CM/Context.h"
 
-#include "main.h"
-#include "mathutil.h"
-#include "utilities.h"
-#include "ResourceManager.h"
-#include "Buffer.h"
-#include "Framebuffer.h"
-#include "Renderbuffer.h"
-#include "Texture.h"
-#include "VertexDataManager.h"
-#include "IndexDataManager.h"
-#include "libEGL/Display.h"
-#include "common/Surface.hpp"
+#include "OpenGL/libGLES_CM/main.h"
+#include "OpenGL/libGLES_CM/mathutil.h"
+#include "OpenGL/libGLES_CM/utilities.h"
+#include "OpenGL/libGLES_CM/ResourceManager.h"
+#include "OpenGL/libGLES_CM/Buffer.h"
+#include "OpenGL/libGLES_CM/Framebuffer.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
+#include "OpenGL/libGLES_CM/Texture.h"
+#include "OpenGL/libGLES_CM/VertexDataManager.h"
+#include "OpenGL/libGLES_CM/IndexDataManager.h"
+#include "OpenGL/libEGL/Display.h"
+#include "OpenGL/common/Surface.hpp"
 #include "Common/Half.hpp"
 
 #include <EGL/eglext.h>

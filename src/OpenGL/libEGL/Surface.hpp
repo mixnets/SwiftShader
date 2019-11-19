@@ -19,8 +19,8 @@
 #ifndef INCLUDE_EGL_SURFACE_H_
 #define INCLUDE_EGL_SURFACE_H_
 
-#include "common/Object.hpp"
-#include "common/Surface.hpp"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/Surface.hpp"
 
 #include "Main/FrameBuffer.hpp"
 

@@ -15,7 +15,7 @@
 #ifndef VK_FENCE_HPP_
 #define VK_FENCE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include "System/Synchronization.hpp"
 
 #include "marl/containers.h"

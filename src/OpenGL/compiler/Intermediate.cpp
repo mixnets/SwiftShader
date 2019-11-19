@@ -20,8 +20,8 @@
 #include <limits.h>
 #include <algorithm>
 
-#include "localintermediate.h"
-#include "SymbolTable.h"
+#include "OpenGL/compiler/localintermediate.h"
+#include "OpenGL/compiler/SymbolTable.h"
 #include "Common/Math.hpp"
 
 bool CompareStructure(const TType& leftNodeType, ConstantUnion* rightUnionArray, ConstantUnion* leftUnionArray);

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DSwapChain9.hpp"
+#include "D3D9/Direct3DSwapChain9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Renderer.hpp"
-#include "Timer.hpp"
-#include "Resource.hpp"
-#include "Configurator.hpp"
-#include "Debug.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Common/Timer.hpp"
+#include "Common/Resource.hpp"
+#include "Common/Configurator.hpp"
+#include "D3D9/Debug.hpp"
 
-#include "FrameBufferDD.hpp"
-#include "FrameBufferGDI.hpp"
+#include "Main/FrameBufferDD.hpp"
+#include "Main/FrameBufferGDI.hpp"
 
 namespace D3D9
 {

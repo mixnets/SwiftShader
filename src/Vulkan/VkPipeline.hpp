@@ -15,7 +15,7 @@
 #ifndef VK_PIPELINE_HPP_
 #define VK_PIPELINE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineCache.hpp"
 #include "Device/Renderer.hpp"

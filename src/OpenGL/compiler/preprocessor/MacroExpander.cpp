@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MacroExpander.h"
+#include "OpenGL/compiler/preprocessor/MacroExpander.h"
 
 #include <algorithm>
 #include <cassert>
 
-#include "DiagnosticsBase.h"
-#include "pp_utils.h"
-#include "Token.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/pp_utils.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
 
 namespace pp
 {

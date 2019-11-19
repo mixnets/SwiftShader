@@ -15,7 +15,7 @@
 #ifndef sw_Triangle_hpp
 #define sw_Triangle_hpp
 
-#include "Vertex.hpp"
+#include "Renderer/Vertex.hpp"
 
 namespace sw
 {

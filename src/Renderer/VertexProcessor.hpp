@@ -15,9 +15,9 @@
 #ifndef sw_VertexProcessor_hpp
 #define sw_VertexProcessor_hpp
 
-#include "Matrix.hpp"
-#include "Context.hpp"
-#include "RoutineCache.hpp"
+#include "Renderer/Matrix.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/RoutineCache.hpp"
 #include "Shader/VertexShader.hpp"
 
 namespace sw

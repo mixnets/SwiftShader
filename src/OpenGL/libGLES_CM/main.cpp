@@ -14,14 +14,14 @@
 
 // main.cpp: DLL entry point and management of thread-local data.
 
-#include "main.h"
+#include "OpenGL/libGLES_CM/main.h"
 
-#include "libGLES_CM.hpp"
-#include "Framebuffer.h"
-#include "common/Surface.hpp"
+#include "OpenGL/libGLES_CM/libGLES_CM.hpp"
+#include "OpenGL/libGLES_CM/Framebuffer.h"
+#include "OpenGL/common/Surface.hpp"
 #include "Common/Thread.hpp"
 #include "Common/SharedLibrary.hpp"
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 
 #include <GLES/glext.h>
 

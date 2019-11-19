@@ -15,9 +15,9 @@
 #ifndef D3D8_Direct3DVolume8_hpp
 #define D3D8_Direct3DVolume8_hpp
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
-#include "Surface.hpp"
+#include "Renderer/Surface.hpp"
 
 #include <d3d8.h>
 

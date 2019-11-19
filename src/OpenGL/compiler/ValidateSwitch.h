@@ -15,7 +15,7 @@
 #ifndef COMPILER_TRANSLATOR_VALIDATESWITCH_H_
 #define COMPILER_TRANSLATOR_VALIDATESWITCH_H_
 
-#include "intermediate.h"
+#include "OpenGL/compiler/intermediate.h"
 #include <set>
 
 class TParseContext;

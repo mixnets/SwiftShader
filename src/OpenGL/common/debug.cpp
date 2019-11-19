@@ -14,7 +14,7 @@
 
 // debug.cpp: Debugging utilities.
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 
 #ifdef  __ANDROID__
 #if !defined(ANDROID_NDK_BUILD)

@@ -16,8 +16,8 @@
 #define SWIFTSHADER_XLIBSURFACEKHR_HPP
 
 #include "Vulkan/VkObject.hpp"
-#include "libX11.hpp"
-#include "VkSurfaceKHR.hpp"
+#include "WSI/libX11.hpp"
+#include "WSI/VkSurfaceKHR.hpp"
 #include "vulkan/vulkan_xlib.h"
 
 #include <unordered_map>

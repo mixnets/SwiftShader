@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Matrix.hpp"
+#include "Renderer/Matrix.hpp"
 
-#include "Point.hpp"
+#include "Renderer/Point.hpp"
 #include "Common/Math.hpp"
 
 namespace sw

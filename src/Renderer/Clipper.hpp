@@ -15,7 +15,7 @@
 #ifndef sw_Clipper_hpp
 #define sw_Clipper_hpp
 
-#include "Plane.hpp"
+#include "Renderer/Plane.hpp"
 #include "Common/Types.hpp"
 
 namespace sw

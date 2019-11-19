@@ -15,8 +15,8 @@
 #ifndef sw_SetupProcessor_hpp
 #define sw_SetupProcessor_hpp
 
-#include "Context.hpp"
-#include "RoutineCache.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/RoutineCache.hpp"
 #include "Shader/VertexShader.hpp"
 #include "Shader/PixelShader.hpp"
 #include "Common/Types.hpp"

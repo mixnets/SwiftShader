@@ -15,7 +15,7 @@
 #ifndef VK_DEVICE_HPP_
 #define VK_DEVICE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include "Device/LRUCache.hpp"
 #include "Reactor/Routine.hpp"
 #include <memory>

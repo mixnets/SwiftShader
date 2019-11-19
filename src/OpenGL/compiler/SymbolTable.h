@@ -39,13 +39,13 @@
 //
 
 #if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD) && !defined(ANDROID_NDK_BUILD)
-#include "../../Common/DebugAndroid.hpp"
+#include "Common/DebugAndroid.hpp"
 #else
 #include <assert.h>
 #endif
 
-#include "InfoSink.h"
-#include "intermediate.h"
+#include "OpenGL/compiler/InfoSink.h"
+#include "OpenGL/compiler/intermediate.h"
 #include <set>
 
 //

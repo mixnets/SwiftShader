@@ -36,7 +36,6 @@ swiftshader_source_set("swiftshader_opengl_common") {
   configs = [ ":swiftshader_opengl_common_private_config" ]
 
   include_dirs = [
-    "..",
     "../..",
     "../../../include",
   ]

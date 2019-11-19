@@ -15,8 +15,8 @@
 #ifndef sw_PixelProcessor_hpp
 #define sw_PixelProcessor_hpp
 
-#include "Context.hpp"
-#include "RoutineCache.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/RoutineCache.hpp"
 
 namespace sw
 {

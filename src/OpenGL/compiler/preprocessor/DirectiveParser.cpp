@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DirectiveParser.h"
+#include "OpenGL/compiler/preprocessor/DirectiveParser.h"
 
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <sstream>
 
-#include "DiagnosticsBase.h"
-#include "DirectiveHandlerBase.h"
-#include "ExpressionParser.h"
-#include "MacroExpander.h"
-#include "Token.h"
-#include "Tokenizer.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/DirectiveHandlerBase.h"
+#include "OpenGL/compiler/preprocessor/ExpressionParser.h"
+#include "OpenGL/compiler/preprocessor/MacroExpander.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
+#include "OpenGL/compiler/preprocessor/Tokenizer.h"
 
 namespace {
 enum DirectiveType

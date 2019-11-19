@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DirectiveHandler.h"
+#include "OpenGL/compiler/DirectiveHandler.h"
 
 #include <sstream>
 
-#include "debug.h"
-#include "Diagnostics.h"
+#include "OpenGL/compiler/debug.h"
+#include "OpenGL/compiler/Diagnostics.h"
 
 static TBehavior getBehavior(const std::string& str)
 {

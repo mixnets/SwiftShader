@@ -15,7 +15,7 @@
 #ifndef sw_ComputeProgram_hpp
 #define sw_ComputeProgram_hpp
 
-#include "SpirvShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 #include "Reactor/Coroutine.hpp"
 #include "Device/Context.hpp"

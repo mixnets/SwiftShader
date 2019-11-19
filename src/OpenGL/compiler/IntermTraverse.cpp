@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "intermediate.h"
+#include "OpenGL/compiler/intermediate.h"
 
 //
 // Traverse the intermediate representation tree, and

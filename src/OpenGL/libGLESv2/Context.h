@@ -18,12 +18,12 @@
 #ifndef LIBGLESV2_CONTEXT_H_
 #define LIBGLESV2_CONTEXT_H_
 
-#include "ResourceManager.h"
-#include "Buffer.h"
-#include "libEGL/Context.hpp"
-#include "common/NameSpace.hpp"
-#include "common/Object.hpp"
-#include "common/Image.hpp"
+#include "OpenGL/libGLESv2/ResourceManager.h"
+#include "OpenGL/libGLESv2/Buffer.h"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/common/NameSpace.hpp"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/Image.hpp"
 #include "Renderer/Sampler.hpp"
 
 #include <GLES2/gl2.h>

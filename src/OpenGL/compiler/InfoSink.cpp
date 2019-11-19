@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "InfoSink.h"
+#include "OpenGL/compiler/InfoSink.h"
 
 void TInfoSinkBase::prefix(TPrefixType message) {
 	switch(message) {

@@ -15,7 +15,7 @@
 #ifndef sw_Polygon_hpp
 #define sw_Polygon_hpp
 
-#include "Vertex.hpp"
+#include "Renderer/Vertex.hpp"
 
 namespace sw
 {

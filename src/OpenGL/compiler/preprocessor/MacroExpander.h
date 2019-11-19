@@ -18,9 +18,9 @@
 #include <memory>
 #include <vector>
 
-#include "Lexer.h"
-#include "Macro.h"
-#include "pp_utils.h"
+#include "OpenGL/compiler/preprocessor/Lexer.h"
+#include "OpenGL/compiler/preprocessor/Macro.h"
+#include "OpenGL/compiler/preprocessor/pp_utils.h"
 
 namespace pp
 {

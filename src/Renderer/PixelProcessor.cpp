@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelProcessor.hpp"
+#include "Renderer/PixelProcessor.hpp"
 
-#include "Surface.hpp"
-#include "Primitive.hpp"
+#include "Renderer/Surface.hpp"
+#include "Renderer/Primitive.hpp"
 #include "Shader/PixelPipeline.hpp"
 #include "Shader/PixelProgram.hpp"
 #include "Shader/PixelShader.hpp"

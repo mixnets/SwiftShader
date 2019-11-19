@@ -17,7 +17,7 @@
 #ifndef LIBGLESV2_MATHUTIL_H_
 #define LIBGLESV2_MATHUTIL_H_
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 #include "Common/Math.hpp"
 #include <limits>
 

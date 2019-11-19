@@ -15,9 +15,9 @@
 #ifndef _INITIALIZE_INCLUDED_
 #define _INITIALIZE_INCLUDED_
 
-#include "Common.h"
-#include "Compiler.h"
-#include "SymbolTable.h"
+#include "OpenGL/compiler/Common.h"
+#include "OpenGL/compiler/Compiler.h"
+#include "OpenGL/compiler/SymbolTable.h"
 
 void InsertBuiltInFunctions(GLenum shaderType, const ShBuiltInResources &resources, TSymbolTable &table);
 

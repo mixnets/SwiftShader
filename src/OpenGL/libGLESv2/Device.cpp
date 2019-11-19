@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Device.hpp"
+#include "OpenGL/libGLESv2/Device.hpp"
 
-#include "common/Image.hpp"
-#include "Texture.h"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/libGLESv2/Texture.h"
 
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Clipper.hpp"
@@ -27,7 +27,7 @@
 #include "Common/Configurator.hpp"
 #include "Common/Memory.hpp"
 #include "Common/Timer.hpp"
-#include "../common/debug.h"
+#include "OpenGL/common/debug.h"
 
 namespace es2
 {

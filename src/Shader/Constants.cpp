@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Constants.hpp"
+#include "Shader/Constants.hpp"
 
 #include "Common/Math.hpp"
 #include "Common/Half.hpp"

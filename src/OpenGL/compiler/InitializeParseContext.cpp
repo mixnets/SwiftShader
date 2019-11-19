@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "InitializeParseContext.h"
+#include "OpenGL/compiler/InitializeParseContext.h"
 
-#include "osinclude.h"
+#include "OpenGL/compiler/osinclude.h"
 
 OS_TLSIndex GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
 

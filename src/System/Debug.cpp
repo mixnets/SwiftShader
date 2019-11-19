@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Debug.hpp"
+#include "System/Debug.hpp"
 
 #include <stdio.h>
 #include <stdarg.h>

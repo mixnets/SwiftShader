@@ -15,8 +15,8 @@
 #ifndef VK_OBJECT_HPP_
 #define VK_OBJECT_HPP_
 
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkMemory.h"
 #include "System/Memory.hpp"
 
 namespace vk

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexProcessor.hpp"
+#include "Device/VertexProcessor.hpp"
 
 #include "Pipeline/VertexProgram.hpp"
 #include "Pipeline/Constants.hpp"

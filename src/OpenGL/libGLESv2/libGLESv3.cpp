@@ -14,18 +14,18 @@
 
 // libGLESv3.cpp: Implements the exported OpenGL ES 3.0 functions.
 
-#include "main.h"
-#include "Buffer.h"
-#include "Fence.h"
-#include "Framebuffer.h"
-#include "Program.h"
-#include "Query.h"
-#include "Sampler.h"
-#include "Texture.h"
-#include "mathutil.h"
-#include "TransformFeedback.h"
-#include "VertexArray.h"
-#include "common/debug.h"
+#include "OpenGL/libGLESv2/main.h"
+#include "OpenGL/libGLESv2/Buffer.h"
+#include "OpenGL/libGLESv2/Fence.h"
+#include "OpenGL/libGLESv2/Framebuffer.h"
+#include "OpenGL/libGLESv2/Program.h"
+#include "OpenGL/libGLESv2/Query.h"
+#include "OpenGL/libGLESv2/Sampler.h"
+#include "OpenGL/libGLESv2/Texture.h"
+#include "OpenGL/libGLESv2/mathutil.h"
+#include "OpenGL/libGLESv2/TransformFeedback.h"
+#include "OpenGL/libGLESv2/VertexArray.h"
+#include "OpenGL/common/debug.h"
 
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>

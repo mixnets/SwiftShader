@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Plane.hpp"
+#include "Renderer/Plane.hpp"
 
-#include "Matrix.hpp"
+#include "Renderer/Matrix.hpp"
 
 namespace sw
 {

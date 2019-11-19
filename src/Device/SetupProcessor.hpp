@@ -15,10 +15,10 @@
 #ifndef sw_SetupProcessor_hpp
 #define sw_SetupProcessor_hpp
 
-#include <Pipeline/SpirvShader.hpp>
-#include "Context.hpp"
-#include "Memset.hpp"
-#include "RoutineCache.hpp"
+#include "Pipeline/SpirvShader.hpp"
+#include "Device/Context.hpp"
+#include "Device/Memset.hpp"
+#include "Device/RoutineCache.hpp"
 #include "System/Types.hpp"
 
 namespace sw

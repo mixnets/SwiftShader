@@ -15,7 +15,7 @@
 #ifndef sw_Surface_hpp
 #define sw_Surface_hpp
 
-#include "Color.hpp"
+#include "Renderer/Color.hpp"
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
 

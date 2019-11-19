@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Preprocessor.h"
+#include "OpenGL/compiler/preprocessor/Preprocessor.h"
 
 #include <cassert>
 
-#include "DiagnosticsBase.h"
-#include "DirectiveParser.h"
-#include "Macro.h"
-#include "MacroExpander.h"
-#include "Token.h"
-#include "Tokenizer.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/DirectiveParser.h"
+#include "OpenGL/compiler/preprocessor/Macro.h"
+#include "OpenGL/compiler/preprocessor/MacroExpander.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
+#include "OpenGL/compiler/preprocessor/Tokenizer.h"
 
 namespace pp
 {

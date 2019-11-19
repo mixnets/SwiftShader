@@ -15,7 +15,7 @@
 #ifndef VK_FORMAT_UTILS_HPP_
 #define VK_FORMAT_UTILS_HPP_
 
-#include <Vulkan/VulkanPlatform.h>
+#include "Vulkan/VulkanPlatform.h"
 
 namespace sw
 {

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 
-#include "VkDescriptorSet.hpp"
-#include "VkSampler.hpp"
-#include "VkImageView.hpp"
-#include "VkBuffer.hpp"
-#include "VkBufferView.hpp"
+#include "Vulkan/VkDescriptorSet.hpp"
+#include "Vulkan/VkSampler.hpp"
+#include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkBufferView.hpp"
 #include "System/Types.hpp"
 
 #include <algorithm>

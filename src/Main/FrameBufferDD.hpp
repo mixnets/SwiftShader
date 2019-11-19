@@ -15,7 +15,7 @@
 #ifndef	sw_FrameBufferDD_hpp
 #define	sw_FrameBufferDD_hpp
 
-#include "FrameBufferWin.hpp"
+#include "Main/FrameBufferWin.hpp"
 
 #include <ddraw.h>
 

@@ -97,7 +97,7 @@
 #pragma warning(disable: 4065 4244 4701 4702)
 #endif
 
-#include "ExpressionParser.h"
+#include "OpenGL/compiler/preprocessor/ExpressionParser.h"
 
 #if defined(_MSC_VER)
 #include <malloc.h>
@@ -110,10 +110,10 @@
 #include <sstream>
 #include <stdint.h>
 
-#include "DiagnosticsBase.h"
-#include "Lexer.h"
-#include "Token.h"
-#include "../../common/debug.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/Lexer.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
+#include "OpenGL/common/debug.h"
 
 typedef int32_t YYSTYPE;
 typedef uint32_t UNSIGNED_TYPE;

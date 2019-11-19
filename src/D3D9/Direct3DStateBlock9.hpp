@@ -15,8 +15,8 @@
 #ifndef D3D9_Direct3DStateBlock9_hpp
 #define D3D9_Direct3DStateBlock9_hpp
 
-#include "Direct3DDevice9.hpp"
-#include "Unknown.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "D3D9/Unknown.hpp"
 
 #include <vector>
 

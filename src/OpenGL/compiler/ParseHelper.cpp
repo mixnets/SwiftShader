@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ParseHelper.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 #include <limits>
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "glslang.h"
-#include "preprocessor/SourceLocation.h"
-#include "ValidateSwitch.h"
+#include "OpenGL/compiler/glslang.h"
+#include "OpenGL/compiler/preprocessor/SourceLocation.h"
+#include "OpenGL/compiler/ValidateSwitch.h"
 
 ///////////////////////////////////////////////////////////////////////
 //

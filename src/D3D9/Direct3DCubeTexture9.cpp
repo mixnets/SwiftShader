@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DCubeTexture9.hpp"
+#include "D3D9/Direct3DCubeTexture9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Direct3DSurface9.hpp"
-#include "Resource.hpp"
-#include "Debug.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "D3D9/Direct3DSurface9.hpp"
+#include "Common/Resource.hpp"
+#include "D3D9/Debug.hpp"
 
 #include <assert.h>
 

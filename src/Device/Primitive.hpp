@@ -15,8 +15,8 @@
 #ifndef sw_Primitive_hpp
 #define sw_Primitive_hpp
 
-#include "Memset.hpp"
-#include "Vertex.hpp"
+#include "Device/Memset.hpp"
+#include "Device/Vertex.hpp"
 #include "Device/Config.hpp"
 #include "System/Build.hpp"
 

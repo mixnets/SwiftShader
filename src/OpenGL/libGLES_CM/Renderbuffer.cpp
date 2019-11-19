@@ -16,11 +16,11 @@
 // Colorbuffer, Depthbuffer and Stencilbuffer. Implements GL renderbuffer
 // objects and related functionality. [OpenGL ES 2.0.24] section 4.4.3 page 108.
 
-#include "Renderbuffer.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
 
-#include "main.h"
-#include "Texture.h"
-#include "utilities.h"
+#include "OpenGL/libGLES_CM/main.h"
+#include "OpenGL/libGLES_CM/Texture.h"
+#include "OpenGL/libGLES_CM/utilities.h"
 
 namespace es1
 {

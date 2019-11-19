@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MemFd.hpp"
-#include "../Debug.hpp"
+#include "System/Linux/MemFd.hpp"
+#include "System/Debug.hpp"
 
 #include <errno.h>
 #include <fcntl.h>

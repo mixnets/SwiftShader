@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ShaderCore.hpp"
+#include "Shader/ShaderCore.hpp"
 
 #include "Renderer/Renderer.hpp"
 #include "Common/Debug.hpp"

@@ -14,17 +14,17 @@
 
 // main.cpp: DLL entry point and management of thread-local data.
 
-#include "main.h"
+#include "OpenGL/libEGL/main.h"
 
-#include "libEGL.hpp"
-#include "Context.hpp"
-#include "Surface.hpp"
-#include "Display.h"
+#include "OpenGL/libEGL/libEGL.hpp"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/libEGL/Surface.hpp"
+#include "OpenGL/libEGL/Display.h"
 
-#include "resource.h"
+#include "OpenGL/libEGL/resource.h"
 #include "Common/Thread.hpp"
 #include "Common/SharedLibrary.hpp"
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 
 #include <EGL/eglext.h>
 

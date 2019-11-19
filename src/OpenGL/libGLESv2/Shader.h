@@ -20,9 +20,9 @@
 #ifndef LIBGLESV2_SHADER_H_
 #define LIBGLESV2_SHADER_H_
 
-#include "ResourceManager.h"
+#include "OpenGL/libGLESv2/ResourceManager.h"
 
-#include "compiler/TranslatorASM.h"
+#include "OpenGL/compiler/TranslatorASM.h"
 
 #include <GLES2/gl2.h>
 

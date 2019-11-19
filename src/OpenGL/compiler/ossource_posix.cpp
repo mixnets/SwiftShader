@@ -15,7 +15,7 @@
 //
 // This file contains the posix specific functions
 //
-#include "osinclude.h"
+#include "OpenGL/compiler/osinclude.h"
 
 #if !defined(ANGLE_OS_POSIX)
 #error Trying to build a posix specific file in a non-posix build.

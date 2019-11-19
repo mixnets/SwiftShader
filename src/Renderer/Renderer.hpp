@@ -15,11 +15,11 @@
 #ifndef sw_Renderer_hpp
 #define sw_Renderer_hpp
 
-#include "VertexProcessor.hpp"
-#include "PixelProcessor.hpp"
-#include "SetupProcessor.hpp"
-#include "Plane.hpp"
-#include "Blitter.hpp"
+#include "Renderer/VertexProcessor.hpp"
+#include "Renderer/PixelProcessor.hpp"
+#include "Renderer/SetupProcessor.hpp"
+#include "Renderer/Plane.hpp"
+#include "Renderer/Blitter.hpp"
 #include "Common/MutexLock.hpp"
 #include "Common/Thread.hpp"
 #include "Main/Config.hpp"

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3D8.hpp"
+#include "D3D8/Direct3D8.hpp"
 
-#include "resource.h"
+#include "D3D8/resource.h"
 
 #include <stdio.h>
 #include <assert.h>

@@ -16,11 +16,11 @@
 // index data. Implements GL buffer objects and related functionality.
 // [OpenGL ES 2.0.24] section 2.9 page 21.
 
-#include "Buffer.h"
+#include "OpenGL/libGLESv2/Buffer.h"
 
-#include "main.h"
-#include "VertexDataManager.h"
-#include "IndexDataManager.h"
+#include "OpenGL/libGLESv2/main.h"
+#include "OpenGL/libGLESv2/VertexDataManager.h"
+#include "OpenGL/libGLESv2/IndexDataManager.h"
 
 namespace es2
 {

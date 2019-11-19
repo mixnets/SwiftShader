@@ -15,7 +15,7 @@
 #ifndef	sw_FrameBufferWin_hpp
 #define	sw_FrameBufferWin_hpp
 
-#include "FrameBuffer.hpp"
+#include "Main/FrameBuffer.hpp"
 
 namespace sw
 {

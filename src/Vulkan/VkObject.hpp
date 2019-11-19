@@ -15,12 +15,12 @@
 #ifndef VK_OBJECT_HPP_
 #define VK_OBJECT_HPP_
 
-#include "VkConfig.h"
-#include "VkDebug.hpp"
-#include "VkMemory.h"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkMemory.h"
 
 #include <new>
-#include <Vulkan/VulkanPlatform.h>
+#include "Vulkan/VulkanPlatform.h"
 #include <vulkan/vk_icd.h>
 
 namespace vk

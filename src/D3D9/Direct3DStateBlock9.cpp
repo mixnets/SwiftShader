@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DStateBlock9.hpp"
+#include "D3D9/Direct3DStateBlock9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Direct3DVertexDeclaration9.hpp"
-#include "Direct3DIndexBuffer9.hpp"
-#include "Direct3DVertexBuffer9.hpp"
-#include "Direct3DBaseTexture9.hpp"
-#include "Direct3DPixelShader9.hpp"
-#include "Direct3DVertexShader9.hpp"
-#include "Debug.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "D3D9/Direct3DVertexDeclaration9.hpp"
+#include "D3D9/Direct3DIndexBuffer9.hpp"
+#include "D3D9/Direct3DVertexBuffer9.hpp"
+#include "D3D9/Direct3DBaseTexture9.hpp"
+#include "D3D9/Direct3DPixelShader9.hpp"
+#include "D3D9/Direct3DVertexShader9.hpp"
+#include "D3D9/Debug.hpp"
 
 #include <assert.h>
 

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkCommandPool.hpp"
-#include "VkCommandBuffer.hpp"
-#include "VkDestroy.h"
+#include "Vulkan/VkCommandPool.hpp"
+#include "Vulkan/VkCommandBuffer.hpp"
+#include "Vulkan/VkDestroy.h"
 #include <algorithm>
 #include <new>
 
