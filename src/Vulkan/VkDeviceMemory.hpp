@@ -15,8 +15,8 @@
 #ifndef VK_DEVICE_MEMORY_HPP_
 #define VK_DEVICE_MEMORY_HPP_
 
-#include "VkConfig.h"
-#include "VkObject.hpp"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkObject.hpp"
 
 namespace vk
 {

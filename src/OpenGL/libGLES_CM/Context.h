@@ -18,13 +18,13 @@
 #ifndef LIBGLES_CM_CONTEXT_H_
 #define LIBGLES_CM_CONTEXT_H_
 
-#include "libEGL/Context.hpp"
-#include "ResourceManager.h"
-#include "common/NameSpace.hpp"
-#include "common/Object.hpp"
-#include "common/Image.hpp"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/libGLES_CM/ResourceManager.h"
+#include "OpenGL/common/NameSpace.hpp"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/Image.hpp"
 #include "Renderer/Sampler.hpp"
-#include "common/MatrixStack.hpp"
+#include "OpenGL/common/MatrixStack.hpp"
 
 #include <GLES/gl.h>
 #include <GLES/glext.h>

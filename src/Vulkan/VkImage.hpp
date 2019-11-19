@@ -15,8 +15,8 @@
 #ifndef VK_IMAGE_HPP_
 #define VK_IMAGE_HPP_
 
-#include "VkObject.hpp"
-#include "VkFormat.h"
+#include "Vulkan/VkObject.hpp"
+#include "Vulkan/VkFormat.h"
 
 #ifdef __ANDROID__
 #include <vulkan/vk_android_native_buffer.h> // For VkSwapchainImageUsageFlagsANDROID and buffer_handle_t

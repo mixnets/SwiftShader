@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkGetProcAddress.h"
-#include "VkDevice.hpp"
+#include "Vulkan/VkGetProcAddress.h"
+#include "Vulkan/VkDevice.hpp"
 
 #include <unordered_map>
 #include <string>

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Token.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
 
 #include <cassert>
 
-#include "numeric_lex.h"
+#include "OpenGL/compiler/preprocessor/numeric_lex.h"
 
 namespace pp
 {

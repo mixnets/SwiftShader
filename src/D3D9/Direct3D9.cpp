@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3D9.hpp"
+#include "D3D9/Direct3D9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Capabilities.hpp"
-#include "Configurator.hpp"
-#include "Debug.hpp"
-#include "CPUID.hpp"
-#include "Version.h"
-#include "Config.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "D3D9/Capabilities.hpp"
+#include "Common/Configurator.hpp"
+#include "D3D9/Debug.hpp"
+#include "Common/CPUID.hpp"
+#include "Common/Version.h"
+#include "Main/Config.hpp"
 
 #define COMPILE_MULTIMON_STUBS
 #include <multimon.h>

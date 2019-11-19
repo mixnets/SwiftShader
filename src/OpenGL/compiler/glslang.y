@@ -50,8 +50,8 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 #pragma warning(disable: 4701)
 #endif
 
-#include "SymbolTable.h"
-#include "ParseHelper.h"
+#include "OpenGL/compiler/SymbolTable.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 #define YYENABLE_NLS 0
 %}

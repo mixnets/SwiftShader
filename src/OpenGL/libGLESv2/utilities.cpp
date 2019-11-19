@@ -14,14 +14,14 @@
 
 // utilities.cpp: Conversion functions and other utility routines.
 
-#include "utilities.h"
+#include "OpenGL/libGLESv2/utilities.h"
 
-#include "Framebuffer.h"
-#include "main.h"
-#include "mathutil.h"
-#include "Context.h"
-#include "Shader.h"
-#include "common/debug.h"
+#include "OpenGL/libGLESv2/Framebuffer.h"
+#include "OpenGL/libGLESv2/main.h"
+#include "OpenGL/libGLESv2/mathutil.h"
+#include "OpenGL/libGLESv2/Context.h"
+#include "OpenGL/libGLESv2/Shader.h"
+#include "OpenGL/common/debug.h"
 
 #include <limits>
 #include <stdio.h>

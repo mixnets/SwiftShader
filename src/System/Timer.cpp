@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Timer.hpp"
+#include "System/Timer.hpp"
 
 #if !defined(__i386__) && defined(_M_IX86)
 	#define __i386__ 1

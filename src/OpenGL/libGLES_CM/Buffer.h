@@ -19,7 +19,7 @@
 #ifndef LIBGLES_CM_BUFFER_H_
 #define LIBGLES_CM_BUFFER_H_
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 #include "Common/Resource.hpp"
 
 #include <GLES/gl.h>

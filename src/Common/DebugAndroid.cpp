@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DebugAndroid.hpp"
+#include "Common/DebugAndroid.hpp"
 
 #include <stdlib.h>
 #include <unistd.h>

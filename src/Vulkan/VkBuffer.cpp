@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkBuffer.hpp"
-#include "VkConfig.h"
-#include "VkDeviceMemory.hpp"
+#include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkDeviceMemory.hpp"
 
 #include <cstring>
 

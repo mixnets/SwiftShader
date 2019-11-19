@@ -15,7 +15,7 @@
 #ifndef VK_QUERY_POOL_HPP_
 #define VK_QUERY_POOL_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include "marl/event.h"
 #include "marl/waitgroup.h"

@@ -15,9 +15,9 @@
 #ifndef _TYPES_INCLUDED
 #define _TYPES_INCLUDED
 
-#include "BaseTypes.h"
-#include "Common.h"
-#include "debug.h"
+#include "OpenGL/compiler/BaseTypes.h"
+#include "OpenGL/compiler/Common.h"
+#include "OpenGL/compiler/debug.h"
 
 #include <algorithm>
 

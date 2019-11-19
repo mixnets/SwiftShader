@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SpirvShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
-#include "SamplerCore.hpp"
+#include "Pipeline/SamplerCore.hpp"
 #include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"

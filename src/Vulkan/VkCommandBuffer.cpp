@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkCommandBuffer.hpp"
-#include "VkBuffer.hpp"
-#include "VkEvent.hpp"
-#include "VkFence.hpp"
-#include "VkFramebuffer.hpp"
-#include "VkImage.hpp"
-#include "VkImageView.hpp"
-#include "VkPipeline.hpp"
-#include "VkPipelineLayout.hpp"
-#include "VkQueryPool.hpp"
-#include "VkRenderPass.hpp"
+#include "Vulkan/VkCommandBuffer.hpp"
+#include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkEvent.hpp"
+#include "Vulkan/VkFence.hpp"
+#include "Vulkan/VkFramebuffer.hpp"
+#include "Vulkan/VkImage.hpp"
+#include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkPipeline.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
+#include "Vulkan/VkQueryPool.hpp"
+#include "Vulkan/VkRenderPass.hpp"
 #include "Device/Renderer.hpp"
 
 #include <cstring>

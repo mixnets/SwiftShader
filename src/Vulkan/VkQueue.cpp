@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkCommandBuffer.hpp"
-#include "VkFence.hpp"
-#include "VkQueue.hpp"
-#include "VkSemaphore.hpp"
+#include "Vulkan/VkCommandBuffer.hpp"
+#include "Vulkan/VkFence.hpp"
+#include "Vulkan/VkQueue.hpp"
+#include "Vulkan/VkSemaphore.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 #include "Device/Renderer.hpp"
 

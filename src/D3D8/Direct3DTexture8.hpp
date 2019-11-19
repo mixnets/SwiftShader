@@ -15,11 +15,11 @@
 #ifndef D3D8_Direct3DTexture8_hpp
 #define D3D8_Direct3DTexture8_hpp
 
-#include "Direct3DBaseTexture8.hpp"
+#include "D3D8/Direct3DBaseTexture8.hpp"
 
-#include "Direct3DSurface8.hpp"
+#include "D3D8/Direct3DSurface8.hpp"
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 #include <d3d8.h>
 

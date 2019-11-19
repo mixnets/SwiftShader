@@ -18,7 +18,7 @@
 #ifndef LIBGLES_CM_RESOURCEMANAGER_H_
 #define LIBGLES_CM_RESOURCEMANAGER_H_
 
-#include "common/NameSpace.hpp"
+#include "OpenGL/common/NameSpace.hpp"
 
 #include <GLES/gl.h>
 

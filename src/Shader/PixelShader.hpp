@@ -15,7 +15,7 @@
 #ifndef sw_PixelShader_hpp
 #define sw_PixelShader_hpp
 
-#include "Shader.hpp"
+#include "Shader/Shader.hpp"
 #include "Main/Config.hpp"
 
 namespace sw

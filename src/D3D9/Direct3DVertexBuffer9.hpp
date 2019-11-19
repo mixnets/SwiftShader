@@ -15,7 +15,7 @@
 #ifndef D3D9_Direct3DVertexBuffer9_hpp
 #define D3D9_Direct3DVertexBuffer9_hpp
 
-#include "Direct3DResource9.hpp"
+#include "D3D9/Direct3DResource9.hpp"
 
 #include <d3d9.h>
 

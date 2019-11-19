@@ -18,7 +18,7 @@
 #ifndef LIBGLESV2_INDEXDATAMANAGER_H_
 #define LIBGLESV2_INDEXDATAMANAGER_H_
 
-#include "Context.h"
+#include "OpenGL/libGLESv2/Context.h"
 
 #include <GLES2/gl2.h>
 

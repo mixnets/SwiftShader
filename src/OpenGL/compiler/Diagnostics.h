@@ -15,7 +15,7 @@
 #ifndef COMPILER_DIAGNOSTICS_H_
 #define COMPILER_DIAGNOSTICS_H_
 
-#include "preprocessor/DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
 
 class TInfoSink;
 

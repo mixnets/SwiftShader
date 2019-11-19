@@ -15,9 +15,9 @@
 #ifndef VK_BUFFER_VIEW_HPP_
 #define VK_BUFFER_VIEW_HPP_
 
-#include "VkObject.hpp"
-#include "VkFormat.h"
-#include "VkImageView.hpp"
+#include "Vulkan/VkObject.hpp"
+#include "Vulkan/VkFormat.h"
+#include "Vulkan/VkImageView.hpp"
 
 namespace vk
 {

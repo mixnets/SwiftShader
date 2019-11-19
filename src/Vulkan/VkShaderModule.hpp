@@ -15,7 +15,7 @@
 #ifndef VK_SHADER_MODULE_HPP_
 #define VK_SHADER_MODULE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include <atomic>
 #include <vector>

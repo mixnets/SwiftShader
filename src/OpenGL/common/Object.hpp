@@ -19,7 +19,7 @@
 #ifndef gl_Object_hpp
 #define gl_Object_hpp
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 #include "Common/MutexLock.hpp"
 
 #include <set>

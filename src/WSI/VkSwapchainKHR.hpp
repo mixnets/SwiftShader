@@ -18,7 +18,7 @@
 
 #include "Vulkan/VkObject.hpp"
 #include "Vulkan/VkImage.hpp"
-#include "VkSurfaceKHR.hpp"
+#include "WSI/VkSurfaceKHR.hpp"
 
 #include <vector>
 

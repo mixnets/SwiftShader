@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "localintermediate.h"
-#include "SymbolTable.h"
+#include "OpenGL/compiler/localintermediate.h"
+#include "OpenGL/compiler/SymbolTable.h"
 
 //
 // Two purposes:

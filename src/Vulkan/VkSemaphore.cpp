@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkSemaphore.hpp"
+#include "Vulkan/VkSemaphore.hpp"
 
-#include "VkConfig.h"
+#include "Vulkan/VkConfig.h"
 
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
-#include "VkSemaphoreExternalLinux.hpp"
+#include "Vulkan/VkSemaphoreExternalLinux.hpp"
 #elif SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
-#include "VkSemaphoreExternalFuchsia.hpp"
+#include "Vulkan/VkSemaphoreExternalFuchsia.hpp"
 #else
-#include "VkSemaphoreExternalNone.hpp"
+#include "Vulkan/VkSemaphoreExternalNone.hpp"
 #endif
 
 #include "marl/blockingcall.h"

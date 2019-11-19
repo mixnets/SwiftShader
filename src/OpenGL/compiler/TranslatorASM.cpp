@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TranslatorASM.h"
+#include "OpenGL/compiler/TranslatorASM.h"
 
-#include "InitializeParseContext.h"
+#include "OpenGL/compiler/InitializeParseContext.h"
 
 TranslatorASM::TranslatorASM(glsl::Shader *shaderObject, GLenum shaderType) : TCompiler(shaderType), shaderObject(shaderObject)
 {

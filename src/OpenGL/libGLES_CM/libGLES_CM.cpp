@@ -14,15 +14,15 @@
 
 // libGLES_CM.cpp: Implements the exported OpenGL ES 1.1 functions.
 
-#include "main.h"
-#include "mathutil.h"
-#include "utilities.h"
-#include "Buffer.h"
-#include "Context.h"
-#include "Framebuffer.h"
-#include "Renderbuffer.h"
-#include "Texture.h"
-#include "common/debug.h"
+#include "OpenGL/libGLES_CM/main.h"
+#include "OpenGL/libGLES_CM/mathutil.h"
+#include "OpenGL/libGLES_CM/utilities.h"
+#include "OpenGL/libGLES_CM/Buffer.h"
+#include "OpenGL/libGLES_CM/Context.h"
+#include "OpenGL/libGLES_CM/Framebuffer.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
+#include "OpenGL/libGLES_CM/Texture.h"
+#include "OpenGL/common/debug.h"
 #include "Common/SharedLibrary.hpp"
 #include "Common/Version.h"
 

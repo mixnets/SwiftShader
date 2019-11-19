@@ -15,8 +15,8 @@
 #ifndef sw_VertexProgram_hpp
 #define sw_VertexProgram_hpp
 
-#include "VertexRoutine.hpp"
-#include "ShaderCore.hpp"
+#include "Pipeline/VertexRoutine.hpp"
+#include "Pipeline/ShaderCore.hpp"
 
 namespace sw
 {

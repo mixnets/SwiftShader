@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Macro.h"
+#include "OpenGL/compiler/preprocessor/Macro.h"
 
-#include "Token.h"
+#include "OpenGL/compiler/preprocessor/Token.h"
 
 namespace pp
 {

@@ -18,9 +18,9 @@
 // built-in functions and operators.
 //
 
-#include "Initialize.h"
+#include "OpenGL/compiler/Initialize.h"
 
-#include "intermediate.h"
+#include "OpenGL/compiler/intermediate.h"
 
 void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TSymbolTable &symbolTable)
 {

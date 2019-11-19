@@ -15,9 +15,9 @@
 #ifndef D3D8_Direct3DPixelShader8_hpp
 #define D3D8_Direct3DPixelShader8_hpp
 
-#include "PixelShader.hpp"
+#include "Shader/PixelShader.hpp"
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
 namespace D3D8
 {

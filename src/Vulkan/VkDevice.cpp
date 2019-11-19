@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDevice.hpp"
+#include "Vulkan/VkDevice.hpp"
 
-#include "VkConfig.h"
-#include "VkDebug.hpp"
-#include "VkDescriptorSetLayout.hpp"
-#include "VkFence.hpp"
-#include "VkQueue.hpp"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkFence.hpp"
+#include "Vulkan/VkQueue.hpp"
 #include "Device/Blitter.hpp"
 
 #include <chrono>

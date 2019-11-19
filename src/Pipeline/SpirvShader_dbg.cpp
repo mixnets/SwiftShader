@@ -15,7 +15,7 @@
 // This file contains code used to aid debugging.
 
 #include <spirv/unified1/spirv.hpp>
-#include "SpirvShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 namespace sw
 {

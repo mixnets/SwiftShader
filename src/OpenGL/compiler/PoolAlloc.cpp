@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PoolAlloc.h"
+#include "OpenGL/compiler/PoolAlloc.h"
 
 #ifndef _MSC_VER
 #include <stdint.h>
@@ -20,8 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "InitializeGlobals.h"
-#include "osinclude.h"
+#include "OpenGL/compiler/InitializeGlobals.h"
+#include "OpenGL/compiler/osinclude.h"
 
 OS_TLSIndex PoolIndex = OS_INVALID_TLS_INDEX;
 

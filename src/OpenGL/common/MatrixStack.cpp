@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MatrixStack.hpp"
+#include "OpenGL/common/MatrixStack.hpp"
 
 #include "Common/Math.hpp"
 

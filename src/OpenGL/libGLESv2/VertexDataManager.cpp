@@ -15,12 +15,12 @@
 // VertexDataManager.h: Defines the VertexDataManager, a class that
 // runs the Buffer translation process.
 
-#include "VertexDataManager.h"
+#include "OpenGL/libGLESv2/VertexDataManager.h"
 
-#include "Buffer.h"
-#include "Program.h"
-#include "IndexDataManager.h"
-#include "common/debug.h"
+#include "OpenGL/libGLESv2/Buffer.h"
+#include "OpenGL/libGLESv2/Program.h"
+#include "OpenGL/libGLESv2/IndexDataManager.h"
+#include "OpenGL/common/debug.h"
 
 namespace
 {

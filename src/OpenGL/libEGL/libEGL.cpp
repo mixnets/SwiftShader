@@ -14,13 +14,13 @@
 
 // libEGL.cpp: Implements the exported EGL functions.
 
-#include "main.h"
-#include "Display.h"
-#include "Surface.hpp"
-#include "Texture.hpp"
-#include "Context.hpp"
-#include "common/Image.hpp"
-#include "common/debug.h"
+#include "OpenGL/libEGL/main.h"
+#include "OpenGL/libEGL/Display.h"
+#include "OpenGL/libEGL/Surface.hpp"
+#include "OpenGL/libEGL/Texture.hpp"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/common/debug.h"
 #include "Common/Version.h"
 
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)

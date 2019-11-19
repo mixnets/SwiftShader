@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "QuadRasterizer.hpp"
+#include "Device/QuadRasterizer.hpp"
 
-#include "Primitive.hpp"
-#include "Renderer.hpp"
+#include "Device/Primitive.hpp"
+#include "Device/Renderer.hpp"
 #include "Pipeline/Constants.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"

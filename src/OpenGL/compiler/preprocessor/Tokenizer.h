@@ -15,9 +15,9 @@
 #ifndef COMPILER_PREPROCESSOR_TOKENIZER_H_
 #define COMPILER_PREPROCESSOR_TOKENIZER_H_
 
-#include "Input.h"
-#include "Lexer.h"
-#include "pp_utils.h"
+#include "OpenGL/compiler/preprocessor/Input.h"
+#include "OpenGL/compiler/preprocessor/Lexer.h"
+#include "OpenGL/compiler/preprocessor/pp_utils.h"
 
 namespace pp
 {

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Context.hpp"
+#include "Renderer/Context.hpp"
 
-#include "Primitive.hpp"
-#include "Surface.hpp"
+#include "Renderer/Primitive.hpp"
+#include "Renderer/Surface.hpp"
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
 #include "Common/Memory.hpp"

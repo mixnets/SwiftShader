@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3D9.hpp"
-#include "Direct3D9Ex.hpp"
+#include "D3D9/Direct3D9.hpp"
+#include "D3D9/Direct3D9Ex.hpp"
 
-#include "Debug.hpp"
+#include "D3D9/Debug.hpp"
 
-#include "resource.h"
+#include "D3D9/resource.h"
 
 #include <stdio.h>
 #include <assert.h>

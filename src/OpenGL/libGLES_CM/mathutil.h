@@ -17,7 +17,7 @@
 #ifndef LIBGLES_CM_MATHUTIL_H_
 #define LIBGLES_CM_MATHUTIL_H_
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 #include "Common/Math.hpp"
 
 namespace es1

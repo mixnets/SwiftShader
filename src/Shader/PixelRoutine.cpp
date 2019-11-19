@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelRoutine.hpp"
+#include "Shader/PixelRoutine.hpp"
 
-#include "SamplerCore.hpp"
-#include "Constants.hpp"
+#include "Shader/SamplerCore.hpp"
+#include "Shader/Constants.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/QuadRasterizer.hpp"
 #include "Renderer/Surface.hpp"

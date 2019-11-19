@@ -18,8 +18,8 @@
 #ifndef LIBGLESV2_VERTEXDATAMANAGER_H_
 #define LIBGLESV2_VERTEXDATAMANAGER_H_
 
-#include "Context.h"
-#include "Device.hpp"
+#include "OpenGL/libGLESv2/Context.h"
+#include "OpenGL/libGLESv2/Device.hpp"
 
 #include <GLES2/gl2.h>
 

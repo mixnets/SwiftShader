@@ -17,9 +17,9 @@
 #ifndef LIBGLES_CM_UTILITIES_H
 #define LIBGLES_CM_UTILITIES_H
 
-#include "Device.hpp"
-#include "common/Image.hpp"
-#include "Texture.h"
+#include "OpenGL/libGLES_CM/Device.hpp"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/libGLES_CM/Texture.h"
 
 #include <GLES/gl.h>
 #include <GLES/glext.h>

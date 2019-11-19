@@ -15,7 +15,7 @@
 #ifndef D3D8_Direct3DIndexBuffer8_hpp
 #define D3D8_Direct3DIndexBuffer8_hpp
 
-#include "Direct3DResource8.hpp"
+#include "D3D8/Direct3DResource8.hpp"
 
 #include <d3d8.h>
 

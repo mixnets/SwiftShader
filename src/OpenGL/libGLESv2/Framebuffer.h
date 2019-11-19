@@ -18,9 +18,9 @@
 #ifndef LIBGLESV2_FRAMEBUFFER_H_
 #define LIBGLESV2_FRAMEBUFFER_H_
 
-#include "Context.h"
-#include "common/Object.hpp"
-#include "common/Image.hpp"
+#include "OpenGL/libGLESv2/Context.h"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/Image.hpp"
 
 #include <GLES2/gl2.h>
 

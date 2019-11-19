@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Input.h"
+#include "OpenGL/compiler/preprocessor/Input.h"
 
 #include <algorithm>
 #include <cassert>

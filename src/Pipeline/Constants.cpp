@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Constants.hpp"
+#include "Pipeline/Constants.hpp"
 
 #include "System/Math.hpp"
 #include "System/Half.hpp"

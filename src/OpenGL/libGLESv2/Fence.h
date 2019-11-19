@@ -17,7 +17,7 @@
 #ifndef LIBGLESV2_FENCE_H_
 #define LIBGLESV2_FENCE_H_
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 #include <GLES2/gl2.h>
 
 namespace es2

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Shader.hpp"
+#include "Shader/Shader.hpp"
 
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
+#include "Shader/VertexShader.hpp"
+#include "Shader/PixelShader.hpp"
 #include "Common/Math.hpp"
 #include "Common/Debug.hpp"
 

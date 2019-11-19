@@ -16,7 +16,7 @@
 #define SWIFTSHADER_METALSURFACE_HPP
 
 #include "Vulkan/VkObject.hpp"
-#include "VkSurfaceKHR.hpp"
+#include "WSI/VkSurfaceKHR.hpp"
 #ifdef VK_USE_PLATFORM_MACOS_MVK
 #	include "vulkan/vulkan_macos.h"
 #endif

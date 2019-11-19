@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkPipeline.hpp"
+#include "Vulkan/VkPipeline.hpp"
 
-#include "VkDevice.hpp"
-#include "VkPipelineCache.hpp"
-#include "VkPipelineLayout.hpp"
-#include "VkShaderModule.hpp"
-#include "VkRenderPass.hpp"
+#include "Vulkan/VkDevice.hpp"
+#include "Vulkan/VkPipelineCache.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
+#include "Vulkan/VkShaderModule.hpp"
+#include "Vulkan/VkRenderPass.hpp"
 #include "Pipeline/ComputeProgram.hpp"
 #include "Pipeline/SpirvShader.hpp"
 

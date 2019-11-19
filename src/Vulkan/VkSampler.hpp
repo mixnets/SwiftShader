@@ -15,8 +15,8 @@
 #ifndef VK_SAMPLER_HPP_
 #define VK_SAMPLER_HPP_
 
-#include "VkDevice.hpp"
-#include "VkImageView.hpp"  // For ResolveIdentityMapping()
+#include "Vulkan/VkDevice.hpp"
+#include "Vulkan/VkImageView.hpp"  // For ResolveIdentityMapping()
 #include "Device/Config.hpp"
 #include "System/Math.hpp"
 

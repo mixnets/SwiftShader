@@ -14,9 +14,9 @@
 
 // Query.cpp: Implements the es2::Query class
 
-#include "Query.h"
+#include "OpenGL/libGLESv2/Query.h"
 
-#include "main.h"
+#include "OpenGL/libGLESv2/main.h"
 #include "Common/Thread.hpp"
 
 namespace es2

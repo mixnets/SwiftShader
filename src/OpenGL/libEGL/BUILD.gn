@@ -94,6 +94,5 @@ swiftshader_shared_library("swiftshader_libEGL") {
   include_dirs = [
     "../../../include",
     "../..",
-    "..",
   ]
 }

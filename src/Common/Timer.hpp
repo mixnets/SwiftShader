@@ -15,7 +15,7 @@
 #ifndef sw_Timer_hpp
 #define sw_Timer_hpp
 
-#include "Types.hpp"
+#include "Common/Types.hpp"
 
 namespace sw
 {
