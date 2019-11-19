@@ -15,10 +15,10 @@
 #ifndef COMPILER_PREPROCESSOR_DIRECTIVE_PARSER_H_
 #define COMPILER_PREPROCESSOR_DIRECTIVE_PARSER_H_
 
-#include "Lexer.h"
-#include "Macro.h"
-#include "pp_utils.h"
-#include "SourceLocation.h"
+#include "OpenGL/compiler/preprocessor/Lexer.h"
+#include "OpenGL/compiler/preprocessor/Macro.h"
+#include "OpenGL/compiler/preprocessor/pp_utils.h"
+#include "OpenGL/compiler/preprocessor/SourceLocation.h"
 
 namespace pp
 {

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DStateBlock8.hpp"
+#include "D3D8/Direct3DStateBlock8.hpp"
 
-#include "Direct3DDevice8.hpp"
-#include "Direct3DBaseTexture8.hpp"
-#include "Direct3DVertexBuffer8.hpp"
-#include "Direct3DIndexBuffer8.hpp"
-#include "Debug.hpp"
+#include "D3D8/Direct3DDevice8.hpp"
+#include "D3D8/Direct3DBaseTexture8.hpp"
+#include "D3D8/Direct3DVertexBuffer8.hpp"
+#include "D3D8/Direct3DIndexBuffer8.hpp"
+#include "D3D8/Debug.hpp"
 
 #include <assert.h>
 

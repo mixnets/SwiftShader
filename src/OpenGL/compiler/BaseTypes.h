@@ -15,7 +15,7 @@
 #ifndef _BASICTYPES_INCLUDED_
 #define _BASICTYPES_INCLUDED_
 
-#include "debug.h"
+#include "OpenGL/compiler/debug.h"
 
 //
 // Precision qualifiers

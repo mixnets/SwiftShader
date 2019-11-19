@@ -15,7 +15,7 @@
 #ifndef sw_SamplerCore_hpp
 #define sw_SamplerCore_hpp
 
-#include "ShaderCore.hpp"
+#include "Pipeline/ShaderCore.hpp"
 #include "Device/Sampler.hpp"
 #include "Reactor/Reactor.hpp"
 

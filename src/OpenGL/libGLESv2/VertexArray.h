@@ -17,8 +17,8 @@
 #ifndef LIBGLESV2_VERTEX_ARRAY_H_
 #define LIBGLESV2_VERTEX_ARRAY_H_
 
-#include "Buffer.h"
-#include "Context.h"
+#include "OpenGL/libGLESv2/Buffer.h"
+#include "OpenGL/libGLESv2/Context.h"
 
 #include <GLES2/gl2.h>
 

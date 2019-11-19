@@ -15,9 +15,9 @@
 #ifndef VK_COMMAND_BUFFER_HPP_
 #define VK_COMMAND_BUFFER_HPP_
 
-#include "VkConfig.h"
-#include "VkObject.hpp"
-#include "VkDescriptorSet.hpp"
+#include "Vulkan/VkConfig.h"
+#include "Vulkan/VkObject.hpp"
+#include "Vulkan/VkDescriptorSet.hpp"
 #include "Device/Color.hpp"
 #include "Device/Context.hpp"
 #include <memory>

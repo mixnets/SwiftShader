@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkBufferView.hpp"
-#include "VkBuffer.hpp"
-#include "VkFormat.h"
+#include "Vulkan/VkBufferView.hpp"
+#include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkFormat.h"
 
 namespace vk
 {

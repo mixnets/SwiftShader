@@ -15,11 +15,11 @@
 // ResourceManager.cpp: Implements the ResourceManager class, which tracks and
 // retrieves objects which may be shared by multiple Contexts.
 
-#include "ResourceManager.h"
+#include "OpenGL/libGLES_CM/ResourceManager.h"
 
-#include "Buffer.h"
-#include "Renderbuffer.h"
-#include "Texture.h"
+#include "OpenGL/libGLES_CM/Buffer.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
+#include "OpenGL/libGLES_CM/Texture.h"
 
 namespace es1
 {

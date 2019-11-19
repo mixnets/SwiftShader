@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkFormat.h"
-#include "VkDebug.hpp"
+#include "Vulkan/VkFormat.h"
+#include "Vulkan/VkDebug.hpp"
 #include "System/Math.hpp"
 
 namespace vk

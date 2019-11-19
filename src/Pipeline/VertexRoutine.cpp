@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexRoutine.hpp"
+#include "Pipeline/VertexRoutine.hpp"
 
-#include "Constants.hpp"
-#include "SpirvShader.hpp"
+#include "Pipeline/Constants.hpp"
+#include "Pipeline/SpirvShader.hpp"
 #include "Device/Vertex.hpp"
 #include "Device/Renderer.hpp"
 #include "Vulkan/VkDebug.hpp"

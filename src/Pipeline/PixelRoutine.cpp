@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelRoutine.hpp"
+#include "Pipeline/PixelRoutine.hpp"
 
-#include "SamplerCore.hpp"
-#include "Constants.hpp"
+#include "Pipeline/SamplerCore.hpp"
+#include "Pipeline/Constants.hpp"
 #include "Device/Renderer.hpp"
 #include "Device/QuadRasterizer.hpp"
 #include "Device/Primitive.hpp"

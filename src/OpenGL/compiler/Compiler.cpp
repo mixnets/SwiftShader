@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Compiler.h"
+#include "OpenGL/compiler/Compiler.h"
 
-#include "AnalyzeCallDepth.h"
-#include "Initialize.h"
-#include "InitializeParseContext.h"
-#include "InitializeGlobals.h"
-#include "ParseHelper.h"
-#include "ValidateLimitations.h"
+#include "OpenGL/compiler/AnalyzeCallDepth.h"
+#include "OpenGL/compiler/Initialize.h"
+#include "OpenGL/compiler/InitializeParseContext.h"
+#include "OpenGL/compiler/InitializeGlobals.h"
+#include "OpenGL/compiler/ParseHelper.h"
+#include "OpenGL/compiler/ValidateLimitations.h"
 
 namespace
 {

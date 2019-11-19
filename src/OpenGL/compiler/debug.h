@@ -18,7 +18,7 @@
 #define COMPILER_DEBUG_H_
 
 #if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD) && !defined(ANDROID_NDK_BUILD)
-#include "../../Common/DebugAndroid.hpp"
+#include "Common/DebugAndroid.hpp"
 
 #define Trace(...) ((void)0)
 #else

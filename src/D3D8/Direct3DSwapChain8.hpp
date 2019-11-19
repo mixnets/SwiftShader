@@ -15,11 +15,11 @@
 #ifndef D3D8_Direct3DSwapChain8_hpp
 #define D3D8_Direct3DSwapChain8_hpp
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
-#include "Direct3DSurface8.hpp"
+#include "D3D8/Direct3DSurface8.hpp"
 
-#include "FrameBufferWin.hpp"
+#include "Main/FrameBufferWin.hpp"
 
 #include <d3d8.h>
 

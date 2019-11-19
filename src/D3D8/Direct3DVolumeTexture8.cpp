@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DVolumeTexture8.hpp"
+#include "D3D8/Direct3DVolumeTexture8.hpp"
 
-#include "Direct3DVolume8.hpp"
-#include "Resource.hpp"
-#include "Debug.hpp"
+#include "D3D8/Direct3DVolume8.hpp"
+#include "Common/Resource.hpp"
+#include "D3D8/Debug.hpp"
 
 #include <assert.h>
 

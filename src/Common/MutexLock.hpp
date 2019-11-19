@@ -15,7 +15,7 @@
 #ifndef sw_MutexLock_hpp
 #define sw_MutexLock_hpp
 
-#include "Thread.hpp"
+#include "Common/Thread.hpp"
 
 #if defined(__linux__)
 // Use a pthread mutex on Linux. Since many processes may use SwiftShader

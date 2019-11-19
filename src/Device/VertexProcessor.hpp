@@ -15,11 +15,11 @@
 #ifndef sw_VertexProcessor_hpp
 #define sw_VertexProcessor_hpp
 
-#include "Context.hpp"
-#include "Matrix.hpp"
-#include "Memset.hpp"
-#include "RoutineCache.hpp"
-#include "Vertex.hpp"
+#include "Device/Context.hpp"
+#include "Device/Matrix.hpp"
+#include "Device/Memset.hpp"
+#include "Device/RoutineCache.hpp"
+#include "Device/Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
 namespace sw

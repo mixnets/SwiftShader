@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 #include "Common/Thread.hpp"
 #include "Common/Timer.hpp"

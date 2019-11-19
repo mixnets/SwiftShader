@@ -15,7 +15,7 @@
 #ifndef COMPILER_PREPROCESSOR_EXPRESSION_PARSER_H_
 #define COMPILER_PREPROCESSOR_EXPRESSION_PARSER_H_
 
-#include "DiagnosticsBase.h"
+#include "OpenGL/compiler/preprocessor/DiagnosticsBase.h"
 
 namespace pp
 {

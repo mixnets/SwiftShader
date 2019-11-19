@@ -16,9 +16,9 @@
 // and size for an egl::Surface. Implements EGLConfig and related functionality.
 // [EGL 1.4] section 3.4 page 15.
 
-#include "Config.h"
+#include "OpenGL/libEGL/Config.h"
 
-#include "common/debug.h"
+#include "OpenGL/common/debug.h"
 
 #include <EGL/eglext.h>
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)

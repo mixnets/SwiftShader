@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDescriptorUpdateTemplate.hpp"
-#include "VkDescriptorSet.hpp"
-#include "VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkDescriptorUpdateTemplate.hpp"
+#include "Vulkan/VkDescriptorSet.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include <cstring>
 
 namespace vk

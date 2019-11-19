@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "libX11.hpp"
+#include "WSI/libX11.hpp"
 
 #include "System/SharedLibrary.hpp"
 

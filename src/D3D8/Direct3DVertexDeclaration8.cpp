@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DVertexDeclaration8.hpp"
+#include "D3D8/Direct3DVertexDeclaration8.hpp"
 
-#include "Debug.hpp"
+#include "D3D8/Debug.hpp"
 
 #include <d3d8types.h>
 

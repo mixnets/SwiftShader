@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ValidateLimitations.h"
-#include "InfoSink.h"
-#include "InitializeParseContext.h"
-#include "ParseHelper.h"
+#include "OpenGL/compiler/ValidateLimitations.h"
+#include "OpenGL/compiler/InfoSink.h"
+#include "OpenGL/compiler/InitializeParseContext.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 namespace {
 bool IsLoopIndex(const TIntermSymbol* symbol, const TLoopStack& stack) {

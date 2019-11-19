@@ -14,7 +14,7 @@
 
 // main.cpp: DLLMain and management of thread-local data.
 
-#include "main.h"
+#include "OpenGL/libGLESv2/main.h"
 
 #if !defined(_MSC_VER)
 #define CONSTRUCTOR __attribute__((constructor))

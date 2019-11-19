@@ -15,7 +15,7 @@
 #ifndef VK_QUEUE_HPP_
 #define VK_QUEUE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include "Device/Renderer.hpp"
 #include <thread>
 #include <vulkan/vk_icd.h>

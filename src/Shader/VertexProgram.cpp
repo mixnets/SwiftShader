@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexProgram.hpp"
+#include "Shader/VertexProgram.hpp"
 
-#include "VertexShader.hpp"
-#include "SamplerCore.hpp"
+#include "Shader/VertexShader.hpp"
+#include "Shader/SamplerCore.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Vertex.hpp"
 #include "Common/Half.hpp"

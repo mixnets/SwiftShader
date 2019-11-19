@@ -15,7 +15,7 @@
 #ifndef VK_PIPELINE_CACHE_HPP_
 #define VK_PIPELINE_CACHE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include <cstring>
 #include <functional>

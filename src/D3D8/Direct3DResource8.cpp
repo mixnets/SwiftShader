@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DResource8.hpp"
+#include "D3D8/Direct3DResource8.hpp"
 
-#include "Direct3DDevice8.hpp"
-#include "Debug.hpp"
+#include "D3D8/Direct3DDevice8.hpp"
+#include "D3D8/Debug.hpp"
 
 namespace D3D8
 {

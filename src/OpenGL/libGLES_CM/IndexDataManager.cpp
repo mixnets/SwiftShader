@@ -15,10 +15,10 @@
 // IndexDataManager.cpp: Defines the IndexDataManager, a class that
 // runs the Buffer translation process for index buffers.
 
-#include "IndexDataManager.h"
+#include "OpenGL/libGLES_CM/IndexDataManager.h"
 
-#include "Buffer.h"
-#include "common/debug.h"
+#include "OpenGL/libGLES_CM/Buffer.h"
+#include "OpenGL/common/debug.h"
 
 #include <string.h>
 #include <algorithm>

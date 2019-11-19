@@ -17,8 +17,8 @@
 #ifndef LIBEGL_MAIN_H_
 #define LIBEGL_MAIN_H_
 
-#include "libGLES_CM/libGLES_CM.hpp"
-#include "libGLESv2/libGLESv2.hpp"
+#include "OpenGL/libGLES_CM/libGLES_CM.hpp"
+#include "OpenGL/libGLESv2/libGLESv2.hpp"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>

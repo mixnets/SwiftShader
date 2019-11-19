@@ -15,12 +15,12 @@
 // Framebuffer.cpp: Implements the Framebuffer class. Implements GL framebuffer
 // objects and related functionality. [OpenGL ES 2.0.24] section 4.4 page 105.
 
-#include "Framebuffer.h"
+#include "OpenGL/libGLES_CM/Framebuffer.h"
 
-#include "main.h"
-#include "Renderbuffer.h"
-#include "Texture.h"
-#include "utilities.h"
+#include "OpenGL/libGLES_CM/main.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
+#include "OpenGL/libGLES_CM/Texture.h"
+#include "OpenGL/libGLES_CM/utilities.h"
 
 namespace es1
 {

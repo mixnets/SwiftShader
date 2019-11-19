@@ -15,12 +15,12 @@
 #ifndef D3D9_Direct3DDevice9Ex_hpp
 #define D3D9_Direct3DDevice9Ex_hpp
 
-#include "Direct3DDevice9.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
 
-#include "Direct3D9Ex.hpp"
-#include "Direct3DSwapChain9.hpp"
+#include "D3D9/Direct3D9Ex.hpp"
+#include "D3D9/Direct3DSwapChain9.hpp"
 
-#include "Stream.hpp"
+#include "Renderer/Stream.hpp"
 
 #include <d3d9.h>
 #include <map>

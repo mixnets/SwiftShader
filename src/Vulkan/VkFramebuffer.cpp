@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkFramebuffer.hpp"
-#include "VkImageView.hpp"
-#include "VkRenderPass.hpp"
+#include "Vulkan/VkFramebuffer.hpp"
+#include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkRenderPass.hpp"
 #include <algorithm>
 #include <memory.h>
 

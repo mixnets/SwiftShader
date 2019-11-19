@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ParseHelper.h"
+#include "OpenGL/compiler/ParseHelper.h"
 
 //
 // Use this class to carry along data from node to node in

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkInstance.hpp"
-#include "VkDestroy.h"
+#include "Vulkan/VkInstance.hpp"
+#include "Vulkan/VkDestroy.h"
 
 namespace vk
 {

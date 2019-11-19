@@ -15,7 +15,7 @@
 #ifndef VK_DESCRIPTOR_UPDATE_TEMPLATE_HPP_
 #define VK_DESCRIPTOR_UPDATE_TEMPLATE_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 namespace vk
 {

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OutputASM.h"
+#include "OpenGL/compiler/OutputASM.h"
 #include "Common/Math.hpp"
 
-#include "common/debug.h"
-#include "InfoSink.h"
+#include "OpenGL/common/debug.h"
+#include "OpenGL/compiler/InfoSink.h"
 
-#include "libGLESv2/Shader.h"
+#include "OpenGL/libGLESv2/Shader.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>

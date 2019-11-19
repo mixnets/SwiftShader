@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Diagnostics.h"
+#include "OpenGL/compiler/Diagnostics.h"
 
-#include "debug.h"
-#include "InfoSink.h"
-#include "preprocessor/SourceLocation.h"
+#include "OpenGL/compiler/debug.h"
+#include "OpenGL/compiler/InfoSink.h"
+#include "OpenGL/compiler/preprocessor/SourceLocation.h"
 
 TDiagnostics::TDiagnostics(TInfoSink& infoSink) :
 	mShaderVersion(100),

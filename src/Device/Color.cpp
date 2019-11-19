@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Color.hpp"
+#include "Device/Color.hpp"
 
 namespace sw
 {

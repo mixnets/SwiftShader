@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SamplerCore.hpp"
+#include "Shader/SamplerCore.hpp"
 
-#include "Constants.hpp"
+#include "Shader/Constants.hpp"
 #include "Common/Debug.hpp"
 
 namespace

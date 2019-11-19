@@ -16,7 +16,7 @@
 #define Debug_hpp
 
 #if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD) && !defined(ANDROID_NDK_BUILD)
-#include "DebugAndroid.hpp"
+#include "System/DebugAndroid.hpp"
 #else
 
 #include <assert.h>

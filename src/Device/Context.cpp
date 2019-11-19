@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Context.hpp"
+#include "Device/Context.hpp"
 
-#include "Primitive.hpp"
+#include "Device/Primitive.hpp"
 #include "System/Memory.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImageView.hpp"

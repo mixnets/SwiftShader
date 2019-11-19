@@ -15,8 +15,8 @@
 #ifndef VK_PHYSICAL_DEVICE_HPP_
 #define VK_PHYSICAL_DEVICE_HPP_
 
-#include "VkObject.hpp"
-#include "VkFormat.h"
+#include "Vulkan/VkObject.hpp"
+#include "Vulkan/VkFormat.h"
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 #include <vulkan/vk_android_native_buffer.h>

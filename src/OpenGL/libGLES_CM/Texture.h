@@ -19,11 +19,11 @@
 #ifndef LIBGLES_CM_TEXTURE_H_
 #define LIBGLES_CM_TEXTURE_H_
 
-#include "Renderbuffer.h"
-#include "common/Object.hpp"
-#include "utilities.h"
-#include "libEGL/Texture.hpp"
-#include "common/debug.h"
+#include "OpenGL/libGLES_CM/Renderbuffer.h"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/libGLES_CM/utilities.h"
+#include "OpenGL/libEGL/Texture.hpp"
+#include "OpenGL/common/debug.h"
 
 #include <GLES/gl.h>
 

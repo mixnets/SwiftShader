@@ -15,7 +15,7 @@
 #ifndef VK_DESCRIPTOR_SET_LAYOUT_HPP_
 #define VK_DESCRIPTOR_SET_LAYOUT_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include "Vulkan/VkSampler.hpp"
 #include "Vulkan/VkImageView.hpp"

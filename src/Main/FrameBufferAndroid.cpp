@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "FrameBufferAndroid.hpp"
+#include "Main/FrameBufferAndroid.hpp"
 
 #ifndef ANDROID_NDK_BUILD
 #include "Common/GrallocAndroid.hpp"

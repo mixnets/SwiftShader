@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDescriptorPool.hpp"
+#include "Vulkan/VkDescriptorPool.hpp"
 
-#include "VkDescriptorSet.hpp"
-#include "VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkDescriptorSet.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 
 #include <algorithm>
 #include <memory>

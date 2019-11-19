@@ -15,7 +15,7 @@
 #ifndef D3D9_Capabilities_hpp
 #define D3D9_Capabilities_hpp
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 #include <d3d9.h>
 

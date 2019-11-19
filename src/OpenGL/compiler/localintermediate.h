@@ -15,7 +15,7 @@
 #ifndef _LOCAL_INTERMEDIATE_INCLUDED_
 #define _LOCAL_INTERMEDIATE_INCLUDED_
 
-#include "intermediate.h"
+#include "OpenGL/compiler/intermediate.h"
 
 struct TVectorFields {
 	int offsets[4];

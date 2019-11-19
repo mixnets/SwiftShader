@@ -21,7 +21,7 @@
 #pragma warning(disable: 4718)
 #endif
 
-#include "SymbolTable.h"
+#include "OpenGL/compiler/SymbolTable.h"
 
 #include <stdio.h>
 #include <limits.h>

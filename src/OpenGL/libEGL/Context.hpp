@@ -15,7 +15,7 @@
 #ifndef egl_Context_hpp
 #define egl_Context_hpp
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 #include "Renderer/Surface.hpp"
 
 #include <EGL/egl.h>

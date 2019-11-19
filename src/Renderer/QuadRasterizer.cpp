@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "QuadRasterizer.hpp"
+#include "Renderer/QuadRasterizer.hpp"
 
-#include "Primitive.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Primitive.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Shader/Constants.hpp"
 #include "Common/Math.hpp"
 #include "Common/Debug.hpp"

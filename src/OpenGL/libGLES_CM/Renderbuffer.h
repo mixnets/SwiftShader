@@ -20,8 +20,8 @@
 #ifndef LIBGLES_CM_RENDERBUFFER_H_
 #define LIBGLES_CM_RENDERBUFFER_H_
 
-#include "common/Object.hpp"
-#include "common/Image.hpp"
+#include "OpenGL/common/Object.hpp"
+#include "OpenGL/common/Image.hpp"
 
 #include <GLES/gl.h>
 

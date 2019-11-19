@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
-#include "Debug.hpp"
+#include "D3D8/Debug.hpp"
 
 #include <assert.h>
 

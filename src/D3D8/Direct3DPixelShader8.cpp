@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DPixelShader8.hpp"
+#include "D3D8/Direct3DPixelShader8.hpp"
 
-#include "Debug.hpp"
+#include "D3D8/Debug.hpp"
 
 namespace D3D8
 {

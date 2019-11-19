@@ -15,7 +15,7 @@
 #ifndef Plane_hpp
 #define Plane_hpp
 
-#include "Vector.hpp"
+#include "Renderer/Vector.hpp"
 
 namespace sw
 {

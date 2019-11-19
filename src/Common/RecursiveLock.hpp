@@ -15,7 +15,7 @@
 #ifndef sw_RecursiveLock_hpp
 #define sw_RecursiveLock_hpp
 
-#include "Thread.hpp"
+#include "Common/Thread.hpp"
 
 #include <mutex>
 

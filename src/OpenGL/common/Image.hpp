@@ -15,7 +15,7 @@
 #ifndef egl_Image_hpp
 #define egl_Image_hpp
 
-#include "libEGL/Texture.hpp"
+#include "OpenGL/libEGL/Texture.hpp"
 #include "Renderer/Surface.hpp"
 
 #include <GLES3/gl3.h>
@@ -23,11 +23,11 @@
 
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
 #include <system/window.h>
-#include "../../Common/GrallocAndroid.hpp"
+#include "Common/GrallocAndroid.hpp"
 #endif
 
 #if defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD) && !defined(ANDROID_NDK_BUILD)
-#include "../../Common/DebugAndroid.hpp"
+#include "Common/DebugAndroid.hpp"
 #define LOGLOCK(fmt, ...) // TRACE(fmt " tid=%d", ##__VA_ARGS__, gettid())
 #else
 #include <assert.h>

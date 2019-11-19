@@ -18,8 +18,8 @@
 #ifndef LIBGLES_CM_VERTEXDATAMANAGER_H_
 #define LIBGLES_CM_VERTEXDATAMANAGER_H_
 
-#include "Context.h"
-#include "Device.hpp"
+#include "OpenGL/libGLES_CM/Context.h"
+#include "OpenGL/libGLES_CM/Device.hpp"
 
 #include <GLES/gl.h>
 

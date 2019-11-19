@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Socket.hpp"
+#include "Common/Socket.hpp"
 
 #if defined(_WIN32)
 	#include <ws2tcpip.h>

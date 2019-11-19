@@ -15,9 +15,9 @@
 #ifndef D3D8_Direct3DVolumeTexture8_hpp
 #define D3D8_Direct3DVolumeTexture8_hpp
 
-#include "Direct3DBaseTexture8.hpp"
+#include "D3D8/Direct3DBaseTexture8.hpp"
 
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 #include <d3d8.h>
 

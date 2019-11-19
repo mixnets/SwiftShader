@@ -15,14 +15,14 @@
 #ifndef D3D8_Direct3DDevice8_hpp
 #define D3D8_Direct3DDevice8_hpp
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
-#include "Direct3D8.hpp"
-#include "Direct3DStateBlock8.hpp"
-#include "Direct3DVertexDeclaration8.hpp"
-#include "Direct3DSwapChain8.hpp"
+#include "D3D8/Direct3D8.hpp"
+#include "D3D8/Direct3DStateBlock8.hpp"
+#include "D3D8/Direct3DVertexDeclaration8.hpp"
+#include "D3D8/Direct3DSwapChain8.hpp"
 
-#include "Stream.hpp"
+#include "Renderer/Stream.hpp"
 
 #include <d3d8.h>
 #include <vector>

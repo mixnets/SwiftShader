@@ -15,11 +15,11 @@
 #ifndef D3D9_Direct3DSwapChain9_hpp
 #define D3D9_Direct3DSwapChain9_hpp
 
-#include "Unknown.hpp"
+#include "D3D9/Unknown.hpp"
 
-#include "Direct3DSurface9.hpp"
+#include "D3D9/Direct3DSurface9.hpp"
 
-#include "FrameBufferWin.hpp"
+#include "Main/FrameBufferWin.hpp"
 
 #include <d3d9.h>
 

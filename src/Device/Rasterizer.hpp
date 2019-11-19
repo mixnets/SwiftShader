@@ -15,8 +15,8 @@
 #ifndef sw_Rasterizer_hpp
 #define sw_Rasterizer_hpp
 
-#include "Context.hpp"
-#include "PixelProcessor.hpp"
+#include "Device/Context.hpp"
+#include "Device/PixelProcessor.hpp"
 #include "Device/Config.hpp"
 
 namespace sw

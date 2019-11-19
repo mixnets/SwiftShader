@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DVertexDeclaration9.hpp"
+#include "D3D9/Direct3DVertexDeclaration9.hpp"
 
-#include "Direct3DDevice9.hpp"
-#include "Debug.hpp"
+#include "D3D9/Direct3DDevice9.hpp"
+#include "D3D9/Debug.hpp"
 
 #include <d3d9types.h>
 #include <stdio.h>
