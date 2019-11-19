@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDeviceMemory.hpp"
-#include "VkBuffer.hpp"
-#include "VkDevice.hpp"
-#include "VkImage.hpp"
+#include "Vulkan/VkDeviceMemory.hpp"
+#include "Vulkan/VkBuffer.hpp"
+#include "Vulkan/VkDevice.hpp"
+#include "Vulkan/VkImage.hpp"
 #include "Device/Blitter.hpp"
 #include "Device/ETC_Decoder.hpp"
 #include <cstring>

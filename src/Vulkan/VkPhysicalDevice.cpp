@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkPhysicalDevice.hpp"
+#include "Vulkan/VkPhysicalDevice.hpp"
 
-#include "VkConfig.h"
+#include "Vulkan/VkConfig.h"
 #include "Pipeline/SpirvShader.hpp" // sw::SIMD::Width
 
 #include <limits>

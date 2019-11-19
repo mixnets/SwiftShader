@@ -17,12 +17,12 @@
 #ifndef LIBGLESV2_MAIN_H_
 #define LIBGLESV2_MAIN_H_
 
-#include "Context.h"
-#include "Device.hpp"
-#include "common/debug.h"
-#include "libEGL/libEGL.hpp"
-#include "libEGL/Display.h"
-#include "libGLES_CM/libGLES_CM.hpp"
+#include "OpenGL/libGLESv2/Context.h"
+#include "OpenGL/libGLESv2/Device.hpp"
+#include "OpenGL/common/debug.h"
+#include "OpenGL/libEGL/libEGL.hpp"
+#include "OpenGL/libEGL/Display.h"
+#include "OpenGL/libGLES_CM/libGLES_CM.hpp"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>

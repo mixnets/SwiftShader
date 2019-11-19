@@ -17,11 +17,11 @@
 #ifndef LIBGLES_CM_MAIN_H_
 #define LIBGLES_CM_MAIN_H_
 
-#include "Context.h"
-#include "Device.hpp"
-#include "common/debug.h"
-#include "libEGL/libEGL.hpp"
-#include "libEGL/Display.h"
+#include "OpenGL/libGLES_CM/Context.h"
+#include "OpenGL/libGLES_CM/Device.hpp"
+#include "OpenGL/common/debug.h"
+#include "OpenGL/libEGL/libEGL.hpp"
+#include "OpenGL/libEGL/Display.h"
 
 #include <GLES/gl.h>
 #include <GLES/glext.h>

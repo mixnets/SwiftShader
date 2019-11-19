@@ -17,7 +17,7 @@
 #ifndef LIBGLESV2_SAMPLER_H_
 #define LIBGLESV2_SAMPLER_H_
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 #include "Renderer/Renderer.hpp"
 
 #include <GLES2/gl2.h>

@@ -15,7 +15,7 @@
 #ifndef VK_EVENT_HPP_
 #define VK_EVENT_HPP_
 
-#include "VkObject.hpp"
+#include "Vulkan/VkObject.hpp"
 #include <condition_variable>
 #include <mutex>
 

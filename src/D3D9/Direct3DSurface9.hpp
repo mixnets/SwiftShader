@@ -15,9 +15,9 @@
 #ifndef D3D9_Direct3DSurface9_hpp
 #define D3D9_Direct3DSurface9_hpp
 
-#include "Direct3DResource9.hpp"
+#include "D3D9/Direct3DResource9.hpp"
 
-#include "Surface.hpp"
+#include "Renderer/Surface.hpp"
 
 #include <d3d9.h>
 

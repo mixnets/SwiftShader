@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Image.hpp"
+#include "OpenGL/common/Image.hpp"
 
-#include "../libEGL/Texture.hpp"
-#include "../common/debug.h"
+#include "OpenGL/libEGL/Texture.hpp"
+#include "OpenGL/common/debug.h"
 #include "Common/Math.hpp"
 #include "Common/Thread.hpp"
 

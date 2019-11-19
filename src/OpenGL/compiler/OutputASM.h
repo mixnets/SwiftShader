@@ -15,8 +15,8 @@
 #ifndef COMPILER_OUTPUTASM_H_
 #define COMPILER_OUTPUTASM_H_
 
-#include "intermediate.h"
-#include "ParseHelper.h"
+#include "OpenGL/compiler/intermediate.h"
+#include "OpenGL/compiler/ParseHelper.h"
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
 

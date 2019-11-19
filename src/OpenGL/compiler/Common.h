@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "PoolAlloc.h"
+#include "OpenGL/compiler/PoolAlloc.h"
 
 struct TSourceLoc {
 	int first_file;

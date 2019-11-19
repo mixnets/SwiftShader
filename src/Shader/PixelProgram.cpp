@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelProgram.hpp"
+#include "Shader/PixelProgram.hpp"
 
-#include "SamplerCore.hpp"
+#include "Shader/SamplerCore.hpp"
 #include "Renderer/Primitive.hpp"
 #include "Renderer/Renderer.hpp"
 

@@ -18,7 +18,7 @@
 #include <ostream>
 #include <string>
 
-#include "SourceLocation.h"
+#include "OpenGL/compiler/preprocessor/SourceLocation.h"
 
 namespace pp
 {

@@ -15,9 +15,9 @@
 #ifndef sw_SpirvShader_hpp
 #define sw_SpirvShader_hpp
 
-#include "ShaderCore.hpp"
-#include "SamplerCore.hpp"
-#include "SpirvID.hpp"
+#include "Pipeline/ShaderCore.hpp"
+#include "Pipeline/SamplerCore.hpp"
+#include "Pipeline/SpirvID.hpp"
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkConfig.h"

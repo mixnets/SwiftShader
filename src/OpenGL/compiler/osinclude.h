@@ -43,7 +43,7 @@
 #endif  // ANGLE_OS_WIN
 
 
-#include "debug.h"
+#include "OpenGL/compiler/debug.h"
 
 //
 // Thread Local Storage Operations

@@ -16,7 +16,7 @@
 // lifecycle support for GL objects using the traditional BindObject scheme, but
 // that need to be reference counted for correct cross-context deletion.
 
-#include "Object.hpp"
+#include "OpenGL/common/Object.hpp"
 
 #include "Common/Thread.hpp"
 

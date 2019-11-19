@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexArray.h"
+#include "OpenGL/libGLESv2/VertexArray.h"
 
 namespace es2
 {

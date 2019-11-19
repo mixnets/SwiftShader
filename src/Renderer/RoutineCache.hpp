@@ -15,7 +15,7 @@
 #ifndef sw_RoutineCache_hpp
 #define sw_RoutineCache_hpp
 
-#include "LRUCache.hpp"
+#include "Renderer/LRUCache.hpp"
 
 #include "Reactor/Reactor.hpp"
 

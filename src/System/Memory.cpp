@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Memory.hpp"
+#include "System/Memory.hpp"
 
-#include "Types.hpp"
-#include "Debug.hpp"
+#include "System/Types.hpp"
+#include "System/Debug.hpp"
 
 #if defined(_WIN32)
 	#ifndef WIN32_LEAN_AND_MEAN

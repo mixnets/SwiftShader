@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "FrameBuffer.hpp"
+#include "Main/FrameBuffer.hpp"
 
 #include "Renderer/Surface.hpp"
 #include "Reactor/Reactor.hpp"

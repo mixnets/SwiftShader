@@ -17,9 +17,9 @@
 
 #include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDescriptorSet.hpp"
-#include "Config.hpp"
-#include "Memset.hpp"
-#include "Stream.hpp"
+#include "Device/Config.hpp"
+#include "Device/Memset.hpp"
+#include "Device/Stream.hpp"
 #include "System/Types.hpp"
 
 namespace vk

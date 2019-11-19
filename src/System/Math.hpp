@@ -15,7 +15,7 @@
 #ifndef sw_Math_hpp
 #define sw_Math_hpp
 
-#include "Types.hpp"
+#include "System/Types.hpp"
 
 #include "Vulkan/VkDebug.hpp"
 

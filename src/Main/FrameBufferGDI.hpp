@@ -15,7 +15,7 @@
 #ifndef	sw_FrameBufferGDI_hpp
 #define	sw_FrameBufferGDI_hpp
 
-#include "FrameBufferWin.hpp"
+#include "Main/FrameBufferWin.hpp"
 
 namespace sw
 {

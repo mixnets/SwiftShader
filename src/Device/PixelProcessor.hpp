@@ -15,10 +15,10 @@
 #ifndef sw_PixelProcessor_hpp
 #define sw_PixelProcessor_hpp
 
-#include "Color.hpp"
-#include "Context.hpp"
-#include "Memset.hpp"
-#include "RoutineCache.hpp"
+#include "Device/Color.hpp"
+#include "Device/Context.hpp"
+#include "Device/Memset.hpp"
+#include "Device/RoutineCache.hpp"
 
 namespace sw
 {

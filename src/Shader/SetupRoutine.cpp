@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SetupRoutine.hpp"
+#include "Shader/SetupRoutine.hpp"
 
-#include "Constants.hpp"
+#include "Shader/Constants.hpp"
 #include "Renderer/Primitive.hpp"
 #include "Renderer/Polygon.hpp"
 #include "Renderer/Renderer.hpp"

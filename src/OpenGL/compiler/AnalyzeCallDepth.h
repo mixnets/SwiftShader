@@ -15,7 +15,7 @@
 #ifndef COMPILER_ANALYZE_CALL_DEPTH_H_
 #define COMPILER_ANALYZE_CALL_DEPTH_H_
 
-#include "intermediate.h"
+#include "OpenGL/compiler/intermediate.h"
 
 #include <set>
 #include <limits.h>

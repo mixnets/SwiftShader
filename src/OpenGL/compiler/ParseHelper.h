@@ -14,12 +14,12 @@
 #ifndef _PARSER_HELPER_INCLUDED_
 #define _PARSER_HELPER_INCLUDED_
 
-#include "Diagnostics.h"
-#include "DirectiveHandler.h"
-#include "localintermediate.h"
-#include "preprocessor/Preprocessor.h"
-#include "Compiler.h"
-#include "SymbolTable.h"
+#include "OpenGL/compiler/Diagnostics.h"
+#include "OpenGL/compiler/DirectiveHandler.h"
+#include "OpenGL/compiler/localintermediate.h"
+#include "OpenGL/compiler/preprocessor/Preprocessor.h"
+#include "OpenGL/compiler/Compiler.h"
+#include "OpenGL/compiler/SymbolTable.h"
 
 struct TMatrixFields {
 	bool wholeRow;

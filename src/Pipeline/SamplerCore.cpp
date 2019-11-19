@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SamplerCore.hpp"
+#include "Pipeline/SamplerCore.hpp"
 
-#include "PixelRoutine.hpp"
-#include "Constants.hpp"
+#include "Pipeline/PixelRoutine.hpp"
+#include "Pipeline/Constants.hpp"
 #include "Vulkan/VkSampler.hpp"
 #include "Vulkan/VkDebug.hpp"
 

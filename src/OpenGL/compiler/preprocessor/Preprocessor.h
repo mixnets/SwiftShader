@@ -15,7 +15,7 @@
 #ifndef COMPILER_PREPROCESSOR_PREPROCESSOR_H_
 #define COMPILER_PREPROCESSOR_PREPROCESSOR_H_
 
-#include "pp_utils.h"
+#include "OpenGL/compiler/preprocessor/pp_utils.h"
 
 #include <cstddef>
 

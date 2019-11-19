@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Blitter.hpp"
+#include "Device/Blitter.hpp"
 
 #include "Pipeline/ShaderCore.hpp"
 #include "Reactor/Reactor.hpp"

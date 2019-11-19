@@ -16,7 +16,7 @@
 #define _INFOSINK_INCLUDED_
 
 #include <math.h>
-#include "Common.h"
+#include "OpenGL/compiler/Common.h"
 
 // Returns the fractional part of the given floating-point number.
 inline float fractionalPart(float f) {

@@ -15,7 +15,7 @@
 #ifndef D3D8_Direct3DStateBlock8_hpp
 #define D3D8_Direct3DStateBlock8_hpp
 
-#include "Unknown.hpp"
+#include "D3D8/Unknown.hpp"
 
 #include <vector>
 

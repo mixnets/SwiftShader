@@ -14,9 +14,9 @@
 
 // entry_points.cpp: GL entry points exports and definition
 
-#include "main.h"
-#include "entry_points.h"
-#include "libEGL/main.h"
+#include "OpenGL/libGLESv2/main.h"
+#include "OpenGL/libGLESv2/entry_points.h"
+#include "OpenGL/libEGL/main.h"
 
 extern "C"
 {

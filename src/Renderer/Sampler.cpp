@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Sampler.hpp"
+#include "Renderer/Sampler.hpp"
 
-#include "Context.hpp"
-#include "Surface.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/Surface.hpp"
 #include "Shader/PixelRoutine.hpp"
 #include "Common/Debug.hpp"
 

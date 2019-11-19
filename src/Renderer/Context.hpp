@@ -15,11 +15,11 @@
 #ifndef sw_Context_hpp
 #define sw_Context_hpp
 
-#include "Sampler.hpp"
-#include "TextureStage.hpp"
-#include "Stream.hpp"
-#include "Point.hpp"
-#include "Vertex.hpp"
+#include "Renderer/Sampler.hpp"
+#include "Renderer/TextureStage.hpp"
+#include "Renderer/Stream.hpp"
+#include "Renderer/Point.hpp"
+#include "Renderer/Vertex.hpp"
 #include "Common/Types.hpp"
 
 namespace sw

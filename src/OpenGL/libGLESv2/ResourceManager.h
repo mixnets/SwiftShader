@@ -18,7 +18,7 @@
 #ifndef LIBGLESV2_RESOURCEMANAGER_H_
 #define LIBGLESV2_RESOURCEMANAGER_H_
 
-#include "common/NameSpace.hpp"
+#include "OpenGL/common/NameSpace.hpp"
 #include "Common/MutexLock.hpp"
 
 #include <GLES2/gl2.h>

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TextureStage.hpp"
+#include "Renderer/TextureStage.hpp"
 
-#include "Sampler.hpp"
+#include "Renderer/Sampler.hpp"
 #include "Common/Debug.hpp"
 
 #include <string.h>

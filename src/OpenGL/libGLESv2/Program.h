@@ -18,8 +18,8 @@
 #ifndef LIBGLESV2_PROGRAM_H_
 #define LIBGLESV2_PROGRAM_H_
 
-#include "Shader.h"
-#include "Context.h"
+#include "OpenGL/libGLESv2/Shader.h"
+#include "OpenGL/libGLESv2/Context.h"
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
 

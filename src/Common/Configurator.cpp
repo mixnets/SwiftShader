@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Configurator.hpp"
+#include "Common/Configurator.hpp"
 
 #include <iostream>
 #include <fstream>

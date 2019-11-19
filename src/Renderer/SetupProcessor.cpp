@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SetupProcessor.hpp"
+#include "Renderer/SetupProcessor.hpp"
 
-#include "Primitive.hpp"
-#include "Polygon.hpp"
-#include "Context.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Primitive.hpp"
+#include "Renderer/Polygon.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Shader/SetupRoutine.hpp"
 #include "Shader/Constants.hpp"
 #include "Common/Debug.hpp"

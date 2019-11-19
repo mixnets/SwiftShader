@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Surface.hpp"
+#include "Renderer/Surface.hpp"
 
-#include "Color.hpp"
-#include "Context.hpp"
-#include "ETC_Decoder.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Color.hpp"
+#include "Renderer/Context.hpp"
+#include "Renderer/ETC_Decoder.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Common/Half.hpp"
 #include "Common/Memory.hpp"
 #include "Common/CPUID.hpp"

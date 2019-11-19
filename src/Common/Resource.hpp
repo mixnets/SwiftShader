@@ -15,7 +15,7 @@
 #ifndef sw_Resource_hpp
 #define sw_Resource_hpp
 
-#include "MutexLock.hpp"
+#include "Common/MutexLock.hpp"
 
 namespace sw
 {

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelProcessor.hpp"
+#include "Device/PixelProcessor.hpp"
 
-#include "Primitive.hpp"
+#include "Device/Primitive.hpp"
 #include "Pipeline/PixelProgram.hpp"
 #include "Pipeline/Constants.hpp"
 #include "Vulkan/VkDebug.hpp"

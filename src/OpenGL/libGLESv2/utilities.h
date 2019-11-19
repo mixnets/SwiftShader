@@ -17,9 +17,9 @@
 #ifndef LIBGLESV2_UTILITIES_H
 #define LIBGLESV2_UTILITIES_H
 
-#include "Device.hpp"
-#include "common/Image.hpp"
-#include "Texture.h"
+#include "OpenGL/libGLESv2/Device.hpp"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/libGLESv2/Texture.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>

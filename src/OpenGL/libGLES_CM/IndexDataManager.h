@@ -18,7 +18,7 @@
 #ifndef LIBGLES_CM_INDEXDATAMANAGER_H_
 #define LIBGLES_CM_INDEXDATAMANAGER_H_
 
-#include "Context.h"
+#include "OpenGL/libGLES_CM/Context.h"
 
 #include <GLES/gl.h>
 

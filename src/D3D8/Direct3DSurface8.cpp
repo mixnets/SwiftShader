@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Direct3DSurface8.hpp"
+#include "D3D8/Direct3DSurface8.hpp"
 
-#include "Direct3DBaseTexture8.hpp"
-#include "Debug.hpp"
+#include "D3D8/Direct3DBaseTexture8.hpp"
+#include "D3D8/Debug.hpp"
 
 #include <malloc.h>
 #include <assert.h>

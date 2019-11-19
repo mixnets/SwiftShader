@@ -16,7 +16,7 @@
 #define SWIFTSHADER_XCBSURFACEKHR_HPP
 
 #include "Vulkan/VkObject.hpp"
-#include "VkSurfaceKHR.hpp"
+#include "WSI/VkSurfaceKHR.hpp"
 #include <xcb/xcb.h>
 #include "vulkan/vulkan_xcb.h"
 

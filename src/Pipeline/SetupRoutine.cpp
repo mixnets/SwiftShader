@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Device/Vertex.hpp>
-#include "SetupRoutine.hpp"
+#include "Device/Vertex.hpp"
+#include "Pipeline/SetupRoutine.hpp"
 
-#include "Constants.hpp"
+#include "Pipeline/Constants.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Polygon.hpp"
 #include "Device/Renderer.hpp"

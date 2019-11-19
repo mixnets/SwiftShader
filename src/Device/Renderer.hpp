@@ -15,12 +15,12 @@
 #ifndef sw_Renderer_hpp
 #define sw_Renderer_hpp
 
-#include "VertexProcessor.hpp"
-#include "PixelProcessor.hpp"
-#include "SetupProcessor.hpp"
-#include "Plane.hpp"
-#include "Primitive.hpp"
-#include "Blitter.hpp"
+#include "Device/VertexProcessor.hpp"
+#include "Device/PixelProcessor.hpp"
+#include "Device/SetupProcessor.hpp"
+#include "Device/Plane.hpp"
+#include "Device/Primitive.hpp"
+#include "Device/Blitter.hpp"
 #include "Device/Config.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 

@@ -104,7 +104,6 @@ swiftshader_static_library("swiftshader_libGLESv2_static") {
   include_dirs = [
     "../../../include",
     "../..",
-    "..",
   ]
 }
 
@@ -143,6 +142,5 @@ swiftshader_shared_library("swiftshader_libGLESv2") {
   include_dirs = [
     "../../../include",
     "../..",
-    "..",
   ]
 }

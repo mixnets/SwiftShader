@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PixelProgram.hpp"
+#include "Pipeline/PixelProgram.hpp"
 
-#include "SamplerCore.hpp"
+#include "Pipeline/SamplerCore.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
 

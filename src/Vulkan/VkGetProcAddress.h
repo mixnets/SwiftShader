@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_UTILS_HPP_
-#define VK_UTILS_HPP_
+#ifndef VK_GET_PROC_ADDRESS_H_
+#define VK_GET_PROC_ADDRESS_H_
 
-#include <Vulkan/VulkanPlatform.h>
+#include "Vulkan/VulkanPlatform.h"
 
 namespace vk
 {
@@ -28,4 +28,4 @@ PFN_vkVoidFunction GetDeviceProcAddr(Device* device, const char* pName);
 
 }
 
-#endif // VK_UTILS_HPP_
+#endif // VK_GET_PROC_ADDRESS_H_

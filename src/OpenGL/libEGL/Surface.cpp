@@ -16,14 +16,14 @@
 // such as the client area of a window, including any back buffers.
 // Implements EGLSurface and related functionality. [EGL 1.4] section 2.2 page 3.
 
-#include "Surface.hpp"
+#include "OpenGL/libEGL/Surface.hpp"
 
-#include "main.h"
-#include "Display.h"
-#include "Texture.hpp"
-#include "common/Image.hpp"
-#include "Context.hpp"
-#include "common/debug.h"
+#include "OpenGL/libEGL/main.h"
+#include "OpenGL/libEGL/Display.h"
+#include "OpenGL/libEGL/Texture.hpp"
+#include "OpenGL/common/Image.hpp"
+#include "OpenGL/libEGL/Context.hpp"
+#include "OpenGL/common/debug.h"
 #include "Main/FrameBuffer.hpp"
 
 #if defined(USE_X11)
@@ -31,7 +31,7 @@
 #elif defined(_WIN32)
 #include <tchar.h>
 #elif defined(__APPLE__)
-#include "OSXUtils.hpp"
+#include "OpenGL/libEGL/OSXUtils.hpp"
 #endif
 #if defined(__ANDROID__) && defined(ANDROID_NDK_BUILD)
 #include <android/native_window.h>

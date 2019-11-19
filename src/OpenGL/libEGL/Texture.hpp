@@ -15,7 +15,7 @@
 #ifndef egl_Texture_hpp
 #define egl_Texture_hpp
 
-#include "common/Object.hpp"
+#include "OpenGL/common/Object.hpp"
 
 namespace sw
 {
