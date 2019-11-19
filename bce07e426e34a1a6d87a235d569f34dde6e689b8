@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "662d0d08_8e810e10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-19T07:18:30Z",
+      "side": 1,
+      "message": "Bug: b/140302392",
+      "revId": "bce07e426e34a1a6d87a235d569f34dde6e689b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
