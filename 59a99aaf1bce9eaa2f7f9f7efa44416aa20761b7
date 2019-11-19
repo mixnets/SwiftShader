@@ -46,6 +46,30 @@
       "revId": "59a99aaf1bce9eaa2f7f9f7efa44416aa20761b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9902dc28_8d210552",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-19T18:53:02Z",
+      "side": 1,
+      "message": "Ok, seems hard to avoid.",
+      "parentUuid": "3b8d8dab_e6ebbdba",
+      "range": {
+        "startLine": 94,
+        "startChar": 30,
+        "endLine": 94,
+        "endChar": 60
+      },
+      "revId": "59a99aaf1bce9eaa2f7f9f7efa44416aa20761b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
