@@ -16,6 +16,24 @@
       "revId": "7710599402d59ab0dbd2b9c7ff6041e2975a1b35",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e560919a_1a717cea",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 26487
+      },
+      "writtenOn": "2019-11-19T16:26:18Z",
+      "side": 0,
+      "message": "Reworked this slightly.",
+      "parentUuid": "572b3e04_bd89b44c",
+      "revId": "7710599402d59ab0dbd2b9c7ff6041e2975a1b35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
