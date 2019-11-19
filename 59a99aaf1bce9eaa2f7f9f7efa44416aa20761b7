@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c364654_9a29fa9d",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-19T15:47:00Z",
+      "side": 1,
+      "message": "Not sure I understand why Traits.inl is necessary. There\u0027s a bunch of functions like these which are defined below (see line 157 and below). What was failing to compile when having these definitions inlined here?",
+      "range": {
+        "startLine": 94,
+        "startChar": 30,
+        "endLine": 94,
+        "endChar": 60
+      },
+      "revId": "59a99aaf1bce9eaa2f7f9f7efa44416aa20761b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
