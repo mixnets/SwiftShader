@@ -22,6 +22,30 @@
       "revId": "59a99aaf1bce9eaa2f7f9f7efa44416aa20761b7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b8d8dab_e6ebbdba",
+        "filename": "src/Reactor/Traits.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-19T15:53:29Z",
+      "side": 1,
+      "message": "It\u0027s a circular dependency between Reactor.hpp and Traits.hpp.\nReactor.hpp uses the CToReactor templates, and some of these specializations use the ConstantPointer() function declared in Reactor.hpp.\nWithout splitting this into a declaration and implementation that sandwich reactor.hpp, you\u0027ll get compilation errors.\n\nWill add this to the CL description.",
+      "parentUuid": "4c364654_9a29fa9d",
+      "range": {
+        "startLine": 94,
+        "startChar": 30,
+        "endLine": 94,
+        "endChar": 60
+      },
+      "revId": "59a99aaf1bce9eaa2f7f9f7efa44416aa20761b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
