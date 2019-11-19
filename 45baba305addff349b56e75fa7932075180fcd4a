@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "166b8c88_2fcf19ec",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-19T23:08:36Z",
+      "side": 1,
+      "message": "Apparently, nothing had picked up this obvious error until now.",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 324,
+        "endChar": 41
+      },
+      "revId": "45baba305addff349b56e75fa7932075180fcd4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
