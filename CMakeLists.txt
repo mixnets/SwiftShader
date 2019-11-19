@@ -23,6 +23,8 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
     set(CMAKE_CXX_FLAGS "-DANDROID_NDK_BUILD")
 elseif(WIN32)
 elseif(APPLE)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Fuchsia")
+    set(FUCHSIA ON)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
@@ -230,7 +232,7 @@ macro(set_shared_library_export_map TARGET DIR)
         if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-undefined,error")
         endif()
-    elseif(LINUX)
+    elseif(LINUX OR FUCHSIA)
         # The version script only exports the API functions and
         # hides all the others.
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${DIR}/${TARGET}.lds")
@@ -242,7 +244,7 @@ macro(set_shared_library_export_map TARGET DIR)
         if(ARCH STREQUAL "mipsel" OR ARCH STREQUAL "mips64el")
           # MIPS supports sysv hash-style only.
           set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--hash-style=sysv")
-        else()
+        elseif(LINUX)
           # Both hash-style are needed, because we want both gold and
           # GNU ld to be able to read our libraries.
           set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--hash-style=both")
@@ -1398,6 +1400,8 @@ elseif(APPLE)
 elseif(ANDROID)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/android/include)
     list(APPEND LIBBACKTRACE_INCLUDE_DIR ${LIBBACKTRACE_CONFIG_DIR}/android/include)
+elseif(FUCHSIA)
+    list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/fuchsia/include)
 endif()
 
 list(APPEND LLVM_INCLUDE_DIR
@@ -1778,7 +1782,8 @@ file(GLOB_RECURSE VULKAN_LIST
 if (LINUX OR ANDROID)
     list(APPEND VULKAN_LIST
         ${SOURCE_DIR}/System/Linux/MemFd.cpp
-	${SOURCE_DIR}/System/Linux/MemFd.hpp)
+        ${SOURCE_DIR}/System/Linux/MemFd.hpp
+    )
 endif(LINUX OR ANDROID)
 
 ###########################################################
@@ -1861,12 +1866,21 @@ elseif(ANDROID)
     list(APPEND OPENGL_COMPILER_LIST
         ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
     )
+elseif(FUCHSIA)
+    list(APPEND SWIFTSHADER_LIST
+        ${SOURCE_DIR}/Main/FrameBufferFuchsia.cpp
+    )
+    list(APPEND OPENGL_COMPILER_LIST
+        ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
+    )
 endif()
 
 if(WIN32)
     set(OS_LIBS odbc32 odbccp32 WS2_32 dxguid)
 elseif(LINUX)
     set(OS_LIBS dl pthread)
+elseif(FUCHSIA)
+    set(OS_LIBS zircon)
 elseif(APPLE)
     find_library(COCOA_FRAMEWORK Cocoa)
     find_library(QUARTZ_FRAMEWORK Quartz)
@@ -2063,6 +2077,9 @@ if(BUILD_VULKAN)
     elseif(APPLE)
         set_property(TARGET vk_swiftshader APPEND
                      PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_MACOS_MVK")
+    elseif(FUCHSIA)
+        set_property(TARGET vk_swiftshader APPEND
+                     PROPERTY COMPILE_DEFINITIONS "VK_USE_PLATFORM_FUCHSIA")
     endif()
 
     set_shared_library_export_map(vk_swiftshader ${SOURCE_DIR}/Vulkan)

@@ -65,6 +65,9 @@ static std::pair<std::chrono::microseconds, std::chrono::microseconds> getRUsage
   struct rusage RU;
   ::getrusage(RUSAGE_SELF, &RU);
   return { toDuration(RU.ru_utime), toDuration(RU.ru_stime) };
+#elif defined(__Fuchsia__)
+  // Don't use #warning to avoid compiler error with -Werror.
+  return { std::chrono::microseconds::zero(), std::chrono::microseconds::zero() };
 #else
 #warning Cannot get usage times on this platform
   return { std::chrono::microseconds::zero(), std::chrono::microseconds::zero() };
@@ -106,6 +109,9 @@ size_t Process::GetMallocUsage() {
   char *EndOfMemory = (char*)sbrk(0);
   if (EndOfMemory != ((char*)-1) && StartOfMemory != ((char*)-1))
     return EndOfMemory - StartOfMemory;
+  return 0;
+#elif defined(__Fuchsia__)
+  // Don't use #warning to avoid compiler error with -Werror.
   return 0;
 #else
 #warning Cannot get malloc info on this platform
