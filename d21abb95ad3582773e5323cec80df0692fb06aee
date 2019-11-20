@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "88511f0f_2ede4d9c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6842
+      },
+      "writtenOn": "2019-11-20T07:16:54Z",
+      "side": 1,
+      "message": "Include path choice is not a reliable way to prohibit specific dependencies or inclusions, because it\u0027s possible to use .. in #include statements.\n\nUsing paths relative to one root makes it much easier to figure out which file is being included - I think that\u0027s an improvement regardless of the build system.",
+      "parentUuid": "48fe9364_03914c3d",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 54
+      },
+      "revId": "d21abb95ad3582773e5323cec80df0692fb06aee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25f317ca_1adb1e54",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "5c72b2b3_2b032658",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6842
+      },
+      "writtenOn": "2019-11-20T07:16:54Z",
+      "side": 1,
+      "message": "Specifically the layering check performed by Bazel on Mac seems to greedily traverse directories. There is internal context and a sample error in the linked bug.",
+      "parentUuid": "25f317ca_1adb1e54",
+      "range": {
+        "startLine": 9,
+        "startChar": 12,
+        "endLine": 9,
+        "endChar": 26
+      },
+      "revId": "d21abb95ad3582773e5323cec80df0692fb06aee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0535d6fe_d5e7f36f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -68,6 +116,30 @@
       "revId": "d21abb95ad3582773e5323cec80df0692fb06aee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ae5487e_ea751bb4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6842
+      },
+      "writtenOn": "2019-11-20T07:16:54Z",
+      "side": 1,
+      "message": "The specific problem area is OpenGL/common, which Bazel seems to confuse with Common.",
+      "parentUuid": "0535d6fe_d5e7f36f",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 28
+      },
+      "revId": "d21abb95ad3582773e5323cec80df0692fb06aee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
