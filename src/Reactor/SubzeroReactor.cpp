@@ -1601,7 +1601,8 @@ namespace rr
 			UNREACHABLE("Unknown constant vector type: %d", (int)reinterpret_cast<intptr_t>(type));
 		}
 
-		auto name = Ice::GlobalString::createWithoutString(::context);
+		// Provide a name so that Subzero dump doesn't assert on name with invalid ID
+		auto name = Ice::GlobalString::createWithString(::context, "constantVector");
 		auto *variableDeclaration = Ice::VariableDeclaration::create(globalPool);
 		variableDeclaration->setName(name);
 		variableDeclaration->setAlignment(alignment);
