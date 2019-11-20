@@ -161,8 +161,9 @@ namespace
 	const bool emulateIntrinsics = false;
 	const bool emulateMismatchedBitCast = CPUID::ARM;
 
-	// Make sure to compile Subzero with ALLOW_DUMP = 1 if setting this to true
+	// Make sure to compile Subzero with ALLOW_DUMP = 1 if settings these any of these to true
 	const bool subzeroDumpEnabled = false;
+	const bool subzeroEmitTextAsm = false;
 }
 
 namespace rr
@@ -597,6 +598,12 @@ namespace rr
 		static llvm::raw_os_ostream cout(std::cout);
 		static llvm::raw_os_ostream cerr(std::cerr);
 
+		if (subzeroEmitTextAsm)
+		{
+			// Decorate text asm with liveness info
+			Flags.setDecorateAsm(true);
+		}
+
 		if(false)   // Write out to a file
 		{
 			std::error_code errorCode;
@@ -676,6 +683,12 @@ namespace rr
 		}
 
 		::context->emitFileHeader();
+
+		if (subzeroEmitTextAsm)
+		{
+			::function->emit();
+		}
+
 		::function->emitIAS();
 		auto assembler = ::function->releaseAssembler();
 		auto objectWriter = ::context->getObjectWriter();
