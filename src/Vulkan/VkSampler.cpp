@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "VkSampler.hpp"
 
 namespace vk
@@ -20,4 +19,4 @@ namespace vk
 
 std::atomic<uint32_t> Sampler::nextID(1);
 
-} // namespace vk
+}  // namespace vk

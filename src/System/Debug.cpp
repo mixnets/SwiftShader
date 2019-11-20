@@ -14,8 +14,8 @@
 
 #include "Debug.hpp"
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 namespace sw
 {
@@ -36,4 +36,4 @@ void trace(const char *format, ...)
 		}
 	}
 }
-}
+}  // namespace sw

@@ -17,53 +17,53 @@
 
 namespace rr
 {
-	// Non-specialized implementation of CToReactorPtr::cast() defaults to
-	// returning a ConstantPointer for v.
-	template<typename T, typename ENABLE>
-	Pointer<Byte> CToReactorPtr<T, ENABLE>::cast(const T* v)
-	{
-		return ConstantPointer(v);
-	}
+// Non-specialized implementation of CToReactorPtr::cast() defaults to
+// returning a ConstantPointer for v.
+template <typename T, typename ENABLE>
+Pointer<Byte> CToReactorPtr<T, ENABLE>::cast(const T* v)
+{
+	return ConstantPointer(v);
+}
 
-	// CToReactorPtr specialization for T types that have a CToReactorT<>
-	// specialization.
-	template<typename T>
-	Pointer<CToReactorT<T>>
-	CToReactorPtr<T, typename std::enable_if< IsDefined< CToReactorT<T> >::value>::type >::cast(const T* v)
-	{
-		return type(v);
-	}
+// CToReactorPtr specialization for T types that have a CToReactorT<>
+// specialization.
+template <typename T>
+Pointer<CToReactorT<T>>
+CToReactorPtr<T, typename std::enable_if<IsDefined<CToReactorT<T>>::value>::type>::cast(const T* v)
+{
+	return type(v);
+}
 
-	// CToReactorPtr specialization for void*.
-	Pointer<Byte> CToReactorPtr<void, void>::cast(const void* v)
-	{
-		return ConstantPointer(v);
-	}
+// CToReactorPtr specialization for void*.
+Pointer<Byte> CToReactorPtr<void, void>::cast(const void* v)
+{
+	return ConstantPointer(v);
+}
 
-	// CToReactorPtrT specialization for function pointer types.
-	template<typename T>
-	Pointer<Byte>
-	CToReactorPtr<T, typename std::enable_if< std::is_function<T>::value >::type>::cast(T* v)
-	{
-		return ConstantPointer(v);
-	}
+// CToReactorPtrT specialization for function pointer types.
+template <typename T>
+Pointer<Byte>
+CToReactorPtr<T, typename std::enable_if<std::is_function<T>::value>::type>::cast(T* v)
+{
+	return ConstantPointer(v);
+}
 
-	// CToReactor specialization for pointer types.
-	template<typename T>
-	CToReactorPtrT<typename std::remove_pointer<T>::type>
-	CToReactor<T, typename std::enable_if<std::is_pointer<T>::value>::type>::cast(T v)
-	{
-		return CToReactorPtr<elem>::cast(v);
-	}
+// CToReactor specialization for pointer types.
+template <typename T>
+CToReactorPtrT<typename std::remove_pointer<T>::type>
+CToReactor<T, typename std::enable_if<std::is_pointer<T>::value>::type>::cast(T v)
+{
+	return CToReactorPtr<elem>::cast(v);
+}
 
-	// CToReactor specialization for enum types.
-	template<typename T>
-	CToReactorT<typename std::underlying_type<T>::type>
-	CToReactor<T, typename std::enable_if<std::is_enum<T>::value>::type>::cast(T v)
-	{
-		return CToReactor<underlying>::cast(v);
-	}
+// CToReactor specialization for enum types.
+template <typename T>
+CToReactorT<typename std::underlying_type<T>::type>
+CToReactor<T, typename std::enable_if<std::is_enum<T>::value>::type>::cast(T v)
+{
+	return CToReactor<underlying>::cast(v);
+}
 
-} // namespace rr
+}  // namespace rr
 
-#endif // rr_Traits_inl
+#endif  // rr_Traits_inl

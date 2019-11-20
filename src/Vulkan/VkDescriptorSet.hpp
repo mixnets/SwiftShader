@@ -22,33 +22,33 @@
 
 namespace vk
 {
-	class DescriptorSetLayout;
+class DescriptorSetLayout;
 
-	struct alignas(16) DescriptorSetHeader
+struct alignas(16) DescriptorSetHeader
+{
+	DescriptorSetLayout* layout;
+};
+
+class alignas(16) DescriptorSet
+{
+public:
+	static inline DescriptorSet* Cast(VkDescriptorSet object)
 	{
-		DescriptorSetLayout* layout;
-	};
-
-	class alignas(16) DescriptorSet
-	{
-	public:
-		static inline DescriptorSet* Cast(VkDescriptorSet object)
-		{
-			return static_cast<DescriptorSet*>(static_cast<void*>(object));
-		}
-
-		using Bindings = std::array<vk::DescriptorSet*, vk::MAX_BOUND_DESCRIPTOR_SETS>;
-		using DynamicOffsets = std::array<uint32_t, vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC>;
-
-		DescriptorSetHeader header;
-		alignas(16) uint8_t data[1];
-	};
-
-	inline DescriptorSet* Cast(VkDescriptorSet object)
-	{
-		return DescriptorSet::Cast(object);
+		return static_cast<DescriptorSet*>(static_cast<void*>(object));
 	}
 
-} // namespace vk
+	using Bindings = std::array<vk::DescriptorSet*, vk::MAX_BOUND_DESCRIPTOR_SETS>;
+	using DynamicOffsets = std::array<uint32_t, vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC>;
 
-#endif // VK_DESCRIPTOR_SET_HPP_
+	DescriptorSetHeader header;
+	alignas(16) uint8_t data[1];
+};
+
+inline DescriptorSet* Cast(VkDescriptorSet object)
+{
+	return DescriptorSet::Cast(object);
+}
+
+}  // namespace vk
+
+#endif  // VK_DESCRIPTOR_SET_HPP_

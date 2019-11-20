@@ -14,8 +14,8 @@
 
 #include "Debug.hpp"
 
-#include <string>
 #include <stdarg.h>
+#include <string>
 
 namespace rr
 {
@@ -71,4 +71,4 @@ void abort(const char *format, ...)
 	::abort();
 }
 
-} // namespace rr
+}  // namespace rr

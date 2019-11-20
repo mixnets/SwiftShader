@@ -15,8 +15,8 @@
 #ifndef VK_OBJECT_HPP_
 #define VK_OBJECT_HPP_
 
-#include "VkConfig.h"
 #include "VkMemory.h"
+#include "VkConfig.h"
 #include "System/Memory.hpp"
 
 namespace vk
@@ -24,9 +24,7 @@ namespace vk
 
 void* allocate(size_t count, size_t alignment, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope) :
-		sw::allocate(count, alignment);
+	return pAllocator ? pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope) : sw::allocate(count, alignment);
 }
 
 void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
@@ -34,6 +32,6 @@ void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
 	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif  // VK_OBJECT_HPP_

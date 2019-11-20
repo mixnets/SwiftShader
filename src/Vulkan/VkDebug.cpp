@@ -14,8 +14,8 @@
 
 #include "VkDebug.hpp"
 
-#include <string>
 #include <stdarg.h>
+#include <string>
 
 namespace vk
 {
@@ -71,4 +71,4 @@ void abort(const char *format, ...)
 	::abort();
 }
 
-}
+}  // namespace vk

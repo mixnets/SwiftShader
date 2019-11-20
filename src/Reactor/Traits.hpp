@@ -19,206 +19,335 @@
 #include <type_traits>
 
 #ifdef Bool
-#undef Bool // b/127920555
+#	undef Bool  // b/127920555
 #endif
 
 namespace rr
 {
-	// Forward declarations
-	class Value;
+// Forward declarations
+class Value;
 
-	class Void;
-	class Bool;
-	class Byte;
-	class SByte;
-	class Short;
-	class UShort;
-	class Int;
-	class UInt;
-	class Long;
-	class Half;
-	class Float;
+class Void;
+class Bool;
+class Byte;
+class SByte;
+class Short;
+class UShort;
+class Int;
+class UInt;
+class Long;
+class Half;
+class Float;
 
-	template<class T> class Pointer;
-	template<class T> class LValue;
-	template<class T> class RValue;
+template <class T>
+class Pointer;
+template <class T>
+class LValue;
+template <class T>
+class RValue;
 
-	// IsDefined<T>::value is true if T is a valid type, otherwise false.
-	template <typename T, typename Enable = void>
-	struct IsDefined
-	{
-		static constexpr bool value = false;
-	};
+// IsDefined<T>::value is true if T is a valid type, otherwise false.
+template <typename T, typename Enable = void>
+struct IsDefined
+{
+	static constexpr bool value = false;
+};
 
-	template <typename T>
-	struct IsDefined<T, typename std::enable_if<(sizeof(T)>0)>::type>
-	{
-		static constexpr bool value = true;
-	};
+template <typename T>
+struct IsDefined<T, typename std::enable_if<(sizeof(T) > 0)>::type>
+{
+	static constexpr bool value = true;
+};
 
-	template <>
-	struct IsDefined<void>
-	{
-		static constexpr bool value = true;
-	};
+template <>
+struct IsDefined<void>
+{
+	static constexpr bool value = true;
+};
 
-	// CToReactorT<T> resolves to the corresponding Reactor type for the given C
-	// template type T.
-	template<typename T, typename ENABLE = void> struct CToReactor;
-	template<typename T> using CToReactorT = typename CToReactor<T>::type;
+// CToReactorT<T> resolves to the corresponding Reactor type for the given C
+// template type T.
+template <typename T, typename ENABLE = void>
+struct CToReactor;
+template <typename T>
+using CToReactorT = typename CToReactor<T>::type;
 
-	// CToReactor specializations for POD types.
-	template<> struct CToReactor<void>    	{ using type = Void; };
-	template<> struct CToReactor<bool>    	{ using type = Bool;   static Bool   cast(bool);     };
-	template<> struct CToReactor<uint8_t> 	{ using type = Byte;   static Byte   cast(uint8_t);  };
-	template<> struct CToReactor<int8_t>  	{ using type = SByte;  static SByte  cast(int8_t);   };
-	template<> struct CToReactor<int16_t> 	{ using type = Short;  static Short  cast(int16_t);  };
-	template<> struct CToReactor<uint16_t>	{ using type = UShort; static UShort cast(uint16_t); };
-	template<> struct CToReactor<int32_t> 	{ using type = Int;    static Int    cast(int32_t);  };
-	template<> struct CToReactor<uint32_t>	{ using type = UInt;   static UInt   cast(uint32_t); };
-	template<> struct CToReactor<float>   	{ using type = Float;  static Float  cast(float);    };
+// CToReactor specializations for POD types.
+template <>
+struct CToReactor<void>
+{
+	using type = Void;
+};
+template <>
+struct CToReactor<bool>
+{
+	using type = Bool;
+	static Bool cast(bool);
+};
+template <>
+struct CToReactor<uint8_t>
+{
+	using type = Byte;
+	static Byte cast(uint8_t);
+};
+template <>
+struct CToReactor<int8_t>
+{
+	using type = SByte;
+	static SByte cast(int8_t);
+};
+template <>
+struct CToReactor<int16_t>
+{
+	using type = Short;
+	static Short cast(int16_t);
+};
+template <>
+struct CToReactor<uint16_t>
+{
+	using type = UShort;
+	static UShort cast(uint16_t);
+};
+template <>
+struct CToReactor<int32_t>
+{
+	using type = Int;
+	static Int cast(int32_t);
+};
+template <>
+struct CToReactor<uint32_t>
+{
+	using type = UInt;
+	static UInt cast(uint32_t);
+};
+template <>
+struct CToReactor<float>
+{
+	using type = Float;
+	static Float cast(float);
+};
 
-	// TODO: Long has no constructor that takes a uint64_t
-	template<> struct CToReactor<uint64_t>	{ using type = Long;  /* static Long   cast(uint64_t); */ };
+// TODO: Long has no constructor that takes a uint64_t
+template <>
+struct CToReactor<uint64_t>
+{
+	using type = Long; /* static Long   cast(uint64_t); */
+};
 
-	// CToReactorPtr<T>::type resolves to the corresponding Reactor Pointer<>
-	// type for T*.
-	// For T types that have a CToReactorT<> specialization,
-	// CToReactorPtr<T>::type resolves to Pointer< CToReactorT<T> >, otherwise
-	// CToReactorPtr<T>::type resolves to Pointer<Byte>.
-	template<typename T, typename ENABLE = void> struct CToReactorPtr
-	{
-		using type = Pointer<Byte>;
-		static inline type cast(const T* v); // implemented in Traits.inl
-	};
+// CToReactorPtr<T>::type resolves to the corresponding Reactor Pointer<>
+// type for T*.
+// For T types that have a CToReactorT<> specialization,
+// CToReactorPtr<T>::type resolves to Pointer< CToReactorT<T> >, otherwise
+// CToReactorPtr<T>::type resolves to Pointer<Byte>.
+template <typename T, typename ENABLE = void>
+struct CToReactorPtr
+{
+	using type = Pointer<Byte>;
+	static inline type cast(const T* v);  // implemented in Traits.inl
+};
 
-	// CToReactorPtr specialization for T types that have a CToReactorT<>
-	// specialization.
-	template<typename T> struct CToReactorPtr<T, typename std::enable_if< IsDefined< CToReactorT<T> >::value>::type >
-	{
-		using type = Pointer< CToReactorT<T> >;
-		static inline type cast(const T* v); // implemented in Traits.inl
-	};
+// CToReactorPtr specialization for T types that have a CToReactorT<>
+// specialization.
+template <typename T>
+struct CToReactorPtr<T, typename std::enable_if<IsDefined<CToReactorT<T>>::value>::type>
+{
+	using type = Pointer<CToReactorT<T>>;
+	static inline type cast(const T* v);  // implemented in Traits.inl
+};
 
-	// CToReactorPtr specialization for void*.
-	// Maps to Pointer<Byte> instead of Pointer<Void>.
-	template<> struct CToReactorPtr<void, void>
-	{
-		using type = Pointer<Byte>;
-		static inline type cast(const void* v); // implemented in Traits.inl
-	};
+// CToReactorPtr specialization for void*.
+// Maps to Pointer<Byte> instead of Pointer<Void>.
+template <>
+struct CToReactorPtr<void, void>
+{
+	using type = Pointer<Byte>;
+	static inline type cast(const void* v);  // implemented in Traits.inl
+};
 
-	// CToReactorPtr specialization for function pointer types.
-	// Maps to Pointer<Byte>.
-	// Drops the 'const' qualifier from the cast() method to avoid warnings
-	// about const having no meaning for function types.
-	template<typename T> struct CToReactorPtr<T, typename std::enable_if< std::is_function<T>::value >::type >
-	{
-		using type = Pointer<Byte>;
-		static inline type cast(T* v); // implemented in Traits.inl
-	};
+// CToReactorPtr specialization for function pointer types.
+// Maps to Pointer<Byte>.
+// Drops the 'const' qualifier from the cast() method to avoid warnings
+// about const having no meaning for function types.
+template <typename T>
+struct CToReactorPtr<T, typename std::enable_if<std::is_function<T>::value>::type>
+{
+	using type = Pointer<Byte>;
+	static inline type cast(T* v);  // implemented in Traits.inl
+};
 
-	template<typename T> using CToReactorPtrT = typename CToReactorPtr<T>::type;
+template <typename T>
+using CToReactorPtrT = typename CToReactorPtr<T>::type;
 
-	// CToReactor specialization for pointer types.
-	// For T types that have a CToReactorT<> specialization,
-	// CToReactorT<T*>::type resolves to Pointer< CToReactorT<T> >, otherwise
-	// CToReactorT<T*>::type resolves to Pointer<Byte>.
-	template<typename T>
-	struct CToReactor<T, typename std::enable_if<std::is_pointer<T>::value>::type>
-	{
-		using elem = typename std::remove_pointer<T>::type;
-		using type = CToReactorPtrT<elem>;
-		static inline type cast(T v); // implemented in Traits.inl
-	};
+// CToReactor specialization for pointer types.
+// For T types that have a CToReactorT<> specialization,
+// CToReactorT<T*>::type resolves to Pointer< CToReactorT<T> >, otherwise
+// CToReactorT<T*>::type resolves to Pointer<Byte>.
+template <typename T>
+struct CToReactor<T, typename std::enable_if<std::is_pointer<T>::value>::type>
+{
+	using elem = typename std::remove_pointer<T>::type;
+	using type = CToReactorPtrT<elem>;
+	static inline type cast(T v);  // implemented in Traits.inl
+};
 
-	// CToReactor specialization for enum types.
-	template<typename T>
-	struct CToReactor<T, typename std::enable_if<std::is_enum<T>::value>::type>
-	{
-		using underlying = typename std::underlying_type<T>::type;
-		using type = CToReactorT<underlying>;
-		static type cast(T v); // implemented in Traits.inl
-	};
+// CToReactor specialization for enum types.
+template <typename T>
+struct CToReactor<T, typename std::enable_if<std::is_enum<T>::value>::type>
+{
+	using underlying = typename std::underlying_type<T>::type;
+	using type = CToReactorT<underlying>;
+	static type cast(T v);  // implemented in Traits.inl
+};
 
-	// IsRValue::value is true if T is of type RValue<X>, where X is any type.
-	template <typename T, typename Enable = void> struct IsRValue { static constexpr bool value = false; };
-	template <typename T> struct IsRValue<T, typename std::enable_if<IsDefined<typename T::rvalue_underlying_type>::value>::type> { static constexpr bool value = true; };
+// IsRValue::value is true if T is of type RValue<X>, where X is any type.
+template <typename T, typename Enable = void>
+struct IsRValue
+{
+	static constexpr bool value = false;
+};
+template <typename T>
+struct IsRValue<T, typename std::enable_if<IsDefined<typename T::rvalue_underlying_type>::value>::type>
+{
+	static constexpr bool value = true;
+};
 
-	// IsLValue::value is true if T is of, or derives from type LValue<T>.
-	template <typename T> struct IsLValue { static constexpr bool value = std::is_base_of<LValue<T>, T>::value; };
+// IsLValue::value is true if T is of, or derives from type LValue<T>.
+template <typename T>
+struct IsLValue
+{
+	static constexpr bool value = std::is_base_of<LValue<T>, T>::value;
+};
 
-	// IsReference::value is true if T is of type Reference<X>, where X is any type.
-	template <typename T, typename Enable = void> struct IsReference { static constexpr bool value = false; };
-	template <typename T> struct IsReference<T, typename std::enable_if<IsDefined<typename T::reference_underlying_type>::value>::type> { static constexpr bool value = true; };
+// IsReference::value is true if T is of type Reference<X>, where X is any type.
+template <typename T, typename Enable = void>
+struct IsReference
+{
+	static constexpr bool value = false;
+};
+template <typename T>
+struct IsReference<T, typename std::enable_if<IsDefined<typename T::reference_underlying_type>::value>::type>
+{
+	static constexpr bool value = true;
+};
 
-	// ReactorTypeT<T> returns the LValue Reactor type for T.
-	// T can be a C-type, RValue or LValue.
-	template<typename T, typename ENABLE = void> struct ReactorType;
-	template<typename T> using ReactorTypeT = typename ReactorType<T>::type;
-	template<typename T> struct ReactorType<T, typename std::enable_if<IsDefined<CToReactorT<T>>::value>::type>
-	{
-		using type = CToReactorT<T>;
-		static type cast(T v) { return CToReactor<T>::cast(v); }
-	};
-	template<typename T> struct ReactorType<T, typename std::enable_if<IsRValue<T>::value>::type>
-	{
-		using type = typename T::rvalue_underlying_type;
-		static type cast(T v) { return type(v); }
-	};
-	template<typename T> struct ReactorType<T, typename std::enable_if<IsLValue<T>::value>::type>
-	{
-		using type = T;
-		static type cast(T v) { return type(v); }
-	};
-	template<typename T> struct ReactorType<T, typename std::enable_if<IsReference<T>::value>::type>
-	{
-		using type = T;
-		static type cast(T v) { return type(v); }
-	};
+// ReactorTypeT<T> returns the LValue Reactor type for T.
+// T can be a C-type, RValue or LValue.
+template <typename T, typename ENABLE = void>
+struct ReactorType;
+template <typename T>
+using ReactorTypeT = typename ReactorType<T>::type;
+template <typename T>
+struct ReactorType<T, typename std::enable_if<IsDefined<CToReactorT<T>>::value>::type>
+{
+	using type = CToReactorT<T>;
+	static type cast(T v) { return CToReactor<T>::cast(v); }
+};
+template <typename T>
+struct ReactorType<T, typename std::enable_if<IsRValue<T>::value>::type>
+{
+	using type = typename T::rvalue_underlying_type;
+	static type cast(T v) { return type(v); }
+};
+template <typename T>
+struct ReactorType<T, typename std::enable_if<IsLValue<T>::value>::type>
+{
+	using type = T;
+	static type cast(T v) { return type(v); }
+};
+template <typename T>
+struct ReactorType<T, typename std::enable_if<IsReference<T>::value>::type>
+{
+	using type = T;
+	static type cast(T v) { return type(v); }
+};
 
+// Reactor types that can be used as a return type for a function.
+template <typename T>
+struct CanBeUsedAsReturn
+{
+	static constexpr bool value = false;
+};
+template <>
+struct CanBeUsedAsReturn<Void>
+{
+	static constexpr bool value = true;
+};
+template <>
+struct CanBeUsedAsReturn<Int>
+{
+	static constexpr bool value = true;
+};
+template <>
+struct CanBeUsedAsReturn<UInt>
+{
+	static constexpr bool value = true;
+};
+template <>
+struct CanBeUsedAsReturn<Float>
+{
+	static constexpr bool value = true;
+};
+template <typename T>
+struct CanBeUsedAsReturn<Pointer<T>>
+{
+	static constexpr bool value = true;
+};
 
-	// Reactor types that can be used as a return type for a function.
-	template <typename T> struct CanBeUsedAsReturn { static constexpr bool value = false; };
-	template <> struct CanBeUsedAsReturn<Void>     { static constexpr bool value = true; };
-	template <> struct CanBeUsedAsReturn<Int>      { static constexpr bool value = true; };
-	template <> struct CanBeUsedAsReturn<UInt>     { static constexpr bool value = true; };
-	template <> struct CanBeUsedAsReturn<Float>    { static constexpr bool value = true; };
-	template <typename T> struct CanBeUsedAsReturn<Pointer<T>> { static constexpr bool value = true; };
+// Reactor types that can be used as a parameter types for a function.
+template <typename T>
+struct CanBeUsedAsParameter
+{
+	static constexpr bool value = false;
+};
+template <>
+struct CanBeUsedAsParameter<Int>
+{
+	static constexpr bool value = true;
+};
+template <>
+struct CanBeUsedAsParameter<UInt>
+{
+	static constexpr bool value = true;
+};
+template <>
+struct CanBeUsedAsParameter<Float>
+{
+	static constexpr bool value = true;
+};
+template <typename T>
+struct CanBeUsedAsParameter<Pointer<T>>
+{
+	static constexpr bool value = true;
+};
 
-	// Reactor types that can be used as a parameter types for a function.
-	template <typename T> struct CanBeUsedAsParameter { static constexpr bool value = false; };
-	template <> struct CanBeUsedAsParameter<Int>      { static constexpr bool value = true; };
-	template <> struct CanBeUsedAsParameter<UInt>     { static constexpr bool value = true; };
-	template <> struct CanBeUsedAsParameter<Float>    { static constexpr bool value = true; };
-	template <typename T> struct CanBeUsedAsParameter<Pointer<T>> { static constexpr bool value = true; };
+// AssertParameterTypeIsValid statically asserts that all template parameter
+// types can be used as a Reactor function parameter.
+template <typename T, typename... other>
+struct AssertParameterTypeIsValid : AssertParameterTypeIsValid<other...>
+{
+	static_assert(CanBeUsedAsParameter<T>::value, "Invalid parameter type");
+};
+template <typename T>
+struct AssertParameterTypeIsValid<T>
+{
+	static_assert(CanBeUsedAsParameter<T>::value, "Invalid parameter type");
+};
 
-	// AssertParameterTypeIsValid statically asserts that all template parameter
-	// types can be used as a Reactor function parameter.
-	template<typename T, typename ... other>
-	struct AssertParameterTypeIsValid : AssertParameterTypeIsValid<other...>
-	{
-		static_assert(CanBeUsedAsParameter<T>::value, "Invalid parameter type");
-	};
-	template<typename T>
-	struct AssertParameterTypeIsValid<T>
-	{
-		static_assert(CanBeUsedAsParameter<T>::value, "Invalid parameter type");
-	};
+// AssertFunctionSignatureIsValid statically asserts that the Reactor
+// function signature is valid.
+template <typename Return, typename... Arguments>
+class AssertFunctionSignatureIsValid;
+template <typename Return>
+class AssertFunctionSignatureIsValid<Return(Void)>
+{
+};
+template <typename Return, typename... Arguments>
+class AssertFunctionSignatureIsValid<Return(Arguments...)>
+{
+	static_assert(CanBeUsedAsReturn<Return>::value, "Invalid return type");
+	static_assert(sizeof(AssertParameterTypeIsValid<Arguments...>) >= 0, "");
+};
 
-	// AssertFunctionSignatureIsValid statically asserts that the Reactor
-	// function signature is valid.
-	template<typename Return, typename... Arguments>
-	class AssertFunctionSignatureIsValid;
-	template<typename Return>
-	class AssertFunctionSignatureIsValid<Return(Void)> {};
-	template<typename Return, typename... Arguments>
-	class AssertFunctionSignatureIsValid<Return(Arguments...)>
-	{
-		static_assert(CanBeUsedAsReturn<Return>::value, "Invalid return type");
-		static_assert(sizeof(AssertParameterTypeIsValid<Arguments...>) >= 0, "");
-	};
+}  // namespace rr
 
-} // namespace rr
-
-#endif // rr_Traits_hpp
+#endif  // rr_Traits_hpp

@@ -30,9 +30,9 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkInstanceCreateInfo*) { return 0; }
 
-	VkResult getPhysicalDevices(uint32_t *pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const;
-	VkResult getPhysicalDeviceGroups(uint32_t *pPhysicalDeviceGroupCount,
-                                 VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const;
+	VkResult getPhysicalDevices(uint32_t* pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const;
+	VkResult getPhysicalDeviceGroups(uint32_t* pPhysicalDeviceGroupCount,
+	                                 VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const;
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -45,6 +45,6 @@ static inline Instance* Cast(VkInstance object)
 	return DispatchableInstance::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_INSTANCE_HPP_
+#endif  // VK_INSTANCE_HPP_

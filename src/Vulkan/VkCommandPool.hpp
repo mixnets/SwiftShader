@@ -43,6 +43,6 @@ static inline CommandPool* Cast(VkCommandPool object)
 	return CommandPool::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_COMMAND_POOL_HPP_
+#endif  // VK_COMMAND_POOL_HPP_

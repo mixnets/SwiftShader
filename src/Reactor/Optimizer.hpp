@@ -19,7 +19,7 @@
 
 namespace rr
 {
-	void optimize(Ice::Cfg *function);
+void optimize(Ice::Cfg *function);
 }
 
-#endif   // rr_Optimizer_hpp
+#endif  // rr_Optimizer_hpp

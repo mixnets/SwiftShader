@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	VkResult status = VK_EVENT_RESET; // guarded by mutex
+	VkResult status = VK_EVENT_RESET;  // guarded by mutex
 	std::mutex mutex;
 	std::condition_variable condition;
 };
@@ -73,6 +73,6 @@ static inline Event* Cast(VkEvent object)
 	return Event::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_EVENT_HPP_
+#endif  // VK_EVENT_HPP_

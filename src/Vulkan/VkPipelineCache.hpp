@@ -27,9 +27,9 @@
 
 namespace sw
 {
-	class ComputeProgram;
-	class SpirvShader;
-}
+class ComputeProgram;
+class SpirvShader;
+}  // namespace sw
 
 namespace vk
 {
@@ -71,39 +71,41 @@ public:
 		SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
 		               const std::string& entryPointName,
 		               const std::vector<uint32_t>& insns,
-		               const vk::RenderPass *renderPass,
+		               const vk::RenderPass* renderPass,
 		               const uint32_t subpassIndex,
 		               const VkSpecializationInfo* specializationInfo);
 
-		bool operator<(const SpirvShaderKey &other) const;
+		bool operator<(const SpirvShaderKey& other) const;
 
 		const VkShaderStageFlagBits& getPipelineStage() const { return pipelineStage; }
 		const std::string& getEntryPointName() const { return entryPointName; }
 		const std::vector<uint32_t>& getInsns() const { return insns; }
-		const vk::RenderPass *getRenderPass() const { return renderPass; }
+		const vk::RenderPass* getRenderPass() const { return renderPass; }
 		uint32_t getSubpassIndex() const { return subpassIndex; }
-		const VkSpecializationInfo *getSpecializationInfo() const { return specializationInfo.get(); }
+		const VkSpecializationInfo* getSpecializationInfo() const { return specializationInfo.get(); }
 
 	private:
 		const VkShaderStageFlagBits pipelineStage;
 		const std::string entryPointName;
 		const std::vector<uint32_t> insns;
-		const vk::RenderPass *renderPass;
+		const vk::RenderPass* renderPass;
 		const uint32_t subpassIndex;
 		const SpecializationInfo specializationInfo;
 	};
 
 	std::mutex& getShaderMutex() { return spirvShadersMutex; }
 	const std::shared_ptr<sw::SpirvShader>* operator[](const PipelineCache::SpirvShaderKey& key) const;
-	void insert(const PipelineCache::SpirvShaderKey& key, const std::shared_ptr<sw::SpirvShader> &shader);
+	void insert(const PipelineCache::SpirvShaderKey& key, const std::shared_ptr<sw::SpirvShader>& shader);
 
 	struct ComputeProgramKey
 	{
 		ComputeProgramKey(const sw::SpirvShader* shader, const vk::PipelineLayout* layout) :
-			shader(shader), layout(layout)
-		{}
+		    shader(shader),
+		    layout(layout)
+		{
+		}
 
-		bool operator<(const ComputeProgramKey &other) const
+		bool operator<(const ComputeProgramKey& other) const
 		{
 			return std::tie(shader, layout) < std::tie(other.shader, other.layout);
 		}
@@ -118,7 +120,7 @@ public:
 
 	std::mutex& getProgramMutex() { return computeProgramsMutex; }
 	const std::shared_ptr<sw::ComputeProgram>* operator[](const PipelineCache::ComputeProgramKey& key) const;
-	void insert(const PipelineCache::ComputeProgramKey& key, const std::shared_ptr<sw::ComputeProgram> &computeProgram);
+	void insert(const PipelineCache::ComputeProgramKey& key, const std::shared_ptr<sw::ComputeProgram>& computeProgram);
 
 private:
 	struct CacheHeader
@@ -127,11 +129,11 @@ private:
 		uint32_t headerVersion;
 		uint32_t vendorID;
 		uint32_t deviceID;
-		uint8_t  pipelineCacheUUID[VK_UUID_SIZE];
+		uint8_t pipelineCacheUUID[VK_UUID_SIZE];
 	};
 
 	size_t dataSize = 0;
-	uint8_t* data   = nullptr;
+	uint8_t* data = nullptr;
 
 	std::mutex spirvShadersMutex;
 	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders;
@@ -145,6 +147,6 @@ static inline PipelineCache* Cast(VkPipelineCache object)
 	return PipelineCache::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_PIPELINE_CACHE_HPP_
+#endif  // VK_PIPELINE_CACHE_HPP_

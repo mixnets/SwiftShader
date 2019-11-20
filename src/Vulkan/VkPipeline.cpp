@@ -17,8 +17,8 @@
 #include "VkDevice.hpp"
 #include "VkPipelineCache.hpp"
 #include "VkPipelineLayout.hpp"
-#include "VkShaderModule.hpp"
 #include "VkRenderPass.hpp"
+#include "VkShaderModule.hpp"
 #include "Pipeline/ComputeProgram.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
@@ -159,92 +159,93 @@ unsigned char getNumberOfChannels(VkFormat format)
 
 // preprocessSpirv applies and freezes specializations into constants, and inlines all functions.
 std::vector<uint32_t> preprocessSpirv(
-		std::vector<uint32_t> const &code,
-		VkSpecializationInfo const *specializationInfo)
+    std::vector<uint32_t> const& code,
+    VkSpecializationInfo const* specializationInfo)
 {
-	spvtools::Optimizer opt{SPV_ENV_VULKAN_1_1};
+	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
 
 	opt.SetMessageConsumer([](spv_message_level_t level, const char*, const spv_position_t& p, const char* m) {
-		switch (level)
+		switch(level)
 		{
-		case SPV_MSG_FATAL:          vk::warn("SPIR-V FATAL: %d:%d %s\n", int(p.line), int(p.column), m);
+		case SPV_MSG_FATAL: vk::warn("SPIR-V FATAL: %d:%d %s\n", int(p.line), int(p.column), m);
 		case SPV_MSG_INTERNAL_ERROR: vk::warn("SPIR-V INTERNAL_ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
-		case SPV_MSG_ERROR:          vk::warn("SPIR-V ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
-		case SPV_MSG_WARNING:        vk::warn("SPIR-V WARNING: %d:%d %s\n", int(p.line), int(p.column), m);
-		case SPV_MSG_INFO:           vk::trace("SPIR-V INFO: %d:%d %s\n", int(p.line), int(p.column), m);
-		case SPV_MSG_DEBUG:          vk::trace("SPIR-V DEBUG: %d:%d %s\n", int(p.line), int(p.column), m);
-		default:                     vk::trace("SPIR-V MESSAGE: %d:%d %s\n", int(p.line), int(p.column), m);
+		case SPV_MSG_ERROR: vk::warn("SPIR-V ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
+		case SPV_MSG_WARNING: vk::warn("SPIR-V WARNING: %d:%d %s\n", int(p.line), int(p.column), m);
+		case SPV_MSG_INFO: vk::trace("SPIR-V INFO: %d:%d %s\n", int(p.line), int(p.column), m);
+		case SPV_MSG_DEBUG: vk::trace("SPIR-V DEBUG: %d:%d %s\n", int(p.line), int(p.column), m);
+		default: vk::trace("SPIR-V MESSAGE: %d:%d %s\n", int(p.line), int(p.column), m);
 		}
 	});
 
 	// If the pipeline uses specialization, apply the specializations before freezing
-	if (specializationInfo)
+	if(specializationInfo)
 	{
 		std::unordered_map<uint32_t, std::vector<uint32_t>> specializations;
-		for (auto i = 0u; i < specializationInfo->mapEntryCount; ++i)
+		for(auto i = 0u; i < specializationInfo->mapEntryCount; ++i)
 		{
-			auto const &e = specializationInfo->pMapEntries[i];
+			auto const& e = specializationInfo->pMapEntries[i];
 			auto value_ptr =
-					static_cast<uint32_t const *>(specializationInfo->pData) + e.offset / sizeof(uint32_t);
+			    static_cast<uint32_t const*>(specializationInfo->pData) + e.offset / sizeof(uint32_t);
 			specializations.emplace(e.constantID,
-									std::vector<uint32_t>{value_ptr, value_ptr + e.size / sizeof(uint32_t)});
+			                        std::vector<uint32_t>{ value_ptr, value_ptr + e.size / sizeof(uint32_t) });
 		}
 		opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass(specializations));
 	}
 
 	// Full optimization list taken from spirv-opt.
 	opt.RegisterPass(spvtools::CreateWrapOpKillPass())
-		.RegisterPass(spvtools::CreateDeadBranchElimPass())
-		.RegisterPass(spvtools::CreateMergeReturnPass())
-		.RegisterPass(spvtools::CreateInlineExhaustivePass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreatePrivateToLocalPass())
-		.RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass())
-		.RegisterPass(spvtools::CreateLocalSingleStoreElimPass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreateScalarReplacementPass())
-		.RegisterPass(spvtools::CreateLocalAccessChainConvertPass())
-		.RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass())
-		.RegisterPass(spvtools::CreateLocalSingleStoreElimPass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreateLocalMultiStoreElimPass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreateCCPPass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreateRedundancyEliminationPass())
-		.RegisterPass(spvtools::CreateCombineAccessChainsPass())
-		.RegisterPass(spvtools::CreateSimplificationPass())
-		.RegisterPass(spvtools::CreateVectorDCEPass())
-		.RegisterPass(spvtools::CreateDeadInsertElimPass())
-		.RegisterPass(spvtools::CreateDeadBranchElimPass())
-		.RegisterPass(spvtools::CreateSimplificationPass())
-		.RegisterPass(spvtools::CreateIfConversionPass())
-		.RegisterPass(spvtools::CreateCopyPropagateArraysPass())
-		.RegisterPass(spvtools::CreateReduceLoadSizePass())
-		.RegisterPass(spvtools::CreateAggressiveDCEPass())
-		.RegisterPass(spvtools::CreateBlockMergePass())
-		.RegisterPass(spvtools::CreateRedundancyEliminationPass())
-		.RegisterPass(spvtools::CreateDeadBranchElimPass())
-		.RegisterPass(spvtools::CreateBlockMergePass())
-		.RegisterPass(spvtools::CreateSimplificationPass());
+	    .RegisterPass(spvtools::CreateDeadBranchElimPass())
+	    .RegisterPass(spvtools::CreateMergeReturnPass())
+	    .RegisterPass(spvtools::CreateInlineExhaustivePass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreatePrivateToLocalPass())
+	    .RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass())
+	    .RegisterPass(spvtools::CreateLocalSingleStoreElimPass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreateScalarReplacementPass())
+	    .RegisterPass(spvtools::CreateLocalAccessChainConvertPass())
+	    .RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass())
+	    .RegisterPass(spvtools::CreateLocalSingleStoreElimPass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreateLocalMultiStoreElimPass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreateCCPPass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreateRedundancyEliminationPass())
+	    .RegisterPass(spvtools::CreateCombineAccessChainsPass())
+	    .RegisterPass(spvtools::CreateSimplificationPass())
+	    .RegisterPass(spvtools::CreateVectorDCEPass())
+	    .RegisterPass(spvtools::CreateDeadInsertElimPass())
+	    .RegisterPass(spvtools::CreateDeadBranchElimPass())
+	    .RegisterPass(spvtools::CreateSimplificationPass())
+	    .RegisterPass(spvtools::CreateIfConversionPass())
+	    .RegisterPass(spvtools::CreateCopyPropagateArraysPass())
+	    .RegisterPass(spvtools::CreateReduceLoadSizePass())
+	    .RegisterPass(spvtools::CreateAggressiveDCEPass())
+	    .RegisterPass(spvtools::CreateBlockMergePass())
+	    .RegisterPass(spvtools::CreateRedundancyEliminationPass())
+	    .RegisterPass(spvtools::CreateDeadBranchElimPass())
+	    .RegisterPass(spvtools::CreateBlockMergePass())
+	    .RegisterPass(spvtools::CreateSimplificationPass());
 
 	std::vector<uint32_t> optimized;
 	opt.Run(code.data(), code.size(), &optimized);
 
-	if (false) {
+	if(false)
+	{
 		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
 		std::string preOpt;
 		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::string postOpt;
 		core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::cout << "PRE-OPT: " << preOpt << std::endl
-		 		<< "POST-OPT: " << postOpt << std::endl;
+		          << "POST-OPT: " << postOpt << std::endl;
 	}
 
 	return optimized;
 }
 
-std::shared_ptr<sw::SpirvShader> createShader(const vk::PipelineCache::SpirvShaderKey& key, const vk::ShaderModule *module, bool robustBufferAccess)
+std::shared_ptr<sw::SpirvShader> createShader(const vk::PipelineCache::SpirvShaderKey& key, const vk::ShaderModule* module, bool robustBufferAccess)
 {
 	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo());
 	ASSERT(code.size() > 0);
@@ -255,7 +256,7 @@ std::shared_ptr<sw::SpirvShader> createShader(const vk::PipelineCache::SpirvShad
 
 	// TODO(b/119409619): use allocator.
 	return std::make_shared<sw::SpirvShader>(codeSerialID, key.getPipelineStage(), key.getEntryPointName().c_str(),
-		code, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess);
+	                                         code, key.getRenderPass(), key.getSubpassIndex(), robustBufferAccess);
 }
 
 std::shared_ptr<sw::ComputeProgram> createProgram(const vk::PipelineCache::ComputeProgramKey& key)
@@ -270,26 +271,26 @@ std::shared_ptr<sw::ComputeProgram> createProgram(const vk::PipelineCache::Compu
 	return program;
 }
 
-} // anonymous namespace
+}  // anonymous namespace
 
 namespace vk
 {
 
-Pipeline::Pipeline(PipelineLayout const *layout, const Device *device)
-	: layout(layout),
-	  robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
+Pipeline::Pipeline(PipelineLayout const* layout, const Device* device) :
+    layout(layout),
+    robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
 {
 }
 
-GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem, const Device *device)
-	: Pipeline(vk::Cast(pCreateInfo->layout), device)
+GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem, const Device* device) :
+    Pipeline(vk::Cast(pCreateInfo->layout), device)
 {
 	context.robustBufferAccess = robustBufferAccess;
 
 	if(((pCreateInfo->flags &
-		~(VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT |
-	      VK_PIPELINE_CREATE_DERIVATIVE_BIT |
-	      VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT)) != 0) ||
+	     ~(VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT |
+	       VK_PIPELINE_CREATE_DERIVATIVE_BIT |
+	       VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT)) != 0) ||
 	   (pCreateInfo->pTessellationState != nullptr))
 	{
 		UNIMPLEMENTED("pCreateInfo settings");
@@ -335,14 +336,14 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	uint32_t instanceStrides[MAX_VERTEX_INPUT_BINDINGS];
 	for(uint32_t i = 0; i < vertexInputState->vertexBindingDescriptionCount; i++)
 	{
-		auto const & desc = vertexInputState->pVertexBindingDescriptions[i];
+		auto const& desc = vertexInputState->pVertexBindingDescriptions[i];
 		vertexStrides[desc.binding] = desc.inputRate == VK_VERTEX_INPUT_RATE_VERTEX ? desc.stride : 0;
 		instanceStrides[desc.binding] = desc.inputRate == VK_VERTEX_INPUT_RATE_INSTANCE ? desc.stride : 0;
 	}
 
 	for(uint32_t i = 0; i < vertexInputState->vertexAttributeDescriptionCount; i++)
 	{
-		auto const & desc = vertexInputState->pVertexAttributeDescriptions[i];
+		auto const& desc = vertexInputState->pVertexAttributeDescriptions[i];
 		sw::Stream& input = context.input[desc.location];
 		input.count = getNumberOfChannels(desc.format);
 		input.type = getStreamType(desc.format);
@@ -366,8 +367,8 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	if(viewportState)
 	{
 		if((viewportState->flags != 0) ||
-			(viewportState->viewportCount != 1) ||
-			(viewportState->scissorCount != 1))
+		   (viewportState->viewportCount != 1) ||
+		   (viewportState->scissorCount != 1))
 		{
 			UNIMPLEMENTED("pCreateInfo->pViewportState settings");
 		}
@@ -414,7 +415,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT:
 		{
 			const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT* provokingVertexModeCreateInfo =
-				reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT*>(extensionCreateInfo);
+			    reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT*>(extensionCreateInfo);
 			context.provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
 		}
 		break;
@@ -429,7 +430,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 	const VkPipelineMultisampleStateCreateInfo* multisampleState = pCreateInfo->pMultisampleState;
 	if(multisampleState)
 	{
-		switch (multisampleState->rasterizationSamples)
+		switch(multisampleState->rasterizationSamples)
 		{
 		case VK_SAMPLE_COUNT_1_BIT:
 			context.sampleCount = 1;
@@ -441,7 +442,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 			UNIMPLEMENTED("Unsupported sample count");
 		}
 
-		if (multisampleState->pSampleMask)
+		if(multisampleState->pSampleMask)
 		{
 			context.sampleMask = multisampleState->pSampleMask[0];
 		}
@@ -449,8 +450,8 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		context.alphaToCoverage = (multisampleState->alphaToCoverageEnable == VK_TRUE);
 
 		if((multisampleState->flags != 0) ||
-			(multisampleState->sampleShadingEnable != VK_FALSE) ||
-			(multisampleState->alphaToOneEnable != VK_FALSE))
+		   (multisampleState->sampleShadingEnable != VK_FALSE) ||
+		   (multisampleState->alphaToOneEnable != VK_FALSE))
 		{
 			UNIMPLEMENTED("multisampleState");
 		}
@@ -499,18 +500,18 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 			blendConstants.a = colorBlendState->blendConstants[3];
 		}
 
-		for (auto i = 0u; i < colorBlendState->attachmentCount; i++)
+		for(auto i = 0u; i < colorBlendState->attachmentCount; i++)
 		{
 			const VkPipelineColorBlendAttachmentState& attachment = colorBlendState->pAttachments[i];
 			context.colorWriteMask[i] = attachment.colorWriteMask;
 
 			context.setBlendState(i, { (attachment.blendEnable == VK_TRUE),
-				attachment.srcColorBlendFactor, attachment.dstColorBlendFactor, attachment.colorBlendOp,
-				attachment.srcAlphaBlendFactor, attachment.dstAlphaBlendFactor, attachment.alphaBlendOp });
+			                           attachment.srcColorBlendFactor, attachment.dstColorBlendFactor, attachment.colorBlendOp,
+			                           attachment.srcAlphaBlendFactor, attachment.dstAlphaBlendFactor, attachment.alphaBlendOp });
 		}
 	}
 
-	context.multiSampleMask = context.sampleMask & ((unsigned) 0xFFFFFFFF >> (32 - context.sampleCount));
+	context.multiSampleMask = context.sampleMask & ((unsigned)0xFFFFFFFF >> (32 - context.sampleCount));
 }
 
 void GraphicsPipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
@@ -562,14 +563,14 @@ const std::shared_ptr<sw::SpirvShader> GraphicsPipeline::getShader(const VkShade
 
 void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, const VkGraphicsPipelineCreateInfo* pCreateInfo, PipelineCache* pPipelineCache)
 {
-	for (auto pStage = pCreateInfo->pStages; pStage != pCreateInfo->pStages + pCreateInfo->stageCount; pStage++)
+	for(auto pStage = pCreateInfo->pStages; pStage != pCreateInfo->pStages + pCreateInfo->stageCount; pStage++)
 	{
-		if (pStage->flags != 0)
+		if(pStage->flags != 0)
 		{
 			UNIMPLEMENTED("pStage->flags");
 		}
 
-		const ShaderModule *module = vk::Cast(pStage->module);
+		const ShaderModule* module = vk::Cast(pStage->module);
 		const PipelineCache::SpirvShaderKey key(pStage->stage, pStage->pName, module->getCode(),
 		                                        vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass,
 		                                        pStage->pSpecializationInfo);
@@ -649,8 +650,8 @@ bool GraphicsPipeline::hasDynamicState(VkDynamicState dynamicState) const
 	return (dynamicStateFlags & (1 << dynamicState)) != 0;
 }
 
-ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem, const Device *device)
-	: Pipeline(vk::Cast(pCreateInfo->layout), device)
+ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem, const Device* device) :
+    Pipeline(vk::Cast(pCreateInfo->layout), device)
 {
 }
 
@@ -667,14 +668,14 @@ size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCre
 
 void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo, PipelineCache* pPipelineCache)
 {
-	auto &stage = pCreateInfo->stage;
-	const ShaderModule *module = vk::Cast(stage.module);
+	auto& stage = pCreateInfo->stage;
+	const ShaderModule* module = vk::Cast(stage.module);
 
 	ASSERT(shader.get() == nullptr);
 	ASSERT(program.get() == nullptr);
 
 	const PipelineCache::SpirvShaderKey shaderKey(
-		stage.stage, stage.pName, module->getCode(), nullptr, 0, stage.pSpecializationInfo);
+	    stage.stage, stage.pName, module->getCode(), nullptr, 0, stage.pSpecializationInfo);
 	if(pPipelineCache)
 	{
 		PipelineCache& pipelineCache = *pPipelineCache;
@@ -716,16 +717,16 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 }
 
 void ComputePipeline::run(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
-	uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-	vk::DescriptorSet::Bindings const &descriptorSets,
-	vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
-	sw::PushConstantStorage const &pushConstants)
+                          uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+                          vk::DescriptorSet::Bindings const& descriptorSets,
+                          vk::DescriptorSet::DynamicOffsets const& descriptorDynamicOffsets,
+                          sw::PushConstantStorage const& pushConstants)
 {
 	ASSERT_OR_RETURN(program != nullptr);
 	program->run(
-		descriptorSets, descriptorDynamicOffsets, pushConstants,
-		baseGroupX, baseGroupY, baseGroupZ,
-		groupCountX, groupCountY, groupCountZ);
+	    descriptorSets, descriptorDynamicOffsets, pushConstants,
+	    baseGroupX, baseGroupY, baseGroupZ,
+	    groupCountX, groupCountY, groupCountZ);
 }
 
-} // namespace vk
+}  // namespace vk

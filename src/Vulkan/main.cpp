@@ -15,10 +15,10 @@
 // main.cpp: DLL entry point.
 
 #if defined(_WIN32)
-#include "resource.h"
-#include <windows.h>
+#	include "resource.h"
+#	include <windows.h>
 
-#ifdef DEBUGGER_WAIT_DIALOG
+#	ifdef DEBUGGER_WAIT_DIALOG
 static INT_PTR CALLBACK DebuggerWaitDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	RECT rect;
@@ -51,29 +51,29 @@ static void WaitForDebugger(HINSTANCE instance)
 	if(!IsDebuggerPresent())
 	{
 		HRSRC dialog = FindResource(instance, MAKEINTRESOURCE(IDD_DIALOG1), RT_DIALOG);
-		DLGTEMPLATE *dialogTemplate = (DLGTEMPLATE*)LoadResource(instance, dialog);
+		DLGTEMPLATE *dialogTemplate = (DLGTEMPLATE *)LoadResource(instance, dialog);
 		DialogBoxIndirect(instance, dialogTemplate, NULL, DebuggerWaitDialogProc);
 	}
 }
-#endif
+#	endif
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 {
 	switch(reason)
 	{
 	case DLL_PROCESS_ATTACH:
-		#ifdef DEBUGGER_WAIT_DIALOG
-		{
-			char disable_debugger_wait_dialog[] = "0";
-			GetEnvironmentVariable("SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG", disable_debugger_wait_dialog, sizeof(disable_debugger_wait_dialog));
+#	ifdef DEBUGGER_WAIT_DIALOG
+	{
+		char disable_debugger_wait_dialog[] = "0";
+		GetEnvironmentVariable("SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG", disable_debugger_wait_dialog, sizeof(disable_debugger_wait_dialog));
 
-			if(disable_debugger_wait_dialog[0] != '1')
-			{
-				WaitForDebugger(instance);
-			}
+		if(disable_debugger_wait_dialog[0] != '1')
+		{
+			WaitForDebugger(instance);
 		}
-		#endif
-		break;
+	}
+#	endif
+	break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
