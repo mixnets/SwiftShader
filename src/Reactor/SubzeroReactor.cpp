@@ -160,6 +160,9 @@ namespace
 	const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
 	const bool emulateIntrinsics = false;
 	const bool emulateMismatchedBitCast = CPUID::ARM;
+
+	// Make sure to compile Subzero with ALLOW_DUMP = 1 if setting this to true
+	const bool subzeroDumpEnabled = false;
 }
 
 namespace rr
@@ -588,7 +591,7 @@ namespace rr
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(toIce(getDefaultConfig().getOptimization().getLevel()));
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
-		Flags.setVerbose(false ? Ice::IceV_Most : Ice::IceV_None);
+		Flags.setVerbose(subzeroDumpEnabled ? Ice::IceV_Most : Ice::IceV_None);
 		Flags.setDisableHybridAssembly(true);
 
 		static llvm::raw_os_ostream cout(std::cout);
@@ -644,6 +647,12 @@ namespace rr
 
 	std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 	{
+		if (subzeroDumpEnabled)
+		{
+			// Output dump strings immediately, rather than once buffer is full. Useful for debugging.
+			context->getStrDump().SetUnbuffered();
+		}
+
 		if(basicBlock->getInsts().empty() || basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
 		{
 			createRetVoid();
