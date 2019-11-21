@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff3861d6_1b3da42d",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "we shouldn\u0027t be using this directly anymore. See latest ResourceTracker.cpp code for how to avoid it.",
+      "range": {
+        "startLine": 61,
+        "startChar": 11,
+        "endLine": 61,
+        "endChar": 31
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0978ffe_088e9ab8",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "We\u0027ll need \".cpu \u003d cpuUsageReadOften | cpuUsageWriteOften\" as that\u0027s a requirement by this ICD. No sure it makes sense to set vulkan usages here. Doesn\u0027t hurt I guess.",
+      "range": {
+        "startLine": 223,
+        "startChar": 3,
+        "endLine": 225,
+        "endChar": 4
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0f3aab3_fa2b7682",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "this should be false. swiftshader will need the memory to be in a domain that can be accessed by the cpu.",
+      "range": {
+        "startLine": 231,
+        "startChar": 3,
+        "endLine": 231,
+        "endChar": 41
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e38e7bb4_5f868c06",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "you can remove this at let sysmem determine what heap is required based on cpu usage above.",
+      "range": {
+        "startLine": 232,
+        "startChar": 3,
+        "endLine": 233,
+        "endChar": 63
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05ca6078_f7bbae0d",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "apply",
+      "range": {
+        "startLine": 39,
+        "startChar": 9,
+        "endLine": 39,
+        "endChar": 15
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc2a6012_6d698d48",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "negotiation",
+      "range": {
+        "startLine": 44,
+        "startChar": 15,
+        "endLine": 44,
+        "endChar": 26
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a71f13e6_0bc2d455",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2019-11-21T12:54:25Z",
+      "side": 1,
+      "message": "images/buffers",
+      "range": {
+        "startLine": 76,
+        "startChar": 47,
+        "endLine": 76,
+        "endChar": 53
+      },
+      "revId": "0847bb118c0aabf2790545673960dca3d5cdec49",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
