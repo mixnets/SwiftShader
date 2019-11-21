@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19818410_d7de6637",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-21T15:10:16Z",
+      "side": 1,
+      "message": "Nit: Should ShadowStoreSize be static? I don\u0027t think this value can change between calls.\nSomething like:\n#if defined(SUBZERO_USE_MICROSOFT_ABI)\n  static const SizeT ShadowStoreSize \u003d\n      Traits::Is64Bit ? 4 * typeWidthInBytes(Traits::WordType) : 0;\n  return ShadowStoreSize;\n#else\n  return 0;\n#endif",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 25
+      },
+      "revId": "25276ae3c83f10af1f9a7b678fabdb1ac862eece",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
