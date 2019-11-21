@@ -419,7 +419,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		}
 		break;
 		default:
-			UNIMPLEMENTED("extensionCreateInfo->sType");
+			WARN("pCreateInfo->pRasterizationState->pNext sType=0x%X", extensionCreateInfo->sType);
 			break;
 		}
 

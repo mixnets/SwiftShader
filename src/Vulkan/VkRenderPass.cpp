@@ -76,7 +76,7 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 			break;
 		}
 		default:
-			/* Unknown structure in pNext chain must be ignored */
+			WARN("pCreateInfo->pNext sType=0x%X", extensionCreateInfo->sType);
 			break;
 		}
 
