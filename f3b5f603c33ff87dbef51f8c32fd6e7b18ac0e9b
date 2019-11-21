@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "52fed71e_484cf8d5",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-21T15:14:34Z",
+      "side": 0,
+      "message": "Ack",
+      "parentUuid": "3612561f_4e4da6c1",
+      "revId": "f3b5f603c33ff87dbef51f8c32fd6e7b18ac0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a14a88da_989c7589",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 5
@@ -96,6 +114,30 @@
       "side": 0,
       "message": "You\u0027re reviewing upside down. These lines are removed.",
       "parentUuid": "7d6dc4e2_590c246b",
+      "range": {
+        "startLine": 5382,
+        "startChar": 2,
+        "endLine": 5388,
+        "endChar": 3
+      },
+      "revId": "f3b5f603c33ff87dbef51f8c32fd6e7b18ac0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0b8d6c92_728bf3f7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 5388,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-21T15:14:34Z",
+      "side": 0,
+      "message": "Ack",
+      "parentUuid": "513b49e3_d55b6abc",
       "range": {
         "startLine": 5382,
         "startChar": 2,
