@@ -22,6 +22,30 @@
       "revId": "25276ae3c83f10af1f9a7b678fabdb1ac862eece",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb46d002_af15a5dd",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-21T15:24:00Z",
+      "side": 1,
+      "message": "Yes, the problem is that it relies on the templated Traits type, so to make this a static, I need to add it to the class declaration, then define in here. I wanted to avoid modifying the class declaration, but I suppose it\u0027s not a big deal. I\u0027ll give it a shot.",
+      "parentUuid": "19818410_d7de6637",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 25
+      },
+      "revId": "25276ae3c83f10af1f9a7b678fabdb1ac862eece",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
