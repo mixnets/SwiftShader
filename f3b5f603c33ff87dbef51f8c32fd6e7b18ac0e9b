@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "2b6de1b3_660923e5",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-21T04:37:26Z",
+      "side": 0,
+      "message": "Remove \"Byte8\" here means value is declared where? I can\u0027t seem to locate it...",
+      "revId": "f3b5f603c33ff87dbef51f8c32fd6e7b18ac0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a14a88da_989c7589",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 5
@@ -13,6 +30,30 @@
       "writtenOn": "2019-11-20T20:49:25Z",
       "side": 0,
       "message": "Well, I just spent a day looking for this, not knowing there was quadLayout logic in the SPIR-V code, but now it should work.",
+      "range": {
+        "startLine": 5382,
+        "startChar": 2,
+        "endLine": 5388,
+        "endChar": 3
+      },
+      "revId": "f3b5f603c33ff87dbef51f8c32fd6e7b18ac0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d6dc4e2_590c246b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 5388,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-11-21T04:37:26Z",
+      "side": 0,
+      "message": "I don\u0027t understand. This change removes quad layout, so what is this logic for exactly?",
+      "parentUuid": "a14a88da_989c7589",
       "range": {
         "startLine": 5382,
         "startChar": 2,
