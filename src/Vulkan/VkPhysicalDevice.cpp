@@ -165,6 +165,28 @@ void PhysicalDevice::getFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT* fea
 	features->provokingVertexLast = VK_TRUE;
 }
 
+void PhysicalDevice::getFeatures(VkPhysicalDeviceConditionalRenderingFeaturesEXT* features) const
+{
+	features->conditionalRendering = VK_FALSE;
+	features->inheritedConditionalRendering = VK_FALSE;
+}
+
+void PhysicalDevice::getFeatures(VkPhysicalDeviceScalarBlockLayoutFeaturesEXT* features) const
+{
+	features->scalarBlockLayout = VK_FALSE;
+}
+
+void PhysicalDevice::getFeatures(VkPhysicalDeviceTimelineSemaphoreFeaturesKHR* features) const
+{
+	features->timelineSemaphore = VK_FALSE;
+}
+
+void PhysicalDevice::getFeatures(VkPhysicalDevicePerformanceQueryFeaturesKHR* features) const
+{
+	features->performanceCounterMultipleQueryPools = VK_FALSE;
+	features->performanceCounterQueryPools = VK_FALSE;
+}
+
 VkSampleCountFlags PhysicalDevice::getSampleCounts() const
 {
 	return VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT;

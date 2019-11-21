@@ -2574,12 +2574,28 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physica
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT:
-			ASSERT(!HasExtensionProperty(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME, deviceExtensionProperties,
-										 sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
+			{
+				auto features = reinterpret_cast<VkPhysicalDeviceConditionalRenderingFeaturesEXT*>(extensionFeatures);
+				vk::Cast(physicalDevice)->getFeatures(features);
+			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT:
-			ASSERT(!HasExtensionProperty(VK_EXT_SCALAR_BLOCK_LAYOUT_EXTENSION_NAME, deviceExtensionProperties,
-										 sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
+			{
+				auto features = reinterpret_cast<VkPhysicalDeviceScalarBlockLayoutFeaturesEXT*>(extensionFeatures);
+				vk::Cast(physicalDevice)->getFeatures(features);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR:
+			{
+				auto features = reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR*>(extensionFeatures);
+				vk::Cast(physicalDevice)->getFeatures(features);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR:
+			{
+				auto features = reinterpret_cast<VkPhysicalDevicePerformanceQueryFeaturesKHR*>(extensionFeatures);
+				vk::Cast(physicalDevice)->getFeatures(features);
+			}
 			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"

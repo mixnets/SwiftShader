@@ -45,6 +45,10 @@ public:
 	void getFeatures(VkPhysicalDeviceShaderDrawParameterFeatures* features) const;
 	void getFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT* features) const;
 	void getFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT* features) const;
+	void getFeatures(VkPhysicalDeviceConditionalRenderingFeaturesEXT* features) const;
+	void getFeatures(VkPhysicalDeviceScalarBlockLayoutFeaturesEXT* features) const;
+	void getFeatures(VkPhysicalDeviceTimelineSemaphoreFeaturesKHR* features) const;
+	void getFeatures(VkPhysicalDevicePerformanceQueryFeaturesKHR* features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const;
 
 	const VkPhysicalDeviceProperties& getProperties() const;
