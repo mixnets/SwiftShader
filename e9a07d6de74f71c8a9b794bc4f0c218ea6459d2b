@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb81859a_dd9351b8",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-21T15:46:29Z",
+      "side": 1,
+      "message": "Can this be bade explicit? If you make your setting constexpr, you could have:\n#if !(ALLOW_DUMP)\nstatic_assert(!subzeroDumpEnabled);\n#endif",
+      "range": {
+        "startLine": 164,
+        "startChar": 38,
+        "endLine": 164,
+        "endChar": 48
+      },
+      "revId": "e9a07d6de74f71c8a9b794bc4f0c218ea6459d2b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
