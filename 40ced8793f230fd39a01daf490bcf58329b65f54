@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cca04c08_b26b416a",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-21T15:22:50Z",
+      "side": 1,
+      "message": "setting any of these",
+      "range": {
+        "startLine": 164,
+        "startChar": 56,
+        "endLine": 164,
+        "endChar": 83
+      },
+      "revId": "40ced8793f230fd39a01daf490bcf58329b65f54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2e22626_a5288c14",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-21T15:22:50Z",
+      "side": 1,
+      "message": "Same comment as previous cl about explicit static_assert here.",
+      "range": {
+        "startLine": 165,
+        "startChar": 0,
+        "endLine": 166,
+        "endChar": 39
+      },
+      "revId": "40ced8793f230fd39a01daf490bcf58329b65f54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
