@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d36269c0_be6025d8",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-22T15:30:11Z",
+      "side": 1,
+      "message": "Do you want to be built by default with the actual ICD? In this case, maybe add a dependency to to this target?",
+      "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba96e21f_e8f1698a",
+        "filename": "src/Vulkan/vulkan.gni",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-11-22T15:30:11Z",
+      "side": 1,
+      "message": "You might want to put this in the declare_args() section of src/swiftshader.gni instead. This will allow clients to customize this in their args.gn file easily.\n\n(And if you do this, I recommend renaming it with swiftshader_vulkan_icd_ prefix for clarity :-))",
+      "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
