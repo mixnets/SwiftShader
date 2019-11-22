@@ -16,6 +16,24 @@
       "revId": "5396422b62aa2826532d241fd384fd567d7b1e19",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "062875ca_54755f80",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-22T19:28:05Z",
+      "side": 1,
+      "message": "I think we abort in Debug, but only warn in Release.\nI guess this could be modified to always warn and never abort.",
+      "parentUuid": "655218cb_248bc824",
+      "revId": "5396422b62aa2826532d241fd384fd567d7b1e19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
