@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1789ef4_6628b484",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2578,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-22T18:21:50Z",
+      "side": 1,
+      "message": "Filling these structures out for extensions we don\u0027t support is technically a spec violation.\n\n\"the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extensions]\"",
+      "revId": "7250e6954824296f01148a8766f4879cd1c932d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
