@@ -247,13 +247,13 @@ static const VkExtensionProperties deviceExtensionProperties[] =
 	// (from KHR_swapchain v70) to vkBindImageMemory2.
 	{ VK_ANDROID_NATIVE_BUFFER_EXTENSION_NAME, 7 },
 #endif
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
 	{ VK_KHR_EXTERNAL_SEMAPHORE_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_SEMAPHORE_FD_SPEC_VERSION },
 #endif
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 	{ VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME, VK_KHR_EXTERNAL_MEMORY_FD_SPEC_VERSION },
 #endif
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
+#if VK_USE_PLATFORM_FUCHSIA
 	{ VK_FUCHSIA_EXTERNAL_SEMAPHORE_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_SEMAPHORE_SPEC_VERSION },
 #endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
@@ -799,7 +799,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			// This extension controls on which physical devices the memory gets allocated.
 			// SwiftShader only has a single physical device, so this extension does nothing in this case.
 			break;
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
 		{
 			auto* importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(allocationInfo);
@@ -820,7 +820,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			}
 			break;
 		}
-#endif
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 		default:
 			UNIMPLEMENTED("allocationInfo->sType %u", allocationInfo->sType);
 			break;
@@ -854,7 +854,7 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, 
 	vk::destroy(memory, pAllocator);
 }
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* getFdInfo, int* pFd)
 {
 	TRACE("(VkDevice device = %p, const VkMemoryGetFdInfoKHR* getFdInfo = %p, int* pFd = %p",
@@ -892,7 +892,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExt
 
 	return VK_SUCCESS;
 }
-#endif  // SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
 {
@@ -1086,7 +1086,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySemaphore(VkDevice device, VkSemaphore semap
 	vk::destroy(semaphore, pAllocator);
 }
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
 VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd)
 {
 	TRACE("(VkDevice device = %p, const VkSemaphoreGetFdInfoKHR* pGetFdInfo = %p, int* pFd = %p)",
@@ -1113,9 +1113,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreFdKHR(VkDevice device, const VkI
 
 	return vk::Cast(pImportSemaphoreInfo->semaphore)->importFd(pImportSemaphoreInfo->fd, temporaryImport);
 }
-#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_LINUX_MEMFD
+#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
 
-#if SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
+#if VK_USE_PLATFORM_FUCHSIA
 VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreZirconHandleFUCHSIA(
 	VkDevice                                        device,
 	const VkImportSemaphoreZirconHandleInfoFUCHSIA* pImportSemaphoreZirconHandleInfo)
@@ -1149,7 +1149,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreZirconHandleFUCHSIA(
 
 	return vk::Cast(pGetZirconHandleInfo->semaphore)->exportHandle(pZirconHandle);
 }
-#endif  // SWIFTSHADER_EXTERNAL_SEMAPHORE_ZIRCON_EVENT
+#endif  // VK_USE_PLATFORM_FUCHSIA
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateEvent(VkDevice device, const VkEventCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkEvent* pEvent)
 {

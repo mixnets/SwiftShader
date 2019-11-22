@@ -36,7 +36,7 @@ public:
     // A value of 0 corresponds to non-external memory.
 	virtual VkExternalMemoryHandleTypeFlagBits getFlagBit() const = 0;
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 	virtual VkResult exportFd(int* pFd) const
 	{
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
@@ -121,7 +121,7 @@ public:
 
 }  // namespace vk
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 #include "VkDeviceMemoryExternalLinux.hpp"
 #endif
 
@@ -131,7 +131,7 @@ namespace vk
 static void findTraits(const VkMemoryAllocateInfo* pAllocateInfo,
 					   ExternalMemoryTraits*       pTraits)
 {
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 	if (parseCreateInfo<LinuxMemfdExternalMemory>(pAllocateInfo, pTraits))
 	{
 		return;
@@ -220,7 +220,7 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 	return (supportedHandleTypes & handle_type_bit) != 0;
 }
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_LINUX_MEMFD
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 VkResult DeviceMemory::exportFd(int* pFd) const
 {
 	return external->exportFd(pFd);
