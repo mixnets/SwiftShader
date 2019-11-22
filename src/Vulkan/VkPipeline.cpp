@@ -418,6 +418,9 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 			context.provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionCreateInfo->sType");
 			break;

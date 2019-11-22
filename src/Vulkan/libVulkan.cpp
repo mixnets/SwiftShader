@@ -282,7 +282,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 
 	if(pCreateInfo->pNext)
 	{
-		switch(*reinterpret_cast<const VkStructureType*>(pCreateInfo->pNext))
+		const VkBaseInStructure* createInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+		switch(createInfo->sType)
 		{
 		case VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO:
 			// According to the Vulkan spec, section 2.7.2. Implicit Valid Usage:
@@ -291,8 +292,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 			//  internal use by the loader, and do not have corresponding
 			//  Vulkan structures in this Specification."
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
-			UNIMPLEMENTED("pCreateInfo->pNext");
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", createInfo->sType);
 		}
 	}
 
@@ -635,6 +639,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				(void)provokingVertexFeatures->provokingVertexLast;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
@@ -659,9 +666,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
 		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
-		if(queueCreateInfo.pNext || queueCreateInfo.flags)
+		if(queueCreateInfo.flags)
 		{
-			UNIMPLEMENTED("queueCreateInfo.pNext || queueCreateInfo.flags");
+			UNIMPLEMENTED("queueCreateInfo.flags");
+		}
+
+		auto extInfo = reinterpret_cast<VkBaseInStructure const*>(queueCreateInfo.pNext);
+		while(extInfo)
+		{
+			switch(extInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// Ignored unknown extension
+				break;
+			default:
+				UNIMPLEMENTED("pCreateInfo->pQueueCreateInfos[%d].pNext sType=0x%X", i, extInfo->sType);
+			}
+			extInfo = extInfo->pNext;
 		}
 
 		ASSERT(queueCreateInfo.queueFamilyIndex < queueFamilyPropertyCount);
@@ -821,6 +842,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 			break;
 		}
 #endif
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("allocationInfo->sType %u", allocationInfo->sType);
 			break;
@@ -1021,9 +1045,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateFence(VkDevice device, const VkFenceCreat
 	TRACE("(VkDevice device = %p, const VkFenceCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkFence* pFence = %p)",
 		    device, pCreateInfo, pAllocator, pFence);
 
-	if(pCreateInfo->pNext)
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while(nextInfo)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext");
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::Fence::Create(pAllocator, pCreateInfo, pFence);
@@ -1156,9 +1189,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateEvent(VkDevice device, const VkEventCreat
 	TRACE("(VkDevice device = %p, const VkEventCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkEvent* pEvent = %p)",
 	      device, pCreateInfo, pAllocator, pEvent);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::Event::Create(pAllocator, pCreateInfo, pEvent);
@@ -1202,9 +1249,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateQueryPool(VkDevice device, const VkQueryP
 	TRACE("(VkDevice device = %p, const VkQueryPoolCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkQueryPool* pQueryPool = %p)",
 	      device, pCreateInfo, pAllocator, pQueryPool);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::QueryPool::Create(pAllocator, pCreateInfo, pQueryPool);
@@ -1239,6 +1300,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 		case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO:
 			// Do nothing. Should be handled by vk::Buffer::Create().
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
 		}
@@ -1261,9 +1325,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferView(VkDevice device, const VkBuffe
 	TRACE("(VkDevice device = %p, const VkBufferViewCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkBufferView* pView = %p)",
 	        device, pCreateInfo, pAllocator, pView);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::BufferView::Create(pAllocator, pCreateInfo, pView);
@@ -1314,6 +1392,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR:
 			/* Do nothing. We don't actually need the swapchain handle yet; we'll do all the work in vkBindImageMemory2. */
+			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
 			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
@@ -1420,6 +1501,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 			}
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
@@ -1444,9 +1528,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateShaderModule(VkDevice device, const VkSha
 	TRACE("(VkDevice device = %p, const VkShaderModuleCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkShaderModule* pShaderModule = %p)",
 		    device, pCreateInfo, pAllocator, pShaderModule);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while(nextInfo)
+	{
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::ShaderModule::Create(pAllocator, pCreateInfo, pShaderModule);
@@ -1465,9 +1563,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineCache(VkDevice device, const VkPi
 	TRACE("(VkDevice device = %p, const VkPipelineCacheCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkPipelineCache* pPipelineCache = %p)",
 	        device, pCreateInfo, pAllocator, pPipelineCache);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::PipelineCache::Create(pAllocator, pCreateInfo, pPipelineCache);
@@ -1574,9 +1686,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(VkDevice device, const VkP
 	TRACE("(VkDevice device = %p, const VkPipelineLayoutCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkPipelineLayout* pPipelineLayout = %p)",
 		    device, pCreateInfo, pAllocator, pPipelineLayout);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while(nextInfo)
+	{
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::PipelineLayout::Create(pAllocator, pCreateInfo, pPipelineLayout);
@@ -1597,7 +1723,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 
 	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
 	}
 
 	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
@@ -1612,6 +1738,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 				const VkSamplerYcbcrConversionInfo* samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo*>(extensionCreateInfo);
 				ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
 			}
+			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
 			break;
 		default:
 			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
@@ -1646,6 +1775,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(VkDevice device, cons
 		case VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT:
 			ASSERT(!vk::Cast(device)->hasExtension(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME));
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
@@ -1670,9 +1802,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorPool(VkDevice device, const VkD
 	TRACE("(VkDevice device = %p, const VkDescriptorPoolCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkDescriptorPool* pDescriptorPool = %p)",
 	      device, pCreateInfo, pAllocator, pDescriptorPool);
 
-	if(pCreateInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::DescriptorPool::Create(pAllocator, pCreateInfo, pDescriptorPool);
@@ -1704,9 +1845,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateDescriptorSets(VkDevice device, const V
 	TRACE("(VkDevice device = %p, const VkDescriptorSetAllocateInfo* pAllocateInfo = %p, VkDescriptorSet* pDescriptorSets = %p)",
 		device, pAllocateInfo, pDescriptorSets);
 
-	if(pAllocateInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pAllocateInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pAllocateInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pAllocateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::Cast(pAllocateInfo->descriptorPool)->allocateSets(
@@ -1736,9 +1886,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateFramebuffer(VkDevice device, const VkFram
 	TRACE("(VkDevice device = %p, const VkFramebufferCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkFramebuffer* pFramebuffer = %p)",
 		    device, pCreateInfo, pAllocator, pFramebuffer);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags)
+	if(pCreateInfo->flags)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags");
+		UNIMPLEMENTED("pCreateInfo->flags");
+	}
+
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while(nextInfo)
+	{
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::Framebuffer::Create(pAllocator, pCreateInfo, pFramebuffer);
@@ -1836,6 +2000,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(VkDevice device, const VkRende
 			ASSERT(vk::Cast(device)->getPhysicalDevice()->getProperties().limits.maxFramebufferLayers >= 32);
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionCreateInfo->sType %d", int(extensionCreateInfo->sType));
 			break;
@@ -1868,9 +2035,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateCommandPool(VkDevice device, const VkComm
 	TRACE("(VkDevice device = %p, const VkCommandPoolCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkCommandPool* pCommandPool = %p)",
 		    device, pCreateInfo, pAllocator, pCommandPool);
 
-	if(pCreateInfo->pNext)
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
+	while(nextInfo)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext");
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::CommandPool::Create(pAllocator, pCreateInfo, pCommandPool);
@@ -1897,9 +2073,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateCommandBuffers(VkDevice device, const V
 	TRACE("(VkDevice device = %p, const VkCommandBufferAllocateInfo* pAllocateInfo = %p, VkCommandBuffer* pCommandBuffers = %p)",
 		    device, pAllocateInfo, pCommandBuffers);
 
-	if(pAllocateInfo->pNext)
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pAllocateInfo->pNext);
+	while(nextInfo)
 	{
-		UNIMPLEMENTED("pAllocateInfo->pNext");
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pAllocateInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::Cast(pAllocateInfo->commandPool)->allocateCommandBuffers(
@@ -1919,9 +2104,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBeginCommandBuffer(VkCommandBuffer commandBuffe
 	TRACE("(VkCommandBuffer commandBuffer = %p, const VkCommandBufferBeginInfo* pBeginInfo = %p)",
 		    commandBuffer, pBeginInfo);
 
-	if(pBeginInfo->pNext)
+	auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pBeginInfo->pNext);
+	while(nextInfo)
 	{
-		UNIMPLEMENTED("pBeginInfo->pNext");
+		switch(nextInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pBeginInfo->pNext sType=0x%X", nextInfo->sType);
+		}
+		nextInfo = nextInfo->pNext;
 	}
 
 	return vk::Cast(commandBuffer)->begin(pBeginInfo->flags, pBeginInfo->pInheritanceInfo);
@@ -2279,6 +2473,9 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 			// in order to distribute rendering between multiple physical devices.
 			// SwiftShader only has a single physical device, so this extension does nothing in this case.
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("renderPassBeginInfo->sType");
 			break;
@@ -2329,9 +2526,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bin
 
 	for(uint32_t i = 0; i < bindInfoCount; i++)
 	{
-		if(pBindInfos[i].pNext)
+		auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pBindInfos[i].pNext);
+		while(extInfo)
 		{
-			UNIMPLEMENTED("pBindInfos[%d].pNext", i);
+			switch(extInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// Ignored unknown extension
+				break;
+			default:
+				UNIMPLEMENTED("pBindInfos[%d].pNext sType=0x%X", i, extInfo->sType);
+			}
+			extInfo = extInfo->pNext;
 		}
 
 		if (!vk::Cast(pBindInfos[i].buffer)->canBindToMemory(vk::Cast(pBindInfos[i].memory)))
@@ -2386,9 +2592,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 				}
 				break;
 #endif
-
-			default:
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// Ignored unknown extension
 				break;
+			default:
+				UNIMPLEMENTED("pBindInfos[%d].pNext sType=0x%X", i, extInfo->sType);
 			}
 			extInfo = extInfo->pNext;
 		}
@@ -2436,9 +2644,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements2(VkDevice device, const 
 	TRACE("(VkDevice device = %p, const VkImageMemoryRequirementsInfo2* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
 
-	if(pInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	VkBaseOutStructure* extensionRequirements = reinterpret_cast<VkBaseOutStructure*>(pMemoryRequirements->pNext);
@@ -2452,6 +2669,9 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements2(VkDevice device, const 
 			vk::Cast(device)->getRequirements(requirements);
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionRequirements->sType");
 			break;
@@ -2468,9 +2688,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 	TRACE("(VkDevice device = %p, const VkBufferMemoryRequirementsInfo2* pInfo = %p, VkMemoryRequirements2* pMemoryRequirements = %p)",
 	      device, pInfo, pMemoryRequirements);
 
-	if(pInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	VkBaseOutStructure* extensionRequirements = reinterpret_cast<VkBaseOutStructure*>(pMemoryRequirements->pNext);
@@ -2483,6 +2712,9 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 				auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements*>(extensionRequirements);
 				vk::Cast(device)->getRequirements(requirements);
 			}
+			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
 			break;
 		default:
 			UNIMPLEMENTED("extensionRequirements->sType");
@@ -2500,9 +2732,32 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageSparseMemoryRequirements2(VkDevice device, 
 	TRACE("(VkDevice device = %p, const VkImageSparseMemoryRequirementsInfo2* pInfo = %p, uint32_t* pSparseMemoryRequirementCount = %p, VkSparseImageMemoryRequirements2* pSparseMemoryRequirements = %p)",
 	      device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 
-	if(pInfo->pNext || pSparseMemoryRequirements->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pInfo->pNext || pSparseMemoryRequirements->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
+	}
+
+	VkBaseOutStructure* extensionRequirements = reinterpret_cast<VkBaseInStructure const*>(pSparseMemoryRequirements->pNext);
+	while(extensionRequirements)
+	{
+		switch(extensionRequirements->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pSparseMemoryRequirements->pNext sType=0x%X", extensionRequirements->sType);
+		}
+		extensionRequirements = extensionRequirements->pNext;
 	}
 
 	// The 'sparseBinding' feature is not supported, so images can not be created with the VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT flag.
@@ -2596,6 +2851,9 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physica
 				auto features = reinterpret_cast<VkPhysicalDevicePerformanceQueryFeaturesKHR*>(extensionFeatures);
 				vk::Cast(physicalDevice)->getFeatures(features);
 			}
+			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
 			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
@@ -2693,6 +2951,9 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNIMPLEMENTED("extensionProperties->sType");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
@@ -2710,9 +2971,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkFormat format = %d, VkFormatProperties2* pFormatProperties = %p)",
 		    physicalDevice, format, pFormatProperties);
 
-	if(pFormatProperties->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pFormatProperties->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pFormatProperties->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pFormatProperties->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &(pFormatProperties->formatProperties));
@@ -2757,6 +3027,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 			                             sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionFormatInfo->sType");
 			break;
@@ -2790,6 +3063,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 			                             sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0])));
 		}
 		break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
 			UNIMPLEMENTED("extensionProperties->sType");
 			break;
@@ -2812,9 +3088,21 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalD
 	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t* pQueueFamilyPropertyCount = %p, VkQueueFamilyProperties2* pQueueFamilyProperties = %p)",
 		physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
 
-	if(pQueueFamilyProperties && pQueueFamilyProperties->pNext)
+	if(pQueueFamilyProperties)
 	{
-		UNIMPLEMENTED("pQueueFamilyProperties->pNext");
+		auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pQueueFamilyProperties->pNext);
+		while(extInfo)
+		{
+			switch(extInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// Ignored unknown extension
+				break;
+			default:
+				UNIMPLEMENTED("pQueueFamilyProperties->pNext sType=0x%X", extInfo->sType);
+			}
+			extInfo = extInfo->pNext;
+		}
 	}
 
 	if(!pQueueFamilyProperties)
@@ -2831,9 +3119,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice
 {
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkPhysicalDeviceMemoryProperties2* pMemoryProperties = %p)", physicalDevice, pMemoryProperties);
 
-	if(pMemoryProperties->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pMemoryProperties->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pMemoryProperties->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pMemoryProperties->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &(pMemoryProperties->memoryProperties));
@@ -2844,9 +3141,21 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceSparseImageFormatProperties2(VkPhy
 	TRACE("(VkPhysicalDevice physicalDevice = %p, const VkPhysicalDeviceSparseImageFormatInfo2* pFormatInfo = %p, uint32_t* pPropertyCount = %p, VkSparseImageFormatProperties2* pProperties = %p)",
 	     physicalDevice, pFormatInfo, pPropertyCount, pProperties);
 
-	if(pProperties && pProperties->pNext)
+	if(pProperties)
 	{
-		UNIMPLEMENTED("pProperties->pNext");
+		auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pProperties->pNext);
+		while(extInfo)
+		{
+			switch(extInfo->sType)
+			{
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// Ignored unknown extension
+				break;
+			default:
+				UNIMPLEMENTED("pProperties->pNext sType=0x%X", extInfo->sType);
+			}
+			extInfo = extInfo->pNext;
+		}
 	}
 
 	// We do not support sparse images.
@@ -2866,9 +3175,18 @@ VKAPI_ATTR void VKAPI_CALL vkGetDeviceQueue2(VkDevice device, const VkDeviceQueu
 	TRACE("(VkDevice device = %p, const VkDeviceQueueInfo2* pQueueInfo = %p, VkQueue* pQueue = %p)",
 	      device, pQueueInfo, pQueue);
 
-	if(pQueueInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pQueueInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pQueueInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pQueueInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	// The only flag that can be set here is VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
@@ -2891,9 +3209,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversion(VkDevice device, c
 	TRACE("(VkDevice device = %p, const VkSamplerYcbcrConversionCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkSamplerYcbcrConversion* pYcbcrConversion = %p)",
 		    device, pCreateInfo, pAllocator, pYcbcrConversion);
 
-	if(pCreateInfo->pNext)
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext");
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::SamplerYcbcrConversion::Create(pAllocator, pCreateInfo, pYcbcrConversion);
@@ -2912,9 +3239,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorUpdateTemplate(VkDevice device,
 	TRACE("(VkDevice device = %p, const VkDescriptorUpdateTemplateCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkDescriptorUpdateTemplate* pDescriptorUpdateTemplate = %p)",
 	      device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
 
-	if(pCreateInfo->pNext || pCreateInfo->flags || (pCreateInfo->templateType != VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET))
+	if(pCreateInfo->flags || (pCreateInfo->templateType != VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET))
 	{
-		UNIMPLEMENTED("pCreateInfo->pNext || pCreateInfo->flags || (pCreateInfo->templateType != VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET)");
+		UNIMPLEMENTED("pCreateInfo->flags || (pCreateInfo->templateType != VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET)");
+	}
+
+	auto extInfo = reinterpret_cast<VkBaseInStructure const*>(pCreateInfo->pNext);
+	while(extInfo)
+	{
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
+		default:
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extInfo->sType);
+		}
+		extInfo = extInfo->pNext;
 	}
 
 	return vk::DescriptorUpdateTemplate::Create(pAllocator, pCreateInfo, pDescriptorUpdateTemplate);

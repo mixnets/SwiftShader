@@ -75,8 +75,11 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 
 			break;
 		}
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// Ignored unknown extension
+			break;
 		default:
-			/* Unknown structure in pNext chain must be ignored */
+			UNIMPLEMENTED("pCreateInfo->pNext sType=0x%X", extensionCreateInfo->sType);
 			break;
 		}
 
