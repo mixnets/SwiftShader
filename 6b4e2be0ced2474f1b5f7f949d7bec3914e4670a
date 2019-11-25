@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "188d0ed7_f2f7aeef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5880
+      },
+      "writtenOn": "2019-11-25T15:46:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "07399848_1e73a360",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 12
+      },
+      "revId": "6b4e2be0ced2474f1b5f7f949d7bec3914e4670a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2083d97_74262f74",
         "filename": "src/Vulkan/vulkan.gni",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "6b4e2be0ced2474f1b5f7f949d7bec3914e4670a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ae93940_298478b4",
+        "filename": "src/Vulkan/vulkan.gni",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5880
+      },
+      "writtenOn": "2019-11-25T15:46:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2083d97_74262f74",
+      "range": {
+        "startLine": 15,
+        "startChar": 54,
+        "endLine": 15,
+        "endChar": 67
+      },
+      "revId": "6b4e2be0ced2474f1b5f7f949d7bec3914e4670a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

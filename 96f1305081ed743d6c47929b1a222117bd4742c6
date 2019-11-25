@@ -69,6 +69,24 @@
       "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3821fc03_b1436d62",
+        "filename": "src/Vulkan/vulkan.gni",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5880
+      },
+      "writtenOn": "2019-11-25T15:46:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "16b38d9b_ede2f45e",
+      "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
