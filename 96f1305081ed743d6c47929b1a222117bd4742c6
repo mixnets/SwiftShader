@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8766f4ab_c23e03c1",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-11-25T09:37:04Z",
+      "side": 1,
+      "message": "I was thinking that instead of depending on swiftshader_libvulkan, projects looking to use swiftshader would add a data_deps to icd_files, that itself has a deps on swiftshader_libvulkan. But maybe it would be more clear with a group that\u0027s \"swiftshader_libvulkan_and_icd_files\" and has data_deps on both the lib, and the icd files?",
+      "parentUuid": "d36269c0_be6025d8",
+      "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ba96e21f_e8f1698a",
         "filename": "src/Vulkan/vulkan.gni",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2019-11-22T15:30:11Z",
       "side": 1,
       "message": "You might want to put this in the declare_args() section of src/swiftshader.gni instead. This will allow clients to customize this in their args.gn file easily.\n\n(And if you do this, I recommend renaming it with swiftshader_vulkan_icd_ prefix for clarity :-))",
+      "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16b38d9b_ede2f45e",
+        "filename": "src/Vulkan/vulkan.gni",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-11-25T09:37:04Z",
+      "side": 1,
+      "message": "Had an offline discussion about this: the variable is a read-only variable from swiftshader that exports a string constant to GN projects that use Swiftshader so they don\u0027t need to duplicate the name of the ICD file. declare_args() is for input variables, and swiftshader.gni is too big for inclusion in other projects so we agreed this approach works.\n\nI\u0027ll update / add comments to make this more clear.",
+      "parentUuid": "ba96e21f_e8f1698a",
       "revId": "96f1305081ed743d6c47929b1a222117bd4742c6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
