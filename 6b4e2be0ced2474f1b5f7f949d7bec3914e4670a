@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07399848_1e73a360",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2019-11-25T15:35:56Z",
+      "side": 1,
+      "message": "tiny nits that might be necessary for presubmit:\n\nadd a space b/w \"Bug:\" and \"dawn:283\"\ndelete blank line b/w Bug: line and Change-Id: line.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 12
+      },
+      "revId": "6b4e2be0ced2474f1b5f7f949d7bec3914e4670a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2083d97_74262f74",
+        "filename": "src/Vulkan/vulkan.gni",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2019-11-25T15:35:56Z",
+      "side": 1,
+      "message": "nit: $root_build_dir",
+      "range": {
+        "startLine": 15,
+        "startChar": 54,
+        "endLine": 15,
+        "endChar": 67
+      },
+      "revId": "6b4e2be0ced2474f1b5f7f949d7bec3914e4670a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
