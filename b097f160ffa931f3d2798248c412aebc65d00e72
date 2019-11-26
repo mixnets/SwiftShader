@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3a8a5ff_19dbaed8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-26T17:45:48Z",
+      "side": 1,
+      "message": "I think these need to go on separate lines:\n\nBug: 143122483\nBug: 140421726",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 24
+      },
+      "revId": "b097f160ffa931f3d2798248c412aebc65d00e72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
