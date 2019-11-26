@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8f476de_b4e068f1",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1339,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-26T22:30:56Z",
+      "side": 1,
+      "message": "Note: Temporary code for testing. Will use actual number of samples to compute this value.",
+      "range": {
+        "startLine": 1339,
+        "startChar": 55,
+        "endLine": 1339,
+        "endChar": 56
+      },
+      "revId": "ce5aa91dda914d61fa6945b8f38086da94542311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf6a4a06_df44d6c9",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1365,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-26T22:30:56Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 1365,
+        "startChar": 45,
+        "endLine": 1365,
+        "endChar": 46
+      },
+      "revId": "ce5aa91dda914d61fa6945b8f38086da94542311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
