@@ -81,6 +81,8 @@ public:
 	bool                     is3DSlice() const;
 	uint8_t*                 end() const;
 	VkDeviceSize             getLayerSize(VkImageAspectFlagBits aspect) const;
+	VkDeviceSize             getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	VkDeviceSize             getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	bool                     canBindToMemory(DeviceMemory* pDeviceMemory) const;
 
 	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
@@ -95,9 +97,7 @@ public:
 private:
 	void copy(Buffer* buffer, const VkBufferImageCopy& region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
-	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMultiSampledLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	VkDeviceSize getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const;
 	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
