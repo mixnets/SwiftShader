@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d36ce9b_b4598619",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-11-27T23:49:42Z",
+      "side": 1,
+      "message": "isDrawLine(true) -- if you\u0027re rasterizing lines due to a non-solid fill mode, you want to apply this rule.",
+      "revId": "a8ff57f10e689d475c2b370e6f4748e5f3887f02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
