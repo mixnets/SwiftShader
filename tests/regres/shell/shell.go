@@ -96,7 +96,7 @@ func Shell(timeout time.Duration, exe, wd string, args ...string) error {
 // Exec runs the executable exe with the given arguments, in the working
 // directory wd, with the custom environment flags.
 // If the process does not finish within timeout a errTimeout will be returned.
-func Exec(timeout time.Duration, exe, wd string, env []string, args ...string) ([]byte, error) {
+func Exec(timeout time.Duration, exe string, wd string, env []string, args ...string) ([]byte, error) {
 	// Shell via regres: --exec N <exe> <args...>
 	// See main() for details.
 	args = append([]string{"--exec", exe, fmt.Sprintf("%v", MaxProcMemory)}, args...)
