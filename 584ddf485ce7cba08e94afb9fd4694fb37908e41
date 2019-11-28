@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "327e4e2e_642c68e3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-28T16:48:26Z",
+      "side": 1,
+      "message": "Please clarify here so it\u0027s easier to understand the justification years later and for new team members looking through logs/blame.",
+      "range": {
+        "startLine": 9,
+        "startChar": 51,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d6fc89e_827df682",
         "filename": "src/Pipeline/SpirvShaderEnumNames.cpp",
         "patchSetId": 2
