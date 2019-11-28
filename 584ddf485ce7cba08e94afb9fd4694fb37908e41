@@ -70,6 +70,30 @@
       "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ffc09a9a_18e53458",
+        "filename": "src/Pipeline/SpirvShaderEnumNames.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T16:43:27Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/38820",
+      "parentUuid": "cf2c23b2_af433313",
+      "range": {
+        "startLine": 26,
+        "startChar": 2,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
