@@ -16,6 +16,24 @@
       "revId": "a1f950b4fd2300e8613aa4205385a3ee6e0bb977",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8470fbc6_f5304185",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T17:16:30Z",
+      "side": 1,
+      "message": "If we can, that\u0027s great. I\u0027m happy to follow up with a change to delete this if we can confirm nobody is using this.",
+      "parentUuid": "b933dae6_913ef8a5",
+      "revId": "a1f950b4fd2300e8613aa4205385a3ee6e0bb977",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
