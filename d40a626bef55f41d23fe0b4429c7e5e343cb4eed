@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9c999d57_387335c7",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "Yeah I originally called it deqp. But there was a deqp type in main.go and this represented a checkout of deqp for *downloading* and *building* deqp. So this was kind of conflicting a bit. So I decided that this is the package for configuring and starting a *run* of deqp and processing the results of a run. Happy to change to deqp if you can suggest what I should do with the deqp type in main. I will change RunConfig to Config now so we at least have (for now) deqprun.Config.Run() i.e., given a config for a deqp run, run it! 😄",
+      "parentUuid": "5c9c1a71_e578bc80",
+      "range": {
+        "startLine": 16,
+        "startChar": 8,
+        "endLine": 16,
+        "endChar": 15
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ddf1ff78_d58f8a96",
         "filename": "tests/regres/deqprun/deqprun.go",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98349d9a_6c44acfa",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ddf1ff78_d58f8a96",
+      "range": {
+        "startLine": 70,
+        "startChar": 5,
+        "endLine": 70,
+        "endChar": 16
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "fe5cb209_0706c262",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dcf0f3e4_c96e9451",
+      "range": {
+        "startLine": 112,
+        "startChar": 1,
+        "endLine": 112,
+        "endChar": 45
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "26e53b42_ab5416c7",
         "filename": "tests/regres/main.go",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-11-28T15:04:38Z",
       "side": 1,
       "message": "why?",
+      "range": {
+        "startLine": 107,
+        "startChar": 2,
+        "endLine": 107,
+        "endChar": 9
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2d22970_9805013e",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "An IDE said we might be accidentally ignoring the error. This was its \"fix\" to make it clear that this is intentional. Happy to revert; thought I would see what you thought instead of applying the fix everywhere!",
+      "parentUuid": "26e53b42_ab5416c7",
       "range": {
         "startLine": 107,
         "startChar": 2,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "92bee445_1ec91fea",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b83b2b2c_f1d9741a",
+      "range": {
+        "startLine": 556,
+        "startChar": 1,
+        "endLine": 556,
+        "endChar": 16
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "343e0976_5deceeb5",
         "filename": "tests/regres/shell/shell.go",
         "patchSetId": 1
@@ -137,6 +257,30 @@
       "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ba2f70f_7d2c21b1",
+        "filename": "tests/regres/shell/shell.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T15:58:38Z",
+      "side": 1,
+      "message": "Ah thank you for explaining. I did not understand this.",
+      "parentUuid": "343e0976_5deceeb5",
+      "range": {
+        "startLine": 99,
+        "startChar": 33,
+        "endLine": 99,
+        "endChar": 54
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
