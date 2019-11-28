@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a56ac5c8_1b34579c",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2019-11-28T15:20:46Z",
+      "side": 1,
+      "message": "nit: you should probably at some point switch to the upstream-master branch of this repo.",
+      "revId": "fe4a8cc65dfb6fc67119d13768741e66841e7196",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
