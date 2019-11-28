@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c9c1a71_e578bc80",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "There\u0027s a bit of stuttering with this package name (see https://blog.golang.org/package-names#TOC_3.)\n\nHow about just calling this \u0027deqp\u0027, then you\u0027d have deqp.Config.Run()?",
+      "range": {
+        "startLine": 16,
+        "startChar": 8,
+        "endLine": 16,
+        "endChar": 15
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddf1ff78_d58f8a96",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "Just \u0027Results\u0027, as \u0027deqp.Results\u0027 is pretty self explanatory?",
+      "range": {
+        "startLine": 70,
+        "startChar": 5,
+        "endLine": 70,
+        "endChar": 16
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcf0f3e4_c96e9451",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "When you have an err followed by a check for nil, prefer to place them into a single if statement:\n\n  if err :\u003d os.MkdirAll(filepath.Dir(path), 0777); err !\u003d nil {",
+      "range": {
+        "startLine": 112,
+        "startChar": 1,
+        "endLine": 112,
+        "endChar": 45
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26e53b42_ab5416c7",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "why?",
+      "range": {
+        "startLine": 107,
+        "startChar": 2,
+        "endLine": 107,
+        "endChar": 9
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b83b2b2c_f1d9741a",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "if err :\u003d git.Add(test.srcDir, path); err !\u003d nil {",
+      "range": {
+        "startLine": 556,
+        "startChar": 1,
+        "endLine": 556,
+        "endChar": 16
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "343e0976_5deceeb5",
+        "filename": "tests/regres/shell/shell.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T15:04:38Z",
+      "side": 1,
+      "message": "Übeernit: for parameters of the same type, you can do: \n\n  exe, wd string\n\nNot everyone likes this though, so feel free to ignore.",
+      "range": {
+        "startLine": 99,
+        "startChar": 33,
+        "endLine": 99,
+        "endChar": 54
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
