@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b933dae6_913ef8a5",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-11-28T16:58:07Z",
+      "side": 1,
+      "message": "I think this file can be deleted? Didn\u0027t we fully deprecate building Vulkan with the Visual Studio solution already?",
+      "revId": "a1f950b4fd2300e8613aa4205385a3ee6e0bb977",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
