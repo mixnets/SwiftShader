@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3b3f801f_2e312643",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T17:14:28Z",
+      "side": 1,
+      "message": "Done (this was described in more detail in the associated bug, but I admit I was being unnecessarily vague)",
+      "parentUuid": "327e4e2e_642c68e3",
+      "range": {
+        "startLine": 9,
+        "startChar": 51,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d6fc89e_827df682",
         "filename": "src/Pipeline/SpirvShaderEnumNames.cpp",
         "patchSetId": 2
