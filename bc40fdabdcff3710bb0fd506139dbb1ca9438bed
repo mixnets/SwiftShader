@@ -22,6 +22,30 @@
       "revId": "bc40fdabdcff3710bb0fd506139dbb1ca9438bed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d52d9b9_123ddd01",
+        "filename": "src/Pipeline/SpirvShaderSpec.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T16:20:54Z",
+      "side": 1,
+      "message": "Nope. Good spot. Removed in https://swiftshader-review.googlesource.com/c/SwiftShader/+/38818",
+      "parentUuid": "eb43a30e_068dbb7b",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "bc40fdabdcff3710bb0fd506139dbb1ca9438bed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
