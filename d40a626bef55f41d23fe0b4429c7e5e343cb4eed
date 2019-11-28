@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "cc45fba0_bf3189ec",
+        "filename": "tests/regres/deqprun/deqprun.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T18:06:57Z",
+      "side": 1,
+      "message": "Done. Note that I changed RunConfig to Config; could change it back if preferred.",
+      "parentUuid": "e6a3757c_9c21f67c",
+      "range": {
+        "startLine": 16,
+        "startChar": 8,
+        "endLine": 16,
+        "endChar": 15
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ddf1ff78_d58f8a96",
         "filename": "tests/regres/deqprun/deqprun.go",
         "patchSetId": 1
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "That\u0027s a new one to me. I\u0027d probably just remove it - it\u0027s just pointless noise.",
       "parentUuid": "e2d22970_9805013e",
+      "range": {
+        "startLine": 107,
+        "startChar": 2,
+        "endLine": 107,
+        "endChar": 9
+      },
+      "revId": "d40a626bef55f41d23fe0b4429c7e5e343cb4eed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48ed707b_4b2df58e",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-11-28T18:06:57Z",
+      "side": 1,
+      "message": "OK done. Note that there are a few other places in main.go where errors are ignored, and a few are unintentional I think. I could try to fix those in a future CL. The other way of suppressing the warning for *intentionally* ignored errors is to add a comment `//noinspection GoUnhandledErrorResult` before the line, but I think it is specific to the GoLand IDE; unsure if that is preferable. There is of course a bug open for this kind of stuff! https://github.com/golang/go/issues/20803",
+      "parentUuid": "912017aa_d60f7713",
       "range": {
         "startLine": 107,
         "startChar": 2,
