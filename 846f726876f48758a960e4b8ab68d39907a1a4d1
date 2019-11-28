@@ -22,6 +22,30 @@
       "revId": "846f726876f48758a960e4b8ab68d39907a1a4d1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4c9c754_1e243d0a",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T16:21:54Z",
+      "side": 1,
+      "message": "No. Removed in https://swiftshader-review.googlesource.com/c/SwiftShader/+/38818.",
+      "parentUuid": "95a80fb2_3153f626",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "846f726876f48758a960e4b8ab68d39907a1a4d1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
