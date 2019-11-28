@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb7f9a7d_e4e7c24a",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-11-28T16:21:42Z",
+      "side": 1,
+      "message": "Is this needed?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 40
+      },
+      "revId": "90506e6a59ebe94d9ff21b619ef1362f2bc7cf19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
