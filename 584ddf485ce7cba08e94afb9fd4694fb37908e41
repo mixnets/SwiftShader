@@ -22,6 +22,30 @@
       "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4de70b5_fe29d5fa",
+        "filename": "src/Pipeline/SpirvShaderEnumNames.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T16:26:18Z",
+      "side": 1,
+      "message": "Except we strip the \u0027Op\u0027 prefix. Not for any real good reason, mind you.\nWill consider following up with another change.",
+      "parentUuid": "6d6fc89e_827df682",
+      "range": {
+        "startLine": 26,
+        "startChar": 2,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
