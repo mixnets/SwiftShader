@@ -46,6 +46,30 @@
       "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cf2c23b2_af433313",
+        "filename": "src/Pipeline/SpirvShaderEnumNames.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-11-28T16:27:37Z",
+      "side": 1,
+      "message": "Actually, I could make that work with the preprocessor approach too.\nHowever, I might have a way to get this out of spirv-tools, which would be preferable to enumerating all of this again.\nWill investigate",
+      "parentUuid": "e4de70b5_fe29d5fa",
+      "range": {
+        "startLine": 26,
+        "startChar": 2,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "584ddf485ce7cba08e94afb9fd4694fb37908e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
