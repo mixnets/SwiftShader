@@ -534,9 +534,8 @@ namespace rr
 
 		void seek(uint64_t Off) override { position = Off; }
 
-		const void *getEntry(int index) override
+		void cacheEntry()
 		{
-			ASSERT(index == 0); // Subzero does not support multiple entry points per routine yet.
 			if(!entry)
 			{
 				position = std::numeric_limits<std::size_t>::max();   // Can't stream more data after this
@@ -552,8 +551,11 @@ namespace rr
 					__builtin___clear_cache((char*)entry, (char*)entry + codeSize);
 				#endif
 			}
+		}
 
-			return entry;
+		const void *getEntry(int index) const override
+		{
+			return index == 0 ? entry : nullptr;
 		}
 
 		const void* addConstantData(const void* data, size_t size)
@@ -704,6 +706,7 @@ namespace rr
 		objectWriter->setUndefinedSyms(::context->getConstantExternSyms());
 		objectWriter->writeNonUserSections();
 
+		::routine->cacheEntry();
 		Routine *handoffRoutine = ::routine;
 		::routine = nullptr;
 

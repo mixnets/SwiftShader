@@ -31,13 +31,16 @@ namespace rr
 		~StreamBase()
 		{
 			auto pfn = (Nucleus::CoroutineDestroy*)routine->getEntry(Nucleus::CoroutineEntryDestroy);
-			pfn(handle);
+			if (pfn)
+			{
+				pfn(handle);
+			}
 		}
 
 		bool await(void* out)
 		{
 			auto pfn = (Nucleus::CoroutineAwait*)routine->getEntry(Nucleus::CoroutineEntryAwait);
-			return pfn(handle, out);
+			return pfn ? pfn(handle, out) : false;
 		}
 
 private:
