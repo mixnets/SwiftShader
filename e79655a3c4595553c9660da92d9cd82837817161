@@ -22,6 +22,30 @@
       "revId": "e79655a3c4595553c9660da92d9cd82837817161",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b304a283_33689778",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2019-12-02T19:11:47Z",
+      "side": 1,
+      "message": "For some reason, this newline doesn\u0027t exist in my checkout, not sure how this is even showing up here.",
+      "parentUuid": "ff0f2768_a7693fa4",
+      "range": {
+        "startLine": 224,
+        "startChar": 1,
+        "endLine": 224,
+        "endChar": 2
+      },
+      "revId": "e79655a3c4595553c9660da92d9cd82837817161",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
