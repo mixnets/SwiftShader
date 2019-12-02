@@ -21,7 +21,7 @@
 
 namespace vk {
 
-const char *Stringify(VkStructureType value)
+std::string Stringify(VkStructureType value)
 {
 #ifndef NDEBUG
 	// Since C++ hasn't given us introspection on enums, we can't just "get" an
@@ -32,7 +32,7 @@ const char *Stringify(VkStructureType value)
 	// If vulkan_core.h is updated to include new structure types, and this list
 	// becomes out of date, then this function will throw a warning if someone
 	// tries to stringify that enum value.
-	static const std::map<VkStructureType, const char *> strings = {
+	static const std::map<VkStructureType, std::string> strings = {
 #define INSERT_ELEMENT(p) std::make_pair(p, #p)
 		INSERT_ELEMENT(VK_STRUCTURE_TYPE_APPLICATION_INFO),
 		INSERT_ELEMENT(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO),
@@ -464,10 +464,10 @@ const char *Stringify(VkStructureType value)
 	else
 	{
 		WARN("Stringify(VkStructureType v) is out of date. Please update it to match vulkan/vulkan_core.h");
-		return "";
+		return std::to_string(value);
 	}
 #else // if not debug:
-	return "";
+	return std::to_string(value);
 #endif
 }
 
