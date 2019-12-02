@@ -842,6 +842,7 @@ namespace sw
 				case spv::CapabilitySampled1D: capabilities.Sampled1D = true; break;
 				case spv::CapabilityImage1D: capabilities.Image1D = true; break;
 				case spv::CapabilitySampledBuffer: capabilities.SampledBuffer = true; break;
+				case spv::CapabilitySampledCubeArray: capabilities.SampledCubeArray = true; break;
 				case spv::CapabilityImageBuffer: capabilities.ImageBuffer = true; break;
 				case spv::CapabilityImageQuery: capabilities.ImageQuery = true; break;
 				case spv::CapabilityDerivativeControl: capabilities.DerivativeControl = true; break;
