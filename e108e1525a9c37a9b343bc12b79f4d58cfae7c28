@@ -22,6 +22,30 @@
       "revId": "e108e1525a9c37a9b343bc12b79f4d58cfae7c28",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dca59ca7_1418f17f",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T15:09:52Z",
+      "side": 1,
+      "message": "Post our discussion, I modified this change so that it\u0027s about adding stubbed coroutine support to SubzeroReactor. The createCoroutine and acquireCoroutine implementations were originally part of the next CL: https://swiftshader-review.googlesource.com/c/SwiftShader/+/38874/2.",
+      "parentUuid": "23418ac2_070db90b",
+      "range": {
+        "startLine": 34,
+        "startChar": 3,
+        "endLine": 37,
+        "endChar": 4
+      },
+      "revId": "e108e1525a9c37a9b343bc12b79f4d58cfae7c28",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
