@@ -43,6 +43,9 @@
 #include "VkStringify.hpp"
 #include "VkRenderPass.hpp"
 
+#include "Debug/Context.hpp"
+#include "Debug/Server.hpp"
+
 #if defined(VK_USE_PLATFORM_METAL_EXT) || defined(VK_USE_PLATFORM_MACOS_MVK)
 #include "WSI/MetalSurface.h"
 #endif
@@ -151,6 +154,20 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 	return scheduler;
 }
 
+std::shared_ptr<vk::dbg::Context> getDebuggerContext()
+{
+#ifdef ENABLE_VK_DEBUGGER
+	static auto port = getenv("VK_DEBUGGER_PORT");
+	if (port)
+	{
+		static auto context = vk::dbg::Context::create();
+		static auto server = vk::dbg::Server::create(context, atoi(port));
+		return context;
+	}
+#endif // ENABLE_VK_DEBUGGER
+	return nullptr;
+}
+
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
 // initialization of the swiftshader driver.
 void initializeLibrary()
@@ -161,6 +178,11 @@ void initializeLibrary()
 #endif  // __ANDROID__ && ENABLE_BUILD_VERSION_OUTPUT
 		setReactorDefaultConfig();
 		setCPUDefaults();
+
+		// Construct the debugger context and server - this may block for a
+		// debugger connection, allowing breakpoints to be set before they're
+		// executed.
+		getDebuggerContext();
 		return true;
 	}();
 	(void)doOnce;
@@ -1973,7 +1995,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateCommandBuffers(VkDevice device, const V
 	}
 
 	return vk::Cast(pAllocateInfo->commandPool)->allocateCommandBuffers(
-		pAllocateInfo->level, pAllocateInfo->commandBufferCount, pCommandBuffers);
+		pAllocateInfo->level, pAllocateInfo->commandBufferCount, pCommandBuffers,
+		getDebuggerContext());
 }
 
 VKAPI_ATTR void VKAPI_CALL vkFreeCommandBuffers(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
