@@ -22,6 +22,30 @@
       "revId": "ecab1aa8040c1ba0dc0108e0b5583700d6a2457a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c44fcfb5_6b32793f",
+        "filename": "src/Pipeline/SamplerCore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T15:22:17Z",
+      "side": 1,
+      "message": "Why is it the same for all samples? The array index is the last component of the vec4 coordinates passed to the texture sampling function. I see no requirement for a shader to only use a single cubemap of the cubemap array for a given texture sample operation.",
+      "parentUuid": "81530a59_85a60739",
+      "range": {
+        "startLine": 86,
+        "startChar": 111,
+        "endLine": 86,
+        "endChar": 122
+      },
+      "revId": "ecab1aa8040c1ba0dc0108e0b5583700d6a2457a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
