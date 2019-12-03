@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1048d840_f71f0bd4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12b77dfd_a765ccab",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "30b9dc2f_414d1605",
         "filename": "src/Vulkan/Debug/EventListener.hpp",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7972a475_e038ab67",
+        "filename": "src/Vulkan/Debug/EventListener.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:52:49Z",
+      "side": 1,
+      "message": "I used ID\u003cThread\u003e as I\u0027d need to #include \"Thread.hpp\" in order to use the ID alias in Thread (you can\u0027t forward declare inner types). While I could include this header, I was trying to keep the transitive header dependencies to a minimum.",
+      "parentUuid": "30b9dc2f_414d1605",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "6cca80c9_63cc2666",
+        "filename": "src/Vulkan/Debug/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:52:49Z",
+      "side": 1,
+      "message": "\u003e These query functions, like locals(), arguments(), hovers(), etc. are returning pointers to data that might get modified from another thread\n\nThis is fine, VariableContainer has been built to be thread safe.\nThis is also the intended way to actually modify the variables - I don\u0027t want to have to incur a full cascading immutable copy every time a new variable is added to the stack frame.",
+      "parentUuid": "71f97915_ac760589",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6e115ec5_af1c9520",
         "filename": "src/Vulkan/Debug/Thread.hpp",
         "patchSetId": 3
@@ -67,6 +121,24 @@
       "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c95a0ff_12e642c0",
+        "filename": "src/Vulkan/Debug/Thread.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:52:49Z",
+      "side": 1,
+      "message": "Unfortunately so, as I have getters with these names, and I have a loathing for \u0027get\u0027 prefixes.",
+      "parentUuid": "6e115ec5_af1c9520",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
