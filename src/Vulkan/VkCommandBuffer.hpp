@@ -20,6 +20,7 @@
 #include "VkDescriptorSet.hpp"
 #include "Device/Color.hpp"
 #include "Device/Context.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -32,6 +33,12 @@ namespace sw
 
 namespace vk
 {
+
+namespace dbg
+{
+class Context;
+class File;
+} // namespace vk::dbg
 
 class Buffer;
 class Event;
@@ -47,7 +54,7 @@ class CommandBuffer
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 
-	CommandBuffer(VkCommandBufferLevel pLevel);
+	CommandBuffer(VkCommandBufferLevel pLevel, const std::shared_ptr<vk::dbg::Context>& dbgctx);
 
 	static inline CommandBuffer* Cast(VkCommandBuffer object)
 	{
@@ -188,6 +195,11 @@ public:
 
 	class Command;
 private:
+	struct Debug {
+		std::shared_ptr<vk::dbg::Context> ctx;
+		std::shared_ptr<vk::dbg::File> file;
+	};
+
 	void resetState();
 	template<typename T, typename... Args> void addCommand(Args&&... args);
 
@@ -197,6 +209,8 @@ private:
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	std::vector<std::unique_ptr<Command>>* commands;
+
+	Debug dbg;
 };
 
 using DispatchableCommandBuffer = DispatchableObject<CommandBuffer, VkCommandBuffer>;
