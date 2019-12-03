@@ -36,6 +36,7 @@ class vk::CommandBuffer::Command
 public:
 	// FIXME (b/119421344): change the commandBuffer argument to a CommandBuffer state
 	virtual void play(vk::CommandBuffer::ExecutionState& executionState) = 0;
+	virtual std::string description() = 0;
 	virtual ~Command() {}
 };
 
@@ -67,6 +68,8 @@ public:
 		framebuffer->clear(executionState.renderPass, clearValueCount, clearValues, renderArea);
 	}
 
+	std::string description() override { return "vkCmdBeginRenderPass()"; }
+
 private:
 	vk::RenderPass* renderPass;
 	vk::Framebuffer* framebuffer;
@@ -92,6 +95,8 @@ public:
 
 		++executionState.subpassIndex;
 	}
+
+	std::string description() override { return "vkCmdNextSubpass()"; }
 };
 
 class EndRenderPass : public vk::CommandBuffer::Command
@@ -110,6 +115,8 @@ public:
 		executionState.renderPass = nullptr;
 		executionState.renderPassFramebuffer = nullptr;
 	}
+
+	std::string description() override { return "vkCmdEndRenderPass()"; }
 };
 
 class ExecuteCommands : public vk::CommandBuffer::Command
@@ -123,6 +130,8 @@ public:
 	{
 		commandBuffer->submitSecondary(executionState);
 	}
+
+	std::string description() override { return "vkCmdExecuteCommands()"; }
 
 private:
 	const vk::CommandBuffer* commandBuffer;
@@ -140,6 +149,8 @@ public:
 	{
 		executionState.pipelineState[pipelineBindPoint].pipeline = pipeline;
 	}
+
+	std::string description() override { return "vkCmdPipelineBind()"; }
 
 private:
 	VkPipelineBindPoint pipelineBindPoint;
@@ -166,6 +177,8 @@ public:
 			pipelineState.descriptorDynamicOffsets,
 			executionState.pushConstants);
 	}
+
+	std::string description() override { return "vkCmdDispatch()"; }
 
 private:
 	uint32_t baseGroupX;
@@ -197,6 +210,8 @@ public:
 			executionState.pushConstants);
 	}
 
+	std::string description() override { return "vkCmdDispatchIndirect()"; }
+
 private:
 	const vk::Buffer* buffer;
 	VkDeviceSize offset;
@@ -214,6 +229,8 @@ public:
 	{
 		executionState.vertexInputBindings[binding] = { buffer, offset };
 	}
+
+	std::string description() override { return "vkCmdVertexBufferBind()"; }
 
 private:
 	uint32_t binding;
@@ -235,6 +252,8 @@ public:
 		executionState.indexType = indexType;
 	}
 
+	std::string description() override { return "vkCmdIndexBufferBind()"; }
+
 private:
 	vk::Buffer* buffer;
 	const VkDeviceSize offset;
@@ -254,6 +273,8 @@ public:
 		executionState.dynamicState.viewport = viewport;
 	}
 
+	std::string description() override { return "vkCmdSetViewport()"; }
+
 private:
 	const VkViewport viewport;
 	uint32_t viewportID;
@@ -271,6 +292,8 @@ public:
 	{
 		executionState.dynamicState.scissor = scissor;
 	}
+
+	std::string description() override { return "vkCmdSetScissor()"; }
 
 private:
 	const VkRect2D scissor;
@@ -292,6 +315,8 @@ public:
 		executionState.dynamicState.depthBiasSlopeFactor = depthBiasSlopeFactor;
 	}
 
+	std::string description() override { return "vkCmdSetDepthBias()"; }
+
 private:
 	float depthBiasConstantFactor;
 	float depthBiasClamp;
@@ -311,6 +336,8 @@ public:
 		memcpy(&(executionState.dynamicState.blendConstants[0]), blendConstants, sizeof(blendConstants));
 	}
 
+	std::string description() override { return "vkCmdSetBlendConstants()"; }
+
 private:
 	float blendConstants[4];
 };
@@ -328,6 +355,8 @@ public:
 		executionState.dynamicState.minDepthBounds = minDepthBounds;
 		executionState.dynamicState.maxDepthBounds = maxDepthBounds;
 	}
+
+	std::string description() override { return "vkCmdSetDepthBounds()"; }
 
 private:
 	float minDepthBounds;
@@ -354,6 +383,8 @@ public:
 		}
 	}
 
+	std::string description() override { return "vkCmdSetStencilCompareMask()"; }
+
 private:
 	VkStencilFaceFlags faceMask;
 	uint32_t compareMask;
@@ -379,6 +410,8 @@ public:
 		}
 	}
 
+	std::string description() override { return "vkCmdSetStencilWriteMask()"; }
+
 private:
 	VkStencilFaceFlags faceMask;
 	uint32_t writeMask;
@@ -403,6 +436,8 @@ public:
 			executionState.dynamicState.reference[1] = reference;
 		}
 	}
+
+	std::string description() override { return "vkCmdSetStencilReference()"; }
 
 private:
 	VkStencilFaceFlags faceMask;
@@ -587,6 +622,8 @@ public:
 		draw(executionState, false, vertexCount, instanceCount, 0, firstVertex, firstInstance);
 	}
 
+	std::string description() override { return "vkCmdDraw()"; }
+
 private:
 	uint32_t vertexCount;
 	uint32_t instanceCount;
@@ -606,6 +643,8 @@ public:
 	{
 		draw(executionState, true, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 	}
+
+	std::string description() override { return "vkCmdDrawIndexed()"; }
 
 private:
 	uint32_t indexCount;
@@ -632,6 +671,8 @@ public:
 		}
 	}
 
+	std::string description() override { return "vkCmdDrawIndirect()"; }
+
 private:
 	const vk::Buffer* buffer;
 	VkDeviceSize offset;
@@ -656,6 +697,8 @@ public:
 		}
 	}
 
+	std::string description() override { return "vkCmdDrawIndirect()"; }
+
 private:
 	const vk::Buffer* buffer;
 	VkDeviceSize offset;
@@ -676,6 +719,8 @@ public:
 		srcImage->copyTo(dstImage, region);
 	}
 
+	std::string description() override { return "vkCmdImageToImageCopy()"; }
+
 private:
 	const vk::Image* srcImage;
 	vk::Image* dstImage;
@@ -694,6 +739,8 @@ public:
 	{
 		srcBuffer->copyTo(dstBuffer, region);
 	}
+
+	std::string description() override { return "vkCmdBufferToBufferCopy()"; }
 
 private:
 	const vk::Buffer* srcBuffer;
@@ -714,6 +761,8 @@ public:
 		srcImage->copyTo(dstBuffer, region);
 	}
 
+	std::string description() override { return "vkCmdImageToBufferCopy()"; }
+
 private:
 	vk::Image* srcImage;
 	vk::Buffer* dstBuffer;
@@ -733,6 +782,8 @@ public:
 		dstImage->copyFrom(srcBuffer, region);
 	}
 
+	std::string description() override { return "vkCmdBufferToImageCopy()"; }
+
 private:
 	vk::Buffer* srcBuffer;
 	vk::Image* dstImage;
@@ -751,6 +802,8 @@ public:
 	{
 		dstBuffer->fill(dstOffset, size, data);
 	}
+
+	std::string description() override { return "vkCmdFillBuffer()"; }
 
 private:
 	vk::Buffer* dstBuffer;
@@ -772,6 +825,8 @@ public:
 		dstBuffer->update(dstOffset, data.size(), data.data());
 	}
 
+	std::string description() override { return "vkCmdUpdateBuffer()"; }
+
 private:
 	vk::Buffer* dstBuffer;
 	VkDeviceSize dstOffset;
@@ -791,6 +846,8 @@ public:
 		image->clear(color, range);
 	}
 
+	std::string description() override { return "vkCmdClearColorImage()"; }
+
 private:
 	vk::Image* image;
 	const VkClearColorValue color;
@@ -809,6 +866,8 @@ public:
 	{
 		image->clear(depthStencil, range);
 	}
+
+	std::string description() override { return "vkCmdClearDepthStencilImage()"; }
 
 private:
 	vk::Image* image;
@@ -833,6 +892,8 @@ public:
 		executionState.renderPassFramebuffer->clearAttachment(executionState.renderPass, executionState.subpassIndex, attachment, rect);
 	}
 
+	std::string description() override { return "vkCmdClearAttachment()"; }
+
 private:
 	const VkClearAttachment attachment;
 	const VkClearRect rect;
@@ -850,6 +911,8 @@ public:
 	{
 		srcImage->blit(dstImage, region, filter);
 	}
+
+	std::string description() override { return "vkCmdBlitImage()"; }
 
 private:
 	const vk::Image* srcImage;
@@ -871,6 +934,8 @@ public:
 		srcImage->resolve(dstImage, region);
 	}
 
+	std::string description() override { return "vkCmdBlitImage()"; }
+
 private:
 	const vk::Image* srcImage;
 	vk::Image* dstImage;
@@ -891,6 +956,8 @@ public:
 
 		// Also note that this would be a good moment to update cube map borders or decompress compressed textures, if necessary.
 	}
+
+	std::string description() override { return "vkCmdPipelineBarrier()"; }
 };
 
 class SignalEvent : public vk::CommandBuffer::Command
@@ -905,6 +972,8 @@ public:
 		executionState.renderer->synchronize();
 		ev->signal();
 	}
+
+	std::string description() override { return "vkCmdSignalEvent()"; }
 
 private:
 	vk::Event* ev;
@@ -923,6 +992,8 @@ public:
 		ev->reset();
 	}
 
+	std::string description() override { return "vkCmdResetEvent()"; }
+
 private:
 	vk::Event* ev;
 	VkPipelineStageFlags stageMask; // FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
@@ -940,6 +1011,8 @@ public:
 		executionState.renderer->synchronize();
 		ev->wait();
 	}
+
+	std::string description() override { return "vkCmdWaitEvent()"; }
 
 private:
 	vk::Event* ev;
@@ -973,6 +1046,8 @@ public:
 		}
 	}
 
+	std::string description() override { return "vkCmdBindDescriptorSet()"; }
+
 private:
 	VkPipelineBindPoint pipelineBindPoint;
 	const vk::PipelineLayout *pipelineLayout;
@@ -999,6 +1074,8 @@ public:
 		memcpy(&executionState.pushConstants.data[offset], data, size);
 	}
 
+	std::string description() override { return "vkCmdSetPushConstants()"; }
+
 private:
 	uint32_t offset;
 	uint32_t size;
@@ -1018,6 +1095,8 @@ public:
 		queryPool->begin(query, flags);
 		executionState.renderer->addQuery(queryPool->getQuery(query));
 	}
+
+	std::string description() override { return "vkCmdBeginQuery()"; }
 
 private:
 	vk::QueryPool* queryPool;
@@ -1039,6 +1118,8 @@ public:
 		queryPool->end(query);
 	}
 
+	std::string description() override { return "vkCmdEndQuery()"; }
+
 private:
 	vk::QueryPool* queryPool;
 	uint32_t query;
@@ -1056,6 +1137,8 @@ public:
 	{
 		queryPool->reset(firstQuery, queryCount);
 	}
+
+	std::string description() override { return "vkCmdResetQueryPool()"; }
 
 private:
 	vk::QueryPool* queryPool;
@@ -1087,6 +1170,8 @@ public:
 		queryPool->writeTimestamp(query);
 	}
 
+	std::string description() override { return "vkCmdWriteTimeStamp()"; }
+
 private:
 	vk::QueryPool* queryPool;
 	uint32_t query;
@@ -1108,6 +1193,8 @@ public:
 		queryPool->getResults(firstQuery, queryCount, dstBuffer->getSize() - dstOffset,
 		                      dstBuffer->getOffsetPointer(dstOffset), stride, flags);
 	}
+
+	std::string description() override { return "vkCmdCopyQueryPoolResults()"; }
 
 private:
 	const vk::QueryPool* queryPool;
