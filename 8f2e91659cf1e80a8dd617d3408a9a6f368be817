@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57bd9257_d4336430",
+        "filename": "third_party/subzero/src/IceInstX86Base.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1252,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T22:43:54Z",
+      "side": 1,
+      "message": "change to TODO(b/\u003cbug id\u003e)",
+      "range": {
+        "startLine": 1252,
+        "startChar": 14,
+        "endLine": 1252,
+        "endChar": 23
+      },
+      "revId": "8f2e91659cf1e80a8dd617d3408a9a6f368be817",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
