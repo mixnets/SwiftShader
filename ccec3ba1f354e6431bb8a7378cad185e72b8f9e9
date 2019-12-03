@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13171936_69f0b9ab",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T16:42:43Z",
+      "side": 1,
+      "message": "spelling: identifiers",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "648d513b_8f3fe99e",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T16:42:43Z",
+      "side": 1,
+      "message": "\u0027inline\u0027 is redundant on all these functions. Is this a Google coding standard thing?",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
