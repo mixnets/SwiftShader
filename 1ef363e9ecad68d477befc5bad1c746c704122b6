@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "584bad84_1af42d92",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T21:41:50Z",
+      "side": 1,
+      "message": "\"#ifdef ENABLE_VK_DBG\" around both includes?\n\nI think the vk::dbg::Context is already forward declared in one or more of the included header files, since you call allocateCommandBuffers with it.",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 27
+      },
+      "revId": "1ef363e9ecad68d477befc5bad1c746c704122b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
