@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12b77dfd_a765ccab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T21:01:43Z",
+      "side": 1,
+      "message": "nit: EventListener _is_ an interface...",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30b9dc2f_414d1605",
+        "filename": "src/Vulkan/Debug/EventListener.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T21:01:43Z",
+      "side": 1,
+      "message": "Should it be ID\u003cThread\u003e or Thread::ID? I know both are equivalent, but since you are typedef\u0027ing ID in each class, maybe it would be more consistent to use ClassName::ID everywhere?",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71f97915_ac760589",
+        "filename": "src/Vulkan/Debug/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T21:01:43Z",
+      "side": 1,
+      "message": "These query functions, like locals(), arguments(), hovers(), etc. are returning pointers to data that might get modified from another thread. The mutex lock here doesn\u0027t help. There are usually two solutions:\n1. Call a function that takes a callback in which you lock the mutex, and pass the data to the callback (via const ref), where it can be safely read.\n2. Return a copy of the data.",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e115ec5_af1c9520",
+        "filename": "src/Vulkan/Debug/Thread.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T21:01:43Z",
+      "side": 1,
+      "message": "name_, and state_ below have the underscore suffix. Is this intentional?",
+      "revId": "5276feeaf6b9db3a33a889f6f6d4de9fc2bca68e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
