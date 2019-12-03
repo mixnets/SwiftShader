@@ -1137,6 +1137,20 @@ namespace sw
 		Int killMask = Int{0};
 		SIMD::Int windowSpacePosition[2];
 		Int viewID;	// slice offset into input attachments for multiview, even if the shader doesn't use ViewIndex
+		Int instanceID;
+		SIMD::Int vertexIndex;
+		std::array<SIMD::Float, 4> fragCoord;
+		std::array<SIMD::Float, 4> pointCoord;
+		SIMD::Int helperInvocation;
+		Int4 numWorkgroups;
+		Int4 workgroupID;
+		Int4 workgroupSize;
+		Int subgroupsPerWorkgroup;
+		Int invocationsPerSubgroup;
+		Int subgroupIndex;
+		SIMD::Int localInvocationIndex;
+		std::array<SIMD::Int, 3> localInvocationID;
+		std::array<SIMD::Int, 3> globalInvocationID;
 
 		void createVariable(SpirvShader::Object::ID id, uint32_t size)
 		{
