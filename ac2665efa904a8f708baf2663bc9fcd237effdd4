@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8073a0b_6cd1ac4c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T17:57:35Z",
+      "side": 1,
+      "message": "\u0027time\u0027 -\u003e \u0027type\u0027 ?",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdd0af6b_d47ab635",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T17:57:35Z",
+      "side": 1,
+      "message": "In C++, it\u0027s usually recommended to use the \u003ccstdint\u003e include to signify that we\u0027re including a C standard header. For example, \u003cstring\u003e is C++, and \u003ccstring\u003e is the C one, which is the same as string.h, but clearer.",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8409d038_8e6838c8",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T17:57:35Z",
+      "side": 1,
+      "message": "\u0027inline\u0027 not necessary on the constructor here.",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a78a8340_6598d6b0",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T17:57:35Z",
+      "side": 1,
+      "message": "Should the pointed-to thing be const as well? \u0027const std::shared_ptr\u003cconst Type\u003e elem\u0027 ? I only ask because this is a public member, so it means one could modify the thing it points to via this member.\n\nAlso typo: Element type \"_of_ pointer.\n\nAnother question: why use shared_ptr for these types?",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
