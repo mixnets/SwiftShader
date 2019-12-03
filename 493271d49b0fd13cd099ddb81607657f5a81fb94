@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8cd2bb57_80056b1e",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T22:29:31Z",
+      "side": 1,
+      "message": "const void*?",
+      "range": {
+        "startLine": 537,
+        "startChar": 2,
+        "endLine": 537,
+        "endChar": 7
+      },
+      "revId": "493271d49b0fd13cd099ddb81607657f5a81fb94",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b92be35b_99d1a054",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T22:29:31Z",
+      "side": 1,
+      "message": "const void*?",
+      "range": {
+        "startLine": 714,
+        "startChar": 2,
+        "endLine": 714,
+        "endChar": 7
+      },
+      "revId": "493271d49b0fd13cd099ddb81607657f5a81fb94",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
