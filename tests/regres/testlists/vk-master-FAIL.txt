@@ -1,2 +1,3 @@
 dEQP-VK.graphicsfuzz.discard-continue-return
 dEQP-VK.graphicsfuzz.unreachable-continue-statement
+dEQP-VK.synchronization.basic.fence.multi_waitall_false
