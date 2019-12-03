@@ -46,7 +46,7 @@ size_t CommandPool::ComputeRequiredAllocationSize(const VkCommandPoolCreateInfo 
 	return 0;
 }
 
-VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_t commandBufferCount, VkCommandBuffer *pCommandBuffers)
+VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_t commandBufferCount, VkCommandBuffer *pCommandBuffers, const std::shared_ptr<dbg::Context> &dbgctx)
 {
 	for(uint32_t i = 0; i < commandBufferCount; i++)
 	{
@@ -54,7 +54,7 @@ VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_
 		void *deviceMemory = vk::allocate(sizeof(DispatchableCommandBuffer), REQUIRED_MEMORY_ALIGNMENT,
 		                                  DEVICE_MEMORY, DispatchableCommandBuffer::GetAllocationScope());
 		ASSERT(deviceMemory);
-		DispatchableCommandBuffer *commandBuffer = new(deviceMemory) DispatchableCommandBuffer(level);
+		DispatchableCommandBuffer *commandBuffer = new(deviceMemory) DispatchableCommandBuffer(level, dbgctx);
 		if(commandBuffer)
 		{
 			pCommandBuffers[i] = *commandBuffer;
