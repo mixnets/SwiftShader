@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ca48ef50_40a47385",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T18:14:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8073a0b_6cd1ac4c",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bdd0af6b_d47ab635",
         "filename": "src/Vulkan/Debug/Type.hpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fa0c896_3b75fb9b",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T18:14:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bdd0af6b_d47ab635",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "21dd6e5a_e0d2e95f",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T18:14:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8409d038_8e6838c8",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a78a8340_6598d6b0",
         "filename": "src/Vulkan/Debug/Type.hpp",
         "patchSetId": 1
@@ -67,6 +121,24 @@
       "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "430ac9ce_64359415",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T18:14:59Z",
+      "side": 1,
+      "message": "\u003e Should the pointed-to thing be const as well? \u0027const std::shared_ptr\u003cconst Type\u003e elem\u0027 ? I only ask because this is a public member, so it means one could modify the thing it points to via this member.\n\nAll members on type were already const, but done anyway.\n\n\u003e Also typo: Element type \"_of_ pointer.\n\nDone.\n\n\u003e Another question: why use shared_ptr for these types?\n\nI\u0027m assuming that there will be types built on the fly from SpirvShader (composite types are still WIP). Given that these will have a transient lifetime, shared_ptr made sense.",
+      "parentUuid": "a78a8340_6598d6b0",
+      "revId": "ac2665efa904a8f708baf2663bc9fcd237effdd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
