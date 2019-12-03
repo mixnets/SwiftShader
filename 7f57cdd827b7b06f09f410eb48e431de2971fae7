@@ -22,6 +22,30 @@
       "revId": "7f57cdd827b7b06f09f410eb48e431de2971fae7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98a08f2e_06216bf3",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:58:17Z",
+      "side": 1,
+      "message": "Yup. Good spot!",
+      "parentUuid": "a4d4fde4_3d798318",
+      "range": {
+        "startLine": 696,
+        "startChar": 55,
+        "endLine": 696,
+        "endChar": 56
+      },
+      "revId": "7f57cdd827b7b06f09f410eb48e431de2971fae7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
