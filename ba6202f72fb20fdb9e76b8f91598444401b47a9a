@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88103a1a_79e6518d",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 4701,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-03T06:53:27Z",
+      "side": 1,
+      "message": "Looks like this might not be handling scalars then? Or does _movp() handle scalars in vector registers?",
+      "range": {
+        "startLine": 4701,
+        "startChar": 4,
+        "endLine": 4701,
+        "endChar": 19
+      },
+      "revId": "ba6202f72fb20fdb9e76b8f91598444401b47a9a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
