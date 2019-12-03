@@ -25,6 +25,12 @@
 #include "VkRenderPass.hpp"
 #include "Device/Renderer.hpp"
 
+#include "./Debug/Context.hpp"
+#include "./Debug/File.hpp"
+#include "./Debug/Thread.hpp"
+
+#include "marl/defer.h"
+
 #include <cstring>
 
 class vk::CommandBuffer::Command
@@ -1206,8 +1212,10 @@ private:
 
 namespace vk {
 
-CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
+CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel, const std::shared_ptr<vk::dbg::Context>& dbgctx) : level(pLevel)
 {
+	dbg.ctx = dbgctx;
+
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	commands = new std::vector<std::unique_ptr<Command> >();
 }
@@ -1252,6 +1260,17 @@ VkResult CommandBuffer::end()
 	ASSERT(state == RECORDING);
 
 	state = EXECUTABLE;
+
+#ifdef ENABLE_VK_DEBUGGER
+	if (dbg.ctx)
+	{
+		std::string source;
+		for(auto& command : *commands) {
+			source += command->description() + "\n";
+		}
+		dbg.file = dbg.ctx->lock().createVirtualFile("VkCommandBuffer", source.c_str());
+	}
+#endif // ENABLE_VK_DEBUGGER
 
 	return VK_SUCCESS;
 }
@@ -1669,8 +1688,26 @@ void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
 	// Perform recorded work
 	state = PENDING;
 
+#ifdef ENABLE_VK_DEBUGGER
+	std::shared_ptr<vk::dbg::Thread> dbgThread;
+	if (dbg.ctx)
+	{
+		auto lock = dbg.ctx->lock();
+		dbgThread = lock.currentThread();
+		dbgThread->setName("vkQueue processor");
+		dbgThread->enter(lock, dbg.file, "vkCommandBuffer::submit");
+		lock.unlock();
+	}
+	defer(if (dbgThread) { dbgThread->exit(); });
+	int line = 1;
+#endif // ENABLE_VK_DEBUGGER
+
 	for(auto& command : *commands)
 	{
+#ifdef ENABLE_VK_DEBUGGER
+		if (dbgThread) { dbgThread->update({line++, dbg.file}); }
+#endif // ENABLE_VK_DEBUGGER
+
 		command->play(executionState);
 	}
 
@@ -1737,4 +1774,4 @@ void CommandBuffer::ExecutionState::bindAttachments(sw::Context& context)
 	}
 }
 
-}  // namespace vk
+} // namespace vk
