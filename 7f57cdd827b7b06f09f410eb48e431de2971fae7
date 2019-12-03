@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4d4fde4_3d798318",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-03T21:48:55Z",
+      "side": 1,
+      "message": "Do you want to mention \"Indexed\" in here, to differentiate?",
+      "range": {
+        "startLine": 696,
+        "startChar": 55,
+        "endLine": 696,
+        "endChar": 56
+      },
+      "revId": "7f57cdd827b7b06f09f410eb48e431de2971fae7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
