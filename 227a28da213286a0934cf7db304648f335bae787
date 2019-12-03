@@ -16,6 +16,24 @@
       "revId": "227a28da213286a0934cf7db304648f335bae787",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "962cfd76_5db3066f",
+        "filename": "src/Vulkan/Debug/Location.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:45:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "734468e0_ebcab830",
+      "revId": "227a28da213286a0934cf7db304648f335bae787",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
