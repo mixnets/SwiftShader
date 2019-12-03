@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74ed7316_86b9ff49",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "I would document that this class is thread-safe in terms of breakpoints. In fact, perhaps this contract should be moved up to File, and you could move the mutex there, make clear/add/hasBreakpoint non-virtual, lock mutex, and call protected \"doClear/doAdd/doHasBreakpoint\" virtual functions (i.e. Template Method pattern).",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb25cef1_adcc636f",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "Consider making the constructor protected to avoid and signal that this class shouldn\u0027t be instantiated.",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe0c3282_7b1169d7",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "Once we move to C++17, we can finally make use of \u003cfilesystem\u003e (https://en.cppreference.com/w/cpp/filesystem/path)",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "677519d8_6c8919e4",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "I would remove \u0027inline\u0027 here.",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "858eb8e6_1b551abb",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "You could have all these strings be passed in by value (here and in the static factory functions), and std::move() them down the chain and into storage here. This would be more efficient if you create an r-value or std::move the initial string passed down, as it only heap allocates once.",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9512b0d_6dcd60bf",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T20:24:09Z",
+      "side": 1,
+      "message": "No real need to copy \u0027dir\u0027 to \u0027d\u0027, right? Can just use \u0027dir\u0027 directly in the return statement.",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
