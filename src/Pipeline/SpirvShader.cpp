@@ -18,6 +18,8 @@
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Vulkan/VkRenderPass.hpp"
 
+#include "marl/defer.h"
+
 #include <spirv/unified1/spirv.hpp>
 
 namespace sw {
@@ -38,6 +40,11 @@ SpirvShader::SpirvShader(
     , robustBufferAccess(robustBufferAccess)
 {
 	ASSERT(insns.size() > 0);
+
+	if(dbgctx)
+	{
+		dbgInit(dbgctx);
+	}
 
 	if(renderPass)
 	{
@@ -692,6 +699,13 @@ SpirvShader::SpirvShader(
 	{
 		it.second.AssignBlockFields();
 	}
+
+	dbgCreateFile();
+}
+
+SpirvShader::~SpirvShader()
+{
+	dbgTerm();
 }
 
 void SpirvShader::DeclareType(InsnIterator insn)
@@ -1425,6 +1439,7 @@ void SpirvShader::DefineResult(const InsnIterator &insn)
 	}
 
 	object.definition = insn;
+	dbgDeclareResult(insn, resultId);
 }
 
 OutOfBoundsBehavior SpirvShader::EmitState::getOutOfBoundsBehavior(spv::StorageClass storageClass) const
@@ -1515,6 +1530,9 @@ void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLan
 {
 	EmitState state(routine, entryPoint, activeLaneMask, storesAndAtomicsMask, descriptorSets, robustBufferAccess, executionModel);
 
+	dbgBeginEmit(&state);
+	defer(dbgEndEmit(&state));
+
 	// Emit everything up to the first label
 	// TODO: Separate out dispatch of block from non-block instructions?
 	for(auto insn : *this)
@@ -1550,6 +1568,9 @@ void SpirvShader::EmitInstructions(InsnIterator begin, InsnIterator end, EmitSta
 
 SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitState *state) const
 {
+	dbgBeginEmitInstruction(insn, state);
+	defer(dbgEndEmitInstruction(insn, state));
+
 	auto opcode = insn.opcode();
 
 	switch(opcode)
