@@ -22,6 +22,30 @@
       "revId": "ba6202f72fb20fdb9e76b8f91598444401b47a9a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05b90166_b2595ff7",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 4701,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-03T16:20:02Z",
+      "side": 1,
+      "message": "I think you\u0027re right, this wouldn\u0027t handle scalars. _movp creates an InstX86Movp, which is only for vector targets:\n\ntemplate \u003ctypename TraitsType\u003e\nvoid InstImpl\u003cTraitsType\u003e::InstX86Movp::emitIAS(const Cfg *Func) const {\n  assert(this-\u003egetSrcSize() \u003d\u003d 1);\n  assert(isVectorType(this-\u003egetDest()-\u003egetType()));\n  ...",
+      "parentUuid": "88103a1a_79e6518d",
+      "range": {
+        "startLine": 4701,
+        "startChar": 4,
+        "endLine": 4701,
+        "endChar": 19
+      },
+      "revId": "ba6202f72fb20fdb9e76b8f91598444401b47a9a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
