@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a2ed3630_f53ba537",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Documented the public interface in File.hpp.\nI\u0027ll consider the refactorings, but I\u0027d prefer to do this as a separate, incremental change.",
+      "parentUuid": "74ed7316_86b9ff49",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb25cef1_adcc636f",
         "filename": "src/Vulkan/Debug/File.cpp",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1bce1fc_8fb6baf4",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb25cef1_adcc636f",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "d9b801a9_1ee84bf7",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Ack. One sweet day.",
+      "parentUuid": "fe0c3282_7b1169d7",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "677519d8_6c8919e4",
         "filename": "src/Vulkan/Debug/File.hpp",
         "patchSetId": 3
@@ -67,6 +121,24 @@
       "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8242f706_fde8df61",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "677519d8_6c8919e4",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "b91b951f_be026490",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "858eb8e6_1b551abb",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9512b0d_6dcd60bf",
         "filename": "src/Vulkan/Debug/File.hpp",
         "patchSetId": 3
@@ -101,6 +191,24 @@
       "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b07ea13_2f88c474",
+        "filename": "src/Vulkan/Debug/File.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T23:44:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9512b0d_6dcd60bf",
+      "revId": "a7d18216530c87f56383860f713f04ad4f18b914",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
