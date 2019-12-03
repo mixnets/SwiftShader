@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "aa47d019_5e85b210",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T17:09:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "13171936_69f0b9ab",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "648d513b_8f3fe99e",
         "filename": "src/Vulkan/Debug/ID.hpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2019-12-03T16:42:43Z",
       "side": 1,
       "message": "\u0027inline\u0027 is redundant on all these functions. Is this a Google coding standard thing?",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c495cead_901be500",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-03T17:09:52Z",
+      "side": 1,
+      "message": "Nope, I just like being explicit about this - especially for a type that I _really_ want to be as performant as an int.\nThe reason for my preference was that I\u0027ve encountered compilers in the past that would incorrectly error on duplicate symbols, despite the implementation clearly being in the header.\n\nMy brain also parses these easier - I know to look for the implementation starting at the end of the line or below the class when I start reading a function declaration starting with an \u0027inline\u0027.\n\nWill change if it really offends you. Also note that this particular file is pretty much copypasta from https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/master/src/Pipeline/SpirvID.hpp (which also has the typo!)",
+      "parentUuid": "648d513b_8f3fe99e",
       "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
