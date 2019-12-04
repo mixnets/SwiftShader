@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "062dd8a6_ddc3c93c",
+        "filename": "src/Vulkan/Debug/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:29:03Z",
+      "side": 1,
+      "message": "add and remove modifies the listeners vector, which would invalidate iterators in the other functions that also lock the recursive mutex. Maybe we should be asserting, instead, that the mutex is not locked at all in these functions?",
+      "revId": "66352d7742ebe9d67acfe871c6a3c67172a5e934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d398ebc_92788b27",
+        "filename": "src/Vulkan/Debug/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:29:03Z",
+      "side": 1,
+      "message": "spelling: reentrant",
+      "range": {
+        "startLine": 40,
+        "startChar": 72,
+        "endLine": 40,
+        "endChar": 80
+      },
+      "revId": "66352d7742ebe9d67acfe871c6a3c67172a5e934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "670b0e1b_a3f4d51c",
+        "filename": "src/Vulkan/Debug/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:29:03Z",
+      "side": 1,
+      "message": "typo: createScope",
+      "range": {
+        "startLine": 102,
+        "startChar": 5,
+        "endLine": 102,
+        "endChar": 16
+      },
+      "revId": "66352d7742ebe9d67acfe871c6a3c67172a5e934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96eb6827_1890363d",
+        "filename": "src/Vulkan/Debug/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:29:03Z",
+      "side": 1,
+      "message": "typo: yet",
+      "range": {
+        "startLine": 123,
+        "startChar": 34,
+        "endLine": 123,
+        "endChar": 37
+      },
+      "revId": "66352d7742ebe9d67acfe871c6a3c67172a5e934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "434932c8_04373835",
+        "filename": "src/Vulkan/Debug/Context.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:29:03Z",
+      "side": 1,
+      "message": "Perhaps rename to getBroadcaster or broadcaster? broadcast is a verb, and gives the impression it performs the actual broadcasting.",
+      "revId": "66352d7742ebe9d67acfe871c6a3c67172a5e934",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
