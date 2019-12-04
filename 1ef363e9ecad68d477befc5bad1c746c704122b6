@@ -22,6 +22,30 @@
       "revId": "1ef363e9ecad68d477befc5bad1c746c704122b6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abaabbe0_a2b44263",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-04T00:02:59Z",
+      "side": 1,
+      "message": "There are other places that we\u0027re #including these headers without the include guards.\nI believe there\u0027s nothing in these headers that should cause side effects, and I\u0027m hoping this define will be a short term safety belt.\nIf we really want to disable compilation of the headers, I\u0027d probably argue for #ifdef\u0027ing the body of the .hpp files instead.",
+      "parentUuid": "584bad84_1af42d92",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 27
+      },
+      "revId": "1ef363e9ecad68d477befc5bad1c746c704122b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
