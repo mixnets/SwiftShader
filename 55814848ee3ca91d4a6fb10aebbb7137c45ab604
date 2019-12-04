@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "298204f0_1faacc8b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1543,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:36:21Z",
+      "side": 1,
+      "message": "Thanks!\nDone",
+      "parentUuid": "5ef7c332_fedda97e",
+      "range": {
+        "startLine": 1543,
+        "startChar": 8,
+        "endLine": 1543,
+        "endChar": 49
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f6d63de_5135ff23",
         "filename": "src/Reactor/EmulatedReactor.cpp",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "793031c2_9ed03a07",
+        "filename": "src/Reactor/EmulatedReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:36:21Z",
+      "side": 1,
+      "message": "Yeah, I had wanted to do that. I made it so that these functions deduce T and EL altogether, which is better. Thanks!",
+      "parentUuid": "7f6d63de_5135ff23",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -91,6 +139,30 @@
       "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50974805_cea434e0",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:36:21Z",
+      "side": 1,
+      "message": "Nice spot!",
+      "parentUuid": "a549ab58_6171a10c",
+      "range": {
+        "startLine": 203,
+        "startChar": 2,
+        "endLine": 203,
+        "endChar": 108
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
