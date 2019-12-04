@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <functional>
+#include <utility>
 
 namespace rr
 {
@@ -10,7 +11,7 @@ namespace rr
 		template <typename T>
 		struct UnderlyingType
 		{
-			using Type = typename decltype(rr::Extract(declval<RValue<T>>(), 0))::rvalue_underlying_type;
+			using Type = typename decltype(rr::Extract(std::declval<RValue<T>>(), 0))::rvalue_underlying_type;
 		};
 
 		template <typename T>
