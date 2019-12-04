@@ -46,6 +46,30 @@
       "revId": "30d41250b7b4ba4b34d2e4941c57d9b884791586",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bc34b2d_76dfd6ba",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 4446,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T19:13:56Z",
+      "side": 1,
+      "message": "Thank you for pointing this out. This worked fine in Subzero\u0027s O2 optimization mode, but borked on Om1. In O2, Subzero would optimize out this mov, so it didn\u0027t matter, but in Om1, the movq would only move the first half of the register\u0027s values to the destination. I added Sqrt to my intrinsic tests (later CL) and it now passes in both O2 and Om1.",
+      "parentUuid": "c79bd1eb_380ca51e",
+      "range": {
+        "startLine": 4442,
+        "startChar": 0,
+        "endLine": 4446,
+        "endChar": 5
+      },
+      "revId": "30d41250b7b4ba4b34d2e4941c57d9b884791586",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
