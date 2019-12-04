@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "5ef7c332_fedda97e",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 1543,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-04T17:59:20Z",
+      "side": 1,
+      "message": "I think you also need to add this to: src/Reactor/BUILD.gn",
+      "range": {
+        "startLine": 1543,
+        "startChar": 8,
+        "endLine": 1543,
+        "endChar": 49
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f6d63de_5135ff23",
+        "filename": "src/Reactor/EmulatedReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-04T17:59:20Z",
+      "side": 1,
+      "message": "Just a suggestion:\n\n EL \u003d decltype(Extract(declval\u003cRValue\u003cT\u003e\u003e(), 0))",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9f456134_ddbf0ecd",
         "filename": "src/Reactor/EmulatedReactor.hpp",
         "patchSetId": 4
@@ -18,6 +64,29 @@
         "startChar": 71,
         "endLine": 20,
         "endChar": 72
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a549ab58_6171a10c",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-04T17:59:20Z",
+      "side": 1,
+      "message": "Should this be deleted too?",
+      "range": {
+        "startLine": 203,
+        "startChar": 2,
+        "endLine": 203,
+        "endChar": 108
       },
       "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
