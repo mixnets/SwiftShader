@@ -119,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d4721e84_500131ce",
+        "filename": "src/Reactor/EmulatedReactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:54:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f456134_ddbf0ecd",
+      "range": {
+        "startLine": 20,
+        "startChar": 71,
+        "endLine": 20,
+        "endChar": 72
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a549ab58_6171a10c",
         "filename": "src/Reactor/Nucleus.hpp",
         "patchSetId": 4
@@ -189,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "b6aaef56_79df22d3",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3609,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:54:32Z",
+      "side": 1,
+      "message": "\u003e Eager for \"git cl format\", right? ;)\n\nOMG yes. Visual Studio sucks, often adding useless tabs. It doesn\u0027t even have the option to remove trailing whitespace. Had to use VS Code for that!\n\nDone",
+      "parentUuid": "7de84cd5_6cdd4c76",
+      "range": {
+        "startLine": 3609,
+        "startChar": 0,
+        "endLine": 3609,
+        "endChar": 1
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61f58cd2_ef6a74b9",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 4
@@ -209,6 +257,30 @@
       "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5631156_f7853127",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3710,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-04T20:54:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61f58cd2_ef6a74b9",
+      "range": {
+        "startLine": 3710,
+        "startChar": 52,
+        "endLine": 3710,
+        "endChar": 53
+      },
+      "revId": "55814848ee3ca91d4a6fb10aebbb7137c45ab604",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
