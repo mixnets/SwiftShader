@@ -25,6 +25,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -63,6 +64,12 @@ type Config struct {
 	LogReplacements  map[string]string
 	NumParallelTests int
 	TestTimeout      time.Duration
+
+	// If true and GCOV_PREFIX is in Env, replace occurrences of "PROC_ID" in GCOV_PREFIX with a unique number
+	// per child process. This avoids races between child processes reading and writing coverage output files.
+	// For example, GCOV_PREFIX="/temp/gcov_output/PROC_ID" would become
+	// GCOV_PREFIX="/temp/gcov_output/1" for the first child process.
+	GcovPrefixSmartReplace bool
 }
 
 // Results holds the results of tests across all APIs.
@@ -139,6 +146,8 @@ func (c *Config) Run() (*Results, error) {
 
 	numTests := 0
 
+	goroutineIndex := 0
+
 	// For each API that we are testing
 	for _, list := range c.TestLists {
 		// Resolve the test runner
@@ -165,10 +174,11 @@ func (c *Config) Run() (*Results, error) {
 		// Start a number of go routines to run the tests.
 		wg.Add(c.NumParallelTests)
 		for i := 0; i < c.NumParallelTests; i++ {
-			go func() {
-				c.TestRoutine(exe, tests, results)
+			go func(index int) {
+				c.TestRoutine(exe, tests, results, index)
 				wg.Done()
-			}()
+			}(goroutineIndex)
+			goroutineIndex++
 		}
 
 		// Shuffle the test list.
@@ -229,13 +239,26 @@ func (c *Config) Run() (*Results, error) {
 // is written to results.
 // TestRoutine only returns once the tests chan has been closed.
 // TestRoutine does not close the results chan.
-func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- TestResult) {
+func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- TestResult, goroutineIndex int) {
+	// Change Env if required.
+	env := c.Env
+	if c.GcovPrefixSmartReplace {
+		newEnv := make([]string, 0)
+		for _, v := range env {
+			if strings.HasPrefix(v, "GCOV_PREFIX=") {
+				v = strings.ReplaceAll(v,"PROC_ID", strconv.Itoa(goroutineIndex))
+			}
+			newEnv = append(newEnv, v)
+		}
+		env = newEnv
+	}
+
 nextTest:
 	for name := range tests {
 		// log.Printf("Running test '%s'\n", name)
 
 		start := time.Now()
-		outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), c.Env,
+		outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), env,
 			"--deqp-surface-type=pbuffer",
 			"--deqp-shadercache=disable",
 			"--deqp-log-images=disable",
