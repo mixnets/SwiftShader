@@ -15,8 +15,68 @@
 #include "SpirvShader.hpp"
 
 #include <spirv/unified1/spirv.hpp>
+#include <float.h>
 
 namespace sw {
+
+// A struct created to be friend with the SpirvShader class.
+struct SpirvShaderGroupOps {
+
+	// A template function used to implement non-uniform group binary operations.
+	//
+	// BINOP should be a struct that defines the following fields:
+	//
+	//   using Type = SIMD::<Type>;                                         // underlying SIMD Type.
+	//   static Type Identity() { return ... };                             // identity for the binary operation.
+	//   static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { ... }  // binary operation function.
+	//
+
+	template <typename BINOP>
+	static void BinaryOperation(const SpirvShader*               shader,
+								const SpirvShader::InsnIterator& insn,
+		  						const SpirvShader::EmitState*    state,
+								Intermediate&                    dst)
+	{
+	  SpirvShader::GenericValue value(shader, state, insn.word(5));
+		auto &type = shader->getType(SpirvShader::Type::ID(insn.word(1)));
+		for (auto i = 0u; i < type.sizeInComponents; i++)
+		{
+			using SimdType = typename BINOP::Type;
+			auto mask = As<SIMD::UInt>(state->activeLaneMask());
+			SIMD::UInt v_uint = (value.UInt(i) & mask) | (As<SIMD::UInt>(BINOP::Identity()) & ~mask);
+			SimdType v = As<SimdType>(v_uint);
+			switch (spv::GroupOperation(insn.word(4)))
+			{
+			case spv::GroupOperationReduce:
+			{
+				SimdType v2 = BINOP::Apply(v.xyzw,  v.yxwz);   // [xy]   [xy]   [zw]   [zw]
+				SimdType v3 = BINOP::Apply(v2.xyzw, v2.zwxy);  // [xyzw] [xyzw] [xyzw] [xyzw]
+				dst.move(i, v3);
+				break;
+			}
+			case spv::GroupOperationInclusiveScan:
+			{
+				SimdType v2 = BINOP::Apply(v.xyzw, v.xxww);    // [x] [xy] [z]   [zw]
+				SimdType v3 = BINOP::Apply(v2.xyzw, v2.xyyy);  // [x] [xy] [xyz] [xyzw]
+				dst.move(i, v3);
+				break;
+			}
+			case spv::GroupOperationExclusiveScan:
+			{
+				SimdType v2 = BINOP::Apply(v.xyzw, v.yzww);    // [xy] [yz]  [zw]   [w]
+				SimdType v3 = BINOP::Apply(v2.xyzw, v2.xxyz);  // [xy] [xyz] [xyzw] [w]
+				dst.move(i, v3.xyzz);                          // [xy] [xyz] [xyzw] [xyzw]
+				break;
+			}
+			default:
+				UNIMPLEMENTED("EmitGroupNonUniform op: %s Group operation: %d",
+								SpirvShader::OpcodeName(type.opcode()).c_str(), insn.word(4));
+			}
+		}
+	}
+
+};
+
 
 SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, EmitState *state) const
 {
@@ -257,6 +317,181 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		}
 		break;
 	}
+
+	case spv::OpGroupNonUniformIAdd:
+	{
+		struct IntAdd {
+			using Type = SIMD::Int;
+			static Type Identity() { return Type(0); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a + b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<IntAdd>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformFAdd:
+	{
+		struct FloatAdd {
+			using Type = SIMD::Float;
+			static Type Identity() { return Type(0); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a + b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<FloatAdd>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformIMul:
+	{
+		struct IntMul {
+			using Type = SIMD::Float;
+			static Type Identity() { return Type(0); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a * b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<IntMul>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformFMul:
+	{
+		struct FloatMul {
+			using Type = SIMD::Float;
+			static Type Identity() { return Type(1.); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a * b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<FloatMul>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformBitwiseAnd:
+	{
+		struct BitwiseAnd {
+			using Type = SIMD::UInt;
+			static Type Identity() { return Type(~0U); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a & b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<BitwiseAnd>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformBitwiseOr:
+	{
+		struct BitwiseOr {
+			using Type = SIMD::UInt;
+			static Type Identity() { return Type(0); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a | b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<BitwiseOr>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformBitwiseXor:
+	{
+		struct BitwiseXor {
+			using Type = SIMD::UInt;
+			static Type Identity() { return Type(0); };
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) { return a ^ b; };
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<BitwiseXor>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformSMin:
+	{
+		struct SignedIntMin {
+			using Type = SIMD::Int;
+			static Type Identity() { return Type(INT32_MAX); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return Min(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMin>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformUMin:
+	{
+		struct SignedIntMin {
+			using Type = SIMD::UInt;
+			static Type Identity() { return Type(UINT32_MAX); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return Min(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMin>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformFMin:
+	{
+		struct SignedIntMin {
+			using Type = SIMD::Float;
+			static Type Identity() { return Type(FLT_MAX); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return NMin(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMin>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformSMax:
+	{
+		struct SignedIntMax {
+			using Type = SIMD::Int;
+			static Type Identity() { return Type(INT32_MIN); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return Max(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMax>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformUMax:
+	{
+		struct SignedIntMax {
+			using Type = SIMD::UInt;
+			static Type Identity() { return Type(0); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return Max(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMax>(this, insn, state, dst);
+		break;
+	}
+
+	case spv::OpGroupNonUniformFMax:
+	{
+		struct SignedIntMax {
+			using Type = SIMD::Float;
+			static Type Identity() { return Type(-FLT_MAX); }
+			static RValue<Type> Apply(RValue<Type> a, RValue<Type> b) {
+				return NMax(a, b);
+			}
+		};
+
+		SpirvShaderGroupOps::BinaryOperation<SignedIntMax>(this, insn, state, dst);
+		break;
+	}
+
+
+#if 0
+	case spv::OpGroupNonUniformLogicalAnd:
+	case spv::OpGroupNonUniformLogicalOr:
+	case spv::OpGroupNonUniformLogicalXor:
+#endif  // 0
 
 	default:
 		UNIMPLEMENTED("EmitGroupNonUniform op: %s", OpcodeName(type.opcode()).c_str());
