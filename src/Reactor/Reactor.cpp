@@ -108,6 +108,28 @@ namespace rr
 		unmaterializedVariables.clear();
 	}
 
+	// NOTE: Only 12 bits out of 16 of the |select| value are used.
+	// More specifically, the value should look like:
+	//
+	//    lsb               msb
+	//     v                 v
+	//    [aaa.|bbb.|ccc.|ddd.]    where '.' means an ignored bit
+	//
+	// This format makes it easy to write calls with hexadecimal select values,
+	// since each hex digit is a separate swizzle index.
+	static Value *createBlend4(Value *lhs, Value *rhs, unsigned short select)
+	{
+		int swizzle[4] =
+		{
+			(select >> 0)  & 0x07,
+			(select >> 4)  & 0x07,
+			(select >> 8)  & 0x07,
+			(select >> 12) & 0x07,
+		};
+
+		return Nucleus::createShuffleVector(lhs, rhs, swizzle);
+	}
+
 	static Value *createSwizzle4(Value *val, unsigned char select)
 	{
 		int swizzle[4] =
@@ -3481,6 +3503,11 @@ namespace rr
 		return RValue<Int4>(createSwizzle4(x.value, select));
 	}
 
+	RValue<Int4> Blend(RValue<Int4> x, RValue<Int4> y, unsigned short select)
+	{
+		return RValue<Int4>(createBlend4(x.value, y.value, select));
+	}
+
 	UInt4::UInt4() : XYZW(this)
 	{
 	}
@@ -3714,6 +3741,11 @@ namespace rr
 	RValue<UInt4> Swizzle(RValue<UInt4> x, unsigned char select)
 	{
 		return RValue<UInt4>(createSwizzle4(x.value, select));
+	}
+
+	RValue<UInt4> Blend(RValue<UInt4> x, RValue<UInt4> y, unsigned short select)
+	{
+		return RValue<UInt4>(createBlend4(x.value, y.value, select));
 	}
 
 	Half::Half(RValue<Float> cast)
@@ -4188,6 +4220,11 @@ namespace rr
 	RValue<Float4> Swizzle(RValue<Float4> x, unsigned char select)
 	{
 		return RValue<Float4>(createSwizzle4(x.value, select));
+	}
+
+	RValue<Float4> Blend(RValue<Float4> x, RValue<Float4> y, unsigned short select)
+	{
+		return RValue<Float4>(createBlend4(x.value, y.value, select));
 	}
 
 	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, unsigned char imm)
