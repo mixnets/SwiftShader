@@ -200,8 +200,9 @@ Server::Impl::Impl(const std::shared_ptr<Context>& context, int port) :
 		    dap::StackTraceResponse response;
 		    response.totalFrames = stack.size();
 		    response.stackFrames.reserve(stack.size());
-		    for(auto const& frame : stack)
+		    for(int i = stack.size() - 1; i >= 0; i--)
 		    {
+				auto const& frame = stack[i];
 			    auto const& loc = frame.location;
 			    dap::StackFrame sf;
 			    sf.column = 0;

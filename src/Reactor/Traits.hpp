@@ -89,6 +89,9 @@ template<> struct CToReactor<float[4]>	{ using type = Float4; static Float4 cast
 // TODO: Long has no constructor that takes a uint64_t
 template<> struct CToReactor<uint64_t>	{ using type = Long;  /* static Long   cast(uint64_t); */ };
 
+// CToReactor specialization for std::string.
+template<> struct CToReactor<std::string> { using type = Pointer<Byte>; static Pointer<Byte> cast(const std::string&); };
+
 // HasReactorType<T>::value resolves to true iff there exists a
 // CToReactorT specialization for type T.
 template<typename T>
