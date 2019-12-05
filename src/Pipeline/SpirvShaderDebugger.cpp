@@ -22,6 +22,7 @@
 #include "Vulkan/Debug/Variable.hpp"
 
 #include "spirv-tools/libspirv.h"
+#include "OpenCLDebugInfo100.h"
 
 #include <algorithm>
 
@@ -51,6 +52,189 @@ std::string tostring(const T& s) { return std::to_string(s); }
 std::string tostring(const char* s) { return s; }
 std::string tostring(sw::SpirvShader::Object::ID id) { return "%" + std::to_string(id.value()); }
 
+namespace debug
+{
+
+struct Member;
+
+struct Object
+{
+	enum class Kind
+	{
+		// Scopes
+		CompilationUnit,
+
+		// Types
+		BasicType, VectorType, FunctionType, CompositeType,
+
+		// Others
+		Source, Member, Function, InlinedAt, LocalVariable, Declare, Value,
+		Operation, Expression
+	};
+
+	using ID = sw::SpirvID<Object>;
+	inline Object(Kind kind) : kind(kind) {}
+	const Kind kind;
+	static constexpr bool kindof(Object::Kind kind) { return true; }
+};
+
+template <typename TYPE, typename BASE, Object::Kind KIND>
+struct ObjectImpl : public BASE
+{
+	ObjectImpl() : BASE(KIND) {}
+	static_assert(BASE::kindof(KIND), "BASE::kindof() returned false");
+	static constexpr bool kindof(Object::Kind kind) { return kind == KIND; }
+	using ID = sw::SpirvID<TYPE>;
+};
+
+template <typename TO, typename FROM>
+std::shared_ptr<TO> cast(const std::shared_ptr<FROM>& obj)
+{
+	return (TO::kindof(obj->kind)) ? std::static_pointer_cast<TO>(obj) : nullptr;
+}
+
+struct Scope : public Object
+{
+	using ID = sw::SpirvID<Scope>;
+	inline Scope(Kind kind) : Object(kind) {}
+	static constexpr bool kindof(Kind kind)
+	{
+		return kind == Kind::CompilationUnit;
+	}
+};
+
+struct Type : public Object
+{
+	using ID = sw::SpirvID<Type>;
+	inline Type(Kind kind) : Object(kind) {}
+	static constexpr bool kindof(Kind kind)
+	{
+		return kind == Kind::BasicType ||
+		       kind == Kind::VectorType ||
+		       kind == Kind::FunctionType ||
+		       kind == Kind::CompositeType;
+	}
+};
+
+struct CompilationUnit : public ObjectImpl<CompilationUnit, Scope, Object::Kind::CompilationUnit>
+{
+
+};
+
+struct Source : public ObjectImpl<Source, Object, Object::Kind::Source>
+{
+	spv::SourceLanguage language;
+	uint32_t version;
+	std::string file;
+	std::string source;
+};
+
+struct BasicType : public ObjectImpl<BasicType, Object, Object::Kind::BasicType>
+{
+	std::string name;
+	uint32_t size = 0; // in bits.
+	OpenCLDebugInfo100DebugBaseTypeAttributeEncoding encoding;
+};
+
+struct VectorType : public ObjectImpl<VectorType, Object, Object::Kind::VectorType>
+{
+	std::shared_ptr<Type> base;
+	uint32_t components = 0;
+};
+
+struct FunctionType : public ObjectImpl<FunctionType, Object, Object::Kind::FunctionType>
+{
+	std::shared_ptr<Type> returnTy;
+	std::vector<std::shared_ptr<Type>> paramTys;
+};
+
+struct CompositeType : public ObjectImpl<CompositeType, Object, Object::Kind::CompositeType>
+{
+	std::string name;
+	OpenCLDebugInfo100DebugCompositeType tag;
+	std::shared_ptr<Source> source;
+	uint32_t line = 0;
+	uint32_t column = 0;
+	std::shared_ptr<Object> parent;
+	uint32_t size = 0; // in bits.
+	uint32_t flags = 0; // OR'd from OpenCLDebugInfo100DebugInfoFlags
+	std::vector<std::shared_ptr<Member>> members;
+};
+
+struct Member : public ObjectImpl<Member, Object, Object::Kind::Member>
+{
+	std::string name;
+	std::shared_ptr<Type> type;
+	std::shared_ptr<Source> source;
+	uint32_t line = 0;
+	uint32_t column = 0;
+	std::shared_ptr<CompositeType> parent;
+	uint32_t offset = 0; // in bits
+	uint32_t size = 0; // in bits
+	uint32_t flags = 0; // OR'd from OpenCLDebugInfo100DebugInfoFlags
+};
+
+struct Function : public ObjectImpl<Function, Object, Object::Kind::Function>
+{
+	std::string name;
+	std::shared_ptr<FunctionType> type;
+	std::shared_ptr<Source> source;
+	uint32_t line = 0;
+	uint32_t column = 0;
+	std::shared_ptr<Scope> parent;
+	std::string linkage;
+	uint32_t flags = 0; // OR'd from OpenCLDebugInfo100DebugInfoFlags
+	uint32_t scopeLine = 0;
+	sw::SpirvShader::Function::ID function;
+};
+
+struct InlinedAt : public ObjectImpl<InlinedAt, Object, Object::Kind::InlinedAt>
+{
+	uint32_t line = 0;
+	std::shared_ptr<Scope> scope;
+	std::shared_ptr<InlinedAt> inlined;
+};
+
+struct LocalVariable : public ObjectImpl<LocalVariable, Object, Object::Kind::LocalVariable>
+{
+	static constexpr uint32_t NoArg = ~uint32_t(0);
+
+	std::string name;
+	std::shared_ptr<Type> type;
+	std::shared_ptr<Source> source;
+	uint32_t line = 0;
+	uint32_t column = 0;
+	std::shared_ptr<Scope> parent;
+	uint32_t arg = NoArg;
+};
+
+struct Operation : public ObjectImpl<Operation, Object, Object::Kind::Operation>
+{
+	uint32_t opcode;
+	std::vector<uint32_t> operands;
+};
+
+struct Expression : public ObjectImpl<Expression, Object, Object::Kind::Expression>
+{
+	std::vector<std::shared_ptr<Operation>> operations;
+};
+
+struct Declare : public ObjectImpl<Declare, Object, Object::Kind::Declare>
+{
+	std::shared_ptr<LocalVariable> local;
+	sw::SpirvShader::Object::ID variable;
+	std::shared_ptr<Expression> expression;
+};
+
+struct Value : public ObjectImpl<Value, Object, Object::Kind::Value>
+{
+	std::shared_ptr<LocalVariable> local;
+	sw::SpirvShader::Object::ID variable;
+	std::shared_ptr<Expression> expression;
+	std::vector<uint32_t> indexes;
+};
+
+}  // namespace debug
 }  // anonymous namespace
 
 namespace rr {
@@ -97,10 +281,20 @@ struct SpirvShader::Impl::Debugger
 	template<typename Key>
 	void exposeVariable(const SpirvShader* shader, const Group& group, int lane, const Key& key, Object::ID id, EmitState *state) const;
 
+	template<typename ID, typename T>
+	void add(ID id, const std::shared_ptr<T>&);
+
+	template<typename T>
+	std::shared_ptr<T> get(SpirvID<T> id) const;
+
 	std::shared_ptr<vk::dbg::Context> ctx;
 	std::shared_ptr<vk::dbg::File> spirvFile;
 	std::unordered_map<const void*, int> spirvLineMappings;  // instruction pointer to line
 	std::unordered_map<const void*, Object::ID> results; // instruction pointer to result ID
+
+private:
+	// use get() and add() to access these
+	std::unordered_map<debug::Object::ID, std::shared_ptr<debug::Object>> objects;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,8 +335,7 @@ public:
 	std::array<std::shared_ptr<vk::dbg::VariableContainer>, sw::SIMD::Width> localsByLane;
 };
 
-SpirvShader::Impl::Debugger::State*
-SpirvShader::Impl::Debugger::State::create(const Debugger* debugger, const char* name)
+SpirvShader::Impl::Debugger::State* SpirvShader::Impl::Debugger::State::create(const Debugger* debugger, const char* name)
 {
 	auto lock = debugger->ctx->lock();
 	return new State(debugger, name, lock);
@@ -356,7 +549,7 @@ SpirvShader::Impl::Debugger::Group SpirvShader::Impl::Debugger::Context::localsL
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// sw::SpirvShader::Impl::Debug methods
+// sw::SpirvShader::Impl::Debugger methods
 ////////////////////////////////////////////////////////////////////////////////
 template<typename Key>
 void SpirvShader::Impl::Debugger::exposeVariable(const SpirvShader* shader, const Key& key, Object::ID id, EmitState *state) const
@@ -367,6 +560,23 @@ void SpirvShader::Impl::Debugger::exposeVariable(const SpirvShader* shader, cons
 		exposeVariable(shader, ctx.localsLane(lane), lane, key, id, state);
 		exposeVariable(shader, hover, lane, laneNames[lane], id, state);
 	}
+}
+
+template<typename ID, typename T>
+void SpirvShader::Impl::Debugger::add(ID id, const std::shared_ptr<T>& obj)
+{
+	auto added = objects.emplace(debug::Object::ID(id.value()), obj).second;
+	ASSERT_MSG(added, "Debug object with %d already exists", id.value());
+}
+
+template <typename T>
+std::shared_ptr<T> SpirvShader::Impl::Debugger::get(SpirvID<T> id) const
+{
+	auto it = objects.find(debug::Object::ID(id.value()));
+	ASSERT_MSG(it != objects.end(), "Unknown debug object %d", id.value());
+	auto ptr = debug::cast<T>(it->second);
+	ASSERT_MSG(ptr, "Debug object %d is not of the correct type", id.value());
+	return ptr;
 }
 
 template<typename Key>
@@ -602,6 +812,194 @@ void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId
 	dbg->results.emplace(insn.wordPointer(0), resultId);
 }
 
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	auto dbg = impl.debugger;
+	if (!dbg) { return EmitResult::Continue; }
+
+	auto extInstIndex = insn.word(4);
+
+	switch (extInstIndex)
+	{
+	case OpenCLDebugInfo100DebugCompilationUnit:
+	{
+		auto id = debug::Scope::ID(insn.word(2));
+		auto scope = std::make_shared<debug::CompilationUnit>();
+		dbg->add(id, scope);
+		break;
+	}
+	case OpenCLDebugInfo100DebugTypeBasic:
+	{
+		auto id = debug::Type::ID(insn.word(2));
+		auto type = std::make_shared<debug::BasicType>();
+		type->name = getString(insn.word(5));
+		type->size = GetConstScalarInt(insn.word(6));
+		type->encoding = static_cast<OpenCLDebugInfo100DebugBaseTypeAttributeEncoding>(insn.word(7));
+		dbg->add(id, type);
+		break;
+	}
+	case OpenCLDebugInfo100DebugTypeVector:
+	{
+		auto id = debug::Type::ID(insn.word(2));
+		auto type = std::make_shared<debug::VectorType>();
+		type->base = dbg->get(debug::Type::ID(insn.word(5)));
+		type->components = insn.word(6);
+		dbg->add(id, type);
+		break;
+	}
+	case OpenCLDebugInfo100DebugTypeFunction:
+	{
+		auto id = debug::Type::ID(insn.word(2));
+		auto type = std::make_shared<debug::FunctionType>();
+		type->returnTy = dbg->get(debug::Type::ID(insn.word(5)));
+		for (uint32_t i = 6; i < insn.wordCount(); i++)
+		{
+			type->paramTys.push_back(dbg->get(debug::Type::ID(insn.word(i))));
+		}
+		dbg->add(id, type);
+		break;
+	}
+	case OpenCLDebugInfo100DebugTypeComposite:
+	{
+		auto id = debug::Type::ID(insn.word(2));
+		auto type = std::make_shared<debug::CompositeType>();
+		type->name = getString(insn.word(5));
+		type->tag = static_cast<OpenCLDebugInfo100DebugCompositeType>(insn.word(6));
+		type->source = dbg->get(debug::Source::ID(insn.word(7)));
+		type->line = insn.word(8);
+		type->column = insn.word(9);
+		type->parent = dbg->get(debug::Object::ID(insn.word(10)));
+		type->size = GetConstScalarInt(insn.word(11));
+		type->flags = insn.word(12);
+		for (uint32_t i = 13; i < insn.wordCount(); i++)
+		{
+			auto obj = dbg->get(debug::Object::ID(insn.word(i)));
+			if (auto member = debug::cast<debug::Member>(obj)) // Can also be Function or TypeInheritance, which we don't care about.
+			{
+				type->members.push_back(member);
+			}
+		}
+		dbg->add(id, type);
+		break;
+	}
+	case OpenCLDebugInfo100DebugTypeMember:
+	{
+		auto id = debug::Member::ID(insn.word(2));
+		auto member = std::make_shared<debug::Member>();
+		member->name = getString(insn.word(5));
+		member->type = dbg->get(debug::Type::ID(insn.word(6)));
+		member->source = dbg->get(debug::Source::ID(insn.word(7)));
+		member->line = insn.word(8);
+		member->column = insn.word(9);
+		member->parent = dbg->get(debug::CompositeType::ID(insn.word(10)));
+		member->offset = GetConstScalarInt(insn.word(11));
+		member->size = GetConstScalarInt(insn.word(12));
+		member->flags = insn.word(13);
+		dbg->add(id, member);
+		break;
+	}
+	case OpenCLDebugInfo100DebugFunction:
+	{
+		auto id = debug::Function::ID(insn.word(2));
+		auto func = std::make_shared<debug::Function>();
+		func->name = getString(insn.word(5));
+		func->type = dbg->get(debug::FunctionType::ID(insn.word(6)));
+		func->source = dbg->get(debug::Source::ID(insn.word(7)));
+		func->line = insn.word(8);
+		func->column = insn.word(9);
+		func->parent = dbg->get(debug::Scope::ID(insn.word(10)));
+		func->linkage = getString(insn.word(11));
+		func->flags = insn.word(12);
+		func->scopeLine = insn.word(13);
+		func->function = Function::ID(insn.word(14));
+		// declaration: word(13)
+		dbg->add(id, func);
+		break;
+	}
+	case OpenCLDebugInfo100DebugScope:
+	{
+		auto id = debug::Scope::ID(insn.word(2));
+		auto scope = dbg->get(debug::Scope::ID(insn.word(5)));
+		(void) id; (void) scope; // TODO: Use.
+		if (insn.wordCount() >= 6)
+		{
+			auto inlinedAt = dbg->get(debug::InlinedAt::ID(insn.word(6)));
+			(void) inlinedAt;
+			// TODO: Use.
+		}
+		break;
+	}
+	case OpenCLDebugInfo100DebugLocalVariable:
+	{
+		auto id = debug::LocalVariable::ID(insn.word(2));
+		auto var = std::make_shared<debug::LocalVariable>();
+		var->name = getString(insn.word(5));
+		var->type = dbg->get(debug::Type::ID(insn.word(6)));
+		var->source = dbg->get(debug::Source::ID(insn.word(7)));
+		var->line = insn.word(8);
+		var->column = insn.word(9);
+		var->parent = dbg->get(debug::Scope::ID(insn.word(10)));
+		if (insn.wordCount() >= 11)
+		{
+			var->arg = insn.word(11);
+		}
+		dbg->add(id, var);
+		break;
+	}
+	case OpenCLDebugInfo100DebugDeclare:
+	{
+		auto id = debug::Declare::ID(insn.word(2));
+		auto decl = std::make_shared<debug::Declare>();
+		decl->local = dbg->get(debug::LocalVariable::ID(insn.word(5)));
+		decl->variable = Object::ID(insn.word(6));
+		decl->expression = dbg->get(debug::Expression::ID(insn.word(7)));
+		dbg->add(id, decl);
+		break;
+	}
+	case OpenCLDebugInfo100DebugValue:
+	{
+		auto id = debug::Value::ID(insn.word(2));
+		auto value = std::make_shared<debug::Value>();
+		value->local = dbg->get(debug::LocalVariable::ID(insn.word(5)));
+		value->variable = Object::ID(insn.word(6));
+		value->expression = dbg->get(debug::Expression::ID(insn.word(7)));
+		for (uint32_t i = 8; i < insn.wordCount(); i++)
+		{
+			value->indexes.push_back(insn.word(i));
+		}
+		dbg->add(id, value);
+		break;
+	}
+	case OpenCLDebugInfo100DebugExpression:
+	{
+		auto id = debug::Value::ID(insn.word(2));
+		auto expr = std::make_shared<debug::Expression>();
+		for (uint32_t i = 5; i < insn.wordCount(); i++)
+		{
+			expr->operations.push_back(dbg->get(debug::Operation::ID(insn.word(i))));
+		}
+		dbg->add(id, expr);
+		break;
+	}
+	case OpenCLDebugInfo100DebugSource:
+	{
+		auto id = debug::Value::ID(insn.word(2));
+		auto source = std::make_shared<debug::Source>();
+		source->file = getString(insn.word(5));
+		if (insn.wordCount() >= 6)
+		{
+			source->source = getString(insn.word(6));
+		}
+		dbg->add(id, source);
+		break;
+	}
+	default:
+		UNSUPPORTED("Unsupported OpenCLDebugInfo100 instruction %d", int(extInstIndex));
+	}
+
+	return EmitResult::Continue;
+}
+
 } // namespace sw
 
 #else // ENABLE_VK_DEBUGGER
@@ -619,6 +1017,11 @@ void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) con
 void SpirvShader::dbgExposeIntermediate(Object::ID id, EmitState *state) const {}
 void SpirvShader::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const {}
 void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const {}
+
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	return EmitResult::Continue;
+}
 
 } // namespace sw
 
