@@ -163,6 +163,53 @@
       "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "777b83e9_34648bdc",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T18:13:24Z",
+      "side": 1,
+      "message": "\u003e documented the fact that the indices are in reverse order compared to Swizzle4\u003c\u003e select values.\n\n\nargh, I didn\u0027t even realize this. Swizzle uses a single char, which requires some good mental arithmetic. I\u0027ve created b/145746360 to propose that we migrate Swizzle() to use this form, as I think it is significantly easier to understand.",
+      "parentUuid": "6d470427_fcd2a685",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb013e3f_926a6d3f",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2034,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T18:13:24Z",
+      "side": 1,
+      "message": "Übernit: I prefer to see properly sized integer types (uint16_t) over \u0027char\u0027 and \u0027short\u0027, but I get that reactor doesn\u0027t do much of this.",
+      "range": {
+        "startLine": 2034,
+        "startChar": 55,
+        "endLine": 2034,
+        "endChar": 69
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
