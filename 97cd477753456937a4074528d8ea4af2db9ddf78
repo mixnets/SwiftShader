@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4158afb2_1fb82fba",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T14:03:14Z",
+      "side": 1,
+      "message": "This is needed because the template function needs to use SpirvShader-private types (e.g. EmitState) and I didn\u0027t want to place it in the private section in the header (since this is really an implementation detail that may change in the future).\n\nUsing a friend struct as a \"friendly namespace\" for the template function is the simplest way to achieve this. I\u0027ve added some comments to better explain the issue.",
+      "parentUuid": "2306ea00_816a362b",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "252d1f5c_0b9ef823",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-12-05T11:58:05Z",
       "side": 1,
       "message": "Nit: alignment is done via whitespace after using tabs for indent.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 8
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d70430db_6ba88681",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T14:03:14Z",
+      "side": 1,
+      "message": "Yes, this was not ready for review yet, but I\u0027ve fixed the formatting in the next patch. Let me know if you still see some issues.",
+      "parentUuid": "252d1f5c_0b9ef823",
       "range": {
         "startLine": 36,
         "startChar": 1,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "3263a723_023adfc9",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T14:03:14Z",
+      "side": 1,
+      "message": "And the reason why was simply that my setup was wrong. It was testing my NVidia vulkan driver, not my Swiftshader build. Of course running it with SW showed plenty of errors, fixed in the next patch :)",
+      "parentUuid": "e7a765ba_4c6a73dc",
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9b952d62_e869f09a",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
@@ -76,6 +142,30 @@
       "writtenOn": "2019-12-05T11:58:05Z",
       "side": 1,
       "message": "Nit: What you have is great, but a bit on the verbose side. FWIW, you could do:\n\n  template \u003ctypename T, typename F\u003e\n  void SpirvShader::ShaderGroupBinOp(const SpirvShader::InsnIterator\u0026 insn,\n                                     const SpirvShader::EmitState*    state,\n                                     Intermediate\u0026                    dst,\n                                     const T\u0026                         identity,\n                                     F\u0026\u0026                              apply);\n\n\n  ShaderGroupBinOp(insn, state, dst, SIMD::Int(0), [](RValue\u003cSIMD::Int\u003e a, RValue\u003cSIMD::Int\u003e b) { a + b });\n\nMeans you can then drop all the structs, and brackets from each case statement.",
+      "range": {
+        "startLine": 323,
+        "startChar": 2,
+        "endLine": 330,
+        "endChar": 8
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9be2f2fb_a64a90ee",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T14:03:14Z",
+      "side": 1,
+      "message": "Wow, excellent suggestion, thanks a ton. I\u0027ve applied it, and this indeed makes the code more readable.",
+      "parentUuid": "9b952d62_e869f09a",
       "range": {
         "startLine": 323,
         "startChar": 2,
