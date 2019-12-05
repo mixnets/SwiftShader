@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "b04c251c_9ae8cf0a",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T14:32:03Z",
+      "side": 1,
+      "message": "If you went with this suggested pattern, perhaps the struct should be called \u0027Group\u0027 struct to match the \u0027SpirvShader\u0027 filename suffix, within a new inner \u0027Impl\u0027 struct:\n\n\n  class SpirvShader {\n  ...\n  private:\n    // Impl holds private forward declaration structs that are implemented \n    // in the corresponding SpirvShaderXXX.cpp files.\n    // This allows access to the private members of the SpirvShader, without\n    // littering the header with implementation details.\n    struct Impl {\n      struct Debug; // Privately implemented in SpirvShaderDebug.cpp\n      struct Group; // Privately implemented in SpirvShaderGroup.cpp\n      ... etc\n    };\n  };",
+      "parentUuid": "fe8d78b2_3d970198",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "252d1f5c_0b9ef823",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
