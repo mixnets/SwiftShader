@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "ce6a46aa_8a576c91",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T17:43:17Z",
+      "side": 1,
+      "message": "Good idea. Done.",
+      "parentUuid": "7f4a1545_58b17213",
+      "range": {
+        "startLine": 46,
+        "startChar": 51,
+        "endLine": 46,
+        "endChar": 53
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a69f25a7_ea9e40e6",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 4
@@ -106,6 +130,30 @@
       "side": 1,
       "message": "And clearly, I\u0027ve screwed up the comment on v3. Let\u0027s try that again:\n\n  TYPE v2 \u003d apply(v,  Swizzle(v,  identity, 0x4012 /* [ident, v.y,    v.z,  v.w] */) // [x] [yx] [zy]  [wz]\n  TYPE v3 \u003d apply(v2, Swizzle(v2, identity, 0x4401 /* [ident, ident, v2.x, v2.y] */) // [x] [yx] [zyx] [wzyx]",
       "parentUuid": "a69f25a7_ea9e40e6",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d470427_fcd2a685",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T17:43:17Z",
+      "side": 1,
+      "message": "I agree that this is much more readable. I\u0027ve fixed it and documented the fact that the indices are in reverse order compared to Swizzle4\u003c\u003e select values.",
+      "parentUuid": "7c04b189_8c3ea5e9",
       "range": {
         "startLine": 60,
         "startChar": 24,
