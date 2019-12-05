@@ -26,7 +26,7 @@ namespace
 
 namespace sw {
 
-SpirvShader::EmitResult SpirvShader::EmitExtendedInstruction(InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.word(1));
 	auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
