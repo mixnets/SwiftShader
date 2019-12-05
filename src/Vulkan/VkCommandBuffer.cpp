@@ -1217,7 +1217,7 @@ CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel, const std::shared_ptr<
 	if (dbgctx)
 	{
 #ifdef ENABLE_VK_DEBUGGER // Keep inside if to avoid unused-parameter warning.
-		dbg = std::unique_ptr<Debugger>();
+		dbg = std::unique_ptr<Debugger>(new Debugger());
 		dbg->ctx = dbgctx;
 #endif // ENABLE_VK_DEBUGGER
 	}
@@ -1711,7 +1711,7 @@ void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
 	for(auto& command : *commands)
 	{
 #ifdef ENABLE_VK_DEBUGGER
-		if (dbg) { dbgThread->update({line++, dbg->file}); }
+		if (dbg) { dbgThread->update({dbg->file, line++, 0}); }
 #endif // ENABLE_VK_DEBUGGER
 
 		command->play(executionState);

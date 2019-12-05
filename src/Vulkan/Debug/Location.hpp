@@ -26,15 +26,17 @@ class File;
 struct Location
 {
 	Location() = default;
-	inline Location(int line, const std::shared_ptr<File>& file);
+	inline Location(const std::shared_ptr<File>& file, int line, int column = 0);
 
-	int line = 0; // 1 based. 0 represents no line.
 	std::shared_ptr<File> file;
+	int line = 0; // 1 based. 0 represents no line.
+	int column = 0; // 1 based. 0 represents no particular column.
 };
 
-Location::Location(int line, const std::shared_ptr<File>& file) :
-    line(line),
-    file(file) {}
+Location::Location(const std::shared_ptr<File>& file, int line, int column /* = 0 */) :
+    file(file),
+	line(line),
+	column(column) {}
 
 }  // namespace dbg
 }  // namespace vk

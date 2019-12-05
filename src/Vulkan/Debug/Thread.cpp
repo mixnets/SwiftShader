@@ -78,11 +78,10 @@ void Thread::update(const Location& location)
 
 void Thread::enter(Context::Lock& ctxlck, const std::shared_ptr<File>& file, const std::string& function)
 {
-	auto frame = ctxlck.createFrame(file);
+	auto frame = ctxlck.createFrame(file, function);
 	auto isFunctionBreakpoint = ctxlck.isFunctionBreakpoint(function);
 
 	std::unique_lock<std::mutex> lock(mutex);
-	frame->function = function;
 	frames.push_back(frame);
 	if(isFunctionBreakpoint)
 	{

@@ -69,13 +69,13 @@ class Frame
 public:
 	using ID = dbg::ID<Frame>;
 
-	inline Frame(ID id);
+	inline Frame(ID id, std::string function);
 
 	// The unique identifier of the stack frame.
 	const ID id;
 
 	// The name of function for this stack frame.
-	std::string function;
+	const std::string function;
 
 	// The current execution location within the stack frame.
 	Location location;
@@ -93,8 +93,8 @@ public:
 	std::shared_ptr<Scope> hovers;
 };
 
-Frame::Frame(ID id) :
-    id(id) {}
+Frame::Frame(ID id, std::string function) :
+    id(id), function(std::move(function)) {}
 
 // Thread holds the state for a single thread of execution.
 class Thread
