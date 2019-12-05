@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c13b16a_e5c17348",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-12-05T02:04:48Z",
+      "side": 1,
+      "message": "Needs care here. Fragments discarded here do not exist at all -- they should not be counted in queries or have their Z/S effects performed when early fragment tests are enabled.\n\nSince early fragment tests support is already kindof broken, I would be OK with a TODO left in here...",
+      "revId": "aebc666a9d588c88d8d2e5f99af4229eec9d6c1b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
