@@ -22,6 +22,7 @@
 #include "Vulkan/Debug/Variable.hpp"
 
 #include "spirv-tools/libspirv.h"
+#include "OpenCLDebugInfo100.h"
 
 #include <algorithm>
 
@@ -572,6 +573,35 @@ void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, con
 	}
 }
 
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	// auto &type = getType(insn.word(1));
+	// auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
+	auto extInstIndex = insn.word(4);
+
+	switch (extInstIndex)
+	{
+	case OpenCLDebugInfo100DebugCompilationUnit:
+	case OpenCLDebugInfo100DebugTypeBasic:
+	case OpenCLDebugInfo100DebugTypeVector:
+	case OpenCLDebugInfo100DebugTypeFunction:
+	case OpenCLDebugInfo100DebugTypeComposite:
+	case OpenCLDebugInfo100DebugTypeMember:
+	case OpenCLDebugInfo100DebugFunction:
+	case OpenCLDebugInfo100DebugScope:
+	case OpenCLDebugInfo100DebugLocalVariable:
+	case OpenCLDebugInfo100DebugDeclare:
+	case OpenCLDebugInfo100DebugValue:
+	case OpenCLDebugInfo100DebugExpression:
+	case OpenCLDebugInfo100DebugSource:
+		break;
+	default:
+		UNSUPPORTED("Unsupported OpenCLDebugInfo100 instruction %d", int(extInstIndex));
+	}
+
+	return EmitResult::Continue;
+}
+
 } // namespace sw
 
 #else // ENABLE_VK_DEBUGGER
@@ -593,6 +623,11 @@ template<typename Key>
 void SpirvShader::dbgExposeVariable(const Debug::Group& group, int l, const Key& key, Object::ID id, EmitState *state) const {}
 
 void SpirvShader::EmitState::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, const std::shared_ptr<vk::dbg::Context>& dbgctx) {}
+
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	return EmitResult::Continue;
+}
 
 } // namespace sw
 

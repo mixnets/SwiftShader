@@ -373,6 +373,21 @@ namespace sw
 			Type::ID result; // return type.
 		};
 
+		class Extension
+		{
+		public:
+			using ID = SpirvID<Extension>;
+
+			enum Name
+			{
+				Unknown,
+				GLSLstd450,
+				OpenCLDebugInfo100
+			};
+
+			Name name;
+		};
+
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
 
 		// TypeOrObjectID is an identifier that represents a Type or an Object,
@@ -713,6 +728,7 @@ namespace sw
 		HandleMap<Type> types;
 		HandleMap<Object> defs;
 		HandleMap<Function> functions;
+		HandleMap<Extension> extensions;
 		Function::ID entryPoint;
 
 		const bool robustBufferAccess = true;
@@ -987,6 +1003,13 @@ namespace sw
 			return it->second;
 		}
 
+		Extension const &getExtension(Extension::ID id) const
+		{
+			auto it = extensions.find(id);
+			ASSERT_MSG(it != extensions.end(), "Unknown extension %d", id.value());
+			return it->second;
+		}
+
 		// Returns a SIMD::Pointer to the underlying data for the given pointer
 		// object.
 		// Handles objects of the following kinds:
@@ -1039,6 +1062,8 @@ namespace sw
 		EmitResult EmitDot(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitSelect(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitExtendedInstruction(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const;
+		EmitResult EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
 		EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;
