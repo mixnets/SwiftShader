@@ -145,6 +145,30 @@
     },
     {
       "key": {
+        "uuid": "488f50b0_93486ebc",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T15:18:44Z",
+      "side": 1,
+      "message": "Sure. Note that Nicolas told me in a previous review that he actually hates the \"Impl\" word (because it\u0027s far too obscure). I\u0027ll just leave this here for you :-)",
+      "parentUuid": "acab496f_08fca4e1",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "252d1f5c_0b9ef823",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
