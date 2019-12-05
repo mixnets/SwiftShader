@@ -378,6 +378,24 @@ public:
 		Type::ID result;          // return type.
 	};
 
+	using String = std::string;
+	using StringID = SpirvID<std::string>;
+
+	class Extension
+	{
+	public:
+		using ID = SpirvID<Extension>;
+
+		enum Name
+		{
+			Unknown,
+			GLSLstd450,
+			OpenCLDebugInfo100
+		};
+
+		Name name;
+	};
+
 	struct TypeOrObject
 	{};  // Dummy struct to represent a Type or Object.
 
@@ -731,6 +749,8 @@ private:
 	HandleMap<Type> types;
 	HandleMap<Object> defs;
 	HandleMap<Function> functions;
+	std::unordered_map<StringID, String> strings;
+	HandleMap<Extension> extensions;
 	Function::ID entryPoint;
 
 	const bool robustBufferAccess = true;
@@ -746,6 +766,8 @@ private:
 	void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 	void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
 	void ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds) const;
+
+	void DefineOpenCLDebugInfo100(const InsnIterator &insn);
 
 	// Creates an Object for the instruction's result in 'defs'.
 	void DefineResult(const InsnIterator &insn);
@@ -1001,6 +1023,20 @@ private:
 		return it->second;
 	}
 
+	String const &getString(StringID id) const
+	{
+		auto it = strings.find(id);
+		ASSERT_MSG(it != strings.end(), "Unknown string %d", id.value());
+		return it->second;
+	}
+
+	Extension const &getExtension(Extension::ID id) const
+	{
+		auto it = extensions.find(id);
+		ASSERT_MSG(it != extensions.end(), "Unknown extension %d", id.value());
+		return it->second;
+	}
+
 	// Returns a SIMD::Pointer to the underlying data for the given pointer
 	// object.
 	// Handles objects of the following kinds:
@@ -1055,6 +1091,9 @@ private:
 	EmitResult EmitDot(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitSelect(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitExtendedInstruction(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitLine(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitBranch(InsnIterator insn, EmitState *state) const;

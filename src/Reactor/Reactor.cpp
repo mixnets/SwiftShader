@@ -16,6 +16,7 @@
 #include "Debug.hpp"
 
 #include <cmath>
+#include <string>
 
 // Define REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION to non-zero to ensure all
 // variables have a stack location obtained throuch alloca().
@@ -4491,5 +4492,10 @@ Float4 CToReactor<float[4]>::cast(float v[4])
 
 // TODO: Long has no constructor that takes a uint64_t
 // Long          CToReactor<uint64_t>::cast(uint64_t v)       { return type(v); }
+
+Pointer<Byte> CToReactor<std::string>::cast(const std::string &str)
+{
+	return ConstantData(str.data(), str.size() + 1);
+}
 
 }  // namespace rr
