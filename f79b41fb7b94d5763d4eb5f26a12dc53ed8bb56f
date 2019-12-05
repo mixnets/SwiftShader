@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "456e4797_01efad63",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-12-05T15:09:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "39129fe5_9b6cce9c",
+      "revId": "f79b41fb7b94d5763d4eb5f26a12dc53ed8bb56f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ef18c023_550fcfb4",
         "filename": "tests/regres/deqp/deqp.go",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "f79b41fb7b94d5763d4eb5f26a12dc53ed8bb56f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4943756c_45f99e39",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2019-12-05T15:09:17Z",
+      "side": 1,
+      "message": "I agree. No need for the flag. I am hoping to keep PROC_ID, as I intend to use it in other scenarios (outside of regres, i.e. GraphicsFuzz) where I just want it to represent some unique ID per parallel process; sometimes this can be a process ID (as it is currently in GraphicsFuzz), but it doesn\u0027t have to be.\n\nActually, I think one reason for having the flag was that, even though it is unlikely, the user might end up having PROC_ID in their GCOV_PREFIX without expecting it to be replaced! At least with the flag, there is some clear documentation that is hard to miss. But I think this is very unlikely!",
+      "parentUuid": "ef18c023_550fcfb4",
+      "range": {
+        "startLine": 72,
+        "startChar": 1,
+        "endLine": 72,
+        "endChar": 23
+      },
+      "revId": "f79b41fb7b94d5763d4eb5f26a12dc53ed8bb56f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
