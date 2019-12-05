@@ -1,0 +1,107 @@
+; SPIR-V
+; Version: 1.0
+; Generator: Google spiregg; 0
+; Bound: 21
+; Schema: 0
+               OpCapability Shader
+     %DbgExt = OpExtInstImport "OpenCL.DebugInfo.100"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %main "main" %in_var_COLOR %out_var_SV_TARGET
+               OpExecutionMode %main OriginUpperLeft
+          %4 = OpString "simple_ps.hlsl"
+        %src = OpString "#line 1 \"simple_ps.hlsl\"
+float4 main(float4 color : COLOR) : SV_TARGET {
+  return color;
+}
+"
+               OpSource HLSL 600 %4 "#line 1 \"simple_ps.hlsl\"
+float4 main(float4 color : COLOR) : SV_TARGET {
+  return color;
+}
+"
+               OpName %in_var_COLOR "in.var.COLOR"
+               OpName %out_var_SV_TARGET "out.var.SV_TARGET"
+               OpName %main "main"
+               OpName %param_var_color "param.var.color"
+               OpName %src_main "src.main"
+               OpName %color "color"
+               OpName %bb_entry "bb.entry"
+               OpDecorate %in_var_COLOR Location 0
+               OpDecorate %out_var_SV_TARGET Location 0
+        %int = OpTypeInt 32 1
+      %float = OpTypeFloat 32
+    %v4float = OpTypeVector %float 4
+%_ptr_Input_v4float = OpTypePointer Input %v4float
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+       %void = OpTypeVoid
+         %10 = OpTypeFunction %void
+%_ptr_Function_v4float = OpTypePointer Function %v4float
+         %17 = OpTypeFunction %v4float %_ptr_Function_v4float
+
+; Compilation Unit
+%dbg_src = OpExtInst %void %DbgExt DebugSource %4 %src
+%comp_unit = OpExtInst %void %DbgExt DebugCompilationUnit 2 4 %dbg_src HLSL
+
+; Type names
+%float_name = OpString "float"
+%main_name = OpString "main"
+%main_linkage_name = OpString "v4f_main_v4f"
+%color_name = OpString "color : COLOR"
+
+; Type sizes in bit unit. For example, 128 means "128 bits"
+%int_32 = OpConstant %int 32
+%int_128 = OpConstant %int 128
+
+; Type information
+%float_info = OpExtInst %void %DbgExt DebugTypeBasic %float_name %int_32 Float
+%v4float_info = OpExtInst %void %DbgExt DebugTypeVector %float_info 4
+%main_type_info = OpExtInst %void %DbgExt DebugTypeFunction FlagIsPublic %v4float_info %v4float_info
+
+; DebugExpression without any information
+%null_expr = OpExtInst %void %DbgExt DebugExpression
+
+; Function information
+%main_info = OpExtInst %void %DbgExt DebugFunction %main_name %main_type_info %dbg_src 1 1 %comp_unit %main_linkage_name FlagIsPublic 1 %src_main
+
+; Local variable information
+%color_info = OpExtInst %void %DbgExt DebugLocalVariable %color_name %v4float_info %dbg_src 1 13 %main_info FlagIsLocal 0
+
+               OpLine %4 1 28
+%in_var_COLOR = OpVariable %_ptr_Input_v4float Input
+
+; Declaration of "float4 color : COLOR" argument of main()
+%color_decl = OpExtInst %void %DbgExt DebugDeclare %color_info %in_var_COLOR %null_expr
+
+               OpLine %4 1 37
+%out_var_SV_TARGET = OpVariable %_ptr_Output_v4float Output
+               OpLine %4 1 1
+       %main = OpFunction %void None %10
+         %11 = OpLabel
+
+; Start the scope of function "main()"
+%main_scope = OpExtInst %void %DbgExt DebugScope %main_info
+
+               OpLine %4 1 20
+%param_var_color = OpVariable %_ptr_Function_v4float Function
+         %14 = OpLoad %v4float %in_var_COLOR
+               OpStore %param_var_color %14
+               OpLine %4 1 1
+         %15 = OpFunctionCall %v4float %src_main %param_var_color
+               OpLine %4 1 37
+               OpStore %out_var_SV_TARGET %15
+               OpReturn
+               OpFunctionEnd
+               OpLine %4 1 1
+   %src_main = OpFunction %v4float None %17
+               OpLine %4 1 20
+      %color = OpFunctionParameter %_ptr_Function_v4float
+   %bb_entry = OpLabel
+               OpLine %4 2 10
+         %20 = OpLoad %v4float %color
+               OpLine %4 2 3
+               OpReturnValue %20
+
+; End the scope of function "main()"
+%main_scope_end = OpExtInst %void %DbgExt DebugNoScope
+
+               OpFunctionEnd
