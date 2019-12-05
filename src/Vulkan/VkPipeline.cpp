@@ -163,6 +163,8 @@ std::vector<uint32_t> preprocessSpirv(
 		std::vector<uint32_t> const &code,
 		VkSpecializationInfo const *specializationInfo)
 {
+	return code; // HACK: DebugInfo not currently supported by spirv-opt.
+
 	spvtools::Optimizer opt{SPV_ENV_VULKAN_1_1};
 
 	opt.SetMessageConsumer([](spv_message_level_t level, const char*, const spv_position_t& p, const char* m) {
@@ -197,7 +199,9 @@ std::vector<uint32_t> preprocessSpirv(
 	opt.RegisterPerformancePasses();
 
 	std::vector<uint32_t> optimized;
-	opt.Run(code.data(), code.size(), &optimized);
+	spvtools::OptimizerOptions options;
+	options.set_run_validator(false);
+	opt.Run(code.data(), code.size(), &optimized, options);
 
 	if (false) {
 		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
