@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7a765ba_4c6a73dc",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T01:00:00Z",
+      "side": 1,
+      "message": "NOTE: This is not correct yet, though curiously dEQP doesn\u0027t complain. Will fix this.",
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
