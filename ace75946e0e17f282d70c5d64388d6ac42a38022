@@ -210,6 +210,30 @@
       "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "799a05f6_1a6ba764",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2034,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T21:31:21Z",
+      "side": 1,
+      "message": "Yes, I\u0027m exactly like you but I tried to follow Reactor\u0027s current coding style :)",
+      "parentUuid": "cb013e3f_926a6d3f",
+      "range": {
+        "startLine": 2034,
+        "startChar": 55,
+        "endLine": 2034,
+        "endChar": 69
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
