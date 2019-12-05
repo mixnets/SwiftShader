@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39129fe5_9b6cce9c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T12:03:32Z",
+      "side": 1,
+      "message": "A bit more context on what\u0027s going on and especially *why* would be appreciated.",
+      "revId": "f79b41fb7b94d5763d4eb5f26a12dc53ed8bb56f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef18c023_550fcfb4",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T12:03:32Z",
+      "side": 1,
+      "message": "Seems a little bit excessive. How common do you think it is to be running regres with GCOV_PREFIX in env, along with a PROC_ID in the env value, and *not* wanting this substituted?\nI\u0027d just assume this is always true, and drop the flag.\n\nAlso - PROC_ID is a bit misleading, it\u0027s not a process id, it\u0027s a made up goroutine id. If you renamed this to REGRES_RUNNER_ID, then I think we have absolutely no reason for the flag.",
+      "range": {
+        "startLine": 72,
+        "startChar": 1,
+        "endLine": 72,
+        "endChar": 23
+      },
+      "revId": "f79b41fb7b94d5763d4eb5f26a12dc53ed8bb56f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
