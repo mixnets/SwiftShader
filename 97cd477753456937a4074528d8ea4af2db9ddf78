@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "8d07a1e5_b854c33b",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-05T15:06:08Z",
+      "side": 1,
+      "message": "Yet another suggestion. I\u0027ve applied the first one (using a private struct GroupOps) because the second one seems appropriate for a future refactor CL. Thanks.",
+      "parentUuid": "b04c251c_9ae8cf0a",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "252d1f5c_0b9ef823",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
