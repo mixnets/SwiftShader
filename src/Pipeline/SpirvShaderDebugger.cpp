@@ -22,6 +22,7 @@
 #include "Vulkan/Debug/Variable.hpp"
 
 #include "spirv-tools/libspirv.h"
+#include "OpenCLDebugInfo100.h"
 
 #include <algorithm>
 
@@ -602,6 +603,35 @@ void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId
 	dbg->results.emplace(insn.wordPointer(0), resultId);
 }
 
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	// auto &type = getType(insn.word(1));
+	// auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
+	auto extInstIndex = insn.word(4);
+
+	switch (extInstIndex)
+	{
+	case OpenCLDebugInfo100DebugCompilationUnit:
+	case OpenCLDebugInfo100DebugTypeBasic:
+	case OpenCLDebugInfo100DebugTypeVector:
+	case OpenCLDebugInfo100DebugTypeFunction:
+	case OpenCLDebugInfo100DebugTypeComposite:
+	case OpenCLDebugInfo100DebugTypeMember:
+	case OpenCLDebugInfo100DebugFunction:
+	case OpenCLDebugInfo100DebugScope:
+	case OpenCLDebugInfo100DebugLocalVariable:
+	case OpenCLDebugInfo100DebugDeclare:
+	case OpenCLDebugInfo100DebugValue:
+	case OpenCLDebugInfo100DebugExpression:
+	case OpenCLDebugInfo100DebugSource:
+		break;
+	default:
+		UNSUPPORTED("Unsupported OpenCLDebugInfo100 instruction %d", int(extInstIndex));
+	}
+
+	return EmitResult::Continue;
+}
+
 } // namespace sw
 
 #else // ENABLE_VK_DEBUGGER
@@ -619,6 +649,11 @@ void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) con
 void SpirvShader::dbgExposeIntermediate(Object::ID id, EmitState *state) const {}
 void SpirvShader::dbgUpdateActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const {}
 void SpirvShader::dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const {}
+
+SpirvShader::EmitResult SpirvShader::EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const
+{
+	return EmitResult::Continue;
+}
 
 } // namespace sw
 
