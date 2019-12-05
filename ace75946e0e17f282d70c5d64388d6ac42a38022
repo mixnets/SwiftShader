@@ -91,6 +91,30 @@
       "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c04b189_8c3ea5e9",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T17:16:08Z",
+      "side": 1,
+      "message": "And clearly, I\u0027ve screwed up the comment on v3. Let\u0027s try that again:\n\n  TYPE v2 \u003d apply(v,  Swizzle(v,  identity, 0x4012 /* [ident, v.y,    v.z,  v.w] */) // [x] [yx] [zy]  [wz]\n  TYPE v3 \u003d apply(v2, Swizzle(v2, identity, 0x4401 /* [ident, ident, v2.x, v2.y] */) // [x] [yx] [zyx] [wzyx]",
+      "parentUuid": "a69f25a7_ea9e40e6",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
