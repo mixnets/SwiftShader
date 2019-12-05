@@ -2030,6 +2030,8 @@ if(BUILD_MARL)
     add_subdirectory(third_party/marl)
 endif(BUILD_MARL)
 
+add_subdirectory(tools/get-gl-extensions)
+
 if(BUILD_VULKAN)
     if (NOT TARGET SPIRV-Tools)
         # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
