@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "acab496f_08fca4e1",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T15:12:26Z",
+      "side": 1,
+      "message": "Sure. I\u0027m happy to tackle this as a followup, assuming you\u0027re happy with me changing this to the \u0027Impl\u0027 approach later.",
+      "parentUuid": "8d07a1e5_b854c33b",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "252d1f5c_0b9ef823",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
