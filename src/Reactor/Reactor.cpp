@@ -108,27 +108,27 @@ namespace rr
 		unmaterializedVariables.clear();
 	}
 
-	static Value *createSwizzle4(Value *val, unsigned char select)
+	static Value *createSwizzle4(Value *val, uint16_t select)
 	{
 		int swizzle[4] =
 		{
-			(select >> 0) & 0x03,
-			(select >> 2) & 0x03,
-			(select >> 4) & 0x03,
-			(select >> 6) & 0x03,
+			(select >> 12) & 0x03,
+			(select >> 8)  & 0x03,
+			(select >> 4)  & 0x03,
+			(select >> 0)  & 0x03,
 		};
 
 		return Nucleus::createShuffleVector(val, val, swizzle);
 	}
 
-	static Value *createMask4(Value *lhs, Value *rhs, unsigned char select)
+	static Value *createMask4(Value *lhs, Value *rhs, uint16_t select)
 	{
 		bool mask[4] = {false, false, false, false};
 
-		mask[(select >> 0) & 0x03] = true;
-		mask[(select >> 2) & 0x03] = true;
-		mask[(select >> 4) & 0x03] = true;
-		mask[(select >> 6) & 0x03] = true;
+		mask[(select >> 12) & 0x03] = true;
+		mask[(select >> 8)  & 0x03] = true;
+		mask[(select >> 4)  & 0x03] = true;
+		mask[(select >> 0)  & 0x03] = true;
 
 		int swizzle[4] =
 		{
@@ -1399,7 +1399,7 @@ namespace rr
 	{
 		int shuffle[16] = {0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23};   // Real type is v16i8
 		auto lowHigh = RValue<Byte16>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
-		return As<Short4>(Swizzle(As<Int4>(lowHigh), 0xEE));
+		return As<Short4>(Swizzle(As<Int4>(lowHigh), 0x2323));
 	}
 
 	SByte8::SByte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
@@ -1575,7 +1575,7 @@ namespace rr
 	{
 		int shuffle[16] = {0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23};   // Real type is v16i8
 		auto lowHigh = RValue<Byte16>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
-		return As<Short4>(Swizzle(As<Int4>(lowHigh), 0xEE));
+		return As<Short4>(Swizzle(As<Int4>(lowHigh), 0x2323));
 	}
 
 	Byte16::Byte16(RValue<Byte16> rhs)
@@ -1633,7 +1633,7 @@ namespace rr
 		Value *vector = loadValue();
 		Value *element = Nucleus::createTrunc(cast.value, Short::getType());
 		Value *insert = Nucleus::createInsertElement(vector, element, 0);
-		Value *swizzle = Swizzle(RValue<Short4>(insert), 0x00).value;
+		Value *swizzle = Swizzle(RValue<Short4>(insert), 0x0000).value;
 
 		storeValue(swizzle);
 	}
@@ -1853,22 +1853,22 @@ namespace rr
 	{
 		int shuffle[8] = {0, 8, 1, 9, 2, 10, 3, 11};   // Real type is v8i16
 		auto lowHigh = RValue<Short8>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
-		return As<Int2>(Swizzle(As<Int4>(lowHigh), 0xEE));
+		return As<Int2>(Swizzle(As<Int4>(lowHigh), 0x2323));
 	}
 
-	RValue<Short4> Swizzle(RValue<Short4> x, unsigned char select)
+	RValue<Short4> Swizzle(RValue<Short4> x, uint16_t select)
 	{
 		// Real type is v8i16
 		int shuffle[8] =
 		{
-			(select >> 0) & 0x03,
-			(select >> 2) & 0x03,
-			(select >> 4) & 0x03,
-			(select >> 6) & 0x03,
-			(select >> 0) & 0x03,
-			(select >> 2) & 0x03,
-			(select >> 4) & 0x03,
-			(select >> 6) & 0x03,
+			(select >> 12) & 0x03,
+			(select >>  8) & 0x03,
+			(select >>  4) & 0x03,
+			(select >>  0) & 0x03,
+			(select >> 12) & 0x03,
+			(select >>  8) & 0x03,
+			(select >>  4) & 0x03,
+			(select >>  0) & 0x03,
 		};
 
 		return As<Short4>(Nucleus::createShuffleVector(x.value, x.value, shuffle));
@@ -3065,7 +3065,7 @@ namespace rr
 	{
 		int shuffle[4] = {0, 4, 1, 5};   // Real type is v4i32
 		auto lowHigh = RValue<Int4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
-		return As<Short4>(Swizzle(lowHigh, 0xEE));
+		return As<Short4>(Swizzle(lowHigh, 0x2323));
 	}
 
 	RValue<Int> Extract(RValue<Int2> val, int i)
@@ -3476,7 +3476,7 @@ namespace rr
 		return RValue<Int4>(Nucleus::createInsertElement(x.value, element.value, i));
 	}
 
-	RValue<Int4> Swizzle(RValue<Int4> x, unsigned char select)
+	RValue<Int4> Swizzle(RValue<Int4> x, uint16_t select)
 	{
 		return RValue<Int4>(createSwizzle4(x.value, select));
 	}
@@ -3711,7 +3711,7 @@ namespace rr
 		return RValue<UInt4>(Nucleus::createInsertElement(x.value, element.value, i));
 	}
 
-	RValue<UInt4> Swizzle(RValue<UInt4> x, unsigned char select)
+	RValue<UInt4> Swizzle(RValue<UInt4> x, uint16_t select)
 	{
 		return RValue<UInt4>(createSwizzle4(x.value, select));
 	}
@@ -4185,19 +4185,19 @@ namespace rr
 		return RValue<Float>(Nucleus::createExtractElement(x.value, Float::getType(), i));
 	}
 
-	RValue<Float4> Swizzle(RValue<Float4> x, unsigned char select)
+	RValue<Float4> Swizzle(RValue<Float4> x, uint16_t select)
 	{
 		return RValue<Float4>(createSwizzle4(x.value, select));
 	}
 
-	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, unsigned char imm)
+	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, uint16_t imm)
 	{
 		int shuffle[4] =
 		{
-			((imm >> 0) & 0x03) + 0,
-			((imm >> 2) & 0x03) + 0,
-			((imm >> 4) & 0x03) + 4,
-			((imm >> 6) & 0x03) + 4,
+			((imm >> 12) & 0x03) + 0,
+			((imm >>  8) & 0x03) + 0,
+			((imm >>  4) & 0x03) + 4,
+			((imm >>  0) & 0x03) + 4,
 		};
 
 		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
@@ -4215,7 +4215,7 @@ namespace rr
 		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
 	}
 
-	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, unsigned char select)
+	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, uint16_t select)
 	{
 		Value *vector = lhs.loadValue();
 		Value *result = createMask4(vector, rhs.value, select);
