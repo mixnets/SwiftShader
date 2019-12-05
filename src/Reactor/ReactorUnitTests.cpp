@@ -349,6 +349,16 @@ TEST(ReactorUnitTests, Concatenate)
 
 TEST(ReactorUnitTests, Swizzle)
 {
+	uint16_t swizzleCodes[256];
+	for(int i = 0; i < 256; i++)
+	{
+		auto x = (i >> 0) & 0x03;
+		auto y = (i >> 2) & 0x03;
+		auto z = (i >> 4) & 0x03;
+		auto w = (i >> 6) & 0x03;
+		swizzleCodes[i] = (x << 12) | (y << 8) | (z << 4) | (w << 0);
+	}
+
 	{
 		FunctionT<int(void*)> function;
 		{
@@ -356,12 +366,12 @@ TEST(ReactorUnitTests, Swizzle)
 
 			for(int i = 0; i < 256; i++)
 			{
-				*Pointer<Float4>(out + 16 * i) = Swizzle(Float4(1.0f, 2.0f, 3.0f, 4.0f), i);
+				*Pointer<Float4>(out + 16 * i) = Swizzle(Float4(1.0f, 2.0f, 3.0f, 4.0f), swizzleCodes[i]);
 			}
 
 			for(int i = 0; i < 256; i++)
-			{	
-				*Pointer<Float4>(out + 16 * (256 + i)) = ShuffleLowHigh(Float4(1.0f, 2.0f, 3.0f, 4.0f), Float4(5.0f, 6.0f, 7.0f, 8.0f), i);
+			{
+				*Pointer<Float4>(out + 16 * (256 + i)) = ShuffleLowHigh(Float4(1.0f, 2.0f, 3.0f, 4.0f), Float4(5.0f, 6.0f, 7.0f, 8.0f), swizzleCodes[i]);
 			}
 
 			*Pointer<Float4>(out + 16 * (512 + 0)) = UnpackLow(Float4(1.0f, 2.0f, 3.0f, 4.0f), Float4(5.0f, 6.0f, 7.0f, 8.0f));
@@ -374,13 +384,13 @@ TEST(ReactorUnitTests, Swizzle)
 			for(int i = 0; i < 256; i++)
 			{
 				*Pointer<Short4>(out + 16 * (512 + 6) + (8 * i)) =
-                                    Swizzle(Short4(1, 2, 3, 4), i);
+                                    Swizzle(Short4(1, 2, 3, 4), swizzleCodes[i]);
 			}
 
 			for(int i = 0; i < 256; i++)
 			{
 				*Pointer<Int4>(out + 16 * (512 + 6 + i) + (8 * 256)) =
-                                    Swizzle(Int4(1, 2, 3, 4), i);
+                                    Swizzle(Int4(1, 2, 3, 4), swizzleCodes[i]);
 			}
 
 			Return(0);
