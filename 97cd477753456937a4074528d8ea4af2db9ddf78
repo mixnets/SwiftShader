@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "2306ea00_816a362b",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T11:58:05Z",
+      "side": 1,
+      "message": "What\u0027s the purpose of this struct? If it\u0027s just to hold the template function, there\u0027s no problem with keeping the implementation and use within the same .cpp (I do this in https://swiftshader-review.googlesource.com/c/SwiftShader/+/38915).\n\nFor the cases where we do need cross-cpp use of the template functions, I\u0027ve just started using std::function - the performance hit here is negligible, and at least you get a proper signature you can read.",
+      "range": {
+        "startLine": 23,
+        "startChar": 7,
+        "endLine": 23,
+        "endChar": 26
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "252d1f5c_0b9ef823",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T11:58:05Z",
+      "side": 1,
+      "message": "Nit: alignment is done via whitespace after using tabs for indent.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 8
+      },
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7a765ba_4c6a73dc",
         "filename": "src/Pipeline/SpirvShaderGroup.cpp",
         "patchSetId": 1
@@ -13,6 +59,29 @@
       "writtenOn": "2019-12-05T01:00:00Z",
       "side": 1,
       "message": "NOTE: This is not correct yet, though curiously dEQP doesn\u0027t complain. Will fix this.",
+      "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b952d62_e869f09a",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T11:58:05Z",
+      "side": 1,
+      "message": "Nit: What you have is great, but a bit on the verbose side. FWIW, you could do:\n\n  template \u003ctypename T, typename F\u003e\n  void SpirvShader::ShaderGroupBinOp(const SpirvShader::InsnIterator\u0026 insn,\n                                     const SpirvShader::EmitState*    state,\n                                     Intermediate\u0026                    dst,\n                                     const T\u0026                         identity,\n                                     F\u0026\u0026                              apply);\n\n\n  ShaderGroupBinOp(insn, state, dst, SIMD::Int(0), [](RValue\u003cSIMD::Int\u003e a, RValue\u003cSIMD::Int\u003e b) { a + b });\n\nMeans you can then drop all the structs, and brackets from each case statement.",
+      "range": {
+        "startLine": 323,
+        "startChar": 2,
+        "endLine": 330,
+        "endChar": 8
+      },
       "revId": "97cd477753456937a4074528d8ea4af2db9ddf78",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
