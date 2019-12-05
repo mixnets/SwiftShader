@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b792ab84_b2b92f6b",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T17:04:22Z",
+      "side": 1,
+      "message": "Alignment still not using whitespace.",
+      "range": {
+        "startLine": 29,
+        "startChar": 1,
+        "endLine": 29,
+        "endChar": 8
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed307494_05a23e14",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T17:04:22Z",
+      "side": 1,
+      "message": "Weird indent here.",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 3
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f4a1545_58b17213",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T17:04:22Z",
+      "side": 1,
+      "message": "While these operators are commutative, this is okay, but perhaps maybe adjust the swizzles so that they\u0027re in order?\n\n  TYPE v2 \u003d apply(v.xxzz,  v.yyww);  // [xy]   [xy]   [zw]   [zw]\n  TYPE v3 \u003d apply(v2.xxxx, v2.zzzz); // [xyzw] [xyzw] [xyzw] [xyzw]\n\nThen I don\u0027t think you need the whole is_same logic.",
+      "range": {
+        "startLine": 46,
+        "startChar": 51,
+        "endLine": 46,
+        "endChar": 53
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a69f25a7_ea9e40e6",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-05T17:04:22Z",
+      "side": 1,
+      "message": "Perhaps it\u0027s just me, but this is backwards from how I\u0027ve used swizzles / blends before, and took me a good 5 minutes to realize what was going on. I\u0027d have expected:\n\n  TYPE v2 \u003d apply(v,  Swizzle(v,  identity, 0x4012 /* [ident, v.y,   v.z, v.w] */) // [x] [yx] [zy]  [wz]\n  TYPE v3 \u003d apply(v2, Swizzle(v2, identity, 0x4401 /* [ident, ident, v.z, v.w] */) // [x] [yx] [zyx] [wzyx]",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 51
+      },
+      "revId": "ace75946e0e17f282d70c5d64388d6ac42a38022",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
