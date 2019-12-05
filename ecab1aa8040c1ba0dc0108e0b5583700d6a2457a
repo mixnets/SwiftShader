@@ -46,6 +46,30 @@
       "revId": "ecab1aa8040c1ba0dc0108e0b5583700d6a2457a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0b6838f_1a79de95",
+        "filename": "src/Pipeline/SamplerCore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-05T16:10:21Z",
+      "side": 1,
+      "message": "Sorry, I meant it\u0027s the same for all texels of a sample.\n\nAnyway, I see this is a pre-existing optimization opportunity since it also applies to 2D arrays but we pass in the array index as another generic coordinate. So this LGTM for now. I\u0027ll make a note about the future optimization potential.",
+      "parentUuid": "c44fcfb5_6b32793f",
+      "range": {
+        "startLine": 86,
+        "startChar": 111,
+        "endLine": 86,
+        "endChar": 122
+      },
+      "revId": "ecab1aa8040c1ba0dc0108e0b5583700d6a2457a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
