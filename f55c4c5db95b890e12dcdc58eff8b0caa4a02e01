@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "498057bd_3b815775",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-06T02:56:15Z",
+      "side": 1,
+      "message": "This can just be a function",
+      "range": {
+        "startLine": 359,
+        "startChar": 2,
+        "endLine": 359,
+        "endChar": 14
+      },
+      "revId": "f55c4c5db95b890e12dcdc58eff8b0caa4a02e01",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
