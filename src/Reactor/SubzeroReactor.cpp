@@ -68,7 +68,11 @@ namespace
 		// This uses a static in a function to avoid the cost of a global static
 		// initializer. See http://neugierig.org/software/chromium/notes/2011/08/static-initializers.html
 		static rr::Config config = rr::Config::Edit()
+		#if defined(REACTOR_DEFAULT_OPT_LEVEL)
+			.set(rr::Optimization::Level::REACTOR_DEFAULT_OPT_LEVEL)
+		#else
 			.set(rr::Optimization::Level::Default)
+		#endif
 			.apply({});
 		return config;
 	}
