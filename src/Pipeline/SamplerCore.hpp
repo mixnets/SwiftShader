@@ -84,12 +84,13 @@ namespace sw
 		void computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, const Int4& sampleId, SamplerFunction function);
 		void computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, Int4 valid, const Pointer<Byte> &mipmap, const Int4& sampleId, SamplerFunction function);
 		Vector4s sampleTexel(Short4 &u, Short4 &v, Short4 &s, Vector4f &offset, Pointer<Byte> &mipmap, const Int4& sampleId, Pointer<Byte> buffer, SamplerFunction function);
-		Vector4s sampleTexel(UInt index[4], Pointer<Byte> buffer);
-		Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &s, Float4 &z, Pointer<Byte> &mipmap, const Int4& sampleId, Pointer<Byte> buffer, SamplerFunction function);
+		Vector4s sampleTexel(UInt index[4], Int4 &blockIdx, Pointer<Byte> buffer);
+		Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &s, Int4 &blockIdx, Float4 &z, Pointer<Byte> &mipmap, const Int4& sampleId, Pointer<Byte> buffer, SamplerFunction function);
 		Vector4f replaceBorderTexel(const Vector4f &c, Int4 valid);
 		void selectMipmap(const Pointer<Byte> &texture, Pointer<Byte> &mipmap, Pointer<Byte> &buffer, const Float &lod, bool secondLOD);
 		Short4 address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap);
 		void address(Float4 &uw, Int4& xyz0, Int4& xyz1, Float4& f, Pointer<Byte>& mipmap, Float4 &texOffset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
+		void adjustAddress(Int4& x0, Int4& x1, Int4& y0, Int4& y1, Int4 c[4]);
 		Int4 computeFilterOffset(Float &lod);
 
 		void convertSigned15(Float4 &cf, Short4 &ci);
@@ -107,6 +108,7 @@ namespace sw
 		bool has32bitIntegerTextureComponents() const;
 		bool isYcbcrFormat() const;
 		bool isRGBComponent(int component) const;
+		bool isCompressed() const;
 		bool borderModeActive() const;
 		VkComponentSwizzle gatherSwizzle() const;
 

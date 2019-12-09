@@ -69,7 +69,7 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device) :
 	tiling(pCreateInfo->tiling),
 	usage(pCreateInfo->usage)
 {
-	if(format.isCompressed())
+	if(format.requiresDecompression())
 	{
 		VkImageCreateInfo compressedImageCreateInfo = *pCreateInfo;
 		compressedImageCreateInfo.format = format.getDecompressedFormat();
@@ -97,7 +97,7 @@ void Image::destroy(const VkAllocationCallbacks* pAllocator)
 
 size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo)
 {
-	return Format(pCreateInfo->format).isCompressed() ? sizeof(Image) : 0;
+	return Format(pCreateInfo->format).requiresDecompression() ? sizeof(Image) : 0;
 }
 
 const VkMemoryRequirements Image::getMemoryRequirements() const
@@ -542,7 +542,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D& extent, const VkBufferI
 int Image::borderSize() const
 {
 	// We won't add a border to compressed cube textures, we'll add it when we decompress the texture
-	return (isCube() && !format.isCompressed()) ? 1 : 0;
+	return (isCube() && !format.requiresDecompression()) ? 1 : 0;
 }
 
 VkDeviceSize Image::texelOffsetBytesInStorage(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const
@@ -759,7 +759,7 @@ VkDeviceSize Image::getStorageSize(VkImageAspectFlags aspectMask) const
 
 const Image* Image::getSampledImage(const vk::Format& imageViewFormat) const
 {
-	bool isImageViewCompressed = imageViewFormat.isCompressed();
+	bool isImageViewCompressed = imageViewFormat.requiresDecompression();
 	if(decompressedImage && !isImageViewCompressed)
 	{
 		ASSERT(flags & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT);

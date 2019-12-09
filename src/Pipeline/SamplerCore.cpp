@@ -147,7 +147,7 @@ namespace sw
 		bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 		bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
 		                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable || state.largeTexture ||
-		                         borderModeActive() || (function == Gather);
+		                         borderModeActive() || (function == Gather) || isCompressed();
 
 		if(use32BitFiltering)
 		{
@@ -895,6 +895,9 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z0, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
+		Int4 blockIndex[4];
+		adjustAddress(x0, x1, y0, y1, blockIndex);
+
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
 		if(state.addressingModeW != ADDRESSING_UNUSED)
@@ -904,16 +907,16 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
 		{
-			c = sampleTexel(x0, y0, z0, q, mipmap, sampleId, buffer, function);
+			c = sampleTexel(x0, y0, z0, blockIndex[0], q, mipmap, sampleId, buffer, function);
 		}
 		else
 		{
 			y1 *= pitchP;
 
-			Vector4f c00 = sampleTexel(x0, y0, z0, q, mipmap, sampleId, buffer, function);
-			Vector4f c10 = sampleTexel(x1, y0, z0, q, mipmap, sampleId, buffer, function);
-			Vector4f c01 = sampleTexel(x0, y1, z0, q, mipmap, sampleId, buffer, function);
-			Vector4f c11 = sampleTexel(x1, y1, z0, q, mipmap, sampleId, buffer, function);
+			Vector4f c00 = sampleTexel(x0, y0, z0, blockIndex[0], q, mipmap, sampleId, buffer, function);
+			Vector4f c10 = sampleTexel(x1, y0, z0, blockIndex[1], q, mipmap, sampleId, buffer, function);
+			Vector4f c01 = sampleTexel(x0, y1, z0, blockIndex[2], q, mipmap, sampleId, buffer, function);
+			Vector4f c11 = sampleTexel(x1, y1, z0, blockIndex[3], q, mipmap, sampleId, buffer, function);
 
 			if(!gather)   // Blend
 			{
@@ -971,6 +974,9 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z1, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
+		Int4 blockIndex[4];
+		adjustAddress(x0, x1, y0, y1, blockIndex);
+
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		Int4 sliceP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
 		y0 *= pitchP;
@@ -978,21 +984,21 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
 		{
-			c = sampleTexel(x0, y0, z0, w, mipmap, sampleId, buffer, function);
+			c = sampleTexel(x0, y0, z0, blockIndex[0], w, mipmap, sampleId, buffer, function);
 		}
 		else
 		{
 			y1 *= pitchP;
 			z1 *= sliceP;
 
-			Vector4f c000 = sampleTexel(x0, y0, z0, w, mipmap, sampleId, buffer, function);
-			Vector4f c100 = sampleTexel(x1, y0, z0, w, mipmap, sampleId, buffer, function);
-			Vector4f c010 = sampleTexel(x0, y1, z0, w, mipmap, sampleId, buffer, function);
-			Vector4f c110 = sampleTexel(x1, y1, z0, w, mipmap, sampleId, buffer, function);
-			Vector4f c001 = sampleTexel(x0, y0, z1, w, mipmap, sampleId, buffer, function);
-			Vector4f c101 = sampleTexel(x1, y0, z1, w, mipmap, sampleId, buffer, function);
-			Vector4f c011 = sampleTexel(x0, y1, z1, w, mipmap, sampleId, buffer, function);
-			Vector4f c111 = sampleTexel(x1, y1, z1, w, mipmap, sampleId, buffer, function);
+			Vector4f c000 = sampleTexel(x0, y0, z0, blockIndex[0], w, mipmap, sampleId, buffer, function);
+			Vector4f c100 = sampleTexel(x1, y0, z0, blockIndex[1], w, mipmap, sampleId, buffer, function);
+			Vector4f c010 = sampleTexel(x0, y1, z0, blockIndex[2], w, mipmap, sampleId, buffer, function);
+			Vector4f c110 = sampleTexel(x1, y1, z0, blockIndex[3], w, mipmap, sampleId, buffer, function);
+			Vector4f c001 = sampleTexel(x0, y0, z1, blockIndex[0], w, mipmap, sampleId, buffer, function);
+			Vector4f c101 = sampleTexel(x1, y0, z1, blockIndex[1], w, mipmap, sampleId, buffer, function);
+			Vector4f c011 = sampleTexel(x0, y1, z1, blockIndex[2], w, mipmap, sampleId, buffer, function);
+			Vector4f c111 = sampleTexel(x1, y1, z1, blockIndex[3], w, mipmap, sampleId, buffer, function);
 
 			// Blend first slice
 			if(componentCount >= 1) c000.x = c000.x + fu * (c100.x - c000.x);
@@ -1373,7 +1379,7 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
+	Vector4s SamplerCore::sampleTexel(UInt index[4], Int4 &blockIdx, Pointer<Byte> buffer)
 	{
 		Vector4s c;
 
@@ -1572,39 +1578,55 @@ namespace sw
 				ASSERT(false);
 			}
 		}
-		else if(state.textureFormat == VK_FORMAT_A2B10G10R10_UNORM_PACK32)
+		else
 		{
-			Int4 cc;
-			cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
+			switch(state.textureFormat)
+			{
+			case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
+				{
+					Int4 cc;
+					cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
 
-			// shift each 10 bit field left 6, and replicate 6 high bits into bottom 6
-			c.x = Short4(((cc << 6) & Int4(0xFFC0)) | ((cc >> 4) & Int4(0x3F)));
-			c.y = Short4(((cc >> 4) & Int4(0xFFC0)) | ((cc >> 14) & Int4(0x3F)));
-			c.z = Short4(((cc >> 14) & Int4(0xFFC0)) | ((cc >> 24) & Int4(0x3F)));
-			c.w = Short4(((cc >> 16) & Int4(0xC000)));
+					// shift each 10 bit field left 6, and replicate 6 high bits into bottom 6
+					c.x = Short4(((cc << 6) & Int4(0xFFC0)) | ((cc >> 4) & Int4(0x3F)));
+					c.y = Short4(((cc >> 4) & Int4(0xFFC0)) | ((cc >> 14) & Int4(0x3F)));
+					c.z = Short4(((cc >> 14) & Int4(0xFFC0)) | ((cc >> 24) & Int4(0x3F)));
+					c.w = Short4(((cc >> 16) & Int4(0xC000)));
 
-			// replicate 2 bit alpha component all the way down
-			c.w |= (c.w >> 8) & Short4(0xc0);
-			c.w |= (c.w >> 4) & Short4(0x0c0c);
-			c.w |= (c.w >> 2) & Short4(0x3333);
+					// replicate 2 bit alpha component all the way down
+					c.w |= (c.w >> 8) & Short4(0xc0);
+					c.w |= (c.w >> 4) & Short4(0x0c0c);
+					c.w |= (c.w >> 2) & Short4(0x3333);
+				}
+				break;
+			case VK_FORMAT_A2B10G10R10_UINT_PACK32:
+				{
+					Int4 cc;
+					cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
+					cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
+
+					c.x = Short4(((cc)&Int4(0x3FF)));
+					c.y = Short4(((cc >> 10)& Int4(0x3FF)));
+					c.z = Short4(((cc >> 20)& Int4(0x3FF)));
+					c.w = Short4(((cc >> 30)& Int4(0x3)));
+				}
+				break;
+			case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
+				for(int i = 0; i < 4; ++i)
+				{
+					c[i] = Unpack(As<Byte4>(DecodeBC1(Pointer<UInt2>(buffer)[index[i]], Extract(blockIdx, i))));
+				}
+				transpose4x4(c.x, c.y, c.z, c.w);
+				break;
+			default:
+				ASSERT(false);
+			}
 		}
-		else if(state.textureFormat == VK_FORMAT_A2B10G10R10_UINT_PACK32)
-		{
-			Int4 cc;
-			cc = Insert(cc, Pointer<Int>(buffer)[index[0]], 0);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[1]], 1);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[2]], 2);
-			cc = Insert(cc, Pointer<Int>(buffer)[index[3]], 3);
-
-			c.x = Short4(((cc) & Int4(0x3FF)));
-			c.y = Short4(((cc >> 10) & Int4(0x3FF)));
-			c.z = Short4(((cc >> 20) & Int4(0x3FF)));
-			c.w = Short4(((cc >> 30) & Int4(0x3)));
-		}
-		else ASSERT(false);
 
 		if (state.textureFormat.isSRGBformat())
 		{
@@ -1762,13 +1784,14 @@ namespace sw
 		}
 		else
 		{
-			return sampleTexel(index, buffer);
+			Int4 dummy;
+			return sampleTexel(index, dummy, buffer);
 		}
 
 		return c;
 	}
 
-	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, const Int4& sampleId, Pointer<Byte> buffer, SamplerFunction function)
+	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Int4 &blockIdx, Float4 &z, Pointer<Byte> &mipmap, const Int4& sampleId, Pointer<Byte> buffer, SamplerFunction function)
 	{
 		Int4 valid;
 
@@ -1903,7 +1926,7 @@ namespace sw
 		{
 			ASSERT(!isYcbcrFormat());
 
-			Vector4s cs = sampleTexel(index, buffer);
+			Vector4s cs = sampleTexel(index, blockIdx, buffer);
 
 			bool isInteger = state.textureFormat.isNonNormalizedInteger();
 			int componentCount = textureComponentCount();
@@ -2334,6 +2357,34 @@ namespace sw
 		}
 	}
 
+	void SamplerCore::adjustAddress(Int4& x0, Int4& x1, Int4& y0, Int4& y1, Int4 c[4])
+	{
+		if(isCompressed())
+		{
+			// Divide x and y by 4 and compute inner block index in c, which is 4*y + x
+			ASSERT((state.textureFormat.blockWidth() == 4) && (state.textureFormat.blockHeight() == 4));
+
+			// Store 4*y
+			c[0] = c[2] = (y0 & Int4(0x3)) << 2;
+			c[1] = c[3] = (y1 & Int4(0x3)) << 2;
+
+			// Add x
+			Int4 dx = x0 & Int4(0x3);
+			c[0] |= dx;
+			c[1] |= dx;
+
+			dx = x1 & Int4(0x3);
+			c[2] |= dx;
+			c[3] |= dx;
+
+			// Divide all coordinates by 4
+			x0 = As<UInt4>(x0) >> 2;
+			x1 = As<UInt4>(x1) >> 2;
+			y0 = As<UInt4>(y0) >> 2;
+			y1 = As<UInt4>(y1) >> 2;
+		}
+	}
+
 	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs)
 	{
 		cf = Float4(cs) * Float4(1.0f / 0x7FFF);
@@ -2411,6 +2462,11 @@ namespace sw
 	bool SamplerCore::isRGBComponent(int component) const
 	{
 		return state.textureFormat.isRGBComponent(component);
+	}
+
+	bool SamplerCore::isCompressed() const
+	{
+		return state.textureFormat.isCompressed();
 	}
 
 	bool SamplerCore::borderModeActive() const

@@ -275,6 +275,8 @@ namespace sw
 		rr::RValue<sw::SIMD::Float> const &i, rr::RValue<sw::SIMD::Float> const &j, rr::RValue<sw::SIMD::Float> const &k, rr::RValue<sw::SIMD::Float> const &l,
 		rr::RValue<sw::SIMD::Float> const &m, rr::RValue<sw::SIMD::Float> const &n, rr::RValue<sw::SIMD::Float> const &o, rr::RValue<sw::SIMD::Float> const &p);
 
+	UInt   DecodeBC1(const UInt2& block, const UInt& blockIndex);
+
 	////////////////////////////////////////////////////////////////////////////
 	// Inline functions
 	////////////////////////////////////////////////////////////////////////////

@@ -782,6 +782,38 @@ namespace sw
 		}};
 	}
 
+	UInt DecodeBC1(const UInt2& block, const UInt& blockIndex)
+	{
+		// Get colors and replicate for each color channel
+		UInt c0(Extract(block, 0));
+		UInt c1 = c0 >> 16;
+		c0 &= 0x0000FFFFu;
+
+		// Verify if we use alpha
+		Bool alpha = c0 <= c1;
+
+		// Color factors
+		UInt4 color0Weight = IfThenElse(alpha, UInt4(2, 0, 1, 0), UInt4(3, 0, 2, 1));
+		UInt4 color1Weight = IfThenElse(alpha, UInt4(0, 2, 1, 0), UInt4(0, 3, 1, 2));
+		Pointer<UInt> factors0Ptr = As<Pointer<UInt>>(&color0Weight);
+		Pointer<UInt> factors1Ptr = As<Pointer<UInt>>(&color1Weight);
+
+		UInt index = blockIndex << 1; // Starting bit, even number, range [0, 30]
+		UInt factorIndex = (Extract(block, 1) & (UInt(0x3) << index)) >> index; // Factor index, range [0, 3]
+		UInt4 factor0(factors0Ptr[factorIndex]); // Replicate factor for each color channel
+		UInt4 factor1(factors1Ptr[factorIndex]); // Replicate factor for each color channel
+
+		// Get colors and replicate for each color channel
+		UInt4 rgbMasks(0xF800u, 0x07E0u, 0x001Fu, 0); // RGBA (there's no alpha in the output color)
+		UInt4 RGB = ((UInt4(c0) & rgbMasks) * factor0) + ((UInt4(c1) & rgbMasks) * factor1);
+		RGB = IfThenElse(alpha, RGB >> 1, RGB / UInt4(3)) >> UInt4(11, 5, 0, 0); // Bring LSB to bit 0
+		// Extend 565 to 888: 888 - 565 = 323, 565 - 323 = 242
+		RGB = (RGB << UInt4(3, 2, 3, 0)) | (RGB >> UInt4(2, 4, 2, 0));
+		// Output (LSB -> MSB) RGBA. Alpha is always 0xFF, except if alpha is true and factorIndex is 3.
+		return IfThenElse(alpha && (factorIndex == 3), UInt(0), UInt(0xFF000000u)) |
+			   (Extract(RGB, 0) & 0xFF) | (Extract(RGB, 1) & 0xFF) << 8 | (Extract(RGB, 2) & 0xFF) << 16;
+	}
+
 	namespace SIMD {
 
 		Pointer::Pointer(rr::Pointer<Byte> base, rr::Int limit)

@@ -48,6 +48,7 @@ public:
 
 	bool isCompatible(const Format& other) const;
 	bool isCompressed() const;
+	bool requiresDecompression() const;
 	VkFormat getDecompressedFormat() const;
 	int blockWidth() const;
 	int blockHeight() const;

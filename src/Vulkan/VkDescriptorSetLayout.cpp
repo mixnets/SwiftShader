@@ -418,7 +418,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device* device, DescriptorSet *dstS
 
 					int width = extent.width;
 					int height = extent.height;
-					int bytes = format.bytes();
+					int bytes = format.bytesPerBlock();
 					int layers = imageView->getSubresourceRange().layerCount;  // TODO(b/129523279): Untangle depth vs layers throughout the sampler
 					int depth = layers > 1 ? layers : extent.depth;
 					int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
