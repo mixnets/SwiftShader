@@ -22,6 +22,30 @@
       "revId": "02d678212280c681306c9eb52871160dc8633781",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "318b3aa9_3ece5359",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-09T19:38:49Z",
+      "side": 1,
+      "message": "Just reducing duplications really. There\u0027s the same number of variables in use (just +1 decl for THIRD_PARTY_DIR), and I\u0027m just substituting more of the paths with the ${THIRD_PARTY_DIR}.\n\nI touched this because I use ${THIRD_PARTY_DIR} for my libraries, and it seems nicer to use a standard this-is-the-path-to-third_party-dir, than having a \"${CMAKE_CURRENT_SOURCE_DIR}/third_party\" string, and repeating \"${CMAKE_CURRENT_SOURCE_DIR}/third_party/blah\" strings for each lib.\n\nCan put back if you think this is a bad move.",
+      "parentUuid": "e0da3e19_f4e385fb",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 289,
+        "endChar": 83
+      },
+      "revId": "02d678212280c681306c9eb52871160dc8633781",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
