@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "613048e1_4e995438",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T18:37:18Z",
+      "side": 1,
+      "message": "\"Default\" just to make it explicit that we effectively use this as the default?",
+      "range": {
+        "startLine": 119,
+        "startChar": 31,
+        "endLine": 119,
+        "endChar": 32
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65cc5145_a653c0d8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T18:37:18Z",
+      "side": 1,
+      "message": "CMakeLists.txt uses spaces for indentation",
+      "range": {
+        "startLine": 495,
+        "startChar": 0,
+        "endLine": 495,
+        "endChar": 1
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "696b6b59_5af72f51",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T18:37:18Z",
+      "side": 1,
+      "message": "Optimization::level already initializes to Level::Default, so maybe we don\u0027t need this. I think we only had it in the original code to more easily edit it for a local experiment. Now we have the CMake variable to do that.",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 128,
+        "endChar": 8
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
