@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "de20aedc_93ec3576",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-09T20:24:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "613048e1_4e995438",
+      "range": {
+        "startLine": 119,
+        "startChar": 31,
+        "endLine": 119,
+        "endChar": 32
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "65cc5145_a653c0d8",
         "filename": "CMakeLists.txt",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6b3b3a5_d587e619",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-09T20:24:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "65cc5145_a653c0d8",
+      "range": {
+        "startLine": 495,
+        "startChar": 0,
+        "endLine": 495,
+        "endChar": 1
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -92,6 +140,30 @@
       "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8e827b6_00e1106f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-09T20:24:18Z",
+      "side": 1,
+      "message": "As discussed, I moved this into the Optimization class\u0027s constructor. Better because it\u0027s now backend agnostic (so adding a new backend will work), and calling it the \"default\" makes more sense.",
+      "parentUuid": "b5a1cb3d_b50db767",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 128,
+        "endChar": 8
+      },
+      "revId": "cedebf1715212c63131f8e4324362e6f7d8cd5b6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
