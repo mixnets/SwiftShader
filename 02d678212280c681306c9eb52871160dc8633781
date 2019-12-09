@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0da3e19_f4e385fb",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T19:32:25Z",
+      "side": 1,
+      "message": "No objection but what\u0027s the reasoning behind moving all of these to variables? It seems useful when it substantially shortens the path and increases readability, but there are still e.g. instances of ${CMAKE_CURRENT_SOURCE_DIR}/tests/ despite your addition of ${TESTS_DIR}",
+      "range": {
+        "startLine": 276,
+        "startChar": 0,
+        "endLine": 289,
+        "endChar": 83
+      },
+      "revId": "02d678212280c681306c9eb52871160dc8633781",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
