@@ -87,6 +87,47 @@
       "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec91d00c_3d9e1258",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T21:04:33Z",
+      "side": 1,
+      "message": "\u003e Nope, I just like being explicit about this - especially for a type that I _really_ want to be as performant as an int.\n\nIt *shouldn\u0027t* matter, but then I read this: https://reviews.llvm.org/D18914#inline-159371 However, I\u0027d be surprised if LLVM didn\u0027t still effectively inline it anyway for methods this small.\n\n\u003e The reason for my preference was that I\u0027ve encountered compilers in the past that would incorrectly error on duplicate symbols, despite the implementation clearly being in the header.\n\nIf we do encounter that then we can use this redundant \u0027inline\u0027 as a reasonable workaround. Right now it feels a bit like jumping the gun (for this argument).\n\n\u003e My brain also parses these easier - I know to look for the implementation starting at the end of the line or below the class when I start reading a function declaration starting with an \u0027inline\u0027.\n\nI like that argument. I do sometimes overlook the in-class definition, looking for it in the .cpp in vain. It\u0027s much clearer that there\u0027s an inline definition when moving it to the next several lines, with blank lines above and below the method, but that\u0027s many extra lines per method which also affects readability.\n\nhttps://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more advocates for the separation between the interface and the implementation, but for a class which is meant to behave *exactly* like a built-in type those two are closely intertwined.\n\nWe might even make classes like this \u0027final\u0027 to help enforce this implementation.\n\nMy one true concern about this though is that I believe some compilers warn against redundant keywords. I\u0027m fairly certain \"inline inline\" produces a warning-as-error in some of our builds. See the use of -Wno-attributes and /wd4141 in CMakeFiles.txt and elsewhere. I\u0027m not sure if this is regarded the same. Please verify if that will be an issue (note https://reviews.llvm.org/D18914 was abandoned so at least one compiler doesn\u0027t think it is redundant, but I\u0027m not sure where GCC 8+ and MSVC stand).\n\n(FWIW note that C++17 supports inline variables and so there could be slight confusion that when you typically see inline being used in the class declaration it\u0027s for an inline variable and not for an inline method. Doesn\u0027t seem like a real concern for this trivial class though. But I do think this usage of inline should be done sparingly.)",
+      "parentUuid": "c495cead_901be500",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "615c75ab_2b6671fa",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-09T21:04:33Z",
+      "side": 1,
+      "message": "unsigned? Or does DAP use signed int? Could perhaps use a comment clarifying the choice.\n\nAlso note SPIR-V defines 0 as an invalid ID. I think that\u0027s useful for quickly detecting bugs (same level of risk as null pointers).",
+      "range": {
+        "startLine": 48,
+        "startChar": 1,
+        "endLine": 48,
+        "endChar": 4
+      },
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
