@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b820a65_fb963ee5",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T11:46:46Z",
+      "side": 1,
+      "message": "Can marl::Event now be used?",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 116,
+        "endChar": 66
+      },
+      "revId": "2c42a684f39b9bba8473543bc7b00f6034788bbc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f7f7402_d9d10f94",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T11:46:46Z",
+      "side": 1,
+      "message": "I think there\u0027s a compiler out there somewhere that\u0027ll moan about class member shadowing.\nMaybe rename the parameter to tempImport.",
+      "range": {
+        "startLine": 211,
+        "startChar": 1,
+        "endLine": 211,
+        "endChar": 22
+      },
+      "revId": "2c42a684f39b9bba8473543bc7b00f6034788bbc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
