@@ -30,6 +30,7 @@ static const VkSurfaceFormatKHR surfaceFormats[] =
 static const VkPresentModeKHR presentModes[] =
 {
 	VK_PRESENT_MODE_FIFO_KHR,
+	VK_PRESENT_MODE_MAILBOX_KHR,
 };
 
 }
