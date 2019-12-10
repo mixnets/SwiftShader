@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "0b346d93_5a73f92f",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T11:59:52Z",
+      "side": 1,
+      "message": "Great researching and good points.\nI\u0027ve been trying to stick to a pattern of keeping inline bodies below the class. I apparently didn\u0027t do this for SpirvID, and this laziness got copied here.\n\nI\u0027ve created https://swiftshader-review.googlesource.com/c/SwiftShader/+/39248 to fix up this and SpirvID. We can continue the discussion there.",
+      "parentUuid": "ec91d00c_3d9e1258",
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "615c75ab_2b6671fa",
         "filename": "src/Vulkan/Debug/ID.hpp",
         "patchSetId": 1
@@ -119,6 +137,30 @@
       "writtenOn": "2019-12-09T21:04:33Z",
       "side": 1,
       "message": "unsigned? Or does DAP use signed int? Could perhaps use a comment clarifying the choice.\n\nAlso note SPIR-V defines 0 as an invalid ID. I think that\u0027s useful for quickly detecting bugs (same level of risk as null pointers).",
+      "range": {
+        "startLine": 48,
+        "startChar": 1,
+        "endLine": 48,
+        "endChar": 4
+      },
+      "revId": "ccec3ba1f354e6431bb8a7378cad185e72b8f9e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1847b442_40c46e50",
+        "filename": "src/Vulkan/Debug/ID.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T11:59:52Z",
+      "side": 1,
+      "message": "DAP is JSON based (:puke:) which means numbers are signed.\n\n\u003e Also note SPIR-V defines 0 as an invalid ID. I think that\u0027s useful for quickly detecting bugs (same level of risk as null pointers).\n\nI\u0027m not sure what you\u0027re suggesting here. The no-param constructor defaults to 0?",
+      "parentUuid": "615c75ab_2b6671fa",
       "range": {
         "startLine": 48,
         "startChar": 1,
