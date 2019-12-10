@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15361c3b_f1b4d945",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T16:30:59Z",
+      "side": 1,
+      "message": "My bad for not spotting this in the review.\nI\u0027m not sure what the patterns are, but I\u0027ve seen compilers warn about member shadowing.\nPerhaps rename the level parameter to lvl to avoid any potential issues?",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 15
+      },
+      "revId": "3a10e1eae37b398df2490afc505de96eaca3be44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
