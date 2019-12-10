@@ -20,8 +20,9 @@
 #include "Renderer/Context.hpp"
 #include "Renderer/VertexProcessor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class VertexPipeline : public VertexRoutine
 	{
 	public:

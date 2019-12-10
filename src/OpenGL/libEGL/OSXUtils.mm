@@ -18,8 +18,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-namespace sw
-{
+namespace sw {
+
+
 namespace OSX
 {
 	bool IsValidWindow(EGLNativeWindowType window)

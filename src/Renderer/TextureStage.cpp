@@ -19,8 +19,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	TextureStage::State::State()
 	{
 		memset(this, 0, sizeof(State));

@@ -42,8 +42,9 @@ namespace {enum E {}; static_assert(!std::numeric_limits<std::underlying_type<E>
 	#define ALIGN(bytes, type) type __attribute__((aligned(bytes)))
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	typedef ALIGN(1, uint8_t) byte;
 	typedef ALIGN(2, uint16_t) word;
 	typedef ALIGN(4, uint32_t) dword;

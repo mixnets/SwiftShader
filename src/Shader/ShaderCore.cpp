@@ -19,8 +19,9 @@
 
 #include <limits.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	extern TranscendentalPrecision logPrecision;
 	extern TranscendentalPrecision expPrecision;
 	extern TranscendentalPrecision rcpPrecision;

@@ -39,8 +39,9 @@
 #define __x86__
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 namespace
 {
 struct Allocation

@@ -43,8 +43,9 @@ unsigned int minPrimitives = 1;
 unsigned int maxPrimitives = 1 << 21;
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	template<typename T>
 	inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, VkProvokingVertexModeEXT provokingVertexMode, T indices, unsigned int start, unsigned int triangleCount)
 	{

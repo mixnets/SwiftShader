@@ -19,8 +19,9 @@
 
 #include <memory.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	Constants constants;
 
 	Constants::Constants()

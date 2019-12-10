@@ -17,8 +17,9 @@
 
 #include "PixelRoutine.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class PixelPipeline : public PixelRoutine
 	{
 	public:

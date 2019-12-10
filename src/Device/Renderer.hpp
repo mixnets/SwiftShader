@@ -33,15 +33,16 @@
 #include <mutex>
 #include <thread>
 
-namespace vk
-{
+namespace vk {
+
 	class DescriptorSet;
 	class Device;
 	class Query;
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	struct DrawCall;
 	class PixelShader;
 	class VertexShader;

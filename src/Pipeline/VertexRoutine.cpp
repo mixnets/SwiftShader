@@ -21,8 +21,9 @@
 #include "Vulkan/VkDebug.hpp"
 #include "System/Half.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	VertexRoutine::VertexRoutine(
 			const VertexProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,

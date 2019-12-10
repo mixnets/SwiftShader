@@ -19,8 +19,9 @@
 #include "PixelProcessor.hpp"
 #include "Device/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Rasterizer : public RasterizerFunction
 	{
 	public:

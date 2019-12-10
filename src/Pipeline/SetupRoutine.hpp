@@ -18,8 +18,9 @@
 #include "Device/SetupProcessor.hpp"
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Context;
 
 	class SetupRoutine

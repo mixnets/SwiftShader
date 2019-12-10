@@ -20,8 +20,9 @@
 
 #include <unordered_map>
 
-namespace sw
-{
+namespace sw {
+
+
 	class PixelProgram : public PixelRoutine
 	{
 	public:

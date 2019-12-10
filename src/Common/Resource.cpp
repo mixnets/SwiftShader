@@ -17,8 +17,9 @@
 #include "Memory.hpp"
 #include "Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Resource::Resource(size_t bytes) : size(bytes)
 	{
 		blocked = 0;

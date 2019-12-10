@@ -17,8 +17,8 @@
 #include "VkDescriptorSetLayout.hpp"
 #include <cstring>
 
-namespace vk
-{
+namespace vk {
+
 	DescriptorUpdateTemplate::DescriptorUpdateTemplate(const VkDescriptorUpdateTemplateCreateInfo* pCreateInfo, void* mem) :
 		descriptorUpdateEntryCount(pCreateInfo->descriptorUpdateEntryCount),
 		descriptorUpdateEntries(reinterpret_cast<VkDescriptorUpdateTemplateEntry*>(mem)),

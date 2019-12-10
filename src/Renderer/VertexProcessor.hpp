@@ -20,8 +20,9 @@
 #include "RoutineCache.hpp"
 #include "Shader/VertexShader.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct DrawData;
 
 	struct VertexCache   // FIXME: Variable size

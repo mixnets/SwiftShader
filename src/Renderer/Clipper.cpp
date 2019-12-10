@@ -18,8 +18,9 @@
 #include "Renderer.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Clipper::Clipper(bool symmetricNormalizedDepth)
 	{
 		n = symmetricNormalizedDepth ? -1.0f : 0.0f;

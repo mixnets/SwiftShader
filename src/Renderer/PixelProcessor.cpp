@@ -24,8 +24,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool complementaryDepthBuffer;
 	extern TransparencyAntialiasing transparencyAntialiasing;
 	extern bool perspectiveCorrection;

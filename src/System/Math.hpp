@@ -24,8 +24,9 @@
 	#include <intrin.h>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	using std::abs;
 
 	#undef min

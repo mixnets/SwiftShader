@@ -43,8 +43,9 @@
 #include <atomic>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	class Event;
 
 	class Thread
@@ -123,8 +124,9 @@ namespace sw
 	void nop();
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	inline void Thread::yield()
 	{
 		#if defined(_WIN32)

@@ -22,8 +22,9 @@
 // at the same time it's best to just have the scheduler overhead.
 #include <pthread.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class MutexLock
 	{
 	public:
@@ -61,8 +62,9 @@ namespace sw
 
 #include <atomic>
 
-namespace sw
-{
+namespace sw {
+
+
 	class BackoffLock
 	{
 	public:

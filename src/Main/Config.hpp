@@ -29,8 +29,9 @@
 #define DEFAULT_THREAD_COUNT 0
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	enum
 	{
 		PERF_PIXEL,

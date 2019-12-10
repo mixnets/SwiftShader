@@ -21,14 +21,13 @@
 #include "Device/Renderer.hpp"
 #include <memory>
 
-namespace sw
-{
-	class ComputeProgram;
-	class SpirvShader;
+namespace sw {
+class ComputeProgram;
+class SpirvShader;
+
 }
 
-namespace vk
-{
+namespace vk {
 
 class PipelineCache;
 class PipelineLayout;
@@ -145,6 +144,6 @@ static inline Pipeline* Cast(VkPipeline object)
 	return Pipeline::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
 #endif // VK_PIPELINE_HPP_

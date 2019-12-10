@@ -20,8 +20,9 @@
 #include "Shader/PixelShader.hpp"
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class QuadRasterizer : public Rasterizer
 	{
 	public:

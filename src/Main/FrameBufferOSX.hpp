@@ -21,8 +21,9 @@
 
 @class CALayer;
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferOSX : public FrameBuffer
 	{
 	public:

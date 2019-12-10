@@ -19,8 +19,9 @@
 
 #include <mutex>
 
-namespace sw
-{
+namespace sw {
+
+
 	class RecursiveLock
 	{
 	public:

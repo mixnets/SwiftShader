@@ -17,8 +17,9 @@
 
 #include "Renderer/Matrix.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class MatrixStack
 	{
 	public:

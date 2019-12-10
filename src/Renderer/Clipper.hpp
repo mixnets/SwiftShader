@@ -18,8 +18,9 @@
 #include "Plane.hpp"
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Polygon;
 	struct DrawCall;
 	struct DrawData;

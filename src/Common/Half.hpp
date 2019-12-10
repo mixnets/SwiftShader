@@ -15,8 +15,9 @@
 #ifndef sw_Half_hpp
 #define sw_Half_hpp
 
-namespace sw
-{
+namespace sw {
+
+
 	class half
 	{
 	public:

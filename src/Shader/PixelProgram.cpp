@@ -18,8 +18,9 @@
 #include "Renderer/Primitive.hpp"
 #include "Renderer/Renderer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool postBlendSRGB;
 	extern bool booleanFaceRegister;
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates

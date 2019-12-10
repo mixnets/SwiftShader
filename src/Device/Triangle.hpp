@@ -17,8 +17,9 @@
 
 #include "Vertex.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Triangle
 	{
 		Vertex V0;

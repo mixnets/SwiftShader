@@ -28,8 +28,9 @@
 #include <mutex>
 #include <queue>
 
-namespace sw
-{
+namespace sw {
+
+
 
 // TaskEvents is an interface for notifying when tasks begin and end.
 // Tasks can be nested and/or overlapping.

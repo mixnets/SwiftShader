@@ -19,8 +19,9 @@
 
 #include <d3d9.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Resource;
 }
 

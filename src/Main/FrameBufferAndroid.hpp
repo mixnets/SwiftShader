@@ -21,8 +21,9 @@
 struct ANativeWindow;
 struct ANativeWindowBuffer;
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferAndroid : public FrameBuffer
 	{
 	public:

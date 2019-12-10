@@ -14,8 +14,9 @@
 
 #include "FrameBufferWin.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	FrameBufferWin::FrameBufferWin(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin) : FrameBuffer(width, height, fullscreen, topLeftOrigin), windowHandle(windowHandle)
 	{
 		if(!windowed)

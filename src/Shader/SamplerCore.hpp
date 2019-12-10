@@ -18,8 +18,9 @@
 #include "PixelRoutine.hpp"
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	enum SamplerMethod
 	{
 		Implicit,  // Compute gradients (pixel shader only).

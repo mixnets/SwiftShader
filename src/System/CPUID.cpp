@@ -27,8 +27,9 @@
 	#include <sys/types.h>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	bool CPUID::MMX = detectMMX();
 	bool CPUID::CMOV = detectCMOV();
 	bool CPUID::SSE = detectSSE();

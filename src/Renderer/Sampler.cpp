@@ -22,8 +22,9 @@
 #include <memory.h>
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	FilterType Sampler::maximumTextureFilterQuality = FILTER_LINEAR;
 	MipmapType Sampler::maximumMipmapFilterQuality = MIPMAP_POINT;
 

@@ -21,8 +21,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Blitter
 	{
 		struct Options

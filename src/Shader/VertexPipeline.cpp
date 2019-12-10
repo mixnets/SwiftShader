@@ -25,8 +25,9 @@
 #undef max
 #undef min
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool secondaryColor;
 
 	VertexPipeline::VertexPipeline(const VertexProcessor::State &state) : VertexRoutine(state, 0)

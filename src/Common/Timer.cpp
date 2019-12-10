@@ -35,8 +35,9 @@
 	#endif
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	Timer::Timer()
 	{
 	}

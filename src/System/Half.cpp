@@ -14,8 +14,9 @@
 
 #include "Half.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	half::half(float fp32)
 	{
 		unsigned int fp32i = *(unsigned int*)&fp32;

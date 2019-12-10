@@ -20,8 +20,9 @@
 #include <type_traits>
 #include <unordered_map>
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class Key, class Data>
 	class LRUCache
 	{
@@ -85,8 +86,9 @@ namespace sw
 	};
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class Key, class Data>
 	LRUCache<Key, Data>::LRUCache(int n)
 	{

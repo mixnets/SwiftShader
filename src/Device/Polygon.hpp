@@ -17,8 +17,9 @@
 
 #include "Vertex.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Polygon
 	{
 		Polygon(const float4 *P0, const float4 *P1, const float4 *P2)

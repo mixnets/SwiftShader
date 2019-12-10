@@ -15,8 +15,9 @@
 #ifndef sw_CPUID_hpp
 #define sw_CPUID_hpp
 
-namespace sw
-{
+namespace sw {
+
+
 	#if !defined(__i386__) && defined(_M_IX86)
 		#define __i386__ 1
 	#endif
@@ -81,8 +82,9 @@ namespace sw
 	};
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	inline bool CPUID::supportsMMX()
 	{
 		return MMX && enableMMX;

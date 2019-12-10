@@ -23,13 +23,14 @@
 
 #include <functional>
 
-namespace vk
-{
-	class PipelineLayout;
-} // namespace vk
+namespace vk {
 
-namespace sw
-{
+	class PipelineLayout;
+}  // namespace vk
+
+namespace sw {
+
+
 
 	using namespace rr;
 

@@ -20,8 +20,8 @@
 #include <array>
 #include <memory>
 
-namespace vk
-{
+namespace vk {
+
 	class DescriptorSetLayout;
 
 	struct alignas(16) DescriptorSetHeader
@@ -49,6 +49,6 @@ namespace vk
 		return DescriptorSet::Cast(object);
 	}
 
-} // namespace vk
+}  // namespace vk
 
 #endif // VK_DESCRIPTOR_SET_HPP_

@@ -18,8 +18,8 @@
 #include "VkObject.hpp"
 #include <set>
 
-namespace vk
-{
+namespace vk {
+
 	class DescriptorPool : public Object<DescriptorPool, VkDescriptorPool>
 	{
 	public:
@@ -58,6 +58,6 @@ namespace vk
 		return DescriptorPool::Cast(object);
 	}
 
-} // namespace vk
+}  // namespace vk
 
 #endif // VK_DESCRIPTOR_POOL_HPP_

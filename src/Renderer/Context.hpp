@@ -22,8 +22,9 @@
 #include "Vertex.hpp"
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Sampler;
 	class Surface;
 	class PixelShader;

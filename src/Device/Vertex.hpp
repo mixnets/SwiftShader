@@ -19,8 +19,9 @@
 #include "System/Types.hpp"
 #include "Device/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	ALIGN(16, struct Vertex
 	{
 		union

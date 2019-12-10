@@ -21,8 +21,9 @@
 #include "Common/Half.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	VertexProgram::VertexProgram(const VertexProcessor::State &state, const VertexShader *shader)
 		: VertexRoutine(state, shader),
 		  shader(shader),

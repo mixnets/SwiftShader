@@ -20,8 +20,9 @@
 #include "Device/Config.hpp"
 #include "System/Build.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Triangle MEMORY_SANITIZER_ONLY(: Memset<Triangle>)
 	{
 #if MEMORY_SANITIZER_ENABLED

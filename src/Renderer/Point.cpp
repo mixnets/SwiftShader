@@ -16,8 +16,9 @@
 
 #include "Matrix.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Point &Point::operator+=(const Vector &v)
 	{
 		x += v.x;

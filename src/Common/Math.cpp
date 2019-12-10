@@ -14,8 +14,9 @@
 
 #include "Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	inline uint64_t FNV_1a(uint64_t hash, unsigned char data)
 	{
 		return (hash ^ data) * 1099511628211;

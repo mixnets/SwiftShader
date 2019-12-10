@@ -14,8 +14,9 @@
 
 #include "Thread.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Thread::Thread(void (*threadFunction)(void *parameters), void *parameters)
 	{
 		Event init;

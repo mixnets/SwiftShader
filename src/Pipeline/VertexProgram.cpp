@@ -22,8 +22,9 @@
 
 #include "Vulkan/VkPipelineLayout.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	VertexProgram::VertexProgram(
 			const VertexProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,

@@ -23,8 +23,9 @@
 	#include <sys/select.h>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	Socket::Socket(SOCKET socket) : socket(socket)
 	{
 	}

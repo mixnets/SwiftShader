@@ -20,8 +20,9 @@
 
 #include <stdlib.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Configurator
 	{
 	public:

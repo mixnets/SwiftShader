@@ -21,8 +21,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	void VertexCache::clear()
 	{
 		for(uint32_t i = 0; i < SIZE; i++)

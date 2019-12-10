@@ -20,8 +20,9 @@
 #include "Renderer/Renderer.hpp"
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool complementaryDepthBuffer;
 	extern TranscendentalPrecision logPrecision;
 	extern bool leadingVertexFirst;

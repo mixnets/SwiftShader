@@ -19,8 +19,9 @@
 #include "Renderer/Surface.hpp"
 #include "Common/Thread.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	class Surface;

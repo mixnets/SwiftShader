@@ -20,8 +20,9 @@
 #include "Pipeline/SpirvShader.hpp"
 #include "System/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class QuadRasterizer : public Rasterizer
 	{
 	public:

@@ -20,8 +20,9 @@
 #include <cstring>
 #include <type_traits>
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class Key, class Data>
 	class LRUCache
 	{
@@ -88,8 +89,9 @@ namespace sw
 	};
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class Key, class Data>
 	LRUCache<Key, Data>::LRUCache(int n)
 	{

@@ -17,8 +17,9 @@
 
 #include "Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Timer
 	{
 	public:

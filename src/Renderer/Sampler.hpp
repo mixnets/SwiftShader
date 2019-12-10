@@ -19,8 +19,9 @@
 #include "Renderer/Surface.hpp"
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Mipmap
 	{
 		const void *buffer[6];

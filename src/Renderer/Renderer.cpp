@@ -40,8 +40,9 @@ unsigned int minPrimitives = 1;
 unsigned int maxPrimitives = 1 << 21;
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
 	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
 	extern bool booleanFaceRegister;

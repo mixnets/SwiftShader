@@ -19,8 +19,9 @@
 #include "Common/Math.hpp"
 #include "Renderer/Color.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Sampler;
 	class PixelRoutine;
 	class Context;

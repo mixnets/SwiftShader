@@ -23,8 +23,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	static int (*PreviousXErrorHandler)(Display *display, XErrorEvent *event) = 0;
 	static bool shmBadAccess = false;
 

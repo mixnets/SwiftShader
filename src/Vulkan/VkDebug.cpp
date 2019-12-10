@@ -85,8 +85,7 @@ bool IsUnderDebugger()
 
 }
 
-namespace vk
-{
+namespace vk {
 
 void tracev(const char *format, va_list args)
 {

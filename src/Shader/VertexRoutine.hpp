@@ -20,8 +20,9 @@
 #include "ShaderCore.hpp"
 #include "VertexShader.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)>
 	{
 	public:

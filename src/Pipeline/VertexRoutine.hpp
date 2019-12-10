@@ -20,13 +20,14 @@
 #include "Device/Color.hpp"
 #include "Device/VertexProcessor.hpp"
 
-namespace vk
-{
-	class PipelineLayout;
-} // namespace vk
+namespace vk {
 
-namespace sw
-{
+	class PipelineLayout;
+}  // namespace vk
+
+namespace sw {
+
+
 	class VertexRoutinePrototype : public VertexRoutineFunction
 	{
 	public:

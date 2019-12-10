@@ -24,8 +24,9 @@
 #undef None  // b/127920555
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	enum SamplerMethod : uint32_t

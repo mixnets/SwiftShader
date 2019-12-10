@@ -17,8 +17,9 @@
 
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Constants
 	{
 		Constants();

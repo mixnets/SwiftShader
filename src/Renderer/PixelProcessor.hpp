@@ -18,8 +18,9 @@
 #include "Context.hpp"
 #include "RoutineCache.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class PixelShader;
 	class Rasterizer;
 	struct Texture;

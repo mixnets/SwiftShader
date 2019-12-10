@@ -22,8 +22,9 @@
 #include "Renderer/Primitive.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool complementaryDepthBuffer;
 	extern bool postBlendSRGB;
 	extern bool exactColorRounding;

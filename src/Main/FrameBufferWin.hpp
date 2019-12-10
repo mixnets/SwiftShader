@@ -17,8 +17,9 @@
 
 #include "FrameBuffer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct GammaRamp
 	{
 		short red[256];

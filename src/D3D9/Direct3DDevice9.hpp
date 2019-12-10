@@ -27,8 +27,9 @@
 #include <map>
 #include <list>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Renderer;
 	class Context;
 	struct Query;

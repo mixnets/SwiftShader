@@ -29,8 +29,9 @@
 #include <list>
 #include <map>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Renderer;
 	class Context;
 }

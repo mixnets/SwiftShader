@@ -27,8 +27,9 @@ using namespace std;
 #include <unistd.h>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	Configurator::Configurator(string iniPath)
 	{
 		path = iniPath;

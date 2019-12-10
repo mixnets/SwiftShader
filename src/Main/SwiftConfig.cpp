@@ -26,8 +26,9 @@
 #include <string.h>
 #include <algorithm>
 
-namespace sw
-{
+namespace sw {
+
+
 	extern Profiler profiler;
 
 	std::string itoa(int number)

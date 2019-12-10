@@ -18,8 +18,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	PixelShader::PixelShader(const PixelShader *ps) : Shader()
 	{
 		shaderModel = 0x0300;

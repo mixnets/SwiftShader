@@ -17,8 +17,9 @@
 #include "Point.hpp"
 #include "System/Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Matrix Matrix::diag(float m11, float m22, float m33, float m44)
 	{
 		return Matrix(m11, 0,   0,   0,

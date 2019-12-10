@@ -25,8 +25,9 @@
 #undef min
 #undef max
 
-namespace sw
-{
+namespace sw {
+
+
 void trace(const char *format, ...);
 inline void trace() {}
 }

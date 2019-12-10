@@ -33,8 +33,7 @@ namespace
 	}
 }
 
-namespace vk
-{
+namespace vk {
 
 std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key& key) const
 {
@@ -264,4 +263,4 @@ std::mutex& Device::getSamplingRoutineCacheMutex()
 	return samplingRoutineCacheMutex;
 }
 
-} // namespace vk
+}  // namespace vk

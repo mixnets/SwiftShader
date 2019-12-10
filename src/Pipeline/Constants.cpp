@@ -19,8 +19,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	Constants constants;
 
 	Constants::Constants()

@@ -17,8 +17,9 @@
 #include "Direct3DDevice9Ex.hpp"
 #include "Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool postBlendSRGB;
 }
 

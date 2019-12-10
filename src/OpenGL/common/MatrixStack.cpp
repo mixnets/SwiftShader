@@ -16,8 +16,9 @@
 
 #include "Common/Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	MatrixStack::MatrixStack(int size)
 	{
 		stack = new Matrix[size];

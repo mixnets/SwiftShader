@@ -22,8 +22,9 @@
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	PixelRoutine::PixelRoutine(
 			const PixelProcessor::State &state,
 			vk::PipelineLayout const *pipelineLayout,

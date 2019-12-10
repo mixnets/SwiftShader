@@ -19,8 +19,9 @@
 #include "Reactor/Reactor.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	class Vector4s

@@ -24,8 +24,9 @@
 #include <array>
 #include <string>
 
-namespace sw
-{
+namespace sw {
+
+
 	class SwiftConfig
 	{
 	public:

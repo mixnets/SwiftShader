@@ -21,8 +21,9 @@
 #include "Device/Renderer.hpp"
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	SetupRoutine::SetupRoutine(const SetupProcessor::State &state) : state(state)
 	{
 	}

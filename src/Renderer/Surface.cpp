@@ -33,8 +33,9 @@
 #undef min
 #undef max
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool quadLayoutEnabled;
 	extern bool complementaryDepthBuffer;
 	extern TranscendentalPrecision logPrecision;

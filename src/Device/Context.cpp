@@ -22,8 +22,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	Context::Context()
 	{
 		init();

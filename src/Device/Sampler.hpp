@@ -20,13 +20,14 @@
 #include "System/Types.hpp"
 #include "Vulkan/VkFormat.h"
 
-namespace vk
-{
+namespace vk {
+
 	class Image;
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Mipmap
 	{
 		const void *buffer;

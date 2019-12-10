@@ -19,8 +19,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	VertexShader::VertexShader(const VertexShader *vs) : Shader()
 	{
 		shaderModel = 0x0300;

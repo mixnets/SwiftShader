@@ -17,8 +17,9 @@
 
 #include "common/Object.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Resource;
 }
 

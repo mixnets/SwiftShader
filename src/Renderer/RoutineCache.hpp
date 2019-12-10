@@ -19,8 +19,9 @@
 
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	template<class State>

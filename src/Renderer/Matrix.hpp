@@ -15,8 +15,9 @@
 #ifndef Matrix_hpp
 #define Matrix_hpp
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Vector;
 	struct Point;
 	struct float4;
@@ -108,8 +109,9 @@ namespace sw
 
 #include "Vector.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	inline Matrix::Matrix()
 	{
 	}

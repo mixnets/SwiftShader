@@ -22,8 +22,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	uint32_t PixelProcessor::States::computeHash()
 	{
 		uint32_t *state = reinterpret_cast<uint32_t*>(this);

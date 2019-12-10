@@ -22,14 +22,15 @@
 #include "Stream.hpp"
 #include "System/Types.hpp"
 
-namespace vk
-{
+namespace vk {
+
 	class ImageView;
 	class PipelineLayout;
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	class SpirvShader;
 
 	struct PushConstantStorage

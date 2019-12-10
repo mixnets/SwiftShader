@@ -16,8 +16,9 @@
 
 #include "Matrix.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Plane::Plane()
 	{
 	}

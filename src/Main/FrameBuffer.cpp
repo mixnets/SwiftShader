@@ -25,8 +25,9 @@
 
 #define ASYNCHRONOUS_BLIT false   // FIXME: Currently leads to rare race conditions
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool forceWindowed;
 
 	FrameBuffer::Cursor FrameBuffer::cursor = {};

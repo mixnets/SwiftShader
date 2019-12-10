@@ -18,8 +18,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace sw
-{
+namespace sw {
+
+
 size_t memoryPageSize();
 
 void *allocate(size_t bytes, size_t alignment = 16);

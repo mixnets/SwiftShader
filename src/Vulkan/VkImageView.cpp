@@ -51,8 +51,7 @@ namespace
 	}
 }
 
-namespace vk
-{
+namespace vk {
 
 std::atomic<uint32_t> ImageView::nextID(1);
 

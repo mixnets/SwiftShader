@@ -19,8 +19,9 @@
 #include "PixelProcessor.hpp"
 #include "Main/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	class Rasterizer : public Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>

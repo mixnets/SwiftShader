@@ -17,8 +17,7 @@
 
 #include <Vulkan/VulkanPlatform.h>
 
-namespace vk
-{
+namespace vk {
 
 class Device;
 class Instance;

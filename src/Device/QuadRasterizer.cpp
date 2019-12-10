@@ -20,8 +20,9 @@
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, SpirvShader const *spirvShader) : state(state), spirvShader{spirvShader}
 	{
 	}

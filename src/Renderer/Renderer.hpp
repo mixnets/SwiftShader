@@ -26,8 +26,9 @@
 
 #include <list>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Clipper;
 	struct DrawCall;
 	class PixelShader;

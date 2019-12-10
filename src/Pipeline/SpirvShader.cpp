@@ -20,8 +20,9 @@
 
 #include <spirv/unified1/spirv.hpp>
 
-namespace sw
-{
+namespace sw {
+
+
 
 	SpirvShader::SpirvShader(
 			uint32_t codeSerialID,

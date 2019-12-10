@@ -42,17 +42,18 @@
 
 #undef Yield // b/127920555
 
-namespace vk
-{
+namespace vk {
+
 	class PipelineLayout;
 	class ImageView;
 	class Sampler;
 	class RenderPass;
 	struct SampledImageDescriptor;
-} // namespace vk
+}  // namespace vk
 
-namespace sw
-{
+namespace sw {
+
+
 	// Forward declarations.
 	class SpirvRoutine;
 

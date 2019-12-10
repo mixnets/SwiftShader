@@ -16,8 +16,9 @@
 
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool forceWindowed;
 
 	GUID secondaryDisplay = {0};

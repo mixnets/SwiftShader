@@ -18,8 +18,9 @@
 #include "Shader.hpp"
 #include "Main/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class PixelShader : public Shader
 	{
 	public:

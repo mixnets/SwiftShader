@@ -19,8 +19,9 @@
 #include "Common/Memory.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	using namespace rr;
 
 	Blitter::Blitter()

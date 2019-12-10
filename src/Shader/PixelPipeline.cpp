@@ -16,8 +16,9 @@
 #include "SamplerCore.hpp"
 #include "Renderer/Renderer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool postBlendSRGB;
 
 	void PixelPipeline::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)

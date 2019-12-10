@@ -15,8 +15,9 @@
 #ifndef Vector_hpp
 #define Vector_hpp
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Point;
 	struct Matrix;
 	struct Plane;
@@ -84,8 +85,9 @@ namespace sw
 
 #include "Point.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	inline Vector::Vector()
 	{
 	}

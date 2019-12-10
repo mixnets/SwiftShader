@@ -19,8 +19,7 @@
 
 #include <Vulkan/VulkanPlatform.h>
 
-namespace vk
-{
+namespace vk {
 
 // Note: Constant array initialization requires a string literal.
 //       constexpr char* or char[] does not work for that purpose.

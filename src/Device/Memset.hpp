@@ -18,8 +18,9 @@
 #include <cstring>
 #include <type_traits>
 
-namespace sw
-{
+namespace sw {
+
+
 	// Helper class for clearing the memory of objects at construction.
 	// Useful as the first base class of cache keys which may contain padding
 	// bytes or bits otherwise left uninitialized.

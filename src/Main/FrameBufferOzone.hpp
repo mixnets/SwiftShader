@@ -17,8 +17,9 @@
 
 #include "Main/FrameBuffer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferOzone : public FrameBuffer
 	{
 	public:

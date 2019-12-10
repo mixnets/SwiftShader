@@ -22,8 +22,9 @@
 #include "Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct DrawData;
 
 	// Basic direct mapped vertex cache.

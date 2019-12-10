@@ -19,8 +19,9 @@
 
 #include <limits.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	Vector4s::Vector4s()
 	{
 	}

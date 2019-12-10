@@ -18,8 +18,9 @@
 #include "Common/Types.hpp"
 #include "Common/Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class T>
 	struct Color
 	{
@@ -73,8 +74,9 @@ namespace sw
 
 #include "Common/Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	template<class T>
 	inline Color<T>::Color()
 	{

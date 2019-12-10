@@ -17,8 +17,9 @@
 
 #include "Renderer/QuadRasterizer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class PixelShader;
 	class SamplerCore;
 

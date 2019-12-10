@@ -19,8 +19,9 @@
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Resource;
 
 	template <typename T> struct RectT
@@ -512,8 +513,9 @@ namespace sw
 #undef min
 #undef max
 
-namespace sw
-{
+namespace sw {
+
+
 	void *Surface::lock(int x, int y, int z, Lock lock, Accessor client, bool internal)
 	{
 		return internal ? lockInternal(x, y, z, lock, client) : lockExternal(x, y, z, lock, client);

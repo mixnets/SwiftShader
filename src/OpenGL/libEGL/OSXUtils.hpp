@@ -17,8 +17,9 @@
 
 #include <EGL/egl.h>
 
-namespace sw
-{
+namespace sw {
+
+
 namespace OSX
 {
 	bool IsValidWindow(EGLNativeWindowType window);

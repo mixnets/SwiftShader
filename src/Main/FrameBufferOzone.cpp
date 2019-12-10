@@ -14,8 +14,9 @@
 
 #include "FrameBufferOzone.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	FrameBufferOzone::FrameBufferOzone(intptr_t display, intptr_t window, int width, int height) : FrameBuffer(width, height, false, false)
 	{
 		buffer = sw::Surface::create(width, height, 1, format, nullptr,

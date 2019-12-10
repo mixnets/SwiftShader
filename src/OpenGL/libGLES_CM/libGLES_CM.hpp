@@ -21,8 +21,9 @@
 
 #include "Common/SharedLibrary.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 class FrameBuffer;
 enum Format : unsigned char;
 }

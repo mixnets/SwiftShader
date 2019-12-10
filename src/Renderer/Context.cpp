@@ -23,8 +23,9 @@
 
 #include <string.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool perspectiveCorrection;
 
 	bool halfIntegerCoordinates = false;     // Pixel centers are not at integer coordinates

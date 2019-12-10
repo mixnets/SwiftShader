@@ -22,8 +22,9 @@
 	typedef int SOCKET;
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 	class Socket
 	{
 	public:

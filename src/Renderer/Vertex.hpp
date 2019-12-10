@@ -19,8 +19,9 @@
 #include "Common/Types.hpp"
 #include "Main/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	enum Out
 	{
 		// Default vertex output semantics

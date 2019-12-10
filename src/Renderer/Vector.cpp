@@ -17,8 +17,9 @@
 #include "Matrix.hpp"
 #include "Common/Math.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Vector Vector::operator+() const
 	{
 		return *this;

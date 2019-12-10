@@ -17,8 +17,9 @@
 #include "Common/Thread.hpp"
 #include "Common/Timer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	Profiler profiler;
 
 	Profiler::Profiler()

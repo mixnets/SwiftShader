@@ -27,8 +27,9 @@
 #include <list>
 #include <vector>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Renderer;
 	class Context;
 }

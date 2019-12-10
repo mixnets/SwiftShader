@@ -20,8 +20,9 @@
 #include <string>
 #include <vector>
 
-namespace sw
-{
+namespace sw {
+
+
 	class Shader
 	{
 	public:

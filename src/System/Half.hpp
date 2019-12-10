@@ -20,8 +20,9 @@
 #include <algorithm>
 #include <cmath>
 
-namespace sw
-{
+namespace sw {
+
+
 	class half
 	{
 	public:

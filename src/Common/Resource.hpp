@@ -17,8 +17,9 @@
 
 #include "MutexLock.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	enum Accessor
 	{
 		PUBLIC,    // Application/API access

@@ -22,8 +22,9 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferX11 : public FrameBuffer
 	{
 	public:

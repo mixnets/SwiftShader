@@ -24,8 +24,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool complementaryDepthBuffer;
 	extern bool fullPixelPositionRegister;
 

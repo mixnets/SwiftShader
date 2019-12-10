@@ -18,8 +18,9 @@
 #include "VertexRoutine.hpp"
 #include "ShaderCore.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Stream;
 
 	class VertexProgram : public VertexRoutine

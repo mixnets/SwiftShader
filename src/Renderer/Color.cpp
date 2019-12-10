@@ -14,6 +14,7 @@
 
 #include "Color.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 }

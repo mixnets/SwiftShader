@@ -19,8 +19,9 @@
 
 #include <ddraw.h>
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferDD : public FrameBufferWin
 	{
 	public:

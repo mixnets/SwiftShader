@@ -24,8 +24,9 @@
 
 #include <cstring>
 
-namespace sw
-{
+namespace sw {
+
+
 	bool precacheVertex = false;
 
 	void VertexCache::clear()

@@ -48,8 +48,9 @@ namespace
 	}
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool colorsDefaultToZero;
 
 	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state) : constants(constants), state(state)

@@ -21,8 +21,9 @@
 #include "RoutineCache.hpp"
 #include "System/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Primitive;
 	struct Triangle;
 	struct Polygon;

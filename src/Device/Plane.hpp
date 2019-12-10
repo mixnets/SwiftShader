@@ -17,8 +17,9 @@
 
 #include "Vector.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Matrix;
 
 	struct Plane

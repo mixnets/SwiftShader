@@ -21,8 +21,9 @@
 #include <android/native_window.h>
 #endif
 
-namespace sw
-{
+namespace sw {
+
+
 #if !defined(ANDROID_NDK_BUILD)
 	inline int dequeueBuffer(ANativeWindow* window, ANativeWindowBuffer** buffer)
 	{

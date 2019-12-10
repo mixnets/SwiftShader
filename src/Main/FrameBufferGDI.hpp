@@ -17,8 +17,9 @@
 
 #include "FrameBufferWin.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class FrameBufferGDI : public FrameBufferWin
 	{
 	public:

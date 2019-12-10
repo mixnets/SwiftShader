@@ -17,8 +17,9 @@
 
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	class Resource;
 
 	enum StreamType ENUM_UNDERLYING_TYPE_UNSIGNED_INT

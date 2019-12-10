@@ -20,8 +20,9 @@
 #include "Common/Math.hpp"
 #include "Common/Debug.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	extern bool veryEarlyDepthTest;
 	extern bool complementaryDepthBuffer;
 	extern bool fullPixelPositionRegister;

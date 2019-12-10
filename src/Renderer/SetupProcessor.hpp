@@ -21,8 +21,9 @@
 #include "Shader/PixelShader.hpp"
 #include "Common/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Primitive;
 	struct Triangle;
 	struct Polygon;

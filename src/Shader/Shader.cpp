@@ -28,8 +28,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace sw
-{
+namespace sw {
+
+
 	volatile int Shader::serialCounter = 1;
 
 	Shader::Opcode Shader::OPCODE_DP(int i)

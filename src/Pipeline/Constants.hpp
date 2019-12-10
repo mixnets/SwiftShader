@@ -19,8 +19,9 @@
 #include "System/Math.hpp"
 #include "Vulkan/VkConfig.h"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Constants
 	{
 		Constants();

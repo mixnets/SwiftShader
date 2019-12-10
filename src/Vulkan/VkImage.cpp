@@ -54,8 +54,7 @@ namespace
 	}
 }
 
-namespace vk
-{
+namespace vk {
 
 Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device) :
 	device(device),
@@ -992,4 +991,4 @@ void Image::decodeETC2(const VkImageSubresourceRange& subresourceRange) const
 	}
 }
 
-} // namespace vk
+}  // namespace vk

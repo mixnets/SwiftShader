@@ -18,8 +18,9 @@
 #include "Vertex.hpp"
 #include "Main/Config.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	struct Triangle
 	{
 		Vertex v0;

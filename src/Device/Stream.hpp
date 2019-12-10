@@ -17,8 +17,9 @@
 
 #include "System/Types.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	enum StreamType ENUM_UNDERLYING_TYPE_UNSIGNED_INT
 	{
 		STREAMTYPE_COLOR,     // 4 normalized unsigned bytes, ZYXW order

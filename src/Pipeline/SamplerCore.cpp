@@ -47,8 +47,9 @@ namespace
 	}
 }
 
-namespace sw
-{
+namespace sw {
+
+
 	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state) : constants(constants), state(state)
 	{
 	}

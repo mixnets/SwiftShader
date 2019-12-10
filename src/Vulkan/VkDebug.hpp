@@ -32,8 +32,8 @@
 #define CHECK_PRINTF_ARGS
 #endif
 
-namespace vk
-{
+namespace vk {
+
 	// Outputs text to the debugging log
 	void trace(const char *format, ...) CHECK_PRINTF_ARGS;
 	inline void trace() {}

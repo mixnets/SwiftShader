@@ -18,8 +18,9 @@
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
 
-namespace sw
-{
+namespace sw {
+
+
 	// Union all cMask and return it as 4 booleans
 	Int4 PixelProgram::maskAny(Int cMask[4]) const
 	{
