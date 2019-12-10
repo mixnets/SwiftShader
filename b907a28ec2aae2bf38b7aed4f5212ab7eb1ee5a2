@@ -70,6 +70,30 @@
       "revId": "b907a28ec2aae2bf38b7aed4f5212ab7eb1ee5a2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5337539_f10e3777",
+        "filename": "src/Vulkan/Debug/Type.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T20:08:26Z",
+      "side": 1,
+      "message": "Variables are named, and the collection can grow and shrink over time.\nThe microsoftism for this type of thing is a \u0027Bag\u0027, e.g. \u0027PropertyBag\u0027.\nFor now, I\u0027ve just used the name the DAP keeps on referring to.",
+      "parentUuid": "3de325d2_554d5fd9",
+      "range": {
+        "startLine": 65,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 18
+      },
+      "revId": "b907a28ec2aae2bf38b7aed4f5212ab7eb1ee5a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
