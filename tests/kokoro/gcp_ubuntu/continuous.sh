@@ -25,7 +25,7 @@ if [[ -z "${REACTOR_BACKEND}" ]]; then
   REACTOR_BACKEND="LLVM"
 fi
 
-cmake .. "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1"
+cmake .. "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DCMAKE_BUILD_TYPE=Debug" "-DREACTOR_VERIFY_LLVM_IR=1"
 make --jobs=$(nproc)
 
 # Run unit tests
