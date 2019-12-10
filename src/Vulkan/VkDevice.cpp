@@ -23,18 +23,16 @@
 
 #include <chrono>
 #include <climits>
-#include <new> // Must #include this to use "placement new"
+#include <new>  // Must #include this to use "placement new"
 
-namespace
+namespace {
+std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now()
 {
-	std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now()
-	{
-		return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
-	}
+	return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
 }
+}  // namespace
 
-namespace vk
-{
+namespace vk {
 
 std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key& key) const
 {
@@ -57,12 +55,12 @@ void Device::SamplingRoutineCache::updateConstCache()
 	cache.updateConstCache();
 }
 
-Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, const std::shared_ptr<marl::Scheduler>& scheduler)
-	: physicalDevice(physicalDevice),
-	  queues(reinterpret_cast<Queue*>(mem)),
-	  enabledExtensionCount(pCreateInfo->enabledExtensionCount),
-	  enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{}),  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
-	  scheduler(scheduler)
+Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice* physicalDevice, const VkPhysicalDeviceFeatures* enabledFeatures, const std::shared_ptr<marl::Scheduler>& scheduler) :
+    physicalDevice(physicalDevice),
+    queues(reinterpret_cast<Queue*>(mem)),
+    enabledExtensionCount(pCreateInfo->enabledExtensionCount),
+    enabledFeatures(enabledFeatures ? *enabledFeatures : VkPhysicalDeviceFeatures{}),  // "Setting pEnabledFeatures to NULL and not including a VkPhysicalDeviceFeatures2 in the pNext member of VkDeviceCreateInfo is equivalent to setting all members of the structure to VK_FALSE."
+    scheduler(scheduler)
 {
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
@@ -77,7 +75,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 
 		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
 		{
-			new (&queues[queueID]) Queue(this, scheduler.get());
+			new(&queues[queueID]) Queue(this, scheduler.get());
 		}
 	}
 
@@ -90,7 +88,7 @@ Device::Device(const VkDeviceCreateInfo* pCreateInfo, void* mem, PhysicalDevice 
 	if(pCreateInfo->enabledLayerCount)
 	{
 		// "The ppEnabledLayerNames and enabledLayerCount members of VkDeviceCreateInfo are deprecated and their values must be ignored by implementations."
-		UNIMPLEMENTED("enabledLayerCount");   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+		UNIMPLEMENTED("enabledLayerCount");  // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
 	}
 
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
@@ -146,27 +144,27 @@ VkResult Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBo
 	bool infiniteTimeout = (timeout > max_timeout);
 	const time_point end_ns = start + std::chrono::nanoseconds(std::min(max_timeout, timeout));
 
-	if(waitAll != VK_FALSE) // All fences must be signaled
+	if(waitAll != VK_FALSE)  // All fences must be signaled
 	{
 		for(uint32_t i = 0; i < fenceCount; i++)
 		{
 			if(timeout == 0)
 			{
-				if(Cast(pFences[i])->getStatus() != VK_SUCCESS) // At least one fence is not signaled
+				if(Cast(pFences[i])->getStatus() != VK_SUCCESS)  // At least one fence is not signaled
 				{
 					return VK_TIMEOUT;
 				}
 			}
 			else if(infiniteTimeout)
 			{
-				if(Cast(pFences[i])->wait() != VK_SUCCESS) // At least one fence is not signaled
+				if(Cast(pFences[i])->wait() != VK_SUCCESS)  // At least one fence is not signaled
 				{
 					return VK_TIMEOUT;
 				}
 			}
 			else
 			{
-				if(Cast(pFences[i])->wait(end_ns) != VK_SUCCESS) // At least one fence is not signaled
+				if(Cast(pFences[i])->wait(end_ns) != VK_SUCCESS)  // At least one fence is not signaled
 				{
 					return VK_TIMEOUT;
 				}
@@ -175,7 +173,7 @@ VkResult Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBo
 
 		return VK_SUCCESS;
 	}
-	else // At least one fence must be signaled
+	else  // At least one fence must be signaled
 	{
 		marl::containers::vector<marl::Event, 8> events;
 		for(uint32_t i = 0; i < fenceCount; i++)
@@ -189,7 +187,7 @@ VkResult Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBo
 		{
 			return any.isSignalled() ? VK_SUCCESS : VK_TIMEOUT;
 		}
-		else if (infiniteTimeout)
+		else if(infiniteTimeout)
 		{
 			any.wait();
 			return VK_SUCCESS;
@@ -264,4 +262,4 @@ std::mutex& Device::getSamplingRoutineCacheMutex()
 	return samplingRoutineCacheMutex;
 }
 
-} // namespace vk
+}  // namespace vk

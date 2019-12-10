@@ -17,13 +17,12 @@
 
 #include "VkDebug.hpp"
 #include "VkFormat.h"
-#include "VkObject.hpp"
 #include "VkImage.hpp"
+#include "VkObject.hpp"
 
 #include <atomic>
 
-namespace vk
-{
+namespace vk {
 class SamplerYcbcrConversion;
 
 class ImageView : public Object<ImageView, VkImageView>
@@ -32,19 +31,23 @@ public:
 	// Image usage:
 	// RAW: Use the base image as is
 	// SAMPLING: Image used for texture sampling
-	enum Usage { RAW, SAMPLING };
+	enum Usage
+	{
+		RAW,
+		SAMPLING
+	};
 
-	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
+	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion* ycbcrConversion);
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo* pCreateInfo);
 
 	void clear(const VkClearValue& clearValues, VkImageAspectFlags aspectMask, const VkRect2D& renderArea);
 	void clear(const VkClearValue& clearValue, VkImageAspectFlags aspectMask, const VkClearRect& renderArea);
-	void clearWithLayerMask(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkRect2D &renderArea, uint32_t layerMask);
+	void clearWithLayerMask(const VkClearValue& clearValue, VkImageAspectFlags aspectMask, const VkRect2D& renderArea, uint32_t layerMask);
 	void resolve(ImageView* resolveAttachment);
 	void resolve(ImageView* resolveAttachment, int layer);
-	void resolveWithLayerMask(ImageView *resolveAttachment, uint32_t layerMask);
+	void resolveWithLayerMask(ImageView* resolveAttachment, uint32_t layerMask);
 
 	VkImageViewType getType() const { return viewType; }
 	Format getFormat(Usage usage = RAW) const;
@@ -57,7 +60,7 @@ public:
 
 	int getSampleCount() const
 	{
-		switch (image->getSampleCountFlagBits())
+		switch(image->getSampleCountFlagBits())
 		{
 		case VK_SAMPLE_COUNT_1_BIT: return 1;
 		case VK_SAMPLE_COUNT_4_BIT: return 4;
@@ -67,43 +70,43 @@ public:
 		}
 	}
 
-	void *getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage = RAW) const;
+	void* getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage = RAW) const;
 	bool hasDepthAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT) != 0; }
 	bool hasStencilAspect() const { return (subresourceRange.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) != 0; }
 
 	void prepareForSampling() const { image->prepareForSampling(subresourceRange); }
 
-	const VkComponentMapping &getComponentMapping() const { return components; }
-	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
+	const VkComponentMapping& getComponentMapping() const { return components; }
+	const VkImageSubresourceRange& getSubresourceRange() const { return subresourceRange; }
 	size_t getImageSizeInBytes() const { return image->getMemoryRequirements().size; }
 
 	const uint32_t id = nextID++;
 
 private:
 	static std::atomic<uint32_t> nextID;
-	friend class BufferView;	// ImageView/BufferView share the ID space above.
+	friend class BufferView;  // ImageView/BufferView share the ID space above.
 
-	bool                          imageTypesMatch(VkImageType imageType) const;
-	const Image*                  getImage(Usage usage) const;
+	bool imageTypesMatch(VkImageType imageType) const;
+	const Image* getImage(Usage usage) const;
 
-	Image *const                  image = nullptr;
-	const VkImageViewType         viewType = VK_IMAGE_VIEW_TYPE_2D;
-	const Format                  format;
-	const VkComponentMapping      components = {};
+	Image* const image = nullptr;
+	const VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D;
+	const Format format;
+	const VkComponentMapping components = {};
 	const VkImageSubresourceRange subresourceRange = {};
 
-	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+	const vk::SamplerYcbcrConversion* ycbcrConversion = nullptr;
 };
 
 // TODO(b/132437008): Also used by SamplerYcbcrConversion. Move somewhere centrally?
 inline VkComponentMapping ResolveIdentityMapping(VkComponentMapping m)
 {
 	return {
-			(m.r == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_R : m.r,
-			(m.g == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_G : m.g,
-			(m.b == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_B : m.b,
-			(m.a == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_A : m.a,
-		};
+		(m.r == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_R : m.r,
+		(m.g == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_G : m.g,
+		(m.b == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_B : m.b,
+		(m.a == VK_COMPONENT_SWIZZLE_IDENTITY) ? VK_COMPONENT_SWIZZLE_A : m.a,
+	};
 }
 
 static inline ImageView* Cast(VkImageView object)
@@ -111,6 +114,6 @@ static inline ImageView* Cast(VkImageView object)
 	return ImageView::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_IMAGE_VIEW_HPP_
+#endif  // VK_IMAGE_VIEW_HPP_

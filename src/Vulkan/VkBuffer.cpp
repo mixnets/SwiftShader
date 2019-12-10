@@ -18,12 +18,13 @@
 
 #include <cstring>
 
-namespace vk
-{
+namespace vk {
 
 Buffer::Buffer(const VkBufferCreateInfo* pCreateInfo, void* mem) :
-	flags(pCreateInfo->flags), size(pCreateInfo->size), usage(pCreateInfo->usage),
-	sharingMode(pCreateInfo->sharingMode)
+    flags(pCreateInfo->flags),
+    size(pCreateInfo->size),
+    usage(pCreateInfo->usage),
+    sharingMode(pCreateInfo->sharingMode)
 {
 	if(pCreateInfo->sharingMode == VK_SHARING_MODE_CONCURRENT)
 	{
@@ -33,9 +34,9 @@ Buffer::Buffer(const VkBufferCreateInfo* pCreateInfo, void* mem) :
 	}
 
 	const auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
-	for (; nextInfo != nullptr; nextInfo = nextInfo->pNext)
+	for(; nextInfo != nullptr; nextInfo = nextInfo->pNext)
 	{
-		if (nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO)
+		if(nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO)
 		{
 			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryBufferCreateInfo*>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
@@ -73,8 +74,8 @@ const VkMemoryRequirements Buffer::getMemoryRequirements() const
 		memoryRequirements.alignment = REQUIRED_MEMORY_ALIGNMENT;
 	}
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = size; // TODO: also reserve space for a header containing
-		                            // the size of the buffer (for robust buffer access)
+	memoryRequirements.size = size;  // TODO: also reserve space for a header containing
+	                                 // the size of the buffer (for robust buffer access)
 	return memoryRequirements;
 }
 
@@ -140,4 +141,4 @@ uint8_t* Buffer::end() const
 	return reinterpret_cast<uint8_t*>(getOffsetPointer(size + 1));
 }
 
-} // namespace vk
+}  // namespace vk

@@ -15,14 +15,13 @@
 #ifndef SWIFTSHADER_VKSURFACEKHR_HPP_
 #define SWIFTSHADER_VKSURFACEKHR_HPP_
 
-#include "Vulkan/VkObject.hpp"
 #include "Vulkan/VkImage.hpp"
+#include "Vulkan/VkObject.hpp"
 #include <Vulkan/VulkanPlatform.h>
 
 #include <vector>
 
-namespace vk
-{
+namespace vk {
 
 enum PresentImageStatus
 {
@@ -86,7 +85,7 @@ public:
 	uint32_t getPresentModeCount() const;
 	VkResult getPresentModes(uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes) const;
 
-	VkResult getPresentRectangles(uint32_t *pRectCount, VkRect2D *pRects) const;
+	VkResult getPresentRectangles(uint32_t* pRectCount, VkRect2D* pRects) const;
 
 	virtual void attachImage(PresentImage* image) = 0;
 	virtual void detachImage(PresentImage* image) = 0;
@@ -105,6 +104,6 @@ static inline SurfaceKHR* Cast(VkSurfaceKHR object)
 	return SurfaceKHR::Cast(object);
 }
 
-}
+}  // namespace vk
 
-#endif //SWIFTSHADER_VKSURFACEKHR_HPP_
+#endif  //SWIFTSHADER_VKSURFACEKHR_HPP_

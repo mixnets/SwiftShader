@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkQueue.hpp"
 #include "VkCommandBuffer.hpp"
 #include "VkFence.hpp"
-#include "VkQueue.hpp"
 #include "VkSemaphore.hpp"
-#include "WSI/VkSwapchainKHR.hpp"
 #include "Device/Renderer.hpp"
+#include "WSI/VkSwapchainKHR.hpp"
 
 #include "marl/defer.h"
 #include "marl/scheduler.h"
@@ -26,8 +26,7 @@
 
 #include <cstring>
 
-namespace
-{
+namespace {
 
 VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubmits)
 {
@@ -42,9 +41,9 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 	}
 
 	uint8_t* mem = static_cast<uint8_t*>(
-		vk::allocate(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::DEVICE_MEMORY, vk::Fence::GetAllocationScope()));
+	    vk::allocate(totalSize, vk::REQUIRED_MEMORY_ALIGNMENT, vk::DEVICE_MEMORY, vk::Fence::GetAllocationScope()));
 
-	auto submits = new (mem) VkSubmitInfo[submitCount];
+	auto submits = new(mem) VkSubmitInfo[submitCount];
 	memcpy(mem, pSubmits, submitSize);
 	mem += submitSize;
 
@@ -74,12 +73,12 @@ VkSubmitInfo* DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo* pSubm
 	return submits;
 }
 
-} // anonymous namespace
+}  // anonymous namespace
 
-namespace vk
-{
+namespace vk {
 
-Queue::Queue(Device* device, marl::Scheduler *scheduler) : device(device)
+Queue::Queue(Device* device, marl::Scheduler* scheduler) :
+    device(device)
 {
 	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
 }
@@ -117,7 +116,7 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, Fence
 
 void Queue::submitQueue(const Task& task)
 {
-	if (renderer == nullptr)
+	if(renderer == nullptr)
 	{
 		renderer.reset(new sw::Renderer(device));
 	}
@@ -146,7 +145,7 @@ void Queue::submitQueue(const Task& task)
 		}
 	}
 
-	if (task.pSubmits)
+	if(task.pSubmits)
 	{
 		toDelete.put(task.pSubmits);
 	}
@@ -204,10 +203,10 @@ VkResult Queue::waitIdle()
 
 void Queue::garbageCollect()
 {
-	while (true)
+	while(true)
 	{
 		auto v = toDelete.tryTake();
-		if (!v.second) { break; }
+		if(!v.second) { break; }
 		vk::deallocate(v.first, DEVICE_MEMORY);
 	}
 }
@@ -228,11 +227,11 @@ VkResult Queue::present(const VkPresentInfoKHR* presentInfo)
 	for(uint32_t i = 0; i < presentInfo->swapchainCount; i++)
 	{
 		VkResult res = vk::Cast(presentInfo->pSwapchains[i])->present(presentInfo->pImageIndices[i]);
-		if (presentInfo->pResults != nullptr)
+		if(presentInfo->pResults != nullptr)
 		{
 			presentInfo->pResults[i] = res;
 		}
-		if (res != VK_SUCCESS)
+		if(res != VK_SUCCESS)
 			result = res;
 	}
 
@@ -240,4 +239,4 @@ VkResult Queue::present(const VkPresentInfoKHR* presentInfo)
 }
 #endif
 
-} // namespace vk
+}  // namespace vk

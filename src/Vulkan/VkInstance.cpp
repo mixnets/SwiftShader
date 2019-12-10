@@ -15,11 +15,10 @@
 #include "VkInstance.hpp"
 #include "VkDestroy.h"
 
-namespace vk
-{
+namespace vk {
 
-Instance::Instance(const VkInstanceCreateInfo* pCreateInfo, void* mem, VkPhysicalDevice physicalDevice)
-	: physicalDevice(physicalDevice)
+Instance::Instance(const VkInstanceCreateInfo* pCreateInfo, void* mem, VkPhysicalDevice physicalDevice) :
+    physicalDevice(physicalDevice)
 {
 }
 
@@ -28,15 +27,15 @@ void Instance::destroy(const VkAllocationCallbacks* pAllocator)
 	vk::destroy(physicalDevice, pAllocator);
 }
 
-VkResult Instance::getPhysicalDevices(uint32_t *pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const
+VkResult Instance::getPhysicalDevices(uint32_t* pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const
 {
-	if (!pPhysicalDevices)
+	if(!pPhysicalDevices)
 	{
 		*pPhysicalDeviceCount = 1;
 		return VK_SUCCESS;
 	}
 
-	if (*pPhysicalDeviceCount < 1)
+	if(*pPhysicalDeviceCount < 1)
 	{
 		return VK_INCOMPLETE;
 	}
@@ -47,16 +46,16 @@ VkResult Instance::getPhysicalDevices(uint32_t *pPhysicalDeviceCount, VkPhysical
 	return VK_SUCCESS;
 }
 
-VkResult Instance::getPhysicalDeviceGroups(uint32_t *pPhysicalDeviceGroupCount,
+VkResult Instance::getPhysicalDeviceGroups(uint32_t* pPhysicalDeviceGroupCount,
                                            VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const
 {
-	if (!pPhysicalDeviceGroupProperties)
+	if(!pPhysicalDeviceGroupProperties)
 	{
 		*pPhysicalDeviceGroupCount = 1;
 		return VK_SUCCESS;
 	}
 
-	if (*pPhysicalDeviceGroupCount < 1)
+	if(*pPhysicalDeviceGroupCount < 1)
 	{
 		return VK_INCOMPLETE;
 	}
@@ -69,4 +68,4 @@ VkResult Instance::getPhysicalDeviceGroups(uint32_t *pPhysicalDeviceGroupCount,
 	return VK_SUCCESS;
 }
 
-} // namespace vk
+}  // namespace vk

@@ -19,20 +19,19 @@
 #include "VkDebug.hpp"
 #include "VkMemory.h"
 
-#include <new>
 #include <Vulkan/VulkanPlatform.h>
 #include <vulkan/vk_icd.h>
+#include <new>
 
-namespace vk
-{
+namespace vk {
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 static inline T* VkTtoT(VkT vkObject)
 {
 	return static_cast<T*>(static_cast<void*>(vkObject));
 }
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 static inline VkT TtoVkT(T* object)
 {
 	return { static_cast<uint64_t>(reinterpret_cast<uintptr_t>(object)) };
@@ -41,7 +40,7 @@ static inline VkT TtoVkT(T* object)
 // For use in the placement new to make it verbose that we're allocating an object using device memory
 static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
 
-template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
+template <typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
 static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
 {
 	*outObject = VK_NULL_HANDLE;
@@ -64,7 +63,7 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	auto object = new (objectMemory) T(pCreateInfo, memory, extendedInfo...);
+	auto object = new(objectMemory) T(pCreateInfo, memory, extendedInfo...);
 
 	if(!object)
 	{
@@ -80,15 +79,15 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 	return VK_SUCCESS;
 }
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class ObjectBase
 {
 public:
 	using VkType = VkT;
 
-	void destroy(const VkAllocationCallbacks* pAllocator) {} // Method defined by objects to delete their content, if necessary
+	void destroy(const VkAllocationCallbacks* pAllocator) {}  // Method defined by objects to delete their content, if necessary
 
-	template<typename CreateInfo, typename... ExtendedInfo>
+	template <typename CreateInfo, typename... ExtendedInfo>
 	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
 	{
 		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
@@ -97,7 +96,7 @@ public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 };
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class Object : public ObjectBase<T, VkT>
 {
 public:
@@ -114,7 +113,7 @@ public:
 	}
 };
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class DispatchableObject
 {
 	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
@@ -124,8 +123,9 @@ class DispatchableObject
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return T::GetAllocationScope(); }
 
-	template<typename ...Args>
-	DispatchableObject(Args... args) : object(args...)
+	template <typename... Args>
+	DispatchableObject(Args... args) :
+	    object(args...)
 	{
 	}
 
@@ -142,13 +142,13 @@ public:
 		ASSERT(false);
 	}
 
-	template<typename CreateInfo, typename... ExtendedInfo>
+	template <typename CreateInfo, typename... ExtendedInfo>
 	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
 	{
 		return vk::Create<DispatchableObject<T, VkT>, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
 	}
 
-	template<typename CreateInfo>
+	template <typename CreateInfo>
 	static size_t ComputeRequiredAllocationSize(const CreateInfo* pCreateInfo)
 	{
 		return T::ComputeRequiredAllocationSize(pCreateInfo);
@@ -156,8 +156,7 @@ public:
 
 	static inline T* Cast(VkT vkObject)
 	{
-		return (vkObject == VK_NULL_HANDLE) ? nullptr :
-		       &(reinterpret_cast<DispatchableObject<T, VkT>*>(vkObject)->object);
+		return (vkObject == VK_NULL_HANDLE) ? nullptr : &(reinterpret_cast<DispatchableObject<T, VkT>*>(vkObject)->object);
 	}
 
 	operator VkT()
@@ -166,6 +165,6 @@ public:
 	}
 };
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif  // VK_OBJECT_HPP_

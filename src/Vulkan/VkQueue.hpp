@@ -17,24 +17,21 @@
 
 #include "VkObject.hpp"
 #include "Device/Renderer.hpp"
-#include <thread>
 #include <vulkan/vk_icd.h>
+#include <thread>
 
 #include "System/Synchronization.hpp"
 
-namespace marl
-{
-	class Scheduler;
+namespace marl {
+class Scheduler;
 }
 
-namespace sw
-{
-	class Context;
-	class Renderer;
-}
+namespace sw {
+class Context;
+class Renderer;
+}  // namespace sw
 
-namespace vk
-{
+namespace vk {
 
 class Device;
 class Fence;
@@ -44,7 +41,7 @@ class Queue
 	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
 
 public:
-	Queue(Device* device, marl::Scheduler *scheduler);
+	Queue(Device* device, marl::Scheduler* scheduler);
 	~Queue();
 
 	operator VkQueue()
@@ -65,7 +62,11 @@ private:
 		VkSubmitInfo* pSubmits = nullptr;
 		sw::TaskEvents* events = nullptr;
 
-		enum Type { KILL_THREAD, SUBMIT_QUEUE };
+		enum Type
+		{
+			KILL_THREAD,
+			SUBMIT_QUEUE
+		};
 		Type type = SUBMIT_QUEUE;
 	};
 
@@ -85,6 +86,6 @@ static inline Queue* Cast(VkQueue object)
 	return reinterpret_cast<Queue*>(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif  // VK_QUEUE_HPP_

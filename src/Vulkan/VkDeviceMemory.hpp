@@ -18,8 +18,7 @@
 #include "VkConfig.h"
 #include "VkObject.hpp"
 
-namespace vk
-{
+namespace vk {
 
 class DeviceMemory : public Object<DeviceMemory, VkDeviceMemory>
 {
@@ -42,16 +41,15 @@ public:
 	// If this is external memory, return true iff its handle type matches the bitmask
 	// provided by |supportedExternalHandleTypes|. Otherwise, always return true.
 	bool checkExternalMemoryHandleType(
-				VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleType) const;
+	    VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleType) const;
 
 	// Internal implementation class for external memory. Platform-specific.
 	class ExternalBase;
 
 private:
-
-	void*         buffer = nullptr;
-	VkDeviceSize  size = 0;
-	uint32_t      memoryTypeIndex = 0;
+	void* buffer = nullptr;
+	VkDeviceSize size = 0;
+	uint32_t memoryTypeIndex = 0;
 	ExternalBase* external = nullptr;
 };
 
@@ -60,7 +58,6 @@ static inline DeviceMemory* Cast(VkDeviceMemory object)
 	return DeviceMemory::Cast(object);
 }
 
+}  // namespace vk
 
-} // namespace vk
-
-#endif // VK_DEVICE_MEMORY_HPP_
+#endif  // VK_DEVICE_MEMORY_HPP_

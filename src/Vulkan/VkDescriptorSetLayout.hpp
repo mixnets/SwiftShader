@@ -17,12 +17,11 @@
 
 #include "VkObject.hpp"
 
-#include "Vulkan/VkSampler.hpp"
-#include "Vulkan/VkImageView.hpp"
 #include "Device/Sampler.hpp"
+#include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkSampler.hpp"
 
-namespace vk
-{
+namespace vk {
 
 class DescriptorSet;
 class Device;
@@ -43,7 +42,7 @@ struct alignas(16) SampledImageDescriptor
 	VkFormat format;
 	VkComponentMapping swizzle;
 	alignas(16) sw::Texture texture;
-	VkExtent3D extent; // Of base mip-level.
+	VkExtent3D extent;  // Of base mip-level.
 	int arrayLayers;
 	int mipLevels;
 	int sampleCount;
@@ -53,7 +52,7 @@ struct alignas(16) StorageImageDescriptor
 {
 	~StorageImageDescriptor() = delete;
 
-	void *ptr;
+	void* ptr;
 	VkExtent3D extent;
 	int rowPitchBytes;
 	int slicePitchBytes;
@@ -62,7 +61,7 @@ struct alignas(16) StorageImageDescriptor
 	int sampleCount;
 	int sizeInBytes;
 
-	void *stencilPtr;
+	void* stencilPtr;
 	int stencilRowPitchBytes;
 	int stencilSlicePitchBytes;
 	int stencilSamplePitchBytes;
@@ -72,9 +71,9 @@ struct alignas(16) BufferDescriptor
 {
 	~BufferDescriptor() = delete;
 
-	void *ptr;
-	int sizeInBytes;		// intended size of the bound region -- slides along with dynamic offsets
-	int robustnessSize;		// total accessible size from static offset -- does not move with dynamic offset
+	void* ptr;
+	int sizeInBytes;     // intended size of the bound region -- slides along with dynamic offsets
+	int robustnessSize;  // total accessible size from static offset -- does not move with dynamic offset
 };
 
 class DescriptorSetLayout : public Object<DescriptorSetLayout, VkDescriptorSetLayout>
@@ -89,8 +88,8 @@ public:
 	static void WriteDescriptorSet(Device* device, const VkWriteDescriptorSet& descriptorWrites);
 	static void CopyDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
-	static void WriteDescriptorSet(Device* device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
-	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
+	static void WriteDescriptorSet(Device* device, DescriptorSet* dstSet, VkDescriptorUpdateTemplateEntry const& entry, char const* src);
+	static void WriteTextureLevelInfo(sw::Texture* texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
 
 	void initialize(DescriptorSet* descriptorSet);
 
@@ -126,9 +125,9 @@ public:
 	bool isBindingDynamic(uint32_t binding) const;
 
 	// Returns the VkDescriptorSetLayoutBinding for the given binding.
-	VkDescriptorSetLayoutBinding const & getBindingLayout(uint32_t binding) const;
+	VkDescriptorSetLayoutBinding const& getBindingLayout(uint32_t binding) const;
 
-	uint8_t* getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const;
+	uint8_t* getOffsetPointer(DescriptorSet* descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t* typeSize) const;
 
 private:
 	size_t getDescriptorSetDataSize() const;
@@ -136,9 +135,9 @@ private:
 	static bool isDynamic(VkDescriptorType type);
 
 	VkDescriptorSetLayoutCreateFlags flags;
-	uint32_t                         bindingCount;
-	VkDescriptorSetLayoutBinding*    bindings;
-	size_t*                          bindingOffsets;
+	uint32_t bindingCount;
+	VkDescriptorSetLayoutBinding* bindings;
+	size_t* bindingOffsets;
 };
 
 static inline DescriptorSetLayout* Cast(VkDescriptorSetLayout object)
@@ -146,6 +145,6 @@ static inline DescriptorSetLayout* Cast(VkDescriptorSetLayout object)
 	return DescriptorSetLayout::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_DESCRIPTOR_SET_LAYOUT_HPP_
+#endif  // VK_DESCRIPTOR_SET_LAYOUT_HPP_

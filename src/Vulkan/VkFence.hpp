@@ -22,14 +22,13 @@
 #include "marl/event.h"
 #include "marl/waitgroup.h"
 
-namespace vk
-{
+namespace vk {
 
 class Fence : public Object<Fence, VkFence>, public sw::TaskEvents
 {
 public:
 	Fence(const VkFenceCreateInfo* pCreateInfo, void* mem) :
-		event(marl::Event::Mode::Manual, (pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT) != 0) {}
+	    event(marl::Event::Mode::Manual, (pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT) != 0) {}
 
 	static size_t ComputeRequiredAllocationSize(const VkFenceCreateInfo* pCreateInfo)
 	{
@@ -52,7 +51,7 @@ public:
 		return VK_SUCCESS;
 	}
 
-    template <class CLOCK, class DURATION>
+	template <class CLOCK, class DURATION>
 	VkResult wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
 	{
 		return event.wait_until(timeout) ? VK_SUCCESS : VK_TIMEOUT;
@@ -70,7 +69,7 @@ public:
 	void finish() override
 	{
 		ASSERT(!event.isSignalled());
-		if (wg.done())
+		if(wg.done())
 		{
 			event.signal();
 		}
@@ -88,6 +87,6 @@ static inline Fence* Cast(VkFence object)
 	return Fence::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_FENCE_HPP_
+#endif  // VK_FENCE_HPP_

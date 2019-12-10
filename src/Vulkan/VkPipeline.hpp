@@ -16,19 +16,17 @@
 #define VK_PIPELINE_HPP_
 
 #include "VkObject.hpp"
+#include "Device/Renderer.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineCache.hpp"
-#include "Device/Renderer.hpp"
 #include <memory>
 
-namespace sw
-{
-	class ComputeProgram;
-	class SpirvShader;
-}
+namespace sw {
+class ComputeProgram;
+class SpirvShader;
+}  // namespace sw
 
-namespace vk
-{
+namespace vk {
 
 class PipelineCache;
 class PipelineLayout;
@@ -38,7 +36,7 @@ class Device;
 class Pipeline
 {
 public:
-	Pipeline(PipelineLayout const *layout, const Device *device);
+	Pipeline(PipelineLayout const* layout, const Device* device);
 	virtual ~Pipeline() = default;
 
 	operator VkPipeline()
@@ -61,10 +59,13 @@ public:
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
 
-	PipelineLayout const * getLayout() const { return layout; }
+	PipelineLayout const* getLayout() const
+	{
+		return layout;
+	}
 
 protected:
-	PipelineLayout const *layout = nullptr;
+	PipelineLayout const* layout = nullptr;
 
 	const bool robustBufferAccess = true;
 };
@@ -72,7 +73,7 @@ protected:
 class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, VkPipeline>
 {
 public:
-	GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem, const Device *device);
+	GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem, const Device* device);
 	virtual ~GraphicsPipeline() = default;
 
 	void destroyPipeline(const VkAllocationCallbacks* pAllocator) override;
@@ -113,7 +114,7 @@ private:
 class ComputePipeline : public Pipeline, public ObjectBase<ComputePipeline, VkPipeline>
 {
 public:
-	ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem, const Device *device);
+	ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem, const Device* device);
 	virtual ~ComputePipeline() = default;
 
 	void destroyPipeline(const VkAllocationCallbacks* pAllocator) override;
@@ -130,10 +131,10 @@ public:
 	void compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo, PipelineCache* pipelineCache);
 
 	void run(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ,
-			uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-		vk::DescriptorSet::Bindings const &descriptorSets,
-		vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
-		sw::PushConstantStorage const &pushConstants);
+	         uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+	         vk::DescriptorSet::Bindings const& descriptorSets,
+	         vk::DescriptorSet::DynamicOffsets const& descriptorDynamicOffsets,
+	         sw::PushConstantStorage const& pushConstants);
 
 protected:
 	std::shared_ptr<sw::SpirvShader> shader;
@@ -145,6 +146,6 @@ static inline Pipeline* Cast(VkPipeline object)
 	return Pipeline::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_PIPELINE_HPP_
+#endif  // VK_PIPELINE_HPP_
