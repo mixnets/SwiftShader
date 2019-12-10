@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "8c90b88a_e79a19f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-10T14:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89880fd2_35045d1c",
+      "range": {
+        "startLine": 10,
+        "startChar": 19,
+        "endLine": 10,
+        "endChar": 20
+      },
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75726dc6_3afc872b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-10T14:05:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5afba5e_fdd3e4ee",
+      "range": {
+        "startLine": 10,
+        "startChar": 59,
+        "endLine": 10,
+        "endChar": 60
+      },
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "abde8a00_83e4aafb",
         "filename": "include/EGL/eglplatform.h",
         "patchSetId": 2
@@ -117,6 +165,30 @@
       "writtenOn": "2019-12-10T10:16:54Z",
       "side": 1,
       "message": "This will break again when we update LLVM.\n\nI think we should simply disable -Werror for LLVM.",
+      "range": {
+        "startLine": 69,
+        "startChar": 2,
+        "endLine": 69,
+        "endChar": 61
+      },
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d49697da_190c9038",
+        "filename": "third_party/llvm-7.0/llvm/lib/Support/Unix/Process.inc",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-10T14:05:46Z",
+      "side": 1,
+      "message": "Thanks, done in next patch (which is not final yet).",
+      "parentUuid": "7a8051e5_55a829ab",
       "range": {
         "startLine": 69,
         "startChar": 2,
