@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7d71d07c_1002b134",
+        "filename": "src/Vulkan/Debug/Value.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T20:06:31Z",
+      "side": 1,
+      "message": "Agreed. Will fix.",
+      "parentUuid": "f9fc05db_81a3684c",
+      "range": {
+        "startLine": 61,
+        "startChar": 14,
+        "endLine": 61,
+        "endChar": 17
+      },
+      "revId": "6dd60840411d5025b7a2c667c735c01057ccfabc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c679b1d_aee4c31c",
         "filename": "src/Vulkan/Debug/Value.hpp",
         "patchSetId": 9
@@ -36,6 +60,30 @@
       "writtenOn": "2019-12-10T19:43:05Z",
       "side": 1,
       "message": "nit: Is this useful for a virtual method? Unless the compiler can prove that a Value is a Constant through relatively aggressive optimizations, these won\u0027t actually get inlined. So the justification used for https://swiftshader-review.googlesource.com/c/SwiftShader/+/38891/1/src/Vulkan/Debug/ID.hpp#34 doesn\u0027t apply.\n\nAnyway, no blocking objections to landing this as-is, it\u0027s not wrong, but it probably deserves revisiting to adhere closer to the https://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more recommendation.",
+      "range": {
+        "startLine": 69,
+        "startChar": 1,
+        "endLine": 69,
+        "endChar": 8
+      },
+      "revId": "6dd60840411d5025b7a2c667c735c01057ccfabc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a622a85c_78a66ceb",
+        "filename": "src/Vulkan/Debug/Value.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T20:06:31Z",
+      "side": 1,
+      "message": "\u003e So the justification used for https://swiftshader-review.googlesource.com/c/SwiftShader/+/38891/1/src/Vulkan/Debug/ID.hpp#34 doesn\u0027t apply.\n\nI thought the arguments on that thread were related to putting the implementation into the class body. I think it\u0027s plain wrong to not mark a function as inline if the implementation is further down in the header.\n\n\u003e Unless the compiler can prove that a Value is a Constant through relatively aggressive optimizations, these won\u0027t actually get inlined.\n\nDoesn\u0027t have to be aggressive:\n\n  Constant c;\n  c.type(); // \u003c-- nearly all compilers can skip a vtable lookup here.\n\nIts a bit more complex when the type is constructed by make_shared\u003c\u003e, but once the make_shared is inlined away, I can believe it would still be able to optimize away the vtable lookup.",
+      "parentUuid": "4c679b1d_aee4c31c",
       "range": {
         "startLine": 69,
         "startChar": 1,
