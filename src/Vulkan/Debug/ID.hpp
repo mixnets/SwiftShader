@@ -17,10 +17,8 @@
 
 #include <functional>  // std::hash
 
-namespace vk
-{
-namespace dbg
-{
+namespace vk {
+namespace dbg {
 
 // ID is a strongly-typed identifier backed by a int.
 // The template parameter T is not actually used by the implementation of
@@ -35,9 +33,9 @@ public:
 	    id(0) {}
 	inline ID(int id) :
 	    id(id) {}
-	inline bool operator==(const ID<T>& rhs) const { return id == rhs.id; }
-	inline bool operator!=(const ID<T>& rhs) const { return id != rhs.id; }
-	inline bool operator<(const ID<T>& rhs) const { return id < rhs.id; }
+	inline bool operator==(const ID<T> &rhs) const { return id == rhs.id; }
+	inline bool operator!=(const ID<T> &rhs) const { return id != rhs.id; }
+	inline bool operator<(const ID<T> &rhs) const { return id < rhs.id; }
 	inline ID operator++() { return ID(++id); }
 	inline ID operator++(int) { return ID(id++); }
 
@@ -51,13 +49,12 @@ private:
 }  // namespace dbg
 }  // namespace vk
 
-namespace std
-{
+namespace std {
 // std::hash implementation for vk::dbg::ID<T>
 template <typename T>
 struct hash<vk::dbg::ID<T> >
 {
-	std::size_t operator()(const vk::dbg::ID<T>& id) const noexcept
+	std::size_t operator()(const vk::dbg::ID<T> &id) const noexcept
 	{
 		return std::hash<int>()(id.value());
 	}

@@ -14,11 +14,10 @@
 
 #include "Debug.hpp"
 
-#include <string>
 #include <stdarg.h>
+#include <string>
 
-namespace rr
-{
+namespace rr {
 
 void tracev(const char *format, va_list args)
 {
@@ -71,4 +70,4 @@ void abort(const char *format, ...)
 	::abort();
 }
 
-} // namespace rr
+}  // namespace rr

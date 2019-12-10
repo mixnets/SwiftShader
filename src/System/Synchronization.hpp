@@ -28,8 +28,7 @@
 #include <mutex>
 #include <queue>
 
-namespace sw
-{
+namespace sw {
 
 // TaskEvents is an interface for notifying when tasks begin and end.
 // Tasks can be nested and/or overlapping.
@@ -43,7 +42,11 @@ public:
 	// a corresponding call to start().
 	virtual void finish() = 0;
 	// complete() is a helper for calling start() followed by finish().
-	inline void complete() { start(); finish(); }
+	inline void complete()
+	{
+		start();
+		finish();
+	}
 
 protected:
 	virtual ~TaskEvents() = default;
@@ -91,7 +94,7 @@ public:
 	// has been reached, returning true if all tasks have been completed, or
 	// false if the timeout has been reached.
 	template <class CLOCK, class DURATION>
-	bool wait(const std::chrono::time_point<CLOCK, DURATION>& timeout)
+	bool wait(const std::chrono::time_point<CLOCK, DURATION> &timeout)
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		return condition.wait_until(lock, timeout, [this] { return count_ == 0; });
@@ -112,7 +115,7 @@ public:
 	void finish() override { done(); }
 
 private:
-	int32_t count_ = 0; // guarded by mutex
+	int32_t count_ = 0;  // guarded by mutex
 	std::mutex mutex;
 	std::condition_variable condition;
 };
@@ -150,7 +153,9 @@ private:
 };
 
 template <typename T>
-Chan<T>::Chan() {}
+Chan<T>::Chan()
+{
+}
 
 template <typename T>
 T Chan<T>::take()
@@ -167,7 +172,7 @@ template <typename T>
 std::pair<T, bool> Chan<T>::tryTake()
 {
 	std::unique_lock<std::mutex> lock(mutex);
-	if (queue.size() == 0)
+	if(queue.size() == 0)
 	{
 		return std::make_pair(T{}, false);
 	}
@@ -191,6 +196,6 @@ size_t Chan<T>::count()
 	return queue.size();
 }
 
-} // namespace sw
+}  // namespace sw
 
-#endif // sw_Synchronization_hpp
+#endif  // sw_Synchronization_hpp
