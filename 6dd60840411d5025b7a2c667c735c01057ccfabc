@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "a0a109b3_6cc2cf2c",
+        "filename": "src/Vulkan/Debug/Value.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T21:09:02Z",
+      "side": 1,
+      "message": "Will append a follow-up fix to the end of the stack to save a few kWh of presubmits.",
+      "parentUuid": "7d71d07c_1002b134",
+      "range": {
+        "startLine": 61,
+        "startChar": 14,
+        "endLine": 61,
+        "endChar": 17
+      },
+      "revId": "6dd60840411d5025b7a2c667c735c01057ccfabc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c679b1d_aee4c31c",
         "filename": "src/Vulkan/Debug/Value.hpp",
         "patchSetId": 9
