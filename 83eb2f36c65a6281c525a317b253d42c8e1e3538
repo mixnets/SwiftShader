@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ae58d3e_74ef2643",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-10T19:43:44Z",
+      "side": 1,
+      "message": "Technically, we don\u0027t need the else() branch. If the variable is not defined, if(BUILD_CPPDAP) will be FALSE.",
+      "revId": "83eb2f36c65a6281c525a317b253d42c8e1e3538",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
