@@ -65,6 +65,24 @@
     },
     {
       "key": {
+        "uuid": "6fe86861_4aaff978",
+        "filename": "include/EGL/eglplatform.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2019-12-10T13:49:53Z",
+      "side": 1,
+      "message": "Thanks, uploaded https://github.com/KhronosGroup/EGL-Registry/pull/96 to address this upstream first.",
+      "parentUuid": "abde8a00_83e4aafb",
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54a1e561_ead328d3",
         "filename": "third_party/SPIRV-Tools/CMakeLists.txt",
         "patchSetId": 2
