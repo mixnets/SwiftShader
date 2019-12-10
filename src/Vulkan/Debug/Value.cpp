@@ -58,6 +58,7 @@ std::string Value::string(const FormatFlags& fmt /* = FormatFlags::Default */) c
 	case Kind::Ptr:
 		return std::to_string(reinterpret_cast<uintptr_t>(get()));
 	case Kind::VariableContainer:
+	{
 		auto const* vc = static_cast<const VariableContainer*>(this);
 		std::string out = "";
 		auto subfmt = *fmt.subListFmt;
@@ -72,6 +73,7 @@ std::string Value::string(const FormatFlags& fmt /* = FormatFlags::Default */) c
 			out += var.value->string(subfmt);
 		});
 		return fmt.listPrefix + out + fmt.listSuffix;
+	}
 	}
 	return "";
 }
