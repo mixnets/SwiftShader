@@ -168,7 +168,7 @@ namespace sw
 
 			case spv::OpLabel:
 			{
-				ASSERT(currentBlock.value() == 0);
+				ASSERT(!currentBlock);
 				currentBlock = Block::ID(insn.word(1));
 				blockStart = insn;
 				break;
@@ -185,9 +185,6 @@ namespace sw
 			case spv::OpKill:
 			case spv::OpUnreachable:
 			{
-				ASSERT(currentBlock.value() != 0);
-				ASSERT(currentFunction.value() != 0);
-
 				auto blockEnd = insn; blockEnd++;
 				functions[currentFunction].blocks[currentBlock] = Block(blockStart, blockEnd);
 				currentBlock = Block::ID(0);
