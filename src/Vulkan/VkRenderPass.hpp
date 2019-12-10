@@ -19,8 +19,7 @@
 
 #include <vector>
 
-namespace vk
-{
+namespace vk {
 
 class RenderPass : public Object<RenderPass, VkRenderPass>
 {
@@ -83,15 +82,15 @@ public:
 	}
 
 private:
-	uint32_t                 attachmentCount = 0;
+	uint32_t attachmentCount = 0;
 	VkAttachmentDescription* attachments = nullptr;
-	uint32_t                 subpassCount = 0;
-	VkSubpassDescription*    subpasses = nullptr;
-	uint32_t                 dependencyCount = 0;
-	VkSubpassDependency*     dependencies = nullptr;
-	int*                     attachmentFirstUse = nullptr;
-	uint32_t*                viewMasks = nullptr;
-	uint32_t*                attachmentViewMasks = nullptr;
+	uint32_t subpassCount = 0;
+	VkSubpassDescription* subpasses = nullptr;
+	uint32_t dependencyCount = 0;
+	VkSubpassDependency* dependencies = nullptr;
+	int* attachmentFirstUse = nullptr;
+	uint32_t* viewMasks = nullptr;
+	uint32_t* attachmentViewMasks = nullptr;
 
 	void MarkFirstUse(int attachment, int subpass);
 };
@@ -101,6 +100,6 @@ static inline RenderPass* Cast(VkRenderPass object)
 	return RenderPass::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_RENDER_PASS_HPP_
+#endif  // VK_RENDER_PASS_HPP_

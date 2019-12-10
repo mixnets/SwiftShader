@@ -15,15 +15,13 @@
 #ifndef SWIFTSHADER_VKSWAPCHAINKHR_HPP
 #define SWIFTSHADER_VKSWAPCHAINKHR_HPP
 
-
-#include "Vulkan/VkObject.hpp"
-#include "Vulkan/VkImage.hpp"
 #include "VkSurfaceKHR.hpp"
+#include "Vulkan/VkImage.hpp"
+#include "Vulkan/VkObject.hpp"
 
 #include <vector>
 
-namespace vk
-{
+namespace vk {
 
 class Fence;
 class Semaphore;
@@ -42,12 +40,12 @@ public:
 	VkResult createImages(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo);
 
 	uint32_t getImageCount() const;
-	VkResult getImages(uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const;
+	VkResult getImages(uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages) const;
 
 	VkResult getNextImage(uint64_t timeout, Semaphore* semaphore, Fence* fence, uint32_t* pImageIndex);
 
 	VkResult present(uint32_t index);
-	PresentImage const &getImage(uint32_t imageIndex) { return images[imageIndex]; }
+	PresentImage const& getImage(uint32_t imageIndex) { return images[imageIndex]; }
 
 private:
 	SurfaceKHR* surface = nullptr;
@@ -63,6 +61,6 @@ static inline SwapchainKHR* Cast(VkSwapchainKHR object)
 	return SwapchainKHR::Cast(object);
 }
 
-}
+}  // namespace vk
 
-#endif //SWIFTSHADER_VKSWAPCHAINKHR_HPP
+#endif  //SWIFTSHADER_VKSWAPCHAINKHR_HPP

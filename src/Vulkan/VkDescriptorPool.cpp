@@ -20,8 +20,7 @@
 #include <algorithm>
 #include <memory>
 
-namespace
-{
+namespace {
 
 inline VkDescriptorSet asDescriptorSet(uint8_t* memory)
 {
@@ -33,14 +32,13 @@ inline uint8_t* asMemory(VkDescriptorSet descriptorSet)
 	return reinterpret_cast<uint8_t*>(vk::Cast(descriptorSet));
 }
 
-}
+}  // namespace
 
-namespace vk
-{
+namespace vk {
 
 DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo* pCreateInfo, void* mem) :
-	pool(static_cast<uint8_t*>(mem)),
-	poolSize(ComputeRequiredAllocationSize(pCreateInfo))
+    pool(static_cast<uint8_t*>(mem)),
+    poolSize(ComputeRequiredAllocationSize(pCreateInfo))
 {
 }
 
@@ -230,4 +228,4 @@ size_t DescriptorPool::computeTotalFreeSize() const
 	return totalFreeSize;
 }
 
-} // namespace vk
+}  // namespace vk

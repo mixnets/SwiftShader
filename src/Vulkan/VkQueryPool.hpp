@@ -24,8 +24,7 @@
 #include <condition_variable>
 #include <mutex>
 
-namespace vk
-{
+namespace vk {
 
 class Query
 {
@@ -43,8 +42,8 @@ public:
 
 	struct Data
 	{
-		State state;   // The current query state.
-		int64_t value; // The current query value.
+		State state;    // The current query state.
+		int64_t value;  // The current query value.
 	};
 
 	// reset() sets the state of the Query to UNAVAILABLE, sets the type to
@@ -99,7 +98,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkQueryPoolCreateInfo* pCreateInfo);
 
 	VkResult getResults(uint32_t firstQuery, uint32_t queryCount, size_t dataSize,
-		                void* pData, VkDeviceSize stride, VkQueryResultFlags flags) const;
+	                    void* pData, VkDeviceSize stride, VkQueryResultFlags flags) const;
 	void begin(uint32_t query, VkQueryControlFlags flags);
 	void end(uint32_t query);
 	void reset(uint32_t firstQuery, uint32_t queryCount);
@@ -119,6 +118,6 @@ static inline QueryPool* Cast(VkQueryPool object)
 	return QueryPool::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_QUERY_POOL_HPP_
+#endif  // VK_QUERY_POOL_HPP_

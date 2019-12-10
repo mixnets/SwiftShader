@@ -16,22 +16,20 @@
 #define VK_COMMAND_BUFFER_HPP_
 
 #include "VkConfig.h"
-#include "VkObject.hpp"
 #include "VkDescriptorSet.hpp"
+#include "VkObject.hpp"
 #include "Device/Color.hpp"
 #include "Device/Context.hpp"
 #include <memory>
 #include <vector>
 
-namespace sw
-{
-	class Context;
-	class Renderer;
-	class TaskEvents;
-}
+namespace sw {
+class Context;
+class Renderer;
+class TaskEvents;
+}  // namespace sw
 
-namespace vk
-{
+namespace vk {
 
 class Buffer;
 class Event;
@@ -97,36 +95,36 @@ public:
 	void setStencilWriteMask(VkStencilFaceFlags faceMask, uint32_t writeMask);
 	void setStencilReference(VkStencilFaceFlags faceMask, uint32_t reference);
 	void bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, const PipelineLayout* layout,
-		uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
-		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets);
+	                        uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
+	                        uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets);
 	void bindIndexBuffer(Buffer* buffer, VkDeviceSize offset, VkIndexType indexType);
 	void dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 	void dispatchIndirect(Buffer* buffer, VkDeviceSize offset);
 	void copyBuffer(const Buffer* srcBuffer, Buffer* dstBuffer, uint32_t regionCount, const VkBufferCopy* pRegions);
 	void copyImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-		uint32_t regionCount, const VkImageCopy* pRegions);
+	               uint32_t regionCount, const VkImageCopy* pRegions);
 	void blitImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-		uint32_t regionCount, const VkImageBlit* pRegions, VkFilter filter);
+	               uint32_t regionCount, const VkImageBlit* pRegions, VkFilter filter);
 	void copyBufferToImage(Buffer* srcBuffer, Image* dstImage, VkImageLayout dstImageLayout,
-		uint32_t regionCount, const VkBufferImageCopy* pRegions);
+	                       uint32_t regionCount, const VkBufferImageCopy* pRegions);
 	void copyImageToBuffer(Image* srcImage, VkImageLayout srcImageLayout, Buffer* dstBuffer,
-		uint32_t regionCount, const VkBufferImageCopy* pRegions);
+	                       uint32_t regionCount, const VkBufferImageCopy* pRegions);
 	void updateBuffer(Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData);
 	void fillBuffer(Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data);
 	void clearColorImage(Image* image, VkImageLayout imageLayout, const VkClearColorValue* pColor,
-		uint32_t rangeCount, const VkImageSubresourceRange* pRanges);
+	                     uint32_t rangeCount, const VkImageSubresourceRange* pRanges);
 	void clearDepthStencilImage(Image* image, VkImageLayout imageLayout, const VkClearDepthStencilValue* pDepthStencil,
-		uint32_t rangeCount, const VkImageSubresourceRange* pRanges);
+	                            uint32_t rangeCount, const VkImageSubresourceRange* pRanges);
 	void clearAttachments(uint32_t attachmentCount, const VkClearAttachment* pAttachments,
-		uint32_t rectCount, const VkClearRect* pRects);
+	                      uint32_t rectCount, const VkClearRect* pRects);
 	void resolveImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-		uint32_t regionCount, const VkImageResolve* pRegions);
+	                  uint32_t regionCount, const VkImageResolve* pRegions);
 	void setEvent(Event* event, VkPipelineStageFlags stageMask);
 	void resetEvent(Event* event, VkPipelineStageFlags stageMask);
 	void waitEvents(uint32_t eventCount, const VkEvent* pEvents, VkPipelineStageFlags srcStageMask,
-		VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers,
-		uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
-		uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers);
+	                VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers,
+	                uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
+	                uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers);
 
 	void draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
 	void drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance);
@@ -138,7 +136,7 @@ public:
 	{
 		struct PipelineState
 		{
-			Pipeline *pipeline = nullptr;
+			Pipeline* pipeline = nullptr;
 			vk::DescriptorSet::Bindings descriptorSets = {};
 			vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 		};
@@ -187,11 +185,20 @@ public:
 	void submitSecondary(CommandBuffer::ExecutionState& executionState) const;
 
 	class Command;
+
 private:
 	void resetState();
-	template<typename T, typename... Args> void addCommand(Args&&... args);
+	template <typename T, typename... Args>
+	void addCommand(Args&&... args);
 
-	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
+	enum State
+	{
+		INITIAL,
+		RECORDING,
+		EXECUTABLE,
+		PENDING,
+		INVALID
+	};
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
@@ -206,6 +213,6 @@ static inline CommandBuffer* Cast(VkCommandBuffer object)
 	return DispatchableCommandBuffer::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_COMMAND_BUFFER_HPP_
+#endif  // VK_COMMAND_BUFFER_HPP_

@@ -19,11 +19,10 @@
 #include "VkObject.hpp"
 
 #if VK_USE_PLATFORM_FUCHSIA
-#include <zircon/types.h>
+#	include <zircon/types.h>
 #endif
 
-namespace vk
-{
+namespace vk {
 
 class Semaphore : public Object<Semaphore, VkSemaphore>
 {
@@ -50,7 +49,7 @@ public:
 
 #if VK_USE_PLATFORM_FUCHSIA
 	VkResult importHandle(zx_handle_t handle, bool temporaryImport);
-	VkResult exportHandle(zx_handle_t *pHandle) const;
+	VkResult exportHandle(zx_handle_t* pHandle) const;
 #endif
 
 private:
@@ -64,6 +63,6 @@ static inline Semaphore* Cast(VkSemaphore object)
 	return Semaphore::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_SEMAPHORE_HPP_
+#endif  // VK_SEMAPHORE_HPP_

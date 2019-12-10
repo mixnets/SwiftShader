@@ -17,8 +17,7 @@
 
 #include "VkObject.hpp"
 
-namespace vk
-{
+namespace vk {
 
 class DeviceMemory;
 
@@ -43,13 +42,13 @@ public:
 	bool canBindToMemory(DeviceMemory* pDeviceMemory) const;
 
 private:
-	void*                 memory = nullptr;
-	VkBufferCreateFlags   flags = 0;
-	VkDeviceSize          size = 0;
-	VkBufferUsageFlags    usage = 0;
-	VkSharingMode         sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	uint32_t              queueFamilyIndexCount = 0;
-	uint32_t*             queueFamilyIndices = nullptr;
+	void* memory = nullptr;
+	VkBufferCreateFlags flags = 0;
+	VkDeviceSize size = 0;
+	VkBufferUsageFlags usage = 0;
+	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	uint32_t queueFamilyIndexCount = 0;
+	uint32_t* queueFamilyIndices = nullptr;
 
 	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };
@@ -59,6 +58,6 @@ static inline Buffer* Cast(VkBuffer object)
 	return Buffer::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_BUFFER_HPP_
+#endif  // VK_BUFFER_HPP_

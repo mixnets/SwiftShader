@@ -15,15 +15,14 @@
 #ifndef VK_PHYSICAL_DEVICE_HPP_
 #define VK_PHYSICAL_DEVICE_HPP_
 
-#include "VkObject.hpp"
 #include "VkFormat.h"
+#include "VkObject.hpp"
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-#include <vulkan/vk_android_native_buffer.h>
+#	include <vulkan/vk_android_native_buffer.h>
 #endif
 
-namespace vk
-{
+namespace vk {
 
 class PhysicalDevice
 {
@@ -89,6 +88,6 @@ static inline PhysicalDevice* Cast(VkPhysicalDevice object)
 	return DispatchablePhysicalDevice::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_PHYSICAL_DEVICE_HPP_
+#endif  // VK_PHYSICAL_DEVICE_HPP_

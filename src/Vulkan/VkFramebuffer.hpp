@@ -17,8 +17,7 @@
 
 #include "VkObject.hpp"
 
-namespace vk
-{
+namespace vk {
 
 class ImageView;
 class RenderPass;
@@ -33,14 +32,14 @@ public:
 	void clearAttachment(const RenderPass* renderPass, uint32_t subpassIndex, const VkClearAttachment& attachment, const VkClearRect& rect);
 
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
-	ImageView *getAttachment(uint32_t index) const;
+	ImageView* getAttachment(uint32_t index) const;
 	void resolve(const RenderPass* renderPass, uint32_t subpassIndex);
 
 	const VkExtent3D& getExtent() const { return extent; }
 
 private:
-	uint32_t         attachmentCount = 0;
-	ImageView**      attachments = nullptr;
+	uint32_t attachmentCount = 0;
+	ImageView** attachments = nullptr;
 	const VkExtent3D extent = {};
 };
 
@@ -49,6 +48,6 @@ static inline Framebuffer* Cast(VkFramebuffer object)
 	return Framebuffer::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_FRAMEBUFFER_HPP_
+#endif  // VK_FRAMEBUFFER_HPP_

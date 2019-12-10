@@ -20,13 +20,11 @@
 #include <atomic>
 #include <vector>
 
-namespace rr
-{
-	class Routine;
+namespace rr {
+class Routine;
 }
 
-namespace vk
-{
+namespace vk {
 
 class ShaderModule : public Object<ShaderModule, VkShaderModule>
 {
@@ -37,7 +35,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo* pCreateInfo);
 	// TODO: reconsider boundary of ShaderModule class; try to avoid 'expose the
 	// guts' operations, and this copy.
-	std::vector<uint32_t> getCode() const { return std::vector<uint32_t>{ code, code + wordCount };}
+	std::vector<uint32_t> getCode() const { return std::vector<uint32_t>{ code, code + wordCount }; }
 
 	uint32_t getSerialID() const { return serialID; }
 	static uint32_t nextSerialID() { return serialCounter++; }
@@ -55,6 +53,6 @@ static inline ShaderModule* Cast(VkShaderModule object)
 	return ShaderModule::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_SHADER_MODULE_HPP_
+#endif  // VK_SHADER_MODULE_HPP_

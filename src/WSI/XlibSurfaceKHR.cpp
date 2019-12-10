@@ -19,36 +19,35 @@
 
 namespace vk {
 
-XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem) :
-	pDisplay(pCreateInfo->dpy),
-	window(pCreateInfo->window)
+XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR* pCreateInfo, void* mem) :
+    pDisplay(pCreateInfo->dpy),
+    window(pCreateInfo->window)
 {
 	int screen = DefaultScreen(pDisplay);
 	gc = libX11->XDefaultGC(pDisplay, screen);
 
 	XVisualInfo xVisual;
 	Status status = libX11->XMatchVisualInfo(pDisplay, screen, 32, TrueColor, &xVisual);
-	bool match = (status != 0 && xVisual.blue_mask ==0xFF);
+	bool match = (status != 0 && xVisual.blue_mask == 0xFF);
 	visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
 }
 
-void XlibSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
+void XlibSurfaceKHR::destroySurface(const VkAllocationCallbacks* pAllocator)
 {
-
 }
 
-size_t XlibSurfaceKHR::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo)
+size_t XlibSurfaceKHR::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR* pCreateInfo)
 {
 	return 0;
 }
 
-void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR* pSurfaceCapabilities) const
 {
 	SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
 
 	XWindowAttributes attr;
 	libX11->XGetWindowAttributes(pDisplay, window, &attr);
-	VkExtent2D extent = {static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height)};
+	VkExtent2D extent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
 
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
@@ -76,7 +75,7 @@ void XlibSurfaceKHR::detachImage(PresentImage* image)
 	if(it != imageMap.end())
 	{
 		XImage* xImage = it->second;
-		xImage->data = nullptr; // the XImage does not actually own the buffer
+		xImage->data = nullptr;  // the XImage does not actually own the buffer
 		XDestroyImage(xImage);
 		imageMap.erase(image);
 	}
@@ -93,10 +92,10 @@ VkResult XlibSurfaceKHR::present(PresentImage* image)
 		{
 			XWindowAttributes attr;
 			libX11->XGetWindowAttributes(pDisplay, window, &attr);
-			VkExtent2D windowExtent = {static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height)};
+			VkExtent2D windowExtent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
 			VkExtent3D extent = image->getImage()->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 
-			if (windowExtent.width != extent.width || windowExtent.height != extent.height)
+			if(windowExtent.width != extent.width || windowExtent.height != extent.height)
 			{
 				return VK_ERROR_OUT_OF_DATE_KHR;
 			}
@@ -108,4 +107,4 @@ VkResult XlibSurfaceKHR::present(PresentImage* image)
 	return VK_SUCCESS;
 }
 
-}
+}  // namespace vk

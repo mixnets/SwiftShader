@@ -15,15 +15,14 @@
 #include "VkPipelineCache.hpp"
 #include <cstring>
 
-namespace vk
-{
+namespace vk {
 
 PipelineCache::SpirvShaderKey::SpecializationInfo::SpecializationInfo(const VkSpecializationInfo* specializationInfo)
 {
 	if(specializationInfo)
 	{
 		auto ptr = reinterpret_cast<VkSpecializationInfo*>(
-			allocate(sizeof(VkSpecializationInfo), REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
+		    allocate(sizeof(VkSpecializationInfo), REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
 
 		info = std::shared_ptr<VkSpecializationInfo>(ptr, Deleter());
 
@@ -32,7 +31,7 @@ PipelineCache::SpirvShaderKey::SpecializationInfo::SpecializationInfo(const VkSp
 		{
 			size_t entriesSize = specializationInfo->mapEntryCount * sizeof(VkSpecializationMapEntry);
 			VkSpecializationMapEntry* mapEntries = reinterpret_cast<VkSpecializationMapEntry*>(
-				allocate(entriesSize, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
+			    allocate(entriesSize, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY));
 			memcpy(mapEntries, specializationInfo->pMapEntries, entriesSize);
 			info->pMapEntries = mapEntries;
 		}
@@ -51,7 +50,7 @@ PipelineCache::SpirvShaderKey::SpecializationInfo::SpecializationInfo(const VkSp
 	}
 }
 
-void PipelineCache::SpirvShaderKey::SpecializationInfo::Deleter::operator() (VkSpecializationInfo* info) const
+void PipelineCache::SpirvShaderKey::SpecializationInfo::Deleter::operator()(VkSpecializationInfo* info) const
 {
 	if(info)
 	{
@@ -98,21 +97,21 @@ bool PipelineCache::SpirvShaderKey::SpecializationInfo::operator<(const Speciali
 }
 
 PipelineCache::SpirvShaderKey::SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
-	                                          const std::string& entryPointName,
-	                                          const std::vector<uint32_t>& insns,
-	                                          const vk::RenderPass *renderPass,
-	                                          const uint32_t subpassIndex,
-	                                          const VkSpecializationInfo* specializationInfo) :
-	pipelineStage(pipelineStage),
-	entryPointName(entryPointName),
-	insns(insns),
-	renderPass(renderPass),
-	subpassIndex(subpassIndex),
-	specializationInfo(specializationInfo)
+                                              const std::string& entryPointName,
+                                              const std::vector<uint32_t>& insns,
+                                              const vk::RenderPass* renderPass,
+                                              const uint32_t subpassIndex,
+                                              const VkSpecializationInfo* specializationInfo) :
+    pipelineStage(pipelineStage),
+    entryPointName(entryPointName),
+    insns(insns),
+    renderPass(renderPass),
+    subpassIndex(subpassIndex),
+    specializationInfo(specializationInfo)
 {
 }
 
-bool PipelineCache::SpirvShaderKey::operator<(const SpirvShaderKey &other) const
+bool PipelineCache::SpirvShaderKey::operator<(const SpirvShaderKey& other) const
 {
 	if(pipelineStage != other.pipelineStage)
 	{
@@ -155,7 +154,8 @@ bool PipelineCache::SpirvShaderKey::operator<(const SpirvShaderKey &other) const
 }
 
 PipelineCache::PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void* mem) :
-	dataSize(ComputeRequiredAllocationSize(pCreateInfo)), data(reinterpret_cast<uint8_t*>(mem))
+    dataSize(ComputeRequiredAllocationSize(pCreateInfo)),
+    data(reinterpret_cast<uint8_t*>(mem))
 {
 	CacheHeader* header = reinterpret_cast<CacheHeader*>(mem);
 	header->headerLength = sizeof(CacheHeader);
@@ -234,7 +234,7 @@ const std::shared_ptr<sw::SpirvShader>* PipelineCache::operator[](const Pipeline
 	return (it != spirvShaders.end()) ? &(it->second) : nullptr;
 }
 
-void PipelineCache::insert(const PipelineCache::SpirvShaderKey& key, const std::shared_ptr<sw::SpirvShader> &shader)
+void PipelineCache::insert(const PipelineCache::SpirvShaderKey& key, const std::shared_ptr<sw::SpirvShader>& shader)
 {
 	spirvShaders[key] = shader;
 }
@@ -245,9 +245,9 @@ const std::shared_ptr<sw::ComputeProgram>* PipelineCache::operator[](const Pipel
 	return (it != computePrograms.end()) ? &(it->second) : nullptr;
 }
 
-void PipelineCache::insert(const PipelineCache::ComputeProgramKey& key, const std::shared_ptr<sw::ComputeProgram> &computeProgram)
+void PipelineCache::insert(const PipelineCache::ComputeProgramKey& key, const std::shared_ptr<sw::ComputeProgram>& computeProgram)
 {
 	computePrograms[key] = computeProgram;
 }
 
-} // namespace vk
+}  // namespace vk

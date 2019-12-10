@@ -17,10 +17,8 @@
 
 #include <functional>  // std::hash
 
-namespace vk
-{
-namespace dbg
-{
+namespace vk {
+namespace dbg {
 
 // ID is a strongly-typed identifier backed by a int.
 // The template parameter T is not actually used by the implementation of
@@ -51,8 +49,7 @@ private:
 }  // namespace dbg
 }  // namespace vk
 
-namespace std
-{
+namespace std {
 // std::hash implementation for vk::dbg::ID<T>
 template <typename T>
 struct hash<vk::dbg::ID<T> >

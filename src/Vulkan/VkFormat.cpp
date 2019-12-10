@@ -16,8 +16,7 @@
 #include "VkDebug.hpp"
 #include "System/Math.hpp"
 
-namespace vk
-{
+namespace vk {
 
 bool Format::isUnsignedNormalized() const
 {
@@ -145,8 +144,8 @@ VkImageAspectFlags Format::getAspects() const
 	// isDepth / isStencil etc to check for their aspect
 
 	VkImageAspectFlags aspects = 0;
-	if (isDepth()) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
-	if (isStencil()) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
+	if(isDepth()) aspects |= VK_IMAGE_ASPECT_DEPTH_BIT;
+	if(isStencil()) aspects |= VK_IMAGE_ASPECT_STENCIL_BIT;
 
 	// YCbCr formats
 	switch(format)
@@ -163,7 +162,7 @@ VkImageAspectFlags Format::getAspects() const
 	}
 
 	// Anything else is "color".
-	if (!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
+	if(!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
 	return aspects;
 }
 
@@ -172,9 +171,9 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 	switch(aspect)
 	{
 	case VK_IMAGE_ASPECT_COLOR_BIT:
-	case (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT):
-	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT):
-	case (VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT):
+	case(VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT):
+	case(VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT):
+	case(VK_IMAGE_ASPECT_PLANE_0_BIT | VK_IMAGE_ASPECT_PLANE_1_BIT | VK_IMAGE_ASPECT_PLANE_2_BIT):
 		return format;
 
 	case VK_IMAGE_ASPECT_DEPTH_BIT:
@@ -1545,47 +1544,48 @@ int Format::bytes() const
 	case VK_FORMAT_R64G64B64A64_SINT:
 	case VK_FORMAT_R64G64B64A64_SFLOAT:
 		return 32;
-	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:   return 4;
-	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:    return 4;
-	case VK_FORMAT_D16_UNORM:                 return 2;
-	case VK_FORMAT_X8_D24_UNORM_PACK32:       return 4;
-	case VK_FORMAT_D32_SFLOAT:                return 4;
-	case VK_FORMAT_S8_UINT:                   return 1;
-	case VK_FORMAT_D16_UNORM_S8_UINT:         return 2; // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
-	case VK_FORMAT_D24_UNORM_S8_UINT:         return 4; // Combined depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
-	case VK_FORMAT_D32_SFLOAT_S8_UINT:        return 4; // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
+	case VK_FORMAT_B10G11R11_UFLOAT_PACK32: return 4;
+	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: return 4;
+	case VK_FORMAT_D16_UNORM: return 2;
+	case VK_FORMAT_X8_D24_UNORM_PACK32: return 4;
+	case VK_FORMAT_D32_SFLOAT: return 4;
+	case VK_FORMAT_S8_UINT: return 1;
+	case VK_FORMAT_D16_UNORM_S8_UINT: return 2;  // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
+	case VK_FORMAT_D24_UNORM_S8_UINT: return 4;  // Combined depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:
+		return 4;  // Separate depth and stencil planes  // TODO: ASSERT to ensure this is only called per-aspect?
 	// Note: Compressed formats don't return bytes per pixel,
 	//       since these would be fractional. The returned value
 	//       is bytes per pixel for 1 column, so 2 for 64 bit 4x4
 	//       blocks and 4 for 128 bit 4x4 blocks.
-	case VK_FORMAT_BC1_RGB_UNORM_BLOCK:       return 2;
-	case VK_FORMAT_BC1_RGB_SRGB_BLOCK:        return 2;
-	case VK_FORMAT_BC1_RGBA_UNORM_BLOCK:      return 2;
-	case VK_FORMAT_BC1_RGBA_SRGB_BLOCK:       return 2;
-	case VK_FORMAT_BC2_UNORM_BLOCK:           return 4;
-	case VK_FORMAT_BC2_SRGB_BLOCK:            return 4;
-	case VK_FORMAT_BC3_UNORM_BLOCK:           return 4;
-	case VK_FORMAT_BC3_SRGB_BLOCK:            return 4;
-	case VK_FORMAT_BC4_UNORM_BLOCK:           return 2;
-	case VK_FORMAT_BC4_SNORM_BLOCK:           return 2;
-	case VK_FORMAT_BC5_UNORM_BLOCK:           return 4;
-	case VK_FORMAT_BC5_SNORM_BLOCK:           return 4;
-	case VK_FORMAT_BC6H_UFLOAT_BLOCK:         return 4;
-	case VK_FORMAT_BC6H_SFLOAT_BLOCK:         return 4;
-	case VK_FORMAT_BC7_UNORM_BLOCK:           return 4;
-	case VK_FORMAT_BC7_SRGB_BLOCK:            return 4;
-	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:   return 2;
-	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:    return 2;
+	case VK_FORMAT_BC1_RGB_UNORM_BLOCK: return 2;
+	case VK_FORMAT_BC1_RGB_SRGB_BLOCK: return 2;
+	case VK_FORMAT_BC1_RGBA_UNORM_BLOCK: return 2;
+	case VK_FORMAT_BC1_RGBA_SRGB_BLOCK: return 2;
+	case VK_FORMAT_BC2_UNORM_BLOCK: return 4;
+	case VK_FORMAT_BC2_SRGB_BLOCK: return 4;
+	case VK_FORMAT_BC3_UNORM_BLOCK: return 4;
+	case VK_FORMAT_BC3_SRGB_BLOCK: return 4;
+	case VK_FORMAT_BC4_UNORM_BLOCK: return 2;
+	case VK_FORMAT_BC4_SNORM_BLOCK: return 2;
+	case VK_FORMAT_BC5_UNORM_BLOCK: return 4;
+	case VK_FORMAT_BC5_SNORM_BLOCK: return 4;
+	case VK_FORMAT_BC6H_UFLOAT_BLOCK: return 4;
+	case VK_FORMAT_BC6H_SFLOAT_BLOCK: return 4;
+	case VK_FORMAT_BC7_UNORM_BLOCK: return 4;
+	case VK_FORMAT_BC7_SRGB_BLOCK: return 4;
+	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK: return 2;
+	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK: return 2;
 	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK: return 2;
-	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:  return 2;
+	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK: return 2;
 	case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK: return 4;
-	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:  return 4;
-	case VK_FORMAT_EAC_R11_UNORM_BLOCK:       return 2;
-	case VK_FORMAT_EAC_R11_SNORM_BLOCK:       return 2;
-	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:    return 4;
-	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:    return 4;
-	case VK_FORMAT_ASTC_4x4_UNORM_BLOCK:      return 4;
-	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:       return 4;
+	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK: return 4;
+	case VK_FORMAT_EAC_R11_UNORM_BLOCK: return 2;
+	case VK_FORMAT_EAC_R11_SNORM_BLOCK: return 2;
+	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK: return 4;
+	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK: return 4;
+	case VK_FORMAT_ASTC_4x4_UNORM_BLOCK: return 4;
+	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK: return 4;
 	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
@@ -1643,14 +1643,14 @@ int Format::pitchB(int width, int border, bool target) const
 	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
-		return 8 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per 4 rows
+		return 8 * ((width + 3) / 4);  // 64 bit per 4x4 block, computed per 4 rows
 	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
 	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_4x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
-		return 16 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per 4 rows
+		return 16 * ((width + 3) / 4);  // 128 bit per 4x4 block, computed per 4 rows
 	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
@@ -1716,7 +1716,7 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+		return pitchB(width, border, target) * ((height + 3) / 4);  // Pitch computed per 4 rows
 	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_6x5_UNORM_BLOCK:
@@ -1725,33 +1725,33 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 	case VK_FORMAT_ASTC_8x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
+		return pitchB(width, border, target) * ((height + 4) / 5);  // Pitch computed per 5 rows
 	case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_8x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x6_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x6_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
+		return pitchB(width, border, target) * ((height + 5) / 6);  // Pitch computed per 6 rows
 	case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x8_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x8_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
+		return pitchB(width, border, target) * ((height + 7) / 8);  // Pitch computed per 8 rows
 	case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
+		return pitchB(width, border, target) * ((height + 9) / 10);  // Pitch computed per 10 rows
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
-		return pitchB(width, border, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
+		return pitchB(width, border, target) * ((height + 11) / 12);  // Pitch computed per 12 rows
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		// "Images in this format must be defined with a width and height that is a multiple of two."
 		return pitchB(width, border, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
 	default:
-		return pitchB(width, border, target) * height;   // Pitch computed per row
+		return pitchB(width, border, target) * height;  // Pitch computed per row
 	}
 }
 
@@ -2231,4 +2231,4 @@ bool Format::isRGBComponent(int component) const
 	return false;
 }
 
-} // namespace vk
+}  // namespace vk

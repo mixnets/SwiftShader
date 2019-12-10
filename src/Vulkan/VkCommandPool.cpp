@@ -18,8 +18,7 @@
 #include <algorithm>
 #include <new>
 
-namespace vk
-{
+namespace vk {
 
 CommandPool::CommandPool(const VkCommandPoolCreateInfo* pCreateInfo, void* mem)
 {
@@ -27,7 +26,7 @@ CommandPool::CommandPool(const VkCommandPoolCreateInfo* pCreateInfo, void* mem)
 	void* deviceMemory = vk::allocate(sizeof(std::set<VkCommandBuffer>), REQUIRED_MEMORY_ALIGNMENT,
 	                                  DEVICE_MEMORY, GetAllocationScope());
 	ASSERT(deviceMemory);
-	commandBuffers = new (deviceMemory) std::set<VkCommandBuffer>();
+	commandBuffers = new(deviceMemory) std::set<VkCommandBuffer>();
 }
 
 void CommandPool::destroy(const VkAllocationCallbacks* pAllocator)
@@ -55,7 +54,7 @@ VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_
 		void* deviceMemory = vk::allocate(sizeof(DispatchableCommandBuffer), REQUIRED_MEMORY_ALIGNMENT,
 		                                  DEVICE_MEMORY, DispatchableCommandBuffer::GetAllocationScope());
 		ASSERT(deviceMemory);
-		DispatchableCommandBuffer* commandBuffer = new (deviceMemory) DispatchableCommandBuffer(level);
+		DispatchableCommandBuffer* commandBuffer = new(deviceMemory) DispatchableCommandBuffer(level);
 		if(commandBuffer)
 		{
 			pCommandBuffers[i] = *commandBuffer;
@@ -112,4 +111,4 @@ void CommandPool::trim(VkCommandPoolTrimFlags flags)
 	// TODO (b/119827933): Optimize memory usage here
 }
 
-} // namespace vk
+}  // namespace vk

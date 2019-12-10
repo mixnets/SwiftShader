@@ -15,22 +15,22 @@
 #ifndef VK_IMAGE_HPP_
 #define VK_IMAGE_HPP_
 
-#include "VkObject.hpp"
 #include "VkFormat.h"
+#include "VkObject.hpp"
 
 #ifdef __ANDROID__
-#include <vulkan/vk_android_native_buffer.h> // For VkSwapchainImageUsageFlagsANDROID and buffer_handle_t
+#	include <vulkan/vk_android_native_buffer.h>  // For VkSwapchainImageUsageFlagsANDROID and buffer_handle_t
 #endif
 
-namespace vk
-{
+namespace vk {
 
 class Buffer;
 class Device;
 class DeviceMemory;
 
 #ifdef __ANDROID__
-struct BackingMemory {
+struct BackingMemory
+{
 	int stride = 0;
 	bool externalMemory = false;
 	buffer_handle_t nativeHandle = nullptr;
@@ -41,7 +41,7 @@ struct BackingMemory {
 class Image : public Object<Image, VkImage>
 {
 public:
-	Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device);
+	Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device* device);
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
 #ifdef __ANDROID__
@@ -64,33 +64,36 @@ public:
 	void clear(const VkClearColorValue& color, const VkImageSubresourceRange& subresourceRange);
 	void clear(const VkClearDepthStencilValue& color, const VkImageSubresourceRange& subresourceRange);
 
-	VkImageType              getImageType() const { return imageType; }
-	const Format&            getFormat() const { return format; }
-	Format                   getFormat(VkImageAspectFlagBits aspect) const;
-	uint32_t                 getArrayLayers() const { return arrayLayers; }
-	uint32_t                 getMipLevels() const { return mipLevels; }
-	VkImageUsageFlags        getUsage() const { return usage; }
-	uint32_t                 getLastLayerIndex(const VkImageSubresourceRange& subresourceRange) const;
-	uint32_t                 getLastMipLevel(const VkImageSubresourceRange& subresourceRange) const;
-	VkSampleCountFlagBits    getSampleCountFlagBits() const { return samples; }
-	VkExtent3D               getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	int                      rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	int                      slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
-	bool                     isCube() const;
-	bool                     is3DSlice() const;
-	uint8_t*                 end() const;
-	VkDeviceSize             getLayerSize(VkImageAspectFlagBits aspect) const;
-	VkDeviceSize             getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	bool                     canBindToMemory(DeviceMemory* pDeviceMemory) const;
+	VkImageType getImageType() const { return imageType; }
+	const Format& getFormat() const { return format; }
+	Format getFormat(VkImageAspectFlagBits aspect) const;
+	uint32_t getArrayLayers() const { return arrayLayers; }
+	uint32_t getMipLevels() const { return mipLevels; }
+	VkImageUsageFlags getUsage() const { return usage; }
+	uint32_t getLastLayerIndex(const VkImageSubresourceRange& subresourceRange) const;
+	uint32_t getLastMipLevel(const VkImageSubresourceRange& subresourceRange) const;
+	VkSampleCountFlagBits getSampleCountFlagBits() const { return samples; }
+	VkExtent3D getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	void* getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
+	bool isCube() const;
+	bool is3DSlice() const;
+	uint8_t* end() const;
+	VkDeviceSize getLayerSize(VkImageAspectFlagBits aspect) const;
+	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	bool canBindToMemory(DeviceMemory* pDeviceMemory) const;
 
-	void                     prepareForSampling(const VkImageSubresourceRange& subresourceRange);
-	const Image*             getSampledImage(const vk::Format& imageViewFormat) const;
+	void prepareForSampling(const VkImageSubresourceRange& subresourceRange);
+	const Image* getSampledImage(const vk::Format& imageViewFormat) const;
 
 #ifdef __ANDROID__
-	void                     setBackingMemory(BackingMemory& bm) { backingMemory = bm; }
-	bool                     hasExternalMemory() const { return backingMemory.externalMemory; }
-	VkDeviceMemory           getExternalMemory() const;
+	void setBackingMemory(BackingMemory& bm)
+	{
+		backingMemory = bm;
+	}
+	bool hasExternalMemory() const { return backingMemory.externalMemory; }
+	VkDeviceMemory getExternalMemory() const;
 #endif
 
 private:
@@ -110,21 +113,21 @@ private:
 	int borderSize() const;
 	void decodeETC2(const VkImageSubresourceRange& subresourceRange) const;
 
-	const Device *const      device = nullptr;
-	DeviceMemory*            deviceMemory = nullptr;
-	VkDeviceSize             memoryOffset = 0;
-	VkImageCreateFlags       flags = 0;
-	VkImageType              imageType = VK_IMAGE_TYPE_2D;
-	Format                   format;
-	VkExtent3D               extent = {0, 0, 0};
-	uint32_t                 mipLevels = 0;
-	uint32_t                 arrayLayers = 0;
-	VkSampleCountFlagBits    samples = VK_SAMPLE_COUNT_1_BIT;
-	VkImageTiling            tiling = VK_IMAGE_TILING_OPTIMAL;
-	VkImageUsageFlags        usage = (VkImageUsageFlags)0;
-	Image*                   decompressedImage = nullptr;
+	const Device* const device = nullptr;
+	DeviceMemory* deviceMemory = nullptr;
+	VkDeviceSize memoryOffset = 0;
+	VkImageCreateFlags flags = 0;
+	VkImageType imageType = VK_IMAGE_TYPE_2D;
+	Format format;
+	VkExtent3D extent = { 0, 0, 0 };
+	uint32_t mipLevels = 0;
+	uint32_t arrayLayers = 0;
+	VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+	VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
+	VkImageUsageFlags usage = (VkImageUsageFlags)0;
+	Image* decompressedImage = nullptr;
 #ifdef __ANDROID__
-	BackingMemory            backingMemory = {};
+	BackingMemory backingMemory = {};
 #endif
 
 	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
@@ -135,6 +138,6 @@ static inline Image* Cast(VkImage object)
 	return Image::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
-#endif // VK_IMAGE_HPP_
+#endif  // VK_IMAGE_HPP_
