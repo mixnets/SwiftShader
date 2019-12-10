@@ -20,13 +20,13 @@
 #include <atomic>
 #include <vector>
 
-namespace rr
-{
-	class Routine;
-}
+namespace rr {
 
-namespace vk
-{
+class Routine;
+
+}  // namespace rr
+
+namespace vk {
 
 class ShaderModule : public Object<ShaderModule, VkShaderModule>
 {
@@ -55,6 +55,6 @@ static inline ShaderModule* Cast(VkShaderModule object)
 	return ShaderModule::Cast(object);
 }
 
-} // namespace vk
+}  // namespace vk
 
 #endif // VK_SHADER_MODULE_HPP_

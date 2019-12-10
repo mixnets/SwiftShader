@@ -34,10 +34,9 @@ static bool UsesImmutableSamplers(const VkDescriptorSetLayoutBinding& binding)
 	        (binding.pImmutableSamplers != nullptr));
 }
 
-}
+}  // anonymous namespace
 
-namespace vk
-{
+namespace vk {
 
 DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo* pCreateInfo, void* mem) :
 	flags(pCreateInfo->flags), bindingCount(pCreateInfo->bindingCount), bindings(reinterpret_cast<VkDescriptorSetLayoutBinding*>(mem))
@@ -646,4 +645,4 @@ void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet& descripto
 	memcpy(memToWrite, memToRead, writeSize);
 }
 
-} // namespace vk
+}  // namespace vk

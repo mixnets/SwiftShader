@@ -17,13 +17,13 @@
 
 #include <Vulkan/VulkanPlatform.h>
 
-namespace sw
-{
-	struct float4;
-}
+namespace sw {
 
-namespace vk
-{
+struct float4;
+
+}  // namespace sw
+
+namespace vk {
 
 class Format
 {
@@ -76,6 +76,6 @@ private:
 	VkFormat format = VK_FORMAT_UNDEFINED;
 };
 
-} // namespace vk
+}  // namespace vk
 
 #endif // VK_FORMAT_UTILS_HPP_
