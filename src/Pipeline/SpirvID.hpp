@@ -29,17 +29,44 @@ namespace sw
 	class SpirvID
 	{
 	public:
-		SpirvID() : id(0) {}
-		SpirvID(uint32_t id) : id(id) {}
-		bool operator == (const SpirvID<T>& rhs) const { return id == rhs.id; }
-		bool operator != (const SpirvID<T>& rhs) const { return id != rhs.id; }
-		bool operator < (const SpirvID<T>& rhs) const { return id < rhs.id; }
+		SpirvID() = default;
+		inline SpirvID(uint32_t id);
+		inline bool operator == (const SpirvID<T>& rhs) const;
+		inline bool operator != (const SpirvID<T>& rhs) const;
+		inline bool operator < (const SpirvID<T>& rhs) const;
 
 		// value returns the numerical value of the identifier.
-		uint32_t value() const { return id; }
+		inline uint32_t value() const;
 	private:
-		uint32_t id;
+		uint32_t id = 0;
 	};
+
+	template <typename T>
+	SpirvID<T>::SpirvID(uint32_t id) : id(id) {}
+
+	template <typename T>
+	bool SpirvID<T>::operator == (const SpirvID<T>& rhs) const
+	{
+		return id == rhs.id;
+	}
+
+	template <typename T>
+	bool SpirvID<T>::operator != (const SpirvID<T>& rhs) const
+	{
+		return id != rhs.id;
+	}
+
+	template <typename T>
+	bool SpirvID<T>::operator < (const SpirvID<T>& rhs) const
+	{
+		return id < rhs.id;
+	}
+
+	template <typename T>
+	uint32_t SpirvID<T>::value() const
+	{
+		return id;
+	}
 
 	// HandleMap<T> is an unordered map of SpirvID<T> to T.
 	template <typename T>
