@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9fc05db_81a3684c",
+        "filename": "src/Vulkan/Debug/Value.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-10T19:43:05Z",
+      "side": 1,
+      "message": "Placing a local variable here is probably allowed due there being no way to jump past its scope, but I still think it\u0027s best to add braces for consistency and ease of maintenance.\n\nAgain not blocking since it\u0027s not broken, assuming there\u0027s no compilers warning loudly about this?",
+      "range": {
+        "startLine": 61,
+        "startChar": 14,
+        "endLine": 61,
+        "endChar": 17
+      },
+      "revId": "6dd60840411d5025b7a2c667c735c01057ccfabc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c679b1d_aee4c31c",
+        "filename": "src/Vulkan/Debug/Value.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-10T19:43:05Z",
+      "side": 1,
+      "message": "nit: Is this useful for a virtual method? Unless the compiler can prove that a Value is a Constant through relatively aggressive optimizations, these won\u0027t actually get inlined. So the justification used for https://swiftshader-review.googlesource.com/c/SwiftShader/+/38891/1/src/Vulkan/Debug/ID.hpp#34 doesn\u0027t apply.\n\nAnyway, no blocking objections to landing this as-is, it\u0027s not wrong, but it probably deserves revisiting to adhere closer to the https://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more recommendation.",
+      "range": {
+        "startLine": 69,
+        "startChar": 1,
+        "endLine": 69,
+        "endChar": 8
+      },
+      "revId": "6dd60840411d5025b7a2c667c735c01057ccfabc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
