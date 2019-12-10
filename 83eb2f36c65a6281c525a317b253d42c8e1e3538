@@ -16,6 +16,24 @@
       "revId": "83eb2f36c65a6281c525a317b253d42c8e1e3538",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dda52712_5f6d5d53",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T19:55:08Z",
+      "side": 1,
+      "message": "meh, better to define things than leave them undefined IMO.",
+      "parentUuid": "6ae58d3e_74ef2643",
+      "revId": "83eb2f36c65a6281c525a317b253d42c8e1e3538",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
