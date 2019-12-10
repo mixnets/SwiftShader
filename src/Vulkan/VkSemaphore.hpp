@@ -18,7 +18,7 @@
 #include "VkConfig.h"
 #include "VkObject.hpp"
 
-#include "marl/conditionvariable.h"
+#include "marl/event.h"
 #include <mutex>
 
 #if VK_USE_PLATFORM_FUCHSIA
@@ -60,17 +60,12 @@ public:
 
 private:
 
-	void waitInternal();
-	void signalInternal();
-
 	void allocateExternal();
 	void deallocateExternal();
 
 	const VkAllocationCallbacks* allocator = nullptr;
+	marl::Event event;
 	std::mutex mutex;
-	marl::ConditionVariable condition;
-	bool signaled = false;
-
 	External* external = nullptr;
 	bool temporaryImport = false;
 };
