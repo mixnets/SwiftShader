@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "884ceb72_c73f5825",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-10T19:04:47Z",
+      "side": 1,
+      "message": "Pleas add FIXME(b/124265819) and a brief explanation of the issue to each of these present modes in the code.",
+      "range": {
+        "startLine": 9,
+        "startChar": 57,
+        "endLine": 11,
+        "endChar": 69
+      },
+      "revId": "a6195204e13c24f8b1f26ace6df244d91e5bcb4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
