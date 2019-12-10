@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "23144a6f_bf3f2e6f",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-10T14:26:03Z",
+      "side": 1,
+      "message": "Sure thing.",
+      "parentUuid": "fe4288ef_12bd1d20",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 116,
+        "endChar": 66
+      },
+      "revId": "2c42a684f39b9bba8473543bc7b00f6034788bbc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f7f7402_d9d10f94",
         "filename": "src/Vulkan/VkSemaphore.cpp",
         "patchSetId": 1
