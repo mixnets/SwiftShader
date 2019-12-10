@@ -22,6 +22,30 @@
       "revId": "3a10e1eae37b398df2490afc505de96eaca3be44",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27d03a71_133af705",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-10T19:20:25Z",
+      "side": 1,
+      "message": "Bah, I should\u0027ve realied. I\u0027ve looked around, and asked Alexis and Nicolas, and it seems we don\u0027t have a naming convention for class members. I just decided to go for explicit \u0027this-\u003e\u0027 here to keep it simple.",
+      "parentUuid": "15361c3b_f1b4d945",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 15
+      },
+      "revId": "3a10e1eae37b398df2490afc505de96eaca3be44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
