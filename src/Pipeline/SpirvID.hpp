@@ -36,7 +36,15 @@ namespace sw
 		bool operator < (const SpirvID<T>& rhs) const { return id < rhs.id; }
 
 		// value returns the numerical value of the identifier.
-		uint32_t value() const { return id; }
+		uint32_t value() const
+		{
+			// The SPIR-V specification states:
+			// "all <id>s in this module are guaranteed to satisfy 0 < id < Bound"
+			assert(id != 0);
+
+			return id;
+		}
+		
 	private:
 		uint32_t id;
 	};
