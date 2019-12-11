@@ -313,6 +313,58 @@ JITGlobals::JITGlobals(const char* mcpu,
 {
 }
 
+class MemoryMapper : public llvm::SectionMemoryManager::MemoryMapper
+{
+public:
+	MemoryMapper() {}
+	~MemoryMapper() final {}
+
+	llvm::sys::MemoryBlock allocateMappedMemory(
+			llvm::SectionMemoryManager::AllocationPurpose purpose,
+			size_t numBytes, const llvm::sys::MemoryBlock *const mearBlock,
+			unsigned flags, std::error_code &errorCode) final {
+		errorCode = std::error_code();
+		bool need_exec =
+			purpose == llvm::SectionMemoryManager::AllocationPurpose::Code;
+		void* addr = rr::allocateExecutable(
+			numBytes, flagsToPermissions(flags), need_exec);
+		if (!addr)
+			return llvm::sys::MemoryBlock();
+		return llvm::sys::MemoryBlock(addr, numBytes);
+	}
+
+	std::error_code protectMappedMemory(const llvm::sys::MemoryBlock &block,
+	                                    unsigned flags) {
+		rr::protectExecutable(block.base(), block.size(),
+		                      flagsToPermissions(flags));
+		return std::error_code();
+	}
+
+	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block) {
+		rr::deallocateExecutable(block.base(), block.size());
+		return std::error_code();
+	}
+
+private:
+	int flagsToPermissions(unsigned flags) {
+		int result = 0;
+		if (flags & llvm::sys::Memory::MF_READ)
+		{
+			result |= rr::PERMISSION_READ;
+		}
+		if (flags & llvm::sys::Memory::MF_WRITE)
+		{
+			result |= rr::PERMISSION_WRITE;
+		}
+		if (flags & llvm::sys::Memory::MF_EXEC)
+		{
+			result |= rr::PERMISSION_EXECUTE;
+		}
+		return result;
+	}
+
+};
+
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
 // settings and no Reactor routine directly links against another.
@@ -355,7 +407,7 @@ public:
 		objLayer(
 			session,
 			[this](llvm::orc::VModuleKey) {
-				return ObjLayer::Resources{std::make_shared<llvm::SectionMemoryManager>(), resolver};
+				return ObjLayer::Resources{std::make_shared<llvm::SectionMemoryManager>(&memoryMapper), resolver};
 			},
 			ObjLayer::NotifyLoadedFtor(),
 			[](llvm::orc::VModuleKey, const llvm::object::ObjectFile &Obj, const llvm::RuntimeDyld::LoadedObjectInfo &L) {
@@ -415,6 +467,7 @@ private:
 	std::shared_ptr<llvm::TargetMachine> targetMachine;
 	llvm::orc::ExecutionSession session;
 	CompileLayer compileLayer;
+	MemoryMapper memoryMapper;
 	ObjLayer objLayer;
 	std::vector<const void *> addresses;
 };

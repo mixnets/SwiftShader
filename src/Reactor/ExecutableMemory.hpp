@@ -23,8 +23,20 @@ namespace rr {
 
 size_t memoryPageSize();
 
-void *allocateExecutable(size_t bytes);   // Allocates memory that can be made executable using markExecutable()
-void markExecutable(void *memory, size_t bytes);
+enum MemoryPermission  {
+	PERMISSION_READ = 1,
+	PERMISSION_WRITE = 2,
+	PERMISSION_EXECUTE = 4,
+};
+
+// Allocates memory with the specified permissions. If |need_exec| is true then
+// the allocate memory can be made marked executable using protectExecutable().
+void* allocateExecutable(size_t bytes, int permissions, bool need_exec);
+
+// Sets permissions for memory allocated with allocateExecutable().
+void protectExecutable(void *memory, size_t bytes, int permissions);
+
+// Releases memory allocated with allocateExecutable().
 void deallocateExecutable(void *memory, size_t bytes);
 
 template<typename P>
