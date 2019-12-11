@@ -17,6 +17,7 @@
 #include "VkDevice.hpp"
 #include "VkImage.hpp"
 #include "Device/Blitter.hpp"
+#include "Device/BC_Decoder.hpp"
 #include "Device/ETC_Decoder.hpp"
 #include <cstring>
 
@@ -28,28 +29,92 @@ namespace {
 
 ETC_Decoder::InputType GetInputType(const vk::Format& format)
 {
-	switch(format)
+		switch(format)
+		{
+		case VK_FORMAT_EAC_R11_UNORM_BLOCK:
+			return ETC_Decoder::ETC_R_UNSIGNED;
+		case VK_FORMAT_EAC_R11_SNORM_BLOCK:
+			return ETC_Decoder::ETC_R_SIGNED;
+		case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
+			return ETC_Decoder::ETC_RG_UNSIGNED;
+		case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
+			return ETC_Decoder::ETC_RG_SIGNED;
+		case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
+			return ETC_Decoder::ETC_RGB;
+		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
+			return ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA;
+		case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
+		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
+			return ETC_Decoder::ETC_RGBA;
+		default:
+			UNIMPLEMENTED("format: %d", int(format));
+			return ETC_Decoder::ETC_RGBA;
+		}
+
+	int GetBCn(const vk::Format& format)
 	{
-	case VK_FORMAT_EAC_R11_UNORM_BLOCK:
-		return ETC_Decoder::ETC_R_UNSIGNED;
-	case VK_FORMAT_EAC_R11_SNORM_BLOCK:
-		return ETC_Decoder::ETC_R_SIGNED;
-	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
-		return ETC_Decoder::ETC_RG_UNSIGNED;
-	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
-		return ETC_Decoder::ETC_RG_SIGNED;
-	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
-		return ETC_Decoder::ETC_RGB;
-	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
-		return ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA;
-	case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
-		return ETC_Decoder::ETC_RGBA;
-	default:
-		UNIMPLEMENTED("format: %d", int(format));
-		return ETC_Decoder::ETC_RGBA;
+		switch(format)
+		{
+		case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGBA_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGB_SRGB_BLOCK:
+		case VK_FORMAT_BC1_RGBA_SRGB_BLOCK:
+			return 1;
+		case VK_FORMAT_BC2_UNORM_BLOCK:
+		case VK_FORMAT_BC2_SRGB_BLOCK:
+			return 2;
+		case VK_FORMAT_BC3_UNORM_BLOCK:
+		case VK_FORMAT_BC3_SRGB_BLOCK:
+			return 3;
+		case VK_FORMAT_BC4_UNORM_BLOCK:
+		case VK_FORMAT_BC4_SNORM_BLOCK:
+			return 4;
+		case VK_FORMAT_BC5_UNORM_BLOCK:
+		case VK_FORMAT_BC5_SNORM_BLOCK:
+			return 5;
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+			return 6;
+		case VK_FORMAT_BC7_UNORM_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+			return 7;
+		default:
+			UNIMPLEMENTED("format: %d", int(format));
+			return 0;
+		}
+	}
+
+	// Returns true for BC1 if we have an RGB format, false for RGBA
+	// Returns true for BC4, BC5 and BC6 if we have an unsigned format, false for signed
+	// Ignored by BC2, BC3 and BC7
+	bool GetNoAlphaOrUnsigned(const vk::Format& format)
+	{
+		switch(format)
+		{
+		case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGB_SRGB_BLOCK:
+		case VK_FORMAT_BC4_UNORM_BLOCK:
+		case VK_FORMAT_BC5_UNORM_BLOCK:
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+			return true;
+		case VK_FORMAT_BC1_RGBA_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGBA_SRGB_BLOCK:
+		case VK_FORMAT_BC2_UNORM_BLOCK:
+		case VK_FORMAT_BC2_SRGB_BLOCK:
+		case VK_FORMAT_BC3_UNORM_BLOCK:
+		case VK_FORMAT_BC3_SRGB_BLOCK:
+		case VK_FORMAT_BC4_SNORM_BLOCK:
+		case VK_FORMAT_BC5_SNORM_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+		case VK_FORMAT_BC7_UNORM_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+			return false;
+		default:
+			UNIMPLEMENTED("format: %d", int(format));
+			return false;
+		}
 	}
 }
 
@@ -917,6 +982,20 @@ void Image::prepareForSampling(const VkImageSubresourceRange& subresourceRange)
 		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 			decodeETC2(subresourceRange);
 			break;
+		case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGB_SRGB_BLOCK:
+		case VK_FORMAT_BC1_RGBA_UNORM_BLOCK:
+		case VK_FORMAT_BC1_RGBA_SRGB_BLOCK:
+		case VK_FORMAT_BC2_UNORM_BLOCK:
+		case VK_FORMAT_BC2_SRGB_BLOCK:
+		case VK_FORMAT_BC3_UNORM_BLOCK:
+		case VK_FORMAT_BC3_SRGB_BLOCK:
+		case VK_FORMAT_BC4_UNORM_BLOCK:
+		case VK_FORMAT_BC4_SNORM_BLOCK:
+		case VK_FORMAT_BC5_UNORM_BLOCK:
+		case VK_FORMAT_BC5_SNORM_BLOCK:
+			decodeBC(subresourceRange);
+			break;
 		default:
 			break;
 		}
@@ -992,4 +1071,37 @@ void Image::decodeETC2(const VkImageSubresourceRange& subresourceRange) const
 	}
 }
 
-}  // namespace vk
+void Image::decodeBC(const VkImageSubresourceRange& subresourceRange) const
+{
+	ASSERT(decompressedImage);
+
+	int n = GetBCn(format);
+	int noAlphaU = GetNoAlphaOrUnsigned(format);
+
+	uint32_t lastLayer = getLastLayerIndex(subresourceRange);
+	uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
+
+	int bytes = decompressedImage->format.bytes();
+
+	VkImageSubresourceLayers subresourceLayers = { subresourceRange.aspectMask, subresourceRange.baseMipLevel, subresourceRange.baseArrayLayer, 1 };
+	for(; subresourceLayers.baseArrayLayer <= lastLayer; subresourceLayers.baseArrayLayer++)
+	{
+		for(; subresourceLayers.mipLevel <= lastMipLevel; subresourceLayers.mipLevel++)
+		{
+			VkExtent3D mipLevelExtent = getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceLayers.aspectMask), subresourceLayers.mipLevel);
+
+			int pitchB = decompressedImage->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, subresourceLayers.mipLevel);
+
+			for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
+			{
+				uint8_t* source = static_cast<uint8_t*>(getTexelPointer({ 0, 0, depth }, subresourceLayers));
+				uint8_t* dest = static_cast<uint8_t*>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresourceLayers));
+
+				BC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
+				                   mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, n, noAlphaU);
+			}
+		}
+	}
+}
+
+} // namespace vk
