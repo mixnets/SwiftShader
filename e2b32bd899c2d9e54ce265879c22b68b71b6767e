@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55595f08_017cd3be",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T17:34:05Z",
+      "side": 1,
+      "message": "I think we need to be careful to avoid burdening the JIT with code that doesn\u0027t end up getting used. It\u0027s a slippery slope that can lead to death-by-a-thousand-cuts which is hard to recover from.\n\nCan we instead here just assign to routine-\u003enumWorkgroups instead of the local variable? That way it doesn\u0027t get emitted when unused. The value would be garbage but that seems acceptable to me and we can improve on that if deemed useful. Perhaps we could even have say Debug\u003cInt4\u003e which isn\u0027t shown in the debugger until a value gets assigned to it. Just brainstorming here, might be more confusing than helpful, but I think there\u0027s options worth exploring.\n\nShort term I\u0027m more concerned about setting the right example of not emitting code if it won\u0027t get used (for more than putting a value in the debugger). Can agree to have this landed as-is if we can go back to that shortly after.",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
