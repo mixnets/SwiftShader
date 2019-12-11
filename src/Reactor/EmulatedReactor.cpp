@@ -18,7 +18,7 @@ using UnderlyingTypeT = typename UnderlyingType<T>::Type;
 
 // Call single arg function on a vector type
 template <typename Func, typename T>
-RValue<T> call4(Func func, const RValue<T>& x)
+RValue<T> call4(Func func, const RValue<T> &x)
 {
 	T result;
 	result = Insert(result, Call(func, Extract(x, 0)), 0);
@@ -30,7 +30,7 @@ RValue<T> call4(Func func, const RValue<T>& x)
 
 // Call two arg function on a vector type
 template <typename Func, typename T>
-RValue<T> call4(Func func, const RValue<T>& x, const RValue<T>& y)
+RValue<T> call4(Func func, const RValue<T> &x, const RValue<T> &y)
 {
 	T result;
 	result = Insert(result, Call(func, Extract(x, 0), Extract(y, 0)), 0);
@@ -41,7 +41,7 @@ RValue<T> call4(Func func, const RValue<T>& x, const RValue<T>& y)
 }
 
 template <typename T, typename EL = UnderlyingTypeT<T>>
-void gather(T& out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes)
+void gather(T &out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes)
 {
 	constexpr bool atomic = false;
 	constexpr std::memory_order order = std::memory_order_relaxed;
@@ -49,7 +49,7 @@ void gather(T& out, RValue<Pointer<EL>> base, RValue<Int4> offsets, RValue<Int4>
 	Pointer<Byte> baseBytePtr = base;
 
 	out = T(0);
-	for (int i = 0; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		If(Extract(mask, i) != 0)
 		{
@@ -72,7 +72,7 @@ void scatter(RValue<Pointer<EL>> base, RValue<T> val, RValue<Int4> offsets, RVal
 
 	Pointer<Byte> baseBytePtr = base;
 
-	for (int i = 0; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		If(Extract(mask, i) != 0)
 		{
