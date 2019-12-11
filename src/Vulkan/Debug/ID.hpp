@@ -33,9 +33,9 @@ public:
 	    id(0) {}
 	inline ID(int id) :
 	    id(id) {}
-	inline bool operator==(const ID<T>& rhs) const { return id == rhs.id; }
-	inline bool operator!=(const ID<T>& rhs) const { return id != rhs.id; }
-	inline bool operator<(const ID<T>& rhs) const { return id < rhs.id; }
+	inline bool operator==(const ID<T> &rhs) const { return id == rhs.id; }
+	inline bool operator!=(const ID<T> &rhs) const { return id != rhs.id; }
+	inline bool operator<(const ID<T> &rhs) const { return id < rhs.id; }
 	inline ID operator++() { return ID(++id); }
 	inline ID operator++(int) { return ID(id++); }
 
@@ -55,7 +55,7 @@ namespace std {
 template <typename T>
 struct hash<vk::dbg::ID<T> >
 {
-	std::size_t operator()(const vk::dbg::ID<T>& id) const noexcept
+	std::size_t operator()(const vk::dbg::ID<T> &id) const noexcept
 	{
 		return std::hash<int>()(id.value());
 	}
