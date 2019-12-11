@@ -23,11 +23,11 @@ namespace rr {
 
 size_t memoryPageSize();
 
-void *allocateExecutable(size_t bytes);   // Allocates memory that can be made executable using markExecutable()
+void *allocateExecutable(size_t bytes);  // Allocates memory that can be made executable using markExecutable()
 void markExecutable(void *memory, size_t bytes);
 void deallocateExecutable(void *memory, size_t bytes);
 
-template<typename P>
+template <typename P>
 P unaligned_read(P *address)
 {
 	P value;
@@ -35,20 +35,21 @@ P unaligned_read(P *address)
 	return value;
 }
 
-template<typename P, typename V>
+template <typename P, typename V>
 void unaligned_write(P *address, V value)
 {
 	static_assert(sizeof(V) == sizeof(P), "value size must match pointee size");
 	memcpy(address, &value, sizeof(P));
 }
 
-template<typename P>
+template <typename P>
 class unaligned_ref
 {
 public:
-	explicit unaligned_ref(void *ptr) : ptr((P*)ptr) {}
+	explicit unaligned_ref(void *ptr) :
+	    ptr((P *)ptr) {}
 
-	template<typename V>
+	template <typename V>
 	P operator=(V value)
 	{
 		unaligned_write(ptr, value);
@@ -57,28 +58,29 @@ public:
 
 	operator P()
 	{
-		return unaligned_read((P*)ptr);
+		return unaligned_read((P *)ptr);
 	}
 
 private:
 	P *ptr;
 };
 
-template<typename P>
+template <typename P>
 class unaligned_ptr
 {
-	template<typename S>
+	template <typename S>
 	friend class unaligned_ptr;
 
 public:
-	unaligned_ptr(P *ptr) : ptr(ptr) {}
+	unaligned_ptr(P *ptr) :
+	    ptr(ptr) {}
 
 	unaligned_ref<P> operator*()
 	{
 		return unaligned_ref<P>(ptr);
 	}
 
-	template<typename S>
+	template <typename S>
 	operator S()
 	{
 		return S(ptr);
@@ -90,4 +92,4 @@ private:
 
 }  // namespace rr
 
-#endif   // rr_ExecutableMemory_hpp
+#endif  // rr_ExecutableMemory_hpp

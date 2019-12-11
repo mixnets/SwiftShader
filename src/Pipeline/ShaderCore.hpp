@@ -19,9 +19,9 @@
 #include "Reactor/Reactor.hpp"
 #include "Vulkan/VkDebug.hpp"
 
-#include <atomic> // std::memory_order
 #include <array>
-#include <utility> // std::pair
+#include <atomic>   // std::memory_order
+#include <utility>  // std::pair
 
 namespace sw {
 
@@ -87,17 +87,17 @@ struct Pointer
 	Pointer(rr::Pointer<Byte> base, rr::Int limit, SIMD::Int offset);
 	Pointer(rr::Pointer<Byte> base, unsigned int limit, SIMD::Int offset);
 
-	Pointer& operator += (Int i);
-	Pointer& operator *= (Int i);
+	Pointer &operator+=(Int i);
+	Pointer &operator*=(Int i);
 
-	Pointer operator + (SIMD::Int i);
-	Pointer operator * (SIMD::Int i);
+	Pointer operator+(SIMD::Int i);
+	Pointer operator*(SIMD::Int i);
 
-	Pointer& operator += (int i);
-	Pointer& operator *= (int i);
+	Pointer &operator+=(int i);
+	Pointer &operator*=(int i);
 
-	Pointer operator + (int i);
-	Pointer operator * (int i);
+	Pointer operator+(int i);
+	Pointer operator*(int i);
 
 	SIMD::Int offsets() const;
 
@@ -122,36 +122,50 @@ struct Pointer
 	// (N, N, N, N)
 	bool hasStaticEqualOffsets() const;
 
-	template<typename T>
+	template <typename T>
 	inline T Load(OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed, int alignment = sizeof(float));
 
-	template<typename T>
+	template <typename T>
 	inline void Store(T val, OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
 
-	template<typename T>
+	template <typename T>
 	inline void Store(RValue<T> val, OutOfBoundsBehavior robustness, Int mask, bool atomic = false, std::memory_order order = std::memory_order_relaxed);
 
 	// Base address for the pointer, common across all lanes.
 	rr::Pointer<rr::Byte> base;
 
 	// Upper (non-inclusive) limit for offsets from base.
-	rr::Int dynamicLimit; // If hasDynamicLimit is false, dynamicLimit is zero.
+	rr::Int dynamicLimit;  // If hasDynamicLimit is false, dynamicLimit is zero.
 	unsigned int staticLimit;
 
 	// Per lane offsets from base.
-	SIMD::Int dynamicOffsets; // If hasDynamicOffsets is false, all dynamicOffsets are zero.
+	SIMD::Int dynamicOffsets;  // If hasDynamicOffsets is false, all dynamicOffsets are zero.
 	std::array<int32_t, SIMD::Width> staticOffsets;
 
 	bool hasDynamicLimit;    // True if dynamicLimit is non-zero.
 	bool hasDynamicOffsets;  // True if any dynamicOffsets are non-zero.
 };
 
-template <typename T> struct Element {};
-template <> struct Element<Float> { using type = rr::Float; };
-template <> struct Element<Int>   { using type = rr::Int; };
-template <> struct Element<UInt>  { using type = rr::UInt; };
+template <typename T>
+struct Element
+{};
+template <>
+struct Element<Float>
+{
+	using type = rr::Float;
+};
+template <>
+struct Element<Int>
+{
+	using type = rr::Int;
+};
+template <>
+struct Element<UInt>
+{
+	using type = rr::UInt;
+};
 
-} // namespace SIMD
+}  // namespace SIMD
 
 Float4 exponential2(RValue<Float4> x, bool pp = false);
 Float4 logarithm2(RValue<Float4> x, bool pp = false);
@@ -161,8 +175,8 @@ Float4 power(RValue<Float4> x, RValue<Float4> y, bool pp = false);
 Float4 reciprocal(RValue<Float4> x, bool pp = false, bool finite = false, bool exactAtPow2 = false);
 Float4 reciprocalSquareRoot(RValue<Float4> x, bool abs, bool pp = false);
 Float4 modulo(RValue<Float4> x, RValue<Float4> y);
-Float4 sine_pi(RValue<Float4> x, bool pp = false);     // limited to [-pi, pi] range
-Float4 cosine_pi(RValue<Float4> x, bool pp = false);   // limited to [-pi, pi] range
+Float4 sine_pi(RValue<Float4> x, bool pp = false);    // limited to [-pi, pi] range
+Float4 cosine_pi(RValue<Float4> x, bool pp = false);  // limited to [-pi, pi] range
 Float4 sine(RValue<Float4> x, bool pp = false);
 Float4 cosine(RValue<Float4> x, bool pp = false);
 Float4 tangent(RValue<Float4> x, bool pp = false);
@@ -221,9 +235,9 @@ rr::RValue<sw::SIMD::UInt> Bitmask32(rr::RValue<sw::SIMD::UInt> const &bitCount)
 
 // Performs a fused-multiply add, returning a * b + c.
 rr::RValue<sw::SIMD::Float> FMA(
-		rr::RValue<sw::SIMD::Float> const &a,
-		rr::RValue<sw::SIMD::Float> const &b,
-		rr::RValue<sw::SIMD::Float> const &c);
+    rr::RValue<sw::SIMD::Float> const &a,
+    rr::RValue<sw::SIMD::Float> const &b,
+    rr::RValue<sw::SIMD::Float> const &c);
 
 // Returns the exponent of the floating point number f.
 // Assumes IEEE 754
@@ -241,60 +255,60 @@ rr::RValue<sw::SIMD::Float> NMax(rr::RValue<sw::SIMD::Float> const &x, rr::RValu
 
 // Returns the determinant of a 2x2 matrix.
 rr::RValue<sw::SIMD::Float> Determinant(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b,
-	rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b,
+    rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d);
 
 // Returns the determinant of a 3x3 matrix.
 rr::RValue<sw::SIMD::Float> Determinant(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c,
-	rr::RValue<sw::SIMD::Float> const &d, rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f,
-	rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h, rr::RValue<sw::SIMD::Float> const &i);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c,
+    rr::RValue<sw::SIMD::Float> const &d, rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f,
+    rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h, rr::RValue<sw::SIMD::Float> const &i);
 
 // Returns the determinant of a 4x4 matrix.
 rr::RValue<sw::SIMD::Float> Determinant(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d,
-	rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f, rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h,
-	rr::RValue<sw::SIMD::Float> const &i, rr::RValue<sw::SIMD::Float> const &j, rr::RValue<sw::SIMD::Float> const &k, rr::RValue<sw::SIMD::Float> const &l,
-	rr::RValue<sw::SIMD::Float> const &m, rr::RValue<sw::SIMD::Float> const &n, rr::RValue<sw::SIMD::Float> const &o, rr::RValue<sw::SIMD::Float> const &p);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d,
+    rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f, rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h,
+    rr::RValue<sw::SIMD::Float> const &i, rr::RValue<sw::SIMD::Float> const &j, rr::RValue<sw::SIMD::Float> const &k, rr::RValue<sw::SIMD::Float> const &l,
+    rr::RValue<sw::SIMD::Float> const &m, rr::RValue<sw::SIMD::Float> const &n, rr::RValue<sw::SIMD::Float> const &o, rr::RValue<sw::SIMD::Float> const &p);
 
 // Returns the inverse of a 2x2 matrix.
 std::array<rr::RValue<sw::SIMD::Float>, 4> MatrixInverse(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b,
-	rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b,
+    rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d);
 
 // Returns the inverse of a 3x3 matrix.
 std::array<rr::RValue<sw::SIMD::Float>, 9> MatrixInverse(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c,
-	rr::RValue<sw::SIMD::Float> const &d, rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f,
-	rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h, rr::RValue<sw::SIMD::Float> const &i);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c,
+    rr::RValue<sw::SIMD::Float> const &d, rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f,
+    rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h, rr::RValue<sw::SIMD::Float> const &i);
 
 // Returns the inverse of a 4x4 matrix.
 std::array<rr::RValue<sw::SIMD::Float>, 16> MatrixInverse(
-	rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d,
-	rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f, rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h,
-	rr::RValue<sw::SIMD::Float> const &i, rr::RValue<sw::SIMD::Float> const &j, rr::RValue<sw::SIMD::Float> const &k, rr::RValue<sw::SIMD::Float> const &l,
-	rr::RValue<sw::SIMD::Float> const &m, rr::RValue<sw::SIMD::Float> const &n, rr::RValue<sw::SIMD::Float> const &o, rr::RValue<sw::SIMD::Float> const &p);
+    rr::RValue<sw::SIMD::Float> const &a, rr::RValue<sw::SIMD::Float> const &b, rr::RValue<sw::SIMD::Float> const &c, rr::RValue<sw::SIMD::Float> const &d,
+    rr::RValue<sw::SIMD::Float> const &e, rr::RValue<sw::SIMD::Float> const &f, rr::RValue<sw::SIMD::Float> const &g, rr::RValue<sw::SIMD::Float> const &h,
+    rr::RValue<sw::SIMD::Float> const &i, rr::RValue<sw::SIMD::Float> const &j, rr::RValue<sw::SIMD::Float> const &k, rr::RValue<sw::SIMD::Float> const &l,
+    rr::RValue<sw::SIMD::Float> const &m, rr::RValue<sw::SIMD::Float> const &n, rr::RValue<sw::SIMD::Float> const &o, rr::RValue<sw::SIMD::Float> const &p);
 
 ////////////////////////////////////////////////////////////////////////////
 // Inline functions
 ////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
+template <typename T>
 inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */, int alignment /* = sizeof(float) */)
 {
 	using EL = typename Element<T>::type;
 
-	if (isStaticallyInBounds(sizeof(float), robustness))
+	if(isStaticallyInBounds(sizeof(float), robustness))
 	{
 		// All elements are statically known to be in-bounds.
 		// We can avoid costly conditional on masks.
 
-		if (hasStaticSequentialOffsets(sizeof(float)))
+		if(hasStaticSequentialOffsets(sizeof(float)))
 		{
 			// Offsets are sequential. Perform regular load.
 			return rr::Load(rr::Pointer<T>(base + staticOffsets[0]), alignment, atomic, order);
 		}
-		if (hasStaticEqualOffsets())
+		if(hasStaticEqualOffsets())
 		{
 			// Load one, replicate.
 			return T(*rr::Pointer<EL>(base + staticOffsets[0], alignment));
@@ -317,9 +331,9 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 
 	auto offs = offsets();
 
-	if (!atomic && order == std::memory_order_relaxed)
+	if(!atomic && order == std::memory_order_relaxed)
 	{
-		if (hasStaticEqualOffsets())
+		if(hasStaticEqualOffsets())
 		{
 			// Load one, replicate.
 			// Be careful of the case where the post-bounds-check mask
@@ -346,7 +360,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 			break;
 		}
 
-		if (hasStaticSequentialOffsets(sizeof(float)))
+		if(hasStaticSequentialOffsets(sizeof(float)))
 		{
 			return rr::MaskedLoad(rr::Pointer<T>(base + staticOffsets[0]), mask, alignment, zeroMaskedLanes);
 		}
@@ -373,7 +387,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 		{
 			// Divergent offsets or masked lanes.
 			out = T(0);
-			for (int i = 0; i < SIMD::Width; i++)
+			for(int i = 0; i < SIMD::Width; i++)
 			{
 				If(Extract(mask, i) != 0)
 				{
@@ -387,7 +401,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 	}
 }
 
-template<typename T>
+template <typename T>
 inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
 {
 	using EL = typename Element<T>::type;
@@ -397,8 +411,8 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 	switch(robustness)
 	{
 	case OutOfBoundsBehavior::Nullify:
-	case OutOfBoundsBehavior::RobustBufferAccess:  // TODO: Allows writing anywhere within bounds. Could be faster than masking.
-	case OutOfBoundsBehavior::UndefinedValue:  // Should not be used for store operations. Treat as robust buffer access.
+	case OutOfBoundsBehavior::RobustBufferAccess:       // TODO: Allows writing anywhere within bounds. Could be faster than masking.
+	case OutOfBoundsBehavior::UndefinedValue:           // Should not be used for store operations. Treat as robust buffer access.
 		mask &= isInBounds(sizeof(float), robustness);  // Disable out-of-bounds writes.
 		break;
 	case OutOfBoundsBehavior::UndefinedBehavior:
@@ -406,26 +420,26 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		break;
 	}
 
-	if (!atomic && order == std::memory_order_relaxed)
+	if(!atomic && order == std::memory_order_relaxed)
 	{
-		if (hasStaticEqualOffsets())
+		if(hasStaticEqualOffsets())
 		{
-			If (AnyTrue(mask))
+			If(AnyTrue(mask))
 			{
 				// All equal. One of these writes will win -- elect the winning lane.
 				auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 				auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
 				auto maskedVal = As<SIMD::Int>(val) & elect;
 				auto scalarVal = Extract(maskedVal, 0) |
-					Extract(maskedVal, 1) |
-					Extract(maskedVal, 2) |
-					Extract(maskedVal, 3);
+				                 Extract(maskedVal, 1) |
+				                 Extract(maskedVal, 2) |
+				                 Extract(maskedVal, 3);
 				*rr::Pointer<EL>(base + staticOffsets[0], alignment) = As<EL>(scalarVal);
 			}
 		}
-		else if (hasStaticSequentialOffsets(sizeof(float)))
+		else if(hasStaticSequentialOffsets(sizeof(float)))
 		{
-			if (isStaticallyInBounds(sizeof(float), robustness))
+			if(isStaticallyInBounds(sizeof(float), robustness))
 			{
 				// Pointer has no elements OOB, and the store is not atomic.
 				// Perform a RMW.
@@ -455,7 +469,7 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		Else
 		{
 			// Divergent offsets or masked lanes.
-			for (int i = 0; i < SIMD::Width; i++)
+			for(int i = 0; i < SIMD::Width; i++)
 			{
 				If(Extract(mask, i) != 0)
 				{
@@ -467,7 +481,7 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 	}
 }
 
-template<typename T>
+template <typename T>
 inline void SIMD::Pointer::Store(RValue<T> val, OutOfBoundsBehavior robustness, Int mask, bool atomic /* = false */, std::memory_order order /* = std::memory_order_relaxed */)
 {
 	Store(T(val), robustness, mask, atomic, order);
@@ -476,55 +490,69 @@ inline void SIMD::Pointer::Store(RValue<T> val, OutOfBoundsBehavior robustness, 
 template <typename T>
 inline rr::RValue<T> AndAll(rr::RValue<T> const &mask)
 {
-	T v1 = mask;              // [x]    [y]    [z]    [w]
-	T v2 = v1.xzxz & v1.ywyw; // [xy]   [zw]   [xy]   [zw]
-	return v2.xxxx & v2.yyyy; // [xyzw] [xyzw] [xyzw] [xyzw]
+	T v1 = mask;               // [x]    [y]    [z]    [w]
+	T v2 = v1.xzxz & v1.ywyw;  // [xy]   [zw]   [xy]   [zw]
+	return v2.xxxx & v2.yyyy;  // [xyzw] [xyzw] [xyzw] [xyzw]
 }
 
 template <typename T>
 inline rr::RValue<T> OrAll(rr::RValue<T> const &mask)
 {
-	T v1 = mask;              // [x]    [y]    [z]    [w]
-	T v2 = v1.xzxz | v1.ywyw; // [xy]   [zw]   [xy]   [zw]
-	return v2.xxxx | v2.yyyy; // [xyzw] [xyzw] [xyzw] [xyzw]
+	T v1 = mask;               // [x]    [y]    [z]    [w]
+	T v2 = v1.xzxz | v1.ywyw;  // [xy]   [zw]   [xy]   [zw]
+	return v2.xxxx | v2.yyyy;  // [xyzw] [xyzw] [xyzw] [xyzw]
 }
 
-} // namespace sw
+}  // namespace sw
 
 #ifdef ENABLE_RR_PRINT
 namespace rr {
-template <> struct PrintValue::Ty<sw::Vector4f>
+template <>
+struct PrintValue::Ty<sw::Vector4f>
 {
-	static std::string fmt(const sw::Vector4f& v)
+	static std::string fmt(const sw::Vector4f &v)
 	{
-		return "[x: " + PrintValue::fmt(v.x) + ","
-		       " y: " + PrintValue::fmt(v.y) + ","
-		       " z: " + PrintValue::fmt(v.z) + ","
-		       " w: " + PrintValue::fmt(v.w) + "]";
+		return "[x: " + PrintValue::fmt(v.x) +
+		       ","
+		       " y: " +
+		       PrintValue::fmt(v.y) +
+		       ","
+		       " z: " +
+		       PrintValue::fmt(v.z) +
+		       ","
+		       " w: " +
+		       PrintValue::fmt(v.w) + "]";
 	}
 
-	static std::vector<rr::Value*> val(const sw::Vector4f& v)
+	static std::vector<rr::Value *> val(const sw::Vector4f &v)
 	{
 		return PrintValue::vals(v.x, v.y, v.z, v.w);
 	}
 };
-template <> struct PrintValue::Ty<sw::Vector4s>
+template <>
+struct PrintValue::Ty<sw::Vector4s>
 {
-	static std::string fmt(const sw::Vector4s& v)
+	static std::string fmt(const sw::Vector4s &v)
 	{
-		return "[x: " + PrintValue::fmt(v.x) + ","
-		       " y: " + PrintValue::fmt(v.y) + ","
-		       " z: " + PrintValue::fmt(v.z) + ","
-		       " w: " + PrintValue::fmt(v.w) + "]";
+		return "[x: " + PrintValue::fmt(v.x) +
+		       ","
+		       " y: " +
+		       PrintValue::fmt(v.y) +
+		       ","
+		       " z: " +
+		       PrintValue::fmt(v.z) +
+		       ","
+		       " w: " +
+		       PrintValue::fmt(v.w) + "]";
 	}
 
-	static std::vector<rr::Value*> val(const sw::Vector4s& v)
+	static std::vector<rr::Value *> val(const sw::Vector4s &v)
 	{
 		return PrintValue::vals(v.x, v.y, v.z, v.w);
 	}
 };
 
-}  // namespace sw
-#endif // ENABLE_RR_PRINT
+}  // namespace rr
+#endif  // ENABLE_RR_PRINT
 
-#endif   // sw_ShaderCore_hpp
+#endif  // sw_ShaderCore_hpp

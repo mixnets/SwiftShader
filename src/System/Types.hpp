@@ -21,25 +21,30 @@
 // GCC warns against bitfields not fitting the entire range of an enum with a fixed underlying type of unsigned int, which gets promoted to an error with -Werror and cannot be suppressed.
 // However, GCC already defaults to using unsigned int as the underlying type of an unscoped enum without a fixed underlying type. So we can just omit it.
 #if defined(__GNUC__) && !defined(__clang__)
-namespace {enum E {}; static_assert(!std::numeric_limits<std::underlying_type<E>::type>::is_signed, "expected unscoped enum whose underlying type is not fixed to be unsigned");}
-#define ENUM_UNDERLYING_TYPE_UNSIGNED_INT
+namespace {
+enum E
+{
+};
+static_assert(!std::numeric_limits<std::underlying_type<E>::type>::is_signed, "expected unscoped enum whose underlying type is not fixed to be unsigned");
+}  // namespace
+#	define ENUM_UNDERLYING_TYPE_UNSIGNED_INT
 #else
-#define ENUM_UNDERLYING_TYPE_UNSIGNED_INT : unsigned int
+#	define ENUM_UNDERLYING_TYPE_UNSIGNED_INT : unsigned int
 #endif
 
 #if defined(_MSC_VER)
-	typedef signed __int8 int8_t;
-	typedef signed __int16 int16_t;
-	typedef signed __int32 int32_t;
-	typedef signed __int64 int64_t;
-	typedef unsigned __int8 uint8_t;
-	typedef unsigned __int16 uint16_t;
-	typedef unsigned __int32 uint32_t;
-	typedef unsigned __int64 uint64_t;
-	#define ALIGN(bytes, type) __declspec(align(bytes)) type
+typedef signed __int8 int8_t;
+typedef signed __int16 int16_t;
+typedef signed __int32 int32_t;
+typedef signed __int64 int64_t;
+typedef unsigned __int8 uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+#	define ALIGN(bytes, type) __declspec(align(bytes)) type
 #else
-	#include <stdint.h>
-	#define ALIGN(bytes, type) type __attribute__((aligned(bytes)))
+#	include <stdint.h>
+#	define ALIGN(bytes, type) type __attribute__((aligned(bytes)))
 #endif
 
 namespace sw {
@@ -71,61 +76,61 @@ typedef ALIGN(16, unsigned int) uint4[4];
 
 typedef ALIGN(8, float) float2[2];
 
-ALIGN(16, struct int4
-{
-	int x;
-	int y;
-	int z;
-	int w;
+ALIGN(
+    16, struct int4 {
+	    int x;
+	    int y;
+	    int z;
+	    int w;
 
-	int &operator[](int i)
-	{
-		return (&x)[i];
-	}
+	    int &operator[](int i)
+	    {
+		    return (&x)[i];
+	    }
 
-	const int &operator[](int i) const
-	{
-		return (&x)[i];
-	}
+	    const int &operator[](int i) const
+	    {
+		    return (&x)[i];
+	    }
 
-	bool operator!=(const int4 &rhs)
-	{
-		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
-	}
+	    bool operator!=(const int4 &rhs)
+	    {
+		    return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
+	    }
 
-	bool operator==(const int4 &rhs)
-	{
-		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
-	}
-});
+	    bool operator==(const int4 &rhs)
+	    {
+		    return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
+	    }
+    });
 
-ALIGN(16, struct float4
-{
-	float x;
-	float y;
-	float z;
-	float w;
+ALIGN(
+    16, struct float4 {
+	    float x;
+	    float y;
+	    float z;
+	    float w;
 
-	float &operator[](int i)
-	{
-		return (&x)[i];
-	}
+	    float &operator[](int i)
+	    {
+		    return (&x)[i];
+	    }
 
-	const float &operator[](int i) const
-	{
-		return (&x)[i];
-	}
+	    const float &operator[](int i) const
+	    {
+		    return (&x)[i];
+	    }
 
-	bool operator!=(const float4 &rhs)
-	{
-		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
-	}
+	    bool operator!=(const float4 &rhs)
+	    {
+		    return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
+	    }
 
-	bool operator==(const float4 &rhs)
-	{
-		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
-	}
-});
+	    bool operator==(const float4 &rhs)
+	    {
+		    return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
+	    }
+    });
 
 inline constexpr float4 vector(float x, float y, float z, float w)
 {
@@ -137,8 +142,8 @@ inline constexpr float4 replicate(float f)
 	return vector(f, f, f, f);
 }
 
-#define OFFSET(s,m) (int)(size_t)&reinterpret_cast<const volatile char&>((((s*)0)->m))
+#define OFFSET(s, m) (int)(size_t) & reinterpret_cast<const volatile char &>((((s *)0)->m))
 
 }  // namespace sw
 
-#endif   // sw_Types_hpp
+#endif  // sw_Types_hpp

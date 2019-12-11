@@ -21,7 +21,7 @@
 
 #include <cmath>
 #if defined(_MSC_VER)
-	#include <intrin.h>
+#	include <intrin.h>
 #endif
 
 namespace sw {
@@ -31,37 +31,37 @@ using std::abs;
 #undef min
 #undef max
 
-template<class T>
+template <class T>
 inline T constexpr max(T a, T b)
 {
 	return a > b ? a : b;
 }
 
-template<class T>
+template <class T>
 inline constexpr T min(T a, T b)
 {
 	return a < b ? a : b;
 }
 
-template<class T>
+template <class T>
 inline constexpr T max(T a, T b, T c)
 {
 	return max(max(a, b), c);
 }
 
-template<class T>
+template <class T>
 inline constexpr T min(T a, T b, T c)
 {
 	return min(min(a, b), c);
 }
 
-template<class T>
+template <class T>
 inline constexpr T max(T a, T b, T c, T d)
 {
 	return max(max(a, b), max(c, d));
 }
 
-template<class T>
+template <class T>
 inline constexpr T min(T a, T b, T c, T d)
 {
 	return min(min(a, b), min(c, d));
@@ -82,7 +82,7 @@ destType bit_cast(const sourceType &source)
 inline int iround(float x)
 {
 	return (int)floor(x + 0.5f);
-//	return _mm_cvtss_si32(_mm_load_ss(&x));   // FIXME: Demands SSE support
+	//	return _mm_cvtss_si32(_mm_load_ss(&x));   // FIXME: Demands SSE support
 }
 
 inline int ifloor(float x)
@@ -100,52 +100,52 @@ inline int ceilInt4(int x)
 	return (x + 0xF) >> 4;
 }
 
-#define BITS(x)    ( \
-!!((x) & 0x80000000) + \
-!!((x) & 0xC0000000) + \
-!!((x) & 0xE0000000) + \
-!!((x) & 0xF0000000) + \
-!!((x) & 0xF8000000) + \
-!!((x) & 0xFC000000) + \
-!!((x) & 0xFE000000) + \
-!!((x) & 0xFF000000) + \
-!!((x) & 0xFF800000) + \
-!!((x) & 0xFFC00000) + \
-!!((x) & 0xFFE00000) + \
-!!((x) & 0xFFF00000) + \
-!!((x) & 0xFFF80000) + \
-!!((x) & 0xFFFC0000) + \
-!!((x) & 0xFFFE0000) + \
-!!((x) & 0xFFFF0000) + \
-!!((x) & 0xFFFF8000) + \
-!!((x) & 0xFFFFC000) + \
-!!((x) & 0xFFFFE000) + \
-!!((x) & 0xFFFFF000) + \
-!!((x) & 0xFFFFF800) + \
-!!((x) & 0xFFFFFC00) + \
-!!((x) & 0xFFFFFE00) + \
-!!((x) & 0xFFFFFF00) + \
-!!((x) & 0xFFFFFF80) + \
-!!((x) & 0xFFFFFFC0) + \
-!!((x) & 0xFFFFFFE0) + \
-!!((x) & 0xFFFFFFF0) + \
-!!((x) & 0xFFFFFFF8) + \
-!!((x) & 0xFFFFFFFC) + \
-!!((x) & 0xFFFFFFFE) + \
-!!((x) & 0xFFFFFFFF))
+#define BITS(x) (        \
+	!!((x)&0x80000000) + \
+	!!((x)&0xC0000000) + \
+	!!((x)&0xE0000000) + \
+	!!((x)&0xF0000000) + \
+	!!((x)&0xF8000000) + \
+	!!((x)&0xFC000000) + \
+	!!((x)&0xFE000000) + \
+	!!((x)&0xFF000000) + \
+	!!((x)&0xFF800000) + \
+	!!((x)&0xFFC00000) + \
+	!!((x)&0xFFE00000) + \
+	!!((x)&0xFFF00000) + \
+	!!((x)&0xFFF80000) + \
+	!!((x)&0xFFFC0000) + \
+	!!((x)&0xFFFE0000) + \
+	!!((x)&0xFFFF0000) + \
+	!!((x)&0xFFFF8000) + \
+	!!((x)&0xFFFFC000) + \
+	!!((x)&0xFFFFE000) + \
+	!!((x)&0xFFFFF000) + \
+	!!((x)&0xFFFFF800) + \
+	!!((x)&0xFFFFFC00) + \
+	!!((x)&0xFFFFFE00) + \
+	!!((x)&0xFFFFFF00) + \
+	!!((x)&0xFFFFFF80) + \
+	!!((x)&0xFFFFFFC0) + \
+	!!((x)&0xFFFFFFE0) + \
+	!!((x)&0xFFFFFFF0) + \
+	!!((x)&0xFFFFFFF8) + \
+	!!((x)&0xFFFFFFFC) + \
+	!!((x)&0xFFFFFFFE) + \
+	!!((x)&0xFFFFFFFF))
 
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
 inline unsigned long log2i(int x)
 {
-	#if defined(_MSC_VER)
-		unsigned long y;
-		_BitScanReverse(&y, x);
-		return y;
-	#else
-		return 31 - __builtin_clz(x);
-	#endif
+#if defined(_MSC_VER)
+	unsigned long y;
+	_BitScanReverse(&y, x);
+	return y;
+#else
+	return 31 - __builtin_clz(x);
+#endif
 }
 
 inline bool isPow2(int x)
@@ -153,7 +153,7 @@ inline bool isPow2(int x)
 	return (x & -x) == x;
 }
 
-template<class T>
+template <class T>
 inline T clamp(T x, T a, T b)
 {
 	ASSERT(a <= b);
@@ -222,7 +222,7 @@ inline int ceilMod(int a, int b)
 	return r - ((-r >> 31) & b);
 }
 
-template<const int n>
+template <const int n>
 inline unsigned int unorm(float x)
 {
 	static const unsigned int max = 0xFFFFFFFF >> (32 - n);
@@ -242,7 +242,7 @@ inline unsigned int unorm(float x)
 	}
 }
 
-template<const int n>
+template <const int n>
 inline int snorm(float x)
 {
 	static const unsigned int min = 0x80000000 >> (32 - n);
@@ -274,7 +274,7 @@ inline int snorm(float x)
 	}
 }
 
-template<const int n>
+template <const int n>
 inline unsigned int ucast(float x)
 {
 	static const unsigned int max = 0xFFFFFFFF >> (32 - n);
@@ -294,7 +294,7 @@ inline unsigned int ucast(float x)
 	}
 }
 
-template<const int n>
+template <const int n>
 inline int scast(float x)
 {
 	static const unsigned int min = 0x80000000 >> (32 - n);
@@ -331,11 +331,11 @@ inline float sRGBtoLinear(float c)
 {
 	if(c <= 0.04045f)
 	{
-		return c * 0.07739938f;   // 1.0f / 12.92f;
+		return c * 0.07739938f;  // 1.0f / 12.92f;
 	}
 	else
 	{
-		return powf((c + 0.055f) * 0.9478673f, 2.4f);   // 1.0f / 1.055f
+		return powf((c + 0.055f) * 0.9478673f, 2.4f);  // 1.0f / 1.055f
 	}
 }
 
@@ -347,22 +347,22 @@ inline float linearToSRGB(float c)
 	}
 	else
 	{
-		return 1.055f * powf(c, 0.4166667f) - 0.055f;   // 1.0f / 2.4f
+		return 1.055f * powf(c, 0.4166667f) - 0.055f;  // 1.0f / 2.4f
 	}
 }
 
 unsigned char sRGB8toLinear8(unsigned char value);
 
-uint64_t FNV_1a(const unsigned char *data, int size);   // Fowler-Noll-Vo hash function
+uint64_t FNV_1a(const unsigned char *data, int size);  // Fowler-Noll-Vo hash function
 
 // Round up to the next multiple of alignment
-template<typename T>
+template <typename T>
 inline T align(T value, unsigned int alignment)
 {
 	return ((value + alignment - 1) / alignment) * alignment;
 }
 
-template<unsigned int alignment, typename T>
+template <unsigned int alignment, typename T>
 inline T align(T value)
 {
 	return ((value + alignment - 1) / alignment) * alignment;
@@ -374,10 +374,11 @@ inline int clampToSignedInt(unsigned int x)
 }
 
 // Convert floating value v to fixed point with p digits after the decimal point
-constexpr int toFixedPoint(float v, int p) {
+constexpr int toFixedPoint(float v, int p)
+{
 	return static_cast<int>(v * (1 << p));
 }
 
 }  // namespace sw
 
-#endif   // sw_Math_hpp
+#endif  // sw_Math_hpp

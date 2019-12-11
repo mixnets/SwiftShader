@@ -31,7 +31,7 @@ class vk::CommandBuffer::Command
 {
 public:
 	// FIXME (b/119421344): change the commandBuffer argument to a CommandBuffer state
-	virtual void play(vk::CommandBuffer::ExecutionState& executionState) = 0;
+	virtual void play(vk::CommandBuffer::ExecutionState &executionState) = 0;
 	virtual ~Command() {}
 };
 
@@ -40,10 +40,12 @@ namespace {
 class CmdBeginRenderPass : public vk::CommandBuffer::Command
 {
 public:
-	CmdBeginRenderPass(vk::RenderPass* renderPass, vk::Framebuffer* framebuffer, VkRect2D renderArea,
-	                uint32_t clearValueCount, const VkClearValue* pClearValues) :
-		renderPass(renderPass), framebuffer(framebuffer), renderArea(renderArea),
-		clearValueCount(clearValueCount)
+	CmdBeginRenderPass(vk::RenderPass *renderPass, vk::Framebuffer *framebuffer, VkRect2D renderArea,
+	                   uint32_t clearValueCount, const VkClearValue *pClearValues) :
+	    renderPass(renderPass),
+	    framebuffer(framebuffer),
+	    renderArea(renderArea),
+	    clearValueCount(clearValueCount)
 	{
 		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 		clearValues = new VkClearValue[clearValueCount];
@@ -52,10 +54,10 @@ public:
 
 	~CmdBeginRenderPass() override
 	{
-		delete [] clearValues;
+		delete[] clearValues;
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.renderPass = renderPass;
 		executionState.renderPassFramebuffer = framebuffer;
@@ -64,17 +66,17 @@ public:
 	}
 
 private:
-	vk::RenderPass* renderPass;
-	vk::Framebuffer* framebuffer;
+	vk::RenderPass *renderPass;
+	vk::Framebuffer *framebuffer;
 	VkRect2D renderArea;
 	uint32_t clearValueCount;
-	VkClearValue* clearValues;
+	VkClearValue *clearValues;
 };
 
 class CmdNextSubpass : public vk::CommandBuffer::Command
 {
 public:
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		bool hasResolveAttachments = (executionState.renderPass->getSubpass(executionState.subpassIndex).pResolveAttachments != nullptr);
 		if(hasResolveAttachments)
@@ -93,7 +95,7 @@ public:
 class CmdEndRenderPass : public vk::CommandBuffer::Command
 {
 public:
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		// Execute (implicit or explicit) VkSubpassDependency to VK_SUBPASS_EXTERNAL
 		// This is somewhat heavier than the actual ordering required.
@@ -111,56 +113,62 @@ public:
 class CmdExecuteCommands : public vk::CommandBuffer::Command
 {
 public:
-	CmdExecuteCommands(const vk::CommandBuffer* commandBuffer) : commandBuffer(commandBuffer)
+	CmdExecuteCommands(const vk::CommandBuffer *commandBuffer) :
+	    commandBuffer(commandBuffer)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		commandBuffer->submitSecondary(executionState);
 	}
 
 private:
-	const vk::CommandBuffer* commandBuffer;
+	const vk::CommandBuffer *commandBuffer;
 };
 
 class CmdPipelineBind : public vk::CommandBuffer::Command
 {
 public:
-	CmdPipelineBind(VkPipelineBindPoint pipelineBindPoint, vk::Pipeline* pipeline) :
-		pipelineBindPoint(pipelineBindPoint), pipeline(pipeline)
+	CmdPipelineBind(VkPipelineBindPoint pipelineBindPoint, vk::Pipeline *pipeline) :
+	    pipelineBindPoint(pipelineBindPoint),
+	    pipeline(pipeline)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.pipelineState[pipelineBindPoint].pipeline = pipeline;
 	}
 
 private:
 	VkPipelineBindPoint pipelineBindPoint;
-	vk::Pipeline* pipeline;
+	vk::Pipeline *pipeline;
 };
 
 class CmdDispatch : public vk::CommandBuffer::Command
 {
 public:
 	CmdDispatch(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) :
-			baseGroupX(baseGroupX), baseGroupY(baseGroupY), baseGroupZ(baseGroupZ),
-			groupCountX(groupCountX), groupCountY(groupCountY), groupCountZ(groupCountZ)
+	    baseGroupX(baseGroupX),
+	    baseGroupY(baseGroupY),
+	    baseGroupZ(baseGroupZ),
+	    groupCountX(groupCountX),
+	    groupCountY(groupCountY),
+	    groupCountZ(groupCountZ)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_COMPUTE];
 
-		vk::ComputePipeline* pipeline = static_cast<vk::ComputePipeline*>(pipelineState.pipeline);
+		vk::ComputePipeline *pipeline = static_cast<vk::ComputePipeline *>(pipelineState.pipeline);
 		pipeline->run(baseGroupX, baseGroupY, baseGroupZ,
-			groupCountX, groupCountY, groupCountZ,
-			pipelineState.descriptorSets,
-			pipelineState.descriptorDynamicOffsets,
-			executionState.pushConstants);
+		              groupCountX, groupCountY, groupCountZ,
+		              pipelineState.descriptorSets,
+		              pipelineState.descriptorDynamicOffsets,
+		              executionState.pushConstants);
 	}
 
 private:
@@ -175,64 +183,69 @@ private:
 class CmdDispatchIndirect : public vk::CommandBuffer::Command
 {
 public:
-	CmdDispatchIndirect(vk::Buffer* buffer, VkDeviceSize offset) :
-			buffer(buffer), offset(offset)
+	CmdDispatchIndirect(vk::Buffer *buffer, VkDeviceSize offset) :
+	    buffer(buffer),
+	    offset(offset)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		auto cmd = reinterpret_cast<VkDispatchIndirectCommand const *>(buffer->getOffsetPointer(offset));
 
 		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_COMPUTE];
 
-		auto pipeline = static_cast<vk::ComputePipeline*>(pipelineState.pipeline);
+		auto pipeline = static_cast<vk::ComputePipeline *>(pipelineState.pipeline);
 		pipeline->run(0, 0, 0, cmd->x, cmd->y, cmd->z,
-			pipelineState.descriptorSets,
-			pipelineState.descriptorDynamicOffsets,
-			executionState.pushConstants);
+		              pipelineState.descriptorSets,
+		              pipelineState.descriptorDynamicOffsets,
+		              executionState.pushConstants);
 	}
 
 private:
-	const vk::Buffer* buffer;
+	const vk::Buffer *buffer;
 	VkDeviceSize offset;
 };
 
 class CmdVertexBufferBind : public vk::CommandBuffer::Command
 {
 public:
-	CmdVertexBufferBind(uint32_t binding, vk::Buffer* buffer, const VkDeviceSize offset) :
-		binding(binding), buffer(buffer), offset(offset)
+	CmdVertexBufferBind(uint32_t binding, vk::Buffer *buffer, const VkDeviceSize offset) :
+	    binding(binding),
+	    buffer(buffer),
+	    offset(offset)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.vertexInputBindings[binding] = { buffer, offset };
 	}
 
 private:
 	uint32_t binding;
-	vk::Buffer* buffer;
+	vk::Buffer *buffer;
 	const VkDeviceSize offset;
 };
 
 class CmdIndexBufferBind : public vk::CommandBuffer::Command
 {
 public:
-	CmdIndexBufferBind(vk::Buffer* buffer, const VkDeviceSize offset, const VkIndexType indexType) :
-		buffer(buffer), offset(offset), indexType(indexType)
+	CmdIndexBufferBind(vk::Buffer *buffer, const VkDeviceSize offset, const VkIndexType indexType) :
+	    buffer(buffer),
+	    offset(offset),
+	    indexType(indexType)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.indexBufferBinding = { buffer, offset };
 		executionState.indexType = indexType;
 	}
 
 private:
-	vk::Buffer* buffer;
+	vk::Buffer *buffer;
 	const VkDeviceSize offset;
 	const VkIndexType indexType;
 };
@@ -240,12 +253,13 @@ private:
 class CmdSetViewport : public vk::CommandBuffer::Command
 {
 public:
-	CmdSetViewport(const VkViewport& viewport, uint32_t viewportID) :
-		viewport(viewport), viewportID(viewportID)
+	CmdSetViewport(const VkViewport &viewport, uint32_t viewportID) :
+	    viewport(viewport),
+	    viewportID(viewportID)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.dynamicState.viewport = viewport;
 	}
@@ -258,12 +272,13 @@ private:
 class CmdSetScissor : public vk::CommandBuffer::Command
 {
 public:
-	CmdSetScissor(const VkRect2D& scissor, uint32_t scissorID) :
-		scissor(scissor), scissorID(scissorID)
+	CmdSetScissor(const VkRect2D &scissor, uint32_t scissorID) :
+	    scissor(scissor),
+	    scissorID(scissorID)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.dynamicState.scissor = scissor;
 	}
@@ -277,11 +292,13 @@ class CmdSetDepthBias : public vk::CommandBuffer::Command
 {
 public:
 	CmdSetDepthBias(float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor) :
-		depthBiasConstantFactor(depthBiasConstantFactor), depthBiasClamp(depthBiasClamp), depthBiasSlopeFactor(depthBiasSlopeFactor)
+	    depthBiasConstantFactor(depthBiasConstantFactor),
+	    depthBiasClamp(depthBiasClamp),
+	    depthBiasSlopeFactor(depthBiasSlopeFactor)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.dynamicState.depthBiasConstantFactor = depthBiasConstantFactor;
 		executionState.dynamicState.depthBiasClamp = depthBiasClamp;
@@ -302,7 +319,7 @@ public:
 		memcpy(this->blendConstants, blendConstants, sizeof(this->blendConstants));
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		memcpy(&(executionState.dynamicState.blendConstants[0]), blendConstants, sizeof(blendConstants));
 	}
@@ -315,11 +332,12 @@ class CmdSetDepthBounds : public vk::CommandBuffer::Command
 {
 public:
 	CmdSetDepthBounds(float minDepthBounds, float maxDepthBounds) :
-		minDepthBounds(minDepthBounds), maxDepthBounds(maxDepthBounds)
+	    minDepthBounds(minDepthBounds),
+	    maxDepthBounds(maxDepthBounds)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.dynamicState.minDepthBounds = minDepthBounds;
 		executionState.dynamicState.maxDepthBounds = maxDepthBounds;
@@ -334,11 +352,12 @@ class CmdSetStencilCompareMask : public vk::CommandBuffer::Command
 {
 public:
 	CmdSetStencilCompareMask(VkStencilFaceFlags faceMask, uint32_t compareMask) :
-		faceMask(faceMask), compareMask(compareMask)
+	    faceMask(faceMask),
+	    compareMask(compareMask)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		if(faceMask & VK_STENCIL_FACE_FRONT_BIT)
 		{
@@ -359,11 +378,12 @@ class CmdSetStencilWriteMask : public vk::CommandBuffer::Command
 {
 public:
 	CmdSetStencilWriteMask(VkStencilFaceFlags faceMask, uint32_t writeMask) :
-		faceMask(faceMask), writeMask(writeMask)
+	    faceMask(faceMask),
+	    writeMask(writeMask)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		if(faceMask & VK_STENCIL_FACE_FRONT_BIT)
 		{
@@ -384,11 +404,12 @@ class CmdSetStencilReference : public vk::CommandBuffer::Command
 {
 public:
 	CmdSetStencilReference(VkStencilFaceFlags faceMask, uint32_t reference) :
-		faceMask(faceMask), reference(reference)
+	    faceMask(faceMask),
+	    reference(reference)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		if(faceMask & VK_STENCIL_FACE_FRONT_BIT)
 		{
@@ -408,19 +429,19 @@ private:
 class CmdDrawBase : public vk::CommandBuffer::Command
 {
 public:
-	int bytesPerIndex(vk::CommandBuffer::ExecutionState const& executionState)
+	int bytesPerIndex(vk::CommandBuffer::ExecutionState const &executionState)
 	{
 		return executionState.indexType == VK_INDEX_TYPE_UINT16 ? 2 : 4;
 	}
 
-	template<typename T>
-	void processPrimitiveRestart(T* indexBuffer,
+	template <typename T>
+	void processPrimitiveRestart(T *indexBuffer,
 	                             uint32_t count,
-		                         vk::GraphicsPipeline* pipeline,
-	                             std::vector<std::pair<uint32_t, void*>>& indexBuffers)
+	                             vk::GraphicsPipeline *pipeline,
+	                             std::vector<std::pair<uint32_t, void *>> &indexBuffers)
 	{
 		static const T RestartIndex = static_cast<T>(-1);
-		T* indexBufferStart = indexBuffer;
+		T *indexBufferStart = indexBuffer;
 		uint32_t vertexCount = 0;
 		for(uint32_t i = 0; i < count; i++)
 		{
@@ -458,8 +479,8 @@ public:
 		}
 	}
 
-	void draw(vk::CommandBuffer::ExecutionState& executionState, bool indexed,
-			uint32_t count, uint32_t instanceCount, uint32_t first, int32_t vertexOffset, uint32_t firstInstance)
+	void draw(vk::CommandBuffer::ExecutionState &executionState, bool indexed,
+	          uint32_t count, uint32_t instanceCount, uint32_t first, int32_t vertexOffset, uint32_t firstInstance)
 	{
 		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_GRAPHICS];
 
@@ -473,14 +494,11 @@ public:
 		context.descriptorDynamicOffsets = pipelineState.descriptorDynamicOffsets;
 
 		// Apply either pipeline state or dynamic state
-		executionState.renderer->setScissor(pipeline->hasDynamicState(VK_DYNAMIC_STATE_SCISSOR) ?
-		                                    executionState.dynamicState.scissor : pipeline->getScissor());
-		executionState.renderer->setViewport(pipeline->hasDynamicState(VK_DYNAMIC_STATE_VIEWPORT) ?
-		                                     executionState.dynamicState.viewport : pipeline->getViewport());
-		executionState.renderer->setBlendConstant(pipeline->hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS) ?
-		                                          executionState.dynamicState.blendConstants : pipeline->getBlendConstants());
+		executionState.renderer->setScissor(pipeline->hasDynamicState(VK_DYNAMIC_STATE_SCISSOR) ? executionState.dynamicState.scissor : pipeline->getScissor());
+		executionState.renderer->setViewport(pipeline->hasDynamicState(VK_DYNAMIC_STATE_VIEWPORT) ? executionState.dynamicState.viewport : pipeline->getViewport());
+		executionState.renderer->setBlendConstant(pipeline->hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS) ? executionState.dynamicState.blendConstants : pipeline->getBlendConstants());
 
-		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS))
+		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BIAS))
 		{
 			// If the depth bias clamping feature is not enabled, depthBiasClamp must be 0.0
 			ASSERT(executionState.dynamicState.depthBiasClamp == 0.0f);
@@ -488,27 +506,27 @@ public:
 			context.depthBias = executionState.dynamicState.depthBiasConstantFactor;
 			context.slopeDepthBias = executionState.dynamicState.depthBiasSlopeFactor;
 		}
-		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BOUNDS) && context.depthBoundsTestEnable)
+		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BOUNDS) && context.depthBoundsTestEnable)
 		{
 			// Unless the VK_EXT_depth_range_unrestricted extension is enabled minDepthBounds and maxDepthBounds must be between 0.0 and 1.0, inclusive
 			ASSERT(executionState.dynamicState.minDepthBounds >= 0.0f &&
-				   executionState.dynamicState.minDepthBounds <= 1.0f);
+			       executionState.dynamicState.minDepthBounds <= 1.0f);
 			ASSERT(executionState.dynamicState.maxDepthBounds >= 0.0f &&
-				   executionState.dynamicState.maxDepthBounds <= 1.0f);
+			       executionState.dynamicState.maxDepthBounds <= 1.0f);
 
 			UNIMPLEMENTED("depthBoundsTestEnable");
 		}
-		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && context.stencilEnable)
+		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.compareMask = executionState.dynamicState.compareMask[0];
 			context.backStencil.compareMask = executionState.dynamicState.compareMask[1];
 		}
-		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_WRITE_MASK) && context.stencilEnable)
+		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_WRITE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.writeMask = executionState.dynamicState.writeMask[0];
 			context.backStencil.writeMask = executionState.dynamicState.writeMask[1];
 		}
-		if (pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_REFERENCE) && context.stencilEnable)
+		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_REFERENCE) && context.stencilEnable)
 		{
 			context.frontStencil.reference = executionState.dynamicState.reference[0];
 			context.backStencil.reference = executionState.dynamicState.reference[1];
@@ -519,13 +537,13 @@ public:
 		context.occlusionEnabled = executionState.renderer->hasOcclusionQuery();
 
 		std::vector<std::pair<uint32_t, void *>> indexBuffers;
-		if (indexed)
+		if(indexed)
 		{
 			void *indexBuffer = executionState.indexBufferBinding.buffer->getOffsetPointer(
-					executionState.indexBufferBinding.offset + first * bytesPerIndex(executionState));
-			if (pipeline->hasPrimitiveRestartEnable())
+			    executionState.indexBufferBinding.offset + first * bytesPerIndex(executionState));
+			if(pipeline->hasPrimitiveRestartEnable())
 			{
-				switch (executionState.indexType)
+				switch(executionState.indexType)
 				{
 				case VK_INDEX_TYPE_UINT16:
 					processPrimitiveRestart(static_cast<uint16_t *>(indexBuffer), count, pipeline, indexBuffers);
@@ -539,29 +557,29 @@ public:
 			}
 			else
 			{
-				indexBuffers.push_back({pipeline->computePrimitiveCount(count), indexBuffer});
+				indexBuffers.push_back({ pipeline->computePrimitiveCount(count), indexBuffer });
 			}
 		}
 		else
 		{
-			indexBuffers.push_back({pipeline->computePrimitiveCount(count), nullptr});
+			indexBuffers.push_back({ pipeline->computePrimitiveCount(count), nullptr });
 		}
 
-		for (uint32_t instance = firstInstance; instance != firstInstance + instanceCount; instance++)
+		for(uint32_t instance = firstInstance; instance != firstInstance + instanceCount; instance++)
 		{
 			// FIXME: reconsider instances/views nesting.
 			auto viewMask = executionState.renderPass->getViewMask(executionState.subpassIndex);
-			while (viewMask)
+			while(viewMask)
 			{
 				int viewID = sw::log2i(viewMask);
 				viewMask &= ~(1 << viewID);
 
-				for (auto indexBuffer : indexBuffers)
+				for(auto indexBuffer : indexBuffers)
 				{
 					executionState.renderer->draw(&context, executionState.indexType, indexBuffer.first, vertexOffset,
-												  executionState.events, instance, viewID, indexBuffer.second,
-												  executionState.renderPassFramebuffer->getExtent(),
-												  executionState.pushConstants);
+					                              executionState.events, instance, viewID, indexBuffer.second,
+					                              executionState.renderPassFramebuffer->getExtent(),
+					                              executionState.pushConstants);
 				}
 			}
 
@@ -573,12 +591,15 @@ public:
 class CmdDraw : public CmdDrawBase
 {
 public:
-	CmdDraw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
-		: vertexCount(vertexCount), instanceCount(instanceCount), firstVertex(firstVertex), firstInstance(firstInstance)
+	CmdDraw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) :
+	    vertexCount(vertexCount),
+	    instanceCount(instanceCount),
+	    firstVertex(firstVertex),
+	    firstInstance(firstInstance)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		draw(executionState, false, vertexCount, instanceCount, 0, firstVertex, firstInstance);
 	}
@@ -593,12 +614,16 @@ private:
 class CmdDrawIndexed : public CmdDrawBase
 {
 public:
-	CmdDrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
-			: indexCount(indexCount), instanceCount(instanceCount), firstIndex(firstIndex), vertexOffset(vertexOffset), firstInstance(firstInstance)
+	CmdDrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance) :
+	    indexCount(indexCount),
+	    instanceCount(instanceCount),
+	    firstIndex(firstIndex),
+	    vertexOffset(vertexOffset),
+	    firstInstance(firstInstance)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		draw(executionState, true, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 	}
@@ -614,14 +639,17 @@ private:
 class CmdDrawIndirect : public CmdDrawBase
 {
 public:
-	CmdDrawIndirect(vk::Buffer* buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
-			: buffer(buffer), offset(offset), drawCount(drawCount), stride(stride)
+	CmdDrawIndirect(vk::Buffer *buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) :
+	    buffer(buffer),
+	    offset(offset),
+	    drawCount(drawCount),
+	    stride(stride)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		for (auto drawId = 0u; drawId < drawCount; drawId++)
+		for(auto drawId = 0u; drawId < drawCount; drawId++)
 		{
 			auto cmd = reinterpret_cast<VkDrawIndirectCommand const *>(buffer->getOffsetPointer(offset + drawId * stride));
 			draw(executionState, false, cmd->vertexCount, cmd->instanceCount, 0, cmd->firstVertex, cmd->firstInstance);
@@ -629,7 +657,7 @@ public:
 	}
 
 private:
-	const vk::Buffer* buffer;
+	const vk::Buffer *buffer;
 	VkDeviceSize offset;
 	uint32_t drawCount;
 	uint32_t stride;
@@ -638,14 +666,17 @@ private:
 class CmdDrawIndexedIndirect : public CmdDrawBase
 {
 public:
-	CmdDrawIndexedIndirect(vk::Buffer* buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
-			: buffer(buffer), offset(offset), drawCount(drawCount), stride(stride)
+	CmdDrawIndexedIndirect(vk::Buffer *buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) :
+	    buffer(buffer),
+	    offset(offset),
+	    drawCount(drawCount),
+	    stride(stride)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		for (auto drawId = 0u; drawId < drawCount; drawId++)
+		for(auto drawId = 0u; drawId < drawCount; drawId++)
 		{
 			auto cmd = reinterpret_cast<VkDrawIndexedIndirectCommand const *>(buffer->getOffsetPointer(offset + drawId * stride));
 			draw(executionState, true, cmd->indexCount, cmd->instanceCount, cmd->firstIndex, cmd->vertexOffset, cmd->firstInstance);
@@ -653,7 +684,7 @@ public:
 	}
 
 private:
-	const vk::Buffer* buffer;
+	const vk::Buffer *buffer;
 	VkDeviceSize offset;
 	uint32_t drawCount;
 	uint32_t stride;
@@ -662,94 +693,105 @@ private:
 class CmdImageToImageCopy : public vk::CommandBuffer::Command
 {
 public:
-	CmdImageToImageCopy(const vk::Image* srcImage, vk::Image* dstImage, const VkImageCopy& region) :
-		srcImage(srcImage), dstImage(dstImage), region(region)
+	CmdImageToImageCopy(const vk::Image *srcImage, vk::Image *dstImage, const VkImageCopy &region) :
+	    srcImage(srcImage),
+	    dstImage(dstImage),
+	    region(region)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		srcImage->copyTo(dstImage, region);
 	}
 
 private:
-	const vk::Image* srcImage;
-	vk::Image* dstImage;
+	const vk::Image *srcImage;
+	vk::Image *dstImage;
 	const VkImageCopy region;
 };
 
 class CmdBufferToBufferCopy : public vk::CommandBuffer::Command
 {
 public:
-	CmdBufferToBufferCopy(const vk::Buffer* srcBuffer, vk::Buffer* dstBuffer, const VkBufferCopy& region) :
-		srcBuffer(srcBuffer), dstBuffer(dstBuffer), region(region)
+	CmdBufferToBufferCopy(const vk::Buffer *srcBuffer, vk::Buffer *dstBuffer, const VkBufferCopy &region) :
+	    srcBuffer(srcBuffer),
+	    dstBuffer(dstBuffer),
+	    region(region)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		srcBuffer->copyTo(dstBuffer, region);
 	}
 
 private:
-	const vk::Buffer* srcBuffer;
-	vk::Buffer* dstBuffer;
+	const vk::Buffer *srcBuffer;
+	vk::Buffer *dstBuffer;
 	const VkBufferCopy region;
 };
 
 class CmdImageToBufferCopy : public vk::CommandBuffer::Command
 {
 public:
-	CmdImageToBufferCopy(vk::Image* srcImage, vk::Buffer* dstBuffer, const VkBufferImageCopy& region) :
-		srcImage(srcImage), dstBuffer(dstBuffer), region(region)
+	CmdImageToBufferCopy(vk::Image *srcImage, vk::Buffer *dstBuffer, const VkBufferImageCopy &region) :
+	    srcImage(srcImage),
+	    dstBuffer(dstBuffer),
+	    region(region)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		srcImage->copyTo(dstBuffer, region);
 	}
 
 private:
-	vk::Image* srcImage;
-	vk::Buffer* dstBuffer;
+	vk::Image *srcImage;
+	vk::Buffer *dstBuffer;
 	const VkBufferImageCopy region;
 };
 
 class CmdBufferToImageCopy : public vk::CommandBuffer::Command
 {
 public:
-	CmdBufferToImageCopy(vk::Buffer* srcBuffer, vk::Image* dstImage, const VkBufferImageCopy& region) :
-		srcBuffer(srcBuffer), dstImage(dstImage), region(region)
+	CmdBufferToImageCopy(vk::Buffer *srcBuffer, vk::Image *dstImage, const VkBufferImageCopy &region) :
+	    srcBuffer(srcBuffer),
+	    dstImage(dstImage),
+	    region(region)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		dstImage->copyFrom(srcBuffer, region);
 	}
 
 private:
-	vk::Buffer* srcBuffer;
-	vk::Image* dstImage;
+	vk::Buffer *srcBuffer;
+	vk::Image *dstImage;
 	const VkBufferImageCopy region;
 };
 
 class CmdFillBuffer : public vk::CommandBuffer::Command
 {
 public:
-	CmdFillBuffer(vk::Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data) :
-		dstBuffer(dstBuffer), dstOffset(dstOffset), size(size), data(data)
+	CmdFillBuffer(vk::Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data) :
+	    dstBuffer(dstBuffer),
+	    dstOffset(dstOffset),
+	    size(size),
+	    data(data)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		dstBuffer->fill(dstOffset, size, data);
 	}
 
 private:
-	vk::Buffer* dstBuffer;
+	vk::Buffer *dstBuffer;
 	VkDeviceSize dstOffset;
 	VkDeviceSize size;
 	uint32_t data;
@@ -758,37 +800,41 @@ private:
 class CmdUpdateBuffer : public vk::CommandBuffer::Command
 {
 public:
-	CmdUpdateBuffer(vk::Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const uint8_t* pData) :
-		dstBuffer(dstBuffer), dstOffset(dstOffset), data(pData, &pData[dataSize])
+	CmdUpdateBuffer(vk::Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const uint8_t *pData) :
+	    dstBuffer(dstBuffer),
+	    dstOffset(dstOffset),
+	    data(pData, &pData[dataSize])
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		dstBuffer->update(dstOffset, data.size(), data.data());
 	}
 
 private:
-	vk::Buffer* dstBuffer;
+	vk::Buffer *dstBuffer;
 	VkDeviceSize dstOffset;
-	std::vector<uint8_t> data; // FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
+	std::vector<uint8_t> data;  // FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 };
 
 class CmdClearColorImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdClearColorImage(vk::Image* image, const VkClearColorValue& color, const VkImageSubresourceRange& range) :
-		image(image), color(color), range(range)
+	CmdClearColorImage(vk::Image *image, const VkClearColorValue &color, const VkImageSubresourceRange &range) :
+	    image(image),
+	    color(color),
+	    range(range)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		image->clear(color, range);
 	}
 
 private:
-	vk::Image* image;
+	vk::Image *image;
 	const VkClearColorValue color;
 	const VkImageSubresourceRange range;
 };
@@ -796,18 +842,20 @@ private:
 class CmdClearDepthStencilImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdClearDepthStencilImage(vk::Image* image, const VkClearDepthStencilValue& depthStencil, const VkImageSubresourceRange& range) :
-		image(image), depthStencil(depthStencil), range(range)
+	CmdClearDepthStencilImage(vk::Image *image, const VkClearDepthStencilValue &depthStencil, const VkImageSubresourceRange &range) :
+	    image(image),
+	    depthStencil(depthStencil),
+	    range(range)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		image->clear(depthStencil, range);
 	}
 
 private:
-	vk::Image* image;
+	vk::Image *image;
 	const VkClearDepthStencilValue depthStencil;
 	const VkImageSubresourceRange range;
 };
@@ -815,12 +863,13 @@ private:
 class CmdClearAttachment : public vk::CommandBuffer::Command
 {
 public:
-	CmdClearAttachment(const VkClearAttachment& attachment, const VkClearRect& rect) :
-		attachment(attachment), rect(rect)
+	CmdClearAttachment(const VkClearAttachment &attachment, const VkClearRect &rect) :
+	    attachment(attachment),
+	    rect(rect)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		// attachment clears are drawing operations, and so have rasterization-order guarantees.
 		// however, we don't do the clear through the rasterizer, so need to ensure prior drawing
@@ -837,19 +886,22 @@ private:
 class CmdBlitImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdBlitImage(const vk::Image* srcImage, vk::Image* dstImage, const VkImageBlit& region, VkFilter filter) :
-		srcImage(srcImage), dstImage(dstImage), region(region), filter(filter)
+	CmdBlitImage(const vk::Image *srcImage, vk::Image *dstImage, const VkImageBlit &region, VkFilter filter) :
+	    srcImage(srcImage),
+	    dstImage(dstImage),
+	    region(region),
+	    filter(filter)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		srcImage->blit(dstImage, region, filter);
 	}
 
 private:
-	const vk::Image* srcImage;
-	vk::Image* dstImage;
+	const vk::Image *srcImage;
+	vk::Image *dstImage;
 	VkImageBlit region;
 	VkFilter filter;
 };
@@ -857,26 +909,28 @@ private:
 class CmdResolveImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdResolveImage(const vk::Image* srcImage, vk::Image* dstImage, const VkImageResolve& region) :
-		srcImage(srcImage), dstImage(dstImage), region(region)
+	CmdResolveImage(const vk::Image *srcImage, vk::Image *dstImage, const VkImageResolve &region) :
+	    srcImage(srcImage),
+	    dstImage(dstImage),
+	    region(region)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		srcImage->resolve(dstImage, region);
 	}
 
 private:
-	const vk::Image* srcImage;
-	vk::Image* dstImage;
+	const vk::Image *srcImage;
+	vk::Image *dstImage;
 	VkImageResolve region;
 };
 
 class CmdPipelineBarrier : public vk::CommandBuffer::Command
 {
 public:
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		// This is a very simple implementation that simply calls sw::Renderer::synchronize(),
 		// since the driver is free to move the source stage towards the bottom of the pipe
@@ -892,70 +946,78 @@ public:
 class CmdSignalEvent : public vk::CommandBuffer::Command
 {
 public:
-	CmdSignalEvent(vk::Event* ev, VkPipelineStageFlags stageMask) : ev(ev), stageMask(stageMask)
+	CmdSignalEvent(vk::Event *ev, VkPipelineStageFlags stageMask) :
+	    ev(ev),
+	    stageMask(stageMask)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.renderer->synchronize();
 		ev->signal();
 	}
 
 private:
-	vk::Event* ev;
-	VkPipelineStageFlags stageMask; // FIXME(b/117835459) : We currently ignore the flags and signal the event at the last stage
+	vk::Event *ev;
+	VkPipelineStageFlags stageMask;  // FIXME(b/117835459) : We currently ignore the flags and signal the event at the last stage
 };
 
 class CmdResetEvent : public vk::CommandBuffer::Command
 {
 public:
-	CmdResetEvent(vk::Event* ev, VkPipelineStageFlags stageMask) : ev(ev), stageMask(stageMask)
+	CmdResetEvent(vk::Event *ev, VkPipelineStageFlags stageMask) :
+	    ev(ev),
+	    stageMask(stageMask)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		ev->reset();
 	}
 
 private:
-	vk::Event* ev;
-	VkPipelineStageFlags stageMask; // FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
+	vk::Event *ev;
+	VkPipelineStageFlags stageMask;  // FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
 };
 
 class CmdWaitEvent : public vk::CommandBuffer::Command
 {
 public:
-	CmdWaitEvent(vk::Event* ev) : ev(ev)
+	CmdWaitEvent(vk::Event *ev) :
+	    ev(ev)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.renderer->synchronize();
 		ev->wait();
 	}
 
 private:
-	vk::Event* ev;
+	vk::Event *ev;
 };
 
 class CmdBindDescriptorSet : public vk::CommandBuffer::Command
 {
 public:
-	CmdBindDescriptorSet(VkPipelineBindPoint pipelineBindPoint, const vk::PipelineLayout *pipelineLayout, uint32_t set, vk::DescriptorSet* descriptorSet,
-		uint32_t dynamicOffsetCount, uint32_t const *dynamicOffsets)
-		: pipelineBindPoint(pipelineBindPoint), pipelineLayout(pipelineLayout), set(set), descriptorSet(descriptorSet),
-		  dynamicOffsetCount(dynamicOffsetCount)
+	CmdBindDescriptorSet(VkPipelineBindPoint pipelineBindPoint, const vk::PipelineLayout *pipelineLayout, uint32_t set, vk::DescriptorSet *descriptorSet,
+	                     uint32_t dynamicOffsetCount, uint32_t const *dynamicOffsets) :
+	    pipelineBindPoint(pipelineBindPoint),
+	    pipelineLayout(pipelineLayout),
+	    set(set),
+	    descriptorSet(descriptorSet),
+	    dynamicOffsetCount(dynamicOffsetCount)
 	{
-		for (uint32_t i = 0; i < dynamicOffsetCount; i++)
+		for(uint32_t i = 0; i < dynamicOffsetCount; i++)
 		{
 			this->dynamicOffsets[i] = dynamicOffsets[i];
 		}
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		ASSERT_OR_RETURN((pipelineBindPoint < VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (set < vk::MAX_BOUND_DESCRIPTOR_SETS));
 		auto &pipelineState = executionState.pipelineState[pipelineBindPoint];
@@ -963,7 +1025,7 @@ public:
 		ASSERT_OR_RETURN(dynamicOffsetBase + dynamicOffsetCount <= vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC);
 
 		pipelineState.descriptorSets[set] = descriptorSet;
-		for (uint32_t i = 0; i < dynamicOffsetCount; i++)
+		for(uint32_t i = 0; i < dynamicOffsetCount; i++)
 		{
 			pipelineState.descriptorDynamicOffsets[dynamicOffsetBase + i] = dynamicOffsets[i];
 		}
@@ -973,7 +1035,7 @@ private:
 	VkPipelineBindPoint pipelineBindPoint;
 	const vk::PipelineLayout *pipelineLayout;
 	uint32_t set;
-	vk::DescriptorSet* descriptorSet;
+	vk::DescriptorSet *descriptorSet;
 	uint32_t dynamicOffsetCount;
 	vk::DescriptorSet::DynamicOffsets dynamicOffsets;
 };
@@ -981,8 +1043,9 @@ private:
 class CmdSetPushConstants : public vk::CommandBuffer::Command
 {
 public:
-	CmdSetPushConstants(uint32_t offset, uint32_t size, void const *pValues)
-		: offset(offset), size(size)
+	CmdSetPushConstants(uint32_t offset, uint32_t size, void const *pValues) :
+	    offset(offset),
+	    size(size)
 	{
 		ASSERT(offset < vk::MAX_PUSH_CONSTANT_SIZE);
 		ASSERT(offset + size <= vk::MAX_PUSH_CONSTANT_SIZE);
@@ -990,7 +1053,7 @@ public:
 		memcpy(data, pValues, size);
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		memcpy(&executionState.pushConstants.data[offset], data, size);
 	}
@@ -1004,19 +1067,21 @@ private:
 class CmdBeginQuery : public vk::CommandBuffer::Command
 {
 public:
-	CmdBeginQuery(vk::QueryPool* queryPool, uint32_t query, VkQueryControlFlags flags)
-		: queryPool(queryPool), query(query), flags(flags)
+	CmdBeginQuery(vk::QueryPool *queryPool, uint32_t query, VkQueryControlFlags flags) :
+	    queryPool(queryPool),
+	    query(query),
+	    flags(flags)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		queryPool->begin(query, flags);
 		executionState.renderer->addQuery(queryPool->getQuery(query));
 	}
 
 private:
-	vk::QueryPool* queryPool;
+	vk::QueryPool *queryPool;
 	uint32_t query;
 	VkQueryControlFlags flags;
 };
@@ -1024,37 +1089,40 @@ private:
 class CmdEndQuery : public vk::CommandBuffer::Command
 {
 public:
-	CmdEndQuery(vk::QueryPool* queryPool, uint32_t query)
-		: queryPool(queryPool), query(query)
+	CmdEndQuery(vk::QueryPool *queryPool, uint32_t query) :
+	    queryPool(queryPool),
+	    query(query)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		executionState.renderer->removeQuery(queryPool->getQuery(query));
 		queryPool->end(query);
 	}
 
 private:
-	vk::QueryPool* queryPool;
+	vk::QueryPool *queryPool;
 	uint32_t query;
 };
 
 class CmdResetQueryPool : public vk::CommandBuffer::Command
 {
 public:
-	CmdResetQueryPool(vk::QueryPool* queryPool, uint32_t firstQuery, uint32_t queryCount)
-		: queryPool(queryPool), firstQuery(firstQuery), queryCount(queryCount)
+	CmdResetQueryPool(vk::QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount) :
+	    queryPool(queryPool),
+	    firstQuery(firstQuery),
+	    queryCount(queryCount)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		queryPool->reset(firstQuery, queryCount);
 	}
 
 private:
-	vk::QueryPool* queryPool;
+	vk::QueryPool *queryPool;
 	uint32_t firstQuery;
 	uint32_t queryCount;
 };
@@ -1062,14 +1130,16 @@ private:
 class CmdWriteTimeStamp : public vk::CommandBuffer::Command
 {
 public:
-	CmdWriteTimeStamp(vk::QueryPool* queryPool, uint32_t query, VkPipelineStageFlagBits stage)
-		: queryPool(queryPool), query(query), stage(stage)
+	CmdWriteTimeStamp(vk::QueryPool *queryPool, uint32_t query, VkPipelineStageFlagBits stage) :
+	    queryPool(queryPool),
+	    query(query),
+	    stage(stage)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		if (stage & ~(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT | VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT))
+		if(stage & ~(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT | VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT))
 		{
 			// The `top of pipe` and `draw indirect` stages are handled in command buffer processing so a timestamp write
 			// done in those stages can just be done here without any additional synchronization.
@@ -1084,7 +1154,7 @@ public:
 	}
 
 private:
-	vk::QueryPool* queryPool;
+	vk::QueryPool *queryPool;
 	uint32_t query;
 	VkPipelineStageFlagBits stage;
 };
@@ -1092,24 +1162,29 @@ private:
 class CmdCopyQueryPoolResults : public vk::CommandBuffer::Command
 {
 public:
-	CmdCopyQueryPoolResults(const vk::QueryPool* queryPool, uint32_t firstQuery, uint32_t queryCount,
-		vk::Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags)
-		: queryPool(queryPool), firstQuery(firstQuery), queryCount(queryCount),
-		  dstBuffer(dstBuffer), dstOffset(dstOffset), stride(stride), flags(flags)
+	CmdCopyQueryPoolResults(const vk::QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount,
+	                        vk::Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags) :
+	    queryPool(queryPool),
+	    firstQuery(firstQuery),
+	    queryCount(queryCount),
+	    dstBuffer(dstBuffer),
+	    dstOffset(dstOffset),
+	    stride(stride),
+	    flags(flags)
 	{
 	}
 
-	void play(vk::CommandBuffer::ExecutionState& executionState) override
+	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		queryPool->getResults(firstQuery, queryCount, dstBuffer->getSize() - dstOffset,
 		                      dstBuffer->getOffsetPointer(dstOffset), stride, flags);
 	}
 
 private:
-	const vk::QueryPool* queryPool;
+	const vk::QueryPool *queryPool;
 	uint32_t firstQuery;
 	uint32_t queryCount;
-	vk::Buffer* dstBuffer;
+	vk::Buffer *dstBuffer;
 	VkDeviceSize dstOffset;
 	VkDeviceSize stride;
 	VkQueryResultFlags flags;
@@ -1119,13 +1194,14 @@ private:
 
 namespace vk {
 
-CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
+CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) :
+    level(pLevel)
 {
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
-	commands = new std::vector<std::unique_ptr<Command> >();
+	commands = new std::vector<std::unique_ptr<Command>>();
 }
 
-void CommandBuffer::destroy(const VkAllocationCallbacks* pAllocator)
+void CommandBuffer::destroy(const VkAllocationCallbacks *pAllocator)
 {
 	delete commands;
 }
@@ -1138,14 +1214,14 @@ void CommandBuffer::resetState()
 	state = INITIAL;
 }
 
-VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBufferInheritanceInfo* pInheritanceInfo)
+VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBufferInheritanceInfo *pInheritanceInfo)
 {
 	ASSERT((state != RECORDING) && (state != PENDING));
 
 	// Nothing interesting to do based on flags. We don't have any optimizations
 	// to apply for ONE_TIME_SUBMIT or (lack of) SIMULTANEOUS_USE. RENDER_PASS_CONTINUE
 	// must also provide a non-null pInheritanceInfo, which we don't implement yet, but is caught below.
-	(void) flags;
+	(void)flags;
 
 	// pInheritanceInfo merely contains optimization hints, so we currently ignore it
 
@@ -1178,15 +1254,15 @@ VkResult CommandBuffer::reset(VkCommandPoolResetFlags flags)
 	return VK_SUCCESS;
 }
 
-template<typename T, typename... Args>
-void CommandBuffer::addCommand(Args&&... args)
+template <typename T, typename... Args>
+void CommandBuffer::addCommand(Args &&... args)
 {
 	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 	commands->push_back(std::unique_ptr<T>(new T(std::forward<Args>(args)...)));
 }
 
-void CommandBuffer::beginRenderPass(RenderPass* renderPass, Framebuffer* framebuffer, VkRect2D renderArea,
-                                    uint32_t clearValueCount, const VkClearValue* clearValues, VkSubpassContents contents)
+void CommandBuffer::beginRenderPass(RenderPass *renderPass, Framebuffer *framebuffer, VkRect2D renderArea,
+                                    uint32_t clearValueCount, const VkClearValue *clearValues, VkSubpassContents contents)
 {
 	ASSERT(state == RECORDING);
 
@@ -1205,7 +1281,7 @@ void CommandBuffer::endRenderPass()
 	addCommand<::CmdEndRenderPass>();
 }
 
-void CommandBuffer::executeCommands(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
+void CommandBuffer::executeCommands(uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers)
 {
 	ASSERT(state == RECORDING);
 
@@ -1228,28 +1304,28 @@ void CommandBuffer::dispatchBase(uint32_t baseGroupX, uint32_t baseGroupY, uint3
 
 void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask,
                                     VkDependencyFlags dependencyFlags,
-                                    uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers,
-                                    uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
-                                    uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers)
+                                    uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers,
+                                    uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers,
+                                    uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers)
 {
 	addCommand<::CmdPipelineBarrier>();
 }
 
-void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline* pipeline)
+void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline *pipeline)
 {
 	switch(pipelineBindPoint)
 	{
-		case VK_PIPELINE_BIND_POINT_COMPUTE:
-		case VK_PIPELINE_BIND_POINT_GRAPHICS:
-			addCommand<::CmdPipelineBind>(pipelineBindPoint, pipeline);
-			break;
-		default:
-			UNIMPLEMENTED("pipelineBindPoint");
+	case VK_PIPELINE_BIND_POINT_COMPUTE:
+	case VK_PIPELINE_BIND_POINT_GRAPHICS:
+		addCommand<::CmdPipelineBind>(pipelineBindPoint, pipeline);
+		break;
+	default:
+		UNIMPLEMENTED("pipelineBindPoint");
 	}
 }
 
 void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
-                                      const VkBuffer* pBuffers, const VkDeviceSize* pOffsets)
+                                      const VkBuffer *pBuffers, const VkDeviceSize *pOffsets)
 {
 	for(uint32_t i = 0; i < bindingCount; ++i)
 	{
@@ -1257,39 +1333,39 @@ void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCou
 	}
 }
 
-void CommandBuffer::beginQuery(QueryPool* queryPool, uint32_t query, VkQueryControlFlags flags)
+void CommandBuffer::beginQuery(QueryPool *queryPool, uint32_t query, VkQueryControlFlags flags)
 {
 	addCommand<::CmdBeginQuery>(queryPool, query, flags);
 }
 
-void CommandBuffer::endQuery(QueryPool* queryPool, uint32_t query)
+void CommandBuffer::endQuery(QueryPool *queryPool, uint32_t query)
 {
 	addCommand<::CmdEndQuery>(queryPool, query);
 }
 
-void CommandBuffer::resetQueryPool(QueryPool* queryPool, uint32_t firstQuery, uint32_t queryCount)
+void CommandBuffer::resetQueryPool(QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount)
 {
 	addCommand<::CmdResetQueryPool>(queryPool, firstQuery, queryCount);
 }
 
-void CommandBuffer::writeTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool* queryPool, uint32_t query)
+void CommandBuffer::writeTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool *queryPool, uint32_t query)
 {
 	addCommand<::CmdWriteTimeStamp>(queryPool, query, pipelineStage);
 }
 
-void CommandBuffer::copyQueryPoolResults(const QueryPool* queryPool, uint32_t firstQuery, uint32_t queryCount,
-	Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags)
+void CommandBuffer::copyQueryPoolResults(const QueryPool *queryPool, uint32_t firstQuery, uint32_t queryCount,
+                                         Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags)
 {
 	addCommand<::CmdCopyQueryPoolResults>(queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
 }
 
-void CommandBuffer::pushConstants(PipelineLayout* layout, VkShaderStageFlags stageFlags,
-	uint32_t offset, uint32_t size, const void* pValues)
+void CommandBuffer::pushConstants(PipelineLayout *layout, VkShaderStageFlags stageFlags,
+                                  uint32_t offset, uint32_t size, const void *pValues)
 {
 	addCommand<::CmdSetPushConstants>(offset, size, pValues);
 }
 
-void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, const VkViewport* pViewports)
+void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, const VkViewport *pViewports)
 {
 	if(firstViewport != 0 || viewportCount > 1)
 	{
@@ -1302,7 +1378,7 @@ void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, 
 	}
 }
 
-void CommandBuffer::setScissor(uint32_t firstScissor, uint32_t scissorCount, const VkRect2D* pScissors)
+void CommandBuffer::setScissor(uint32_t firstScissor, uint32_t scissorCount, const VkRect2D *pScissors)
 {
 	if(firstScissor != 0 || scissorCount > 1)
 	{
@@ -1360,9 +1436,9 @@ void CommandBuffer::setStencilReference(VkStencilFaceFlags faceMask, uint32_t re
 	addCommand<::CmdSetStencilReference>(faceMask, reference);
 }
 
-void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, const PipelineLayout* layout,
-	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
-	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
+void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, const PipelineLayout *layout,
+                                       uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets,
+                                       uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets)
 {
 	ASSERT(state == RECORDING);
 
@@ -1376,15 +1452,15 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, co
 		ASSERT(dynamicOffsetCount >= numDynamicDescriptors);
 
 		addCommand<::CmdBindDescriptorSet>(
-				pipelineBindPoint, layout, descriptorSetIndex, vk::Cast(pDescriptorSets[i]),
-				dynamicOffsetCount, pDynamicOffsets);
+		    pipelineBindPoint, layout, descriptorSetIndex, vk::Cast(pDescriptorSets[i]),
+		    dynamicOffsetCount, pDynamicOffsets);
 
 		pDynamicOffsets += numDynamicDescriptors;
 		dynamicOffsetCount -= numDynamicDescriptors;
 	}
 }
 
-void CommandBuffer::bindIndexBuffer(Buffer* buffer, VkDeviceSize offset, VkIndexType indexType)
+void CommandBuffer::bindIndexBuffer(Buffer *buffer, VkDeviceSize offset, VkIndexType indexType)
 {
 	addCommand<::CmdIndexBufferBind>(buffer, offset, indexType);
 }
@@ -1394,12 +1470,12 @@ void CommandBuffer::dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_
 	addCommand<::CmdDispatch>(0, 0, 0, groupCountX, groupCountY, groupCountZ);
 }
 
-void CommandBuffer::dispatchIndirect(Buffer* buffer, VkDeviceSize offset)
+void CommandBuffer::dispatchIndirect(Buffer *buffer, VkDeviceSize offset)
 {
 	addCommand<::CmdDispatchIndirect>(buffer, offset);
 }
 
-void CommandBuffer::copyBuffer(const Buffer* srcBuffer, Buffer* dstBuffer, uint32_t regionCount, const VkBufferCopy* pRegions)
+void CommandBuffer::copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions)
 {
 	ASSERT(state == RECORDING);
 
@@ -1409,8 +1485,8 @@ void CommandBuffer::copyBuffer(const Buffer* srcBuffer, Buffer* dstBuffer, uint3
 	}
 }
 
-void CommandBuffer::copyImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-	uint32_t regionCount, const VkImageCopy* pRegions)
+void CommandBuffer::copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+                              uint32_t regionCount, const VkImageCopy *pRegions)
 {
 	ASSERT(state == RECORDING);
 	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL ||
@@ -1424,8 +1500,8 @@ void CommandBuffer::copyImage(const Image* srcImage, VkImageLayout srcImageLayou
 	}
 }
 
-void CommandBuffer::blitImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-	uint32_t regionCount, const VkImageBlit* pRegions, VkFilter filter)
+void CommandBuffer::blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+                              uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter)
 {
 	ASSERT(state == RECORDING);
 	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL ||
@@ -1439,8 +1515,8 @@ void CommandBuffer::blitImage(const Image* srcImage, VkImageLayout srcImageLayou
 	}
 }
 
-void CommandBuffer::copyBufferToImage(Buffer* srcBuffer, Image* dstImage, VkImageLayout dstImageLayout,
-	uint32_t regionCount, const VkBufferImageCopy* pRegions)
+void CommandBuffer::copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImageLayout dstImageLayout,
+                                      uint32_t regionCount, const VkBufferImageCopy *pRegions)
 {
 	ASSERT(state == RECORDING);
 
@@ -1450,8 +1526,8 @@ void CommandBuffer::copyBufferToImage(Buffer* srcBuffer, Image* dstImage, VkImag
 	}
 }
 
-void CommandBuffer::copyImageToBuffer(Image* srcImage, VkImageLayout srcImageLayout, Buffer* dstBuffer,
-	uint32_t regionCount, const VkBufferImageCopy* pRegions)
+void CommandBuffer::copyImageToBuffer(Image *srcImage, VkImageLayout srcImageLayout, Buffer *dstBuffer,
+                                      uint32_t regionCount, const VkBufferImageCopy *pRegions)
 {
 	ASSERT(state == RECORDING);
 	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL || srcImageLayout == VK_IMAGE_LAYOUT_GENERAL);
@@ -1462,22 +1538,22 @@ void CommandBuffer::copyImageToBuffer(Image* srcImage, VkImageLayout srcImageLay
 	}
 }
 
-void CommandBuffer::updateBuffer(Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData)
+void CommandBuffer::updateBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData)
 {
 	ASSERT(state == RECORDING);
 
-	addCommand<::CmdUpdateBuffer>(dstBuffer, dstOffset, dataSize, reinterpret_cast<const uint8_t*>(pData));
+	addCommand<::CmdUpdateBuffer>(dstBuffer, dstOffset, dataSize, reinterpret_cast<const uint8_t *>(pData));
 }
 
-void CommandBuffer::fillBuffer(Buffer* dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data)
+void CommandBuffer::fillBuffer(Buffer *dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data)
 {
 	ASSERT(state == RECORDING);
 
 	addCommand<::CmdFillBuffer>(dstBuffer, dstOffset, size, data);
 }
 
-void CommandBuffer::clearColorImage(Image* image, VkImageLayout imageLayout, const VkClearColorValue* pColor,
-	uint32_t rangeCount, const VkImageSubresourceRange* pRanges)
+void CommandBuffer::clearColorImage(Image *image, VkImageLayout imageLayout, const VkClearColorValue *pColor,
+                                    uint32_t rangeCount, const VkImageSubresourceRange *pRanges)
 {
 	ASSERT(state == RECORDING);
 
@@ -1487,8 +1563,8 @@ void CommandBuffer::clearColorImage(Image* image, VkImageLayout imageLayout, con
 	}
 }
 
-void CommandBuffer::clearDepthStencilImage(Image* image, VkImageLayout imageLayout, const VkClearDepthStencilValue* pDepthStencil,
-	uint32_t rangeCount, const VkImageSubresourceRange* pRanges)
+void CommandBuffer::clearDepthStencilImage(Image *image, VkImageLayout imageLayout, const VkClearDepthStencilValue *pDepthStencil,
+                                           uint32_t rangeCount, const VkImageSubresourceRange *pRanges)
 {
 	ASSERT(state == RECORDING);
 
@@ -1498,8 +1574,8 @@ void CommandBuffer::clearDepthStencilImage(Image* image, VkImageLayout imageLayo
 	}
 }
 
-void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAttachment* pAttachments,
-	uint32_t rectCount, const VkClearRect* pRects)
+void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAttachment *pAttachments,
+                                     uint32_t rectCount, const VkClearRect *pRects)
 {
 	ASSERT(state == RECORDING);
 
@@ -1512,8 +1588,8 @@ void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAtta
 	}
 }
 
-void CommandBuffer::resolveImage(const Image* srcImage, VkImageLayout srcImageLayout, Image* dstImage, VkImageLayout dstImageLayout,
-	uint32_t regionCount, const VkImageResolve* pRegions)
+void CommandBuffer::resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+                                 uint32_t regionCount, const VkImageResolve *pRegions)
 {
 	ASSERT(state == RECORDING);
 	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL ||
@@ -1527,24 +1603,24 @@ void CommandBuffer::resolveImage(const Image* srcImage, VkImageLayout srcImageLa
 	}
 }
 
-void CommandBuffer::setEvent(Event* event, VkPipelineStageFlags stageMask)
+void CommandBuffer::setEvent(Event *event, VkPipelineStageFlags stageMask)
 {
 	ASSERT(state == RECORDING);
 
 	addCommand<::CmdSignalEvent>(event, stageMask);
 }
 
-void CommandBuffer::resetEvent(Event* event, VkPipelineStageFlags stageMask)
+void CommandBuffer::resetEvent(Event *event, VkPipelineStageFlags stageMask)
 {
 	ASSERT(state == RECORDING);
 
 	addCommand<::CmdResetEvent>(event, stageMask);
 }
 
-void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent* pEvents, VkPipelineStageFlags srcStageMask,
-	VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers,
-	uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
-	uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers)
+void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask,
+                               VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers,
+                               uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers,
+                               uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers)
 {
 	ASSERT(state == RECORDING);
 
@@ -1567,22 +1643,22 @@ void CommandBuffer::drawIndexed(uint32_t indexCount, uint32_t instanceCount, uin
 	addCommand<::CmdDrawIndexed>(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
-void CommandBuffer::drawIndirect(Buffer* buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
+void CommandBuffer::drawIndirect(Buffer *buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
 {
 	addCommand<::CmdDrawIndirect>(buffer, offset, drawCount, stride);
 }
 
-void CommandBuffer::drawIndexedIndirect(Buffer* buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
+void CommandBuffer::drawIndexedIndirect(Buffer *buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride)
 {
 	addCommand<::CmdDrawIndexedIndirect>(buffer, offset, drawCount, stride);
 }
 
-void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
+void CommandBuffer::submit(CommandBuffer::ExecutionState &executionState)
 {
 	// Perform recorded work
 	state = PENDING;
 
-	for(auto& command : *commands)
+	for(auto &command : *commands)
 	{
 		command->play(executionState);
 	}
@@ -1591,20 +1667,20 @@ void CommandBuffer::submit(CommandBuffer::ExecutionState& executionState)
 	state = EXECUTABLE;
 }
 
-void CommandBuffer::submitSecondary(CommandBuffer::ExecutionState& executionState) const
+void CommandBuffer::submitSecondary(CommandBuffer::ExecutionState &executionState) const
 {
-	for(auto& command : *commands)
+	for(auto &command : *commands)
 	{
 		command->play(executionState);
 	}
 }
 
-void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context& context, int firstInstance)
+void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context &context, int firstInstance)
 {
 	for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
 	{
 		auto &attrib = context.input[i];
-		if (attrib.count)
+		if(attrib.count)
 		{
 			const auto &vertexInput = vertexInputBindings[attrib.binding];
 			VkDeviceSize offset = attrib.offset + vertexInput.offset +
@@ -1617,33 +1693,33 @@ void CommandBuffer::ExecutionState::bindVertexInputs(sw::Context& context, int f
 	}
 }
 
-void CommandBuffer::ExecutionState::bindAttachments(sw::Context& context)
+void CommandBuffer::ExecutionState::bindAttachments(sw::Context &context)
 {
 	// Binds all the attachments for the current subpass
 	// Ideally this would be performed by BeginRenderPass and NextSubpass, but
 	// there is too much stomping of the renderer's state by setContext() in
 	// draws.
 
-	auto const & subpass = renderPass->getSubpass(subpassIndex);
+	auto const &subpass = renderPass->getSubpass(subpassIndex);
 
-	for (auto i = 0u; i < subpass.colorAttachmentCount; i++)
+	for(auto i = 0u; i < subpass.colorAttachmentCount; i++)
 	{
 		auto attachmentReference = subpass.pColorAttachments[i];
-		if (attachmentReference.attachment != VK_ATTACHMENT_UNUSED)
+		if(attachmentReference.attachment != VK_ATTACHMENT_UNUSED)
 		{
 			context.renderTarget[i] = renderPassFramebuffer->getAttachment(attachmentReference.attachment);
 		}
 	}
 
 	auto attachmentReference = subpass.pDepthStencilAttachment;
-	if (attachmentReference && attachmentReference->attachment != VK_ATTACHMENT_UNUSED)
+	if(attachmentReference && attachmentReference->attachment != VK_ATTACHMENT_UNUSED)
 	{
 		auto attachment = renderPassFramebuffer->getAttachment(attachmentReference->attachment);
-		if (attachment->hasDepthAspect())
+		if(attachment->hasDepthAspect())
 		{
 			context.depthBuffer = attachment;
 		}
-		if (attachment->hasStencilAspect())
+		if(attachment->hasStencilAspect())
 		{
 			context.stencilBuffer = attachment;
 		}
