@@ -22,7 +22,7 @@
 
 namespace sw {
 
-template<class Key, class Data>
+template <class Key, class Data>
 class LRUCache
 {
 public:
@@ -33,8 +33,8 @@ public:
 	Data query(const Key &key) const;
 	virtual Data add(const Key &key, const Data &data);
 
-	int getSize() {return size;}
-	Key &getKey(int i) {return key[i];}
+	int getSize() { return size; }
+	Key &getKey(int i) { return key[i]; }
 
 protected:
 	int size;
@@ -47,22 +47,24 @@ protected:
 	Data *data;
 };
 
-template<class Key, class Data, class Hasher = std::hash<Key>>
+template <class Key, class Data, class Hasher = std::hash<Key>>
 class LRUConstCache : public LRUCache<Key, Data>
 {
 	using LRUBase = LRUCache<Key, Data>;
+
 public:
-	LRUConstCache(int n) : LRUBase(n) {}
+	LRUConstCache(int n) :
+	    LRUBase(n) {}
 	~LRUConstCache() { clearConstCache(); }
 
-	Data add(const Key &key, const Data& data) override
+	Data add(const Key &key, const Data &data) override
 	{
 		constCacheNeedsUpdate = true;
 		return LRUBase::add(key, data);
 	}
 
 	void updateConstCache();
-	const Data& queryConstCache(const Key &key) const;
+	const Data &queryConstCache(const Key &key) const;
 
 private:
 	void clearConstCache();
@@ -72,22 +74,22 @@ private:
 
 // Traits-like helper class for checking if objects can be compared using memcmp().
 // Useful for statically asserting if a cache key can implement operator==() with memcmp().
-template<typename T>
+template <typename T>
 struct is_memcmparable
 {
-	// std::is_trivially_copyable is not available in older GCC versions.
-	#if !defined(__GNUC__) || __GNUC__ > 5
-		static const bool value = std::is_trivially_copyable<T>::value;
-	#else
-		// At least check it doesn't have virtual methods.
-		static const bool value = !std::is_polymorphic<T>::value;
-	#endif
+// std::is_trivially_copyable is not available in older GCC versions.
+#if !defined(__GNUC__) || __GNUC__ > 5
+	static const bool value = std::is_trivially_copyable<T>::value;
+#else
+	// At least check it doesn't have virtual methods.
+	static const bool value = !std::is_polymorphic<T>::value;
+#endif
 };
-}
+}  // namespace sw
 
 namespace sw {
 
-template<class Key, class Data>
+template <class Key, class Data>
 LRUCache<Key, Data>::LRUCache(int n)
 {
 	size = ceilPow2(n);
@@ -96,7 +98,7 @@ LRUCache<Key, Data>::LRUCache(int n)
 	fill = 0;
 
 	key = new Key[size];
-	ref = new Key*[size];
+	ref = new Key *[size];
 	data = new Data[size];
 
 	for(int i = 0; i < size; i++)
@@ -105,7 +107,7 @@ LRUCache<Key, Data>::LRUCache(int n)
 	}
 }
 
-template<class Key, class Data>
+template <class Key, class Data>
 LRUCache<Key, Data>::~LRUCache()
 {
 	delete[] key;
@@ -118,7 +120,7 @@ LRUCache<Key, Data>::~LRUCache()
 	data = nullptr;
 }
 
-template<class Key, class Data>
+template <class Key, class Data>
 Data LRUCache<Key, Data>::query(const Key &key) const
 {
 	for(int i = top; i > top - fill; i--)
@@ -147,10 +149,10 @@ Data LRUCache<Key, Data>::query(const Key &key) const
 		}
 	}
 
-	return {};   // Not found
+	return {};  // Not found
 }
 
-template<class Key, class Data>
+template <class Key, class Data>
 Data LRUCache<Key, Data>::add(const Key &key, const Data &data)
 {
 	top = (top + 1) & mask;
@@ -162,13 +164,13 @@ Data LRUCache<Key, Data>::add(const Key &key, const Data &data)
 	return data;
 }
 
-template<class Key, class Data, class Hasher>
+template <class Key, class Data, class Hasher>
 void LRUConstCache<Key, Data, Hasher>::clearConstCache()
 {
 	constCache.clear();
 }
 
-template<class Key, class Data, class Hasher>
+template <class Key, class Data, class Hasher>
 void LRUConstCache<Key, Data, Hasher>::updateConstCache()
 {
 	if(constCacheNeedsUpdate)
@@ -187,8 +189,8 @@ void LRUConstCache<Key, Data, Hasher>::updateConstCache()
 	}
 }
 
-template<class Key, class Data, class Hasher>
-const Data& LRUConstCache<Key, Data, Hasher>::queryConstCache(const Key &key) const
+template <class Key, class Data, class Hasher>
+const Data &LRUConstCache<Key, Data, Hasher>::queryConstCache(const Key &key) const
 {
 	auto it = constCache.find(key);
 	static Data null = {};
@@ -197,4 +199,4 @@ const Data& LRUConstCache<Key, Data, Hasher>::queryConstCache(const Key &key) co
 
 }  // namespace sw
 
-#endif   // sw_LRUCache_hpp
+#endif  // sw_LRUCache_hpp

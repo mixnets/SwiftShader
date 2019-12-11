@@ -41,8 +41,8 @@ public:
 	using ID = dbg::ID<Scope>;
 
 	inline Scope(ID id,
-	             const std::shared_ptr<File>& file,
-	             const std::shared_ptr<VariableContainer>& variables);
+	             const std::shared_ptr<File> &file,
+	             const std::shared_ptr<VariableContainer> &variables);
 
 	// The unique identifier of the scope.
 	const ID id;
@@ -55,8 +55,8 @@ public:
 };
 
 Scope::Scope(ID id,
-             const std::shared_ptr<File>& file,
-             const std::shared_ptr<VariableContainer>& variables) :
+             const std::shared_ptr<File> &file,
+             const std::shared_ptr<VariableContainer> &variables) :
     id(id),
     file(file),
     variables(variables) {}
@@ -110,17 +110,17 @@ public:
 		Paused     // Thread is currently paused.
 	};
 
-	Thread(ID id, Context* ctx);
+	Thread(ID id, Context *ctx);
 
 	// setName() sets the name of the thread.
-	void setName(const std::string&);
+	void setName(const std::string &);
 
 	// name() returns the name of the thread.
 	std::string name() const;
 
 	// enter() pushes the thread's stack with a new frame created with the given
 	// file and function.
-	void enter(Context::Lock& lock, const std::shared_ptr<File>& file, const std::string& function);
+	void enter(Context::Lock &lock, const std::shared_ptr<File> &file, const std::string &function);
 
 	// exit() pops the thread's stack frame.
 	void exit();
@@ -170,13 +170,13 @@ public:
 
 	// update() updates the current stack frame's location, and potentially
 	// blocks until the thread is resumed with one of the methods above.
-	void update(const Location& location);
+	void update(const Location &location);
 
 	// The unique identifier of the thread.
 	const ID id;
 
 private:
-	EventListener* const broadcast;
+	EventListener *const broadcast;
 
 	mutable std::mutex mutex;
 	std::string name_;
