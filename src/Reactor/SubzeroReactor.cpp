@@ -43,11 +43,6 @@
 #define NOMINMAX
 #endif // !NOMINMAX
 #include <Windows.h>
-#else
-#include <sys/mman.h>
-#if !defined(MAP_ANONYMOUS)
-#define MAP_ANONYMOUS MAP_ANON
-#endif
 #endif
 
 #include <mutex>
@@ -475,7 +470,8 @@ namespace rr
 
 		T *allocate(size_type n)
 		{
-			return (T*)allocateExecutable(sizeof(T) * n);
+			return (T*)allocateExecutable(
+				sizeof(T) * n, PERMISSION_READ | PERMISSION_WRITE, true);
 		}
 
 		void deallocate(T *p, size_type n)
@@ -498,13 +494,6 @@ namespace rr
 
 		~ELFMemoryStreamer() override
 		{
-			#if defined(_WIN32)
-				if(buffer.size() != 0)
-				{
-					DWORD exeProtection;
-					VirtualProtect(&buffer[0], buffer.size(), oldProtection, &exeProtection);
-				}
-			#endif
 		}
 
 		void write8(uint8_t Value) override
@@ -541,11 +530,10 @@ namespace rr
 			size_t codeSize = 0;
 			const void *entry = loadImage(&buffer[0], codeSize);
 
+			protectExecutable(&buffer[0], buffer.size(), PERMISSION_READ | PERMISSION_EXECUTE);
 #if defined(_WIN32)
-			VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READ, &oldProtection);
 			FlushInstructionCache(GetCurrentProcess(), NULL, 0);
 #else
-			mprotect(&buffer[0], buffer.size(), PROT_READ | PROT_EXEC);
 			__builtin___clear_cache((char*)entry, (char*)entry + codeSize);
 #endif
 			return entry;
@@ -577,10 +565,6 @@ namespace rr
 		std::vector<uint8_t, ExecutableAllocator<uint8_t>> buffer;
 		std::size_t position;
 		std::vector<std::unique_ptr<uint8_t[]>> constantData;
-
-		#if defined(_WIN32)
-		DWORD oldProtection;
-		#endif
 	};
 
 	Nucleus::Nucleus()
