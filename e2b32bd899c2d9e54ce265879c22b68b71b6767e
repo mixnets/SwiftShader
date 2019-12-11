@@ -52,6 +52,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65d7ca68_ea17d2b2",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-11T22:15:25Z",
+      "side": 1,
+      "message": "\u003e setInputBuiltin() doesn\u0027t call the lambda if the builtin variable isn\u0027t used (or declared to be more precise), so that already achieves avoiding extra JIT overhead.\n\nIf I understand you correctly, you\u0027re effectively asking for a full (functional) revert of this code. If I were to do this, there would be no point in the additional fields on the Routine, and I could just use the existing SpirvRoutine::inputBuiltins map.\n\nThe point of these changes is to expose to the debugger the values *even if they\u0027re not directly used by the shader*. We want to expose to the debugger all of this state whether it is referenced by the SPIR-V or not. That way, you can identify the particular shader invocation, set conditional breakpoints, and more.",
+      "parentUuid": "106ae2e1_8092a0e3",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
