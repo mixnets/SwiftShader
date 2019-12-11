@@ -19,34 +19,34 @@
 #include "VkDebug.hpp"
 #include "VkMemory.h"
 
-#include <new>
 #include <Vulkan/VulkanPlatform.h>
 #include <vulkan/vk_icd.h>
+#include <new>
 
 namespace vk {
 
-template<typename T, typename VkT>
-static inline T* VkTtoT(VkT vkObject)
+template <typename T, typename VkT>
+static inline T *VkTtoT(VkT vkObject)
 {
-	return static_cast<T*>(static_cast<void*>(vkObject));
+	return static_cast<T *>(static_cast<void *>(vkObject));
 }
 
-template<typename T, typename VkT>
-static inline VkT TtoVkT(T* object)
+template <typename T, typename VkT>
+static inline VkT TtoVkT(T *object)
 {
 	return { static_cast<uint64_t>(reinterpret_cast<uintptr_t>(object)) };
 }
 
 // For use in the placement new to make it verbose that we're allocating an object using device memory
-static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
+static constexpr VkAllocationCallbacks *DEVICE_MEMORY = nullptr;
 
-template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
-static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+template <typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
+static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo *pCreateInfo, VkT *outObject, ExtendedInfo... extendedInfo)
 {
 	*outObject = VK_NULL_HANDLE;
 
 	size_t size = T::ComputeRequiredAllocationSize(pCreateInfo);
-	void* memory = nullptr;
+	void *memory = nullptr;
 	if(size)
 	{
 		memory = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, pAllocator, T::GetAllocationScope());
@@ -56,14 +56,14 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 		}
 	}
 
-	void* objectMemory = vk::allocate(sizeof(T), alignof(T), pAllocator, T::GetAllocationScope());
+	void *objectMemory = vk::allocate(sizeof(T), alignof(T), pAllocator, T::GetAllocationScope());
 	if(!objectMemory)
 	{
 		vk::deallocate(memory, pAllocator);
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
 
-	auto object = new (objectMemory) T(pCreateInfo, memory, extendedInfo...);
+	auto object = new(objectMemory) T(pCreateInfo, memory, extendedInfo...);
 
 	if(!object)
 	{
@@ -79,16 +79,16 @@ static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo
 	return VK_SUCCESS;
 }
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class ObjectBase
 {
 public:
 	using VkType = VkT;
 
-	void destroy(const VkAllocationCallbacks* pAllocator) {} // Method defined by objects to delete their content, if necessary
+	void destroy(const VkAllocationCallbacks *pAllocator) {}  // Method defined by objects to delete their content, if necessary
 
-	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	template <typename CreateInfo, typename... ExtendedInfo>
+	static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo *pCreateInfo, VkT *outObject, ExtendedInfo... extendedInfo)
 	{
 		return vk::Create<T, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
 	}
@@ -96,7 +96,7 @@ public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 };
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class Object : public ObjectBase<T, VkT>
 {
 public:
@@ -104,16 +104,16 @@ public:
 	{
 		// The static_cast<T*> is used to make sure the returned pointer points to the
 		// beginning of the object, even if the derived class uses multiple inheritance
-		return vk::TtoVkT<T, VkT>(static_cast<T*>(this));
+		return vk::TtoVkT<T, VkT>(static_cast<T *>(this));
 	}
 
-	static inline T* Cast(VkT vkObject)
+	static inline T *Cast(VkT vkObject)
 	{
 		return vk::VkTtoT<T, VkT>(vkObject);
 	}
 };
 
-template<typename T, typename VkT>
+template <typename T, typename VkT>
 class DispatchableObject
 {
 	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
@@ -123,40 +123,40 @@ class DispatchableObject
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return T::GetAllocationScope(); }
 
-	template<typename ...Args>
-	DispatchableObject(Args... args) : object(args...)
+	template <typename... Args>
+	DispatchableObject(Args... args) :
+	    object(args...)
 	{
 	}
 
 	~DispatchableObject() = delete;
 
-	void destroy(const VkAllocationCallbacks* pAllocator)
+	void destroy(const VkAllocationCallbacks *pAllocator)
 	{
 		object.destroy(pAllocator);
 	}
 
-	void operator delete(void* ptr, const VkAllocationCallbacks* pAllocator)
+	void operator delete(void *ptr, const VkAllocationCallbacks *pAllocator)
 	{
 		// Should never happen
 		ASSERT(false);
 	}
 
-	template<typename CreateInfo, typename... ExtendedInfo>
-	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject, ExtendedInfo... extendedInfo)
+	template <typename CreateInfo, typename... ExtendedInfo>
+	static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo *pCreateInfo, VkT *outObject, ExtendedInfo... extendedInfo)
 	{
 		return vk::Create<DispatchableObject<T, VkT>, VkT, CreateInfo>(pAllocator, pCreateInfo, outObject, extendedInfo...);
 	}
 
-	template<typename CreateInfo>
-	static size_t ComputeRequiredAllocationSize(const CreateInfo* pCreateInfo)
+	template <typename CreateInfo>
+	static size_t ComputeRequiredAllocationSize(const CreateInfo *pCreateInfo)
 	{
 		return T::ComputeRequiredAllocationSize(pCreateInfo);
 	}
 
-	static inline T* Cast(VkT vkObject)
+	static inline T *Cast(VkT vkObject)
 	{
-		return (vkObject == VK_NULL_HANDLE) ? nullptr :
-		       &(reinterpret_cast<DispatchableObject<T, VkT>*>(vkObject)->object);
+		return (vkObject == VK_NULL_HANDLE) ? nullptr : &(reinterpret_cast<DispatchableObject<T, VkT> *>(vkObject)->object);
 	}
 
 	operator VkT()
@@ -167,4 +167,4 @@ public:
 
 }  // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif  // VK_OBJECT_HPP_

@@ -27,7 +27,7 @@ SpirvShader::EmitResult SpirvShader::EmitVectorTimesScalar(InsnIterator insn, Em
 	auto lhs = GenericValue(this, state, insn.word(3));
 	auto rhs = GenericValue(this, state, insn.word(4));
 
-	for (auto i = 0u; i < type.sizeInComponents; i++)
+	for(auto i = 0u; i < type.sizeInComponents; i++)
 	{
 		dst.move(i, lhs.Float(i) * rhs.Float(0));
 	}
@@ -43,10 +43,10 @@ SpirvShader::EmitResult SpirvShader::EmitMatrixTimesVector(InsnIterator insn, Em
 	auto rhs = GenericValue(this, state, insn.word(4));
 	auto rhsType = getType(rhs.type);
 
-	for (auto i = 0u; i < type.sizeInComponents; i++)
+	for(auto i = 0u; i < type.sizeInComponents; i++)
 	{
 		SIMD::Float v = lhs.Float(i) * rhs.Float(0);
-		for (auto j = 1u; j < rhsType.sizeInComponents; j++)
+		for(auto j = 1u; j < rhsType.sizeInComponents; j++)
 		{
 			v += lhs.Float(i + type.sizeInComponents * j) * rhs.Float(j);
 		}
@@ -64,10 +64,10 @@ SpirvShader::EmitResult SpirvShader::EmitVectorTimesMatrix(InsnIterator insn, Em
 	auto rhs = GenericValue(this, state, insn.word(4));
 	auto lhsType = getType(lhs.type);
 
-	for (auto i = 0u; i < type.sizeInComponents; i++)
+	for(auto i = 0u; i < type.sizeInComponents; i++)
 	{
 		SIMD::Float v = lhs.Float(0) * rhs.Float(i * lhsType.sizeInComponents);
-		for (auto j = 1u; j < lhsType.sizeInComponents; j++)
+		for(auto j = 1u; j < lhsType.sizeInComponents; j++)
 		{
 			v += lhs.Float(j) * rhs.Float(i * lhsType.sizeInComponents + j);
 		}
@@ -88,12 +88,12 @@ SpirvShader::EmitResult SpirvShader::EmitMatrixTimesMatrix(InsnIterator insn, Em
 	auto numRows = getType(type.definition.word(2)).definition.word(3);
 	auto numAdds = getType(getObject(insn.word(3)).type).definition.word(3);
 
-	for (auto row = 0u; row < numRows; row++)
+	for(auto row = 0u; row < numRows; row++)
 	{
-		for (auto col = 0u; col < numColumns; col++)
+		for(auto col = 0u; col < numColumns; col++)
 		{
 			SIMD::Float v = SIMD::Float(0);
-			for (auto i = 0u; i < numAdds; i++)
+			for(auto i = 0u; i < numAdds; i++)
 			{
 				v += lhs.Float(i * numRows + row) * rhs.Float(col * numAdds + i);
 			}
@@ -122,9 +122,9 @@ SpirvShader::EmitResult SpirvShader::EmitOuterProduct(InsnIterator insn, EmitSta
 	auto numRows = lhsType.definition.word(3);
 	auto numCols = rhsType.definition.word(3);
 
-	for (auto col = 0u; col < numCols; col++)
+	for(auto col = 0u; col < numCols; col++)
 	{
-		for (auto row = 0u; row < numRows; row++)
+		for(auto row = 0u; row < numRows; row++)
 		{
 			dst.move(col * numRows + row, lhs.Float(row) * rhs.Float(col));
 		}
@@ -142,9 +142,9 @@ SpirvShader::EmitResult SpirvShader::EmitTranspose(InsnIterator insn, EmitState 
 	auto numCols = type.definition.word(3);
 	auto numRows = getType(type.definition.word(2)).sizeInComponents;
 
-	for (auto col = 0u; col < numCols; col++)
+	for(auto col = 0u; col < numCols; col++)
 	{
-		for (auto row = 0u; row < numRows; row++)
+		for(auto row = 0u; row < numRows; row++)
 		{
 			dst.move(col * numRows + row, mat.Float(row * numCols + col));
 		}
@@ -159,12 +159,12 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 	auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
 	auto src = GenericValue(this, state, insn.word(3));
 
-	for (auto i = 0u; i < type.sizeInComponents; i++)
+	for(auto i = 0u; i < type.sizeInComponents; i++)
 	{
-		switch (insn.opcode())
+		switch(insn.opcode())
 		{
 		case spv::OpNot:
-		case spv::OpLogicalNot:		// logical not == bitwise not due to all-bits boolean representation
+		case spv::OpLogicalNot:  // logical not == bitwise not due to all-bits boolean representation
 			dst.move(i, ~src.UInt(i));
 			break;
 		case spv::OpBitFieldInsert:
@@ -186,7 +186,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			auto one = SIMD::UInt(1);
 			auto v = src.UInt(i);
 			SIMD::UInt out = (v >> offset) & Bitmask32(count);
-			if (insn.opcode() == spv::OpBitFieldSExtract)
+			if(insn.opcode() == spv::OpBitFieldSExtract)
 			{
 				auto sign = out & NthBit32(count - one);
 				auto sext = ~(sign - one);
@@ -254,8 +254,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			break;
 		case spv::OpFwidth:
 		case spv::OpFwidthCoarse:
-			dst.move(i, SIMD::Float(Abs(Extract(src.Float(i), 1) - Extract(src.Float(i), 0))
-						+ Abs(Extract(src.Float(i), 2) - Extract(src.Float(i), 0))));
+			dst.move(i, SIMD::Float(Abs(Extract(src.Float(i), 1) - Extract(src.Float(i), 0)) + Abs(Extract(src.Float(i), 2) - Extract(src.Float(i), 0))));
 			break;
 		case spv::OpDPdxFine:
 		{
@@ -298,8 +297,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			auto abs = Abs(src.Float(i));
 			auto sign = src.Int(i) & SIMD::Int(0x80000000);
 			auto isZero = CmpLT(abs, SIMD::Float(0.000061035f));
-			auto isInf  = CmpGT(abs, SIMD::Float(65504.0f));
-			auto isNaN  = IsNan(abs);
+			auto isInf = CmpGT(abs, SIMD::Float(65504.0f));
+			auto isNaN = IsNan(abs);
 			auto isInfOrNan = isInf | isNaN;
 			SIMD::Int v = src.Int(i) & SIMD::Int(0xFFFFE000);
 			v &= ~isZero | SIMD::Int(0x80000000);
@@ -324,9 +323,9 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 	auto lhs = GenericValue(this, state, insn.word(3));
 	auto rhs = GenericValue(this, state, insn.word(4));
 
-	for (auto i = 0u; i < lhsType.sizeInComponents; i++)
+	for(auto i = 0u; i < lhsType.sizeInComponents; i++)
 	{
-		switch (insn.opcode())
+		switch(insn.opcode())
 		{
 		case spv::OpIAdd:
 			dst.move(i, lhs.Int(i) + rhs.Int(i));
@@ -341,8 +340,8 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 		{
 			SIMD::Int a = lhs.Int(i);
 			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+			b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
+			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1)));  // prevent integer overflow
 			dst.move(i, a / b);
 			break;
 		}
@@ -356,8 +355,8 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 		{
 			SIMD::Int a = lhs.Int(i);
 			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+			b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
+			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1)));  // prevent integer overflow
 			dst.move(i, a % b);
 			break;
 		}
@@ -365,8 +364,8 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 		{
 			SIMD::Int a = lhs.Int(i);
 			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+			b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
+			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1)));  // prevent integer overflow
 			auto mod = a % b;
 			// If a and b have opposite signs, the remainder operation takes
 			// the sign from a but OpSMod is supposed to take the sign of b.
@@ -532,11 +531,11 @@ SpirvShader::EmitResult SpirvShader::EmitDot(InsnIterator insn, EmitState *state
 	return EmitResult::Continue;
 }
 
-SIMD::Float SpirvShader::Dot(unsigned numComponents, GenericValue const & x, GenericValue const & y) const
+SIMD::Float SpirvShader::Dot(unsigned numComponents, GenericValue const &x, GenericValue const &y) const
 {
 	SIMD::Float d = x.Float(0) * y.Float(0);
 
-	for (auto i = 1u; i < numComponents; i++)
+	for(auto i = 1u; i < numComponents; i++)
 	{
 		d += x.Float(i) * y.Float(i);
 	}
@@ -561,9 +560,12 @@ SIMD::UInt SpirvShader::FloatToHalfBits(SIMD::UInt floatBits, bool storeInUpperB
 	// Note: this version doesn't round to the nearest even in case of a tie as defined by IEEE 754-2008, it rounds to +inf
 	//       instead of nearest even, since that's fine for GLSL ES 3.0's needs (see section 2.1.1 Floating-Point Computation)
 	SIMD::UInt joined = ((((As<SIMD::UInt>(Min(As<SIMD::Float>(absf & SIMD::UInt(mask_round)) * As<SIMD::Float>(SIMD::UInt(c_magic)),
-										As<SIMD::Float>(SIMD::UInt(c_clamp))))) - SIMD::UInt(mask_round)) >> 13) & b_isnormal) |
-					((b_isnormal ^ SIMD::UInt(0xFFFFFFFF)) & ((CmpNLE(absf, SIMD::UInt(c_f32infty)) & SIMD::UInt(c_nanbit)) |
-														SIMD::UInt(c_infty_as_fp16)));
+	                                           As<SIMD::Float>(SIMD::UInt(c_clamp))))) -
+	                       SIMD::UInt(mask_round)) >>
+	                      13) &
+	                     b_isnormal) |
+	                    ((b_isnormal ^ SIMD::UInt(0xFFFFFFFF)) & ((CmpNLE(absf, SIMD::UInt(c_f32infty)) & SIMD::UInt(c_nanbit)) |
+	                                                              SIMD::UInt(c_infty_as_fp16)));
 
 	return storeInUpperBits ? ((joined << 16) | justsign) : joined | (justsign >> 16);
 }

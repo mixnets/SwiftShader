@@ -14,14 +14,14 @@
 
 #include "SpirvShader.hpp"
 
-#include "SamplerCore.hpp" // TODO: Figure out what's needed.
+#include "SamplerCore.hpp"  // TODO: Figure out what's needed.
+#include "Device/Config.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkSampler.hpp"
-#include "Device/Config.hpp"
 
 #include <spirv/unified1/spirv.hpp>
 
@@ -36,22 +36,22 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	const auto samplerId = sampler ? sampler->id : 0;
 	ASSERT(imageDescriptor->imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 
-	vk::Device::SamplingRoutineCache::Key key = {inst, imageDescriptor->imageViewId, samplerId};
+	vk::Device::SamplingRoutineCache::Key key = { inst, imageDescriptor->imageViewId, samplerId };
 
 	ASSERT(imageDescriptor->device);
 
 	if(auto routine = imageDescriptor->device->findInConstCache(key))
 	{
-		return (ImageSampler*)(routine->getEntry());
+		return (ImageSampler *)(routine->getEntry());
 	}
 
 	std::unique_lock<std::mutex> lock(imageDescriptor->device->getSamplingRoutineCacheMutex());
-	vk::Device::SamplingRoutineCache* cache = imageDescriptor->device->getSamplingRoutineCache();
+	vk::Device::SamplingRoutineCache *cache = imageDescriptor->device->getSamplingRoutineCache();
 
 	auto routine = cache->query(key);
 	if(routine)
 	{
-		return (ImageSampler*)(routine->getEntry());
+		return (ImageSampler *)(routine->getEntry());
 	}
 
 	auto type = imageDescriptor->type;
@@ -69,9 +69,9 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.swizzle = imageDescriptor->swizzle;
 	samplerState.gatherComponent = instruction.gatherComponent;
 	samplerState.highPrecisionFiltering = false;
-	samplerState.largeTexture = (imageDescriptor->extent.width  > SHRT_MAX) ||
+	samplerState.largeTexture = (imageDescriptor->extent.width > SHRT_MAX) ||
 	                            (imageDescriptor->extent.height > SHRT_MAX) ||
-	                            (imageDescriptor->extent.depth  > SHRT_MAX);
+	                            (imageDescriptor->extent.depth > SHRT_MAX);
 
 	if(sampler)
 	{
@@ -100,7 +100,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	routine = emitSamplerRoutine(instruction, samplerState);
 
 	cache->add(key, routine);
-	return (ImageSampler*)(routine->getEntry());
+	return (ImageSampler *)(routine->getEntry());
 }
 
 std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
@@ -114,22 +114,22 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		Pointer<SIMD::Float> out = function.Arg<3>();
 		Pointer<Byte> constants = function.Arg<4>();
 
-		SIMD::Float uvw[4] = {0, 0, 0, 0};
+		SIMD::Float uvw[4] = { 0, 0, 0, 0 };
 		SIMD::Float q = 0;
 		SIMD::Float lodOrBias = 0;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
-		Vector4f dsx = {0, 0, 0, 0};
-		Vector4f dsy = {0, 0, 0, 0};
-		Vector4f offset = {0, 0, 0, 0};
+		Vector4f dsx = { 0, 0, 0, 0 };
+		Vector4f dsy = { 0, 0, 0, 0 };
+		Vector4f offset = { 0, 0, 0, 0 };
 		SIMD::Int sampleId = 0;
 		SamplerFunction samplerFunction = instruction.getSamplerFunction();
 
 		uint32_t i = 0;
-		for( ; i < instruction.coordinates; i++)
+		for(; i < instruction.coordinates; i++)
 		{
 			uvw[i] = in[i];
 		}
 
-		if (instruction.isDref())
+		if(instruction.isDref())
 		{
 			q = in[i];
 			i++;
@@ -235,7 +235,7 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 		switch(sampler->minFilter)
 		{
 		case VK_FILTER_NEAREST: return FILTER_POINT;
-		case VK_FILTER_LINEAR:  return FILTER_MIN_LINEAR_MAG_POINT;
+		case VK_FILTER_LINEAR: return FILTER_MIN_LINEAR_MAG_POINT;
 		default:
 			UNIMPLEMENTED("minFilter %d", sampler->minFilter);
 			return FILTER_POINT;
@@ -245,7 +245,7 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 		switch(sampler->minFilter)
 		{
 		case VK_FILTER_NEAREST: return FILTER_MIN_POINT_MAG_LINEAR;
-		case VK_FILTER_LINEAR:  return FILTER_LINEAR;
+		case VK_FILTER_LINEAR: return FILTER_LINEAR;
 		default:
 			UNIMPLEMENTED("minFilter %d", sampler->minFilter);
 			return FILTER_POINT;
@@ -274,7 +274,7 @@ sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 	switch(sampler->mipmapMode)
 	{
 	case VK_SAMPLER_MIPMAP_MODE_NEAREST: return MIPMAP_POINT;
-	case VK_SAMPLER_MIPMAP_MODE_LINEAR:  return MIPMAP_LINEAR;
+	case VK_SAMPLER_MIPMAP_MODE_LINEAR: return MIPMAP_LINEAR;
 	default:
 		UNIMPLEMENTED("mipmapMode %d", sampler->mipmapMode);
 		return MIPMAP_POINT;
@@ -381,10 +381,10 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, const
 
 	switch(addressMode)
 	{
-	case VK_SAMPLER_ADDRESS_MODE_REPEAT:               return ADDRESSING_WRAP;
-	case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT:      return ADDRESSING_MIRROR;
-	case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE:        return ADDRESSING_CLAMP;
-	case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER:      return ADDRESSING_BORDER;
+	case VK_SAMPLER_ADDRESS_MODE_REPEAT: return ADDRESSING_WRAP;
+	case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT: return ADDRESSING_MIRROR;
+	case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE: return ADDRESSING_CLAMP;
+	case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER: return ADDRESSING_BORDER;
 	case VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE: return ADDRESSING_MIRRORONCE;
 	default:
 		UNIMPLEMENTED("addressMode %d", addressMode);
@@ -392,4 +392,4 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, const
 	}
 }
 
-} // namespace sw
+}  // namespace sw

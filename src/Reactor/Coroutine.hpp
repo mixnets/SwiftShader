@@ -17,7 +17,7 @@
 #include <memory>
 
 #ifndef rr_ReactorCoroutine_hpp
-#define rr_ReactorCoroutine_hpp
+#	define rr_ReactorCoroutine_hpp
 
 namespace rr {
 
@@ -25,18 +25,19 @@ namespace rr {
 class StreamBase
 {
 protected:
-	StreamBase(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
-		: routine(routine), handle(handle) {}
+	StreamBase(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle) :
+	    routine(routine),
+	    handle(handle) {}
 
 	~StreamBase()
 	{
-		auto pfn = (Nucleus::CoroutineDestroy*)routine->getEntry(Nucleus::CoroutineEntryDestroy);
+		auto pfn = (Nucleus::CoroutineDestroy *)routine->getEntry(Nucleus::CoroutineEntryDestroy);
 		pfn(handle);
 	}
 
-	bool await(void* out)
+	bool await(void *out)
 	{
-		auto pfn = (Nucleus::CoroutineAwait*)routine->getEntry(Nucleus::CoroutineEntryAwait);
+		auto pfn = (Nucleus::CoroutineAwait *)routine->getEntry(Nucleus::CoroutineEntryAwait);
 		return pfn(handle, out);
 	}
 
@@ -48,21 +49,21 @@ private:
 // Stream is the interface to a running Coroutine instance.
 // A Coroutine may Yield() values of type T, which can be retrieved with
 // await().
-template<typename T>
+template <typename T>
 class Stream : public StreamBase
 {
 public:
-	inline Stream(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle)
-		: StreamBase(routine, handle) {}
+	inline Stream(const std::shared_ptr<Routine> &routine, Nucleus::CoroutineHandle handle) :
+	    StreamBase(routine, handle) {}
 
 	// await() retrieves the next yielded value from the coroutine.
 	// Returns true if the coroutine yieled a value and out was assigned a
 	// new value. If await() returns false, the coroutine has finished
 	// execution and await() will return false for all future calls.
-	inline bool await(T& out) { return StreamBase::await(&out); }
+	inline bool await(T &out) { return StreamBase::await(&out); }
 };
 
-template<typename FunctionType>
+template <typename FunctionType>
 class Coroutine;
 
 // Coroutine constructs a reactor Coroutine function.
@@ -108,20 +109,20 @@ class Coroutine;
 //       printf("Fibonacci(%d): %d", i, val);
 //   }
 //
-template<typename Return, typename... Arguments>
+template <typename Return, typename... Arguments>
 class Coroutine<Return(Arguments...)>
 {
 public:
 	Coroutine();
 
-	template<int index>
+	template <int index>
 	using CArgumentType = typename std::tuple_element<index, std::tuple<Arguments...>>::type;
 
-	template<int index>
+	template <int index>
 	using RArgumentType = CToReactorT<CArgumentType<index>>;
 
 	// Return the argument value with the given index.
-	template<int index>
+	template <int index>
 	Argument<RArgumentType<index>> Arg() const
 	{
 		Value *arg = Nucleus::getArgument(index);
@@ -143,15 +144,15 @@ public:
 protected:
 	std::unique_ptr<Nucleus> core;
 	std::shared_ptr<Routine> routine;
-	std::vector<Type*> arguments;
+	std::vector<Type *> arguments;
 };
 
-template<typename Return, typename... Arguments>
+template <typename Return, typename... Arguments>
 Coroutine<Return(Arguments...)>::Coroutine()
 {
 	core.reset(new Nucleus());
 
-	std::vector<Type*> types = {CToReactorT<Arguments>::getType()...};
+	std::vector<Type *> types = { CToReactorT<Arguments>::getType()... };
 	for(auto type : types)
 	{
 		if(type != Void::getType())
@@ -163,7 +164,7 @@ Coroutine<Return(Arguments...)>::Coroutine()
 	Nucleus::createCoroutine(CToReactorT<Return>::getType(), arguments);
 }
 
-template<typename Return, typename... Arguments>
+template <typename Return, typename... Arguments>
 void Coroutine<Return(Arguments...)>::finalize(const Config::Edit &cfg /* = Config::Edit::None */)
 {
 	if(core != nullptr)
@@ -173,27 +174,30 @@ void Coroutine<Return(Arguments...)>::finalize(const Config::Edit &cfg /* = Conf
 	}
 }
 
-template<typename Return, typename... Arguments>
+template <typename Return, typename... Arguments>
 std::unique_ptr<Stream<Return>>
 Coroutine<Return(Arguments...)>::operator()(Arguments... args)
 {
 	finalize();
 
 	using Sig = Nucleus::CoroutineBegin<Arguments...>;
-	auto pfn = (Sig*)routine->getEntry(Nucleus::CoroutineEntryBegin);
+	auto pfn = (Sig *)routine->getEntry(Nucleus::CoroutineEntryBegin);
 	auto handle = pfn(args...);
 	return std::unique_ptr<Stream<Return>>(new Stream<Return>(routine, handle));
 }
 
-#ifdef Yield // Defined in WinBase.h
-#undef Yield
-#endif
+#	ifdef Yield  // Defined in WinBase.h
+#		undef Yield
+#	endif
 
 // Suspends execution of the coroutine and yields val to the caller.
 // Execution of the coroutine will resume after val is retrieved.
-template<typename T>
-inline void Yield(const T &val) { Nucleus::yield(ValueOf(val)); }
+template <typename T>
+inline void Yield(const T &val)
+{
+	Nucleus::yield(ValueOf(val));
+}
 
-} // namespace rr
+}  // namespace rr
 
-#endif // rr_ReactorCoroutine_hpp
+#endif  // rr_ReactorCoroutine_hpp
