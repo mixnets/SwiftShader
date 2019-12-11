@@ -16,6 +16,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c4036b6_b1fcace5",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-11T17:53:52Z",
+      "side": 1,
+      "message": "\u003e Can we instead here just assign to routine-\u003enumWorkgroups instead of the local variable? \n\nThe local being \u0027auto numWorkgroups\u0027 ? That will be an RValue\u003c\u003e, so I don\u0027t see any additional JIT gains with this suggestion (if that\u0027s really what you meant).\n\nYou\u0027re right in that I\u0027m bloating the amount of variables stored for displaying in the debugger view. I guess I could try and refactor setInputBuiltin() to store the value somewhere else iff there is a valid debug context.\nThe reason I didn\u0027t go with the approach from the start is that there are already a number of builtins being stored in the Routine, as there\u0027s more than just the debugger that needs to access some of these. Deciding whether a variable copy should be made is a fiddly thing to get right and has rules that\u0027ll inevitably change over time. This is the sort of thing that will only get noticed if the code path is tested, and seems really fragile.\n\nIn my opinion, this is the sort of thing that the underlying compiler should be optimizing away. LLVM will already strip unread variables. Subzero is really the problem.",
+      "parentUuid": "55595f08_017cd3be",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
