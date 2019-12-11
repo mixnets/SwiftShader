@@ -56,48 +56,43 @@ Int4 PixelProgram::maskAny(Int cMask[4], Int sMask[4], Int zMask[4]) const
 	return mask;
 }
 
-void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w, Int cMask[4])
+void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4])
 {
 	routine.setImmutableInputBuiltins(spirvShader);
 
-	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
-	{
+	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<Float4>(Int4((*Pointer<Int>(data + OFFSET(DrawData, viewID)))));
 	});
 
-	routine.setInputBuiltin(spirvShader, spv::BuiltInFragCoord, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
-	{
+	routine.setInputBuiltin(spirvShader, spv::BuiltInFragCoord, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 4);
-		value[builtin.FirstComponent+0] = SIMD::Float(Float(x)) + SIMD::Float(0.5f, 1.5f, 0.5f, 1.5f);
-		value[builtin.FirstComponent+1] = SIMD::Float(Float(y)) + SIMD::Float(0.5f, 0.5f, 1.5f, 1.5f);
-		value[builtin.FirstComponent+2] = z[0];	// sample 0
-		value[builtin.FirstComponent+3] = w;
+		value[builtin.FirstComponent + 0] = SIMD::Float(Float(x)) + SIMD::Float(0.5f, 1.5f, 0.5f, 1.5f);
+		value[builtin.FirstComponent + 1] = SIMD::Float(Float(y)) + SIMD::Float(0.5f, 0.5f, 1.5f, 1.5f);
+		value[builtin.FirstComponent + 2] = z[0];  // sample 0
+		value[builtin.FirstComponent + 3] = w;
 	});
 
-	routine.setInputBuiltin(spirvShader, spv::BuiltInPointCoord, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
-	{
+	routine.setInputBuiltin(spirvShader, spv::BuiltInPointCoord, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 2);
-		value[builtin.FirstComponent+0] = SIMD::Float(0.5f, 1.5f, 0.5f, 1.5f) +
-			SIMD::Float(Float(x) - (*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX))));
-		value[builtin.FirstComponent+1] = SIMD::Float(0.5f, 0.5f, 1.5f, 1.5f) +
-			SIMD::Float(Float(y) - (*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY))));
+		value[builtin.FirstComponent + 0] = SIMD::Float(0.5f, 1.5f, 0.5f, 1.5f) +
+		                                    SIMD::Float(Float(x) - (*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX))));
+		value[builtin.FirstComponent + 1] = SIMD::Float(0.5f, 0.5f, 1.5f, 1.5f) +
+		                                    SIMD::Float(Float(y) - (*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY))));
 	});
 
-	routine.setInputBuiltin(spirvShader, spv::BuiltInSubgroupSize, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
-	{
+	routine.setInputBuiltin(spirvShader, spv::BuiltInSubgroupSize, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(SIMD::Width));
 	});
 
-	routine.setInputBuiltin(spirvShader, spv::BuiltInHelperInvocation, [&](const SpirvShader::BuiltinMapping& builtin, Array<SIMD::Float>& value)
-	{
+	routine.setInputBuiltin(spirvShader, spv::BuiltInHelperInvocation, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<SIMD::Float>(~maskAny(cMask));
 	});
 
-	routine.windowSpacePosition[0] = x + SIMD::Int(0,1,0,1);
-	routine.windowSpacePosition[1] = y + SIMD::Int(0,0,1,1);
+	routine.windowSpacePosition[0] = x + SIMD::Int(0, 1, 0, 1);
+	routine.windowSpacePosition[1] = y + SIMD::Int(0, 0, 1, 1);
 	routine.viewID = *Pointer<Int>(data + OFFSET(DrawData, viewID));
 }
 
@@ -109,7 +104,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 	routine.constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, constants));
 
 	auto it = spirvShader->inputBuiltins.find(spv::BuiltInFrontFacing);
-	if (it != spirvShader->inputBuiltins.end())
+	if(it != spirvShader->inputBuiltins.end())
 	{
 		ASSERT(it->second.SizeInComponents == 1);
 		auto frontFacing = Int4(*Pointer<Int>(primitive + OFFSET(Primitive, clockwiseMask)));
@@ -117,13 +112,13 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 	}
 
 	it = spirvShader->inputBuiltins.find(spv::BuiltInSampleMask);
-	if (it != spirvShader->inputBuiltins.end())
+	if(it != spirvShader->inputBuiltins.end())
 	{
 		static_assert(SIMD::Width == 4, "Expects SIMD width to be 4");
 		Int4 laneBits = Int4(1, 2, 4, 8);
 
 		Int4 inputSampleMask = Int4(1) & CmpNEQ(Int4(cMask[0]) & laneBits, Int4(0));
-		for (auto i = 1u; i < state.multiSample; i++)
+		for(auto i = 1u; i < state.multiSample; i++)
 		{
 			inputSampleMask |= Int4(1 << i) & CmpNEQ(Int4(cMask[i]) & laneBits, Int4(0));
 		}
@@ -131,7 +126,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 		routine.getVariable(it->second.Id)[it->second.FirstComponent] = As<Float4>(inputSampleMask);
 		// Sample mask input is an array, as the spec contemplates MSAA levels higher than 32.
 		// Fill any non-zero indices with 0.
-		for (auto i = 1u; i < it->second.SizeInComponents; i++)
+		for(auto i = 1u; i < it->second.SizeInComponents; i++)
 			routine.getVariable(it->second.Id)[it->second.FirstComponent + i] = Float4(0);
 	}
 
@@ -156,25 +151,25 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 
 	if(spirvShader->getModes().ContainsKill)
 	{
-		for (auto i = 0u; i < state.multiSample; i++)
+		for(auto i = 0u; i < state.multiSample; i++)
 		{
 			cMask[i] &= ~routine.killMask;
 		}
 	}
 
 	it = spirvShader->outputBuiltins.find(spv::BuiltInSampleMask);
-	if (it != spirvShader->outputBuiltins.end())
+	if(it != spirvShader->outputBuiltins.end())
 	{
 		auto outputSampleMask = As<SIMD::Int>(routine.getVariable(it->second.Id)[it->second.FirstComponent]);
 
-		for (auto i = 0u; i < state.multiSample; i++)
+		for(auto i = 0u; i < state.multiSample; i++)
 		{
-			cMask[i] &= SignMask(CmpNEQ(outputSampleMask & SIMD::Int(1<<i), SIMD::Int(0)));
+			cMask[i] &= SignMask(CmpNEQ(outputSampleMask & SIMD::Int(1 << i), SIMD::Int(0)));
 		}
 	}
 
 	it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
-	if (it != spirvShader->outputBuiltins.end())
+	if(it != spirvShader->outputBuiltins.end())
 	{
 		oDepth = Min(Max(routine.getVariable(it->second.Id)[it->second.FirstComponent], Float4(0.0f)), Float4(1.0f));
 	}
@@ -312,10 +307,14 @@ void PixelProgram::clampColor(Vector4f oC[RENDERTARGETS])
 		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-			oC[index].x = Max(oC[index].x, Float4(0.0f)); oC[index].x = Min(oC[index].x, Float4(1.0f));
-			oC[index].y = Max(oC[index].y, Float4(0.0f)); oC[index].y = Min(oC[index].y, Float4(1.0f));
-			oC[index].z = Max(oC[index].z, Float4(0.0f)); oC[index].z = Min(oC[index].z, Float4(1.0f));
-			oC[index].w = Max(oC[index].w, Float4(0.0f)); oC[index].w = Min(oC[index].w, Float4(1.0f));
+			oC[index].x = Max(oC[index].x, Float4(0.0f));
+			oC[index].x = Min(oC[index].x, Float4(1.0f));
+			oC[index].y = Max(oC[index].y, Float4(0.0f));
+			oC[index].y = Min(oC[index].y, Float4(1.0f));
+			oC[index].z = Max(oC[index].z, Float4(0.0f));
+			oC[index].z = Min(oC[index].z, Float4(1.0f));
+			oC[index].w = Max(oC[index].w, Float4(0.0f));
+			oC[index].w = Min(oC[index].w, Float4(1.0f));
 			break;
 		case VK_FORMAT_R32_SFLOAT:
 		case VK_FORMAT_R32G32_SFLOAT:
@@ -351,7 +350,7 @@ void PixelProgram::clampColor(Vector4f oC[RENDERTARGETS])
 	}
 }
 
-Float4 PixelProgram::linearToSRGB(const Float4 &x)   // Approximates x^(1.0/2.2)
+Float4 PixelProgram::linearToSRGB(const Float4 &x)  // Approximates x^(1.0/2.2)
 {
 	Float4 sqrtx = Rcp_pp(RcpSqrt_pp(x));
 	Float4 sRGB = sqrtx * Float4(1.14f) - x * Float4(0.14f);
@@ -359,4 +358,4 @@ Float4 PixelProgram::linearToSRGB(const Float4 &x)   // Approximates x^(1.0/2.2)
 	return Min(Max(sRGB, Float4(0.0f)), Float4(1.0f));
 }
 
-}  // namepsace sw
+}  // namespace sw
