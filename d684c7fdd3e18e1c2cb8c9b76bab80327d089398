@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2666e69_1e1abafc",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2019-12-11T19:58:22Z",
+      "side": 0,
+      "message": "Note that this this change is not really related to the fix. This call is redundant because ExecutableAllocator::deallocate() restores protection mode to RW anyway.",
+      "range": {
+        "startLine": 504,
+        "startChar": 4,
+        "endLine": 504,
+        "endChar": 18
+      },
+      "revId": "d684c7fdd3e18e1c2cb8c9b76bab80327d089398",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
