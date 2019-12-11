@@ -21,11 +21,12 @@
 namespace vk {
 namespace dbg {
 
-Thread::Thread(ID id, Context* ctx) :
-    id(id),
-    broadcast(ctx->broadcast()) {}
+Thread::Thread(ID id, Context *ctx)
+    : id(id)
+    , broadcast(ctx->broadcast())
+{}
 
-void Thread::setName(const std::string& name)
+void Thread::setName(const std::string &name)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	name_ = name;
@@ -37,7 +38,7 @@ std::string Thread::name() const
 	return name_;
 }
 
-void Thread::update(const Location& location)
+void Thread::update(const Location &location)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	frames.back()->location = location;
@@ -76,7 +77,7 @@ void Thread::update(const Location& location)
 	}
 }
 
-void Thread::enter(Context::Lock& ctxlck, const std::shared_ptr<File>& file, const std::string& function)
+void Thread::enter(Context::Lock &ctxlck, const std::shared_ptr<File> &file, const std::string &function)
 {
 	auto frame = ctxlck.createFrame(file);
 	auto isFunctionBreakpoint = ctxlck.isFunctionBreakpoint(function);

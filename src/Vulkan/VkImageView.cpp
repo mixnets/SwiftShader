@@ -36,7 +36,7 @@ VkComponentMapping ResolveComponentMapping(VkComponentMapping m, vk::Format form
 		format.componentCount() < 4 ? VK_COMPONENT_SWIZZLE_ONE : VK_COMPONENT_SWIZZLE_A,
 	};
 
-	return {table[m.r], table[m.g], table[m.b], table[m.a]};
+	return { table[m.r], table[m.g], table[m.b], table[m.a] };
 }
 
 VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange range, const vk::Image *image)
@@ -56,20 +56,22 @@ namespace vk {
 
 std::atomic<uint32_t> ImageView::nextID(1);
 
-ImageView::ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem, const vk::SamplerYcbcrConversion *ycbcrConversion) :
-	image(vk::Cast(pCreateInfo->image)), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
-	components(ResolveComponentMapping(pCreateInfo->components, format)),
-	subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image)),
-	ycbcrConversion(ycbcrConversion)
+ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : image(vk::Cast(pCreateInfo->image))
+    , viewType(pCreateInfo->viewType)
+    , format(pCreateInfo->format)
+    , components(ResolveComponentMapping(pCreateInfo->components, format))
+    , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
+    , ycbcrConversion(ycbcrConversion)
 {
 }
 
-size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo* pCreateInfo)
+size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo)
 {
 	return 0;
 }
 
-void ImageView::destroy(const VkAllocationCallbacks* pAllocator)
+void ImageView::destroy(const VkAllocationCallbacks *pAllocator)
 {
 }
 
@@ -112,7 +114,7 @@ bool ImageView::imageTypesMatch(VkImageType imageType) const
 	return false;
 }
 
-void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags aspectMask, const VkRect2D& renderArea)
+void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkRect2D &renderArea)
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
@@ -131,7 +133,7 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 	image->clear(clearValue, format, renderArea, sr);
 }
 
-void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags aspectMask, const VkClearRect& renderArea)
+void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkClearRect &renderArea)
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
@@ -157,17 +159,17 @@ void ImageView::clear(const VkClearValue& clearValue, const VkImageAspectFlags a
 
 void ImageView::clearWithLayerMask(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkRect2D &renderArea, uint32_t layerMask)
 {
-	while (layerMask)
+	while(layerMask)
 	{
 		uint32_t layer = sw::log2i(layerMask);
 		layerMask &= ~(1 << layer);
-		VkClearRect r = {renderArea, layer, 1};
+		VkClearRect r = { renderArea, layer, 1 };
 		r.baseArrayLayer = layer;
 		clear(clearValue, aspectMask, r);
 	}
 }
 
-void ImageView::resolve(ImageView* resolveAttachment, int layer)
+void ImageView::resolve(ImageView *resolveAttachment, int layer)
 {
 	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
 	{
@@ -175,16 +177,14 @@ void ImageView::resolve(ImageView* resolveAttachment, int layer)
 	}
 
 	VkImageCopy region;
-	region.srcSubresource =
-	{
+	region.srcSubresource = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer + layer,
 		1
 	};
 	region.srcOffset = { 0, 0, 0 };
-	region.dstSubresource =
-	{
+	region.dstSubresource = {
 		resolveAttachment->subresourceRange.aspectMask,
 		resolveAttachment->subresourceRange.baseMipLevel,
 		resolveAttachment->subresourceRange.baseArrayLayer + layer,
@@ -197,7 +197,7 @@ void ImageView::resolve(ImageView* resolveAttachment, int layer)
 	image->copyTo(resolveAttachment->image, region);
 }
 
-void ImageView::resolve(ImageView* resolveAttachment)
+void ImageView::resolve(ImageView *resolveAttachment)
 {
 	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
 	{
@@ -205,16 +205,14 @@ void ImageView::resolve(ImageView* resolveAttachment)
 	}
 
 	VkImageCopy region;
-	region.srcSubresource =
-	{
+	region.srcSubresource = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer,
 		subresourceRange.layerCount
 	};
 	region.srcOffset = { 0, 0, 0 };
-	region.dstSubresource =
-	{
+	region.dstSubresource = {
 		resolveAttachment->subresourceRange.aspectMask,
 		resolveAttachment->subresourceRange.baseMipLevel,
 		resolveAttachment->subresourceRange.baseArrayLayer,
@@ -229,7 +227,7 @@ void ImageView::resolve(ImageView* resolveAttachment)
 
 void ImageView::resolveWithLayerMask(ImageView *resolveAttachment, uint32_t layerMask)
 {
-	while (layerMask)
+	while(layerMask)
 	{
 		int layer = sw::log2i(layerMask);
 		layerMask &= ~(1 << layer);
@@ -237,7 +235,7 @@ void ImageView::resolveWithLayerMask(ImageView *resolveAttachment, uint32_t laye
 	}
 }
 
-const Image* ImageView::getImage(Usage usage) const
+const Image *ImageView::getImage(Usage usage) const
 {
 	switch(usage)
 	{
@@ -283,12 +281,11 @@ VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
+void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
 
-	VkImageSubresourceLayers imageSubresourceLayers =
-	{
+	VkImageSubresourceLayers imageSubresourceLayers = {
 		static_cast<VkImageAspectFlags>(aspect),
 		subresourceRange.baseMipLevel + mipLevel,
 		subresourceRange.baseArrayLayer + layer,
