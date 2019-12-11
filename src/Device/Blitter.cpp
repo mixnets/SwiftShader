@@ -18,19 +18,19 @@
 #include "Reactor/Reactor.hpp"
 #include "System/Half.hpp"
 #include "System/Memory.hpp"
+#include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImage.hpp"
-#include "Vulkan/VkBuffer.hpp"
 
 #include <utility>
 
 namespace sw {
 
 Blitter::Blitter() :
-	blitMutex(),
-	blitCache(1024),
-	cornerUpdateMutex(),
-	cornerUpdateCache(64) // We only need one of these per format
+    blitMutex(),
+    blitCache(1024),
+    cornerUpdateMutex(),
+    cornerUpdateCache(64)  // We only need one of these per format
 {
 }
 
@@ -38,7 +38,7 @@ Blitter::~Blitter()
 {
 }
 
-void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D* renderArea)
+void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
 	vk::Format dstFormat = viewFormat.getAspectFormat(aspect);
@@ -48,14 +48,14 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 	}
 
 	float *pPixel = static_cast<float *>(pixel);
-	if (viewFormat.isUnsignedNormalized())
+	if(viewFormat.isUnsignedNormalized())
 	{
 		pPixel[0] = sw::clamp(pPixel[0], 0.0f, 1.0f);
 		pPixel[1] = sw::clamp(pPixel[1], 0.0f, 1.0f);
 		pPixel[2] = sw::clamp(pPixel[2], 0.0f, 1.0f);
 		pPixel[3] = sw::clamp(pPixel[3], 0.0f, 1.0f);
 	}
-	else if (viewFormat.isSignedNormalized())
+	else if(viewFormat.isSignedNormalized())
 	{
 		pPixel[0] = sw::clamp(pPixel[0], -1.0f, 1.0f);
 		pPixel[1] = sw::clamp(pPixel[1], -1.0f, 1.0f);
@@ -75,8 +75,7 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		return;
 	}
 
-	VkImageSubresourceLayers subresLayers =
-	{
+	VkImageSubresourceLayers subresLayers = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer,
@@ -102,31 +101,30 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 			area.extent.height = extent.height;
 		}
 
-		BlitData data =
-		{
-			pixel, nullptr, // source, dest
+		BlitData data = {
+			pixel, nullptr,  // source, dest
 
-			format.bytes(),                                       // sPitchB
-			dest->rowPitchBytes(aspect, subresLayers.mipLevel),   // dPitchB
-			0,                                                    // sSliceB (unused in clear operations)
-			dest->slicePitchBytes(aspect, subresLayers.mipLevel), // dSliceB
+			format.bytes(),                                        // sPitchB
+			dest->rowPitchBytes(aspect, subresLayers.mipLevel),    // dPitchB
+			0,                                                     // sSliceB (unused in clear operations)
+			dest->slicePitchBytes(aspect, subresLayers.mipLevel),  // dSliceB
 
-			0.5f, 0.5f, 0.0f, 0.0f, // x0, y0, w, h
+			0.5f, 0.5f, 0.0f, 0.0f,  // x0, y0, w, h
 
-			area.offset.y, static_cast<int>(area.offset.y + area.extent.height), // y0d, y1d
-			area.offset.x, static_cast<int>(area.offset.x + area.extent.width),  // x0d, x1d
+			area.offset.y, static_cast<int>(area.offset.y + area.extent.height),  // y0d, y1d
+			area.offset.x, static_cast<int>(area.offset.x + area.extent.width),   // x0d, x1d
 
-			0, 0, // sWidth, sHeight
+			0, 0,  // sWidth, sHeight
 		};
 
-		if (renderArea && dest->is3DSlice())
+		if(renderArea && dest->is3DSlice())
 		{
 			// Reinterpret layers as depth slices
 			subresLayers.baseArrayLayer = 0;
 			subresLayers.layerCount = 1;
-			for (uint32_t depth = subresourceRange.baseArrayLayer; depth <= lastLayer; depth++)
+			for(uint32_t depth = subresourceRange.baseArrayLayer; depth <= lastLayer; depth++)
 			{
-				data.dest = dest->getTexelPointer({0, 0, static_cast<int32_t>(depth)}, subresLayers);
+				data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subresLayers);
 				blitRoutine(&data);
 			}
 		}
@@ -145,14 +143,14 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 	}
 }
 
-bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format& viewFormat, const VkImageSubresourceRange& subresourceRange, const VkRect2D* renderArea)
+bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	if(format != VK_FORMAT_R32G32B32A32_SFLOAT)
 	{
 		return false;
 	}
 
-	float *color = (float*)pixel;
+	float *color = (float *)pixel;
 	float r = color[0];
 	float g = color[1];
 	float b = color[2];
@@ -165,13 +163,13 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 	{
 	case VK_FORMAT_R5G6B5_UNORM_PACK16:
 		packed = ((uint16_t)(31 * b + 0.5f) << 0) |
-			        ((uint16_t)(63 * g + 0.5f) << 5) |
-			        ((uint16_t)(31 * r + 0.5f) << 11);
+		         ((uint16_t)(63 * g + 0.5f) << 5) |
+		         ((uint16_t)(31 * r + 0.5f) << 11);
 		break;
 	case VK_FORMAT_B5G6R5_UNORM_PACK16:
 		packed = ((uint16_t)(31 * r + 0.5f) << 0) |
-			        ((uint16_t)(63 * g + 0.5f) << 5) |
-			        ((uint16_t)(31 * b + 0.5f) << 11);
+		         ((uint16_t)(63 * g + 0.5f) << 5) |
+		         ((uint16_t)(31 * b + 0.5f) << 11);
 		break;
 	case VK_FORMAT_A8B8G8R8_UINT_PACK32:
 	case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
@@ -197,8 +195,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 		return false;
 	}
 
-	VkImageSubresourceLayers subresLayers =
-	{
+	VkImageSubresourceLayers subresLayers = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer,
@@ -226,15 +223,15 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 		}
 		if(dest->is3DSlice())
 		{
-			extent.depth = 1; // The 3D image is instead interpreted as a 2D image with layers
+			extent.depth = 1;  // The 3D image is instead interpreted as a 2D image with layers
 		}
 
 		for(subresLayers.baseArrayLayer = subresourceRange.baseArrayLayer; subresLayers.baseArrayLayer <= lastLayer; subresLayers.baseArrayLayer++)
 		{
 			for(uint32_t depth = 0; depth < extent.depth; depth++)
 			{
-				uint8_t *slice = (uint8_t*)dest->getTexelPointer(
-					{ area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subresLayers);
+				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
+				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subresLayers);
 
 				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
 				{
@@ -246,7 +243,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 						for(uint32_t i = 0; i < area.extent.height; i++)
 						{
 							ASSERT(d < dest->end());
-							sw::clear((uint16_t*)d, static_cast<uint16_t>(packed), area.extent.width);
+							sw::clear((uint16_t *)d, static_cast<uint16_t>(packed), area.extent.width);
 							d += rowPitchBytes;
 						}
 						break;
@@ -254,7 +251,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 						for(uint32_t i = 0; i < area.extent.height; i++)
 						{
 							ASSERT(d < dest->end());
-							sw::clear((uint32_t*)d, packed, area.extent.width);
+							sw::clear((uint32_t *)d, packed, area.extent.width);
 							d += rowPitchBytes;
 						}
 						break;
@@ -414,19 +411,19 @@ Float4 Blitter::readFloat4(Pointer<Byte> element, const State &state)
 		break;
 	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 		// This type contains a common 5 bit exponent (E) and a 9 bit the mantissa for R, G and B.
-		c.x = Float(*Pointer<UInt>(element) & UInt(0x000001FF));         // R's mantissa (bits 0-8)
-		c.y = Float((*Pointer<UInt>(element) & UInt(0x0003FE00)) >> 9);  // G's mantissa (bits 9-17)
-		c.z = Float((*Pointer<UInt>(element) & UInt(0x07FC0000)) >> 18); // B's mantissa (bits 18-26)
+		c.x = Float(*Pointer<UInt>(element) & UInt(0x000001FF));          // R's mantissa (bits 0-8)
+		c.y = Float((*Pointer<UInt>(element) & UInt(0x0003FE00)) >> 9);   // G's mantissa (bits 9-17)
+		c.z = Float((*Pointer<UInt>(element) & UInt(0x07FC0000)) >> 18);  // B's mantissa (bits 18-26)
 		c *= Float4(
-			// 2^E, using the exponent (bits 27-31) and treating it as an unsigned integer value
-			Float(UInt(1) << ((*Pointer<UInt>(element) & UInt(0xF8000000)) >> 27)) *
-			// Since the 9 bit mantissa values currently stored in RGB were converted straight
-			// from int to float (in the [0, 1<<9] range instead of the [0, 1] range), they
-			// are (1 << 9) times too high.
-			// Also, the exponent has 5 bits and we compute the exponent bias of floating point
-			// formats using "2^(k-1) - 1", so, in this case, the exponent bias is 2^(5-1)-1 = 15
-			// Exponent bias (15) + number of mantissa bits per component (9) = 24
-			Float(1.0f / (1 << 24)));
+		    // 2^E, using the exponent (bits 27-31) and treating it as an unsigned integer value
+		    Float(UInt(1) << ((*Pointer<UInt>(element) & UInt(0xF8000000)) >> 27)) *
+		    // Since the 9 bit mantissa values currently stored in RGB were converted straight
+		    // from int to float (in the [0, 1<<9] range instead of the [0, 1] range), they
+		    // are (1 << 9) times too high.
+		    // Also, the exponent has 5 bits and we compute the exponent bias of floating point
+		    // formats using "2^(k-1) - 1", so, in this case, the exponent bias is 2^(5-1)-1 = 15
+		    // Exponent bias (15) + number of mantissa bits per component (9) = 24
+		    Float(1.0f / (1 << 24)));
 		c.w = 1.0f;
 		break;
 	case VK_FORMAT_R5G6B5_UNORM_PACK16:
@@ -482,31 +479,27 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			if(!writeR)
 			{
 				*Pointer<Byte>(element) = (Byte(RoundInt(Float(c.y))) & Byte(0xF)) |
-			                              (*Pointer<Byte>(element) & Byte(0xF0));
+				                          (*Pointer<Byte>(element) & Byte(0xF0));
 			}
 			else if(!writeG)
 			{
 				*Pointer<Byte>(element) = (*Pointer<Byte>(element) & Byte(0xF)) |
-			                              (Byte(RoundInt(Float(c.x))) << Byte(4));
+				                          (Byte(RoundInt(Float(c.x))) << Byte(4));
 			}
 			else
 			{
 				*Pointer<Byte>(element) = (Byte(RoundInt(Float(c.y))) & Byte(0xF)) |
-			                              (Byte(RoundInt(Float(c.x))) << Byte(4));
+				                          (Byte(RoundInt(Float(c.x))) << Byte(4));
 			}
 		}
 		break;
 	case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
 		if(writeR || writeG || writeB || writeA)
 		{
-			*Pointer<UShort>(element) = (writeR ? ((UShort(RoundInt(Float(c.x))) & UShort(0xF)) << UShort(12)) :
-			                                      (*Pointer<UShort>(element) & UShort(0x000F))) |
-			                            (writeG ? ((UShort(RoundInt(Float(c.y))) & UShort(0xF)) << UShort(8)) :
-			                                      (*Pointer<UShort>(element) & UShort(0x00F0))) |
-			                            (writeB ? ((UShort(RoundInt(Float(c.z))) & UShort(0xF)) << UShort(4)) :
-		                                          (*Pointer<UShort>(element) & UShort(0x0F00))) |
-		                                (writeA ? (UShort(RoundInt(Float(c.w))) & UShort(0xF)) :
-		                                          (*Pointer<UShort>(element) & UShort(0xF000)));
+			*Pointer<UShort>(element) = (writeR ? ((UShort(RoundInt(Float(c.x))) & UShort(0xF)) << UShort(12)) : (*Pointer<UShort>(element) & UShort(0x000F))) |
+			                            (writeG ? ((UShort(RoundInt(Float(c.y))) & UShort(0xF)) << UShort(8)) : (*Pointer<UShort>(element) & UShort(0x00F0))) |
+			                            (writeB ? ((UShort(RoundInt(Float(c.z))) & UShort(0xF)) << UShort(4)) : (*Pointer<UShort>(element) & UShort(0x0F00))) |
+			                            (writeA ? (UShort(RoundInt(Float(c.w))) & UShort(0xF)) : (*Pointer<UShort>(element) & UShort(0xF000)));
 		}
 		break;
 	case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
@@ -528,7 +521,8 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                            ((UShort(RoundInt(Float(c.w)) & Int(0xF)) |
 			                              UShort((RoundInt(Float(c.x)) & Int(0xF)) << 4) |
 			                              UShort((RoundInt(Float(c.y)) & Int(0xF)) << 8) |
-			                              UShort((RoundInt(Float(c.z)) & Int(0xF)) << 12)) & UShort(mask));
+			                              UShort((RoundInt(Float(c.z)) & Int(0xF)) << 12)) &
+			                             UShort(mask));
 		}
 		break;
 	case VK_FORMAT_B8G8R8A8_SRGB:
@@ -620,73 +614,73 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		if(writeR) { *Pointer<Half>(element) = Half(c.x); }
 		break;
 	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		{
-			// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
-			// Since the 16-bit half-precision float format also has a 5 bit exponent, we can extract these minifloats from them.
+	{
+		// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
+		// Since the 16-bit half-precision float format also has a 5 bit exponent, we can extract these minifloats from them.
 
-			// FIXME(b/138944025): Handle negative values, Inf, and NaN.
-			// FIXME(b/138944025): Perform rounding before truncating the mantissa.
-			UInt r = (UInt(As<UShort>(Half(c.x))) & 0x00007FF0) >> 4;
-			UInt g = (UInt(As<UShort>(Half(c.y))) & 0x00007FF0) << 7;
-			UInt b = (UInt(As<UShort>(Half(c.z))) & 0x00007FE0) << 17;
+		// FIXME(b/138944025): Handle negative values, Inf, and NaN.
+		// FIXME(b/138944025): Perform rounding before truncating the mantissa.
+		UInt r = (UInt(As<UShort>(Half(c.x))) & 0x00007FF0) >> 4;
+		UInt g = (UInt(As<UShort>(Half(c.y))) & 0x00007FF0) << 7;
+		UInt b = (UInt(As<UShort>(Half(c.z))) & 0x00007FE0) << 17;
 
-			UInt rgb = r | g | b;
+		UInt rgb = r | g | b;
 
-			UInt old = *Pointer<UInt>(element);
+		UInt old = *Pointer<UInt>(element);
 
-			unsigned int mask = (writeR ? 0x000007FF : 0) |
-			                    (writeG ? 0x003FF800 : 0) |
-			                    (writeB ? 0xFFC00000 : 0);
+		unsigned int mask = (writeR ? 0x000007FF : 0) |
+		                    (writeG ? 0x003FF800 : 0) |
+		                    (writeB ? 0xFFC00000 : 0);
 
-			*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
-		}
-		break;
+		*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
+	}
+	break;
 	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-		{
-			ASSERT(writeRGBA);  // Can't sensibly write just part of this format.
+	{
+		ASSERT(writeRGBA);  // Can't sensibly write just part of this format.
 
-			// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion
+		// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion
 
-			constexpr int N = 9;       // number of mantissa bits per component
-			constexpr int B = 15;      // exponent bias
-			constexpr int E_max = 31;  // maximum possible biased exponent value
+		constexpr int N = 9;       // number of mantissa bits per component
+		constexpr int B = 15;      // exponent bias
+		constexpr int E_max = 31;  // maximum possible biased exponent value
 
-			// Maximum representable value.
-			constexpr float sharedexp_max = ((static_cast<float>(1 << N) - 1) / static_cast<float>(1 << N)) * static_cast<float>(1 << (E_max - B));
+		// Maximum representable value.
+		constexpr float sharedexp_max = ((static_cast<float>(1 << N) - 1) / static_cast<float>(1 << N)) * static_cast<float>(1 << (E_max - B));
 
-			// Clamp components to valid range. NaN becomes 0.
-			Float red_c =   Min(IfThenElse(!(c.x > 0), Float(0), Float(c.x)), sharedexp_max);
-			Float green_c = Min(IfThenElse(!(c.y > 0), Float(0), Float(c.y)), sharedexp_max);
-			Float blue_c =  Min(IfThenElse(!(c.z > 0), Float(0), Float(c.z)), sharedexp_max);
+		// Clamp components to valid range. NaN becomes 0.
+		Float red_c = Min(IfThenElse(!(c.x > 0), Float(0), Float(c.x)), sharedexp_max);
+		Float green_c = Min(IfThenElse(!(c.y > 0), Float(0), Float(c.y)), sharedexp_max);
+		Float blue_c = Min(IfThenElse(!(c.z > 0), Float(0), Float(c.z)), sharedexp_max);
 
-			// We're reducing the mantissa to 9 bits, so we must round up if the next
-			// bit is 1. In other words add 0.5 to the new mantissa's position and
-			// allow overflow into the exponent so we can scale correctly.
-			constexpr int half = 1 << (23 - N);
-			Float red_r = As<Float>(As<Int>(red_c) + half);
-			Float green_r = As<Float>(As<Int>(green_c) + half);
-			Float blue_r = As<Float>(As<Int>(blue_c) + half);
+		// We're reducing the mantissa to 9 bits, so we must round up if the next
+		// bit is 1. In other words add 0.5 to the new mantissa's position and
+		// allow overflow into the exponent so we can scale correctly.
+		constexpr int half = 1 << (23 - N);
+		Float red_r = As<Float>(As<Int>(red_c) + half);
+		Float green_r = As<Float>(As<Int>(green_c) + half);
+		Float blue_r = As<Float>(As<Int>(blue_c) + half);
 
-			// The largest component determines the shared exponent. It can't be lower
-			// than 0 (after bias subtraction) so also limit to the mimimum representable.
-			constexpr float min_s = 0.5f / (1 << B);
-			Float max_s = Max(Max(red_r, green_r), Max(blue_r, min_s));
+		// The largest component determines the shared exponent. It can't be lower
+		// than 0 (after bias subtraction) so also limit to the mimimum representable.
+		constexpr float min_s = 0.5f / (1 << B);
+		Float max_s = Max(Max(red_r, green_r), Max(blue_r, min_s));
 
-			// Obtain the reciprocal of the shared exponent by inverting the bits,
-			// and scale by the new mantissa's size. Note that the IEEE-754 single-precision
-			// format has an implicit leading 1, but this shared component format does not.
-			Float scale = As<Float>((As<Int>(max_s) & 0x7F800000) ^ 0x7F800000) * (1 << (N - 2));
+		// Obtain the reciprocal of the shared exponent by inverting the bits,
+		// and scale by the new mantissa's size. Note that the IEEE-754 single-precision
+		// format has an implicit leading 1, but this shared component format does not.
+		Float scale = As<Float>((As<Int>(max_s) & 0x7F800000) ^ 0x7F800000) * (1 << (N - 2));
 
-			UInt R9 = RoundInt(red_c * scale);
-			UInt G9 = UInt(RoundInt(green_c * scale));
-			UInt B9 = UInt(RoundInt(blue_c * scale));
-			UInt E5 = (As<UInt>(max_s) >> 23) - 127 + 15 + 1;
+		UInt R9 = RoundInt(red_c * scale);
+		UInt G9 = UInt(RoundInt(green_c * scale));
+		UInt B9 = UInt(RoundInt(blue_c * scale));
+		UInt E5 = (As<UInt>(max_s) >> 23) - 127 + 15 + 1;
 
-			UInt E5B9G9R9 = (E5 << 27) | (B9 << 18) | (G9 << 9) | R9;
+		UInt E5B9G9R9 = (E5 << 27) | (B9 << 18) | (G9 << 9) | R9;
 
-			*Pointer<UInt>(element) = E5B9G9R9;
-		}
-		break;
+		*Pointer<UInt>(element) = E5B9G9R9;
+	}
+	break;
 	case VK_FORMAT_B8G8R8A8_SNORM:
 		if(writeB) { *Pointer<SByte>(element) = SByte(RoundInt(Float(c.z))); }
 		if(writeG) { *Pointer<SByte>(element + 1) = SByte(RoundInt(Float(c.y))); }
@@ -853,8 +847,8 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		if(writeR && writeG && writeB)
 		{
 			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) |
-			                                  (RoundInt(Float(c.y)) << Int(5)) |
-			                                  (RoundInt(Float(c.x)) << Int(11)));
+			                                   (RoundInt(Float(c.y)) << Int(5)) |
+			                                   (RoundInt(Float(c.x)) << Int(11)));
 		}
 		else
 		{
@@ -862,17 +856,18 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
 			                            (UShort(RoundInt(Float(c.z)) |
-			                                   (RoundInt(Float(c.y)) << Int(5)) |
-			                                   (RoundInt(Float(c.x)) << Int(11))) & UShort(mask));
+			                                    (RoundInt(Float(c.y)) << Int(5)) |
+			                                    (RoundInt(Float(c.x)) << Int(11))) &
+			                             UShort(mask));
 		}
 		break;
 	case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
 		if(writeRGBA)
 		{
 			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.w)) |
-			                                  (RoundInt(Float(c.z)) << Int(1)) |
-			                                  (RoundInt(Float(c.y)) << Int(6)) |
-			                                  (RoundInt(Float(c.x)) << Int(11)));
+			                                   (RoundInt(Float(c.z)) << Int(1)) |
+			                                   (RoundInt(Float(c.y)) << Int(6)) |
+			                                   (RoundInt(Float(c.x)) << Int(11)));
 		}
 		else
 		{
@@ -883,18 +878,19 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
 			                            (UShort(RoundInt(Float(c.w)) |
-			                                   (RoundInt(Float(c.z)) << Int(1)) |
-			                                   (RoundInt(Float(c.y)) << Int(6)) |
-			                                   (RoundInt(Float(c.x)) << Int(11))) & UShort(mask));
+			                                    (RoundInt(Float(c.z)) << Int(1)) |
+			                                    (RoundInt(Float(c.y)) << Int(6)) |
+			                                    (RoundInt(Float(c.x)) << Int(11))) &
+			                             UShort(mask));
 		}
 		break;
 	case VK_FORMAT_B5G5R5A1_UNORM_PACK16:
 		if(writeRGBA)
 		{
 			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.w)) |
-			                                  (RoundInt(Float(c.x)) << Int(1)) |
-			                                  (RoundInt(Float(c.y)) << Int(6)) |
-			                                  (RoundInt(Float(c.z)) << Int(11)));
+			                                   (RoundInt(Float(c.x)) << Int(1)) |
+			                                   (RoundInt(Float(c.y)) << Int(6)) |
+			                                   (RoundInt(Float(c.z)) << Int(11)));
 		}
 		else
 		{
@@ -905,18 +901,19 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
 			                            (UShort(RoundInt(Float(c.w)) |
-			                                   (RoundInt(Float(c.x)) << Int(1)) |
-			                                   (RoundInt(Float(c.y)) << Int(6)) |
-			                                   (RoundInt(Float(c.z)) << Int(11))) & UShort(mask));
+			                                    (RoundInt(Float(c.x)) << Int(1)) |
+			                                    (RoundInt(Float(c.y)) << Int(6)) |
+			                                    (RoundInt(Float(c.z)) << Int(11))) &
+			                             UShort(mask));
 		}
 		break;
 	case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
 		if(writeRGBA)
 		{
 			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) |
-			                                  (RoundInt(Float(c.y)) << Int(5)) |
-			                                  (RoundInt(Float(c.x)) << Int(10)) |
-			                                  (RoundInt(Float(c.w)) << Int(15)));
+			                                   (RoundInt(Float(c.y)) << Int(5)) |
+			                                   (RoundInt(Float(c.x)) << Int(10)) |
+			                                   (RoundInt(Float(c.w)) << Int(15)));
 		}
 		else
 		{
@@ -927,9 +924,10 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			unsigned short unmask = ~mask;
 			*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
 			                            (UShort(RoundInt(Float(c.z)) |
-			                                   (RoundInt(Float(c.y)) << Int(5)) |
-			                                   (RoundInt(Float(c.x)) << Int(10)) |
-			                                   (RoundInt(Float(c.w)) << Int(15))) & UShort(mask));
+			                                    (RoundInt(Float(c.y)) << Int(5)) |
+			                                    (RoundInt(Float(c.x)) << Int(10)) |
+			                                    (RoundInt(Float(c.w)) << Int(15))) &
+			                             UShort(mask));
 		}
 		break;
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
@@ -938,9 +936,9 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		if(writeRGBA)
 		{
 			*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)) |
-			                              (RoundInt(Float(c.y)) << 10) |
-			                              (RoundInt(Float(c.z)) << 20) |
-			                              (RoundInt(Float(c.w)) << 30));
+			                               (RoundInt(Float(c.y)) << 10) |
+			                               (RoundInt(Float(c.z)) << 20) |
+			                               (RoundInt(Float(c.w)) << 30));
 		}
 		else
 		{
@@ -950,10 +948,11 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                    (writeR ? 0x000003FF : 0x0000);
 			unsigned int unmask = ~mask;
 			*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-			                            (UInt(RoundInt(Float(c.x)) |
-			                                 (RoundInt(Float(c.y)) << 10) |
-			                                 (RoundInt(Float(c.z)) << 20) |
-			                                 (RoundInt(Float(c.w)) << 30)) & UInt(mask));
+			                          (UInt(RoundInt(Float(c.x)) |
+			                                (RoundInt(Float(c.y)) << 10) |
+			                                (RoundInt(Float(c.z)) << 20) |
+			                                (RoundInt(Float(c.w)) << 30)) &
+			                           UInt(mask));
 		}
 		break;
 	case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
@@ -962,9 +961,9 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		if(writeRGBA)
 		{
 			*Pointer<UInt>(element) = UInt(RoundInt(Float(c.z)) |
-			                              (RoundInt(Float(c.y)) << 10) |
-			                              (RoundInt(Float(c.x)) << 20) |
-			                              (RoundInt(Float(c.w)) << 30));
+			                               (RoundInt(Float(c.y)) << 10) |
+			                               (RoundInt(Float(c.x)) << 20) |
+			                               (RoundInt(Float(c.w)) << 30));
 		}
 		else
 		{
@@ -974,10 +973,11 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			                    (writeB ? 0x000003FF : 0x0000);
 			unsigned int unmask = ~mask;
 			*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-			                            (UInt(RoundInt(Float(c.z)) |
-			                                 (RoundInt(Float(c.y)) << 10) |
-			                                 (RoundInt(Float(c.x)) << 20) |
-			                                 (RoundInt(Float(c.w)) << 30)) & UInt(mask));
+			                          (UInt(RoundInt(Float(c.z)) |
+			                                (RoundInt(Float(c.y)) << 10) |
+			                                (RoundInt(Float(c.x)) << 20) |
+			                                (RoundInt(Float(c.w)) << 30)) &
+			                           UInt(mask));
 		}
 		break;
 	case VK_FORMAT_D16_UNORM:
@@ -1155,7 +1155,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 		if(writeRGBA)
 		{
 			*Pointer<UInt>(element) =
-				UInt((Extract(c, 0)) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30));
+			    UInt((Extract(c, 0)) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30));
 		}
 		else
 		{
@@ -1165,7 +1165,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 			                    (writeR ? 0x000003FF : 0x0000);
 			unsigned int unmask = ~mask;
 			*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				(UInt(Extract(c, 0) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
+			                          (UInt(Extract(c, 0) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
 		}
 		break;
 	case VK_FORMAT_A2R10G10B10_UINT_PACK32:
@@ -1175,7 +1175,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 		if(writeRGBA)
 		{
 			*Pointer<UInt>(element) =
-				UInt((Extract(c, 2)) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30));
+			    UInt((Extract(c, 2)) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30));
 		}
 		else
 		{
@@ -1185,7 +1185,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 			                    (writeB ? 0x000003FF : 0x0000);
 			unsigned int unmask = ~mask;
 			*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				(UInt(Extract(c, 2) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
+			                          (UInt(Extract(c, 2) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
 		}
 		break;
 	case VK_FORMAT_B8G8R8A8_UINT:
@@ -1322,12 +1322,12 @@ void Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool preScal
 	bool srcSRGB = state.sourceFormat.isSRGBformat();
 	bool dstSRGB = state.destFormat.isSRGBformat();
 
-	if(state.allowSRGBConversion && ((srcSRGB && !preScaled) || dstSRGB))   // One of the formats is sRGB encoded.
+	if(state.allowSRGBConversion && ((srcSRGB && !preScaled) || dstSRGB))  // One of the formats is sRGB encoded.
 	{
-		value *= preScaled ? Float4(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z, 1.0f / scale.w) : // Unapply scale
-		                     Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w); // Apply unscale
+		value *= preScaled ? Float4(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z, 1.0f / scale.w) :  // Unapply scale
+		             Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w);   // Apply unscale
 		value = (srcSRGB && !preScaled) ? sRGBtoLinear(value) : LinearToSRGB(value);
-		value *= Float4(scale.x, scale.y, scale.z, scale.w); // Apply scale
+		value *= Float4(scale.x, scale.y, scale.z, scale.w);  // Apply scale
 	}
 	else if(unscale != scale)
 	{
@@ -1369,7 +1369,7 @@ Float4 Blitter::sRGBtoLinear(Float4 &c)
 	Int4 linear = CmpLT(c, Float4(0.04045f));
 
 	Float4 s = c;
-	s.xyz = As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));   // TODO: IfThenElse()
+	s.xyz = As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));  // TODO: IfThenElse()
 
 	return s;
 }
@@ -1380,23 +1380,23 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 	{
 		Pointer<Byte> blit(function.Arg<0>());
 
-		Pointer<Byte> source = *Pointer<Pointer<Byte>>(blit + OFFSET(BlitData,source));
-		Pointer<Byte> dest = *Pointer<Pointer<Byte>>(blit + OFFSET(BlitData,dest));
-		Int sPitchB = *Pointer<Int>(blit + OFFSET(BlitData,sPitchB));
-		Int dPitchB = *Pointer<Int>(blit + OFFSET(BlitData,dPitchB));
+		Pointer<Byte> source = *Pointer<Pointer<Byte>>(blit + OFFSET(BlitData, source));
+		Pointer<Byte> dest = *Pointer<Pointer<Byte>>(blit + OFFSET(BlitData, dest));
+		Int sPitchB = *Pointer<Int>(blit + OFFSET(BlitData, sPitchB));
+		Int dPitchB = *Pointer<Int>(blit + OFFSET(BlitData, dPitchB));
 
-		Float x0 = *Pointer<Float>(blit + OFFSET(BlitData,x0));
-		Float y0 = *Pointer<Float>(blit + OFFSET(BlitData,y0));
-		Float w = *Pointer<Float>(blit + OFFSET(BlitData,w));
-		Float h = *Pointer<Float>(blit + OFFSET(BlitData,h));
+		Float x0 = *Pointer<Float>(blit + OFFSET(BlitData, x0));
+		Float y0 = *Pointer<Float>(blit + OFFSET(BlitData, y0));
+		Float w = *Pointer<Float>(blit + OFFSET(BlitData, w));
+		Float h = *Pointer<Float>(blit + OFFSET(BlitData, h));
 
-		Int x0d = *Pointer<Int>(blit + OFFSET(BlitData,x0d));
-		Int x1d = *Pointer<Int>(blit + OFFSET(BlitData,x1d));
-		Int y0d = *Pointer<Int>(blit + OFFSET(BlitData,y0d));
-		Int y1d = *Pointer<Int>(blit + OFFSET(BlitData,y1d));
+		Int x0d = *Pointer<Int>(blit + OFFSET(BlitData, x0d));
+		Int x1d = *Pointer<Int>(blit + OFFSET(BlitData, x1d));
+		Int y0d = *Pointer<Int>(blit + OFFSET(BlitData, y0d));
+		Int y1d = *Pointer<Int>(blit + OFFSET(BlitData, y1d));
 
-		Int sWidth = *Pointer<Int>(blit + OFFSET(BlitData,sWidth));
-		Int sHeight = *Pointer<Int>(blit + OFFSET(BlitData,sHeight));
+		Int sWidth = *Pointer<Int>(blit + OFFSET(BlitData, sWidth));
+		Int sHeight = *Pointer<Int>(blit + OFFSET(BlitData, sHeight));
 
 		bool intSrc = state.sourceFormat.isNonNormalizedInteger();
 		bool intDst = state.destFormat.isNonNormalizedInteger();
@@ -1410,7 +1410,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 		Float4 constantColorF;
 		if(state.clearOperation)
 		{
-			if(intBoth) // Integer types
+			if(intBoth)  // Integer types
 			{
 				constantColorI = readInt4(source, state);
 				hasConstantColorI = true;
@@ -1452,7 +1452,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 						d += *Pointer<Int>(blit + OFFSET(BlitData, dSliceB));
 					}
 				}
-				else if(intBoth) // Integer types do not support filtering
+				else if(intBoth)  // Integer types do not support filtering
 				{
 					Int X = Int(x);
 					Int Y = Int(y);
@@ -1471,7 +1471,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 					{
 						write(color, d, state);
 
-						d += *Pointer<Int>(blit + OFFSET(BlitData,dSliceB));
+						d += *Pointer<Int>(blit + OFFSET(BlitData, dSliceB));
 					}
 				}
 				else
@@ -1494,9 +1494,9 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 
 						color = readFloat4(s, state);
 
-						if(state.srcSamples > 1) // Resolve multisampled source
+						if(state.srcSamples > 1)  // Resolve multisampled source
 						{
-							if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+							if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
 							{
 								ApplyScaleAndClamp(color, state);
 								preScaled = true;
@@ -1507,7 +1507,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 								s += *Pointer<Int>(blit + OFFSET(BlitData, sSliceB));
 								color = readFloat4(s, state);
 
-								if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+								if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
 								{
 									ApplyScaleAndClamp(color, state);
 									preScaled = true;
@@ -1517,7 +1517,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 							color = accum * Float4(1.0f / static_cast<float>(state.srcSamples));
 						}
 					}
-					else   // Bilinear filtering
+					else  // Bilinear filtering
 					{
 						Float X = x;
 						Float Y = y;
@@ -1549,7 +1549,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 						Float4 c10 = readFloat4(s10, state);
 						Float4 c11 = readFloat4(s11, state);
 
-						if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat()) // sRGB -> RGB
+						if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
 						{
 							ApplyScaleAndClamp(c00, state);
 							ApplyScaleAndClamp(c01, state);
@@ -1573,7 +1573,7 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 					{
 						write(color, d, state);
 
-						d += *Pointer<Int>(blit + OFFSET(BlitData,dSliceB));
+						d += *Pointer<Int>(blit + OFFSET(BlitData, dSliceB));
 					}
 				}
 			}
@@ -1615,7 +1615,7 @@ void Blitter::blitToBuffer(const vk::Image *src, VkImageSubresourceLayers subres
 {
 	auto aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
 	auto format = src->getFormat(aspect);
-	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{false, false});
+	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{ false, false });
 
 	auto blitRoutine = getBlitRoutine(state);
 	if(!blitRoutine)
@@ -1623,24 +1623,23 @@ void Blitter::blitToBuffer(const vk::Image *src, VkImageSubresourceLayers subres
 		return;
 	}
 
-	BlitData data =
-	{
-		nullptr, // source
-		dst, // dest
-		src->rowPitchBytes(aspect, subresource.mipLevel),   // sPitchB
-		bufferRowPitch,   // dPitchB
-		src->slicePitchBytes(aspect, subresource.mipLevel), // sSliceB
-		bufferSlicePitch, // dSliceB
+	BlitData data = {
+		nullptr,                                             // source
+		dst,                                                 // dest
+		src->rowPitchBytes(aspect, subresource.mipLevel),    // sPitchB
+		bufferRowPitch,                                      // dPitchB
+		src->slicePitchBytes(aspect, subresource.mipLevel),  // sSliceB
+		bufferSlicePitch,                                    // dSliceB
 
 		0, 0, 1, 1,
 
-		0, // y0d
-		static_cast<int>(extent.height), // y1d
-		0, // x0d
-		static_cast<int>(extent.width), // x1d
+		0,                                // y0d
+		static_cast<int>(extent.height),  // y1d
+		0,                                // x0d
+		static_cast<int>(extent.width),   // x1d
 
-		static_cast<int>(extent.width), // sWidth
-		static_cast<int>(extent.height) // sHeight;
+		static_cast<int>(extent.width),  // sWidth
+		static_cast<int>(extent.height)  // sHeight;
 	};
 
 	VkOffset3D srcOffset = { 0, 0, offset.z };
@@ -1648,8 +1647,7 @@ void Blitter::blitToBuffer(const vk::Image *src, VkImageSubresourceLayers subres
 	VkImageSubresourceLayers srcSubresLayers = subresource;
 	srcSubresLayers.layerCount = 1;
 
-	VkImageSubresourceRange srcSubresRange =
-	{
+	VkImageSubresourceRange srcSubresRange = {
 		subresource.aspectMask,
 		subresource.mipLevel,
 		1,
@@ -1678,7 +1676,7 @@ void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subr
 {
 	auto aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
 	auto format = dst->getFormat(aspect);
-	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{false, false});
+	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{ false, false });
 
 	auto blitRoutine = getBlitRoutine(state);
 	if(!blitRoutine)
@@ -1686,27 +1684,26 @@ void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subr
 		return;
 	}
 
-	BlitData data =
-	{
-		src, // source
-		nullptr, // dest
-		bufferRowPitch,   // sPitchB
-		dst->rowPitchBytes(aspect, subresource.mipLevel),   // dPitchB
-		bufferSlicePitch, // sSliceB
-		dst->slicePitchBytes(aspect, subresource.mipLevel), // dSliceB
+	BlitData data = {
+		src,                                                 // source
+		nullptr,                                             // dest
+		bufferRowPitch,                                      // sPitchB
+		dst->rowPitchBytes(aspect, subresource.mipLevel),    // dPitchB
+		bufferSlicePitch,                                    // sSliceB
+		dst->slicePitchBytes(aspect, subresource.mipLevel),  // dSliceB
 
-		static_cast<float>(-offset.x), // x0
-		static_cast<float>(-offset.y), // y0
-		1.0f, // w
-		1.0f, // h
+		static_cast<float>(-offset.x),  // x0
+		static_cast<float>(-offset.y),  // y0
+		1.0f,                           // w
+		1.0f,                           // h
 
-		offset.y, // y0d
-		static_cast<int>(offset.y + extent.height), // y1d
-		offset.x, // x0d
-		static_cast<int>(offset.x + extent.width), // x1d
+		offset.y,                                    // y0d
+		static_cast<int>(offset.y + extent.height),  // y1d
+		offset.x,                                    // x0d
+		static_cast<int>(offset.x + extent.width),   // x1d
 
-		static_cast<int>(extent.width), // sWidth
-		static_cast<int>(extent.height) // sHeight;
+		static_cast<int>(extent.width),  // sWidth
+		static_cast<int>(extent.height)  // sHeight;
 	};
 
 	VkOffset3D dstOffset = { 0, 0, offset.z };
@@ -1714,8 +1711,7 @@ void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subr
 	VkImageSubresourceLayers dstSubresLayers = subresource;
 	dstSubresLayers.layerCount = 1;
 
-	VkImageSubresourceRange dstSubresRange =
-	{
+	VkImageSubresourceRange dstSubresRange = {
 		subresource.aspectMask,
 		subresource.mipLevel,
 		1,
@@ -1784,9 +1780,9 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 
 	bool doFilter = (filter != VK_FILTER_NEAREST);
 	bool allowSRGBConversion =
-		doFilter ||
-		(src->getSampleCountFlagBits() > 1) ||
-		(srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
+	    doFilter ||
+	    (src->getSampleCountFlagBits() > 1) ||
+	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
 	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
 	            Options{ doFilter, allowSRGBConversion });
@@ -1802,50 +1798,46 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 		return;
 	}
 
-	BlitData data =
-	{
-		nullptr, // source
-		nullptr, // dest
-		src->rowPitchBytes(srcAspect, region.srcSubresource.mipLevel),   // sPitchB
-		dst->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel),   // dPitchB
-		src->slicePitchBytes(srcAspect, region.srcSubresource.mipLevel), // sSliceB
-		dst->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel), // dSliceB
+	BlitData data = {
+		nullptr,                                                          // source
+		nullptr,                                                          // dest
+		src->rowPitchBytes(srcAspect, region.srcSubresource.mipLevel),    // sPitchB
+		dst->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel),    // dPitchB
+		src->slicePitchBytes(srcAspect, region.srcSubresource.mipLevel),  // sSliceB
+		dst->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel),  // dSliceB
 
 		x0,
 		y0,
 		widthRatio,
 		heightRatio,
 
-		region.dstOffsets[0].y, // y0d
-		region.dstOffsets[1].y, // y1d
-		region.dstOffsets[0].x, // x0d
-		region.dstOffsets[1].x, // x1d
+		region.dstOffsets[0].y,  // y0d
+		region.dstOffsets[1].y,  // y1d
+		region.dstOffsets[0].x,  // x0d
+		region.dstOffsets[1].x,  // x1d
 
-		static_cast<int>(srcExtent.width), // sWidth
-		static_cast<int>(srcExtent.height) // sHeight;
+		static_cast<int>(srcExtent.width),  // sWidth
+		static_cast<int>(srcExtent.height)  // sHeight;
 	};
 
 	VkOffset3D srcOffset = { 0, 0, region.srcOffsets[0].z };
 	VkOffset3D dstOffset = { 0, 0, region.dstOffsets[0].z };
 
-	VkImageSubresourceLayers srcSubresLayers =
-	{
+	VkImageSubresourceLayers srcSubresLayers = {
 		region.srcSubresource.aspectMask,
 		region.srcSubresource.mipLevel,
 		region.srcSubresource.baseArrayLayer,
 		1
 	};
 
-	VkImageSubresourceLayers dstSubresLayers =
-	{
+	VkImageSubresourceLayers dstSubresLayers = {
 		region.dstSubresource.aspectMask,
 		region.dstSubresource.mipLevel,
 		region.dstSubresource.baseArrayLayer,
 		1
 	};
 
-	VkImageSubresourceRange srcSubresRange =
-	{
+	VkImageSubresourceRange srcSubresRange = {
 		region.srcSubresource.aspectMask,
 		region.srcSubresource.mipLevel,
 		1,
@@ -1875,7 +1867,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	}
 }
 
-void Blitter::computeCubeCorner(Pointer<Byte>& layer, Int& x0, Int& x1, Int& y0, Int& y1, Int& pitchB, const State& state)
+void Blitter::computeCubeCorner(Pointer<Byte> &layer, Int &x0, Int &x1, Int &y0, Int &y1, Int &pitchB, const State &state)
 {
 	int bytes = state.sourceFormat.bytes();
 
@@ -1888,7 +1880,7 @@ void Blitter::computeCubeCorner(Pointer<Byte>& layer, Int& x0, Int& x1, Int& y0,
 	write(c, layer + ComputeOffset(x0, y0, pitchB, bytes), state);
 }
 
-Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State& state)
+Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State &state)
 {
 	// Reading and writing from/to the same image
 	ASSERT(state.sourceFormat == state.destFormat);
@@ -1909,7 +1901,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State& stat
 		UInt dim = *Pointer<Int>(blit + OFFSET(CubeBorderData, dim));
 
 		// Low Border, Low Pixel, High Border, High Pixel
-		Int LB(-1), LP(0), HB(dim), HP(dim-1);
+		Int LB(-1), LP(0), HB(dim), HP(dim - 1);
 
 		for(int face = 0; face < 6; face++)
 		{
@@ -1924,7 +1916,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State& stat
 	return function("BlitRoutine");
 }
 
-void Blitter::updateBorders(vk::Image* image, const VkImageSubresourceLayers& subresourceLayers)
+void Blitter::updateBorders(vk::Image *image, const VkImageSubresourceLayers &subresourceLayers)
 {
 	if(image->getArrayLayers() < (subresourceLayers.baseArrayLayer + 6))
 	{
@@ -1996,8 +1988,7 @@ void Blitter::updateBorders(vk::Image* image, const VkImageSubresourceLayers& su
 	}
 
 	VkExtent3D extent = image->getMipLevelExtent(aspect, subresourceLayers.mipLevel);
-	CubeBorderData data =
-	{
+	CubeBorderData data = {
 		image->getTexelPointer({ 0, 0, 0 }, posX),
 		image->rowPitchBytes(aspect, subresourceLayers.mipLevel),
 		static_cast<uint32_t>(image->getLayerSize(aspect)),
@@ -2006,9 +1997,9 @@ void Blitter::updateBorders(vk::Image* image, const VkImageSubresourceLayers& su
 	cornerUpdateRoutine(&data);
 }
 
-void Blitter::copyCubeEdge(vk::Image* image,
-                           const VkImageSubresourceLayers& dstSubresourceLayers, Edge dstEdge,
-                           const VkImageSubresourceLayers& srcSubresourceLayers, Edge srcEdge)
+void Blitter::copyCubeEdge(vk::Image *image,
+                           const VkImageSubresourceLayers &dstSubresourceLayers, Edge dstEdge,
+                           const VkImageSubresourceLayers &srcSubresourceLayers, Edge srcEdge)
 {
 	ASSERT(srcSubresourceLayers.aspectMask == dstSubresourceLayers.aspectMask);
 	ASSERT(srcSubresourceLayers.mipLevel == dstSubresourceLayers.mipLevel);
@@ -2062,8 +2053,8 @@ void Blitter::copyCubeEdge(vk::Image* image,
 		dstOffset.y += reverse ? h : 1;
 	}
 
-	const uint8_t* src = static_cast<const uint8_t*>(image->getTexelPointer(srcOffset, srcSubresourceLayers));
-	uint8_t *dst = static_cast<uint8_t*>(image->getTexelPointer(dstOffset, dstSubresourceLayers));
+	const uint8_t *src = static_cast<const uint8_t *>(image->getTexelPointer(srcOffset, srcSubresourceLayers));
+	uint8_t *dst = static_cast<uint8_t *>(image->getTexelPointer(dstOffset, dstSubresourceLayers));
 	ASSERT((src < image->end()) && ((src + (w * srcDelta)) < image->end()));
 	ASSERT((dst < image->end()) && ((dst + (w * dstDelta)) < image->end()));
 
@@ -2073,4 +2064,4 @@ void Blitter::copyCubeEdge(vk::Image* image,
 	}
 }
 
-}  // namepspace sw
+}  // namespace sw
