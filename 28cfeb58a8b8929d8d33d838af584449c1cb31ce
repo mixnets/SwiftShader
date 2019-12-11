@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca5809ca_41d73a90",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T18:05:51Z",
+      "side": 1,
+      "message": "Since it\u0027s a singleton (at least currently), can\u0027t we just fetch it as a global where we need it instead of passing it around as an argument?",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "658939a1_8c96f9d0",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T18:05:51Z",
+      "side": 1,
+      "message": "This adds about 32 bytes to every command buffer when we\u0027re not debugging. This might add up for some game engines that create a command buffer for each object and/or overallocate their pools. There\u0027s some constructor/destructor overhead too. All minor, I\u0027m sure, but slippery slope and all that.\n\nSince you\u0027re already guarding the actual logic with #ifdef ENABLE_VK_DEBUGGER this could probably be eliminated when no building with debugger support as well.",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 11
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
