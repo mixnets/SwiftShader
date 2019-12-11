@@ -45,6 +45,29 @@
       "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbc189bb_c4dfb37f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T18:17:38Z",
+      "side": 1,
+      "message": "nit: Consider consistently calling this the debugger context. Similar arguments to why we went with ENABLE_VK_DEBUGGER instead of ENABLE_VK_DEBUG",
+      "range": {
+        "startLine": 157,
+        "startChar": 37,
+        "endLine": 157,
+        "endChar": 49
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
