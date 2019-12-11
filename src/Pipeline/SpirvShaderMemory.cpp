@@ -57,10 +57,9 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 	auto &dst = state->createIntermediate(resultId, resultTy.sizeInComponents);
 	auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
-	VisitMemoryObject(pointerId, [&](const MemoryElement& el)
-	{
+	VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 		auto p = ptr + el.offset;
-		if (interleavedByLane) { p = InterleaveByLane(p); }  // TODO: Interleave once, then add offset?
+		if(interleavedByLane) { p = InterleaveByLane(p); }  // TODO: Interleave once, then add offset?
 		dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
 	});
 
@@ -92,19 +91,18 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 	auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
 	SIMD::Int mask = state->activeLaneMask();
-	if (!StoresInHelperInvocation(pointerTy.storageClass))
+	if(!StoresInHelperInvocation(pointerTy.storageClass))
 	{
 		mask = mask & state->storesAndAtomicsMask();
 	}
 
-	if (object.kind == Object::Kind::Constant)
+	if(object.kind == Object::Kind::Constant)
 	{
 		// Constant source data.
 		const uint32_t *src = object.constantValue.get();
-		VisitMemoryObject(pointerId, [&](const MemoryElement& el)
-		{
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 			auto p = ptr + el.offset;
-			if (interleavedByLane) { p = InterleaveByLane(p); }
+			if(interleavedByLane) { p = InterleaveByLane(p); }
 			p.Store(SIMD::Int(src[el.index]), robustness, mask, atomic, memoryOrder);
 		});
 	}
@@ -112,10 +110,9 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 	{
 		// Intermediate source data.
 		auto &src = state->getIntermediate(objectId);
-		VisitMemoryObject(pointerId, [&](const MemoryElement& el)
-		{
+		VisitMemoryObject(pointerId, [&](const MemoryElement &el) {
 			auto p = ptr + el.offset;
-			if (interleavedByLane) { p = InterleaveByLane(p); }
+			if(interleavedByLane) { p = InterleaveByLane(p); }
 			p.Store(src.Float(el.index), robustness, mask, atomic, memoryOrder);
 		});
 	}
@@ -130,7 +127,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	auto &object = getObject(resultId);
 	auto &objectTy = getType(object.type);
 
-	switch (objectTy.storageClass)
+	switch(objectTy.storageClass)
 	{
 	case spv::StorageClassOutput:
 	case spv::StorageClassPrivate:
@@ -153,15 +150,15 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	}
 	case spv::StorageClassInput:
 	{
-		if (object.kind == Object::Kind::InterfaceVariable)
+		if(object.kind == Object::Kind::InterfaceVariable)
 		{
 			auto &dst = routine->getVariable(resultId);
 			int offset = 0;
 			VisitInterface(resultId,
-							[&](Decorations const &d, AttribType type) {
-								auto scalarSlot = d.Location << 2 | d.Component;
-								dst[offset++] = routine->inputs[scalarSlot];
-							});
+			               [&](Decorations const &d, AttribType type) {
+				               auto scalarSlot = d.Location << 2 | d.Component;
+				               dst[offset++] = routine->inputs[scalarSlot];
+			               });
 		}
 		ASSERT(objectTy.opcode() == spv::OpTypePointer);
 		auto base = &routine->getVariable(resultId)[0];
@@ -178,12 +175,12 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 
 		uint32_t arrayIndex = 0;  // TODO(b/129523279)
 		auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-		if (setLayout->hasBinding(d.Binding))
+		if(setLayout->hasBinding(d.Binding))
 		{
 			uint32_t bindingOffset = static_cast<uint32_t>(setLayout->getBindingOffset(d.Binding, arrayIndex));
 			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
 			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
-			auto size = 0; // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
+			auto size = 0;                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
 			state->createPointer(resultId, SIMD::Pointer(binding, size));
 		}
 		else
@@ -199,11 +196,11 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	{
 		const auto &d = descriptorDecorations.at(resultId);
 		ASSERT(d.DescriptorSet >= 0);
-		auto size = 0; // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
+		auto size = 0;  // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
 		// Note: the module may contain descriptor set references that are not suitable for this implementation -- using a set index higher than the number
 		// of descriptor set binding points we support. As long as the selected entrypoint doesn't actually touch the out of range binding points, this
 		// is valid. In this case make the value nullptr to make it easier to diagnose an attempt to dereference it.
-		if (d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS)
+		if(d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS)
 		{
 			state->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet], size));
 		}
@@ -223,14 +220,14 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		break;
 	}
 
-	if (insn.wordCount() > 4)
+	if(insn.wordCount() > 4)
 	{
 		Object::ID initializerId = insn.word(4);
-		if (getObject(initializerId).kind != Object::Kind::Constant)
+		if(getObject(initializerId).kind != Object::Kind::Constant)
 		{
 			UNIMPLEMENTED("Non-constant initializers not yet implemented");
 		}
-		switch (objectTy.storageClass)
+		switch(objectTy.storageClass)
 		{
 		case spv::StorageClassOutput:
 		case spv::StorageClassPrivate:
@@ -239,10 +236,9 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 			auto ptr = GetPointerToData(resultId, 0, state);
 			GenericValue initialValue(this, state, initializerId);
-			VisitMemoryObject(resultId, [&](const MemoryElement& el)
-			{
+			VisitMemoryObject(resultId, [&](const MemoryElement &el) {
 				auto p = ptr + el.offset;
-				if (interleavedByLane) { p = InterleaveByLane(p); }
+				if(interleavedByLane) { p = InterleaveByLane(p); }
 				auto robustness = OutOfBoundsBehavior::UndefinedBehavior;  // Local variables are always within bounds.
 				p.Store(initialValue.Float(el.index), robustness, state->activeLaneMask());
 			});
@@ -271,10 +267,9 @@ SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState
 
 	std::unordered_map<uint32_t, uint32_t> srcOffsets;
 
-	VisitMemoryObject(srcPtrId, [&](const MemoryElement& el) { srcOffsets[el.index] = el.offset; });
+	VisitMemoryObject(srcPtrId, [&](const MemoryElement &el) { srcOffsets[el.index] = el.offset; });
 
-	VisitMemoryObject(dstPtrId, [&](const MemoryElement& el)
-	{
+	VisitMemoryObject(dstPtrId, [&](const MemoryElement &el) {
 		auto it = srcOffsets.find(el.index);
 		ASSERT(it != srcOffsets.end());
 		auto srcOffset = it->second;
@@ -282,8 +277,8 @@ SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState
 
 		auto dst = dstPtr + dstOffset;
 		auto src = srcPtr + srcOffset;
-		if (dstInterleavedByLane) { dst = InterleaveByLane(dst); }
-		if (srcInterleavedByLane) { src = InterleaveByLane(src); }
+		if(dstInterleavedByLane) { dst = InterleaveByLane(dst); }
+		if(srcInterleavedByLane) { src = InterleaveByLane(src); }
 
 		// TODO(b/131224163): Optimize based on src/dst storage classes.
 		auto robustness = OutOfBoundsBehavior::RobustBufferAccess;
@@ -303,18 +298,18 @@ SpirvShader::EmitResult SpirvShader::EmitMemoryBarrier(InsnIterator insn, EmitSt
 	return EmitResult::Continue;
 }
 
-void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::SpirvShader::Decorations d, uint32_t& index, uint32_t offset, const MemoryVisitor& f) const
+void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::SpirvShader::Decorations d, uint32_t &index, uint32_t offset, const MemoryVisitor &f) const
 {
 	ApplyDecorationsForId(&d, id);
 	auto const &type = getType(id);
 
-	if (d.HasOffset)
+	if(d.HasOffset)
 	{
 		offset += d.Offset;
 		d.HasOffset = false;
 	}
 
-	switch (type.opcode())
+	switch(type.opcode())
 	{
 	case spv::OpTypePointer:
 		VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
@@ -322,12 +317,12 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	case spv::OpTypeInt:
 	case spv::OpTypeFloat:
 	case spv::OpTypeRuntimeArray:
-		f(MemoryElement{index++, offset, type});
+		f(MemoryElement{ index++, offset, type });
 		break;
 	case spv::OpTypeVector:
 	{
 		auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
-		for (auto i = 0u; i < type.definition.word(3); i++)
+		for(auto i = 0u; i < type.definition.word(3); i++)
 		{
 			VisitMemoryObjectInner(type.definition.word(2), d, index, offset + elemStride * i, f);
 		}
@@ -337,7 +332,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	{
 		auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
 		d.InsideMatrix = true;
-		for (auto i = 0u; i < type.definition.word(3); i++)
+		for(auto i = 0u; i < type.definition.word(3); i++)
 		{
 			ASSERT(d.HasMatrixStride);
 			VisitMemoryObjectInner(type.definition.word(2), d, index, offset + columnStride * i, f);
@@ -345,7 +340,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 		break;
 	}
 	case spv::OpTypeStruct:
-		for (auto i = 0u; i < type.definition.wordCount() - 2; i++)
+		for(auto i = 0u; i < type.definition.wordCount() - 2; i++)
 		{
 			ApplyDecorationsForIdMember(&d, id, i);
 			VisitMemoryObjectInner(type.definition.word(i + 2), d, index, offset, f);
@@ -354,7 +349,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	case spv::OpTypeArray:
 	{
 		auto arraySize = GetConstScalarInt(type.definition.word(3));
-		for (auto i = 0u; i < arraySize; i++)
+		for(auto i = 0u; i < arraySize; i++)
 		{
 			ASSERT(d.HasArrayStride);
 			VisitMemoryObjectInner(type.definition.word(2), d, index, offset + i * d.ArrayStride, f);
@@ -366,11 +361,11 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	}
 }
 
-void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const MemoryVisitor& f) const
+void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const MemoryVisitor &f) const
 {
 	auto typeId = getObject(id).type;
-	auto const & type = getType(typeId);
-	if (IsExplicitLayout(type.storageClass))
+	auto const &type = getType(typeId);
+	if(IsExplicitLayout(type.storageClass))
 	{
 		Decorations d{};
 		ApplyDecorationsForId(&d, id);
@@ -381,10 +376,10 @@ void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const Memory
 	{
 		// Objects without explicit layout are tightly packed.
 		auto &elType = getType(type.element);
-		for (auto index = 0u; index < elType.sizeInComponents; index++)
+		for(auto index = 0u; index < elType.sizeInComponents; index++)
 		{
 			auto offset = static_cast<uint32_t>(index * sizeof(float));
-			f({index, offset, elType});
+			f({ index, offset, elType });
 		}
 	}
 }
@@ -393,63 +388,62 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitS
 {
 	auto routine = state->routine;
 	auto &object = getObject(id);
-	switch (object.kind)
+	switch(object.kind)
 	{
-		case Object::Kind::Pointer:
-		case Object::Kind::InterfaceVariable:
-			return state->getPointer(id);
+	case Object::Kind::Pointer:
+	case Object::Kind::InterfaceVariable:
+		return state->getPointer(id);
 
-		case Object::Kind::DescriptorSet:
+	case Object::Kind::DescriptorSet:
+	{
+		const auto &d = descriptorDecorations.at(id);
+		ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
+		ASSERT(d.Binding >= 0);
+
+		auto set = state->getPointer(id);
+
+		auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+		ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
+		int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
+
+		Pointer<Byte> descriptor = set.base + bindingOffset;                                           // BufferDescriptor*
+		Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
+		Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+		if(setLayout->isBindingDynamic(d.Binding))
 		{
-			const auto &d = descriptorDecorations.at(id);
-			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
-			ASSERT(d.Binding >= 0);
-
-			auto set = state->getPointer(id);
-
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
-			int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
-
-			Pointer<Byte> descriptor = set.base + bindingOffset; // BufferDescriptor*
-			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr)); // void*
-			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
-			if (setLayout->isBindingDynamic(d.Binding))
-			{
-				uint32_t dynamicBindingIndex =
-					routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-					setLayout->getDynamicDescriptorOffset(d.Binding) +
-					arrayIndex;
-				Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
-				Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
-				return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
-			}
-			else
-			{
-				return SIMD::Pointer(data, size);
-			}
+			uint32_t dynamicBindingIndex =
+			    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+			    setLayout->getDynamicDescriptorOffset(d.Binding) +
+			    arrayIndex;
+			Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
+			Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+			return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
 		}
+		else
+		{
+			return SIMD::Pointer(data, size);
+		}
+	}
 
-		default:
-			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
-			return SIMD::Pointer(Pointer<Byte>(), 0);
+	default:
+		UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+		return SIMD::Pointer(Pointer<Byte>(), 0);
 	}
 }
 
 std::memory_order SpirvShader::MemoryOrder(spv::MemorySemanticsMask memorySemantics)
 {
 	auto control = static_cast<uint32_t>(memorySemantics) & static_cast<uint32_t>(
-		spv::MemorySemanticsAcquireMask |
-		spv::MemorySemanticsReleaseMask |
-		spv::MemorySemanticsAcquireReleaseMask |
-		spv::MemorySemanticsSequentiallyConsistentMask
-	);
-	switch (control)
+	                                                            spv::MemorySemanticsAcquireMask |
+	                                                            spv::MemorySemanticsReleaseMask |
+	                                                            spv::MemorySemanticsAcquireReleaseMask |
+	                                                            spv::MemorySemanticsSequentiallyConsistentMask);
+	switch(control)
 	{
-	case spv::MemorySemanticsMaskNone:                   return std::memory_order_relaxed;
-	case spv::MemorySemanticsAcquireMask:                return std::memory_order_acquire;
-	case spv::MemorySemanticsReleaseMask:                return std::memory_order_release;
-	case spv::MemorySemanticsAcquireReleaseMask:         return std::memory_order_acq_rel;
+	case spv::MemorySemanticsMaskNone: return std::memory_order_relaxed;
+	case spv::MemorySemanticsAcquireMask: return std::memory_order_acquire;
+	case spv::MemorySemanticsReleaseMask: return std::memory_order_release;
+	case spv::MemorySemanticsAcquireReleaseMask: return std::memory_order_acq_rel;
 	case spv::MemorySemanticsSequentiallyConsistentMask: return std::memory_order_acq_rel;  // Vulkan 1.1: "SequentiallyConsistent is treated as AcquireRelease"
 	default:
 		// "it is invalid for more than one of these four bits to be set:
@@ -461,7 +455,7 @@ std::memory_order SpirvShader::MemoryOrder(spv::MemorySemanticsMask memorySemant
 
 bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
@@ -474,7 +468,7 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 
 bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
@@ -497,7 +491,7 @@ sw::SIMD::Pointer SpirvShader::InterleaveByLane(sw::SIMD::Pointer p)
 
 bool SpirvShader::IsStorageInterleavedByLane(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
