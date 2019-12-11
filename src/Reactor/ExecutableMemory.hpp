@@ -23,7 +23,7 @@ namespace rr {
 
 size_t memoryPageSize();
 
-void *allocateExecutable(size_t bytes);   // Allocates memory that can be made executable using markExecutable()
+void *allocateExecutable(size_t bytes);  // Allocates memory that can be made executable using markExecutable()
 void markExecutable(void *memory, size_t bytes);
 void deallocateExecutable(void *memory, size_t bytes);
 
@@ -46,7 +46,8 @@ template<typename P>
 class unaligned_ref
 {
 public:
-	explicit unaligned_ref(void *ptr) : ptr((P*)ptr) {}
+	explicit unaligned_ref(void *ptr) :
+	    ptr((P *)ptr) {}
 
 	template<typename V>
 	P operator=(V value)
@@ -57,7 +58,7 @@ public:
 
 	operator P()
 	{
-		return unaligned_read((P*)ptr);
+		return unaligned_read((P *)ptr);
 	}
 
 private:
@@ -71,7 +72,8 @@ class unaligned_ptr
 	friend class unaligned_ptr;
 
 public:
-	unaligned_ptr(P *ptr) : ptr(ptr) {}
+	unaligned_ptr(P *ptr) :
+	    ptr(ptr) {}
 
 	unaligned_ref<P> operator*()
 	{
@@ -90,4 +92,4 @@ private:
 
 }  // namespace rr
 
-#endif   // rr_ExecutableMemory_hpp
+#endif  // rr_ExecutableMemory_hpp
