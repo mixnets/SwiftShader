@@ -37,10 +37,10 @@ public:
 	class iterator
 	{
 	public:
-		inline iterator(const MapIterator& it, const MapIterator& end);
+		inline iterator(const MapIterator &it, const MapIterator &end);
 		inline void operator++();
-		inline bool operator==(const iterator&) const;
-		inline bool operator!=(const iterator&) const;
+		inline bool operator==(const iterator &) const;
+		inline bool operator!=(const iterator &) const;
 		inline std::pair<K, std::shared_ptr<V>> operator*() const;
 
 	private:
@@ -65,17 +65,17 @@ public:
 	// get() returns the std::shared_ptr<V> value for the given key, or nullptr
 	// if the map does not contain the key, or the last remaining
 	// std::shared_ptr<V> reference to the value has been dropped.
-	inline std::shared_ptr<V> get(const K& key) const;
+	inline std::shared_ptr<V> get(const K &key) const;
 
 	// add() attempts to insert the key-value pair into the map.
 	// add() returns true if there was no existing entry with the given key,
 	// and the pair was added, otherwise false.
-	inline bool add(const K& key, const std::shared_ptr<V>& val);
+	inline bool add(const K &key, const std::shared_ptr<V> &val);
 
 	// remove() attempts to remove the entry with the given key from the map.
 	// remove() returns true if there was no existing entry with the given key,
 	// and the entry was removed, otherwise false.
-	inline bool remove(const K& key);
+	inline bool remove(const K &key);
 
 private:
 	// reap() removes any entries that have values with no external references.
@@ -86,7 +86,7 @@ private:
 };
 
 template <typename K, typename V>
-WeakMap<K, V>::iterator::iterator(const MapIterator& it, const MapIterator& end) :
+WeakMap<K, V>::iterator::iterator(const MapIterator &it, const MapIterator &end) :
     it(it),
     end(end)
 {
@@ -116,13 +116,13 @@ void WeakMap<K, V>::iterator::skipNull()
 }
 
 template <typename K, typename V>
-bool WeakMap<K, V>::iterator::operator==(const iterator& rhs) const
+bool WeakMap<K, V>::iterator::operator==(const iterator &rhs) const
 {
 	return it == rhs.it;
 }
 
 template <typename K, typename V>
-bool WeakMap<K, V>::iterator::operator!=(const iterator& rhs) const
+bool WeakMap<K, V>::iterator::operator!=(const iterator &rhs) const
 {
 	return it != rhs.it;
 }
@@ -152,14 +152,14 @@ size_t WeakMap<K, V>::approx_size() const
 }
 
 template <typename K, typename V>
-std::shared_ptr<V> WeakMap<K, V>::get(const K& key) const
+std::shared_ptr<V> WeakMap<K, V>::get(const K &key) const
 {
 	auto it = map.find(key);
 	return (it != map.end()) ? it->second.lock() : nullptr;
 }
 
 template <typename K, typename V>
-bool WeakMap<K, V>::add(const K& key, const std::shared_ptr<V>& val)
+bool WeakMap<K, V>::add(const K &key, const std::shared_ptr<V> &val)
 {
 	if(map.size() > reapAtSize)
 	{
@@ -170,7 +170,7 @@ bool WeakMap<K, V>::add(const K& key, const std::shared_ptr<V>& val)
 }
 
 template <typename K, typename V>
-bool WeakMap<K, V>::remove(const K& key)
+bool WeakMap<K, V>::remove(const K &key)
 {
 	return map.erase(key) > 0;
 }

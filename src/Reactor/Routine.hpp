@@ -29,21 +29,21 @@ public:
 };
 
 // RoutineT is a type-safe wrapper around a Routine and its callable entry, returned by FunctionT
-template<typename FunctionType>
+template <typename FunctionType>
 class RoutineT;
 
-template<typename Return, typename... Arguments>
+template <typename Return, typename... Arguments>
 class RoutineT<Return(Arguments...)>
 {
 public:
 	RoutineT() = default;
 
-	explicit RoutineT(const std::shared_ptr<Routine>& routine)
-		: routine(routine)
+	explicit RoutineT(const std::shared_ptr<Routine> &routine) :
+	    routine(routine)
 	{
-		if (routine)
+		if(routine)
 		{
-			callable = reinterpret_cast<CallableType>(const_cast<void*>(routine->getEntry(0)));
+			callable = reinterpret_cast<CallableType>(const_cast<void *>(routine->getEntry(0)));
 		}
 	}
 
@@ -53,22 +53,22 @@ public:
 	}
 
 	template <typename... Args>
-	Return operator()(Args&&... args) const
+	Return operator()(Args &&... args) const
 	{
 		return callable(std::forward<Args>(args)...);
 	}
 
-	const void* getEntry() const
+	const void *getEntry() const
 	{
-		return reinterpret_cast<void*>(callable);
+		return reinterpret_cast<void *>(callable);
 	}
 
 private:
 	std::shared_ptr<Routine> routine;
-	using CallableType = Return(*)(Arguments...);
+	using CallableType = Return (*)(Arguments...);
 	CallableType callable = nullptr;
 };
 
 }  // namespace rr
 
-#endif   // rr_Routine_hpp
+#endif  // rr_Routine_hpp

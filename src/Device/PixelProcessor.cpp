@@ -15,8 +15,8 @@
 #include "PixelProcessor.hpp"
 
 #include "Primitive.hpp"
-#include "Pipeline/PixelProgram.hpp"
 #include "Pipeline/Constants.hpp"
+#include "Pipeline/PixelProgram.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImageView.hpp"
 
@@ -26,7 +26,7 @@ namespace sw {
 
 uint32_t PixelProcessor::States::computeHash()
 {
-	uint32_t *state = reinterpret_cast<uint32_t*>(this);
+	uint32_t *state = reinterpret_cast<uint32_t *>(this);
 	uint32_t hash = 0;
 
 	for(unsigned int i = 0; i < sizeof(States) / sizeof(uint32_t); i++)
@@ -45,7 +45,7 @@ bool PixelProcessor::State::operator==(const State &state) const
 	}
 
 	static_assert(is_memcmparable<State>::value, "Cannot memcmp State");
-	return memcmp(static_cast<const States*>(this), static_cast<const States*>(&state), sizeof(States)) == 0;
+	return memcmp(static_cast<const States *>(this), static_cast<const States *>(&state), sizeof(States)) == 0;
 }
 
 PixelProcessor::PixelProcessor()
@@ -64,84 +64,84 @@ void PixelProcessor::setBlendConstant(const Color<float> &blendConstant)
 {
 	// TODO(b/140935644): Compact into generic function, cheack if clamp is required
 	factor.blendConstant4W[0][0] =
-	factor.blendConstant4W[0][1] =
-	factor.blendConstant4W[0][2] =
-	factor.blendConstant4W[0][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.r));
+	    factor.blendConstant4W[0][1] =
+	        factor.blendConstant4W[0][2] =
+	            factor.blendConstant4W[0][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.r));
 
 	factor.blendConstant4W[1][0] =
-	factor.blendConstant4W[1][1] =
-	factor.blendConstant4W[1][2] =
-	factor.blendConstant4W[1][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.g));
+	    factor.blendConstant4W[1][1] =
+	        factor.blendConstant4W[1][2] =
+	            factor.blendConstant4W[1][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.g));
 
 	factor.blendConstant4W[2][0] =
-	factor.blendConstant4W[2][1] =
-	factor.blendConstant4W[2][2] =
-	factor.blendConstant4W[2][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.b));
+	    factor.blendConstant4W[2][1] =
+	        factor.blendConstant4W[2][2] =
+	            factor.blendConstant4W[2][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.b));
 
 	factor.blendConstant4W[3][0] =
-	factor.blendConstant4W[3][1] =
-	factor.blendConstant4W[3][2] =
-	factor.blendConstant4W[3][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.a));
+	    factor.blendConstant4W[3][1] =
+	        factor.blendConstant4W[3][2] =
+	            factor.blendConstant4W[3][3] = static_cast<uint16_t>(iround(65535.0f * blendConstant.a));
 
 	factor.invBlendConstant4W[0][0] =
-	factor.invBlendConstant4W[0][1] =
-	factor.invBlendConstant4W[0][2] =
-	factor.invBlendConstant4W[0][3] = 0xFFFFu - factor.blendConstant4W[0][0];
+	    factor.invBlendConstant4W[0][1] =
+	        factor.invBlendConstant4W[0][2] =
+	            factor.invBlendConstant4W[0][3] = 0xFFFFu - factor.blendConstant4W[0][0];
 
 	factor.invBlendConstant4W[1][0] =
-	factor.invBlendConstant4W[1][1] =
-	factor.invBlendConstant4W[1][2] =
-	factor.invBlendConstant4W[1][3] = 0xFFFFu - factor.blendConstant4W[1][0];
+	    factor.invBlendConstant4W[1][1] =
+	        factor.invBlendConstant4W[1][2] =
+	            factor.invBlendConstant4W[1][3] = 0xFFFFu - factor.blendConstant4W[1][0];
 
 	factor.invBlendConstant4W[2][0] =
-	factor.invBlendConstant4W[2][1] =
-	factor.invBlendConstant4W[2][2] =
-	factor.invBlendConstant4W[2][3] = 0xFFFFu - factor.blendConstant4W[2][0];
+	    factor.invBlendConstant4W[2][1] =
+	        factor.invBlendConstant4W[2][2] =
+	            factor.invBlendConstant4W[2][3] = 0xFFFFu - factor.blendConstant4W[2][0];
 
 	factor.invBlendConstant4W[3][0] =
-	factor.invBlendConstant4W[3][1] =
-	factor.invBlendConstant4W[3][2] =
-	factor.invBlendConstant4W[3][3] = 0xFFFFu - factor.blendConstant4W[3][0];
+	    factor.invBlendConstant4W[3][1] =
+	        factor.invBlendConstant4W[3][2] =
+	            factor.invBlendConstant4W[3][3] = 0xFFFFu - factor.blendConstant4W[3][0];
 
 	factor.blendConstant4F[0][0] =
-	factor.blendConstant4F[0][1] =
-	factor.blendConstant4F[0][2] =
-	factor.blendConstant4F[0][3] = blendConstant.r;
+	    factor.blendConstant4F[0][1] =
+	        factor.blendConstant4F[0][2] =
+	            factor.blendConstant4F[0][3] = blendConstant.r;
 
 	factor.blendConstant4F[1][0] =
-	factor.blendConstant4F[1][1] =
-	factor.blendConstant4F[1][2] =
-	factor.blendConstant4F[1][3] = blendConstant.g;
+	    factor.blendConstant4F[1][1] =
+	        factor.blendConstant4F[1][2] =
+	            factor.blendConstant4F[1][3] = blendConstant.g;
 
 	factor.blendConstant4F[2][0] =
-	factor.blendConstant4F[2][1] =
-	factor.blendConstant4F[2][2] =
-	factor.blendConstant4F[2][3] = blendConstant.b;
+	    factor.blendConstant4F[2][1] =
+	        factor.blendConstant4F[2][2] =
+	            factor.blendConstant4F[2][3] = blendConstant.b;
 
 	factor.blendConstant4F[3][0] =
-	factor.blendConstant4F[3][1] =
-	factor.blendConstant4F[3][2] =
-	factor.blendConstant4F[3][3] = blendConstant.a;
+	    factor.blendConstant4F[3][1] =
+	        factor.blendConstant4F[3][2] =
+	            factor.blendConstant4F[3][3] = blendConstant.a;
 
 	factor.invBlendConstant4F[0][0] =
-	factor.invBlendConstant4F[0][1] =
-	factor.invBlendConstant4F[0][2] =
-	factor.invBlendConstant4F[0][3] = 1 - blendConstant.r;
+	    factor.invBlendConstant4F[0][1] =
+	        factor.invBlendConstant4F[0][2] =
+	            factor.invBlendConstant4F[0][3] = 1 - blendConstant.r;
 
 	factor.invBlendConstant4F[1][0] =
-	factor.invBlendConstant4F[1][1] =
-	factor.invBlendConstant4F[1][2] =
-	factor.invBlendConstant4F[1][3] = 1 - blendConstant.g;
+	    factor.invBlendConstant4F[1][1] =
+	        factor.invBlendConstant4F[1][2] =
+	            factor.invBlendConstant4F[1][3] = 1 - blendConstant.g;
 
 	factor.invBlendConstant4F[2][0] =
-	factor.invBlendConstant4F[2][1] =
-	factor.invBlendConstant4F[2][2] =
-	factor.invBlendConstant4F[2][3] = 1 - blendConstant.b;
+	    factor.invBlendConstant4F[2][1] =
+	        factor.invBlendConstant4F[2][2] =
+	            factor.invBlendConstant4F[2][3] = 1 - blendConstant.b;
 
 	factor.invBlendConstant4F[3][0] =
-	factor.invBlendConstant4F[3][1] =
-	factor.invBlendConstant4F[3][2] =
-	factor.invBlendConstant4F[3][3] = 1 - blendConstant.a;
+	    factor.invBlendConstant4F[3][1] =
+	        factor.invBlendConstant4F[3][2] =
+	            factor.invBlendConstant4F[3][3] = 1 - blendConstant.a;
 }
 
 void PixelProcessor::setRoutineCacheSize(int cacheSize)
@@ -150,7 +150,7 @@ void PixelProcessor::setRoutineCacheSize(int cacheSize)
 	routineCache = new RoutineCacheType(clamp(cacheSize, 1, 65536));
 }
 
-const PixelProcessor::State PixelProcessor::update(const Context* context) const
+const PixelProcessor::State PixelProcessor::update(const Context *context) const
 {
 	State state;
 
@@ -211,9 +211,9 @@ const PixelProcessor::State PixelProcessor::update(const Context* context) const
 }
 
 PixelProcessor::RoutineType PixelProcessor::routine(const State &state,
-	vk::PipelineLayout const *pipelineLayout,
-	SpirvShader const *pixelShader,
-	const vk::DescriptorSet::Bindings &descriptorSets)
+                                                    vk::PipelineLayout const *pipelineLayout,
+                                                    SpirvShader const *pixelShader,
+                                                    const vk::DescriptorSet::Bindings &descriptorSets)
 {
 	auto routine = routineCache->query(state);
 

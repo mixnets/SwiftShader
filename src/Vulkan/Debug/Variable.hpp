@@ -46,26 +46,26 @@ public:
 	// foreach() calls cb with each of the variables in the container.
 	// F must be a function with the signature void(const Variable&).
 	template <typename F>
-	inline void foreach(size_t startIndex, const F& cb) const;
+	inline void foreach(size_t startIndex, const F &cb) const;
 
 	// find() looks up the variable with the given name.
 	// If the variable with the given name is found, cb is called with the
 	// variable and find() returns true.
 	template <typename F>
-	inline bool find(const std::string& name, const F& cb) const;
+	inline bool find(const std::string &name, const F &cb) const;
 
 	// put() places the variable var into the container.
-	inline void put(const Variable& var);
+	inline void put(const Variable &var);
 
 	// put() places the variable with the given name and value into the container.
-	inline void put(const std::string& name, const std::shared_ptr<Value>& value);
+	inline void put(const std::string &name, const std::shared_ptr<Value> &value);
 
 	// The unique identifier of the variable.
 	const ID id;
 
 private:
 	inline std::shared_ptr<Type> type() const override;
-	inline const void* get() const override;
+	inline const void *get() const override;
 
 	mutable std::mutex mutex;
 	std::vector<Variable> variables;
@@ -76,7 +76,7 @@ VariableContainer::VariableContainer(ID id) :
     id(id) {}
 
 template <typename F>
-void VariableContainer::foreach(size_t startIndex, const F& cb) const
+void VariableContainer::foreach(size_t startIndex, const F &cb) const
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	for(size_t i = startIndex; i < variables.size(); i++)
@@ -86,10 +86,10 @@ void VariableContainer::foreach(size_t startIndex, const F& cb) const
 }
 
 template <typename F>
-bool VariableContainer::find(const std::string& name, const F& cb) const
+bool VariableContainer::find(const std::string &name, const F &cb) const
 {
 	std::unique_lock<std::mutex> lock(mutex);
-	for(auto const& var : variables)
+	for(auto const &var : variables)
 	{
 		if(var.name == name)
 		{
@@ -100,7 +100,7 @@ bool VariableContainer::find(const std::string& name, const F& cb) const
 	return false;
 }
 
-void VariableContainer::put(const Variable& var)
+void VariableContainer::put(const Variable &var)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	auto it = indices.find(var.name);
@@ -115,8 +115,8 @@ void VariableContainer::put(const Variable& var)
 	}
 }
 
-void VariableContainer::put(const std::string& name,
-                            const std::shared_ptr<Value>& value)
+void VariableContainer::put(const std::string &name,
+                            const std::shared_ptr<Value> &value)
 {
 	put({ name, value });
 }
@@ -126,7 +126,7 @@ std::shared_ptr<Type> VariableContainer::type() const
 	return TypeOf<VariableContainer>::get();
 }
 
-const void* VariableContainer::get() const
+const void *VariableContainer::get() const
 {
 	return nullptr;
 }

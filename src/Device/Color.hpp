@@ -15,12 +15,12 @@
 #ifndef sw_Color_hpp
 #define sw_Color_hpp
 
-#include "System/Types.hpp"
 #include "System/Math.hpp"
+#include "System/Types.hpp"
 
 namespace sw {
 
-template<class T>
+template <class T>
 struct Color
 {
 	Color();
@@ -28,12 +28,12 @@ struct Color
 	Color(const Color<byte> &c);
 	Color(const Color<short> &c);
 	Color(const Color<float> &c);
-	
+
 	Color(int c);
 	Color(unsigned short c);
 	Color(unsigned long c);
 	Color(unsigned int c);
-	
+
 	Color(T r, T g, T b, T a = 1);
 
 	operator unsigned int() const;
@@ -44,24 +44,24 @@ struct Color
 	Color<T> operator+() const;
 	Color<T> operator-() const;
 
-	Color<T>& operator=(const Color<T>& c);
+	Color<T> &operator=(const Color<T> &c);
 
 	Color<T> &operator+=(const Color<T> &c);
 	Color<T> &operator*=(float l);
 
-	static Color<T> gradient(const Color<T> &c1, const Color<T>  &c2, float d);
-	static Color<T> shade(const Color<T> &c1, const Color<T>  &c2, float d);
+	static Color<T> gradient(const Color<T> &c1, const Color<T> &c2, float d);
+	static Color<T> shade(const Color<T> &c1, const Color<T> &c2, float d);
 
-	template<class S>
+	template <class S>
 	friend Color<S> operator+(const Color<S> &c1, const Color<S> &c2);
-	template<class S>
+	template <class S>
 	friend Color<S> operator-(const Color<S> &c1, const Color<S> &c2);
 
-	template<class S>
+	template <class S>
 	friend Color<S> operator*(float l, const Color<S> &c);
-	template<class S>
+	template <class S>
 	friend Color<S> operator*(const Color<S> &c1, const Color<S> &c2);
-	template<class S>
+	template <class S>
 	friend Color<S> operator/(const Color<S> &c, float l);
 
 	T r;
@@ -69,18 +69,18 @@ struct Color
 	T b;
 	T a;
 };
-}
+}  // namespace sw
 
 #include "System/Math.hpp"
 
 namespace sw {
 
-template<class T>
+template <class T>
 inline Color<T>::Color()
 {
 }
 
-template<>
+template <>
 inline Color<byte>::Color(const Color<byte> &c)
 {
 	r = c.r;
@@ -89,7 +89,7 @@ inline Color<byte>::Color(const Color<byte> &c)
 	a = c.a;
 }
 
-template<>
+template <>
 inline Color<byte>::Color(const Color<short> &c)
 {
 	r = static_cast<byte>(clamp(c.r >> 4, 0, 255));
@@ -98,7 +98,7 @@ inline Color<byte>::Color(const Color<short> &c)
 	a = static_cast<byte>(clamp(c.a >> 4, 0, 255));
 }
 
-template<>
+template <>
 inline Color<byte>::Color(const Color<float> &c)
 {
 	r = static_cast<byte>(ifloor(clamp(c.r * 256.0f, 0.0f, 255.0f)));
@@ -107,7 +107,7 @@ inline Color<byte>::Color(const Color<float> &c)
 	a = static_cast<byte>(ifloor(clamp(c.a * 256.0f, 0.0f, 255.0f)));
 }
 
-template<>
+template <>
 inline Color<short>::Color(const Color<short> &c)
 {
 	r = c.r;
@@ -116,7 +116,7 @@ inline Color<short>::Color(const Color<short> &c)
 	a = c.a;
 }
 
-template<>
+template <>
 inline Color<short>::Color(const Color<byte> &c)
 {
 	r = c.r << 4;
@@ -125,7 +125,7 @@ inline Color<short>::Color(const Color<byte> &c)
 	a = c.a << 4;
 }
 
-template<>
+template <>
 inline Color<float>::Color(const Color<float> &c)
 {
 	r = c.r;
@@ -134,7 +134,7 @@ inline Color<float>::Color(const Color<float> &c)
 	a = c.a;
 }
 
-template<>
+template <>
 inline Color<short>::Color(const Color<float> &c)
 {
 	r = static_cast<short>(iround(clamp(c.r * 4095.0f, -4096.0f, 4095.0f)));
@@ -143,7 +143,7 @@ inline Color<short>::Color(const Color<float> &c)
 	a = static_cast<short>(iround(clamp(c.a * 4095.0f, -4096.0f, 4095.0f)));
 }
 
-template<>
+template <>
 inline Color<float>::Color(const Color<byte> &c)
 {
 	r = c.r / 255.0f;
@@ -152,7 +152,7 @@ inline Color<float>::Color(const Color<byte> &c)
 	a = c.a / 255.0f;
 }
 
-template<>
+template <>
 inline Color<float>::Color(const Color<short> &c)
 {
 	r = c.r / 4095.0f;
@@ -161,7 +161,7 @@ inline Color<float>::Color(const Color<short> &c)
 	a = c.a / 4095.0f;
 }
 
-template<>
+template <>
 inline Color<float>::Color(unsigned short c)
 {
 	r = (float)(c & 0xF800) / (float)0xF800;
@@ -170,7 +170,7 @@ inline Color<float>::Color(unsigned short c)
 	a = 1;
 }
 
-template<>
+template <>
 inline Color<short>::Color(unsigned short c)
 {
 	// 4.12 fixed-point format
@@ -180,7 +180,7 @@ inline Color<short>::Color(unsigned short c)
 	a = 0x1000;
 }
 
-template<>
+template <>
 inline Color<byte>::Color(unsigned short c)
 {
 	r = (byte)(((c & 0xF800) >> 8) + ((c & 0xE000) >> 13));
@@ -189,7 +189,7 @@ inline Color<byte>::Color(unsigned short c)
 	a = 0xFF;
 }
 
-template<>
+template <>
 inline Color<float>::Color(int c)
 {
 	const float d = 1.0f / 255.0f;
@@ -200,7 +200,7 @@ inline Color<float>::Color(int c)
 	a = (float)((c & 0xFF000000) >> 24) * d;
 }
 
-template<>
+template <>
 inline Color<short>::Color(int c)
 {
 	// 4.12 fixed-point format
@@ -210,7 +210,7 @@ inline Color<short>::Color(int c)
 	a = (short)((c & 0xFF000000) >> 20);
 }
 
-template<>
+template <>
 inline Color<byte>::Color(int c)
 {
 	r = (byte)((c & 0x00FF0000) >> 16);
@@ -219,7 +219,7 @@ inline Color<byte>::Color(int c)
 	a = (byte)((c & 0xFF000000) >> 24);
 }
 
-template<>
+template <>
 inline Color<float>::Color(unsigned int c)
 {
 	const float d = 1.0f / 255.0f;
@@ -230,7 +230,7 @@ inline Color<float>::Color(unsigned int c)
 	a = (float)((c & 0xFF000000) >> 24) * d;
 }
 
-template<>
+template <>
 inline Color<short>::Color(unsigned int c)
 {
 	// 4.12 fixed-point format
@@ -240,7 +240,7 @@ inline Color<short>::Color(unsigned int c)
 	a = (short)((c & 0xFF000000) >> 20);
 }
 
-template<>
+template <>
 inline Color<byte>::Color(unsigned int c)
 {
 	r = (byte)((c & 0x00FF0000) >> 16);
@@ -249,7 +249,7 @@ inline Color<byte>::Color(unsigned int c)
 	a = (byte)((c & 0xFF000000) >> 24);
 }
 
-template<>
+template <>
 inline Color<float>::Color(unsigned long c)
 {
 	const float d = 1.0f / 255.0f;
@@ -260,7 +260,7 @@ inline Color<float>::Color(unsigned long c)
 	a = (float)((c & 0xFF000000) >> 24) * d;
 }
 
-template<>
+template <>
 inline Color<short>::Color(unsigned long c)
 {
 	// 4.12 fixed-point format
@@ -270,7 +270,7 @@ inline Color<short>::Color(unsigned long c)
 	a = (short)((c & 0xFF000000) >> 20);
 }
 
-template<>
+template <>
 inline Color<byte>::Color(unsigned long c)
 {
 	r = (byte)((c & 0x00FF0000) >> 16);
@@ -279,7 +279,7 @@ inline Color<byte>::Color(unsigned long c)
 	a = (byte)((c & 0xFF000000) >> 24);
 }
 
-template<class T>
+template <class T>
 inline Color<T>::Color(T r_, T g_, T b_, T a_)
 {
 	r = r_;
@@ -288,7 +288,7 @@ inline Color<T>::Color(T r_, T g_, T b_, T a_)
 	a = a_;
 }
 
-template<>
+template <>
 inline Color<float>::operator unsigned int() const
 {
 	return ((unsigned int)min(b * 255.0f, 255.0f) << 0) |
@@ -297,7 +297,7 @@ inline Color<float>::operator unsigned int() const
 	       ((unsigned int)min(a * 255.0f, 255.0f) << 24);
 }
 
-template<>
+template <>
 inline Color<short>::operator unsigned int() const
 {
 	return ((unsigned int)min(b >> 4, 255) << 0) |
@@ -306,41 +306,41 @@ inline Color<short>::operator unsigned int() const
 	       ((unsigned int)min(a >> 4, 255) << 24);
 }
 
-template<>
+template <>
 inline Color<byte>::operator unsigned int() const
 {
 	return (b << 0) +
 	       (g << 8) +
 	       (r << 16) +
-		   (a << 24);
+	       (a << 24);
 }
 
-template<class T>
+template <class T>
 inline T &Color<T>::operator[](int i)
 {
 	return (&r)[i];
 }
 
-template<class T>
+template <class T>
 inline const T &Color<T>::operator[](int i) const
 {
 	return (&r)[i];
 }
 
-template<class T>
+template <class T>
 inline Color<T> Color<T>::operator+() const
 {
 	return *this;
 }
 
-template<class T>
+template <class T>
 inline Color<T> Color<T>::operator-() const
 {
 	return Color(-r, -g, -b, -a);
 }
 
-template<class T>
-inline Color<T> &Color<T>::operator=(const Color& c)
+template <class T>
+inline Color<T> &Color<T>::operator=(const Color &c)
 {
 	r = c.r;
 	g = c.g;
@@ -350,7 +350,7 @@ inline Color<T> &Color<T>::operator=(const Color& c)
 	return *this;
 }
 
-template<class T>
+template <class T>
 inline Color<T> &Color<T>::operator+=(const Color &c)
 {
 	r += c.r;
@@ -361,7 +361,7 @@ inline Color<T> &Color<T>::operator+=(const Color &c)
 	return *this;
 }
 
-template<class T>
+template <class T>
 inline Color<T> &Color<T>::operator*=(float l)
 {
 	*this = l * *this;
@@ -369,25 +369,25 @@ inline Color<T> &Color<T>::operator*=(float l)
 	return *this;
 }
 
-template<class T>
+template <class T>
 inline Color<T> operator+(const Color<T> &c1, const Color<T> &c2)
 {
 	return Color<T>(c1.r + c2.r,
 	                c1.g + c2.g,
 	                c1.b + c2.b,
-	                c1.a + c2.a);	
+	                c1.a + c2.a);
 }
 
-template<class T>
+template <class T>
 inline Color<T> operator-(const Color<T> &c1, const Color<T> &c2)
 {
 	return Color<T>(c1.r - c2.r,
 	                c1.g - c2.g,
 	                c1.b - c2.b,
-	                c1.a - c2.a);	
+	                c1.a - c2.a);
 }
 
-template<class T>
+template <class T>
 inline Color<T> operator*(float l, const Color<T> &c)
 {
 	T r = (T)(l * c.r);
@@ -398,7 +398,7 @@ inline Color<T> operator*(float l, const Color<T> &c)
 	return Color<T>(r, g, b, a);
 }
 
-template<class T>
+template <class T>
 inline Color<T> operator*(const Color<T> &c1, const Color<T> &c2)
 {
 	T r = c1.r * c2.r;
@@ -409,7 +409,7 @@ inline Color<T> operator*(const Color<T> &c1, const Color<T> &c2)
 	return Color<T>(r, g, b, a);
 }
 
-template<>
+template <>
 inline Color<short> operator*(const Color<short> &c1, const Color<short> &c2)
 {
 	short r = c1.r * c2.r >> 12;
@@ -420,7 +420,7 @@ inline Color<short> operator*(const Color<short> &c1, const Color<short> &c2)
 	return Color<short>(r, g, b, a);
 }
 
-template<>
+template <>
 inline Color<byte> operator*(const Color<byte> &c1, const Color<byte> &c2)
 {
 	byte r = c1.r * c2.r >> 8;
@@ -431,10 +431,10 @@ inline Color<byte> operator*(const Color<byte> &c1, const Color<byte> &c2)
 	return Color<byte>(r, g, b, a);
 }
 
-template<class T>
+template <class T>
 inline Color<T> operator/(const Color<T> &c, float l)
 {
-	l = 1.0f / l; 
+	l = 1.0f / l;
 
 	T r = (T)(l * c.r);
 	T g = (T)(l * c.g);
@@ -444,10 +444,10 @@ inline Color<T> operator/(const Color<T> &c, float l)
 	return Color<T>(r, g, b, a);
 }
 
-template<class T>
+template <class T>
 inline Color<T> Color<T>::gradient(const Color<T> &c1, const Color<T> &c2, float d)
 {
-	d = 1.0f / d; 
+	d = 1.0f / d;
 
 	T r = (c2.r - c1.r) * d;
 	T g = (c2.g - c1.g) * d;
@@ -457,8 +457,8 @@ inline Color<T> Color<T>::gradient(const Color<T> &c1, const Color<T> &c2, float
 	return Color<T>(r, g, b, a);
 }
 
-template<class T>
-inline Color<T> Color<T>::shade(const Color<T> &c1, const Color<T>  &c2, float d)
+template <class T>
+inline Color<T> Color<T>::shade(const Color<T> &c1, const Color<T> &c2, float d)
 {
 	T r = c1.r + (T)(d * (c2.r - c1.r));
 	T g = c1.g + (T)(d * (c2.g - c1.g));
@@ -470,4 +470,4 @@ inline Color<T> Color<T>::shade(const Color<T> &c1, const Color<T>  &c2, float d
 
 }  // namespace sw
 
-#endif   // sw_Color_hpp
+#endif  // sw_Color_hpp
