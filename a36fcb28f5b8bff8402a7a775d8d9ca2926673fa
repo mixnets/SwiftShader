@@ -62,6 +62,30 @@
       "revId": "a36fcb28f5b8bff8402a7a775d8d9ca2926673fa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4a7999e_4c709e2d",
+        "filename": "clang-format.sh",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-11T21:50:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd305ceb_1efe9923",
+      "range": {
+        "startLine": 1,
+        "startChar": 10,
+        "endLine": 1,
+        "endChar": 11
+      },
+      "revId": "a36fcb28f5b8bff8402a7a775d8d9ca2926673fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
