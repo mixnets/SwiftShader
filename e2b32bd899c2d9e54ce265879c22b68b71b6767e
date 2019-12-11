@@ -34,6 +34,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "106ae2e1_8092a0e3",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T22:03:12Z",
+      "side": 1,
+      "message": "\u003e The local being \u0027auto numWorkgroups\u0027 ? That will be an RValue\u003c\u003e, so I don\u0027t see any additional JIT gains with this suggestion (if that\u0027s really what you meant).\n\nSorry for the unclearness. My suggestion is to replace \u0027auto numWorkgroups\u0027 of line 59 in the original code with \u0027routine-\u003enumWorkgroups\u0027 (and likewise at line 63 use \u0027routine-\u003enumWorkgroups\u0027 and similar for the other builtins), and not have any of the load ops happening at lines 57-67 of Patchset 19.\n\nsetInputBuiltin() doesn\u0027t call the lambda if the builtin variable isn\u0027t used (or declared to be more precise), so that already achieves avoiding extra JIT overhead.\n\nThe downside is leaving the value of \u0027routine-\u003enumWorkgroups\u0027 uninitialized, but like I said, in my opinion that\u0027s an acceptable compromise for now and there\u0027s ways to improve on it later. In fact we can probably do something similar to the delayed materialization and track whether a variable has a value stored into it yet before displaying in the debugger?",
+      "parentUuid": "2c4036b6_b1fcace5",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
