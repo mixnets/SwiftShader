@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "644fb712_cffcdea9",
+        "filename": ".clang-format",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T20:10:16Z",
+      "side": 1,
+      "message": "Should this file be added to src/ instead of ./ ?\n\nAt least for now it appears we only want things under src/ to be formatted. Can always move it up later if/when that becomes useful.",
+      "revId": "a36fcb28f5b8bff8402a7a775d8d9ca2926673fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef2ca2b0_2294a253",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T20:10:16Z",
+      "side": 1,
+      "message": "Happy to be overruled if this is deemed very useful by multiple team members, but I\u0027m not a big fan of adding more things to the root folder. Especially since on some platforms this probably doesn\u0027t run out of the box, and I imagine several of us will develop a specific workflow where we let the IDE apply .clang-format\n\nApologies if I jumped the gun and you marked this WIP because you didn\u0027t intend to have this landed.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 51
+      },
+      "revId": "a36fcb28f5b8bff8402a7a775d8d9ca2926673fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd305ceb_1efe9923",
+        "filename": "clang-format.sh",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-11T20:10:16Z",
+      "side": 1,
+      "message": "\"Device\" too?",
+      "range": {
+        "startLine": 1,
+        "startChar": 10,
+        "endLine": 1,
+        "endChar": 11
+      },
+      "revId": "a36fcb28f5b8bff8402a7a775d8d9ca2926673fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
