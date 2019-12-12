@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4fbf148c_11b3480c",
+        "filename": "src/Device/Color.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T09:31:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8bfa169_12046e98",
+      "range": {
+        "startLine": 23,
+        "startChar": 8,
+        "endLine": 23,
+        "endChar": 9
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5a30447_211779cf",
         "filename": "src/Device/LRUCache.hpp",
         "patchSetId": 10
@@ -45,6 +69,30 @@
       "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6727918_edfbc006",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T09:31:26Z",
+      "side": 1,
+      "message": "I assume there\u0027s nothing for me to do here?\n(I like to tick the \u0027Resolved\u0027 myself when commenting to indicate it is a non-actionable comment instead of a request-to-change).",
+      "parentUuid": "c5a30447_211779cf",
+      "range": {
+        "startLine": 101,
+        "startChar": 11,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -91,6 +139,30 @@
       "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ad2f237_0eed8fc9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T09:31:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bad26241_1981f175",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 1
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {

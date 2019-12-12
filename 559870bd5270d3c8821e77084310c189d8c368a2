@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "7de959d3_4dbccc2c",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T09:31:26Z",
+      "side": 1,
+      "message": "I still argue that they\u0027re beneficial to indicate that we\u0027re indexing based on dimensionality instead of an array element, especially as this file accesses builtins that are a mix of both.\n\n\u003e I expect X to be a local variable, not a constant.\n\nI would if it were \u0027x\u0027, but capitalized symbols are typically understood to be static and constant, much like MY_BIG_SHOUTY_FLAG.",
+      "parentUuid": "1d4a8a75_9eafbd49",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 2
+      },
+      "revId": "559870bd5270d3c8821e77084310c189d8c368a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4e5b508a_f7a81650",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 4
