@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1d4a8a75_9eafbd49",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "FWIW note that in the review of the code that introduced this enum I argued we shouldn\u0027t have these short names. When I see \"numWorkgroups[X]\" I expect X to be a local variable, not a constant.\n\nSo I hope one day this will get refactored and become moot.\n\nThat said I do think single-line enums can be useful, but that probably becomes a case for \"// clang-format off\", or a feature request.",
+      "parentUuid": "6166fee6_c8ad46b8",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 2
+      },
+      "revId": "559870bd5270d3c8821e77084310c189d8c368a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e5b508a_f7a81650",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 4

@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8bfa169_12046e98",
+        "filename": "src/Device/Color.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "I prefer no space here. My justification is that these can\u0027t exist separately, and thus they belong together. Conversely we put spaces around e.g. operators and after commas in argument lists because they separate expressions that could exist on their own. Also makes it consistent with e.g. Color\u003cshort\u003e and static_cast\u003cbyte\u003e also found in this file.",
+      "range": {
+        "startLine": 23,
+        "startChar": 8,
+        "endLine": 23,
+        "endChar": 9
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5a30447_211779cf",
+        "filename": "src/Device/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "Took me a while to convince myself this is OK. Similarly I\u0027ve seen e.g \"(void *)\" and \"sizeof(int *)\" in several places. I would have previously omitted the space, when there\u0027s no variable name, just a type.\n\nFirst, for those who would suggest using \u0027PointerAlignment: Left\u0027 instead:\n\"int* a, b;\" is a pointer and an integer, not two pointers, so \"int *a, b;\" is more helpful. Likewise \"int*\u0026 a;\" can be misread as being a pointer to a reference, which doesn\u0027t exist, while \"int *\u0026a;\" encourages right-to-left reading to see this is a reference to a pointer. Also note \"int *(\u0026a);\" is the same thing while \"(int*)\u0026 a;\" doesn\u0027t parse. With \"const\" and function pointers added to the mix it becomes even more important to encourage right-to-left reading for correct interpretation, which \u0027PointerAlignment: Right\u0027 achieves better. Note \"int a[2];\" despite also having the array next the name instead of the type like \"int[2] a;\"\n\nThis works equally well when there\u0027s no variable name involved. \"new Key *;\" emphasizes that we\u0027re allocating memory for a pointer.",
+      "range": {
+        "startLine": 101,
+        "startChar": 11,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb460d27_96ee2310",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 3810,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "On my Linux workstation this becomes \"mantissa\u003e \u003e e\", which doesn\u0027t compile.\n\nWriting \"(mantissa \u003e\u003e e)\" ensures it\u0027s left alone (also doesn\u0027t alter the \"e \u003c 24\", as desired).",
+      "range": {
+        "startLine": 3810,
+        "startChar": 20,
+        "endLine": 3810,
+        "endChar": 38
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bad26241_1981f175",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "I think this shouldn\u0027t be indented, for the same reasons we no longer indent namespaces (laid out in https://swiftshader-review.googlesource.com/c/SwiftShader/+/39348).\n\nEssentially this is no different from applying extern \"C\" to each function individually.",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 1
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e430c2bd_3acb7a11",
+        "filename": "src/WSI/libX11.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2019-12-12T08:14:57Z",
+      "side": 1,
+      "message": "Not sure why this got split while all the others are not.",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 34,
+        "endChar": 39
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
