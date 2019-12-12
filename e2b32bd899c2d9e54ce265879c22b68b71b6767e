@@ -70,6 +70,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c757e5c3_c9f0fd99",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T11:18:34Z",
+      "side": 1,
+      "message": "While we still try and settle on this, I\u0027ve folded away the autos (not that I think there was any performance hit here).",
+      "parentUuid": "65d7ca68_ea17d2b2",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
