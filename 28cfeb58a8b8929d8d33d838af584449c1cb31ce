@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "3b4efb8c_a81411fb",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T11:18:43Z",
+      "side": 1,
+      "message": "Wrapped in #ifdef ENABLE_VK_DEBUGGER, and also used std::unique_ptr\u003c\u003e to reduce the overhead to a single pointer.",
+      "parentUuid": "596736b3_f65ec2da",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 11
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fbc189bb_c4dfb37f",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 18
@@ -140,6 +164,30 @@
       "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38ed327e_e07e20c6",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T11:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33a30795_7ef0c7b0",
+      "range": {
+        "startLine": 157,
+        "startChar": 37,
+        "endLine": 157,
+        "endChar": 49
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
