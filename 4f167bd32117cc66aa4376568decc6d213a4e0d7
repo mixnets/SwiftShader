@@ -186,6 +186,30 @@
       "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93090ea6_35b296fb",
+        "filename": "src/WSI/libX11.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T10:42:22Z",
+      "side": 1,
+      "message": "It\u0027s because clang-format believe\u0027s this is a macro call. \u0027gc\u0027 or \u0027Gc\u0027 would make it format correctly.\nI\u0027ve tried to find ways around it, to no avail so far.",
+      "parentUuid": "e430c2bd_3acb7a11",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 34,
+        "endChar": 39
+      },
+      "revId": "4f167bd32117cc66aa4376568decc6d213a4e0d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
