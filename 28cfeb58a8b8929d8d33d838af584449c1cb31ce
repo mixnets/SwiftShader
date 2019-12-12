@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1c95aa6e_43e78c69",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T00:06:10Z",
+      "side": 1,
+      "message": "I\u0027m not entirely convinced.\n\nYes, it currently has a single instance in libVulkan.cpp, but this may not always be the case.\n\nPerhaps we will want to enable / disable the debugger functionality based on a vkCreateInstance() extension property?\nPerhaps we will want to have a different vk::dbg::Context implementation for ensuring spirv-opt passes behave as expected, by writing out each line transition state to a file, but without the overhead of a DAP connection?\nPerhaps we want to write unit / integration tests that verifies the expected vk::dbg::Context calls are made using a mock vk::dbg::Context?\n\nA couple of these examples are more than hypothetical, but I haven\u0027t formalized a proper plan to present to you yet. That and singletons being a global with a fancy name, and you know how much I love them. 😊",
+      "parentUuid": "ca5809ca_41d73a90",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "596736b3_f65ec2da",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T00:06:10Z",
+      "side": 1,
+      "message": "Fair point. It\u0027s easy to forget that a single shared_ptr is a pair of pointers.\n\nI can wrap this with a preprocessor flag for now, but I am hoping that I can get this into a state where it can be used as part of a standard-config build (i.e. default ENABLE_VK_DEBUGGER to true)\n\nWhat are your thoughts about pointer-indirecting the Debug structure (std::unique_ptr\u003cDebug\u003e)? This adds a runtime heap allocation overhead for when this is actually enabled and used, but who cares.\nThis would lower the general memory cost to an additional 8 bytes when runtime-disabled but still compiled in.\nIs that acceptable?",
+      "parentUuid": "658939a1_8c96f9d0",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 11
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fbc189bb_c4dfb37f",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 18
@@ -59,6 +107,30 @@
       "writtenOn": "2019-12-11T18:17:38Z",
       "side": 1,
       "message": "nit: Consider consistently calling this the debugger context. Similar arguments to why we went with ENABLE_VK_DEBUGGER instead of ENABLE_VK_DEBUG",
+      "range": {
+        "startLine": 157,
+        "startChar": 37,
+        "endLine": 157,
+        "endChar": 49
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33a30795_7ef0c7b0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-12T00:06:10Z",
+      "side": 1,
+      "message": "Sure thing. I think there\u0027s still a few places that use the old \u0027debug\u0027 name before your suggestion to rename to \u0027debugger\u0027.\nI\u0027ll see if I can find all of them and do one big rename.",
+      "parentUuid": "fbc189bb_c4dfb37f",
       "range": {
         "startLine": 157,
         "startChar": 37,
