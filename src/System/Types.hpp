@@ -99,6 +99,16 @@ struct vec : public vec_base<T, N>
 {
 	using vec_base<T, N>::v;
 
+	vec() = default;
+
+	constexpr vec(T scalar)
+	{
+		for(int i = 0; i < N; i++)
+		{
+			v[i] = scalar;
+		}
+	}
+
 	T& operator[](int i)
 	{
 		return v[i];
@@ -107,6 +117,24 @@ struct vec : public vec_base<T, N>
 	const T& operator[](int i) const
 	{
 		return v[i];
+	}
+
+	bool operator==(const vec &rhs)
+	{
+		for(int i = 0; i < N; i++)
+		{
+			if(v[i] != rhs.v[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool operator!=(const vec& rhs)
+	{
+		return !(*this == rhs);
 	}
 };
 
@@ -120,13 +148,7 @@ struct vec4 : public vec<T, 4>
 
 	vec4() = default;
 
-	constexpr vec4(T scalar)
-	{
-		x = scalar;
-		y = scalar;
-		z = scalar;
-		w = scalar;
-	}
+	using vec::vec;
 
 	constexpr vec4(T x, T y, T z, T w)
 	{
@@ -134,16 +156,6 @@ struct vec4 : public vec<T, 4>
 		this->y = y;
 		this->z = z;
 		this->w = w;
-	}
-
-	bool operator!=(const vec4 &rhs)
-	{
-		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
-	}
-
-	bool operator==(const vec4 &rhs)
-	{
-		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
 	}
 };
 
