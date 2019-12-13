@@ -1337,18 +1337,18 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		transpose4x4(current.x, current.y, current.z, current.w);
 		break;
 	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-	{
-		auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
-		auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
-		auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
-		auto a = (Int4(current.w) >> 14) & Int4(0x3);
-		Int4 packed = (a << 30) | (b << 20) | (g << 10) | r;
-		auto c02 = As<Int2>(Int4(packed.xzzz)); // TODO: auto c02 = packed.xz;
-		auto c13 = As<Int2>(Int4(packed.ywww)); // TODO: auto c13 = packed.yw;
-		current.x = UnpackLow(c02, c13);
-		current.y = UnpackHigh(c02, c13);
+		{
+			auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
+			auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
+			auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
+			auto a = (Int4(current.w) >> 14) & Int4(0x3);
+			Int4 packed = (a << 30) | (b << 20) | (g << 10) | r;
+			auto c02 = As<Int2>(Int4(packed.xzzz)); // TODO: auto c02 = packed.xz;
+			auto c13 = As<Int2>(Int4(packed.ywww)); // TODO: auto c13 = packed.yw;
+			current.x = UnpackLow(c02, c13);
+			current.y = UnpackHigh(c02, c13);
+		}
 		break;
-	}
 	default:
 		UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
 	}
@@ -1634,7 +1634,7 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			}
 		}
 		break;
-		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
+	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 		{
 			Pointer<Byte> buffer = cBuffer + 4 * x;
 

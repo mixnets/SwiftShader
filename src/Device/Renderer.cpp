@@ -53,87 +53,87 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 	switch(topology)
 	{
 	case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
-	{
-		auto index = start;
-		auto pointBatch = &(batch[0][0]);
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			*pointBatch++ = indices[index++];
-		}
-
-		// Repeat the last index to allow for SIMD width overrun.
-		index--;
-		for(unsigned int i = 0; i < 3; i++)
-		{
-			*pointBatch++ = indices[index];
+			auto index = start;
+			auto pointBatch = &(batch[0][0]);
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				*pointBatch++ = indices[index++];
+			}
+	
+			// Repeat the last index to allow for SIMD width overrun.
+			index--;
+			for(unsigned int i = 0; i < 3; i++)
+			{
+				*pointBatch++ = indices[index];
+			}
 		}
 		break;
-	}
 	case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
-	{
-		auto index = 2 * start;
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			batch[i][0] = indices[index + (provokeFirst ? 0 : 1)];
-			batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
-			batch[i][2] = indices[index + 1];
-
-			index += 2;
+			auto index = 2 * start;
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = indices[index + (provokeFirst ? 0 : 1)];
+				batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
+				batch[i][2] = indices[index + 1];
+	
+				index += 2;
+			}
 		}
 		break;
-	}
 	case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-	{
-		auto index = start;
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			batch[i][0] = indices[index + (provokeFirst ? 0 : 1)];
-			batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
-			batch[i][2] = indices[index + 1];
-
-			index += 1;
+			auto index = start;
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = indices[index + (provokeFirst ? 0 : 1)];
+				batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
+				batch[i][2] = indices[index + 1];
+	
+				index += 1;
+			}
 		}
 		break;
-	}
 	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
-	{
-		auto index = 3 * start;
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			batch[i][0] = indices[index + (provokeFirst ? 0 : 2)];
-			batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
-			batch[i][2] = indices[index + (provokeFirst ? 2 : 1)];
-
-			index += 3;
+			auto index = 3 * start;
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = indices[index + (provokeFirst ? 0 : 2)];
+				batch[i][1] = indices[index + (provokeFirst ? 1 : 0)];
+				batch[i][2] = indices[index + (provokeFirst ? 2 : 1)];
+	
+				index += 3;
+			}
 		}
 		break;
-	}
 	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-	{
-		auto index = start;
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			batch[i][0] = indices[index + (provokeFirst ? 0 : 2)];
-			batch[i][1] = indices[index + ((start + i) & 1) + (provokeFirst ? 1 : 0)];
-			batch[i][2] = indices[index + (~(start + i) & 1) + (provokeFirst ? 1 : 0)];
-
-			index += 1;
+			auto index = start;
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = indices[index + (provokeFirst ? 0 : 2)];
+				batch[i][1] = indices[index + ((start + i) & 1) + (provokeFirst ? 1 : 0)];
+				batch[i][2] = indices[index + (~(start + i) & 1) + (provokeFirst ? 1 : 0)];
+	
+				index += 1;
+			}
 		}
 		break;
-	}
 	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-	{
-		auto index = start + 1;
-		for(unsigned int i = 0; i < triangleCount; i++)
 		{
-			batch[i][provokeFirst ? 0 : 2] = indices[index + 0];
-			batch[i][provokeFirst ? 1 : 0] = indices[index + 1];
-			batch[i][provokeFirst ? 2 : 1] = indices[0];
-
-			index += 1;
+			auto index = start + 1;
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][provokeFirst ? 0 : 2] = indices[index + 0];
+				batch[i][provokeFirst ? 1 : 0] = indices[index + 1];
+				batch[i][provokeFirst ? 2 : 1] = indices[0];
+	
+				index += 1;
+			}
 		}
 		break;
-	}
 	default:
 		ASSERT(false);
 		return false;
