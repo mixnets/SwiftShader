@@ -1909,32 +1909,32 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 			transpose4x4(c.x, c.y, c.z, c.w);
 			break;
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-		{
-			Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
-			t.x = *Pointer<Float>(buffer + index[0] * 4);
-			t.y = *Pointer<Float>(buffer + index[1] * 4);
-			t.z = *Pointer<Float>(buffer + index[2] * 4);
-			t.w = *Pointer<Float>(buffer + index[3] * 4);
-			t0 = As<UInt4>(t);
-			c.w = Float4(UInt4(1) << ((t0 >> 27) & UInt4(0x1F))) * Float4(1.0f / (1 << 24));
-			c.x = Float4((t0) & UInt4(0x1FF)) * c.w;
-			c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
-			c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
+			{
+				Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
+				t.x = *Pointer<Float>(buffer + index[0] * 4);
+				t.y = *Pointer<Float>(buffer + index[1] * 4);
+				t.z = *Pointer<Float>(buffer + index[2] * 4);
+				t.w = *Pointer<Float>(buffer + index[3] * 4);
+				t0 = As<UInt4>(t);
+				c.w = Float4(UInt4(1) << ((t0 >> 27) & UInt4(0x1F))) * Float4(1.0f / (1 << 24));
+				c.x = Float4((t0) & UInt4(0x1FF)) * c.w;
+				c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
+				c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
+			}
 			break;
-		}
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		{
-			Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
-			t.x = *Pointer<Float>(buffer + index[0] * 4);
-			t.y = *Pointer<Float>(buffer + index[1] * 4);
-			t.z = *Pointer<Float>(buffer + index[2] * 4);
-			t.w = *Pointer<Float>(buffer + index[3] * 4);
-			t0 = As<UInt4>(t);
-			c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
-			c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
-			c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+			{
+				Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
+				t.x = *Pointer<Float>(buffer + index[0] * 4);
+				t.y = *Pointer<Float>(buffer + index[1] * 4);
+				t.z = *Pointer<Float>(buffer + index[2] * 4);
+				t.w = *Pointer<Float>(buffer + index[3] * 4);
+				t0 = As<UInt4>(t);
+				c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
+				c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
+				c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+			}
 			break;
-		}
 		default:
 			UNIMPLEMENTED("Format %d", VkFormat(state.textureFormat));
 		}

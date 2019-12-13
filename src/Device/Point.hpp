@@ -35,7 +35,7 @@ struct Point
 		float p[3];
 
 		struct
-		{	
+		{
 			float x;
 			float y;
 			float z;
