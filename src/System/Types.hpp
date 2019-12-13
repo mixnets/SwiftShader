@@ -130,6 +130,24 @@ struct vec : public vec_base<T, N>
 	{
 		return v[i];
 	}
+
+	bool operator==(const vec &rhs)
+	{
+		for(int i = 0; i < N; i++)
+		{
+			if(v[i] != rhs.v[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool operator!=(const vec& rhs)
+	{
+		return !(*this == rhs);
+	}
 };
 
 template<typename T>
@@ -150,16 +168,6 @@ struct vec4 : public vec<T, 4>
 	constexpr vec4(T x, T y, T z, T w)
 		: vec<T, 4>(x, y, z, w)
 	{
-	}
-
-	bool operator!=(const vec4 &rhs)
-	{
-		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
-	}
-
-	bool operator==(const vec4 &rhs)
-	{
-		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
 	}
 };
 
