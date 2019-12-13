@@ -176,8 +176,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				auto v = src.UInt(i);
 				auto mask = Bitmask32(offset + count) ^ Bitmask32(offset);
 				dst.move(i, (v & ~mask) | ((insert << offset) & mask));
-				break;
 			}
+			break;
 			case spv::OpBitFieldSExtract:
 			case spv::OpBitFieldUExtract:
 			{
@@ -193,8 +193,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 					out |= sext;
 				}
 				dst.move(i, out);
-				break;
 			}
+			break;
 			case spv::OpBitReverse:
 			{
 				// TODO: Add an intrinsic to reactor. Even if there isn't a
@@ -208,8 +208,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				v = ((v >> 8) & SIMD::UInt(0x00FF00FF)) | ((v & SIMD::UInt(0x00FF00FF)) << 8);
 				v = (v >> 16) | (v << 16);
 				dst.move(i, v);
-				break;
 			}
+			break;
 			case spv::OpBitCount:
 				dst.move(i, CountBits(src.UInt(i)));
 				break;
@@ -264,8 +264,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				v = Insert(v, secondRow, 2);
 				v = Insert(v, secondRow, 3);
 				dst.move(i, v);
-				break;
 			}
+			break;
 			case spv::OpDPdyFine:
 			{
 				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
@@ -274,8 +274,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				v = Insert(v, secondColumn, 1);
 				v = Insert(v, secondColumn, 3);
 				dst.move(i, v);
-				break;
 			}
+			break;
 			case spv::OpFwidthFine:
 			{
 				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
@@ -289,8 +289,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dpdy = Insert(dpdy, secondColumn, 1);
 				dpdy = Insert(dpdy, secondColumn, 3);
 				dst.move(i, Abs(dpdx) + Abs(dpdy));
-				break;
 			}
+			break;
 			case spv::OpQuantizeToF16:
 			{
 				// Note: keep in sync with the specialization constant version in EvalSpecConstantUnaryOp
@@ -305,8 +305,8 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				v = sign | (isInfOrNan & SIMD::Int(0x7F800000)) | (~isInfOrNan & v);
 				v |= isNaN & SIMD::Int(0x400000);
 				dst.move(i, v);
-				break;
 			}
+			break;
 			default:
 				UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 		}
@@ -343,14 +343,14 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
 				a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1)));  // prevent integer overflow
 				dst.move(i, a / b);
-				break;
 			}
+			break;
 			case spv::OpUDiv:
 			{
 				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
 				dst.move(i, lhs.UInt(i) / (rhs.UInt(i) | zeroMask));
-				break;
 			}
+			break;
 			case spv::OpSRem:
 			{
 				SIMD::Int a = lhs.Int(i);
@@ -358,8 +358,8 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
 				a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1)));  // prevent integer overflow
 				dst.move(i, a % b);
-				break;
 			}
+			break;
 			case spv::OpSMod:
 			{
 				SIMD::Int a = lhs.Int(i);
@@ -376,14 +376,14 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				auto signDiff = CmpNEQ(CmpGE(a, SIMD::Int(0)), CmpGE(b, SIMD::Int(0)));
 				auto fixedMod = mod + (b & CmpNEQ(mod, SIMD::Int(0)) & signDiff);
 				dst.move(i, As<SIMD::Float>(fixedMod));
-				break;
 			}
+			break;
 			case spv::OpUMod:
 			{
 				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
 				dst.move(i, lhs.UInt(i) % (rhs.UInt(i) | zeroMask));
-				break;
 			}
+			break;
 			case spv::OpIEqual:
 			case spv::OpLogicalEqual:
 				dst.move(i, CmpEQ(lhs.Int(i), rhs.Int(i)));

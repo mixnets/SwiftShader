@@ -67,8 +67,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			{
 				*pointBatch++ = indices[index];
 			}
-			break;
 		}
+		break;
 		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
 		{
 			auto index = 2 * start;
@@ -80,8 +80,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 				index += 2;
 			}
-			break;
 		}
+		break;
 		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
 		{
 			auto index = start;
@@ -93,8 +93,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 				index += 1;
 			}
-			break;
 		}
+		break;
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
 		{
 			auto index = 3 * start;
@@ -106,8 +106,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 				index += 3;
 			}
-			break;
 		}
+		break;
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
 		{
 			auto index = start;
@@ -119,8 +119,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 				index += 1;
 			}
-			break;
 		}
+		break;
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 		{
 			auto index = start + 1;
@@ -132,8 +132,8 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 				index += 1;
 			}
-			break;
 		}
+		break;
 		default:
 			ASSERT(false);
 			return false;

@@ -78,8 +78,8 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 				auto sel = cond.constantValue[condIsScalar ? 0 : i];
 				result.constantValue[i] = sel ? left.constantValue[i] : right.constantValue[i];
 			}
-			break;
 		}
+		break;
 
 		case spv::OpCompositeExtract:
 		{
@@ -91,8 +91,8 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			{
 				result.constantValue[i] = compositeObject.constantValue[firstComponent + i];
 			}
-			break;
 		}
+		break;
 
 		case spv::OpCompositeInsert:
 		{
@@ -116,8 +116,8 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			{
 				result.constantValue[i] = oldObject.constantValue[i];
 			}
-			break;
 		}
+		break;
 
 		case spv::OpVectorShuffle:
 		{
@@ -142,8 +142,8 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 					result.constantValue[i] = secondHalf.constantValue[selector - getType(firstHalf.type).sizeInComponents];
 				}
 			}
-			break;
 		}
+		break;
 
 		default:
 			// Other spec constant ops are possible, but require capabilities that are
@@ -195,8 +195,8 @@ void SpirvShader::EvalSpecConstantUnaryOp(InsnIterator insn)
 				v &= ~isZero | 0x80000000;
 				v = sign | (isInfOrNan & 0x7F800000) | (~isInfOrNan & v);
 				v |= isNaN & 0x400000;
-				break;
 			}
+			break;
 			default:
 				UNREACHABLE("EvalSpecConstantUnaryOp op: %s", OpcodeName(opcode).c_str());
 		}

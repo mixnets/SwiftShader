@@ -138,16 +138,16 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * static_cast<uint32_t>(sizeof(float)) * SIMD::Width;
 			state->createPointer(resultId, SIMD::Pointer(base, size));
-			break;
 		}
+		break;
 		case spv::StorageClassWorkgroup:
 		{
 			ASSERT(objectTy.opcode() == spv::OpTypePointer);
 			auto base = &routine->workgroupMemory[0];
 			auto size = workgroupMemory.size();
 			state->createPointer(resultId, SIMD::Pointer(base, size, workgroupMemory.offsetOf(resultId)));
-			break;
 		}
+		break;
 		case spv::StorageClassInput:
 		{
 			if(object.kind == Object::Kind::InterfaceVariable)
@@ -165,8 +165,8 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			auto elementTy = getType(objectTy.element);
 			auto size = elementTy.sizeInComponents * static_cast<uint32_t>(sizeof(float)) * SIMD::Width;
 			state->createPointer(resultId, SIMD::Pointer(base, size));
-			break;
 		}
+		break;
 		case spv::StorageClassUniformConstant:
 		{
 			const auto &d = descriptorDecorations.at(resultId);
@@ -189,8 +189,8 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 				// used? Or perhaps strip these unused variable declarations as
 				// a preprocess on the SPIR-V?
 			}
-			break;
 		}
+		break;
 		case spv::StorageClassUniform:
 		case spv::StorageClassStorageBuffer:
 		{
@@ -208,13 +208,11 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			{
 				state->createPointer(resultId, SIMD::Pointer(nullptr, 0));
 			}
-			break;
 		}
+		break;
 		case spv::StorageClassPushConstant:
-		{
 			state->createPointer(resultId, SIMD::Pointer(routine->pushConstants, vk::MAX_PUSH_CONSTANT_SIZE));
 			break;
-		}
 		default:
 			UNREACHABLE("Storage class %d", objectTy.storageClass);
 			break;
@@ -227,6 +225,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		{
 			UNIMPLEMENTED("Non-constant initializers not yet implemented");
 		}
+
 		switch(objectTy.storageClass)
 		{
 			case spv::StorageClassOutput:
@@ -242,8 +241,8 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 					auto robustness = OutOfBoundsBehavior::UndefinedBehavior;  // Local variables are always within bounds.
 					p.Store(initialValue.Float(el.index), robustness, state->activeLaneMask());
 				});
-				break;
 			}
+			break;
 			default:
 				ASSERT_MSG(initializerId == 0, "Vulkan does not permit variables of storage class %d to have initializers", int(objectTy.storageClass));
 		}
@@ -326,8 +325,8 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 			{
 				VisitMemoryObjectInner(type.definition.word(2), d, index, offset + elemStride * i, f);
 			}
-			break;
 		}
+		break;
 		case spv::OpTypeMatrix:
 		{
 			auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
@@ -337,8 +336,8 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 				ASSERT(d.HasMatrixStride);
 				VisitMemoryObjectInner(type.definition.word(2), d, index, offset + columnStride * i, f);
 			}
-			break;
 		}
+		break;
 		case spv::OpTypeStruct:
 			for(auto i = 0u; i < type.definition.wordCount() - 2; i++)
 			{
@@ -354,8 +353,8 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 				ASSERT(d.HasArrayStride);
 				VisitMemoryObjectInner(type.definition.word(2), d, index, offset + i * d.ArrayStride, f);
 			}
-			break;
 		}
+		break;
 		default:
 			UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
 	}
@@ -424,6 +423,7 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitS
 				return SIMD::Pointer(data, size);
 			}
 		}
+		break;
 
 		default:
 			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
@@ -438,6 +438,7 @@ std::memory_order SpirvShader::MemoryOrder(spv::MemorySemanticsMask memorySemant
 	                                                            spv::MemorySemanticsReleaseMask |
 	                                                            spv::MemorySemanticsAcquireReleaseMask |
 	                                                            spv::MemorySemanticsSequentiallyConsistentMask);
+
 	switch(control)
 	{
 		case spv::MemorySemanticsMaskNone: return std::memory_order_relaxed;

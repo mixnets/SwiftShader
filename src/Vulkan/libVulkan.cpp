@@ -813,8 +813,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 					UNSUPPORTED("importInfo->handleType %u", importInfo->handleType);
 					return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 				}
-				break;
 			}
+			break;
 			case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
 			{
 				auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(allocationInfo);
@@ -823,8 +823,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 					UNSUPPORTED("exportInfo->handleTypes %u", exportInfo->handleTypes);
 					return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 				}
-				break;
 			}
+			break;
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 			default:
 				WARN("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());

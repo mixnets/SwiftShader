@@ -1345,8 +1345,8 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			auto c13 = As<Int2>(Int4(packed.ywww));  // TODO: auto c13 = packed.yw;
 			current.x = UnpackLow(c02, c13);
 			current.y = UnpackHigh(c02, c13);
-			break;
 		}
+		break;
 		default:
 			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
 	}

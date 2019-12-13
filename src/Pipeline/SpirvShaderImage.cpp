@@ -302,7 +302,10 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	Array<SIMD::Float> out(4);
 	Call<ImageSampler>(cache.function, texture, sampler, &in[0], &out[0], state->routine->constants);
 
-	for(auto i = 0u; i < resultType.sizeInComponents; i++) { result.move(i, out[i]); }
+	for(auto i = 0u; i < resultType.sizeInComponents; i++)
+	{
+		result.move(i, out[i]);
+	}
 
 	return EmitResult::Continue;
 }
@@ -361,19 +364,15 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 	{
 		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 		case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-		{
 			extent = descriptor + OFFSET(vk::StorageImageDescriptor, extent);                           // int[3]*
 			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers));  // uint32_t
 			break;
-		}
 		case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 		case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 		case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-		{
 			extent = descriptor + OFFSET(vk::SampledImageDescriptor, extent);                           // int[3]*
 			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, arrayLayers));  // uint32_t
 			break;
-		}
 		default:
 			UNREACHABLE("Image descriptorType: %d", int(bindingLayout.descriptorType));
 	}
