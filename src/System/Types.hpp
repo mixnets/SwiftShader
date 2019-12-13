@@ -71,22 +71,59 @@ typedef ALIGN(16, unsigned int) uint4[4];
 
 typedef ALIGN(8, float) float2[2];
 
-template<typename T>
-struct alignas(sizeof(T) * 4) vec4
+template<typename T, int N>
+struct alignas(sizeof(T) * N) vec_base
 {
-	T x;
-	T y;
-	T z;
-	T w;
+	T v[N];
+};
 
-	T &operator[](int i)
+template<typename T>
+struct alignas(sizeof(T) * 4) vec_base<T, 4>
+{
+	union
 	{
-		return (&x)[i];
+		T v[4];
+
+		struct
+		{
+			T x;
+			T y;
+			T z;
+			T w;
+		};
+	};
+};
+
+template<typename T, int N>
+struct vec : public vec_base<T, N>
+{
+	T& operator[](int i)
+	{
+		return v[i];
 	}
 
-	const T &operator[](int i) const
+	const T& operator[](int i) const
 	{
-		return (&x)[i];
+		return v[i];
+	}
+};
+
+template<typename T>
+struct vec4 : public vec<T, 4>
+{
+	using vec_base<T, 4>::x;
+	using vec_base<T, 4>::y;
+	using vec_base<T, 4>::z;
+	using vec_base<T, 4>::w;
+
+	vec4() = default;
+
+	vec4(T x, T y, T z, T w)
+	{
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
 	}
 
 	bool operator!=(const vec4 &rhs)
@@ -105,7 +142,12 @@ using float4 = vec4<float>;
 
 inline constexpr float4 vector(float x, float y, float z, float w)
 {
-	return { x, y, z, w };
+	float4 v;
+	v.x = x;
+	v.y = y;
+	v.z = z;
+	v.w = w;
+	return v;
 }
 
 inline constexpr float4 replicate(float f)
