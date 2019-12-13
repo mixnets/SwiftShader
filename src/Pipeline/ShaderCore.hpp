@@ -191,6 +191,8 @@ void transpose2x4(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3);
 void transpose4xN(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3, int N);
 
 UInt4 halfToFloatBits(UInt4 halfBits);
+void r11g11b10ToFloat(rr::Pointer<Byte> data, Float4& c);
+UInt r11g11b10pack(Float4& c);
 
 rr::RValue<rr::Bool> AnyTrue(rr::RValue<sw::SIMD::Int> const &ints);
 

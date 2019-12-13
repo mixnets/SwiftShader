@@ -567,6 +567,35 @@ UInt4 halfToFloatBits(UInt4 halfBits)
 	return sign32 | (norm32 & ~isDnormOrZero) | (denorm32 & isDnormOrZero);
 }
 
+void r11g11b10ToFloat(rr::Pointer<Byte> data, Float4 &c)
+{
+	// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
+	// Since the Half float format also has a 5 bit exponent, we can convert these formats to half by
+	// copy/pasting the bits so the the exponent bits and top mantissa bits are aligned to the half format.
+	// In this case, we have:
+	//              B B B B B B B B B B G G G G G G G G G G G R R R R R R R R R R R
+	// 1st Short:                                  |xxxxxxxxxx---------------------|
+	// 2nd Short:                  |xxxx---------------------xxxxxx|
+	// 3rd Short: |--------------------xxxxxxxxxxxx|
+	// These memory reads overlap, but each of them contains an entire channel, so we can read this without
+	// any int -> short conversion.
+	c.x = Float(As<Half>((*Pointer<UShort>(data + 0) & UShort(0x07FF)) << UShort(4)));
+	c.y = Float(As<Half>((*Pointer<UShort>(data + 1) & UShort(0x3FF8)) << UShort(1)));
+	c.z = Float(As<Half>((*Pointer<UShort>(data + 2) & UShort(0xFFC0)) >> UShort(1)));
+	c.w = 1.0f;
+}
+
+UInt r11g11b10pack(Float4 &c)
+{
+	// 10 (or 11) bit float formats are unsigned formats with a 5 bit exponent and a 5 (or 6) bit mantissa.
+	// Since the 16-bit half-precision float format also has a 5 bit exponent, we can extract these minifloats from them.
+
+	// FIXME(b/138944025): Handle negative values, Inf, and NaN.
+	// FIXME(b/138944025): Perform rounding before truncating the mantissa.
+	return ((UInt(As<UShort>(Half(c.x))) & 0x00007FF0) >> 4) | // r
+	       ((UInt(As<UShort>(Half(c.y))) & 0x00007FF0) << 7) | // g
+	       ((UInt(As<UShort>(Half(c.z))) & 0x00007FE0) << 17); // b
+}
 
 rr::RValue<rr::Bool> AnyTrue(rr::RValue<sw::SIMD::Int> const &ints)
 {
