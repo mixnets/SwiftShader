@@ -23,6 +23,31 @@ namespace sw {
 
 Constants constants;
 
+// VK_SAMPLE_COUNT_4_BIT
+// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#primsrast-multisampling
+const float Constants::VkSampleLocations4[][2] = {
+	{0.375, 0.125},
+	{0.875, 0.375},
+	{0.125, 0.625},
+	{0.625, 0.875},
+};
+
+// Vulkan spec sample positions are relative to 0,0 in top left corner, with Y+ going down.
+// Convert to our space, with 0,0 in center, and Y+ going up.
+const float Constants::SampleLocationsX[4] = {
+	VkSampleLocations4[0][0] - 0.5f,
+	VkSampleLocations4[1][0] - 0.5f,
+	VkSampleLocations4[2][0] - 0.5f,
+	VkSampleLocations4[3][0] - 0.5f,
+};
+
+const float Constants::SampleLocationsY[4] = {
+	-(VkSampleLocations4[0][1] - 0.5f),
+	-(VkSampleLocations4[1][1] - 0.5f),
+	-(VkSampleLocations4[2][1] - 0.5f),
+	-(VkSampleLocations4[3][1] - 0.5f),
+};
+
 Constants::Constants()
 {
 	static const unsigned int transposeBit0[16] =
@@ -290,14 +315,14 @@ Constants::Constants()
 		sRGBtoLinear12_16[i] = (unsigned short)(clamp(sw::sRGBtoLinear((float)i / 0x0FFF) * 0xFFFF + 0.5f, 0.0f, (float)0xFFFF));
 	}
 
-	constexpr float4 X[4] = {
+	const float4 X[4] = {
 		sw::replicate(SampleLocationsX[0]),
 		sw::replicate(SampleLocationsX[1]),
 		sw::replicate(SampleLocationsX[2]),
 		sw::replicate(SampleLocationsX[3]),
 	};
 
-	constexpr float4 Y[4] = {
+	const float4 Y[4] = {
 		sw::replicate(SampleLocationsY[0]),
 		sw::replicate(SampleLocationsY[1]),
 		sw::replicate(SampleLocationsY[2]),
