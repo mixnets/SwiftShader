@@ -61,20 +61,19 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 		switch (extensionCreateInfo->sType)
 		{
 		case VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO:
-		{
-			// Renderpass uses multiview if this structure is present AND some subpass specifies
-			// a nonzero view mask
-			auto const *multiviewCreateInfo = reinterpret_cast<VkRenderPassMultiviewCreateInfo const *>(extensionCreateInfo);
-			for (auto i = 0u; i < pCreateInfo->subpassCount; i++)
 			{
-				masks[i] = multiviewCreateInfo->pViewMasks[i];
-				// This is now a multiview renderpass, so make the masks available
-				if (masks[i])
-					viewMasks = masks;
+				// Renderpass uses multiview if this structure is present AND some subpass specifies
+				// a nonzero view mask
+				auto const *multiviewCreateInfo = reinterpret_cast<VkRenderPassMultiviewCreateInfo const *>(extensionCreateInfo);
+				for (auto i = 0u; i < pCreateInfo->subpassCount; i++)
+				{
+					masks[i] = multiviewCreateInfo->pViewMasks[i];
+					// This is now a multiview renderpass, so make the masks available
+					if (masks[i])
+						viewMasks = masks;
+				}
 			}
-
 			break;
-		}
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 			break;

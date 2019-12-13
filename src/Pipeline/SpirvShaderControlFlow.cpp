@@ -39,75 +39,75 @@ SpirvShader::Block::Block(InsnIterator begin, InsnIterator end) : begin_(begin),
 
 	switch (insns[1].opcode())
 	{
-		case spv::OpBranch:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(1)));
+	case spv::OpBranch:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(1)));
 
-			switch (insns[0].opcode())
-			{
-				case spv::OpLoopMerge:
-					kind = Loop;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					continueTarget = Block::ID(mergeInstruction.word(2));
-					break;
-
-				default:
-					kind = Block::Simple;
-					break;
-			}
-			break;
-
-		case spv::OpBranchConditional:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(2)));
-			outs.emplace(Block::ID(branchInstruction.word(3)));
-
-			switch (insns[0].opcode())
-			{
-				case spv::OpSelectionMerge:
-					kind = StructuredBranchConditional;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					break;
-
-				case spv::OpLoopMerge:
-					kind = Loop;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					continueTarget = Block::ID(mergeInstruction.word(2));
-					break;
-
-				default:
-					kind = UnstructuredBranchConditional;
-					break;
-			}
-			break;
-
-		case spv::OpSwitch:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(2)));
-			for (uint32_t w = 4; w < branchInstruction.wordCount(); w += 2)
-			{
-				outs.emplace(Block::ID(branchInstruction.word(w)));
-			}
-
-			switch (insns[0].opcode())
-			{
-				case spv::OpSelectionMerge:
-					kind = StructuredSwitch;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					break;
-
-				default:
-					kind = UnstructuredSwitch;
-					break;
-			}
+		switch (insns[0].opcode())
+		{
+		case spv::OpLoopMerge:
+			kind = Loop;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			continueTarget = Block::ID(mergeInstruction.word(2));
 			break;
 
 		default:
+			kind = Block::Simple;
 			break;
+		}
+		break;
+
+	case spv::OpBranchConditional:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(2)));
+		outs.emplace(Block::ID(branchInstruction.word(3)));
+
+		switch (insns[0].opcode())
+		{
+		case spv::OpSelectionMerge:
+			kind = StructuredBranchConditional;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			break;
+
+		case spv::OpLoopMerge:
+			kind = Loop;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			continueTarget = Block::ID(mergeInstruction.word(2));
+			break;
+
+		default:
+			kind = UnstructuredBranchConditional;
+			break;
+		}
+		break;
+
+	case spv::OpSwitch:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(2)));
+		for (uint32_t w = 4; w < branchInstruction.wordCount(); w += 2)
+		{
+			outs.emplace(Block::ID(branchInstruction.word(w)));
+		}
+
+		switch (insns[0].opcode())
+		{
+		case spv::OpSelectionMerge:
+			kind = StructuredSwitch;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			break;
+
+		default:
+			kind = UnstructuredSwitch;
+			break;
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 

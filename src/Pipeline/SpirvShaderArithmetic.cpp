@@ -168,48 +168,48 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			dst.move(i, ~src.UInt(i));
 			break;
 		case spv::OpBitFieldInsert:
-		{
-			auto insert = GenericValue(this, state, insn.word(4)).UInt(i);
-			auto offset = GenericValue(this, state, insn.word(5)).UInt(0);
-			auto count = GenericValue(this, state, insn.word(6)).UInt(0);
-			auto one = SIMD::UInt(1);
-			auto v = src.UInt(i);
-			auto mask = Bitmask32(offset + count) ^ Bitmask32(offset);
-			dst.move(i, (v & ~mask) | ((insert << offset) & mask));
+			{
+				auto insert = GenericValue(this, state, insn.word(4)).UInt(i);
+				auto offset = GenericValue(this, state, insn.word(5)).UInt(0);
+				auto count = GenericValue(this, state, insn.word(6)).UInt(0);
+				auto one = SIMD::UInt(1);
+				auto v = src.UInt(i);
+				auto mask = Bitmask32(offset + count) ^ Bitmask32(offset);
+				dst.move(i, (v & ~mask) | ((insert << offset) & mask));
+			}
 			break;
-		}
 		case spv::OpBitFieldSExtract:
 		case spv::OpBitFieldUExtract:
-		{
-			auto offset = GenericValue(this, state, insn.word(4)).UInt(0);
-			auto count = GenericValue(this, state, insn.word(5)).UInt(0);
-			auto one = SIMD::UInt(1);
-			auto v = src.UInt(i);
-			SIMD::UInt out = (v >> offset) & Bitmask32(count);
-			if (insn.opcode() == spv::OpBitFieldSExtract)
 			{
-				auto sign = out & NthBit32(count - one);
-				auto sext = ~(sign - one);
-				out |= sext;
+				auto offset = GenericValue(this, state, insn.word(4)).UInt(0);
+				auto count = GenericValue(this, state, insn.word(5)).UInt(0);
+				auto one = SIMD::UInt(1);
+				auto v = src.UInt(i);
+				SIMD::UInt out = (v >> offset) & Bitmask32(count);
+				if (insn.opcode() == spv::OpBitFieldSExtract)
+				{
+					auto sign = out & NthBit32(count - one);
+					auto sext = ~(sign - one);
+					out |= sext;
+				}
+				dst.move(i, out);
 			}
-			dst.move(i, out);
 			break;
-		}
 		case spv::OpBitReverse:
-		{
-			// TODO: Add an intrinsic to reactor. Even if there isn't a
-			// single vector instruction, there may be target-dependent
-			// ways to make this faster.
-			// https://graphics.stanford.edu/~seander/bithacks.html#ReverseParallel
-			SIMD::UInt v = src.UInt(i);
-			v = ((v >> 1) & SIMD::UInt(0x55555555)) | ((v & SIMD::UInt(0x55555555)) << 1);
-			v = ((v >> 2) & SIMD::UInt(0x33333333)) | ((v & SIMD::UInt(0x33333333)) << 2);
-			v = ((v >> 4) & SIMD::UInt(0x0F0F0F0F)) | ((v & SIMD::UInt(0x0F0F0F0F)) << 4);
-			v = ((v >> 8) & SIMD::UInt(0x00FF00FF)) | ((v & SIMD::UInt(0x00FF00FF)) << 8);
-			v = (v >> 16) | (v << 16);
-			dst.move(i, v);
+			{
+				// TODO: Add an intrinsic to reactor. Even if there isn't a
+				// single vector instruction, there may be target-dependent
+				// ways to make this faster.
+				// https://graphics.stanford.edu/~seander/bithacks.html#ReverseParallel
+				SIMD::UInt v = src.UInt(i);
+				v = ((v >> 1) & SIMD::UInt(0x55555555)) | ((v & SIMD::UInt(0x55555555)) << 1);
+				v = ((v >> 2) & SIMD::UInt(0x33333333)) | ((v & SIMD::UInt(0x33333333)) << 2);
+				v = ((v >> 4) & SIMD::UInt(0x0F0F0F0F)) | ((v & SIMD::UInt(0x0F0F0F0F)) << 4);
+				v = ((v >> 8) & SIMD::UInt(0x00FF00FF)) | ((v & SIMD::UInt(0x00FF00FF)) << 8);
+				v = (v >> 16) | (v << 16);
+				dst.move(i, v);
+			}
 			break;
-		}
 		case spv::OpBitCount:
 			dst.move(i, CountBits(src.UInt(i)));
 			break;
@@ -258,56 +258,56 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 						+ Abs(Extract(src.Float(i), 2) - Extract(src.Float(i), 0))));
 			break;
 		case spv::OpDPdxFine:
-		{
-			auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
-			auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
-			SIMD::Float v = SIMD::Float(firstRow);
-			v = Insert(v, secondRow, 2);
-			v = Insert(v, secondRow, 3);
-			dst.move(i, v);
+			{
+				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
+				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
+				SIMD::Float v = SIMD::Float(firstRow);
+				v = Insert(v, secondRow, 2);
+				v = Insert(v, secondRow, 3);
+				dst.move(i, v);
+			}
 			break;
-		}
 		case spv::OpDPdyFine:
-		{
-			auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
-			auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
-			SIMD::Float v = SIMD::Float(firstColumn);
-			v = Insert(v, secondColumn, 1);
-			v = Insert(v, secondColumn, 3);
-			dst.move(i, v);
+			{
+				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
+				auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
+				SIMD::Float v = SIMD::Float(firstColumn);
+				v = Insert(v, secondColumn, 1);
+				v = Insert(v, secondColumn, 3);
+				dst.move(i, v);
+			}
 			break;
-		}
 		case spv::OpFwidthFine:
-		{
-			auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
-			auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
-			SIMD::Float dpdx = SIMD::Float(firstRow);
-			dpdx = Insert(dpdx, secondRow, 2);
-			dpdx = Insert(dpdx, secondRow, 3);
-			auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
-			auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
-			SIMD::Float dpdy = SIMD::Float(firstColumn);
-			dpdy = Insert(dpdy, secondColumn, 1);
-			dpdy = Insert(dpdy, secondColumn, 3);
-			dst.move(i, Abs(dpdx) + Abs(dpdy));
+			{
+				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
+				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
+				SIMD::Float dpdx = SIMD::Float(firstRow);
+				dpdx = Insert(dpdx, secondRow, 2);
+				dpdx = Insert(dpdx, secondRow, 3);
+				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
+				auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
+				SIMD::Float dpdy = SIMD::Float(firstColumn);
+				dpdy = Insert(dpdy, secondColumn, 1);
+				dpdy = Insert(dpdy, secondColumn, 3);
+				dst.move(i, Abs(dpdx) + Abs(dpdy));
+			}
 			break;
-		}
 		case spv::OpQuantizeToF16:
-		{
-			// Note: keep in sync with the specialization constant version in EvalSpecConstantUnaryOp
-			auto abs = Abs(src.Float(i));
-			auto sign = src.Int(i) & SIMD::Int(0x80000000);
-			auto isZero = CmpLT(abs, SIMD::Float(0.000061035f));
-			auto isInf  = CmpGT(abs, SIMD::Float(65504.0f));
-			auto isNaN  = IsNan(abs);
-			auto isInfOrNan = isInf | isNaN;
-			SIMD::Int v = src.Int(i) & SIMD::Int(0xFFFFE000);
-			v &= ~isZero | SIMD::Int(0x80000000);
-			v = sign | (isInfOrNan & SIMD::Int(0x7F800000)) | (~isInfOrNan & v);
-			v |= isNaN & SIMD::Int(0x400000);
-			dst.move(i, v);
+			{
+				// Note: keep in sync with the specialization constant version in EvalSpecConstantUnaryOp
+				auto abs = Abs(src.Float(i));
+				auto sign = src.Int(i) & SIMD::Int(0x80000000);
+				auto isZero = CmpLT(abs, SIMD::Float(0.000061035f));
+				auto isInf  = CmpGT(abs, SIMD::Float(65504.0f));
+				auto isNaN  = IsNan(abs);
+				auto isInfOrNan = isInf | isNaN;
+				SIMD::Int v = src.Int(i) & SIMD::Int(0xFFFFE000);
+				v &= ~isZero | SIMD::Int(0x80000000);
+				v = sign | (isInfOrNan & SIMD::Int(0x7F800000)) | (~isInfOrNan & v);
+				v |= isNaN & SIMD::Int(0x400000);
+				dst.move(i, v);
+			}
 			break;
-		}
 		default:
 			UNREACHABLE("%s", OpcodeName(insn.opcode()).c_str());
 		}
@@ -338,53 +338,53 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 			dst.move(i, lhs.Int(i) * rhs.Int(i));
 			break;
 		case spv::OpSDiv:
-		{
-			SIMD::Int a = lhs.Int(i);
-			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
-			dst.move(i, a / b);
+			{
+				SIMD::Int a = lhs.Int(i);
+				SIMD::Int b = rhs.Int(i);
+				b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
+				a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+				dst.move(i, a / b);
+			}
 			break;
-		}
 		case spv::OpUDiv:
-		{
-			auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
-			dst.move(i, lhs.UInt(i) / (rhs.UInt(i) | zeroMask));
+			{
+				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
+				dst.move(i, lhs.UInt(i) / (rhs.UInt(i) | zeroMask));
+			}
 			break;
-		}
 		case spv::OpSRem:
-		{
-			SIMD::Int a = lhs.Int(i);
-			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
-			dst.move(i, a % b);
+			{
+				SIMD::Int a = lhs.Int(i);
+				SIMD::Int b = rhs.Int(i);
+				b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
+				a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+				dst.move(i, a % b);
+			}
 			break;
-		}
 		case spv::OpSMod:
-		{
-			SIMD::Int a = lhs.Int(i);
-			SIMD::Int b = rhs.Int(i);
-			b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
-			a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
-			auto mod = a % b;
-			// If a and b have opposite signs, the remainder operation takes
-			// the sign from a but OpSMod is supposed to take the sign of b.
-			// Adding b will ensure that the result has the correct sign and
-			// that it is still congruent to a modulo b.
-			//
-			// See also http://mathforum.org/library/drmath/view/52343.html
-			auto signDiff = CmpNEQ(CmpGE(a, SIMD::Int(0)), CmpGE(b, SIMD::Int(0)));
-			auto fixedMod = mod + (b & CmpNEQ(mod, SIMD::Int(0)) & signDiff);
-			dst.move(i, As<SIMD::Float>(fixedMod));
+			{
+				SIMD::Int a = lhs.Int(i);
+				SIMD::Int b = rhs.Int(i);
+				b = b | CmpEQ(b, SIMD::Int(0)); // prevent divide-by-zero
+				a = a | (CmpEQ(a, SIMD::Int(0x80000000)) & CmpEQ(b, SIMD::Int(-1))); // prevent integer overflow
+				auto mod = a % b;
+				// If a and b have opposite signs, the remainder operation takes
+				// the sign from a but OpSMod is supposed to take the sign of b.
+				// Adding b will ensure that the result has the correct sign and
+				// that it is still congruent to a modulo b.
+				//
+				// See also http://mathforum.org/library/drmath/view/52343.html
+				auto signDiff = CmpNEQ(CmpGE(a, SIMD::Int(0)), CmpGE(b, SIMD::Int(0)));
+				auto fixedMod = mod + (b & CmpNEQ(mod, SIMD::Int(0)) & signDiff);
+				dst.move(i, As<SIMD::Float>(fixedMod));
+			}
 			break;
-		}
 		case spv::OpUMod:
-		{
-			auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
-			dst.move(i, lhs.UInt(i) % (rhs.UInt(i) | zeroMask));
+			{
+				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
+				dst.move(i, lhs.UInt(i) % (rhs.UInt(i) | zeroMask));
+			}
 			break;
-		}
 		case spv::OpIEqual:
 		case spv::OpLogicalEqual:
 			dst.move(i, CmpEQ(lhs.Int(i), rhs.Int(i)));

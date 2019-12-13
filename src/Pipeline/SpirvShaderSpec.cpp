@@ -66,84 +66,84 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 		break;
 
 	case spv::OpSelect:
-	{
-		auto &result = CreateConstant(insn);
-		auto const &cond = getObject(insn.word(4));
-		auto condIsScalar = (getType(cond.type).sizeInComponents == 1);
-		auto const &left = getObject(insn.word(5));
-		auto const &right = getObject(insn.word(6));
-
-		for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 		{
-			auto sel = cond.constantValue[condIsScalar ? 0 : i];
-			result.constantValue[i] = sel ? left.constantValue[i] : right.constantValue[i];
+			auto &result = CreateConstant(insn);
+			auto const &cond = getObject(insn.word(4));
+			auto condIsScalar = (getType(cond.type).sizeInComponents == 1);
+			auto const &left = getObject(insn.word(5));
+			auto const &right = getObject(insn.word(6));
+	
+			for(auto i = 0u; i < getType(result.type).sizeInComponents; i++)
+			{
+				auto sel = cond.constantValue[condIsScalar ? 0 : i];
+				result.constantValue[i] = sel ? left.constantValue[i] : right.constantValue[i];
+			}
 		}
 		break;
-	}
 
 	case spv::OpCompositeExtract:
-	{
-		auto &result = CreateConstant(insn);
-		auto const &compositeObject = getObject(insn.word(4));
-		auto firstComponent = WalkLiteralAccessChain(compositeObject.type, insn.wordCount() - 5, insn.wordPointer(5));
-
-		for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 		{
-			result.constantValue[i] = compositeObject.constantValue[firstComponent + i];
+			auto &result = CreateConstant(insn);
+			auto const &compositeObject = getObject(insn.word(4));
+			auto firstComponent = WalkLiteralAccessChain(compositeObject.type, insn.wordCount() - 5, insn.wordPointer(5));
+	
+			for(auto i = 0u; i < getType(result.type).sizeInComponents; i++)
+			{
+				result.constantValue[i] = compositeObject.constantValue[firstComponent + i];
+			}
 		}
 		break;
-	}
 
 	case spv::OpCompositeInsert:
-	{
-		auto &result = CreateConstant(insn);
-		auto const &newPart = getObject(insn.word(4));
-		auto const &oldObject = getObject(insn.word(5));
-		auto firstNewComponent = WalkLiteralAccessChain(result.type, insn.wordCount() - 6, insn.wordPointer(6));
-
-		// old components before
-		for (auto i = 0u; i < firstNewComponent; i++)
 		{
-			result.constantValue[i] = oldObject.constantValue[i];
-		}
-		// new part
-		for (auto i = 0u; i < getType(newPart.type).sizeInComponents; i++)
-		{
-			result.constantValue[firstNewComponent + i] = newPart.constantValue[i];
-		}
-		// old components after
-		for (auto i = firstNewComponent + getType(newPart.type).sizeInComponents; i < getType(result.type).sizeInComponents; i++)
-		{
-			result.constantValue[i] = oldObject.constantValue[i];
+			auto &result = CreateConstant(insn);
+			auto const &newPart = getObject(insn.word(4));
+			auto const &oldObject = getObject(insn.word(5));
+			auto firstNewComponent = WalkLiteralAccessChain(result.type, insn.wordCount() - 6, insn.wordPointer(6));
+	
+			// old components before
+			for(auto i = 0u; i < firstNewComponent; i++)
+			{
+				result.constantValue[i] = oldObject.constantValue[i];
+			}
+			// new part
+			for(auto i = 0u; i < getType(newPart.type).sizeInComponents; i++)
+			{
+				result.constantValue[firstNewComponent + i] = newPart.constantValue[i];
+			}
+			// old components after
+			for(auto i = firstNewComponent + getType(newPart.type).sizeInComponents; i < getType(result.type).sizeInComponents; i++)
+			{
+				result.constantValue[i] = oldObject.constantValue[i];
+			}
 		}
 		break;
-	}
 
 	case spv::OpVectorShuffle:
-	{
-		auto &result = CreateConstant(insn);
-		auto const &firstHalf = getObject(insn.word(4));
-		auto const &secondHalf = getObject(insn.word(5));
-
-		for (auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 		{
-			auto selector = insn.word(6 + i);
-			if (selector == static_cast<uint32_t>(-1))
+			auto &result = CreateConstant(insn);
+			auto const &firstHalf = getObject(insn.word(4));
+			auto const &secondHalf = getObject(insn.word(5));
+	
+			for(auto i = 0u; i < getType(result.type).sizeInComponents; i++)
 			{
-				// Undefined value, we'll use zero
-				result.constantValue[i] = 0;
-			}
-			else if (selector < getType(firstHalf.type).sizeInComponents)
-			{
-				result.constantValue[i] = firstHalf.constantValue[selector];
-			}
-			else
-			{
-				result.constantValue[i] = secondHalf.constantValue[selector - getType(firstHalf.type).sizeInComponents];
+				auto selector = insn.word(6 + i);
+				if(selector == static_cast<uint32_t>(-1))
+				{
+					// Undefined value, we'll use zero
+					result.constantValue[i] = 0;
+				}
+				else if(selector < getType(firstHalf.type).sizeInComponents)
+				{
+					result.constantValue[i] = firstHalf.constantValue[selector];
+				}
+				else
+				{
+					result.constantValue[i] = secondHalf.constantValue[selector - getType(firstHalf.type).sizeInComponents];
+				}
 			}
 		}
 		break;
-	}
 
 	default:
 		// Other spec constant ops are possible, but require capabilities that are
@@ -183,20 +183,20 @@ void SpirvShader::EvalSpecConstantUnaryOp(InsnIterator insn)
 			break;
 
 		case spv::OpQuantizeToF16:
-		{
-			// Can do this nicer with host code, but want to perfectly mirror the reactor code we emit.
-			auto abs = bit_cast<float>(l & 0x7FFFFFFF);
-			auto sign = l & 0x80000000;
-			auto isZero = abs < 0.000061035f ? ~0u : 0u;
-			auto isInf = abs > 65504.0f ? ~0u : 0u;
-			auto isNaN = (abs != abs) ? ~0u : 0u;
-			auto isInfOrNan = isInf | isNaN;
-			v = l & 0xFFFFE000;
-			v &= ~isZero | 0x80000000;
-			v = sign | (isInfOrNan & 0x7F800000) | (~isInfOrNan & v);
-			v |= isNaN & 0x400000;
+			{
+				// Can do this nicer with host code, but want to perfectly mirror the reactor code we emit.
+				auto abs = bit_cast<float>(l & 0x7FFFFFFF);
+				auto sign = l & 0x80000000;
+				auto isZero = abs < 0.000061035f ? ~0u : 0u;
+				auto isInf = abs > 65504.0f ? ~0u : 0u;
+				auto isNaN = (abs != abs) ? ~0u : 0u;
+				auto isInfOrNan = isInf | isNaN;
+				v = l & 0xFFFFE000;
+				v &= ~isZero | 0x80000000;
+				v = sign | (isInfOrNan & 0x7F800000) | (~isInfOrNan & v);
+				v |= isNaN & 0x400000;
+			}
 			break;
-		}
 		default:
 			UNREACHABLE("EvalSpecConstantUnaryOp op: %s", OpcodeName(opcode).c_str());
 		}

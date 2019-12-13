@@ -64,69 +64,73 @@ SpirvShader::SpirvShader(
 		switch (opcode)
 		{
 		case spv::OpEntryPoint:
-		{
-			executionModel = spv::ExecutionModel(insn.word(1));
-			auto id = Function::ID(insn.word(2));
-			auto name = insn.string(3);
-			auto stage = executionModelToStage(executionModel);
-			if (stage == pipelineStage && strcmp(name, entryPointName) == 0)
 			{
-				ASSERT_MSG(entryPoint == 0, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
-				entryPoint = id;
+				executionModel = spv::ExecutionModel(insn.word(1));
+				auto id = Function::ID(insn.word(2));
+				auto name = insn.string(3);
+				auto stage = executionModelToStage(executionModel);
+				if (stage == pipelineStage && strcmp(name, entryPointName) == 0)
+				{
+					ASSERT_MSG(entryPoint == 0, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
+					entryPoint = id;
+				}
 			}
 			break;
-		}
 
 		case spv::OpExecutionMode:
 			ProcessExecutionMode(insn);
 			break;
 
 		case spv::OpDecorate:
-		{
-			TypeOrObjectID targetId = insn.word(1);
-			auto decoration = static_cast<spv::Decoration>(insn.word(2));
-			uint32_t value = insn.wordCount() > 3 ? insn.word(3) : 0;
-
-			decorations[targetId].Apply(decoration, value);
-
-			switch(decoration)
 			{
-			case spv::DecorationDescriptorSet:
-				descriptorDecorations[targetId].DescriptorSet = value;
-				break;
-			case spv::DecorationBinding:
-				descriptorDecorations[targetId].Binding = value;
-				break;
-			case spv::DecorationInputAttachmentIndex:
-				descriptorDecorations[targetId].InputAttachmentIndex = value;
-				break;
-			default:
-				// Only handling descriptor decorations here.
-				break;
+				TypeOrObjectID targetId = insn.word(1);
+				auto decoration = static_cast<spv::Decoration>(insn.word(2));
+				uint32_t value = insn.wordCount() > 3 ? insn.word(3) : 0;
+	
+				decorations[targetId].Apply(decoration, value);
+	
+				switch(decoration)
+				{
+				case spv::DecorationDescriptorSet:
+					descriptorDecorations[targetId].DescriptorSet = value;
+					break;
+				case spv::DecorationBinding:
+					descriptorDecorations[targetId].Binding = value;
+					break;
+				case spv::DecorationInputAttachmentIndex:
+					descriptorDecorations[targetId].InputAttachmentIndex = value;
+					break;
+				default:
+					// Only handling descriptor decorations here.
+					break;
+				}
+	
+				if (decoration == spv::DecorationCentroid)
+				{
+					modes.NeedsCentroid = true;
+				}
 			}
-
-			if (decoration == spv::DecorationCentroid)
-				modes.NeedsCentroid = true;
 			break;
-		}
 
 		case spv::OpMemberDecorate:
-		{
-			Type::ID targetId = insn.word(1);
-			auto memberIndex = insn.word(2);
-			auto decoration = static_cast<spv::Decoration>(insn.word(3));
-			uint32_t value = insn.wordCount() > 4 ? insn.word(4) : 0;
-
-			auto &d = memberDecorations[targetId];
-			if (memberIndex >= d.size())
-				d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
-
-			d[memberIndex].Apply(decoration, value);
-
-			if (decoration == spv::DecorationCentroid)
-				modes.NeedsCentroid = true;
+			{
+				Type::ID targetId = insn.word(1);
+				auto memberIndex = insn.word(2);
+				auto decoration = static_cast<spv::Decoration>(insn.word(3));
+				uint32_t value = insn.wordCount() > 4 ? insn.word(4) : 0;
+	
+				auto &d = memberDecorations[targetId];
+				if (memberIndex >= d.size())
+					d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
+	
+				d[memberIndex].Apply(decoration, value);
+	
+				if (decoration == spv::DecorationCentroid)
+				{
+					modes.NeedsCentroid = true;
+				}
+			}
 			break;
-		}
 
 		case spv::OpDecorationGroup:
 			// Nothing to do here. We don't need to record the definition of the group; we'll just have
@@ -135,43 +139,42 @@ SpirvShader::SpirvShader(
 			break;
 
 		case spv::OpGroupDecorate:
-		{
-			uint32_t group = insn.word(1);
-			auto const &groupDecorations = decorations[group];
-			auto const &descriptorGroupDecorations = descriptorDecorations[group];
-			for (auto i = 2u; i < insn.wordCount(); i++)
 			{
-				// Remaining operands are targets to apply the group to.
-				uint32_t target = insn.word(i);
-				decorations[target].Apply(groupDecorations);
-				descriptorDecorations[target].Apply(descriptorGroupDecorations);
+				uint32_t group = insn.word(1);
+				auto const &groupDecorations = decorations[group];
+				auto const &descriptorGroupDecorations = descriptorDecorations[group];
+				for (auto i = 2u; i < insn.wordCount(); i++)
+				{
+					// Remaining operands are targets to apply the group to.
+					uint32_t target = insn.word(i);
+					decorations[target].Apply(groupDecorations);
+					descriptorDecorations[target].Apply(descriptorGroupDecorations);
+				}
 			}
-
 			break;
-		}
 
 		case spv::OpGroupMemberDecorate:
-		{
-			auto const &srcDecorations = decorations[insn.word(1)];
-			for (auto i = 2u; i < insn.wordCount(); i += 2)
 			{
-				// remaining operands are pairs of <id>, literal for members to apply to.
-				auto &d = memberDecorations[insn.word(i)];
-				auto memberIndex = insn.word(i + 1);
-				if (memberIndex >= d.size())
-					d.resize(memberIndex + 1);    // on demand resize, see above...
-				d[memberIndex].Apply(srcDecorations);
+				auto const &srcDecorations = decorations[insn.word(1)];
+				for (auto i = 2u; i < insn.wordCount(); i += 2)
+				{
+					// remaining operands are pairs of <id>, literal for members to apply to.
+					auto &d = memberDecorations[insn.word(i)];
+					auto memberIndex = insn.word(i + 1);
+					if (memberIndex >= d.size())
+						d.resize(memberIndex + 1);    // on demand resize, see above...
+					d[memberIndex].Apply(srcDecorations);
+				}
 			}
 			break;
-		}
 
 		case spv::OpLabel:
-		{
-			ASSERT(currentBlock.value() == 0);
-			currentBlock = Block::ID(insn.word(1));
-			blockStart = insn;
+			{
+				ASSERT(currentBlock.value() == 0);
+				currentBlock = Block::ID(insn.word(1));
+				blockStart = insn;
+			}
 			break;
-		}
 
 		// Branch Instructions (subset of Termination Instructions):
 		case spv::OpBranch:
@@ -183,20 +186,20 @@ SpirvShader::SpirvShader(
 		// Termination instruction:
 		case spv::OpKill:
 		case spv::OpUnreachable:
-		{
-			ASSERT(currentBlock.value() != 0);
-			ASSERT(currentFunction.value() != 0);
-
-			auto blockEnd = insn; blockEnd++;
-			functions[currentFunction].blocks[currentBlock] = Block(blockStart, blockEnd);
-			currentBlock = Block::ID(0);
-
-			if (opcode == spv::OpKill)
 			{
-				modes.ContainsKill = true;
+				ASSERT(currentBlock.value() != 0);
+				ASSERT(currentFunction.value() != 0);
+	
+				auto blockEnd = insn; blockEnd++;
+				functions[currentFunction].blocks[currentBlock] = Block(blockStart, blockEnd);
+				currentBlock = Block::ID(0);
+	
+				if (opcode == spv::OpKill)
+				{
+					modes.ContainsKill = true;
+				}
 			}
 			break;
-		}
 
 		case spv::OpLoopMerge:
 		case spv::OpSelectionMerge:
@@ -252,13 +255,13 @@ SpirvShader::SpirvShader(
 				break; // Correctly handled.
 
 			case spv::StorageClassWorkgroup:
-			{
-				auto &elTy = getType(getType(typeId).element);
-				auto sizeInBytes = elTy.sizeInComponents * static_cast<uint32_t>(sizeof(float));
-				workgroupMemory.allocate(resultId, sizeInBytes);
-				object.kind = Object::Kind::Pointer;
+				{
+					auto &elTy = getType(getType(typeId).element);
+					auto sizeInBytes = elTy.sizeInComponents * static_cast<uint32_t>(sizeof(float));
+					workgroupMemory.allocate(resultId, sizeInBytes);
+					object.kind = Object::Kind::Pointer;
+				}
 				break;
-			}
 			case spv::StorageClassAtomicCounter:
 			case spv::StorageClassImage:
 				UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
@@ -293,52 +296,52 @@ SpirvShader::SpirvShader(
 			break;
 		case spv::OpConstantNull:
 		case spv::OpUndef:
-		{
-			// TODO: consider a real LLVM-level undef. For now, zero is a perfectly good value.
-			// OpConstantNull forms a constant of arbitrary type, all zeros.
-			auto &object = CreateConstant(insn);
-			auto &objectTy = getType(object.type);
-			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
-				object.constantValue[i] = 0;
-			}
-			break;
-		}
-		case spv::OpConstantComposite:
-		case spv::OpSpecConstantComposite:
-		{
-			auto &object = CreateConstant(insn);
-			auto offset = 0u;
-			for (auto i = 0u; i < insn.wordCount() - 3; i++)
-			{
-				auto &constituent = getObject(insn.word(i + 3));
-				auto &constituentTy = getType(constituent.type);
-				for (auto j = 0u; j < constituentTy.sizeInComponents; j++)
+				// TODO: consider a real LLVM-level undef. For now, zero is a perfectly good value.
+				// OpConstantNull forms a constant of arbitrary type, all zeros.
+				auto &object = CreateConstant(insn);
+				auto &objectTy = getType(object.type);
+				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 				{
-					object.constantValue[offset++] = constituent.constantValue[j];
+					object.constantValue[i] = 0;
 				}
 			}
-
-			auto objectId = Object::ID(insn.word(2));
-			auto decorationsIt = decorations.find(objectId);
-			if (decorationsIt != decorations.end() &&
-				decorationsIt->second.BuiltIn == spv::BuiltInWorkgroupSize)
+			break;
+		case spv::OpConstantComposite:
+		case spv::OpSpecConstantComposite:
 			{
-				// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#interfaces-builtin-variables :
-				// Decorating an object with the WorkgroupSize built-in
-				// decoration will make that object contain the dimensions
-				// of a local workgroup. If an object is decorated with the
-				// WorkgroupSize decoration, this must take precedence over
-				// any execution mode set for LocalSize.
-				// The object decorated with WorkgroupSize must be declared
-				// as a three-component vector of 32-bit integers.
-				ASSERT(getType(object.type).sizeInComponents == 3);
-				modes.WorkgroupSizeX = object.constantValue[0];
-				modes.WorkgroupSizeY = object.constantValue[1];
-				modes.WorkgroupSizeZ = object.constantValue[2];
+				auto &object = CreateConstant(insn);
+				auto offset = 0u;
+				for (auto i = 0u; i < insn.wordCount() - 3; i++)
+				{
+					auto &constituent = getObject(insn.word(i + 3));
+					auto &constituentTy = getType(constituent.type);
+					for (auto j = 0u; j < constituentTy.sizeInComponents; j++)
+					{
+						object.constantValue[offset++] = constituent.constantValue[j];
+					}
+				}
+	
+				auto objectId = Object::ID(insn.word(2));
+				auto decorationsIt = decorations.find(objectId);
+				if (decorationsIt != decorations.end() &&
+					decorationsIt->second.BuiltIn == spv::BuiltInWorkgroupSize)
+				{
+					// https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#interfaces-builtin-variables :
+					// Decorating an object with the WorkgroupSize built-in
+					// decoration will make that object contain the dimensions
+					// of a local workgroup. If an object is decorated with the
+					// WorkgroupSize decoration, this must take precedence over
+					// any execution mode set for LocalSize.
+					// The object decorated with WorkgroupSize must be declared
+					// as a three-component vector of 32-bit integers.
+					ASSERT(getType(object.type).sizeInComponents == 3);
+					modes.WorkgroupSizeX = object.constantValue[0];
+					modes.WorkgroupSizeY = object.constantValue[1];
+					modes.WorkgroupSizeZ = object.constantValue[2];
+				}
 			}
 			break;
-		}
 		case spv::OpSpecConstantOp:
 			EvalSpecConstantOp(insn);
 			break;
@@ -380,47 +383,47 @@ SpirvShader::SpirvShader(
 			break; // Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
 
 		case spv::OpFunction:
-		{
-			auto functionId = Function::ID(insn.word(2));
-			ASSERT_MSG(currentFunction == 0, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
-			currentFunction = functionId;
-			auto &function = functions[functionId];
-			function.result = Type::ID(insn.word(1));
-			function.type = Type::ID(insn.word(4));
-			// Scan forward to find the function's label.
-			for (auto it = insn; it != end() && function.entry == 0; it++)
 			{
-				switch (it.opcode())
+				auto functionId = Function::ID(insn.word(2));
+				ASSERT_MSG(currentFunction == 0, "Functions %d and %d overlap", currentFunction.value(), functionId.value());
+				currentFunction = functionId;
+				auto &function = functions[functionId];
+				function.result = Type::ID(insn.word(1));
+				function.type = Type::ID(insn.word(4));
+				// Scan forward to find the function's label.
+				for (auto it = insn; it != end() && function.entry == 0; it++)
 				{
-				case spv::OpFunction:
-				case spv::OpFunctionParameter:
-					break;
-				case spv::OpLabel:
-					function.entry = Block::ID(it.word(1));
-					break;
-				default:
-					WARN("Unexpected opcode '%s' following OpFunction", OpcodeName(it.opcode()).c_str());
+					switch (it.opcode())
+					{
+					case spv::OpFunction:
+					case spv::OpFunctionParameter:
+						break;
+					case spv::OpLabel:
+						function.entry = Block::ID(it.word(1));
+						break;
+					default:
+						WARN("Unexpected opcode '%s' following OpFunction", OpcodeName(it.opcode()).c_str());
+					}
 				}
+				ASSERT_MSG(function.entry != 0, "Function<%d> has no label", currentFunction.value());
 			}
-			ASSERT_MSG(function.entry != 0, "Function<%d> has no label", currentFunction.value());
 			break;
-		}
 
 		case spv::OpFunctionEnd:
 			currentFunction = 0;
 			break;
 
 		case spv::OpExtInstImport:
-		{
-			// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
-			// Valid shaders will not attempt to import any other instruction sets.
-			auto ext = insn.string(2);
-			if (0 != strcmp("GLSL.std.450", ext))
 			{
-				UNSUPPORTED("SPIR-V Extension: %s", ext);
+				// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
+				// Valid shaders will not attempt to import any other instruction sets.
+				auto ext = insn.string(2);
+				if (0 != strcmp("GLSL.std.450", ext))
+				{
+					UNSUPPORTED("SPIR-V Extension: %s", ext);
+				}
 			}
 			break;
-		}
 		case spv::OpName:
 		case spv::OpMemberName:
 		case spv::OpSource:
@@ -664,19 +667,19 @@ SpirvShader::SpirvShader(
 			break;
 
 		case spv::OpExtension:
-		{
-			auto ext = insn.string(1);
-			// Part of core SPIR-V 1.3. Vulkan 1.1 implementations must also accept the pre-1.3
-			// extension per Appendix A, `Vulkan Environment for SPIR-V`.
-			if (!strcmp(ext, "SPV_KHR_storage_buffer_storage_class")) break;
-			if (!strcmp(ext, "SPV_KHR_shader_draw_parameters")) break;
-			if (!strcmp(ext, "SPV_KHR_16bit_storage")) break;
-			if (!strcmp(ext, "SPV_KHR_variable_pointers")) break;
-			if (!strcmp(ext, "SPV_KHR_device_group")) break;
-			if (!strcmp(ext, "SPV_KHR_multiview")) break;
-			UNSUPPORTED("SPIR-V Extension: %s", ext);
+			{
+				auto ext = insn.string(1);
+				// Part of core SPIR-V 1.3. Vulkan 1.1 implementations must also accept the pre-1.3
+				// extension per Appendix A, `Vulkan Environment for SPIR-V`.
+				if (!strcmp(ext, "SPV_KHR_storage_buffer_storage_class")) break;
+				if (!strcmp(ext, "SPV_KHR_shader_draw_parameters")) break;
+				if (!strcmp(ext, "SPV_KHR_16bit_storage")) break;
+				if (!strcmp(ext, "SPV_KHR_variable_pointers")) break;
+				if (!strcmp(ext, "SPV_KHR_device_group")) break;
+				if (!strcmp(ext, "SPV_KHR_multiview")) break;
+				UNSUPPORTED("SPIR-V Extension: %s", ext);
+			}
 			break;
-		}
 
 		default:
 			UNIMPLEMENTED("%s", OpcodeName(opcode).c_str());
@@ -703,38 +706,38 @@ void SpirvShader::DeclareType(InsnIterator insn)
 	switch (insn.opcode())
 	{
 	case spv::OpTypeStruct:
-	{
-		auto d = memberDecorations.find(resultId);
-		if (d != memberDecorations.end())
 		{
-			for (auto &m : d->second)
+			auto d = memberDecorations.find(resultId);
+			if (d != memberDecorations.end())
 			{
-				if (m.HasBuiltIn)
+				for (auto &m : d->second)
 				{
-					type.isBuiltInBlock = true;
-					break;
+					if (m.HasBuiltIn)
+					{
+						type.isBuiltInBlock = true;
+						break;
+					}
 				}
 			}
 		}
 		break;
-	}
 	case spv::OpTypePointer:
-	{
-		Type::ID elementTypeId = insn.word(3);
-		type.element = elementTypeId;
-		type.isBuiltInBlock = getType(elementTypeId).isBuiltInBlock;
-		type.storageClass = static_cast<spv::StorageClass>(insn.word(2));
+		{
+			Type::ID elementTypeId = insn.word(3);
+			type.element = elementTypeId;
+			type.isBuiltInBlock = getType(elementTypeId).isBuiltInBlock;
+			type.storageClass = static_cast<spv::StorageClass>(insn.word(2));
+		}
 		break;
-	}
 	case spv::OpTypeVector:
 	case spv::OpTypeMatrix:
 	case spv::OpTypeArray:
 	case spv::OpTypeRuntimeArray:
-	{
-		Type::ID elementTypeId = insn.word(2);
-		type.element = elementTypeId;
+		{
+			Type::ID elementTypeId = insn.word(2);
+			type.element = elementTypeId;
+		}
 		break;
-	}
 	default:
 		break;
 	}
@@ -1000,12 +1003,12 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 		switch (type.opcode())
 		{
 		case spv::OpTypeStruct:
-		{
-			int memberIndex = GetConstScalarInt(indexIds[i]);
-			ApplyDecorationsForIdMember(d, typeId, memberIndex);
-			typeId = type.definition.word(2u + memberIndex);
+			{
+				int memberIndex = GetConstScalarInt(indexIds[i]);
+				ApplyDecorationsForIdMember(d, typeId, memberIndex);
+				typeId = type.definition.word(2u + memberIndex);
+			}
 			break;
-		}
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
 			if (dd->InputAttachmentIndex >= 0)
@@ -1063,64 +1066,64 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 		switch (type.definition.opcode())
 		{
 		case spv::OpTypeStruct:
-		{
-			int memberIndex = GetConstScalarInt(indexIds[i]);
-			ApplyDecorationsForIdMember(&d, typeId, memberIndex);
-			ASSERT(d.HasOffset);
-			constantOffset += d.Offset;
-			typeId = type.definition.word(2u + memberIndex);
+			{
+				int memberIndex = GetConstScalarInt(indexIds[i]);
+				ApplyDecorationsForIdMember(&d, typeId, memberIndex);
+				ASSERT(d.HasOffset);
+				constantOffset += d.Offset;
+				typeId = type.definition.word(2u + memberIndex);
+			}
 			break;
-		}
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
-		{
-			// TODO: b/127950082: Check bounds.
-			ASSERT(d.HasArrayStride);
-			auto & obj = getObject(indexIds[i]);
-			if (obj.kind == Object::Kind::Constant)
 			{
-				constantOffset += d.ArrayStride * GetConstScalarInt(indexIds[i]);
+				// TODO: b/127950082: Check bounds.
+				ASSERT(d.HasArrayStride);
+				auto & obj = getObject(indexIds[i]);
+				if (obj.kind == Object::Kind::Constant)
+				{
+					constantOffset += d.ArrayStride * GetConstScalarInt(indexIds[i]);
+				}
+				else
+				{
+					ptr += SIMD::Int(d.ArrayStride) * state->getIntermediate(indexIds[i]).Int(0);
+				}
+				typeId = type.element;
 			}
-			else
-			{
-				ptr += SIMD::Int(d.ArrayStride) * state->getIntermediate(indexIds[i]).Int(0);
-			}
-			typeId = type.element;
 			break;
-		}
 		case spv::OpTypeMatrix:
-		{
-			// TODO: b/127950082: Check bounds.
-			ASSERT(d.HasMatrixStride);
-			d.InsideMatrix = true;
-			auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
-			auto & obj = getObject(indexIds[i]);
-			if (obj.kind == Object::Kind::Constant)
 			{
-				constantOffset += columnStride * GetConstScalarInt(indexIds[i]);
+				// TODO: b/127950082: Check bounds.
+				ASSERT(d.HasMatrixStride);
+				d.InsideMatrix = true;
+				auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
+				auto & obj = getObject(indexIds[i]);
+				if (obj.kind == Object::Kind::Constant)
+				{
+					constantOffset += columnStride * GetConstScalarInt(indexIds[i]);
+				}
+				else
+				{
+					ptr += SIMD::Int(columnStride) * state->getIntermediate(indexIds[i]).Int(0);
+				}
+				typeId = type.element;
 			}
-			else
-			{
-				ptr += SIMD::Int(columnStride) * state->getIntermediate(indexIds[i]).Int(0);
-			}
-			typeId = type.element;
 			break;
-		}
 		case spv::OpTypeVector:
-		{
-			auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
-			auto & obj = getObject(indexIds[i]);
-			if (obj.kind == Object::Kind::Constant)
 			{
-				constantOffset += elemStride * GetConstScalarInt(indexIds[i]);
+				auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
+				auto & obj = getObject(indexIds[i]);
+				if (obj.kind == Object::Kind::Constant)
+				{
+					constantOffset += elemStride * GetConstScalarInt(indexIds[i]);
+				}
+				else
+				{
+					ptr += SIMD::Int(elemStride) * state->getIntermediate(indexIds[i]).Int(0);
+				}
+				typeId = type.element;
 			}
-			else
-			{
-				ptr += SIMD::Int(elemStride) * state->getIntermediate(indexIds[i]).Int(0);
-			}
-			typeId = type.element;
 			break;
-		}
 		default:
 			UNREACHABLE("%s", OpcodeName(type.definition.opcode()).c_str());
 		}
@@ -1147,56 +1150,56 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, uint32_t numIndexe
 		switch(type.opcode())
 		{
 		case spv::OpTypeStruct:
-		{
-			int memberIndex = GetConstScalarInt(indexIds[i]);
-			int offsetIntoStruct = 0;
-			for (auto j = 0; j < memberIndex; j++) {
-				auto memberType = type.definition.word(2u + j);
-				offsetIntoStruct += getType(memberType).sizeInComponents * sizeof(float);
+			{
+				int memberIndex = GetConstScalarInt(indexIds[i]);
+				int offsetIntoStruct = 0;
+				for (auto j = 0; j < memberIndex; j++) {
+					auto memberType = type.definition.word(2u + j);
+					offsetIntoStruct += getType(memberType).sizeInComponents * sizeof(float);
+				}
+				constantOffset += offsetIntoStruct;
+				typeId = type.definition.word(2u + memberIndex);
 			}
-			constantOffset += offsetIntoStruct;
-			typeId = type.definition.word(2u + memberIndex);
 			break;
-		}
 
 		case spv::OpTypeVector:
 		case spv::OpTypeMatrix:
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
-		{
-			// TODO: b/127950082: Check bounds.
-			if (getType(baseObject.type).storageClass == spv::StorageClassUniformConstant)
 			{
-				// indexing into an array of descriptors.
-				auto &obj = getObject(indexIds[i]);
-				if (obj.kind != Object::Kind::Constant)
+				// TODO: b/127950082: Check bounds.
+				if (getType(baseObject.type).storageClass == spv::StorageClassUniformConstant)
 				{
-					UNSUPPORTED("SPIR-V SampledImageArrayDynamicIndexing Capability");
-				}
-
-				auto d = descriptorDecorations.at(baseId);
-				ASSERT(d.DescriptorSet >= 0);
-				ASSERT(d.Binding >= 0);
-				auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-				auto stride = static_cast<uint32_t>(setLayout->getBindingStride(d.Binding));
-				ptr.base += stride * GetConstScalarInt(indexIds[i]);
-			}
-			else
-			{
-				auto stride = getType(type.element).sizeInComponents * static_cast<uint32_t>(sizeof(float));
-				auto & obj = getObject(indexIds[i]);
-				if (obj.kind == Object::Kind::Constant)
-				{
-					ptr += stride * GetConstScalarInt(indexIds[i]);
+					// indexing into an array of descriptors.
+					auto &obj = getObject(indexIds[i]);
+					if (obj.kind != Object::Kind::Constant)
+					{
+						UNSUPPORTED("SPIR-V SampledImageArrayDynamicIndexing Capability");
+					}
+	
+					auto d = descriptorDecorations.at(baseId);
+					ASSERT(d.DescriptorSet >= 0);
+					ASSERT(d.Binding >= 0);
+					auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+					auto stride = static_cast<uint32_t>(setLayout->getBindingStride(d.Binding));
+					ptr.base += stride * GetConstScalarInt(indexIds[i]);
 				}
 				else
 				{
-					ptr += SIMD::Int(stride) * state->getIntermediate(indexIds[i]).Int(0);
+					auto stride = getType(type.element).sizeInComponents * static_cast<uint32_t>(sizeof(float));
+					auto & obj = getObject(indexIds[i]);
+					if (obj.kind == Object::Kind::Constant)
+					{
+						ptr += stride * GetConstScalarInt(indexIds[i]);
+					}
+					else
+					{
+						ptr += SIMD::Int(stride) * state->getIntermediate(indexIds[i]).Int(0);
+					}
 				}
+				typeId = type.element;
 			}
-			typeId = type.element;
 			break;
-		}
 
 		default:
 			UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
@@ -1220,28 +1223,28 @@ uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndexe
 		switch(type.opcode())
 		{
 		case spv::OpTypeStruct:
-		{
-			int memberIndex = indexes[i];
-			int offsetIntoStruct = 0;
-			for (auto j = 0; j < memberIndex; j++) {
-				auto memberType = type.definition.word(2u + j);
-				offsetIntoStruct += getType(memberType).sizeInComponents;
+			{
+				int memberIndex = indexes[i];
+				int offsetIntoStruct = 0;
+				for (auto j = 0; j < memberIndex; j++) {
+					auto memberType = type.definition.word(2u + j);
+					offsetIntoStruct += getType(memberType).sizeInComponents;
+				}
+				componentOffset += offsetIntoStruct;
+				typeId = type.definition.word(2u + memberIndex);
 			}
-			componentOffset += offsetIntoStruct;
-			typeId = type.definition.word(2u + memberIndex);
 			break;
-		}
 
 		case spv::OpTypeVector:
 		case spv::OpTypeMatrix:
 		case spv::OpTypeArray:
-		{
-			auto elementType = type.definition.word(2);
-			auto stride = getType(elementType).sizeInComponents;
-			componentOffset += stride * indexes[i];
-			typeId = elementType;
+			{
+				auto elementType = type.definition.word(2);
+				auto stride = getType(elementType).sizeInComponents;
+				componentOffset += stride * indexes[i];
+				typeId = elementType;
+			}
 			break;
-		}
 
 		default:
 			UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
@@ -1460,25 +1463,25 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 		switch (insn.opcode())
 		{
 		case spv::OpVariable:
-		{
-			Type::ID resultPointerTypeId = insn.word(1);
-			auto resultPointerType = getType(resultPointerTypeId);
-			auto pointeeType = getType(resultPointerType.element);
-
-			if(pointeeType.sizeInComponents > 0)  // TODO: what to do about zero-slot objects?
 			{
-				Object::ID resultId = insn.word(2);
-				routine->createVariable(resultId, pointeeType.sizeInComponents);
+				Type::ID resultPointerTypeId = insn.word(1);
+				auto resultPointerType = getType(resultPointerTypeId);
+				auto pointeeType = getType(resultPointerType.element);
+	
+				if(pointeeType.sizeInComponents > 0)  // TODO: what to do about zero-slot objects?
+				{
+					Object::ID resultId = insn.word(2);
+					routine->createVariable(resultId, pointeeType.sizeInComponents);
+				}
 			}
 			break;
-		}
 		case spv::OpPhi:
-		{
-			auto type = getType(insn.word(1));
-			Object::ID resultId = insn.word(2);
-			routine->phis.emplace(resultId, SpirvRoutine::Variable(type.sizeInComponents));
+			{
+				auto type = getType(insn.word(1));
+				Object::ID resultId = insn.word(2);
+				routine->phis.emplace(resultId, SpirvRoutine::Variable(type.sizeInComponents));
+			}
 			break;
-		}
 
 		case spv::OpImageDrefGather:
 		case spv::OpImageFetch:
@@ -1492,11 +1495,11 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 		case spv::OpImageSampleProjDrefImplicitLod:
 		case spv::OpImageSampleProjExplicitLod:
 		case spv::OpImageSampleProjImplicitLod:
-		{
-			Object::ID resultId = insn.word(2);
-			routine->samplerCache.emplace(resultId, SpirvRoutine::SamplerCache{});
+			{
+				Object::ID resultId = insn.word(2);
+				routine->samplerCache.emplace(resultId, SpirvRoutine::SamplerCache{});
+			}
 			break;
-		}
 
 		default:
 			// Nothing else produces interface variables, so can all be safely ignored.
@@ -1517,6 +1520,7 @@ void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLan
 		{
 			break;
 		}
+
 		EmitInstruction(insn, &state);
 	}
 
@@ -2299,22 +2303,22 @@ void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 		switch (insn.opcode())
 		{
 		case spv::OpVariable:
-		{
-			Object::ID resultId = insn.word(2);
-			auto &object = getObject(resultId);
-			auto &objectTy = getType(object.type);
-			if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassOutput)
 			{
-				auto &dst = routine->getVariable(resultId);
-				int offset = 0;
-				VisitInterface(resultId,
-							   [&](Decorations const &d, AttribType type) {
-								   auto scalarSlot = d.Location << 2 | d.Component;
-								   routine->outputs[scalarSlot] = dst[offset++];
-							   });
+				Object::ID resultId = insn.word(2);
+				auto &object = getObject(resultId);
+				auto &objectTy = getType(object.type);
+				if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassOutput)
+				{
+					auto &dst = routine->getVariable(resultId);
+					int offset = 0;
+					VisitInterface(resultId,
+								   [&](Decorations const &d, AttribType type) {
+									   auto scalarSlot = d.Location << 2 | d.Component;
+									   routine->outputs[scalarSlot] = dst[offset++];
+								   });
+				}
 			}
 			break;
-		}
 		default:
 			break;
 		}

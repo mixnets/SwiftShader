@@ -372,18 +372,18 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		switch((long)(extensionCreateInfo->sType))
 		{
 		case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT:
-		{
-			const VkPipelineRasterizationLineStateCreateInfoEXT* lineStateCreateInfo = reinterpret_cast<const VkPipelineRasterizationLineStateCreateInfoEXT*>(extensionCreateInfo);
-			context.lineRasterizationMode = lineStateCreateInfo->lineRasterizationMode;
-		}
-		break;
+			{
+				const VkPipelineRasterizationLineStateCreateInfoEXT* lineStateCreateInfo = reinterpret_cast<const VkPipelineRasterizationLineStateCreateInfoEXT*>(extensionCreateInfo);
+				context.lineRasterizationMode = lineStateCreateInfo->lineRasterizationMode;
+			}
+			break;
 		case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT:
-		{
-			const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT* provokingVertexModeCreateInfo =
-				reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT*>(extensionCreateInfo);
-			context.provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
-		}
-		break;
+			{
+				const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT* provokingVertexModeCreateInfo =
+					reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT*>(extensionCreateInfo);
+				context.provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
+			}
+			break;
 		default:
 			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 			break;
