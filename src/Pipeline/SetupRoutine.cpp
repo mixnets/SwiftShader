@@ -167,8 +167,14 @@ void SetupRoutine::generate()
 
 		if(state.multiSample > 1)
 		{
-			yMin = (yMin + Constants::yMinMultiSampleOffset) >> subPixB;
-			yMax = (yMax + Constants::yMaxMultiSampleOffset) >> subPixB;
+			// Compute the yMin and yMax multisample offsets so that they are just large enough to include all sample points
+			const float min = sw::min(Constants::SampleLocationsY[0], Constants::SampleLocationsY[1], Constants::SampleLocationsY[2], Constants::SampleLocationsY[3]);
+			const float max = sw::max(Constants::SampleLocationsY[0], Constants::SampleLocationsY[1], Constants::SampleLocationsY[2], Constants::SampleLocationsY[3]);
+			const int yMinMultiSampleOffset = sw::toFixedPoint(1, vk::SUBPIXEL_PRECISION_BITS) + sw::toFixedPoint(min, vk::SUBPIXEL_PRECISION_BITS) - 1;
+			const int yMaxMultiSampleOffset = sw::toFixedPoint(1, vk::SUBPIXEL_PRECISION_BITS) + sw::toFixedPoint(max, vk::SUBPIXEL_PRECISION_BITS) - 1;
+
+			yMin = (yMin + yMinMultiSampleOffset) >> subPixB;
+			yMax = (yMax + yMaxMultiSampleOffset) >> subPixB;
 		}
 		else
 		{
