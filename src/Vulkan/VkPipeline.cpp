@@ -386,8 +386,8 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 		break;
 		default:
 			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -508,8 +508,8 @@ void GraphicsPipeline::setShader(const VkShaderStageFlagBits& stage, const std::
 
 	default:
 		UNSUPPORTED("Unsupported stage");
-		break;
 	}
+	break;
 }
 
 const std::shared_ptr<sw::SpirvShader> GraphicsPipeline::getShader(const VkShaderStageFlagBits& stage) const

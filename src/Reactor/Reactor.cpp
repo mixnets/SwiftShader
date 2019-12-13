@@ -72,9 +72,9 @@ void rr::Config::Edit::apply(const std::vector<std::pair<ListEdit, T>> & edits, 
 			break;
 		case ListEdit::Clear:
 			list.clear();
-			break;
 		}
 	}
+	break;
 }
 
 // Set of variables that do not have a stack location yet.

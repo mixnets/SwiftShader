@@ -252,8 +252,8 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 		}
 		break;
 	default:
-		break;
 	}
+	break;
 
 	UNIMPLEMENTED("magFilter %d", sampler->magFilter);
 	return FILTER_POINT;

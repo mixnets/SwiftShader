@@ -547,8 +547,8 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties* pFor
 			VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT;
 		break;
 	default:
-		break;
 	}
+	break;
 
 	switch(format)
 	{
@@ -584,8 +584,8 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties* pFor
 			VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
 		break;
 	default:
-		break;
 	}
+	break;
 
 	switch(format)
 	{
@@ -642,8 +642,8 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties* pFor
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		break;
 	default:
-		break;
 	}
+	break;
 
 	switch(format)
 	{
@@ -696,8 +696,8 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties* pFor
 			VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT;
 		break;
 	default:
-		break;
 	}
+	break;
 
 	switch(format)
 	{
@@ -743,8 +743,8 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties* pFor
 			VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
 		break;
 	default:
-		break;
 	}
+	break;
 
 	if(pFormatProperties->optimalTilingFeatures)
 	{
@@ -800,8 +800,8 @@ void PhysicalDevice::getImageFormatProperties(Format format, VkImageType type, V
 		break;
 	default:
 		UNREACHABLE("VkImageType: %d", int(type));
-		break;
 	}
+	break;
 
 	pImageFormatProperties->maxResourceSize = 1u << 31; // Minimum value for maxResourceSize
 

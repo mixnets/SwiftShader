@@ -56,8 +56,8 @@ void Thread::update(const Location& location)
 	case State::Paused:
 	{
 		stateCV.wait(lock, [this] { return state_ != State::Paused; });
-		break;
 	}
+	break;
 
 	case State::Stepping:
 	{
@@ -68,12 +68,12 @@ void Thread::update(const Location& location)
 			stateCV.wait(lock, [this] { return state_ != State::Paused; });
 			pauseAtFrame = 0;
 		}
-		break;
 	}
+	break;
 
 	case State::Running:
-		break;
 	}
+	break;
 }
 
 void Thread::enter(Context::Lock& ctxlck, const std::shared_ptr<File>& file, const std::string& function)

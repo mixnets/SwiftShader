@@ -260,8 +260,8 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 					{
 						addressUses.loads[i] = addressUses.loads.back();
 						addressUses.loads.pop_back();
-						break;
 					}
+					break;
 				}
 
 				for(size_t i = 0; i < addressUses.size(); i++)
@@ -270,8 +270,8 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 					{
 						addressUses[i] = addressUses.back();
 						addressUses.pop_back();
-						break;
 					}
+					break;
 				}
 
 				if(addressUses.size() == 1)
@@ -302,8 +302,8 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 						}
 					}
 
-					break;
 				}
+				break;
 			}
 		}
 	}
@@ -349,8 +349,8 @@ void Optimizer::optimizeStoresInSingleBasicBlock()
 			if(getNode(store) != singleBasicBlock)
 			{
 				singleBasicBlock = nullptr;
-				break;
 			}
+			break;
 		}
 
 		if(singleBasicBlock)
@@ -451,8 +451,8 @@ void Optimizer::analyzeUses(Ice::Cfg *function)
 				{
 					if(instruction.getSrc(i) == instruction.getSrc(unique))
 					{
-						break;
 					}
+					break;
 				}
 
 				if(i == unique)
@@ -806,8 +806,8 @@ void Optimizer::Uses::erase(Ice::Inst *instruction)
 				{
 					loads[i] = loads.back();
 					loads.pop_back();
-					break;
 				}
+				break;
 			}
 
 			for(size_t i = 0; i < stores.size(); i++)
@@ -816,13 +816,13 @@ void Optimizer::Uses::erase(Ice::Inst *instruction)
 				{
 					stores[i] = stores.back();
 					stores.pop_back();
-					break;
 				}
+				break;
 			}
 
-			break;
 		}
 	}
+	break;
 }
 
 }  // anonymous namespace 

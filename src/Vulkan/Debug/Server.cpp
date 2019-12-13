@@ -316,8 +316,8 @@ Server::Impl::Impl(const std::shared_ptr<Context>& context, int port) :
 				for(auto thread : threads)
 				{
 					event.threadId = thread->id.value();
-					break;
 				}
+				break;
 			}
 		}
 
@@ -563,8 +563,8 @@ std::shared_ptr<File> Server::Impl::file(const dap::Source& source)
 			if(file->path() == path)
 			{
 				out = file;
-				break;
 			}
+			break;
 		}
 		return out;
 	}
@@ -578,8 +578,8 @@ std::shared_ptr<File> Server::Impl::file(const dap::Source& source)
 			if(file->name == name)
 			{
 				out = file;
-				break;
 			}
+			break;
 		}
 		return out;
 	}

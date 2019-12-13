@@ -78,8 +78,8 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
 	default:
-		break;
 	}
+	break;
 
 	return TRUE;
 }

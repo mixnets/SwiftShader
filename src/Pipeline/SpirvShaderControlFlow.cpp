@@ -54,8 +54,8 @@ SpirvShader::Block::Block(InsnIterator begin, InsnIterator end) : begin_(begin),
 
 				default:
 					kind = Block::Simple;
-					break;
-			}
+				}
+			break;
 			break;
 
 		case spv::OpBranchConditional:
@@ -80,8 +80,8 @@ SpirvShader::Block::Block(InsnIterator begin, InsnIterator end) : begin_(begin),
 
 				default:
 					kind = UnstructuredBranchConditional;
-					break;
-			}
+				}
+			break;
 			break;
 
 		case spv::OpSwitch:
@@ -102,13 +102,13 @@ SpirvShader::Block::Block(InsnIterator begin, InsnIterator end) : begin_(begin),
 
 				default:
 					kind = UnstructuredSwitch;
-					break;
-			}
+				}
+			break;
 			break;
 
 		default:
-			break;
-	}
+		}
+	break;
 }
 
 void SpirvShader::Function::TraverseReachableBlocks(Block::ID id, SpirvShader::Block::Set& reachable) const
@@ -616,8 +616,8 @@ SpirvShader::EmitResult SpirvShader::EmitControlBarrier(InsnIterator insn, EmitS
 	default:
 		// See Vulkan 1.1 spec, Appendix A, Validation Rules within a Module.
 		UNREACHABLE("Scope for execution must be limited to Workgroup or Subgroup");
-		break;
 	}
+	break;
 
 	return EmitResult::Continue;
 }
