@@ -97,7 +97,7 @@ struct Matrix
 
 	static Matrix translate(const Vector &v);
 	static Matrix translate(float x, float y, float z);
-	
+
 	static Matrix scale(const Vector &v);
 	static Matrix scale(float x, float y, float z);
 
