@@ -54,13 +54,10 @@ void Thread::update(const Location& location)
 	switch(state_)
 	{
 	case State::Paused:
-	{
 		stateCV.wait(lock, [this] { return state_ != State::Paused; });
 		break;
-	}
 
 	case State::Stepping:
-	{
 		if(!pauseAtFrame || pauseAtFrame == frames.back())
 		{
 			broadcast->onThreadStepped(id);
@@ -69,7 +66,6 @@ void Thread::update(const Location& location)
 			pauseAtFrame = 0;
 		}
 		break;
-	}
 
 	case State::Running:
 		break;

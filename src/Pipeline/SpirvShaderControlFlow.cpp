@@ -39,75 +39,75 @@ SpirvShader::Block::Block(InsnIterator begin, InsnIterator end) : begin_(begin),
 
 	switch (insns[1].opcode())
 	{
-		case spv::OpBranch:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(1)));
+	case spv::OpBranch:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(1)));
 
-			switch (insns[0].opcode())
-			{
-				case spv::OpLoopMerge:
-					kind = Loop;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					continueTarget = Block::ID(mergeInstruction.word(2));
-					break;
-
-				default:
-					kind = Block::Simple;
-					break;
-			}
-			break;
-
-		case spv::OpBranchConditional:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(2)));
-			outs.emplace(Block::ID(branchInstruction.word(3)));
-
-			switch (insns[0].opcode())
-			{
-				case spv::OpSelectionMerge:
-					kind = StructuredBranchConditional;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					break;
-
-				case spv::OpLoopMerge:
-					kind = Loop;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					continueTarget = Block::ID(mergeInstruction.word(2));
-					break;
-
-				default:
-					kind = UnstructuredBranchConditional;
-					break;
-			}
-			break;
-
-		case spv::OpSwitch:
-			branchInstruction = insns[1];
-			outs.emplace(Block::ID(branchInstruction.word(2)));
-			for (uint32_t w = 4; w < branchInstruction.wordCount(); w += 2)
-			{
-				outs.emplace(Block::ID(branchInstruction.word(w)));
-			}
-
-			switch (insns[0].opcode())
-			{
-				case spv::OpSelectionMerge:
-					kind = StructuredSwitch;
-					mergeInstruction = insns[0];
-					mergeBlock = Block::ID(mergeInstruction.word(1));
-					break;
-
-				default:
-					kind = UnstructuredSwitch;
-					break;
-			}
+		switch(insns[0].opcode())
+		{
+		case spv::OpLoopMerge:
+			kind = Loop;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			continueTarget = Block::ID(mergeInstruction.word(2));
 			break;
 
 		default:
+			kind = Block::Simple;
 			break;
+		}
+		break;
+
+	case spv::OpBranchConditional:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(2)));
+		outs.emplace(Block::ID(branchInstruction.word(3)));
+
+		switch(insns[0].opcode())
+		{
+		case spv::OpSelectionMerge:
+			kind = StructuredBranchConditional;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			break;
+
+		case spv::OpLoopMerge:
+			kind = Loop;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			continueTarget = Block::ID(mergeInstruction.word(2));
+			break;
+
+		default:
+			kind = UnstructuredBranchConditional;
+			break;
+		}
+		break;
+
+	case spv::OpSwitch:
+		branchInstruction = insns[1];
+		outs.emplace(Block::ID(branchInstruction.word(2)));
+		for(uint32_t w = 4; w < branchInstruction.wordCount(); w += 2)
+		{
+			outs.emplace(Block::ID(branchInstruction.word(w)));
+		}
+
+		switch(insns[0].opcode())
+		{
+		case spv::OpSelectionMerge:
+			kind = StructuredSwitch;
+			mergeInstruction = insns[0];
+			mergeBlock = Block::ID(mergeInstruction.word(1));
+			break;
+
+		default:
+			kind = UnstructuredSwitch;
+			break;
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 
@@ -156,8 +156,8 @@ void SpirvShader::Function::ForeachBlockDependency(Block::ID blockId, std::funct
 	auto block = getBlock(blockId);
 	for (auto dep : block.ins)
 	{
-		if (block.kind != Block::Loop ||                 // if not a loop...
-			!ExistsPath(blockId, dep, block.mergeBlock)) // or a loop and not a loop back edge
+		if(block.kind != Block::Loop ||                  // if not a loop...
+		   !ExistsPath(blockId, dep, block.mergeBlock))  // or a loop and not a loop back edge
 		{
 			f(dep);
 		}
@@ -583,11 +583,13 @@ SpirvShader::EmitResult SpirvShader::EmitFunctionCall(InsnIterator insn, EmitSta
 				UNIMPLEMENTED("Function block number of instructions: %d", insnNumber);
 				return EmitResult::Continue;
 			}
+
 			if (blockInsn.opcode() != wrapOpKill[insnNumber++])
 			{
 				UNIMPLEMENTED("Function block instruction %d : %s", insnNumber - 1, OpcodeName(blockInsn.opcode()).c_str());
 				return EmitResult::Continue;
 			}
+
 			if (blockInsn.opcode() == spv::OpKill)
 			{
 				EmitInstruction(blockInsn, state);
@@ -688,8 +690,9 @@ void SpirvShader::Fence(spv::MemorySemanticsMask semantics) const
 {
 	if (semantics == spv::MemorySemanticsMaskNone)
 	{
-		return; //no-op
+		return;  //no-op
 	}
+
 	rr::Fence(MemoryOrder(semantics));
 }
 

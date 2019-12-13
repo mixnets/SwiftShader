@@ -1690,7 +1690,7 @@ Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int
 			Value *v = createInsertElement(u, i, 0);
 			return createBitCast(v, type);
 		}
-		// Fallthrough to non-emulated case.
+		// [[fallthrough]] to non-emulated case.
 	case Type_LLVM:
 		{
 			auto elTy = T(type);
@@ -1774,7 +1774,7 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 				Int::getType(), isVolatile, alignment, atomic, memoryOrder);
 			return value;
 		}
-		// Fallthrough to non-emulated case.
+		// [[fallthrough]] to non-emulated case.
 	case Type_LLVM:
 		{
 			auto elTy = T(type);

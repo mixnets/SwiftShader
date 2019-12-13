@@ -28,12 +28,12 @@ struct Color
 	Color(const Color<byte> &c);
 	Color(const Color<short> &c);
 	Color(const Color<float> &c);
-	
+
 	Color(int c);
 	Color(unsigned short c);
 	Color(unsigned long c);
 	Color(unsigned int c);
-	
+
 	Color(T r, T g, T b, T a = 1);
 
 	operator unsigned int() const;
@@ -375,7 +375,7 @@ inline Color<T> operator+(const Color<T> &c1, const Color<T> &c2)
 	return Color<T>(c1.r + c2.r,
 	                c1.g + c2.g,
 	                c1.b + c2.b,
-	                c1.a + c2.a);	
+	                c1.a + c2.a);
 }
 
 template<class T>
@@ -384,7 +384,7 @@ inline Color<T> operator-(const Color<T> &c1, const Color<T> &c2)
 	return Color<T>(c1.r - c2.r,
 	                c1.g - c2.g,
 	                c1.b - c2.b,
-	                c1.a - c2.a);	
+	                c1.a - c2.a);
 }
 
 template<class T>
