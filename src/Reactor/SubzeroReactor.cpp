@@ -166,6 +166,11 @@ static_assert(!subzeroEmitTextAsm, "Compile Subzero with ALLOW_DUMP=1 for subzer
 
 namespace rr {
 
+BackendType Backend()
+{
+	return BackendType::Subzero;
+}
+
 std::string BackendName()
 {
 	return "Subzero";
