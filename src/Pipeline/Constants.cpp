@@ -291,17 +291,17 @@ Constants::Constants()
 	}
 
 	constexpr float4 X[4] = {
-		sw::replicate(SampleLocationsX[0]),
-		sw::replicate(SampleLocationsX[1]),
-		sw::replicate(SampleLocationsX[2]),
-		sw::replicate(SampleLocationsX[3]),
+		float4(SampleLocationsX[0]),
+		float4(SampleLocationsX[1]),
+		float4(SampleLocationsX[2]),
+		float4(SampleLocationsX[3]),
 	};
 
 	constexpr float4 Y[4] = {
-		sw::replicate(SampleLocationsY[0]),
-		sw::replicate(SampleLocationsY[1]),
-		sw::replicate(SampleLocationsY[2]),
-		sw::replicate(SampleLocationsY[3]),
+		float4(SampleLocationsY[0]),
+		float4(SampleLocationsY[1]),
+		float4(SampleLocationsY[2]),
+		float4(SampleLocationsY[3]),
 	};
 
 	for(int q = 0; q < 4; q++)
