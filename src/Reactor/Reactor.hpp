@@ -50,6 +50,13 @@ void FlushDebug();
 
 namespace rr {
 
+enum class BackendType
+{
+	Subzero,
+	LLVM
+};
+
+BackendType Backend();
 std::string BackendName();
 
 struct Capabilities
