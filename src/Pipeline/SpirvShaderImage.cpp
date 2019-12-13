@@ -302,7 +302,10 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	Array<SIMD::Float> out(4);
 	Call<ImageSampler>(cache.function, texture, sampler, &in[0], &out[0], state->routine->constants);
 
-	for(auto i = 0u; i < resultType.sizeInComponents; i++) { result.move(i, out[i]); }
+	for(auto i = 0u; i < resultType.sizeInComponents; i++)
+	{
+		result.move(i, out[i]);
+	}
 
 	return EmitResult::Continue;
 }
@@ -361,19 +364,15 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 	{
 		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 		case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-		{
 			extent = descriptor + OFFSET(vk::StorageImageDescriptor, extent);                           // int[3]*
 			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers));  // uint32_t
 			break;
-		}
 		case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 		case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 		case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-		{
 			extent = descriptor + OFFSET(vk::SampledImageDescriptor, extent);                           // int[3]*
 			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, arrayLayers));  // uint32_t
 			break;
-		}
 		default:
 			UNREACHABLE("Image descriptorType: %d", int(bindingLayout.descriptorType));
 	}
@@ -903,8 +902,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			break;
 		case spv::ImageFormatRgba16f:
 			texelSize = 8;
-			packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
-			packed[1] = floatToHalfBits(texel.UInt(2), false) | floatToHalfBits(texel.UInt(3), true);
+			packed[0] = FloatToHalfBits(texel.UInt(0), false) | FloatToHalfBits(texel.UInt(1), true);
+			packed[1] = FloatToHalfBits(texel.UInt(2), false) | FloatToHalfBits(texel.UInt(3), true);
 			numPackedElements = 2;
 			break;
 		case spv::ImageFormatRgba16i:

@@ -76,8 +76,8 @@ SpirvShader::SpirvShader(
 					ASSERT_MSG(entryPoint == 0, "Duplicate entry point with name '%s' and stage %d", name, int(stage));
 					entryPoint = id;
 				}
-				break;
 			}
+			break;
 
 			case spv::OpExecutionMode:
 				ProcessExecutionMode(insn);
@@ -108,9 +108,11 @@ SpirvShader::SpirvShader(
 				}
 
 				if(decoration == spv::DecorationCentroid)
+				{
 					modes.NeedsCentroid = true;
-				break;
+				}
 			}
+			break;
 
 			case spv::OpMemberDecorate:
 			{
@@ -121,14 +123,18 @@ SpirvShader::SpirvShader(
 
 				auto &d = memberDecorations[targetId];
 				if(memberIndex >= d.size())
+				{
 					d.resize(memberIndex + 1);  // on demand; exact size would require another pass...
+				}
 
 				d[memberIndex].Apply(decoration, value);
 
 				if(decoration == spv::DecorationCentroid)
+				{
 					modes.NeedsCentroid = true;
-				break;
+				}
 			}
+			break;
 
 			case spv::OpDecorationGroup:
 				// Nothing to do here. We don't need to record the definition of the group; we'll just have
@@ -148,9 +154,8 @@ SpirvShader::SpirvShader(
 					decorations[target].Apply(groupDecorations);
 					descriptorDecorations[target].Apply(descriptorGroupDecorations);
 				}
-
-				break;
 			}
+			break;
 
 			case spv::OpGroupMemberDecorate:
 			{
@@ -161,28 +166,30 @@ SpirvShader::SpirvShader(
 					auto &d = memberDecorations[insn.word(i)];
 					auto memberIndex = insn.word(i + 1);
 					if(memberIndex >= d.size())
+					{
 						d.resize(memberIndex + 1);  // on demand resize, see above...
+					}
 					d[memberIndex].Apply(srcDecorations);
 				}
-				break;
 			}
+			break;
 
 			case spv::OpLabel:
 			{
 				ASSERT(currentBlock.value() == 0);
 				currentBlock = Block::ID(insn.word(1));
 				blockStart = insn;
-				break;
 			}
+			break;
 
 			// Branch Instructions (subset of Termination Instructions):
 			case spv::OpBranch:
 			case spv::OpBranchConditional:
 			case spv::OpSwitch:
 			case spv::OpReturn:
-			// fallthrough
+				// [[fallthrough]] to termination instructions.
 
-			// Termination instruction:
+			// Termination instructions:
 			case spv::OpKill:
 			case spv::OpUnreachable:
 			{
@@ -198,8 +205,8 @@ SpirvShader::SpirvShader(
 				{
 					modes.ContainsKill = true;
 				}
-				break;
 			}
+			break;
 
 			case spv::OpLoopMerge:
 			case spv::OpSelectionMerge:
@@ -260,8 +267,8 @@ SpirvShader::SpirvShader(
 						auto sizeInBytes = elTy.sizeInComponents * static_cast<uint32_t>(sizeof(float));
 						workgroupMemory.allocate(resultId, sizeInBytes);
 						object.kind = Object::Kind::Pointer;
-						break;
 					}
+					break;
 					case spv::StorageClassAtomicCounter:
 					case spv::StorageClassImage:
 						UNIMPLEMENTED("StorageClass %d not yet implemented", (int)storageClass);
@@ -305,8 +312,8 @@ SpirvShader::SpirvShader(
 				{
 					object.constantValue[i] = 0;
 				}
-				break;
 			}
+			break;
 			case spv::OpConstantComposite:
 			case spv::OpSpecConstantComposite:
 			{
@@ -340,8 +347,8 @@ SpirvShader::SpirvShader(
 					modes.WorkgroupSizeY = object.constantValue[1];
 					modes.WorkgroupSizeZ = object.constantValue[2];
 				}
-				break;
 			}
+			break;
 			case spv::OpSpecConstantOp:
 				EvalSpecConstantOp(insn);
 				break;
@@ -376,8 +383,8 @@ SpirvShader::SpirvShader(
 					default:
 						UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
-				break;  // Various capabilities will be declared, but none affect our code generation at this point.
 			}
+			break;  // Various capabilities will be declared, but none affect our code generation at this point.
 
 			case spv::OpMemoryModel:
 				break;  // Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
@@ -406,8 +413,8 @@ SpirvShader::SpirvShader(
 					}
 				}
 				ASSERT_MSG(function.entry != 0, "Function<%d> has no label", currentFunction.value());
-				break;
 			}
+			break;
 
 			case spv::OpFunctionEnd:
 				currentFunction = 0;
@@ -422,8 +429,8 @@ SpirvShader::SpirvShader(
 				{
 					UNSUPPORTED("SPIR-V Extension: %s", ext);
 				}
-				break;
 			}
+			break;
 			case spv::OpName:
 			case spv::OpMemberName:
 			case spv::OpSource:
@@ -678,8 +685,8 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_device_group")) break;
 				if(!strcmp(ext, "SPV_KHR_multiview")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
-				break;
 			}
+			break;
 
 			default:
 				UNIMPLEMENTED("%s", OpcodeName(opcode).c_str());
@@ -719,16 +726,16 @@ void SpirvShader::DeclareType(InsnIterator insn)
 					}
 				}
 			}
-			break;
 		}
+		break;
 		case spv::OpTypePointer:
 		{
 			Type::ID elementTypeId = insn.word(3);
 			type.element = elementTypeId;
 			type.isBuiltInBlock = getType(elementTypeId).isBuiltInBlock;
 			type.storageClass = static_cast<spv::StorageClass>(insn.word(2));
-			break;
 		}
+		break;
 		case spv::OpTypeVector:
 		case spv::OpTypeMatrix:
 		case spv::OpTypeArray:
@@ -736,8 +743,8 @@ void SpirvShader::DeclareType(InsnIterator insn)
 		{
 			Type::ID elementTypeId = insn.word(2);
 			type.element = elementTypeId;
-			break;
 		}
+		break;
 		default:
 			break;
 	}
@@ -1007,8 +1014,8 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 				int memberIndex = GetConstScalarInt(indexIds[i]);
 				ApplyDecorationsForIdMember(d, typeId, memberIndex);
 				typeId = type.definition.word(2u + memberIndex);
-				break;
 			}
+			break;
 			case spv::OpTypeArray:
 			case spv::OpTypeRuntimeArray:
 				if(dd->InputAttachmentIndex >= 0)
@@ -1072,8 +1079,8 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 				ASSERT(d.HasOffset);
 				constantOffset += d.Offset;
 				typeId = type.definition.word(2u + memberIndex);
-				break;
 			}
+			break;
 			case spv::OpTypeArray:
 			case spv::OpTypeRuntimeArray:
 			{
@@ -1089,8 +1096,8 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 					ptr += SIMD::Int(d.ArrayStride) * state->getIntermediate(indexIds[i]).Int(0);
 				}
 				typeId = type.element;
-				break;
 			}
+			break;
 			case spv::OpTypeMatrix:
 			{
 				// TODO: b/127950082: Check bounds.
@@ -1107,8 +1114,8 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 					ptr += SIMD::Int(columnStride) * state->getIntermediate(indexIds[i]).Int(0);
 				}
 				typeId = type.element;
-				break;
 			}
+			break;
 			case spv::OpTypeVector:
 			{
 				auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
@@ -1122,8 +1129,8 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 					ptr += SIMD::Int(elemStride) * state->getIntermediate(indexIds[i]).Int(0);
 				}
 				typeId = type.element;
-				break;
 			}
+			break;
 			default:
 				UNREACHABLE("%s", OpcodeName(type.definition.opcode()).c_str());
 		}
@@ -1160,8 +1167,8 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, uint32_t numIndexe
 				}
 				constantOffset += offsetIntoStruct;
 				typeId = type.definition.word(2u + memberIndex);
-				break;
 			}
+			break;
 
 			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
@@ -1199,8 +1206,8 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, uint32_t numIndexe
 					}
 				}
 				typeId = type.element;
-				break;
 			}
+			break;
 
 			default:
 				UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
@@ -1234,8 +1241,8 @@ uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndexe
 				}
 				componentOffset += offsetIntoStruct;
 				typeId = type.definition.word(2u + memberIndex);
-				break;
 			}
+			break;
 
 			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
@@ -1245,8 +1252,8 @@ uint32_t SpirvShader::WalkLiteralAccessChain(Type::ID typeId, uint32_t numIndexe
 				auto stride = getType(elementType).sizeInComponents;
 				componentOffset += stride * indexes[i];
 				typeId = elementType;
-				break;
 			}
+			break;
 
 			default:
 				UNREACHABLE("%s", OpcodeName(type.opcode()).c_str());
@@ -1391,7 +1398,9 @@ void SpirvShader::ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const
 {
 	auto it = decorations.find(id);
 	if(it != decorations.end())
+	{
 		d->Apply(it->second);
+	}
 }
 
 void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const
@@ -1475,15 +1484,15 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 					Object::ID resultId = insn.word(2);
 					routine->createVariable(resultId, pointeeType.sizeInComponents);
 				}
-				break;
 			}
+			break;
 			case spv::OpPhi:
 			{
 				auto type = getType(insn.word(1));
 				Object::ID resultId = insn.word(2);
 				routine->phis.emplace(resultId, SpirvRoutine::Variable(type.sizeInComponents));
-				break;
 			}
+			break;
 
 			case spv::OpImageDrefGather:
 			case spv::OpImageFetch:
@@ -1500,8 +1509,8 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 			{
 				Object::ID resultId = insn.word(2);
 				routine->samplerCache.emplace(resultId, SpirvRoutine::SamplerCache{});
-				break;
 			}
+			break;
 
 			default:
 				// Nothing else produces interface variables, so can all be safely ignored.
@@ -1522,6 +1531,7 @@ void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLan
 		{
 			break;
 		}
+
 		EmitInstruction(insn, &state);
 	}
 
@@ -2318,8 +2328,8 @@ void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 						               routine->outputs[scalarSlot] = dst[offset++];
 					               });
 				}
-				break;
 			}
+			break;
 			default:
 				break;
 		}
