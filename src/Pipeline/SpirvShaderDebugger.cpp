@@ -1957,28 +1957,28 @@ void SpirvShader::Impl::Debugger::Shadow::create(const SpirvShader *shader, cons
 	{
 		case Object::Kind::Constant:
 		case Object::Kind::Intermediate:
-		{
-			size += objTy.componentCount * sizeof(uint32_t) * sw::SIMD::Width;
-			auto dst = InterleaveByLane(SIMD::Pointer(base, 0));
-			for(uint32_t i = 0u; i < objTy.componentCount; i++)
 			{
-				auto val = SpirvShader::Operand(shader, state, objId).Int(i);
-				dst.Store(val, sw::OutOfBoundsBehavior::UndefinedBehavior, mask);
-				dst += sizeof(uint32_t) * SIMD::Width;
+				size += objTy.componentCount * sizeof(uint32_t) * sw::SIMD::Width;
+				auto dst = InterleaveByLane(SIMD::Pointer(base, 0));
+				for(uint32_t i = 0u; i < objTy.componentCount; i++)
+				{
+					auto val = SpirvShader::Operand(shader, state, objId).Int(i);
+					dst.Store(val, sw::OutOfBoundsBehavior::UndefinedBehavior, mask);
+					dst += sizeof(uint32_t) * SIMD::Width;
+				}
+				entry.kind = Entry::Kind::Value;
 			}
-			entry.kind = Entry::Kind::Value;
 			break;
-		}
 		case Object::Kind::Pointer:
 		case Object::Kind::InterfaceVariable:
-		{
-			size += sizeof(void *) + sizeof(uint32_t) * SIMD::Width;
-			auto ptr = state->getPointer(objId);
-			store(base, ptr.base);
-			store(base + sizeof(void *), ptr.offsets());
-			entry.kind = Entry::Kind::Pointer;
+			{
+				size += sizeof(void *) + sizeof(uint32_t) * SIMD::Width;
+				auto ptr = state->getPointer(objId);
+				store(base, ptr.base);
+				store(base + sizeof(void *), ptr.offsets());
+				entry.kind = Entry::Kind::Pointer;
+			}
 			break;
-		}
 		default:
 			break;
 	}
@@ -2353,21 +2353,21 @@ SpirvShader::Impl::Debugger::State::Data::getOrCreateLocals(State *state, debug:
 				switch(var->definition)
 				{
 					case debug::LocalVariable::Definition::Undefined:
-					{
-						vc->put(name, var->type->undefined());
+						{
+							vc->put(name, var->type->undefined());
+						}
 						break;
-					}
 					case debug::LocalVariable::Definition::Declaration:
-					{
-						auto data = state->debugger->shadow.get(state, var->declaration->variable);
-						vc->put(name, var->type->value(data.dref(lane), true));
+						{
+							auto data = state->debugger->shadow.get(state, var->declaration->variable);
+							vc->put(name, var->type->value(data.dref(lane), true));
+						}
 						break;
-					}
 					case debug::LocalVariable::Definition::Values:
-					{
-						vc->put(name, std::make_shared<LocalVariableValue>(var, state, lane));
-						break;
-					}
+						{
+							vc->put(name, std::make_shared<LocalVariableValue>(var, state, lane));
+							break;
+						}
 				}
 			}
 
@@ -2447,32 +2447,32 @@ void SpirvShader::Impl::Debugger::State::Data::buildGlobals(State *state)
 	switch(state->debugger->shader->executionModel)
 	{
 		case spv::ExecutionModelGLCompute:
-		{
-			buildGlobal("numWorkgroups", state->globals.compute.numWorkgroups);
-			buildGlobal("workgroupID", state->globals.compute.workgroupID);
-			buildGlobal("workgroupSize", state->globals.compute.workgroupSize);
-			buildGlobal("numSubgroups", state->globals.compute.numSubgroups);
-			buildGlobal("subgroupIndex", state->globals.compute.subgroupIndex);
-			buildGlobal("globalInvocationId", state->globals.compute.globalInvocationId);
-			buildGlobal("localInvocationIndex", state->globals.compute.localInvocationIndex);
+			{
+				buildGlobal("numWorkgroups", state->globals.compute.numWorkgroups);
+				buildGlobal("workgroupID", state->globals.compute.workgroupID);
+				buildGlobal("workgroupSize", state->globals.compute.workgroupSize);
+				buildGlobal("numSubgroups", state->globals.compute.numSubgroups);
+				buildGlobal("subgroupIndex", state->globals.compute.subgroupIndex);
+				buildGlobal("globalInvocationId", state->globals.compute.globalInvocationId);
+				buildGlobal("localInvocationIndex", state->globals.compute.localInvocationIndex);
+			}
 			break;
-		}
 		case spv::ExecutionModelFragment:
-		{
-			buildGlobal("viewIndex", state->globals.fragment.viewIndex);
-			buildGlobal("fragCoord", state->globals.fragment.fragCoord);
-			buildGlobal("pointCoord", state->globals.fragment.pointCoord);
-			buildGlobal("windowSpacePosition", state->globals.fragment.windowSpacePosition);
-			buildGlobal("helperInvocation", state->globals.fragment.helperInvocation);
+			{
+				buildGlobal("viewIndex", state->globals.fragment.viewIndex);
+				buildGlobal("fragCoord", state->globals.fragment.fragCoord);
+				buildGlobal("pointCoord", state->globals.fragment.pointCoord);
+				buildGlobal("windowSpacePosition", state->globals.fragment.windowSpacePosition);
+				buildGlobal("helperInvocation", state->globals.fragment.helperInvocation);
+			}
 			break;
-		}
 		case spv::ExecutionModelVertex:
-		{
-			buildGlobal("viewIndex", state->globals.vertex.viewIndex);
-			buildGlobal("instanceIndex", state->globals.vertex.instanceIndex);
-			buildGlobal("vertexIndex", state->globals.vertex.vertexIndex);
+			{
+				buildGlobal("viewIndex", state->globals.vertex.viewIndex);
+				buildGlobal("instanceIndex", state->globals.vertex.instanceIndex);
+				buildGlobal("vertexIndex", state->globals.vertex.vertexIndex);
+			}
 			break;
-		}
 		default:
 			break;
 	}
@@ -2526,19 +2526,19 @@ SpirvShader::Impl::Debugger::State::Data::buildSpirvValue(State *state, Shadow::
 		case spv::OpTypeFloat:
 			return vk::dbg::make_reference(reinterpret_cast<float *>(memory.addr)[lane]);
 		case spv::OpTypeVector:
-		{
-			auto elTy = shader->getType(type.element);
-			return vk::dbg::Struct::create("vector", [&](auto &fields) {
-				for(uint32_t i = 0; i < type.componentCount; i++)
-				{
-					if(auto val = buildSpirvValue(state, memory, elTy, lane))
+			{
+				auto elTy = shader->getType(type.element);
+				return vk::dbg::Struct::create("vector", [&](auto &fields) {
+					for(uint32_t i = 0; i < type.componentCount; i++)
 					{
-						fields->put(vecElementName(i, type.componentCount), val);
-						memory.addr += sizeof(uint32_t) * sw::SIMD::Width;
+						if(auto val = buildSpirvValue(state, memory, elTy, lane))
+						{
+							fields->put(vecElementName(i, type.componentCount), val);
+							memory.addr += sizeof(uint32_t) * sw::SIMD::Width;
+						}
 					}
-				}
-			});
-		}
+				});
+			}
 		default:
 			return nullptr;  // Not handled yet
 	}
@@ -2619,35 +2619,35 @@ void SpirvShader::dbgBeginEmit(EmitState *state) const
 		switch(executionModel)
 		{
 			case spv::ExecutionModelGLCompute:
-			{
-				auto compute = globals + OFFSET(Globals, compute);
-				store(compute + OFFSET(Globals::Compute, numWorkgroups), routine->numWorkgroups);
-				store(compute + OFFSET(Globals::Compute, workgroupID), routine->workgroupID);
-				store(compute + OFFSET(Globals::Compute, workgroupSize), routine->workgroupSize);
-				store(compute + OFFSET(Globals::Compute, numSubgroups), routine->subgroupsPerWorkgroup);
-				store(compute + OFFSET(Globals::Compute, subgroupIndex), routine->subgroupIndex);
-				store(compute + OFFSET(Globals::Compute, globalInvocationId), routine->globalInvocationID);
-				store(compute + OFFSET(Globals::Compute, localInvocationIndex), routine->localInvocationIndex);
+				{
+					auto compute = globals + OFFSET(Globals, compute);
+					store(compute + OFFSET(Globals::Compute, numWorkgroups), routine->numWorkgroups);
+					store(compute + OFFSET(Globals::Compute, workgroupID), routine->workgroupID);
+					store(compute + OFFSET(Globals::Compute, workgroupSize), routine->workgroupSize);
+					store(compute + OFFSET(Globals::Compute, numSubgroups), routine->subgroupsPerWorkgroup);
+					store(compute + OFFSET(Globals::Compute, subgroupIndex), routine->subgroupIndex);
+					store(compute + OFFSET(Globals::Compute, globalInvocationId), routine->globalInvocationID);
+					store(compute + OFFSET(Globals::Compute, localInvocationIndex), routine->localInvocationIndex);
+				}
 				break;
-			}
 			case spv::ExecutionModelFragment:
-			{
-				auto fragment = globals + OFFSET(Globals, fragment);
-				store(fragment + OFFSET(Globals::Fragment, viewIndex), routine->viewID);
-				store(fragment + OFFSET(Globals::Fragment, fragCoord), routine->fragCoord);
-				store(fragment + OFFSET(Globals::Fragment, pointCoord), routine->pointCoord);
-				store(fragment + OFFSET(Globals::Fragment, windowSpacePosition), routine->windowSpacePosition);
-				store(fragment + OFFSET(Globals::Fragment, helperInvocation), routine->helperInvocation);
+				{
+					auto fragment = globals + OFFSET(Globals, fragment);
+					store(fragment + OFFSET(Globals::Fragment, viewIndex), routine->viewID);
+					store(fragment + OFFSET(Globals::Fragment, fragCoord), routine->fragCoord);
+					store(fragment + OFFSET(Globals::Fragment, pointCoord), routine->pointCoord);
+					store(fragment + OFFSET(Globals::Fragment, windowSpacePosition), routine->windowSpacePosition);
+					store(fragment + OFFSET(Globals::Fragment, helperInvocation), routine->helperInvocation);
+				}
 				break;
-			}
 			case spv::ExecutionModelVertex:
-			{
-				auto vertex = globals + OFFSET(Globals, vertex);
-				store(vertex + OFFSET(Globals::Vertex, viewIndex), routine->viewID);
-				store(vertex + OFFSET(Globals::Vertex, instanceIndex), routine->instanceID);
-				store(vertex + OFFSET(Globals::Vertex, vertexIndex), routine->vertexIndex);
+				{
+					auto vertex = globals + OFFSET(Globals, vertex);
+					store(vertex + OFFSET(Globals::Vertex, viewIndex), routine->viewID);
+					store(vertex + OFFSET(Globals::Vertex, instanceIndex), routine->instanceID);
+					store(vertex + OFFSET(Globals::Vertex, vertexIndex), routine->vertexIndex);
+				}
 				break;
-			}
 			default:
 				break;
 		}
@@ -2734,13 +2734,13 @@ void SpirvShader::dbgEndEmitInstruction(InsnIterator insn, EmitState *state) con
 			dbg->shadow.create(this, state, insn.resultId());
 			break;
 		default:
-		{
-			auto resIt = dbg->results.find(insn.wordPointer(0));
-			if(resIt != dbg->results.end())
 			{
-				dbg->shadow.create(this, state, resIt->second);
+				auto resIt = dbg->results.find(insn.wordPointer(0));
+				if(resIt != dbg->results.end())
+				{
+					dbg->shadow.create(this, state, resIt->second);
+				}
 			}
-		}
 	}
 }
 

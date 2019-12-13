@@ -1532,69 +1532,69 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 		switch(textureComponentCount())
 		{
 			case 4:
-			{
-				Byte4 c0 = Pointer<Byte4>(buffer)[index[0]];
-				Byte4 c1 = Pointer<Byte4>(buffer)[index[1]];
-				Byte4 c2 = Pointer<Byte4>(buffer)[index[2]];
-				Byte4 c3 = Pointer<Byte4>(buffer)[index[3]];
-				c.x = Unpack(c0, c1);
-				c.y = Unpack(c2, c3);
-
-				switch(state.textureFormat)
 				{
-					case VK_FORMAT_B8G8R8A8_UNORM:
-					case VK_FORMAT_B8G8R8A8_SRGB:
-						c.z = As<Short4>(UnpackLow(c.x, c.y));
-						c.x = As<Short4>(UnpackHigh(c.x, c.y));
-						c.y = c.z;
-						c.w = c.x;
-						c.z = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.x));
-						c.w = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.w));
-						break;
-					case VK_FORMAT_R8G8B8A8_UNORM:
-					case VK_FORMAT_R8G8B8A8_SNORM:
-					case VK_FORMAT_R8G8B8A8_SINT:
-					case VK_FORMAT_R8G8B8A8_SRGB:
-					case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
-					case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
-					case VK_FORMAT_A8B8G8R8_SINT_PACK32:
-					case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
-						c.z = As<Short4>(UnpackHigh(c.x, c.y));
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.y = c.x;
-						c.w = c.z;
-						c.x = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.x));
-						c.y = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.y));
-						c.z = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.z));
-						c.w = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.w));
-						// Propagate sign bit
-						if(state.textureFormat == VK_FORMAT_R8G8B8A8_SINT ||
-						   state.textureFormat == VK_FORMAT_A8B8G8R8_SINT_PACK32)
-						{
-							c.x >>= 8;
-							c.y >>= 8;
-							c.z >>= 8;
-							c.w >>= 8;
-						}
-						break;
-					case VK_FORMAT_R8G8B8A8_UINT:
-					case VK_FORMAT_A8B8G8R8_UINT_PACK32:
-						c.z = As<Short4>(UnpackHigh(c.x, c.y));
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.y = c.x;
-						c.w = c.z;
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(Short4(0)));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(Short4(0)));
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(Short4(0)));
-						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(Short4(0)));
-						break;
-					default:
-						ASSERT(false);
+					Byte4 c0 = Pointer<Byte4>(buffer)[index[0]];
+					Byte4 c1 = Pointer<Byte4>(buffer)[index[1]];
+					Byte4 c2 = Pointer<Byte4>(buffer)[index[2]];
+					Byte4 c3 = Pointer<Byte4>(buffer)[index[3]];
+					c.x = Unpack(c0, c1);
+					c.y = Unpack(c2, c3);
+
+					switch(state.textureFormat)
+					{
+						case VK_FORMAT_B8G8R8A8_UNORM:
+						case VK_FORMAT_B8G8R8A8_SRGB:
+							c.z = As<Short4>(UnpackLow(c.x, c.y));
+							c.x = As<Short4>(UnpackHigh(c.x, c.y));
+							c.y = c.z;
+							c.w = c.x;
+							c.z = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.z));
+							c.y = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.y));
+							c.x = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.x));
+							c.w = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.w));
+							break;
+						case VK_FORMAT_R8G8B8A8_UNORM:
+						case VK_FORMAT_R8G8B8A8_SNORM:
+						case VK_FORMAT_R8G8B8A8_SINT:
+						case VK_FORMAT_R8G8B8A8_SRGB:
+						case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+						case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+						case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+						case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
+							c.z = As<Short4>(UnpackHigh(c.x, c.y));
+							c.x = As<Short4>(UnpackLow(c.x, c.y));
+							c.y = c.x;
+							c.w = c.z;
+							c.x = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.x));
+							c.y = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.y));
+							c.z = UnpackLow(As<Byte8>(Short4(0)), As<Byte8>(c.z));
+							c.w = UnpackHigh(As<Byte8>(Short4(0)), As<Byte8>(c.w));
+							// Propagate sign bit
+							if(state.textureFormat == VK_FORMAT_R8G8B8A8_SINT ||
+							   state.textureFormat == VK_FORMAT_A8B8G8R8_SINT_PACK32)
+							{
+								c.x >>= 8;
+								c.y >>= 8;
+								c.z >>= 8;
+								c.w >>= 8;
+							}
+							break;
+						case VK_FORMAT_R8G8B8A8_UINT:
+						case VK_FORMAT_A8B8G8R8_UINT_PACK32:
+							c.z = As<Short4>(UnpackHigh(c.x, c.y));
+							c.x = As<Short4>(UnpackLow(c.x, c.y));
+							c.y = c.x;
+							c.w = c.z;
+							c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(Short4(0)));
+							c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(Short4(0)));
+							c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(Short4(0)));
+							c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(Short4(0)));
+							break;
+						default:
+							ASSERT(false);
+					}
 				}
-			}
-			break;
+				break;
 			case 2:
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[0]], 0);
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[1]], 1);
@@ -1622,41 +1622,41 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				}
 				break;
 			case 1:
-			{
-				Int c0 = Int(*Pointer<Byte>(buffer + index[0]));
-				Int c1 = Int(*Pointer<Byte>(buffer + index[1]));
-				Int c2 = Int(*Pointer<Byte>(buffer + index[2]));
-				Int c3 = Int(*Pointer<Byte>(buffer + index[3]));
-				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-
-				switch(state.textureFormat)
 				{
-					case VK_FORMAT_R8_SINT:
-					case VK_FORMAT_R8_UINT:
-					case VK_FORMAT_S8_UINT:
+					Int c0 = Int(*Pointer<Byte>(buffer + index[0]));
+					Int c1 = Int(*Pointer<Byte>(buffer + index[1]));
+					Int c2 = Int(*Pointer<Byte>(buffer + index[2]));
+					Int c3 = Int(*Pointer<Byte>(buffer + index[3]));
+					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+
+					switch(state.textureFormat)
 					{
-						Int zero(0);
-						c.x = Unpack(As<Byte4>(c0), As<Byte4>(zero));
-						// Propagate sign bit
-						if(state.textureFormat == VK_FORMAT_R8_SINT)
-						{
-							c.x = (c.x << 8) >> 8;
-						}
+						case VK_FORMAT_R8_SINT:
+						case VK_FORMAT_R8_UINT:
+						case VK_FORMAT_S8_UINT:
+							{
+								Int zero(0);
+								c.x = Unpack(As<Byte4>(c0), As<Byte4>(zero));
+								// Propagate sign bit
+								if(state.textureFormat == VK_FORMAT_R8_SINT)
+								{
+									c.x = (c.x << 8) >> 8;
+								}
+							}
+							break;
+						case VK_FORMAT_R8_SNORM:
+						case VK_FORMAT_R8_UNORM:
+						case VK_FORMAT_R8_SRGB:
+							// TODO: avoid populating the low bits at all.
+							c.x = Unpack(As<Byte4>(c0));
+							c.x &= Short4(0xFF00u);
+							break;
+						default:
+							c.x = Unpack(As<Byte4>(c0));
+							break;
 					}
-					break;
-					case VK_FORMAT_R8_SNORM:
-					case VK_FORMAT_R8_UNORM:
-					case VK_FORMAT_R8_SRGB:
-						// TODO: avoid populating the low bits at all.
-						c.x = Unpack(As<Byte4>(c0));
-						c.x &= Short4(0xFF00u);
-						break;
-					default:
-						c.x = Unpack(As<Byte4>(c0));
-						break;
 				}
-			}
-			break;
+				break;
 			default:
 				ASSERT(false);
 		}
@@ -1998,32 +1998,32 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
 			case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-			{
-				Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
-				t.x = *Pointer<Float>(buffer + index[0] * 4);
-				t.y = *Pointer<Float>(buffer + index[1] * 4);
-				t.z = *Pointer<Float>(buffer + index[2] * 4);
-				t.w = *Pointer<Float>(buffer + index[3] * 4);
-				t0 = As<UInt4>(t);
-				c.w = Float4(UInt4(1) << ((t0 >> 27) & UInt4(0x1F))) * Float4(1.0f / (1 << 24));
-				c.x = Float4(t0 & UInt4(0x1FF)) * c.w;
-				c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
-				c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
+				{
+					Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
+					t.x = *Pointer<Float>(buffer + index[0] * 4);
+					t.y = *Pointer<Float>(buffer + index[1] * 4);
+					t.z = *Pointer<Float>(buffer + index[2] * 4);
+					t.w = *Pointer<Float>(buffer + index[3] * 4);
+					t0 = As<UInt4>(t);
+					c.w = Float4(UInt4(1) << ((t0 >> 27) & UInt4(0x1F))) * Float4(1.0f / (1 << 24));
+					c.x = Float4(t0 & UInt4(0x1FF)) * c.w;
+					c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
+					c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
+				}
 				break;
-			}
 			case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-			{
-				Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
-				t.x = *Pointer<Float>(buffer + index[0] * 4);
-				t.y = *Pointer<Float>(buffer + index[1] * 4);
-				t.z = *Pointer<Float>(buffer + index[2] * 4);
-				t.w = *Pointer<Float>(buffer + index[3] * 4);
-				t0 = As<UInt4>(t);
-				c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
-				c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
-				c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+				{
+					Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
+					t.x = *Pointer<Float>(buffer + index[0] * 4);
+					t.y = *Pointer<Float>(buffer + index[1] * 4);
+					t.z = *Pointer<Float>(buffer + index[2] * 4);
+					t.w = *Pointer<Float>(buffer + index[3] * 4);
+					t0 = As<UInt4>(t);
+					c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
+					c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
+					c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+				}
 				break;
-			}
 			default:
 				UNSUPPORTED("Format %d", VkFormat(state.textureFormat));
 		}
@@ -2352,21 +2352,21 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 						}
 						break;
 					case ADDRESSING_MIRROR:
-					{
-						Float4 half = As<Float4>(Int4(halfBits));
-						Float4 one = As<Float4>(Int4(oneBits));
-						Float4 two = As<Float4>(Int4(twoBits));
-						coord = one - Abs(two * Frac(coord * half) - one);
-					}
-					break;
+						{
+							Float4 half = As<Float4>(Int4(halfBits));
+							Float4 one = As<Float4>(Int4(oneBits));
+							Float4 two = As<Float4>(Int4(twoBits));
+							coord = one - Abs(two * Frac(coord * half) - one);
+						}
+						break;
 					case ADDRESSING_MIRRORONCE:
-					{
-						Float4 half = As<Float4>(Int4(halfBits));
-						Float4 one = As<Float4>(Int4(oneBits));
-						Float4 two = As<Float4>(Int4(twoBits));
-						coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
-					}
-					break;
+						{
+							Float4 half = As<Float4>(Int4(halfBits));
+							Float4 one = As<Float4>(Int4(oneBits));
+							Float4 two = As<Float4>(Int4(twoBits));
+							coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
+						}
+						break;
 					case ADDRESSING_BORDER:
 						// Don't map to a valid range here.
 						break;
@@ -2460,14 +2460,14 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 					xyz1 = Min(xyz1, maxXYZ);
 					break;
 				default:  // Wrap
-				{
-					Int4 under = CmpLT(xyz0, Int4(0));
-					xyz0 = (under & maxXYZ) | (~under & xyz0);  // xyz < 0 ? dim - 1 : xyz   // TODO: IfThenElse()
+					{
+						Int4 under = CmpLT(xyz0, Int4(0));
+						xyz0 = (under & maxXYZ) | (~under & xyz0);  // xyz < 0 ? dim - 1 : xyz   // TODO: IfThenElse()
 
-					Int4 nover = CmpLT(xyz1, dim);
-					xyz1 = nover & xyz1;  // xyz >= dim ? 0 : xyz
-				}
-				break;
+						Int4 nover = CmpLT(xyz1, dim);
+						xyz1 = nover & xyz1;  // xyz >= dim ? 0 : xyz
+					}
+					break;
 			}
 		}
 	}

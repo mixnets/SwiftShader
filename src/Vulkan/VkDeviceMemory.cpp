@@ -128,17 +128,17 @@ public:
 				switch(createInfo->sType)
 				{
 					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
-					{
-						const auto *importInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(createInfo);
-
-						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT && importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT)
 						{
-							UNSUPPORTED("importInfo->handleType");
+							const auto *importInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(createInfo);
+
+							if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT && importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT)
+							{
+								UNSUPPORTED("importInfo->handleType");
+							}
+							hostPointer = importInfo->pHostPointer;
+							supported = true;
 						}
-						hostPointer = importInfo->pHostPointer;
-						supported = true;
 						break;
-					}
 					default:
 						break;
 				}
@@ -204,28 +204,28 @@ struct OpaqueFdAllocateInfo
 			switch(createInfo->sType)
 			{
 				case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
-				{
-					const auto *importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(createInfo);
-
-					if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
 					{
-						UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(importInfo->handleType));
+						const auto *importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(createInfo);
+
+						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+						{
+							UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(importInfo->handleType));
+						}
+						importFd = true;
+						fd = importInfo->fd;
 					}
-					importFd = true;
-					fd = importInfo->fd;
-				}
-				break;
+					break;
 				case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-				{
-					const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
-
-					if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
 					{
-						UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
+						const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
+
+						if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+						{
+							UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
+						}
+						exportFd = true;
 					}
-					exportFd = true;
-				}
-				break;
+					break;
 				case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
 					// This can safely be ignored, as the Vulkan spec mentions:
 					// "If the pNext chain includes a VkMemoryDedicatedAllocateInfo structure, then that structure

@@ -54,33 +54,31 @@ void Thread::onLocationUpdate(marl::lock &lock)
 	switch(state_)
 	{
 		case State::Paused:
-		{
 			lock.wait(stateCV, [this]() REQUIRES(mutex) { return state_ != State::Paused; });
 			break;
-		}
 
 		case State::Stepping:
-		{
-			bool pause = false;
-
 			{
-				auto frame = pauseAtFrame.lock();
-				pause = !frame;             // Pause if there's no pause-at-frame...
-				if(frame == frames.back())  // ... or if we've reached the pause-at-frame
+				bool pause = false;
+
 				{
-					pause = true;
-					pauseAtFrame.reset();
+					auto frame = pauseAtFrame.lock();
+					pause = !frame;             // Pause if there's no pause-at-frame...
+					if(frame == frames.back())  // ... or if we've reached the pause-at-frame
+					{
+						pause = true;
+						pauseAtFrame.reset();
+					}
+				}
+
+				if(pause)
+				{
+					ctx->serverEventBroadcast()->onThreadStepped(id);
+					state_ = State::Paused;
+					lock.wait(stateCV, [this]() REQUIRES(mutex) { return state_ != State::Paused; });
 				}
 			}
-
-			if(pause)
-			{
-				ctx->serverEventBroadcast()->onThreadStepped(id);
-				state_ = State::Paused;
-				lock.wait(stateCV, [this]() REQUIRES(mutex) { return state_ != State::Paused; });
-			}
 			break;
-		}
 
 		case State::Running:
 			break;

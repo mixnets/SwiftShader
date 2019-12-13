@@ -172,38 +172,38 @@ AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const VkMemoryAllocate
 		switch(createInfo->sType)
 		{
 			case VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID:
-			{
-				const auto *importInfo = reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID *>(createInfo);
-				importAhb = true;
-				ahb = importInfo->buffer;
-			}
-			break;
+				{
+					const auto *importInfo = reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID *>(createInfo);
+					importAhb = true;
+					ahb = importInfo->buffer;
+				}
+				break;
 			case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-			{
-				const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
+				{
+					const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
 
-				if(exportInfo->handleTypes == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
-				{
-					exportAhb = true;
+					if(exportInfo->handleTypes == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
+					{
+						exportAhb = true;
+					}
+					else
+					{
+						UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
+					}
 				}
-				else
-				{
-					UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
-				}
-			}
-			break;
+				break;
 			case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
-			{
-				const auto *dedicatedAllocateInfo = reinterpret_cast<const VkMemoryDedicatedAllocateInfo *>(createInfo);
-				dedicatedImageHandle = vk::Cast(dedicatedAllocateInfo->image);
-				dedicatedBufferHandle = vk::Cast(dedicatedAllocateInfo->buffer);
-			}
-			break;
+				{
+					const auto *dedicatedAllocateInfo = reinterpret_cast<const VkMemoryDedicatedAllocateInfo *>(createInfo);
+					dedicatedImageHandle = vk::Cast(dedicatedAllocateInfo->image);
+					dedicatedBufferHandle = vk::Cast(dedicatedAllocateInfo->buffer);
+				}
+				break;
 			default:
-			{
-				LOG_TRAP("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
-			}
-			break;
+				{
+					LOG_TRAP("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+				}
+				break;
 		}
 		createInfo = createInfo->pNext;
 	}

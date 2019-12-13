@@ -156,42 +156,42 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo2KHR *pCreateInfo, void *mem)
 			switch(extension->sType)
 			{
 				case VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE:
-				{
-					const auto *ext = reinterpret_cast<const VkSubpassDescriptionDepthStencilResolve *>(extension);
-					// If any subpass includes depthStencilResolve, allocate a DSR struct for each subpass
-					// This allows us to index into subpassDepthStencilResolves using the subpass index.
-					if(ext->pDepthStencilResolveAttachment != nullptr && ext->pDepthStencilResolveAttachment->attachment != VK_ATTACHMENT_UNUSED)
 					{
-						if(subpassDepthStencilResolves == nullptr)
+						const auto *ext = reinterpret_cast<const VkSubpassDescriptionDepthStencilResolve *>(extension);
+						// If any subpass includes depthStencilResolve, allocate a DSR struct for each subpass
+						// This allows us to index into subpassDepthStencilResolves using the subpass index.
+						if(ext->pDepthStencilResolveAttachment != nullptr && ext->pDepthStencilResolveAttachment->attachment != VK_ATTACHMENT_UNUSED)
 						{
-							subpassDepthStencilResolves = reinterpret_cast<VkSubpassDescriptionDepthStencilResolve *>(hostMemory);
-							hostMemory += subpassCount * sizeof(VkSubpassDescriptionDepthStencilResolve);
-							for(uint32_t subpass = 0; subpass < subpassCount; subpass++)
+							if(subpassDepthStencilResolves == nullptr)
 							{
-								subpassDepthStencilResolves[subpass].sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE;
-								subpassDepthStencilResolves[subpass].pNext = nullptr;
-								subpassDepthStencilResolves[subpass].depthResolveMode = VK_RESOLVE_MODE_NONE;
-								subpassDepthStencilResolves[subpass].stencilResolveMode = VK_RESOLVE_MODE_NONE;
-								subpassDepthStencilResolves[subpass].pDepthStencilResolveAttachment = nullptr;
+								subpassDepthStencilResolves = reinterpret_cast<VkSubpassDescriptionDepthStencilResolve *>(hostMemory);
+								hostMemory += subpassCount * sizeof(VkSubpassDescriptionDepthStencilResolve);
+								for(uint32_t subpass = 0; subpass < subpassCount; subpass++)
+								{
+									subpassDepthStencilResolves[subpass].sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE;
+									subpassDepthStencilResolves[subpass].pNext = nullptr;
+									subpassDepthStencilResolves[subpass].depthResolveMode = VK_RESOLVE_MODE_NONE;
+									subpassDepthStencilResolves[subpass].stencilResolveMode = VK_RESOLVE_MODE_NONE;
+									subpassDepthStencilResolves[subpass].pDepthStencilResolveAttachment = nullptr;
+								}
 							}
+
+							VkAttachmentReference2 *reference = reinterpret_cast<VkAttachmentReference2 *>(hostMemory);
+							hostMemory += sizeof(VkAttachmentReference2);
+
+							subpassDepthStencilResolves[i].depthResolveMode = ext->depthResolveMode;
+							subpassDepthStencilResolves[i].stencilResolveMode = ext->stencilResolveMode;
+							reference->pNext = nullptr;
+							reference->sType = ext->pDepthStencilResolveAttachment->sType;
+							reference->attachment = ext->pDepthStencilResolveAttachment->attachment;
+							reference->layout = ext->pDepthStencilResolveAttachment->layout;
+							reference->aspectMask = ext->pDepthStencilResolveAttachment->aspectMask;
+							subpassDepthStencilResolves[i].pDepthStencilResolveAttachment = reinterpret_cast<const VkAttachmentReference2 *>(reference);
+
+							MarkFirstUse(reference->attachment, i);
 						}
-
-						VkAttachmentReference2 *reference = reinterpret_cast<VkAttachmentReference2 *>(hostMemory);
-						hostMemory += sizeof(VkAttachmentReference2);
-
-						subpassDepthStencilResolves[i].depthResolveMode = ext->depthResolveMode;
-						subpassDepthStencilResolves[i].stencilResolveMode = ext->stencilResolveMode;
-						reference->pNext = nullptr;
-						reference->sType = ext->pDepthStencilResolveAttachment->sType;
-						reference->attachment = ext->pDepthStencilResolveAttachment->attachment;
-						reference->layout = ext->pDepthStencilResolveAttachment->layout;
-						reference->aspectMask = ext->pDepthStencilResolveAttachment->aspectMask;
-						subpassDepthStencilResolves[i].pDepthStencilResolveAttachment = reinterpret_cast<const VkAttachmentReference2 *>(reference);
-
-						MarkFirstUse(reference->attachment, i);
 					}
-				}
-				break;
+					break;
 				default:
 					LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
 					         i, vk::Stringify(extension->sType).c_str());
@@ -244,22 +244,21 @@ void RenderPass::init(const T *pCreateInfo, void **mem)
 		switch(extensionCreateInfo->sType)
 		{
 			case VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO:
-			{
-				// Renderpass uses multiview if this structure is present AND some subpass specifies
-				// a nonzero view mask
-				auto const *multiviewCreateInfo = reinterpret_cast<VkRenderPassMultiviewCreateInfo const *>(extensionCreateInfo);
-				for(auto i = 0u; i < pCreateInfo->subpassCount; i++)
 				{
-					masks[i] = multiviewCreateInfo->pViewMasks[i];
-					// This is now a multiview renderpass, so make the masks available
-					if(masks[i])
+					// Renderpass uses multiview if this structure is present AND some subpass specifies
+					// a nonzero view mask
+					auto const *multiviewCreateInfo = reinterpret_cast<VkRenderPassMultiviewCreateInfo const *>(extensionCreateInfo);
+					for(auto i = 0u; i < pCreateInfo->subpassCount; i++)
 					{
-						viewMasks = masks;
+						masks[i] = multiviewCreateInfo->pViewMasks[i];
+						// This is now a multiview renderpass, so make the masks available
+						if(masks[i])
+						{
+							viewMasks = masks;
+						}
 					}
 				}
-
 				break;
-			}
 			default:
 				WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 				break;
@@ -388,22 +387,22 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo2KH
 			switch(extension->sType)
 			{
 				case VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE:
-				{
-					const auto *ext = reinterpret_cast<const VkSubpassDescriptionDepthStencilResolve *>(extension);
-					if(ext->pDepthStencilResolveAttachment != nullptr && ext->pDepthStencilResolveAttachment->attachment != VK_ATTACHMENT_UNUSED)
 					{
-						if(!usesDSR)
+						const auto *ext = reinterpret_cast<const VkSubpassDescriptionDepthStencilResolve *>(extension);
+						if(ext->pDepthStencilResolveAttachment != nullptr && ext->pDepthStencilResolveAttachment->attachment != VK_ATTACHMENT_UNUSED)
 						{
-							// If any subpass uses DSR, then allocate a VkSubpassDescriptionDepthStencilResolve
-							// for all subpasses. This allows us to index into our DSR structs using the subpass index.
-							requiredMemory += sizeof(VkSubpassDescriptionDepthStencilResolve) * pCreateInfo->subpassCount;
-							usesDSR = true;
+							if(!usesDSR)
+							{
+								// If any subpass uses DSR, then allocate a VkSubpassDescriptionDepthStencilResolve
+								// for all subpasses. This allows us to index into our DSR structs using the subpass index.
+								requiredMemory += sizeof(VkSubpassDescriptionDepthStencilResolve) * pCreateInfo->subpassCount;
+								usesDSR = true;
+							}
+							// For each subpass that actually uses DSR, allocate a VkAttachmentReference2.
+							requiredMemory += sizeof(VkAttachmentReference2);
 						}
-						// For each subpass that actually uses DSR, allocate a VkAttachmentReference2.
-						requiredMemory += sizeof(VkAttachmentReference2);
 					}
-				}
-				break;
+					break;
 				default:
 					LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
 					         i, vk::Stringify(extension->sType).c_str());

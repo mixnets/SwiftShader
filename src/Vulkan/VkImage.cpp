@@ -133,20 +133,20 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 		{
 #ifdef __ANDROID__
 			case VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID:
-			{
-				const VkExternalFormatANDROID *externalFormatAndroid = reinterpret_cast<const VkExternalFormatANDROID *>(nextInfo);
-
-				// VkExternalFormatANDROID: "If externalFormat is zero, the effect is as if the VkExternalFormatANDROID structure was not present."
-				if(externalFormatAndroid->externalFormat == 0)
 				{
-					break;
-				}
+					const VkExternalFormatANDROID *externalFormatAndroid = reinterpret_cast<const VkExternalFormatANDROID *>(nextInfo);
 
-				const VkFormat correspondingVkFormat = AHardwareBufferExternalMemory::GetVkFormatFromAHBFormat(externalFormatAndroid->externalFormat);
-				ASSERT(pCreateInfo->format == VK_FORMAT_UNDEFINED || pCreateInfo->format == correspondingVkFormat);
-				return correspondingVkFormat;
-			}
-			break;
+					// VkExternalFormatANDROID: "If externalFormat is zero, the effect is as if the VkExternalFormatANDROID structure was not present."
+					if(externalFormatAndroid->externalFormat == 0)
+					{
+						break;
+					}
+
+					const VkFormat correspondingVkFormat = AHardwareBufferExternalMemory::GetVkFormatFromAHBFormat(externalFormatAndroid->externalFormat);
+					ASSERT(pCreateInfo->format == VK_FORMAT_UNDEFINED || pCreateInfo->format == correspondingVkFormat);
+					return correspondingVkFormat;
+				}
+				break;
 #endif
 			default:
 				LOG_TRAP("pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());

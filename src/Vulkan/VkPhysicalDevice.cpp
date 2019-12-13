@@ -823,18 +823,18 @@ void PhysicalDevice::getProperties(const VkPhysicalDeviceExternalSemaphoreInfo *
 		switch(nextInfo->sType)
 		{
 			case VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO:
-			{
-				const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
-				// Timeline Semaphore does not support external semaphore
-				if(tlsInfo->semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
 				{
-					pExternalSemaphoreProperties->compatibleHandleTypes = 0;
-					pExternalSemaphoreProperties->exportFromImportedHandleTypes = 0;
-					pExternalSemaphoreProperties->externalSemaphoreFeatures = 0;
-					return;
+					const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
+					// Timeline Semaphore does not support external semaphore
+					if(tlsInfo->semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+					{
+						pExternalSemaphoreProperties->compatibleHandleTypes = 0;
+						pExternalSemaphoreProperties->exportFromImportedHandleTypes = 0;
+						pExternalSemaphoreProperties->externalSemaphoreFeatures = 0;
+						return;
+					}
 				}
-			}
-			break;
+				break;
 			default:
 				WARN("nextInfo->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;

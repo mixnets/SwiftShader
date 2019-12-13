@@ -47,13 +47,13 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 			switch(extension->sType)
 			{
 				case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
-				{
-					const auto *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
-					totalSize += sizeof(VkTimelineSemaphoreSubmitInfo);
-					totalSize += tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
-					totalSize += tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
-				}
-				break;
+					{
+						const auto *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
+						totalSize += sizeof(VkTimelineSemaphoreSubmitInfo);
+						totalSize += tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
+						totalSize += tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
+					}
+					break;
 				default:
 					WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 					break;
@@ -96,29 +96,29 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 			switch(extension->sType)
 			{
 				case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
-				{
-					const VkTimelineSemaphoreSubmitInfo *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
+					{
+						const VkTimelineSemaphoreSubmitInfo *tlsSubmitInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(extension);
 
-					size = sizeof(VkTimelineSemaphoreSubmitInfo);
-					VkTimelineSemaphoreSubmitInfo *tlsSubmitInfoCopy = reinterpret_cast<VkTimelineSemaphoreSubmitInfo *>(mem);
-					memcpy(mem, extension, size);
-					// Don't copy the pNext pointer at all.
-					tlsSubmitInfoCopy->pNext = nullptr;
-					mem += size;
+						size = sizeof(VkTimelineSemaphoreSubmitInfo);
+						VkTimelineSemaphoreSubmitInfo *tlsSubmitInfoCopy = reinterpret_cast<VkTimelineSemaphoreSubmitInfo *>(mem);
+						memcpy(mem, extension, size);
+						// Don't copy the pNext pointer at all.
+						tlsSubmitInfoCopy->pNext = nullptr;
+						mem += size;
 
-					size = tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
-					tlsSubmitInfoCopy->pWaitSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
-					memcpy(mem, tlsSubmitInfo->pWaitSemaphoreValues, size);
-					mem += size;
+						size = tlsSubmitInfo->waitSemaphoreValueCount * sizeof(uint64_t);
+						tlsSubmitInfoCopy->pWaitSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+						memcpy(mem, tlsSubmitInfo->pWaitSemaphoreValues, size);
+						mem += size;
 
-					size = tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
-					tlsSubmitInfoCopy->pSignalSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
-					memcpy(mem, tlsSubmitInfo->pSignalSemaphoreValues, size);
-					mem += size;
+						size = tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
+						tlsSubmitInfoCopy->pSignalSemaphoreValues = reinterpret_cast<uint64_t *>(mem);
+						memcpy(mem, tlsSubmitInfo->pSignalSemaphoreValues, size);
+						mem += size;
 
-					submits[i].pNext = tlsSubmitInfoCopy;
-				}
-				break;
+						submits[i].pNext = tlsSubmitInfoCopy;
+					}
+					break;
 				default:
 					WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 					break;
