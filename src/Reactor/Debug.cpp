@@ -14,15 +14,34 @@
 
 #include "Debug.hpp"
 
+#include <cstdarg>
+#include <cstdio>
 #include <string>
-#include <stdarg.h>
+
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 
 namespace rr {
 
 void tracev(const char *format, va_list args)
 {
 #ifndef RR_DISABLE_TRACE
-	if(false)
+	static bool traceToDebugOut = false;
+	static bool traceToFile = false;
+
+	if (traceToDebugOut)
+	{
+		char buffer[2048];
+		vsnprintf(buffer, sizeof(buffer), format, args);
+#if defined(_WIN32)
+		::OutputDebugString(buffer);
+#else
+		printf(buffer);
+#endif
+	}
+
+	if(traceToFile)
 	{
 		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
 
