@@ -290,14 +290,14 @@ Constants::Constants()
 		sRGBtoLinear12_16[i] = (unsigned short)(clamp(sw::sRGBtoLinear((float)i / 0x0FFF) * 0xFFFF + 0.5f, 0.0f, (float)0xFFFF));
 	}
 
-	constexpr float4 X[4] = {
+	const float4 X[4] = {
 		sw::replicate(SampleLocationsX[0]),
 		sw::replicate(SampleLocationsX[1]),
 		sw::replicate(SampleLocationsX[2]),
 		sw::replicate(SampleLocationsX[3]),
 	};
 
-	constexpr float4 Y[4] = {
+	const float4 Y[4] = {
 		sw::replicate(SampleLocationsY[0]),
 		sw::replicate(SampleLocationsY[1]),
 		sw::replicate(SampleLocationsY[2]),
