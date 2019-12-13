@@ -108,6 +108,14 @@ struct vec : public vec_base<T, N>
 
 	vec() = default;
 
+	vec(T scalar)
+	{
+		for(int i = 0; i < N; i++)
+		{
+			v[i] = scalar;
+		}
+	}
+
 	constexpr vec(T x, T y, T z, T w)
 		: vec_base<T, 4>(x, y, z, w)
 	{
@@ -134,6 +142,11 @@ struct vec4 : public vec<T, 4>
 
 	vec4() = default;
 
+	constexpr vec4(T scalar)
+		: vec<T, 4>(scalar, scalar, scalar, scalar)
+	{
+	}
+
 	constexpr vec4(T x, T y, T z, T w)
 		: vec<T, 4>(x, y, z, w)
 	{
@@ -152,16 +165,6 @@ struct vec4 : public vec<T, 4>
 
 using int4 = vec4<int>;
 using float4 = vec4<float>;
-
-inline constexpr float4 vector(float x, float y, float z, float w)
-{
-	return { x, y, z, w };
-}
-
-inline constexpr float4 replicate(float f)
-{
-	return vector(f, f, f, f);
-}
 
 #define OFFSET(s,m) (int)(size_t)&reinterpret_cast<const volatile char&>((((s*)0)->m))
 
