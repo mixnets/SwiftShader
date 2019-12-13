@@ -48,28 +48,7 @@ typedef ALIGN(1, uint8_t) byte;
 typedef ALIGN(2, uint16_t) word;
 typedef ALIGN(4, uint32_t) dword;
 typedef ALIGN(8, uint64_t) qword;
-typedef ALIGN(16, uint64_t) qword2[2];
-typedef ALIGN(4, uint8_t) byte4[4];
-typedef ALIGN(8, uint8_t) byte8[8];
-typedef ALIGN(16, uint8_t) byte16[16];
-typedef ALIGN(8, uint16_t) word4[4];
-typedef ALIGN(8, uint32_t) dword2[2];
-typedef ALIGN(16, uint32_t) dword4[4];
-typedef ALIGN(16, uint64_t) xword[2];
-
 typedef ALIGN(1, int8_t) sbyte;
-typedef ALIGN(4, int8_t) sbyte4[4];
-typedef ALIGN(8, int8_t) sbyte8[8];
-typedef ALIGN(16, int8_t) sbyte16[16];
-typedef ALIGN(8, short) short4[4];
-typedef ALIGN(8, unsigned short) ushort4[4];
-typedef ALIGN(16, short) short8[8];
-typedef ALIGN(16, unsigned short) ushort8[8];
-typedef ALIGN(8, int) int2[2];
-typedef ALIGN(8, unsigned int) uint2[2];
-typedef ALIGN(16, unsigned int) uint4[4];
-
-typedef ALIGN(8, float) float2[2];
 
 template<typename T, int N>
 struct alignas(sizeof(T) * N) vec_base
@@ -171,8 +150,29 @@ struct vec4 : public vec<T, 4>
 	}
 };
 
+using int2 = vec<int, 2>;
+using uint2 = vec<unsigned int, 2>;
+using float2 = vec<float, 2>;
+using dword2 = vec<dword, 2>;
+using qword2 = vec<qword, 2>;
+
 using int4 = vec4<int>;
+using uint4 = vec4<unsigned int>;
 using float4 = vec4<float>;
+using byte4 = vec4<byte>;
+using sbyte4 = vec4<sbyte>;
+using short4 = vec4<short>;
+using ushort4 = vec4<unsigned short>;
+using word4 = vec4<word>;
+using dword4 = vec4<dword>;
+
+using byte8 = vec<byte, 8>;
+using sbyte8 = vec<sbyte, 8>;
+using short8 = vec<short, 8>;
+using ushort8 = vec<unsigned short, 8>;
+
+using byte16 = vec<byte, 16>;
+using sbyte16 = vec<sbyte, 16>;
 
 #define OFFSET(s,m) (int)(size_t)&reinterpret_cast<const volatile char&>((((s*)0)->m))
 
