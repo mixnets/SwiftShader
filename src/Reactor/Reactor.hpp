@@ -51,6 +51,8 @@
 
 namespace rr {
 
+std::string BackendName();
+
 struct Capabilities
 {
 	bool CoroutinesSupported; // Support for rr::Coroutine<F>

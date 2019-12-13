@@ -16,6 +16,7 @@
 
 #include "VkConfig.h"
 #include "Pipeline/SpirvShader.hpp" // sw::SIMD::Width
+#include "Reactor/Reactor.hpp"
 
 #include <limits>
 #include <cstring>
@@ -288,19 +289,28 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 
 const VkPhysicalDeviceProperties& PhysicalDevice::getProperties() const
 {
-	static const VkPhysicalDeviceProperties properties
+	auto getProperties = [&]() -> VkPhysicalDeviceProperties
 	{
-		API_VERSION,
-		DRIVER_VERSION,
-		VENDOR_ID,
-		DEVICE_ID,
-		VK_PHYSICAL_DEVICE_TYPE_CPU, // deviceType
-		SWIFTSHADER_DEVICE_NAME, // deviceName
-		SWIFTSHADER_UUID, // pipelineCacheUUID
-		getLimits(), // limits
-		{} // sparseProperties
+		VkPhysicalDeviceProperties properties = {
+			API_VERSION,
+			DRIVER_VERSION,
+			VENDOR_ID,
+			DEVICE_ID,
+			VK_PHYSICAL_DEVICE_TYPE_CPU, // deviceType
+			"", // deviceName
+			SWIFTSHADER_UUID, // pipelineCacheUUID
+			getLimits(), // limits
+			{} // sparseProperties
+		};
+
+		// Append Reactor JIT backend name and version
+		snprintf(properties.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,
+			"%s (%s)", SWIFTSHADER_DEVICE_NAME, rr::BackendName().c_str());
+
+		return properties;
 	};
 
+	static const VkPhysicalDeviceProperties properties = getProperties();
 	return properties;
 }
 
