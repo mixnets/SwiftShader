@@ -398,8 +398,8 @@ void Image::copy(Buffer* buffer, const VkBufferImageCopy& region, bool bufferIsS
 		break;
 	default:
 		UNSUPPORTED("aspectMask %x", int(region.imageSubresource.aspectMask));
-		break;
 	}
+	break;
 
 	auto aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
 	Format copyFormat = getFormat(aspect);
@@ -730,8 +730,8 @@ VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 		break;
 
 	default:
-		break;
 	}
+	break;
 
 	return memoryOffset;
 }
@@ -990,9 +990,9 @@ void Image::prepareForSampling(const VkImageSubresourceRange& subresourceRange)
 			decodeBC(subresourceRange);
 			break;
 		default:
-			break;
 		}
 	}
+	break;
 
 	if(isCube() && (arrayLayers >= 6))
 	{

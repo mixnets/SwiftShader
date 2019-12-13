@@ -178,9 +178,9 @@ void Queue::taskLoop(marl::Scheduler* scheduler)
 			break;
 		default:
 			UNIMPLEMENTED("task.type %d", static_cast<int>(task.type));
-			break;
 		}
 	}
+	break;
 }
 
 VkResult Queue::waitIdle()

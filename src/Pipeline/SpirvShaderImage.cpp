@@ -364,16 +364,16 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 	{
 		extent = descriptor + OFFSET(vk::StorageImageDescriptor, extent); // int[3]*
 		arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers)); // uint32_t
-		break;
 	}
+	break;
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
 	{
 		extent = descriptor + OFFSET(vk::SampledImageDescriptor, extent); // int[3]*
 		arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, arrayLayers)); // uint32_t
-		break;
 	}
+	break;
 	default:
 		UNREACHABLE("Image descriptorType: %d", int(bindingLayout.descriptorType));
 	}
@@ -822,8 +822,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 		break;
 	default:
 		UNIMPLEMENTED("VkFormat %d", int(vkFormat));
-		break;
 	}
+	break;
 
 	return EmitResult::Continue;
 }
@@ -948,8 +948,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 
 	default:
 		UNREACHABLE("spv::ImageFormat %d", int(format));
-		break;
 	}
+	break;
 
 	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
 	auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, 0, false);

@@ -233,8 +233,8 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 					if(stream.count >= 4) v.x = As<Float4>(UInt4(v.w));
 					break;
 				default:
-					break;
 				}
+				break;
 			}
 		}
 		break;

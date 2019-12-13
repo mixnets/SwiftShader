@@ -98,8 +98,8 @@ bool Configurator::readFile()
 				case ';':
 				case '#':
 					// Ignore comments
-					break;
 				}
+				break;
 			}
 		}
 	}

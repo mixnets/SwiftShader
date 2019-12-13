@@ -170,8 +170,8 @@ void DebugInfo::syncScope(Backtrace const& backtrace)
 			LOG("  STACK(%d): Changed function %s -> %s", int(i),
 				oldLocation.function.name.c_str(), newLocation.function.name.c_str());
 			shrink(i);
-			break;
 		}
+		break;
 
 		if (oldLocation.line > newLocation.line)
 		{
@@ -183,8 +183,8 @@ void DebugInfo::syncScope(Backtrace const& backtrace)
 			emitPending(scope, builder);
 			scope = {newLocation, di};
 			shrink(i+1);
-			break;
 		}
+		break;
 
 		scope.location = newLocation;
 	}
@@ -246,8 +246,8 @@ void DebugInfo::EmitVariable(Value *variable)
 		auto tokIt = tokens->find(location.line);
 		if (tokIt == tokens->end())
 		{
-			break;
 		}
+		break;
 		auto token = tokIt->second;
 		auto name = token.identifier;
 		if (token.kind == Token::Return)
@@ -300,9 +300,9 @@ void DebugInfo::EmitVariable(Value *variable)
 		}
 		else
 		{
-			break;
 		}
 	}
+	break;
 }
 
 void DebugInfo::emitPending(Scope &scope, IRBuilder *builder)
@@ -466,9 +466,9 @@ DebugInfo::Backtrace DebugInfo::getCallerBacktrace(size_t limit /* = 0 */) const
 
 		if (limit > 0 && locations.size() >= limit)
 		{
-			break;
 		}
 	}
+	break;
 
 	std::reverse(locations.begin(), locations.end());
 

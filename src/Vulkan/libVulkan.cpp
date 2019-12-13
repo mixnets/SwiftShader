@@ -295,9 +295,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo* pCre
 			break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
-			break;
 		}
 	}
+	break;
 
 	*pInstance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -641,8 +641,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -818,8 +818,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				UNSUPPORTED("importInfo->handleType %u", importInfo->handleType);
 				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 			}
-			break;
 		}
+		break;
 		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
 		{
 			auto* exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(allocationInfo);
@@ -828,13 +828,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				UNSUPPORTED("exportInfo->handleTypes %u", exportInfo->handleTypes);
 				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 			}
-			break;
 		}
+		break;
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 		default:
 			WARN("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		allocationInfo = allocationInfo->pNext;
 	}
@@ -1267,8 +1267,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 			break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(nextInfo->sType).c_str());
-			break;
 		}
+		break;
 		nextInfo = nextInfo->pNext;
 	}
 
@@ -1352,8 +1352,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -1456,8 +1456,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -1670,8 +1670,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 			break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -1703,8 +1703,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(VkDevice device, cons
 			break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -1904,8 +1904,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass(VkDevice device, const VkRende
 		break;
 		default:
 			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
@@ -2353,8 +2353,8 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 			break;
 		default:
 			WARN("pRenderPassBegin->pNext sType = %s", vk::Stringify(renderPassBeginInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		renderPassBeginInfo = renderPassBeginInfo->pNext;
 	}
@@ -2463,8 +2463,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindImageMemory2(VkDevice device, uint32_t bind
 
 			default:
 				WARN("pBindInfos[%d].pNext sType = %s", i, vk::Stringify(extInfo->sType).c_str());
-				break;
 			}
+			break;
 			extInfo = extInfo->pNext;
 		}
 
@@ -2531,8 +2531,8 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements2(VkDevice device, const 
 		break;
 		default:
 			WARN("pMemoryRequirements->pNext sType = %s", vk::Stringify(extensionRequirements->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionRequirements = extensionRequirements->pNext;
 	}
@@ -2565,8 +2565,8 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 			break;
 		default:
 			WARN("pMemoryRequirements->pNext sType = %s", vk::Stringify(extensionRequirements->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionRequirements = extensionRequirements->pNext;
 	}
@@ -2679,8 +2679,8 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physica
 			break;
 		default:
 			WARN("pFeatures->pNext sType = %s", vk::Stringify(extensionFeatures->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionFeatures = extensionFeatures->pNext;
 	}
@@ -2775,8 +2775,8 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			WARN("pProperties->pNext sType = %s", vk::Stringify(extensionProperties->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionProperties = extensionProperties->pNext;
 	}
@@ -2840,8 +2840,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		break;
 		default:
 			WARN("pImageFormatInfo->pNext sType = %s", vk::Stringify(extensionFormatInfo->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionFormatInfo = extensionFormatInfo->pNext;
 	}
@@ -2873,8 +2873,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		break;
 		default:
 			WARN("pImageFormatProperties->pNext sType = %s", vk::Stringify(extensionProperties->sType).c_str());
-			break;
 		}
+		break;
 
 		extensionProperties = extensionProperties->pNext;
 	}

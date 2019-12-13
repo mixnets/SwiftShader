@@ -57,8 +57,8 @@ public:
 					UNIMPLEMENTED("exportInfo->handleTypes");
 				}
 				exportSemaphore = true;
-				break;
 			}
+			break;
 		}
 
 		if (exportSemaphore)

@@ -158,8 +158,8 @@ VkImageAspectFlags Format::getAspects() const
 		break;
 	default:
 		ASSERT(!isYcbcrFormat());
-		break;
 	}
+	break;
 
 	// Anything else is "color".
 	if (!aspects) aspects |= VK_IMAGE_ASPECT_COLOR_BIT;
@@ -189,8 +189,8 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_D32_SFLOAT;
 		default:
 			UNSUPPORTED("format %d", int(format));
-			break;
 		}
+		break;
 		break;
 
 	case VK_IMAGE_ASPECT_STENCIL_BIT:
@@ -203,8 +203,8 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_S8_UINT;
 		default:
 			UNSUPPORTED("format %d", int(format));
-			break;
 		}
+		break;
 		break;
 
 	// YCbCr formats
@@ -218,8 +218,8 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_R8_UNORM;
 		default:
 			UNSUPPORTED("format %d", int(format));
-			break;
 		}
+		break;
 		break;
 
 	case VK_IMAGE_ASPECT_PLANE_1_BIT:
@@ -233,8 +233,8 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_R8G8_UNORM;
 		default:
 			UNSUPPORTED("format %d", int(format));
-			break;
 		}
+		break;
 		break;
 
 	case VK_IMAGE_ASPECT_PLANE_2_BIT:
@@ -245,14 +245,14 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 			return VK_FORMAT_R8_UNORM;
 		default:
 			UNSUPPORTED("format %d", int(format));
-			break;
 		}
+		break;
 		break;
 
 	default:
 		UNSUPPORTED("aspect %x", int(aspect));
-		break;
 	}
+	break;
 
 	return format;
 }
@@ -1963,8 +1963,8 @@ sw::float4 Format::getScale() const
 		return sw::vector(1.0f, 1.0f, 1.0f, 1.0f);
 	default:
 		UNSUPPORTED("format %d", int(format));
-		break;
 	}
+	break;
 
 	return sw::vector(1.0f, 1.0f, 1.0f, 1.0f);
 }

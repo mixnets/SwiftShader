@@ -660,8 +660,8 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 				c.y = c11[swizzle - VK_COMPONENT_SWIZZLE_R];
 				c.z = c10[swizzle - VK_COMPONENT_SWIZZLE_R];
 				c.w = c00[swizzle - VK_COMPONENT_SWIZZLE_R];
-				break;
 			}
+			break;
 		}
 	}
 
@@ -966,8 +966,8 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 				c.y = c11[swizzle - VK_COMPONENT_SWIZZLE_R];
 				c.z = c10[swizzle - VK_COMPONENT_SWIZZLE_R];
 				c.w = c00[swizzle - VK_COMPONENT_SWIZZLE_R];
-				break;
 			}
+			break;
 		}
 	}
 
@@ -1567,8 +1567,8 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 					break;
 				default:
 					c.x = Unpack(As<Byte4>(c0));
-					break;
 				}
+				break;
 			}
 			break;
 		default:
@@ -1920,8 +1920,8 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 			c.x = Float4((t0) & UInt4(0x1FF)) * c.w;
 			c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
 			c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
-			break;
 		}
+		break;
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 		{
 			Float4 t;		// TODO: add Insert(UInt4, RValue<UInt>)
@@ -1933,8 +1933,8 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 			c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
 			c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
 			c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
-			break;
 		}
+		break;
 		default:
 			UNIMPLEMENTED("Format %d", VkFormat(state.textureFormat));
 		}
@@ -2222,8 +2222,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 				// If unnormalizedCoordinates is VK_TRUE, addressModeU and addressModeV must each be
 				// either VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE or VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
 				UNREACHABLE("addressingMode %d", int(addressingMode));
-				break;
 			}
+			break;
 		}
 		else if(state.textureFilter == FILTER_GATHER && addressingMode == ADDRESSING_MIRROR)
 		{
@@ -2286,8 +2286,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 					break;
 				default:   // Wrap
 					coord = Frac(coord);
-					break;
 				}
+				break;
 			}
 
 			coord = coord * Float4(dim);
@@ -2358,8 +2358,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 			default:   // Wrap
 				xyz0 = mod(xyz0, dim);
 				xyz1 = mod(xyz1, dim);
-				break;
 			}
+			break;
 		}
 		else if(state.textureFilter != FILTER_POINT)
 		{
@@ -2381,8 +2381,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 					Int4 nover = CmpLT(xyz1, dim);
 					xyz1 = nover & xyz1;   // xyz >= dim ? 0 : xyz
 				}
-				break;
 			}
+			break;
 		}
 	}
 }

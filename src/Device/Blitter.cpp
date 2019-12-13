@@ -994,8 +994,8 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		break;
 	default:
 		UNSUPPORTED("Blitter destination format %d", (int)state.destFormat);
-		break;
 	}
+	break;
 }
 
 Int4 Blitter::readInt4(Pointer<Byte> element, const State &state)
@@ -1119,8 +1119,8 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 		c = Min(Max(c, Int4(-0x8000)), Int4(0x7FFF));
 		break;
 	default:
-		break;
 	}
+	break;
 
 	switch(state.destFormat)
 	{

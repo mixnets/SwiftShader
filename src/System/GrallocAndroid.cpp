@@ -45,8 +45,8 @@ GrallocModule::GrallocModule()
 #endif
 	default:
 		TRACE("unknown gralloc major version (%d)", m_major_version);
-		break;
 	}
+	break;
 }
 
 int GrallocModule::lock(buffer_handle_t handle, int usage, int left, int top, int width, int height, void **vaddr)

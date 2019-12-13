@@ -443,8 +443,8 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 		break;
 	default:
 		zMask = SignMask(zTest) & cMask;
-		break;
 	}
+	break;
 
 	if(state.stencilActive)
 	{
@@ -526,8 +526,8 @@ Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x
 		break;
 	default:
 		zMask = SignMask(zTest) & cMask;
-		break;
 	}
+	break;
 
 	if(state.stencilActive)
 	{
@@ -1215,8 +1215,8 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		current.w = current.w - As<Short4>(As<UShort4>(current.w) >> 8) + Short4(0x0080);
 		break;
 	default:
-		break;
 	}
+	break;
 
 	int rgbaWriteMask = state.colorWriteActive(index);
 	int bgraWriteMask = (rgbaWriteMask & 0x0000000A) | (rgbaWriteMask & 0x00000001) << 2 | (rgbaWriteMask & 0x00000004) >> 2;
@@ -1347,8 +1347,8 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		auto c13 = As<Int2>(Int4(packed.ywww)); // TODO: auto c13 = packed.yw;
 		current.x = UnpackLow(c02, c13);
 		current.y = UnpackHigh(c02, c13);
-		break;
 	}
+	break;
 	default:
 		UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
 	}

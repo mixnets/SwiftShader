@@ -311,9 +311,9 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 			break;
 		case OutOfBoundsBehavior::UndefinedBehavior:
 			// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
-			break;
 		}
 	}
+	break;
 
 	auto offs = offsets();
 
@@ -343,8 +343,8 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 		case OutOfBoundsBehavior::UndefinedValue:
 		case OutOfBoundsBehavior::UndefinedBehavior:
 			zeroMaskedLanes = false;
-			break;
 		}
+		break;
 
 		if (hasStaticSequentialOffsets(sizeof(float)))
 		{
@@ -403,8 +403,8 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		break;
 	case OutOfBoundsBehavior::UndefinedBehavior:
 		// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
-		break;
 	}
+	break;
 
 	if (!atomic && order == std::memory_order_relaxed)
 	{
