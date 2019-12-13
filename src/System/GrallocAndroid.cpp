@@ -194,25 +194,25 @@ int GrallocModule::lock(buffer_handle_t handle, int usage, int left, int top, in
 	switch(m_major_version)
 	{
 		case 0:
-		{
-			return m_module->lock(m_module, handle, usage, left, top, width, height, vaddr);
-		}
+			{
+				return m_module->lock(m_module, handle, usage, left, top, width, height, vaddr);
+			}
 		case 1:
 #ifdef HAVE_GRALLOC1
-		{
-			gralloc1_rect_t outRect{};
-			outRect.left = left;
-			outRect.top = top;
-			outRect.width = width;
-			outRect.height = height;
-			return m_gralloc1_lock(m_gralloc1_device, handle, usage, usage, &outRect, vaddr, -1);
-		}
+			{
+				gralloc1_rect_t outRect{};
+				outRect.left = left;
+				outRect.top = top;
+				outRect.width = width;
+				outRect.height = height;
+				return m_gralloc1_lock(m_gralloc1_device, handle, usage, usage, &outRect, vaddr, -1);
+			}
 #endif
 		default:
-		{
-			TRACE("no gralloc module to lock");
-			return -1;
-		}
+			{
+				TRACE("no gralloc module to lock");
+				return -1;
+			}
 	}
 }
 
@@ -249,26 +249,26 @@ int GrallocModule::unlock(buffer_handle_t handle)
 	switch(m_major_version)
 	{
 		case 0:
-		{
-			return m_module->unlock(m_module, handle);
-		}
+			{
+				return m_module->unlock(m_module, handle);
+			}
 		case 1:
 #ifdef HAVE_GRALLOC1
-		{
-			int32_t fenceFd = -1;
-			int error = m_gralloc1_unlock(m_gralloc1_device, handle, &fenceFd);
-			if(!error)
 			{
-				sync_wait(fenceFd, -1);
-				close(fenceFd);
+				int32_t fenceFd = -1;
+				int error = m_gralloc1_unlock(m_gralloc1_device, handle, &fenceFd);
+				if(!error)
+				{
+					sync_wait(fenceFd, -1);
+					close(fenceFd);
+				}
+				return error;
 			}
-			return error;
-		}
 #endif
 		default:
-		{
-			TRACE("no gralloc module to unlock");
-			return -1;
-		}
+			{
+				TRACE("no gralloc module to unlock");
+				return -1;
+			}
 	}
 }

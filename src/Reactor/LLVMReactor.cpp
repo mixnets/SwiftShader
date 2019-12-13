@@ -453,24 +453,24 @@ static size_t typeSize(Type *type)
 		case Type_v4i8: return 4;
 		case Type_v2f32: return 8;
 		case Type_LLVM:
-		{
-			llvm::Type *t = T(type);
-
-			if(t->isPointerTy())
 			{
-				return sizeof(void *);
+				llvm::Type *t = T(type);
+
+				if(t->isPointerTy())
+				{
+					return sizeof(void *);
+				}
+
+				// At this point we should only have LLVM 'primitive' types.
+				unsigned int bits = t->getPrimitiveSizeInBits();
+				ASSERT_MSG(bits != 0, "bits: %d", int(bits));
+
+				// TODO(capn): Booleans are 1 bit integers in LLVM's SSA type system,
+				// but are typically stored as one byte. The DataLayout structure should
+				// be used here and many other places if this assumption fails.
+				return (bits + 7) / 8;
 			}
-
-			// At this point we should only have LLVM 'primitive' types.
-			unsigned int bits = t->getPrimitiveSizeInBits();
-			ASSERT_MSG(bits != 0, "bits: %d", int(bits));
-
-			// TODO(capn): Booleans are 1 bit integers in LLVM's SSA type system,
-			// but are typically stored as one byte. The DataLayout structure should
-			// be used here and many other places if this assumption fails.
-			return (bits + 7) / 8;
-		}
-		break;
+			break;
 		default:
 			UNREACHABLE("asInternalType(type): %d", int(asInternalType(type)));
 			return 0;
@@ -895,57 +895,57 @@ Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int
 			}
 			// Fallthrough to non-emulated case.
 		case Type_LLVM:
-		{
-			auto elTy = T(type);
-			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
+			{
+				auto elTy = T(type);
+				ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
-			if(!atomic)
-			{
-				return V(jit->builder->CreateAlignedLoad(V(ptr), llvm::MaybeAlign(alignment), isVolatile));
+				if(!atomic)
+				{
+					return V(jit->builder->CreateAlignedLoad(V(ptr), llvm::MaybeAlign(alignment), isVolatile));
+				}
+				else if(elTy->isIntegerTy() || elTy->isPointerTy())
+				{
+					// Integers and pointers can be atomically loaded by setting
+					// the ordering constraint on the load instruction.
+					auto load = jit->builder->CreateAlignedLoad(V(ptr), llvm::MaybeAlign(alignment), isVolatile);
+					load->setAtomic(atomicOrdering(atomic, memoryOrder));
+					return V(load);
+				}
+				else if(elTy->isFloatTy() || elTy->isDoubleTy())
+				{
+					// LLVM claims to support atomic loads of float types as
+					// above, but certain backends cannot deal with this.
+					// Load as an integer and bitcast. See b/136037244.
+					auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
+					auto elAsIntTy = llvm::IntegerType::get(*jit->context, size * 8);
+					auto ptrCast = jit->builder->CreatePointerCast(V(ptr), elAsIntTy->getPointerTo());
+					auto load = jit->builder->CreateAlignedLoad(ptrCast, llvm::MaybeAlign(alignment), isVolatile);
+					load->setAtomic(atomicOrdering(atomic, memoryOrder));
+					auto loadCast = jit->builder->CreateBitCast(load, elTy);
+					return V(loadCast);
+				}
+				else
+				{
+					// More exotic types require falling back to the extern:
+					// void __atomic_load(size_t size, void *ptr, void *ret, int ordering)
+					auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
+					auto intTy = llvm::IntegerType::get(*jit->context, sizeof(int) * 8);
+					auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
+					auto i8PtrTy = i8Ty->getPointerTo();
+					auto voidTy = llvm::Type::getVoidTy(*jit->context);
+					auto funcTy = llvm::FunctionType::get(voidTy, { sizetTy, i8PtrTy, i8PtrTy, intTy }, false);
+					auto func = jit->module->getOrInsertFunction("__atomic_load", funcTy);
+					auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
+					auto out = allocateStackVariable(type);
+					jit->builder->CreateCall(func, {
+					                                   llvm::ConstantInt::get(sizetTy, size),
+					                                   jit->builder->CreatePointerCast(V(ptr), i8PtrTy),
+					                                   jit->builder->CreatePointerCast(V(out), i8PtrTy),
+					                                   llvm::ConstantInt::get(intTy, uint64_t(atomicOrdering(true, memoryOrder))),
+					                               });
+					return V(jit->builder->CreateLoad(V(out)));
+				}
 			}
-			else if(elTy->isIntegerTy() || elTy->isPointerTy())
-			{
-				// Integers and pointers can be atomically loaded by setting
-				// the ordering constraint on the load instruction.
-				auto load = jit->builder->CreateAlignedLoad(V(ptr), llvm::MaybeAlign(alignment), isVolatile);
-				load->setAtomic(atomicOrdering(atomic, memoryOrder));
-				return V(load);
-			}
-			else if(elTy->isFloatTy() || elTy->isDoubleTy())
-			{
-				// LLVM claims to support atomic loads of float types as
-				// above, but certain backends cannot deal with this.
-				// Load as an integer and bitcast. See b/136037244.
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-				auto elAsIntTy = llvm::IntegerType::get(*jit->context, size * 8);
-				auto ptrCast = jit->builder->CreatePointerCast(V(ptr), elAsIntTy->getPointerTo());
-				auto load = jit->builder->CreateAlignedLoad(ptrCast, llvm::MaybeAlign(alignment), isVolatile);
-				load->setAtomic(atomicOrdering(atomic, memoryOrder));
-				auto loadCast = jit->builder->CreateBitCast(load, elTy);
-				return V(loadCast);
-			}
-			else
-			{
-				// More exotic types require falling back to the extern:
-				// void __atomic_load(size_t size, void *ptr, void *ret, int ordering)
-				auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
-				auto intTy = llvm::IntegerType::get(*jit->context, sizeof(int) * 8);
-				auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
-				auto i8PtrTy = i8Ty->getPointerTo();
-				auto voidTy = llvm::Type::getVoidTy(*jit->context);
-				auto funcTy = llvm::FunctionType::get(voidTy, { sizetTy, i8PtrTy, i8PtrTy, intTy }, false);
-				auto func = jit->module->getOrInsertFunction("__atomic_load", funcTy);
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-				auto out = allocateStackVariable(type);
-				jit->builder->CreateCall(func, {
-				                                   llvm::ConstantInt::get(sizetTy, size),
-				                                   jit->builder->CreatePointerCast(V(ptr), i8PtrTy),
-				                                   jit->builder->CreatePointerCast(V(out), i8PtrTy),
-				                                   llvm::ConstantInt::get(intTy, uint64_t(atomicOrdering(true, memoryOrder))),
-				                               });
-				return V(jit->builder->CreateLoad(V(out)));
-			}
-		}
 		default:
 			UNREACHABLE("asInternalType(type): %d", int(asInternalType(type)));
 			return nullptr;
@@ -979,73 +979,73 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 			}
 			// Fallthrough to non-emulated case.
 		case Type_LLVM:
-		{
-			auto elTy = T(type);
-			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
+			{
+				auto elTy = T(type);
+				ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
-			if(__has_feature(memory_sanitizer) && !REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION)
-			{
-				// Mark all memory writes as initialized by calling __msan_unpoison
-				// void __msan_unpoison(const volatile void *a, size_t size)
-				auto voidTy = llvm::Type::getVoidTy(*jit->context);
-				auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
-				auto voidPtrTy = i8Ty->getPointerTo();
-				auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
-				auto funcTy = llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
-				auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
+				if(__has_feature(memory_sanitizer) && !REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION)
+				{
+					// Mark all memory writes as initialized by calling __msan_unpoison
+					// void __msan_unpoison(const volatile void *a, size_t size)
+					auto voidTy = llvm::Type::getVoidTy(*jit->context);
+					auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
+					auto voidPtrTy = i8Ty->getPointerTo();
+					auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
+					auto funcTy = llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
+					auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
+					auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
 
-				jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(V(ptr), voidPtrTy),
-				                                 llvm::ConstantInt::get(sizetTy, size) });
-			}
+					jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(V(ptr), voidPtrTy),
+					                                 llvm::ConstantInt::get(sizetTy, size) });
+				}
 
-			if(!atomic)
-			{
-				jit->builder->CreateAlignedStore(V(value), V(ptr), llvm::MaybeAlign(alignment), isVolatile);
-			}
-			else if(elTy->isIntegerTy() || elTy->isPointerTy())
-			{
-				// Integers and pointers can be atomically stored by setting
-				// the ordering constraint on the store instruction.
-				auto store = jit->builder->CreateAlignedStore(V(value), V(ptr), llvm::MaybeAlign(alignment), isVolatile);
-				store->setAtomic(atomicOrdering(atomic, memoryOrder));
-			}
-			else if(elTy->isFloatTy() || elTy->isDoubleTy())
-			{
-				// LLVM claims to support atomic stores of float types as
-				// above, but certain backends cannot deal with this.
-				// Store as an bitcast integer. See b/136037244.
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-				auto elAsIntTy = llvm::IntegerType::get(*jit->context, size * 8);
-				auto valCast = jit->builder->CreateBitCast(V(value), elAsIntTy);
-				auto ptrCast = jit->builder->CreatePointerCast(V(ptr), elAsIntTy->getPointerTo());
-				auto store = jit->builder->CreateAlignedStore(valCast, ptrCast, llvm::MaybeAlign(alignment), isVolatile);
-				store->setAtomic(atomicOrdering(atomic, memoryOrder));
-			}
-			else
-			{
-				// More exotic types require falling back to the extern:
-				// void __atomic_store(size_t size, void *ptr, void *val, int ordering)
-				auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
-				auto intTy = llvm::IntegerType::get(*jit->context, sizeof(int) * 8);
-				auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
-				auto i8PtrTy = i8Ty->getPointerTo();
-				auto voidTy = llvm::Type::getVoidTy(*jit->context);
-				auto funcTy = llvm::FunctionType::get(voidTy, { sizetTy, i8PtrTy, i8PtrTy, intTy }, false);
-				auto func = jit->module->getOrInsertFunction("__atomic_store", funcTy);
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-				auto copy = allocateStackVariable(type);
-				jit->builder->CreateStore(V(value), V(copy));
-				jit->builder->CreateCall(func, {
-				                                   llvm::ConstantInt::get(sizetTy, size),
-				                                   jit->builder->CreatePointerCast(V(ptr), i8PtrTy),
-				                                   jit->builder->CreatePointerCast(V(copy), i8PtrTy),
-				                                   llvm::ConstantInt::get(intTy, uint64_t(atomicOrdering(true, memoryOrder))),
-				                               });
-			}
+				if(!atomic)
+				{
+					jit->builder->CreateAlignedStore(V(value), V(ptr), llvm::MaybeAlign(alignment), isVolatile);
+				}
+				else if(elTy->isIntegerTy() || elTy->isPointerTy())
+				{
+					// Integers and pointers can be atomically stored by setting
+					// the ordering constraint on the store instruction.
+					auto store = jit->builder->CreateAlignedStore(V(value), V(ptr), llvm::MaybeAlign(alignment), isVolatile);
+					store->setAtomic(atomicOrdering(atomic, memoryOrder));
+				}
+				else if(elTy->isFloatTy() || elTy->isDoubleTy())
+				{
+					// LLVM claims to support atomic stores of float types as
+					// above, but certain backends cannot deal with this.
+					// Store as an bitcast integer. See b/136037244.
+					auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
+					auto elAsIntTy = llvm::IntegerType::get(*jit->context, size * 8);
+					auto valCast = jit->builder->CreateBitCast(V(value), elAsIntTy);
+					auto ptrCast = jit->builder->CreatePointerCast(V(ptr), elAsIntTy->getPointerTo());
+					auto store = jit->builder->CreateAlignedStore(valCast, ptrCast, llvm::MaybeAlign(alignment), isVolatile);
+					store->setAtomic(atomicOrdering(atomic, memoryOrder));
+				}
+				else
+				{
+					// More exotic types require falling back to the extern:
+					// void __atomic_store(size_t size, void *ptr, void *val, int ordering)
+					auto sizetTy = llvm::IntegerType::get(*jit->context, sizeof(size_t) * 8);
+					auto intTy = llvm::IntegerType::get(*jit->context, sizeof(int) * 8);
+					auto i8Ty = llvm::Type::getInt8Ty(*jit->context);
+					auto i8PtrTy = i8Ty->getPointerTo();
+					auto voidTy = llvm::Type::getVoidTy(*jit->context);
+					auto funcTy = llvm::FunctionType::get(voidTy, { sizetTy, i8PtrTy, i8PtrTy, intTy }, false);
+					auto func = jit->module->getOrInsertFunction("__atomic_store", funcTy);
+					auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
+					auto copy = allocateStackVariable(type);
+					jit->builder->CreateStore(V(value), V(copy));
+					jit->builder->CreateCall(func, {
+					                                   llvm::ConstantInt::get(sizetTy, size),
+					                                   jit->builder->CreatePointerCast(V(ptr), i8PtrTy),
+					                                   jit->builder->CreatePointerCast(V(copy), i8PtrTy),
+					                                   llvm::ConstantInt::get(intTy, uint64_t(atomicOrdering(true, memoryOrder))),
+					                               });
+				}
 
-			return value;
-		}
+				return value;
+			}
 		default:
 			UNREACHABLE("asInternalType(type): %d", int(asInternalType(type)));
 			return nullptr;

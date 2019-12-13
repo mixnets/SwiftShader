@@ -44,28 +44,28 @@ public:
 				switch(extInfo->sType)
 				{
 					case VK_STRUCTURE_TYPE_TEMP_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA:
-					{
-						const auto *importInfo = reinterpret_cast<const VkImportMemoryZirconHandleInfoFUCHSIA *>(extInfo);
-
-						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
 						{
-							UNSUPPORTED("importInfo->handleType");
+							const auto *importInfo = reinterpret_cast<const VkImportMemoryZirconHandleInfoFUCHSIA *>(extInfo);
+
+							if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+							{
+								UNSUPPORTED("importInfo->handleType");
+							}
+							importHandle = true;
+							handle = importInfo->handle;
 						}
-						importHandle = true;
-						handle = importInfo->handle;
 						break;
-					}
 					case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-					{
-						const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(extInfo);
-
-						if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
 						{
-							UNSUPPORTED("exportInfo->handleTypes");
+							const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(extInfo);
+
+							if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+							{
+								UNSUPPORTED("exportInfo->handleTypes");
+							}
+							exportHandle = true;
 						}
-						exportHandle = true;
 						break;
-					}
 					case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
 						// This can safely be ignored, as the Vulkan spec mentions:
 						// "If the pNext chain includes a VkMemoryDedicatedAllocateInfo structure, then that structure

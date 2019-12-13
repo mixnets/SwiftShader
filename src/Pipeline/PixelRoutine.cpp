@@ -1181,30 +1181,30 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 			pixel.w = Short4(0xFFFFu);
 			break;
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		{
-			Int4 v = Int4(0);
-			buffer += 4 * x;
-			v = Insert(v, *Pointer<Int>(buffer + 0), 0);
-			v = Insert(v, *Pointer<Int>(buffer + 4), 1);
-			buffer += pitchB;
-			v = Insert(v, *Pointer<Int>(buffer + 0), 2);
-			v = Insert(v, *Pointer<Int>(buffer + 4), 3);
+			{
+				Int4 v = Int4(0);
+				buffer += 4 * x;
+				v = Insert(v, *Pointer<Int>(buffer + 0), 0);
+				v = Insert(v, *Pointer<Int>(buffer + 4), 1);
+				buffer += pitchB;
+				v = Insert(v, *Pointer<Int>(buffer + 0), 2);
+				v = Insert(v, *Pointer<Int>(buffer + 4), 3);
 
-			pixel = a2b10g10r10Unpack(v);
-		}
-		break;
+				pixel = a2b10g10r10Unpack(v);
+			}
+			break;
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-		{
-			Int4 v = Int4(0);
-			v = Insert(v, *Pointer<Int>(buffer + 4 * x), 0);
-			v = Insert(v, *Pointer<Int>(buffer + 4 * x + 4), 1);
-			buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
-			v = Insert(v, *Pointer<Int>(buffer + 4 * x), 2);
-			v = Insert(v, *Pointer<Int>(buffer + 4 * x + 4), 3);
+			{
+				Int4 v = Int4(0);
+				v = Insert(v, *Pointer<Int>(buffer + 4 * x), 0);
+				v = Insert(v, *Pointer<Int>(buffer + 4 * x + 4), 1);
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				v = Insert(v, *Pointer<Int>(buffer + 4 * x), 2);
+				v = Insert(v, *Pointer<Int>(buffer + 4 * x + 4), 3);
 
-			pixel = a2r10g10b10Unpack(v);
-		}
-		break;
+				pixel = a2r10g10b10Unpack(v);
+			}
+			break;
 		default:
 			UNSUPPORTED("VkFormat %d", int(state.targetFormat[index]));
 	}
@@ -1386,24 +1386,24 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	switch(state.targetFormat[index])
 	{
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
-		{
-			current.w = current.w & Short4(0x8000u);
-			current.x = As<UShort4>(current.x & Short4(0xF800)) >> 1;
-			current.y = As<UShort4>(current.y & Short4(0xF800)) >> 6;
-			current.z = As<UShort4>(current.z & Short4(0xF800)) >> 11;
+			{
+				current.w = current.w & Short4(0x8000u);
+				current.x = As<UShort4>(current.x & Short4(0xF800)) >> 1;
+				current.y = As<UShort4>(current.y & Short4(0xF800)) >> 6;
+				current.z = As<UShort4>(current.z & Short4(0xF800)) >> 11;
 
-			current.x = current.x | current.y | current.z | current.w;
-		}
-		break;
+				current.x = current.x | current.y | current.z | current.w;
+			}
+			break;
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
-		{
-			current.x = current.x & Short4(0xF800u);
-			current.y = As<UShort4>(current.y & Short4(0xFC00u)) >> 5;
-			current.z = As<UShort4>(current.z) >> 11;
+			{
+				current.x = current.x & Short4(0xF800u);
+				current.y = As<UShort4>(current.y & Short4(0xFC00u)) >> 5;
+				current.z = As<UShort4>(current.z) >> 11;
 
-			current.x = current.x | current.y | current.z;
-		}
-		break;
+				current.x = current.x | current.y | current.z;
+			}
+			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
 		case VK_FORMAT_B8G8R8A8_SRGB:
 			if(rgbaWriteMask == 0x7)
@@ -1499,31 +1499,31 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			transpose4x4(current.x, current.y, current.z, current.w);
 			break;
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		{
-			auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
-			auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
-			auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
-			auto a = (Int4(current.w) >> 14) & Int4(0x3);
-			Int4 packed = (a << 30) | (b << 20) | (g << 10) | r;
-			auto c02 = As<Int2>(Int4(packed.xzzz));  // TODO: auto c02 = packed.xz;
-			auto c13 = As<Int2>(Int4(packed.ywww));  // TODO: auto c13 = packed.yw;
-			current.x = UnpackLow(c02, c13);
-			current.y = UnpackHigh(c02, c13);
+			{
+				auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
+				auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
+				auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
+				auto a = (Int4(current.w) >> 14) & Int4(0x3);
+				Int4 packed = (a << 30) | (b << 20) | (g << 10) | r;
+				auto c02 = As<Int2>(Int4(packed.xzzz));  // TODO: auto c02 = packed.xz;
+				auto c13 = As<Int2>(Int4(packed.ywww));  // TODO: auto c13 = packed.yw;
+				current.x = UnpackLow(c02, c13);
+				current.y = UnpackHigh(c02, c13);
+			}
 			break;
-		}
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-		{
-			auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
-			auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
-			auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
-			auto a = (Int4(current.w) >> 14) & Int4(0x3);
-			Int4 packed = (a << 30) | (r << 20) | (g << 10) | b;
-			auto c02 = As<Int2>(Int4(packed.xzzz));  // TODO: auto c02 = packed.xz;
-			auto c13 = As<Int2>(Int4(packed.ywww));  // TODO: auto c13 = packed.yw;
-			current.x = UnpackLow(c02, c13);
-			current.y = UnpackHigh(c02, c13);
+			{
+				auto r = (Int4(current.x) >> 6) & Int4(0x3ff);
+				auto g = (Int4(current.y) >> 6) & Int4(0x3ff);
+				auto b = (Int4(current.z) >> 6) & Int4(0x3ff);
+				auto a = (Int4(current.w) >> 14) & Int4(0x3);
+				Int4 packed = (a << 30) | (r << 20) | (g << 10) | b;
+				auto c02 = As<Int2>(Int4(packed.xzzz));  // TODO: auto c02 = packed.xz;
+				auto c13 = As<Int2>(Int4(packed.ywww));  // TODO: auto c13 = packed.yw;
+				current.x = UnpackLow(c02, c13);
+				current.y = UnpackHigh(c02, c13);
+			}
 			break;
-		}
 		default:
 			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 	}
@@ -1553,111 +1553,111 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 	switch(state.targetFormat[index])
 	{
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
-		{
-			buffer += 2 * x;
-			Int value = *Pointer<Int>(buffer);
-
-			Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask5551Q[bgraWriteMask & 0xF][0]));
-
-			Int c01 = Extract(As<Int2>(current.x), 0);
-			Int mask01 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][0]) + xMask * 8);
-			if(bgraWriteMask != 0x0000000F)
 			{
-				mask01 &= channelMask;
-			}
-			*Pointer<Int>(buffer) = (c01 & mask01) | (value & ~mask01);
+				buffer += 2 * x;
+				Int value = *Pointer<Int>(buffer);
 
-			buffer += pitchB;
-			value = *Pointer<Int>(buffer);
+				Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask5551Q[bgraWriteMask & 0xF][0]));
 
-			Int c23 = Extract(As<Int2>(current.x), 1);
-			Int mask23 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][2]) + xMask * 8);
-			if(bgraWriteMask != 0x0000000F)
-			{
-				mask23 &= channelMask;
+				Int c01 = Extract(As<Int2>(current.x), 0);
+				Int mask01 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][0]) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
+				{
+					mask01 &= channelMask;
+				}
+				*Pointer<Int>(buffer) = (c01 & mask01) | (value & ~mask01);
+
+				buffer += pitchB;
+				value = *Pointer<Int>(buffer);
+
+				Int c23 = Extract(As<Int2>(current.x), 1);
+				Int mask23 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][2]) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
+				{
+					mask23 &= channelMask;
+				}
+				*Pointer<Int>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
-			*Pointer<Int>(buffer) = (c23 & mask23) | (value & ~mask23);
-		}
-		break;
+			break;
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
-		{
-			buffer += 2 * x;
-			Int value = *Pointer<Int>(buffer);
-
-			Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask565Q[bgraWriteMask & 0x7][0]));
-
-			Int c01 = Extract(As<Int2>(current.x), 0);
-			Int mask01 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][0]) + xMask * 8);
-			if((bgraWriteMask & 0x00000007) != 0x00000007)
 			{
-				mask01 &= channelMask;
-			}
-			*Pointer<Int>(buffer) = (c01 & mask01) | (value & ~mask01);
+				buffer += 2 * x;
+				Int value = *Pointer<Int>(buffer);
 
-			buffer += pitchB;
-			value = *Pointer<Int>(buffer);
+				Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask565Q[bgraWriteMask & 0x7][0]));
 
-			Int c23 = Extract(As<Int2>(current.x), 1);
-			Int mask23 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][2]) + xMask * 8);
-			if((bgraWriteMask & 0x00000007) != 0x00000007)
-			{
-				mask23 &= channelMask;
+				Int c01 = Extract(As<Int2>(current.x), 0);
+				Int mask01 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][0]) + xMask * 8);
+				if((bgraWriteMask & 0x00000007) != 0x00000007)
+				{
+					mask01 &= channelMask;
+				}
+				*Pointer<Int>(buffer) = (c01 & mask01) | (value & ~mask01);
+
+				buffer += pitchB;
+				value = *Pointer<Int>(buffer);
+
+				Int c23 = Extract(As<Int2>(current.x), 1);
+				Int mask23 = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[0][2]) + xMask * 8);
+				if((bgraWriteMask & 0x00000007) != 0x00000007)
+				{
+					mask23 &= channelMask;
+				}
+				*Pointer<Int>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
-			*Pointer<Int>(buffer) = (c23 & mask23) | (value & ~mask23);
-		}
-		break;
+			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
 		case VK_FORMAT_B8G8R8A8_SRGB:
-		{
-			buffer += x * 4;
-			Short4 value = *Pointer<Short4>(buffer);
-			Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[bgraWriteMask][0]));
-
-			Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
-			if(bgraWriteMask != 0x0000000F)
 			{
-				mask01 &= channelMask;
-			}
-			*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
+				buffer += x * 4;
+				Short4 value = *Pointer<Short4>(buffer);
+				Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[bgraWriteMask][0]));
 
-			buffer += pitchB;
-			value = *Pointer<Short4>(buffer);
+				Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
+				{
+					mask01 &= channelMask;
+				}
+				*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
 
-			Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
-			if(bgraWriteMask != 0x0000000F)
-			{
-				mask23 &= channelMask;
+				buffer += pitchB;
+				value = *Pointer<Short4>(buffer);
+
+				Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
+				if(bgraWriteMask != 0x0000000F)
+				{
+					mask23 &= channelMask;
+				}
+				*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
-			*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
-		}
-		break;
+			break;
 		case VK_FORMAT_R8G8B8A8_UNORM:
 		case VK_FORMAT_R8G8B8A8_SRGB:
 		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
-		{
-			buffer += x * 4;
-			Short4 value = *Pointer<Short4>(buffer);
-			Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[rgbaWriteMask][0]));
-
-			Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
-			if(rgbaWriteMask != 0x0000000F)
 			{
-				mask01 &= channelMask;
-			}
-			*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
+				buffer += x * 4;
+				Short4 value = *Pointer<Short4>(buffer);
+				Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[rgbaWriteMask][0]));
 
-			buffer += pitchB;
-			value = *Pointer<Short4>(buffer);
+				Short4 mask01 = *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
+				if(rgbaWriteMask != 0x0000000F)
+				{
+					mask01 &= channelMask;
+				}
+				*Pointer<Short4>(buffer) = (c01 & mask01) | (value & ~mask01);
 
-			Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
-			if(rgbaWriteMask != 0x0000000F)
-			{
-				mask23 &= channelMask;
+				buffer += pitchB;
+				value = *Pointer<Short4>(buffer);
+
+				Short4 mask23 = *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
+				if(rgbaWriteMask != 0x0000000F)
+				{
+					mask23 &= channelMask;
+				}
+				*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
 			}
-			*Pointer<Short4>(buffer) = (c23 & mask23) | (value & ~mask23);
-		}
-		break;
+			break;
 		case VK_FORMAT_R8G8_UNORM:
 			if((rgbaWriteMask & 0x00000003) != 0x0)
 			{
@@ -1699,143 +1699,143 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			}
 			break;
 		case VK_FORMAT_R16G16_UNORM:
-		{
-			buffer += 4 * x;
-
-			Short4 value = *Pointer<Short4>(buffer);
-
-			if((rgbaWriteMask & 0x00000003) != 0x00000003)
 			{
-				Short4 masked = value;
-				current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[rgbaWriteMask & 0x3][0]));
-				masked &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[~rgbaWriteMask & 0x3][0]));
-				current.x |= masked;
-			}
+				buffer += 4 * x;
 
-			current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
-			value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskD01Q) + xMask * 8);
-			current.x |= value;
-			*Pointer<Short4>(buffer) = current.x;
-
-			buffer += pitchB;
-
-			value = *Pointer<Short4>(buffer);
-
-			if((rgbaWriteMask & 0x00000003) != 0x00000003)
-			{
-				Short4 masked = value;
-				current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[rgbaWriteMask & 0x3][0]));
-				masked &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[~rgbaWriteMask & 0x3][0]));
-				current.y |= masked;
-			}
-
-			current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
-			value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskD23Q) + xMask * 8);
-			current.y |= value;
-			*Pointer<Short4>(buffer) = current.y;
-		}
-		break;
-		case VK_FORMAT_R16G16B16A16_UNORM:
-		{
-			buffer += 8 * x;
-
-			{
 				Short4 value = *Pointer<Short4>(buffer);
 
-				if(rgbaWriteMask != 0x0000000F)
+				if((rgbaWriteMask & 0x00000003) != 0x00000003)
 				{
 					Short4 masked = value;
-					current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+					current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[rgbaWriteMask & 0x3][0]));
+					masked &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[~rgbaWriteMask & 0x3][0]));
 					current.x |= masked;
 				}
 
-				current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ0Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ0Q) + xMask * 8);
+				current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
+				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskD01Q) + xMask * 8);
 				current.x |= value;
 				*Pointer<Short4>(buffer) = current.x;
-			}
 
-			{
-				Short4 value = *Pointer<Short4>(buffer + 8);
+				buffer += pitchB;
 
-				if(rgbaWriteMask != 0x0000000F)
+				value = *Pointer<Short4>(buffer);
+
+				if((rgbaWriteMask & 0x00000003) != 0x00000003)
 				{
 					Short4 masked = value;
-					current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+					current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[rgbaWriteMask & 0x3][0]));
+					masked &= *Pointer<Short4>(constants + OFFSET(Constants, maskW01Q[~rgbaWriteMask & 0x3][0]));
 					current.y |= masked;
 				}
 
-				current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ1Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ1Q) + xMask * 8);
+				current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
+				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskD23Q) + xMask * 8);
 				current.y |= value;
-				*Pointer<Short4>(buffer + 8) = current.y;
+				*Pointer<Short4>(buffer) = current.y;
 			}
-
-			buffer += pitchB;
-
+			break;
+		case VK_FORMAT_R16G16B16A16_UNORM:
 			{
-				Short4 value = *Pointer<Short4>(buffer);
+				buffer += 8 * x;
 
-				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					current.z &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
-					current.z |= masked;
+					Short4 value = *Pointer<Short4>(buffer);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+						current.x |= masked;
+					}
+
+					current.x &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ0Q) + xMask * 8);
+					value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ0Q) + xMask * 8);
+					current.x |= value;
+					*Pointer<Short4>(buffer) = current.x;
 				}
 
-				current.z &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ2Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ2Q) + xMask * 8);
-				current.z |= value;
-				*Pointer<Short4>(buffer) = current.z;
-			}
-
-			{
-				Short4 value = *Pointer<Short4>(buffer + 8);
-
-				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					current.w &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
-					current.w |= masked;
+					Short4 value = *Pointer<Short4>(buffer + 8);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+						current.y |= masked;
+					}
+
+					current.y &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ1Q) + xMask * 8);
+					value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ1Q) + xMask * 8);
+					current.y |= value;
+					*Pointer<Short4>(buffer + 8) = current.y;
 				}
 
-				current.w &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ3Q) + xMask * 8);
-				value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ3Q) + xMask * 8);
-				current.w |= value;
-				*Pointer<Short4>(buffer + 8) = current.w;
+				buffer += pitchB;
+
+				{
+					Short4 value = *Pointer<Short4>(buffer);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.z &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+						current.z |= masked;
+					}
+
+					current.z &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ2Q) + xMask * 8);
+					value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ2Q) + xMask * 8);
+					current.z |= value;
+					*Pointer<Short4>(buffer) = current.z;
+				}
+
+				{
+					Short4 value = *Pointer<Short4>(buffer + 8);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.w &= *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q[rgbaWriteMask][0]));
+						current.w |= masked;
+					}
+
+					current.w &= *Pointer<Short4>(constants + OFFSET(Constants, maskQ3Q) + xMask * 8);
+					value &= *Pointer<Short4>(constants + OFFSET(Constants, invMaskQ3Q) + xMask * 8);
+					current.w |= value;
+					*Pointer<Short4>(buffer + 8) = current.w;
+				}
 			}
-		}
-		break;
+			break;
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
 			rgbaWriteMask = bgraWriteMask;
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		{
-			buffer += 4 * x;
-
-			Int2 value = *Pointer<Int2>(buffer, 16);
-			Int2 mergedMask = *Pointer<Int2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
-			if(rgbaWriteMask != 0xF)
 			{
-				mergedMask &= *Pointer<Int2>(constants + OFFSET(Constants, mask10Q[rgbaWriteMask][0]));
-			}
-			*Pointer<Int2>(buffer) = (As<Int2>(current.x) & mergedMask) | (value & ~mergedMask);
+				buffer += 4 * x;
 
-			buffer += pitchB;
+				Int2 value = *Pointer<Int2>(buffer, 16);
+				Int2 mergedMask = *Pointer<Int2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
+				if(rgbaWriteMask != 0xF)
+				{
+					mergedMask &= *Pointer<Int2>(constants + OFFSET(Constants, mask10Q[rgbaWriteMask][0]));
+				}
+				*Pointer<Int2>(buffer) = (As<Int2>(current.x) & mergedMask) | (value & ~mergedMask);
 
-			value = *Pointer<Int2>(buffer, 16);
-			mergedMask = *Pointer<Int2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
-			if(rgbaWriteMask != 0xF)
-			{
-				mergedMask &= *Pointer<Int2>(constants + OFFSET(Constants, mask10Q[rgbaWriteMask][0]));
+				buffer += pitchB;
+
+				value = *Pointer<Int2>(buffer, 16);
+				mergedMask = *Pointer<Int2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
+				if(rgbaWriteMask != 0xF)
+				{
+					mergedMask &= *Pointer<Int2>(constants + OFFSET(Constants, mask10Q[rgbaWriteMask][0]));
+				}
+				*Pointer<Int2>(buffer) = (As<Int2>(current.y) & mergedMask) | (value & ~mergedMask);
 			}
-			*Pointer<Int2>(buffer) = (As<Int2>(current.y) & mergedMask) | (value & ~mergedMask);
-		}
-		break;
+			break;
 		default:
 			UNSUPPORTED("VkFormat: %d", int(state.targetFormat[index]));
 	}

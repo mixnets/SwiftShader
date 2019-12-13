@@ -205,32 +205,32 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_R32G32_SFLOAT:
 		case VK_FORMAT_R32G32B32_SFLOAT:
 		case VK_FORMAT_R32G32B32A32_SFLOAT:
-		{
-			if(componentCount == 0)
 			{
-				// Null stream, all default components
-			}
-			else
-			{
-				if(componentCount == 1)
+				if(componentCount == 0)
 				{
-					v.x.x = *Pointer<Float>(source0);
-					v.x.y = *Pointer<Float>(source1);
-					v.x.z = *Pointer<Float>(source2);
-					v.x.w = *Pointer<Float>(source3);
+					// Null stream, all default components
 				}
 				else
 				{
-					v.x = *Pointer<Float4>(source0);
-					v.y = *Pointer<Float4>(source1);
-					v.z = *Pointer<Float4>(source2);
-					v.w = *Pointer<Float4>(source3);
+					if(componentCount == 1)
+					{
+						v.x.x = *Pointer<Float>(source0);
+						v.x.y = *Pointer<Float>(source1);
+						v.x.z = *Pointer<Float>(source2);
+						v.x.w = *Pointer<Float>(source3);
+					}
+					else
+					{
+						v.x = *Pointer<Float4>(source0);
+						v.y = *Pointer<Float4>(source1);
+						v.z = *Pointer<Float4>(source2);
+						v.w = *Pointer<Float4>(source3);
 
-					transpose4xN(v.x, v.y, v.z, v.w, componentCount);
+						transpose4xN(v.x, v.y, v.z, v.w, componentCount);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
 			bgra = true;
 			// [[fallthrough]]
@@ -363,136 +363,136 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_R16_SFLOAT:
 		case VK_FORMAT_R16G16_SFLOAT:
 		case VK_FORMAT_R16G16B16A16_SFLOAT:
-		{
-			if(componentCount >= 1)
 			{
-				UShort x0 = *Pointer<UShort>(source0 + 0);
-				UShort x1 = *Pointer<UShort>(source1 + 0);
-				UShort x2 = *Pointer<UShort>(source2 + 0);
-				UShort x3 = *Pointer<UShort>(source3 + 0);
+				if(componentCount >= 1)
+				{
+					UShort x0 = *Pointer<UShort>(source0 + 0);
+					UShort x1 = *Pointer<UShort>(source1 + 0);
+					UShort x2 = *Pointer<UShort>(source2 + 0);
+					UShort x3 = *Pointer<UShort>(source3 + 0);
 
-				v.x.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x0) * 4);
-				v.x.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x1) * 4);
-				v.x.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x2) * 4);
-				v.x.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x3) * 4);
+					v.x.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x0) * 4);
+					v.x.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x1) * 4);
+					v.x.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x2) * 4);
+					v.x.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(x3) * 4);
+				}
+
+				if(componentCount >= 2)
+				{
+					UShort y0 = *Pointer<UShort>(source0 + 2);
+					UShort y1 = *Pointer<UShort>(source1 + 2);
+					UShort y2 = *Pointer<UShort>(source2 + 2);
+					UShort y3 = *Pointer<UShort>(source3 + 2);
+
+					v.y.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y0) * 4);
+					v.y.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y1) * 4);
+					v.y.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y2) * 4);
+					v.y.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y3) * 4);
+				}
+
+				if(componentCount >= 3)
+				{
+					UShort z0 = *Pointer<UShort>(source0 + 4);
+					UShort z1 = *Pointer<UShort>(source1 + 4);
+					UShort z2 = *Pointer<UShort>(source2 + 4);
+					UShort z3 = *Pointer<UShort>(source3 + 4);
+
+					v.z.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z0) * 4);
+					v.z.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z1) * 4);
+					v.z.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z2) * 4);
+					v.z.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z3) * 4);
+				}
+
+				if(componentCount >= 4)
+				{
+					UShort w0 = *Pointer<UShort>(source0 + 6);
+					UShort w1 = *Pointer<UShort>(source1 + 6);
+					UShort w2 = *Pointer<UShort>(source2 + 6);
+					UShort w3 = *Pointer<UShort>(source3 + 6);
+
+					v.w.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w0) * 4);
+					v.w.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w1) * 4);
+					v.w.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w2) * 4);
+					v.w.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w3) * 4);
+				}
 			}
-
-			if(componentCount >= 2)
-			{
-				UShort y0 = *Pointer<UShort>(source0 + 2);
-				UShort y1 = *Pointer<UShort>(source1 + 2);
-				UShort y2 = *Pointer<UShort>(source2 + 2);
-				UShort y3 = *Pointer<UShort>(source3 + 2);
-
-				v.y.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y0) * 4);
-				v.y.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y1) * 4);
-				v.y.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y2) * 4);
-				v.y.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(y3) * 4);
-			}
-
-			if(componentCount >= 3)
-			{
-				UShort z0 = *Pointer<UShort>(source0 + 4);
-				UShort z1 = *Pointer<UShort>(source1 + 4);
-				UShort z2 = *Pointer<UShort>(source2 + 4);
-				UShort z3 = *Pointer<UShort>(source3 + 4);
-
-				v.z.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z0) * 4);
-				v.z.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z1) * 4);
-				v.z.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z2) * 4);
-				v.z.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(z3) * 4);
-			}
-
-			if(componentCount >= 4)
-			{
-				UShort w0 = *Pointer<UShort>(source0 + 6);
-				UShort w1 = *Pointer<UShort>(source1 + 6);
-				UShort w2 = *Pointer<UShort>(source2 + 6);
-				UShort w3 = *Pointer<UShort>(source3 + 6);
-
-				v.w.x = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w0) * 4);
-				v.w.y = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w1) * 4);
-				v.w.z = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w2) * 4);
-				v.w.w = *Pointer<Float>(constants + OFFSET(Constants, half2float) + Int(w3) * 4);
-			}
-		}
-		break;
+			break;
 		case VK_FORMAT_A2R10G10B10_SNORM_PACK32:
 			bgra = true;
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
-		{
-			Int4 src;
-			src = Insert(src, *Pointer<Int>(source0), 0);
-			src = Insert(src, *Pointer<Int>(source1), 1);
-			src = Insert(src, *Pointer<Int>(source2), 2);
-			src = Insert(src, *Pointer<Int>(source3), 3);
-			v.x = Float4((src << 22) >> 22);
-			v.y = Float4((src << 12) >> 22);
-			v.z = Float4((src << 02) >> 22);
-			v.w = Float4(src >> 30);
+			{
+				Int4 src;
+				src = Insert(src, *Pointer<Int>(source0), 0);
+				src = Insert(src, *Pointer<Int>(source1), 1);
+				src = Insert(src, *Pointer<Int>(source2), 2);
+				src = Insert(src, *Pointer<Int>(source3), 3);
+				v.x = Float4((src << 22) >> 22);
+				v.y = Float4((src << 12) >> 22);
+				v.z = Float4((src << 02) >> 22);
+				v.w = Float4(src >> 30);
 
-			v.x = Max(v.x * Float4(1.0f / 0x1FF), Float4(-1.0f));
-			v.y = Max(v.y * Float4(1.0f / 0x1FF), Float4(-1.0f));
-			v.z = Max(v.z * Float4(1.0f / 0x1FF), Float4(-1.0f));
-			v.w = Max(v.w, Float4(-1.0f));
-		}
-		break;
+				v.x = Max(v.x * Float4(1.0f / 0x1FF), Float4(-1.0f));
+				v.y = Max(v.y * Float4(1.0f / 0x1FF), Float4(-1.0f));
+				v.z = Max(v.z * Float4(1.0f / 0x1FF), Float4(-1.0f));
+				v.w = Max(v.w, Float4(-1.0f));
+			}
+			break;
 		case VK_FORMAT_A2R10G10B10_SINT_PACK32:
 			bgra = true;
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_SINT_PACK32:
-		{
-			Int4 src;
-			src = Insert(src, *Pointer<Int>(source0), 0);
-			src = Insert(src, *Pointer<Int>(source1), 1);
-			src = Insert(src, *Pointer<Int>(source2), 2);
-			src = Insert(src, *Pointer<Int>(source3), 3);
-			v.x = As<Float4>((src << 22) >> 22);
-			v.y = As<Float4>((src << 12) >> 22);
-			v.z = As<Float4>((src << 02) >> 22);
-			v.w = As<Float4>(src >> 30);
-		}
-		break;
+			{
+				Int4 src;
+				src = Insert(src, *Pointer<Int>(source0), 0);
+				src = Insert(src, *Pointer<Int>(source1), 1);
+				src = Insert(src, *Pointer<Int>(source2), 2);
+				src = Insert(src, *Pointer<Int>(source3), 3);
+				v.x = As<Float4>((src << 22) >> 22);
+				v.y = As<Float4>((src << 12) >> 22);
+				v.z = As<Float4>((src << 02) >> 22);
+				v.w = As<Float4>(src >> 30);
+			}
+			break;
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
 			bgra = true;
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		{
-			Int4 src;
-			src = Insert(src, *Pointer<Int>(source0), 0);
-			src = Insert(src, *Pointer<Int>(source1), 1);
-			src = Insert(src, *Pointer<Int>(source2), 2);
-			src = Insert(src, *Pointer<Int>(source3), 3);
+			{
+				Int4 src;
+				src = Insert(src, *Pointer<Int>(source0), 0);
+				src = Insert(src, *Pointer<Int>(source1), 1);
+				src = Insert(src, *Pointer<Int>(source2), 2);
+				src = Insert(src, *Pointer<Int>(source3), 3);
 
-			v.x = Float4(src & Int4(0x3FF));
-			v.y = Float4((src >> 10) & Int4(0x3FF));
-			v.z = Float4((src >> 20) & Int4(0x3FF));
-			v.w = Float4((src >> 30) & Int4(0x3));
+				v.x = Float4(src & Int4(0x3FF));
+				v.y = Float4((src >> 10) & Int4(0x3FF));
+				v.z = Float4((src >> 20) & Int4(0x3FF));
+				v.w = Float4((src >> 30) & Int4(0x3));
 
-			v.x *= Float4(1.0f / 0x3FF);
-			v.y *= Float4(1.0f / 0x3FF);
-			v.z *= Float4(1.0f / 0x3FF);
-			v.w *= Float4(1.0f / 0x3);
-		}
-		break;
+				v.x *= Float4(1.0f / 0x3FF);
+				v.y *= Float4(1.0f / 0x3FF);
+				v.z *= Float4(1.0f / 0x3FF);
+				v.w *= Float4(1.0f / 0x3);
+			}
+			break;
 		case VK_FORMAT_A2R10G10B10_UINT_PACK32:
 			bgra = true;
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_UINT_PACK32:
-		{
-			Int4 src;
-			src = Insert(src, *Pointer<Int>(source0), 0);
-			src = Insert(src, *Pointer<Int>(source1), 1);
-			src = Insert(src, *Pointer<Int>(source2), 2);
-			src = Insert(src, *Pointer<Int>(source3), 3);
+			{
+				Int4 src;
+				src = Insert(src, *Pointer<Int>(source0), 0);
+				src = Insert(src, *Pointer<Int>(source1), 1);
+				src = Insert(src, *Pointer<Int>(source2), 2);
+				src = Insert(src, *Pointer<Int>(source3), 3);
 
-			v.x = As<Float4>(src & Int4(0x3FF));
-			v.y = As<Float4>((src >> 10) & Int4(0x3FF));
-			v.z = As<Float4>((src >> 20) & Int4(0x3FF));
-			v.w = As<Float4>((src >> 30) & Int4(0x3));
-		}
-		break;
+				v.x = As<Float4>(src & Int4(0x3FF));
+				v.y = As<Float4>((src >> 10) & Int4(0x3FF));
+				v.z = As<Float4>((src >> 20) & Int4(0x3FF));
+				v.w = As<Float4>((src >> 30) & Int4(0x3));
+			}
+			break;
 		default:
 			UNSUPPORTED("stream.format %d", int(stream.format));
 	}

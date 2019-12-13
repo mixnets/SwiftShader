@@ -78,23 +78,23 @@ bool Configurator::readFile()
 				switch(line[pLeft])
 				{
 					case '[':
-					{
-						string::size_type pRight = line.find_last_of("]");
-
-						if(pRight != string::npos && pRight > pLeft)
 						{
-							keyName = line.substr(pLeft + 1, pRight - pLeft - 1);
-							addKeyName(keyName);
+							string::size_type pRight = line.find_last_of("]");
+
+							if(pRight != string::npos && pRight > pLeft)
+							{
+								keyName = line.substr(pLeft + 1, pRight - pLeft - 1);
+								addKeyName(keyName);
+							}
 						}
-					}
-					break;
+						break;
 					case '=':
-					{
-						string valueName = line.substr(0, pLeft);
-						string value = line.substr(pLeft + 1);
-						addValue(keyName, valueName, value);
-					}
-					break;
+						{
+							string valueName = line.substr(0, pLeft);
+							string value = line.substr(pLeft + 1);
+							addValue(keyName, valueName, value);
+						}
+						break;
 					case ';':
 					case '#':
 						// Ignore comments

@@ -101,25 +101,25 @@ SemaphoreCreateInfo::SemaphoreCreateInfo(const VkSemaphoreCreateInfo *pCreateInf
 		switch(nextInfo->sType)
 		{
 			case VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO:
-			{
-				const auto *exportInfo = reinterpret_cast<const VkExportSemaphoreCreateInfo *>(nextInfo);
-				exportSemaphore = true;
-				exportHandleTypes = exportInfo->handleTypes;
-				if((exportHandleTypes & ~kSupportedTypes) != 0)
 				{
-					UNSUPPORTED("exportInfo->handleTypes 0x%X (supports 0x%X)",
-					            int(exportHandleTypes),
-					            int(kSupportedTypes));
+					const auto *exportInfo = reinterpret_cast<const VkExportSemaphoreCreateInfo *>(nextInfo);
+					exportSemaphore = true;
+					exportHandleTypes = exportInfo->handleTypes;
+					if((exportHandleTypes & ~kSupportedTypes) != 0)
+					{
+						UNSUPPORTED("exportInfo->handleTypes 0x%X (supports 0x%X)",
+						            int(exportHandleTypes),
+						            int(kSupportedTypes));
+					}
 				}
-			}
-			break;
+				break;
 			case VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO:
-			{
-				const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
-				semaphoreType = tlsInfo->semaphoreType;
-				initialPayload = tlsInfo->initialValue;
-			}
-			break;
+				{
+					const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
+					semaphoreType = tlsInfo->semaphoreType;
+					initialPayload = tlsInfo->initialValue;
+				}
+				break;
 			default:
 				WARN("nextInfo->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;

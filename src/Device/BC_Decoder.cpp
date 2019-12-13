@@ -1644,102 +1644,102 @@ bool BC_Decoder::Decode(const uint8_t *src, uint8_t *dst, int w, int h, int dstP
 	switch(n)
 	{
 		case 1:  // BC1
-		{
-			const BC_color *color = reinterpret_cast<const BC_color *>(src);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, ++color, dstRow += dx)
+				const BC_color *color = reinterpret_cast<const BC_color *>(src);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, false);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, ++color, dstRow += dx)
+					{
+						color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, false);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 2:  // BC2
-		{
-			const BC_alpha *alpha = reinterpret_cast<const BC_alpha *>(src);
-			const BC_color *color = reinterpret_cast<const BC_color *>(src + 8);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, alpha += 2, color += 2, dstRow += dx)
+				const BC_alpha *alpha = reinterpret_cast<const BC_alpha *>(src);
+				const BC_color *color = reinterpret_cast<const BC_color *>(src + 8);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, true);
-					alpha->decode(dstRow, x, y, w, h, dstPitch, dstBpp);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, alpha += 2, color += 2, dstRow += dx)
+					{
+						color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, true);
+						alpha->decode(dstRow, x, y, w, h, dstPitch, dstBpp);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 3:  // BC3
-		{
-			const BC_channel *alpha = reinterpret_cast<const BC_channel *>(src);
-			const BC_color *color = reinterpret_cast<const BC_color *>(src + 8);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, alpha += 2, color += 2, dstRow += dx)
+				const BC_channel *alpha = reinterpret_cast<const BC_channel *>(src);
+				const BC_color *color = reinterpret_cast<const BC_color *>(src + 8);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, true);
-					alpha->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 3, isSigned);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, alpha += 2, color += 2, dstRow += dx)
+					{
+						color->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isAlpha, true);
+						alpha->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 3, isSigned);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 4:  // BC4
-		{
-			const BC_channel *red = reinterpret_cast<const BC_channel *>(src);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, ++red, dstRow += dx)
+				const BC_channel *red = reinterpret_cast<const BC_channel *>(src);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					red->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 0, isSigned);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, ++red, dstRow += dx)
+					{
+						red->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 0, isSigned);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 5:  // BC5
-		{
-			const BC_channel *red = reinterpret_cast<const BC_channel *>(src);
-			const BC_channel *green = reinterpret_cast<const BC_channel *>(src + 8);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, red += 2, green += 2, dstRow += dx)
+				const BC_channel *red = reinterpret_cast<const BC_channel *>(src);
+				const BC_channel *green = reinterpret_cast<const BC_channel *>(src + 8);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					red->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 0, isSigned);
-					green->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 1, isSigned);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, red += 2, green += 2, dstRow += dx)
+					{
+						red->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 0, isSigned);
+						green->decode(dstRow, x, y, w, h, dstPitch, dstBpp, 1, isSigned);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 6:  // BC6H
-		{
-			const BC6H::Block *block = reinterpret_cast<const BC6H::Block *>(src);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, ++block, dstRow += dx)
+				const BC6H::Block *block = reinterpret_cast<const BC6H::Block *>(src);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					block->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isSigned);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, ++block, dstRow += dx)
+					{
+						block->decode(dstRow, x, y, w, h, dstPitch, dstBpp, isSigned);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		case 7:  // BC7
-		{
-			const BC7::Block *block = reinterpret_cast<const BC7::Block *>(src);
-			for(int y = 0; y < h; y += BlockHeight, dst += dy)
 			{
-				uint8_t *dstRow = dst;
-				for(int x = 0; x < w; x += BlockWidth, ++block, dstRow += dx)
+				const BC7::Block *block = reinterpret_cast<const BC7::Block *>(src);
+				for(int y = 0; y < h; y += BlockHeight, dst += dy)
 				{
-					block->decode(dstRow, x, y, w, h, dstPitch);
+					uint8_t *dstRow = dst;
+					for(int x = 0; x < w; x += BlockWidth, ++block, dstRow += dx)
+					{
+						block->decode(dstRow, x, y, w, h, dstPitch);
+					}
 				}
 			}
-		}
-		break;
+			break;
 		default:
 			return false;
 	}
