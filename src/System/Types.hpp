@@ -71,61 +71,37 @@ typedef ALIGN(16, unsigned int) uint4[4];
 
 typedef ALIGN(8, float) float2[2];
 
-struct alignas(16) int4
+template<typename T, int N>
+struct alignas(sizeof(T) * N) vec
 {
-	int x;
-	int y;
-	int z;
-	int w;
+	T x;
+	T y;
+	T z;
+	T w;
 
-	int &operator[](int i)
+	T &operator[](int i)
 	{
 		return (&x)[i];
 	}
 
-	const int &operator[](int i) const
+	const T &operator[](int i) const
 	{
 		return (&x)[i];
 	}
 
-	bool operator!=(const int4 &rhs)
+	bool operator!=(const vec &rhs)
 	{
 		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
 	}
 
-	bool operator==(const int4 &rhs)
+	bool operator==(const vec &rhs)
 	{
 		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
 	}
 };
 
-struct alignas(16) float4
-{
-	float x;
-	float y;
-	float z;
-	float w;
-
-	float &operator[](int i)
-	{
-		return (&x)[i];
-	}
-
-	const float &operator[](int i) const
-	{
-		return (&x)[i];
-	}
-
-	bool operator!=(const float4 &rhs)
-	{
-		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
-	}
-
-	bool operator==(const float4 &rhs)
-	{
-		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
-	}
-};
+using int4 = vec<int, 4>;
+using float4 = vec<float, 4>;
 
 inline constexpr float4 vector(float x, float y, float z, float w)
 {
