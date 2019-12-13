@@ -1000,6 +1000,11 @@ void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offsets, ll
 
 namespace rr {
 
+BackendType Backend()
+{
+	return BackendType::LLVM;
+}
+
 std::string BackendName()
 {
 	return std::string("LLVM ") + LLVM_VERSION_STRING;

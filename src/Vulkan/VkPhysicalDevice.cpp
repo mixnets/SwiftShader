@@ -173,6 +173,16 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 {
 	VkSampleCountFlags sampleCounts = getSampleCounts();
 
+	// HACK(b/130459196): Force Angle to not support ES 3.1 on SwiftShader when using Subzero
+	// for now, until we implement what's needed to support it (Coroutines for barriers).
+	// See RendererVk::getMaxSupportedESVersion() in Angle source code for which properties
+	// it examines to determine the max ES version it supports.
+	uint32_t maxPerStageDescriptorStorageBuffers = 16;
+	if(rr::Backend() == rr::BackendType::Subzero)
+	{
+		maxPerStageDescriptorStorageBuffers = 4;
+	}
+
 	static const VkPhysicalDeviceLimits limits = {
 		1 << (vk::MAX_IMAGE_LEVELS_1D - 1),               // maxImageDimension1D
 		1 << (vk::MAX_IMAGE_LEVELS_2D - 1),               // maxImageDimension2D
@@ -190,7 +200,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		MAX_BOUND_DESCRIPTOR_SETS,                        // maxBoundDescriptorSets
 		16,                                               // maxPerStageDescriptorSamplers
 		14,                                               // maxPerStageDescriptorUniformBuffers
-		16,                                               // maxPerStageDescriptorStorageBuffers
+		maxPerStageDescriptorStorageBuffers,              // maxPerStageDescriptorStorageBuffers
 		16,                                               // maxPerStageDescriptorSampledImages
 		4,                                                // maxPerStageDescriptorStorageImages
 		4,                                                // maxPerStageDescriptorInputAttachments
