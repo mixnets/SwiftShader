@@ -120,6 +120,14 @@ struct vec4 : public vec<T, 4>
 
 	vec4() = default;
 
+	vec4(T scalar)
+	{
+		x = scalar;
+		y = scalar;
+		z = scalar;
+		w = scalar;
+	}
+
 	vec4(T x, T y, T z, T w)
 	{
 		this->x = x;
@@ -141,21 +149,6 @@ struct vec4 : public vec<T, 4>
 
 using int4 = vec4<int>;
 using float4 = vec4<float>;
-
-inline float4 vector(float x, float y, float z, float w)
-{
-	float4 v;
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	v.w = w;
-	return v;
-}
-
-inline float4 replicate(float f)
-{
-	return vector(f, f, f, f);
-}
 
 #define OFFSET(s,m) (int)(size_t)&reinterpret_cast<const volatile char&>((((s*)0)->m))
 
