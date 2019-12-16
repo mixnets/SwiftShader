@@ -60,7 +60,7 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 	VisitMemoryObject(pointerId, [&](const MemoryElement& el)
 	{
 		auto p = ptr + el.offset;
-		if (interleavedByLane) { p = InterleaveByLane(p); }  // TODO: Interleave once, then add offset?
+		if(interleavedByLane) { p = InterleaveByLane(p); }  // TODO: Interleave once, then add offset?
 		dst.move(el.index, p.Load<SIMD::Float>(robustness, state->activeLaneMask(), atomic, memoryOrder));
 	});
 
@@ -92,19 +92,19 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 	auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
 	SIMD::Int mask = state->activeLaneMask();
-	if (!StoresInHelperInvocation(pointerTy.storageClass))
+	if(!StoresInHelperInvocation(pointerTy.storageClass))
 	{
 		mask = mask & state->storesAndAtomicsMask();
 	}
 
-	if (object.kind == Object::Kind::Constant)
+	if(object.kind == Object::Kind::Constant)
 	{
 		// Constant source data.
 		const uint32_t *src = object.constantValue.get();
 		VisitMemoryObject(pointerId, [&](const MemoryElement& el)
 		{
 			auto p = ptr + el.offset;
-			if (interleavedByLane) { p = InterleaveByLane(p); }
+			if(interleavedByLane) { p = InterleaveByLane(p); }
 			p.Store(SIMD::Int(src[el.index]), robustness, mask, atomic, memoryOrder);
 		});
 	}
@@ -115,7 +115,7 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 		VisitMemoryObject(pointerId, [&](const MemoryElement& el)
 		{
 			auto p = ptr + el.offset;
-			if (interleavedByLane) { p = InterleaveByLane(p); }
+			if(interleavedByLane) { p = InterleaveByLane(p); }
 			p.Store(src.Float(el.index), robustness, mask, atomic, memoryOrder);
 		});
 	}
@@ -130,7 +130,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	auto &object = getObject(resultId);
 	auto &objectTy = getType(object.type);
 
-	switch (objectTy.storageClass)
+	switch(objectTy.storageClass)
 	{
 	case spv::StorageClassOutput:
 	case spv::StorageClassPrivate:
@@ -221,15 +221,15 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		break;
 	}
 
-	if (insn.wordCount() > 4)
+	if(insn.wordCount() > 4)
 	{
 		Object::ID initializerId = insn.word(4);
-		if (getObject(initializerId).kind != Object::Kind::Constant)
+		if(getObject(initializerId).kind != Object::Kind::Constant)
 		{
 			UNIMPLEMENTED("Non-constant initializers not yet implemented");
 		}
 
-		switch (objectTy.storageClass)
+		switch(objectTy.storageClass)
 		{
 		case spv::StorageClassOutput:
 		case spv::StorageClassPrivate:
@@ -281,8 +281,8 @@ SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState
 
 		auto dst = dstPtr + dstOffset;
 		auto src = srcPtr + srcOffset;
-		if (dstInterleavedByLane) { dst = InterleaveByLane(dst); }
-		if (srcInterleavedByLane) { src = InterleaveByLane(src); }
+		if(dstInterleavedByLane) { dst = InterleaveByLane(dst); }
+		if(srcInterleavedByLane) { src = InterleaveByLane(src); }
 
 		// TODO(b/131224163): Optimize based on src/dst storage classes.
 		auto robustness = OutOfBoundsBehavior::RobustBufferAccess;
@@ -307,13 +307,13 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 	ApplyDecorationsForId(&d, id);
 	auto const &type = getType(id);
 
-	if (d.HasOffset)
+	if(d.HasOffset)
 	{
 		offset += d.Offset;
 		d.HasOffset = false;
 	}
 
-	switch (type.opcode())
+	switch(type.opcode())
 	{
 	case spv::OpTypePointer:
 		VisitMemoryObjectInner(type.definition.word(3), d, index, offset, f);
@@ -344,7 +344,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 		}
 		break;
 	case spv::OpTypeStruct:
-		for (auto i = 0u; i < type.definition.wordCount() - 2; i++)
+		for(auto i = 0u; i < type.definition.wordCount() - 2; i++)
 		{
 			ApplyDecorationsForIdMember(&d, id, i);
 			VisitMemoryObjectInner(type.definition.word(i + 2), d, index, offset, f);
@@ -369,7 +369,7 @@ void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const Memory
 {
 	auto typeId = getObject(id).type;
 	auto const & type = getType(typeId);
-	if (IsExplicitLayout(type.storageClass))
+	if(IsExplicitLayout(type.storageClass))
 	{
 		Decorations d{};
 		ApplyDecorationsForId(&d, id);
@@ -380,7 +380,7 @@ void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const Memory
 	{
 		// Objects without explicit layout are tightly packed.
 		auto &elType = getType(type.element);
-		for (auto index = 0u; index < elType.sizeInComponents; index++)
+		for(auto index = 0u; index < elType.sizeInComponents; index++)
 		{
 			auto offset = static_cast<uint32_t>(index * sizeof(float));
 			f({index, offset, elType});
@@ -392,7 +392,7 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitS
 {
 	auto routine = state->routine;
 	auto &object = getObject(id);
-	switch (object.kind)
+	switch(object.kind)
 	{
 	case Object::Kind::Pointer:
 	case Object::Kind::InterfaceVariable:
@@ -413,7 +413,7 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitS
 			Pointer<Byte> descriptor = set.base + bindingOffset; // BufferDescriptor*
 			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr)); // void*
 			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
-			if (setLayout->isBindingDynamic(d.Binding))
+			if(setLayout->isBindingDynamic(d.Binding))
 			{
 				uint32_t dynamicBindingIndex =
 					routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
@@ -462,7 +462,7 @@ std::memory_order SpirvShader::MemoryOrder(spv::MemorySemanticsMask memorySemant
 
 bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
@@ -475,7 +475,7 @@ bool SpirvShader::StoresInHelperInvocation(spv::StorageClass storageClass)
 
 bool SpirvShader::IsExplicitLayout(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:
@@ -498,7 +498,7 @@ sw::SIMD::Pointer SpirvShader::InterleaveByLane(sw::SIMD::Pointer p)
 
 bool SpirvShader::IsStorageInterleavedByLane(spv::StorageClass storageClass)
 {
-	switch (storageClass)
+	switch(storageClass)
 	{
 	case spv::StorageClassUniform:
 	case spv::StorageClassStorageBuffer:

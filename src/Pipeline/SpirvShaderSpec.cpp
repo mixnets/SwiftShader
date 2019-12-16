@@ -22,7 +22,7 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 {
 	auto opcode = static_cast<spv::Op>(insn.word(3));
 
-	switch (opcode)
+	switch(opcode)
 	{
 	case spv::OpIAdd:
 	case spv::OpISub:
@@ -166,7 +166,7 @@ void SpirvShader::EvalSpecConstantUnaryOp(InsnIterator insn)
 		auto &v = result.constantValue[i];
 		auto l = lhs.constantValue[i];
 
-		switch (opcode)
+		switch(opcode)
 		{
 		case spv::OpSConvert:
 		case spv::OpFConvert:
@@ -212,13 +212,13 @@ void SpirvShader::EvalSpecConstantBinaryOp(InsnIterator insn)
 	auto const &rhs = getObject(insn.word(5));
 	auto size = getType(lhs.type).sizeInComponents;
 
-	for (auto i = 0u; i < size; i++)
+	for(auto i = 0u; i < size; i++)
 	{
 		auto &v = result.constantValue[i];
 		auto l = lhs.constantValue[i];
 		auto r = rhs.constantValue[i];
 
-		switch (opcode)
+		switch(opcode)
 		{
 		case spv::OpIAdd:
 			v = l + r;
@@ -236,21 +236,21 @@ void SpirvShader::EvalSpecConstantBinaryOp(InsnIterator insn)
 			v = (r == 0) ? 0 : l % r;
 			break;
 		case spv::OpSDiv:
-			if (r == 0) r = UINT32_MAX;
-			if (l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
+			if(r == 0) r = UINT32_MAX;
+			if(l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
 			v = static_cast<int32_t>(l) / static_cast<int32_t>(r);
 			break;
 		case spv::OpSRem:
-			if (r == 0) r = UINT32_MAX;
-			if (l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
+			if(r == 0) r = UINT32_MAX;
+			if(l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
 			v = static_cast<int32_t>(l) % static_cast<int32_t>(r);
 			break;
 		case spv::OpSMod:
-			if (r == 0) r = UINT32_MAX;
-			if (l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
+			if(r == 0) r = UINT32_MAX;
+			if(l == static_cast<uint32_t>(INT32_MIN)) l = UINT32_MAX;
 			// Test if a signed-multiply would be negative.
 			v = static_cast<int32_t>(l) % static_cast<int32_t>(r);
-			if ((v & 0x80000000) != (r & 0x80000000))
+			if((v & 0x80000000) != (r & 0x80000000))
 				v += r;
 			break;
 		case spv::OpShiftRightLogical:
