@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e514a4b8_05e61160",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T12:44:00Z",
+      "side": 1,
+      "message": "I think you have more classes going on here than you really need.\nvec_base\u003c\u003e doesn\u0027t really give you anything, you\u0027re still needing to initialize the fields in the constructors of each of the derived types.\n\nI\u0027d just still with a single vec\u003c\u003e type that has partial specialization for N\u003d4, etc.\n\nI took a look at the final set of changes, and I think this does everything it does, but is less verbose, cleaner and easier to maintain:\n\n    template\u003ctypename T, int N\u003e\n    struct alignas(sizeof(T) * N) vec\n    {\n        vec(T replicate) {\n            for (int i \u003d 0; i \u003c N; i++) {\n                v[i] \u003d replicate;\n            }\n        }\n\n        template\u003ctypename ARG0, typename ... ARGS\u003e\n        constexpr vec(T arg0, ARGS ... args) : v{arg0, args...} {}\n\n        T\u0026 operator[](int i) { return v[i]; }\n        const T\u0026 operator[](int i) const { return v[i]; }\n\n        T v[N];\n    };\n\n    template\u003ctypename T\u003e\n    struct alignas(sizeof(T) * 4) vec\u003cT, 4\u003e\n    {\n        vec() \u003d default;\n\n        constexpr vec(T replicate) : x(replicate), y(replicate), z(replicate), w(replicate) {}\n        constexpr vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}\n\n        T\u0026 operator[](int i) { return v[i]; }\n        const T\u0026 operator[](int i) const { return v[i]; }\n\n        union\n        {\n            T v[4];\n\n            struct\n            {\n                T x;\n                T y;\n                T z;\n                T w;\n            };\n        };\n    };\n\n    template\u003ctypename T, int N\u003e\n    bool operator\u003d\u003d(const vec\u003cT, N\u003e \u0026a, const vec\u003cT, N\u003e \u0026b)\n    {\n        for (int i \u003d 0; i \u003c N; i++) {\n            if (a.v[i] !\u003d b.v[i]) { return false; }\n        }\n        return true;\n    }\n\n    template\u003ctypename T, int N\u003e\n    bool operator!\u003d(const vec\u003cT, N\u003e \u0026a, const vec\u003cT, N\u003e \u0026b)\n    {\n        return !(a \u003d\u003d b);\n    }\n\n    template \u003ctypename T\u003e using vec2 \u003d vec\u003cT, 2\u003e;\n    template \u003ctypename T\u003e using vec4 \u003d vec\u003cT, 4\u003e;\n    template \u003ctypename T\u003e using vec8 \u003d vec\u003cT, 8\u003e;\n    template \u003ctypename T\u003e using vec16 \u003d vec\u003cT, 16\u003e;\n\n    using int2 \u003d vec2\u003cint\u003e;\n    using uint2 \u003d vec2\u003cunsigned int\u003e;\n    using float2 \u003d vec2\u003cfloat\u003e;\n    using dword2 \u003d vec2\u003cdword\u003e;\n    using qword2 \u003d vec2\u003cqword\u003e;\n\n    using int4 \u003d vec4\u003cint\u003e;\n    using uint4 \u003d vec4\u003cunsigned int\u003e;\n    using float4 \u003d vec4\u003cfloat\u003e;\n    using byte4 \u003d vec4\u003cbyte\u003e;\n    using sbyte4 \u003d vec4\u003csbyte\u003e;\n    using short4 \u003d vec4\u003cshort\u003e;\n    using ushort4 \u003d vec4\u003cunsigned short\u003e;\n    using word4 \u003d vec4\u003cword\u003e;\n    using dword4 \u003d vec4\u003cdword\u003e;\n\n    using byte8 \u003d vec8\u003cbyte\u003e;\n    using sbyte8 \u003d vec8\u003csbyte\u003e;\n    using short8 \u003d vec8\u003cshort\u003e;\n    using ushort8 \u003d vec8\u003cunsigned short\u003e;\n\n    using byte16 \u003d vec16\u003cbyte\u003e;\n    using sbyte16 \u003d vec16\u003csbyte\u003e;",
+      "range": {
+        "startLine": 75,
+        "startChar": 30,
+        "endLine": 75,
+        "endChar": 38
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf0ed659_ad5b49a5",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T12:44:00Z",
+      "side": 1,
+      "message": "Move these to free functions to add these to all flavours of vec:\n\n    template\u003ctypename T, int N\u003e\n    bool operator\u003d\u003d(const vec\u003cT, N\u003e \u0026a, const vec\u003cT, N\u003e \u0026b)\n    {\n        for (int i \u003d 0; i \u003c N; i++) {\n            if (a.v[i] !\u003d b.v[i]) { return false; }\n        }\n        return true;\n    }\n\n    template\u003ctypename T, int N\u003e\n    bool operator!\u003d(const vec\u003cT, N\u003e \u0026a, const vec\u003cT, N\u003e \u0026b)\n    {\n        return !(a \u003d\u003d b);\n    }",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 2
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
