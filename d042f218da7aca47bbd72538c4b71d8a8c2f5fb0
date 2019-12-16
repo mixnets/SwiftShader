@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "50f89d80_ca363f76",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T17:57:35Z",
+      "side": 1,
+      "message": "Interesting suggestion to use free functions to implement operator\u003d\u003d for all vec\u003c\u003e variants and avoid duplicating them in the specialization.\n\nHowever, your code does require duplication of operator[], which can\u0027t be non-members. Granted, it\u0027s one of only a handful such operators, and the implementations are trivial. Other member functions would also require duplicating though. We don\u0027t have plans for such functions yet, so admittedly that enters over-engineering territory, but I think it\u0027s still a valuable property for future maintenance iff it comes at negligible cost...\n\nI formatted your code the same way as mine, and ended up with only 9 lines less than the last change in my chain: https://swiftshader-review.googlesource.com/c/SwiftShader/+/39554 So I\u0027m not sure that\u0027s significant to tip it one way or the other.\n\nAnyway, happy to continue with 39554 if that still has your preference.",
+      "parentUuid": "e1d09839_cb72970d",
+      "range": {
+        "startLine": 75,
+        "startChar": 30,
+        "endLine": 75,
+        "endChar": 38
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cf0ed659_ad5b49a5",
         "filename": "src/System/Types.hpp",
         "patchSetId": 2
@@ -69,6 +93,30 @@
       "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24b14e1b_8b6c9a2c",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T17:57:35Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cf0ed659_ad5b49a5",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 2
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
