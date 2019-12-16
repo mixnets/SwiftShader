@@ -16,6 +16,24 @@
       "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5533c1ea_0f93fea2",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-16T19:21:57Z",
+      "side": 1,
+      "message": "I\u0027m open to any name change, not attached to any of the names. Will gladly rename to anything you like as soon as Nicolas has had a look.",
+      "parentUuid": "f2adaac5_e405d413",
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
