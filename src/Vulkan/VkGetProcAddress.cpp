@@ -448,30 +448,37 @@ extern "C" hwvulkan_module_t HAL_MODULE_INFO_SYM;
 
 namespace {
 
-	int CloseDevice(struct hw_device_t *) { return 0; }
+int CloseDevice(struct hw_device_t *) { return 0; }
 
-	hwvulkan_device_t hal_device = {
-		.common = {
-			.tag = HARDWARE_DEVICE_TAG,
-			.version = HWVULKAN_DEVICE_API_VERSION_0_1,
-			.module = &HAL_MODULE_INFO_SYM.common,
-			.close = CloseDevice,
-		},
-		.EnumerateInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties,
-		.CreateInstance = vkCreateInstance,
-		.GetInstanceProcAddr = vkGetInstanceProcAddr,
-	};
+hwvulkan_device_t hal_device = {
+	.common = {
+		.tag = HARDWARE_DEVICE_TAG,
+		.version = HWVULKAN_DEVICE_API_VERSION_0_1,
+		.module = &HAL_MODULE_INFO_SYM.common,
+		.close = CloseDevice,
+	},
+	.EnumerateInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties,
+	.CreateInstance = vkCreateInstance,
+	.GetInstanceProcAddr = vkGetInstanceProcAddr,
+};
 
-	int OpenDevice(const hw_module_t *module, const char *id, hw_device_t **device)
+int OpenDevice(const hw_module_t *module, const char *id, hw_device_t **device)
+{
+	if(strcmp(id, HWVULKAN_DEVICE_0) != 0)
 	{
-		if (strcmp(id, HWVULKAN_DEVICE_0) != 0) return -ENOENT;
+		if(strcmp(id, HWVULKAN_DEVICE_0) != 0) return -ENOENT;
 		*device = &hal_device.common;
 		return 0;
+		return -ENOENT;
 	}
 
-	hw_module_methods_t module_methods = { .open = OpenDevice };
-
+	*device = &hal_device.common;
+	return 0;
 }
+
+hw_module_methods_t module_methods = { .open = OpenDevice };
+
+}  // anonymous namespace
 
 extern "C" hwvulkan_module_t HAL_MODULE_INFO_SYM =
 {

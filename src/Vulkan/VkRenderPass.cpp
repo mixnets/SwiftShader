@@ -48,7 +48,7 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 
 		attachmentViewMasks = reinterpret_cast<uint32_t *>(hostMemory);
 		hostMemory += pCreateInfo->attachmentCount * sizeof(uint32_t);
-		for (auto i = 0u; i < pCreateInfo->attachmentCount; i++)
+		for(auto i = 0u; i < pCreateInfo->attachmentCount; i++)
 		{
 			attachmentFirstUse[i] = -1;
 			attachmentViewMasks[i] = 0;
@@ -58,7 +58,7 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 	const VkBaseInStructure* extensionCreateInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
 	while (extensionCreateInfo)
 	{
-		switch (extensionCreateInfo->sType)
+		switch(extensionCreateInfo->sType)
 		{
 		case VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO:
 			{
@@ -102,7 +102,7 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 			       pCreateInfo->pSubpasses[i].pInputAttachments, inputAttachmentsSize);
 			hostMemory += inputAttachmentsSize;
 
-			for (auto j = 0u; j < subpasses[i].inputAttachmentCount; j++)
+			for(auto j = 0u; j < subpasses[i].inputAttachmentCount; j++)
 			{
 				if(subpass.pInputAttachments[j].attachment != VK_ATTACHMENT_UNUSED)
 				{
@@ -127,7 +127,7 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
 				hostMemory += colorAttachmentsSize;
 			}
 
-			for (auto j = 0u; j < subpasses[i].colorAttachmentCount; j++)
+			for(auto j = 0u; j < subpasses[i].colorAttachmentCount; j++)
 			{
 				if(subpass.pColorAttachments[j].attachment != VK_ATTACHMENT_UNUSED)
 				{

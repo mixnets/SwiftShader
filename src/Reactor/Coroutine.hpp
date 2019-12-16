@@ -101,7 +101,7 @@ class Coroutine;
 //   auto s = coroutine();
 //
 //   // Grab the first 20 yielded values and print them.
-//   for (int i = 0; i < 20; i++)
+//   for(int i = 0; i < 20; i++)
 //   {
 //       int val = 0;
 //       s->await(val);

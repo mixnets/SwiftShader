@@ -32,7 +32,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtendedInstruction(InsnIterator insn, 
 	auto &dst = state->createIntermediate(insn.word(2), type.sizeInComponents);
 	auto extInstIndex = static_cast<GLSLstd450>(insn.word(4));
 
-	switch (extInstIndex)
+	switch(extInstIndex)
 	{
 	case GLSLstd450FAbs:
 		{

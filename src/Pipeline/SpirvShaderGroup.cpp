@@ -35,12 +35,12 @@ struct SpirvShader::GroupOps {
 	{
 		SpirvShader::GenericValue value(shader, state, insn.word(5));
 		auto &type = shader->getType(SpirvShader::Type::ID(insn.word(1)));
-		for (auto i = 0u; i < type.sizeInComponents; i++)
+		for(auto i = 0u; i < type.sizeInComponents; i++)
 		{
 			auto mask = As<SIMD::UInt>(state->activeLaneMask());
 			SIMD::UInt v_uint = (value.UInt(i) & mask) | (As<SIMD::UInt>(identity) & ~mask);
 			TYPE v = As<TYPE>(v_uint);
-			switch (spv::GroupOperation(insn.word(4)))
+			switch(spv::GroupOperation(insn.word(4)))
 			{
 			case spv::GroupOperationReduce:
 				{
@@ -87,7 +87,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	auto &dst = state->createIntermediate(resultId, type.sizeInComponents);
 
-	switch (insn.opcode())
+	switch(insn.opcode())
 	{
 	case spv::OpGroupNonUniformElect:
 		{

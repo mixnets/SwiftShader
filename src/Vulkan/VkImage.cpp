@@ -132,9 +132,9 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem, Device *device) :
 	}
 
 	const auto* nextInfo = reinterpret_cast<const VkBaseInStructure*>(pCreateInfo->pNext);
-	for (; nextInfo != nullptr; nextInfo = nextInfo->pNext)
+	for(; nextInfo != nullptr; nextInfo = nextInfo->pNext)
 	{
-		if (nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO)
+		if(nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO)
 		{
 			const auto* externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
@@ -225,12 +225,12 @@ VkDeviceMemory Image::getExternalMemory() const
 void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const
 {
 	// By spec, aspectMask has a single bit set.
-	if (!((pSubresource->aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
-	      (pSubresource->aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
-	      (pSubresource->aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
-	      (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
-	      (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
-	      (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
+	if(!((pSubresource->aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+	     (pSubresource->aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
+	     (pSubresource->aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
+	     (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
+	     (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
+	     (pSubresource->aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
 	{
 		UNSUPPORTED("aspectMask %X", pSubresource->aspectMask);
 	}
@@ -248,22 +248,22 @@ void Image::copyTo(Image* dstImage, const VkImageCopy& region) const
 	// Image copy does not perform any conversion, it simply copies memory from
 	// an image to another image that has the same number of bytes per pixel.
 
-	if (!((region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
-	      (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
-	      (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
-	      (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
-	      (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
-	      (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
+	if(!((region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
+	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
+	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
+	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
+	     (region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
 	{
 		UNSUPPORTED("srcSubresource.aspectMask %X", region.srcSubresource.aspectMask);
 	}
 
-	if (!((region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
-	      (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
-	      (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
-	      (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
-	      (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
-	      (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
+	if(!((region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+	     (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
+	     (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT) ||
+	     (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_0_BIT) ||
+	     (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_1_BIT) ||
+	     (region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_PLANE_2_BIT)))
 	{
 		UNSUPPORTED("dstSubresource.aspectMask %X", region.dstSubresource.aspectMask);
 	}
