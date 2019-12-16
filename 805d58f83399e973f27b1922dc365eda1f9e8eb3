@@ -34,6 +34,47 @@
       "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6557755f_d3bc71d3",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T19:48:15Z",
+      "side": 1,
+      "message": "Symmetry between these function names would be preferable, but let\u0027s move that discussion to the follow-up change that I suggest here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/39550/7/src/Pipeline/ShaderCore.cpp#570",
+      "parentUuid": "5533c1ea_0f93fea2",
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b777303a_f70167af",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 570,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T19:48:15Z",
+      "side": 1,
+      "message": "I think this function should take a UInt, and return a Float4.\n\nThere\u0027s an open item in go/pastel-debt which points out that reading a short at data + 1 may not even be supported by some CPU architectures.\n\nAnyway, probably best to do this as a (immediate) follow-up change.",
+      "range": {
+        "startLine": 570,
+        "startChar": 0,
+        "endLine": 570,
+        "endChar": 56
+      },
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
