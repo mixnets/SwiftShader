@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2adaac5_e405d413",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-16T18:47:08Z",
+      "side": 1,
+      "message": "Shouldn\u0027t r11g11b10ToFloat be r11g11b10ToFloat4 (extra \"4\" on the end)?\n\nOr, since we use \"pack\" here, maybe it should be r11g11b10Unpack?\n\nAnd finally, this function has a small \"p\" for pack, whereas the former had a capital \"T\" for \"ToFloat\", so shouldn\u0027t it be r11g11b10Pack?",
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
