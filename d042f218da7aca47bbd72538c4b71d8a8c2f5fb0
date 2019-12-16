@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e1d09839_cb72970d",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T13:24:21Z",
+      "side": 1,
+      "message": "I missed the default constructor for the non-specialized vec class, but works as a drop-in replacement aside from that.",
+      "parentUuid": "e514a4b8_05e61160",
+      "range": {
+        "startLine": 75,
+        "startChar": 30,
+        "endLine": 75,
+        "endChar": 38
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cf0ed659_ad5b49a5",
         "filename": "src/System/Types.hpp",
         "patchSetId": 2
