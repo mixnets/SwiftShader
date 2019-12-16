@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed274dbf_27ce8e96",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T20:43:54Z",
+      "side": 1,
+      "message": "Count use extra indent?",
+      "range": {
+        "startLine": 303,
+        "startChar": 2,
+        "endLine": 303,
+        "endChar": 3
+      },
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "60cc13e3_1d0fe65f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T20:43:54Z",
+      "side": 1,
+      "message": "Perhaps add a comment here to clarify that this appends the Reactor JIT backend name and version.",
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bdbe59cc_a96c0683",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T20:43:54Z",
+      "side": 1,
+      "message": "Let\u0027s maybe name the lambda and the struct instance differently? Took me a sec to realize the lambda didn\u0027t end at line 304 and properties.deviceName at line 306 isn\u0027t const.",
+      "range": {
+        "startLine": 309,
+        "startChar": 0,
+        "endLine": 312,
+        "endChar": 19
+      },
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
