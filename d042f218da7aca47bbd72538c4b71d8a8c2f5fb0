@@ -73,6 +73,76 @@
     },
     {
       "key": {
+        "uuid": "095c9a80_019b7c5d",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T18:26:39Z",
+      "side": 1,
+      "message": "\u003e However, your code does require duplication of operator[], which can\u0027t be non-members \n\nYou can reduce the duplication of these using the CRTP. I didn\u0027t suggest it because it would add more code for the sake of 2 operators.\n\n    template\u003ctypename C, typename T\u003e\n    struct indexable {\n        T operator[](int i) { return static_cast\u003cC*\u003e(this)-\u003ev[i]; }\n        const T operator[](int i) const { return static_cast\u003cC*\u003e(this)-\u003ev[i]; }\n    };\n\n    template\u003ctypename T, int N\u003e\n    struct alignas(sizeof(T) * N) vec : public indexable\u003cvec\u003cT, N\u003e, T\u003e\n    { ... }\n\n    template\u003ctypename T\u003e\n    struct alignas(sizeof(T) * 4) vec\u003cT, 4\u003e : public indexable\u003cvec\u003cT,4\u003e, T\u003e\n    { ... }\n\n\n\n\u003e I\u0027m not sure that\u0027s significant to tip it one way or the other.\n\nMy suggestion also removes a couple of other qualms I had with this change. I\u0027ll add additional comments...",
+      "parentUuid": "50f89d80_ca363f76",
+      "range": {
+        "startLine": 75,
+        "startChar": 30,
+        "endLine": 75,
+        "endChar": 38
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46b92373_c852b99d",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T18:26:39Z",
+      "side": 1,
+      "message": "Why are you adding vec4 logic on the generic type?",
+      "range": {
+        "startLine": 111,
+        "startChar": 1,
+        "endLine": 112,
+        "endChar": 30
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a0c2586_6a6c75fb",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-16T18:26:39Z",
+      "side": 1,
+      "message": "Why isn\u0027t this a specialization? You\u0027ve already specialised vec_base for N\u003d4.\nAs this a completely separate type, it\u0027ll break the template selection for other templated vector types / functions. For example:\n\n  template \u003ctypename T, int N\u003e\n  void dot(const vec\u003cT, N\u003e\u0026 lhs, const vec\u003cT, N\u003e\u0026 rhs); // This won\u0027t ever use vec4.\n\n\nThis seems broken.",
+      "range": {
+        "startLine": 128,
+        "startChar": 7,
+        "endLine": 128,
+        "endChar": 11
+      },
+      "revId": "d042f218da7aca47bbd72538c4b71d8a8c2f5fb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cf0ed659_ad5b49a5",
         "filename": "src/System/Types.hpp",
         "patchSetId": 2
