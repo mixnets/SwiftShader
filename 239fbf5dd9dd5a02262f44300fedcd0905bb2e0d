@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "5f158011_c2744c8c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-16T21:12:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5da0a2ef_00412e78",
+      "range": {
+        "startLine": 303,
+        "startChar": 2,
+        "endLine": 303,
+        "endChar": 3
+      },
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "60cc13e3_1d0fe65f",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -66,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "325f8d9b_1027a53e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-16T21:12:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "60cc13e3_1d0fe65f",
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bdbe59cc_a96c0683",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -77,6 +119,30 @@
       "writtenOn": "2019-12-16T20:43:54Z",
       "side": 1,
       "message": "Let\u0027s maybe name the lambda and the struct instance differently? Took me a sec to realize the lambda didn\u0027t end at line 304 and properties.deviceName at line 306 isn\u0027t const.",
+      "range": {
+        "startLine": 309,
+        "startChar": 0,
+        "endLine": 312,
+        "endChar": 19
+      },
+      "revId": "239fbf5dd9dd5a02262f44300fedcd0905bb2e0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "133c0c4b_99174072",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-16T21:12:31Z",
+      "side": 1,
+      "message": "Done. I\u0027ve become a fan of \"immediately invoked lambdas\" as a way to initialize a constant with runtime code, without having to name the piece of code, but I get that it can be a little confusing 😊",
+      "parentUuid": "bdbe59cc_a96c0683",
       "range": {
         "startLine": 309,
         "startChar": 0,
