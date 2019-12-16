@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "967e0fa6_98cd35f7",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T18:04:30Z",
+      "side": 1,
+      "message": "Will fix tabs if this doesn\u0027t get abandoned first.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 4
+      },
+      "revId": "64403368bfbb1b54897f36c5492efa218fce7d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d00d2e79_b447f8e1",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-16T18:04:30Z",
+      "side": 1,
+      "message": "Will add vec2/4/8/16 templates back.",
+      "revId": "64403368bfbb1b54897f36c5492efa218fce7d6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
