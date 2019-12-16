@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "143601aa_7a165ddf",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-16T21:08:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6557755f_d3bc71d3",
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b777303a_f70167af",
         "filename": "src/Pipeline/ShaderCore.cpp",
         "patchSetId": 7
@@ -75,6 +93,30 @@
       "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "239baac2_ff80e1b9",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 570,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-16T21:08:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b777303a_f70167af",
+      "range": {
+        "startLine": 570,
+        "startChar": 0,
+        "endLine": 570,
+        "endChar": 56
+      },
+      "revId": "805d58f83399e973f27b1922dc365eda1f9e8eb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
