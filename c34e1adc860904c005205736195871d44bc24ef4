@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "6af2c0d5_317c69e6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-12-17T16:06:23Z",
+      "side": 1,
+      "message": "I vaguely recall implementing the validation for this years ago.\n\nDevsim or similar can remove this feature bit for real \"minimum feature set\" testing.",
+      "parentUuid": "d1cbdc5f_35634a43",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "c34e1adc860904c005205736195871d44bc24ef4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1d97b800_c9d1a665",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
