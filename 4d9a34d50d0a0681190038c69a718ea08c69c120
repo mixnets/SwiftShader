@@ -22,6 +22,29 @@
       "revId": "4d9a34d50d0a0681190038c69a718ea08c69c120",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d9cadcc_f34895c9",
+        "filename": "src/Pipeline/Constants.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-17T16:00:03Z",
+      "side": 1,
+      "message": "I think this is wrong, which sort of highlights that maybe it should be more explicit, like:\nmask5551Q[i].replicate((i \u0026 0x1 ? 0x001F : 0) | (i \u0026 0x2 ? 0x03E0 : 0) | (i \u0026 0x4 ? 0x7C00 : 0) | (i \u0026 8 ? 0x8000 : 0));",
+      "range": {
+        "startLine": 251,
+        "startChar": 14,
+        "endLine": 251,
+        "endChar": 17
+      },
+      "revId": "4d9a34d50d0a0681190038c69a718ea08c69c120",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
