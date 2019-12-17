@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3ce2cbd_3550c847",
+        "filename": "src/Reactor/Debug.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T21:43:02Z",
+      "side": 1,
+      "message": "const too, just to clarify we\u0027re not going to alter this below?",
+      "range": {
+        "startLine": 30,
+        "startChar": 7,
+        "endLine": 30,
+        "endChar": 8
+      },
+      "revId": "5a87aabec7b7aabb68b6d3a5b8fc1498d42cc383",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
