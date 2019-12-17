@@ -88,6 +88,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40f0288b_e0eae53a",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T20:48:00Z",
+      "side": 1,
+      "message": "Ideally I think this should move to the end of the change stack, in part since it\u0027s just an incremental feature on top of the actual debugging capability. Then we can also iterate more easily on a more ideal solution for this.\n\nAnyway, if that\u0027s unpractical then I\u0027m OK with landing this as-is as long as you add a // TODO(\u003cnew bug ID\u003e): Look into avoiding generating code that is unused when not debugging",
+      "parentUuid": "c757e5c3_c9f0fd99",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
