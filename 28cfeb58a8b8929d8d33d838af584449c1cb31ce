@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "7b63bdb4_71596628",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T21:54:37Z",
+      "side": 1,
+      "message": "I think each of those examples can still be handled by having a global singleton, and just making it return a different type of debugger implementation.\n\nThe way I conceptualize this is that the debugger is something \u0027out there\u0027 that we communicate with, either a socket or a process, or a file. Almost like logging. You wouldn\u0027t want to have to pass around the debug log handle to every function where you have something to log. That gets configured globally, and can also take different forms. It\u0027s also often possible to log to different files by specifying some enum at the log call site. In other words using a singleton doesn\u0027t have to mean you have only one implementation available.\n\nThat said, I\u0027m totally open to reconsidering this if and when the singleton doesn\u0027t work out. It\u0027s much more convincing that we need something, when we need something. 😉",
+      "parentUuid": "1c95aa6e_43e78c69",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
