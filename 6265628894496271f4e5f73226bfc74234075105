@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23ffb8c8_a8646c53",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2351,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-17T21:26:34Z",
+      "side": 1,
+      "message": "Super long line!",
+      "range": {
+        "startLine": 2351,
+        "startChar": 1,
+        "endLine": 2351,
+        "endChar": 230
+      },
+      "revId": "6265628894496271f4e5f73226bfc74234075105",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
