@@ -15,10 +15,10 @@
 #include "Context.hpp"
 
 #include "Primitive.hpp"
+#include "Pipeline/SpirvShader.hpp"
 #include "System/Memory.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkImageView.hpp"
-#include "Pipeline/SpirvShader.hpp"
 
 #include <string.h>
 
@@ -33,17 +33,17 @@ bool Context::isDrawPoint(bool polygonModeAware) const
 {
 	switch(topology)
 	{
-	case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
-		return true;
-	case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-		return false;
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-		return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_POINT) : false;
-	default:
-		UNIMPLEMENTED("topology %d", int(topology));
+		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
+			return true;
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
+			return false;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
+			return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_POINT) : false;
+		default:
+			UNIMPLEMENTED("topology %d", int(topology));
 	}
 	return false;
 }
@@ -52,17 +52,17 @@ bool Context::isDrawLine(bool polygonModeAware) const
 {
 	switch(topology)
 	{
-	case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
-		return false;
-	case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-		return true;
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-		return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_LINE) : false;
-	default:
-		UNIMPLEMENTED("topology %d", int(topology));
+		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
+			return false;
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
+			return true;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
+			return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_LINE) : false;
+		default:
+			UNIMPLEMENTED("topology %d", int(topology));
 	}
 	return false;
 }
@@ -71,16 +71,16 @@ bool Context::isDrawTriangle(bool polygonModeAware) const
 {
 	switch(topology)
 	{
-	case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-		return false;
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-	case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-		return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_FILL) : true;
-	default:
-		UNIMPLEMENTED("topology %d", int(topology));
+		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
+			return false;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
+			return polygonModeAware ? (polygonMode == VK_POLYGON_MODE_FILL) : true;
+		default:
+			UNIMPLEMENTED("topology %d", int(topology));
 	}
 	return false;
 }
@@ -201,16 +201,16 @@ VkBlendFactor Context::sourceBlendFactor(int index) const
 
 	switch(blendState[index].blendOperation)
 	{
-	case VK_BLEND_OP_ADD:
-	case VK_BLEND_OP_SUBTRACT:
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		return blendState[index].sourceBlendFactor;
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_FACTOR_ONE;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_ADD:
+		case VK_BLEND_OP_SUBTRACT:
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			return blendState[index].sourceBlendFactor;
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_FACTOR_ONE;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_FACTOR_ONE;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].sourceBlendFactor;
@@ -224,16 +224,16 @@ VkBlendFactor Context::destBlendFactor(int index) const
 
 	switch(blendState[index].blendOperation)
 	{
-	case VK_BLEND_OP_ADD:
-	case VK_BLEND_OP_SUBTRACT:
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		return blendState[index].destBlendFactor;
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_FACTOR_ONE;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_ADD:
+		case VK_BLEND_OP_SUBTRACT:
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			return blendState[index].destBlendFactor;
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_FACTOR_ONE;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_FACTOR_ONE;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].destBlendFactor;
@@ -242,9 +242,9 @@ VkBlendFactor Context::destBlendFactor(int index) const
 bool Context::allTargetsColorClamp() const
 {
 	// TODO: remove all of this and support VkPhysicalDeviceFeatures::independentBlend instead
-	for (int i = 0; i < RENDERTARGETS; i++)
+	for(int i = 0; i < RENDERTARGETS; i++)
 	{
-		if (renderTarget[i] && renderTarget[i]->getFormat().isFloatFormat())
+		if(renderTarget[i] && renderTarget[i]->getFormat().isFloatFormat())
 		{
 			return false;
 		}
@@ -261,107 +261,107 @@ VkBlendOp Context::blendOperation(int index) const
 
 	switch(blendState[index].blendOperation)
 	{
-	case VK_BLEND_OP_ADD:
-		if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_ADD:
+			if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
 			{
-				return VK_BLEND_OP_ZERO_EXT;
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_ZERO_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_DST_EXT;
+				}
+			}
+			else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_ADD;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_DST_EXT;
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_ADD;
+				}
 			}
-		}
-		else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_SUBTRACT:
+			if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
 			{
-				return VK_BLEND_OP_SRC_EXT;
+				return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+			}
+			else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_SUBTRACT;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_ADD;
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_SUBTRACT;
+				}
 			}
-		}
-		else
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
 			{
-				return VK_BLEND_OP_SRC_EXT;
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_ZERO_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_DST_EXT;
+				}
+			}
+			else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
+				{
+					return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+				}
+				else
+				{
+					return VK_BLEND_OP_REVERSE_SUBTRACT;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_ADD;
+				if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
+				{
+					return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+				}
+				else
+				{
+					return VK_BLEND_OP_REVERSE_SUBTRACT;
+				}
 			}
-		}
-	case VK_BLEND_OP_SUBTRACT:
-		if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-		{
-			return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-		}
-		else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_SRC_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_SUBTRACT;
-			}
-		}
-		else
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_SRC_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_SUBTRACT;
-			}
-		}
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_ZERO_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_DST_EXT;
-			}
-		}
-		else if(sourceBlendFactor(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-			{
-				return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-			}
-			else
-			{
-				return VK_BLEND_OP_REVERSE_SUBTRACT;
-			}
-		}
-		else
-		{
-			if(destBlendFactor(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-			{
-				return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-			}
-			else
-			{
-				return VK_BLEND_OP_REVERSE_SUBTRACT;
-			}
-		}
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_OP_MIN;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_OP_MAX;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_OP_MIN;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_OP_MAX;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].blendOperation;
@@ -371,18 +371,18 @@ VkBlendFactor Context::sourceBlendFactorAlpha(int index) const
 {
 	ASSERT((index >= 0) && (index < RENDERTARGETS));
 
-	switch (blendState[index].blendOperationAlpha)
+	switch(blendState[index].blendOperationAlpha)
 	{
-	case VK_BLEND_OP_ADD:
-	case VK_BLEND_OP_SUBTRACT:
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		return blendState[index].sourceBlendFactorAlpha;
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_FACTOR_ONE;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_ADD:
+		case VK_BLEND_OP_SUBTRACT:
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			return blendState[index].sourceBlendFactorAlpha;
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_FACTOR_ONE;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_FACTOR_ONE;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].sourceBlendFactorAlpha;
@@ -392,18 +392,18 @@ VkBlendFactor Context::destBlendFactorAlpha(int index) const
 {
 	ASSERT((index >= 0) && (index < RENDERTARGETS));
 
-	switch (blendState[index].blendOperationAlpha)
+	switch(blendState[index].blendOperationAlpha)
 	{
-	case VK_BLEND_OP_ADD:
-	case VK_BLEND_OP_SUBTRACT:
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		return blendState[index].destBlendFactorAlpha;
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_FACTOR_ONE;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_FACTOR_ONE;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_ADD:
+		case VK_BLEND_OP_SUBTRACT:
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			return blendState[index].destBlendFactorAlpha;
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_FACTOR_ONE;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_FACTOR_ONE;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].destBlendFactorAlpha;
@@ -413,109 +413,109 @@ VkBlendOp Context::blendOperationAlpha(int index) const
 {
 	ASSERT((index >= 0) && (index < RENDERTARGETS));
 
-	switch (blendState[index].blendOperationAlpha)
+	switch(blendState[index].blendOperationAlpha)
 	{
-	case VK_BLEND_OP_ADD:
-		if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_ADD:
+			if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
 			{
-				return VK_BLEND_OP_ZERO_EXT;
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_ZERO_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_DST_EXT;
+				}
+			}
+			else if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_ADD;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_DST_EXT;
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_ADD;
+				}
 			}
-		}
-		else if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_SUBTRACT:
+			if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
 			{
-				return VK_BLEND_OP_SRC_EXT;
+				return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+			}
+			else if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_SUBTRACT;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_ADD;
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_SRC_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_SUBTRACT;
+				}
 			}
-		}
-		else
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+		case VK_BLEND_OP_REVERSE_SUBTRACT:
+			if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
 			{
-				return VK_BLEND_OP_SRC_EXT;
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
+				{
+					return VK_BLEND_OP_ZERO_EXT;
+				}
+				else
+				{
+					return VK_BLEND_OP_DST_EXT;
+				}
+			}
+			else if(sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
+			{
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
+				{
+					return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+				}
+				else
+				{
+					return VK_BLEND_OP_REVERSE_SUBTRACT;
+				}
 			}
 			else
 			{
-				return VK_BLEND_OP_ADD;
+				if(destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
+				{
+					return VK_BLEND_OP_ZERO_EXT;  // Negative, clamped to zero
+				}
+				else
+				{
+					return VK_BLEND_OP_REVERSE_SUBTRACT;
+				}
 			}
-		}
-	case VK_BLEND_OP_SUBTRACT:
-		if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-		{
-			return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-		}
-		else if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_SRC_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_SUBTRACT;
-			}
-		}
-		else
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_SRC_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_SUBTRACT;
-			}
-		}
-	case VK_BLEND_OP_REVERSE_SUBTRACT:
-		if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO)
-			{
-				return VK_BLEND_OP_ZERO_EXT;
-			}
-			else
-			{
-				return VK_BLEND_OP_DST_EXT;
-			}
-		}
-		else if (sourceBlendFactorAlpha(index) == VK_BLEND_FACTOR_ONE)
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-			{
-				return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-			}
-			else
-			{
-				return VK_BLEND_OP_REVERSE_SUBTRACT;
-			}
-		}
-		else
-		{
-			if (destBlendFactorAlpha(index) == VK_BLEND_FACTOR_ZERO && allTargetsColorClamp())
-			{
-				return VK_BLEND_OP_ZERO_EXT;   // Negative, clamped to zero
-			}
-			else
-			{
-				return VK_BLEND_OP_REVERSE_SUBTRACT;
-			}
-		}
-	case VK_BLEND_OP_MIN:
-		return VK_BLEND_OP_MIN;
-	case VK_BLEND_OP_MAX:
-		return VK_BLEND_OP_MAX;
-	default:
-		ASSERT(false);
+		case VK_BLEND_OP_MIN:
+			return VK_BLEND_OP_MIN;
+		case VK_BLEND_OP_MAX:
+			return VK_BLEND_OP_MAX;
+		default:
+			ASSERT(false);
 	}
 
 	return blendState[index].blendOperationAlpha;
@@ -537,9 +537,9 @@ VkFormat Context::renderTargetInternalFormat(int index) const
 
 bool Context::colorWriteActive() const
 {
-	for (int i = 0; i < RENDERTARGETS; i++)
+	for(int i = 0; i < RENDERTARGETS; i++)
 	{
-		if (colorWriteActive(i))
+		if(colorWriteActive(i))
 		{
 			return true;
 		}
