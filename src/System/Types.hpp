@@ -108,50 +108,45 @@ struct vec : public vec_base<T, N>
 
 	vec() = default;
 
-	constexpr vec(T x, T y, T z, T w)
-		: vec_base<T, 4>(x, y, z, w)
-	{
-	}
-
-	T& operator[](int i)
+	T &operator[](int i)
 	{
 		return v[i];
 	}
 
-	const T& operator[](int i) const
+	const T &operator[](int i) const
 	{
 		return v[i];
 	}
 };
 
 template<typename T>
-struct vec4 : public vec<T, 4>
+struct vec<T, 4> : public vec_base<T, 4>
 {
 	using vec_base<T, 4>::x;
 	using vec_base<T, 4>::y;
 	using vec_base<T, 4>::z;
 	using vec_base<T, 4>::w;
 
-	vec4() = default;
+	vec() = default;
 
-	constexpr vec4(T x, T y, T z, T w)
-		: vec<T, 4>(x, y, z, w)
+	constexpr vec(T x, T y, T z, T w)
+		: vec_base<T, 4>(x, y, z, w)
 	{
 	}
 
-	bool operator!=(const vec4 &rhs)
+	bool operator!=(const vec<T, 4> &rhs)
 	{
 		return x != rhs.x || y != rhs.y || z != rhs.z || w != rhs.w;
 	}
 
-	bool operator==(const vec4 &rhs)
+	bool operator==(const vec<T, 4> &rhs)
 	{
 		return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
 	}
 };
 
-using int4 = vec4<int>;
-using float4 = vec4<float>;
+using int4 = vec<int, 4>;
+using float4 = vec<float, 4>;
 
 inline constexpr float4 vector(float x, float y, float z, float w)
 {
