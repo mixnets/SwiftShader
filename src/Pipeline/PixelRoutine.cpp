@@ -1906,7 +1906,8 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4f 
 			buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
 			pixel.z = r11g11b10Unpack(*Pointer<UInt>(buffer + 4 * x + 0));
 			pixel.w = r11g11b10Unpack(*Pointer<UInt>(buffer + 4 * x + 4));
-			transpose4x4(pixel.x, pixel.y, pixel.z, pixel.w);
+			transpose4x3(pixel.x, pixel.y, pixel.z, pixel.w);
+			pixel.w = one;
 			break;
 		default:
 			UNIMPLEMENTED("VkFormat: %d", int(state.targetFormat[index]));
