@@ -22,6 +22,30 @@
       "revId": "c34e1adc860904c005205736195871d44bc24ef4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3830dc6_79cdb02a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-12-17T15:24:02Z",
+      "side": 1,
+      "message": "This only covers the case where there are *no* attachments, so no.",
+      "parentUuid": "2b3f60a3_498d6ce9",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "c34e1adc860904c005205736195871d44bc24ef4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
