@@ -22,6 +22,30 @@
       "revId": "b88c9ab9cdd69ea3908cfcfee68cba0c0d4e6dac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87c94d3f_be013553",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T17:48:07Z",
+      "side": 1,
+      "message": "Done. I also made the constructors themselves as explicit to avoid other cases of implicit conversion, until we have a good use case for that.",
+      "parentUuid": "9fcd2c44_0896cd33",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 43
+      },
+      "revId": "b88c9ab9cdd69ea3908cfcfee68cba0c0d4e6dac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
