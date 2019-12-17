@@ -46,6 +46,53 @@
       "revId": "c34e1adc860904c005205736195871d44bc24ef4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1cbdc5f_35634a43",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T15:55:05Z",
+      "side": 1,
+      "message": "I see. A fairly large portion of mobile chips doesn\u0027t support this, so I wonder if we risk enabling the creation of non-portable apps.\n\nIs there a validation layer that helps with this? One that disables features that just put some restrictions in place?",
+      "parentUuid": "e3830dc6_79cdb02a",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "c34e1adc860904c005205736195871d44bc24ef4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d97b800_c9d1a665",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-17T15:55:05Z",
+      "side": 1,
+      "message": "Considering the above, this could potentially turn into a longer discussion that deserves its own bug ID?",
+      "range": {
+        "startLine": 12,
+        "startChar": 5,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "c34e1adc860904c005205736195871d44bc24ef4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
