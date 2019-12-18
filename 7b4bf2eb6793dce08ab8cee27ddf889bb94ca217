@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "aa44dd83_fd84a918",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-18T18:18:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ab704f1_c38b656e",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "69eb7e1b_aff489f4",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "d815406c_972eb3be",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-18T18:18:35Z",
+      "side": 1,
+      "message": "This should be part of enabling GL_OES_depth_texture.",
+      "parentUuid": "69eb7e1b_aff489f4",
+      "range": {
+        "startLine": 528,
+        "startChar": 2,
+        "endLine": 529,
+        "endChar": 36
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0aeedbdf_cdc7377d",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2019-12-18T16:11:55Z",
       "side": 1,
       "message": "Unrelated, but are these ever filterable?",
+      "range": {
+        "startLine": 537,
+        "startChar": 3,
+        "endLine": 539,
+        "endChar": 42
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "39c92d7c_e9241c65",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-18T18:18:35Z",
+      "side": 1,
+      "message": "I haven\u0027t seen any specific requirement on those being filterable yet.",
+      "parentUuid": "0aeedbdf_cdc7377d",
       "range": {
         "startLine": 537,
         "startChar": 3,
