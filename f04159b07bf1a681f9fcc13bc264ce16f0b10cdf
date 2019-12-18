@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e06abea_42a60c49",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T17:40:46Z",
+      "side": 1,
+      "message": "Note that currently no Vulkan implementation supports more than 32768, and 16384 is the sweet spot. Also, outline buffers of 65536 would be quite massive. We\u0027re already really conscious about every size increase, so it\u0027s unlikely we\u0027ll ever approach that, let alone exceed it. Not would we exceed it and not notice issues.\n\nFurthermore, this will all be moot once we switch to a coverage-based rasterizer.\n\nHappy to keep this until then, but I wouldn\u0027t have minded keeping things simple and using just OUTLINE_RESOLUTION instead of min(MAX_ALLOWED_FRAMEBUFFER_SIZE, OUTLINE_RESOLUTION).",
+      "range": {
+        "startLine": 88,
+        "startChar": 14,
+        "endLine": 88,
+        "endChar": 43
+      },
+      "revId": "f04159b07bf1a681f9fcc13bc264ce16f0b10cdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6d7d91c_92e5c5ad",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T17:40:46Z",
+      "side": 1,
+      "message": "MAX_ALLOWED_FRAMEBUFFER_SIZE_BITS ?",
+      "range": {
+        "startLine": 88,
+        "startChar": 51,
+        "endLine": 88,
+        "endChar": 53
+      },
+      "revId": "f04159b07bf1a681f9fcc13bc264ce16f0b10cdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
