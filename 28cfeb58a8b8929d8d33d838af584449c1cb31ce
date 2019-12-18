@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "e6297e14_046bc701",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-18T13:44:42Z",
+      "side": 1,
+      "message": "\u003e I think each of those examples can still be handled by having a global singleton, and just making it return a different type of debugger implementation.\n\nHow can a singleton handle a debugger property for vkCreateInstance()? This is a per-instance attribute.\n\n\u003e It\u0027s also often possible to log to different files by specifying some enum at the log call site. In other words using a singleton doesn\u0027t have to mean you have only one implementation available\n\nIf you are proposing that a debugger-enabled flag is passed down to the vk instances, then what\u0027s the benefit of passing flags down and using a singleton than just simply passing down the debugger context directly?\n\n\u003e The way I conceptualize this is that the debugger is something \u0027out there\u0027 that we communicate with, either a socket or a process, or a file.\n\nNot my argument, but I whole heartily agree:\nhttp://www.object-oriented-security.org/lets-argue/singletons#TOC-What-about-open-or-stdout-\n\n\u003e Almost like logging\n\nhttp://www.object-oriented-security.org/lets-argue/singletons#TOC-What-about-debug-logging-\n\nExcept it isn\u0027t like logging. Logging is publicly stateless. The vk::dbg::Context structure is a big blob of state, and you\u0027re proposing that we access this big blob of state via a global variable.\n\nIf you haven\u0027t already, please see go/singletons.\n\nFor the sake of passing down an additional variable into the constructor of a class, you\u0027re breaking encapsulation, muddying project dependencies, making thread safety more complex, complicating initialization and destruction points, making concurrent testing impossible, and so on.\n\nIt\u0027s just a bad pattern, one that is frowned on at Google.",
+      "parentUuid": "7b63bdb4_71596628",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
