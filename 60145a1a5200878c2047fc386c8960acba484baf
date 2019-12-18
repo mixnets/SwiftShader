@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bffe40a0_393f0f0e",
+        "filename": "src/Renderer/Surface.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2678,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-18T18:03:01Z",
+      "side": 1,
+      "message": "Maybe we could have a similar limit in Vulkan, in order to fix b/144988972?",
+      "range": {
+        "startLine": 2673,
+        "startChar": 4,
+        "endLine": 2678,
+        "endChar": 5
+      },
+      "revId": "60145a1a5200878c2047fc386c8960acba484baf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
