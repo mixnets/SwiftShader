@@ -318,6 +318,7 @@ typedef enum VkStructureType {
     VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR = 1000074000,
     VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHR = 1000074001,
     VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR = 1000074002,
+    VK_STRUCTURE_TYPE_IOSURFACE_MEMORY_INFO = 1000074003,
     VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR = 1000075000,
     VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR = 1000078000,
     VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR = 1000078001,
@@ -5480,6 +5481,19 @@ typedef struct VkImportMemoryFdInfoKHR {
     VkExternalMemoryHandleTypeFlagBits    handleType;
     int                                   fd;
 } VkImportMemoryFdInfoKHR;
+
+
+#define VK_KHR_iosurface_memory 1
+#define VK_KHR_IOSURFACE_MEMORY_SPEC_VERSION 1
+#define VK_KHR_IOSURFACE_MEMORY_EXTENSION_NAME "VK_ANGLE_iosurface_memory"
+typedef struct VkIOSurfaceMemoryInfo {
+    VkStructureType                       sType;
+    const void*                           pNext;
+    void*                           pIOSurfaceRef;
+    int size;
+
+} VkIOSurfaceMemoryInfo;
+
 
 typedef struct VkMemoryFdPropertiesKHR {
     VkStructureType    sType;
