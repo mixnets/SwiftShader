@@ -106,6 +106,24 @@
       "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbbc66d3_a362c3cc",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-18T14:23:52Z",
+      "side": 1,
+      "message": "I\u0027ve moved this change further up the stack, but it is still used by the SPIR-V debugger change.\nCreated b/146486064, and added comments on the new fields in SpirvRoutine along with the places we assign to them.",
+      "parentUuid": "40f0288b_e0eae53a",
+      "revId": "e2b32bd899c2d9e54ce265879c22b68b71b6767e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
