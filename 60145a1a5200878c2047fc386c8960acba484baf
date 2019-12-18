@@ -46,6 +46,30 @@
       "revId": "60145a1a5200878c2047fc386c8960acba484baf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "738f7246_70a5504d",
+        "filename": "src/Renderer/Surface.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2678,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-18T18:47:23Z",
+      "side": 1,
+      "message": "Oh, I wasn\u0027t suggesting to do it in the same change, they\u0027re in 2 different projects, just wondering if a similar fix might be easily added to the Vulkan library and if it makes sense to do so.",
+      "parentUuid": "d141dc10_ff9ef019",
+      "range": {
+        "startLine": 2673,
+        "startChar": 4,
+        "endLine": 2678,
+        "endChar": 5
+      },
+      "revId": "60145a1a5200878c2047fc386c8960acba484baf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
