@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ab704f1_c38b656e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T16:11:55Z",
+      "side": 1,
+      "message": "nit: Unusual order. I\u0027m not 100% sure all tooling supports this.\n\nBug: b/146488564\nTests: dEQP-VK.pipeline.sampler*32_sfloat*filter.linear\nChange-Id: I0b3d2832a76488f778a1978f6e33fb9bdb5ca05a",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "69eb7e1b_aff489f4",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T16:11:55Z",
+      "side": 1,
+      "message": "Unrelated, but are these ever filterable?",
+      "range": {
+        "startLine": 528,
+        "startChar": 2,
+        "endLine": 529,
+        "endChar": 36
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0aeedbdf_cdc7377d",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T16:11:55Z",
+      "side": 1,
+      "message": "Unrelated, but are these ever filterable?",
+      "range": {
+        "startLine": 537,
+        "startChar": 3,
+        "endLine": 539,
+        "endChar": 42
+      },
+      "revId": "7b4bf2eb6793dce08ab8cee27ddf889bb94ca217",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
