@@ -22,6 +22,30 @@
       "revId": "60145a1a5200878c2047fc386c8960acba484baf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d141dc10_ff9ef019",
+        "filename": "src/Renderer/Surface.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2678,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T18:07:28Z",
+      "side": 1,
+      "message": "Yes, but I\u0027d rather not do that as part of this change (in part because our Vulkan implementation doesn\u0027t require the padding and I\u0027d like to avoid the confusion). Note that the bug for this change (b/145229887) has b/144988972 as a blocker to keep them somewhat related.",
+      "parentUuid": "bffe40a0_393f0f0e",
+      "range": {
+        "startLine": 2673,
+        "startChar": 4,
+        "endLine": 2678,
+        "endChar": 5
+      },
+      "revId": "60145a1a5200878c2047fc386c8960acba484baf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
