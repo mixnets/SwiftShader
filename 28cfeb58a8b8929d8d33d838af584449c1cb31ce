@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "72795c40_a6533933",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-18T21:08:04Z",
+      "side": 1,
+      "message": "First things first: these are all excellent discussion points worth debating, but I feel like it would be more productive to first focus on the minimal viable product, then gather feedback on feature requests, and then only for the ones with sufficient impact determine how to fit them in exactly.\n\n\u003e How can a singleton handle a debugger property for vkCreateInstance()? This is a per-instance attribute.\n\nSorry, I missed the per-instance expectation part. I\u0027m not sure what the value of that would be though. The vast majority of applications have just one instance. For those that have multiple, I\u0027m not sure they would have a strong need for selectively enabling debugging. Also note that not enabling an extension doesn\u0027t typically disable them. The Vulkan ICD is not required to perform validation, so unless you have a validation layer for it that somehow checks you\u0027re not debugging an instance that didn\u0027t specify the extension, it\u0027s essentially always enabled if your implementation supports it. I\u0027m not saying we should encourage abusing that property of the extension mechanism. I\u0027m just pointing out that this is hard to enforce and maybe a VK extension is not the right approach if/when we really need this. Also FWIW note that we\u0027ll most likely eventually split our back-end into a separate process. In large part for security, but it also enables e.g. exposing separate \u0027physical devices\u0027 for separate CPU sockets. It might make some sense to debug those separately. But it could be a singleton in each process. In any case, I think it\u0027s very premature to prepare for a per-instance debugger feature.\n\n\u003e http://www.object-oriented-security.org/lets-argue/singletons#TOC-What-about-open-or-stdout-\n\nIt appears this is only talking about native C\u0027s open(). There are plenty of examples of sandboxes which provide an open()-like function which provide the security he seeks in his problem statement, yet still provide singleton access to a portion of the filesystem. No need to pass some \u0027Directory\u0027 argument around everywhere (I\u0027m not saying this can\u0027t be sensible in many cases, even within a sandbox, I\u0027m just saying it can also be perfectly acceptable not to require it if it fits design requirements).\n\n\u003e http://www.object-oriented-security.org/lets-argue/singletons#TOC-What-about-debug-logging-\n\u003e Except it isn\u0027t like logging. Logging is publicly stateless.\n\nI did say \"almost\". 😎 Note this site argues that \"As for stdout, the same thing applies.\", so I\u0027m not sure the distinction matters that much. Also note the argument that \"Another theoretical justification for debug logging says that the debug log function is really just a no-op that happens to be observed by the debugger.  When no debugger is running, the function does nothing.  Debugging in general obviously breaks the entire object-capability model, but it is also obviously a privileged operation.\" This is still valid if it\u0027s not stateless.\n\n\u003e If you haven\u0027t already, please see go/singletons.\n\nI appreciate the link, but rest assured this is not the first time I\u0027ve heard of \"singletons considered harmful\". It\u0027s an excellent first rule to avoid them, since they almost always result in real-world bad consequences, but not always. Even object-oriented-security.org states \"Singletons are almost always bad design\", meaning there can be cases where it\u0027s good design.\n\nThis is not some kind of white raven argument. Reactor is a great example. It would be absolutely disastrous for its usability if we had to provide the JIT context explicitly at various points, instead of using a global.\n\nNote that https://testing.googleblog.com/2008/08/root-cause-of-singletons.html (linked from go/singletons) states that \"The moment you traverse a global variable your API lies about its true dependencies\". But the debugger won\u0027t be a dependency in that sense. The Vulkan API behavior must remain the same with or without debugger. Their paragraph about logging comes to the same conclusion.",
+      "parentUuid": "e6297e14_046bc701",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
