@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a4ede4a_0584fb4a",
+        "filename": "include/vulkan/vulkan_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-19T00:04:07Z",
+      "side": 1,
+      "message": "Changes to this file should be made upstream at https://github.com/KhronosGroup/Vulkan-Headers first, then we can update to the most recent revision of it and other headers as a whole.",
+      "range": {
+        "startLine": 321,
+        "startChar": 4,
+        "endLine": 321,
+        "endChar": 43
+      },
+      "revId": "883f2a883747e09dd112e7cbda926bc835784885",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dad7d3f_e163cea7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 835,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-19T00:04:07Z",
+      "side": 1,
+      "message": "Wrap this in #if defined(VK_USE_PLATFORM_METAL_EXT) or __APPLE__?",
+      "range": {
+        "startLine": 835,
+        "startChar": 6,
+        "endLine": 835,
+        "endChar": 20
+      },
+      "revId": "883f2a883747e09dd112e7cbda926bc835784885",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
