@@ -1059,6 +1059,14 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 			pixel.y = Short4(v >> 4) & Short4(0xFFC0u);
 			pixel.z = Short4(v >> 14) & Short4(0xFFC0u);
 			pixel.w = Short4(v >> 16) & Short4(0xC000u);
+
+			// Expand to 16 bit range
+			pixel.x |= As<Short4>(As<UShort4>(pixel.x) >> 10);
+			pixel.y |= As<Short4>(As<UShort4>(pixel.y) >> 10);
+			pixel.z |= As<Short4>(As<UShort4>(pixel.z) >> 10);
+			pixel.w |= As<Short4>(As<UShort4>(pixel.w) >> 2);
+			pixel.w |= As<Short4>(As<UShort4>(pixel.w) >> 4);
+			pixel.w |= As<Short4>(As<UShort4>(pixel.w) >> 8);
 		}
 		break;
 		default:
