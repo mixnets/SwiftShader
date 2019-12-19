@@ -103,121 +103,171 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
   }
 }
 
-swiftshader_shared_library("swiftshader_libvulkan") {
-  sources = [
-    "VkBuffer.cpp",
-    "VkBufferView.cpp",
-    "VkCommandBuffer.cpp",
-    "VkCommandPool.cpp",
-    "VkDebug.cpp",
-    "VkDescriptorPool.cpp",
-    "VkDescriptorSetLayout.cpp",
-    "VkDescriptorUpdateTemplate.cpp",
-    "VkDevice.cpp",
-    "VkDeviceMemory.cpp",
-    "VkFormat.cpp",
-    "VkFramebuffer.cpp",
-    "VkGetProcAddress.cpp",
-    "VkImage.cpp",
-    "VkImageView.cpp",
-    "VkInstance.cpp",
-    "VkMemory.cpp",
-    "VkPhysicalDevice.cpp",
-    "VkPipeline.cpp",
-    "VkPipelineCache.cpp",
-    "VkPipelineLayout.cpp",
-    "VkPromotedExtensions.cpp",
-    "VkQueryPool.cpp",
-    "VkQueue.cpp",
-    "VkRenderPass.cpp",
-    "VkSampler.cpp",
-    "VkSemaphore.cpp",
-    "VkShaderModule.cpp",
-    "VkStringify.cpp",
-    "Vulkan.rc",
-    "libVulkan.cpp",
-    "main.cpp",
-    "resource.h",
-    "vk_swiftshader.def",
-  ]
-
-  configs = [ ":swiftshader_libvulkan_private_config" ]
-
-  # TODO(capn): Use the same ICD name on both Windows and non-Windows.
-  if (is_win) {
-    output_name = "vk_swiftshader"
-  } else {
-    output_name = "libvk_swiftshader"
-  }
-
-  if (is_mac) {
-    ldflags = [
-      "-Wl,-install_name,@rpath/libvk_swiftshader.dylib",
-      "-Wl,-exported_symbols_list," +
-          rebase_path("vk_swiftshader.exports", root_build_dir),
+template("t_swiftshader_libvulkan") {
+  swiftshader_shared_library(target_name) {
+    sources = [
+      "VkBuffer.cpp",
+      "VkBufferView.cpp",
+      "VkCommandBuffer.cpp",
+      "VkCommandPool.cpp",
+      "VkDebug.cpp",
+      "VkDescriptorPool.cpp",
+      "VkDescriptorSetLayout.cpp",
+      "VkDescriptorUpdateTemplate.cpp",
+      "VkDevice.cpp",
+      "VkDeviceMemory.cpp",
+      "VkFormat.cpp",
+      "VkFramebuffer.cpp",
+      "VkGetProcAddress.cpp",
+      "VkImage.cpp",
+      "VkImageView.cpp",
+      "VkInstance.cpp",
+      "VkMemory.cpp",
+      "VkPhysicalDevice.cpp",
+      "VkPipeline.cpp",
+      "VkPipelineCache.cpp",
+      "VkPipelineLayout.cpp",
+      "VkPromotedExtensions.cpp",
+      "VkQueryPool.cpp",
+      "VkQueue.cpp",
+      "VkRenderPass.cpp",
+      "VkSampler.cpp",
+      "VkSemaphore.cpp",
+      "VkShaderModule.cpp",
+      "VkStringify.cpp",
+      "Vulkan.rc",
+      "libVulkan.cpp",
+      "main.cpp",
+      "resource.h",
+      "vk_swiftshader.def",
     ]
-  } else if (is_linux || is_fuchsia) {
+
+    configs = [ ":swiftshader_libvulkan_private_config" ]
+
+    # TODO(capn): Use the same ICD name on both Windows and non-Windows.
+    if (is_win) {
+      output_name = "${invoker.output_name}"
+    } else {
+      output_name = "lib${invoker.output_name}"
+    }
+
+    if (is_mac) {
+      ldflags = [
+        "-Wl,-install_name,@rpath/libvk_swiftshader.dylib",
+        "-Wl,-exported_symbols_list," +
+            rebase_path("vk_swiftshader.exports", root_build_dir),
+      ]
+    } else if (is_linux || is_fuchsia) {
+      inputs = [
+        "vk_swiftshader.lds",
+      ]
+      ldflags = [ "-Wl,--version-script=" +
+                  rebase_path("vk_swiftshader.lds", root_build_dir) ]
+    }
+
+    deps = invoker.deps + [
+      "${swiftshader_spirv_tools_dir}:SPIRV-Tools",
+      "../../third_party/marl:Marl",
+      "../Device",
+      "../Pipeline",
+      #"../Reactor:swiftshader_llvm_reactor",
+      "../System",
+      "../WSI",
+    ]
+
+    include_dirs = [
+      "..",
+      "../../include",
+      "$swiftshader_spirv_tools_dir/include",
+      "$spirv_tools_spirv_headers_dir/include",
+    ]
+
+    public_deps = [
+      ":swiftshader_libvulkan_headers",
+    ]
+  }
+}
+
+template("t_icd_file") {
+  # Generates an ICD JSON file that can be used by all targets in this GN build
+  # (ANGLE, Dawn, Chromium).
+  action(target_name) {
+    output_icd_file = "${root_out_dir}/${invoker.output_icd_file_name}"
+    input_file = "vk_swiftshader_icd.json"
+
+    _lib_name = "${invoker.lib_name}"
+    if (is_win) {
+      library_path = ".\\${_lib_name}.dll"
+    } else if (is_mac) {
+      library_path = "./lib${_lib_name}.dylib"
+    } else {
+      library_path = "./lib${_lib_name}.so"
+    }
+
+    script = "write_icd_json.py"
+    args = [
+      "--input",
+      rebase_path(input_file, root_build_dir),
+      "--output",
+      rebase_path(output_icd_file, root_build_dir),
+      "--library_path",
+      library_path,
+    ]
+
     inputs = [
-      "vk_swiftshader.lds",
+      input_file,
     ]
-    ldflags = [ "-Wl,--version-script=" +
-                rebase_path("vk_swiftshader.lds", root_build_dir) ]
+    outputs = [
+      output_icd_file,
+    ]
+
+    deps = invoker.deps
   }
+}
+
+t_swiftshader_libvulkan("swiftshader_llvm_libvulkan") {
+  # TODO: "vk_swiftshader_llvm"
+  output_name = "vk_swiftshader"
 
   deps = [
-    "${swiftshader_spirv_tools_dir}:SPIRV-Tools",
-    "../../third_party/marl:Marl",
-    "../Device",
-    "../Pipeline",
     "../Reactor:swiftshader_llvm_reactor",
-    "../System",
-    "../WSI",
-  ]
-
-  include_dirs = [
-    "..",
-    "../../include",
-    "$swiftshader_spirv_tools_dir/include",
-    "$spirv_tools_spirv_headers_dir/include",
-  ]
-
-  public_deps = [
-    ":swiftshader_libvulkan_headers",
   ]
 }
 
-# Generates an ICD JSON file that can be used by all targets in this GN build
-# (ANGLE, Dawn, Chromium).
-action("icd_file") {
-  output_icd_file = "${root_out_dir}/${swiftshader_icd_file_name}"
-  input_file = swiftshader_icd_file_name
-
-  if (is_win) {
-    library_path = ".\\vk_swiftshader.dll"
-  } else if (is_mac) {
-    library_path = "./libvk_swiftshader.dylib"
-  } else {
-    library_path = "./libvk_swiftshader.so"
-  }
-
-  script = "write_icd_json.py"
-  args = [
-    "--input",
-    rebase_path(input_file, root_build_dir),
-    "--output",
-    rebase_path(output_icd_file, root_build_dir),
-    "--library_path",
-    library_path,
-  ]
-
-  inputs = [
-    input_file,
-  ]
-  outputs = [
-    output_icd_file,
-  ]
+t_swiftshader_libvulkan("swiftshader_subzero_libvulkan") {
+  output_name = "vk_swiftshader_subzero"
 
   deps = [
-    ":swiftshader_libvulkan",
+    "../Reactor:swiftshader_subzero_reactor",
+  ]
+}
+
+t_icd_file("swiftshader_llvm_icd_file") {
+  output_icd_file_name = "${swiftshader_llvm_icd_file_name}"
+  lib_name = "vk_swiftshader" # TODO: refer to swiftshader_llvm_libvulkan.output_name
+  deps = [
+    ":swiftshader_llvm_libvulkan",
+  ]
+}
+
+t_icd_file("swiftshader_subzero_icd_file") {
+  output_icd_file_name = "${swiftshader_subzero_icd_file_name}"
+  lib_name = "vk_swiftshader_subzero" # TODO: refer to swiftshader_subzero_libvulkan.output_name
+  deps = [
+    ":swiftshader_subzero_libvulkan",
+  ]
+}
+
+# By default, build the llvm version
+group("swiftshader_libvulkan") {
+  deps = [
+    ":swiftshader_llvm_libvulkan"
+  ]
+}
+
+# By default, build the llvm version
+group("icd_file") {
+  deps = [
+    ":swiftshader_llvm_icd_file"
   ]
 }
