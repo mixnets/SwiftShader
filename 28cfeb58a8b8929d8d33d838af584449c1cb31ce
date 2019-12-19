@@ -145,6 +145,30 @@
     },
     {
       "key": {
+        "uuid": "5e09a59a_4fd22a2a",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-19T13:09:37Z",
+      "side": 1,
+      "message": "One more point: I was chatting with pbaiget yesterday who\u0027s starting to do planning for next year. He wanted to talk to me about how SwiftShader\u0027s debugging was coming along as they\u0027re interested in using this.\n\nGAPID creates a replay device (process) that is long lived. Replays are performed on the device by re-creating vulkan device instances, doing the graphics operation, and then destroying the instance.\nUnless the shader debugging functionality is actively in use, then the vkDevice instances created have no need for debugging. It was my intention that we can pass to vkCreateDevice() the information that:\na) Debugging for this particular instance is required\nb) How the application should connect to the debugger - whether it is a port, file handle, or perhaps a straight up C callback API.\n\nAttempting to share the Vulkan context across devices is undesirable in this situation. You\u0027d just be making it harder to identify particular shader invocations and threads.",
+      "parentUuid": "a3256c14_ce43e5e5",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
