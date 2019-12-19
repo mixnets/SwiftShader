@@ -16,6 +16,24 @@
       "revId": "e82d88538072f32bb4d345cd4b5c3ec264caa215",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc92a6f2_fe5e9fb2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-19T21:50:20Z",
+      "side": 0,
+      "message": "AFAIK, the emulation should only require depth only formats, so I didn\u0027t add it.\nAlso wondering: Wouldn\u0027t that imply stencil filtering as well?",
+      "parentUuid": "bfd61340_1db6ea45",
+      "revId": "e82d88538072f32bb4d345cd4b5c3ec264caa215",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
