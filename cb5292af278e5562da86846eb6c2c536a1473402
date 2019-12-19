@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dba38c66_ff4ec774",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-19T18:39:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7edf8d60_d9c128d8",
+      "range": {
+        "startLine": 9,
+        "startChar": 32,
+        "endLine": 9,
+        "endChar": 44
+      },
+      "revId": "cb5292af278e5562da86846eb6c2c536a1473402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "74ec3d67_b0c150f5",
         "filename": "/COMMIT_MSG",
         "patchSetId": 12
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "a88cc11d_cfd23812",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-19T18:39:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74ec3d67_b0c150f5",
+      "revId": "cb5292af278e5562da86846eb6c2c536a1473402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "57b55040_6a2a17df",
         "filename": "src/clang-format-separate.sh",
         "patchSetId": 12
@@ -53,6 +95,24 @@
       "writtenOn": "2019-12-19T18:27:50Z",
       "side": 1,
       "message": "I think this script can be deleted now?",
+      "revId": "cb5292af278e5562da86846eb6c2c536a1473402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef855896_ff61d053",
+        "filename": "src/clang-format-separate.sh",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-19T18:39:18Z",
+      "side": 1,
+      "message": "I think it\u0027s handy to keep around, say in case we want to adjust the format rules.",
+      "parentUuid": "57b55040_6a2a17df",
       "revId": "cb5292af278e5562da86846eb6c2c536a1473402",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
