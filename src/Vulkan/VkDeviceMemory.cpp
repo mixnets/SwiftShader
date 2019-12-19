@@ -100,8 +100,10 @@ public:
 	{
 		void *buffer = vk::allocate(size, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY);
 		if(!buffer)
+		{
 			return VK_ERROR_OUT_OF_DEVICE_MEMORY;
-
+		}
+		
 		*pBuffer = buffer;
 		return VK_SUCCESS;
 	}
