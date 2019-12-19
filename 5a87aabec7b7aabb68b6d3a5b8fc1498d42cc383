@@ -22,6 +22,30 @@
       "revId": "5a87aabec7b7aabb68b6d3a5b8fc1498d42cc383",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d3af233_ce222831",
+        "filename": "src/Reactor/Debug.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-19T20:51:27Z",
+      "side": 1,
+      "message": "Done. I made them const instead. No need for static here. Compiler will optimize them out in release, but still compile the code in the if block.",
+      "parentUuid": "f3ce2cbd_3550c847",
+      "range": {
+        "startLine": 30,
+        "startChar": 7,
+        "endLine": 30,
+        "endChar": 8
+      },
+      "revId": "5a87aabec7b7aabb68b6d3a5b8fc1498d42cc383",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
