@@ -825,28 +825,21 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
 			if(writeR && writeG && writeB)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) |
-				                                   (RoundInt(Float(c.y)) << Int(5)) |
-				                                   (RoundInt(Float(c.x)) << Int(11)));
+				*Pointer<UShort>(element) = UShort(OrPack(RoundInt(c.xyzz) << Int4(11, 5, 0, 0)));
 			}
 			else
 			{
 				unsigned short mask = (writeB ? 0x001F : 0x0000) | (writeG ? 0x07E0 : 0x0000) | (writeR ? 0xF800 : 0x0000);
 				unsigned short unmask = ~mask;
 				*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-				                            (UShort(RoundInt(Float(c.z)) |
-				                                    (RoundInt(Float(c.y)) << Int(5)) |
-				                                    (RoundInt(Float(c.x)) << Int(11))) &
+				                            (UShort(OrPack(RoundInt(c.xyzz) << Int4(11, 5, 0, 0))) &
 				                             UShort(mask));
 			}
 			break;
 		case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
 			if(writeRGBA)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.w)) |
-				                                   (RoundInt(Float(c.z)) << Int(1)) |
-				                                   (RoundInt(Float(c.y)) << Int(6)) |
-				                                   (RoundInt(Float(c.x)) << Int(11)));
+				*Pointer<UShort>(element) = UShort(OrPack(RoundInt(c) << Int4(11, 6, 1, 0)));
 			}
 			else
 			{
@@ -856,20 +849,14 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 				                      (writeB ? 0x001F : 0x0000);
 				unsigned short unmask = ~mask;
 				*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-				                            (UShort(RoundInt(Float(c.w)) |
-				                                    (RoundInt(Float(c.z)) << Int(1)) |
-				                                    (RoundInt(Float(c.y)) << Int(6)) |
-				                                    (RoundInt(Float(c.x)) << Int(11))) &
+				                            (UShort(OrPack(RoundInt(c) << Int4(11, 6, 1, 0))) &
 				                             UShort(mask));
 			}
 			break;
 		case VK_FORMAT_B5G5R5A1_UNORM_PACK16:
 			if(writeRGBA)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.w)) |
-				                                   (RoundInt(Float(c.x)) << Int(1)) |
-				                                   (RoundInt(Float(c.y)) << Int(6)) |
-				                                   (RoundInt(Float(c.z)) << Int(11)));
+				*Pointer<UShort>(element) = UShort(OrPack(RoundInt(c) << Int4(1, 6, 11, 0)));
 			}
 			else
 			{
@@ -879,20 +866,14 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 				                      (writeB ? 0x001F : 0x0000);
 				unsigned short unmask = ~mask;
 				*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-				                            (UShort(RoundInt(Float(c.w)) |
-				                                    (RoundInt(Float(c.x)) << Int(1)) |
-				                                    (RoundInt(Float(c.y)) << Int(6)) |
-				                                    (RoundInt(Float(c.z)) << Int(11))) &
+				                            (UShort(OrPack(RoundInt(c) << Int4(1, 6, 11, 0))) &
 				                             UShort(mask));
 			}
 			break;
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
 			if(writeRGBA)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) |
-				                                   (RoundInt(Float(c.y)) << Int(5)) |
-				                                   (RoundInt(Float(c.x)) << Int(10)) |
-				                                   (RoundInt(Float(c.w)) << Int(15)));
+				*Pointer<UShort>(element) = UShort(OrPack(RoundInt(c) << Int4(10, 5, 0, 15)));
 			}
 			else
 			{
@@ -902,10 +883,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 				                      (writeB ? 0x001F : 0x0000);
 				unsigned short unmask = ~mask;
 				*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-				                            (UShort(RoundInt(Float(c.z)) |
-				                                    (RoundInt(Float(c.y)) << Int(5)) |
-				                                    (RoundInt(Float(c.x)) << Int(10)) |
-				                                    (RoundInt(Float(c.w)) << Int(15))) &
+				                            (UShort(OrPack(RoundInt(c) << Int4(10, 5, 0, 15))) &
 				                             UShort(mask));
 			}
 			break;
@@ -914,10 +892,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
 			if(writeRGBA)
 			{
-				*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)) |
-				                               (RoundInt(Float(c.y)) << 10) |
-				                               (RoundInt(Float(c.z)) << 20) |
-				                               (RoundInt(Float(c.w)) << 30));
+				*Pointer<UInt>(element) = As<UInt>(OrPack(RoundInt(c) << Int4(0, 10, 20, 30)));
 			}
 			else
 			{
@@ -927,10 +902,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 				                    (writeR ? 0x000003FF : 0x0000);
 				unsigned int unmask = ~mask;
 				*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				                          (UInt(RoundInt(Float(c.x)) |
-				                                (RoundInt(Float(c.y)) << 10) |
-				                                (RoundInt(Float(c.z)) << 20) |
-				                                (RoundInt(Float(c.w)) << 30)) &
+				                          (As<UInt>(OrPack(RoundInt(c) << Int4(0, 10, 20, 30))) &
 				                           UInt(mask));
 			}
 			break;
@@ -939,10 +911,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_A2R10G10B10_SNORM_PACK32:
 			if(writeRGBA)
 			{
-				*Pointer<UInt>(element) = UInt(RoundInt(Float(c.z)) |
-				                               (RoundInt(Float(c.y)) << 10) |
-				                               (RoundInt(Float(c.x)) << 20) |
-				                               (RoundInt(Float(c.w)) << 30));
+				*Pointer<UInt>(element) = As<UInt>(OrPack(RoundInt(c) << Int4(20, 10, 0, 30)));
 			}
 			else
 			{
@@ -952,10 +921,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 				                    (writeB ? 0x000003FF : 0x0000);
 				unsigned int unmask = ~mask;
 				*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				                          (UInt(RoundInt(Float(c.z)) |
-				                                (RoundInt(Float(c.y)) << 10) |
-				                                (RoundInt(Float(c.x)) << 20) |
-				                                (RoundInt(Float(c.w)) << 30)) &
+				                          (As<UInt>(OrPack(RoundInt(c) << Int4(20, 10, 0, 30))) &
 				                           UInt(mask));
 			}
 			break;
@@ -1133,8 +1099,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_A2B10G10R10_SSCALED_PACK32:
 			if(writeRGBA)
 			{
-				*Pointer<UInt>(element) =
-				    UInt((Extract(c, 0)) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30));
+				*Pointer<UInt>(element) = As<UInt>(OrPack(c << Int4(0, 10, 20, 30)));
 			}
 			else
 			{
@@ -1144,7 +1109,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 				                    (writeR ? 0x000003FF : 0x0000);
 				unsigned int unmask = ~mask;
 				*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				                          (UInt(Extract(c, 0) | (Extract(c, 1) << 10) | (Extract(c, 2) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
+				                          (As<UInt>(OrPack(c << Int4(0, 10, 20, 30))) & UInt(mask));
 			}
 			break;
 		case VK_FORMAT_A2R10G10B10_UINT_PACK32:
@@ -1153,8 +1118,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_A2R10G10B10_SSCALED_PACK32:
 			if(writeRGBA)
 			{
-				*Pointer<UInt>(element) =
-				    UInt((Extract(c, 2)) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30));
+				*Pointer<UInt>(element) = As<UInt>(OrPack(c << Int4(20, 10, 0, 30)));
 			}
 			else
 			{
@@ -1164,7 +1128,7 @@ void Blitter::write(Int4 &c, Pointer<Byte> element, const State &state)
 				                    (writeB ? 0x000003FF : 0x0000);
 				unsigned int unmask = ~mask;
 				*Pointer<UInt>(element) = (*Pointer<UInt>(element) & UInt(unmask)) |
-				                          (UInt(Extract(c, 2) | (Extract(c, 1) << 10) | (Extract(c, 0) << 20) | (Extract(c, 3) << 30)) & UInt(mask));
+				                          (As<UInt>(OrPack(c << Int4(20, 10, 0, 30))) & UInt(mask));
 			}
 			break;
 		case VK_FORMAT_B8G8R8A8_UINT:
