@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a071fef_3ee3a224",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 828,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-20T20:23:26Z",
+      "side": 1,
+      "message": "Interesting utility function! I think you can actually make the shift amounts part of its argument list too. Currently what happens is that the vector shift gets scalarized, then a new vector gets constructed with those results, then it gets decomposed into scalars again, to be OR-ed together.\n\nWhile in theory your current version could be used for non-shifted vectors as well, I think all current uses have a shift, and that\u0027s clearly what this is most useful for.\n\nWith the shift amounts as parameters we can also use a more descriptive name. \u0027PackFields\u0027 or something like that?",
+      "range": {
+        "startLine": 828,
+        "startChar": 39,
+        "endLine": 828,
+        "endChar": 84
+      },
+      "revId": "aa494a45f8310d48845c87cc1af0192d62a91393",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
