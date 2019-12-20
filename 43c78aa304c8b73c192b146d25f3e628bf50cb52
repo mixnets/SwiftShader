@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c3a66d1_88fdbaa2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-12-20T20:11:17Z",
+      "side": 1,
+      "message": "What release version do we expect that to be part of? Can you add that here and/or in the bug entry so we\u0027ll be able to verify things are as expected?",
+      "range": {
+        "startLine": 10,
+        "startChar": 37,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "43c78aa304c8b73c192b146d25f3e628bf50cb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
