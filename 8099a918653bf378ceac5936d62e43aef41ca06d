@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "500dfc1b_ebefed6b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-20T14:29:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3520f0f_49ad60f4",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "8099a918653bf378ceac5936d62e43aef41ca06d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "73f8870c_f8fd843c",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "08dced1e_1f8a511b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-20T14:29:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73f8870c_f8fd843c",
+      "revId": "8099a918653bf378ceac5936d62e43aef41ca06d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4ac27ad_0a4e19e9",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -53,6 +95,30 @@
       "writtenOn": "2019-12-17T21:47:37Z",
       "side": 1,
       "message": "nit: HACK(b/130459196)",
+      "range": {
+        "startLine": 177,
+        "startChar": 4,
+        "endLine": 177,
+        "endChar": 8
+      },
+      "revId": "8099a918653bf378ceac5936d62e43aef41ca06d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fe410e3_7656d025",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2019-12-20T14:29:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4ac27ad_0a4e19e9",
       "range": {
         "startLine": 177,
         "startChar": 4,
