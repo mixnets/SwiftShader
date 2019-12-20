@@ -22,6 +22,30 @@
       "revId": "43c78aa304c8b73c192b146d25f3e628bf50cb52",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc3cdd54_5661ba6a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-20T20:18:29Z",
+      "side": 1,
+      "message": "Done. Mentioned in the issue itself.",
+      "parentUuid": "7c3a66d1_88fdbaa2",
+      "range": {
+        "startLine": 10,
+        "startChar": 37,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "43c78aa304c8b73c192b146d25f3e628bf50cb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
