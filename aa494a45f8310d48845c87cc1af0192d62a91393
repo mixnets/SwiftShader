@@ -22,6 +22,30 @@
       "revId": "aa494a45f8310d48845c87cc1af0192d62a91393",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b3b04db_ab93a335",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 828,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-12-20T21:17:45Z",
+      "side": 1,
+      "message": "Refactored as PackFields in Blitter.cpp",
+      "parentUuid": "6a071fef_3ee3a224",
+      "range": {
+        "startLine": 828,
+        "startChar": 39,
+        "endLine": 828,
+        "endChar": 84
+      },
+      "revId": "aa494a45f8310d48845c87cc1af0192d62a91393",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
