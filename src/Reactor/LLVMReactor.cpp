@@ -19,6 +19,7 @@
 
 #include "CPUID.hpp"
 #include "ExecutableMemory.hpp"
+#include "MutexLock.hpp"
 #include "Thread.hpp"
 #include "x86.hpp"
 
