@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e2b9964_54a1e5cf",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-12-27T22:04:48Z",
+      "side": 1,
+      "message": "This doesn\u0027t appear to be used outside of this compilation unit, and so it should probably go in an anonymous namespace",
+      "revId": "5fa7e0c6c1bf2cdfb9f275b80fedd97664932873",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
