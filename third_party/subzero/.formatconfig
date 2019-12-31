@@ -1,0 +1,6 @@
+root = false
+
+[*.*]
+command = Edit.FormatDocument
+allowed_extensions =
+denied_extensions = .*
