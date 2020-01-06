@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1496e142_e161e606",
+        "filename": "third_party/llvm-subzero/build/Android/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-06T20:27:02Z",
+      "side": 1,
+      "message": "Any reason why this is commented out as #undef? A commented out line in this sort of file suggests to me that you can un-comment it to re-enable.\nThe comment above the line suggests this should be defined as 0.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 30
+      },
+      "revId": "c288f173813adef5e256d907d09ba826ce4764ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
