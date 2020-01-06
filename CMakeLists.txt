@@ -145,15 +145,49 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Initialize submodules
 ###########################################################
 
+<<<<<<< HEAD   (e00815 Update SPIRV-Headers to 204cd131c)
 if (NOT TARGET gtest)
     if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/.git)
         message(WARNING "
       third_party/googletest submodule missing.
       Running 'git submodule update --init' to download it:
         ")
+=======
+include(GNUInstallDirs)
+>>>>>>> BRANCH (884b00 Squashed 'third_party/SPIRV-Tools/' changes from c3f22f7cb..)
 
+<<<<<<< HEAD   (e00815 Update SPIRV-Headers to 204cd131c)
         execute_process(COMMAND git submodule update --init)
     endif()
+=======
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 11)
+
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+  add_definitions(-DSPIRV_FUCHSIA)
+else()
+  message(FATAL_ERROR "Your platform '${CMAKE_SYSTEM_NAME}' is not supported!")
+>>>>>>> BRANCH (884b00 Squashed 'third_party/SPIRV-Tools/' changes from c3f22f7cb..)
 endif()
 
 if (NOT TARGET libbacktrace)
@@ -487,10 +521,32 @@ else()
     endif()
 endif()
 
+<<<<<<< HEAD   (e00815 Update SPIRV-Headers to 204cd131c)
 if(REACTOR_EMIT_PRINT_LOCATION)
     # This feature depends on REACTOR_EMIT_DEBUG_INFO, so enable it
     set(REACTOR_EMIT_DEBUG_INFO "On")
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
+=======
+if(ENABLE_SPIRV_TOOLS_INSTALL)
+  if(WIN32)
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} ${TARGET}/cmake)
+    endmacro()
+  else()
+    macro(spvtools_config_package_dir TARGET PATH)
+      set(${PATH} ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET})
+    endmacro()
+  endif()
+
+  macro(spvtools_generate_config_file TARGET)
+    file(WRITE ${CMAKE_BINARY_DIR}/${TARGET}Config.cmake
+      "include(CMakeFindDependencyMacro)\n"
+      "find_dependency(${SPIRV_TOOLS})\n"
+      "include(\${CMAKE_CURRENT_LIST_DIR}/${TARGET}Targets.cmake)\n"
+      "set(${TARGET}_LIBRARIES ${TARGET})\n"
+      "get_target_property(${TARGET}_INCLUDE_DIRS ${TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
+  endmacro()
+>>>>>>> BRANCH (884b00 Squashed 'third_party/SPIRV-Tools/' changes from c3f22f7cb..)
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
