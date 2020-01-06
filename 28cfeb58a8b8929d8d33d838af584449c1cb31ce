@@ -217,6 +217,30 @@
     },
     {
       "key": {
+        "uuid": "a9a7703a_ae6b166e",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-06T13:35:08Z",
+      "side": 1,
+      "message": "\u003e I suggest passing the device handle to these constructors instead, and where you need the debugger context you retrieve it from the device.\n\nI\u0027ve done this up to but not including SpirvShader (which happens in later change). SpirvShader (at least to me) seems low enough to warrant explicit dependencies, and will ease testing for the reasons described in this now silly long thread.",
+      "parentUuid": "0cbb06fe_cb5154a3",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
