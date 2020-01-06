@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d261a4e_29c8d300",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-06T14:40:25Z",
+      "side": 1,
+      "message": "nit: Improve 1010102 blend precision",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 17
+      },
+      "revId": "d88df2cb78bd3998ccbabdd1c623ec3bcc79c1e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8d636a04_7dd0995e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-06T14:40:25Z",
+      "side": 1,
+      "message": "Any ideas what the remaining 2 are? If we have any golden image tests that use 1010102 (I don\u0027t think we do), then this change and the one to fix the remaining 2 might require two rebases.\n\nAnyway, totally your call whether you want to land this immediately or first get a better understanding of the remaining failures.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 27
+      },
+      "revId": "d88df2cb78bd3998ccbabdd1c623ec3bcc79c1e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f1379810_6e1f40ec",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-06T14:40:25Z",
+      "side": 1,
+      "message": "note: This might be more efficient as a multiplication now.",
+      "range": {
+        "startLine": 630,
+        "startChar": 1,
+        "endLine": 632,
+        "endChar": 52
+      },
+      "revId": "d88df2cb78bd3998ccbabdd1c623ec3bcc79c1e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
