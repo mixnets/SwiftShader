@@ -241,6 +241,30 @@
     },
     {
       "key": {
+        "uuid": "73efcc21_d6575f35",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-06T21:59:36Z",
+      "side": 1,
+      "message": "Agreed SpirvShader can have an explicit dependency on the debugger object. I\u0027m comparing this to enabling debugging for a C++ program. It should be entirely oblivious to it (cf. the \"not a true dependency\" I talked about earlier). The only exceptions would be cases where you explicitly want to interact with the debugger. This includes things like Win32\u0027s IsDebuggerPresent() and OutputDebugString(), and the rare case of a JIT. Note that the first two clearly interface with a global debugger. There can only be one per process, hence it is and must be a singleton.\n\nI\u0027m still wholly unconvinced that the code should be passing this singleton around through constructor parameters, be it directly or through the device object. Note by the way that the latter was a suggestion hinged on the condition that we absolutely need support for multiple debugger connections per process, and this is agreed on by Khronos. Without that, this is feature creep.\n\nI\u0027m sorry but I think this is an important design integration issue that can have considerable consequences in the future. On top of aforementioned maintenance reasons, note e.g. that the command buffer will become a plain memory buffer. It should have no dependency on anything device-specific. We\u0027ll be mapping these buffers across a process. The current CommandBuffer design already needs major changes to arrive at that, but we took this shortcut for Pastel 1.0\u0027s goals. Having it take a debugger or device parameter only complicates that refactoring, needlessly.\n\nIf and when we need multiple debugger support we can determine if that can be done through multiple processes or if the timeline demands a different solution, but until then let\u0027s obtain this singleton through a global function to keep things decoupled. Even without taking into account the probability of whether this will be needed in the first place, I\u0027m confident this will be simpler to adjust than in the other scenarios.",
+      "parentUuid": "a9a7703a_ae6b166e",
+      "range": {
+        "startLine": 57,
+        "startChar": 42,
+        "endLine": 57,
+        "endChar": 91
+      },
+      "revId": "28cfeb58a8b8929d8d33d838af584449c1cb31ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "658939a1_8c96f9d0",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 18
