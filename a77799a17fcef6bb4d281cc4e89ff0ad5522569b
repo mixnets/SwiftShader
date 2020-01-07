@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c179e19_465363e4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-07T22:36:39Z",
+      "side": 1,
+      "message": "Only when the submodule SHA is manually rolled forward.\nI think saying this \"tracks\" the project is misleading.",
+      "range": {
+        "startLine": 10,
+        "startChar": 36,
+        "endLine": 10,
+        "endChar": 70
+      },
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66a0268d_85953f73",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-07T22:36:39Z",
+      "side": 1,
+      "message": "nit: stray newline",
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "002e2f25_f21f49d5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-07T22:36:39Z",
+      "side": 1,
+      "message": "This file uses whitespace for indentation.\nHere and below.",
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
