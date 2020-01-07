@@ -90,11 +90,9 @@ option(BUILD_EGL "Build the EGL library" 1)
 option(BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
 option(BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
 option(BUILD_VULKAN "Build the Vulkan library" 1)
+option(BUILD_POWERVR "Pull and build the Power VR submodule" OFF)
 
 option(USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" 1)
-
-option(BUILD_SAMPLES "Build sample programs" 1)
-option(BUILD_TESTS "Build test programs" 1)
 
 option(MSAN "Build with memory sanitizer" 0)
 option(ASAN "Build with address sanitizer" 0)
@@ -106,6 +104,7 @@ option(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" 0)
 option(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" 0)
 option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" 0)
 option(LESS_DEBUG_INFO "Generate less debug info to reduce file size" 0)
+
 
 set(BUILD_MARL ${BUILD_VULKAN})
 
@@ -133,6 +132,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Initialize submodules
 ###########################################################
 
+
 if (NOT TARGET gtest)
     if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/.git)
         message(WARNING "
@@ -140,7 +140,7 @@ if (NOT TARGET gtest)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+		execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest)
     endif()
 endif()
 
@@ -151,8 +151,26 @@ if (NOT TARGET libbacktrace)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+		execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace/src)
     endif()
+endif()
+
+if (BUILD_POWERVR AND NOT TARGET PowerVR_SDK)
+	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR/.git)
+		message(WARNING "
+		third_party/PowerVR module missing.
+		Running 'git submodule update --init to download it:
+		")
+		execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR)
+	endif()
+endif()
+
+# Add PowerVR subdirectory before any global options are set
+if(BUILD_POWERVR)
+	message(STATUS "Adding PowerVR subdirectory")
+	set(PVR_BUILD_FRAMEWORK ON CACHE BOOL "Build the PowerVR Framework" FORCE)
+	set(PVR_BUILD_EXAMPLES ON CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR)
 endif()
 
 # Boost is downloaded if necessary
@@ -280,7 +298,6 @@ set(MARL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/marl/include)
 set(SUBZERO_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/subzero)
 set(SUBZERO_LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-subzero)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-set(HELLO2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_SDK/Examples/Beginner/01_HelloAPI/OGLES2)
 
 ###########################################################
 # Compile flags
@@ -345,7 +362,7 @@ if(MSVC)
 
 else()
     set_cpp_flag("--std=c++11")
-    set_cpp_flag("-fno-exceptions")
+	set_cpp_flag("-fno-exceptions")
 
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS
         "-Wall"
@@ -2093,125 +2110,81 @@ endif()
 # Sample programs
 ###########################################################
 
-if(BUILD_SAMPLES)
-    if(WIN32)
-        add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_Windows.cpp)
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-            FOLDER "Samples"
-        )
-        target_link_libraries(OGLES2HelloAPI libEGL libGLESv2)
-        set_property(TARGET OGLES2HelloAPI APPEND_STRING PROPERTY LINK_FLAGS "/SUBSYSTEM:WINDOWS")
-        set(CMAKE_DEFAULT_STARTUP_PROJECT OGLES2HelloAPI)
-    elseif(LINUX)
-        add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_LinuxX11.cpp)
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-        )
-        target_link_libraries(OGLES2HelloAPI dl ${X11} libEGL libGLESv2)   # Explicitly link our "lib*" targets, not the platform provided "EGL" and "GLESv2"
-    elseif(APPLE)
-        add_executable(OGLES2HelloAPI MACOSX_BUNDLE
-            ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm
-            ${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib
-        )
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS};-Wno-deprecated-declarations" # 'NSTitledWindowMask', 'NSClosableWindowMask' is deprecated
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-            MACOSX_BUNDLE_INFO_PLIST "${HELLO2_DIR}/Build/OSX/Info.plist"
-        )
-        target_link_libraries(OGLES2HelloAPI libEGL libGLESv2 ${OS_LIBS})
-        set_source_files_properties(${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib PROPERTIES
-            MACOSX_PACKAGE_LOCATION "Resources"
-        )
-    endif()
+set(REACTOR_UNIT_TESTS_LIST
+	${SOURCE_DIR}/Reactor/ReactorUnitTests.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+)
+
+set(REACTOR_UNIT_TESTS_INCLUDE_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+)
+
+add_executable(ReactorUnitTests ${REACTOR_UNIT_TESTS_LIST})
+set_target_properties(ReactorUnitTests PROPERTIES
+	INCLUDE_DIRECTORIES "${REACTOR_UNIT_TESTS_INCLUDE_DIR}"
+	COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+	FOLDER "Tests"
+)
+
+if(NOT WIN32 AND ${REACTOR_BACKEND} STREQUAL "Subzero")
+	target_link_libraries(ReactorUnitTests ${Reactor} pthread dl)
+else()
+	target_link_libraries(ReactorUnitTests ${Reactor})
 endif()
 
-if(BUILD_TESTS)
-    set(REACTOR_UNIT_TESTS_LIST
-        ${SOURCE_DIR}/Reactor/ReactorUnitTests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
-    )
+set(GLES_UNITTESTS_LIST
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+)
 
-    set(REACTOR_UNIT_TESTS_INCLUDE_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
-    )
+set(GLES_UNITTESTS_INCLUDE_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+	${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
 
-    add_executable(ReactorUnitTests ${REACTOR_UNIT_TESTS_LIST})
-    set_target_properties(ReactorUnitTests PROPERTIES
-        INCLUDE_DIRECTORIES "${REACTOR_UNIT_TESTS_INCLUDE_DIR}"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-        FOLDER "Tests"
-    )
+add_executable(gles-unittests ${GLES_UNITTESTS_LIST})
+set_target_properties(gles-unittests PROPERTIES
+	INCLUDE_DIRECTORIES "${GLES_UNITTESTS_INCLUDE_DIR}"
+	FOLDER "Tests"
+	COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+	COMPILE_DEFINITIONS "STANDALONE"
+)
 
-    if(NOT WIN32 AND ${REACTOR_BACKEND} STREQUAL "Subzero")
-        target_link_libraries(ReactorUnitTests ${Reactor} pthread dl)
-    else()
-        target_link_libraries(ReactorUnitTests ${Reactor})
-    endif()
+target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS})
+if(ANDROID)
+	target_link_libraries(gles-unittests -landroid)
 endif()
 
-if(BUILD_TESTS)
-    set(GLES_UNITTESTS_LIST
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
-    )
+# Math unit tests
+set(MATH_UNITTESTS_LIST
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/unittests.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+)
 
-    set(GLES_UNITTESTS_INCLUDE_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    )
+set(MATH_UNITTESTS_INCLUDE_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
+	${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+	${CMAKE_CURRENT_SOURCE_DIR}/src/
+)
 
-    add_executable(gles-unittests ${GLES_UNITTESTS_LIST})
-    set_target_properties(gles-unittests PROPERTIES
-        INCLUDE_DIRECTORIES "${GLES_UNITTESTS_INCLUDE_DIR}"
-        FOLDER "Tests"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-        COMPILE_DEFINITIONS "STANDALONE"
-    )
+add_executable(math-unittests ${MATH_UNITTESTS_LIST})
+set_target_properties(math-unittests PROPERTIES
+	INCLUDE_DIRECTORIES "${MATH_UNITTESTS_INCLUDE_DIR}"
+	FOLDER "Tests"
+	COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
+)
 
-    target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS})
-    if(ANDROID)
-        target_link_libraries(gles-unittests -landroid)
-    endif()
-endif(BUILD_TESTS)
-
-if(BUILD_TESTS)
-    # Math unit tests
-    set(MATH_UNITTESTS_LIST
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/unittests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
-    )
-
-    set(MATH_UNITTESTS_INCLUDE_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/
-    )
-
-    add_executable(math-unittests ${MATH_UNITTESTS_LIST})
-    set_target_properties(math-unittests PROPERTIES
-        INCLUDE_DIRECTORIES "${MATH_UNITTESTS_INCLUDE_DIR}"
-        FOLDER "Tests"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-    )
-
-    if(NOT WIN32)
-        target_link_libraries(math-unittests pthread)
-    endif()
+if(NOT WIN32)
+	target_link_libraries(math-unittests pthread)
 endif()
 
-if(BUILD_TESTS AND BUILD_VULKAN)
+if(BUILD_VULKAN)
     set(VK_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Device.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Driver.cpp
@@ -2239,4 +2212,5 @@ if(BUILD_TESTS AND BUILD_VULKAN)
     )
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
-endif(BUILD_TESTS AND BUILD_VULKAN)
+endif(BUILD_VULKAN)
+
