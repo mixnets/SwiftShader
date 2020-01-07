@@ -22,6 +22,30 @@
       "revId": "a7be9d868d7c0bcd285a9d5678e994fa67254955",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a42fc576_6d87b1d8",
+        "filename": "third_party/llvm-7.0/configs/darwin/include/llvm/Config/config.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-07T15:01:26Z",
+      "side": 1,
+      "message": "yes",
+      "parentUuid": "fdaa2727_cb8085a0",
+      "range": {
+        "startLine": 73,
+        "startChar": 53,
+        "endLine": 73,
+        "endChar": 54
+      },
+      "revId": "a7be9d868d7c0bcd285a9d5678e994fa67254955",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
