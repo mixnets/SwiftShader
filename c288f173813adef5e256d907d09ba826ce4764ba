@@ -22,6 +22,30 @@
       "revId": "c288f173813adef5e256d907d09ba826ce4764ba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79499f6f_214869dc",
+        "filename": "third_party/llvm-subzero/build/Android/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-07T14:06:45Z",
+      "side": 1,
+      "message": "This corresponds with the config.h files that we have for LLVM. It also avoids potential bugs when using #ifdef ENABLE_BACKTRACES\n\nAnyway, upstream LLVM produces config.h\u0027s which define this as 0, and I\u0027ve verified that the usage is correct, so I\u0027ll update this for consistency.",
+      "parentUuid": "1496e142_e161e606",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 30
+      },
+      "revId": "c288f173813adef5e256d907d09ba826ce4764ba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
