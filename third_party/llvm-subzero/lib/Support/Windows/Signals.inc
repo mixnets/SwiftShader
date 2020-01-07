@@ -217,6 +217,7 @@ enum {
 #endif
 };
 
+#if ENABLE_BACKTRACES
 static bool printStackTraceWithLLVMSymbolizer(llvm::raw_ostream &OS,
                                               HANDLE hProcess, HANDLE hThread,
                                               STACKFRAME64 &StackFrameOrig,
@@ -245,6 +246,7 @@ static bool printStackTraceWithLLVMSymbolizer(llvm::raw_ostream &OS,
 
   return printSymbolizedStackTrace(Argv0, &StackTrace[0], Depth, OS);
 }
+#endif  // ENABLE_BACKTRACES
 
 namespace {
 struct FindModuleData {
@@ -375,7 +377,7 @@ static void PrintStackTraceForThread(llvm::raw_ostream &OS, HANDLE hProcess,
 
     OS << '\n';
   }
-#endif
+#endif  // ENABLE_BACKTRACES
 }
 
 namespace llvm {
