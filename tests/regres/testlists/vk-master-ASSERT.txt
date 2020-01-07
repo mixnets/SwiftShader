@@ -1,0 +1,12 @@
+dEQP-VK.spirv_assembly.instruction.graphics.loop.break_frag
+dEQP-VK.spirv_assembly.instruction.graphics.loop.break_vert
+dEQP-VK.spirv_assembly.instruction.graphics.loop.continue_frag
+dEQP-VK.spirv_assembly.instruction.graphics.loop.continue_vert
+dEQP-VK.spirv_assembly.instruction.graphics.loop.multi_block_loop_construct_frag
+dEQP-VK.spirv_assembly.instruction.graphics.loop.multi_block_loop_construct_vert
+dEQP-VK.spirv_assembly.instruction.graphics.loop.return_frag
+dEQP-VK.spirv_assembly.instruction.graphics.loop.return_vert
+dEQP-VK.spirv_assembly.instruction.graphics.opphi.out_of_order_frag
+dEQP-VK.spirv_assembly.instruction.graphics.opphi.out_of_order_vert
+dEQP-VK.spirv_assembly.instruction.graphics.switch_block_order.out_of_order_frag
+dEQP-VK.spirv_assembly.instruction.graphics.switch_block_order.out_of_order_vert
