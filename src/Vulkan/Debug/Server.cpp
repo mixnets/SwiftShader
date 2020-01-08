@@ -32,7 +32,7 @@
 #define ENABLE_DAP_LOGGING 0
 
 #if ENABLE_DAP_LOGGING
-#	define DAP_LOG(msg, ...) printf(msg "\n", __VA_ARGS__)
+#	define DAP_LOG(msg, ...) printf(msg "\n", ##__VA_ARGS__)
 #else
 #	define DAP_LOG(...) \
 		do               \
@@ -104,6 +104,7 @@ Server::Impl::Impl(const std::shared_ptr<Context> &context, int port)
 		    dap::SetFunctionBreakpointsResponse response;
 		    for(auto const &bp : req.breakpoints)
 		    {
+			    DAP_LOG("Setting breakpoint for function '%s'", bp.name.c_str());
 			    lock.addFunctionBreakpoint(bp.name.c_str());
 			    response.breakpoints.push_back({});
 		    }
@@ -473,6 +474,7 @@ Server::Impl::Impl(const std::shared_ptr<Context> &context, int port)
 		ctx->addListener(this);
 	});
 	configurationDone.wait();
+	DAP_LOG("Debugger connection established");
 }
 
 Server::Impl::~Impl()
