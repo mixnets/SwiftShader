@@ -170,6 +170,16 @@ bool Image::canBindToMemory(DeviceMemory *pDeviceMemory) const
 	return pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes);
 }
 
+void Image::lockDeviceMemory() const
+{
+	deviceMemory->lock();
+}
+
+void Image::unlockDeviceMemory() const
+{
+	deviceMemory->unlock();
+}
+
 void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
 	deviceMemory = pDeviceMemory;

@@ -1001,6 +1001,11 @@ private:
 class CmdPipelineBarrier : public vk::CommandBuffer::Command
 {
 public:
+	CmdPipelineBarrier(const uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers)
+	    : imageMemoryBarrierCount(imageMemoryBarrierCount)
+	    , pImageMemoryBarriers(pImageMemoryBarriers)
+	{
+	}
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
 		// This is a very simple implementation that simply calls sw::Renderer::synchronize(),
@@ -1011,9 +1016,33 @@ public:
 		// Right now all buffers are read-only in drawcalls but a similar mechanism will be required once we support SSBOs.
 
 		// Also note that this would be a good moment to update cube map borders or decompress compressed textures, if necessary.
+
+		// If we are transfering to or from VK_QUEUE_FAMILY_EXTERNAL or VK_QUEUE_FAMILY_FOREIGN_EXT,
+		// we must lock/unlock the corresponding VkDeviceMemory
+		for(uint32_t i = 0; i < imageMemoryBarrierCount; i++)
+		{
+			if(pImageMemoryBarriers[i].srcQueueFamilyIndex != pImageMemoryBarriers[i].dstQueueFamilyIndex)
+			{
+				vk::Image *image = vk::Image::Cast(pImageMemoryBarriers[i].image);
+				if(pImageMemoryBarriers[i].dstQueueFamilyIndex == VK_QUEUE_FAMILY_EXTERNAL ||
+				   pImageMemoryBarriers[i].dstQueueFamilyIndex == VK_QUEUE_FAMILY_FOREIGN_EXT)
+				{
+					image->unlockDeviceMemory();
+				}
+				if(pImageMemoryBarriers[i].srcQueueFamilyIndex == VK_QUEUE_FAMILY_EXTERNAL ||
+				   pImageMemoryBarriers[i].srcQueueFamilyIndex == VK_QUEUE_FAMILY_FOREIGN_EXT)
+				{
+					image->lockDeviceMemory();
+				}
+			}
+		}
 	}
 
 	std::string description() override { return "vkCmdPipelineBarrier()"; }
+
+private:
+	uint32_t imageMemoryBarrierCount;
+	const VkImageMemoryBarrier *pImageMemoryBarriers;
 };
 
 class CmdSignalEvent : public vk::CommandBuffer::Command
@@ -1415,7 +1444,7 @@ void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelin
                                     uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers,
                                     uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers)
 {
-	addCommand<::CmdPipelineBarrier>();
+	addCommand<::CmdPipelineBarrier>(imageMemoryBarrierCount, pImageMemoryBarriers);
 }
 
 void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline *pipeline)

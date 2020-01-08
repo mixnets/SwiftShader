@@ -101,6 +101,9 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
   } else {
     sources += [ "VkSemaphoreExternalNone.hpp" ]
   }
+  if (is_mac) {
+    sources += [ "VkDeviceMemoryExternalMac.hpp" ]
+  }
 }
 
 swiftshader_shared_library("swiftshader_libvulkan") {
@@ -156,6 +159,8 @@ swiftshader_shared_library("swiftshader_libvulkan") {
       "-Wl,-exported_symbols_list," +
           rebase_path("vk_swiftshader.exports", root_build_dir),
     ]
+    sources += [ "VkDeviceMemoryExternalMac.mm" ]
+    libs = [ "IOSurface.framework" ]
   } else if (is_linux || is_fuchsia) {
     inputs = [
       "vk_swiftshader.lds",

@@ -83,6 +83,8 @@ public:
 	VkDeviceSize getLayerSize(VkImageAspectFlagBits aspect) const;
 	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
+	void lockDeviceMemory() const;
+	void unlockDeviceMemory() const;
 
 	void prepareForSampling(const VkImageSubresourceRange &subresourceRange);
 	const Image *getSampledImage(const vk::Format &imageViewFormat) const;

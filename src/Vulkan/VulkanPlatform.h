@@ -48,8 +48,9 @@ public:
 	typedef VkNonDispatchableHandle<object##Ptr> object; \
 	template class VkNonDispatchableHandle<object##Ptr>;
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vk_ext_iosurface_device_memory.h>
 #include <vulkan/vk_ext_provoking_vertex.h>
+#include <vulkan/vulkan.h>
 
 #ifdef Bool
 #undef Bool // b/127920555

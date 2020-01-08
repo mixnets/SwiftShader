@@ -826,6 +826,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				break;
 			}
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
+			case VK_STRUCTURE_TYPE_IOSURFACE_MEMORY_INFO:
+				// This is allowed on Mac
+				break;
 			default:
 				WARN("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
 				break;

@@ -13,38 +13,11 @@
 // limitations under the License.
 
 #include "VkDeviceMemory.hpp"
+#include "VkDeviceMemoryExternalMac.hpp"
 
 #include "VkConfig.h"
 
 namespace vk {
-
-// Base abstract interface for a device memory implementation.
-class DeviceMemory::ExternalBase
-{
-public:
-	virtual ~ExternalBase() = default;
-
-	// Allocate the memory according to |size|. On success return VK_SUCCESS
-	// and sets |*pBuffer|.
-	virtual VkResult allocate(size_t size, void **pBuffer) = 0;
-
-	// Deallocate previously allocated memory at |buffer|.
-	virtual void deallocate(void *buffer, size_t size) = 0;
-
-	// Return the handle type flag bit supported by this implementation.
-	// A value of 0 corresponds to non-external memory.
-	virtual VkExternalMemoryHandleTypeFlagBits getFlagBit() const = 0;
-
-#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	virtual VkResult exportFd(int *pFd) const
-	{
-		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
-	}
-#endif
-
-protected:
-	ExternalBase() = default;
-};
 
 // Small class describing a given DeviceMemory::ExternalBase derived class.
 // |typeFlagBit| corresponds to the external memory handle type.
@@ -117,6 +90,9 @@ public:
 	{
 		return typeFlagBit;
 	}
+
+	void lock() const override {}
+	void unlock() const override {}
 };
 
 }  // namespace vk
@@ -140,6 +116,10 @@ static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
 		return;
 	}
 #endif
+	if(parseCreateInfo<IOSurfaceExternalMemory>(pAllocateInfo, pTraits))
+	{
+		return;
+	}
 	parseCreateInfo<DeviceMemoryHostExternalBase>(pAllocateInfo, pTraits);
 }
 
@@ -227,6 +207,16 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 	// one specified during VkCreate{Image,Buffer}(), through a
 	// VkExternalMemory{Image,Buffer}AllocateInfo struct.
 	return (supportedHandleTypes & handle_type_bit) != 0;
+}
+
+void DeviceMemory::lock() const
+{
+	external->lock();
+}
+
+void DeviceMemory::unlock() const
+{
+	external->unlock();
 }
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
