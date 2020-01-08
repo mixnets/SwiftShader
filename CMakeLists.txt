@@ -360,7 +360,7 @@ if(MSVC)
     )
 
 else()
-    set_cpp_flag("--std=c++11")
+    set_cpp_flag("--std=c++14")
     set_cpp_flag("-fno-exceptions")
 
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS
