@@ -34,6 +34,24 @@
       "revId": "47076ffbb0136efcb22afc62bf5b2ee48795e22a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2aff9540_1a62ca95",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T15:34:47Z",
+      "side": 1,
+      "message": "That\u0027s a shame. Personally feel that the difficulty with realizing that the code modifies the ref is less bad than worrying about whether you can pass in nullptr or not. Ah well.",
+      "parentUuid": "9c479221_6655bf89",
+      "revId": "47076ffbb0136efcb22afc62bf5b2ee48795e22a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
