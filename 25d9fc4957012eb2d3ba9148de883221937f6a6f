@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "874202be_d471b94d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T17:39:00Z",
+      "side": 1,
+      "message": "Tests: line to have Regres verify the fixed cases?",
+      "revId": "25d9fc4957012eb2d3ba9148de883221937f6a6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
