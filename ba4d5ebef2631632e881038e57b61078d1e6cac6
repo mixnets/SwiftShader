@@ -34,6 +34,24 @@
       "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63c61699_62711f3a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T15:39:57Z",
+      "side": 1,
+      "message": "I don\u0027t know, it\u0027s less about collisions, and more about scope. We may grow this class, for instance, by adding a Strings[] array with the const char* strings that go with the names. Was going to suggest that instead of the initializer_list\u003cpair\u003c...\u003e\u003e below, but decided against it for now. The fact that enums spill their values into the outer scope of the enum is something I don\u0027t really like. It\u0027s why I tend to wrap them up in namespaces, but with enum class, we don\u0027t have to do that anymore (except when you want to implicitly convert the enum value to int). In the end, I don\u0027t think it\u0027s that much less fluent to have to add Names:: in there, and it\u0027s actually IDE-friendlier.\n\nI\u0027ll let you decide on this one.",
+      "parentUuid": "e6e7a742_74e0cd2d",
+      "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
