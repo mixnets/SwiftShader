@@ -86,15 +86,15 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
 
-option(BUILD_EGL "Build the EGL library" 1)
-option(BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
-option(BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
-option(BUILD_VULKAN "Build the Vulkan library" 1)
+option(SWS_BUILD_EGL "Build the EGL library" 1)
+option(SWS_BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
+option(SWS_BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
+option(SWS_BUILD_VULKAN "Build the Vulkan library" 1)
+option(SWS_BUILD_PVR "Fetch and build the PowerVR examples" 0)
 
 option(USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" 1)
 
-option(BUILD_SAMPLES "Build sample programs" 1)
-option(BUILD_TESTS "Build test programs" 1)
+option(SWS_BUILD_TESTS "Build test programs" 1)
 
 option(MSAN "Build with memory sanitizer" 0)
 option(ASAN "Build with address sanitizer" 0)
@@ -108,9 +108,9 @@ option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in 
 option(LESS_DEBUG_INFO "Generate less debug info to reduce file size" 0)
 option(ENABLE_VULKAN_DEBUGGER "Enable vulkan debugger support" 0)
 
-set(BUILD_MARL ${BUILD_VULKAN})
+set(BUILD_MARL ${SWS_BUILD_VULKAN})
 
-if(${BUILD_VULKAN} AND ${ENABLE_VULKAN_DEBUGGER})
+if(${SWS_BUILD_VULKAN} AND ${ENABLE_VULKAN_DEBUGGER})
     set(BUILD_CPPDAP 1)
 else()
     set(BUILD_CPPDAP 0)
@@ -152,7 +152,7 @@ if (NOT TARGET gtest)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRECT_SOURCE_DIR}/third_party/googletest)
     endif()
 endif()
 
@@ -163,7 +163,7 @@ if (NOT TARGET libbacktrace)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRECT_SOURCE_DIR}/third_party/libbacktrace)
     endif()
 endif()
 
@@ -208,6 +208,19 @@ function(DownloadBoost)
         endif()
     endif()
 endfunction()
+
+if (SWS_BUILD_PVR)
+    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples/.git)
+        message(WARNING "
+        third_party/PowerVR_Examples submodule missing.
+        Running 'git submodule update --init' to download it:
+        ")
+
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRECT_SOURCE_DIR}/third_party/PowerVR_Examples)
+    endif()
+    set(PVR_BUILD_EXAMPLES ON CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
+endif()
 
 ###########################################################
 # Convenience macros
@@ -1982,7 +1995,7 @@ else()
     set(LIB_PREFIX "lib")
 endif()
 
-if(BUILD_EGL)
+if(SWS_BUILD_EGL)
     add_library(libEGL SHARED ${EGL_LIST})
     set_target_properties(libEGL PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2011,7 +2024,7 @@ if(BUILD_EGL)
     )
 endif()
 
-if(BUILD_GLESv2)
+if(SWS_BUILD_GLESv2)
     add_library(libGLESv2 SHARED ${GLES2_LIST})
     set_target_properties(libGLESv2 PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2035,7 +2048,7 @@ if(BUILD_GLESv2)
     )
 endif()
 
-if(BUILD_GLES_CM)
+if(SWS_BUILD_GLES_CM)
     add_library(libGLES_CM SHARED ${GLES_CM_LIST})
     set_target_properties(libGLES_CM PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2067,7 +2080,7 @@ if(BUILD_CPPDAP)
     add_subdirectory(${CPPDAP_DIR})
 endif(BUILD_CPPDAP)
 
-if(BUILD_VULKAN)
+if(SWS_BUILD_VULKAN)
     if (NOT TARGET SPIRV-Tools)
         # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
         set(SPIRV-Headers_SOURCE_DIR "${THIRD_PARTY_DIR}/SPIRV-Headers")
@@ -2138,45 +2151,7 @@ endif()
 # Sample programs
 ###########################################################
 
-if(BUILD_SAMPLES)
-    if(WIN32)
-        add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_Windows.cpp)
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-            FOLDER "Samples"
-        )
-        target_link_libraries(OGLES2HelloAPI libEGL libGLESv2)
-        set_property(TARGET OGLES2HelloAPI APPEND_STRING PROPERTY LINK_FLAGS "/SUBSYSTEM:WINDOWS")
-        set(CMAKE_DEFAULT_STARTUP_PROJECT OGLES2HelloAPI)
-    elseif(LINUX)
-        add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_LinuxX11.cpp)
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-        )
-        target_link_libraries(OGLES2HelloAPI dl ${X11} libEGL libGLESv2)   # Explicitly link our "lib*" targets, not the platform provided "EGL" and "GLESv2"
-    elseif(APPLE)
-        add_executable(OGLES2HelloAPI MACOSX_BUNDLE
-            ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm
-            ${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib
-        )
-        set_target_properties(OGLES2HelloAPI PROPERTIES
-            INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS};-Wno-deprecated-declarations" # 'NSTitledWindowMask', 'NSClosableWindowMask' is deprecated
-            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-            MACOSX_BUNDLE_INFO_PLIST "${HELLO2_DIR}/Build/OSX/Info.plist"
-        )
-        target_link_libraries(OGLES2HelloAPI libEGL libGLESv2 ${OS_LIBS})
-        set_source_files_properties(${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib PROPERTIES
-            MACOSX_PACKAGE_LOCATION "Resources"
-        )
-    endif()
-endif()
-
-if(BUILD_TESTS)
+if(SWS_BUILD_TESTS)
     set(REACTOR_UNIT_TESTS_LIST
         ${SOURCE_DIR}/Reactor/ReactorUnitTests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
@@ -2201,7 +2176,7 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-if(BUILD_TESTS)
+if(SWS_BUILD_TESTS)
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
@@ -2227,9 +2202,9 @@ if(BUILD_TESTS)
     if(ANDROID)
         target_link_libraries(gles-unittests -landroid)
     endif()
-endif(BUILD_TESTS)
+endif(SWS_BUILD_TESTS)
 
-if(BUILD_TESTS)
+if(SWS_BUILD_TESTS)
     # Math unit tests
     set(MATH_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/main.cpp
@@ -2256,7 +2231,7 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-if(BUILD_TESTS AND BUILD_VULKAN)
+if(SWS_BUILD_TESTS AND SWS_BUILD_VULKAN)
     set(VK_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Device.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Driver.cpp
@@ -2284,4 +2259,4 @@ if(BUILD_TESTS AND BUILD_VULKAN)
     )
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
-endif(BUILD_TESTS AND BUILD_VULKAN)
+endif(SWS_BUILD_TESTS AND SWS_BUILD_VULKAN)
