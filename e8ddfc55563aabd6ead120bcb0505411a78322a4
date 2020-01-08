@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b1a2e66_cd24c1ac",
+        "filename": "src/Vulkan/Debug/Server.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T14:53:42Z",
+      "side": 1,
+      "message": "Whenever I see this, I know one compiler will complain about unsigned to signed conversion (size_t to int). You might want to cast stack.size() to int. Alternatively, you can use the strange but correct form that keeps i as a size_t without underflowing it in the loop body:\n\n```\nfor (size_t i \u003d stack.size(); i-- \u003e 0; )\n{\n}\n```\n\n(Just searched, and looks like it\u0027s relatively popular: https://stackoverflow.com/a/3626468)",
+      "revId": "e8ddfc55563aabd6ead120bcb0505411a78322a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ac34d93_b9d3de77",
+        "filename": "src/Vulkan/Debug/Thread.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T14:53:42Z",
+      "side": 1,
+      "message": "You probably don\u0027t care about perf here, but std::function may allocate, so if you\u0027re willing to make this function inline, you could make it a template with a Func type, which for lambas will make it free. Hopefully, someday, we\u0027ll get a proper function_view in C++ (like https://vittorioromeo.info/Misc/fnview0.html).",
+      "revId": "e8ddfc55563aabd6ead120bcb0505411a78322a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
