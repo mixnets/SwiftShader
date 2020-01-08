@@ -52,6 +52,7 @@ struct SampledImageDescriptor;
 
 namespace dbg {
 class Context;
+class File;
 }  // namespace dbg
 
 }  // namespace vk
@@ -389,6 +390,7 @@ public:
 		{
 			Unknown,
 			GLSLstd450,
+			OpenCLDebugInfo100
 		};
 
 		Name name;
@@ -748,7 +750,8 @@ private:
 	HandleMap<Object> defs;
 	HandleMap<Function> functions;
 	std::unordered_map<StringID, String> strings;
-	HandleMap<Extension> extensions;
+	HandleMap<Extension> extensionsByID;
+	std::unordered_set<Extension::Name> extensions;
 	Function::ID entryPoint;
 
 	const bool robustBufferAccess = true;
@@ -764,6 +767,8 @@ private:
 	void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 	void ApplyDecorationsForIdMember(Decorations *d, Type::ID id, uint32_t member) const;
 	void ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecorations *dd, Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds) const;
+
+	void DefineOpenCLDebugInfo100(const InsnIterator &insn);
 
 	// Creates an Object for the instruction's result in 'defs'.
 	void DefineResult(const InsnIterator &insn);
@@ -1031,8 +1036,8 @@ private:
 
 	Extension const &getExtension(Extension::ID id) const
 	{
-		auto it = extensions.find(id);
-		ASSERT_MSG(it != extensions.end(), "Unknown extension %d", id.value());
+		auto it = extensionsByID.find(id);
+		ASSERT_MSG(it != extensionsByID.end(), "Unknown extension %d", id.value());
 		return it->second;
 	}
 
@@ -1057,7 +1062,6 @@ private:
 	// Asserts if from is reachable and the edge does not exist.
 	RValue<SIMD::Int> GetActiveLaneMaskEdge(EmitState *state, Block::ID from, Block::ID to) const;
 
-	// Updates the current active lane mask.
 	void SetActiveLaneMask(RValue<SIMD::Int> mask, EmitState *state) const;
 
 	// Emit all the unvisited blocks (except for ignore) in DFS order,
@@ -1092,6 +1096,7 @@ private:
 	EmitResult EmitSelect(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitExtendedInstruction(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const;
+	EmitResult EmitOpenCLDebugInfo100(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitLine(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitAny(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitAll(InsnIterator insn, EmitState *state) const;
@@ -1214,8 +1219,8 @@ private:
 	// instruction.
 	void dbgDeclareResult(const InsnIterator &insn, Object::ID resultId) const;
 
-	// Impl holds forward declaration structs and pointers to state for the
-	// private implementations in the corresponding SpirvShaderXXX.cpp files.
+	// Impl holds private forward declaration structs that are implemented
+	// in the corresponding SpirvShaderXXX.cpp files.
 	// This allows access to the private members of the SpirvShader, without
 	// littering the header with implementation details.
 	struct Impl

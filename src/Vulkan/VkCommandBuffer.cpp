@@ -626,6 +626,7 @@ public:
 
 			executionState.renderer->advanceInstanceAttributes(context.input);
 		}
+		executionState.renderer->synchronize();
 	}
 };
 
