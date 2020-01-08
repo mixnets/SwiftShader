@@ -129,6 +129,30 @@
     },
     {
       "key": {
+        "uuid": "0cf23d1b_92955796",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T22:36:01Z",
+      "side": 1,
+      "message": "\u003e Note we\u0027re the only users of the CMake build files\n\nNope, we\u0027re not.\n\nhttps://github.com/google/amber/blob/c6c570dcf0e70000d62274aa3ae75c4c76e85174/third_party/CMakeLists.txt#L68\n\n\u003e How about BUILD_SWIFTSHADER_EGL etc?\n\nI don\u0027t mind using the full name, but should we keep the project at the beginning for consistency (SWIFTSHADER_BUILD_EGL)? Marl prefixes all flags with MARL_, e.g. MARL_ASAN.",
+      "parentUuid": "83dd1d9f_309e1943",
+      "range": {
+        "startLine": 20,
+        "startChar": 55,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "763d22e5_b5f50f9a",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
