@@ -19,6 +19,69 @@
     },
     {
       "key": {
+        "uuid": "69a07d03_89ca648a",
+        "filename": ".gitmodules",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T22:19:33Z",
+      "side": 1,
+      "message": "uber-nit: separate by a blank line?",
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "36f046de_18ba7e94",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T22:19:33Z",
+      "side": 1,
+      "message": "I\u0027m assuming they don\u0027t run with SwiftShader unless the ICD has been configured? I wonder if we can specify a path as part of the build to avoid requiring any further setup.\n\nSomething to look into after this lands.",
+      "range": {
+        "startLine": 14,
+        "startChar": 29,
+        "endLine": 14,
+        "endChar": 35
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63e1b7b6_a811d7c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T22:19:33Z",
+      "side": 1,
+      "message": "Can this be done automatically?\n\nAnyway, probably a topic for a follow-up change. This seems OK as a starting point.",
+      "range": {
+        "startLine": 16,
+        "startChar": 50,
+        "endLine": 18,
+        "endChar": 26
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f9e14f2e_426d78cf",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
