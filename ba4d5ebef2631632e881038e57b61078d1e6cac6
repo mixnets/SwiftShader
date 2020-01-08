@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2064931a_787c20e6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T15:15:55Z",
+      "side": 1,
+      "message": "Can we use an enum class instead? I\u0027m not a fan of enums in a class where the values are at the same level as other names in that same class -- for instance, Extension::ID and Extension::Unknown. With enum class here, it becomes Extension::Name::Unknown.",
+      "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
