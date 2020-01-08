@@ -162,6 +162,28 @@ std::vector<uint32_t> preprocessSpirv(
     std::vector<uint32_t> const &code,
     VkSpecializationInfo const *specializationInfo)
 {
+	if(true)
+	{
+		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
+		core.SetMessageConsumer([](spv_message_level_t level, const char *, const spv_position_t &p, const char *m) {
+			switch(level)
+			{
+				case SPV_MSG_FATAL: vk::warn("SPIR-V FATAL: %d:%d %s\n", int(p.line), int(p.column), m);
+				case SPV_MSG_INTERNAL_ERROR: vk::warn("SPIR-V INTERNAL_ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
+				case SPV_MSG_ERROR: vk::warn("SPIR-V ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
+				case SPV_MSG_WARNING: vk::warn("SPIR-V WARNING: %d:%d %s\n", int(p.line), int(p.column), m);
+				case SPV_MSG_INFO: vk::trace("SPIR-V INFO: %d:%d %s\n", int(p.line), int(p.column), m);
+				case SPV_MSG_DEBUG: vk::trace("SPIR-V DEBUG: %d:%d %s\n", int(p.line), int(p.column), m);
+				default: vk::trace("SPIR-V MESSAGE: %d:%d %s\n", int(p.line), int(p.column), m);
+			}
+		});
+		std::string dis;
+		core.Disassemble(code, &dis, SPV_BINARY_TO_TEXT_OPTION_NONE);
+		std::cout << "SPIR-V: " << dis << std::endl;
+	}
+
+	return code;  // HACK: DebugInfo not currently supported by spirv-opt.
+
 	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
 
 	opt.SetMessageConsumer([](spv_message_level_t level, const char *, const spv_position_t &p, const char *m) {
@@ -196,7 +218,9 @@ std::vector<uint32_t> preprocessSpirv(
 	opt.RegisterPerformancePasses();
 
 	std::vector<uint32_t> optimized;
-	opt.Run(code.data(), code.size(), &optimized);
+	spvtools::OptimizerOptions options;
+	options.set_run_validator(false);
+	opt.Run(code.data(), code.size(), &optimized, options);
 
 	if(false)
 	{
