@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0ed8ef5_98d8a935",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-08T18:03:40Z",
+      "side": 1,
+      "message": "Nit: B10G11R11_UFLOAT\n\nThis is mangled in a few places in the commit message.",
+      "revId": "11899608284f8adc2c7888ba6648f5d19ca403eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
