@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "31eeb3dc_d95baba4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T18:33:54Z",
+      "side": 1,
+      "message": "No worries. I sometimes split a refactoring like that into an earlier CL when it improves readability of the functional change. I\u0027m fine with keep this as-is.",
+      "parentUuid": "5c03eeac_8dec1ce8",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 56
+      },
+      "revId": "42f19018448f46cccb20a2d6a33eb8c50f690b20",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5dec05fa_27c5262b",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
