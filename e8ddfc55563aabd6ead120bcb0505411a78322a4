@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ca0ecb85_6f1031b5",
+        "filename": "src/Vulkan/Debug/Server.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:42:31Z",
+      "side": 1,
+      "message": "Done. I went with the cast, because I think it\u0027s slightly easier to brain-parse.",
+      "parentUuid": "3b1a2e66_cd24c1ac",
+      "revId": "e8ddfc55563aabd6ead120bcb0505411a78322a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9ac34d93_b9d3de77",
         "filename": "src/Vulkan/Debug/Thread.hpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "e8ddfc55563aabd6ead120bcb0505411a78322a4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "283f5f61_66495251",
+        "filename": "src/Vulkan/Debug/Thread.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:42:31Z",
+      "side": 1,
+      "message": "Ack. There are a few reasons why I didn\u0027t do this:\n• Function template arguments do not declare their signature, and instead require documenting. Getting the signature wrong leads to horrible compile errors.\n• I don\u0027t want implementation in the header.\n• I did lots of investigation into std::function\u003c\u003e implementations as part of Marl. MSVC, GCC and Clang will all avoid heap allocations if the lambda capture is \u003c\u003d 3 pointers.\n• The debug stuff is currently entirely unoptimized, and this is a completely negligible optimization.",
+      "parentUuid": "9ac34d93_b9d3de77",
+      "revId": "e8ddfc55563aabd6ead120bcb0505411a78322a4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
