@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a048f06a_1dfc7c1e",
+        "filename": "src/Vulkan/Debug/Value.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T14:28:03Z",
+      "side": 1,
+      "message": "You should use std::make_shared to make 1 heap alloc instead of 2. It\u0027s also cleaner. Once we move to C++14 (which we really should do soon!), we can also use std::make_unique for unique_ptrs.",
+      "revId": "9ed607b8c168e773428a9eb99ec304ae47495f90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
