@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5c03eeac_8dec1ce8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-08T18:24:44Z",
+      "side": 1,
+      "message": "Ok. Sorry about that, but I\u0027d like to keep it if possible. It helped me read the code while debugging this.",
+      "parentUuid": "be7c87b6_25424877",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 56
+      },
+      "revId": "42f19018448f46cccb20a2d6a33eb8c50f690b20",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5dec05fa_27c5262b",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "42f19018448f46cccb20a2d6a33eb8c50f690b20",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32ab8b5d_84d2dcef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-08T18:24:44Z",
+      "side": 1,
+      "message": "Yes, almost every test in dEQP-VK.pipeline.blend.format.b10g11r11* using VK_BLEND_OP_SUBTRACT or VK_BLEND_OP_REVERSE_SUBTRACT was failing without this.",
+      "parentUuid": "5dec05fa_27c5262b",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 33
+      },
+      "revId": "42f19018448f46cccb20a2d6a33eb8c50f690b20",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
