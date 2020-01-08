@@ -855,6 +855,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				// Ignore
 				break;
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+			case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
+			{
+				auto *importInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(allocationInfo);
+				if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT)
+				{
+					UNSUPPORTED("importInfo->handleType %u", importInfo->handleType);
+					return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+				}
+				break;
+			}
 			default:
 				WARN("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
 				break;
