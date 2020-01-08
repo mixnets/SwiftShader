@@ -86,31 +86,32 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
 
-option(BUILD_EGL "Build the EGL library" 1)
-option(BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
-option(BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
-option(BUILD_VULKAN "Build the Vulkan library" 1)
+option(SWIFTSHADER_BUILD_EGL "Build the EGL library" 1)
+option(SWIFTSHADER_BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
+option(SWIFTSHADER_BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
+option(SWIFTSHADER_BUILD_VULKAN "Build the Vulkan library" 1)
+option(SWIFTSHADER_BUILD_PVR "Fetch and build the PowerVR examples" 0)
 
-option(USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" 1)
+option(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" 1)
 
-option(BUILD_SAMPLES "Build sample programs" 1)
-option(BUILD_TESTS "Build test programs" 1)
+option(SWIFTSHADER_BUILD_SAMPLES "Build sample programs" 1)
+option(SWIFTSHADER_BUILD_TESTS "Build test programs" 1)
 
-option(MSAN "Build with memory sanitizer" 0)
-option(ASAN "Build with address sanitizer" 0)
-option(TSAN "Build with thread sanitizer" 0)
-option(UBSAN "Build with undefined behavior sanitizer" 0)
-option(WARNINGS_AS_ERRORS "Treat all warnings as errors" 1)
-option(DCHECK_ALWAYS_ON "Check validation macros even in release builds" 0)
+option(SWIFTSHADER_MSAN "Build with memory sanitizer" 0)
+option(SWIFTSHADER_ASAN "Build with address sanitizer" 0)
+option(SWIFTSHADER_TSAN "Build with thread sanitizer" 0)
+option(SWIFTSHADER_UBSAN "Build with undefined behavior sanitizer" 0)
+option(SWIFTSHADER_WARNINGS_AS_ERRORS "Treat all warnings as errors" 1)
+option(SWIFTSHADER_DCHECK_ALWAYS_ON "Check validation macros even in release builds" 0)
 option(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" 0)
 option(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" 0)
 option(REACTOR_VERIFY_LLVM_IR "Check reactor-generated LLVM IR is valid even in release builds" 0)
-option(LESS_DEBUG_INFO "Generate less debug info to reduce file size" 0)
-option(ENABLE_VULKAN_DEBUGGER "Enable vulkan debugger support" 0)
+option(SWIFTSHADER_LESS_DEBUG_INFO "Generate less debug info to reduce file size" 0)
+option(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER "Enable vulkan debugger support" 0)
 
-set(BUILD_MARL ${BUILD_VULKAN})
+set(BUILD_MARL ${SWIFTSHADER_BUILD_VULKAN})
 
-if(${BUILD_VULKAN} AND ${ENABLE_VULKAN_DEBUGGER})
+if(${SWIFTSHADER_BUILD_VULKAN} AND ${SWIFTSHADER_ENABLE_VULKAN_DEBUGGER})
     set(BUILD_CPPDAP 1)
 else()
     set(BUILD_CPPDAP 0)
@@ -152,7 +153,7 @@ if (NOT TARGET gtest)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest)
     endif()
 endif()
 
@@ -163,7 +164,7 @@ if (NOT TARGET libbacktrace)
       Running 'git submodule update --init' to download it:
         ")
 
-        execute_process(COMMAND git submodule update --init)
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libbacktrace)
     endif()
 endif()
 
@@ -209,6 +210,19 @@ function(DownloadBoost)
     endif()
 endfunction()
 
+if (SWIFTSHADER_BUILD_PVR)
+    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples/.git)
+        message(WARNING "
+        third_party/PowerVR_Examples submodule missing.
+        Running 'git submodule update --init' to download it:
+        ")
+
+        execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
+    endif()
+    set(PVR_BUILD_EXAMPLES ON CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
+endif()
+
 ###########################################################
 # Convenience macros
 ###########################################################
@@ -239,7 +253,7 @@ macro(set_shared_library_export_map TARGET DIR)
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS "-exported_symbols_list ${DIR}/${TARGET}.exports")
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_DEPENDS "${DIR}/${TARGET}.exports;")
         # Don't allow undefined symbols, unless it's a Sanitizer build.
-        if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
+        if(NOT SWIFTSHADER_MSAN AND NOT SWIFTSHADER_ASAN AND NOT SWIFTSHADER_TSAN AND NOT SWIFTSHADER_UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-undefined,error")
         endif()
     elseif(LINUX)
@@ -265,13 +279,13 @@ macro(set_shared_library_export_map TARGET DIR)
         set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--gc-sections")
 
         # Don't allow undefined symbols, unless it's a Sanitizer build.
-        if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
+        if(NOT SWIFTSHADER_MSAN AND NOT SWIFTSHADER_ASAN AND NOT SWIFTSHADER_TSAN AND NOT SWIFTSHADER_UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-undefined")
         endif()
     endif()
 endmacro()
 
-if(USE_GROUP_SOURCES)
+if(SWIFTSHADER_USE_GROUP_SOURCES)
     group_all_sources(src)
 endif()
 
@@ -328,7 +342,7 @@ if(MSVC)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
     add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)  # Disable MSVC warnings about std::aligned_storage being broken before VS 2017 15.8
 
-    if(WARNINGS_AS_ERRORS)
+    if(SWIFTSHADER_WARNINGS_AS_ERRORS)
         set_cpp_flag("/WX") # Treat all warnings as errors
     endif()
 
@@ -417,7 +431,7 @@ else()
         set_cpp_flag("-fPIC")
     endif()
 
-    if(LESS_DEBUG_INFO)
+    if(SWIFTSHADER_LESS_DEBUG_INFO)
         # Use -g1 to be able to get stack traces
         set_cpp_flag("-g -g1" DEBUG)
         set_cpp_flag("-g -g1" RELWITHDEBINFO)
@@ -432,11 +446,11 @@ else()
         set_cpp_flag("-s" RELEASE)
     endif()
 
-    if(WARNINGS_AS_ERRORS)
+    if(SWIFTSHADER_WARNINGS_AS_ERRORS)
         set_cpp_flag("-Werror") # Treat all warnings as errors
     endif()
 
-    if(DCHECK_ALWAYS_ON)
+    if(SWIFTSHADER_DCHECK_ALWAYS_ON)
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
     endif()
 
@@ -472,16 +486,16 @@ else()
     set_cpp_flag("-fdata-sections" RELEASE)
     set_cpp_flag("-fomit-frame-pointer" RELEASE)
 
-    if(MSAN)
+    if(SWIFTSHADER_MSAN)
         set_cpp_flag("-fsanitize=memory")
         set_linker_flag("-fsanitize=memory")
-    elseif(ASAN)
+    elseif(SWIFTSHADER_ASAN)
         set_cpp_flag("-fsanitize=address")
         set_linker_flag("-fsanitize=address")
-    elseif(TSAN)
+    elseif(SWIFTSHADER_TSAN)
         set_cpp_flag("-fsanitize=thread")
         set_linker_flag("-fsanitize=thread")
-    elseif(UBSAN)
+    elseif(SWIFTSHADER_UBSAN)
         set_cpp_flag("-fsanitize=undefined")
         set_linker_flag("-fsanitize=undefined")
     endif()
@@ -1796,7 +1810,7 @@ file(GLOB VULKAN_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
 
-if(ENABLE_VULKAN_DEBUGGER)
+if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
     file(GLOB_RECURSE VULKAN_DEBUG_LIST
         ${VULKAN_DIR}/Debug/*.cpp
         ${VULKAN_DIR}/Debug/*.h
@@ -1804,7 +1818,7 @@ if(ENABLE_VULKAN_DEBUGGER)
     )
     list(APPEND VULKAN_LIST ${VULKAN_DEBUG_LIST})
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_VK_DEBUGGER")
-endif(ENABLE_VULKAN_DEBUGGER)
+endif(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
 
 if(LINUX OR ANDROID)
     list(APPEND VULKAN_LIST
@@ -1982,7 +1996,7 @@ else()
     set(LIB_PREFIX "lib")
 endif()
 
-if(BUILD_EGL)
+if(SWIFTSHADER_BUILD_EGL)
     add_library(libEGL SHARED ${EGL_LIST})
     set_target_properties(libEGL PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2011,7 +2025,7 @@ if(BUILD_EGL)
     )
 endif()
 
-if(BUILD_GLESv2)
+if(SWIFTSHADER_BUILD_GLESv2)
     add_library(libGLESv2 SHARED ${GLES2_LIST})
     set_target_properties(libGLESv2 PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2035,7 +2049,7 @@ if(BUILD_GLESv2)
     )
 endif()
 
-if(BUILD_GLES_CM)
+if(SWIFTSHADER_BUILD_GLES_CM)
     add_library(libGLES_CM SHARED ${GLES_CM_LIST})
     set_target_properties(libGLES_CM PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
@@ -2067,7 +2081,7 @@ if(BUILD_CPPDAP)
     add_subdirectory(${CPPDAP_DIR})
 endif(BUILD_CPPDAP)
 
-if(BUILD_VULKAN)
+if(SWIFTSHADER_BUILD_VULKAN)
     if (NOT TARGET SPIRV-Tools)
         # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
         set(SPIRV-Headers_SOURCE_DIR "${THIRD_PARTY_DIR}/SPIRV-Headers")
@@ -2105,9 +2119,9 @@ if(BUILD_VULKAN)
     set_shared_library_export_map(vk_swiftshader ${SOURCE_DIR}/Vulkan)
 
     set(VK_SWIFTSHADER_LIBS ${Reactor} marl ${OS_LIBS} SPIRV-Tools SPIRV-Tools-opt)
-    if(ENABLE_VULKAN_DEBUGGER)
+    if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
         list(APPEND VK_SWIFTSHADER_LIBS cppdap)
-    endif(ENABLE_VULKAN_DEBUGGER)
+    endif(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
     target_link_libraries(vk_swiftshader ${VK_SWIFTSHADER_LIBS})
 
     add_custom_command(
@@ -2138,7 +2152,7 @@ endif()
 # Sample programs
 ###########################################################
 
-if(BUILD_SAMPLES)
+if(SWIFTSHADER_BUILD_SAMPLES)
     if(WIN32)
         add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_Windows.cpp)
         set_target_properties(OGLES2HelloAPI PROPERTIES
@@ -2176,7 +2190,8 @@ if(BUILD_SAMPLES)
     endif()
 endif()
 
-if(BUILD_TESTS)
+
+if(SWIFTSHADER_BUILD_TESTS)
     set(REACTOR_UNIT_TESTS_LIST
         ${SOURCE_DIR}/Reactor/ReactorUnitTests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
@@ -2201,7 +2216,7 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-if(BUILD_TESTS)
+if(SWIFTSHADER_BUILD_TESTS)
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
@@ -2227,9 +2242,9 @@ if(BUILD_TESTS)
     if(ANDROID)
         target_link_libraries(gles-unittests -landroid)
     endif()
-endif(BUILD_TESTS)
+endif(SWIFTSHADER_BUILD_TESTS)
 
-if(BUILD_TESTS)
+if(SWIFTSHADER_BUILD_TESTS)
     # Math unit tests
     set(MATH_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/main.cpp
@@ -2256,7 +2271,7 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-if(BUILD_TESTS AND BUILD_VULKAN)
+if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
     set(VK_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Device.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Driver.cpp
@@ -2284,4 +2299,4 @@ if(BUILD_TESTS AND BUILD_VULKAN)
     )
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
-endif(BUILD_TESTS AND BUILD_VULKAN)
+endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
