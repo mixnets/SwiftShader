@@ -16,6 +16,24 @@
       "revId": "9ed607b8c168e773428a9eb99ec304ae47495f90",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4746ba32_2f7f1d81",
+        "filename": "src/Vulkan/Debug/Value.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:29:15Z",
+      "side": 1,
+      "message": "Agreed. I think this moved from a unique_ptr to a shared_ptr, and I didn\u0027t change it.",
+      "parentUuid": "a048f06a_1dfc7c1e",
+      "revId": "9ed607b8c168e773428a9eb99ec304ae47495f90",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
