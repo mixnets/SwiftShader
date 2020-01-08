@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5855f87_b0272906",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-08T15:18:49Z",
+      "side": 1,
+      "message": "Not for this change, as I see most of the functions already do this, but I think state should be a reference, and not a pointer, as we assume it\u0027s valid in the body of the functions.",
+      "revId": "47076ffbb0136efcb22afc62bf5b2ee48795e22a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
