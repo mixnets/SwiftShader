@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "31c8b6f3_624ef89f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T04:26:40Z",
+      "side": 1,
+      "message": "nit: PowerVR is an Imagination company division, so this reads a bit weird.\n\nI would add \"SDK\" or \"samples\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 33
+      },
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebc6421d_7495abe4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T04:26:40Z",
+      "side": 1,
+      "message": "Let\u0027s do that as a separate CL. It makes this one easier to review and lets us separately verify that the new samples work as desired as a replacement. Also I think you\u0027re missing changes to the Visual Studio project, causing that build to likely break (while this CL should be the last major step that will allow us to remove it entirely, I think we should announce it on the public mailing list to give external contributors a heads-up, and ensure our documentation is up to date).",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 36
+      },
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8c179e19_465363e4",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -22,6 +68,52 @@
       "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d364b8c6_dd6cfdf9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T04:26:40Z",
+      "side": 1,
+      "message": "_SAMPLES or _SDK",
+      "range": {
+        "startLine": 13,
+        "startChar": 37,
+        "endLine": 13,
+        "endChar": 44
+      },
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "584c9b17_82e9b2a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-08T04:26:40Z",
+      "side": 1,
+      "message": "nit: b/141361933\n\nI intend to enforce this in the near future with https://swiftshader-review.googlesource.com/c/SwiftShader/+/39910",
+      "range": {
+        "startLine": 23,
+        "startChar": 5,
+        "endLine": 23,
+        "endChar": 14
+      },
+      "revId": "a77799a17fcef6bb4d281cc4e89ff0ad5522569b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
