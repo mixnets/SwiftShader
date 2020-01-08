@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acd38921_916cbd0f",
+        "filename": ".gitmodules",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T22:17:05Z",
+      "side": 1,
+      "message": "Übernit: Can we either remove the newlines between the other submodule definitions, or add a blank newline above this for consistency\u0027s sake.",
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9e14f2e_426d78cf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T22:17:05Z",
+      "side": 1,
+      "message": "I personally would have used the SS_ prefix, which I think is a more common abbreviation for the project. You might want to wait for Nicolas\u0027 opinion before making any changes here though.",
+      "range": {
+        "startLine": 20,
+        "startChar": 55,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "763d22e5_b5f50f9a",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T22:17:05Z",
+      "side": 1,
+      "message": "If we\u0027re prefixing options, I\u0027d probably recommend prefixing all of these. MSAN and the like especially.",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 65
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
