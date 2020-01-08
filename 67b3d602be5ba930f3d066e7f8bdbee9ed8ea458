@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7cbcb6a5_5acc7971",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-08T17:58:12Z",
+      "side": 1,
+      "message": "3 bit writemask",
+      "revId": "67b3d602be5ba930f3d066e7f8bdbee9ed8ea458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
