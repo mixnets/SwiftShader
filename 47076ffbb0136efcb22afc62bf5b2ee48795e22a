@@ -16,6 +16,24 @@
       "revId": "47076ffbb0136efcb22afc62bf5b2ee48795e22a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c479221_6655bf89",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:27:34Z",
+      "side": 1,
+      "message": "I agree with this - it\u0027s a pattern I\u0027ve used before. However, it isn\u0027t the google style:\nhttps://google.github.io/styleguide/cppguide.html#Reference_Arguments",
+      "parentUuid": "b5855f87_b0272906",
+      "revId": "47076ffbb0136efcb22afc62bf5b2ee48795e22a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
