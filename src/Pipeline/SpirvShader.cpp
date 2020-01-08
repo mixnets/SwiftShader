@@ -428,6 +428,7 @@ SpirvShader::SpirvShader(
 				auto ext = Extension{ Extension::Unknown };
 				for(auto it : std::initializer_list<std::pair<const char *, Extension::Name>>{
 				        { "GLSL.std.450", Extension::GLSLstd450 },
+				        { "OpenCL.DebugInfo.100", Extension::OpenCLDebugInfo100 },
 				    })
 				{
 					if(0 == strcmp(name, it.first))
@@ -454,7 +455,6 @@ SpirvShader::SpirvShader(
 			case spv::OpModuleProcessed:
 				// No semantic impact
 				break;
-
 			case spv::OpString:
 				strings.emplace(insn.word(1), insn.string(2));
 				break;
@@ -681,6 +681,9 @@ SpirvShader::SpirvShader(
 				{
 					case Extension::GLSLstd450:
 						DefineResult(insn);
+						break;
+					case Extension::OpenCLDebugInfo100:
+						DefineOpenCLDebugInfo100(insn);
 						break;
 					default:
 						UNREACHABLE("Unexpected Extension name %d", int(getExtension(insn.word(3)).name));
@@ -2346,6 +2349,8 @@ SpirvShader::EmitResult SpirvShader::EmitExtendedInstruction(InsnIterator insn, 
 	{
 		case Extension::GLSLstd450:
 			return EmitExtGLSLstd450(insn, state);
+		case Extension::OpenCLDebugInfo100:
+			return EmitOpenCLDebugInfo100(insn, state);
 		default:
 			UNREACHABLE("Unknown Extension::Name<%d>", int(ext.name));
 	}
