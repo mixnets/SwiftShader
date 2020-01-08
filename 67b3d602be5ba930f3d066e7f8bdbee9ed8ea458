@@ -16,6 +16,24 @@
       "revId": "67b3d602be5ba930f3d066e7f8bdbee9ed8ea458",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "feafca66_c4c20202",
+        "filename": "src/Pipeline/Constants.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-08T18:00:11Z",
+      "side": 1,
+      "message": "Good catch, I forgot to update the comment when I removed the alpha from it locally.",
+      "parentUuid": "7cbcb6a5_5acc7971",
+      "revId": "67b3d602be5ba930f3d066e7f8bdbee9ed8ea458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
