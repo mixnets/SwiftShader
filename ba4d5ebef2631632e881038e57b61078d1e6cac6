@@ -52,6 +52,24 @@
       "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81b0984f_3c471166",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:46:30Z",
+      "side": 1,
+      "message": "If we grow the class, and it starts to get confusing I\u0027d certainly agree and would be happy to make the change. Currently the class only acts as a enum namespace along with a single variable of said enum, so until then, I personally prefer the succinct version.",
+      "parentUuid": "63c61699_62711f3a",
+      "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
