@@ -16,6 +16,24 @@
       "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6e7a742_74e0cd2d",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-08T15:32:25Z",
+      "side": 1,
+      "message": "Given that Extension is compact, this seems unnecessarily verbose.\nIt seemed fluent enough for Extension::Unknown, Extension::GLSLstd450, etc, and I don\u0027t think there\u0027s much room for symbol collision?",
+      "parentUuid": "2064931a_787c20e6",
+      "revId": "ba4d5ebef2631632e881038e57b61078d1e6cac6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
