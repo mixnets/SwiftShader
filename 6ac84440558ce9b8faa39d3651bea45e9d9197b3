@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "234280e5_37b5d4d6",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1722,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-09T23:21:11Z",
+      "side": 1,
+      "message": "(btw, technically that\u0027s shifting by octal 0, but that\u0027s okay in this case)",
+      "parentUuid": "1d062604_43626a45",
+      "range": {
+        "startLine": 1722,
+        "startChar": 19,
+        "endLine": 1722,
+        "endChar": 22
+      },
+      "revId": "6ac84440558ce9b8faa39d3651bea45e9d9197b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6a553a72_d1e3b874",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 4
