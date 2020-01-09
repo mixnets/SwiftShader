@@ -177,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "a178a0bb_0f62ab99",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-09T04:08:54Z",
+      "side": 1,
+      "message": "\u003e Nope, we\u0027re not.\n\nThanks for the heads up!\n\n\u003e should we keep the project at the beginning for consistency\n\nSounds good. I thought it would be easier to read when starting with verb, but that makes it harder to see which options belong together with which project, and we can just read the prefix as a namespace instead. In fact it appears there\u0027s support for using :: for target namespace in CMake: https://stackoverflow.com/questions/48524359/naming-convention-for-components-and-namespaces-in-cmake",
+      "parentUuid": "07618138_8a00f987",
+      "range": {
+        "startLine": 20,
+        "startChar": 55,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "763d22e5_b5f50f9a",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
