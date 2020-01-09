@@ -47,7 +47,7 @@ cc_defaults {
             relative_install_path: "egl",
             header_libs: [
                 "swiftshader_platform_headers",
-		"libnativebase_headers",
+                "libnativebase_headers",
             ],
             shared_libs: [
                 "libnativewindow",
@@ -65,7 +65,7 @@ cc_defaults {
             header_libs: [
                 "swiftshader_host_headers",
                 "swiftshader_platform_headers",
-		"libnativebase_headers",
+                "libnativebase_headers",
             ],
 
             // Pretend to build for Android
@@ -542,6 +542,7 @@ cc_defaults {
 
     version_script: "Vulkan/vk_swiftshader.lds",
 
+
     generated_headers: [ "commit_header" ],
 
     target: {
@@ -559,6 +560,9 @@ cc_defaults {
                 "libsync",
                 "liblog",
             ],
+            static_libs: [
+                "libarect",
+            ],
         },
     },
 }
@@ -568,6 +572,7 @@ cc_defaults {
 
     cflags: [
         "-DLOG_TAG=\"swiftshader\"",
+        "-DSWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER",
     ],
 
     srcs: [
