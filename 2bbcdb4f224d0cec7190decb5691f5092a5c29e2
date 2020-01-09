@@ -59,6 +59,24 @@
     },
     {
       "key": {
+        "uuid": "05a8297e_6176e7c5",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:13:02Z",
+      "side": 1,
+      "message": "I want this to be a build option for now because it\u0027s destabilizing. Maybe I get to drop all of this out eventually.",
+      "parentUuid": "d3a62121_5bf94462",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fa86464a_0ad1571a",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
