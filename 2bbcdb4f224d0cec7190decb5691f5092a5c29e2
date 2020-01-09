@@ -119,6 +119,24 @@
     },
     {
       "key": {
+        "uuid": "a07af0ed_e117c96e",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:31:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "05a8297e_6176e7c5",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa86464a_0ad1571a",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -154,6 +172,24 @@
     },
     {
       "key": {
+        "uuid": "897f12d1_7237d0f5",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:31:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a7c3ff9e_2fb11c9a",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0316466_aaeed354",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -168,6 +204,24 @@
       "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8515822a_fccc582d",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:31:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0316466_aaeed354",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
