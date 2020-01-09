@@ -42,6 +42,23 @@
     },
     {
       "key": {
+        "uuid": "d3a62121_5bf94462",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-01-09T20:54:38Z",
+      "side": 1,
+      "message": "FWIW, the SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD is used because several platforms can implement the same extension (Linux, Android and OSX) though their implementation might be different (e.g. one could implement an OS X based on Mac shared memory regions, which are different from Linux/Android memfd-based ones). Having the macro there avoids repeating platform-specific #if checks in other parts of the code (e.g. libVulkan.cpp).\n\nFor something like VK_ANDROID_xxx extensions, maybe just checking for __ANDROID__ would be enough, since it is unlikely this extension will be implemented on different systems?\n\nI don\u0027t have strong opinions here, but I plan to add support for VK_FUCHSIA_external_memory and to check directly for __Fuchsia__, instead of introducing SWIFTSHADER_EXTERNAL_MEMORY_ZIRCON_EVENT due to this, so let me know what you prefer, and I\u0027ll follow the same convention to keep everything consistent.",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fa86464a_0ad1571a",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -56,6 +73,41 @@
       "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c3ff9e_2fb11c9a",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-01-09T20:54:38Z",
+      "side": 1,
+      "message": "Yes that was exactly the reason. You may need to add the ExternalAndroid.hpp to the BUILD.gn file though.\n\nI recommend changing from headers to source fils in a different CL that would only deal with build config files, if possible.",
+      "parentUuid": "fa86464a_0ad1571a",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0316466_aaeed354",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-01-09T20:54:38Z",
+      "side": 1,
+      "message": "I think this field should be default-initialized to nullptr",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
