@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "993314a4_487540af",
+        "filename": "tests/kokoro/macos/continuous.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-09T18:18:15Z",
+      "side": 1,
+      "message": "I\u0027m thinking we can still do this as well. In case of unit test crashes that we can\u0027t easily reproduce locally AND don\u0027t provide enough info in the Koroko logs AND are too tedious to divide-and-conquer with multiple Kokoro tries, we can still increase the debug info level again here in the WIP change.\n\nIt depends on how much build time we gain from this of course.",
+      "range": {
+        "startLine": 20,
+        "startChar": 124,
+        "endLine": 20,
+        "endChar": 145
+      },
+      "revId": "1cb59da72a5ab5c4301f5d5e2b08e44c2bb14a41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
