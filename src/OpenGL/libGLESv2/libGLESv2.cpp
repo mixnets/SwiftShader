@@ -2841,6 +2841,9 @@ void GL_APIENTRY GetIntegerv(GLenum pname, GLint* params)
 			params[0] = (GLint)es2::ALIASED_LINE_WIDTH_RANGE_MIN;
 			params[1] = (GLint)es2::ALIASED_LINE_WIDTH_RANGE_MAX;
 			return;
+		case GL_MAX_VIEWPORT_DIMS:
+			params[0] = params[1] = (GLint)es2::IMPLEMENTATION_MAX_TEXTURE_SIZE;
+			return;
 		}
 	}
 
