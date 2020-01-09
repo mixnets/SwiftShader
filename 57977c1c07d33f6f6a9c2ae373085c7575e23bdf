@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e785b108_6892aba3",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-09T15:07:43Z",
+      "side": 0,
+      "message": "Why are we removing the samples?",
+      "revId": "57977c1c07d33f6f6a9c2ae373085c7575e23bdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
