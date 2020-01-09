@@ -153,6 +153,30 @@
     },
     {
       "key": {
+        "uuid": "07618138_8a00f987",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-09T00:44:50Z",
+      "side": 1,
+      "message": "yes please, git-gui groups variables by word until first underscore.",
+      "parentUuid": "0cf23d1b_92955796",
+      "range": {
+        "startLine": 20,
+        "startChar": 55,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "763d22e5_b5f50f9a",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
