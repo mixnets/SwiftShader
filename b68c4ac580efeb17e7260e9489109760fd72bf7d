@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "478383fd_bd169f46",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1668,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-09T22:11:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97cbc71c_051e5bdc",
+      "range": {
+        "startLine": 1668,
+        "startChar": 6,
+        "endLine": 1668,
+        "endChar": 18
+      },
+      "revId": "b68c4ac580efeb17e7260e9489109760fd72bf7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d0f8c023_d896a6b8",
         "filename": "src/Pipeline/PixelRoutine.cpp",
         "patchSetId": 1
@@ -83,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "60bb9e0f_306f9e68",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2630,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-09T22:11:44Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d0f8c023_d896a6b8",
+      "range": {
+        "startLine": 2630,
+        "startChar": 2,
+        "endLine": 2630,
+        "endChar": 6
+      },
+      "revId": "b68c4ac580efeb17e7260e9489109760fd72bf7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa28d376_347f7e4d",
         "filename": "src/Pipeline/ShaderCore.cpp",
         "patchSetId": 1
@@ -94,6 +142,30 @@
       "writtenOn": "2020-01-09T21:00:28Z",
       "side": 1,
       "message": "nit: Note that return-value-optimization makes it efficient to just return a local variable instead, which is a nicer syntax.\n\nNo need to change in this CL though.",
+      "range": {
+        "startLine": 635,
+        "startChar": 46,
+        "endLine": 635,
+        "endChar": 52
+      },
+      "revId": "b68c4ac580efeb17e7260e9489109760fd72bf7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "54a37761_e4e70be5",
+        "filename": "src/Pipeline/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 635,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-09T22:11:44Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "aa28d376_347f7e4d",
       "range": {
         "startLine": 635,
         "startChar": 46,
