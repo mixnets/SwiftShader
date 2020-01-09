@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d006bd20_9b9684b5",
+        "filename": "src/Pipeline/BUILD.gn",
+        "patchSetId": 29
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-09T16:09:49Z",
+      "side": 1,
+      "message": "Debugger ?",
+      "range": {
+        "startLine": 44,
+        "startChar": 16,
+        "endLine": 44,
+        "endChar": 21
+      },
+      "revId": "1c6682cdb5f4afd33af29a6fac72101bb67be738",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

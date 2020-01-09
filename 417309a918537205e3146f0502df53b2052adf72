@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54d319d7_79a95d48",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-09T16:09:49Z",
+      "side": 1,
+      "message": "Can these be moved into some kind of object/interface? At least that way dbgInit() and dbgTerm() can be the constructor and destructor to prevent doing things in the wrong sequence. Also it could talk to a more restricted interface into SprivShader, instead of having access to everything, which might eventually lead to more coupling than desired, and hence higher maintenance cost during refactorings.\n\nAntonio and I had an interesting chat the other day: he has two different experiences writing debuggers for emulator\u0027s chips, and mentioned a more event-driven design option too. I think the both of you should talk about the pros and cons of several design choices.\n\nAnyway, I\u0027m OK with this as-is for now since we need a working starting point first and will probably require some iteration and gaining insight into practical usage before we settle on a more abstracted design.",
+      "range": {
+        "startLine": 1176,
+        "startChar": 13,
+        "endLine": 1176,
+        "endChar": 26
+      },
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14dd6fca_9ebc8fe0",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-09T16:09:49Z",
+      "side": 1,
+      "message": "Is there a more structural way to ensure all these debugger API calls are zero cost when no debugger is present?\n\nOK for now for the MVP.",
+      "range": {
+        "startLine": 484,
+        "startChar": 0,
+        "endLine": 485,
+        "endChar": 21
+      },
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
