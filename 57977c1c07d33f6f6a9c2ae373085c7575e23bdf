@@ -16,6 +16,24 @@
       "revId": "57977c1c07d33f6f6a9c2ae373085c7575e23bdf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bf8bd49_f8ed67d0",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T16:21:05Z",
+      "side": 0,
+      "message": "Yeah, I guess it could be saved for the future update where we remove the old PowerVR_SDK directory.",
+      "parentUuid": "e785b108_6892aba3",
+      "revId": "57977c1c07d33f6f6a9c2ae373085c7575e23bdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }

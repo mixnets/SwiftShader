@@ -201,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "aaa91a32_ac4cb927",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T16:21:05Z",
+      "side": 1,
+      "message": "I believe target namespaces only work for actual targets, and not for cache variables like options.",
+      "parentUuid": "a178a0bb_0f62ab99",
+      "range": {
+        "startLine": 20,
+        "startChar": 55,
+        "endLine": 20,
+        "endChar": 58
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "763d22e5_b5f50f9a",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
@@ -259,6 +283,30 @@
       "side": 1,
       "message": "Actually, perhaps this is just that it needs quotes around the whole path?",
       "parentUuid": "4648b8cc_7aad321e",
+      "range": {
+        "startLine": 155,
+        "startChar": 8,
+        "endLine": 155,
+        "endChar": 111
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32476729_ba9aa9a5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T16:21:05Z",
+      "side": 1,
+      "message": "Woops, I misspelled \"CMAKE_CURRENT_SOURCE_DIR\" so it just substituted in an empty string.",
+      "parentUuid": "dad785b8_3f1c005a",
       "range": {
         "startLine": 155,
         "startChar": 8,
