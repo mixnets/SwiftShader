@@ -22,6 +22,29 @@
       "revId": "9eb00bac61cfb1580ff2b33eba53b733215a2715",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd44d652_13195126",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-09T17:54:03Z",
+      "side": 1,
+      "message": "Also: .vscode/tasks.json",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 0
+      },
+      "revId": "9eb00bac61cfb1580ff2b33eba53b733215a2715",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
