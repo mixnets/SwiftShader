@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "cd07ccb5_1d5fc227",
+        "filename": "src/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 545,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:14:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67800bf5_c70d3ce9",
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d24f0f74_53e42697",
         "filename": "src/Android.bp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2020-01-09T20:35:33Z",
       "side": 1,
       "message": "nit: while you\u0027re at it, some more stray tabs here",
+      "range": {
+        "startLine": 553,
+        "startChar": 0,
+        "endLine": 553,
+        "endChar": 4
+      },
+      "revId": "2bbcdb4f224d0cec7190decb5691f5092a5c29e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63eba7e7_e35812c4",
+        "filename": "src/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-09T21:14:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d24f0f74_53e42697",
       "range": {
         "startLine": 553,
         "startChar": 0,
