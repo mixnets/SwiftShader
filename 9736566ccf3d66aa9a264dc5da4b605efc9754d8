@@ -36,6 +36,42 @@
     },
     {
       "key": {
+        "uuid": "db03f5bd_2f5526c3",
+        "filename": ".gitmodules",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T17:23:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "acd38921_916cbd0f",
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "12e84fbb_d38df90b",
+        "filename": ".gitmodules",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T17:23:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69a07d03_89ca648a",
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "36f046de_18ba7e94",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -248,6 +284,30 @@
     },
     {
       "key": {
+        "uuid": "03f16997_ef5cc919",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T17:23:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "763d22e5_b5f50f9a",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 65
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4648b8cc_7aad321e",
         "filename": "CMakeLists.txt",
         "patchSetId": 2
@@ -340,6 +400,30 @@
       "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e9573d6_20abf2a1",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-01-09T17:23:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99330395_2a149a90",
+      "range": {
+        "startLine": 155,
+        "startChar": 8,
+        "endLine": 155,
+        "endChar": 111
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
