@@ -316,6 +316,30 @@
       "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99330395_2a149a90",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-09T16:30:07Z",
+      "side": 1,
+      "message": "That would do it! I was too tired to even spot the typo.",
+      "parentUuid": "32476729_ba9aa9a5",
+      "range": {
+        "startLine": 155,
+        "startChar": 8,
+        "endLine": 155,
+        "endChar": 111
+      },
+      "revId": "9736566ccf3d66aa9a264dc5da4b605efc9754d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
