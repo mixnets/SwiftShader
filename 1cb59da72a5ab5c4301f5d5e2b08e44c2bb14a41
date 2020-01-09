@@ -22,6 +22,30 @@
       "revId": "1cb59da72a5ab5c4301f5d5e2b08e44c2bb14a41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3289518_9e711acb",
+        "filename": "tests/kokoro/macos/continuous.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-09T19:08:16Z",
+      "side": 1,
+      "message": "I agree that we should try with this enabled - but let\u0027s do these two separately.",
+      "parentUuid": "993314a4_487540af",
+      "range": {
+        "startLine": 20,
+        "startChar": 124,
+        "endLine": 20,
+        "endChar": 145
+      },
+      "revId": "1cb59da72a5ab5c4301f5d5e2b08e44c2bb14a41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
