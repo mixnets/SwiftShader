@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "2686801a_f14aefbc",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-10T08:31:13Z",
+      "side": 1,
+      "message": "ack",
+      "parentUuid": "a3979d6c_1b24a213",
+      "range": {
+        "startLine": 1176,
+        "startChar": 13,
+        "endLine": 1176,
+        "endChar": 26
+      },
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "14dd6fca_9ebc8fe0",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 34
@@ -93,6 +117,30 @@
       "revId": "417309a918537205e3146f0502df53b2052adf72",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "976df2a1_9aad546b",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-10T08:31:13Z",
+      "side": 1,
+      "message": "How about using a proxy class which holds a pointer to the implementation class instance and just forwards the calls, unless the pointer is null. This way it\u0027s a clear, detectable error to have the SpirvShader calls into this have any effect when there\u0027s no debugger present.\n\nSince this depends on https://swiftshader-review.googlesource.com/c/SwiftShader/+/38915/34/src/Pipeline/SpirvShader.hpp#1176 let\u0027s revisit this after landing the MVP.",
+      "parentUuid": "c9dec09f_5d2e4edb",
+      "range": {
+        "startLine": 484,
+        "startChar": 0,
+        "endLine": 485,
+        "endChar": 21
+      },
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
