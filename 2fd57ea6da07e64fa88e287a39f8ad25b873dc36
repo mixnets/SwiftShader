@@ -96,6 +96,29 @@
     },
     {
       "key": {
+        "uuid": "83fdf7aa_90a8b1df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-10T10:22:35Z",
+      "side": 1,
+      "message": "Bug: b/143122483\nBug: b/144687651",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 24
+      },
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "abde8a00_83e4aafb",
         "filename": "include/EGL/eglplatform.h",
         "patchSetId": 2
@@ -128,6 +151,24 @@
       "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ec03216_fd642bdd",
+        "filename": "include/EGL/eglplatform.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-10T10:22:35Z",
+      "side": 1,
+      "message": "Looks good",
+      "parentUuid": "6fe86861_4aaff978",
+      "revId": "2fd57ea6da07e64fa88e287a39f8ad25b873dc36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
