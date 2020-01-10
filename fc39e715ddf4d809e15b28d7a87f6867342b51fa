@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81858631_cd388da9",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 35
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "Although not necessary, I like to qualify functions that are hidden inside another cpp with \"extern\". Also, have you reached out to them about exposing this function?",
+      "revId": "fc39e715ddf4d809e15b28d7a87f6867342b51fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

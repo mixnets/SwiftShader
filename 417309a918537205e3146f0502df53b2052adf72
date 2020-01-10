@@ -73,6 +73,98 @@
     },
     {
       "key": {
+        "uuid": "6b4ad005_a1c22228",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "Let me just jot down some of the points I made when discussing with Nicolas, so that it\u0027s here:\n\nBasically, I wrote two emulators, each with its own debugger, and each with a different design:\n\n1. For the NES emulator, the Debugger knew about all the components, like the Cpu, and the Cpu knew about the Debugger, so that it could forward info to the Debuger (preExecuteOp, postExecuteOp, etc.).\n\n2. For the Vectrex emulator, my Debugger knew about all components, but components did not know about the Debugger. This made the design much simpler and easier to understand - all dependencies in one direction. However, it also meant that I had to duplicate some logic from, say, the Cpu to the Debugger, such as instruction decoding. The Cpu decodes to execute, the Debugger decodes to spit out the disassembled representation. I also had to expose more internals of the Cpu so that the Debugger could introspect its state.\n\nIn the end, I much preferred the 2nd option, despite a bit of copy pasting. However, there was a third option that I considered that is sort of in between 1 and 2: the Cpu provides hooks/callbacks for interesting events (pre/postExecuteOp), and the Debugger hooks into those. This makes the Cpu code similar to option 1, but at least it\u0027s dependent on some generic event thing, rather than directly on a Debugger. Furthermore, it means it\u0027s easy to hook other stuff, like a Stub implementation, or a Logger. Also, it allows to enable/disable the debugger more easily by registering/unregistering for the events at runtime, if that\u0027s useful.\n\nAll that to say, we may want to consider removing the concept of a debugger from SpirvShader, and add event hooks instead. The Debugger can hook in from the outside and get what it needs. Or, if possible, go with what I did in my Vectrex emulator (option 2 above), and have the Debugger introspect and figure out what it needs from SpirvShader, if that\u0027s possible.\n\nFood for thought 😊",
+      "parentUuid": "2686801a_f14aefbc",
+      "range": {
+        "startLine": 1176,
+        "startChar": 13,
+        "endLine": 1176,
+        "endChar": 26
+      },
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "09f60692_b387acee",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "I personally like to add \"extern\" to these functions, to communicate that this is a prototype for a function hidden inside another cpp file. Obviously it\u0027s not necessary, but I\u0027ve seen this done in many places, and it can be helpful. Also, have you considered reaching out to the SPIRV team about exposing this functionality?",
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "509feda1_9fe84cce",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "In C++17, we can use std::size() for arrays! Oh, and std::ssize in C++20 to get a signed ssize_t! What an exciting future!",
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e0018a2_615dfdd1",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "Consider passing in a reference to a State* so that you can also set it to nullptr after deleting. This way, the caller doesn\u0027t end up with a dangling pointer after the call.",
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35d8af6c_fd59c8f1",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-10T21:19:57Z",
+      "side": 1,
+      "message": "I\u0027m guessing it\u0027s safe to call thread-\u003eexit() twice? Asking since this function is also called by the destructor.",
+      "revId": "417309a918537205e3146f0502df53b2052adf72",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "14dd6fca_9ebc8fe0",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 34
