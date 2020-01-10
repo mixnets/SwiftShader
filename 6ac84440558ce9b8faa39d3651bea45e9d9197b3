@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "74e3d96b_afc35feb",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1722,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-10T13:24:53Z",
+      "side": 1,
+      "message": "I think both work. As Ben pointed out in chat, it only behaves this way because clang-format thinks it\u0027s a cast. I\u0027ll do a follow up on this and look if there are more instances of this in the code.",
+      "parentUuid": "235a7d18_f97fd295",
+      "range": {
+        "startLine": 1722,
+        "startChar": 19,
+        "endLine": 1722,
+        "endChar": 22
+      },
+      "revId": "6ac84440558ce9b8faa39d3651bea45e9d9197b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a553a72_d1e3b874",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 4
