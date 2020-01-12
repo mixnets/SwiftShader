@@ -4601,7 +4601,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 	//	"GL_NV_depth_buffer_float2",  // b/147536183
 		"GL_NV_fence",
 	//	"GL_NV_framebuffer_blit",  // b/147536183
-		"GL_NV_read_depth",
+	//	"GL_NV_read_depth",  // b/147536183
 		"GL_NV_read_depth_stencil",
 		"GL_NV_read_stencil",
 	};
