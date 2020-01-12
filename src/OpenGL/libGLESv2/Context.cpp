@@ -4598,7 +4598,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 	//	"GL_APPLE_texture_format_BGRA8888",  // b/147536183
 		"GL_CHROMIUM_color_buffer_float_rgba", // A subset of EXT_color_buffer_float on top of OpenGL ES 2.0
 		"GL_CHROMIUM_texture_filtering_hint",
-		"GL_NV_depth_buffer_float2",
+	//	"GL_NV_depth_buffer_float2",  // b/147536183
 		"GL_NV_fence",
 		"GL_NV_framebuffer_blit",
 		"GL_NV_read_depth",
