@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a779acbc_2512d73e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-13T21:30:49Z",
+      "side": 1,
+      "message": "nit: vague",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 42
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c8028502_ab50d1e4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-13T21:30:49Z",
+      "side": 1,
+      "message": "What will this be used for?",
+      "range": {
+        "startLine": 10,
+        "startChar": 138,
+        "endLine": 10,
+        "endChar": 191
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
