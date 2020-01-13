@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ec6c3804_c26a623a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-13T21:51:40Z",
+      "side": 1,
+      "message": "joys of trying to keep within the git 50 char subject limit.",
+      "parentUuid": "a779acbc_2512d73e",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 42
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c8028502_ab50d1e4",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e839d6b_e7c9218e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-13T21:51:40Z",
+      "side": 1,
+      "message": "Deciding whether the debugger shows SPIR-V or high level source. This is determined by looking for the OpenCL.Debug.100 extension.\nWe may wish to force SPIR-V even if this extension is used, but for now this seems like a good first step.",
+      "parentUuid": "c8028502_ab50d1e4",
+      "range": {
+        "startLine": 10,
+        "startChar": 138,
+        "endLine": 10,
+        "endChar": 191
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
