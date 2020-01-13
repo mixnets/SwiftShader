@@ -3880,12 +3880,23 @@ Float::Float(float x)
 	// being reinterpreted as float and then bitcast to integer again,
 	// which does not guarantee preserving the integer value.
 	//
-	// Should infinity and NaN constants be required, methods like
-	// infinity(), quiet_NaN(), and signaling_NaN() should be added
+	// The inifinity() method can be used to obtain positive infinity.
+	// Should NaN constants be required, methods like quiet_NaN() and
+	// signaling_NaN() should be added (matching std::numeric_limits).
 	// to the Float class.
 	ASSERT(std::isfinite(x));
 
 	storeValue(Nucleus::createConstantFloat(x));
+}
+
+Float Float::infinity()
+{
+	Float result;
+
+	constexpr double inf = std::numeric_limits<double>::infinity();
+	result.storeValue(Nucleus::createConstantFloat(inf));
+
+	return result;
 }
 
 Float::Float(RValue<Float> rhs)
@@ -4111,25 +4122,15 @@ Float4::Float4(float x, float y, float z, float w)
 	constant(x, y, z, w);
 }
 
-Float4 Float4::positive_inf()
+Float4 Float4::infinity()
 {
 	Float4 result;
-	result.infinity_constant(false);
-	return result;
-}
 
-Float4 Float4::negative_inf()
-{
-	Float4 result;
-	result.infinity_constant(true);
-	return result;
-}
-
-void Float4::infinity_constant(bool negative)
-{
-	double inf = negative ? -INFINITY : INFINITY;
+	constexpr double inf = std::numeric_limits<double>::infinity();
 	double constantVector[4] = { inf, inf, inf, inf };
-	storeValue(Nucleus::createConstantVector(constantVector, getType()));
+	result.storeValue(Nucleus::createConstantVector(constantVector, getType()));
+
+	return result;
 }
 
 void Float4::constant(float x, float y, float z, float w)
