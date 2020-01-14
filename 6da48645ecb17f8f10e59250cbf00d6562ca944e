@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "161f53cb_55dea3cc",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-14T20:57:24Z",
+      "side": 1,
+      "message": "Unrelated change. \nAlso, I\u0027d prefer if this wasn\u0027t changed. I keep the condition / comment the same on the #if, #else and #endif. If you negate this at the else, I\u0027ll interpret this as a double negative.",
+      "revId": "6da48645ecb17f8f10e59250cbf00d6562ca944e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
