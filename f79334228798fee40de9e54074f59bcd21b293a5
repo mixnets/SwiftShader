@@ -22,6 +22,30 @@
       "revId": "f79334228798fee40de9e54074f59bcd21b293a5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a60154a6_66121571",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-14T19:46:26Z",
+      "side": 1,
+      "message": "The gift that keeps on giving. Done",
+      "parentUuid": "3981e980_22f19782",
+      "range": {
+        "startLine": 322,
+        "startChar": 10,
+        "endLine": 322,
+        "endChar": 50
+      },
+      "revId": "f79334228798fee40de9e54074f59bcd21b293a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
