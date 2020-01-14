@@ -660,7 +660,7 @@ SpirvShader::EmitResult SpirvShader::EmitLine(InsnIterator insn, EmitState *stat
 
 }  // namespace sw
 
-#else  // ENABLE_VK_DEBUGGER
+#else  // !ENABLE_VK_DEBUGGER
 
 // Stub implementations of the dbgXXX functions.
 namespace sw {
