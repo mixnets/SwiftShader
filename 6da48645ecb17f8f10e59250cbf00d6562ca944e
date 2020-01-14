@@ -16,6 +16,24 @@
       "revId": "6da48645ecb17f8f10e59250cbf00d6562ca944e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6541dd8_1746a284",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-14T21:31:46Z",
+      "side": 1,
+      "message": "Oops, didn\u0027t mean to make it part of this CL.\n\nI do prefer to state the actual condition the #else is handling though. Works well with #elif too:\n\n#if A\n#elif B // !A \u0026\u0026 B\n#endif\n\nWe already use this elsewhere, also with C++ conditionals.",
+      "parentUuid": "161f53cb_55dea3cc",
+      "revId": "6da48645ecb17f8f10e59250cbf00d6562ca944e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
