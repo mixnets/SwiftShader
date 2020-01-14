@@ -160,7 +160,8 @@ unsigned char getNumberOfChannels(VkFormat format)
 // preprocessSpirv applies and freezes specializations into constants, and inlines all functions.
 std::vector<uint32_t> preprocessSpirv(
     std::vector<uint32_t> const &code,
-    VkSpecializationInfo const *specializationInfo)
+    VkSpecializationInfo const *specializationInfo,
+    bool optimize, bool validate)
 {
 	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
 
@@ -192,11 +193,16 @@ std::vector<uint32_t> preprocessSpirv(
 		opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass(specializations));
 	}
 
-	// Full optimization list taken from spirv-opt.
-	opt.RegisterPerformancePasses();
+	if(optimize)
+	{
+		// Full optimization list taken from spirv-opt.
+		opt.RegisterPerformancePasses();
+	}
 
 	std::vector<uint32_t> optimized;
-	opt.Run(code.data(), code.size(), &optimized);
+	spvtools::OptimizerOptions options;
+	options.set_run_validator(validate);
+	opt.Run(code.data(), code.size(), &optimized, options);
 
 	if(false)
 	{
@@ -218,7 +224,21 @@ std::shared_ptr<sw::SpirvShader> createShader(
     bool robustBufferAccess,
     const std::shared_ptr<vk::dbg::Context> &dbgctx)
 {
-	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo());
+	// Do not optimize the shader if we have a debugger context.
+	// Optimization passes are likely to damage debug information, and reorder
+	// instructions.
+	const bool optimize = !dbgctx;
+
+	// Do not validate the shader if we have a debugger context.
+	// This is a work-around for the validator incorrectly reporting errors when
+	// debug information is provided. This can be removed once the following
+	// SPIR-V tools bugs are fixed:
+	// https://github.com/KhronosGroup/SPIRV-Tools/issues/3102
+	// https://github.com/KhronosGroup/SPIRV-Tools/issues/3103
+	// https://github.com/KhronosGroup/SPIRV-Tools/issues/3118
+	const bool validate = !dbgctx;
+
+	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo(), optimize, validate);
 	ASSERT(code.size() > 0);
 
 	// If the pipeline has specialization constants, assume they're unique and
