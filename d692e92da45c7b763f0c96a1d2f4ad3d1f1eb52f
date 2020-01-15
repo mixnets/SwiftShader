@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "15b1731c_5d4568e8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T06:06:43Z",
+      "side": 1,
+      "message": "If it helps, I personally don\u0027t prefix the line with a class or subproject name. When looking through logs or using blame you can do it at a subdirectory or file level to narrow the scope to certain classes or subprojects, and when looking at an individual CL the changed files and their paths should provide enough contextual info that the prefix is redundant.\n\nDoesn\u0027t mean I wouldn\u0027t at least mention SPIR-V though: \"Provide bidirectional imported SPIR-V extensions lookup\"\n\nYes, that slightly exceeds 50 characters, but Torvalds actually dictates \"the ``summary`` must be no more than 70-75 characters\". The 50 character number is the Linux kernel development average, and some tools may warn about exceeding it or may truncate in summaries, but I\u0027ve never seen unacceptable consequences.\n\nJust my 2 cents though.",
+      "parentUuid": "ec6c3804_c26a623a",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 42
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c8028502_ab50d1e4",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Deciding whether the debugger shows SPIR-V or high level source. This is determined by looking for the OpenCL.Debug.100 extension.\nWe may wish to force SPIR-V even if this extension is used, but for now this seems like a good first step.",
       "parentUuid": "c8028502_ab50d1e4",
+      "range": {
+        "startLine": 10,
+        "startChar": 138,
+        "endLine": 10,
+        "endChar": 191
+      },
+      "revId": "d692e92da45c7b763f0c96a1d2f4ad3d1f1eb52f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "715cb4f9_999e2da3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T06:06:43Z",
+      "side": 1,
+      "message": "Thanks. Seems a bit overkill considering this can be done using just a Boolean (at least for now, but I don\u0027t expect the number of extensions to get high and even then several Booleans could be used).\n\nFine for now.",
+      "parentUuid": "4e839d6b_e7c9218e",
       "range": {
         "startLine": 10,
         "startChar": 138,
