@@ -46,6 +46,30 @@
       "revId": "f0e91f98ef79fb1f8fe8eb7b1fbe3fcd08a34708",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9843ecad_3899db16",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T14:50:38Z",
+      "side": 1,
+      "message": "Perfect, thanks",
+      "parentUuid": "ca726f1d_da063fc3",
+      "range": {
+        "startLine": 234,
+        "startChar": 35,
+        "endLine": 235,
+        "endChar": 32
+      },
+      "revId": "f0e91f98ef79fb1f8fe8eb7b1fbe3fcd08a34708",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
