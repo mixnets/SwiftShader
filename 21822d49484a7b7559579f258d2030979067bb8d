@@ -22,6 +22,30 @@
       "revId": "21822d49484a7b7559579f258d2030979067bb8d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2354c81f_2d6acea1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-15T17:44:32Z",
+      "side": 1,
+      "message": "Ack. I expect to land a few more before I consider \u0027first-working-prototype\u0027 done. After that, I\u0027ll create real bugs.",
+      "parentUuid": "05c96335_2c76b767",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "21822d49484a7b7559579f258d2030979067bb8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
