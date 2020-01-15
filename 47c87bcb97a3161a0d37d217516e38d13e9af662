@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fa724cbe_05831588",
+        "filename": "tests/kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T16:45:13Z",
+      "side": 1,
+      "message": "Note that in macos/continuous.sh I rephrased \"to work around Kokoro timeouts\" to this. Even if we\u0027re not suffering from any timeouts, it\u0027s technically correct with the new phrasing. 8-)\n\nAnyway, I opened b/147735529 precisely to not conflate this with being a fix for b/147355576, so I\u0027ll at least remove the latter from these comments, and rephrase the comment to \"to reduce Kokoro build times.\"",
+      "parentUuid": "e2edeb2d_836cbeb3",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 39
+      },
+      "revId": "47c87bcb97a3161a0d37d217516e38d13e9af662",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "de5f1661_780cc3ea",
         "filename": "tests/kokoro/gcp_windows/continuous.bat",
         "patchSetId": 3
