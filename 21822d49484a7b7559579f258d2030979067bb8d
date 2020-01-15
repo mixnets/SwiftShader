@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05c96335_2c76b767",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T17:41:58Z",
+      "side": 1,
+      "message": "note: This bug ID is seeing a lot of reuse (38 landed and 2 more pending). While obviously this is a big feature that will see a lot of CLs, please consider splitting it into subtasks to make it a little easier to dig through the history of changes for future maintainers. For starters dicerning between between SPIR-V level and HLL level debugging could be useful, if that still makes sense at this point. Your call. Definitely could use a new bug ID after the MVP is done.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "21822d49484a7b7559579f258d2030979067bb8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
