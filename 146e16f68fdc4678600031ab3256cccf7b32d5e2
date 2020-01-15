@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8825eaa8_447a6703",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-15T12:21:40Z",
+      "side": 0,
+      "message": "nit: I\u0027d have probably have just written -Type::infinity() here to be consistent with the use above, and to remove another pointless line.",
+      "revId": "146e16f68fdc4678600031ab3256cccf7b32d5e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
