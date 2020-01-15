@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac1c54d_179743cc",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-15T06:20:40Z",
+      "side": 1,
+      "message": "TODO(b/\u003ctracker bug\u003e) ?",
+      "range": {
+        "startLine": 234,
+        "startChar": 35,
+        "endLine": 235,
+        "endChar": 32
+      },
+      "revId": "f0e91f98ef79fb1f8fe8eb7b1fbe3fcd08a34708",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
