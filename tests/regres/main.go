@@ -858,7 +858,7 @@ func (t *test) build() error {
 	}
 
 	if err := shell.Shell(buildTimeout, t.r.cmake, t.buildDir,
-		"-DCMAKE_BUILD_TYPE=Release",
+		"-DCMAKE_BUILD_TYPE=Debug",
 		"-DDCHECK_ALWAYS_ON=1",
 		"-DREACTOR_VERIFY_LLVM_IR=1",
 		"-DWARNINGS_AS_ERRORS=0",
