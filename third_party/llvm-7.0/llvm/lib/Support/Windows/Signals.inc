@@ -220,7 +220,7 @@ enum {
   NativeMachineType = IMAGE_FILE_MACHINE_UNKNOWN
 #endif
 };
-
+/*
 static bool printStackTraceWithLLVMSymbolizer(llvm::raw_ostream &OS,
                                               HANDLE hProcess, HANDLE hThread,
                                               STACKFRAME64 &StackFrameOrig,
@@ -249,7 +249,7 @@ static bool printStackTraceWithLLVMSymbolizer(llvm::raw_ostream &OS,
 
   return printSymbolizedStackTrace(Argv0, &StackTrace[0], Depth, OS);
 }
-
+*/
 namespace {
 struct FindModuleData {
   void **StackTrace;

@@ -338,7 +338,7 @@ macro(set_linker_flag FLAG)
 endmacro()
 
 if(MSVC)
-    set_cpp_flag("/MP")
+#    set_cpp_flag("/MP")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
@@ -348,6 +348,14 @@ if(MSVC)
         set_cpp_flag("/WX") # Treat all warnings as errors
     endif()
 
+    set_cpp_flag(
+        "-Wno-deprecated-declarations")
+        set_cpp_flag(
+        "-Wno-unused-function")
+        set_cpp_flag(
+        "-Wno-unused-private-field")
+        set_cpp_flag(
+        "-Wno-unused-command-line-argument")
     # Disable specific warnings
     # TODO: Not all of these should be disabled, but for now, we want a warning-free msvc build. Remove these one by one
     #       and fix the actual warnings in code.
@@ -384,6 +392,13 @@ else()
         "-Wsign-compare"
         "-Wmissing-braces"
     )
+
+    set_cpp_flag(
+        "-Wno-deprecated-declarations")
+       set_cpp_flag(
+        "-Wno-unused-function")
+        set_cpp_flag(
+        "-Wno-unused-private-field")
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS

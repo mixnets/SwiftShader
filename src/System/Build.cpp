@@ -36,10 +36,10 @@ class cpp
 	static_assert(version >= 2014, "SwiftShader requires at least C++14");
 };
 
-void check_cpp_version()
-{
-	cpp<CPP_VERSION / 100>();
-	(void)&check_cpp_version;  // dummy reference to avoid unreferenced function warning.
-}
+//void check_cpp_version()
+//{
+//	cpp<CPP_VERSION / 100>();
+//	(void)&check_cpp_version;  // dummy reference to avoid unreferenced function warning.
+//}
 
 }  // namespace

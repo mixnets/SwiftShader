@@ -192,7 +192,7 @@ bool Driver::resolve(VkInstance instance)
 void *Driver::lookup(const char *name)
 {
 #if OS_WINDOWS
-	return GetProcAddress((HMODULE)dll, name);
+	return (void*)GetProcAddress((HMODULE)dll, name);
 #elif(OS_MAC || OS_LINUX || OS_ANDROID || OS_FUCHSIA)
 	return dlsym(dll, name);
 #else
