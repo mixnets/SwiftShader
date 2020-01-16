@@ -2481,12 +2481,6 @@ RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
 	return As<UInt4>(result);
 }
 
-RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
-{
-	UNIMPLEMENTED("RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)");
-	return UShort4(0);
-}
-
 Type *UShort4::getType()
 {
 	return T(Type_v4i16);
