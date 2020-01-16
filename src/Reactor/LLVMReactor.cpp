@@ -2821,16 +2821,6 @@ RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 #endif
 }
 
-RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
-	return x86::pavgw(x, y);
-#else
-	return As<UShort4>(V(lowerPAVG(V(x.value), V(y.value))));
-#endif
-}
-
 Type *UShort4::getType()
 {
 	return T(Type_v4i16);

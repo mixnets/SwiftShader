@@ -951,7 +951,6 @@ RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y);
 RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y);
 RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y);
 RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y);
-RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y);
 
 class Short8 : public LValue<Short8>
 {
