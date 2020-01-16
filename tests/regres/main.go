@@ -415,7 +415,7 @@ func (r *regres) getOrBuildDEQP(test *test) (deqpBuild, error) {
 
 		if err := shell.Shell(buildTimeout, r.cmake, buildDir,
 			"-DDEQP_TARGET=x11_egl",
-			"-DCMAKE_BUILD_TYPE=Release",
+			"-DCMAKE_BUILD_TYPE=Debug",
 			".."); err != nil {
 			return deqpBuild{}, cause.Wrap(err, "Couldn't generate build rules for deqp %v @ %v", cfg.Remote, cfg.SHA)
 		}
@@ -858,7 +858,7 @@ func (t *test) build() error {
 	}
 
 	if err := shell.Shell(buildTimeout, t.r.cmake, t.buildDir,
-		"-DCMAKE_BUILD_TYPE=Release",
+		"-DCMAKE_BUILD_TYPE=Debug",
 		"-DDCHECK_ALWAYS_ON=1",
 		"-DREACTOR_VERIFY_LLVM_IR=1",
 		"-DWARNINGS_AS_ERRORS=0",
