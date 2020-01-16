@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f405e394_e256290c",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-16T21:14:28Z",
+      "side": 1,
+      "message": "Not sure, but I think if you make the constructor constexpr, you\u0027d be able to return \"kind \u003d\u003d this-\u003ekind\" here, and maybe remove it from the ObjectImpl? In fact, you might be able to get rid of most of the implementation of ObjectImpl, and only use it to carry templates params up?",
+      "revId": "04845ba8bc274f09b22aecec73ae57da7908785d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9ecd752_f2da8ccf",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-16T21:14:28Z",
+      "side": 1,
+      "message": "The \"public\" is implied here, since you\u0027re defining a struct. Same applies to all the structs defined lower.",
+      "revId": "04845ba8bc274f09b22aecec73ae57da7908785d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04a000e8_36b14997",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-16T21:14:28Z",
+      "side": 1,
+      "message": "I suggest that all pointer types be explicitly initialized using either \"{}\" or \"\u003d nullptr\" to help catch invalid accesses. Same comment applies to all the pointer types declared in the structs below.",
+      "revId": "04845ba8bc274f09b22aecec73ae57da7908785d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c305184_48335da7",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-16T21:14:28Z",
+      "side": 1,
+      "message": "Cool 😊",
+      "revId": "04845ba8bc274f09b22aecec73ae57da7908785d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
