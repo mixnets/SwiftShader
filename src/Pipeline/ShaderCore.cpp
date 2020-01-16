@@ -609,15 +609,17 @@ Float4 r11g11b10Unpack(UInt r11g11b10bits)
 	return As<Float4>(halfToFloatBits(halfBits));
 }
 
-UInt r11g11b10Pack(sw::SIMD::Float &value)
+UInt r11g11b10Pack(const sw::SIMD::Float &value)
 {
 	SIMD::UInt halfBits = floatToHalfBits(As<SIMD::UInt>(value), true) &
 	                      SIMD::UInt(0x7FF00000, 0x7FF00000, 0x7FE00000, 0);
 	return (UInt(halfBits.x) >> 20) | (UInt(halfBits.y) >> 9) | (UInt(halfBits.z) << 1);
 }
 
-void a2b10g10r10Unpack(Int4 &value, Vector4s &result)
+Vector4s a2b10g10r10Unpack(const Int4 &value)
 {
+	Vector4s result;
+
 	result.x = Short4(value << 6) & Short4(0xFFC0u);
 	result.y = Short4(value >> 4) & Short4(0xFFC0u);
 	result.z = Short4(value >> 14) & Short4(0xFFC0u);
@@ -630,10 +632,14 @@ void a2b10g10r10Unpack(Int4 &value, Vector4s &result)
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 2);
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 4);
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 8);
+
+	return result;
 }
 
-void a2r10g10b10Unpack(Int4 &value, Vector4s &result)
+Vector4s a2r10g10b10Unpack(const Int4 &value)
 {
+	Vector4s result;
+
 	result.x = Short4(value >> 14) & Short4(0xFFC0u);
 	result.y = Short4(value >> 4) & Short4(0xFFC0u);
 	result.z = Short4(value << 6) & Short4(0xFFC0u);
@@ -646,6 +652,8 @@ void a2r10g10b10Unpack(Int4 &value, Vector4s &result)
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 2);
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 4);
 	result.w |= As<Short4>(As<UShort4>(result.w) >> 8);
+
+	return result;
 }
 
 rr::RValue<rr::Bool> AnyTrue(rr::RValue<sw::SIMD::Int> const &ints)
