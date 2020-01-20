@@ -261,6 +261,30 @@
     },
     {
       "key": {
+        "uuid": "af0ddc2b_415a67e2",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-20T20:49:49Z",
+      "side": 1,
+      "message": "Wouldn\u0027t that would make reducing its size in the Input class impossible? I\u0027d rather have it stay a trivial type unless necessary.",
+      "parentUuid": "1a2d3702_8331cc44",
+      "range": {
+        "startLine": 180,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a11dd4bb_62ceeeec",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 3
@@ -320,6 +344,30 @@
       "side": 1,
       "message": "Ack. Let\u0027s make them consistent, then. Doesn\u0027t have to happen in this CL.",
       "parentUuid": "9f6833fa_1fed93d5",
+      "range": {
+        "startLine": 1814,
+        "startChar": 12,
+        "endLine": 1814,
+        "endChar": 41
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "86fd60b3_b4e34f51",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1814,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-20T20:49:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cd6e0fc8_140624f9",
       "range": {
         "startLine": 1814,
         "startChar": 12,
