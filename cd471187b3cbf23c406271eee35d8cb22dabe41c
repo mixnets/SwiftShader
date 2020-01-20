@@ -285,6 +285,30 @@
     },
     {
       "key": {
+        "uuid": "82c9127b_32e7ecda",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T20:55:02Z",
+      "side": 1,
+      "message": "I think it\u0027s the opposite. VkFormat already has to be 32-bit, while vk::Format can be a more compact type as suggested in b/148016460",
+      "parentUuid": "af0ddc2b_415a67e2",
+      "range": {
+        "startLine": 180,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a11dd4bb_62ceeeec",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 3
