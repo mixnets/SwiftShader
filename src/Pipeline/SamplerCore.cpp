@@ -203,7 +203,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampl
 					c.w *= Float4(1.0f / 0xFF00u);
 					break;
 				default:
-					for(int component = 0; component < textureComponentCount(); component++)
+					for(uint8_t component = 0; component < textureComponentCount(); component++)
 					{
 						c[component] *= Float4(hasUnsignedTextureComponent(component) ? 1.0f / 0xFFFF : 1.0f / 0x7FFF);
 					}
@@ -257,7 +257,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampl
 				c.w = Float4(As<UShort4>(cs.w)) * Float4(1.0f / 0xFF00u);
 				break;
 			default:
-				for(int component = 0; component < textureComponentCount(); component++)
+				for(uint8_t component = 0; component < textureComponentCount(); component++)
 				{
 					if(hasUnsignedTextureComponent(component))
 					{
@@ -513,9 +513,6 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 {
 	Vector4s c;
 
-	int componentCount = textureComponentCount();
-	bool gather = (state.textureFilter == FILTER_GATHER);
-
 	Pointer<Byte> mipmap;
 	Pointer<Byte> buffer;
 	selectMipmap(texture, mipmap, buffer, lod, secondLOD);
@@ -548,7 +545,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 		Vector4s c01 = sampleTexel(uuuu0, vvvv1, wwww, offset, mipmap, cubeArrayId, sampleId, buffer, function);
 		Vector4s c11 = sampleTexel(uuuu1, vvvv1, wwww, offset, mipmap, cubeArrayId, sampleId, buffer, function);
 
-		if(!gather)  // Blend
+		if(state.textureFilter != FILTER_GATHER)  // Blend
 		{
 			// Fractions
 			UShort4 f0u = As<UShort4>(uuuu0) * UShort4(*Pointer<Int4>(mipmap + OFFSET(Mipmap, width)));
@@ -577,6 +574,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 			}
 
 			// Bilinear interpolation
+			uint8_t componentCount = textureComponentCount();
 			if(componentCount >= 1)
 			{
 				if(has16bitTextureComponents() && hasUnsignedTextureComponent(0))
@@ -723,8 +721,6 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 {
 	Vector4s c_;
 
-	int componentCount = textureComponentCount();
-
 	Pointer<Byte> mipmap;
 	Pointer<Byte> buffer;
 	selectMipmap(texture, mipmap, buffer, lod, secondLOD);
@@ -809,6 +805,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 			fs[1][1][1] = f[1][1][1] >> 1;
 		}
 
+		uint8_t componentCount = textureComponentCount();
 		for(int i = 0; i < 2; i++)
 		{
 			for(int j = 0; j < 2; j++)
@@ -974,9 +971,6 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 {
 	Vector4f c;
 
-	int componentCount = textureComponentCount();
-	bool gather = (state.textureFilter == FILTER_GATHER);
-
 	Pointer<Byte> mipmap;
 	Pointer<Byte> buffer;
 	selectMipmap(texture, mipmap, buffer, lod, secondLOD);
@@ -1014,8 +1008,10 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		Vector4f c01 = sampleTexel(x0, y1, z0, q, mipmap, cubeArrayId, sampleId, buffer, function);
 		Vector4f c11 = sampleTexel(x1, y1, z0, q, mipmap, cubeArrayId, sampleId, buffer, function);
 
-		if(!gather)  // Blend
+		if(state.textureFilter != FILTER_GATHER)  // Blend
 		{
+			uint8_t componentCount = textureComponentCount();
+
 			if(componentCount >= 1) c00.x = c00.x + fu * (c10.x - c00.x);
 			if(componentCount >= 2) c00.y = c00.y + fu * (c10.y - c00.y);
 			if(componentCount >= 3) c00.z = c00.z + fu * (c10.z - c00.z);
@@ -1057,8 +1053,6 @@ Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 {
 	Vector4f c;
 
-	int componentCount = textureComponentCount();
-
 	Pointer<Byte> mipmap;
 	Pointer<Byte> buffer;
 	selectMipmap(texture, mipmap, buffer, lod, secondLOD);
@@ -1098,6 +1092,8 @@ Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		Vector4f c101 = sampleTexel(x1, y0, z1, w, mipmap, cubeArrayId, sampleId, buffer, function);
 		Vector4f c011 = sampleTexel(x0, y1, z1, w, mipmap, cubeArrayId, sampleId, buffer, function);
 		Vector4f c111 = sampleTexel(x1, y1, z1, w, mipmap, cubeArrayId, sampleId, buffer, function);
+
+		uint8_t componentCount = textureComponentCount();
 
 		// Blend first slice
 		if(componentCount >= 1) c000.x = c000.x + fu * (c100.x - c000.x);
@@ -1742,7 +1738,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 
 	if(state.textureFormat.isSRGBformat())
 	{
-		for(int i = 0; i < textureComponentCount(); i++)
+		for(uint8_t i = 0; i < textureComponentCount(); i++)
 		{
 			if(isRGBComponent(i))
 			{
@@ -2041,8 +2037,8 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 		Vector4s cs = sampleTexel(index, buffer);
 
 		bool isInteger = state.textureFormat.isUnnormalizedInteger();
-		int componentCount = textureComponentCount();
-		for(int n = 0; n < componentCount; n++)
+		uint8_t componentCount = textureComponentCount();
+		for(uint8_t n = 0; n < componentCount; n++)
 		{
 			if(hasUnsignedTextureComponent(n))
 			{
@@ -2514,12 +2510,12 @@ bool SamplerCore::hasUnnormalizedIntegerTexture() const
 	return state.textureFormat.isUnnormalizedInteger();
 }
 
-bool SamplerCore::hasUnsignedTextureComponent(int component) const
+bool SamplerCore::hasUnsignedTextureComponent(uint8_t component) const
 {
 	return state.textureFormat.isUnsignedComponent(component);
 }
 
-int SamplerCore::textureComponentCount() const
+uint8_t SamplerCore::textureComponentCount() const
 {
 	return state.textureFormat.componentCount();
 }
@@ -2556,7 +2552,7 @@ bool SamplerCore::isYcbcrFormat() const
 	return state.textureFormat.isYcbcrFormat();
 }
 
-bool SamplerCore::isRGBComponent(int component) const
+bool SamplerCore::isRGBComponent(uint8_t component) const
 {
 	return state.textureFormat.isRGBComponent(component);
 }

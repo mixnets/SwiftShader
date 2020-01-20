@@ -49,8 +49,8 @@ public:
 	int blockHeight() const;
 	int bytesPerBlock() const;
 
-	int componentCount() const;
-	bool isUnsignedComponent(int component) const;
+	uint8_t componentCount() const;
+	bool isUnsignedComponent(uint8_t component) const;
 
 	int bytes() const;
 	int pitchB(int width, int border, bool target) const;
@@ -63,7 +63,7 @@ public:
 	bool has8bitTextureComponents() const;
 	bool has16bitTextureComponents() const;
 	bool has32bitIntegerTextureComponents() const;
-	bool isRGBComponent(int component) const;
+	bool isRGBComponent(uint8_t component) const;
 
 private:
 	VkFormat compatibleFormat() const;
