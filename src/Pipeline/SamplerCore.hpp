@@ -100,15 +100,15 @@ private:
 
 	bool hasFloatTexture() const;
 	bool hasUnnormalizedIntegerTexture() const;
-	bool hasUnsignedTextureComponent(int component) const;
-	int textureComponentCount() const;
+	bool hasUnsignedTextureComponent(uint8_t component) const;
+	uint8_t textureComponentCount() const;
 	bool hasThirdCoordinate() const;
 	bool has16bitTextureFormat() const;
 	bool has8bitTextureComponents() const;
 	bool has16bitTextureComponents() const;
 	bool has32bitIntegerTextureComponents() const;
 	bool isYcbcrFormat() const;
-	bool isRGBComponent(int component) const;
+	bool isRGBComponent(uint8_t component) const;
 	bool borderModeActive() const;
 	bool isCube() const;
 	VkComponentSwizzle gatherSwizzle() const;

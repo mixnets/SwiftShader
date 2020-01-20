@@ -1180,7 +1180,7 @@ void Renderer::advanceInstanceAttributes(Stream *inputs)
 	for(uint32_t i = 0; i < vk::MAX_VERTEX_INPUT_BINDINGS; i++)
 	{
 		auto &attrib = inputs[i];
-		if(attrib.count && attrib.instanceStride && (attrib.instanceStride < attrib.robustnessSize))
+		if((attrib.format != VK_FORMAT_UNDEFINED) && attrib.instanceStride && (attrib.instanceStride < attrib.robustnessSize))
 		{
 			// Under the casts: attrib.buffer += attrib.instanceStride
 			attrib.buffer = (void const *)((uintptr_t)attrib.buffer + attrib.instanceStride);
