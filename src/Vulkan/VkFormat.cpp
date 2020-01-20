@@ -1103,7 +1103,7 @@ int Format::bytesPerBlock() const
 	}
 }
 
-int Format::componentCount() const
+uint8_t Format::componentCount() const
 {
 	switch(format)
 	{
@@ -1272,7 +1272,7 @@ int Format::componentCount() const
 	return 1;
 }
 
-bool Format::isUnsignedComponent(int component) const
+bool Format::isUnsignedComponent(uint8_t component) const
 {
 	switch(format)
 	{
@@ -2242,7 +2242,7 @@ bool Format::has32bitIntegerTextureComponents() const
 	return false;
 }
 
-bool Format::isRGBComponent(int component) const
+bool Format::isRGBComponent(uint8_t component) const
 {
 	switch(format)
 	{
