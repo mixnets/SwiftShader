@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45c56fcb_2e32edf6",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "While we\u0027re here, please add a \"// TODO(b/137740918): Optimize instancing to use a single draw call.\" to this function.",
+      "revId": "d1d28b2c2ebf6c5fa20887fdfa91f1d69f3eb3d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

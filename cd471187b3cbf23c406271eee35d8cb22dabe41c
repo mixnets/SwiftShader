@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "109c09d9_53516b94",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "TODO(b/148016460)",
+      "range": {
+        "startLine": 74,
+        "startChar": 23,
+        "endLine": 74,
+        "endChar": 27
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f918e0aa_fedba96c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "Doesn\u0027t help us here either, and negatively impacts readability in my opinion (makes one wonder why this is specifically an 8-bit value).",
+      "range": {
+        "startLine": 206,
+        "startChar": 9,
+        "endLine": 206,
+        "endChar": 17
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89f91c31_b1ae6d1c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "These are sampler changes, while the CL is about vertex buffers. Please move it to a separate CL so it\u0027s easier to discuss whether there\u0027s anything worthwhile here.",
+      "range": {
+        "startLine": 548,
+        "startChar": 2,
+        "endLine": 548,
+        "endChar": 52
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9e769ba_82f32cf3",
+        "filename": "src/Pipeline/SamplerCore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "This doesn\u0027t help because arguments are always promoted to a 32-bit or 64-bit register or stack slot (depending on machine and calling convention).",
+      "range": {
+        "startLine": 103,
+        "startChar": 34,
+        "endLine": 103,
+        "endChar": 42
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e9a4b2d_3d573a63",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "Do we need this? It\u0027s not used consistently currently, and I don\u0027t think it hurts to write \"stream.format\" a couple times instead.",
+      "range": {
+        "startLine": 180,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a11dd4bb_62ceeeec",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1814,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "\u0027Input\u0027 has an \u0027operator bool()\u0027 for this. I think it\u0027s useful because it\u0027s not entirely obvious that having an undefined format means the attribute isn\u0027t in use, and that might change. We have formatless images for example (see Vulkan\u0027s shaderStorageImageReadWithoutFormat feature).\n\nMight have more cases like this.",
+      "range": {
+        "startLine": 1814,
+        "startChar": 12,
+        "endLine": 1814,
+        "endChar": 41
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6547141c_63a9b147",
+        "filename": "src/Vulkan/VkFormat.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 52,
+        "startChar": 1,
+        "endLine": 52,
+        "endChar": 9
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6bd43037_c48c880a",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-20T19:33:08Z",
+      "side": 1,
+      "message": "Please sort these in the same order as in vulkan_core.h",
+      "range": {
+        "startLine": 692,
+        "startChar": 0,
+        "endLine": 699,
+        "endChar": 41
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
