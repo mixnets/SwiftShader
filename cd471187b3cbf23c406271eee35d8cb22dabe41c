@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4e66f264_a3253f9f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-21T15:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73a3c801_31f34d88",
+      "range": {
+        "startLine": 7,
+        "startChar": 42,
+        "endLine": 7,
+        "endChar": 49
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "109c09d9_53516b94",
         "filename": "src/Device/VertexProcessor.hpp",
         "patchSetId": 3
