@@ -267,7 +267,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCre
 
 	if(pCreateInfo->enabledLayerCount)
 	{
-		UNSUPPORTED("pCreateInfo->enabledLayerCount");
+		UNIMPLEMENTED("pCreateInfo->enabledLayerCount");
 	}
 
 	uint32_t extensionPropertiesCount = sizeof(instanceExtensionProperties) / sizeof(instanceExtensionProperties[0]);
@@ -507,7 +507,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	if(pCreateInfo->enabledLayerCount)
 	{
 		// "The ppEnabledLayerNames and enabledLayerCount members of VkDeviceCreateInfo are deprecated and their values must be ignored by implementations."
-		UNSUPPORTED("pCreateInfo->enabledLayerCount");  // TODO(b/119321052): UNSUPPORTED() should be used only for features that must still be implemented. Use a more informational macro here.
+		UNSUPPORTED("pCreateInfo->enabledLayerCount");
 	}
 
 	uint32_t extensionPropertiesCount = sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]);

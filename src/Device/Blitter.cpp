@@ -1750,7 +1750,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	if((region.srcSubresource.layerCount != region.dstSubresource.layerCount) ||
 	   (region.srcSubresource.aspectMask != region.dstSubresource.aspectMask))
 	{
-		UNSUPPORTED("region");
+		UNSUPPORTED("region");  // ?
 	}
 
 	if(region.dstOffsets[0].x > region.dstOffsets[1].x)
