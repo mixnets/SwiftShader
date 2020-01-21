@@ -91,7 +91,7 @@ sw::StreamType getStreamType(VkFormat format)
 		case VK_FORMAT_R32G32B32A32_SFLOAT:
 			return sw::STREAMTYPE_FLOAT;
 		default:
-			UNIMPLEMENTED("format");
+			UNSUPPORTED("format");
 	}
 
 	return sw::STREAMTYPE_BYTE;
@@ -151,7 +151,7 @@ unsigned char getNumberOfChannels(VkFormat format)
 		case VK_FORMAT_R32G32B32A32_SFLOAT:
 			return 4;
 		default:
-			UNIMPLEMENTED("format");
+			UNSUPPORTED("format");
 	}
 
 	return 0;
@@ -281,7 +281,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 	       VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT)) != 0) ||
 	   (pCreateInfo->pTessellationState != nullptr))
 	{
-		UNIMPLEMENTED("pCreateInfo settings");
+		UNSUPPORTED("pCreateInfo settings");
 	}
 
 	if(pCreateInfo->pDynamicState)
@@ -304,7 +304,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 					dynamicStateFlags |= (1 << dynamicState);
 					break;
 				default:
-					UNIMPLEMENTED("dynamic state");
+					UNSUPPORTED("dynamic state");
 			}
 		}
 	}
@@ -312,7 +312,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 	const VkPipelineVertexInputStateCreateInfo *vertexInputState = pCreateInfo->pVertexInputState;
 	if(vertexInputState->flags != 0)
 	{
-		UNIMPLEMENTED("vertexInputState->flags");
+		UNSUPPORTED("vertexInputState->flags");
 	}
 
 	// Context must always have a PipelineLayout set.
@@ -345,7 +345,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 	const VkPipelineInputAssemblyStateCreateInfo *assemblyState = pCreateInfo->pInputAssemblyState;
 	if(assemblyState->flags != 0)
 	{
-		UNIMPLEMENTED("pCreateInfo->pInputAssemblyState settings");
+		UNSUPPORTED("pCreateInfo->pInputAssemblyState settings");
 	}
 
 	primitiveRestartEnable = (assemblyState->primitiveRestartEnable != VK_FALSE);
@@ -358,7 +358,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		   (viewportState->viewportCount != 1) ||
 		   (viewportState->scissorCount != 1))
 		{
-			UNIMPLEMENTED("pCreateInfo->pViewportState settings");
+			UNSUPPORTED("pCreateInfo->pViewportState settings");
 		}
 
 		if(!hasDynamicState(VK_DYNAMIC_STATE_SCISSOR))
@@ -376,7 +376,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 	if((rasterizationState->flags != 0) ||
 	   (rasterizationState->depthClampEnable != VK_FALSE))
 	{
-		UNIMPLEMENTED("pCreateInfo->pRasterizationState settings");
+		UNSUPPORTED("pCreateInfo->pRasterizationState settings");
 	}
 
 	context.rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable == VK_TRUE);
@@ -427,7 +427,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 				context.sampleCount = 4;
 				break;
 			default:
-				UNIMPLEMENTED("Unsupported sample count");
+				UNSUPPORTED("Unsupported sample count");
 		}
 
 		if(multisampleState->pSampleMask)
@@ -441,7 +441,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		   (multisampleState->sampleShadingEnable != VK_FALSE) ||
 		   (multisampleState->alphaToOneEnable != VK_FALSE))
 		{
-			UNIMPLEMENTED("multisampleState");
+			UNSUPPORTED("multisampleState");
 		}
 	}
 	else
@@ -455,7 +455,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		if((depthStencilState->flags != 0) ||
 		   (depthStencilState->depthBoundsTestEnable != VK_FALSE))
 		{
-			UNIMPLEMENTED("depthStencilState");
+			UNSUPPORTED("depthStencilState");
 		}
 
 		context.depthBoundsTestEnable = (depthStencilState->depthBoundsTestEnable == VK_TRUE);
@@ -477,7 +477,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		if((colorBlendState->flags != 0) ||
 		   ((colorBlendState->logicOpEnable != VK_FALSE)))
 		{
-			UNIMPLEMENTED("colorBlendState");
+			UNSUPPORTED("colorBlendState");
 		}
 
 		if(!hasDynamicState(VK_DYNAMIC_STATE_BLEND_CONSTANTS))
@@ -555,7 +555,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 	{
 		if(pStage->flags != 0)
 		{
-			UNIMPLEMENTED("pStage->flags");
+			UNSUPPORTED("pStage->flags");
 		}
 
 		const ShaderModule *module = vk::Cast(pStage->module);
@@ -607,7 +607,7 @@ uint32_t GraphicsPipeline::computePrimitiveCount(uint32_t vertexCount) const
 		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 			return std::max<uint32_t>(vertexCount, 2) - 2;
 		default:
-			UNIMPLEMENTED("context.topology %d", int(context.topology));
+			UNSUPPORTED("context.topology %d", int(context.topology));
 	}
 
 	return 0;
