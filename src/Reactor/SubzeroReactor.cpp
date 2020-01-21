@@ -1126,67 +1126,67 @@ Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedInd
 
 Value *Nucleus::createAtomicAdd(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicAdd");
+	UNSUPPORTED("createAtomicAdd");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicSub(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicSub");
+	UNSUPPORTED("createAtomicSub");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicAnd(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicAnd");
+	UNSUPPORTED("createAtomicAnd");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicOr(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicOr");
+	UNSUPPORTED("createAtomicOr");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicXor(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicXor");
+	UNSUPPORTED("createAtomicXor");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicMin(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicMin");
+	UNSUPPORTED("createAtomicMin");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicMax(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicMax");
+	UNSUPPORTED("createAtomicMax");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicUMin(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicUMin");
+	UNSUPPORTED("createAtomicUMin");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicUMax(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicUMax");
+	UNSUPPORTED("createAtomicUMax");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicExchange(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("createAtomicExchange");
+	UNSUPPORTED("createAtomicExchange");
 	return nullptr;
 }
 
 Value *Nucleus::createAtomicCompareExchange(Value *ptr, Value *value, Value *compare, std::memory_order memoryOrderEqual, std::memory_order memoryOrderUnequal)
 {
-	UNIMPLEMENTED("createAtomicCompareExchange");
+	UNSUPPORTED("createAtomicCompareExchange");
 	return nullptr;
 }
 
@@ -2005,7 +2005,7 @@ Short4::Short4(RValue<Int4> cast)
 
 Short4::Short4(RValue<Float4> cast)
 {
-	UNIMPLEMENTED("Short4::Short4(RValue<Float4> cast)");
+	UNSUPPORTED("Short4::Short4(RValue<Float4> cast)");
 }
 
 RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
@@ -2483,7 +2483,7 @@ RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y)
 
 RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
 {
-	UNIMPLEMENTED("RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)");
+	UNSUPPORTED("RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)");
 	return UShort4(0);
 }
 
@@ -2548,13 +2548,13 @@ RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs)
 
 RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 {
-	UNIMPLEMENTED("RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)");
+	UNSUPPORTED("RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)");
 	return Int4(0);
 }
 
 RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 {
-	UNIMPLEMENTED("RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)");
+	UNSUPPORTED("RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)");
 	return Short8(0);
 }
 
@@ -2619,13 +2619,13 @@ RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 
 RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 {
-	UNIMPLEMENTED("RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)");
+	UNSUPPORTED("RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)");
 	return UShort8(0);
 }
 
 RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 {
-	UNIMPLEMENTED("RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)");
+	UNSUPPORTED("RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)");
 	return UShort8(0);
 }
 
@@ -3546,7 +3546,7 @@ Type *Float4::getType()
 
 RValue<Long> Ticks()
 {
-	UNIMPLEMENTED("RValue<Long> Ticks()");
+	UNSUPPORTED("RValue<Long> Ticks()");
 	return Long(Int(0));
 }
 
@@ -3595,16 +3595,16 @@ void Breakpoint()
 
 void Nucleus::createFence(std::memory_order memoryOrder)
 {
-	UNIMPLEMENTED("Subzero createFence()");
+	UNSUPPORTED("Subzero createFence()");
 }
 Value *Nucleus::createMaskedLoad(Value *ptr, Type *elTy, Value *mask, unsigned int alignment, bool zeroMaskedLanes)
 {
-	UNIMPLEMENTED("Subzero createMaskedLoad()");
+	UNSUPPORTED("Subzero createMaskedLoad()");
 	return nullptr;
 }
 void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned int alignment)
 {
-	UNIMPLEMENTED("Subzero createMaskedStore()");
+	UNSUPPORTED("Subzero createMaskedStore()");
 }
 
 RValue<Float4> Gather(RValue<Pointer<Float>> base, RValue<Int4> offsets, RValue<Int4> mask, unsigned int alignment, bool zeroMaskedLanes /* = false */)
@@ -3731,7 +3731,7 @@ RValue<UInt> Ctlz(RValue<UInt> x, bool isZeroUndef)
 {
 	if(emulateIntrinsics)
 	{
-		UNIMPLEMENTED("Subzero Ctlz()");
+		UNSUPPORTED("Subzero Ctlz()");
 		return UInt(0);
 	}
 	else
@@ -3751,7 +3751,7 @@ RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef)
 {
 	if(emulateIntrinsics)
 	{
-		UNIMPLEMENTED("Subzero Ctlz()");
+		UNSUPPORTED("Subzero Ctlz()");
 		return UInt4(0);
 	}
 	else
@@ -3770,7 +3770,7 @@ RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef)
 {
 	if(emulateIntrinsics)
 	{
-		UNIMPLEMENTED("Subzero Cttz()");
+		UNSUPPORTED("Subzero Cttz()");
 		return UInt(0);
 	}
 	else
@@ -3790,7 +3790,7 @@ RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef)
 {
 	if(emulateIntrinsics)
 	{
-		UNIMPLEMENTED("Subzero Cttz()");
+		UNSUPPORTED("Subzero Cttz()");
 		return UInt4(0);
 	}
 	else
@@ -3836,7 +3836,7 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 
 void Nucleus::yield(Value *val)
 {
-	UNIMPLEMENTED("Yield");
+	UNSUPPORTED("Yield");
 }
 
 }  // namespace rr
