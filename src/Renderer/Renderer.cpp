@@ -1779,6 +1779,11 @@ namespace sw
 			return false;
 		}
 
+		if(P0.w == 0 || P1.w == 0)
+		{
+			return false;
+		}
+
 		const float W = data.Wx16[0] * (1.0f / 16.0f);
 		const float H = data.Hx16[0] * (1.0f / 16.0f);
 
