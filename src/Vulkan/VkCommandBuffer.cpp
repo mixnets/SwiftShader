@@ -547,9 +547,10 @@ public:
 			context.depthBias = executionState.dynamicState.depthBiasConstantFactor;
 			context.slopeDepthBias = executionState.dynamicState.depthBiasSlopeFactor;
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_DEPTH_BOUNDS) && context.depthBoundsTestEnable)
 		{
-			// Unless the VK_EXT_depth_range_unrestricted extension is enabled minDepthBounds and maxDepthBounds must be between 0.0 and 1.0, inclusive
+			// Unless the VK_EXT_depth_range_unrestricted extension is enabled, minDepthBounds and maxDepthBounds must be between 0.0 and 1.0, inclusive
 			ASSERT(executionState.dynamicState.minDepthBounds >= 0.0f &&
 			       executionState.dynamicState.minDepthBounds <= 1.0f);
 			ASSERT(executionState.dynamicState.maxDepthBounds >= 0.0f &&
@@ -557,16 +558,19 @@ public:
 
 			UNIMPLEMENTED("depthBoundsTestEnable");
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.compareMask = executionState.dynamicState.compareMask[0];
 			context.backStencil.compareMask = executionState.dynamicState.compareMask[1];
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_WRITE_MASK) && context.stencilEnable)
 		{
 			context.frontStencil.writeMask = executionState.dynamicState.writeMask[0];
 			context.backStencil.writeMask = executionState.dynamicState.writeMask[1];
 		}
+
 		if(pipeline->hasDynamicState(VK_DYNAMIC_STATE_STENCIL_REFERENCE) && context.stencilEnable)
 		{
 			context.frontStencil.reference = executionState.dynamicState.reference[0];
@@ -593,7 +597,7 @@ public:
 						processPrimitiveRestart(static_cast<uint32_t *>(indexBuffer), count, pipeline, indexBuffers);
 						break;
 					default:
-						UNIMPLEMENTED("executionState.indexType %d", int(executionState.indexType));
+						UNSUPPORTED("executionState.indexType %d", int(executionState.indexType));
 				}
 			}
 			else
@@ -1427,7 +1431,7 @@ void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline
 			addCommand<::CmdPipelineBind>(pipelineBindPoint, pipeline);
 			break;
 		default:
-			UNIMPLEMENTED("pipelineBindPoint");
+			UNSUPPORTED("pipelineBindPoint");
 	}
 }
 
@@ -1476,7 +1480,7 @@ void CommandBuffer::setViewport(uint32_t firstViewport, uint32_t viewportCount, 
 {
 	if(firstViewport != 0 || viewportCount > 1)
 	{
-		UNIMPLEMENTED("viewport");
+		UNSUPPORTED("multiViewport");
 	}
 
 	for(uint32_t i = 0; i < viewportCount; i++)
@@ -1489,7 +1493,7 @@ void CommandBuffer::setScissor(uint32_t firstScissor, uint32_t scissorCount, con
 {
 	if(firstScissor != 0 || scissorCount > 1)
 	{
-		UNIMPLEMENTED("scissor");
+		UNSUPPORTED("multiViewport");
 	}
 
 	for(uint32_t i = 0; i < scissorCount; i++)
