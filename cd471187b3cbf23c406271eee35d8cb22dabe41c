@@ -309,6 +309,30 @@
     },
     {
       "key": {
+        "uuid": "ebb1f93e_dbfd6e64",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-21T14:57:35Z",
+      "side": 1,
+      "message": "I see your point. You\u0027d like to retain the ability to make it even smaller than 16- or even 8-bit by using a custom enum again. Let\u0027s discuss as part of b/148016460, if it actually turns out to be an issue.",
+      "parentUuid": "82c9127b_32e7ecda",
+      "range": {
+        "startLine": 180,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "cd471187b3cbf23c406271eee35d8cb22dabe41c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a11dd4bb_62ceeeec",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 3
