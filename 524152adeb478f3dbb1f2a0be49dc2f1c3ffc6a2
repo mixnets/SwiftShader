@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "96f4785c_79950818",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-21T14:55:33Z",
+      "side": 1,
+      "message": "note: Interestingly this is currently equal to VK_FORMAT_ASTC_12x12_SRGB_BLOCK \u003d 184 which is much smaller than the highest enum value VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16 \u003d 1000156026",
+      "range": {
+        "startLine": 74,
+        "startChar": 66,
+        "endLine": 74,
+        "endChar": 85
+      },
+      "revId": "524152adeb478f3dbb1f2a0be49dc2f1c3ffc6a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
