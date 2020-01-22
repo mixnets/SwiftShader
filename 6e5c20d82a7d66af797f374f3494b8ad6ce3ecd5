@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1393bfe5_b5ed11f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-22T21:10:38Z",
+      "side": 1,
+      "message": "This change isn\u0027t about the new stubs but about old broken functionality. Just use b/148139679 ?",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "6e5c20d82a7d66af797f374f3494b8ad6ce3ecd5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
