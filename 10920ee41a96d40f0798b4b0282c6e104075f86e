@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "20593511_6cff6c29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-22T20:44:01Z",
+      "side": 1,
+      "message": "Fair enough. I don\u0027t think it hurts to repeat the \"why\" as part of the commit message in both changes, but if it\u0027s not straighforward to make this separation I\u0027m fine with keeping it as one. Thanks for filing the follow-up bug, that\u0027s the important part!",
+      "parentUuid": "309d8100_0559f383",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 70
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5d0c4172_2cb33033",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
