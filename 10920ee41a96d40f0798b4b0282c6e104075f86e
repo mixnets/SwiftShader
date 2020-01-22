@@ -214,6 +214,30 @@
     },
     {
       "key": {
+        "uuid": "f42ea782_e2c6d7dc",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T21:19:18Z",
+      "side": 1,
+      "message": "Fair enough. Weird std function. 😊",
+      "parentUuid": "0079a73f_51b345b1",
+      "range": {
+        "startLine": 597,
+        "startChar": 0,
+        "endLine": 602,
+        "endChar": 20
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "466dde4c_de8a63b3",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -296,6 +320,30 @@
       "side": 1,
       "message": "Maybe. So far, ConstantData is only being used to pass the constant to Call, which doesn\u0027t lead to any problems. But if we try to load it into a variable, as we do here, it will fail during compilation. I\u0027d like to wait on making that change. If we run into it, it\u0027s easy enough to understand as the output from Subzero is pretty clear on this error.",
       "parentUuid": "4e13cd81_22344f23",
+      "range": {
+        "startLine": 1682,
+        "startChar": 26,
+        "endLine": 1682,
+        "endChar": 43
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a111363a_bbb266d2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T21:19:18Z",
+      "side": 1,
+      "message": "Humm... So if you\u0027ve found a case where this does break, doesn\u0027t it seem likely that the public rr::ConstantData() function will break on someone in the future? \n\n\u003e If we run into it, it\u0027s easy enough to understand as the output from Subzero is pretty clear on this error\n\nComing from the person who has been working on SubZero for the last few months. 😊\nIf it\u0027s broken, I\u0027d recommend fixing it now and merging the two code paths.",
+      "parentUuid": "98bf32e3_4907d0b4",
       "range": {
         "startLine": 1682,
         "startChar": 26,
