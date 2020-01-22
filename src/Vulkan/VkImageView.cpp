@@ -244,7 +244,7 @@ const Image *ImageView::getImage(Usage usage) const
 		case SAMPLING:
 			return image->getSampledImage(format);
 		default:
-			UNIMPLEMENTED("usage %d", int(usage));
+			UNREACHABLE("usage %d", int(usage));
 			return nullptr;
 	}
 }
