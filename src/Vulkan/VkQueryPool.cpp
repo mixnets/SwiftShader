@@ -100,7 +100,7 @@ QueryPool::QueryPool(const VkQueryPoolCreateInfo *pCreateInfo, void *mem)
 	//  pipelineStatistics member of the VkQueryPoolCreateInfo structure."
 	if(type == VK_QUERY_TYPE_PIPELINE_STATISTICS)
 	{
-		UNSUPPORTED("pCreateInfo->queryType");
+		UNSUPPORTED("pipelineStatisticsQuery");
 	}
 
 	// Construct all queries
@@ -189,7 +189,7 @@ void QueryPool::begin(uint32_t query, VkQueryControlFlags flags)
 
 	if(flags != 0)
 	{
-		UNSUPPORTED("flags");
+		UNIMPLEMENTED("vkCmdBeginQuery::flags %d", int(flags));
 	}
 
 	pool[query].prepare(type);
