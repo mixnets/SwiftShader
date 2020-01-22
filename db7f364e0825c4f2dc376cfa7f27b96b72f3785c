@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50c7b087_b61d7a6a",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-01-22T17:26:10Z",
+      "side": 1,
+      "message": "Non-constant initializers are only used to form pointers-to-pointers, and requires variable pointer features.",
+      "revId": "db7f364e0825c4f2dc376cfa7f27b96b72f3785c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
