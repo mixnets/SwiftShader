@@ -22,6 +22,30 @@
       "revId": "3b8067bacc227e1c5c7a37acf17daad066a0b574",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4da6c07a_f0ef0237",
+        "filename": "src/Reactor/EmulatedReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T21:18:43Z",
+      "side": 1,
+      "message": "Good points, though I\u0027m not sure I would use b/145754674 here. Perhaps a new bug for \"Replace emulated intrinsics with implementations in Subzero\" or something along those lines?",
+      "parentUuid": "0adf1924_37aa54b8",
+      "range": {
+        "startLine": 102,
+        "startChar": 64,
+        "endLine": 102,
+        "endChar": 69
+      },
+      "revId": "3b8067bacc227e1c5c7a37acf17daad066a0b574",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
