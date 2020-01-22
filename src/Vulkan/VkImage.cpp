@@ -49,7 +49,7 @@ ETC_Decoder::InputType GetInputType(const vk::Format &format)
 		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 			return ETC_Decoder::ETC_RGBA;
 		default:
-			UNIMPLEMENTED("format: %d", int(format));
+			UNSUPPORTED("format: %d", int(format));
 			return ETC_Decoder::ETC_RGBA;
 	}
 }
@@ -76,7 +76,7 @@ int GetBCn(const vk::Format &format)
 		case VK_FORMAT_BC5_SNORM_BLOCK:
 			return 5;
 		default:
-			UNIMPLEMENTED("format: %d", int(format));
+			UNSUPPORTED("format: %d", int(format));
 			return 0;
 	}
 }
@@ -103,7 +103,7 @@ bool GetNoAlphaOrUnsigned(const vk::Format &format)
 		case VK_FORMAT_BC5_SNORM_BLOCK:
 			return false;
 		default:
-			UNIMPLEMENTED("format: %d", int(format));
+			UNSUPPORTED("format: %d", int(format));
 			return false;
 	}
 }
