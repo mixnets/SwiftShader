@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d0c4172_2cb33033",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T18:35:39Z",
+      "side": 1,
+      "message": "Can we change\n\n  RValue\u003cPointer\u003cByte\u003e\u003e ConstantPointer(void const *ptr)\n\nTo use this now?",
+      "range": {
+        "startLine": 55,
+        "startChar": 22,
+        "endLine": 55,
+        "endChar": 40
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf9a9554_56b6424a",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T18:35:39Z",
+      "side": 1,
+      "message": "übernit: If you inline the `ptr` expression into the `std::align` call, you kill one local and prevent anyone changing this code and accidentally using the unaligned pointer:\n\n\t\tvoid *ptr \u003d std::align(alignment, size, buf.get(), space);\n\t\tASSERT(ptr);\n\t\tmemcpy(ptr, data, size);\n\t\tconstantData.emplace_back(std::move(buf));\n\t\treturn ptr;\n\nMarking resolved as this is exceptionally minor, and I don\u0027t mind if you ignore.",
+      "range": {
+        "startLine": 597,
+        "startChar": 0,
+        "endLine": 602,
+        "endChar": 20
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "466dde4c_de8a63b3",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1589,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T18:35:39Z",
+      "side": 1,
+      "message": "And should\n\n  RValue\u003cPointer\u003cByte\u003e\u003e ConstantData(void const *data, size_t size)\n\ncall this?",
+      "range": {
+        "startLine": 1589,
+        "startChar": 0,
+        "endLine": 1589,
+        "endChar": 90
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e13cd81_22344f23",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-22T18:35:39Z",
+      "side": 1,
+      "message": "How come\n\n  RValue\u003cPointer\u003cByte\u003e\u003e ConstantData(void const *data, size_t size)\n\ndoesn\u0027t need to call createUnconstCast()?",
+      "range": {
+        "startLine": 1682,
+        "startChar": 26,
+        "endLine": 1682,
+        "endChar": 43
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
