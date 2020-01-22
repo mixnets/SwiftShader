@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6e615fd9_46cb6c5b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7d6b0ae_77b3e80a",
+      "range": {
+        "startLine": 12,
+        "startChar": 40,
+        "endLine": 12,
+        "endChar": 43
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de069836_db5f7398",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2020-01-22T19:21:57Z",
       "side": 1,
       "message": "nit: If it\u0027s not too much trouble, could you split this into two changes, one introducing the new functionality for storing globals as external memory, and the second to actually switch us over to using it? That way we can trivially revert the second one once the Subzero bug is fixed.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 70
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "309d8100_0559f383",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Personally, I prefer to keep it as one change. This way, we can see _why_ the changes were made. If we do fix the Subzero bug, it\u0027s easy enough to do a partial revert of this one change anyway. Besides, I suspect fixing the bug will require changes even on API usage, so it probably won\u0027t be a simple revert.",
+      "parentUuid": "de069836_db5f7398",
       "range": {
         "startLine": 15,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "7adf2336_83e398d2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d0c4172_2cb33033",
+      "range": {
+        "startLine": 55,
+        "startChar": 22,
+        "endLine": 55,
+        "endChar": 40
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf9a9554_56b6424a",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2020-01-22T18:35:39Z",
       "side": 1,
       "message": "übernit: If you inline the `ptr` expression into the `std::align` call, you kill one local and prevent anyone changing this code and accidentally using the unaligned pointer:\n\n\t\tvoid *ptr \u003d std::align(alignment, size, buf.get(), space);\n\t\tASSERT(ptr);\n\t\tmemcpy(ptr, data, size);\n\t\tconstantData.emplace_back(std::move(buf));\n\t\treturn ptr;\n\nMarking resolved as this is exceptionally minor, and I don\u0027t mind if you ignore.",
+      "range": {
+        "startLine": 597,
+        "startChar": 0,
+        "endLine": 602,
+        "endChar": 20
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0079a73f_51b345b1",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Can\u0027t actually, as std::align takes the 3rd param by ref (to pointer), and actually aligns it. The returned value is the same value as the \u0027ptr\u0027 arg it aligns, or nullptr if there isn\u0027t enough space. It\u0027s a weird API. I could get rid of \"alignedPtr\" here, but I wanted to assert that the returned value is non-nullptr. I could add a assert that aligniedPtr \u003d\u003d ptr, if that helps.",
+      "parentUuid": "bf9a9554_56b6424a",
       "range": {
         "startLine": 597,
         "startChar": 0,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "27c2ab75_0c0cf279",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1589,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "466dde4c_de8a63b3",
+      "range": {
+        "startLine": 1589,
+        "startChar": 0,
+        "endLine": 1589,
+        "endChar": 90
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e13cd81_22344f23",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -128,6 +248,30 @@
       "writtenOn": "2020-01-22T18:35:39Z",
       "side": 1,
       "message": "How come\n\n  RValue\u003cPointer\u003cByte\u003e\u003e ConstantData(void const *data, size_t size)\n\ndoesn\u0027t need to call createUnconstCast()?",
+      "range": {
+        "startLine": 1682,
+        "startChar": 26,
+        "endLine": 1682,
+        "endChar": 43
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98bf32e3_4907d0b4",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-22T20:06:10Z",
+      "side": 1,
+      "message": "Maybe. So far, ConstantData is only being used to pass the constant to Call, which doesn\u0027t lead to any problems. But if we try to load it into a variable, as we do here, it will fail during compilation. I\u0027d like to wait on making that change. If we run into it, it\u0027s easy enough to understand as the output from Subzero is pretty clear on this error.",
+      "parentUuid": "4e13cd81_22344f23",
       "range": {
         "startLine": 1682,
         "startChar": 26,
