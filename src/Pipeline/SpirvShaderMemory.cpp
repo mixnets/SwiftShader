@@ -227,6 +227,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		{
 			UNIMPLEMENTED("Non-constant initializers not yet implemented");
 		}
+
 		switch(objectTy.storageClass)
 		{
 			case spv::StorageClassOutput:
