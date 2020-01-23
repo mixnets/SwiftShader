@@ -86,6 +86,7 @@ SetupProcessor::State SetupProcessor::update(const sw::Context *context) const
 
 	if(context->pixelShader)
 	{
+		state.centroid = context->pixelShader->getModes().NeedsCentroid;
 		for(int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 		{
 			state.gradient[interpolant] = context->pixelShader->inputs[interpolant];
