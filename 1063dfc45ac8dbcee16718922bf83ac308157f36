@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8f4ed40_0611e254",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-23T16:03:40Z",
+      "side": 1,
+      "message": "uber-nit: https://chris.beams.io/posts/git-commit/#imperative",
+      "range": {
+        "startLine": 7,
+        "startChar": 16,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "1063dfc45ac8dbcee16718922bf83ac308157f36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
