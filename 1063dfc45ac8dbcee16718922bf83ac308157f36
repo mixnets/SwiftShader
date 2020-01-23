@@ -22,6 +22,30 @@
       "revId": "1063dfc45ac8dbcee16718922bf83ac308157f36",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f6ad3e3d_1afdc602",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-23T16:10:15Z",
+      "side": 1,
+      "message": "Done. Totally agree, I\u0027m surprised I did that.",
+      "parentUuid": "d8f4ed40_0611e254",
+      "range": {
+        "startLine": 7,
+        "startChar": 16,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "1063dfc45ac8dbcee16718922bf83ac308157f36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
