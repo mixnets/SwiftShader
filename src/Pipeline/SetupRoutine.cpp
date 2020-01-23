@@ -200,10 +200,10 @@ void SetupRoutine::generate()
 				Xq[i] = X[i];
 				Yq[i] = Y[i];
 
-				if(state.enableMultiSampling)
+				if(state.enableMultiSampling && !state.centroid)
 				{
-					Xq[i] = Xq[i] + *Pointer<Int>(constants + OFFSET(Constants, Xf) + q * sizeof(int));
-					Yq[i] = Yq[i] + *Pointer<Int>(constants + OFFSET(Constants, Yf) + q * sizeof(int));
+					Xq[i] = Xq[i] - *Pointer<Int>(constants + OFFSET(Constants, Xf) + q * sizeof(int));
+					Yq[i] = Yq[i] - *Pointer<Int>(constants + OFFSET(Constants, Yf) + q * sizeof(int));
 				}
 
 				i++;

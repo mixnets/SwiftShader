@@ -312,9 +312,8 @@ Constants::Constants()
 
 	constexpr auto subPixB = vk::SUBPIXEL_PRECISION_BITS;
 
-	// Reorder sample points for fragment offset computation
-	const int Xf[4] = { toFixedPoint(X[2][0], subPixB), toFixedPoint(X[1][0], subPixB), toFixedPoint(X[3][0], subPixB), toFixedPoint(X[0][0], subPixB) };
-	const int Yf[4] = { toFixedPoint(Y[2][0], subPixB), toFixedPoint(Y[1][0], subPixB), toFixedPoint(Y[3][0], subPixB), toFixedPoint(Y[0][0], subPixB) };
+	const int Xf[4] = { toFixedPoint(X[0][0], subPixB), toFixedPoint(X[1][0], subPixB), toFixedPoint(X[2][0], subPixB), toFixedPoint(X[3][0], subPixB) };
+	const int Yf[4] = { toFixedPoint(Y[0][0], subPixB), toFixedPoint(Y[1][0], subPixB), toFixedPoint(Y[2][0], subPixB), toFixedPoint(Y[3][0], subPixB) };
 
 	memcpy(&this->Xf, &Xf, sizeof(Xf));
 	memcpy(&this->Yf, &Yf, sizeof(Yf));
