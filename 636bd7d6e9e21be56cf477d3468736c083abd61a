@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d09677ad_dba52166",
+        "filename": "src/Reactor/EmulatedReactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-23T21:02:11Z",
+      "side": 1,
+      "message": "We already implement fallback atomic arithmetic in LLVMReactor using CAS.\nSee:\nhttps://github.com/google/swiftshader/blob/5ef91b82cbedb4e262af2cb4fddaee7006de8818/src/Reactor/LLVMReactor.cpp#L1060\n\nCan we promote the CAS implementation to a common function (here, or in another header) instead of adding another, divergent implementation? I don\u0027t mind this being a follow up change.",
+      "revId": "636bd7d6e9e21be56cf477d3468736c083abd61a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
