@@ -353,6 +353,30 @@
       "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bcaf5fc_2f3b4733",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-23T15:18:06Z",
+      "side": 1,
+      "message": "Absolutely right. I wrote a test which did indeed fail when attempting to load from a ConstantData pointer. Fix all this by refactoring the two loads into a sz::createLoad which emits the unconst cast if the operand is a constant.",
+      "parentUuid": "a111363a_bbb266d2",
+      "range": {
+        "startLine": 1682,
+        "startChar": 26,
+        "endLine": 1682,
+        "endChar": 43
+      },
+      "revId": "10920ee41a96d40f0798b4b0282c6e104075f86e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
