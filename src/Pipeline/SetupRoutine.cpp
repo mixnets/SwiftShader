@@ -202,8 +202,8 @@ void SetupRoutine::generate()
 
 				if(state.multiSampleCount > 1)
 				{
-					Xq[i] = Xq[i] + *Pointer<Int>(constants + OFFSET(Constants, Xf) + q * sizeof(int));
-					Yq[i] = Yq[i] + *Pointer<Int>(constants + OFFSET(Constants, Yf) + q * sizeof(int));
+					Xq[i] = Xq[i] - *Pointer<Int>(constants + OFFSET(Constants, Xf) + q * sizeof(int));
+					Yq[i] = Yq[i] - *Pointer<Int>(constants + OFFSET(Constants, Yf) + q * sizeof(int));
 				}
 
 				i++;
