@@ -46,6 +46,30 @@
       "revId": "0da48d8fda6fd5bc3a86681b5168220b73274fe2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9cafff6_3ee2962f",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T15:40:41Z",
+      "side": 1,
+      "message": "Yes, but it delays working on SWANGLE blockers instead (both your time and reviewers\u0027).",
+      "parentUuid": "495824f6_21e1616b",
+      "range": {
+        "startLine": 760,
+        "startChar": 11,
+        "endLine": 760,
+        "endChar": 108
+      },
+      "revId": "0da48d8fda6fd5bc3a86681b5168220b73274fe2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
