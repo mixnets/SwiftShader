@@ -92,6 +92,30 @@
       "revId": "763a1d3277e0f50ee1c3485cd92b43a178e803b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b230d0a_e629e742",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-24T14:34:04Z",
+      "side": 1,
+      "message": "I\u0027ll summarize what we discussed over chat: looking at the generated code, the createUnconstCast gets optimized away. I prefer putting this code here, rather than have getConstantPointer (and the functions that call it) all return a Variable, rather than a Constant. Right now, only InstLoad seems to be problematic. If we see that Constant operands cause problems with other instructions, we can make getConstantPointer return a Variable (or at least Operand, the base of both Variable and Constant).",
+      "parentUuid": "566e3325_e3da893b",
+      "range": {
+        "startLine": 78,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 2
+      },
+      "revId": "763a1d3277e0f50ee1c3485cd92b43a178e803b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
