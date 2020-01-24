@@ -1,0 +1,256 @@
+{
+  "context": {
+    "date": "2020-02-06 22:27:21",
+    "host_name": "bclayton-macbookpro.roam.corp.google.com",
+    "executable": "./build/ReactorBenchmarks",
+    "num_cpus": 12,
+    "mhz_per_cpu": 2900,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 2
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 2
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 262144,
+        "num_sharing": 2
+      },
+      {
+        "type": "Unified",
+        "level": 3,
+        "size": 12582912,
+        "num_sharing": 12
+      }
+    ],
+    "load_avg": [3.06543,2.74463,2.3125],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "Functions/Fibonacci/iterations:1",
+      "run_name": "Functions/Fibonacci/iterations:1",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 245541665,
+      "real_time": 2.6987391855281904e+00,
+      "cpu_time": 2.6984911094416506e+00,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:8",
+      "run_name": "Functions/Fibonacci/iterations:8",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 53327645,
+      "real_time": 1.2287269539849481e+01,
+      "cpu_time": 1.2282428747791126e+01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:64",
+      "run_name": "Functions/Fibonacci/iterations:64",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 6503521,
+      "real_time": 9.9086916305058992e+01,
+      "cpu_time": 9.9086325699571063e+01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:512",
+      "run_name": "Functions/Fibonacci/iterations:512",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 830545,
+      "real_time": 8.2615906062694603e+02,
+      "cpu_time": 8.2215292368264193e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:4096",
+      "run_name": "Functions/Fibonacci/iterations:4096",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 87304,
+      "real_time": 5.8959759577247187e+03,
+      "cpu_time": 5.8905319343901747e+03,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:32768",
+      "run_name": "Functions/Fibonacci/iterations:32768",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 12339,
+      "real_time": 4.8358303507997836e+04,
+      "cpu_time": 4.8324013291190502e+04,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:262144",
+      "run_name": "Functions/Fibonacci/iterations:262144",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1893,
+      "real_time": 3.6493116378812713e+05,
+      "cpu_time": 3.6491283676703606e+05,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:2097152",
+      "run_name": "Functions/Fibonacci/iterations:2097152",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 231,
+      "real_time": 2.9260058699828852e+06,
+      "cpu_time": 2.9248441558441534e+06,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Functions/Fibonacci/iterations:16777216",
+      "run_name": "Functions/Fibonacci/iterations:16777216",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 30,
+      "real_time": 2.3302961499818288e+07,
+      "cpu_time": 2.3302133333333362e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:1",
+      "run_name": "Coroutines/Fibonacci/iterations:1",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 254988,
+      "real_time": 3.5267215083722890e+03,
+      "cpu_time": 2.5443471849655675e+03,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:8",
+      "run_name": "Coroutines/Fibonacci/iterations:8",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 33229,
+      "real_time": 2.8639499714329053e+04,
+      "cpu_time": 2.0447229829365879e+04,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:64",
+      "run_name": "Coroutines/Fibonacci/iterations:64",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 4313,
+      "real_time": 2.2789423208808541e+05,
+      "cpu_time": 1.6710062601437527e+05,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:512",
+      "run_name": "Coroutines/Fibonacci/iterations:512",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 529,
+      "real_time": 1.8428709734951293e+06,
+      "cpu_time": 1.3274574669187185e+06,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:4096",
+      "run_name": "Coroutines/Fibonacci/iterations:4096",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 65,
+      "real_time": 1.3756933091924740e+07,
+      "cpu_time": 1.0043307692307698e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:32768",
+      "run_name": "Coroutines/Fibonacci/iterations:32768",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 8,
+      "real_time": 1.1106078987359069e+08,
+      "cpu_time": 8.1498500000000134e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:262144",
+      "run_name": "Coroutines/Fibonacci/iterations:262144",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 9.0349340799730277e+08,
+      "cpu_time": 6.4917400000000036e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:2097152",
+      "run_name": "Coroutines/Fibonacci/iterations:2097152",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 7.0871852670097723e+09,
+      "cpu_time": 5.2016519999999990e+09,
+      "time_unit": "ns"
+    },
+    {
+      "name": "Coroutines/Fibonacci/iterations:16777216",
+      "run_name": "Coroutines/Fibonacci/iterations:16777216",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 6.1859057242982086e+10,
+      "cpu_time": 4.4445897000000000e+10,
+      "time_unit": "ns"
+    }
+  ]
+}

@@ -17,7 +17,49 @@
 
 #include "benchmark/benchmark.h"
 
+#include "marl/defer.h"
+#include "marl/scheduler.h"
+
 BENCHMARK_MAIN();
+
+class Functions : public benchmark::Fixture
+{
+public:
+	void SetUp(const ::benchmark::State &state) {}
+
+	void TearDown(const ::benchmark::State &state) {}
+};
+
+BENCHMARK_DEFINE_F(Functions, Fibonacci)
+(benchmark::State &state)
+{
+	using namespace rr;
+
+	FunctionT<int(int)> function;
+	{
+		Int n = function.Arg<0>();
+		Int current = 0;
+		Int next = 1;
+		For(Int i = 0, i < n, i++)
+		{
+			auto tmp = current + next;
+			current = next;
+			next = tmp;
+		}
+		Return(current);
+	}
+
+	auto routine = function("");
+
+	const auto iterations = state.range(0);
+
+	for(auto _ : state)
+	{
+		routine(iterations);
+	}
+}
+
+BENCHMARK_REGISTER_F(Functions, Fibonacci)->RangeMultiplier(8)->Range(1, 0x1000000)->ArgName("iterations");
 
 class Coroutines : public benchmark::Fixture
 {
@@ -31,6 +73,11 @@ BENCHMARK_DEFINE_F(Coroutines, Fibonacci)
 (benchmark::State &state)
 {
 	using namespace rr;
+
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(1);
+	scheduler.bind();
+	defer(scheduler.unbind());
 
 	if(!Caps.CoroutinesSupported)
 	{
