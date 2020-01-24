@@ -17,6 +17,9 @@
 
 #include "gtest/gtest.h"
 
+#include "marl/defer.h"
+#include "marl/scheduler.h"
+
 #include <cmath>
 #include <thread>
 #include <tuple>
@@ -1820,6 +1823,11 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
+
 	Coroutine<int()> function;
 	{
 		Yield(Int(0));
@@ -1875,6 +1883,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 	{
 		int out = 0;
 		EXPECT_EQ(coroutine->await(out), true);
+		printf("%d: %d\n", (int)i, out);
 		EXPECT_EQ(out, expected[i]);
 	}
 }
@@ -1886,6 +1895,11 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
 
 	Coroutine<uint8_t(uint8_t * data, int count)> function;
 	{
@@ -1928,6 +1942,11 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
+
 	Coroutine<int()> function;
 	{
 		Int4 a{ 1, 2, 3, 4 };
@@ -1962,6 +1981,11 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
+
 	for(int i = 0; i < 2; ++i)
 	{
 		Coroutine<int()> function;
@@ -1985,6 +2009,11 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
 
 	Coroutine<int()> function;
 	{

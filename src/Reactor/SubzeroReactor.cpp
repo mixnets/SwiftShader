@@ -31,6 +31,8 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_os_ostream.h"
 
+#include "marl/event.h"
+
 #if __has_feature(memory_sanitizer)
 #	include <sanitizer/msan_interface.h>
 #endif
@@ -341,11 +343,7 @@ std::string BackendName()
 }
 
 const Capabilities Caps = {
-#if defined(_WIN32)
 	true,  // CoroutinesSupported
-#else
-	false,  // CoroutinesSupported
-#endif
 };
 
 enum EmulatedType
@@ -4086,19 +4084,15 @@ void FlushDebug() {}
 namespace {
 namespace coro {
 
-using FiberHandle = void *;
-
 // Instance data per generated coroutine
 // This is the "handle" type used for Coroutine functions
 // Lifetime: from yield to when CoroutineEntryDestroy generated function is called.
 struct CoroutineData
 {
-	FiberHandle fibers[2]{};  // 0: main (caller), 1: routine (callee)
-	bool convertedFiber = false;
-
-	// Variables used by coroutines
-	bool done = false;
-	void *promisePtr{};
+	marl::Event suspended;
+	marl::Event resumed;
+	marl::Event done{marl::Event::Mode::Manual};
+	void *promisePtr = nullptr;
 };
 
 CoroutineData *createCoroutineData()
@@ -4108,111 +4102,29 @@ CoroutineData *createCoroutineData()
 
 void destroyCoroutineData(CoroutineData *coroData)
 {
+	printf("destroyCoroutineData\n");
+	coroData->resumed.signal();
+	coroData->done.wait();
+	printf("finished\n");
 	delete coroData;
 }
 
-void convertThreadToMainFiber(Nucleus::CoroutineHandle handle)
+void suspend(Nucleus::CoroutineHandle handle)
 {
-#if defined(_WIN32)
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-
-	coroData->fibers[0] = ::ConvertThreadToFiber(nullptr);
-
-	if(coroData->fibers[0])
-	{
-		coroData->convertedFiber = true;
-	}
-	else
-	{
-		// We're probably already on a fiber, so just grab it and remember that we didn't
-		// convert it, so not to convert back to thread.
-		coroData->fibers[0] = GetCurrentFiber();
-		coroData->convertedFiber = false;
-	}
-	ASSERT(coroData->fibers[0]);
-#else
-	UNIMPLEMENTED("convertThreadToMainFiber not implemented for current platform");
-#endif
+	printf("suspend()\n");
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	data->suspended.signal();
+	data->resumed.wait();
+	printf("suspend() (wake)\n");
 }
 
-void convertMainFiberToThread(Nucleus::CoroutineHandle handle)
+void resume(Nucleus::CoroutineHandle handle)
 {
-#if defined(_WIN32)
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-
-	ASSERT(coroData->fibers[0]);
-
-	if(coroData->convertedFiber)
-	{
-		::ConvertFiberToThread();
-		coroData->fibers[0] = nullptr;
-	}
-#else
-	UNIMPLEMENTED("convertMainFiberToThread not implemented for current platform");
-#endif
-}
-using FiberFunc = std::function<void()>;
-
-void createRoutineFiber(Nucleus::CoroutineHandle handle, FiberFunc *fiberFunc)
-{
-#if defined(_WIN32)
-	struct Invoker
-	{
-		FiberFunc func;
-
-		static VOID __stdcall fiberEntry(LPVOID lpParameter)
-		{
-			auto *func = reinterpret_cast<FiberFunc *>(lpParameter);
-			(*func)();
-		}
-	};
-
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-
-	constexpr SIZE_T StackSize = 2 * 1024 * 1024;
-	coroData->fibers[1] = ::CreateFiber(StackSize, &Invoker::fiberEntry, fiberFunc);
-	ASSERT(coroData->fibers[1]);
-#else
-	UNIMPLEMENTED("createRoutineFiber not implemented for current platform");
-#endif
-}
-
-void deleteRoutineFiber(Nucleus::CoroutineHandle handle)
-{
-#if defined(_WIN32)
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	ASSERT(coroData->fibers[1]);
-	::DeleteFiber(coroData->fibers[1]);
-	coroData->fibers[1] = nullptr;
-#else
-	UNIMPLEMENTED("deleteRoutineFiber not implemented for current platform");
-#endif
-}
-
-void switchToMainFiber(Nucleus::CoroutineHandle handle)
-{
-#if defined(_WIN32)
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-
-	// Win32
-	ASSERT(coroData->fibers[0]);
-	::SwitchToFiber(coroData->fibers[0]);
-#else
-	UNIMPLEMENTED("switchToMainFiber not implemented for current platform");
-#endif
-}
-
-void switchToRoutineFiber(Nucleus::CoroutineHandle handle)
-{
-#if defined(_WIN32)
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-
-	// Win32
-	ASSERT(coroData->fibers[1]);
-	::SwitchToFiber(coroData->fibers[1]);
-#else
-	UNIMPLEMENTED("switchToRoutineFiber not implemented for current platform");
-#endif
+	printf("resume()\n");
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	data->resumed.signal();
+	data->suspended.wait();
+	printf("resume() (wake)\n");
 }
 
 namespace detail {
@@ -4222,31 +4134,36 @@ rr::Nucleus::CoroutineHandle coroHandle{};
 
 void setHandleParam(Nucleus::CoroutineHandle handle)
 {
+	printf("setHandleParam: %p\n", handle);
 	detail::coroHandleMutex.lock();
 	detail::coroHandle = handle;
 }
 Nucleus::CoroutineHandle getHandleParam()
 {
 	auto handle = detail::coroHandle;
+	printf("getHandleParam: %p\n", handle);
 	detail::coroHandleMutex.unlock();
 	return handle;
 }
 
 void setDone(Nucleus::CoroutineHandle handle)
 {
+	printf("setDone()\n");
 	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	ASSERT(!coroData->done);  // Should be called once
-	coroData->done = true;
+	ASSERT(!coroData->done.isSignalled());  // Should be called once
+	coroData->done.signal();
 }
 
 bool isDone(Nucleus::CoroutineHandle handle)
 {
 	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->done;
+	printf("isDone: %d\n", (int)coroData->done.test());
+	return coroData->done.test();
 }
 
 void setPromisePtr(Nucleus::CoroutineHandle handle, void *promisePtr)
 {
+	printf("setPromisePtr: %p\n", promisePtr);
 	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
 	coroData->promisePtr = promisePtr;
 }
@@ -4254,6 +4171,7 @@ void setPromisePtr(Nucleus::CoroutineHandle handle, void *promisePtr)
 void *getPromisePtr(Nucleus::CoroutineHandle handle)
 {
 	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
+	printf("getPromisePtr: %p\n", coroData->promisePtr);
 	return coroData->promisePtr;
 }
 
@@ -4317,12 +4235,12 @@ public:
 		//        ... <REACTOR CODE> ...
 		//
 		//        promise = val;
-		//        coro::switchToMainFiber(handle);
+		//        coro::suspend(handle);
 		//
 		//        ... <REACTOR CODE> ...
 
 		Nucleus::createStore(val, V(this->promise), ::coroYieldType);
-		sz::Call(::function, ::basicBlock, coro::switchToMainFiber, this->handle);
+		sz::Call(::function, ::basicBlock, coro::suspend, this->handle);
 	}
 
 	// Adds instructions at the end of the current main coroutine function to end the coroutine.
@@ -4331,16 +4249,10 @@ public:
 		//        ... <REACTOR CODE> ...
 		//
 		//        coro::setDone(handle);
-		//        coro::switchToMainFiber();
-		//        // Unreachable
 		//    }
 		//
 
 		sz::Call(::function, ::basicBlock, coro::setDone, this->handle);
-
-		// A Win32 Fiber function must not end, otherwise it tears down the thread it's running on.
-		// So we add code to switch back to the main thread.
-		sz::Call(::function, ::basicBlock, coro::switchToMainFiber, this->handle);
 	}
 
 	using FunctionUniqePtr = std::unique_ptr<Ice::Cfg>;
@@ -4359,7 +4271,7 @@ public:
 		//     {
 		//         YieldType* promise = coro::GetPromisePtr(handle);
 		//         *out = *promise;
-		//         coro::switchToRoutineFiber(handle);
+		//         coro::resume(handle);
 		//         return true;
 		//     }
 		// }
@@ -4396,8 +4308,8 @@ public:
 			auto store = Ice::InstStore::create(awaitFunc, promiseVal, outPtr);
 			resumeBlock->appendInst(store);
 
-			//         coro::switchToRoutineFiber(handle);
-			sz::Call(awaitFunc, resumeBlock, coro::switchToRoutineFiber, handle);
+			//         coro::resume(handle);
+			sz::Call(awaitFunc, resumeBlock, coro::resume, handle);
 
 			//         return true;
 			Ice::InstRet *ret = Ice::InstRet::create(awaitFunc, ::context->getConstantInt32(1));
@@ -4426,9 +4338,7 @@ public:
 	{
 		// void coroutine_destroy(Nucleus::CoroutineHandle handle)
 		// {
-		//     coro::convertMainFiberToThread(coroData);
-		//     coro::deleteRoutineFiber(handle);
-		//     coro::destroyCoroutineData(handle);
+		//     coro::destroyCoroutineData(coroData);
 		//     return;
 		// }
 
@@ -4441,12 +4351,6 @@ public:
 		Ice::Variable *handle = destroyFunc->getArgs()[0];
 
 		auto *bb = destroyFunc->getEntryNode();
-
-		//     coro::convertMainFiberToThread(coroData);
-		sz::Call(destroyFunc, bb, coro::convertMainFiberToThread, handle);
-
-		//     coro::deleteRoutineFiber(handle);
-		sz::Call(destroyFunc, bb, coro::deleteRoutineFiber, handle);
 
 		//     coro::destroyCoroutineData(handle);
 		sz::Call(destroyFunc, bb, coro::destroyCoroutineData, handle);
@@ -4468,26 +4372,17 @@ static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::Coro
 	// This doubles up as our coroutine handle
 	auto coroData = coro::createCoroutineData();
 
-	// Convert current thread to a fiber so we can create new fibers and switch to them
-	coro::convertThreadToMainFiber(coroData);
+	setHandleParam(coroData);
 
-	coro::FiberFunc fiberFunc = [&]() {
-		// Invoke the begin function in the context of the routine fiber
+	marl::schedule([=]{
+		printf("coroutine start\n");
 		beginFunc();
+		printf("coroutine end\n");
+		coroData->done.signal();
+	});
 
-		// Either it yielded, or finished. In either case, we switch back to the main fiber.
-		// We don't ever return from this function, or the current thread will be destroyed.
-		coro::switchToMainFiber(coroData);
-	};
-
-	coro::createRoutineFiber(coroData, &fiberFunc);
-
-	// Store handle so that the coroutine can grab it. The set and get use a global mutex
-	// to ensure the fiber we just created gets this handle.
-	coro::setHandleParam(coroData);
-
-	// Fiber will now start running, executing the saved beginFunc
-	coro::switchToRoutineFiber(coroData);
+	printf("coroData->suspended.wait()\n");
+	coroData->suspended.wait();
 
 	return coroData;
 }
