@@ -68,6 +68,30 @@
       "revId": "763a1d3277e0f50ee1c3485cd92b43a178e803b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "947b0918_d0686573",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-24T14:25:19Z",
+      "side": 1,
+      "message": "Over IM Antonio pointed out that the load was always calling \u0027makeVariable()\u0027. So I have no objections.",
+      "parentUuid": "566e3325_e3da893b",
+      "range": {
+        "startLine": 78,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 2
+      },
+      "revId": "763a1d3277e0f50ee1c3485cd92b43a178e803b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
