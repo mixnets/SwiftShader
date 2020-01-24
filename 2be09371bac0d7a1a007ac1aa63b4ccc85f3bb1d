@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b089db14_41cc46f9",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-24T15:32:32Z",
+      "side": 1,
+      "message": "Should the opposite be true (should VK_SUCCESS get replaced by VK_SUBOPTIMAL_KHR)?",
+      "range": {
+        "startLine": 239,
+        "startChar": 33,
+        "endLine": 239,
+        "endChar": 90
+      },
+      "revId": "2be09371bac0d7a1a007ac1aa63b4ccc85f3bb1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
