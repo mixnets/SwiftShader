@@ -70,6 +70,30 @@
       "revId": "2be09371bac0d7a1a007ac1aa63b4ccc85f3bb1d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5d70851_d902654e",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T16:29:25Z",
+      "side": 1,
+      "message": "Line 240 prevents that",
+      "parentUuid": "b1ca4525_3a1a7da0",
+      "range": {
+        "startLine": 239,
+        "startChar": 33,
+        "endLine": 239,
+        "endChar": 90
+      },
+      "revId": "2be09371bac0d7a1a007ac1aa63b4ccc85f3bb1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
