@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b52eeeb6_c02ed771",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T15:32:50Z",
+      "side": 1,
+      "message": "Can be done with a single pshufb instruction, and LLVM probably optimizes this to that, but not Subzero. We\u0027re missing an rr::Shuffle() variant to do it explicitly. Also a Byte4(Int4) constructor would work. Please add a TODO for that.",
+      "range": {
+        "startLine": 760,
+        "startChar": 11,
+        "endLine": 760,
+        "endChar": 108
+      },
+      "revId": "0da48d8fda6fd5bc3a86681b5168220b73274fe2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
