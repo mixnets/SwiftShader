@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2eadb0e2_41fdbed4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T15:07:19Z",
+      "side": 1,
+      "message": "nit: Implement VK_EXT_shader_stencil_export support",
+      "revId": "3c76ea0a34bee54430b0d198026305a508193957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99cad124_8bdacea0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T15:07:19Z",
+      "side": 1,
+      "message": "not *that* trivial",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 13
+      },
+      "revId": "3c76ea0a34bee54430b0d198026305a508193957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bf392f6_b723215e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-24T15:07:19Z",
+      "side": 1,
+      "message": "This also has to be used in lieu of referenceMaskedQ and referenceMaskedSignedQ.",
+      "range": {
+        "startLine": 781,
+        "startChar": 12,
+        "endLine": 781,
+        "endChar": 30
+      },
+      "revId": "3c76ea0a34bee54430b0d198026305a508193957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
