@@ -1250,10 +1250,56 @@ Byte4::Byte4(RValue<Byte8> cast)
 	storeValue(Nucleus::createBitCast(cast.value, getType()));
 }
 
+Byte4::Byte4(RValue<UShort4> cast)
+{
+	*this = As<Byte4>(Swizzle(As<Byte8>(cast), 0x02460246));
+}
+
+Byte4::Byte4(RValue<Short4> cast)
+{
+	*this = As<Byte4>(Swizzle(As<Byte8>(cast), 0x02460246));
+}
+
+Byte4::Byte4(RValue<UInt4> cast)
+{
+	*this = As<Byte4>(Swizzle(As<Byte16>(cast), 0x048C048C048C048C));
+}
+
+Byte4::Byte4(RValue<Int4> cast)
+{
+	*this = As<Byte4>(Swizzle(As<Byte16>(cast), 0x048C048C048C048C));
+}
+
+Byte4::Byte4(RValue<Byte4> rhs)
+{
+	storeValue(rhs.value);
+}
+
+Byte4::Byte4(const Byte4 &rhs)
+{
+	Value *value = rhs.loadValue();
+	storeValue(value);
+}
+
 Byte4::Byte4(const Reference<Byte4> &rhs)
 {
 	Value *value = rhs.loadValue();
 	storeValue(value);
+}
+
+RValue<Byte4> Byte4::operator=(RValue<Byte4> rhs)
+{
+	storeValue(rhs.value);
+
+	return rhs;
+}
+
+RValue<Byte4> Byte4::operator=(const Byte4 &rhs)
+{
+	Value *value = rhs.loadValue();
+	storeValue(value);
+
+	return RValue<Byte4>(value);
 }
 
 Byte8::Byte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
@@ -1415,6 +1461,31 @@ RValue<Byte8> operator^=(Byte8 &lhs, RValue<Byte8> rhs)
 RValue<Byte8> operator~(RValue<Byte8> val)
 {
 	return RValue<Byte8>(Nucleus::createNot(val.value));
+}
+
+RValue<Byte8> Swizzle(RValue<Byte8> x, uint32_t select)
+{
+	// Real type is v16i8
+	int shuffle[16] = {
+		(select >> 28) & 0x07,
+		(select >> 24) & 0x07,
+		(select >> 20) & 0x07,
+		(select >> 16) & 0x07,
+		(select >> 12) & 0x07,
+		(select >> 8) & 0x07,
+		(select >> 4) & 0x07,
+		(select >> 0) & 0x07,
+		(select >> 28) & 0x07,
+		(select >> 24) & 0x07,
+		(select >> 20) & 0x07,
+		(select >> 16) & 0x07,
+		(select >> 12) & 0x07,
+		(select >> 8) & 0x07,
+		(select >> 4) & 0x07,
+		(select >> 0) & 0x07,
+	};
+
+	return As<Byte8>(Nucleus::createShuffleVector(x.value, x.value, shuffle));
 }
 
 RValue<Short4> Unpack(RValue<Byte4> x)
@@ -1655,6 +1726,30 @@ RValue<Byte16> Byte16::operator=(const Reference<Byte16> &rhs)
 	storeValue(value);
 
 	return RValue<Byte16>(value);
+}
+
+RValue<Byte16> Swizzle(RValue<Byte16> x, uint64_t select)
+{
+	int shuffle[16] = {
+		static_cast<int>((select >> 60) & 0x0F),
+		static_cast<int>((select >> 56) & 0x0F),
+		static_cast<int>((select >> 52) & 0x0F),
+		static_cast<int>((select >> 48) & 0x0F),
+		static_cast<int>((select >> 44) & 0x0F),
+		static_cast<int>((select >> 40) & 0x0F),
+		static_cast<int>((select >> 36) & 0x0F),
+		static_cast<int>((select >> 32) & 0x0F),
+		static_cast<int>((select >> 28) & 0x0F),
+		static_cast<int>((select >> 24) & 0x0F),
+		static_cast<int>((select >> 20) & 0x0F),
+		static_cast<int>((select >> 16) & 0x0F),
+		static_cast<int>((select >> 12) & 0x0F),
+		static_cast<int>((select >> 8) & 0x0F),
+		static_cast<int>((select >> 4) & 0x0F),
+		static_cast<int>((select >> 0) & 0x0F),
+	};
+
+	return As<Byte16>(Nucleus::createShuffleVector(x.value, x.value, shuffle));
 }
 
 Short2::Short2(RValue<Short4> cast)
