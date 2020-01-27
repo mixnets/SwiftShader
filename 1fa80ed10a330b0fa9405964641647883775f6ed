@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6eb880b0_a7ff996f",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1255,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-27T16:21:00Z",
+      "side": 1,
+      "message": "Done. I have to say that in fixed-width font it looks a little weird, but that\u0027s mostly probably because it\u0027s such a new and rarely used feature. Probably the best use case I\u0027ve seen so far though. I\u0027ve filed b/148379603 for refactorings that would optimize this out.",
+      "parentUuid": "58b4496e_8505cbd3",
+      "revId": "1fa80ed10a330b0fa9405964641647883775f6ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d3eeb0e_e80f81dc",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 6
@@ -33,6 +51,24 @@
       "revId": "1fa80ed10a330b0fa9405964641647883775f6ed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31e7bb21_e9a320b6",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-27T16:21:00Z",
+      "side": 1,
+      "message": "Ack. This is pattern followed by all these Reactor unit tests. I think at one point it was used to avoid crashing on a failure to create a routine that uses unimplemented functionality (e.g. ARM support was implemented very incrementally). Now we have stronger demands on things being fully supported or skipped based on feature flags. I\u0027ll remove this in a separate CL.",
+      "parentUuid": "7d3eeb0e_e80f81dc",
+      "revId": "1fa80ed10a330b0fa9405964641647883775f6ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
