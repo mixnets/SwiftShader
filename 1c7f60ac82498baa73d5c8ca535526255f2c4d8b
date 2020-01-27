@@ -1,0 +1,303 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "32aa8c89_691cddc4",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "I think this is probably justification enough to kill the implicit call to finalize().\nDoesn\u0027t need to be part of this change though.",
+      "range": {
+        "startLine": 139,
+        "startChar": 1,
+        "endLine": 143,
+        "endChar": 16
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7313c5e9_65de517b",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "A bit icky, but I think see why you\u0027re doing it. IIUC the problem you\u0027re trying to solve is:\n\n• The Reactor codegen\u0027d function F needs some special fiber initialization logic (P) to be run before calling F. \n• You can\u0027t just make getEntry(Nucleus::CoroutineEntryBegin) return the C++ function P, as P does not have the address of F.\n• You cannot codegen P (to call F) because Subzero doesn\u0027t have any way to obtain the address of F at the same time as building P?\n\nIf the last part is true, could we not do two rounds of JIT, and use ConstantPointer() to invoke F? \u0027tis a bit gross I admit, and we\u0027d have to be careful that P holds a ref-count to F\u0027s routine.\n\nThis is all fairly minor smell, but I\u0027d still like to make sure I understand the problem correctly.",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 197,
+        "endChar": 71
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b71bebe9_a8cab828",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "Probably should have caught this in an earlier code review, but if these utility functions are only used in this compilation unit (which I assume to be true), then Google policy is to place them in an anonymous namespace:\n\n  https://google.github.io/styleguide/cppguide.html#Unnamed_Namespaces_and_Static_Variables\n\nThis is similar in symbol scoping to using static (private to compilation unit), but also allows private type declarations. Given that anonymous namespaces provide a superset of \u0027static\u0027, I also prefer this for consistency.\n\nFeel free to keep the `sz` namespace (put the anonymous namespace in `sz`) if you want to keep the explicit scoping.\n\nNote there is already an anonymous namespace just below all this new code.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6951f3f5_379e1ffc",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "nit: I think Nicolas and I are in agreement (gasp!) that we prefer brackets around single line statements. I\u0027ve just seen too many bugs in my career caused by these.",
+      "range": {
+        "startLine": 60,
+        "startChar": 2,
+        "endLine": 60,
+        "endChar": 9
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2389e593_2fe91660",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "I love it.",
+      "range": {
+        "startLine": 161,
+        "startChar": 45,
+        "endLine": 161,
+        "endChar": 59
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9e350f2_9f6df165",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "perhaps `\u003d nullptr` to keep consistent with the surrounding code?",
+      "range": {
+        "startLine": 228,
+        "startChar": 23,
+        "endLine": 228,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e05fd8f1_ee49071e",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "nit: brackets.",
+      "range": {
+        "startLine": 395,
+        "startChar": 2,
+        "endLine": 395,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e896628_d55d71b7",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "nit: Could do with breaking up into a couple of lines to prevent the reader\u0027s head melting (I has initially assumed the + here was a string-concatenate, not a pointer offset).",
+      "range": {
+        "startLine": 634,
+        "startChar": 38,
+        "endLine": 634,
+        "endChar": 163
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f88d90b_6ba109b3",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4087,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "Übernit: I think it is more common in the SwiftShader codebase to have the anonymous namespace in the named namespace. I don\u0027t think it makes any difference here though.",
+      "range": {
+        "startLine": 4087,
+        "startChar": 0,
+        "endLine": 4087,
+        "endChar": 16
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e50b5fed_49cab027",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4096,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "Is there any reason to have this as an array?\nGiven that you went to the effort of commenting what index means what, why not just have two sensibly named fields?",
+      "range": {
+        "startLine": 4096,
+        "startChar": 13,
+        "endLine": 4096,
+        "endChar": 24
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba977d45_89a84192",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "\u003d nullptr?",
+      "range": {
+        "startLine": 4101,
+        "startChar": 17,
+        "endLine": 4101,
+        "endChar": 19
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1686960_df6dc7a2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4228,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "Übernit: newline between functions.",
+      "range": {
+        "startLine": 4228,
+        "startChar": 0,
+        "endLine": 4228,
+        "endChar": 2
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01bcc7af_26f0fa18",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4279,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T12:01:36Z",
+      "side": 1,
+      "message": "nit: may be ignored, but is still good to know what the signature is, so you know what the correct return instruction should be.",
+      "range": {
+        "startLine": 4279,
+        "startChar": 8,
+        "endLine": 4279,
+        "endChar": 17
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
