@@ -303,71 +303,71 @@ void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x
 	}
 
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
-	Byte8 value = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
-	value = value | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
-	Byte8 valueBack = value;
+	Byte4 value = *Pointer<Byte4>(buffer) & Byte4(-1, -1, 0, 0);
+	value = value | (*Pointer<Byte4>(buffer + pitch - 2) & Byte4(0, 0, -1, -1));
+	Byte4 valueBack = value;
 
-	if(state.frontStencil.compareMask != 0xff)
+	if(state.frontStencil.compareMask != 0xFF)
 	{
-		value &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].testMaskQ));
+		value &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[0].testMaskQ));
 	}
 
 	stencilTest(value, state.frontStencil.compareOp, false);
 
-	if(state.backStencil.compareMask != 0xff)
+	if(state.backStencil.compareMask != 0xFF)
 	{
-		valueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].testMaskQ));
+		valueBack &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[1].testMaskQ));
 	}
 
 	stencilTest(valueBack, state.backStencil.compareOp, true);
 
-	value &= *Pointer<Byte8>(primitive + OFFSET(Primitive, clockwiseMask));
-	valueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
+	value &= *Pointer<Byte4>(primitive + OFFSET(Primitive, clockwiseMask));
+	valueBack &= *Pointer<Byte4>(primitive + OFFSET(Primitive, invClockwiseMask));
 	value |= valueBack;
 
 	sMask = SignMask(value) & cMask;
 }
 
-void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, bool isBack)
+void PixelRoutine::stencilTest(Byte4 &value, VkCompareOp stencilCompareMode, bool isBack)
 {
-	Byte8 equal;
+	Byte4 equal;
 
 	switch(stencilCompareMode)
 	{
 		case VK_COMPARE_OP_ALWAYS:
-			value = Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+			value = Byte4(0xFF, 0xFF, 0xFF, 0xFF);
 			break;
 		case VK_COMPARE_OP_NEVER:
-			value = Byte8(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+			value = Byte4(0x00, 0x00, 0x00, 0x00);
 			break;
 		case VK_COMPARE_OP_LESS:  // a < b ~ b > a
-			value += Byte8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
-			value = CmpGT(As<SByte8>(value), *Pointer<SByte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
+			value += Byte4(0x80, 0x80, 0x80, 0x80);
+			value = CmpGT(As<SByte4>(value), *Pointer<SByte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
 			break;
 		case VK_COMPARE_OP_EQUAL:
-			value = CmpEQ(value, *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
+			value = CmpEQ(value, *Pointer<Byte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
 			break;
 		case VK_COMPARE_OP_NOT_EQUAL:  // a != b ~ !(a == b)
-			value = CmpEQ(value, *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
-			value ^= Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+			value = CmpEQ(value, *Pointer<Byte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
+			value ^= Byte4(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
 			break;
 		case VK_COMPARE_OP_LESS_OR_EQUAL:  // a <= b ~ (b > a) || (a == b)
 			equal = value;
-			equal = CmpEQ(equal, *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
-			value += Byte8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
-			value = CmpGT(As<SByte8>(value), *Pointer<SByte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
+			equal = CmpEQ(equal, *Pointer<Byte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedQ)));
+			value += Byte4(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+			value = CmpGT(As<SByte4>(value), *Pointer<SByte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
 			value |= equal;
 			break;
 		case VK_COMPARE_OP_GREATER:  // a > b
-			equal = *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ));
-			value += Byte8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
-			equal = CmpGT(As<SByte8>(equal), As<SByte8>(value));
+			equal = *Pointer<Byte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ));
+			value += Byte4(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+			equal = CmpGT(As<SByte4>(equal), As<SByte4>(value));
 			value = equal;
 			break;
 		case VK_COMPARE_OP_GREATER_OR_EQUAL:  // a >= b ~ !(a < b) ~ !(b > a)
-			value += Byte8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
-			value = CmpGT(As<SByte8>(value), *Pointer<SByte8>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
-			value ^= Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+			value += Byte4(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+			value = CmpGT(As<SByte4>(value), *Pointer<SByte4>(data + OFFSET(DrawData, stencil[isBack].referenceMaskedSignedQ)));
+			value ^= Byte4(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
 			break;
 		default:
 			UNSUPPORTED("VkCompareOp: %d", int(stencilCompareMode));
@@ -680,48 +680,48 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, con
 	}
 
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
-	Byte8 bufferValue = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
-	bufferValue = bufferValue | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
-	Byte8 newValue;
+	Byte4 bufferValue = *Pointer<Byte4>(buffer) & Byte4(-1, -1, 0, 0, 0, 0, 0, 0);
+	bufferValue = bufferValue | (*Pointer<Byte4>(buffer + pitch - 2) & Byte4(0, 0, -1, -1, 0, 0, 0, 0));
+	Byte4 newValue;
 	stencilOperation(newValue, bufferValue, state.frontStencil, false, zMask, sMask);
 
 	if((state.frontStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
 	{
-		Byte8 maskedValue = bufferValue;
-		newValue &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].writeMaskQ));
-		maskedValue &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].invWriteMaskQ));
+		Byte4 maskedValue = bufferValue;
+		newValue &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[0].writeMaskQ));
+		maskedValue &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[0].invWriteMaskQ));
 		newValue |= maskedValue;
 	}
 
-	Byte8 newValueBack;
+	Byte4 newValueBack;
 
 	stencilOperation(newValueBack, bufferValue, state.backStencil, true, zMask, sMask);
 
 	if((state.backStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
 	{
-		Byte8 maskedValue = bufferValue;
-		newValueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].writeMaskQ));
-		maskedValue &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].invWriteMaskQ));
+		Byte4 maskedValue = bufferValue;
+		newValueBack &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[1].writeMaskQ));
+		maskedValue &= *Pointer<Byte4>(data + OFFSET(DrawData, stencil[1].invWriteMaskQ));
 		newValueBack |= maskedValue;
 	}
 
-	newValue &= *Pointer<Byte8>(primitive + OFFSET(Primitive, clockwiseMask));
-	newValueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
+	newValue &= *Pointer<Byte4>(primitive + OFFSET(Primitive, clockwiseMask));
+	newValueBack &= *Pointer<Byte4>(primitive + OFFSET(Primitive, invClockwiseMask));
 	newValue |= newValueBack;
 
-	newValue &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * cMask);
-	bufferValue &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * cMask);
+	newValue &= *Pointer<Byte4>(constants + OFFSET(Constants, maskB4Q) + 8 * cMask);
+	bufferValue &= *Pointer<Byte4>(constants + OFFSET(Constants, invMaskB4Q) + 8 * cMask);
 	newValue |= bufferValue;
 
 	*Pointer<Short>(buffer) = Extract(As<Short4>(newValue), 0);
 	*Pointer<Short>(buffer + pitch) = Extract(As<Short4>(newValue), 1);
 }
 
-void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
+void PixelRoutine::stencilOperation(Byte4 &newValue, const Byte4 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
 {
-	Byte8 &pass = newValue;
-	Byte8 fail;
-	Byte8 zFail;
+	Byte4 &pass = newValue;
+	Byte4 fail;
+	Byte4 zFail;
 
 	stencilOperation(pass, bufferValue, ops.passOp, isBack);
 
@@ -739,38 +739,29 @@ void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, c
 	{
 		if(state.depthTestActive && ops.depthFailOp != ops.passOp)  // zMask valid and values not the same
 		{
-			pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * zMask);
-			zFail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * zMask);
+			pass &= *Pointer<Byte4>(constants + OFFSET(Constants, maskB4Q) + 8 * zMask);
+			zFail &= *Pointer<Byte4>(constants + OFFSET(Constants, invMaskB4Q) + 8 * zMask);
 			pass |= zFail;
 		}
 
-		pass &= *Pointer<Byte8>(constants + OFFSET(Constants, maskB4Q) + 8 * sMask);
-		fail &= *Pointer<Byte8>(constants + OFFSET(Constants, invMaskB4Q) + 8 * sMask);
+		pass &= *Pointer<Byte4>(constants + OFFSET(Constants, maskB4Q) + 8 * sMask);
+		fail &= *Pointer<Byte4>(constants + OFFSET(Constants, invMaskB4Q) + 8 * sMask);
 		pass |= fail;
 	}
 }
 
-Byte8 PixelRoutine::stencilReplaceRef(bool isBack)
+Byte4 PixelRoutine::stencilReplaceRef(bool isBack)
 {
 	auto it = spirvShader->outputBuiltins.find(spv::BuiltInFragStencilRefEXT);
 	if(it != spirvShader->outputBuiltins.end())
 	{
-		UInt4 sRef = As<UInt4>(routine.getVariable(it->second.Id)[it->second.FirstComponent]) & UInt4(0xff);
-		// TODO (b/148295813): Could be done with a single pshufb instruction. Optimize the
-		//                     following line by either adding a rr::Shuffle() variant to do
-		//                     it explicitly or adding a Byte4(Int4) constructor would work.
-		sRef.x = rr::UInt(sRef.x) | (rr::UInt(sRef.y) << 8) | (rr::UInt(sRef.z) << 16) | (rr::UInt(sRef.w) << 24);
-
-		UInt2 sRefDuplicated;
-		sRefDuplicated = Insert(sRefDuplicated, sRef.x, 0);
-		sRefDuplicated = Insert(sRefDuplicated, sRef.x, 1);
-		return As<Byte8>(sRefDuplicated);
+		return Byte4(As<UInt4>(routine.getVariable(it->second.Id)[it->second.FirstComponent]));
 	}
 
-	return *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceQ));
+	return *Pointer<Byte4>(data + OFFSET(DrawData, stencil[isBack].referenceQ));
 }
 
-void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack)
+void PixelRoutine::stencilOperation(Byte4 &output, const Byte4 &bufferValue, VkStencilOp operation, bool isBack)
 {
 	switch(operation)
 	{
@@ -778,25 +769,25 @@ void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkS
 			output = bufferValue;
 			break;
 		case VK_STENCIL_OP_ZERO:
-			output = Byte8(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+			output = Byte4(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
 			break;
 		case VK_STENCIL_OP_REPLACE:
 			output = stencilReplaceRef(isBack);
 			break;
 		case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
-			output = AddSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
+			output = AddSat(bufferValue, Byte4(1, 1, 1, 1, 1, 1, 1, 1));
 			break;
 		case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
-			output = SubSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));
+			output = SubSat(bufferValue, Byte4(1, 1, 1, 1, 1, 1, 1, 1));
 			break;
 		case VK_STENCIL_OP_INVERT:
-			output = bufferValue ^ Byte8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+			output = bufferValue ^ Byte4(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
 			break;
 		case VK_STENCIL_OP_INCREMENT_AND_WRAP:
-			output = bufferValue + Byte8(1, 1, 1, 1, 1, 1, 1, 1);
+			output = bufferValue + Byte4(1, 1, 1, 1, 1, 1, 1, 1);
 			break;
 		case VK_STENCIL_OP_DECREMENT_AND_WRAP:
-			output = bufferValue - Byte8(1, 1, 1, 1, 1, 1, 1, 1);
+			output = bufferValue - Byte4(1, 1, 1, 1, 1, 1, 1, 1);
 			break;
 		default:
 			UNSUPPORTED("VkStencilOp: %d", int(operation));

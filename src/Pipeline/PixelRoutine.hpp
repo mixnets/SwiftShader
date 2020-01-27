@@ -65,11 +65,11 @@ protected:
 
 private:
 	Float4 interpolateCentroid(const Float4 &x, const Float4 &y, const Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
-	Byte8 stencilReplaceRef(bool isBack);
+	Byte4 stencilReplaceRef(bool isBack);
 	void stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x, Int &sMask, const Int &cMask);
-	void stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, bool isBack);
-	void stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
-	void stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack);
+	void stencilTest(Byte4 &value, VkCompareOp stencilCompareMode, bool isBack);
+	void stencilOperation(Byte4 &newValue, const Byte4 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
+	void stencilOperation(Byte4 &output, const Byte4 &bufferValue, VkStencilOp operation, bool isBack);
 	Bool depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask);
 
 	// Raster operations
