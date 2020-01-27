@@ -207,6 +207,30 @@
     },
     {
       "key": {
+        "uuid": "50e0f628_0d89cbc1",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-27T18:25:46Z",
+      "side": 1,
+      "message": "Just my 2 cents, but especially in the case of a single-line return statement I think it\u0027s valuable to have it stand out really strongly. It disrupts regular flow control and even with automatic formatting guaranteeing that it will be indented while following statements won\u0027t be, it can be hard to spot at a glance. Also it could be returning a value that itself is computed over multiple lines. Best to just delimit it clearly with braces.",
+      "parentUuid": "cbfea969_162ad4c4",
+      "range": {
+        "startLine": 60,
+        "startChar": 2,
+        "endLine": 60,
+        "endChar": 9
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2389e593_2fe91660",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -289,6 +313,30 @@
       "side": 1,
       "message": "Yeah, I\u0027m really a fan of uniform init, since it\u0027s the same for all types. And the fact that you have to know that it 0 or null initializes doesn\u0027t bother me, since every language that supports default constructions (C#, Java, Python) all work this way. But yeah, consistency is more important here, so I\u0027ll just go for the \u003d nullptr.",
       "parentUuid": "d9e350f2_9f6df165",
+      "range": {
+        "startLine": 228,
+        "startChar": 23,
+        "endLine": 228,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68da06b3_614a5945",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-27T18:25:46Z",
+      "side": 1,
+      "message": "My 2 cents here is that while uniform initialization, just like \u0027auto\u0027, is useful for avoiding having to refactor code when changing types, in the case of basic types I find the {} syntax confusing since it looks like an empty struct. Also in higher-level code the changing of types is common and typically benign, but in low-level code it\u0027s often important to know that something is and remains a specific basic type.\n\nSee b/148112755 for related efforts.",
+      "parentUuid": "c3592332_7787d8ec",
       "range": {
         "startLine": 228,
         "startChar": 23,
