@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "68500dbb_d1d7aa4b",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T20:50:01Z",
+      "side": 1,
+      "message": "Took a stab, and it\u0027s a more involved change. I decided to create an issue and document how I would do this here: https://b.corp.google.com/issues/148400732\nI also added a reference to this in the code.",
+      "parentUuid": "0a66af84_1beb40a4",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 197,
+        "endChar": 71
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bfa41dc7_42e06544",
         "filename": "src/Reactor/Optimizer.cpp",
         "patchSetId": 2
