@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c268613c_257a552f",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Maybe, though it\u0027s nice not having to call it explicitly in most unit tests, where we don\u0027t use separate threads. But yeah, I say we tackle this in a future change.",
+      "parentUuid": "32aa8c89_691cddc4",
+      "range": {
+        "startLine": 139,
+        "startChar": 1,
+        "endLine": 143,
+        "endChar": 16
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7313c5e9_65de517b",
         "filename": "src/Reactor/Coroutine.hpp",
         "patchSetId": 2
@@ -45,6 +69,47 @@
       "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a66af84_1beb40a4",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "The main issue is that I need some way to pass in \u0027args\u0027 to \u0027F\u0027 running on a different fiber. This was the simplest solution: package up the call to \u0027F\u0027 in a std::function, copying in the args by value, and then pass this std::function as the fiber\u0027s void* argument, so it can be invoked in the context of the fiber itself.\n\nI\u0027ll take a stab at doing the \u0027P\u0027 call \u0027F\u0027 thing to see how that goes.",
+      "parentUuid": "7313c5e9_65de517b",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 197,
+        "endChar": 71
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfa41dc7_42e06544",
+        "filename": "src/Reactor/Optimizer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "I should mention that all the changes here were necessary because I now compile multiple functions. What was happening is that this code would delete the \"Uses\" instances stores on Ice::Operand instances as \"external data\", but Operands might be referenced by multiple functions, so these \"external data\" dangling pointers would survive, and crash here. I just modified this code to store pointers to the Operands themselves so that we could reset the external data to nullptr when done this pass.",
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "e3b0d2a6_0884dc03",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Yes, this was on purpose, because I intend to hoist this out into a separate header/cpp, since these functions are completely independent of any global state. I\u0027ll do the anonymous namespace for now, until I hoist this out. But I don\u0027t really get putting the anonymous namespace on the inside, as that would add the \u0027sz\u0027 namespace to the external symbol table needlessly. I\u0027ll put the anonymous namespace on the outside, if that\u0027s alright.",
+      "parentUuid": "b71bebe9_a8cab828",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6951f3f5_379e1ffc",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -94,6 +183,30 @@
     },
     {
       "key": {
+        "uuid": "cbfea969_162ad4c4",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "I used to agree with this, until clang-format, since formatting exposes the bugs that you\u0027ve seen (the ones where indendation fools you into thinking the code executes as part of the same block that has no braces). With clang-format, it exposes this error immediately, so it\u0027s not really necessary, and I get to have more compact code - especially when it means 2 extra lines for braces.\n\nHaving said all that, I don\u0027t want to have a debate over this, so I\u0027ll just go ahead and put the braces 😊",
+      "parentUuid": "6951f3f5_379e1ffc",
+      "range": {
+        "startLine": 60,
+        "startChar": 2,
+        "endLine": 60,
+        "endChar": 9
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2389e593_2fe91660",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -105,6 +218,30 @@
       "writtenOn": "2020-01-27T12:01:36Z",
       "side": 1,
       "message": "I love it.",
+      "range": {
+        "startLine": 161,
+        "startChar": 45,
+        "endLine": 161,
+        "endChar": 59
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b507e6c_cbb04167",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Haha, you should, I took it from you! It\u0027s what you did in rr::Call\u0027s Subzero implementation 😊",
+      "parentUuid": "2389e593_2fe91660",
       "range": {
         "startLine": 161,
         "startChar": 45,
@@ -140,6 +277,30 @@
     },
     {
       "key": {
+        "uuid": "c3592332_7787d8ec",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Yeah, I\u0027m really a fan of uniform init, since it\u0027s the same for all types. And the fact that you have to know that it 0 or null initializes doesn\u0027t bother me, since every language that supports default constructions (C#, Java, Python) all work this way. But yeah, consistency is more important here, so I\u0027ll just go for the \u003d nullptr.",
+      "parentUuid": "d9e350f2_9f6df165",
+      "range": {
+        "startLine": 228,
+        "startChar": 23,
+        "endLine": 228,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e05fd8f1_ee49071e",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -160,6 +321,30 @@
       "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66967a27_72b9197f",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e05fd8f1_ee49071e",
+      "range": {
+        "startLine": 395,
+        "startChar": 2,
+        "endLine": 395,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -186,6 +371,30 @@
     },
     {
       "key": {
+        "uuid": "632c5c5b_76710720",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e896628_d55d71b7",
+      "range": {
+        "startLine": 634,
+        "startChar": 38,
+        "endLine": 634,
+        "endChar": 163
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f88d90b_6ba109b3",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -197,6 +406,30 @@
       "writtenOn": "2020-01-27T12:01:36Z",
       "side": 1,
       "message": "Übernit: I think it is more common in the SwiftShader codebase to have the anonymous namespace in the named namespace. I don\u0027t think it makes any difference here though.",
+      "range": {
+        "startLine": 4087,
+        "startChar": 0,
+        "endLine": 4087,
+        "endChar": 16
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ee4bcff_8373b938",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4087,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "I mentioned this already on the namespace sz comment, but if a namespace itself should be interal, then it should be inside the anonymous namespace, not the other way around. Unless I\u0027m missing something?",
+      "parentUuid": "9f88d90b_6ba109b3",
       "range": {
         "startLine": 4087,
         "startChar": 0,
@@ -255,6 +488,30 @@
     },
     {
       "key": {
+        "uuid": "ac95b8de_1a0509f2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4101,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Okay, but will leave the FiberHandle inits with {}, as FiberHandle may not necessarily be a void* on other platforms. This, btw, is one of the reasons I like uniform initialization: you can change a type without having to modify all initializations.",
+      "parentUuid": "ba977d45_89a84192",
+      "range": {
+        "startLine": 4101,
+        "startChar": 17,
+        "endLine": 4101,
+        "endChar": 19
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c1686960_df6dc7a2",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -278,6 +535,30 @@
     },
     {
       "key": {
+        "uuid": "04facf35_707c99e2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4228,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "This wasn\u0027t an accident. I wanted to show that these two functions go hand in hand, with that gross mutex lock/unlock thing. But I\u0027ll put the space for consistency.",
+      "parentUuid": "c1686960_df6dc7a2",
+      "range": {
+        "startLine": 4228,
+        "startChar": 0,
+        "endLine": 4228,
+        "endChar": 2
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "01bcc7af_26f0fa18",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -298,6 +579,47 @@
       "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc49c5d8_9a83befa",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4279,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01bcc7af_26f0fa18",
+      "range": {
+        "startLine": 4279,
+        "startChar": 8,
+        "endLine": 4279,
+        "endChar": 17
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a51a345_3273c4ee",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4388,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T17:18:02Z",
+      "side": 1,
+      "message": "As we discovered, I forgot to pass the handle in here. I got lucky that this worked. Seems the handle remained in the same register from an earlier call. Fixed now.",
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
