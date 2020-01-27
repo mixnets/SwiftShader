@@ -1223,11 +1223,24 @@ void PixelRoutine::alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s 
 	}
 }
 
+Float4 LinearToSRGB(const Float4 &&c)
+{
+	Float4 lc = Min(c, Float4(0.0031308f)) * Float4(12.92f);
+	Float4 ec = Float4(1.055f) * power(c, Float4(1.0f / 2.4f)) - Float4(0.055f);
+
+	return Max(lc, ec);
+}
+
 void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &current, const Int &sMask, const Int &zMask, const Int &cMask)
 {
 	if(isSRGB(index))
 	{
 		linearToSRGB16_12_16(current);
+
+		
+		//current[0] = UShort4(LinearToSRGB(Float4(As<UShort4>(current[0])) * Float4(1.0f / 0xFFFF)) * Float4(0xFFFF) + Float4(0.5f));
+		//current[1] = UShort4(LinearToSRGB(Float4(As<UShort4>(current[1])) * Float4(1.0f / 0xFFFF)) * Float4(0xFFFF) + Float4(0.5f));
+		//current[2] = UShort4(LinearToSRGB(Float4(As<UShort4>(current[2])) * Float4(1.0f / 0xFFFF)) * Float4(0xFFFF) + Float4(0.5f));
 	}
 
 	switch(state.targetFormat[index])
@@ -2731,9 +2744,9 @@ void PixelRoutine::sRGBtoLinear16_12_16(Vector4s &c)
 {
 	Pointer<Byte> LUT = constants + OFFSET(Constants, sRGBtoLinear12_16);
 
-	c.x = As<UShort4>(c.x) >> 4;
-	c.y = As<UShort4>(c.y) >> 4;
-	c.z = As<UShort4>(c.z) >> 4;
+	c.x = AddSat(As<UShort4>(c.x), UShort4(0x0007)) >> 4;
+	c.y = AddSat(As<UShort4>(c.y), UShort4(0x0007)) >> 4;
+	c.z = AddSat(As<UShort4>(c.z), UShort4(0x0007)) >> 4;
 
 	c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 0))), 0);
 	c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 1))), 1);
@@ -2753,9 +2766,9 @@ void PixelRoutine::sRGBtoLinear16_12_16(Vector4s &c)
 
 void PixelRoutine::linearToSRGB16_12_16(Vector4s &c)
 {
-	c.x = As<UShort4>(c.x) >> 4;
-	c.y = As<UShort4>(c.y) >> 4;
-	c.z = As<UShort4>(c.z) >> 4;
+	c.x = AddSat(As<UShort4>(c.x), UShort4(0x0007)) >> 4;
+	c.y = AddSat(As<UShort4>(c.y), UShort4(0x0007)) >> 4;
+	c.z = AddSat(As<UShort4>(c.z), UShort4(0x0007)) >> 4;
 
 	linearToSRGB12_16(c);
 }

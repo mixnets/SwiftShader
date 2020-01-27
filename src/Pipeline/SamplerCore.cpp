@@ -1492,6 +1492,16 @@ void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww,
 	}
 }
 
+Float4 sRGBtoLinear(const Float4 &&c)
+{
+	Float4 lc = c * Float4(1.0f / 12.92f);
+	Float4 ec = power((c + Float4(0.055f)) * Float4(1.0f / 1.055f), Float4(2.4f));
+
+	Int4 linear = CmpLT(c, Float4(0.04045f));
+
+	return As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));  // TODO: IfThenElse()
+}
+
 Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 {
 	Vector4s c;
@@ -1746,7 +1756,9 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 		{
 			if(isRGBComponent(i))
 			{
-				sRGBtoLinear16_8_16(c[i]);
+				ASSERT(state.textureFormat.has8bitTextureComponents());
+			//	c[i] = UShort4(sRGBtoLinear(Float4(As<UShort4>(c[i])) * Float4(1.0f / 0xFF00)) * Float4(0xFF00) + Float4(0.5f));
+				sRGBtoLinear16_8_16(c[i]);			
 			}
 		}
 	}

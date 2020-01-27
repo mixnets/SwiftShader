@@ -606,7 +606,23 @@ public:
 //	const SByte4 &operator++(SByte4 &val);   // Pre-increment
 //	RValue<SByte4> operator--(SByte4 &val, int);   // Post-decrement
 //	const SByte4 &operator--(SByte4 &val);   // Pre-decrement
+/*
+template<int N>
+class ByteVec : public LValue<ByteVec<N>>
+{
+public:
+	ByteVec() = default;
+	//ByteVec(RValue<ByteVec> rhs);
+	//ByteVec(const ByteVec &rhs);
+	//ByteVec(const Reference<ByteVec> &rhs);
 
+	RValue<Byte8> operator=(RValue<Byte8> rhs);
+	RValue<Byte8> operator=(const Byte8 &rhs);
+	RValue<Byte8> operator=(const Reference<Byte8> &rhs);
+
+	static Type *getType();
+};
+*/
 class Byte8 : public LValue<Byte8>
 {
 public:

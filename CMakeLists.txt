@@ -356,8 +356,8 @@ if(MSVC)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
     add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)  # Disable MSVC warnings about std::aligned_storage being broken before VS 2017 15.8
 
-    set_cpp_flag("/DEBUG:FASTLINK" DEBUG)
-    set_cpp_flag("/DEBUG:FASTLINK" RELWITHDEBINFO)
+   # set_cpp_flag("/DEBUG:FASTLINK" DEBUG)
+   # set_cpp_flag("/DEBUG:FASTLINK" RELWITHDEBINFO)
 
     if(SWIFTSHADER_WARNINGS_AS_ERRORS)
         set_cpp_flag("/WX") # Treat all warnings as errors
