@@ -208,6 +208,30 @@
     },
     {
       "key": {
+        "uuid": "c9fe44b9_cf236a33",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T21:20:55Z",
+      "side": 1,
+      "message": "Copying from the same private chat 😊:\n\nRight, both are good points. All I\u0027ll say is that for something that\u0027s definitely internal to a cpp, I think having it all wrapped up in an anonymous namespace makes more sense. But in a header, of course, the other way around. I could have just moved \u0027sz\u0027 out as part of this change, but I didn\u0027t want to because I\u0027m adding functions to the namespace, and I don\u0027t like changes that refactor + modify, as it\u0027s harder to understand the diffs.",
+      "parentUuid": "e32857cc_46015640",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6951f3f5_379e1ffc",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -607,6 +631,30 @@
       "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32a1b46d_578be241",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4087,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T21:20:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ee4bcff_8373b938",
+      "range": {
+        "startLine": 4087,
+        "startChar": 0,
+        "endLine": 4087,
+        "endChar": 16
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
