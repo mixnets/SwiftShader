@@ -45,6 +45,30 @@
       "revId": "9036cf4ba3dea9165b24885fe59dc70a682fef4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd8e3d5a_9398404d",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-01-27T15:51:33Z",
+      "side": 1,
+      "message": "I flipped the sign on the constants to make keep them in the same space as the original coordinates, so additions become subtractions and subtractions become additions when using them.",
+      "parentUuid": "708960e5_02b60c58",
+      "range": {
+        "startLine": 205,
+        "startChar": 19,
+        "endLine": 205,
+        "endChar": 21
+      },
+      "revId": "9036cf4ba3dea9165b24885fe59dc70a682fef4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
