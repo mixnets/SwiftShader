@@ -231,6 +231,30 @@
     },
     {
       "key": {
+        "uuid": "d39ded3f_ce171cc5",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T18:34:18Z",
+      "side": 1,
+      "message": "I agree, except for early returns at the top of a function, which are basically precondition checks. Those tend to stand out quite clearly. But yeah, for middle of function returns, having it stand out is very important.",
+      "parentUuid": "50e0f628_0d89cbc1",
+      "range": {
+        "startLine": 60,
+        "startChar": 2,
+        "endLine": 60,
+        "endChar": 9
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2389e593_2fe91660",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -337,6 +361,30 @@
       "side": 1,
       "message": "My 2 cents here is that while uniform initialization, just like \u0027auto\u0027, is useful for avoiding having to refactor code when changing types, in the case of basic types I find the {} syntax confusing since it looks like an empty struct. Also in higher-level code the changing of types is common and typically benign, but in low-level code it\u0027s often important to know that something is and remains a specific basic type.\n\nSee b/148112755 for related efforts.",
       "parentUuid": "c3592332_7787d8ec",
+      "range": {
+        "startLine": 228,
+        "startChar": 23,
+        "endLine": 228,
+        "endChar": 25
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b9d862ae_f367ad57",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T18:34:18Z",
+      "side": 1,
+      "message": "I understand, but this syntax has been standard since C++11, and actually borrows from struct and array initialization, so IMHO, it\u0027s just a matter of getting used to it. I found it weird at first as well, but it didn\u0027t take long before I came to appreciate it. Having to specify 0, 0.0f, nullptr, and false isn\u0027t difficult, but it\u0027s also not necessary to have to type them out - especially if you believe that primitives should be default initialized by default (I do 😊). Oh, and I didn\u0027t mention that it also avoids some compilers warning about truncating \u00270\u0027 as an int to a smaller type, though most compilers have gotten better at not doing that.",
+      "parentUuid": "68da06b3_614a5945",
       "range": {
         "startLine": 228,
         "startChar": 23,
@@ -510,6 +558,30 @@
       "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cda66fe_133e2681",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4096,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T18:34:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e50b5fed_49cab027",
+      "range": {
+        "startLine": 4096,
+        "startChar": 13,
+        "endLine": 4096,
+        "endChar": 24
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
