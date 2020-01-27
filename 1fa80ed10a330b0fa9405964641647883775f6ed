@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "58b4496e_8505cbd3",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1255,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T15:10:09Z",
+      "side": 1,
+      "message": "As discussed in person, 0x02460246 would be more readable as 0x0246\u00270246.\nSame for 0x048C048C048C048C below as 0x048C\u0027048C\u0027048C\u0027048C.\nAnd you were right, it\u0027s since C++14, so we can do this now 😊",
+      "revId": "1fa80ed10a330b0fa9405964641647883775f6ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d3eeb0e_e80f81dc",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-27T15:10:09Z",
+      "side": 1,
+      "message": "Not sure there\u0027s really any reason to check if the routine is valid. If you attempt to invoke routine, it will assert, and we probably want to know that for unit tests, right?",
+      "revId": "1fa80ed10a330b0fa9405964641647883775f6ed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
