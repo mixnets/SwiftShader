@@ -184,6 +184,30 @@
     },
     {
       "key": {
+        "uuid": "e32857cc_46015640",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T21:15:12Z",
+      "side": 1,
+      "message": "Copying from a private IM conversation we had:\n\n1) I\u0027m not sure that just having a namespace on its own will pollute the external symbol table. I\u0027d strongly suspect that you\u0027d need a real symbol (type, function, var, etc) in there before any real namespace symbol is generated (mangled or dwarf)\n\n2) I think part of the reason this is typically done is so that you can put private things into an existing public namespace. For example:\n\n  namespace vk {\n  namespace {\n  // stuff here doesn\u0027t need to use the vk:: prefix\n\nBut I do not feel strongly here. Only commented as this goes against the common style I\u0027ve seen elsewhere. That is not to say it\u0027s any better or worse.",
+      "parentUuid": "e3b0d2a6_0884dc03",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6951f3f5_379e1ffc",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 2
@@ -314,6 +338,30 @@
       "side": 1,
       "message": "Haha, you should, I took it from you! It\u0027s what you did in rr::Call\u0027s Subzero implementation 😊",
       "parentUuid": "2389e593_2fe91660",
+      "range": {
+        "startLine": 161,
+        "startChar": 45,
+        "endLine": 161,
+        "endChar": 59
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f15c67ac_c83076a1",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T21:15:12Z",
+      "side": 1,
+      "message": "Just as well I didn\u0027t criticise it then. :D",
+      "parentUuid": "6b507e6c_cbb04167",
       "range": {
         "startLine": 161,
         "startChar": 45,
@@ -644,6 +692,30 @@
       "side": 1,
       "message": "Okay, but will leave the FiberHandle inits with {}, as FiberHandle may not necessarily be a void* on other platforms. This, btw, is one of the reasons I like uniform initialization: you can change a type without having to modify all initializations.",
       "parentUuid": "ba977d45_89a84192",
+      "range": {
+        "startLine": 4101,
+        "startChar": 17,
+        "endLine": 4101,
+        "endChar": 19
+      },
+      "revId": "1c7f60ac82498baa73d5c8ca535526255f2c4d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49f95e2d_af420eb2",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-27T21:15:12Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ac95b8de_1a0509f2",
       "range": {
         "startLine": 4101,
         "startChar": 17,
