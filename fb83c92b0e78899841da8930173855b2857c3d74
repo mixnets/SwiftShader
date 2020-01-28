@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a1e6d43_ef1eb219",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-28T04:10:32Z",
+      "side": 1,
+      "message": "I haven\u0027t taken a close look at this yet, but it sounds like you\u0027re essentially trying to implement a symbol table. These would typically have push and pop methods for adding and removing scope levels, respectively. \u0027extending\u0027 a container sounds a bit weird to me, conceptually.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 52
+      },
+      "revId": "fb83c92b0e78899841da8930173855b2857c3d74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
