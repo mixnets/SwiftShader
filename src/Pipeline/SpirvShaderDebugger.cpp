@@ -1165,8 +1165,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 
 			for(auto member : ty->members)
 			{
-				auto memberGroup = objectGroup.template group<const char *>(member->name.c_str());
-				exposeVariable(shader, memberGroup, l, member->name.c_str(), member->type, id, state, member->offset / 32);
+				exposeVariable(shader, objectGroup, l, member->name.c_str(), member->type, id, state, member->offset / 32);
 			}
 
 			return;
