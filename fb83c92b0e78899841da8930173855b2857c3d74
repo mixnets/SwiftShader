@@ -22,6 +22,30 @@
       "revId": "fb83c92b0e78899841da8930173855b2857c3d74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dc588f5_94e4c71d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-28T10:54:12Z",
+      "side": 1,
+      "message": "It\u0027s similar, but not quite the same thing.\n\nFirst some terminology / background:\n\n• DAP has Scopes - these are collections of variables, optionally associated with a range within a source:\n  https://microsoft.github.io/debug-adapter-protocol/specification#Types_Scope\n\n• A Scope owns a single VariableContainer:\nhttps://github.com/google/swiftshader/blob/34e16df059f8c69f0409e167b4d2e7ef59bf7b55/src/Vulkan/Debug/Thread.hpp#L54\n\n• A Thread\u0027s call stack is formed from a collection of stack frame entries.\n\n• Each entry can be associated with a number of Scopes - one for locals, one for globals, one for registers and so on.\n\n• The Thread itself already has a push and pop interface for creating new stack entries: \n  https://github.com/google/swiftshader/blob/34e16df059f8c69f0409e167b4d2e7ef59bf7b55/src/Vulkan/Debug/Thread.hpp#L124-L129\n\nWith all that said:\n\n\u003e These would typically have push and pop methods for adding and removing scope levels, respectively.\n\nRight - so a Scope could have this push() / pop() API for nesting symbols within a single Scope, but I actually want something a bit more powerful.\nFor the builtins (see next change) I actually want more than a simple linear stack. I\u0027m creating a single VariableContainer to hold the immutable values for the builtins, and then pulling these in to a number of VariableContainers with extend(). These will be added to the base of each frame scope stack (either the base of the locals or globals Scope), and also used in the SPIR-V scope which runs parallel to the high-level-source scopes.\nBasically, this mechanism allows be to declare all this stuff once, and reuse it in a bunch of places.\n\nSo yes, you\u0027re right, and I may end up adding a push() / pop() interface to Scope, and this very well might be implemented by using this API.",
+      "parentUuid": "9a1e6d43_ef1eb219",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 52
+      },
+      "revId": "fb83c92b0e78899841da8930173855b2857c3d74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
