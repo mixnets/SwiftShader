@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab553edc_bf96e071",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 880,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-29T21:54:16Z",
+      "side": 1,
+      "message": "*cough*",
+      "range": {
+        "startLine": 880,
+        "startChar": 1,
+        "endLine": 880,
+        "endChar": 19
+      },
+      "revId": "b9060901a910de2f9554a3e93423bcb5725eb173",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
