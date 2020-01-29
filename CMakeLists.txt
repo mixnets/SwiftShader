@@ -469,7 +469,7 @@ else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
     endif()
 
-    # Disable pedanitc warnings
+    # Disable pedantic warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wno-ignored-attributes"   # ignoring attributes on template argument 'X'
@@ -1470,9 +1470,10 @@ list(APPEND LLVM_INCLUDE_DIR
 set(LLVM_COMPILE_OPTIONS)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     list(APPEND LLVM_COMPILE_OPTIONS
-        "-Wno-noexcept-type"           # mangled name for ‘X’ will change in C++17 because the exception specification is part of a function type
-        "-Wno-maybe-uninitialized"     # ‘X’ may be used uninitialized in this function
-        "-Wno-unused-but-set-variable" # variable ‘X’ set but not used
+        "-Wno-noexcept-type"            # mangled name for ‘X’ will change in C++17 because the exception specification is part of a function type
+        "-Wno-maybe-uninitialized"      # ‘X’ may be used uninitialized in this function
+        "-Wno-unused-but-set-variable"  # variable ‘X’ set but not used
+        "-Wno-error=init-list-lifetime" # error: initializing <type> from <type> does not extend the lifetime of the underlying array
     )
     if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
         list(APPEND LLVM_COMPILE_OPTIONS
