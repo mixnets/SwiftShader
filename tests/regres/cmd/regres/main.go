@@ -251,6 +251,9 @@ func (r *regres) run() error {
 			}
 		}
 
+		change = &changeInfo{id: "I7c906ed72a6bd5465a50381d3e91e18383bb23e1"}
+		change.update(client)
+
 		if change == nil {
 			// Everything up to date. Take a break.
 			log.Println("Nothing to do. Sleeping")
@@ -299,7 +302,7 @@ func (r *regres) run() error {
 
 func (r *regres) test(change *changeInfo) (string, bool, error) {
 	latest := r.newTest(change.latest)
-	defer latest.cleanup()
+	//defer latest.cleanup()
 
 	if err := latest.checkout(); err != nil {
 		return "", true, cause.Wrap(err, "Failed to checkout '%s'", change.latest)
@@ -485,7 +488,7 @@ func (r *regres) testLatest(change *changeInfo, test *test, d deqpBuild) (*deqp.
 func (r *regres) testParent(change *changeInfo, testlists testlist.Lists, d deqpBuild) (*deqp.Results, error) {
 	// Get the test results for the changes's parent changelist.
 	test := r.newTest(change.parent)
-	defer test.cleanup()
+	//defer test.cleanup()
 
 	cachePath := test.resultsCachePath(testlists, d)
 
@@ -519,7 +522,7 @@ func (r *regres) updateTestLists(client *gerrit.Client) error {
 
 	// Get the full test results for latest master.
 	test := r.newTest(headHash)
-	defer test.cleanup()
+	//defer test.cleanup()
 
 	// Always need to checkout the change.
 	if err := test.checkout(); err != nil {
@@ -536,12 +539,13 @@ func (r *regres) updateTestLists(client *gerrit.Client) error {
 	if err != nil {
 		return cause.Wrap(err, "Failed to load full test lists for '%s'", headHash)
 	}
-
+	log.Println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 	// Build the change.
 	if err := test.build(); err != nil {
+		log.Println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
 		return cause.Wrap(err, "Failed to build '%s'", headHash)
 	}
-
+	log.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	// Run the tests on the change.
 	results, err := test.run(testLists, d)
 	if err != nil {
@@ -832,12 +836,15 @@ func (t *test) checkout() error {
 // reported in the returned deqprun.Results.Error field.
 func (t *test) buildAndRun(testLists testlist.Lists, d deqpBuild) *deqp.Results {
 	// Build the parent change.
+	log.Println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
 	if err := t.build(); err != nil {
+		log.Println("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
 		msg := fmt.Sprintf("Failed to build '%s'", t.commit)
 		log.Println(cause.Wrap(err, msg))
 		return &deqp.Results{Error: msg}
 	}
-
+	log.Println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+	//time.Sleep(1000 * time.Hour)
 	// Run the tests on the parent change.
 	results, err := t.run(testLists, d)
 	if err != nil {
@@ -876,14 +883,16 @@ func (t *test) build() error {
 func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error) {
 	log.Printf("Running tests for '%s'\n", t.commit)
 
-	outDir := filepath.Join(t.srcDir, "out")
-	if !util.IsDir(outDir) { // https://swiftshader-review.googlesource.com/c/SwiftShader/+/27188
-		outDir = t.buildDir
+	swiftshader_icd_so := filepath.Join(t.buildDir, "libvk_swiftshader.so")
+	swiftshader_icd_json := filepath.Join(t.buildDir, "Linux", "vk_swiftshader_icd.json")
+
+	if _, err := os.Stat(swiftshader_icd_so); err != nil {
+		return nil, fmt.Errorf("Couldn't find '%s'", swiftshader_icd_so)
 	}
-	if !util.IsDir(outDir) {
-		return nil, fmt.Errorf("Couldn't find output directory")
+
+	if _, err := os.Stat(swiftshader_icd_json); err != nil {
+		return nil, fmt.Errorf("Couldn't find '%s'", swiftshader_icd_json)
 	}
-	log.Println("outDir:", outDir)
 
 	config := deqp.Config{
 		ExeEgl:    filepath.Join(d.path, "build", "modules", "egl", "deqp-egl"),
@@ -893,7 +902,7 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 		TestLists: testLists,
 		Env: []string{
 			"LD_LIBRARY_PATH=" + t.buildDir + ":" + os.Getenv("LD_LIBRARY_PATH"),
-			"VK_ICD_FILENAMES=" + filepath.Join(outDir, "Linux", "vk_swiftshader_icd.json"),
+			"VK_ICD_FILENAMES=" + swiftshader_icd_json,
 			"DISPLAY=" + os.Getenv("DISPLAY"),
 			"LIBC_FATAL_STDERR_=1", // Put libc explosions into logs.
 		},
@@ -903,6 +912,8 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 		NumParallelTests: numParallelTests,
 		TestTimeout:      testTimeout,
 	}
+
+	log.Printf("env: %s\n", config.Env)
 
 	return config.Run()
 }
