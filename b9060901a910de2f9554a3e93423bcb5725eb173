@@ -22,6 +22,30 @@
       "revId": "b9060901a910de2f9554a3e93423bcb5725eb173",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "775269f7_b2956a29",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 880,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-29T21:56:52Z",
+      "side": 1,
+      "message": "bleh https://stackoverflow.com/questions/39830166/glued-acronyms-and-golang-naming-convention",
+      "parentUuid": "ab553edc_bf96e071",
+      "range": {
+        "startLine": 880,
+        "startChar": 1,
+        "endLine": 880,
+        "endChar": 19
+      },
+      "revId": "b9060901a910de2f9554a3e93423bcb5725eb173",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
