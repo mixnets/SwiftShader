@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b456787_6da7dd72",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 875,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-29T21:51:18Z",
+      "side": 1,
+      "message": "Go style insists that acronyms are fully capitalized (so this should be swiftshaderICDSo), but I\u0027m not going to waste your time here. 😊",
+      "range": {
+        "startLine": 875,
+        "startChar": 12,
+        "endLine": 875,
+        "endChar": 16
+      },
+      "revId": "fa9bfceaf3db6dc6b22b6ab4bcf19bb69757776b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
