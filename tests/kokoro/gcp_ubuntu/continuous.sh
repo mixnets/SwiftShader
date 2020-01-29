@@ -6,6 +6,7 @@ set -e # Fail on any error.
 set -x # Display commands being run.
 
 # Specify we want to build with GCC 7
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install -y gcc-7 g++-7
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
@@ -23,7 +24,13 @@ fi
 # Lower the amount of debug info, to reduce Kokoro build times.
 LESS_DEBUG_INFO=1
 
-cmake .. "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1" "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
+# GCC7 on Ubuntu 16 fails to link with ASAN enabled with "unrecognized option '--push-state--no-as-needed'"
+# Using the gold linker seems to bypass the problem.
+# https://stackoverflow.com/a/50357910
+# ASAN_OPTIONS="-DSWIFTSHADER_ASAN=ON -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold"
+ASAN_OPTIONS="-DSWIFTSHADER_ASAN=ON"
+
+cmake .. ${ASAN_OPTIONS} "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1" "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
 make --jobs=$(nproc)
 
 # Run unit tests
