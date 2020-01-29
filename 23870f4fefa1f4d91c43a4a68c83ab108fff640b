@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d33dcefd_c4b54c42",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-29T16:24:39Z",
+      "side": 1,
+      "message": "I hear you, but I actually don\u0027t want us to add anything other than \u0027sz\u0027 functions in here. In any case, I\u0027m planning to extract this into a separate header/cpp, so we won\u0027t need the anonymous namespace anyway 😊",
+      "parentUuid": "7997c79c_edab4071",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 93
+      },
+      "revId": "23870f4fefa1f4d91c43a4a68c83ab108fff640b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b8e4311_acf761d5",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2020-01-29T16:19:30Z",
       "side": 1,
       "message": "nit: Assign to yourself \"TODO(amaiorano)\" or better yet a bug \"TODO(b/###)\", so it shows up in go/todo",
+      "range": {
+        "startLine": 74,
+        "startChar": 5,
+        "endLine": 74,
+        "endChar": 9
+      },
+      "revId": "23870f4fefa1f4d91c43a4a68c83ab108fff640b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87e0947e_bed06218",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-29T16:24:39Z",
+      "side": 1,
+      "message": "Done. Went for TODO(amaiorano), as I feel this is too small to warrant a Buganizer entry.",
+      "parentUuid": "3b8e4311_acf761d5",
       "range": {
         "startLine": 74,
         "startChar": 5,
