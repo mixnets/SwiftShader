@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9d2891ea_75faec51",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-29T20:10:22Z",
+      "side": 1,
+      "message": "It struck me as a little bit odd that this isn\u0027t actually used as an argument for anything, you\u0027re just checking the build produced the driver .so, right?\n\nAnyway, some übernits: Don\u0027t use underscores in go names (you don\u0027t use them in SwiftShader either 😊).\nGiven the lack of usage, aside from the test, I\u0027d suggest moving this declaration just above the `if` test, so it sits nicely together with its only usage.",
+      "range": {
+        "startLine": 879,
+        "startChar": 1,
+        "endLine": 879,
+        "endChar": 19
+      },
+      "revId": "ed57932159a72378eb4157fb60b689f345998e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
