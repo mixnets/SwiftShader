@@ -469,13 +469,15 @@ else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DDCHECK_ALWAYS_ON")
     endif()
 
-    # Disable pedanitc warnings
+    # Disable pedantic warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wno-ignored-attributes"   # ignoring attributes on template argument 'X'
             "-Wno-attributes"           # 'X' attribute ignored
             "-Wno-strict-aliasing"      # dereferencing type-punned pointer will break strict-aliasing rules
             "-Wno-comment"              # multi-line comment
+            # Silence LLVM7 warnings (remove once we get rid of LLVM7)
+            "-Wno-error=init-list-lifetime"
         )
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
