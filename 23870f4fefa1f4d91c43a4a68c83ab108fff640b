@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7997c79c_edab4071",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-29T16:19:30Z",
+      "side": 1,
+      "message": "uber-nit: This comment can be moved inside the anonymous namespace, just above the sz namespace. Just in case we add more local utility functions that are not strictly Subzero related.",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 93
+      },
+      "revId": "23870f4fefa1f4d91c43a4a68c83ab108fff640b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b8e4311_acf761d5",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-29T16:19:30Z",
+      "side": 1,
+      "message": "nit: Assign to yourself \"TODO(amaiorano)\" or better yet a bug \"TODO(b/###)\", so it shows up in go/todo",
+      "range": {
+        "startLine": 74,
+        "startChar": 5,
+        "endLine": 74,
+        "endChar": 9
+      },
+      "revId": "23870f4fefa1f4d91c43a4a68c83ab108fff640b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
