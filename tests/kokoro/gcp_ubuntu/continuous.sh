@@ -5,11 +5,11 @@ cd git/SwiftShader
 set -e # Fail on any error.
 set -x # Display commands being run.
 
-# Specify we want to build with GCC 7
+# Specify we want to build with GCC 8
 sudo apt-get update
-sudo apt-get install -y gcc-7 g++-7
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-sudo update-alternatives --set gcc "/usr/bin/gcc-7"
+sudo apt-get install -y gcc-8 g++-8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+sudo update-alternatives --set gcc "/usr/bin/gcc-8"
 
 # Download all submodules
 git submodule update --init
@@ -23,7 +23,7 @@ fi
 # Lower the amount of debug info, to reduce Kokoro build times.
 LESS_DEBUG_INFO=1
 
-cmake .. "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1" "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
+cmake .. "-DSWIFTSHADER_ASAN=ON" "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1" "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
 make --jobs=$(nproc)
 
 # Run unit tests
