@@ -16,6 +16,24 @@
       "revId": "b02e8b45257ffa0f8d4ad6a9c9a5d884a1bb792e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bea4530_df9f4f7b",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-30T15:37:46Z",
+      "side": 1,
+      "message": "It is, thanks, that\u0027s more elegant!",
+      "parentUuid": "1791c16c_de95ed10",
+      "revId": "b02e8b45257ffa0f8d4ad6a9c9a5d884a1bb792e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
