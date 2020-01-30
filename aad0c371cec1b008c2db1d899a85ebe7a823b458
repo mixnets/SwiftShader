@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40d2d73a_4320fef8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-30T17:26:33Z",
+      "side": 1,
+      "message": "Quoting the last comment on https://swiftshader-review.googlesource.com/c/SwiftShader/+/28370/6/CMakeLists.txt#2167 from which this was split off:\n\n\u003e Then you\u0027re actively encouraging people to use the binaries out of the source tree instead of the build folder, which encourages people to use a process that suffers from the problems I\u0027ve listed above.\nI just don\u0027t understand why {SwiftShader}/build/out is any worse to you than {SwiftShader}/out. I honestly cannot think of a single compelling argument.\n\nAny dev worth their salt will avoid using build artifacts from a fixed directory if they depend on having multiple build configurations. This is just meant as a convenience for manually grabbing the library for some quick testing, and to keep the first experience for people building SwiftShader as simple as possible. In other words, this is meant to (very slightly) increase our productivity by being pragmatic. If anyone on the team finds this useful (/me raises hand), it\u0027s worthwhile. If it ever causes a significant issue, people will file a bug and we can adjust this. The risk is extremely low in my view. Also note that instructing people to look in build/ or build/out/ instead is strictly speaking wrong too, but I don\u0027t think it\u0027s helpful to get very verbose about symbolic paths.",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 34
+      },
+      "revId": "aad0c371cec1b008c2db1d899a85ebe7a823b458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
