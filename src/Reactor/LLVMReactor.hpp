@@ -15,10 +15,27 @@
 #ifndef rr_LLVMReactor_hpp
 #define rr_LLVMReactor_hpp
 
-namespace llvm {
+#include "Nucleus.hpp"
 
-class Type;
-class Value;
+#ifdef _MSC_VER
+__pragma(warning(push))
+    __pragma(warning(disable : 4146))  // unary minus operator applied to unsigned type, result still unsigned
+#endif
+
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+
+#ifdef _MSC_VER
+    __pragma(warning(pop))
+#endif
+
+#include <memory>
+
+        namespace llvm
+{
+
+	class Type;
+	class Value;
 
 }  // namespace llvm
 
@@ -48,6 +65,45 @@ inline Value *V(llvm::Value *t)
 // Useful for emitting something that can have a source location without
 // effect.
 void Nop();
+
+class Routine;
+class Config;
+
+// JITBuilder holds all the LLVM state for building routines.
+class JITBuilder
+{
+public:
+	JITBuilder(const rr::Config &config);
+
+	void optimize(const rr::Config &cfg);
+
+	std::shared_ptr<rr::Routine> acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg);
+
+	const Config config;
+	llvm::LLVMContext context;
+	std::unique_ptr<llvm::Module> module;
+	std::unique_ptr<llvm::IRBuilder<>> builder;
+	llvm::Function *function = nullptr;
+
+	struct CoroutineState
+	{
+		llvm::Function *await = nullptr;
+		llvm::Function *destroy = nullptr;
+		llvm::Value *handle = nullptr;
+		llvm::Value *id = nullptr;
+		llvm::Value *promise = nullptr;
+		llvm::Type *yieldType = nullptr;
+		llvm::BasicBlock *entryBlock = nullptr;
+		llvm::BasicBlock *suspendBlock = nullptr;
+		llvm::BasicBlock *endBlock = nullptr;
+		llvm::BasicBlock *destroyBlock = nullptr;
+	};
+	CoroutineState coroutine;
+
+#ifdef ENABLE_RR_DEBUG_INFO
+	std::unique_ptr<rr::DebugInfo> debugInfo;
+#endif
+};
 
 }  // namespace rr
 
