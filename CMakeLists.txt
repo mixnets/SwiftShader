@@ -234,7 +234,6 @@ if (SWIFTSHADER_BUILD_PVR)
         execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
     endif()
     set(PVR_BUILD_EXAMPLES ON CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
 endif()
 
 ###########################################################
@@ -360,7 +359,9 @@ if(MSVC)
     set_cpp_flag("/DEBUG:FASTLINK" RELWITHDEBINFO)
 
     if(SWIFTSHADER_WARNINGS_AS_ERRORS)
-        set_cpp_flag("/WX") # Treat all warnings as errors
+        list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+            "/WX" # Treat all warnings as errors
+        )
     endif()
 
     # Disable specific warnings
@@ -2331,3 +2332,28 @@ if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
+
+if(SWIFTSHADER_BUILD_PVR)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
+
+	# Copy the 'loader' library to the bin/ directory
+	# where the PowerVR executables are placed.
+    add_custom_command(
+        TARGET vk_swiftshader
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}
+    )
+
+    add_dependencies(VulkanGlass vk_swiftshader)
+    add_dependencies(VulkanBumpmap vk_swiftshader)
+    add_dependencies(VulkanDeferredShading vk_swiftshader)
+    add_dependencies(VulkanGameOfLife vk_swiftshader)
+    add_dependencies(VulkanGnomeHorde vk_swiftshader)
+    add_dependencies(VulkanHelloAPI vk_swiftshader)
+    add_dependencies(VulkanImageBasedLighting vk_swiftshader)
+    add_dependencies(VulkanMultiSampling vk_swiftshader)
+    add_dependencies(VulkanMultithreading vk_swiftshader)
+    add_dependencies(VulkanParticleSystem vk_swiftshader)
+    add_dependencies(VulkanPostProcessing vk_swiftshader)
+    add_dependencies(VulkanSkinning vk_swiftshader)
+endif()
