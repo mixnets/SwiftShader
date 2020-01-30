@@ -420,7 +420,8 @@ public:
 	    : resolver(createLegacyLookupResolver(
 	          session,
 	          [&](const llvm::StringRef &name) {
-		          void *func = rr::resolveExternalSymbol(name.str().c_str());
+				  std::string string = name.str();
+		          void *func = rr::resolveExternalSymbol(string.c_str());
 		          if(func != nullptr)
 		          {
 			          return llvm::JITSymbol(
