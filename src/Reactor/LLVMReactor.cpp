@@ -52,7 +52,7 @@ __pragma(warning(push))
 #include "llvm/IR/GlobalVariable.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Intrinsics.h"
-#if LLVM_VERSION_MAJOR >= 8
+#if LLVM_VERSION_MAJOR >= 9
 #	include "llvm/IR/IntrinsicsX86.h"
 #endif
 #include "llvm/IR/LLVMContext.h"
@@ -168,6 +168,12 @@ VALUE Cache<KEY, VALUE>::getOrCreate(KEY key, std::function<VALUE()> create)
 	return value;
 }
 
+#if LLVM_VERSION_MAJOR >= 9
+	using String = llvm::StringRef;
+#else
+	using String = std::string;
+#endif
+
 // JITGlobals is a singleton that holds all the immutable machine specific
 // information for the host device.
 class JITGlobals
@@ -178,7 +184,7 @@ public:
 	static JITGlobals *get();
 
 	const std::string mcpu;
-	const std::vector<std::string> mattrs;
+	const std::vector<String> mattrs;
 	const char *const march;
 	const llvm::TargetOptions targetOptions;
 	const llvm::DataLayout dataLayout;
@@ -189,7 +195,7 @@ private:
 	static JITGlobals create();
 	static llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level);
 	JITGlobals(const char *mcpu,
-	           const std::vector<std::string> &mattrs,
+	           const std::vector<String> &mattrs,
 	           const char *march,
 	           const llvm::TargetOptions &targetOptions,
 	           const llvm::DataLayout &dataLayout);
@@ -248,7 +254,8 @@ JITGlobals JITGlobals::create()
 	(void)ok;  // getHostCPUFeatures always returns false on other platforms
 #endif
 
-	std::vector<std::string> mattrs;
+	std::vector<String> mattrs;
+
 	for(auto &feature : features)
 	{
 		if(feature.second) { mattrs.push_back(feature.first()); }
@@ -306,7 +313,7 @@ llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::Optimization::Level level)
 }
 
 JITGlobals::JITGlobals(const char *mcpu,
-                       const std::vector<std::string> &mattrs,
+                       const std::vector<String> &mattrs,
                        const char *march,
                        const llvm::TargetOptions &targetOptions,
                        const llvm::DataLayout &dataLayout)
@@ -350,7 +357,7 @@ public:
 		// Round down base address to align with a page boundary. This matches
 		// DefaultMMapper behavior.
 		void *addr = block.base();
-#if LLVM_VERSION_MAJOR >= 8
+#if LLVM_VERSION_MAJOR >= 9
 		size_t size = block.allocatedSize();
 #else
 		size_t size = block.size();
@@ -367,7 +374,7 @@ public:
 
 	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block)
 	{
-#if LLVM_VERSION_MAJOR >= 8
+#if LLVM_VERSION_MAJOR >= 9
 		size_t size = block.allocatedSize();
 #else
 		size_t size = block.size();
@@ -418,8 +425,13 @@ public:
 	    const rr::Config &config)
 	    : resolver(createLegacyLookupResolver(
 	          session,
-	          [&](const std::string &name) {
-		          void *func = rr::resolveExternalSymbol(name.c_str());
+	          [&](const String &name) {
+				  #if LLVM_VERSION_MAJOR >= 9
+				  std::string string = name.str();
+				  #else
+				  std::string string = name;
+				  #endif
+		          void *func = rr::resolveExternalSymbol(string.c_str());
 		          if(func != nullptr)
 		          {
 			          return llvm::JITSymbol(
@@ -5078,7 +5090,7 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 		// Run manadory coroutine transforms.
 		llvm::legacy::PassManager pm;
 
-#if LLVM_VERSION_MAJOR >= 8
+#if LLVM_VERSION_MAJOR >= 9
 		pm.add(llvm::createCoroEarlyLegacyPass());
 		pm.add(llvm::createCoroSplitLegacyPass());
 		pm.add(llvm::createCoroElideLegacyPass());
