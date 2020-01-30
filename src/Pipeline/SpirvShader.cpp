@@ -1219,18 +1219,22 @@ SIMD::Pointer SpirvShader::WalkAccessChain(Object::ID baseId, uint32_t numIndexe
 				if(getType(baseObject.type).storageClass == spv::StorageClassUniformConstant)
 				{
 					// indexing into an array of descriptors.
-					auto &obj = getObject(indexIds[i]);
-					if(obj.kind != Object::Kind::Constant)
-					{
-						UNSUPPORTED("SPIR-V SampledImageArrayDynamicIndexing Capability");
-					}
-
 					auto d = descriptorDecorations.at(baseId);
 					ASSERT(d.DescriptorSet >= 0);
 					ASSERT(d.Binding >= 0);
 					auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 					auto stride = static_cast<uint32_t>(setLayout->getBindingStride(d.Binding));
-					ptr.base += stride * GetConstScalarInt(indexIds[i]);
+
+					auto &obj = getObject(indexIds[i]);
+					if(obj.kind == Object::Kind::Constant)
+					{
+						ptr.base += stride * GetConstScalarInt(indexIds[i]);
+					}
+					else
+					{
+						// Note: the value of indexIds[i] must be dynamically uniform.
+						ptr += SIMD::Int(stride) * state->getIntermediate(indexIds[i]).Int(0);
+					}
 				}
 				else
 				{
