@@ -251,7 +251,10 @@ JITGlobals JITGlobals::create()
 	std::vector<std::string> mattrs;
 	for(auto &feature : features)
 	{
-		if(feature.second) { mattrs.push_back(feature.first()); }
+		if(feature.second)
+		{
+			mattrs.push_back(feature.first());
+		}
 	}
 
 	const char *march = nullptr;
