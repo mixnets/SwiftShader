@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1791c16c_de95ed10",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-30T15:29:25Z",
+      "side": 1,
+      "message": "Is StringRef not available in LLVM7?",
+      "revId": "b02e8b45257ffa0f8d4ad6a9c9a5d884a1bb792e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

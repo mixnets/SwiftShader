@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "379b27b1_22eabef4",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1330,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-30T15:29:25Z",
+      "side": 0,
+      "message": "clang-format? Why wasn\u0027t this formatted already?",
+      "revId": "430def835f9f85d52f4a96db9b715cd9a7403c9c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
