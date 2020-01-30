@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f26edee_7adc58b5",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-30T16:33:06Z",
+      "side": 1,
+      "message": "Once we can switch to C++17, we\u0027ll be able to make resolveExternalSymbol accept a std::string_view (https://en.cppreference.com/w/cpp/string/basic_string_view) intead. Then we\u0027d be able to pass in a const char* or a std::string without having to convert, and thus not worry about lifetime issues like this.",
+      "revId": "1d7f131184bc34a8e7753a88f75bed7a62140eeb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
