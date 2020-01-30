@@ -21,11 +21,21 @@
 
 #	include "boost/stacktrace.hpp"
 
+// TODO(b/143539525): Eliminate when warning has been fixed.
+#	ifdef _MSC_VER
+__pragma(warning(push))
+__pragma(warning(disable : 4146))  // unary minus operator applied to unsigned type, result still unsigned
+#	endif
+
 #	include "llvm/Demangle/Demangle.h"
 #	include "llvm/ExecutionEngine/JITEventListener.h"
 #	include "llvm/IR/DIBuilder.h"
 #	include "llvm/IR/IRBuilder.h"
 #	include "llvm/IR/Intrinsics.h"
+
+#	ifdef _MSC_VER
+__pragma(warning(pop))
+#	endif
 
 #	include <cctype>
 #	include <fstream>
@@ -57,14 +67,14 @@ std::mutex jitEventListenerMutex;
 namespace rr {
 
 DebugInfo::DebugInfo(
-    llvm::IRBuilder<> *builder,
-    llvm::LLVMContext *context,
-    llvm::Module *module,
-    llvm::Function *function)
-    : builder(builder)
-    , context(context)
-    , module(module)
-    , function(function)
+	llvm::IRBuilder<> *builder,
+	llvm::LLVMContext *context,
+	llvm::Module *module,
+	llvm::Function *function)
+	: builder(builder)
+	, context(context)
+	, module(module)
+	, function(function)
 {
 	using namespace ::llvm;
 
@@ -73,10 +83,10 @@ DebugInfo::DebugInfo(
 	auto fileAndDir = splitPath(location.function.file.c_str());
 	diBuilder.reset(new llvm::DIBuilder(*module));
 	diCU = diBuilder->createCompileUnit(
-	    llvm::dwarf::DW_LANG_C,
-	    diBuilder->createFile(fileAndDir.first, fileAndDir.second),
-	    "Reactor",
-	    0, "", 0);
+		llvm::dwarf::DW_LANG_C,
+		diBuilder->createFile(fileAndDir.first, fileAndDir.second),
+		"Reactor",
+		0, "", 0);
 
 	registerBasicTypes();
 
@@ -85,17 +95,17 @@ DebugInfo::DebugInfo(
 
 	auto file = getOrCreateFile(location.function.file.c_str());
 	auto sp = diBuilder->createFunction(
-	    file,                    // scope
-	    "ReactorFunction",       // function name
-	    "ReactorFunction",       // linkage
-	    file,                    // file
-	    location.line,           // line
-	    funcTy,                  // type
-	    false,                   // internal linkage
-	    true,                    // definition
-	    location.line,           // scope line
-	    DINode::FlagPrototyped,  // flags
-	    false                    // is optimized
+		file,                    // scope
+		"ReactorFunction",       // function name
+		"ReactorFunction",       // linkage
+		file,                    // file
+		location.line,           // line
+		funcTy,                  // type
+		false,                   // internal linkage
+		true,                    // definition
+		location.line,           // scope line
+		DINode::FlagPrototyped,  // flags
+		false                    // is optimized
 	);
 	diSubprogram = sp;
 	function->setSubprogram(sp);
@@ -148,9 +158,9 @@ void DebugInfo::syncScope(Backtrace const &backtrace)
 		{
 			auto &scope = diScope.back();
 			LOG("- STACK(%d): di: %p, location: %s:%d",
-			    int(diScope.size() - 1), scope.di,
-			    scope.location.function.file.c_str(),
-			    int(scope.location.line));
+				int(diScope.size() - 1), scope.di,
+				scope.location.function.file.c_str(),
+				int(scope.location.line));
 			emitPending(scope, builder);
 			diScope.pop_back();
 		}
@@ -170,7 +180,7 @@ void DebugInfo::syncScope(Backtrace const &backtrace)
 		if(oldLocation.function != newLocation.function)
 		{
 			LOG("  STACK(%d): Changed function %s -> %s", int(i),
-			    oldLocation.function.name.c_str(), newLocation.function.name.c_str());
+				oldLocation.function.name.c_str(), newLocation.function.name.c_str());
 			shrink(i);
 			break;
 		}
@@ -181,7 +191,7 @@ void DebugInfo::syncScope(Backtrace const &backtrace)
 			auto file = getOrCreateFile(newLocation.function.file.c_str());
 			auto di = diBuilder->createLexicalBlock(scope.di, file, newLocation.line, 0);
 			LOG("  STACK(%d): Jumped backwards %d -> %d. di: %p -> %p", int(i),
-			    oldLocation.line, newLocation.line, scope.di, di);
+				oldLocation.line, newLocation.line, scope.di, di);
 			emitPending(scope, builder);
 			scope = { newLocation, di };
 			shrink(i + 1);
@@ -205,21 +215,21 @@ void DebugInfo::syncScope(Backtrace const &backtrace)
 		auto name = "jit!" + (status == 0 ? std::string(buf) : location.function.name);
 
 		auto func = diBuilder->createFunction(
-		    file,                          // scope
-		    name,                          // function name
-		    "",                            // linkage
-		    file,                          // file
-		    location.line,                 // line
-		    funcTy,                        // type
-		    false,                         // internal linkage
-		    true,                          // definition
-		    location.line,                 // scope line
-		    llvm::DINode::FlagPrototyped,  // flags
-		    false                          // is optimized
+			file,                          // scope
+			name,                          // function name
+			"",                            // linkage
+			file,                          // file
+			location.line,                 // line
+			funcTy,                        // type
+			false,                         // internal linkage
+			true,                          // definition
+			location.line,                 // scope line
+			llvm::DINode::FlagPrototyped,  // flags
+			false                          // is optimized
 		);
 		diScope.push_back({ location, func });
 		LOG("+ STACK(%d): di: %p, location: %s:%d", int(i), di,
-		    location.function.file.c_str(), int(location.line));
+			location.function.file.c_str(), int(location.line));
 	}
 }
 
@@ -228,11 +238,11 @@ llvm::DILocation *DebugInfo::getLocation(const Backtrace &backtrace, size_t i)
 	if(backtrace.size() == 0) { return nullptr; }
 	assert(backtrace.size() == diScope.size());
 	return llvm::DILocation::get(
-	    *context,
-	    backtrace[i].line,
-	    0,
-	    diScope[i].di,
-	    i > 0 ? getLocation(backtrace, i - 1) : diRootLocation);
+		*context,
+		backtrace[i].line,
+		0,
+		diScope[i].di,
+		i > 0 ? getLocation(backtrace, i - 1) : diRootLocation);
 }
 
 void DebugInfo::EmitVariable(Value *variable)
@@ -322,7 +332,7 @@ void DebugInfo::emitPending(Scope &scope, IRBuilder *builder)
 	bool isAlloca = llvm::isa<llvm::AllocaInst>(pending.value);
 
 	LOG("  EMIT(%s): di: %p, location: %s:%d, isAlloca: %s", pending.name.c_str(), scope.di,
-	    pending.location.function.file.c_str(), pending.location.line, isAlloca ? "true" : "false");
+		pending.location.function.file.c_str(), pending.location.line, isAlloca ? "true" : "false");
 
 	auto value = pending.value;
 
@@ -368,11 +378,11 @@ void DebugInfo::emitPending(Scope &scope, IRBuilder *builder)
 	if(pending.addNopOnNextLine)
 	{
 		builder->SetCurrentDebugLocation(llvm::DILocation::get(
-		    *context,
-		    pending.diLocation->getLine() + 1,
-		    0,
-		    pending.diLocation->getScope(),
-		    pending.diLocation->getInlinedAt()));
+			*context,
+			pending.diLocation->getLine() + 1,
+			0,
+			pending.diLocation->getScope(),
+			pending.diLocation->getInlinedAt()));
 		Nop();
 	}
 
@@ -440,10 +450,10 @@ DebugInfo::Backtrace DebugInfo::getCallerBacktrace(size_t limit /* = 0 */) const
 {
 	auto shouldSkipFile = [](llvm::StringRef fileSR) {
 		return fileSR.empty() ||
-		       fileSR.endswith_lower("ReactorDebugInfo.cpp") ||
-		       fileSR.endswith_lower("Reactor.cpp") ||
-		       fileSR.endswith_lower("Reactor.hpp") ||
-		       fileSR.endswith_lower("stacktrace.hpp");
+			fileSR.endswith_lower("ReactorDebugInfo.cpp") ||
+			fileSR.endswith_lower("Reactor.cpp") ||
+			fileSR.endswith_lower("Reactor.hpp") ||
+			fileSR.endswith_lower("stacktrace.hpp");
 	};
 
 	std::vector<DebugInfo::Location> locations;
@@ -483,8 +493,8 @@ llvm::DIType *DebugInfo::getOrCreateType(llvm::Type *type)
 	if(type->isPointerTy())
 	{
 		auto dbgTy = diBuilder->createPointerType(
-		    getOrCreateType(type->getPointerElementType()),
-		    sizeof(void *) * 8, alignof(void *) * 8);
+			getOrCreateType(type->getPointerElementType()),
+			sizeof(void *) * 8, alignof(void *) * 8);
 		diTypes.emplace(type, dbgTy);
 		return dbgTy;
 	}
@@ -506,14 +516,14 @@ llvm::DIFile *DebugInfo::getOrCreateFile(const char *path)
 DebugInfo::LineTokens const *DebugInfo::getOrParseFileTokens(const char *path)
 {
 	static std::regex reLocalDecl(
-	    "^"                                              // line start
-	    "\\s*"                                           // initial whitespace
-	    "(?:For\\s*\\(\\s*)?"                            // optional 'For('
-	    "((?:\\w+(?:<[^>]+>)?)(?:::\\w+(?:<[^>]+>)?)*)"  // type (match group 1)
-	    "\\s+"                                           // whitespace between type and name
-	    "(\\w+)"                                         // identifier (match group 2)
-	    "\\s*"                                           // whitespace after identifier
-	    "(\\[.*\\])?");                                  // optional array suffix (match group 3)
+		"^"                                              // line start
+		"\\s*"                                           // initial whitespace
+		"(?:For\\s*\\(\\s*)?"                            // optional 'For('
+		"((?:\\w+(?:<[^>]+>)?)(?:::\\w+(?:<[^>]+>)?)*)"  // type (match group 1)
+		"\\s+"                                           // whitespace between type and name
+		"(\\w+)"                                         // identifier (match group 2)
+		"\\s*"                                           // whitespace after identifier
+		"(\\[.*\\])?");                                  // optional array suffix (match group 3)
 
 	auto it = fileTokens.find(path);
 	if(it != fileTokens.end())
