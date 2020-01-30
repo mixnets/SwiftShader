@@ -104,7 +104,7 @@ option_if_not_defined(SWIFTSHADER_BUILD_EGL "Build the EGL library" 1)
 option_if_not_defined(SWIFTSHADER_BUILD_GLESv2 "Build the OpenGL ES 2 library" 1)
 option_if_not_defined(SWIFTSHADER_BUILD_GLES_CM "Build the OpenGL ES 1.1 library" 1)
 option_if_not_defined(SWIFTSHADER_BUILD_VULKAN "Build the Vulkan library" 1)
-option_if_not_defined(SWIFTSHADER_BUILD_PVR "Fetch and build the PowerVR examples" 0)
+option_if_not_defined(SWIFTSHADER_BUILD_PVR "Fetch and build the PowerVR examples" 1)
 
 option_if_not_defined(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" 1)
 
@@ -234,7 +234,6 @@ if (SWIFTSHADER_BUILD_PVR)
         execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
     endif()
     set(PVR_BUILD_EXAMPLES ON CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
 endif()
 
 ###########################################################
@@ -2165,7 +2164,16 @@ if(SWIFTSHADER_BUILD_VULKAN)
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME}
+      #  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}
     )
+
+    #add_custom_command(
+    #    OUTPUT ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME}
+    #    POST_BUILD
+    #    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
+    #    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME}
+    #    DEPENDS vk_swiftshader
+    #)
 
     # The vk_swiftshader_icd.json manifest file will point to ICD_LIBRARY_PATH.
     # Set ICD_LIBRARY_PATH to be a relative path similar to "./libvk_swiftshader.so", so both files can be moved.
@@ -2331,3 +2339,52 @@ if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
+
+if (SWIFTSHADER_BUILD_PVR)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
+
+    add_custom_command(
+        TARGET vk_swiftshader
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}
+    )
+
+add_dependencies(VulkanGlass vk_swiftshader)
+endif()
+
+
+# Because OUTPUT option may not use generator expressions,
+# extract name of file from target's properties.
+#get_target_property(mytarget_basename VulkanGlass OUTPUT_NAME)
+#get_target_property(mytarget_suffix VulkanGlass SUFFIX)
+#set(mytarget_filename ${mytarget_basename}${mytarget_suffix})
+# make copied file be dependent from one which is build.
+# Note, that DEPENDS here creates dependencies both from the target
+# and from the file it creates.
+#add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/final_destination/${mytarget_filename}
+ #   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:VulkanGlass> ${CMAKE_BINARY_DIR}/final_destination
+#    COMMAND ${CMAKE_BINARY_DIR}/final_destination/${mytarget_filename}
+#    DEPENDS VulkanGlass
+#)
+
+#set_source_files_properties(${CMAKE_BINARY_DIR}/final_destination/${mytarget_filename}
+#                            SYMBOLIC True)
+
+# Create target which consume the command via DEPENDS.
+#add_custom_target(copy_files ALL
+#    DEPENDS ${CMAKE_BINARY_DIR}/final_destination/${mytarget_filename}
+#)
+
+#add_custom_command(
+#        TARGET vk_swiftshader
+#        POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}
+#    )
+
+#add_dependencies(VulkanGlass vk_swiftshader)
+#target_link_libraries(VulkanGlass ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME})
+
+#add_executable(myexe)
+
+#set(MY_PATH "PATH=${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/")
+#set_target_properties(VulkanGlass PROPERTIES VS_DEBUGGER_ENVIRONMENT "${MY_PATH}")
