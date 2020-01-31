@@ -24,6 +24,7 @@
 #include "Vulkan/VkConfig.h"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
 
 #include <spirv/unified1/spirv.hpp>
 
@@ -1042,6 +1043,13 @@ private:
 		return it->second;
 	}
 
+	// Get offset of given array element from descriptor set binding offset.
+	template<typename I>
+	I GetBindingArrayElementOffset(size_t offset, size_t typeSize, I arrayElement) const
+	{
+	    return offset + (typeSize * arrayElement);
+	}
+
 	// Returns a SIMD::Pointer to the underlying data for the given pointer
 	// object.
 	// Handles objects of the following kinds:
@@ -1050,7 +1058,8 @@ private:
 	//  • InterfaceVariable
 	//  • NonDivergentPointer
 	// Calling GetPointerToData with objects of any other kind will assert.
-	SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const;
+	template<typename I>
+	SIMD::Pointer GetPointerToData(Object::ID id, I arrayIndex, EmitState const *state) const;
 
 	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 	SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
@@ -1326,6 +1335,57 @@ private:
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> phis;
 };
+
+template<typename I>
+SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, I arrayIndex, EmitState const *state) const
+{
+	auto routine = state->routine;
+	auto &object = getObject(id);
+	switch(object.kind)
+	{
+		case Object::Kind::Pointer:
+		case Object::Kind::InterfaceVariable:
+			return state->getPointer(id);
+
+		case Object::Kind::DescriptorSet:
+		{
+			const auto &d = descriptorDecorations.at(id);
+			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
+			ASSERT(d.Binding >= 0);
+
+			auto set = state->getPointer(id);
+
+			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
+			size_t typeSize = 0;
+			size_t bindingOffset = setLayout->getBindingOffset(d.Binding, &typeSize);
+			I bindingArrayElementOffset = GetBindingArrayElementOffset(bindingOffset, typeSize, arrayIndex);
+
+			Pointer<Byte> descriptor = set.base + bindingArrayElementOffset;                                           // BufferDescriptor*
+			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
+			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+			if(setLayout->isBindingDynamic(d.Binding))
+			{
+				I dynamicBindingIndex =
+				    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+				    setLayout->getDynamicDescriptorOffset(d.Binding) +
+				    arrayIndex;
+				Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
+				Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+				return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
+			}
+			else
+			{
+				return SIMD::Pointer(data, size);
+			}
+		}
+
+		default:
+			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+			return SIMD::Pointer(Pointer<Byte>(), 0);
+	}
+}
+
 
 }  // namespace sw
 

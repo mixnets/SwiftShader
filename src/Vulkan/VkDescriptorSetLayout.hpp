@@ -104,7 +104,7 @@ public:
 
 	// Returns the byte offset from the base address of the descriptor set for
 	// the given binding and array element within that binding.
-	size_t getBindingOffset(uint32_t binding, size_t arrayElement) const;
+	size_t getBindingOffset(uint32_t binding, size_t* typeSize) const;
 
 	// Returns the stride of an array of descriptors
 	size_t getBindingStride(uint32_t binding) const;
