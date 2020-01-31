@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "e0b5403c_27a88c76",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T15:10:00Z",
+      "side": 1,
+      "message": "You\u0027re probably right about this exposing the wrong separation of concerns, but I still think we should keep Nucleus implementation in one place. I\u0027d rather we have the config stuff in LLVMReactor.cpp for now, and fix the abstraction later, than the reverse (move Nucleus functions here, then fix abstraction, and move these back).",
+      "parentUuid": "db1e6df5_e48d1ad5",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "789a6b0b_87d510df",
         "filename": "src/Reactor/LLVMReactor.hpp",
         "patchSetId": 5
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "b7c036e9_1b89a9a1",
+        "filename": "src/Reactor/LLVMReactor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T15:10:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "110c0c75_9620e749",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d24c3c60_5dfd9e45",
         "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
         "patchSetId": 5
@@ -101,6 +137,24 @@
       "side": 1,
       "message": "This is what clang-format gives us. :(",
       "parentUuid": "d24c3c60_5dfd9e45",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6578c27_5c4d5b2b",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T15:10:00Z",
+      "side": 1,
+      "message": "There\u0027s something weird here. The previous version didn\u0027t format this way... and why is the open brace on a new line?",
+      "parentUuid": "25ca836f_34e19b9b",
       "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
