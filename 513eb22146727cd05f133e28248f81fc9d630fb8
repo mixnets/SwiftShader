@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "0e8d70bf_83b15d0c",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T15:21:32Z",
+      "side": 1,
+      "message": "Okay, it was actually much easier to move this back than I feared. Please have another look.",
+      "parentUuid": "e0b5403c_27a88c76",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "789a6b0b_87d510df",
         "filename": "src/Reactor/LLVMReactor.hpp",
         "patchSetId": 5
@@ -155,6 +173,24 @@
       "side": 1,
       "message": "There\u0027s something weird here. The previous version didn\u0027t format this way... and why is the open brace on a new line?",
       "parentUuid": "25ca836f_34e19b9b",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6fde903c_535dc713",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T15:21:32Z",
+      "side": 1,
+      "message": "Interestingly clang-format accepted me forcing this back to what it looked like before, but made some new indent changes. Weird behavior.",
+      "parentUuid": "c6578c27_5c4d5b2b",
       "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
