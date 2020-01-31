@@ -192,11 +192,11 @@ size_t DescriptorSetLayout::getBindingStride(uint32_t binding) const
 	return GetDescriptorSize(bindings[index].descriptorType);
 }
 
-size_t DescriptorSetLayout::getBindingOffset(uint32_t binding, size_t arrayElement) const
+size_t DescriptorSetLayout::getBindingOffset(uint32_t binding, size_t *typeSize) const
 {
 	uint32_t index = getBindingIndex(binding);
-	auto typeSize = GetDescriptorSize(bindings[index].descriptorType);
-	return bindingOffsets[index] + OFFSET(DescriptorSet, data[0]) + (typeSize * arrayElement);
+	*typeSize = GetDescriptorSize(bindings[index].descriptorType);
+	return bindingOffsets[index] + OFFSET(DescriptorSet, data[0]);
 }
 
 bool DescriptorSetLayout::isDynamic(VkDescriptorType type)

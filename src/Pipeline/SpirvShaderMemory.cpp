@@ -177,9 +177,12 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 			if(setLayout->hasBinding(d.Binding))
 			{
-				uint32_t bindingOffset = static_cast<uint32_t>(setLayout->getBindingOffset(d.Binding, arrayIndex));
+				size_t typeSize = 0;
+				size_t bindingOffset = setLayout->getBindingOffset(d.Binding, &typeSize);
+				bindingOffset = GetBindingArrayElementOffset(bindingOffset, typeSize, arrayIndex);
+
 				Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
-				Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
+				Pointer<Byte> binding = Pointer<Byte>(set + static_cast<uint32_t>(bindingOffset));  // vk::SampledImageDescriptor*
 				auto size = 0;                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
 				state->createPointer(resultId, SIMD::Pointer(binding, size));
 			}
@@ -382,53 +385,6 @@ void SpirvShader::VisitMemoryObject(sw::SpirvShader::Object::ID id, const Memory
 			auto offset = static_cast<uint32_t>(index * sizeof(float));
 			f({ index, offset, elType });
 		}
-	}
-}
-
-SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const
-{
-	auto routine = state->routine;
-	auto &object = getObject(id);
-	switch(object.kind)
-	{
-		case Object::Kind::Pointer:
-		case Object::Kind::InterfaceVariable:
-			return state->getPointer(id);
-
-		case Object::Kind::DescriptorSet:
-		{
-			const auto &d = descriptorDecorations.at(id);
-			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
-			ASSERT(d.Binding >= 0);
-
-			auto set = state->getPointer(id);
-
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
-			int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
-
-			Pointer<Byte> descriptor = set.base + bindingOffset;                                           // BufferDescriptor*
-			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
-			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
-			if(setLayout->isBindingDynamic(d.Binding))
-			{
-				uint32_t dynamicBindingIndex =
-				    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-				    setLayout->getDynamicDescriptorOffset(d.Binding) +
-				    arrayIndex;
-				Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
-				Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
-				return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
-			}
-			else
-			{
-				return SIMD::Pointer(data, size);
-			}
-		}
-
-		default:
-			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
-			return SIMD::Pointer(Pointer<Byte>(), 0);
 	}
 }
 
