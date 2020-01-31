@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3564c66f_68bbabb6",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T14:44:36Z",
+      "side": 1,
+      "message": "I like the idea of splitting out utilities to make LLVMReactor.cpp smaller, but I don\u0027t like Nucleus function implementations being split across files. These should all remain in one cpp file, IMHO.",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "789a6b0b_87d510df",
+        "filename": "src/Reactor/LLVMReactor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T14:44:36Z",
+      "side": 1,
+      "message": "We\u0027ve done this in a few places now. I wrote some macros in my Vectrex emulator that makes this a bit cleaner: https://github.com/amaiorano/vectrexy/blob/master/libs/core/include/core/Base.h#L44\nMaybe we can do the same?",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d24c3c60_5dfd9e45",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T14:44:36Z",
+      "side": 1,
+      "message": "Bad indent?",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
