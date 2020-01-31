@@ -70,6 +70,30 @@
       "revId": "8d634abed96aa77eb73f30235e8550ef79eca0bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b8e962f_e222e946",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T19:02:35Z",
+      "side": 1,
+      "message": "Yeah, something\u0027s off with my IDE integration. Anyway, I\u0027ve checked that I\u0027m using version 8.0 and ran clang-format-all now. It brings back the weird namespace formatting at the top.",
+      "parentUuid": "d8207c31_4b849bc6",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "8d634abed96aa77eb73f30235e8550ef79eca0bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
