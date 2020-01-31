@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "099be841_a5f94a1b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T14:34:34Z",
+      "side": 1,
+      "message": "\"Build benchmarks\" ?",
+      "revId": "0270b7551ddaa60932873fca137c8c8be752b381",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
