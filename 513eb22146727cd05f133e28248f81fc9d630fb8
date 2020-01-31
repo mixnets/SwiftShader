@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "db1e6df5_e48d1ad5",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T15:01:02Z",
+      "side": 1,
+      "message": "Actually I think it illustrates that Nucleus doesn\u0027t have the right separation of concerns, and we need to split it. As I noted, this change is the first in a series that will create some better abstraction. For the short term I think this is workable and accomplishes the initial needs for b/148561024",
+      "parentUuid": "3564c66f_68bbabb6",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "789a6b0b_87d510df",
         "filename": "src/Reactor/LLVMReactor.hpp",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "110c0c75_9620e749",
+        "filename": "src/Reactor/LLVMReactor.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T15:01:02Z",
+      "side": 1,
+      "message": "I\u0027m very much hoping this will go away when we upgrade to a more recent version of LLVM. I\u0027ll make a note about it.",
+      "parentUuid": "789a6b0b_87d510df",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d24c3c60_5dfd9e45",
         "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
         "patchSetId": 5
@@ -50,6 +86,24 @@
       "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25ca836f_34e19b9b",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-01-31T15:01:02Z",
+      "side": 1,
+      "message": "This is what clang-format gives us. :(",
+      "parentUuid": "d24c3c60_5dfd9e45",
+      "revId": "513eb22146727cd05f133e28248f81fc9d630fb8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
