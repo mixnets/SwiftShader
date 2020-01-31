@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7687c17a_a13f5a3c",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-01-31T15:54:23Z",
+      "side": 1,
+      "message": "Does our clang-format permit whitespace or something? I\u0027m confused why this wouldn\u0027t have been bulk formatted back when I formatted the world.",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "8d634abed96aa77eb73f30235e8550ef79eca0bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
