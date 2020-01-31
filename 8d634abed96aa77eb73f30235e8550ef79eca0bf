@@ -22,6 +22,30 @@
       "revId": "8d634abed96aa77eb73f30235e8550ef79eca0bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a60df94_d6944f98",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-01-31T16:10:24Z",
+      "side": 1,
+      "message": "Kokoro presubmit failed due to this extra whitespace: https://sponge.corp.google.com/target?id\u003d144b74f1-0af5-4900-bd6e-c6390257f724\u0026target\u003dswiftshader%2Fgcp_ubuntu_check_style%2Fpresubmit\u0026searchFor\u003d",
+      "parentUuid": "7687c17a_a13f5a3c",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "8d634abed96aa77eb73f30235e8550ef79eca0bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
