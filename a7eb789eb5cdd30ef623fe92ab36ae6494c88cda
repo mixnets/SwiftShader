@@ -33,6 +33,24 @@
       "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e4b8a1b_766771a8",
+        "filename": "src/Pipeline/SpirvShaderInstructions.inc",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-03T19:34:02Z",
+      "side": 1,
+      "message": "Maybe - I could probably be convinced. I\u0027d like to discuss a few of the pros and cons here first.\n\nWhat you\u0027ve suggested is a bit lacking in error message when it goes wrong. You\u0027ll get a static assert, but it doesn\u0027t tell you where. When you have over 5k opcodes it might be hard to identify where things are out of sync. I hacked this together which I think solves that problem:\n\n    template \u003cint i\u003e struct ValidateOps {\n        static constexpr bool op_matches_index \u003d (opInfos[i].op \u003d\u003d i);\n        static constexpr bool is_valid \u003d op_matches_index \u0026\u0026 ValidateOps\u003ci-1\u003e::is_valid;\n        static_assert(op_matches_index, \"opInfos out of sync\");\n    };\n\n    template \u003c\u003e struct ValidateOps\u003c0\u003e {\n        static constexpr bool op_matches_index \u003d (opInfos[0].op \u003d\u003d 0);\n        static constexpr bool is_valid \u003d opInfos[0].op \u003d\u003d 0;\n        static_assert(op_matches_index, \"opInfos out of sync\");\n    };\n\n    static_assert(ValidateOps\u003cnumOpInfos-1\u003e::is_valid);\n\nNote: I\u0027ve also dodged the use of OpMax - it\u0027s assigned to 0x7fffffff, not 1+ the last value.\n\nSo - warnings should be fine - however the other reason I structured this code the way I did was to reduce the amount of memory / binary size used. By only placing the T or F into the switch, I\u0027m removing a substantial amount of logic, and giving the compiler more wiggle room to collapse the switch statement down.\n\nThis might be a pointless optimization though.\n\nThe only other difference I can see is that the spv::Op enum actually contains duplicates. I found this with a lovely compiler generated warning that said \u0027X\u0027 and \u0027Y\u0027 were used twice in the same switch statement. So the above should still catch these, but it isn\u0027t quite as lovely an error.\n\nBasically, if you feel strongly, I\u0027ll make changes. I admit what you\u0027re proposing is prettier, but I\u0027d still argue that the old school way produces better errors, and code (probably).",
+      "parentUuid": "bbcc1524_9b997524",
+      "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
