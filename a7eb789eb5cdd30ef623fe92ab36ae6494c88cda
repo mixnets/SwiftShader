@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1dfc98f6_09802788",
+        "filename": "src/Pipeline/SpirvShaderInstructions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-03T18:58:49Z",
+      "side": 1,
+      "message": "Interesting technique. I wonder if it\u0027s worth putting in #ifdefs for specific compilers (GCC, Clang, MSVC) to push/enable/pop the specific warning for missing enums in swithces, and maybe even force it to be an error.",
+      "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbcc1524_9b997524",
+        "filename": "src/Pipeline/SpirvShaderInstructions.inc",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-03T18:58:49Z",
+      "side": 1,
+      "message": "I\u0027m usually not a huge fan of macro tricks, though I can understand their utility, but I do wonder whether we can\u0027t make a compile-time table here instead, and make use of that? Something along the lines of:\n\n```\nstruct OpInfo\n{\n    Op op;\n    bool isStatement;\n};\n\nconstexpr OpInfo opInfos[] \u003d\n{\n    {OpNop, true},\n    {OpUndef, true},\n    {OpSourceContinued, false}\n    ...\n};\n\nconstexpr size_t opInfosSize \u003d sizeof(opInfos) / sizeoof(opInfos[0]);\n\nconstexpr bool validateTableOrder()\n{\n    for (size_i \u003d 0; i \u003c opInfosSiz; ++i)\n    {\n        if ((int)opInfos[i].op !\u003d i)\n        {\n            return false;\n        }\n    }\n    return true;\n}\n\nstatic_assert(opInfos[opInfosSize - 1].op \u003d\u003d static_cast\u003cspv::Op\u003e(OpMax -1));\nstatic_assert(validateTableOrder());\n```\n\nThen we can index the table by op. The advantage is that we can easily add more properties if needed, and it\u0027s all checked at compile-time, and is standard C++14. What do you think?",
+      "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
