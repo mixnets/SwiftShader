@@ -15,9 +15,9 @@
 #ifndef rr_Print_hpp
 #define rr_Print_hpp
 
-#if !defined(NDEBUG)
-#	define ENABLE_RR_PRINT 1  // Enables RR_PRINT(), RR_WATCH()
-#endif                         // !defined(NDEBUG)
+//#if !defined(NDEBUG)
+//#	define ENABLE_RR_PRINT 1  // Enables RR_PRINT(), RR_WATCH()
+//#endif                         // !defined(NDEBUG)
 
 #ifdef ENABLE_RR_PRINT
 

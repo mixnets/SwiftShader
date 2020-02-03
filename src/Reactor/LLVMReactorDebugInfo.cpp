@@ -18,6 +18,7 @@
 
 #	include "LLVMReactor.hpp"
 #	include "Reactor.hpp"
+#	include "Print.hpp"
 
 #	include "boost/stacktrace.hpp"
 
@@ -130,7 +131,7 @@ void DebugInfo::EmitLocation()
 	Location currLocation = backtrace[backtrace.size() - 1];
 	if(currLocation != lastLocation)
 	{
-		rr::Print("rr> {0} [{1}:{2}]\n", currLocation.function.name.c_str(), currLocation.function.file.c_str(), currLocation.line);
+		rr::Print("rr> {0} [{1}:{2}]\n", currLocation.function.name, currLocation.function.file, currLocation.line);
 		lastLocation = std::move(currLocation);
 	}
 #	endif  // ENABLE_RR_EMIT_PRINT_LOCATION

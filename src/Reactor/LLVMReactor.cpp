@@ -16,6 +16,7 @@
 #include "Debug.hpp"
 #include "LLVMReactorDebugInfo.hpp"
 #include "Reactor.hpp"
+#include "Print.hpp"
 
 #include "CPUID.hpp"
 #include "ExecutableMemory.hpp"
