@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3bb6ea1_f6b33e5c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-04T13:51:36Z",
+      "side": 1,
+      "message": "Let\u0027s take this opportunity to correct the spelling of \"pedantic\" 😊",
+      "revId": "c8d6f5c684f31cacd670b0c39d98df8a631b4d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
