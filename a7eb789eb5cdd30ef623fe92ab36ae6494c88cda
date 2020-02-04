@@ -51,6 +51,24 @@
       "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55fe4ac2_90989d63",
+        "filename": "src/Pipeline/SpirvShaderInstructions.inc",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-04T13:49:45Z",
+      "side": 1,
+      "message": "\u003e What you\u0027ve suggested is a bit lacking in error message when it goes wrong.\n\nYes, I think eventually we\u0027ll be able to use std::fmt to output formatted compile-time errors from constexpr functions, but your ValidateOps recursive metafunction is great for now (though if there are really 5000 opcodes, we may bust the compiler\u0027s template instantiation stack).\n\n\u003e Note: I\u0027ve also dodged the use of OpMax - it\u0027s assigned to 0x7fffffff, not 1+ the last value.\n\nNice catch. I obviously didn\u0027t test the code I wrote 😊\n\n\u003e So - warnings should be fine - however the other reason I structured this code the way I did was to reduce the amount of memory / binary size used. By only placing the T or F into the switch, I\u0027m removing a substantial amount of logic, and giving the compiler more wiggle room to collapse the switch statement down.\n\nYes, I realize that, though I suspect code gen to be pretty much the same in both cases. You can perhaps take a look at what it produces?\n\n\u003e Basically, if you feel strongly, I\u0027ll make changes. I admit what you\u0027re proposing is prettier, but I\u0027d still argue that the old school way produces better errors, and code (probably).\n\nThe main changes in standards since C++11 have been to add more and more compile-time programming constructs, with the lofty goal of eventually not needing the preprocessor at all. I\u0027m all for that, and this is a step in that direction. It should produce better compile-time errors, and in Debug builds, where the table is not optimized out, we\u0027ll be able to look at the table\u0027s contents in the debugger. Can we give it a try and see how it goes?",
+      "parentUuid": "2e4b8a1b_766771a8",
+      "revId": "a7eb789eb5cdd30ef623fe92ab36ae6494c88cda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
