@@ -16,6 +16,23 @@
       "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77a8dfc5_d4a60505",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2020-02-04T19:17:09Z",
+      "side": 1,
+      "message": "This ends up only setting VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT. In patch set 5 I explicitly change this to set VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT as required by ANGLE. I\u0027m not sure what the correct behavior should be",
+      "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
