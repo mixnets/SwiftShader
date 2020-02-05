@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62c1ef11_69c3fc1b",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-05T18:29:13Z",
+      "side": 1,
+      "message": "I created https://github.com/google/swiftshader/blob/master/src/System/Build.hpp so we don\u0027t rely on \u0027__has_feature\u0027 as I believe this is a clang-only thing.\nThat said, I see subzero does the same, so perhaps it\u0027s harmless. I\u0027m also not sure if Reactor depends on System.\n\nAnyway, nothing to change, just wanted to point this out.",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 17
+      },
+      "revId": "c9bd17d33e9f1502121ce52ac1fbcac1219fdb07",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e9550d0_5f8a996e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1058,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-05T18:29:13Z",
+      "side": 1,
+      "message": "nit: elsewhere I\u0027ve tried to keep these variable names quite strict to their LLVM types. So this would normally be called i8PtrTy. It looks like you\u0027re going with the C type name.\n\nDoesn\u0027t have to be addressed now.",
+      "range": {
+        "startLine": 1058,
+        "startChar": 9,
+        "endLine": 1058,
+        "endChar": 18
+      },
+      "revId": "c9bd17d33e9f1502121ce52ac1fbcac1219fdb07",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
