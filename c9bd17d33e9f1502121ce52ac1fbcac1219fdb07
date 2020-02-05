@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d9e298be_6f2836ff",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-05T18:34:26Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "62c1ef11_69c3fc1b",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 17
+      },
+      "revId": "c9bd17d33e9f1502121ce52ac1fbcac1219fdb07",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0e9550d0_5f8a996e",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "c9bd17d33e9f1502121ce52ac1fbcac1219fdb07",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4a26f87_e34154b8",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1058,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-05T18:34:26Z",
+      "side": 1,
+      "message": "Ack. I did want to make it clear that it\u0027s a void*, but yeah, it\u0027s inconsistent. What I\u0027d really like is to write a Call helper for LLVM types, as I did for Subzero.",
+      "parentUuid": "0e9550d0_5f8a996e",
+      "range": {
+        "startLine": 1058,
+        "startChar": 9,
+        "endLine": 1058,
+        "endChar": 18
+      },
+      "revId": "c9bd17d33e9f1502121ce52ac1fbcac1219fdb07",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
