@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4fc71542_c37b69d1",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2020-02-06T21:28:12Z",
+      "side": 1,
+      "message": "need_exec indicates that the memory may need to be marked as executable in the future. permissions specifies that the memory should be mapped as executable. In other words need_exec is a property of the allocation, while permissions is a property of the mapping.  permissions\u003dPERMISSION_EXECUTE is not compatible with need_exec\u003dtrue, but a memory can be allocated with need_exec\u003dtrue and with permissision\u003dR|W. If memory is allocated with need_exec\u003dfalse then protect(EXEC) may fail later (depending on platform).",
+      "parentUuid": "641427bb_d20a1d73",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f1351b3b_0c2257d1",
         "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
         "patchSetId": 1
