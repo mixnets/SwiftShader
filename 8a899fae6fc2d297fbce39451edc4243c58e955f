@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "922e7b57_e1be620b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 958,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2020-02-06T18:46:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b627918_744e0c5f",
+      "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "77a8dfc5_d4a60505",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 4
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Anything allocated by SwiftShader will be device local, but this memory is not allocated by SwiftShader, it is allocated by the host, so it should be fine to mark it as host visible.",
       "parentUuid": "77a8dfc5_d4a60505",
+      "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "716ae994_3e3bc1be",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 33023
+      },
+      "writtenOn": "2020-02-06T18:46:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59aa3fd5_2a6d7233",
       "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
