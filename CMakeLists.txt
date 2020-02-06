@@ -2351,7 +2351,7 @@ if(SWIFTSHADER_BUILD_BENCHMARKS)
     )
 
     add_executable(ReactorBenchmarks ${REACTOR_BENCHMARK_LIST})
-    target_link_libraries(ReactorBenchmarks benchmark::benchmark ${Reactor})
+    target_link_libraries(ReactorBenchmarks benchmark::benchmark marl ${Reactor})
 
     set_target_properties(ReactorBenchmarks PROPERTIES
         COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS}"

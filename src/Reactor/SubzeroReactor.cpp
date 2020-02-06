@@ -53,16 +53,13 @@
 
 // Subzero utility functions
 // These functions only accept and return Subzero (Ice) types, and do not access any globals.
-namespace {
 namespace sz {
-void replaceEntryNode(Ice::Cfg *function, Ice::CfgNode *newEntryNode)
+static void replaceEntryNode(Ice::Cfg *function, Ice::CfgNode *newEntryNode)
 {
 	ASSERT_MSG(function->getEntryNode() != nullptr, "Function should have an entry node");
 
 	if(function->getEntryNode() == newEntryNode)
-	{
 		return;
-	}
 
 	// Make this the new entry node
 	function->setEntryNode(newEntryNode);
@@ -73,7 +70,7 @@ void replaceEntryNode(Ice::Cfg *function, Ice::CfgNode *newEntryNode)
 	{
 		auto nodes = function->getNodes();
 
-		// TODO(amaiorano): Fast path if newEntryNode is last? Can avoid linear search.
+		// TODO: Fast path if newEntryNode is last? Can avoid linear search.
 
 		auto iter = std::find(nodes.begin(), nodes.end(), newEntryNode);
 		ASSERT_MSG(iter != nodes.end(), "New node should be in the function's node list");
@@ -87,7 +84,7 @@ void replaceEntryNode(Ice::Cfg *function, Ice::CfgNode *newEntryNode)
 	}
 }
 
-Ice::Cfg *createFunction(Ice::GlobalContext *context, Ice::Type returnType, const std::vector<Ice::Type> &paramTypes)
+static Ice::Cfg *createFunction(Ice::GlobalContext *context, Ice::Type returnType, const std::vector<Ice::Type> &paramTypes)
 {
 	uint32_t sequenceNumber = 0;
 	auto function = Ice::Cfg::create(context, sequenceNumber).release();
@@ -106,7 +103,7 @@ Ice::Cfg *createFunction(Ice::GlobalContext *context, Ice::Type returnType, cons
 	return function;
 }
 
-Ice::Type getPointerType(Ice::Type elementType)
+static Ice::Type getPointerType(Ice::Type elementType)
 {
 	if(sizeof(void *) == 8)
 	{
@@ -118,7 +115,7 @@ Ice::Type getPointerType(Ice::Type elementType)
 	}
 }
 
-Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arraySize = 0)
+static Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arraySize = 0)
 {
 	int typeSize = Ice::typeWidthInBytes(type);
 	int totalSize = typeSize * (arraySize ? arraySize : 1);
@@ -131,7 +128,7 @@ Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arr
 	return address;
 }
 
-Ice::Constant *getConstantPointer(Ice::GlobalContext *context, void const *ptr)
+static Ice::Constant *getConstantPointer(Ice::GlobalContext *context, void const *ptr)
 {
 	if(sizeof(void *) == 8)
 	{
@@ -145,7 +142,7 @@ Ice::Constant *getConstantPointer(Ice::GlobalContext *context, void const *ptr)
 
 // Wrapper for calls on C functions with Ice types
 template<typename Return, typename... CArgs, typename... RArgs>
-Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&... args)
+static Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&... args)
 {
 	Ice::Type retTy = T(rr::CToReactorT<Return>::getType());
 
@@ -163,7 +160,7 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(C
 
 	std::initializer_list<Ice::Variable *> iceArgs = { std::forward<RArgs>(args)... };
 
-	auto call = Ice::InstCall::create(function, iceArgs.size(), ret, getConstantPointer(function->getContext(), reinterpret_cast<void const *>(fptr)), false);
+	auto call = Ice::InstCall::create(function, iceArgs.size(), ret, getConstantPointer(function->getContext(), reinterpret_cast<void const*>(fptr)), false);
 	for(auto arg : iceArgs)
 	{
 		call->addArg(arg);
@@ -174,7 +171,7 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(C
 }
 
 // Returns a non-const variable copy of const v
-Ice::Variable *createUnconstCast(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Constant *v)
+static Ice::Variable *createUnconstCast(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Constant *v)
 {
 	Ice::Variable *result = function->makeVariable(v->getType());
 	Ice::InstCast *cast = Ice::InstCast::create(function, Ice::InstCast::Bitcast, result, v);
@@ -182,7 +179,7 @@ Ice::Variable *createUnconstCast(Ice::Cfg *function, Ice::CfgNode *basicBlock, I
 	return result;
 }
 
-Ice::Variable *createLoad(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Operand *ptr, Ice::Type type, unsigned int align)
+static Ice::Variable *createLoad(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Operand *ptr, Ice::Type type, unsigned int align)
 {
 	// TODO(b/148272103): InstLoad assumes that a constant ptr is an offset, rather than an
 	// absolute address. We circumvent this by casting to a non-const variable, and loading
@@ -200,8 +197,6 @@ Ice::Variable *createLoad(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Ope
 }
 
 }  // namespace sz
-}  // namespace
-
 namespace rr {
 class ELFMemoryStreamer;
 class CoroutineGenerator;
@@ -232,7 +227,7 @@ Ice::ELFFileStreamer *elfFile = nullptr;
 Ice::Fdstream *out = nullptr;
 
 // Coroutine globals
-rr::Type *coroYieldType = nullptr;
+rr::Type *coroYieldType{};
 std::shared_ptr<rr::CoroutineGenerator> coroGen;
 
 }  // Anonymous namespace
@@ -395,9 +390,7 @@ std::vector<Ice::Type> T(const std::vector<Type *> &types)
 	std::vector<Ice::Type> result;
 	result.reserve(types.size());
 	for(auto &t : types)
-	{
 		result.push_back(T(t));
-	}
 	return result;
 }
 
@@ -408,7 +401,7 @@ Value *V(Ice::Operand *v)
 
 Ice::Operand *V(Value *v)
 {
-	return reinterpret_cast<Ice::Operand *>(v);
+	return reinterpret_cast<Ice::Variable *>(v);
 }
 
 BasicBlock *B(Ice::CfgNode *b)
@@ -636,10 +629,7 @@ void *loadImage(uint8_t *const elfImage, size_t &codeSize, const char *functionN
 		{
 			if(sectionHeader[i].sh_flags & SHF_EXECINSTR)
 			{
-				auto getCurrSectionName = [&]() {
-					auto sectionNameOffset = sectionHeader[elfHeader->e_shstrndx].sh_offset + sectionHeader[i].sh_name;
-					return reinterpret_cast<const char *>(elfImage + sectionNameOffset);
-				};
+				auto getCurrSectionName = [&]() { return reinterpret_cast<const char *>((elfImage + sectionHeader[elfHeader->e_shstrndx].sh_offset) + sectionHeader[i].sh_name); };
 				if(functionName && strstr(getCurrSectionName(), functionName) == nullptr)
 				{
 					continue;
@@ -2882,11 +2872,23 @@ RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 	}
 }
 
+RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
+{
+	UNIMPLEMENTED("RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)");
+	return UShort8(0);
+}
+
 RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 {
 	UNIMPLEMENTED("RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)");
 	return UShort8(0);
 }
+
+// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))
+//	RValue<UShort8> PackRepeat(RValue<Byte16> x, RValue<Byte16> y, int element)
+//	{
+//		ASSERT(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+//	}
 
 Type *UShort8::getType()
 {
@@ -4126,20 +4128,20 @@ void resume(Nucleus::CoroutineHandle handle)
 }
 
 namespace detail {
-thread_local rr::Nucleus::CoroutineHandle coroHandle{};
+std::mutex coroHandleMutex;
+rr::Nucleus::CoroutineHandle coroHandle{};
 }  // namespace detail
 
 void setHandleParam(Nucleus::CoroutineHandle handle)
 {
-	ASSERT(!detail::coroHandle);
+	detail::coroHandleMutex.lock();
 	detail::coroHandle = handle;
 }
 
 Nucleus::CoroutineHandle getHandleParam()
 {
-	ASSERT(detail::coroHandle);
 	auto handle = detail::coroHandle;
-	detail::coroHandle = {};
+	detail::coroHandleMutex.unlock();
 	return handle;
 }
 
@@ -4189,7 +4191,7 @@ public:
 		// We insert these instructions at the top of the entry node,
 		// before existing reactor-generated instructions.
 
-		//    CoroutineHandle coroutine_begin(<Arguments>)
+		//    [Ignored] coroutine_begin(<Arguments>)
 		//    {
 		//        this->handle = coro::getHandleParam();
 		//
@@ -4249,11 +4251,11 @@ public:
 		::basicBlock = resumeBlock;
 	}
 
-	using FunctionUniquePtr = std::unique_ptr<Ice::Cfg>;
+	using FunctionUniqePtr = std::unique_ptr<Ice::Cfg>;
 
 	// Generates the await function for the current coroutine.
 	// Cannot use Nucleus functions that modify ::function and ::basicBlock.
-	static FunctionUniquePtr generateAwaitFunction()
+	static FunctionUniqePtr generateAwaitFunction()
 	{
 		// bool coroutine_await(CoroutineHandle handle, YieldType* out)
 		// {
@@ -4263,7 +4265,7 @@ public:
 		//     }
 		//     else // resume
 		//     {
-		//         YieldType* promise = coro::getPromisePtr(handle);
+		//         YieldType* promise = coro::GetPromisePtr(handle);
 		//         *out = *promise;
 		//         coro::resume(handle);
 		//         return true;
@@ -4323,12 +4325,12 @@ public:
 		auto br = Ice::InstBr::create(awaitFunc, done, doneBlock, resumeBlock);
 		bb->appendInst(br);
 
-		return FunctionUniquePtr{ awaitFunc };
+		return FunctionUniqePtr{ awaitFunc };
 	}
 
 	// Generates the destroy function for the current coroutine.
 	// Cannot use Nucleus functions that modify ::function and ::basicBlock.
-	static FunctionUniquePtr generateDestroyFunction()
+	static FunctionUniqePtr generateDestroyFunction()
 	{
 		// void coroutine_destroy(Nucleus::CoroutineHandle handle)
 		// {
