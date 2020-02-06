@@ -1838,15 +1838,23 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 
 	const VkBaseInStructure *extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+	VkSamplerFilteringPrecisionModeGOOGLE filteringPrecision = VK_SAMPLER_FILTERING_PRECISION_MODE_LOW_GOOGLE;
 
 	while(extensionCreateInfo)
 	{
-		switch(extensionCreateInfo->sType)
+		switch(static_cast<long>(extensionCreateInfo->sType))
 		{
 			case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
 			{
 				const VkSamplerYcbcrConversionInfo *samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo *>(extensionCreateInfo);
 				ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
+			}
+			break;
+			case VK_STRUCTURE_TYPE_SAMPLER_FILTERING_PRECISION_GOOGLE:
+			{
+				const VkSamplerFilteringPrecisionGOOGLE *filteringInfo =
+				    reinterpret_cast<const VkSamplerFilteringPrecisionGOOGLE *>(extensionCreateInfo);
+				filteringPrecision = filteringInfo->samplerFilteringPrecisionMode;
 			}
 			break;
 			default:
@@ -1857,7 +1865,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion);
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion, filteringPrecision);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks *pAllocator)
