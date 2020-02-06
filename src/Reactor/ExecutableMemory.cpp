@@ -309,7 +309,9 @@ void *allocateMemoryPages(size_t bytes, int permissions, bool need_exec)
 	// "runtime" option cannot execute writable memory by default. They can opt
 	// into this capability by specifying the "com.apple.security.cs.allow-jit"
 	// code signing entitlement and allocating the region with the MAP_JIT flag.
-	mapping = mmap(nullptr, length, prot, flags | MAP_JIT, -1, 0);
+	if (need_exec)
+		flags |= MAP_JIT;
+	mapping = mmap(nullptr, length, prot, flags, -1, 0);
 
 	if(mapping == MAP_FAILED)
 	{
