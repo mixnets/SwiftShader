@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5b627918_744e0c5f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 958,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-06T18:30:54Z",
+      "side": 1,
+      "message": "From the spec, they do seem to be pretty much the same, so I think you\u0027re right, we should be able to add both and implement them the same way.",
+      "parentUuid": "ddfb3f51_c909b3e8",
+      "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "77a8dfc5_d4a60505",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 4
@@ -33,6 +51,24 @@
       "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59aa3fd5_2a6d7233",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-06T18:30:54Z",
+      "side": 1,
+      "message": "Anything allocated by SwiftShader will be device local, but this memory is not allocated by SwiftShader, it is allocated by the host, so it should be fine to mark it as host visible.",
+      "parentUuid": "77a8dfc5_d4a60505",
+      "revId": "8a899fae6fc2d297fbce39451edc4243c58e955f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

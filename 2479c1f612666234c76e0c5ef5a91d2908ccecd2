@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22d950f3_21009343",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-06T18:30:54Z",
+      "side": 1,
+      "message": "Add line:\nTests: dEQP-VK.*\nTo get coverage on any dEQP tests this might impact.",
+      "revId": "2479c1f612666234c76e0c5ef5a91d2908ccecd2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
