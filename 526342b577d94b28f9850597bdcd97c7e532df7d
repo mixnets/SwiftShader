@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "641427bb_d20a1d73",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-06T20:43:07Z",
+      "side": 1,
+      "message": "I\u0027ll admit, I\u0027m unclear on what need_exec is for, given that \u0027permissions\u0027 may contain the PERMISSION_EXECUTE flag.",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1351b3b_0c2257d1",
+        "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-06T20:43:07Z",
+      "side": 1,
+      "message": "Looks like this is still the case on latest LLVM (9):\nhttps://cs.corp.google.com/aosp-nougat/external/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp?q\u003dSectionMemoryManager.cpp\u0026g\u003d0\u0026l\u003d144\n\nThis should be upstreamed as well.",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
