@@ -27,7 +27,7 @@ namespace vk {
 class Sampler : public Object<Sampler, VkSampler>
 {
 public:
-	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
+	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion, const VkSamplerFilteringPrecisionModeGOOGLE filteringMode)
 	    : magFilter(pCreateInfo->magFilter)
 	    , minFilter(pCreateInfo->minFilter)
 	    , mipmapMode(pCreateInfo->mipmapMode)
@@ -44,6 +44,7 @@ public:
 	    , borderColor(pCreateInfo->borderColor)
 	    , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
 	    , ycbcrConversion(ycbcrConversion)
+        , filteringMode(filteringMode)
 	{
 	}
 
@@ -76,6 +77,7 @@ public:
 	const VkBool32 unnormalizedCoordinates = VK_FALSE;
 
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+    const VkSamplerFilteringPrecisionModeGOOGLE filteringMode = VK_SAMPLER_FILTERING_PRECISION_MODE_LOW_GOOGLE;
 
 private:
 	static std::atomic<uint32_t> nextID;
