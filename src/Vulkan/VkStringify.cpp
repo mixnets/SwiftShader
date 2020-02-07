@@ -16,8 +16,6 @@
 
 #include "System/Debug.hpp"
 
-#include "vulkan/vk_ext_provoking_vertex.h"
-
 #include <iostream>
 #include <map>
 #include <string>

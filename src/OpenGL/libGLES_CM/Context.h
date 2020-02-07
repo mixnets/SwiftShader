@@ -29,6 +29,7 @@
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 #include <EGL/egl.h>
+#undef None  // b/127920555
 
 #include <map>
 #include <string>

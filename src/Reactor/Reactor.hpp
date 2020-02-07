@@ -26,7 +26,9 @@
 #include <tuple>
 #include <unordered_set>
 
-#undef Bool  // b/127920555
+// TODO(b/127920555): Once the legacy OpenGL / D3D frontends have been removed,
+// this hack can also be removed.
+#undef Bool
 
 #ifdef ENABLE_RR_DEBUG_INFO
 // Functions used for generating JIT debug info.

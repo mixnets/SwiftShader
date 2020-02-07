@@ -15,7 +15,7 @@
 #ifndef VK_DESCRIPTOR_SET_HPP_
 #define VK_DESCRIPTOR_SET_HPP_
 
-// Intentionally not including VkObject.hpp here due to b/127920555
+#include "VkObject.hpp"
 
 #include <array>
 #include <memory>
