@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (534d12 ReactorBenchmarks: Sweep coroutine perf.)
 ---
 Language:        Cpp
 # BasedOnStyle:  Google
@@ -114,3 +115,15 @@ TabWidth:        4
 UseTab:          ForIndentation
 ...
 
+=======
+# http://clang.llvm.org/docs/ClangFormatStyleOptions.html
+BasedOnStyle: Chromium
+
+---
+Language:        Cpp
+StatementMacros:
+ - _Acquires_lock_
+ - _Releases_lock_
+ - _Requires_lock_held_
+ - _When_
+>>>>>>> BRANCH (112402 Squashed 'third_party/marl/' changes from 14e4d862a..2b3e3fe)

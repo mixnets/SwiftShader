@@ -4,6 +4,7 @@
 [submodule "third_party/googletest"]
 	path = third_party/googletest
 	url = https://github.com/google/googletest.git
+<<<<<<< HEAD   (534d12 ReactorBenchmarks: Sweep coroutine perf.)
 [submodule "third_party/json"]
 	path = third_party/json
 	url = https://github.com/nlohmann/json.git
@@ -13,6 +14,8 @@
 [submodule "third_party/PowerVR_Examples"]
 	path = third_party/PowerVR_Examples
 	url = https://github.com/powervr-graphics/Native_SDK.git
+=======
+>>>>>>> BRANCH (112402 Squashed 'third_party/marl/' changes from 14e4d862a..2b3e3fe)
 [submodule "third_party/benchmark"]
 	path = third_party/benchmark
 	url = https://github.com/google/benchmark.git
