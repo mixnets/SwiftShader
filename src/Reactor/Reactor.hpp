@@ -15,6 +15,10 @@
 #ifndef rr_Reactor_hpp
 #define rr_Reactor_hpp
 
+// TODO(b/127920555): Once the legacy OpenGL / D3D frontends have been removed,
+// this hack can also be removed.
+#undef Bool
+
 #include "Nucleus.hpp"
 #include "Routine.hpp"
 #include "Traits.hpp"
@@ -25,8 +29,6 @@
 #include <limits>
 #include <tuple>
 #include <unordered_set>
-
-#undef Bool  // b/127920555
 
 #ifdef ENABLE_RR_DEBUG_INFO
 // Functions used for generating JIT debug info.

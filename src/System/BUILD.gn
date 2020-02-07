@@ -17,13 +17,15 @@ import("../swiftshader.gni")
 swiftshader_source_set("System_headers") {
   sources = [
     "Build.hpp",
-    "CPUID.hpp",
     "Configurator.hpp",
+    "CPUID.hpp",
     "Debug.hpp",
     "Half.hpp",
     "Math.hpp",
     "Memory.hpp",
-    "Socket.cpp",
+    "PlatformHeaders/Vulkan.hpp",
+    "PlatformHeaders/Windows.hpp",
+    "PlatformHeaders/X11.hpp",
     "Socket.hpp",
     "Timer.hpp",
   ]
