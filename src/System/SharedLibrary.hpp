@@ -16,7 +16,7 @@
 #define SharedLibrary_hpp
 
 #if defined(_WIN32)
-#	include <Windows.h>
+#	include "System/PlatformHeaders/Windows.hpp"
 #else
 #	include <dlfcn.h>
 #endif
