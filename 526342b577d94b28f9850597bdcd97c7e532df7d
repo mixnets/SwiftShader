@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "4debc434_6ef75277",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-07T15:07:49Z",
+      "side": 1,
+      "message": "Please do you mind adding this very helpful info as a comment of allocateMemoryPages()?",
+      "parentUuid": "f911a6fe_47469cf4",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f1351b3b_0c2257d1",
         "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "writtenOn": "2020-02-06T20:43:07Z",
       "side": 1,
       "message": "Looks like this is still the case on latest LLVM (9):\nhttps://cs.corp.google.com/aosp-nougat/external/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp?q\u003dSectionMemoryManager.cpp\u0026g\u003d0\u0026l\u003d144\n\nThis should be upstreamed as well.",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "256ce3b5_28f38731",
+        "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-07T15:07:49Z",
+      "side": 1,
+      "message": "Please create a LLVM patch, and link to it on this gerrit change as a comment so we can track it.",
+      "parentUuid": "f1351b3b_0c2257d1",
       "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
