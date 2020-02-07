@@ -15,10 +15,7 @@
 #ifndef libX11_hpp
 #define libX11_hpp
 
-#define Bool int
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/XShm.h>
+#include "System/PlatformHeaders/X11.hpp"
 
 struct LibX11exports
 {
@@ -48,8 +45,6 @@ struct LibX11exports
 	Bool (*XShmDetach)(Display *display, XShmSegmentInfo *shminfo);
 	int (*XShmPutImage)(Display *display, Drawable d, GC gc, XImage *image, int src_x, int src_y, int dest_x, int dest_y, unsigned int width, unsigned int height, bool send_event);
 };
-
-#undef Bool  // b/127920555
 
 class LibX11
 {
