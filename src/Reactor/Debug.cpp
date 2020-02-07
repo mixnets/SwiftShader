@@ -34,10 +34,6 @@
 #	include <unistd.h>
 #endif
 
-#ifdef ERROR
-#	undef ERROR  // b/127920555
-#endif
-
 #ifndef REACTOR_LOGGING_LEVEL
 #	define REACTOR_LOGGING_LEVEL INFO
 #endif
