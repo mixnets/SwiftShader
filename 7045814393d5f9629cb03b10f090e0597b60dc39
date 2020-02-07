@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63acf32c_72e63ec4",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-07T16:14:00Z",
+      "side": 1,
+      "message": "Note: viewMasks are now also specified through VkSubpassDescription2KHR::viewMask. This is currently ignored, in order to see if any test require handling this to pass.",
+      "range": {
+        "startLine": 157,
+        "startChar": 6,
+        "endLine": 157,
+        "endChar": 24
+      },
+      "revId": "7045814393d5f9629cb03b10f090e0597b60dc39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
