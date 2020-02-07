@@ -34,10 +34,6 @@
 #	include <unistd.h>
 #endif
 
-#ifdef ERROR
-#	undef ERROR  // b/127920555
-#endif
-
 namespace {
 
 bool IsUnderDebugger()

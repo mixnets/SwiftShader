@@ -16,14 +16,9 @@
 #define SWIFTSHADER_WIN32SURFACEKHR_HPP
 
 #include "VkSurfaceKHR.hpp"
+#include "System/PlatformHeaders/Vulkan.hpp"
 #include "Vulkan/VkImage.hpp"
 #include "Vulkan/VkObject.hpp"
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#	define WIN32_LEAN_AND_MEAN
-#endif  // !defined(WIN32_LEAN_AND_MEAN)
-#include "vulkan/vulkan_win32.h"
-#include <Windows.h>
 
 #include <map>
 
