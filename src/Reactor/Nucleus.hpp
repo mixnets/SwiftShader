@@ -15,6 +15,10 @@
 #ifndef rr_Nucleus_hpp
 #define rr_Nucleus_hpp
 
+// TODO(b/127920555): Once the legacy OpenGL / D3D frontends have been removed,
+// this hack can also be removed.
+#undef None
+
 #include <atomic>
 #include <cassert>
 #include <cstdarg>
@@ -22,10 +26,6 @@
 #include <functional>
 #include <memory>
 #include <vector>
-
-#ifdef None
-#	undef None  // TODO(b/127920555)
-#endif
 
 static_assert(sizeof(short) == 2, "Reactor's 'Short' type is 16-bit, and requires the C++ 'short' to match that.");
 static_assert(sizeof(int) == 4, "Reactor's 'Int' type is 32-bit, and requires the C++ 'int' to match that.");

@@ -187,7 +187,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 	}
 }
 
-Bool PixelProgram::alphaTest(Int cMask[4])
+rr::Bool PixelProgram::alphaTest(Int cMask[4])
 {
 	if(!state.alphaToCoverage)
 	{

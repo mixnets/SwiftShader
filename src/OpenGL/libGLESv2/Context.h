@@ -30,6 +30,7 @@
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl3.h>
 #include <EGL/egl.h>
+#undef None  // b/127920555
 
 #include <map>
 #include <string>
