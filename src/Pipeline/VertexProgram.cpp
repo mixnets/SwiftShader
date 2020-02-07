@@ -18,7 +18,7 @@
 #include "Device/Renderer.hpp"
 #include "Device/Vertex.hpp"
 #include "System/Half.hpp"
-#include "Vulkan/VkDebug.hpp"
+#include "System/Debug.hpp"
 
 #include "Vulkan/VkPipelineLayout.hpp"
 
