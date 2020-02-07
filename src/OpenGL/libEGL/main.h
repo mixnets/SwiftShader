@@ -22,6 +22,7 @@
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#undef None  // b/127920555
 
 namespace egl
 {

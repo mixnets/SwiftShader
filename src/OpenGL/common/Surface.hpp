@@ -21,6 +21,7 @@
 #include "Renderer/Surface.hpp"
 
 #include <EGL/egl.h>
+#undef None  // b/127920555
 
 namespace egl
 {
