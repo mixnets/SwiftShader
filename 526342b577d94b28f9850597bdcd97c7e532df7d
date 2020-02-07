@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "f911a6fe_47469cf4",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-07T14:52:21Z",
+      "side": 1,
+      "message": "Ah okay, that makes perfect sense. Basically, on some platforms, there may be a different region of memory that must be used for executable code, so need_exec \u003d true would mean use that memory region.",
+      "parentUuid": "4fc71542_c37b69d1",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f1351b3b_0c2257d1",
         "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
         "patchSetId": 1
