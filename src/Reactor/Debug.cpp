@@ -28,14 +28,12 @@
 #	include <sys/ptrace.h>
 #	include <sys/types.h>
 #elif defined(_WIN32) || defined(_WIN64)
+#	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
+#	undef ERROR
 #elif defined(__APPLE__) || defined(__MACH__)
 #	include <sys/sysctl.h>
 #	include <unistd.h>
-#endif
-
-#ifdef ERROR
-#	undef ERROR  // b/127920555
 #endif
 
 #ifndef REACTOR_LOGGING_LEVEL

@@ -374,7 +374,7 @@ void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, boo
 	}
 }
 
-Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
+rr::Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	Float4 Z = z;
 
@@ -453,7 +453,7 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 	return zMask != 0;
 }
 
-Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
+rr::Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	Short4 Z = convertFixed16(z, true);
 
@@ -536,7 +536,7 @@ Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x
 	return zMask != 0;
 }
 
-Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
+rr::Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	if(!state.depthTestActive)
 	{

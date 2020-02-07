@@ -25,6 +25,7 @@
 #include "Main/FrameBuffer.hpp"
 
 #include <EGL/egl.h>
+#undef None  // b/127920555
 
 namespace egl
 {
