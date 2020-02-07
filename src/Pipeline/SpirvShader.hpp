@@ -22,7 +22,7 @@
 #include "Device/Sampler.hpp"
 #include "System/Types.hpp"
 #include "Vulkan/VkConfig.h"
-#include "Vulkan/VkDebug.hpp"
+#include "System/Debug.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 
 #include <spirv/unified1/spirv.hpp>
