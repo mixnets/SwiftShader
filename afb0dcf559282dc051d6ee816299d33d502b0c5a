@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e94df37d_506d3733",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-07T16:35:23Z",
+      "side": 1,
+      "message": "I see you kept my change from https://swiftshader-review.googlesource.com/c/SwiftShader/+/39568/\nHowever, it looks like the printf call for other platforms is lost? Also, this was guarded with a flag \u0027traceToDebugOut\u0027. Should we make this a SWIFTSHADER_ENABLE_TRACE_DEBUG_OUT or something?",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3393103_e8eed207",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-07T16:35:23Z",
+      "side": 1,
+      "message": "Can we make this SWIFTSHADER_ENABLE_TRACE instead?",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b335768c_b6d358c7",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-07T16:35:23Z",
+      "side": 1,
+      "message": "Not part of this change, but I\u0027m always wary of just undefining macros like this. If there is another ABORT defined, then which one we pick up is header include order-dependent, and sometimes can lead to weird compiler errors, or worse, runtime issues. I know that we do this _because_ we have multiple definitions already, and this is one step in the direction of fixing that. So let\u0027s make it a goal to remove these #undefs.",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
