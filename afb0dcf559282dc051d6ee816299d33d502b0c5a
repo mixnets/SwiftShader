@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f907b4ba_00b2b308",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-07T16:47:34Z",
+      "side": 1,
+      "message": "\u003e the printf call for other platforms is lost\n\nOnly if SWIFTSHADER_DISABLE_TRACE is enabled. All the commands now call this function (renamed from tracev to logv) and is the only function that prints messages anywhere.\n\nFor \u0027nix, all the functions fprint to stdout or stderr.\nFor windows, all functions fprint to stdout or stderr AND OutputDebugString.\nFor android, all function log to logcat.\n\n\u003e Also, this was guarded with a flag \u0027traceToDebugOut\u0027. \n\nI didn\u0027t really see the value in this, so I removed it. If we\u0027re logging stuff, who cares if it goes the console as well?\n\n\u003e Should we make this a SWIFTSHADER_ENABLE_TRACE_DEBUG_OUT or something?\n\nSWIFTSHADER_DISABLE_TRACE seemed sufficient for a shut-the-hell-up flag IMO.",
+      "parentUuid": "e94df37d_506d3733",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3393103_e8eed207",
         "filename": "src/System/Debug.hpp",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "bb13d793_add7937e",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-07T16:47:34Z",
+      "side": 1,
+      "message": "Sure, but please let\u0027s do that in a separate change. I want to keep this stuff as incremental as possible.",
+      "parentUuid": "d3393103_e8eed207",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b335768c_b6d358c7",
         "filename": "src/System/Debug.hpp",
         "patchSetId": 8
@@ -50,6 +86,24 @@
       "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47a36225_30220255",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-07T16:47:34Z",
+      "side": 1,
+      "message": "Completely agree. That\u0027s why I started this change immediately after: https://swiftshader-review.googlesource.com/c/SwiftShader/+/40970",
+      "parentUuid": "b335768c_b6d358c7",
+      "revId": "afb0dcf559282dc051d6ee816299d33d502b0c5a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
