@@ -177,6 +177,10 @@ cc_defaults {
 
     defaults: [ "libswiftshader_common_defaults" ],
 
+    header_libs: [
+        "swiftshader_platform_headers",
+    ],
+
     srcs: [
         "Reactor/Reactor.cpp",
         "Reactor/LLVMJIT.cpp",
@@ -194,10 +198,18 @@ cc_defaults {
     static_libs: [
         "libLLVM7_swiftshader",
     ],
+
+    shared_libs: [
+        "liblog",
+    ],
 }
 
 cc_defaults {
     name: "libswiftshadervk_llvm_defaults",
+
+    header_libs: [
+        "swiftshader_platform_headers",
+    ],
 
     srcs: [
         "Reactor/Reactor.cpp",
@@ -219,6 +231,7 @@ cc_defaults {
 
     shared_libs: [
         "libcutils",
+        "liblog",
     ],
 }
 
