@@ -28,14 +28,10 @@
 #	include <sys/ptrace.h>
 #	include <sys/types.h>
 #elif defined(_WIN32) || defined(_WIN64)
-#	include <windows.h>
+#	include "System/PlatformHeaders/Windows.hpp"
 #elif defined(__APPLE__) || defined(__MACH__)
 #	include <sys/sysctl.h>
 #	include <unistd.h>
-#endif
-
-#ifdef FATAL
-#	undef FATAL  // b/127920555
 #endif
 
 namespace {

@@ -1,4 +1,4 @@
-// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
+// Copyright 2020 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// VkStringify.hpp: Utilities to turn Vulkan enums into strings
+#ifndef sw_PlatformHeaders_Windows_hpp
+#define sw_PlatformHeaders_Windows_hpp
 
-#ifndef VK_STRINGIFY_HPP_
-#define VK_STRINGIFY_HPP_
+#if !defined(WIN32_LEAN_AND_MEAN)
+#	define WIN32_LEAN_AND_MEAN
+#endif  // !defined(WIN32_LEAN_AND_MEAN)
 
-#include "System/PlatformHeaders/Vulkan.hpp"
+#include <Windows.h>
 
-#include <string>
-
-namespace vk {
-
-std::string Stringify(VkStructureType value);
-
-}
+#undef FATAL
+#undef Yield
 
 #endif
