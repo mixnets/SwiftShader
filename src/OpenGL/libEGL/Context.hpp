@@ -20,6 +20,7 @@
 
 #include <EGL/egl.h>
 #include <GLES/gl.h>
+#undef None  // b/127920555
 
 namespace gl { class Surface; }
 
