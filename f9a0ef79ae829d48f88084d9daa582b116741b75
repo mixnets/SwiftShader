@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ea15dc7_3b105464",
+        "filename": "src/Reactor/Debug.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-07T19:22:03Z",
+      "side": 1,
+      "message": "Is the part of the comment referring to \"Vulkan / SPIR-V\" relevant here? Or we don\u0027t care as these will be consolidated soon enough?",
+      "revId": "f9a0ef79ae829d48f88084d9daa582b116741b75",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
