@@ -19,9 +19,8 @@
 #include "VkMemory.h"
 
 #include "System/Debug.hpp"
+#include "Vulkan/VulkanPlatform.h"
 
-#include <Vulkan/VulkanPlatform.h>
-#include <vulkan/vk_icd.h>
 #include <new>
 
 namespace vk {

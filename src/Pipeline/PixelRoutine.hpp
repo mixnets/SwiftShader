@@ -33,6 +33,8 @@ public:
 	virtual ~PixelRoutine();
 
 protected:
+	using Bool = rr::Bool;
+
 	Float4 z[4];  // Multisampled z
 	Float4 w;     // Used as is
 	Float4 rhw;   // Reciprocal w

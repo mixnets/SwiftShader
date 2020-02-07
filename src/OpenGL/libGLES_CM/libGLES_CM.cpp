@@ -31,6 +31,7 @@
 
 #include <GLES/gl.h>
 #include <GLES/glext.h>
+#undef None  // b/127920555
 
 #include <algorithm>
 #include <limits>
