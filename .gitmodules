@@ -4,6 +4,7 @@
 [submodule "third_party/googletest"]
 	path = third_party/googletest
 	url = https://github.com/google/googletest.git
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 [submodule "third_party/json"]
 	path = third_party/json
 	url = https://github.com/nlohmann/json.git
@@ -13,6 +14,8 @@
 [submodule "third_party/PowerVR_Examples"]
 	path = third_party/PowerVR_Examples
 	url = https://github.com/powervr-graphics/Native_SDK.git
+=======
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
 [submodule "third_party/benchmark"]
 	path = third_party/benchmark
 	url = https://github.com/google/benchmark.git
