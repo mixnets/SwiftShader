@@ -82,6 +82,7 @@ find_library(XCB xcb)
 ###########################################################
 # Options
 ###########################################################
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
@@ -318,10 +319,27 @@ endmacro()
 if(SWIFTSHADER_USE_GROUP_SOURCES)
     group_all_sources(src)
 endif()
+=======
+function (option_if_not_defined name description default)
+    if(NOT DEFINED ${name})
+        option(${name} ${description} ${default})
+    endif()
+endfunction()
+
+option_if_not_defined(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option_if_not_defined(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option_if_not_defined(MARL_BUILD_TESTS "Build tests" OFF)
+option_if_not_defined(MARL_BUILD_BENCHMARKS "Build benchmarks" OFF)
+option_if_not_defined(MARL_ASAN "Build marl with address sanitizer" OFF)
+option_if_not_defined(MARL_MSAN "Build marl with memory sanitizer" OFF)
+option_if_not_defined(MARL_TSAN "Build marl with thread sanitizer" OFF)
+option_if_not_defined(MARL_INSTALL "Create marl install target" OFF)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
 
 ###########################################################
 # Directories
 ###########################################################
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
@@ -341,10 +359,24 @@ set(SUBZERO_DIR ${THIRD_PARTY_DIR}/subzero)
 set(SUBZERO_LLVM_DIR ${THIRD_PARTY_DIR}/llvm-subzero)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 set(HELLO2_DIR ${THIRD_PARTY_DIR}/PowerVR_SDK/Examples/Beginner/01_HelloAPI/OGLES2)
+=======
+function (set_if_not_defined name value)
+    if(NOT DEFINED ${name})
+        set(${name} ${value} PARENT_SCOPE)
+    endif()
+endfunction()
+
+set(MARL_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(MARL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_if_not_defined(MARL_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
+set_if_not_defined(MARL_GOOGLETEST_DIR ${MARL_THIRD_PARTY_DIR}/googletest)
+set_if_not_defined(MARL_BENCHMARK_DIR ${MARL_THIRD_PARTY_DIR}/benchmark)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
 
 ###########################################################
 # Compile flags
 ###########################################################
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 
 # Flags for project code (non 3rd party)
 set(SWIFTSHADER_COMPILE_OPTIONS "")
@@ -354,9 +386,17 @@ macro(set_cpp_flag FLAG)
         set(CMAKE_CXX_FLAGS_${ARGV1} "${CMAKE_CXX_FLAGS_${ARGV1}} ${FLAG}")
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG}")
+=======
+if(MARL_BUILD_TESTS)
+    if(NOT EXISTS ${MARL_GOOGLETEST_DIR}/.git)
+        message(WARNING "third_party/googletest submodule missing.")
+        message(WARNING "Run: `git submodule update --init` to build tests.")
+        set(MARL_BUILD_TESTS OFF)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
     endif()
 endmacro()
 
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 macro(set_linker_flag FLAG)
     if(${ARGC} GREATER 1)
         set(CMAKE_EXE_LINKER_FLAGS ${ARGV1} "${CMAKE_EXE_LINKER_FLAGS ${ARGV1}} ${FLAG}")
@@ -396,6 +436,45 @@ if(MSVC)
         "/wd4838" # conversion from 'type_1' to 'type_2' requires a narrowing conversion
         "/wd5030" # attribute 'attribute' is not recognized
         "/wd5038" # data member 'member1' will be initialized after data member 'member2' data member 'member' will be initialized after base class 'base_class'
+=======
+if(MARL_BUILD_BENCHMARKS)
+    if(NOT EXISTS ${MARL_BENCHMARK_DIR}/.git)
+        message(WARNING "third_party/benchmark submodule missing.")
+        message(WARNING "Run: `git submodule update --init` to build benchmarks.")
+        set(MARL_BUILD_BENCHMARKS OFF)
+    endif()
+endif(MARL_BUILD_BENCHMARKS)
+
+if(MARL_BUILD_BENCHMARKS)
+    set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
+    add_subdirectory(${MARL_BENCHMARK_DIR})
+endif(MARL_BUILD_BENCHMARKS)
+
+###########################################################
+# File lists
+###########################################################
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/memory.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
     )
 
     # Treat specific warnings as errors
@@ -566,6 +645,7 @@ endif()
 ###########################################################
 # LLVM
 ###########################################################
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
 
 set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/AliasAnalysis.cpp
@@ -1162,6 +1242,55 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/ValueMapper.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/VNCoercion.cpp
     ${LLVM_DIR}/../stubs/Stubs.cpp
+=======
+function(marl_set_target_options target)
+    # Enable all warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE
+            "-W4"
+            "/wd4127" # conditional expression is constant
+        )
+    else()
+        target_compile_options(${target} PRIVATE "-Wall")
+    endif()
+
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} "-fsanitize=thread")
+    endif()
+
+    target_include_directories(${target} PUBLIC ${MARL_INCLUDE_DIR})
+endfunction(marl_set_target_options)
+
+###########################################################
+# Targets
+###########################################################
+
+# marl
+add_library(marl STATIC ${MARL_LIST})
+set_target_properties(marl PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
@@ -1608,12 +1737,33 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         message(FATAL_ERROR "Architecture '${ARCH}' not supported by Subzero")
     endif()
 
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
     file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
         ${SUBZERO_LLVM_DIR}/*.cpp
         ${SUBZERO_LLVM_DIR}/*.c
         ${SUBZERO_LLVM_DIR}/*.h
+=======
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/event_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/memory_test.cpp
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${MARL_GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
     )
 
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
     set(SUBZERO_REACTOR_LIST
         ${SOURCE_DIR}/Reactor/Debug.cpp
         ${SOURCE_DIR}/Reactor/Debug.hpp
@@ -1627,6 +1777,12 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         ${SOURCE_DIR}/Reactor/Reactor.hpp
         ${SOURCE_DIR}/Reactor/Routine.hpp
         ${SOURCE_DIR}/Reactor/SubzeroReactor.cpp
+=======
+    set(MARL_TEST_INCLUDE_DIR
+        ${MARL_GOOGLETEST_DIR}/googletest/include/
+        ${MARL_GOOGLETEST_DIR}/googlemock/include/
+        ${MARL_GOOGLETEST_DIR}/googletest/
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
     )
 
     set(SUBZERO_INCLUDE_DIR
@@ -2279,19 +2435,58 @@ if(SWIFTSHADER_BUILD_TESTS)
         target_link_libraries(ReactorUnitTests ${Reactor})
     endif()
 
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
     set(GLES_UNITTESTS_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
+=======
+    target_link_libraries(marl-unittests marl)
+endif(MARL_BUILD_TESTS)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
 
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
     set(GLES_UNITTESTS_INCLUDE_DIR
         ${THIRD_PARTY_DIR}/googletest/googletest/include/
         ${THIRD_PARTY_DIR}/googletest/googlemock/include/
         ${THIRD_PARTY_DIR}/googletest/googletest/
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
+=======
+# benchmarks
+if(MARL_BUILD_BENCHMARKS)
+    set(MARL_BENCHMARK_LIST
+        ${MARL_SRC_DIR}/blockingcall_bench.cpp
+        ${MARL_SRC_DIR}/defer_bench.cpp
+        ${MARL_SRC_DIR}/event_bench.cpp
+        ${MARL_SRC_DIR}/marl_bench.cpp
+        ${MARL_SRC_DIR}/non_marl_bench.cpp
+        ${MARL_SRC_DIR}/scheduler_bench.cpp
+        ${MARL_SRC_DIR}/ticket_bench.cpp
+        ${MARL_SRC_DIR}/waitgroup_bench.cpp
+    )
 
+    add_executable(marl-benchmarks ${MARL_BENCHMARK_LIST})
+
+    marl_set_target_options(marl-benchmarks)
+
+    target_link_libraries(marl-benchmarks benchmark::benchmark marl)
+endif(MARL_BUILD_BENCHMARKS)
+
+# examples
+if(MARL_BUILD_EXAMPLES)
+    function(build_example target)
+        add_executable(${target} "${CMAKE_CURRENT_SOURCE_DIR}/examples/${target}.cpp")
+        set_target_properties(${target} PROPERTIES
+            FOLDER "Examples"
+        )
+        marl_set_target_options(${target})
+        target_link_libraries(${target} marl)
+    endfunction(build_example)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
+
+<<<<<<< HEAD   (b3b2a4 Fix Android build: Add missing .cpp to Android.bp)
     add_executable(gles-unittests ${GLES_UNITTESTS_LIST})
     set_target_properties(gles-unittests PROPERTIES
         INCLUDE_DIRECTORIES "${GLES_UNITTESTS_INCLUDE_DIR}"
@@ -2379,3 +2574,9 @@ if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
 
     target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
+=======
+    build_example(fractal)
+    build_example(hello_task)
+    build_example(primes)
+endif(MARL_BUILD_EXAMPLES)
+>>>>>>> BRANCH (ec288e Squashed 'third_party/marl/' changes from 14e4d862a..246091e)
