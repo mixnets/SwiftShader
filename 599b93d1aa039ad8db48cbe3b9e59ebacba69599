@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc5b74f1_14dfac26",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-10T20:37:51Z",
+      "side": 1,
+      "message": "This is duplicated below.\n\nAlso, why do we need these copy functions? Isn\u0027t \"T\" here always a \"VkSubpassDescription\"? Couldn\u0027t we simply use the default assignment, as in:\n\n\nfor(uint32_t i \u003d 0; i \u003c count; ++i)\n{\n    dst[i] \u003d src[i];\n}\n\nAnd if that\u0027s the case, we could technically use std::copy_n in the calling code, so CopySubpasses(subpasses, pCreateInfo-\u003epSubpasses, pCreateInfo-\u003esubpassCount); could become:\n\nstd::copy_n(std::begin(subpasses), pCreateInfo-\u003esubpassCount, std::begin(pCreateInfo-\u003epSubpasses));\n\n\nThe same would go for the other copy functions below.",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a71f9261_3dd8308f",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-10T20:37:51Z",
+      "side": 1,
+      "message": "Since this and the other overload below both simply forward to a template, can\u0027t we just remove these overloads? The function template should suffice.",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aedb96dc_04d44b91",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-10T20:37:51Z",
+      "side": 1,
+      "message": "Maybe I\u0027m not seeing it, but can this function be a free-standing function in this cpp file (in anonymous namespace)?",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8260767e_19c36f06",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1974,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-10T20:37:51Z",
+      "side": 1,
+      "message": "Curious why you extracted this code into a function template, when it\u0027s not being used anywhere else. Is this for future code? Or was it meant to be called by vkCreateRenderPass2KHR?",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
