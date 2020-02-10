@@ -159,9 +159,10 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(C
 		ret = function->makeVariable(retTy);
 	}
 
-	std::initializer_list<Ice::Variable *> iceArgs = { std::forward<RArgs>(args)... };
+	Ice::Variable * iceArgs[] = { std::forward<RArgs>(args)... };
+	constexpr size_t iceArgCount = sizeof(iceArgs) / sizeof(iceArgs[0]);
 
-	auto call = Ice::InstCall::create(function, iceArgs.size(), ret, getConstantPointer(function->getContext(), reinterpret_cast<void const *>(fptr)), false);
+	auto call = Ice::InstCall::create(function, iceArgCount, ret, getConstantPointer(function->getContext(), reinterpret_cast<void const *>(fptr)), false);
 	for(auto arg : iceArgs)
 	{
 		call->addArg(arg);
