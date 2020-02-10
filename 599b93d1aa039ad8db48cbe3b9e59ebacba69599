@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "be5ea9bb_6ea9e70d",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-10T22:38:46Z",
+      "side": 1,
+      "message": "Good catch, removed the duplicate. No, T isn\u0027t always a VkSubpassDescription, which is the reason the template function was created. VkRenderPassCreateInfo2KHR uses VkSubpassDescription2KHR.",
+      "parentUuid": "dc5b74f1_14dfac26",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a71f9261_3dd8308f",
         "filename": "src/Vulkan/VkRenderPass.cpp",
         "patchSetId": 9
@@ -33,6 +51,24 @@
       "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6859f12_1a7824ce",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-10T22:38:46Z",
+      "side": 1,
+      "message": "Went for the standalone ComputeRequiredAllocationSizeT function, so I kept both these functions.",
+      "parentUuid": "a71f9261_3dd8308f",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "becd8a7f_193354ed",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-10T22:38:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aedb96dc_04d44b91",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8260767e_19c36f06",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 9
@@ -67,6 +121,24 @@
       "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f22bf910_cfca2049",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1974,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-10T22:38:46Z",
+      "side": 1,
+      "message": "Yup, I added it to vkCreateRenderPass2KHR",
+      "parentUuid": "8260767e_19c36f06",
+      "revId": "599b93d1aa039ad8db48cbe3b9e59ebacba69599",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
