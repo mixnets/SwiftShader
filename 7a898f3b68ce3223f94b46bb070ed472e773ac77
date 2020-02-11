@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "116e43f2_4c52f0a0",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-11T14:11:40Z",
+      "side": 1,
+      "message": "nit: I think this comment should be above the init function definition itself.",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38e1dc9b_e7743569",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-11T14:11:40Z",
+      "side": 1,
+      "message": "nit: rather than \u0027auto\u0027 and initializingwith 0u, I think it\u0027s clearer to just match the type of subpassCount (size_t? uint32_t?) and initialize with 0, which implicitly converts to whatever the type of i is.",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6645d17_73bd7b3b",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-11T14:11:40Z",
+      "side": 1,
+      "message": "nit: \"0u\" shouldn\u0027t be necessary, just \"0\".",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
