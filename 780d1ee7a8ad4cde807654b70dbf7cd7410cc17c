@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24b0c210_b955569b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 719,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-11T14:14:51Z",
+      "side": 1,
+      "message": "Perhaps for a future change but this is precisely the case where \u0027auto\u0027 makes sense: repeating the same type twice on the same line.",
+      "revId": "780d1ee7a8ad4cde807654b70dbf7cd7410cc17c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a117245_98bed59d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2760,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-11T14:14:51Z",
+      "side": 1,
+      "message": "Oh here we do use auto... so perhaps we should make all this consistent now?",
+      "revId": "780d1ee7a8ad4cde807654b70dbf7cd7410cc17c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
