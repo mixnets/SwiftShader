@@ -79,6 +79,10 @@ extern "C" void _chkstk();
 #	include <sanitizer/msan_interface.h>
 #endif
 
+#if defined( __ANDROID__) && defined(__arm__)
+extern "C" signed __aeabi_idivmod();
+#endif
+
 namespace {
 
 // Cache provides a simple, thread-safe key-value store.
@@ -540,6 +544,9 @@ void *resolveExternalSymbol(const char *name)
 #endif
 
 #ifdef __ANDROID__
+#if defined(__arm__)
+			functions.emplace("aeabi_idivmod", reinterpret_cast<void *>(__aeabi_idivmod));
+#endif
 			functions.emplace("aeabi_unwind_cpp_pr0", reinterpret_cast<void *>(F::neverCalled));
 			functions.emplace("sync_synchronize", reinterpret_cast<void *>(F::sync_synchronize));
 			functions.emplace("sync_fetch_and_add_4", reinterpret_cast<void *>(F::sync_fetch_and_add_4));
