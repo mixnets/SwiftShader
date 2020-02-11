@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d731f5fc_d7e5b2d3",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-11T14:52:04Z",
+      "side": 1,
+      "message": "It doesn\u0027t apply to the init() function when used with VkRenderPassCreateInfo, only when using VkRenderPassCreateInfo2KHR.",
+      "parentUuid": "116e43f2_4c52f0a0",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "38e1dc9b_e7743569",
         "filename": "src/Vulkan/VkRenderPass.cpp",
         "patchSetId": 10
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "78813bd7_89817f2b",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-11T14:52:04Z",
+      "side": 1,
+      "message": "This is a copy-paste from line 193 and is also used at lines 176, 237, 260, 291, so I was trying to keep the current style. I\u0027ll take a note to change the style of these loops later.",
+      "parentUuid": "38e1dc9b_e7743569",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a6645d17_73bd7b3b",
         "filename": "src/Vulkan/VkRenderPass.cpp",
         "patchSetId": 10
@@ -50,6 +86,24 @@
       "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d252139_b19c8a6c",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-11T14:52:04Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a6645d17_73bd7b3b",
+      "revId": "7a898f3b68ce3223f94b46bb070ed472e773ac77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
