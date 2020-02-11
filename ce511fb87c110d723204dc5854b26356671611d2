@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9c4dffc_afaea422",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-11T14:46:51Z",
+      "side": 1,
+      "message": "#if defined(__ANDROID__) \u0026\u0026 defined(__arm__)",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 20
+      },
+      "revId": "ce511fb87c110d723204dc5854b26356671611d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
