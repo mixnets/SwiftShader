@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "61fef30d_231ae4a0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 719,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-11T14:52:21Z",
+      "side": 1,
+      "message": "Yeah, i was keeping the style of the other cases. We can change all of them to auto, if that\u0027s better, in a future change, as you mentioned.",
+      "parentUuid": "24b0c210_b955569b",
+      "revId": "780d1ee7a8ad4cde807654b70dbf7cd7410cc17c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a117245_98bed59d",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "780d1ee7a8ad4cde807654b70dbf7cd7410cc17c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b617b49_51357397",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2760,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-11T14:52:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1a117245_98bed59d",
+      "revId": "780d1ee7a8ad4cde807654b70dbf7cd7410cc17c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
