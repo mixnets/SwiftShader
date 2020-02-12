@@ -70,6 +70,30 @@
       "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "992b3136_37325424",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T13:47:38Z",
+      "side": 1,
+      "message": "It didn\u0027t complain as Kokoro isn\u0027t building with RR_PRINT enabled.",
+      "parentUuid": "837fdd8c_ac98bfc0",
+      "range": {
+        "startLine": 217,
+        "startChar": 27,
+        "endLine": 217,
+        "endChar": 36
+      },
+      "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
