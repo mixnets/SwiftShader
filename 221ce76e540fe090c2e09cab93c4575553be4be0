@@ -22,6 +22,30 @@
       "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e1a9366_7048930f",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T13:33:35Z",
+      "side": 1,
+      "message": "and the iterator needs to be size_t. Also both need to be applied to the other test too.",
+      "parentUuid": "6d081a8a_024a7f49",
+      "range": {
+        "startLine": 217,
+        "startChar": 27,
+        "endLine": 217,
+        "endChar": 36
+      },
+      "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
