@@ -3877,7 +3877,9 @@ static std::vector<Value *> toDouble(const std::vector<Value *> &vals)
 
 std::vector<Value *> PrintValue::Ty<Bool>::val(const RValue<Bool> &v)
 {
-	return toInt({ v.value }, false);
+	auto t = jit->builder->CreateGlobalStringPtr("true");
+	auto f = jit->builder->CreateGlobalStringPtr("false");
+	return { V(jit->builder->CreateSelect(V(v.value), t, f)) };
 }
 
 std::vector<Value *> PrintValue::Ty<Byte>::val(const RValue<Byte> &v)

@@ -225,7 +225,7 @@ struct PrintValue::Ty<std::string>
 template<>
 struct PrintValue::Ty<Bool>
 {
-	static std::string fmt(const RValue<Bool> &v) { return "%d"; }
+	static std::string fmt(const RValue<Bool> &v) { return "%s"; }
 	static std::vector<Value *> val(const RValue<Bool> &v);
 };
 template<>

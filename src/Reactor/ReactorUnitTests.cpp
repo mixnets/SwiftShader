@@ -157,6 +157,9 @@ std::vector<std::string> split(const std::string &s)
 TEST(ReactorUnitTests, PrintPrimitiveTypes)
 {
 #ifdef ENABLE_RR_PRINT
+	char pNullptr[64];
+	snprintf(pNullptr, sizeof(pNullptr), "  p: %p", nullptr);
+
 	FunctionT<void()> function;
 	{
 		bool b(true);
@@ -206,7 +209,7 @@ TEST(ReactorUnitTests, PrintPrimitiveTypes)
 		"  d: 2.000000",
 		"  cstr: const char*",
 		"  str: std::string",
-		"  p: 0000000000000000",
+		pNullptr,
 	};
 	constexpr size_t expectedSize = sizeof(expected) / sizeof(expected[0]);
 
@@ -214,7 +217,7 @@ TEST(ReactorUnitTests, PrintPrimitiveTypes)
 	capture.start();
 	routine();
 	auto output = split(capture.stop());
-	for(int i = 0, j = 1; i < std::size(expected); ++i, j += 2)
+	for(size_t i = 0, j = 1; i < expectedSize; ++i, j += 2)
 	{
 		ASSERT_EQ(expected[i], output[j]);
 	}
@@ -225,6 +228,9 @@ TEST(ReactorUnitTests, PrintPrimitiveTypes)
 TEST(ReactorUnitTests, PrintReactorTypes)
 {
 #ifdef ENABLE_RR_PRINT
+	char piNullptr[64];
+	snprintf(piNullptr, sizeof(piNullptr), "  pi: %p", nullptr);
+
 	FunctionT<void()> function;
 	{
 		Bool b(true);
@@ -266,7 +272,7 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 		RR_WATCH(by4);
 	}
 	const char *expected[] = {
-		"  b: 1",
+		"  b: true",
 		"  i: -1",
 		"  i2: [-1, -2]",
 		"  i4: [-1, -2, -3, -4]",
@@ -280,7 +286,7 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 		"  f: 1.000000",
 		"  f4: [1.000000, 2.000000, 3.000000, 4.000000]",
 		"  l: -1",
-		"  pi: 0000000000000000",
+		piNullptr,
 		"  rvi: -1",
 		"  by: 97",
 		"  by4: [255, 254, 253, 252]",
@@ -293,7 +299,7 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 	capture.start();
 	routine();
 	auto output = split(capture.stop());
-	for(int i = 0, j = 1; i < std::size(expected); ++i, j += 2)
+	for(size_t i = 0, j = 1; i < expectedSize; ++i, j += 2)
 	{
 		ASSERT_EQ(expected[i], output[j]);
 	}
