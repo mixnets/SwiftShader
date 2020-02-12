@@ -46,6 +46,30 @@
       "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "837fdd8c_ac98bfc0",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-12T13:46:22Z",
+      "side": 1,
+      "message": "Done. Yep! I started with std::size, then remembered that it\u0027s C++17 only (sad), so I did the sizeof(blah)/sizeof(blah[0]) dance, but forgot to use it. Nice catch! Amazingly, Kokoro didn\u0027t complain...",
+      "parentUuid": "6e1a9366_7048930f",
+      "range": {
+        "startLine": 217,
+        "startChar": 27,
+        "endLine": 217,
+        "endChar": 36
+      },
+      "revId": "221ce76e540fe090c2e09cab93c4575553be4be0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
