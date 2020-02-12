@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9c95f1b_0331325b",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T13:47:08Z",
+      "side": 1,
+      "message": "This isn\u0027t how pointers are printed on all platforms.\nI bodged a fix in https://swiftshader-review.googlesource.com/c/SwiftShader/+/41129.",
+      "range": {
+        "startLine": 209,
+        "startChar": 8,
+        "endLine": 209,
+        "endChar": 24
+      },
+      "revId": "245bbf3044413c6e5fdf718678107d664caa62a7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
