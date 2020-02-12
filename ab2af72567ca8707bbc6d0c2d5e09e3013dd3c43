@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "95c8fb1f_4b56c04e",
+        "filename": "tests/kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T22:07:02Z",
+      "side": 1,
+      "message": "FWIW, I don\u0027t think ReactorUnitTests cares where it is run from. But I see the argument for consistency.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 5
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a023e57_ca1b8b03",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T22:07:02Z",
+      "side": 1,
+      "message": "If this works, yay for removing MSVC filth!",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 15
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccd155de_5793b379",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-12T22:07:02Z",
+      "side": 1,
+      "message": "I\u0027m so tempted to rewrite this all in go to avoid having to touch batch files, and have this consistent for all platforms.",
+      "range": {
+        "startLine": 55,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 42
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
