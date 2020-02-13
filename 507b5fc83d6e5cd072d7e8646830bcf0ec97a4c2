@@ -22,6 +22,30 @@
       "revId": "507b5fc83d6e5cd072d7e8646830bcf0ec97a4c2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81ea8aed_6355f7f0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-13T16:45:04Z",
+      "side": 1,
+      "message": "Jiaxun Yang (CC\u0027d)\n\nContext:\n\n https://swiftshader-review.googlesource.com/c/SwiftShader/+/41028\n https://github.com/google/marl/pull/72\n \"I\u0027m just trying to bring MIPS64 support back to Chromium again :-). Most of the code is lying in Chromium for years without maintenance.\"\n\nI didn\u0027t ask for a bug # on 41028 as I was under the impression this is for tracking our own work. Asking external contributors for bugs to be created seemed like it would be making the barrier for contributions that bit harder.",
+      "parentUuid": "3980dff6_563245b4",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "507b5fc83d6e5cd072d7e8646830bcf0ec97a4c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
