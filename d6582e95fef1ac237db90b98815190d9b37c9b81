@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cca36cb6_071ebc42",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-13T19:18:57Z",
+      "side": 1,
+      "message": "uber-nit: I would\u0027ve inverted this so the error case is handled first as an early-out. This way the normal code path is to continue the function until the end, and if any more logic needs to be added it wouldn\u0027t be inside the conditional block (or become nested conditionals if more than one error conditions need checking). Anyway, this function will probably remain tiny and trivial to understand so no need to change.",
+      "range": {
+        "startLine": 186,
+        "startChar": 2,
+        "endLine": 186,
+        "endChar": 28
+      },
+      "revId": "d6582e95fef1ac237db90b98815190d9b37c9b81",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
