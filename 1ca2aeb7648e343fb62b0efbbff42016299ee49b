@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6dfb16d6_3f945d49",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3854,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-02-13T22:01:25Z",
+      "side": 1,
+      "message": "Nit: I\u0027m curious if we could have an fprintf version of this. I\u0027ve had times in the past where I was using rrprintf but didn\u0027t want it to output to stdout. But I also remember it being a nightmare to generate a call to fopen, get a file pointer, then pass that to fprintf, so feel free to ignore this.",
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "821d611a_c1d1a9e1",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4601,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-02-13T22:01:25Z",
+      "side": 1,
+      "message": "Nit: Maybe rename this to replaceAll? It\u0027s a little confusing to me to have str.replace() called inside a function called \"replace\".",
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
