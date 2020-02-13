@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b3023529_8d4a868c",
+        "filename": "tests/kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-13T13:46:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "95c8fb1f_4b56c04e",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 5
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a023e57_ca1b8b03",
         "filename": "tests/kokoro/gcp_windows/continuous.bat",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "0db5a992_e6b3b4c1",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-13T13:46:17Z",
+      "side": 1,
+      "message": "Yeah, this also means we could remove the -G altogether, and have CMake automatically use whatever latest version of VS is available. But I\u0027ll leave it there for now.",
+      "parentUuid": "9a023e57_ca1b8b03",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 15
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ccd155de_5793b379",
         "filename": "tests/kokoro/gcp_windows/continuous.bat",
         "patchSetId": 3
@@ -59,6 +107,30 @@
       "writtenOn": "2020-02-12T22:07:02Z",
       "side": 1,
       "message": "I\u0027m so tempted to rewrite this all in go to avoid having to touch batch files, and have this consistent for all platforms.",
+      "range": {
+        "startLine": 55,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 42
+      },
+      "revId": "ab2af72567ca8707bbc6d0c2d5e09e3013dd3c43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10f0f2d5_24fea181",
+        "filename": "tests/kokoro/gcp_windows/continuous.bat",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-13T13:46:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ccd155de_5793b379",
       "range": {
         "startLine": 55,
         "startChar": 0,
