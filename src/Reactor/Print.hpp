@@ -341,6 +341,7 @@ struct PrintValue::Ty<RValue<T>>
 // message and optional values.
 // See Printv below.
 void Printv(const char *function, const char *file, int line, const char *msg, std::initializer_list<PrintValue> vals);
+void Printv(const std::vector<Value *> &vals);
 
 // Printv emits a call to printf() using the provided message and optional
 // values.
