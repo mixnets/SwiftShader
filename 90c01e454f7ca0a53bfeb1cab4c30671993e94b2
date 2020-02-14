@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31b36922_6d10e595",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-14T02:30:08Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of chaining reverts like that. In case this has to be reverted again (and then re-landed) it becomes hard to see at a glance what each CL does. We\u0027re back to a clean slate after the initial revert, so this title should just describe what this CL accomplishes.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 54
+      },
+      "revId": "90c01e454f7ca0a53bfeb1cab4c30671993e94b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8b58d83_dba363e6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-14T02:30:08Z",
+      "side": 1,
+      "message": "Please state what\u0027s different this time.\n\nDid ANGLE make a change that could have resolved the previously encountered issue? Have you tried running the Chromium test that failed? Or can we expect to require reverting this again if the breakage was legit and is not addressed?",
+      "range": {
+        "startLine": 11,
+        "startChar": 19,
+        "endLine": 11,
+        "endChar": 25
+      },
+      "revId": "90c01e454f7ca0a53bfeb1cab4c30671993e94b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
