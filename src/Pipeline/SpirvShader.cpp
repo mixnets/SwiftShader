@@ -2340,7 +2340,11 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 
 	auto arrayBase = structBase + d.Offset;
 	auto arraySizeInBytes = SIMD::Int(arrayBase.limit()) - arrayBase.offsets();
-	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElTy.sizeInComponents * sizeof(float));
+	// Scalar and vector array elements are always vec4 aligned
+	// FIXME(b/149769414): Column major matrix array elements should be N Column * 4 Rows aligned and
+	//                     Row major matrix array elements should be N Rows * 4 Column aligned
+	auto arrayElementSizeInBytes = std::max(arrayElTy.sizeInComponents, 4u) * sizeof(float);
+	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElementSizeInBytes);
 
 	result.move(0, SIMD::Int(arrayLength));
 
