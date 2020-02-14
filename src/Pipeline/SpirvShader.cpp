@@ -2340,7 +2340,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 
 	auto arrayBase = structBase + d.Offset;
 	auto arraySizeInBytes = SIMD::Int(arrayBase.limit()) - arrayBase.offsets();
-	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElTy.sizeInComponents * sizeof(float));
+	auto arrayLength = arraySizeInBytes / SIMD::Int(d.HasArrayStride ? d.ArrayStride : arrayElTy.sizeInComponents * sizeof(float));
 
 	result.move(0, SIMD::Int(arrayLength));
 
