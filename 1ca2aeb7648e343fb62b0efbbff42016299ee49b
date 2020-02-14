@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "f91b6957_73a7d249",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3849,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-14T14:05:47Z",
+      "side": 1,
+      "message": "\u003e I\u0027d like to reserve Printf() for a function that behaves exactly like printf().\nI\u0027m not sure we\u0027ll ever add a rr::Printf, given that rr::Print already exists, and is better than Printf, using Python\u0027s \"{}\" syntax, and supporting a mix of C and Reactor types.\n\nHaving said that, I don\u0027t think this function should be called Printf anyway, because it\u0027s closer in spirit to vprintf (http://www.cplusplus.com/reference/cstdio/vprintf/) than to printf, in that the former takes a va_list arg. In fact, that\u0027s what I thought the \"V\" suffix might represent in PrintV.\n\nSo I think we should either leave it as a PrintV overload, or maybe call it \"VPrintf\", to indicate that it\u0027s closer to vprintf (though the format string is embedded in the vector). Thoughts?",
+      "parentUuid": "5cc55d48_cf94e121",
+      "range": {
+        "startLine": 3849,
+        "startChar": 5,
+        "endLine": 3849,
+        "endChar": 11
+      },
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "df3aff34_dbd9ab28",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
@@ -96,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "5cf0f43c_768f9aa3",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3853,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-14T14:05:47Z",
+      "side": 1,
+      "message": "printf actually returns int, so this isn\u0027t a bug.",
+      "parentUuid": "df3aff34_dbd9ab28",
+      "range": {
+        "startLine": 3853,
+        "startChar": 41,
+        "endLine": 3853,
+        "endChar": 46
+      },
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6dfb16d6_3f945d49",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 3
@@ -113,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "2eaa90f9_6459b875",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3854,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-14T14:05:47Z",
+      "side": 1,
+      "message": "Recently, Ben and I spoke about this with regards to writing unit tests for rr::Print. Ben suggested we have a way to set the target for Print to stdout, or whatever FILE* we like. In the end, though, I managed to take advantage of a googletest facility to capture stdout into a string.",
+      "parentUuid": "6dfb16d6_3f945d49",
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "821d611a_c1d1a9e1",
         "filename": "src/Reactor/Reactor.cpp",
         "patchSetId": 3
@@ -127,6 +193,24 @@
       "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1ee3273_8810b516",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4601,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-14T14:05:47Z",
+      "side": 1,
+      "message": "Done. Makes sense.",
+      "parentUuid": "821d611a_c1d1a9e1",
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -150,6 +234,30 @@
       "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc03e134_c35adbee",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4776,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-14T14:05:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e3356be_de0236f2",
+      "range": {
+        "startLine": 4776,
+        "startChar": 2,
+        "endLine": 4776,
+        "endChar": 65
+      },
+      "revId": "1ca2aeb7648e343fb62b0efbbff42016299ee49b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
