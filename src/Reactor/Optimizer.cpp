@@ -415,6 +415,14 @@ void Optimizer::optimizeStoresInSingleBasicBlock()
 						continue;
 					}
 
+					// TODO(b/148272103): InstLoad assumes that a constant ptr is an offset, rather than an
+					// absolute address. We need to make sure we don't replace a variable with a constant
+					// on this load.
+					if(llvm::isa<Ice::Constant>(storeValue))
+					{
+						continue;
+					}
+
 					replace(inst, storeValue);
 				}
 			}
