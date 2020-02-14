@@ -48,7 +48,6 @@ __pragma(warning(push))
 #include "llvm/IR/Mangler.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
-#include "llvm/Support/Compiler.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetOptions.h"
@@ -56,6 +55,7 @@ __pragma(warning(push))
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Instrumentation.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 
@@ -73,10 +73,6 @@ __pragma(warning(push))
         extern "C" void __chkstk();
 #elif defined(_WIN32)
 extern "C" void _chkstk();
-#endif
-
-#if __has_feature(memory_sanitizer)
-#	include <sanitizer/msan_interface.h>
 #endif
 
 #ifdef __ARM_EABI__
@@ -561,9 +557,6 @@ void *resolveExternalSymbol(const char *name)
 			functions.emplace("sync_fetch_and_umax_4", reinterpret_cast<void *>(F::sync_fetch_and_umax_4));
 			functions.emplace("sync_fetch_and_umin_4", reinterpret_cast<void *>(F::sync_fetch_and_umin_4));
 #endif
-#if __has_feature(memory_sanitizer)
-			functions.emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
-#endif
 		}
 	};
 
@@ -708,8 +701,11 @@ void JITBuilder::optimize(const rr::Config &cfg)
 	}
 #endif  // ENABLE_RR_DEBUG_INFO
 
-	std::unique_ptr<llvm::legacy::PassManager> passManager(
-	    new llvm::legacy::PassManager());
+	auto passManager = std::make_unique<llvm::legacy::PassManager>();
+
+#if __has_feature(memory_sanitizer)
+	passManager->add(llvm::createMemorySanitizerPass());
+#endif
 
 	for(auto pass : cfg.getOptimization().getPasses())
 	{

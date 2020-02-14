@@ -1139,6 +1139,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineVectorOps.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstructionCombining.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/ADCE.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/ConstantHoisting.cpp
@@ -1169,6 +1170,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/LoopSimplify.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/LoopUtils.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/LowerInvoke.cpp
+    ${LLVM_DIR}/lib/Transforms/Utils/ModuleUtils.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/OrderedInstructions.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/PromoteMemoryToRegister.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/SimplifyCFG.cpp
