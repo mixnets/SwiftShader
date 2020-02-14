@@ -2327,7 +2327,8 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 
 	auto &structPtrTy = getType(getObject(structPtrId).type);
 	auto &structTy = getType(structPtrTy.element);
-	auto &arrayTy = getType(structTy.definition.word(2 + arrayFieldIdx));
+	auto &arrayId = Type::ID(structTy.definition.word(2 + arrayFieldIdx));
+	auto &arrayTy = getType(arrayId);
 	ASSERT(arrayTy.definition.opcode() == spv::OpTypeRuntimeArray);
 	auto &arrayElTy = getType(arrayTy.element);
 
@@ -2340,7 +2341,10 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 
 	auto arrayBase = structBase + d.Offset;
 	auto arraySizeInBytes = SIMD::Int(arrayBase.limit()) - arrayBase.offsets();
-	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElTy.sizeInComponents * sizeof(float));
+
+	ApplyDecorationsForId(&d, arrayId);
+    auto arrayElementSizeInBytes = d.HasArrayStride ? d.ArrayStride : arrayElTy.sizeInComponents * sizeof(float);
+	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayElementSizeInBytes);
 
 	result.move(0, SIMD::Int(arrayLength));
 
