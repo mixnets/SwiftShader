@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a19ef52_862d4058",
+        "filename": "src/Reactor/ReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-17T19:38:08Z",
+      "side": 1,
+      "message": "New file alert! I don\u0027t think this implements anything that is required by a Chrome or Android build (i.e. without ENABLE_RR_DEBUG_INFO), but I wanted to raise this just in case there was something I missed.",
+      "revId": "6eed649c3bc8df7401da1c2b07b8948ea4619b7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9dc2b788_77c1eba9",
+        "filename": "src/Reactor/ReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-17T19:38:08Z",
+      "side": 1,
+      "message": "übernit: 2020",
+      "range": {
+        "startLine": 1,
+        "startChar": 13,
+        "endLine": 1,
+        "endChar": 17
+      },
+      "revId": "6eed649c3bc8df7401da1c2b07b8948ea4619b7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30c900d0_cceed5fb",
+        "filename": "src/Reactor/ReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-17T19:38:08Z",
+      "side": 1,
+      "message": "nit: brackets.",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 15
+      },
+      "revId": "6eed649c3bc8df7401da1c2b07b8948ea4619b7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
