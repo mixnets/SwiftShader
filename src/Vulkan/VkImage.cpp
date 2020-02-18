@@ -673,8 +673,8 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 	Format usedFormat = getFormat(aspect);
 	if(usedFormat.isCompressed())
 	{
-		sw::align(mipLevelExtent.width, usedFormat.blockWidth());
-		sw::align(mipLevelExtent.height, usedFormat.blockHeight());
+		mipLevelExtent.width = sw::align(mipLevelExtent.width, usedFormat.blockWidth());
+		mipLevelExtent.height = sw::align(mipLevelExtent.height, usedFormat.blockHeight());
 	}
 
 	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), true);
