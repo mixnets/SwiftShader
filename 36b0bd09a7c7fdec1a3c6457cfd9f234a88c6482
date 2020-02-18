@@ -16,6 +16,24 @@
       "revId": "36b0bd09a7c7fdec1a3c6457cfd9f234a88c6482",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d08ff955_4c194944",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-18T20:31:46Z",
+      "side": 1,
+      "message": "Right you are. Keyboard fail.",
+      "parentUuid": "b80891fc_0140fc59",
+      "revId": "36b0bd09a7c7fdec1a3c6457cfd9f234a88c6482",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
