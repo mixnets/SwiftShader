@@ -70,6 +70,30 @@
       "revId": "d9153544581fc65b555cd56c417567a3b0c2a115",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d3f828a_e1ac187f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2343,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-18T22:22:33Z",
+      "side": 1,
+      "message": "It should be on the OpTypeArray:\n\n```\n[2.16.2] Composite objects in the StorageBuffer, PhysicalStorageBuffer, Uniform, and PushConstant Storage Classes must be explicitly laid out. The following apply to all the aggregate and matrix types describing such an object, recursively through their nested types:\n\nEach structure-type member must have an Offset decoration.\n\nEach array type must have an ArrayStride decoration, unless it is an array that contains a structure decorated with Block or BufferBlock, in which case it must not have an ArrayStride decoration.\n\n```",
+      "parentUuid": "84df5486_cf52d143",
+      "range": {
+        "startLine": 2343,
+        "startChar": 49,
+        "endLine": 2343,
+        "endChar": 81
+      },
+      "revId": "d9153544581fc65b555cd56c417567a3b0c2a115",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
