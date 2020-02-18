@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b80891fc_0140fc59",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-18T20:07:12Z",
+      "side": 1,
+      "message": "1.2.1 presumably",
+      "revId": "36b0bd09a7c7fdec1a3c6457cfd9f234a88c6482",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
