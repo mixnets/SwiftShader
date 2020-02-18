@@ -22,6 +22,30 @@
       "revId": "d9153544581fc65b555cd56c417567a3b0c2a115",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03f4f9a6_c9fdf0a3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2343,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-18T21:13:47Z",
+      "side": 1,
+      "message": "If you don\u0027t have an arrayStride here, the SPIRV is bogus.",
+      "parentUuid": "be7cfabd_ddf97d24",
+      "range": {
+        "startLine": 2343,
+        "startChar": 49,
+        "endLine": 2343,
+        "endChar": 81
+      },
+      "revId": "d9153544581fc65b555cd56c417567a3b0c2a115",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
