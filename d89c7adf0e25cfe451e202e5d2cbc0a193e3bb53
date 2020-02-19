@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "47f9979e_0c588dd2",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2331,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-19T21:07:47Z",
+      "side": 1,
+      "message": "Does this change actually do anything?\n\nIf so, we might want avoid being able to pass the uint32_t directly into getType().",
+      "range": {
+        "startLine": 2330,
+        "startChar": 1,
+        "endLine": 2331,
+        "endChar": 34
+      },
+      "revId": "d89c7adf0e25cfe451e202e5d2cbc0a193e3bb53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "355dd49d_08b85d68",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2345,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-19T21:07:47Z",
+      "side": 1,
+      "message": "Why didn\u0027t ApplyDecorationsForIdMember() above not already set the ArrayStride?",
+      "range": {
+        "startLine": 2345,
+        "startChar": 1,
+        "endLine": 2345,
+        "endChar": 22
+      },
+      "revId": "d89c7adf0e25cfe451e202e5d2cbc0a193e3bb53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "30b5c7ad_aa352a4d",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 4
