@@ -103,7 +103,10 @@ enum class Level
 	Warn,
 	Error,
 	Fatal,
+    Disabled,
 };
+
+Level Verbose = Level::Disabled;
 
 #ifdef __ANDROID__
 void logv_android(Level level, const char *msg)
@@ -125,6 +128,8 @@ void logv_android(Level level, const char *msg)
 		case Level::Fatal:
 			__android_log_write(ANDROID_LOG_FATAL, "SwiftShader", msg);
 			break;
+        default:
+            break;
 	}
 }
 #else
@@ -141,6 +146,8 @@ void logv_std(Level level, const char *msg)
 		case Level::Fatal:
 			fprintf(stderr, "%s", msg);
 			break;
+        default:
+            break;
 	}
 }
 #endif
@@ -165,8 +172,8 @@ void logv(Level level, const char *format, va_list args)
 	logv_std(level, buffer);
 #	endif
 
-	const bool traceToFile = false;
-	if(traceToFile)
+	const Level traceToFile = Verbose;
+	if(traceToFile != Level::Disabled)
 	{
 		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
 
@@ -210,8 +217,10 @@ void abort(const char *format, ...)
 	::abort();
 }
 
-void trace_assert(const char *format, ...)
+void log_trap(const char *format, ...)
 {
+    // If enabled, log_assert will log all messages, and otherwise ignore them
+    // unless a debugger is attached.
 	static std::atomic<bool> asserted = { false };
 	if(IsUnderDebugger() && !asserted.exchange(true))
 	{
@@ -227,7 +236,7 @@ void trace_assert(const char *format, ...)
 	{
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Fatal, format, vararg);
+		logv(Verbose, format, vararg);
 		va_end(vararg);
 	}
 }
