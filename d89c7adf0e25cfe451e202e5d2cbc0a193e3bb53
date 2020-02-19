@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30b5c7ad_aa352a4d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2346,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-19T21:04:47Z",
+      "side": 1,
+      "message": "Can we just assert that we have ArrayStride here? You can only use OpArrayLength with operands that should guarantee it exists.",
+      "revId": "d89c7adf0e25cfe451e202e5d2cbc0a193e3bb53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
