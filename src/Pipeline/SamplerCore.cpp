@@ -156,6 +156,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Pointer<Byte> &sampl
 
 	if(use32BitFiltering)
 	{
+		// RR_WATCH(uuuu, vvvv, wwww, qqqq, offset);
 		c = sampleFloatFilter(texture, uuuu, vvvv, wwww, qqqq, offset, cubeArrayCoord, sampleId, lod, anisotropy, uDelta, vDelta, function);
 
 		if(!hasFloatTexture() && !hasUnnormalizedIntegerTexture() && !state.compareEnable)

@@ -144,7 +144,7 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
 		});
-		scheduler->setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+		scheduler->setWorkerThreadCount(marl::Thread::numLogicalCPUs());
 		schedulerWeak = scheduler;
 	}
 	return scheduler;
@@ -670,6 +670,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				   storage16BitFeatures->storagePushConstant16 != VK_FALSE ||
 				   storage16BitFeatures->storageInputOutput16 != VK_FALSE)
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -681,6 +682,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				if(variablePointerFeatures->variablePointersStorageBuffer != VK_FALSE ||
 				   variablePointerFeatures->variablePointers != VK_FALSE)
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -692,6 +694,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				if((groupDeviceCreateInfo->physicalDeviceCount != 1) ||
 				   (groupDeviceCreateInfo->pPhysicalDevices[0] != physicalDevice))
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -703,6 +706,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				if(multiviewFeatures->multiviewGeometryShader ||
 				   multiviewFeatures->multiviewTessellationShader)
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -713,6 +717,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 
 				if(shaderDrawParametersFeatures->shaderDrawParameters)
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -733,6 +738,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				   (lineRasterizationFeatures->stippledRectangularLines != VK_FALSE) ||
 				   (lineRasterizationFeatures->stippledSmoothLines != VK_FALSE))
 				{
+					WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
 			}
@@ -763,6 +769,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	{
 		if(!vk::Cast(physicalDevice)->hasFeatures(*enabledFeatures))
 		{
+			WARN("VK_ERROR_FEATURE_NOT_PRESENT");
 			return VK_ERROR_FEATURE_NOT_PRESENT;
 		}
 	}

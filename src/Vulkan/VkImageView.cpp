@@ -238,7 +238,7 @@ const Image *ImageView::getImage(Usage usage) const
 
 Format ImageView::getFormat(Usage usage) const
 {
-	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
+	Format imageFormat = (getImage(usage) == image) ? format : getImage(usage)->getFormat();
 	return imageFormat.getAspectFormat(subresourceRange.aspectMask);
 }
 

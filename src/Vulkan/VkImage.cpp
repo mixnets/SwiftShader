@@ -25,7 +25,271 @@
 #	include "System/GrallocAndroid.hpp"
 #endif
 
+#include <mutex>
+#include <thread>
+#include <unordered_set>
+
 namespace {
+
+struct ImgRange
+{
+	vk::Image *image;
+	VkImageSubresourceRange range;
+	bool etc2;
+};
+
+class ImageUpdater
+{
+public:
+	static ImageUpdater INSTANCE;
+
+	ImageUpdater()
+	{
+		thread = std::thread([&] {
+			while(true)
+			{
+				std::this_thread::sleep_for(std::chrono::seconds(5));
+
+				std::unique_lock<std::mutex> lock(mutex);
+				WARN("Decoding %d images", (int)items.size());
+				if(!keep_going)
+				{
+					return;
+				}
+				for(auto item : items)
+				{
+					if(item.etc2)
+					{
+						item.image->decodeETC2(item.range);
+					}
+					else
+					{
+						item.image->decodeBC(item.range);
+					}
+				}
+			};
+		});
+	}
+
+	~ImageUpdater()
+	{
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			keep_going = false;
+		}
+		thread.join();
+	}
+
+	void add(const ImgRange &imgrng)
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		items.push_back(imgrng);
+	}
+
+	void remove(vk::Image *image)
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+		std::vector<ImgRange> newitems;
+		for(auto item : items)
+		{
+			if(item.image != image)
+			{
+				newitems.push_back(item);
+			}
+		}
+		items = std::move(newitems);
+	}
+
+private:
+	ImageUpdater(const ImageUpdater &) = delete;
+	ImageUpdater(ImageUpdater &&) = delete;
+
+	bool keep_going = true;
+	std::mutex mutex;
+	std::vector<ImgRange> items;
+	std::thread thread;
+};
+
+ImageUpdater ImageUpdater::INSTANCE;
+
+struct RGBA
+{
+	uint8_t r() const { return r_; }
+	uint8_t g() const { return g_; }
+	uint8_t b() const { return b_; }
+	uint8_t r_, g_, b_, a_;
+};
+
+struct GREY
+{
+	uint8_t r() const { return _; }
+	uint8_t g() const { return _; }
+	uint8_t b() const { return _; }
+	uint8_t _;
+};
+
+// writeBMP writes the given image as a bitmap to the given file, returning
+// true on success and false on error.
+template<typename Color>
+bool writeBMP(const Color *texels,
+              int width,
+              int height,
+              const char *path)
+{
+	auto file = fopen(path, "wb");
+	if(!file)
+	{
+		fprintf(stderr, "Could not open file '%s'\n", path);
+		return false;
+	}
+
+	bool ok = true;
+	auto put4 = [&](uint32_t val) { ok = ok && fwrite(&val, 1, 4, file) == 4; };
+	auto put2 = [&](uint16_t val) { ok = ok && fwrite(&val, 1, 2, file) == 2; };
+	auto put1 = [&](uint8_t val) { ok = ok && fwrite(&val, 1, 1, file) == 1; };
+
+	const uint32_t padding = -(3 * width) & 3U;   // in bytes
+	const uint32_t stride = 3 * width + padding;  // in bytes
+	const uint32_t offset = 54;
+
+	// Bitmap file header
+	put1('B');  // header field
+	put1('M');
+	put4(offset + stride * height * 3);  // size in bytes
+	put4(0);                             // reserved
+	put4(offset);
+
+	// BITMAPINFOHEADER
+	put4(40);      // size of header in bytes
+	put4(width);   // width in pixels
+	put4(height);  // height in pixels
+	put2(1);       // number of color planes
+	put2(24);      // bits per pixel
+	put4(0);       // compression scheme (none)
+	put4(0);       // size
+	put4(72);      // horizontal resolution
+	put4(72);      // vertical resolution
+	put4(0);       // color pallete size
+	put4(0);       // 'important colors' count
+
+	for(int y = height - 1; y >= 0; y--)
+	{
+		for(int x = 0; x < width; x++)
+		{
+			auto &texel = texels[x + y * width];
+			put1(texel.b());
+			put1(texel.g());
+			put1(texel.r());
+		}
+		for(uint32_t i = 0; i < padding; i++)
+		{
+			put1(0);
+		}
+	}
+
+	fclose(file);
+	return ok;
+}
+
+bool writeKTX(const uint8_t *data,
+              size_t sizeBytes,
+              uint32_t width,
+              uint32_t height,
+              vk::Format format,
+              const char *path)
+{
+	auto file = fopen(path, "wb");
+	if(!file)
+	{
+		fprintf(stderr, "Could not open file '%s'\n", path);
+		return false;
+	}
+
+	bool ok = true;
+	auto put4 = [&](uint32_t val) { ok = ok && fwrite(&val, 1, 4, file) == 4; };
+
+	uint8_t magic[12] = {
+		0xAB, 0x4B, 0x54, 0x58, 0x20, 0x31, 0x31, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A
+	};
+	fwrite(magic, 1, sizeof(magic), file);
+	put4(0x04030201);
+	put4(0);  // glType
+	put4(1);  // glTypeSize
+	put4(0);  // glFormat
+
+	constexpr uint16_t GL_COMPRESSED_RGB8_ETC2 = 0x9274;
+	constexpr uint16_t GL_COMPRESSED_SRGB8_ETC2 = 0x9275;
+	constexpr uint16_t GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 0x9276;
+	constexpr uint16_t GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 0x9277;
+	constexpr uint16_t GL_COMPRESSED_RGBA8_ETC2_EAC = 0x9278;
+	constexpr uint16_t GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC = 0x9279;
+	constexpr uint16_t GL_COMPRESSED_R11_EAC = 0x9270;
+	constexpr uint16_t GL_COMPRESSED_SIGNED_R11_EAC = 0x9271;
+	constexpr uint16_t GL_COMPRESSED_RG11_EAC = 0x9272;
+	constexpr uint16_t GL_COMPRESSED_SIGNED_RG11_EAC = 0x9273;
+	constexpr uint16_t GL_RGB = 0x1907;
+	constexpr uint16_t GL_RGBA = 0x1908;
+
+	switch(format)  // glInternalFormat
+	{
+		case VK_FORMAT_EAC_R11_UNORM_BLOCK:
+			put4(GL_COMPRESSED_R11_EAC);  // glInternalFormat
+			put4(GL_RGB);                 // glBaseInternalFormat
+			break;
+		case VK_FORMAT_EAC_R11_SNORM_BLOCK:
+			put4(GL_COMPRESSED_SIGNED_R11_EAC);  // glInternalFormat
+			put4(GL_RGB);                        // glBaseInternalFormat
+			break;
+		case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
+			put4(GL_COMPRESSED_RG11_EAC);  // glInternalFormat
+			put4(GL_RGB);                  // glBaseInternalFormat
+			break;
+		case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
+			put4(GL_COMPRESSED_SIGNED_RG11_EAC);  // glInternalFormat
+			put4(GL_RGB);                         // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
+			put4(GL_COMPRESSED_RGB8_ETC2);  // glInternalFormat
+			put4(GL_RGB);                   // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
+			put4(GL_COMPRESSED_SRGB8_ETC2);  // glInternalFormat
+			put4(GL_RGB);                    // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
+			put4(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2);  // glInternalFormat
+			put4(GL_RGBA);                                      // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
+			put4(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2);  // glInternalFormat
+			put4(GL_RGBA);                                       // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
+			put4(GL_COMPRESSED_RGBA8_ETC2_EAC);  // glInternalFormat
+			put4(GL_RGBA);                       // glBaseInternalFormat
+			break;
+		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
+			put4(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC);  // glInternalFormat
+			put4(GL_RGBA);                              // glBaseInternalFormat
+			break;
+		default:
+			break;
+	}
+
+	put4(width);   // pixelWidth
+	put4(height);  // pixelHeight
+	put4(0);       // pixelDepth
+	put4(0);       // numberOfArrayElements
+	put4(1);       // numberOfFaces
+	put4(1);       // numberOfMipmapLevels
+	put4(0);       // bytesOfKeyValueData
+
+	put4(sizeBytes);  // imageSize
+	fwrite(data, 1, sizeBytes, file);
+
+	fclose(file);
+	return ok;
+}
 
 ETC_Decoder::InputType GetInputType(const vk::Format &format)
 {
@@ -124,6 +388,8 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     , tiling(pCreateInfo->tiling)
     , usage(pCreateInfo->usage)
 {
+	WARN("Image::Image() format: %d", (int)format);
+
 	if(format.isCompressed())
 	{
 		VkImageCreateInfo compressedImageCreateInfo = *pCreateInfo;
@@ -144,6 +410,7 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 
 void Image::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	ImageUpdater::INSTANCE.remove(this);
 	if(decompressedImage)
 	{
 		vk::deallocate(decompressedImage, pAllocator);
@@ -160,8 +427,7 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	VkMemoryRequirements memoryRequirements;
 	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = getStorageSize(format.getAspects()) +
-	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
+	memoryRequirements.size = getStorageSize(format.getAspects());
 	return memoryRequirements;
 }
 
@@ -172,12 +438,20 @@ bool Image::canBindToMemory(DeviceMemory *pDeviceMemory) const
 
 void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
+	WARN("Image::bind(pDeviceMemory: %p, pMemoryOffset: 0x%x)", pDeviceMemory, (int)pMemoryOffset);
 	deviceMemory = pDeviceMemory;
 	memoryOffset = pMemoryOffset;
 	if(decompressedImage)
 	{
-		decompressedImage->deviceMemory = deviceMemory;
-		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
+		VkMemoryAllocateInfo allocateInfo = {};
+		allocateInfo.allocationSize = decompressedImage->getStorageSize(decompressedImage->format.getAspects());
+		VkDeviceMemory pDeviceMemory = {};
+		VkResult result = vk::DeviceMemory::Create(nullptr, &allocateInfo, &pDeviceMemory);
+		ASSERT(result == VK_SUCCESS);
+
+		ASSERT(vk::Cast(pDeviceMemory)->allocate() == VK_SUCCESS);
+		decompressedImage->deviceMemory = vk::Cast(pDeviceMemory);
+		decompressedImage->memoryOffset = 0;
 	}
 }
 
@@ -539,12 +813,8 @@ VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFla
 	if(usedFormat.isCompressed())
 	{
 		// When using a compressed format, we use the block as the base unit, instead of the texel
-		int blockWidth = usedFormat.blockWidth();
-		int blockHeight = usedFormat.blockHeight();
-
-		// Mip level allocations will round up to the next block for compressed texture
-		adjustedExtent.width = ((adjustedExtent.width + blockWidth - 1) / blockWidth);
-		adjustedExtent.height = ((adjustedExtent.height + blockHeight - 1) / blockHeight);
+		adjustedExtent.width /= usedFormat.blockWidth();
+		adjustedExtent.height /= usedFormat.blockHeight();
 	}
 	return adjustedExtent;
 }
@@ -671,13 +941,15 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 
 	VkExtent3D mipLevelExtent = getMipLevelExtent(aspect, mipLevel);
 	Format usedFormat = getFormat(aspect);
+	auto width = mipLevelExtent.width;
+	auto height = mipLevelExtent.height;
 	if(usedFormat.isCompressed())
 	{
-		sw::align(mipLevelExtent.width, usedFormat.blockWidth());
-		sw::align(mipLevelExtent.height, usedFormat.blockHeight());
+		width = sw::align(width, usedFormat.blockWidth());
+		height = sw::align(height, usedFormat.blockHeight());
 	}
 
-	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), true);
+	return usedFormat.sliceB(width, height, borderSize(), true);
 }
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
@@ -962,6 +1234,7 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 			case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
 			case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 				decodeETC2(subresourceRange);
+				ImageUpdater::INSTANCE.add({ this, subresourceRange, true });
 				break;
 			case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
 			case VK_FORMAT_BC1_RGB_SRGB_BLOCK:
@@ -976,6 +1249,7 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 			case VK_FORMAT_BC5_UNORM_BLOCK:
 			case VK_FORMAT_BC5_SNORM_BLOCK:
 				decodeBC(subresourceRange);
+				ImageUpdater::INSTANCE.add({ this, subresourceRange, false });
 				break;
 			default:
 				break;
@@ -1006,6 +1280,25 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 void Image::decodeETC2(const VkImageSubresourceRange &subresourceRange) const
 {
 	ASSERT(decompressedImage);
+
+	const char *type = "unknown";
+
+	switch(format)
+	{
+		case VK_FORMAT_EAC_R11_UNORM_BLOCK: type = "EAC_R11_UNORM_BLOCK"; break;
+		case VK_FORMAT_EAC_R11_SNORM_BLOCK: type = "EAC_R11_SNORM_BLOCK"; break;
+		case VK_FORMAT_EAC_R11G11_UNORM_BLOCK: type = "EAC_R11G11_UNORM_BLOCK"; break;
+		case VK_FORMAT_EAC_R11G11_SNORM_BLOCK: type = "EAC_R11G11_SNORM_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK: type = "ETC2_R8G8B8_UNORM_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK: type = "ETC2_R8G8B8_SRGB_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK: type = "ETC2_R8G8B8A1_UNORM_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK: type = "ETC2_R8G8B8A1_SRGB_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK: type = "ETC2_R8G8B8A8_UNORM_BLOCK"; break;
+		case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK: type = "ETC2_R8G8B8A8_SRGB_BLOCK"; break;
+		default:
+			break;
+	}
+	(void)type;
 
 	ETC_Decoder::InputType inputType = GetInputType(format);
 
@@ -1046,6 +1339,41 @@ void Image::decodeETC2(const VkImageSubresourceRange &subresourceRange) const
 
 				ETC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
 				                    mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, inputType);
+
+				auto width = mipLevelExtent.width;
+				auto height = mipLevelExtent.height;
+				if(false && width >= 128 && height >= 128)
+				{
+					char name[256];
+					sprintf(name, "/home/ben/tmp/imgs/%p-%s-layer-%d_mip-%d_depth-%d.bmp", this, type, (int)subresourceLayers.baseArrayLayer, (int)subresourceLayers.mipLevel, (int)depth);
+					if(true)
+					{
+						writeBMP(reinterpret_cast<RGBA *>(dest), width, height, name);
+
+						auto sizeBytes = getMipLevelSize(static_cast<VkImageAspectFlagBits>(subresourceLayers.aspectMask), subresourceLayers.mipLevel);
+
+						sprintf(name, "/home/ben/tmp/imgs/%p-%s-layer-%d_mip-%d_depth-%d-raw.bmp", this, type, (int)subresourceLayers.baseArrayLayer, (int)subresourceLayers.mipLevel, (int)depth);
+						size_t rawWidth = int(sqrt(sizeBytes / 4));
+						writeBMP(reinterpret_cast<RGBA *>(source), rawWidth, sizeBytes / rawWidth / 4, name);
+
+						sprintf(name, "/home/ben/tmp/imgs/%p-%s-layer-%d_mip-%d_depth-%d.ktx", this, type, (int)subresourceLayers.baseArrayLayer, (int)subresourceLayers.mipLevel, (int)depth);
+						writeKTX(source, sizeBytes, width, height, format, name);
+					}
+
+					printf("%s\n", name);
+					printf("source: %p\n", source);
+					printf("memoryOffset: 0x%x\n", (int)memoryOffset);
+					printf("aspectMask: %d\n", (int)subresourceRange.aspectMask);
+					printf("flags: %d\n", (int)flags);
+					printf("imageType: %d\n", (int)imageType);
+					printf("format: %d\n", (int)format);
+					printf("extent: [%d, %d, %d]\n", (int)extent.width, (int)extent.height, (int)extent.depth);
+					printf("mipLevels: %d\n", (int)mipLevels);
+					printf("arrayLayers: %d\n", (int)arrayLayers);
+					printf("samples: %d\n", (int)samples);
+					printf("tiling: %d\n", (int)tiling);
+					printf("usage: %d\n", (int)usage);
+				}
 			}
 		}
 	}

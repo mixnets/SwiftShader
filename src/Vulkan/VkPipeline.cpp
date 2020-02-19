@@ -348,7 +348,7 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 			context.sampleMask = multisampleState->pSampleMask[0];
 		}
 
-		context.alphaToCoverage = (multisampleState->alphaToCoverageEnable != VK_FALSE);
+		context.alphaToCoverage = context.sampleCount > 1 && (multisampleState->alphaToCoverageEnable != VK_FALSE);
 	}
 	else
 	{
