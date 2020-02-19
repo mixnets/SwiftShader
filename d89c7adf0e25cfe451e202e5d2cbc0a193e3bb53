@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "4c21c92f_c6ffe257",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2330,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-19T22:19:11Z",
+      "side": 1,
+      "message": "No \u0026. Clang produces an error here.",
+      "revId": "d89c7adf0e25cfe451e202e5d2cbc0a193e3bb53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "47f9979e_0c588dd2",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 4
