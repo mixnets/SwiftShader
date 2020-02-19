@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "b80f20c9_55facb5d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2345,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-19T21:46:37Z",
+      "side": 1,
+      "message": "ApplyDecorationsForIdMember only applies OpMemberDecorate from that id,index pair -- it doesn\u0027t walk into the member types, etc. Here we need decorations from the OpTypeArray.\n\nTwo separate sets of decorations is probably a good idea so we don\u0027t accidentally accept decorations that are applied in the wrong place.",
+      "parentUuid": "40eaa84c_5f521de3",
+      "range": {
+        "startLine": 2345,
+        "startChar": 1,
+        "endLine": 2345,
+        "endChar": 22
+      },
+      "revId": "d89c7adf0e25cfe451e202e5d2cbc0a193e3bb53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "30b5c7ad_aa352a4d",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 4
