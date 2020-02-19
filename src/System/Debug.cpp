@@ -98,6 +98,7 @@ bool IsUnderDebugger()
 
 enum class Level
 {
+	Record, // Never output to stderr or stdout
 	Debug,
 	Info,
 	Warn,
@@ -110,6 +111,8 @@ void logv_android(Level level, const char *msg)
 {
 	switch(level)
 	{
+		case Level::Record:
+			break;
 		case Level::Debug:
 			__android_log_write(ANDROID_LOG_DEBUG, "SwiftShader", msg);
 			break;
@@ -132,6 +135,8 @@ void logv_std(Level level, const char *msg)
 {
 	switch(level)
 	{
+		case Level::Record:
+			break;
 		case Level::Debug:
 		case Level::Info:
 			fprintf(stdout, "%s", msg);
@@ -165,7 +170,7 @@ void logv(Level level, const char *format, va_list args)
 	logv_std(level, buffer);
 #	endif
 
-	const bool traceToFile = false;
+	static bool traceToFile = false;
 	if(traceToFile)
 	{
 		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
@@ -210,7 +215,7 @@ void abort(const char *format, ...)
 	::abort();
 }
 
-void trace_assert(const char *format, ...)
+void log_assert(const char *format, ...)
 {
 	static std::atomic<bool> asserted = { false };
 	if(IsUnderDebugger() && !asserted.exchange(true))
@@ -227,7 +232,7 @@ void trace_assert(const char *format, ...)
 	{
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Fatal, format, vararg);
+		logv(Level::Record, format, vararg);
 		va_end(vararg);
 	}
 }
