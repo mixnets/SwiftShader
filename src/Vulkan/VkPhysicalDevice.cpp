@@ -462,6 +462,7 @@ bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatur
 	{
 		if((requestedFeature[i] != VK_FALSE) && (supportedFeature[i] == VK_FALSE))
 		{
+			WARN("VK_ERROR_FEATURE_NOT_PRESENT: %u", i);
 			return false;
 		}
 	}

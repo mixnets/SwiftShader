@@ -42,7 +42,9 @@ public:
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
 
 private:
-	void *memory = nullptr;
+	void *data = nullptr;
+	DeviceMemory *memory = nullptr;
+	VkDeviceSize offset = 0;
 	VkBufferCreateFlags flags = 0;
 	VkDeviceSize size = 0;
 	VkBufferUsageFlags usage = 0;

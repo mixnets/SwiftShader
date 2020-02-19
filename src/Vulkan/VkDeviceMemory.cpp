@@ -148,8 +148,7 @@ public:
 			{
 				switch(createInfo->sType)
 				{
-					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
-					{
+					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT: {
 						const auto *importInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(createInfo);
 
 						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT && importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT)
@@ -284,6 +283,7 @@ VkResult DeviceMemory::allocate()
 	if(!buffer)
 	{
 		result = external->allocate(size, &buffer);
+		memset(buffer, 0xc0, size);
 	}
 	return result;
 }

@@ -96,6 +96,9 @@ public:
 	VkDeviceMemory getExternalMemory() const;
 #endif
 
+	void decodeETC2(const VkImageSubresourceRange &subresourceRange) const;
+	void decodeBC(const VkImageSubresourceRange &subresourceRange) const;
+
 private:
 	void copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
@@ -111,8 +114,6 @@ private:
 	VkFormat getClearFormat() const;
 	void clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea);
 	int borderSize() const;
-	void decodeETC2(const VkImageSubresourceRange &subresourceRange) const;
-	void decodeBC(const VkImageSubresourceRange &subresourceRange) const;
 
 	const Device *const device = nullptr;
 	DeviceMemory *deviceMemory = nullptr;

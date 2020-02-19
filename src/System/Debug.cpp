@@ -39,7 +39,7 @@
 #endif
 
 #ifndef SWIFTSHADER_LOGGING_LEVEL
-#	define SWIFTSHADER_LOGGING_LEVEL Info
+#	define SWIFTSHADER_LOGGING_LEVEL Debug
 #endif
 
 namespace {

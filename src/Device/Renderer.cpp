@@ -313,7 +313,9 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 			data->a2c1 = float4(0.75f);
 		}
 		else
-			ASSERT(false);
+		{
+			ASSERT_MSG(false, "Unsupported alpha to coverage ms: %d", ms);
+		}
 	}
 
 	if(pixelState.occlusionEnabled)

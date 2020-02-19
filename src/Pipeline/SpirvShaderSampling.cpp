@@ -121,7 +121,8 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		uint32_t i = 0;
 		for(; i < instruction.coordinates; i++)
 		{
-			uvw[i] = in[i];
+			SIMD::Float v = in[i];
+			uvw[i] = As<SIMD::Float>(~IsNan(v) & As<SIMD::Int>(v));
 		}
 
 		if(instruction.isDref())
