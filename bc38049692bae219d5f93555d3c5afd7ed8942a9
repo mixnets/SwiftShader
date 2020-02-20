@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2c3fe31_d3e502e5",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T19:43:34Z",
+      "side": 1,
+      "message": "Log ?",
+      "range": {
+        "startLine": 101,
+        "startChar": 1,
+        "endLine": 101,
+        "endChar": 7
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f82e9a27_39e16d7e",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T19:43:34Z",
+      "side": 1,
+      "message": "nit: This is pre-existing, but I find this confusing. Asserts what?\n\nMaybe this should be called break or trap?",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 49
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
