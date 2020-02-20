@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2cfc4756_e52d5a93",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T14:30:42Z",
+      "side": 1,
+      "message": "The \u0027move\u0027, hyphen and newline here really confused me. I thought you had a typo.\n\nHow about: \"adjusts ESP by the stack amount specified in EAX\"",
+      "range": {
+        "startLine": 412,
+        "startChar": 58,
+        "endLine": 413,
+        "endChar": 11
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4b7681f_f7fbd1f4",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T14:30:42Z",
+      "side": 1,
+      "message": "Might be worth mentioning that we\u0027re mirroring the behaviour of MSVC here, and not using the 8k limit claimed by the docs.",
+      "range": {
+        "startLine": 767,
+        "startChar": 24,
+        "endLine": 767,
+        "endChar": 28
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b98a013c_754eddf0",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86Base.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T14:30:42Z",
+      "side": 1,
+      "message": "Formatting seems different from functions above?",
+      "range": {
+        "startLine": 381,
+        "startChar": 2,
+        "endLine": 381,
+        "endChar": 6
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
