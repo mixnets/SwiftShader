@@ -15,6 +15,7 @@
 #include "VkDeviceMemory.hpp"
 #include "VkBuffer.hpp"
 #include "VkImage.hpp"
+#include "VkStringify.hpp"
 
 #include "VkConfig.h"
 
@@ -204,7 +205,61 @@ private:
 };
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-#	if defined(__linux__) || defined(__ANDROID__)
+
+// Helper struct to parse the VkMemoryAllocateInfo.pNext chain and
+// extract relevant information related to the handle type supported
+// by this DeviceMemory;:ExternalBase subclass.
+struct OpaqueFdAllocateInfo
+{
+	bool importFd = false;
+	bool exportFd = false;
+	int fd = -1;
+
+	OpaqueFdAllocateInfo() = default;
+
+	// Parse the VkMemoryAllocateInfo.pNext chain to initialize an OpaqueFdAllocateInfo.
+	OpaqueFdAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+	{
+		const auto *createInfo = reinterpret_cast<const VkBaseInStructure *>(pAllocateInfo->pNext);
+		while(createInfo)
+		{
+			switch(createInfo->sType)
+			{
+				case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
+				{
+					const auto *importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(createInfo);
+
+					if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+					{
+						UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(importInfo->handleType));
+					}
+					importFd = true;
+					fd = importInfo->fd;
+				}
+				break;
+				case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
+				{
+					const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
+
+					if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+					{
+						UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
+					}
+					exportFd = true;
+				}
+				break;
+
+				default:
+					WARN("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+			}
+			createInfo = createInfo->pNext;
+		}
+	}
+};
+
+#	if defined(__APPLE__) || defined(USE_POSIX_EXTERNAL_MEMORY)
+#		include "VkDeviceMemoryExternalPosix.hpp"
+#	elif defined(__linux__) || defined(__ANDROID__)
 #		include "VkDeviceMemoryExternalLinux.hpp"
 #	else
 #		error "Missing VK_KHR_external_memory_fd implementation for this platform!"
