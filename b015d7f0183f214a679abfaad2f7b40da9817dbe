@@ -39,6 +39,48 @@
       "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a01e8432_43c1f226",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T18:34:25Z",
+      "side": 1,
+      "message": "I want to avoid this becoming something more than a temporary workaround.",
+      "parentUuid": "46c7e84d_2ed8e6cc",
+      "range": {
+        "startLine": 689,
+        "startChar": 7,
+        "endLine": 689,
+        "endChar": 29
+      },
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "163d593a_83860f73",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T18:34:25Z",
+      "side": 1,
+      "message": "Comment removed by: Nicolas Capens; Reason: Discusses potentially sensitive future plans",
+      "parentUuid": "1a9f6c15_3b524dca",
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
