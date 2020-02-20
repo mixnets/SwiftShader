@@ -93,6 +93,30 @@
       "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12485336_11fc28be",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T20:36:51Z",
+      "side": 1,
+      "message": "Yeah, I\u0027ve often struggled with this one, because we use \"assert\" to mean \"assert this thing is true\", but also to talk about when the assert fails, like \"it asserted during this run\", which is confusing when you think about it, since passing an assert means we\u0027ve asserted that it\u0027s true! Personally, I say \"trips the assert\", which I suppose is very close to \"traps\".",
+      "parentUuid": "cee53987_47e32b04",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 49
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
