@@ -69,6 +69,30 @@
       "revId": "90c01e454f7ca0a53bfeb1cab4c30671993e94b2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8de8b433_eecdac38",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-20T16:08:44Z",
+      "side": 1,
+      "message": "I never had any confirmation that this was causing any issue, it was preemptively reverted to avoid adding complexity to an already existing failed roll, I\u0027ll just try to land it again and see if it actually causes any issues. We checked Windows and Linux locally and all is good.",
+      "parentUuid": "f8b58d83_dba363e6",
+      "range": {
+        "startLine": 11,
+        "startChar": 19,
+        "endLine": 11,
+        "endChar": 25
+      },
+      "revId": "90c01e454f7ca0a53bfeb1cab4c30671993e94b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
