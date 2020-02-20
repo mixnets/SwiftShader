@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1808260_b4ad0423",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-20T19:17:58Z",
+      "side": 1,
+      "message": "Added null pointer check",
+      "range": {
+        "startLine": 755,
+        "startChar": 1,
+        "endLine": 755,
+        "endChar": 16
+      },
+      "revId": "5f33d6c37ddf4d4c81eed5bcd3a6e93bf9508875",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
