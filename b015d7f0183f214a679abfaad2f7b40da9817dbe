@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46c7e84d_2ed8e6cc",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T18:27:43Z",
+      "side": 1,
+      "message": "I think we should add a CMake option for JIT_IN_SEPARATE_THREAD, so that we can easily test this. It could come in handy.",
+      "range": {
+        "startLine": 689,
+        "startChar": 7,
+        "endLine": 689,
+        "endChar": 29
+      },
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a9f6c15_3b524dca",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T18:27:43Z",
+      "side": 1,
+      "message": "I think Ben mentioned this in chat yesterday, but we should do this for Coroutines as well. Also, we should allow this for Subzero too.\n\nI have another suggestion on how to do this:\n* In Reactor.hpp, add an impl::acquireRoutine and an impl::acquireCoroutine, both of which accept a Nucleus* and forward to the respective call on this instance.\n* In these impl versions, put this #ifdef JIT_IN_SEPARATE_THREAD thing.\n\nThis way, we get this feature for both backends, and for both types of routines, without modifying the backend code for acquireRoutine/Coroutine.",
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
