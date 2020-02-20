@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc6fc914_0710d60d",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T16:12:32Z",
+      "side": 1,
+      "message": "nit: This reads as if it always emits a stack probe call. Can the stack size check be moved up here, or the name of this function clarified?\n\nDoesn\u0027t need to happen in this CL.",
+      "range": {
+        "startLine": 1202,
+        "startChar": 4,
+        "endLine": 1202,
+        "endChar": 39
+      },
+      "revId": "428adf47107b392711a4b6ae00d39aa9479e8e6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
