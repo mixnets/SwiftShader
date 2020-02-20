@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fc04dfc0_4cdf862c",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T16:03:06Z",
+      "side": 1,
+      "message": "Done. Yes, was clearer before clang-format did that ;)",
+      "parentUuid": "2cfc4756_e52d5a93",
+      "range": {
+        "startLine": 412,
+        "startChar": 58,
+        "endLine": 413,
+        "endChar": 11
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f4b7681f_f7fbd1f4",
         "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "8bd4ca45_41d65633",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T16:03:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4b7681f_f7fbd1f4",
+      "range": {
+        "startLine": 767,
+        "startChar": 24,
+        "endLine": 767,
+        "endChar": 28
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b98a013c_754eddf0",
         "filename": "third_party/subzero/src/IceTargetLoweringX86Base.h",
         "patchSetId": 1
@@ -68,6 +116,30 @@
       "revId": "d28147728bf265c49523281eda84bc2173117e22",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c6a757c_b53168d7",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86Base.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T16:03:06Z",
+      "side": 1,
+      "message": "Done. You\u0027ve got a good eye. The problem is that I have to manually format these modified sections. I need to make a separate commit where I format all Subzero source with a default .clang-format file using LLVM style.",
+      "parentUuid": "b98a013c_754eddf0",
+      "range": {
+        "startLine": 381,
+        "startChar": 2,
+        "endLine": 381,
+        "endChar": 6
+      },
+      "revId": "d28147728bf265c49523281eda84bc2173117e22",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
