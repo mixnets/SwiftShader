@@ -203,7 +203,7 @@ public:
 private:
 	void resetState();
 	template<typename T, typename... Args>
-	void addCommand(Args &&... args);
+	void addCommand(Args &&...args);
 
 	enum State
 	{
