@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"../cause"
+	"../git"
 	"../shell"
 	"../testlist"
 	"../util"
@@ -55,6 +56,7 @@ var (
 
 // Config contains the inputs required for running dEQP on a group of test lists.
 type Config struct {
+	Commit           git.Hash
 	ExeEgl           string
 	ExeGles2         string
 	ExeGles3         string
@@ -214,6 +216,7 @@ func (c *Config) Run() (*Results, error) {
 				log.Printf("Ran %d/%d tests (%v%%). Estimated completion in %v.\n",
 					i, numTests, util.Percent(i, numTests),
 					(time.Since(start)/time.Duration(i))*time.Duration(remaining))
+				log.Printf("Running tests for '%s'\n", c.Commit)
 			}
 		}
 		close(finished)

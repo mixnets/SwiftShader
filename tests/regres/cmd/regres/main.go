@@ -883,6 +883,7 @@ func (t *test) run(testLists testlist.Lists, d deqpBuild) (*deqp.Results, error)
 	}
 
 	config := deqp.Config{
+		Commit:    t.commit,
 		ExeEgl:    filepath.Join(d.path, "build", "modules", "egl", "deqp-egl"),
 		ExeGles2:  filepath.Join(d.path, "build", "modules", "gles2", "deqp-gles2"),
 		ExeGles3:  filepath.Join(d.path, "build", "modules", "gles3", "deqp-gles3"),
