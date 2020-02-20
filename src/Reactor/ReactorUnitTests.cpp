@@ -242,7 +242,15 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 		Short4 s4(-1, -2, -3, -4);
 		UShort us(1);
 		UShort4 us4(1, 2, 3, 4);
-		Float f(1);
+		Float f_0(1);
+		Float f_1(1.0f);
+		Float f_2(1.1f);
+		Float f_3(0.99999f);
+		Float f_4(12345.12345f);
+		Float f_5(-12345.12345f);
+		Float f_6(FLT_MAX);
+		Float f_7(-FLT_MAX);
+		Float f_8(0);
 		Float4 f4(1, 2, 3, 4);
 		Long l(i);
 		Pointer<Int> pi = nullptr;
@@ -261,7 +269,15 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 		RR_WATCH(s4);
 		RR_WATCH(us);
 		RR_WATCH(us4);
-		RR_WATCH(f);
+		RR_WATCH(f_0);
+		RR_WATCH(f_1);
+		RR_WATCH(f_2);
+		RR_WATCH(f_3);
+		RR_WATCH(f_4);
+		RR_WATCH(f_5);
+		RR_WATCH(f_6);
+		RR_WATCH(f_7);
+		RR_WATCH(f_8);
 		RR_WATCH(f4);
 		RR_WATCH(l);
 		RR_WATCH(pi);
@@ -287,7 +303,15 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 		"  s4: [-1, -2, -3, -4]",
 		"  us: 1",
 		"  us4: [1, 2, 3, 4]",
-		"  f: 1.000000",
+		"  f_0: 1.000000",
+		"  f_1: 1.000000",
+		"  f_2: 1.100000",
+		"  f_3: 0.999990",
+		"  f_4: 12345.123047",
+		"  f_5: -12345.123047",
+		"  f_6: 340282346638528859811704183484516925440.000000",
+		"  f_7: -340282346638528859811704183484516925440.000000",
+		"  f_8: 0.000000",
 		"  f4: [1.000000, 2.000000, 3.000000, 4.000000]",
 		"  l: -1",
 		piNullptr,
