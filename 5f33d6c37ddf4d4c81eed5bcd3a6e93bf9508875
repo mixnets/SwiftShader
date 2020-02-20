@@ -22,6 +22,30 @@
       "revId": "5f33d6c37ddf4d4c81eed5bcd3a6e93bf9508875",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed98b8e6_127fb236",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T19:59:05Z",
+      "side": 1,
+      "message": "I\u0027m curious which part of the spec allows for this, or whether we inadvertently continue PixelRoutine creation with a SPIR-V shader that failed to compile.\n\nIf this is intended behavior, we should look into creating a null shader object so we don\u0027t run into these crashes any more and the code doesn\u0027t need pointer checks.",
+      "parentUuid": "d1808260_b4ad0423",
+      "range": {
+        "startLine": 755,
+        "startChar": 1,
+        "endLine": 755,
+        "endChar": 16
+      },
+      "revId": "5f33d6c37ddf4d4c81eed5bcd3a6e93bf9508875",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
