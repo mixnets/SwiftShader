@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "f15f8709_554f6a41",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T22:03:28Z",
+      "side": 1,
+      "message": "That could work. If everything looks clean at Debug log level but an app still misbehaves, the info produced by the Verbose level, such as extension structs it\u0027s using, can be useful both as log-only or printed to stderr/out as well.\n\nHow about we have a control knob for which level we output to stderr/stdout, and one for which level gets printed to the logs? Or would it be too confusing to see differences between the two?",
+      "parentUuid": "bcdb2e7a_4df2148e",
+      "range": {
+        "startLine": 101,
+        "startChar": 1,
+        "endLine": 101,
+        "endChar": 7
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f82e9a27_39e16d7e",
         "filename": "src/System/Debug.hpp",
         "patchSetId": 6
