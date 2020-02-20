@@ -41,4 +41,4 @@ cd build
 cmake .. "-DREACTOR_ENABLE_PRINT=1"
 cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
 cd ..
-build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
+build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print* --gtest_repeat=100
