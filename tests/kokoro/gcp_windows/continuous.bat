@@ -51,5 +51,5 @@ cd %SRC%
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 SET SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG=1
 
-build\Debug\ReactorUnitTests.exe --gtest_filter=ReactorUnitTests.Print*
+build\Debug\ReactorUnitTests.exe --gtest_filter=ReactorUnitTests.Print* --gtest_repeat=100
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
