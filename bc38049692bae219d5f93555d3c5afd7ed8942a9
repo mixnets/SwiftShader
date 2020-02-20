@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bcdb2e7a_4df2148e",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T20:19:00Z",
+      "side": 1,
+      "message": "This seems like an orthogonal flag to the level. There\u0027s usually one level less critical to Debug, which is Verbose.\nI\u0027d suggest using Verbose and not special casing it. Debug can be the normal lowest filter level, and we can re-enable the logging of these (if we want them) by enabling Verbose mode.",
+      "parentUuid": "d2c3fe31_d3e502e5",
+      "range": {
+        "startLine": 101,
+        "startChar": 1,
+        "endLine": 101,
+        "endChar": 7
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f82e9a27_39e16d7e",
         "filename": "src/System/Debug.hpp",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cee53987_47e32b04",
+        "filename": "src/System/Debug.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T20:19:00Z",
+      "side": 1,
+      "message": "I agree. Assert is usually a verb to verify some condition. We\u0027re not testing anything here.\nI\u0027d second \u0027trap\u0027",
+      "parentUuid": "f82e9a27_39e16d7e",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 49
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
