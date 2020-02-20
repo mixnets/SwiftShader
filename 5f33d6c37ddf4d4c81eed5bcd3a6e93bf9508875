@@ -46,6 +46,30 @@
       "revId": "5f33d6c37ddf4d4c81eed5bcd3a6e93bf9508875",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38d84316_f2390751",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-02-20T20:00:51Z",
+      "side": 1,
+      "message": "We\u0027re absolutely allowed to create pipelines with only a vertex shader. This is normal for depth-only passes etc.",
+      "parentUuid": "ed98b8e6_127fb236",
+      "range": {
+        "startLine": 755,
+        "startChar": 1,
+        "endLine": 755,
+        "endChar": 16
+      },
+      "revId": "5f33d6c37ddf4d4c81eed5bcd3a6e93bf9508875",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
