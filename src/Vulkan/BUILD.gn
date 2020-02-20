@@ -52,6 +52,11 @@ config("swiftshader_libvulkan_private_config") {
   }
 }
 
+# TODO(digit): Remove this once debugging is complete.
+if (is_linux) {
+  _use_posix_external_memory = true
+}
+
 swiftshader_source_set("swiftshader_libvulkan_headers") {
   sources = [
     "Version.h",
@@ -94,6 +99,14 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
     sources += [
       "VkDeviceMemoryExternalLinux.hpp",
       "VkSemaphoreExternalLinux.hpp",
+    ]
+    if (_use_posix_external_memory) {
+      sources -= [ "VkDeviceMemoryExternalLinux.hpp" ]
+      sources += [ "VkDeviceMemoryExternalPosix.hpp" ]
+    }
+  } else if (is_mac) {
+    sources += [
+      "VkDeviceMemoryExternalPosix.hpp",
     ]
   } else if (is_fuchsia) {
     sources += [ "VkSemaphoreExternalFuchsia.hpp" ]
@@ -160,6 +173,10 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     ]
     ldflags = [ "-Wl,--version-script=" +
                 rebase_path("vk_swiftshader.lds", root_build_dir) ]
+  }
+
+  if (is_linux && _use_posix_external_memory) {
+    defines = [ "USE_POSIX_EXTERNAL_MEMORY=1" ]
   }
 
   deps = [
