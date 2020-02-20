@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ea872bf6_5e23ec63",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T16:21:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f37105c3_c07ab238",
+      "range": {
+        "startLine": 12,
+        "startChar": 5,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "428adf47107b392711a4b6ae00d39aa9479e8e6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fc6fc914_0710d60d",
         "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2020-02-20T16:12:32Z",
       "side": 1,
       "message": "nit: This reads as if it always emits a stack probe call. Can the stack size check be moved up here, or the name of this function clarified?\n\nDoesn\u0027t need to happen in this CL.",
+      "range": {
+        "startLine": 1202,
+        "startChar": 4,
+        "endLine": 1202,
+        "endChar": 39
+      },
+      "revId": "428adf47107b392711a4b6ae00d39aa9479e8e6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b9eff424_6a5fe9b5",
+        "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T16:21:45Z",
+      "side": 1,
+      "message": "The stack size check should happen inside, as it\u0027s platform/target-specific. Right now, I\u0027m checking the \u003e\u003d 4K in both, but MS docs say it should be 8K on 64-bit, but I mirror what their own compiler does (based on Ben\u0027s compiler explorer investigation).\n\nI agree that the name doesn\u0027t say that it might do nothing. I always have a hard time with this:\n* Maybe make it return a bool saying that it did something. \n* Name it \"maybeEmitStackProbe\", \"conditionalEmitStackProbe\" (Unreal Engine uses this convention), \"emitStackProbeIfNecessary\", \"emitStackProbeIfNeeded\"...\n\nI think I\u0027ll leave it for now, though, as as you said, we can revisit in the future.",
+      "parentUuid": "fc6fc914_0710d60d",
       "range": {
         "startLine": 1202,
         "startChar": 4,
