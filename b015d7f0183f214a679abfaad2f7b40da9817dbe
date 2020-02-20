@@ -81,6 +81,48 @@
       "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23be3e04_2c1be7c7",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T18:42:42Z",
+      "side": 1,
+      "message": "If that\u0027s the case, we should create a Buganizer for replacing this, and add a TODO here. I might also suggest changing JIT_IN_SEPARATE_THREAD to something that makes it more clear that it\u0027s temporary/hack, like WORKAROUND_SMALL_STACKSIZE or something.",
+      "parentUuid": "a01e8432_43c1f226",
+      "range": {
+        "startLine": 689,
+        "startChar": 7,
+        "endLine": 689,
+        "endChar": 29
+      },
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c7a8d17_292db0ba",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-02-20T18:42:42Z",
+      "side": 1,
+      "message": "Comment removed by: Nicolas Capens",
+      "parentUuid": "163d593a_83860f73",
+      "revId": "b015d7f0183f214a679abfaad2f7b40da9817dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
