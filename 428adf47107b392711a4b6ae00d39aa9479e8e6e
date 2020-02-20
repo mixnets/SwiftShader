@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "f37105c3_c07ab238",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-20T16:13:11Z",
+      "side": 1,
+      "message": "swiftshader:25",
+      "range": {
+        "startLine": 12,
+        "startChar": 5,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "428adf47107b392711a4b6ae00d39aa9479e8e6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fc6fc914_0710d60d",
         "filename": "third_party/subzero/src/IceTargetLoweringX86BaseImpl.h",
         "patchSetId": 2
