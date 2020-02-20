@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "7eec2ae9_4ddfada6",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-20T22:29:05Z",
+      "side": 1,
+      "message": "\u003e How about we have a control knob for which level we output to stderr/stdout, and one for which level gets printed to the logs? \n\nThat could work. Given that the only way we currently write to logs is to change the:\n\n   const bool traceToFile \u003d false;\n\nLine with either a code edit or a debugger, I don\u0027t see why this couldn\u0027t be changed to:\n\n   const Level traceToFileLevel \u003d Level::Disabled;\n\nAnd we add `Disabled` as a level one higher than Fatal. Then you get both your knobs.",
+      "parentUuid": "f15f8709_554f6a41",
+      "range": {
+        "startLine": 101,
+        "startChar": 1,
+        "endLine": 101,
+        "endChar": 7
+      },
+      "revId": "bc38049692bae219d5f93555d3c5afd7ed8942a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f82e9a27_39e16d7e",
         "filename": "src/System/Debug.hpp",
         "patchSetId": 6
