@@ -75,6 +75,12 @@ int GetBCn(const vk::Format &format)
 		case VK_FORMAT_BC5_UNORM_BLOCK:
 		case VK_FORMAT_BC5_SNORM_BLOCK:
 			return 5;
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+			return 6;
+		case VK_FORMAT_BC7_UNORM_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+			return 7;
 		default:
 			UNSUPPORTED("format: %d", int(format));
 			return 0;
@@ -83,7 +89,7 @@ int GetBCn(const vk::Format &format)
 
 // Returns true for BC1 if we have an RGB format, false for RGBA
 // Returns true for BC4 and BC5 if we have an unsigned format, false for signed
-// Ignored by BC2 and BC3
+// Ignored by BC2, BC3, BC6 and BC7
 bool GetNoAlphaOrUnsigned(const vk::Format &format)
 {
 	switch(format)
@@ -101,6 +107,10 @@ bool GetNoAlphaOrUnsigned(const vk::Format &format)
 		case VK_FORMAT_BC3_SRGB_BLOCK:
 		case VK_FORMAT_BC4_SNORM_BLOCK:
 		case VK_FORMAT_BC5_SNORM_BLOCK:
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+		case VK_FORMAT_BC7_UNORM_BLOCK:
 			return false;
 		default:
 			UNSUPPORTED("format: %d", int(format));
@@ -673,8 +683,8 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 	Format usedFormat = getFormat(aspect);
 	if(usedFormat.isCompressed())
 	{
-		sw::align(mipLevelExtent.width, usedFormat.blockWidth());
-		sw::align(mipLevelExtent.height, usedFormat.blockHeight());
+		mipLevelExtent.width = sw::align(mipLevelExtent.width, usedFormat.blockWidth());
+		mipLevelExtent.height = sw::align(mipLevelExtent.height, usedFormat.blockHeight());
 	}
 
 	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), true);
@@ -975,6 +985,10 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 			case VK_FORMAT_BC4_SNORM_BLOCK:
 			case VK_FORMAT_BC5_UNORM_BLOCK:
 			case VK_FORMAT_BC5_SNORM_BLOCK:
+			case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+			case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+			case VK_FORMAT_BC7_UNORM_BLOCK:
+			case VK_FORMAT_BC7_SRGB_BLOCK:
 				decodeBC(subresourceRange);
 				break;
 			default:
@@ -1045,7 +1059,7 @@ void Image::decodeETC2(const VkImageSubresourceRange &subresourceRange) const
 				}
 
 				ETC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
-				                    mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, inputType);
+				                    pitchB, bytes, inputType);
 			}
 		}
 	}
@@ -1078,7 +1092,7 @@ void Image::decodeBC(const VkImageSubresourceRange &subresourceRange) const
 				uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresourceLayers));
 
 				BC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
-				                   mipLevelExtent.width, mipLevelExtent.height, pitchB, bytes, n, noAlphaU);
+				                   pitchB, bytes, n, noAlphaU);
 			}
 		}
 	}

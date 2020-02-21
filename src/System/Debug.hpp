@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <inttypes.h>  // PRIu64, etc
 #include <cctype>
 #include <string>
 
