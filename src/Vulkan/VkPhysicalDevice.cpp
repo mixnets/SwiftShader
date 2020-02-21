@@ -77,7 +77,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_TRUE,   // samplerAnisotropy
 		VK_TRUE,   // textureCompressionETC2
 		VK_FALSE,  // textureCompressionASTC_LDR
-		VK_FALSE,  // textureCompressionBC
+		VK_TRUE,   // textureCompressionBC
 		VK_FALSE,  // occlusionQueryPrecise
 		VK_FALSE,  // pipelineStatisticsQuery
 		VK_TRUE,   // vertexPipelineStoresAndAtomics
@@ -517,6 +517,10 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties *pFor
 		case VK_FORMAT_BC4_SNORM_BLOCK:
 		case VK_FORMAT_BC5_UNORM_BLOCK:
 		case VK_FORMAT_BC5_SNORM_BLOCK:
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+		case VK_FORMAT_BC7_UNORM_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
 		case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
 		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
 		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
