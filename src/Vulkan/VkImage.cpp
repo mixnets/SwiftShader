@@ -75,6 +75,12 @@ int GetBCn(const vk::Format &format)
 		case VK_FORMAT_BC5_UNORM_BLOCK:
 		case VK_FORMAT_BC5_SNORM_BLOCK:
 			return 5;
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+			return 6;
+		case VK_FORMAT_BC7_UNORM_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+			return 7;
 		default:
 			UNSUPPORTED("format: %d", int(format));
 			return 0;
@@ -83,7 +89,7 @@ int GetBCn(const vk::Format &format)
 
 // Returns true for BC1 if we have an RGB format, false for RGBA
 // Returns true for BC4 and BC5 if we have an unsigned format, false for signed
-// Ignored by BC2 and BC3
+// Ignored by BC2, BC3, BC6 and BC7
 bool GetNoAlphaOrUnsigned(const vk::Format &format)
 {
 	switch(format)
@@ -101,6 +107,10 @@ bool GetNoAlphaOrUnsigned(const vk::Format &format)
 		case VK_FORMAT_BC3_SRGB_BLOCK:
 		case VK_FORMAT_BC4_SNORM_BLOCK:
 		case VK_FORMAT_BC5_SNORM_BLOCK:
+		case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+		case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+		case VK_FORMAT_BC7_SRGB_BLOCK:
+		case VK_FORMAT_BC7_UNORM_BLOCK:
 			return false;
 		default:
 			UNSUPPORTED("format: %d", int(format));
@@ -468,6 +478,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 		{
 			ASSERT(((bufferIsSource ? dstMemory : srcMemory) + copySize) < end());
 			ASSERT(((bufferIsSource ? srcMemory : dstMemory) + copySize) < buffer->end());
+			printf("memcpy(%p. %p, 0x%" PRIx64 ")\n", dstMemory, srcMemory, copySize);
 			memcpy(dstMemory, srcMemory, copySize);
 		}
 		else if(isEntireLine)  // Copy plane by plane
@@ -478,6 +489,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 			{
 				ASSERT(((bufferIsSource ? dstPlaneMemory : srcPlaneMemory) + copySize) < end());
 				ASSERT(((bufferIsSource ? srcPlaneMemory : dstPlaneMemory) + copySize) < buffer->end());
+				printf("memcpy(%p. %p, 0x%" PRIx64 ")\n", dstPlaneMemory, srcPlaneMemory, copySize);
 				memcpy(dstPlaneMemory, srcPlaneMemory, copySize);
 				srcPlaneMemory += srcSlicePitchBytes;
 				dstPlaneMemory += dstSlicePitchBytes;
@@ -495,6 +507,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 				{
 					ASSERT(((bufferIsSource ? dstPlaneMemory : srcPlaneMemory) + copySize) < end());
 					ASSERT(((bufferIsSource ? srcPlaneMemory : dstPlaneMemory) + copySize) < buffer->end());
+					printf("memcpy(%p. %p, 0x%" PRIx64 ")\n", dstPlaneMemory, srcPlaneMemory, copySize);
 					memcpy(dstPlaneMemory, srcPlaneMemory, copySize);
 					srcPlaneMemory += srcRowPitchBytes;
 					dstPlaneMemory += dstRowPitchBytes;
@@ -975,6 +988,10 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 			case VK_FORMAT_BC4_SNORM_BLOCK:
 			case VK_FORMAT_BC5_UNORM_BLOCK:
 			case VK_FORMAT_BC5_SNORM_BLOCK:
+			case VK_FORMAT_BC6H_UFLOAT_BLOCK:
+			case VK_FORMAT_BC6H_SFLOAT_BLOCK:
+			case VK_FORMAT_BC7_UNORM_BLOCK:
+			case VK_FORMAT_BC7_SRGB_BLOCK:
 				decodeBC(subresourceRange);
 				break;
 			default:
