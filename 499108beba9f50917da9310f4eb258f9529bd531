@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13ee99fe_b42550a2",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-23T05:10:28Z",
+      "side": 1,
+      "message": "Second time in a row this fails. Needs investigation.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "499108beba9f50917da9310f4eb258f9529bd531",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
