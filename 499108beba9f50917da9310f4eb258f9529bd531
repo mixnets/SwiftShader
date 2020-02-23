@@ -22,6 +22,30 @@
       "revId": "499108beba9f50917da9310f4eb258f9529bd531",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b46e64b_40ee762d",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-23T20:34:43Z",
+      "side": 1,
+      "message": "Oh, this might coincide with switching Regres to the MON machine. Possibly due to a newer Vulkan loader. Possibly b/150018142",
+      "parentUuid": "13ee99fe_b42550a2",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "499108beba9f50917da9310f4eb258f9529bd531",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
