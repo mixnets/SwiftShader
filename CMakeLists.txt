@@ -550,9 +550,48 @@ if(REACTOR_EMIT_PRINT_LOCATION)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_EMIT_PRINT_LOCATION")
 endif()
 
+<<<<<<< HEAD   (214ec3 Fix Wrange-loop-analysis warnings in swiftshader.)
 if(REACTOR_EMIT_DEBUG_INFO)
     message(WARNING "REACTOR_EMIT_DEBUG_INFO is enabled. This will likely affect performance.")
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
+=======
+set(SPIRV_LIBRARIES "-lSPIRV-Tools-opt -lSPIRV-Tools -lSPIRV-Tools-link")
+set(SPIRV_SHARED_LIBRARIES "-lSPIRV-Tools-shared")
+
+# Build pkg-config file
+# Use a first-class target so it's regenerated when relevant files are updated.
+add_custom_target(spirv-tools-pkg-config ALL
+        COMMAND ${CMAKE_COMMAND}
+                      -DCHANGES_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CHANGES
+                      -DTEMPLATE_FILE=${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools.pc.in
+                      -DOUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools.pc
+                      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+                      -DCMAKE_INSTALL_LIBDIR=${CMAKE_INSTALL_LIBDIR}
+                      -DCMAKE_INSTALL_INCLUDEDIR=${CMAKE_INSTALL_INCLUDEDIR}
+                      -DSPIRV_LIBRARIES=${SPIRV_LIBRARIES}
+                      -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake
+        DEPENDS "CHANGES" "cmake/SPIRV-Tools.pc.in" "cmake/write_pkg_config.cmake")
+add_custom_target(spirv-tools-shared-pkg-config ALL
+        COMMAND ${CMAKE_COMMAND}
+                      -DCHANGES_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CHANGES
+                      -DTEMPLATE_FILE=${CMAKE_CURRENT_SOURCE_DIR}/cmake/SPIRV-Tools-shared.pc.in
+                      -DOUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools-shared.pc
+                      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+                      -DCMAKE_INSTALL_LIBDIR=${CMAKE_INSTALL_LIBDIR}
+                      -DCMAKE_INSTALL_INCLUDEDIR=${CMAKE_INSTALL_INCLUDEDIR}
+                      -DSPIRV_SHARED_LIBRARIES=${SPIRV_SHARED_LIBRARIES}
+                      -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/write_pkg_config.cmake
+        DEPENDS "CHANGES" "cmake/SPIRV-Tools-shared.pc.in" "cmake/write_pkg_config.cmake")
+
+# Install pkg-config file
+if (ENABLE_SPIRV_TOOLS_INSTALL)
+  install(
+    FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools.pc
+      ${CMAKE_CURRENT_BINARY_DIR}/SPIRV-Tools-shared.pc
+    DESTINATION
+      ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+>>>>>>> BRANCH (dc6b76 Squashed 'third_party/SPIRV-Tools/' changes from 8aa423930..)
 endif()
 
 if(REACTOR_ENABLE_PRINT)
