@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9264b289_8fe5879c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-24T19:34:54Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "30dcaf08_c88db926",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 29
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c0ee75c5_4d440c2f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66511ba7_862ac1b4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-24T19:34:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0ee75c5_4d440c2f",
+      "range": {
+        "startLine": 11,
+        "startChar": 16,
+        "endLine": 11,
+        "endChar": 24
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "b940eb28_2f25111b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-24T19:34:54Z",
+      "side": 1,
+      "message": "I wrote the decoder and manually ripped out unused functions and structs. I assumed that this was probably a one time task and that, from this point, we\u0027d only ever need to cherry pick fixes if we started failing tests.",
+      "parentUuid": "79fe6bea_8c086194",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21d8e29d_7c27c753",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6eed06ec_b171c512",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-24T19:34:54Z",
+      "side": 1,
+      "message": "The upstream repo has its own MACRO for printing errors, so I changed it to ours. I can change it to an assert if you don\u0027t want me to add the dependency, but I wouldn\u0027t upstream that change.",
+      "parentUuid": "21d8e29d_7c27c753",
+      "range": {
+        "startLine": 15,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 31
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
