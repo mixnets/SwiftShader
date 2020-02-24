@@ -133,8 +133,13 @@ inline int ceilInt4(int x)
 	!!((x)&0xFFFFFFFE) + \
 	!!((x)&0xFFFFFFFF))
 
-#define MAX(x, y) ((x) > (y) ? (x) : (y))
-#define MIN(x, y) ((x) < (y) ? (x) : (y))
+#ifndef MAX
+#	define MAX(x, y) ((x) > (y) ? (x) : (y))
+#endif
+
+#ifndef MIN
+#	define MIN(x, y) ((x) < (y) ? (x) : (y))
+#endif
 
 inline unsigned long log2i(int x)
 {
