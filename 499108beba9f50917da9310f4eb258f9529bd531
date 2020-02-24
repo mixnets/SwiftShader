@@ -46,6 +46,30 @@
       "revId": "499108beba9f50917da9310f4eb258f9529bd531",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26820a4b_1d889b32",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-24T14:22:47Z",
+      "side": 1,
+      "message": "Test case \u0027dEQP-VK.api.version_check.version\u0027..\n  Fail (This version of CTS does not support a Vulkan instance with version 1.2.132)\n\nDefinitely Vulkan Loader related since this doesn\u0027t happen with the system\u0027s default Loader. Since SwiftShader isn\u0027t 1.2 yet this is probably my NVIDIA driver being presented to dEQP for info collection. Anyway, this will go away with https://swiftshader-review.googlesource.com/c/SwiftShader/+/41329",
+      "parentUuid": "9b46e64b_40ee762d",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "499108beba9f50917da9310f4eb258f9529bd531",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
