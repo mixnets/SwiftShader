@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30dcaf08_c88db926",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-24T17:37:02Z",
+      "side": 1,
+      "message": "Note that the OpenGL ES 3.2 spec states \"Only the ASTC LDR Profile modes are supported by OpenGL ES\". I\u0027m not sure where we might encounter an actual need for HDR. Since it\u0027s easy to enable later when we have the decoder code in place already, let\u0027s remove it from the Vulkan supported formats for now.",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 29
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0ee75c5_4d440c2f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-24T17:37:02Z",
+      "side": 1,
+      "message": "Please mention the URL and the git hash that was used. Can help with future updates.",
+      "range": {
+        "startLine": 11,
+        "startChar": 16,
+        "endLine": 11,
+        "endChar": 24
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79fe6bea_8c086194",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-24T17:37:02Z",
+      "side": 1,
+      "message": "I assume that was trivial? If not, please add some details so we can repeat this for future updates.",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21d8e29d_7c27c753",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-24T17:37:02Z",
+      "side": 1,
+      "message": "That makes it depend on our headers? Might be better to just use assert(false) and make that change upstream so it doesn\u0027t get overwritten when the update this.",
+      "range": {
+        "startLine": 15,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 31
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
