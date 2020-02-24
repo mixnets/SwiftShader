@@ -606,6 +606,7 @@ cc_defaults {
         "Device/*.cpp",
         "Pipeline/*.cpp",
         "Vulkan/*.cpp",
+        "external/swiftshader/third_party/astc-encoder/Source/*.cpp",
     ],
 
     static_libs: [
@@ -614,6 +615,7 @@ cc_defaults {
     ],
 
     include_dirs: [
+        "external/swiftshader/third_party/astc-encoder/Source"
         "external/swiftshader/third_party/SPIRV-Headers/include",
         "external/swiftshader/include"
     ],
