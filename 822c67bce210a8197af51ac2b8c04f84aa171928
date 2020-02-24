@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca672b2c_4fab6ef9",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-24T16:55:00Z",
+      "side": 1,
+      "message": "I was suggesting that Verbose was a new Level one less than Level::Debug, and that SWIFTSHADER_LOGGING_LEVEL was typically Debug or higher. That way your traceToFile option can be set to Level::Verbose, and you\u0027d write to file but not to stdout.\n\nI think I see where you\u0027re going with this, so perhaps rename this to FileLogLevel or something?",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 13
+      },
+      "revId": "822c67bce210a8197af51ac2b8c04f84aa171928",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8403b992_ba6a1c54",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-02-24T16:55:00Z",
+      "side": 1,
+      "message": "This isn\u0027t going to let you trace-to-file without also printing to stdout, right?",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 157,
+        "endChar": 81
+      },
+      "revId": "822c67bce210a8197af51ac2b8c04f84aa171928",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
