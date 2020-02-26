@@ -351,7 +351,8 @@ bool TargetX8632::legalizeOptAddrForSandbox(OptAddr *Addr) {
   return false;
 }
 
-Inst *TargetX8632::emitCallToTarget(Operand *CallTarget, Variable *ReturnReg) {
+Inst *TargetX8632::emitCallToTarget(Operand *CallTarget, Variable *ReturnReg,
+                                    size_t NumVariadicFpArgs) {
   std::unique_ptr<AutoBundle> Bundle;
   if (NeedSandboxing) {
     if (llvm::isa<Constant>(CallTarget)) {
