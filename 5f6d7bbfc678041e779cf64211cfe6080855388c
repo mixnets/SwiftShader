@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "795a87ba_14115be8",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-26T20:45:54Z",
+      "side": 1,
+      "message": "Maybe add a comment clarifying that x86-32 doesn\u0027t use this, and why?",
+      "range": {
+        "startLine": 355,
+        "startChar": 43,
+        "endLine": 355,
+        "endChar": 60
+      },
+      "revId": "5f6d7bbfc678041e779cf64211cfe6080855388c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ec25fd1_bcede807",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 731,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-26T20:45:54Z",
+      "side": 1,
+      "message": "Moving this up a bit would clarify the above comment some more?",
+      "range": {
+        "startLine": 730,
+        "startChar": 8,
+        "endLine": 731,
+        "endChar": 51
+      },
+      "revId": "5f6d7bbfc678041e779cf64211cfe6080855388c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
