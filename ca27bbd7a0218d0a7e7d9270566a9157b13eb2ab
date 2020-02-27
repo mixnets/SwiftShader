@@ -167,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "30a219d5_6e38fb45",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9b2cb44f_5ef67e04",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21d8e29d_7c27c753",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "Since we\u0027re forking, the dependency is sensible.",
       "parentUuid": "6eed06ec_b171c512",
+      "range": {
+        "startLine": 15,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 31
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "481abfc8_ff274c9e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82e7e0a1_abf1e59c",
       "range": {
         "startLine": 15,
         "startChar": 3,

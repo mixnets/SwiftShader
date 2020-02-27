@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e88e81b7_aa57fd43",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "00a26851_2e3587bd",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 37
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cff00184_c00ce751",
         "filename": "/COMMIT_MSG",
         "patchSetId": 12
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "871dee84_cdb7b4f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "I haven\u0027t seen any ASTC HDR tests 😞\nI\u0027ll double check and open an issue if there really aren\u0027t any.\nI verified my 32f path by using it for LDR formats and verifying that the tests still pass.",
+      "parentUuid": "cff00184_c00ce751",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f66014f4_b43eda45",
         "filename": "CMakeLists.txt",
         "patchSetId": 12
@@ -62,6 +110,24 @@
       "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee8fb298_ecce36ee",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f66014f4_b43eda45",
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "1105c1a9_a12c08b4",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 1868,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc01eea9_adc466f5",
+      "range": {
+        "startLine": 1868,
+        "startChar": 0,
+        "endLine": 1868,
+        "endChar": 1
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "70cd1b21_5fa733cf",
         "filename": "src/System/Math.hpp",
         "patchSetId": 12
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "95acc497_fd933563",
+        "filename": "src/System/Math.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "70cd1b21_5fa733cf",
+      "range": {
+        "startLine": 137,
+        "startChar": 9,
+        "endLine": 137,
+        "endChar": 12
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ce61420a_2f26d200",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 12
@@ -131,6 +245,30 @@
       "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cf0e700_d955a729",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 686,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-02-27T16:33:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce61420a_2f26d200",
+      "range": {
+        "startLine": 685,
+        "startChar": 2,
+        "endLine": 686,
+        "endChar": 83
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
