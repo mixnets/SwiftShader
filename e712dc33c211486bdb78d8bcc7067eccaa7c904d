@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00a26851_2e3587bd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Could use clarification that this adds the LDR+HDR decoder code, but only enables LDR.",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 37
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cff00184_c00ce751",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "1) To avoid surprises when enabling this, it could be worth it to have a follow-up patch which adds the extension and runs the dEQP tests.\n2) Note that this decoder expands the data a lot, so it\u0027s very unlikely to be of practical use in this form other than as a test reference. Let\u0027s document that, and lack of content which needs this, as reasons why we leave it disabled for now.",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f66014f4_b43eda45",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Missing BUILD.gn and Android.bp changes. I can test the latter for you if that helps.",
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc01eea9_adc466f5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 1868,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "tabs-\u003espaces",
+      "range": {
+        "startLine": 1868,
+        "startChar": 0,
+        "endLine": 1868,
+        "endChar": 1
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70cd1b21_5fa733cf",
+        "filename": "src/System/Math.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Do we actually use this anywhere? We should probably use std::max() instead if we do, and remove these macros altogether.",
+      "range": {
+        "startLine": 137,
+        "startChar": 9,
+        "endLine": 137,
+        "endChar": 12
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce61420a_2f26d200",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 686,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Please comment on Ben\u0027s change that this supersedes his.",
+      "range": {
+        "startLine": 685,
+        "startChar": 2,
+        "endLine": 686,
+        "endChar": 83
+      },
+      "revId": "e712dc33c211486bdb78d8bcc7067eccaa7c904d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "9b2cb44f_5ef67e04",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Looks like most of the upstream changes are going to be for the encoder, since decoding is a fixed algorithm. So a fork makes sense.",
+      "parentUuid": "b940eb28_2f25111b",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21d8e29d_7c27c753",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -178,6 +202,30 @@
       "side": 1,
       "message": "The upstream repo has its own MACRO for printing errors, so I changed it to ours. I can change it to an assert if you don\u0027t want me to add the dependency, but I wouldn\u0027t upstream that change.",
       "parentUuid": "21d8e29d_7c27c753",
+      "range": {
+        "startLine": 15,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 31
+      },
+      "revId": "ca27bbd7a0218d0a7e7d9270566a9157b13eb2ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "82e7e0a1_abf1e59c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:36:10Z",
+      "side": 1,
+      "message": "Since we\u0027re forking, the dependency is sensible.",
+      "parentUuid": "6eed06ec_b171c512",
       "range": {
         "startLine": 15,
         "startChar": 3,
