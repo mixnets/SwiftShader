@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8f66d53_1dedc91c",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8632.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T14:40:15Z",
+      "side": 1,
+      "message": "Some compilers complain about unused arguments. A \"(void)NumVariadicFpArgs;\" statement would be needed in that case. We might be ok due to disabling such warnings for Subzero. Worth checking maybe.",
+      "range": {
+        "startLine": 356,
+        "startChar": 36,
+        "endLine": 356,
+        "endChar": 45
+      },
+      "revId": "6fceee6829d541f70ea55c71022e9f08f8270a1b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
