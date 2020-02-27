@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d36a5b7_c84d45cb",
+        "filename": "src/Android.bp",
+        "patchSetId": 13
+      },
+      "lineNbr": 618,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T19:36:32Z",
+      "side": 1,
+      "message": "missing comma",
+      "range": {
+        "startLine": 618,
+        "startChar": 61,
+        "endLine": 618,
+        "endChar": 62
+      },
+      "revId": "0bbb2703ec21192c97de3b35295beec9d6e3323e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d027e52c_f8c818f6",
+        "filename": "third_party/astc-encoder/Source/astc_mathlib.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T19:36:32Z",
+      "side": 1,
+      "message": "This is x86 specific, causing the Android aarch64 build to fail. I\u0027ll see if it\u0027s easy to fix.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 22
+      },
+      "revId": "0bbb2703ec21192c97de3b35295beec9d6e3323e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
