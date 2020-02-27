@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e76a30b4_d0b52e0d",
+        "filename": "src/Vulkan/VkPipelineCache.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T17:59:14Z",
+      "side": 1,
+      "message": "nit: We prefer {} even for a one-line conditional statement so that the return stands out more since it deviates from normal return at the end of the function (see also return blocks below).",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 1
+      },
+      "revId": "e7ffb9fd6ef489b70d1271f3f34fb3d260e5c37d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9cb2cba1_ef9153c5",
+        "filename": "src/Vulkan/VkPipelineCache.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-02-27T17:59:14Z",
+      "side": 1,
+      "message": "nit: I think we should invert this test to early out, instead of the return at the end being both for the case of having no specialization info and when they\u0027re identical.",
+      "revId": "e7ffb9fd6ef489b70d1271f3f34fb3d260e5c37d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
