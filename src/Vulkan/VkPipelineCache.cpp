@@ -62,6 +62,10 @@ void PipelineCache::SpirvShaderKey::SpecializationInfo::Deleter::operator()(VkSp
 
 bool PipelineCache::SpirvShaderKey::SpecializationInfo::operator<(const SpecializationInfo &specializationInfo) const
 {
+	// Check that either both or neither keys have specialization info.
+	if ((info.get() == nullptr) != (specializationInfo.info.get() == nullptr))
+		return info.get() == nullptr;
+
 	if(info && specializationInfo.info)
 	{
 		if(info->mapEntryCount != specializationInfo.info->mapEntryCount)
