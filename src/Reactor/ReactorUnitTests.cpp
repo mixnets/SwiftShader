@@ -18,6 +18,9 @@
 
 #include "gtest/gtest.h"
 
+#include "marl/defer.h"
+#include "marl/scheduler.h"
+
 #include <array>
 #include <cmath>
 #include <thread>
@@ -154,6 +157,38 @@ std::vector<std::string> split(const std::string &s)
 	}
 	return result;
 }
+
+static const std::vector<int> fibonacci = {
+	0,
+	1,
+	1,
+	2,
+	3,
+	5,
+	8,
+	13,
+	21,
+	34,
+	55,
+	89,
+	144,
+	233,
+	377,
+	610,
+	987,
+	1597,
+	2584,
+	4181,
+	6765,
+	10946,
+	17711,
+	28657,
+	46368,
+	75025,
+	121393,
+	196418,
+	317811,
+};
 
 TEST(ReactorUnitTests, PrintPrimitiveTypes)
 {
@@ -2041,6 +2076,30 @@ TYPED_TEST(GEPTest, PtrOffsets)
 	}
 }
 
+TEST(ReactorUnitTests, Fibonacci)
+{
+	FunctionT<int(int)> function;
+	{
+		Int n = function.Arg<0>();
+		Int current = 0;
+		Int next = 1;
+		For(Int i = 0, i < n, i++)
+		{
+			auto tmp = current + next;
+			current = next;
+			next = tmp;
+		}
+		Return(current);
+	}
+
+	auto routine = function("one");
+
+	for(size_t i = 0; i < fibonacci.size(); i++)
+	{
+		EXPECT_EQ(routine(i), fibonacci[i]);
+	}
+}
+
 TEST(ReactorUnitTests, Coroutines_Fibonacci)
 {
 	if(!rr::Caps.CoroutinesSupported)
@@ -2048,6 +2107,11 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
 
 	Coroutine<int()> function;
 	{
@@ -2066,45 +2130,11 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 
 	auto coroutine = function();
 
-	int32_t expected[] = {
-		0,
-		1,
-		1,
-		2,
-		3,
-		5,
-		8,
-		13,
-		21,
-		34,
-		55,
-		89,
-		144,
-		233,
-		377,
-		610,
-		987,
-		1597,
-		2584,
-		4181,
-		6765,
-		10946,
-		17711,
-		28657,
-		46368,
-		75025,
-		121393,
-		196418,
-		317811,
-	};
-
-	auto count = sizeof(expected) / sizeof(expected[0]);
-
-	for(size_t i = 0; i < count; i++)
+	for(size_t i = 0; i < fibonacci.size(); i++)
 	{
 		int out = 0;
 		EXPECT_EQ(coroutine->await(out), true);
-		EXPECT_EQ(out, expected[i]);
+		EXPECT_EQ(out, fibonacci[i]);
 	}
 }
 
@@ -2115,6 +2145,11 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
 
 	Coroutine<uint8_t(uint8_t * data, int count)> function;
 	{
@@ -2157,6 +2192,11 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
+
 	Coroutine<int()> function;
 	{
 		Int4 a{ 1, 2, 3, 4 };
@@ -2191,6 +2231,11 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	scheduler.bind();
+	defer(scheduler.unbind());
+
 	for(int i = 0; i < 2; ++i)
 	{
 		Coroutine<int()> function;
@@ -2215,6 +2260,11 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 		return;
 	}
 
+	marl::Scheduler scheduler;
+	scheduler.setWorkerThreadCount(8);
+	//scheduler.bind();
+	//defer(scheduler.unbind());
+
 	Coroutine<int()> function;
 	{
 		Yield(Int(0));
@@ -2233,53 +2283,22 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 	// Must call on same thread that creates the coroutine
 	function.finalize();
 
-	constexpr int32_t expected[] = {
-		0,
-		1,
-		1,
-		2,
-		3,
-		5,
-		8,
-		13,
-		21,
-		34,
-		55,
-		89,
-		144,
-		233,
-		377,
-		610,
-		987,
-		1597,
-		2584,
-		4181,
-		6765,
-		10946,
-		17711,
-		28657,
-		46368,
-		75025,
-		121393,
-		196418,
-		317811,
-	};
-
-	constexpr auto count = sizeof(expected) / sizeof(expected[0]);
-
 	std::vector<std::thread> threads;
 	const size_t numThreads = 100;
 
 	for(size_t t = 0; t < numThreads; ++t)
 	{
 		threads.emplace_back([&] {
+			scheduler.bind();
+			defer(scheduler.unbind());
+
 			auto coroutine = function();
 
-			for(size_t i = 0; i < count; i++)
+			for(size_t i = 0; i < fibonacci.size(); i++)
 			{
 				int out = 0;
 				EXPECT_EQ(coroutine->await(out), true);
-				EXPECT_EQ(out, expected[i]);
+				EXPECT_EQ(out, fibonacci[i]);
 			}
 		});
 	}
