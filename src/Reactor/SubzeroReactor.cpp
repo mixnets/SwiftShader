@@ -1299,8 +1299,20 @@ Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
-	ASSERT(!atomic);                                   // Unimplemented
-	ASSERT(memoryOrder == std::memory_order_relaxed);  // Unimplemented
+#if defined(__i386__) || defined(__x86_64__)
+	// We're good, atomics and strictest memory order (except seq_cst) are guaranteed
+#else
+	if(atomic)
+	{
+		UNIMPLEMENTED("b/150475088 Atomic load not implemented for current platform");
+	}
+	if(memoryOrder != std::memory_order_relaxed)
+	{
+		UNIMPLEMENTED("b/150475088 Memory order other than memory_order_relaxed not implemented for current platform");
+	}
+#endif
+	// Vulkan doesn't allow sequential memory order
+	ASSERT(memoryOrder != std::memory_order_seq_cst);
 
 	int valueType = (int)reinterpret_cast<intptr_t>(type);
 	Ice::Variable *result = nullptr;
@@ -1362,11 +1374,23 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
-	ASSERT(!atomic);                                   // Unimplemented
-	ASSERT(memoryOrder == std::memory_order_relaxed);  // Unimplemented
+#if defined(__i386__) || defined(__x86_64__)
+	// We're good, atomics and strictest memory order (except seq_cst) are guaranteed
+#else
+	if(atomic)
+	{
+		UNIMPLEMENTED("b/150475088 Atomic store not implemented for current platform");
+	}
+	if(memoryOrder != std::memory_order_relaxed)
+	{
+		UNIMPLEMENTED("b/150475088 Memory order other than memory_order_relaxed not implemented for current platform");
+	}
+#endif
+	// Vulkan doesn't allow sequential memory order
+	ASSERT(memoryOrder != std::memory_order_seq_cst);
 
 #if __has_feature(memory_sanitizer)
-	    // Mark all (non-stack) memory writes as initialized by calling __msan_unpoison
+	// Mark all (non-stack) memory writes as initialized by calling __msan_unpoison
 	if(align != 0)
 	{
 		auto call = Ice::InstCall::create(::function, 2, nullptr, ::context->getConstantInt64(reinterpret_cast<intptr_t>(__msan_unpoison)), false);
