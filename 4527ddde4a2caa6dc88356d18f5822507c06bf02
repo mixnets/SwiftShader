@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24f7a542_f010f8d7",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2486,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T20:16:47Z",
+      "side": 0,
+      "message": "I\u0027m a little surprised we haven\u0027t hit this sooner.",
+      "range": {
+        "startLine": 2486,
+        "startChar": 1,
+        "endLine": 2486,
+        "endChar": 21
+      },
+      "revId": "4527ddde4a2caa6dc88356d18f5822507c06bf02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8b91f9a_041c471e",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2486,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T20:16:47Z",
+      "side": 1,
+      "message": "b/",
+      "range": {
+        "startLine": 2486,
+        "startChar": 9,
+        "endLine": 2486,
+        "endChar": 18
+      },
+      "revId": "8a3ad3b5e898e9ad4e0087d73b8c414385d8c3b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42469ba2_be5a2ef8",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2489,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T20:16:47Z",
+      "side": 1,
+      "message": "LGTM, but I think we should work towards this not doing saturation by default, matching C behavior. Separate intrinsics can provide conversion with saturation. That would also avoid the ugly boolean parameter on a constructor.",
+      "range": {
+        "startLine": 2489,
+        "startChar": 21,
+        "endLine": 2489,
+        "endChar": 28
+      },
+      "revId": "8a3ad3b5e898e9ad4e0087d73b8c414385d8c3b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
