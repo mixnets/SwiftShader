@@ -2483,7 +2483,10 @@ Short4::Short4(RValue<Int4> cast)
 
 Short4::Short4(RValue<Float4> cast)
 {
-	UNIMPLEMENTED_NO_BUG("Short4::Short4(RValue<Float4> cast)");
+	// TODO(150791192): Generalize and optimize
+	auto smin = std::numeric_limits<short>::min();
+	auto smax = std::numeric_limits<short>::max();
+	*this = Short4(Int4(Max(Min(cast, Float4(smax)), Float4(smin))));
 }
 
 RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
