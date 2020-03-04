@@ -105,6 +105,24 @@
       "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97512369_f4fdc50e",
+        "filename": "third_party/llvm-7.0/llvm/lib/ExecutionEngine/SectionMemoryManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-04T15:42:01Z",
+      "side": 1,
+      "message": "Hi Sergey, just wondering if you\u0027ve had a chance to upstream this change to LLVM? Cheers.",
+      "parentUuid": "256ce3b5_28f38731",
+      "revId": "526342b577d94b28f9850597bdcd97c7e532df7d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
