@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4ebd21ac_423d386c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T19:26:18Z",
+      "side": 1,
+      "message": "Right. LLVM currently has its own LLVM_COMPILE_OPTIONS to which we could add warnings-as-errors again. But if we\u0027re going to eventually use LLVM\u0027s own CMakeLists.txt then we may not have much control over this or we need a different solution, so let\u0027s come back to this soon.",
+      "parentUuid": "19a26ade_31f89f8a",
+      "revId": "cf3deebc1a7aabf2f22d99c77ee46f456ed2817a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "28e50cd2_127fba86",
         "filename": "CMakeLists.txt",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "cf3deebc1a7aabf2f22d99c77ee46f456ed2817a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18d41a2f_8457b451",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2433,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T19:26:18Z",
+      "side": 1,
+      "message": "Agreed.",
+      "parentUuid": "28e50cd2_127fba86",
+      "revId": "cf3deebc1a7aabf2f22d99c77ee46f456ed2817a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
