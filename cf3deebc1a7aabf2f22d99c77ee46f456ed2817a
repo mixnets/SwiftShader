@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19a26ade_31f89f8a",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-04T18:53:11Z",
+      "side": 1,
+      "message": "I remember wondering whether we should be doing this back when I migrated warnings from the VS projects to CMake, but figured we were interested in fixing warnings popping up in third parties (i.e. LLVM). I do think this is better, but we may want to enable this on a per-target basis when we clean up CMake.",
+      "revId": "cf3deebc1a7aabf2f22d99c77ee46f456ed2817a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28e50cd2_127fba86",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2433,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-04T18:53:11Z",
+      "side": 1,
+      "message": "This is good, but it\u0027s unfortunate that we keep making our root CMakeLists so big. What we should do - and perhaps as part of the CMake cleanup - is move PowerVR_Examples one folder deep (/thirdparty/PowerVR_Examples/PowerVR_Examples) and add a custom CMakeLists.txt that does an add_subdirectory(./PowerVR_Examples) and all of this that you added here.",
+      "revId": "cf3deebc1a7aabf2f22d99c77ee46f456ed2817a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
