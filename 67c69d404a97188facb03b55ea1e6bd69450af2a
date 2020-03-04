@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6427ea44_2cc54e01",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1303,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-04T15:19:12Z",
+      "side": 1,
+      "message": "\u003e Just in case, could you add an assert that this isn\u0027t attempted to be used? Vulkan disallows it, but future uses of Reactor could run into it.\nThis is already there as the last line of this change:\n\n\t// Vulkan doesn\u0027t allow sequential memory order\n\tASSERT(memoryOrder !\u003d std::memory_order_seq_cst);\n\nIs that what you meant?\n\n\u003e Note that sequential memory ordering could be guaranteed by using x86\u0027s LOCK prefix, so that could be mentioned in a comment. Also, atomicity breaks down for the emulatedIntrinsics implementation below, which splits the load into two for the 8 byte case. Also, \u0027relaxed\u0027 memory order could be implemented using MOVNTPS and friends.\n\nI\u0027ll move the validation for both load and store into a separate function and add your comments.",
+      "parentUuid": "7e02aa5e_1584280f",
+      "range": {
+        "startLine": 1303,
+        "startChar": 59,
+        "endLine": 1303,
+        "endChar": 66
+      },
+      "revId": "67c69d404a97188facb03b55ea1e6bd69450af2a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86b4fab5_8431f3f4",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
