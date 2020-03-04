@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06029047_81e2f676",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T02:40:49Z",
+      "side": 1,
+      "message": "uber-nit: a link to the review is a little more useful, since we\u0027re integrated into other projects where it\u0027s not trivial to match an upstream SwiftShader hash to a CL.",
+      "range": {
+        "startLine": 7,
+        "startChar": 44,
+        "endLine": 7,
+        "endChar": 55
+      },
+      "revId": "3be03bd8629c4f4cf80bab0aeaaac0954ae3458e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14707ed5_1c359958",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-04T02:40:49Z",
+      "side": 1,
+      "message": "Do you have an example, just in case we need to repro this again?",
+      "range": {
+        "startLine": 14,
+        "startChar": 56,
+        "endLine": 14,
+        "endChar": 63
+      },
+      "revId": "3be03bd8629c4f4cf80bab0aeaaac0954ae3458e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
