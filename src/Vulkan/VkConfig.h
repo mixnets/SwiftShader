@@ -74,7 +74,7 @@ enum
 
 enum
 {
-	MAX_POINT_SIZE = 1,		// Large points are not supported. If/when we turn this on, must be >= 64.
+	MAX_POINT_SIZE = 4096, // https://developer.nvidia.com/vulkan-driver mentions a maximum point size of 2047 as of dec 2018
 };
 
 constexpr int SUBPIXEL_PRECISION_BITS = 4;
