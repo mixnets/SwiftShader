@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c1fbcd05_500eb881",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-05T19:16:45Z",
+      "side": 1,
+      "message": "According to https://www.khronos.org/registry/vulkan/specs/1.1/html/vkspec.html#primsrast-points-basic we need:\n\n0.5 + Fi * (x_p - x)\n\nWhere Fi is 1/size (here pointSizeFactor), x_p is the sprite\u0027s center (pointCoordX), and x is the center of each pixel. So in SIMD form:\n\n0.5 + Fi * (x_p - (x + SIMD::Float(0, 1, 0, 1)))",
+      "range": {
+        "startLine": 92,
+        "startChar": 38,
+        "endLine": 93,
+        "endChar": 149
+      },
+      "revId": "f39d29776b03c0f5c7c007f9cb5e22e2d6e1d266",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae6016e8_cde4ae34",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-05T19:16:45Z",
+      "side": 1,
+      "message": "https://vulkan.gpuinfo.org/ accumulates stats on many drivers (caveat: it includes beta drivers, and isn\u0027t weighing the stats by actual usage count).\n\nDeciding what value to use for SwiftShader is always a bit tricky because while an initial implementation may allow for an arbitrarily large limit, we often discover optimization opportunities at a later time when a smaller limit is guaranteed. So we tend to keep these reasonably low. Also note that https://vulkan.gpuinfo.org/displaydevicelimit.php?name\u003dpointSizeRange[1]\u0026platform\u003dandroid indicates that very little mobile hardware supports anything above 1024.\n\nI\u0027m inclined to go with 1023.0f for now.",
+      "range": {
+        "startLine": 77,
+        "startChar": 18,
+        "endLine": 77,
+        "endChar": 122
+      },
+      "revId": "f39d29776b03c0f5c7c007f9cb5e22e2d6e1d266",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e9f82c4_750a2225",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-05T19:16:45Z",
+      "side": 1,
+      "message": "nit: Add a space to line up the comments.",
+      "range": {
+        "startLine": 74,
+        "startChar": 11,
+        "endLine": 74,
+        "endChar": 12
+      },
+      "revId": "f39d29776b03c0f5c7c007f9cb5e22e2d6e1d266",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
