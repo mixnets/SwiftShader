@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d26e153_c2306cb2",
+        "filename": "third_party/llvm-subzero/lib/Support/regcomp.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-05T16:53:51Z",
+      "side": 1,
+      "message": "note: This and related files were renamed from .c to .cpp to fix:\n\n-- The C compiler identification is GNU 7.4.0\n-- The CXX compiler identification is GNU 7.4.0\n...\ncc1: warning: command line option ‘-Wreorder’ is valid for C++/ObjC++ but not for C\ncc1: error: command line option ‘-fno-operator-names’ is valid for C++/ObjC++ but not for C [-Werror]",
+      "revId": "6009bd458f1681eb7ffb86ec8c6978e130e760fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
