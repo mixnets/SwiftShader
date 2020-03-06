@@ -3307,13 +3307,14 @@ VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceWin32PresentationSupportKHR(Vk
 }
 #endif
 
-#ifndef __ANDROID__
 VKAPI_ATTR void VKAPI_CALL vkDestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks *pAllocator)
 {
 	TRACE("(VkInstance instance = %p, VkSurfaceKHR surface = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      instance, static_cast<void *>(surface), pAllocator);
 
+#ifndef __ANDROID__
 	vk::destroy(surface, pAllocator);
+#endif
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32 *pSupported)
@@ -3321,8 +3322,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(VkPhysicalDe
 	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t queueFamilyIndex = %d, VkSurface surface = %p, VKBool32* pSupported = %p)",
 	      physicalDevice, int(queueFamilyIndex), static_cast<void *>(surface), pSupported);
 
+#ifndef __ANDROID__
 	*pSupported = VK_TRUE;
 	return VK_SUCCESS;
+#else
+	return VK_ERROR_EXTENSION_NOT_PRESENT;
+#endif
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities)
@@ -3330,8 +3335,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysi
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkSurfaceKHR surface = %p, VkSurfaceCapabilitiesKHR* pSurfaceCapabilities = %p)",
 	      physicalDevice, static_cast<void *>(surface), pSurfaceCapabilities);
 
+#ifndef __ANDROID__
 	vk::Cast(surface)->getSurfaceCapabilities(pSurfaceCapabilities);
 	return VK_SUCCESS;
+#else
+	return VK_ERROR_EXTENSION_NOT_PRESENT;
+#endif
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pSurfaceFormatCount, VkSurfaceFormatKHR *pSurfaceFormats)
@@ -3339,6 +3348,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDe
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkSurfaceKHR surface = %p. uint32_t* pSurfaceFormatCount = %p, VkSurfaceFormatKHR* pSurfaceFormats = %p)",
 	      physicalDevice, static_cast<void *>(surface), pSurfaceFormatCount, pSurfaceFormats);
 
+#ifndef __ANDROID__
 	if(!pSurfaceFormats)
 	{
 		*pSurfaceFormatCount = vk::Cast(surface)->getSurfaceFormatsCount();
@@ -3346,6 +3356,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDe
 	}
 
 	return vk::Cast(surface)->getSurfaceFormats(pSurfaceFormatCount, pSurfaceFormats);
+#else
+	return VK_ERROR_EXTENSION_NOT_PRESENT;
+#endif
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes)
@@ -3353,6 +3366,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysi
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkSurfaceKHR surface = %p uint32_t* pPresentModeCount = %p, VkPresentModeKHR* pPresentModes = %p)",
 	      physicalDevice, static_cast<void *>(surface), pPresentModeCount, pPresentModes);
 
+#ifndef __ANDROID__
 	if(!pPresentModes)
 	{
 		*pPresentModeCount = vk::Cast(surface)->getPresentModeCount();
@@ -3360,7 +3374,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysi
 	}
 
 	return vk::Cast(surface)->getPresentModes(pPresentModeCount, pPresentModes);
+#else
+	return VK_ERROR_EXTENSION_NOT_PRESENT;
+#endif
 }
+
+#ifndef __ANDROID__
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSwapchainKHR *pSwapchain)
 {
