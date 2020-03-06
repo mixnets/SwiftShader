@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3138e7fb_cb800e05",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-06T15:57:55Z",
+      "side": 1,
+      "message": "As discussed, it\u0027s odd that this doesn\u0027t need a 0.5 offset like in the fragCoord case at line 65 above, but we can look into that later.",
+      "range": {
+        "startLine": 92,
+        "startChar": 128,
+        "endLine": 92,
+        "endChar": 146
+      },
+      "revId": "caaba198c6f1f71dd772c348f54f9eb2981dd825",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
