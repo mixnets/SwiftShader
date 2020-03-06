@@ -56,6 +56,7 @@ else()
 endif()
 
 set(CMAKE_MACOSX_RPATH ON)
+set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
 
 if ((CMAKE_GENERATOR MATCHES "Visual Studio") AND (CMAKE_GENERATOR_TOOLSET STREQUAL ""))
   message(WARNING "Visual Studio generators use the x86 host compiler by "
@@ -2424,11 +2425,15 @@ endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
 if(SWIFTSHADER_BUILD_PVR)
     if(UNIX AND NOT APPLE)
         set(PVR_WINDOW_SYSTEM XCB)
+
+        # Set the RPATH of the next defined build targets to $ORIGIN,
+        # allowing them to load shared libraries from the execution directory.
+        set(CMAKE_BUILD_RPATH "$ORIGIN")
     endif()
 
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
 
-    if(WIN32)
+    if(NOT APPLE)
         # Copy the 'loader' library to the bin/ directory
         # where the PowerVR executables are placed.
         add_custom_command(
