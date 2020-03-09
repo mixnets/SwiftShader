@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "abbdd446_f5721e1d",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T15:29:41Z",
+      "side": 1,
+      "message": "Should we start using https://github.com/KhronosGroup/VK-GL-CTS instead?",
+      "range": {
+        "startLine": 2,
+        "startChar": 15,
+        "endLine": 2,
+        "endChar": 70
+      },
+      "revId": "a9d599595d7c4f8a30c1758193e3783fbeab613c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
