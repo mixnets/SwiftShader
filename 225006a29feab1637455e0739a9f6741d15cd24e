@@ -16,6 +16,24 @@
       "revId": "225006a29feab1637455e0739a9f6741d15cd24e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3f27184_71c68cde",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 2430,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T21:18:05Z",
+      "side": 1,
+      "message": "I was simply keeping the enablement of this feature close to its use. We set CMAKE_MACOSX_RPATH at the top, but I\u0027m not sure if that\u0027s still actively used (but it probably will be when enabling running PowerVR samples on macOS directly). No strong preference. Either option seems to have pros and cons. Happy to adjust if you have a stronger preference that will align with the planned refactorings.",
+      "parentUuid": "9081bb9c_f19b5ebf",
+      "revId": "225006a29feab1637455e0739a9f6741d15cd24e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
