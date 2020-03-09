@@ -4484,12 +4484,13 @@ void destroyCoroutineData(CoroutineData *coroData)
 // caller's call to await().
 // Returns true if await() is called again, or false if coroutine_destroy()
 // is called.
-bool suspend(Nucleus::CoroutineHandle handle)
+uint32_t suspend(Nucleus::CoroutineHandle handle)
 {
 	auto *data = reinterpret_cast<CoroutineData *>(handle);
 	data->suspended.signal();
 	data->resumed.wait();
-	return !data->done.test();
+	const bool result = !data->done.test();
+	return result ? 1 : 0;
 }
 
 // resume() is called by await(), blocking until the coroutine calls yield()
@@ -4534,10 +4535,10 @@ Nucleus::CoroutineHandle getHandleParam()
 	return handle;
 }
 
-bool isDone(Nucleus::CoroutineHandle handle)
+uint32_t isDone(Nucleus::CoroutineHandle handle)
 {
 	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->done.test();
+	return coroData->done.test() ? 1 : 0;
 }
 
 void setPromisePtr(Nucleus::CoroutineHandle handle, void *promisePtr)
