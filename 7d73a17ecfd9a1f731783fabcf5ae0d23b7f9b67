@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c78ae955_ad51ae66",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "Please remove. In source files that contain lots of Reactor code we should just have a \"using namespace rr;\" and be able to make it closely resemble C code. Also note the If() macro and such doesn\u0027t have a namespace so we don\u0027t have much of a choice when aiming for consistency.",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 190,
+        "endChar": 4
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e55b0045_c9b77b3b",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "Replace by \"using namespace rr;\". Use of Bool should be kept consistent with the use of Float4 and Int below.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3896d60c_23ab898e",
+        "filename": "src/Reactor/Debug.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "Capital W",
+      "range": {
+        "startLine": 32,
+        "startChar": 11,
+        "endLine": 32,
+        "endChar": 12
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f0f798c_687dfe05",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "This can be removed by making changes to the OpenGL and D3D code. I don\u0027t mind if they become littered with undefs if it means Reactor code is cleaner and we have no follow-up work once those frontends have been removed.\n\nBut let\u0027s do that as a separate CL since this is unrelated to System/PlatformHeaders.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 11
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "565f3a6e_5f0ef57a",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "I\u0027m not completely sold on this approach. It\u0027s very easy to forget about the existence of these headers and create inconsistencies that cause even more head-scratching. When a spec indicates a specific header should be included, I think that\u0027s what we should see at the top of the source file. Despite the descriptive folder name, it\u0027s not clear whether System/PlatformHeaders/Windows.hpp is supposed to fully replace Windows.h or if it\u0027s part of an abstraction with a reduced API (which in fact it is due to WIN32_LEAN_AND_MEAN, although that\u0027s definitely a Good Thing in general).\n\nIn addition, it\u0027s not clear what should go in PlatformHeaders in the future, and what should not.\n\nI think we need to take a closer look at the individual cases here. X11 stuff should probably only be needed exactly once and included in a .cpp where the Bool macro doesn\u0027t bother us. We might have a few more uses of Windows.h, but we should still check if we\u0027re depending on it too much and move it to a .cpp wherever possible. For Vulkan note that vulkan_core.h was specifically created to include only platform-independent Core functionality, while vulkan.h includes a bunch of platform-specific headers. We can include the platform-specific parts ourselves only where needed, and split our implementations where necessary (currently libVulkan.cpp is rather large and contains platform-specific functionality so it could be split into libVulkanCore, libVulkanWin32, etc).\n\nLastly note that one way to prevent mixing up the real header and our replacement is to name ours identically and set up include paths to pick up ours. While this exacerbates the issue of potentially providing an unexpectedly incompatible API, it solves the other issues. Anyway, let\u0027s keep that as a last resort if other approaches don\u0027t work out.",
+      "range": {
+        "startLine": 31,
+        "startChar": 11,
+        "endLine": 31,
+        "endChar": 33
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d67e67_76c83466",
+        "filename": "src/System/PlatformHeaders/Vulkan.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-09T14:51:38Z",
+      "side": 1,
+      "message": "Let\u0027s check if this has been standardized yet.",
+      "range": {
+        "startLine": 22,
+        "startChar": 17,
+        "endLine": 22,
+        "endChar": 42
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
