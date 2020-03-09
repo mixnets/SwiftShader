@@ -22,6 +22,30 @@
       "revId": "a9d599595d7c4f8a30c1758193e3783fbeab613c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdb51b83_5ccc030c",
+        "filename": "tests/regres/deqp.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-03-09T15:31:43Z",
+      "side": 1,
+      "message": "The Khronos github repo does not publish fixes to release branches promptly. AOSP\u0027s upstream-vulkan-cts-* branches are more up to date.",
+      "parentUuid": "abbdd446_f5721e1d",
+      "range": {
+        "startLine": 2,
+        "startChar": 15,
+        "endLine": 2,
+        "endChar": 70
+      },
+      "revId": "a9d599595d7c4f8a30c1758193e3783fbeab613c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
