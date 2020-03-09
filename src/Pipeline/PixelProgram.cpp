@@ -62,8 +62,8 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 
 	// TODO(b/146486064): Consider only assigning these to the SpirvRoutine iff
 	// they are ever going to be read.
-	routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float(0.5f, 1.5f, 0.5f, 1.5f);
-	routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float(0.5f, 0.5f, 1.5f, 1.5f);
+	routine.fragCoord[0] = SIMD::Float(Float(x)) + SIMD::Float(0.0f, 1.0f, 0.0f, 1.0f);
+	routine.fragCoord[1] = SIMD::Float(Float(y)) + SIMD::Float(0.0f, 0.0f, 1.0f, 1.0f);
 	routine.fragCoord[2] = z[0];  // sample 0
 	routine.fragCoord[3] = w;
 
@@ -88,10 +88,10 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInPointCoord, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 2);
-		Float pointSizeFactor = *Pointer<Float>(primitive + OFFSET(Primitive, pointSizeInv));
-		value[builtin.FirstComponent + 0] = SIMD::Float(0.5f) + SIMD::Float(pointSizeFactor) * (((SIMD::Float(Float(x)) + SIMD::Float(0.f, 1.f, 0.f, 1.f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)))));
+		SIMD::Float pointSizeInv = SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointSizeInv)));
+		value[builtin.FirstComponent + 0] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(x)) + SIMD::Float(0.0f, 1.0f, 0.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordX)))));
 
-		value[builtin.FirstComponent + 1] = SIMD::Float(0.5f) + SIMD::Float(pointSizeFactor) * (((SIMD::Float(Float(y)) + SIMD::Float(0.f, 0.f, 1.f, 1.f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)))));
+		value[builtin.FirstComponent + 1] = SIMD::Float(0.5f) + pointSizeInv * (((SIMD::Float(Float(y)) + SIMD::Float(0.0f, 0.0f, 1.0f, 1.0f)) - SIMD::Float(*Pointer<Float>(primitive + OFFSET(Primitive, pointCoordY)))));
 	});
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInSubgroupSize, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
