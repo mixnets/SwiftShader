@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ebaef25_5d6bb86c",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1672,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T19:03:55Z",
+      "side": 1,
+      "message": "Yeah, just following the pattern in the rest of this file. I\u0027ll leave it for now to be consistent, and we can follow-up with a rename all if you like.",
+      "parentUuid": "5bd9e7aa_9d27944b",
+      "range": {
+        "startLine": 1672,
+        "startChar": 8,
+        "endLine": 1672,
+        "endChar": 13
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "63e82c7d_e88e1b29",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "da678fc6_2321f7b5",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T19:03:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "63e82c7d_e88e1b29",
+      "range": {
+        "startLine": 157,
+        "startChar": 28,
+        "endLine": 157,
+        "endChar": 52
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a84b7a5_2587b5f7",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2020-03-10T15:31:49Z",
       "side": 1,
       "message": "Actually this will only keep the LSB. Strictly speaking that\u0027s incorrect. The System V ABI for x86-64 states: \"Booleans, when stored in a memory object, are stored as single byte objects the value of which is always 0 (false) or 1 (true). When stored in integer registers or passed as arguments on the stack, all 8 bytes of the register are significant; any nonzero value is considered true\"\n\nSince the return value is passed by register, I think we should do a compare against 0 here.",
+      "range": {
+        "startLine": 181,
+        "startChar": 5,
+        "endLine": 181,
+        "endChar": 78
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa036830_b5bceab4",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T19:03:55Z",
+      "side": 1,
+      "message": "As discussed, I tried doing the compare, but it turns out that the zero-ing of the i32 that I added above didn\u0027t work. Instead, I\u0027m going to stick with just truncating the i32 to i8, and that should always work. I\u0027ve created an buganizer issue (https://b.corp.google.com/issues/151158858) where we can track this, and where I suggest the better approach of implementing this in Subzero itself when emitting code per target.",
+      "parentUuid": "7a84b7a5_2587b5f7",
       "range": {
         "startLine": 181,
         "startChar": 5,
