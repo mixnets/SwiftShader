@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f86306f1_6805b66a",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-10T14:10:14Z",
+      "side": 1,
+      "message": "Easier said than done.\n\nBecause we have the `using Bool \u003d int` in `PlatformHeaders/Vulkan.hpp`, we end up with two definitions of `Bool` in two namespaces (global and `rr`), and because of the liberal use of `using namespace rr;` in our headers, the compiler is faced with an ambiguous symbol here.\n\nI could attempt to remove the `using Bool \u003d int` definition in Vulkan.hpp, but that\u0027ll almost certainly break references to `Bool` in external headers. That said, if we can ensure that all external headers are only included inside PlatformHeaders, then I could place this `Bool` alias in a new `x11` namespace which we can use in our codebase?\n\nFWIW, I\u0027m *really* against having `using namespace` in any header, for this exact sort of issue.\n`using namespace` is actually banned in its entirety with the Google C++ guide (https://google.github.io/styleguide/cppguide.html#Namespaces) - that said, I\u0027m not personally opposed to a `using namespace` in a cpp.\n\nI\u0027m open to suggestions here.",
+      "parentUuid": "c78ae955_ad51ae66",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 190,
+        "endChar": 4
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e55b0045_c9b77b3b",
         "filename": "src/Pipeline/PixelRoutine.hpp",
         "patchSetId": 18
@@ -36,6 +60,30 @@
       "writtenOn": "2020-03-09T14:51:38Z",
       "side": 1,
       "message": "Replace by \"using namespace rr;\". Use of Bool should be kept consistent with the use of Float4 and Int below.",
+      "range": {
+        "startLine": 36,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2b91dc2_059e2daa",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-10T14:10:14Z",
+      "side": 1,
+      "message": "`using namespace` is not legal inside a class.",
+      "parentUuid": "e55b0045_c9b77b3b",
       "range": {
         "startLine": 36,
         "startChar": 1,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "18a70430_1b287412",
+        "filename": "src/Reactor/Debug.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-10T14:10:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3896d60c_23ab898e",
+      "range": {
+        "startLine": 32,
+        "startChar": 11,
+        "endLine": 32,
+        "endChar": 12
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1f0f798c_687dfe05",
         "filename": "src/Reactor/Nucleus.hpp",
         "patchSetId": 18
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "15a1da57_cee76d18",
+        "filename": "src/Reactor/Nucleus.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-10T14:10:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1f0f798c_687dfe05",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 11
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "565f3a6e_5f0ef57a",
         "filename": "src/System/Debug.cpp",
         "patchSetId": 18
@@ -105,6 +201,30 @@
       "writtenOn": "2020-03-09T14:51:38Z",
       "side": 1,
       "message": "I\u0027m not completely sold on this approach. It\u0027s very easy to forget about the existence of these headers and create inconsistencies that cause even more head-scratching. When a spec indicates a specific header should be included, I think that\u0027s what we should see at the top of the source file. Despite the descriptive folder name, it\u0027s not clear whether System/PlatformHeaders/Windows.hpp is supposed to fully replace Windows.h or if it\u0027s part of an abstraction with a reduced API (which in fact it is due to WIN32_LEAN_AND_MEAN, although that\u0027s definitely a Good Thing in general).\n\nIn addition, it\u0027s not clear what should go in PlatformHeaders in the future, and what should not.\n\nI think we need to take a closer look at the individual cases here. X11 stuff should probably only be needed exactly once and included in a .cpp where the Bool macro doesn\u0027t bother us. We might have a few more uses of Windows.h, but we should still check if we\u0027re depending on it too much and move it to a .cpp wherever possible. For Vulkan note that vulkan_core.h was specifically created to include only platform-independent Core functionality, while vulkan.h includes a bunch of platform-specific headers. We can include the platform-specific parts ourselves only where needed, and split our implementations where necessary (currently libVulkan.cpp is rather large and contains platform-specific functionality so it could be split into libVulkanCore, libVulkanWin32, etc).\n\nLastly note that one way to prevent mixing up the real header and our replacement is to name ours identically and set up include paths to pick up ours. While this exacerbates the issue of potentially providing an unexpectedly incompatible API, it solves the other issues. Anyway, let\u0027s keep that as a last resort if other approaches don\u0027t work out.",
+      "range": {
+        "startLine": 31,
+        "startChar": 11,
+        "endLine": 31,
+        "endChar": 33
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64b7db25_ec41762f",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-10T14:10:14Z",
+      "side": 1,
+      "message": "\u003e It\u0027s very easy to forget about the existence of these headers and create inconsistencies that cause even more head-scratching.\n\nFair point. It would be easy to write another presubmit test that looks for direct os includes from a black list. That should avoid any future accidental direct includes.\n\n\u003e Despite the descriptive folder name, it\u0027s not clear whether System/PlatformHeaders/Windows.hpp is supposed to fully replace Windows.h or if it\u0027s part of an abstraction with a reduced API\n\nCan be solved with documentation. Happy to add.\n\n\u003e I think we need to take a closer look at the individual cases here\n\nSure, feel free to try and improve on this. I spent a few hours trying to access what system includes were really necessary, and IIRC, I did manage to remove a few. \n\n\u003e Lastly note that one way to prevent mixing up the real header and our replacement is to name ours identically and set up include paths to pick up ours. \n\nI considered this, but I\u0027m really not keen on this approach:\n1) If we push our includes to the front of the search paths, how do you actually include the system includes?\n2) This sounds like a nightmare to implement for the N build systems we maintain.\n3) This sounds like a nightmare for leaking the include paths out to projects that include SwiftShader.\n\nI think explicit is best here. I\u0027m open to other approaches, but fiddling include paths sounds like it\u0027ll bite us (or worse dependees) hard, and will be a real WTF? to anyone attempting to diagnose a compiler error who isn\u0027t aware of the crazy build setup.",
+      "parentUuid": "565f3a6e_5f0ef57a",
       "range": {
         "startLine": 31,
         "startChar": 11,
