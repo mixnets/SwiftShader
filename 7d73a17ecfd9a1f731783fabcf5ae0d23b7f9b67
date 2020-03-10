@@ -237,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "3c20dcdc_96840563",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T14:42:41Z",
+      "side": 1,
+      "message": "Just adding my two cents here: Windows headers have always been painful to include, and I\u0027ve seen many projects tackle this problem similarly to what Ben\u0027s doing here, by wrapping in a custom include header that defines and undefines stuff. Some examples:\n\n* https://github.com/Leandros/WindowsHModular\n* Article: https://aras-p.info/blog/2018/01/12/Minimizing-windows.h/\n* Unreal Engine 4 has these pre and post includes that you wrap your Win32 header includes with: https://github.com/code4game/libprotobuf_ue4/issues/1 (you can see these on the UE4 GitHub if you have signed up to be a UE4 developer).\n\nThe one thing I like about UE4\u0027s pre-post solution is that you can still only include specific headers, rather than have the glob header. Maybe it would be possible to have something like \"PrePlatformHeaders.hpp\" and \"PostPlatformHeaders.hpp\", and we\u0027d do:\n\n#include \"PrePlatformHeaders.hpp\"\n#ifdef _WIN32\n#include \u003cwindows.h\u003e\n#elif _LINUX\n#include \u003csysctl.h\u003e\n#include \u003cwhatever.h\u003e\n#endif\n#include \"PostPlatformHeaders.hpp\"\n\nSo these 2 headers would do the right thing of defining/undefining stuff for any platform we support (mostly doing stuff for Windows, where most shenanigans happen).\nThoughts?",
+      "parentUuid": "64b7db25_ec41762f",
+      "range": {
+        "startLine": 31,
+        "startChar": 11,
+        "endLine": 31,
+        "endChar": 33
+      },
+      "revId": "7d73a17ecfd9a1f731783fabcf5ae0d23b7f9b67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "96d67e67_76c83466",
         "filename": "src/System/PlatformHeaders/Vulkan.hpp",
         "patchSetId": 18
