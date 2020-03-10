@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "a15f372d_3dc6174b",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T19:48:32Z",
+      "side": 1,
+      "message": "Ah, I did have it, but when I reverted to not using the compare, I accidentally reverted that too. Will add it back in just before submitting.",
+      "parentUuid": "2e24f79d_bc2d0705",
+      "range": {
+        "startLine": 157,
+        "startChar": 28,
+        "endLine": 157,
+        "endChar": 52
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a84b7a5_2587b5f7",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
