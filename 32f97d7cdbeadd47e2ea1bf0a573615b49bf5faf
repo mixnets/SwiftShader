@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf6c343a_6dddf82f",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4493,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-10T12:23:58Z",
+      "side": 1,
+      "message": "Why not:\nreturn data-\u003edone.test() ? 0 : 1;",
+      "range": {
+        "startLine": 4492,
+        "startChar": 1,
+        "endLine": 4493,
+        "endChar": 23
+      },
+      "revId": "32f97d7cdbeadd47e2ea1bf0a573615b49bf5faf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
