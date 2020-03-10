@@ -38,7 +38,7 @@ struct SpirvShader::Impl::Group
 		auto &type = shader->getType(SpirvShader::Type::ID(insn.word(1)));
 		for(auto i = 0u; i < type.componentCount; i++)
 		{
-			auto mask = As<SIMD::UInt>(state->activeLaneMask());
+			auto mask = As<SIMD::UInt>(state->activeStoresAndAtomicsMask());
 			auto identity = TYPE(identityValue);
 			SIMD::UInt v_uint = (value.UInt(i) & mask) | (As<SIMD::UInt>(identity) & ~mask);
 			TYPE v = As<TYPE>(v_uint);
@@ -93,11 +93,11 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		{
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
-			SIMD::Int active = state->activeLaneMask();
+			SIMD::Int mask = state->activeStoresAndAtomicsMask();
 			// TODO: Would be nice if we could write this as:
-			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
+			//   elect = mask & ~(mask.Oxyz | mask.OOxy | mask.OOOx)
 			auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+			auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
 			dst.move(0, elect);
 			break;
 		}
@@ -105,14 +105,14 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		case spv::OpGroupNonUniformAll:
 		{
 			Operand predicate(this, state, insn.word(4));
-			dst.move(0, AndAll(predicate.UInt(0) | ~As<SIMD::UInt>(state->activeLaneMask())));
+			dst.move(0, AndAll(predicate.UInt(0) | ~As<SIMD::UInt>(state->activeStoresAndAtomicsMask())));
 			break;
 		}
 
 		case spv::OpGroupNonUniformAny:
 		{
 			Operand predicate(this, state, insn.word(4));
-			dst.move(0, OrAll(predicate.UInt(0) & As<SIMD::UInt>(state->activeLaneMask())));
+			dst.move(0, OrAll(predicate.UInt(0) & As<SIMD::UInt>(state->activeStoresAndAtomicsMask())));
 			break;
 		}
 
@@ -120,7 +120,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		{
 			Operand value(this, state, insn.word(4));
 			auto res = SIMD::UInt(0xffffffff);
-			SIMD::UInt active = As<SIMD::UInt>(state->activeLaneMask());
+			SIMD::UInt active = As<SIMD::UInt>(state->activeStoresAndAtomicsMask());
 			SIMD::UInt inactive = ~active;
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
@@ -155,11 +155,11 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			Operand value(this, state, valueId);
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
-			SIMD::Int active = state->activeLaneMask();
+			SIMD::Int mask = state->activeStoresAndAtomicsMask();
 			// TODO: Would be nice if we could write this as:
-			//   elect = active & ~(active.Oxyz | active.OOxy | active.OOOx)
+			//   elect = mask & ~(mask.Oxyz | mask.OOxy | mask.OOOx)
 			auto v0111 = SIMD::Int(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-			auto elect = active & ~(v0111 & (active.xxyz | active.xxxy | active.xxxx));
+			auto elect = mask & ~(v0111 & (mask.xxyz | mask.xxxy | mask.xxxx));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
 				dst.move(i, OrAll(value.Int(i) & elect));
@@ -171,7 +171,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 		{
 			ASSERT(type.componentCount == 4);
 			Operand predicate(this, state, insn.word(4));
-			dst.move(0, SIMD::Int(SignMask(state->activeLaneMask() & predicate.Int(0))));
+			dst.move(0, SIMD::Int(SignMask(state->activeStoresAndAtomicsMask() & predicate.Int(0))));
 			dst.move(1, SIMD::Int(0));
 			dst.move(2, SIMD::Int(0));
 			dst.move(3, SIMD::Int(0));
