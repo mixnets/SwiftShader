@@ -22,6 +22,30 @@
       "revId": "32f97d7cdbeadd47e2ea1bf0a573615b49bf5faf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d3b4979_48bc9eab",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4493,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-10T12:35:00Z",
+      "side": 1,
+      "message": "Because it looks like a mistake. Don\u0027t worry, if I keep this, I will likely rename \"result\" to something more descriptive, like \"awaitCalled\"",
+      "parentUuid": "cf6c343a_6dddf82f",
+      "range": {
+        "startLine": 4492,
+        "startChar": 1,
+        "endLine": 4493,
+        "endChar": 23
+      },
+      "revId": "32f97d7cdbeadd47e2ea1bf0a573615b49bf5faf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
