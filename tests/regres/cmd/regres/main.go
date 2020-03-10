@@ -80,6 +80,7 @@ var (
 	maxProcMemory = flag.Uint64("max-proc-mem", shell.MaxProcMemory, "maximum virtual memory per child process")
 	dailyNow      = flag.Bool("dailynow", false, "Start by running the daily pass")
 	priority      = flag.String("priority", "", "Prioritize a single change with the given id")
+	dailyChange   = flag.String("dailychange", "", "Change hash to use for daily pass")
 )
 
 func main() {
@@ -97,6 +98,7 @@ func main() {
 		dryRun:        *dryRun,
 		dailyNow:      *dailyNow,
 		priority:      *priority,
+		dailyChange:   *dailyChange,
 	}
 
 	if err := r.run(); err != nil {
@@ -118,6 +120,7 @@ type regres struct {
 	maxProcMemory uint64 // max virtual memory for child processes
 	dailyNow      bool   // start with a daily run
 	priority      string // Prioritize a single change with the given id
+	dailyChange   string // Change hash to use for daily pass
 }
 
 // resolveDirs ensures that the necessary directories used can be found, and
@@ -508,40 +511,44 @@ func (r *regres) testParent(change *changeInfo, testlists testlist.Lists, d deqp
 func (r *regres) updateTestLists(client *gerrit.Client) error {
 	log.Println("Updating test lists")
 
-	headHash, err := git.FetchRefHash("HEAD", gitURL)
-	if err != nil {
-		return cause.Wrap(err, "Could not get hash of master HEAD")
+	dailyHash := git.ParseHash(r.dailyChange)
+	if r.dailyChange == "" {
+		headHash, err := git.FetchRefHash("HEAD", gitURL)
+		if err != nil {
+			return cause.Wrap(err, "Could not get hash of master HEAD")
+		}
+		dailyHash = headHash
 	}
 
-	// Get the full test results for latest master.
-	test := r.newTest(headHash)
+	// Get the full test results.
+	test := r.newTest(dailyHash)
 	defer test.cleanup()
 
 	// Always need to checkout the change.
 	if err := test.checkout(); err != nil {
-		return cause.Wrap(err, "Failed to checkout '%s'", headHash)
+		return cause.Wrap(err, "Failed to checkout '%s'", dailyHash)
 	}
 
 	d, err := r.getOrBuildDEQP(test)
 	if err != nil {
-		return cause.Wrap(err, "Failed to build deqp for '%s'", headHash)
+		return cause.Wrap(err, "Failed to build deqp for '%s'", dailyHash)
 	}
 
 	// Load the test lists.
 	testLists, err := test.loadTestLists(fullTestListRelPath)
 	if err != nil {
-		return cause.Wrap(err, "Failed to load full test lists for '%s'", headHash)
+		return cause.Wrap(err, "Failed to load full test lists for '%s'", dailyHash)
 	}
 
 	// Build the change.
 	if err := test.build(); err != nil {
-		return cause.Wrap(err, "Failed to build '%s'", headHash)
+		return cause.Wrap(err, "Failed to build '%s'", dailyHash)
 	}
 
 	// Run the tests on the change.
 	results, err := test.run(testLists, d)
 	if err != nil {
-		return cause.Wrap(err, "Failed to test '%s'", headHash)
+		return cause.Wrap(err, "Failed to test '%s'", dailyHash)
 	}
 
 	// Write out the test list status files.
@@ -565,7 +572,7 @@ func (r *regres) updateTestLists(client *gerrit.Client) error {
 	}
 
 	commitMsg := strings.Builder{}
-	commitMsg.WriteString(consts.TestListUpdateCommitSubjectPrefix + headHash.String()[:8])
+	commitMsg.WriteString(consts.TestListUpdateCommitSubjectPrefix + dailyHash.String()[:8])
 	if existingChange != nil {
 		// Reuse gerrit change ID if there's already a change up for review.
 		commitMsg.WriteString("\n\n")
