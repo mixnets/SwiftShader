@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5bd9e7aa_9d27944b",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1672,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-10T15:31:49Z",
+      "side": 1,
+      "message": "uber-nit: Name this Inline ?",
+      "range": {
+        "startLine": 1672,
+        "startChar": 8,
+        "endLine": 1672,
+        "endChar": 13
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63e82c7d_e88e1b29",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-10T15:31:49Z",
+      "side": 1,
+      "message": "nit: Placing this comparison in parenthesis makes it easier to read.",
+      "range": {
+        "startLine": 157,
+        "startChar": 28,
+        "endLine": 157,
+        "endChar": 52
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a84b7a5_2587b5f7",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-10T15:31:49Z",
+      "side": 1,
+      "message": "Actually this will only keep the LSB. Strictly speaking that\u0027s incorrect. The System V ABI for x86-64 states: \"Booleans, when stored in a memory object, are stored as single byte objects the value of which is always 0 (false) or 1 (true). When stored in integer registers or passed as arguments on the stack, all 8 bytes of the register are significant; any nonzero value is considered true\"\n\nSince the return value is passed by register, I think we should do a compare against 0 here.",
+      "range": {
+        "startLine": 181,
+        "startChar": 5,
+        "endLine": 181,
+        "endChar": 78
+      },
+      "revId": "5009f3ee61928ac0f3b232f81901d5b9fdf6d7c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
