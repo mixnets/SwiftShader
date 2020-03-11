@@ -22,6 +22,30 @@
       "revId": "8be72df6046231eedbd14d155a5a9484bda217c1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11bf9fd9_70a52e63",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 802,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T16:07:58Z",
+      "side": 0,
+      "message": "Yes, I ran into this because after the first full test run it failed to push the change to Gerrit, and I lost the testslists despite using --keep. After this fix I was able to grab it. Still need to look into why it failed to push to Gerrit.",
+      "parentUuid": "646d8b75_a48bd288",
+      "range": {
+        "startLine": 802,
+        "startChar": 1,
+        "endLine": 802,
+        "endChar": 78
+      },
+      "revId": "8be72df6046231eedbd14d155a5a9484bda217c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
