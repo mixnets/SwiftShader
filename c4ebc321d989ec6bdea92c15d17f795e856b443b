@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c2035bb6_5e2362bc",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T15:34:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0aa4c234_b6c0e96a",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 12
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d8eff488_16b1c28a",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "168e0636_6a08e0d4",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T15:34:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8eff488_16b1c28a",
+      "range": {
+        "startLine": 101,
+        "startChar": 2,
+        "endLine": 101,
+        "endChar": 13
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "13d2a1c0_e29425c1",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 3
@@ -68,6 +116,30 @@
       "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80a6bda0_c4c801ac",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T15:34:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13d2a1c0_e29425c1",
+      "range": {
+        "startLine": 514,
+        "startChar": 14,
+        "endLine": 514,
+        "endChar": 42
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -115,6 +187,30 @@
       "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ae18d22_1b533a14",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T15:34:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "220168be_ab23967b",
+      "range": {
+        "startLine": 810,
+        "startChar": 1,
+        "endLine": 810,
+        "endChar": 78
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
