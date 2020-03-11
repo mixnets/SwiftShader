@@ -22,6 +22,30 @@
       "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68994012_469d5822",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-11T12:08:32Z",
+      "side": 1,
+      "message": "That\u0027s what swiftshader_reactor does. It picks Subzero or LLVM based on the architecture (it\u0027s what we use with the GL libraries today).",
+      "parentUuid": "22a07852_e42a0de2",
+      "range": {
+        "startLine": 178,
+        "startChar": 8,
+        "endLine": 178,
+        "endChar": 35
+      },
+      "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
