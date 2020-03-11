@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "787933ea_ee910d72",
+        "filename": "tests/regres/testlist/testlist.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T10:55:21Z",
+      "side": 1,
+      "message": "Good spot. Fixed.",
+      "parentUuid": "75f1d148_2aaeeee9",
+      "revId": "5eb8947470586deec5f33358ec17647883f2be31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ea18176d_201d10c9",
         "filename": "tests/regres/testlist/testlist.go",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "5eb8947470586deec5f33358ec17647883f2be31",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a5f8d3b_4e61827d",
+        "filename": "tests/regres/testlist/testlist.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T10:55:21Z",
+      "side": 1,
+      "message": "So that things like the regres report has deterministic output. Easier to sort here than remember to do it the N places these tests are actually iterated.",
+      "parentUuid": "ea18176d_201d10c9",
+      "revId": "5eb8947470586deec5f33358ec17647883f2be31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
