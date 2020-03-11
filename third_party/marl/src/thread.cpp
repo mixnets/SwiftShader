@@ -108,6 +108,8 @@ bool getGroupAffinity(unsigned int index, GROUP_AFFINITY* groupAffinity) {
 
 }  // namespace
 
+/*
+
 class Thread::Impl {
  public:
   Impl(const Func& func) : func(func) {}
@@ -165,6 +167,25 @@ void Thread::join() {
   MARL_ASSERT(impl != nullptr, "join() called on unjoinable thread");
   std::unique_lock<std::mutex> lock(impl->mutex);
   impl->cv.wait(lock, [&] { return impl->finished; });
+}
+*/
+
+class Thread::Impl {
+ public:
+  template <typename F>
+  Impl(F&& func) : thread(func) {}
+  std::thread thread;
+};
+
+Thread::Thread(unsigned int /* logicalCpu */, const Func& func)
+    : impl(new Thread::Impl(func)) {}
+
+Thread::~Thread() {
+  delete impl;
+}
+
+void Thread::join() {
+  impl->thread.join();
 }
 
 void Thread::setName(const char* fmt, ...) {
