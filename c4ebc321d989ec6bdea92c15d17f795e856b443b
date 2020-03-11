@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "0aa4c234_b6c0e96a",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T08:53:21Z",
+      "side": 1,
+      "message": "nit: I\u0027d move this up one line to keep next to dailyNow.",
+      "range": {
+        "startLine": 83,
+        "startChar": 1,
+        "endLine": 83,
+        "endChar": 12
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8eff488_16b1c28a",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T08:53:21Z",
+      "side": 1,
+      "message": "nit: move up 1 line",
+      "range": {
+        "startLine": 101,
+        "startChar": 2,
+        "endLine": 101,
+        "endChar": 13
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13d2a1c0_e29425c1",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T08:53:21Z",
+      "side": 1,
+      "message": "nit: While the current implementation doesn\u0027t explode if the hash fails, I did have to look this up. Idiomatically, this function should return a (Hash, error) pair.\nI\u0027d recommend either changing ParseHash() to return an additional error, or put this in an else for the `if` below.",
+      "range": {
+        "startLine": 514,
+        "startChar": 14,
+        "endLine": 514,
+        "endChar": 42
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1b6964f5_64bf594c",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 3
@@ -13,6 +82,30 @@
       "writtenOn": "2020-03-11T05:51:50Z",
       "side": 1,
       "message": "Alternatively we could remove this and use test.r.keepCheckouts instead?",
+      "range": {
+        "startLine": 810,
+        "startChar": 1,
+        "endLine": 810,
+        "endChar": 78
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "220168be_ab23967b",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T08:53:21Z",
+      "side": 1,
+      "message": "That would be preferable. `test` is supposed to contain just the test\u0027s data, common stuff is fetched from `r`.",
+      "parentUuid": "1b6964f5_64bf594c",
       "range": {
         "startLine": 810,
         "startChar": 1,
