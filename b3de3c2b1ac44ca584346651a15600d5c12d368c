@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce9f4f5a_593a891d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T09:04:04Z",
+      "side": 1,
+      "message": "If there\u0027s reluctance to submit this change of behaviour, let me know and I\u0027ll break the documentation change out into another CL.\n\nFWIW, old and new behavior pass dEQP tests. Ideally we\u0027d push to get the spec tightened up here - if we did, I believe this new behavior is what we\u0027d want the spec to be.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "b3de3c2b1ac44ca584346651a15600d5c12d368c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
