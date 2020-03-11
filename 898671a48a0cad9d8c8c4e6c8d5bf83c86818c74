@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22a07852_e42a0de2",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T02:14:16Z",
+      "side": 1,
+      "message": "This should be conditional on CPU architecture to not break Fuchsia on ARM64, no?",
+      "range": {
+        "startLine": 178,
+        "startChar": 8,
+        "endLine": 178,
+        "endChar": 35
+      },
+      "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
