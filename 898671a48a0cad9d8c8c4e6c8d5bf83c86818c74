@@ -46,6 +46,30 @@
       "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6020d66_ef641b9c",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-11T12:09:23Z",
+      "side": 1,
+      "message": "See:\nhttps://cs.chromium.org/chromium/src/third_party/swiftshader/src/Reactor/BUILD.gn?l\u003d360",
+      "parentUuid": "68994012_469d5822",
+      "range": {
+        "startLine": 178,
+        "startChar": 8,
+        "endLine": 178,
+        "endChar": 35
+      },
+      "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
