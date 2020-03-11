@@ -81,7 +81,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 #else
 		VK_FALSE,  // textureCompressionASTC_LDR
 #endif
-		VK_FALSE,  // textureCompressionBC
+		VK_TRUE,   // textureCompressionBC
 		VK_FALSE,  // occlusionQueryPrecise
 		VK_FALSE,  // pipelineStatisticsQuery
 		VK_TRUE,   // vertexPipelineStoresAndAtomics
