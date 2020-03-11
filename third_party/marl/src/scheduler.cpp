@@ -127,6 +127,7 @@ void Scheduler::unbind() {
 
 Scheduler::Scheduler(Allocator* allocator /* = Allocator::Default */)
     : allocator(allocator), workerThreads{} {
+  printf("Scheduler::Scheduler()\n");
   for (size_t i = 0; i < spinningWorkers.size(); i++) {
     spinningWorkers[i] = -1;
   }
@@ -145,6 +146,7 @@ Scheduler::~Scheduler() {
   // Release all worker threads.
   // This will wait for all in-flight tasks to complete before returning.
   setWorkerThreadCount(0);
+  printf("Scheduler::~Scheduler()\n");
 }
 
 void Scheduler::setThreadInitializer(const std::function<void()>& func) {
