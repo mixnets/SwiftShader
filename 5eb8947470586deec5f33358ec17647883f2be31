@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75f1d148_2aaeeee9",
+        "filename": "tests/regres/testlist/testlist.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2020-03-11T10:21:25Z",
+      "side": 1,
+      "message": "Slight grammar error?",
+      "revId": "5eb8947470586deec5f33358ec17647883f2be31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea18176d_201d10c9",
+        "filename": "tests/regres/testlist/testlist.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 7165
+      },
+      "writtenOn": "2020-03-11T10:21:25Z",
+      "side": 1,
+      "message": "This was already the case, but why do we sort the tests?",
+      "revId": "5eb8947470586deec5f33358ec17647883f2be31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
