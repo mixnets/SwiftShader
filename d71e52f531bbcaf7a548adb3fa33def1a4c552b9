@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2549be14_c44de86b",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T12:30:04Z",
+      "side": 1,
+      "message": "getOrCreateScheduler()? It\u0027s then clear that there\u0027s lazy initialization?",
+      "range": {
+        "startLine": 271,
+        "startChar": 17,
+        "endLine": 271,
+        "endChar": 30
+      },
+      "revId": "d71e52f531bbcaf7a548adb3fa33def1a4c552b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce85536e_0d8436bd",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-11T12:30:04Z",
+      "side": 1,
+      "message": "Could be replaced with:\n\n  static auto scheduler \u003d []{\n      scheduler \u003d std::make_unique\u003cmarl::Scheduler\u003e();\n      scheduler-\u003esetWorkerThreadCount(8);\n      return scheduler;\n  }();\n\nThen you don\u0027t need the mutex.",
+      "range": {
+        "startLine": 273,
+        "startChar": 1,
+        "endLine": 280,
+        "endChar": 2
+      },
+      "revId": "d71e52f531bbcaf7a548adb3fa33def1a4c552b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
