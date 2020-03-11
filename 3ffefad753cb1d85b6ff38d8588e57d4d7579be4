@@ -22,6 +22,30 @@
       "revId": "3ffefad753cb1d85b6ff38d8588e57d4d7579be4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "008a4717_c3c05e29",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T18:47:25Z",
+      "side": 1,
+      "message": "Removed to avoid confusion/surprises.",
+      "parentUuid": "2d0e1d73_e15fabf6",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 38
+      },
+      "revId": "3ffefad753cb1d85b6ff38d8588e57d4d7579be4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
