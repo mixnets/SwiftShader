@@ -70,6 +70,30 @@
       "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "18e34fd3_7b0bedbb",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T13:16:42Z",
+      "side": 1,
+      "message": "Ah, thanks, I misread this for the LLVM-only one.",
+      "parentUuid": "e6020d66_ef641b9c",
+      "range": {
+        "startLine": 178,
+        "startChar": 8,
+        "endLine": 178,
+        "endChar": 35
+      },
+      "revId": "898671a48a0cad9d8c8c4e6c8d5bf83c86818c74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
