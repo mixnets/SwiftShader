@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b6964f5_64bf594c",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-11T05:51:50Z",
+      "side": 1,
+      "message": "Alternatively we could remove this and use test.r.keepCheckouts instead?",
+      "range": {
+        "startLine": 810,
+        "startChar": 1,
+        "endLine": 810,
+        "endChar": 78
+      },
+      "revId": "c4ebc321d989ec6bdea92c15d17f795e856b443b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
