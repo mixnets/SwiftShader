@@ -2449,6 +2449,7 @@ if(SWIFTSHADER_BUILD_PVR)
         )
     endif()
 
+<<<<<<< HEAD   (7e8570 Support running PowerVR samples using SwiftShader on Linux)
     # Samples known to work well
     set(PVR_VULKAN_TARGET_GOOD
         VulkanBumpmap
@@ -2539,3 +2540,10 @@ if(SWIFTSHADER_BUILD_PVR)
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
     endforeach()
 endif()
+=======
+    build_example(fractal)
+    build_example(hello_task)
+    build_example(primes)
+    build_example(tasks_in_tasks)
+endif(MARL_BUILD_EXAMPLES)
+>>>>>>> BRANCH (3e2f84 Squashed 'third_party/marl/' changes from a047dd0bb..94a361c)
