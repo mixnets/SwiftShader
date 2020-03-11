@@ -2438,6 +2438,7 @@ if(SWIFTSHADER_BUILD_PVR)
         )
     endif()
 
+<<<<<<< HEAD   (16ae92 Subzero: fix Call on bool-returning functions)
     # Samples known to work well
     set(PVR_VULKAN_TARGET_GOOD
         VulkanBumpmap
@@ -2528,3 +2529,10 @@ if(SWIFTSHADER_BUILD_PVR)
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
     endforeach()
 endif()
+=======
+    build_example(fractal)
+    build_example(hello_task)
+    build_example(primes)
+    build_example(tasks_in_tasks)
+endif(MARL_BUILD_EXAMPLES)
+>>>>>>> BRANCH (375ff6 Squashed 'third_party/marl/' changes from a047dd0bb..62f209b)
