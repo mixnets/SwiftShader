@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "071cc17e_fb95b285",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-12T20:15:06Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "ac821853_14d8bc8e",
+      "range": {
+        "startLine": 640,
+        "startChar": 4,
+        "endLine": 640,
+        "endChar": 8
+      },
+      "revId": "8e23dbf6088c47ba6b98e89b1c46ba3fbc5e57ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2528b957_5e8ddfaf",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 2
@@ -39,6 +63,24 @@
       "revId": "8e23dbf6088c47ba6b98e89b1c46ba3fbc5e57ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "942e7b4d_2e46a2f0",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-12T20:15:06Z",
+      "side": 1,
+      "message": "Good spot. So the cause of this is a fun one:\nBy default VSCode has a short timeout on reformatting tools. Once the file reaches a certain complexity, the clang-format tool can exceed this default, meaning saves are not formatted.\nI have a new machine, and I clearly haven\u0027t bumped the timeout for it.",
+      "parentUuid": "2528b957_5e8ddfaf",
+      "revId": "8e23dbf6088c47ba6b98e89b1c46ba3fbc5e57ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
