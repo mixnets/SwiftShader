@@ -2,6 +2,46 @@
   "comments": [
     {
       "key": {
+        "uuid": "19707ed3_5719a070",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T18:00:43Z",
+      "side": 1,
+      "message": "Should be formatted as \"Bug: b/146423360\"",
+      "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "912186cf_bfded148",
+        "filename": "include/vulkan/vk_google_filtering_precision.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T18:00:43Z",
+      "side": 1,
+      "message": "Can vulkan_core.h be used instead? That would avoid pulling in platform-specific things.",
+      "range": {
+        "startLine": 15,
+        "startChar": 10,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e173f7df_bd71385c",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 1
@@ -18,6 +58,52 @@
         "startChar": 39,
         "endLine": 71,
         "endChar": 112
+      },
+      "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ff45a42_9fa13f20",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T18:00:43Z",
+      "side": 1,
+      "message": "filteringPrecision",
+      "range": {
+        "startLine": 80,
+        "startChar": 48,
+        "endLine": 80,
+        "endChar": 61
+      },
+      "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b2e07fc_ccd83129",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1841,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T18:00:43Z",
+      "side": 1,
+      "message": "This is a very generic and could be mistaken for point vs. linear filtering and such. Rename to \u0027filteringPrecision\u0027 ?",
+      "range": {
+        "startLine": 1841,
+        "startChar": 42,
+        "endLine": 1841,
+        "endChar": 55
       },
       "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
