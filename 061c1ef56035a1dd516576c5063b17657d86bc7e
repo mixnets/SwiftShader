@@ -22,6 +22,30 @@
       "revId": "061c1ef56035a1dd516576c5063b17657d86bc7e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8801990d_ae98cc8b",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-12T18:38:51Z",
+      "side": 1,
+      "message": "Done. Just realized you mentioned doing this in a different change. Anyway, it\u0027s not that big a change, it\u0027s probably fine to land as is.",
+      "parentUuid": "a775c6b5_97767c4c",
+      "range": {
+        "startLine": 1505,
+        "startChar": 6,
+        "endLine": 1653,
+        "endChar": 50
+      },
+      "revId": "061c1ef56035a1dd516576c5063b17657d86bc7e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
