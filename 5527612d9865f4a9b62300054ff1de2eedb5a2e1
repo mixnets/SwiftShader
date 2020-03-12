@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c1e0a99c_dee6140d",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1538,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T04:50:38Z",
+      "side": 1,
+      "message": "note: We should probably use this for other intermediary targets as well, like ReactorLLVM and ReactorSubzero and their respective source lists and other dependencies, to simplify the conditionals down to just the Reactor target selecting between these two. https://swiftshader-review.googlesource.com/c/SwiftShader/+/42191 illustrates that going the other direction can otherwise get a bit complicated. Let\u0027s just let CMake do its job.",
+      "range": {
+        "startLine": 1538,
+        "startChar": 24,
+        "endLine": 1538,
+        "endChar": 40
+      },
+      "revId": "5527612d9865f4a9b62300054ff1de2eedb5a2e1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
