@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac821853_14d8bc8e",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T19:21:53Z",
+      "side": 1,
+      "message": "nit: Associate a bug with it?",
+      "range": {
+        "startLine": 640,
+        "startChar": 4,
+        "endLine": 640,
+        "endChar": 8
+      },
+      "revId": "8e23dbf6088c47ba6b98e89b1c46ba3fbc5e57ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2528b957_5e8ddfaf",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-12T19:21:53Z",
+      "side": 1,
+      "message": "Missing indentation?",
+      "revId": "8e23dbf6088c47ba6b98e89b1c46ba3fbc5e57ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
