@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2cf173cd_2a73fe04",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-12T02:28:40Z",
+      "side": 1,
+      "message": "Nicolas has another change where he\u0027s making all the 0/1, YES/NO, to TRUE/FALSE, so may as well do it here too.\n\nHaving said that, the condition that wraps creating the ReactorLLVM target is:\n\nif(${REACTOR_BACKEND} STREQUAL \"LLVM\")\n...\nendif()\n\nand there are a couple of places that do this for Subzero:\n\nif(${REACTOR_BACKEND} STREQUAL \"Subzero\")\n...\nendif()\n\nI think since we have 2, and maybe more backends in the future, I prefer we do this kind of condition, rather than introduce a new bool variable for one backend (SWIFTSHADER_BUILD_LLVM). Otherwise, it\u0027s just inconsistent. Furthermore, I am going to be splitting up this file, and it will very much become a simple:\n\nif(${REACTOR_BACKEND} STREQUAL \"LLVM\")\n    add_subdirectory(path/to/llvm)\nelseif(${REACTOR_BACKEND} STREQUAL \"Subzero\")\n    add_subdirectory(path/to/subzero)\nendif()\n\nSo what I\u0027m suggesting is that we don\u0027t add SWIFTSHADER_BUILD_LLVM here, but rather simply replace the condition at line 588 with: if(${REACTOR_BACKEND} STREQUAL \"LLVM\")",
+      "revId": "c861479e91efe1138d7e8e35e860be131e280e4b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
