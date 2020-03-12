@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e173f7df_bd71385c",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-12T17:28:33Z",
+      "side": 1,
+      "message": "Nit: Surrounding comparisons with parenthesis makes it easier to read.",
+      "range": {
+        "startLine": 71,
+        "startChar": 39,
+        "endLine": 71,
+        "endChar": 112
+      },
+      "revId": "d2432fb72c5200f059dfc307145869383dd5056d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
