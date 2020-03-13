@@ -22,6 +22,30 @@
       "revId": "3d55e16a9dd902c68221b5bda6cd20c46c8668ea",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d55dee6e_efe6e2da",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-13T12:17:39Z",
+      "side": 1,
+      "message": "Only our unit tests look at this flag. The Vulkan / SPIR-V logic always assumes coroutines are supported, hence the chrome test failures.",
+      "parentUuid": "7caadb91_ca39b208",
+      "range": {
+        "startLine": 384,
+        "startChar": 0,
+        "endLine": 386,
+        "endChar": 2
+      },
+      "revId": "3d55e16a9dd902c68221b5bda6cd20c46c8668ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
