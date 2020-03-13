@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7caadb91_ca39b208",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-13T12:14:05Z",
+      "side": 1,
+      "message": "Do the new tests rely on this change? If not, can we just put this tiny change in it\u0027s own easily revertable CL?\nIf it\u0027s necessary, then I\u0027ll +2 the change.",
+      "range": {
+        "startLine": 384,
+        "startChar": 0,
+        "endLine": 386,
+        "endChar": 2
+      },
+      "revId": "3d55e16a9dd902c68221b5bda6cd20c46c8668ea",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
