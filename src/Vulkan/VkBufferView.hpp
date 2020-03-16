@@ -38,7 +38,7 @@ public:
 	uint32_t getRangeInBytes() const { return static_cast<uint32_t>(range); }
 	VkFormat getFormat() const { return format; }
 
-	const uint32_t id = ImageView::nextID++;  // ID space for sampling function cache, shared with imageviews
+	uint32_t id;
 private:
 	Buffer *buffer;
 	VkFormat format;

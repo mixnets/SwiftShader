@@ -33,7 +33,7 @@ namespace sw {
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler)
 {
 	ImageInstruction instruction(inst);
-	const auto samplerId = sampler ? sampler->id : 0;
+	const uint32_t samplerId = sampler ? sampler->id : 0;
 	ASSERT(imageDescriptor->imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 
 	vk::Device::SamplingRoutineCache::Key key = { inst, imageDescriptor->imageViewId, samplerId };

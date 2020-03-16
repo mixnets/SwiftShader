@@ -31,6 +31,8 @@ BufferView::BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem)
 	{
 		range = pCreateInfo->range;
 	}
+
+	id = MakeImageViewKey((VkImageViewType)7, format, {});
 }
 
 void *BufferView::getPointer() const

@@ -27,6 +27,8 @@ namespace vk {
 
 class SamplerYcbcrConversion;
 
+int MakeImageViewKey(VkImageViewType type, VkFormat format, VkComponentMapping mapping);
+
 class ImageView : public Object<ImageView, VkImageView>
 {
 public:
@@ -82,11 +84,10 @@ public:
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 	size_t getImageSizeInBytes() const { return image->getMemoryRequirements().size; }
 
-	const uint32_t id = nextID++;
+	uint32_t id;
 
 private:
-	static std::atomic<uint32_t> nextID;
-	friend class BufferView;  // ImageView/BufferView share the ID space above.
+	friend class BufferView; // ImageView/BufferView share the ID space above.
 
 	bool imageTypesMatch(VkImageType imageType) const;
 	const Image *getImage(Usage usage) const;
