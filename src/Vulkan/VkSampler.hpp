@@ -27,25 +27,7 @@ namespace vk {
 class Sampler : public Object<Sampler, VkSampler>
 {
 public:
-	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
-	    : magFilter(pCreateInfo->magFilter)
-	    , minFilter(pCreateInfo->minFilter)
-	    , mipmapMode(pCreateInfo->mipmapMode)
-	    , addressModeU(pCreateInfo->addressModeU)
-	    , addressModeV(pCreateInfo->addressModeV)
-	    , addressModeW(pCreateInfo->addressModeW)
-	    , mipLodBias(pCreateInfo->mipLodBias)
-	    , anisotropyEnable(pCreateInfo->anisotropyEnable)
-	    , maxAnisotropy(pCreateInfo->maxAnisotropy)
-	    , compareEnable(pCreateInfo->compareEnable)
-	    , compareOp(pCreateInfo->compareOp)
-	    , minLod(ClampLod(pCreateInfo->minLod))
-	    , maxLod(ClampLod(pCreateInfo->maxLod))
-	    , borderColor(pCreateInfo->borderColor)
-	    , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
-	    , ycbcrConversion(ycbcrConversion)
-	{
-	}
+	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
 
 	static size_t ComputeRequiredAllocationSize(const VkSamplerCreateInfo *pCreateInfo)
 	{
@@ -58,7 +40,7 @@ public:
 		return sw::clamp(lod, 0.0f, (float)(sw::MAX_TEXTURE_LOD));
 	}
 
-	const uint32_t id = nextID++;
+	uint32_t id;
 	const VkFilter magFilter = VK_FILTER_NEAREST;
 	const VkFilter minFilter = VK_FILTER_NEAREST;
 	const VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;

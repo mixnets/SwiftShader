@@ -14,8 +14,73 @@
 
 #include "VkSampler.hpp"
 
+#include <vector>
+
 namespace vk {
 
 std::atomic<uint32_t> Sampler::nextID(1);
+
+struct Param
+{
+	VkFilter magFilter = VK_FILTER_NEAREST;
+	VkFilter minFilter = VK_FILTER_NEAREST;
+	VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+	VkSamplerAddressMode addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	VkSamplerAddressMode addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	VkSamplerAddressMode addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	float mipLodBias = 0.0f;
+	VkBool32 anisotropyEnable = VK_FALSE;
+	float maxAnisotropy = 0.0f;
+	VkBool32 compareEnable = VK_FALSE;
+	VkCompareOp compareOp = VK_COMPARE_OP_NEVER;
+	float minLod = 0.0f;
+	float maxLod = 0.0f;
+	VkBorderColor borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+	VkBool32 unnormalizedCoordinates = VK_FALSE;
+};
+
+Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : magFilter(pCreateInfo->magFilter)
+    , minFilter(pCreateInfo->minFilter)
+    , mipmapMode(pCreateInfo->mipmapMode)
+    , addressModeU(pCreateInfo->addressModeU)
+    , addressModeV(pCreateInfo->addressModeV)
+    , addressModeW(pCreateInfo->addressModeW)
+    , mipLodBias(pCreateInfo->mipLodBias)
+    , anisotropyEnable(pCreateInfo->anisotropyEnable)
+    , maxAnisotropy(pCreateInfo->maxAnisotropy)
+    , compareEnable(pCreateInfo->compareEnable)
+    , compareOp(pCreateInfo->compareOp)
+    , minLod(ClampLod(pCreateInfo->minLod))
+    , maxLod(ClampLod(pCreateInfo->maxLod))
+    , borderColor(pCreateInfo->borderColor)
+    , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
+    , ycbcrConversion(ycbcrConversion)
+{
+	static std::vector<Param> cache;
+
+	Param p;
+	memset(&p, 0, sizeof(Param));
+	p.magFilter = magFilter;
+	p.minFilter = minFilter;
+	p.mipmapMode = mipmapMode;
+	p.addressModeU = addressModeU;
+	p.addressModeV = addressModeV;
+	p.addressModeW = addressModeW;
+
+	for(size_t i = 0; i < cache.size(); i++)
+	{
+		if(memcmp(&cache[i], &p, sizeof(Param)) == 0)
+		{
+			id = i + 1;
+			goto done;
+		}
+	}
+
+	cache.push_back(p);
+	id = cache.size();
+
+done:;
+}
 
 }  // namespace vk
