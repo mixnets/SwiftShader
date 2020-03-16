@@ -2454,25 +2454,40 @@ if(SWIFTSHADER_BUILD_PVR)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}
         )
+        add_custom_command(
+            TARGET libGLESv2
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libGLESv2> ${CMAKE_BINARY_DIR}/bin/$<TARGET_FILE_NAME:libGLESv2>
+        )
+        add_custom_command(
+            TARGET libEGL
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libEGL> ${CMAKE_BINARY_DIR}/bin/$<TARGET_FILE_NAME:libEGL>
+        )
     endif()
 
     # Samples known to work well
     set(PVR_VULKAN_TARGET_GOOD
         VulkanBumpmap
+        VulkanExampleUI
+        VulkanGaussianBlur
         VulkanGlass
         VulkanGnomeHorde
         VulkanHelloAPI
         VulkanImageBasedLighting
         VulkanMultiSampling
+        VulkanParticleSystem
         VulkanSkinning
+    )
+
+    set(PVR_GLES_TARGET_GOOD
+        OpenGLESHelloAPI
     )
 
     set(PVR_VULKAN_TARGET_OTHER
         VulkanDeferredShading
         VulkanDeferredShadingPFX
-        VulkanExampleUI
         VulkanGameOfLife
-        VulkanGaussianBlur
         VulkanIBLMapsGenerator
         VulkanIMGTextureFilterCubic
         VulkanIntroducingPVRShell
@@ -2482,22 +2497,14 @@ if(SWIFTSHADER_BUILD_PVR)
         VulkanMultithreading
         VulkanNavigation2D
         VulkanNavigation3D
-        VulkanParticleSystem
         VulkanPostProcessing
         VulkanPVRScopeExample
         VulkanPVRScopeRemote
     )
 
-    set(PVR_TARGET_OTHER
-        glslang
-        glslangValidator
-        glslang-default-resource-limits
-        OGLCompiler
-        OSDependent
-        OpenCLMatrixMultiplication
+    set(PVR_GLES_TARGET_OTHER
         OpenGLESDeferredShading
         OpenGLESGaussianBlur
-        OpenGLESHelloAPI
         OpenGLESImageBasedLighting
         OpenGLESIMGFramebufferDownsample
         OpenGLESIMGTextureFilterCubic
@@ -2514,6 +2521,15 @@ if(SWIFTSHADER_BUILD_PVR)
         OpenGLESPVRScopeExample
         OpenGLESPVRScopeRemote
         OpenGLESSkinning
+    )
+
+    set(PVR_TARGET_OTHER
+        glslang
+        glslangValidator
+        glslang-default-resource-limits
+        OGLCompiler
+        OSDependent
+        OpenCLMatrixMultiplication
         pugixml
         PVRAssets
         PVRCamera
@@ -2534,15 +2550,25 @@ if(SWIFTSHADER_BUILD_PVR)
         ${PVR_VULKAN_TARGET_OTHER}
     )
 
+    set(PVR_GLES_TARGET
+        ${PVR_GLES_TARGET_GOOD}
+        ${PVR_GLES_TARGET_OTHER}
+    )
+
     foreach(pvr_target ${PVR_VULKAN_TARGET})
         add_dependencies(${pvr_target} vk_swiftshader)
     endforeach()
 
-    foreach(pvr_target ${PVR_VULKAN_TARGET_GOOD})
+    foreach(pvr_target ${PVR_GLES_TARGET})
+        add_dependencies(${pvr_target} libGLESv2)
+        add_dependencies(${pvr_target} libEGL)
+    endforeach()
+
+    foreach(pvr_target ${PVR_VULKAN_TARGET_GOOD} ${PVR_GLES_TARGET_GOOD})
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples)
     endforeach()
 
-    foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER})
+    foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER} ${PVR_GLES_TARGET_OTHER})
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
     endforeach()
 endif()
