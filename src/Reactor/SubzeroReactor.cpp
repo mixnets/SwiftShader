@@ -4772,7 +4772,7 @@ static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::Coro
 		::getOrCreateScheduler().bind();
 	}
 
-	marl::schedule([=] {
+	auto run = [=] {
 		// Store handle in TLS so that the coroutine can grab it right away, before
 		// any fiber switch occurs.
 		coro::setHandleParam(coroData);
@@ -4782,7 +4782,8 @@ static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::Coro
 		coroData->done.signal();        // coroutine is done.
 		coroData->suspended.signal();   // resume any blocking await() call.
 		coroData->terminated.signal();  // signal that the coroutine data is ready for freeing.
-	});
+	};
+	marl::schedule(marl::Task(run, marl::Task::Flags::SameThread));
 
 	coroData->suspended.wait();  // block until the first yield or coroutine end
 
