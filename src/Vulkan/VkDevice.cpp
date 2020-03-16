@@ -38,14 +38,18 @@ std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now
 
 namespace vk {
 
-std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key &key) const
+std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key &key)
 {
+	ASSERT_LOCKED(mutex);
+
 	return cache.query(key);
 }
 
 void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine)
 {
 	ASSERT(routine);
+	ASSERT_LOCKED(mutex);
+
 	cache.add(key, routine);
 }
 
@@ -56,6 +60,8 @@ rr::Routine *Device::SamplingRoutineCache::querySnapshot(const vk::Device::Sampl
 
 void Device::SamplingRoutineCache::updateSnapshot()
 {
+	std::lock_guard<std::mutex> lock(mutex);
+
 	cache.updateSnapshot();
 }
 
@@ -309,13 +315,7 @@ rr::Routine *Device::querySnapshotCache(const SamplingRoutineCache::Key &key) co
 
 void Device::updateSamplingRoutineSnapshotCache()
 {
-	std::unique_lock<std::mutex> lock(samplingRoutineCacheMutex);
 	samplingRoutineCache->updateSnapshot();
-}
-
-std::mutex &Device::getSamplingRoutineCacheMutex()
-{
-	return samplingRoutineCacheMutex;
 }
 
 uint32_t Device::indexSampler(const SamplerState &samplerState)
