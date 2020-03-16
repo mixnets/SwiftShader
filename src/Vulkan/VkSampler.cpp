@@ -18,8 +18,6 @@
 
 namespace vk {
 
-std::atomic<uint32_t> Sampler::nextID(1);
-
 struct Param
 {
 	VkFilter magFilter = VK_FILTER_NEAREST;

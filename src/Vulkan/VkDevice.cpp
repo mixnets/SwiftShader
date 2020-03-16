@@ -38,6 +38,11 @@ std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now
 
 namespace vk {
 
+std::mutex &Device::SamplingRoutineCache::getMutex()
+{
+	return mutex;
+}
+
 std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key &key) const
 {
 	return cache.query(key);
@@ -270,13 +275,8 @@ rr::Routine *Device::findInConstCache(const SamplingRoutineCache::Key &key) cons
 
 void Device::updateSamplingRoutineConstCache()
 {
-	std::unique_lock<std::mutex> lock(samplingRoutineCacheMutex);
+	std::lock_guard<std::mutex> lock(samplingRoutineCache->getMutex());
 	samplingRoutineCache->updateConstCache();
-}
-
-std::mutex &Device::getSamplingRoutineCacheMutex()
-{
-	return samplingRoutineCacheMutex;
 }
 
 }  // namespace vk
