@@ -86,18 +86,22 @@ public:
 			};
 		};
 
-		std::shared_ptr<rr::Routine> query(const Key &key) const;
+		std::mutex &getMutex() { return mutex; }
+
+		// Methods which require holding the lock.
+		std::shared_ptr<rr::Routine> query(const Key &key);
 		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine);
 
+		// Methods which don't require holding the lock.
 		rr::Routine *querySnapshot(const Key &key) const;
 		void updateSnapshot();
 
 	private:
-		sw::LRUSnapshotCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
+		sw::LRUSnapshotCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;  // guarded by mutex
+		std::mutex mutex;
 	};
 
 	SamplingRoutineCache *getSamplingRoutineCache() const;
-	std::mutex &getSamplingRoutineCacheMutex();
 	rr::Routine *querySnapshotCache(const SamplingRoutineCache::Key &key) const;
 	void updateSamplingRoutineSnapshotCache();
 
@@ -139,14 +143,13 @@ private:
 	Queue *const queues = nullptr;
 	uint32_t queueCount = 0;
 	std::unique_ptr<sw::Blitter> blitter;
-	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
-	std::mutex samplingRoutineCacheMutex;
 	uint32_t enabledExtensionCount = 0;
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
 	ExtensionName *extensions = nullptr;
 	const VkPhysicalDeviceFeatures enabledFeatures = {};
 
 	std::shared_ptr<marl::Scheduler> scheduler;
+	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 	std::unique_ptr<SamplerIndexer> samplerIndexer;
 
 #ifdef ENABLE_VK_DEBUGGER
