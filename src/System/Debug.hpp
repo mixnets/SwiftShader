@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include <cctype>
+#include <mutex>
 #include <string>
 
 #if !defined(TRACE_OUTPUT_FILE)
@@ -49,6 +50,9 @@ void abort(const char *format, ...) CHECK_PRINTF_ARGS;
 
 // Outputs text to the debugging log, and traps once if a debugger is attached.
 void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
+
+// Tries to lock the mutex on a separate thread. Only use to assert the mutex is already locked.
+bool try_lock_unrecoverable(std::mutex &mutex);
 
 }  // namespace sw
 
@@ -147,5 +151,7 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 			}                            \
 		} while(0)
 #endif
+
+#define ASSERT_LOCKED(mutex) ASSERT_MSG(sw::try_lock_unrecoverable(mutex) == false, "Mutex was expected to be locked, but wasn't.");
 
 #endif  // Debug_hpp
