@@ -14,11 +14,6 @@
 
 #include "Debug.hpp"
 
-#include <atomic>
-#include <cstdarg>
-#include <cstdio>
-#include <string>
-
 #if __ANDROID__
 #	include <android/log.h>
 #endif
@@ -33,6 +28,12 @@
 #	include <sys/sysctl.h>
 #	include <unistd.h>
 #endif
+
+#include <atomic>
+#include <cstdarg>
+#include <cstdio>
+#include <string>
+#include <thread>
 
 #ifdef ERROR
 #	undef ERROR  // b/127920555
@@ -236,6 +237,23 @@ void log_trap(const char *format, ...)
 		logv(Level::Verbose, format, vararg);
 		va_end(vararg);
 	}
+}
+
+// std::mutex::try_lock() has undefined behavior when called from the same thread
+// that already owns the mutex. This function calls it from a separate thread.
+// If successfully locked, it can't be unlocked. Use only to assert it is locked.
+bool try_lock_unrecoverable(std::mutex &mutex)
+{
+	bool locked = false;
+
+	auto try_lock = [&]() {
+		locked = mutex.try_lock();
+	};
+
+	std::thread thread(try_lock);
+	thread.join();
+
+	return locked;
 }
 
 }  // namespace sw
