@@ -1646,6 +1646,7 @@ file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
 )
 
 set(SUBZERO_REACTOR_LIST
+    ${SOURCE_DIR}/Reactor/CoroutineRuntime.cpp
     ${SOURCE_DIR}/Reactor/Debug.cpp
     ${SOURCE_DIR}/Reactor/Debug.hpp
     ${SOURCE_DIR}/Reactor/EmulatedReactor.cpp
