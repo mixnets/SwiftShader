@@ -19,12 +19,49 @@
 
 BENCHMARK_MAIN();
 
+namespace {
+static rr::CoroutineRuntime const *const runtimes[] = {
+	rr::CoroutineRuntime::Marl,
+	rr::CoroutineRuntime::UContext,
+	rr::CoroutineRuntime::Win32,
+};
+static constexpr size_t numRuntimes = sizeof(runtimes) / sizeof(runtimes[0]);
+}  // namespace
+
 class Coroutines : public benchmark::Fixture
 {
 public:
-	void SetUp(const ::benchmark::State &state) {}
+	void SetUp(const ::benchmark::State &state)
+	{
+		if(auto rt = runtime(state))
+		{
+			rr::CoroutineRuntime::Set(rt);
+		}
+	}
 
 	void TearDown(const ::benchmark::State &state) {}
+
+	static rr::CoroutineRuntime const *runtime(const ::benchmark::State &state)
+	{
+		return runtimes[state.range(0)];
+	}
+
+	static size_t iterations(const ::benchmark::State &state)
+	{
+		return static_cast<size_t>(state.range(1));
+	}
+
+	static void args(benchmark::internal::Benchmark *b)
+	{
+		b->ArgNames({ "runtime", "iterations" });
+		for(unsigned int runtime = 0; runtime < numRuntimes; ++runtime)
+		{
+			for(unsigned int iterations = 1U; iterations <= 0x1000000; iterations *= 8)
+			{
+				b->Args({ runtime, iterations });
+			}
+		}
+	}
 };
 
 BENCHMARK_DEFINE_F(Coroutines, Fibonacci)
@@ -35,6 +72,11 @@ BENCHMARK_DEFINE_F(Coroutines, Fibonacci)
 	if(!Caps.CoroutinesSupported)
 	{
 		state.SkipWithError("Coroutines are not supported");
+		return;
+	}
+	if(!runtime(state))
+	{
+		state.SkipWithError("Coroutine runtime is not supported");
 		return;
 	}
 
@@ -55,16 +97,14 @@ BENCHMARK_DEFINE_F(Coroutines, Fibonacci)
 
 	auto coroutine = function();
 
-	const auto iterations = state.range(0);
-
 	int out = 0;
 	for(auto _ : state)
 	{
-		for(int64_t i = 0; i < iterations; i++)
+		for(int64_t i = 0, c = iterations(state); i < c; i++)
 		{
 			coroutine->await(out);
 		}
 	}
 }
 
-BENCHMARK_REGISTER_F(Coroutines, Fibonacci)->RangeMultiplier(8)->Range(1, 0x1000000)->ArgName("iterations");
+BENCHMARK_REGISTER_F(Coroutines, Fibonacci)->Apply(Coroutines::args);
