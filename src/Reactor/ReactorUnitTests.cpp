@@ -2133,6 +2133,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::UContext);
 
 	Coroutine<int()> function;
 	{
@@ -2166,6 +2167,7 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::UContext);
 
 	Coroutine<uint8_t(uint8_t * data, int count)> function;
 	{
@@ -2207,6 +2209,7 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::UContext);
 
 	Coroutine<int()> function;
 	{
@@ -2241,6 +2244,7 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::UContext);
 
 	for(int i = 0; i < 2; ++i)
 	{
@@ -2265,6 +2269,7 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 		SUCCEED() << "Coroutines not supported";
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::UContext);
 
 	Coroutine<int()> function;
 	{

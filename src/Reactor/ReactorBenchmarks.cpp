@@ -37,6 +37,7 @@ BENCHMARK_DEFINE_F(Coroutines, Fibonacci)
 		state.SkipWithError("Coroutines are not supported");
 		return;
 	}
+	rr::CoroutineRuntime::Set(rr::CoroutineRuntime::Marl);
 
 	Coroutine<int()> function;
 	{
