@@ -33,7 +33,7 @@ struct Memset
 // GCC 8+ warns that
 // "‘void* memset(void*, int, size_t)’ clearing an object of non-trivial type ‘T’;
 //  use assignment or value-initialization instead [-Werror=class-memaccess]"
-// This is benign iff it happens before any of the base or member constructrs are called.
+// This is benign iff it happens before any of the base or member constructors are called.
 #if defined(__GNUC__) && (__GNUC__ >= 8)
 #	pragma GCC diagnostic push
 #	pragma GCC diagnostic ignored "-Wclass-memaccess"
@@ -44,6 +44,12 @@ struct Memset
 #if defined(__GNUC__) && (__GNUC__ >= 8)
 #	pragma GCC diagnostic pop
 #endif
+	}
+
+	friend bool operator<(const T &a, const T &b)
+	{
+		/////////////////	static_assert(sw::is_memcmparable<T>::value, "Cannot memcmp Sampler");
+		return ::memcmp(&a, &b, sizeof(T)) < 0;
 	}
 };
 
