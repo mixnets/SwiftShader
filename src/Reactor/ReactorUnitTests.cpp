@@ -2126,7 +2126,48 @@ TEST(ReactorUnitTests, Fibonacci)
 	}
 }
 
-TEST(ReactorUnitTests, Coroutines_Fibonacci)
+struct CoroutineTestParams
+{
+	CoroutineRuntime const *runtime;
+
+	friend std::ostream &operator<<(std::ostream &os,
+	                                const CoroutineTestParams &params)
+	{
+		const char *runtimeName = "<unknown>";
+		if(params.runtime == nullptr)
+		{
+			runtimeName = "<unsupported>";
+		}
+		else if(params.runtime == CoroutineRuntime::Marl)
+		{
+			runtimeName = "marl";
+		}
+		else if(params.runtime == CoroutineRuntime::UContext)
+		{
+			runtimeName = "ucontext";
+		}
+		return os << "CoroutineTestParams{"
+		          << "runtime: " << runtimeName << "}";
+	}
+};
+
+class CoroutineTests : public testing::TestWithParam<CoroutineTestParams>
+{
+public:
+	void SetUp() override
+	{
+		auto &params = GetParam();
+		rr::CoroutineRuntime::Set(params.runtime);
+	}
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    CoroutineTestParams,
+    CoroutineTests,
+    testing::Values(CoroutineTestParams{ CoroutineRuntime::Marl },
+                    CoroutineTestParams{ CoroutineRuntime::UContext }));
+
+TEST_P(CoroutineTests, Coroutines_Fibonacci)
 {
 	if(!rr::Caps.CoroutinesSupported)
 	{
@@ -2159,7 +2200,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 	}
 }
 
-TEST(ReactorUnitTests, Coroutines_Parameters)
+TEST_P(CoroutineTests, Coroutines_Parameters)
 {
 	if(!rr::Caps.CoroutinesSupported)
 	{
@@ -2200,7 +2241,7 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 // This test was written because Subzero's handling of vector types
 // failed when more than one function is generated, as is the case
 // with coroutines.
-TEST(ReactorUnitTests, Coroutines_Vectors)
+TEST_P(CoroutineTests, Coroutines_Vectors)
 {
 	if(!rr::Caps.CoroutinesSupported)
 	{
@@ -2234,7 +2275,7 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 // return (the return type is ignored).
 // We also run it twice to ensure per instance and/or global state
 // is properly cleaned up in between.
-TEST(ReactorUnitTests, Coroutines_NoYield)
+TEST_P(CoroutineTests, Coroutines_NoYield)
 {
 	if(!rr::Caps.CoroutinesSupported)
 	{
@@ -2258,7 +2299,7 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 
 // Test generating one coroutine, and executing it on multiple threads. This makes
 // sure the implementation manages per-call instance data correctly.
-TEST(ReactorUnitTests, Coroutines_Parallel)
+TEST_P(CoroutineTests, Coroutines_Parallel)
 {
 	if(!rr::Caps.CoroutinesSupported)
 	{
