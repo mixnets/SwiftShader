@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Coroutine.hpp"
 #include "Debug.hpp"
 #include "EmulatedReactor.hpp"
 #include "Print.hpp"
@@ -268,17 +269,7 @@ Ice::Fdstream *out = nullptr;
 // Coroutine globals
 rr::Type *coroYieldType = nullptr;
 std::shared_ptr<rr::CoroutineGenerator> coroGen;
-marl::Scheduler &getOrCreateScheduler()
-{
-	static auto scheduler = [] {
-		auto s = std::make_unique<marl::Scheduler>();
-		s->setWorkerThreadCount(8);
-		return s;
-	}();
-
-	return *scheduler;
-}
-}  // Anonymous namespace
+}  // anonymous namespace
 
 namespace {
 
@@ -4470,66 +4461,6 @@ void FlushDebug() {}
 
 namespace {
 namespace coro {
-
-// Instance data per generated coroutine
-// This is the "handle" type used for Coroutine functions
-// Lifetime: from yield to when CoroutineEntryDestroy generated function is called.
-struct CoroutineData
-{
-	bool useInternalScheduler = false;
-	marl::Event suspended;                                // the coroutine is suspended on a yield()
-	marl::Event resumed;                                  // the caller is suspended on an await()
-	marl::Event done{ marl::Event::Mode::Manual };        // the coroutine should stop at the next yield()
-	marl::Event terminated{ marl::Event::Mode::Manual };  // the coroutine has finished.
-	void *promisePtr = nullptr;
-};
-
-CoroutineData *createCoroutineData()
-{
-	return new CoroutineData{};
-}
-
-void destroyCoroutineData(CoroutineData *coroData)
-{
-	delete coroData;
-}
-
-// suspend() pauses execution of the coroutine, and resumes execution from the
-// caller's call to await().
-// Returns true if await() is called again, or false if coroutine_destroy()
-// is called.
-bool suspend(Nucleus::CoroutineHandle handle)
-{
-	auto *data = reinterpret_cast<CoroutineData *>(handle);
-	data->suspended.signal();
-	data->resumed.wait();
-	return !data->done.test();
-}
-
-// resume() is called by await(), blocking until the coroutine calls yield()
-// or the coroutine terminates.
-void resume(Nucleus::CoroutineHandle handle)
-{
-	auto *data = reinterpret_cast<CoroutineData *>(handle);
-	data->resumed.signal();
-	data->suspended.wait();
-}
-
-// stop() is called by coroutine_destroy(), signalling that it's done, then blocks
-// until the coroutine ends, and deletes the coroutine data.
-void stop(Nucleus::CoroutineHandle handle)
-{
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	coroData->done.signal();      // signal that the coroutine should stop at next (or current) yield.
-	coroData->resumed.signal();   // wake the coroutine if blocked on a yield.
-	coroData->terminated.wait();  // wait for the coroutine to return.
-	if(coroData->useInternalScheduler)
-	{
-		::getOrCreateScheduler().unbind();
-	}
-	coro::destroyCoroutineData(coroData);  // free the coroutine data.
-}
-
 namespace detail {
 thread_local rr::Nucleus::CoroutineHandle coroHandle{};
 }  // namespace detail
@@ -4548,24 +4479,6 @@ Nucleus::CoroutineHandle getHandleParam()
 	return handle;
 }
 
-bool isDone(Nucleus::CoroutineHandle handle)
-{
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->done.test();
-}
-
-void setPromisePtr(Nucleus::CoroutineHandle handle, void *promisePtr)
-{
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	coroData->promisePtr = promisePtr;
-}
-
-void *getPromisePtr(Nucleus::CoroutineHandle handle)
-{
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->promisePtr;
-}
-
 }  // namespace coro
 }  // namespace
 
@@ -4575,6 +4488,7 @@ class CoroutineGenerator
 {
 public:
 	CoroutineGenerator()
+	    : runtime(rr::CoroutineRuntime::Get())
 	{
 	}
 
@@ -4590,7 +4504,7 @@ public:
 		//        this->handle = coro::getHandleParam();
 		//
 		//        YieldType promise;
-		//        coro::setPromisePtr(handle, &promise); // For await
+		//        runtime->SetPromisePtr(handle, &promise); // For await
 		//
 		//        ... <REACTOR CODE> ...
 		//
@@ -4608,9 +4522,9 @@ public:
 		this->handle = sz::Call(::function, ::basicBlock, coro::getHandleParam);
 
 		//        YieldType promise;
-		//        coro::setPromisePtr(handle, &promise); // For await
+		//        runtime->SetPromisePtr(handle, &promise); // For await
 		this->promise = sz::allocateStackVariable(::function, T(::coroYieldType));
-		sz::Call(::function, ::basicBlock, coro::setPromisePtr, this->handle, this->promise);
+		sz::Call(::function, ::basicBlock, runtime->SetPromisePtr, this->handle, this->promise);
 
 		// Branch to original entry block
 		auto br = Ice::InstBr::create(::function, origEntryBB);
@@ -4626,7 +4540,7 @@ public:
 		//        ... <REACTOR CODE> ...
 		//
 		//        promise = val;
-		//        if (!coro::suspend(handle)) {
+		//        if (!runtime->Suspend(handle)) {
 		//            return false; // coroutine has been stopped by the caller.
 		//        }
 		//
@@ -4635,8 +4549,8 @@ public:
 		//        promise = val;
 		Nucleus::createStore(val, V(this->promise), ::coroYieldType);
 
-		//        if (!coro::suspend(handle)) {
-		auto result = sz::Call(::function, ::basicBlock, coro::suspend, this->handle);
+		//        if (!runtime->Suspend(handle)) {
+		auto result = sz::Call(::function, ::basicBlock, runtime->Suspend, this->handle);
 		auto doneBlock = Nucleus::createBasicBlock();
 		auto resumeBlock = Nucleus::createBasicBlock();
 		Nucleus::createCondBr(V(result), resumeBlock, doneBlock);
@@ -4653,11 +4567,11 @@ public:
 
 	// Generates the await function for the current coroutine.
 	// Cannot use Nucleus functions that modify ::function and ::basicBlock.
-	static FunctionUniquePtr generateAwaitFunction()
+	FunctionUniquePtr generateAwaitFunction()
 	{
 		// bool coroutine_await(CoroutineHandle handle, YieldType* out)
 		// {
-		//     if (coro::isDone())
+		//     if (runtime->IsDone())
 		//     {
 		//         return false;
 		//     }
@@ -4665,7 +4579,7 @@ public:
 		//     {
 		//         YieldType* promise = coro::getPromisePtr(handle);
 		//         *out = *promise;
-		//         coro::resume(handle);
+		//         runtime->Resume(handle);
 		//         return true;
 		//     }
 		// }
@@ -4691,7 +4605,7 @@ public:
 		auto resumeBlock = awaitFunc->makeNode();
 		{
 			//         YieldType* promise = coro::getPromisePtr(handle);
-			Ice::Variable *promise = sz::Call(awaitFunc, resumeBlock, coro::getPromisePtr, handle);
+			Ice::Variable *promise = sz::Call(awaitFunc, resumeBlock, runtime->GetPromisePtr, handle);
 
 			//         *out = *promise;
 			// Load promise value
@@ -4702,15 +4616,15 @@ public:
 			auto store = Ice::InstStore::create(awaitFunc, promiseVal, outPtr);
 			resumeBlock->appendInst(store);
 
-			//         coro::resume(handle);
-			sz::Call(awaitFunc, resumeBlock, coro::resume, handle);
+			//         runtime->Resume(handle);
+			sz::Call(awaitFunc, resumeBlock, runtime->Resume, handle);
 
 			//         return true;
 			Ice::InstRet *ret = Ice::InstRet::create(awaitFunc, ::context->getConstantInt32(1));
 			resumeBlock->appendInst(ret);
 		}
 
-		//     if (coro::isDone())
+		//     if (runtime->IsDone())
 		//     {
 		//         <doneBlock>
 		//     }
@@ -4719,7 +4633,7 @@ public:
 		//         <resumeBlock>
 		//     }
 		Ice::CfgNode *bb = awaitFunc->getEntryNode();
-		Ice::Variable *done = sz::Call(awaitFunc, bb, coro::isDone);
+		Ice::Variable *done = sz::Call(awaitFunc, bb, runtime->IsDone);
 		auto br = Ice::InstBr::create(awaitFunc, done, doneBlock, resumeBlock);
 		bb->appendInst(br);
 
@@ -4728,11 +4642,11 @@ public:
 
 	// Generates the destroy function for the current coroutine.
 	// Cannot use Nucleus functions that modify ::function and ::basicBlock.
-	static FunctionUniquePtr generateDestroyFunction()
+	FunctionUniquePtr generateDestroyFunction()
 	{
 		// void coroutine_destroy(Nucleus::CoroutineHandle handle)
 		// {
-		//     coro::stop(handle); // signal and wait for coroutine to stop, and delete coroutine data
+		//     runtime->Stop(handle); // signal and wait for coroutine to stop, and delete coroutine data
 		//     return;
 		// }
 
@@ -4746,8 +4660,8 @@ public:
 
 		auto *bb = destroyFunc->getEntryNode();
 
-		//     coro::stop(handle); // signal and wait for coroutine to stop, and delete coroutine data
-		sz::Call(destroyFunc, bb, coro::stop, handle);
+		//     runtime->Stop(handle); // signal and wait for coroutine to stop, and delete coroutine data
+		sz::Call(destroyFunc, bb, runtime->Stop, handle);
 
 		//     return;
 		Ice::InstRet *ret = Ice::InstRet::create(destroyFunc);
@@ -4757,37 +4671,22 @@ public:
 	}
 
 private:
+	rr::CoroutineRuntime const *runtime;
 	Ice::Variable *handle{};
 	Ice::Variable *promise{};
 };
 
 static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::CoroutineHandle()> beginFunc)
 {
-	// This doubles up as our coroutine handle
-	auto coroData = coro::createCoroutineData();
-
-	coroData->useInternalScheduler = (marl::Scheduler::get() == nullptr);
-	if(coroData->useInternalScheduler)
-	{
-		::getOrCreateScheduler().bind();
-	}
-
-	auto run = [=] {
-		// Store handle in TLS so that the coroutine can grab it right away, before
-		// any fiber switch occurs.
-		coro::setHandleParam(coroData);
-
+	auto runtime = rr::CoroutineRuntime::Get();
+	auto handle = runtime->Create();
+	runtime->Start(handle, [=] {
+		// Store handle in TLS so that the coroutine can grab it right away,
+		// before any fiber switch occurs.
+		coro::setHandleParam(handle);
 		beginFunc();
-
-		coroData->done.signal();        // coroutine is done.
-		coroData->suspended.signal();   // resume any blocking await() call.
-		coroData->terminated.signal();  // signal that the coroutine data is ready for freeing.
-	};
-	marl::schedule(marl::Task(run, marl::Task::Flags::SameThread));
-
-	coroData->suspended.wait();  // block until the first yield or coroutine end
-
-	return coroData;
+	});
+	return handle;
 }
 
 void Nucleus::createCoroutine(Type *yieldType, const std::vector<Type *> &params)
@@ -4842,11 +4741,9 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 		::coroGen.reset();
 		::coroYieldType = nullptr;
 
-		auto routine = rr::acquireRoutine({ ::function, awaitFunc.get(), destroyFunc.get() },
-		                                  { name, "await", "destroy" },
-		                                  cfgEdit);
-
-		return routine;
+		return rr::acquireRoutine({ ::function, awaitFunc.get(), destroyFunc.get() },
+		                          { name, "await", "destroy" },
+		                          cfgEdit);
 	}
 	else
 	{

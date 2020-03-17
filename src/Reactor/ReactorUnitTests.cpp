@@ -2126,13 +2126,74 @@ TEST(ReactorUnitTests, Fibonacci)
 	}
 }
 
-TEST(ReactorUnitTests, Coroutines_Fibonacci)
+struct CoroutineTestParams
 {
-	if(!rr::Caps.CoroutinesSupported)
+	CoroutineRuntime const *runtime;
+
+	const char *runtimeName() const
 	{
-		SUCCEED() << "Coroutines not supported";
-		return;
+		if(runtime == nullptr)
+		{
+			return "<unsupported>";
+		}
+		else if(runtime == CoroutineRuntime::Marl)
+		{
+			return "marl";
+		}
+		else if(runtime == CoroutineRuntime::UContext)
+		{
+			return "ucontext";
+		}
+		else if(runtime == CoroutineRuntime::Win32)
+		{
+			return "win32";
+		}
+		return "<unknown>";
 	}
+
+	friend std::ostream &operator<<(std::ostream &os,
+	                                const CoroutineTestParams &params)
+	{
+
+		return os << "CoroutineTestParams{"
+		          << "runtime: " << params.runtimeName() << "}";
+	}
+};
+
+class CoroutineTests : public testing::TestWithParam<CoroutineTestParams>
+{
+public:
+	void SetUp() override
+	{
+		auto &params = GetParam();
+		rr::CoroutineRuntime::Set(params.runtime);
+	}
+
+	bool checkSupported() const
+	{
+		if(!rr::Caps.CoroutinesSupported)
+		{
+			SUCCEED() << "Coroutines not supported";
+			return false;
+		}
+		if(!rr::CoroutineRuntime::Get())
+		{
+			SUCCEED() << "Coroutine runtime " << GetParam().runtimeName() << "not supported";
+			return false;
+		}
+		return true;
+	}
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    CoroutineTestParams,
+    CoroutineTests,
+    testing::Values(CoroutineTestParams{ CoroutineRuntime::Marl },
+                    CoroutineTestParams{ CoroutineRuntime::UContext }));
+
+TEST_P(CoroutineTests, Coroutines_Fibonacci)
+{
+	if(!checkSupported()) { return; }
 
 	Coroutine<int()> function;
 	{
@@ -2159,13 +2220,9 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 	}
 }
 
-TEST(ReactorUnitTests, Coroutines_Parameters)
+TEST_P(CoroutineTests, Coroutines_Parameters)
 {
-	if(!rr::Caps.CoroutinesSupported)
-	{
-		SUCCEED() << "Coroutines not supported";
-		return;
-	}
+	if(!checkSupported()) { return; }
 
 	Coroutine<uint8_t(uint8_t * data, int count)> function;
 	{
@@ -2200,13 +2257,9 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 // This test was written because Subzero's handling of vector types
 // failed when more than one function is generated, as is the case
 // with coroutines.
-TEST(ReactorUnitTests, Coroutines_Vectors)
+TEST_P(CoroutineTests, Coroutines_Vectors)
 {
-	if(!rr::Caps.CoroutinesSupported)
-	{
-		SUCCEED() << "Coroutines not supported";
-		return;
-	}
+	if(!checkSupported()) { return; }
 
 	Coroutine<int()> function;
 	{
@@ -2234,13 +2287,9 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 // return (the return type is ignored).
 // We also run it twice to ensure per instance and/or global state
 // is properly cleaned up in between.
-TEST(ReactorUnitTests, Coroutines_NoYield)
+TEST_P(CoroutineTests, Coroutines_NoYield)
 {
-	if(!rr::Caps.CoroutinesSupported)
-	{
-		SUCCEED() << "Coroutines not supported";
-		return;
-	}
+	if(!checkSupported()) { return; }
 
 	for(int i = 0; i < 2; ++i)
 	{
@@ -2258,13 +2307,9 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 
 // Test generating one coroutine, and executing it on multiple threads. This makes
 // sure the implementation manages per-call instance data correctly.
-TEST(ReactorUnitTests, Coroutines_Parallel)
+TEST_P(CoroutineTests, Coroutines_Parallel)
 {
-	if(!rr::Caps.CoroutinesSupported)
-	{
-		SUCCEED() << "Coroutines not supported";
-		return;
-	}
+	if(!checkSupported()) { return; }
 
 	Coroutine<int()> function;
 	{

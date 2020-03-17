@@ -21,6 +21,53 @@
 
 namespace rr {
 
+struct CoroutineRuntime
+{
+public:
+	static CoroutineRuntime const *Get();
+	static void Set(CoroutineRuntime const *);
+
+	static CoroutineRuntime const *const Marl;
+	static CoroutineRuntime const *const UContext;
+	static CoroutineRuntime const *const Win32;
+
+	struct FuncTys
+	{
+		using Create = Nucleus::CoroutineHandle();
+
+		using Start = void(Nucleus::CoroutineHandle, const std::function<void()> &func);
+
+		// Stop() signals that it's done, blocks until the coroutine ends, and
+		// deletes the coroutine handle.
+		using Stop = void(Nucleus::CoroutineHandle);
+
+		// Suspend() pauses execution of the coroutine, and resumes execution
+		// from the caller's call to await().
+		// Returns true if await() is called again, or false if
+		// coroutine_destroy() is called.
+		using Suspend = bool(Nucleus::CoroutineHandle);
+
+		// Resume() is called by await(), blocking until the coroutine calls
+		// yield() or the coroutine terminates.
+		using Resume = void(Nucleus::CoroutineHandle);
+
+		using IsDone = bool(Nucleus::CoroutineHandle);
+
+		using SetPromisePtr = void(Nucleus::CoroutineHandle, void *promisePtr);
+
+		using GetPromisePtr = void *(Nucleus::CoroutineHandle);
+	};
+
+	FuncTys::Create *Create = nullptr;
+	FuncTys::Start *Start = nullptr;
+	FuncTys::Stop *Stop = nullptr;
+	FuncTys::Suspend *Suspend = nullptr;
+	FuncTys::Resume *Resume = nullptr;
+	FuncTys::IsDone *IsDone = nullptr;
+	FuncTys::SetPromisePtr *SetPromisePtr = nullptr;
+	FuncTys::GetPromisePtr *GetPromisePtr = nullptr;
+};
+
 // Base class for the template Stream<T>
 class StreamBase
 {
