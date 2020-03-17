@@ -1857,13 +1857,17 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, ycbcrConversion);
+	auto *parent = vk::Cast(device);
+
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, parent, ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks *pAllocator)
 {
 	TRACE("(VkDevice device = %p, VkSampler sampler = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      device, static_cast<void *>(sampler), pAllocator);
+
+	//vk::Cast(device)->removeSampler(vk::Cast(sampler));
 
 	vk::destroy(sampler, pAllocator);
 }

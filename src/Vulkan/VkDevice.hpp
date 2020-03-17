@@ -16,8 +16,11 @@
 #define VK_DEVICE_HPP_
 
 #include "VkObject.hpp"
+#include "VkSampler.hpp"
 #include "Device/LRUCache.hpp"
 #include "Reactor/Routine.hpp"
+
+#include <map>
 #include <memory>
 #include <mutex>
 
@@ -100,6 +103,31 @@ public:
 	rr::Routine *findInConstCache(const SamplingRoutineCache::Key &key) const;
 	void updateSamplingRoutineConstCache();
 
+	class SamplerIndexer
+	{
+	public:
+		~SamplerIndexer();
+
+	//	std::mutex &getMutex();
+
+		uint32_t index(const Sampler *sampler);
+		void remove(const Sampler *sampler);
+
+	private:
+		struct ID
+		{
+			uint32_t ID;
+			uint32_t count;
+		};
+
+		std::map<SamplerState, ID, Sampler::Compare> map;
+		std::mutex mutex;
+
+		uint32_t nextID = 0;
+	};
+
+	SamplerIndexer *getSamplerIndexer() const;
+
 	std::shared_ptr<vk::dbg::Context> getDebuggerContext() const
 	{
 #ifdef ENABLE_VK_DEBUGGER
@@ -121,6 +149,7 @@ private:
 
 	std::shared_ptr<marl::Scheduler> scheduler;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
+	std::unique_ptr<SamplerIndexer> samplerIndexer;
 
 #ifdef ENABLE_VK_DEBUGGER
 	struct

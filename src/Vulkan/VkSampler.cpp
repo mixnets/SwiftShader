@@ -14,71 +14,107 @@
 
 #include "VkSampler.hpp"
 
-#include <vector>
+#include "VkDevice.hpp"
+#include "Device/LRUCache.hpp"
+
+#include <cstring>
+//#include <mutex>
+//#include <vector>
 
 namespace vk {
 
-struct Param
-{
-	VkFilter magFilter = VK_FILTER_NEAREST;
-	VkFilter minFilter = VK_FILTER_NEAREST;
-	VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-	VkSamplerAddressMode addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	VkSamplerAddressMode addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	VkSamplerAddressMode addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	float mipLodBias = 0.0f;
-	VkBool32 anisotropyEnable = VK_FALSE;
-	float maxAnisotropy = 0.0f;
-	VkBool32 compareEnable = VK_FALSE;
-	VkCompareOp compareOp = VK_COMPARE_OP_NEVER;
-	float minLod = 0.0f;
-	float maxLod = 0.0f;
-	VkBorderColor borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
-	VkBool32 unnormalizedCoordinates = VK_FALSE;
-};
-
-Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
-    : magFilter(pCreateInfo->magFilter)
+SamplerState::SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : Memset(this, 0), magFilter(pCreateInfo->magFilter)
     , minFilter(pCreateInfo->minFilter)
-    , mipmapMode(pCreateInfo->mipmapMode)
-    , addressModeU(pCreateInfo->addressModeU)
-    , addressModeV(pCreateInfo->addressModeV)
-    , addressModeW(pCreateInfo->addressModeW)
-    , mipLodBias(pCreateInfo->mipLodBias)
-    , anisotropyEnable(pCreateInfo->anisotropyEnable)
-    , maxAnisotropy(pCreateInfo->maxAnisotropy)
-    , compareEnable(pCreateInfo->compareEnable)
-    , compareOp(pCreateInfo->compareOp)
-    , minLod(ClampLod(pCreateInfo->minLod))
-    , maxLod(ClampLod(pCreateInfo->maxLod))
-    , borderColor(pCreateInfo->borderColor)
-    , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
-    , ycbcrConversion(ycbcrConversion)
+	, mipmapMode(pCreateInfo->mipmapMode)
+	, addressModeU(pCreateInfo->addressModeU)
+	, addressModeV(pCreateInfo->addressModeV)
+	, addressModeW(pCreateInfo->addressModeW)
+	, mipLodBias(pCreateInfo->mipLodBias)
+	, anisotropyEnable(pCreateInfo->anisotropyEnable)
+	, maxAnisotropy(pCreateInfo->maxAnisotropy)
+	, compareEnable(pCreateInfo->compareEnable)
+	, compareOp(pCreateInfo->compareOp)
+	, minLod(ClampLod(pCreateInfo->minLod))
+	, maxLod(ClampLod(pCreateInfo->maxLod))
+	, borderColor(pCreateInfo->borderColor)
+	, unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
+//    , ycbcrConversion(ycbcrConversion)
 {
-	static std::vector<Param> cache;
-
-	Param p;
-	memset(&p, 0, sizeof(Param));
-	p.magFilter = magFilter;
-	p.minFilter = minFilter;
-	p.mipmapMode = mipmapMode;
-	p.addressModeU = addressModeU;
-	p.addressModeV = addressModeV;
-	p.addressModeW = addressModeW;
-
-	for(size_t i = 0; i < cache.size(); i++)
+	if(ycbcrConversion)
 	{
-		if(memcmp(&cache[i], &p, sizeof(Param)) == 0)
-		{
-			id = i + 1;
-			goto done;
-		}
+		ycbcrModel = ycbcrConversion->ycbcrModel;
+		studioSwing = (ycbcrConversion->ycbcrRange == VK_SAMPLER_YCBCR_RANGE_ITU_NARROW);
+		swappedChroma = (ycbcrConversion->components.r != VK_COMPONENT_SWIZZLE_R);
 	}
+}
 
-	cache.push_back(p);
-	id = cache.size();
+bool SamplerState::Compare::operator()(const SamplerState &a, const SamplerState &b) const
+{
+	//	static_assert(sw::is_memcmparable<Sampler>::value, "Cannot memcmp Sampler");
+	return ::memcmp(&a, &b, sizeof(SamplerState)) < 0;
 
-done:;
+	/*auto less[](const Sampler &a, const Sampler &b) = {
+		if(a.magFilter < b.magFilter) return true;
+	    if(a.minFilter < b.minFilter) return true;
+	    if(a.mipmapMode < b.mipmapMode) return true;
+
+        return a.swappedChroma && !b.swappedChroma;
+    }
+
+    ASSERT(!less(a, a));
+    ASSERT(!less(b, b));
+    ASSERT(!less(a, b) || !less(b, a));
+
+    return less(a, b);*/
+}
+
+Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : SamplerState(pCreateInfo, ycbcrConversion)
+    , device(device)
+{
+	//static std::vector<Param> cache;
+
+	//Param p;
+	//memset(&p, 0, sizeof(Param));
+//	p.magFilter = magFilter;
+//	p.minFilter = minFilter;
+//	p.mipmapMode = mipmapMode;
+//	p.addressModeU = addressModeU;
+//	p.addressModeV = addressModeV;
+//	p.addressModeW = addressModeW;
+//
+//	for(size_t i = 0; i < cache.size(); i++)
+//	{
+//		if(memcmp(&cache[i], &p, sizeof(Param)) == 0)
+//		{
+//			id = i + 1;
+//			goto done;
+//		}
+//	}
+//
+//	cache.push_back(p);
+//	id = cache.size();
+//
+//done:;
+
+    
+
+    {
+        auto *samplerIndexer = device->getSamplerIndexer();
+	 //   std::lock_guard<std::mutex> lock(samplerIndexer->getMutex());
+
+        id = samplerIndexer->index(this);
+    }
+}
+
+Sampler::~Sampler()
+{
+	//auto *samplerIndexer = device->getSamplerIndexer();
+	//std::lock_guard<std::mutex> lock(samplerIndexer->getMutex());
+
+	auto *samplerIndexer = device->getSamplerIndexer();
+	samplerIndexer->remove(this);
 }
 
 }  // namespace vk
