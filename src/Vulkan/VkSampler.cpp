@@ -70,8 +70,8 @@ bool SamplerState::Compare::operator()(const SamplerState &a, const SamplerState
 }
 
 Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion)
-    : SamplerState(pCreateInfo, ycbcrConversion)
-    , device(device)
+    : device(device)
+	, state(std::make_shared<SamplerState>(pCreateInfo, ycbcrConversion))
 {
 	//static std::vector<Param> cache;
 
@@ -104,7 +104,7 @@ Sampler::Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, Device *devi
         auto *samplerIndexer = device->getSamplerIndexer();
 	 //   std::lock_guard<std::mutex> lock(samplerIndexer->getMutex());
 
-        id = samplerIndexer->index(this);
+        id = samplerIndexer->index(state.get());
     }
 }
 
@@ -114,7 +114,7 @@ Sampler::~Sampler()
 	//std::lock_guard<std::mutex> lock(samplerIndexer->getMutex());
 
 	auto *samplerIndexer = device->getSamplerIndexer();
-	samplerIndexer->remove(this);
+	samplerIndexer->remove(state.get());
 }
 
 }  // namespace vk

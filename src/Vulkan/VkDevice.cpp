@@ -38,6 +38,19 @@ std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now
 
 namespace vk {
 
+SamplingRoutine::SamplingRoutine(std::shared_ptr<rr::Routine> routine, Device *device, std::shared_ptr<SamplerState> sampler)
+    : routine(routine)
+    , device(device)
+    , sampler(sampler)
+{
+	device->addSamplerID(sampler.get());
+}
+
+SamplingRoutine::~SamplingRoutine()
+{
+	device->removeSamplerID(sampler.get());
+}
+
 std::mutex &Device::SamplingRoutineCache::getMutex()
 {
 	return mutex;
@@ -45,18 +58,20 @@ std::mutex &Device::SamplingRoutineCache::getMutex()
 
 std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const Device::SamplingRoutineCache::Key &key) const
 {
-	return cache.query(key);
+	std::shared_ptr<SamplingRoutine> entry = cache.query(key);
+	return entry ? entry->routine : nullptr;
 }
 
-void Device::SamplingRoutineCache::add(const Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine)
+void Device::SamplingRoutineCache::add(const Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine, Device *device, const Sampler *sampler)
 {
 	ASSERT(routine);
-	cache.add(key, routine);
+	cache.add(key, std::make_shared<SamplingRoutine>(routine , device, sampler->state));
 }
 
 rr::Routine *Device::SamplingRoutineCache::queryConst(const Device::SamplingRoutineCache::Key &key) const
 {
-	return cache.queryConstCache(key).get();
+	SamplingRoutine *entry = cache.queryConstCache(key).get();
+	return entry ? entry->routine.get() : nullptr;
 }
 
 void Device::SamplingRoutineCache::updateConstCache()
@@ -74,7 +89,7 @@ Device::SamplerIndexer::~SamplerIndexer()
 //	return mutex;
 //}
 
-uint32_t Device::SamplerIndexer::index(const Sampler *sampler)
+uint32_t Device::SamplerIndexer::index(const SamplerState *sampler)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
@@ -88,12 +103,12 @@ uint32_t Device::SamplerIndexer::index(const Sampler *sampler)
 
 	nextID++;
 
-	map.emplace(*sampler, ID{nextID, 1});
+	map.emplace(*sampler, ID{ nextID, 1 });
 
 	return nextID;
 }
 
-void Device::SamplerIndexer::remove(const Sampler *sampler)
+void Device::SamplerIndexer::remove(const SamplerState *sampler)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 

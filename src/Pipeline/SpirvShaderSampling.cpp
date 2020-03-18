@@ -30,22 +30,23 @@
 
 namespace sw {
 
-SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler)
+SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *samplerx)
 {
 	ImageInstruction instruction(inst);
-	const uint32_t samplerId = sampler ? sampler->id : 0;
+	const uint32_t samplerId = samplerx ? samplerx->id : 0;
 	ASSERT(imageDescriptor->imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 
 	vk::Device::SamplingRoutineCache::Key key = { inst, imageDescriptor->imageViewId, samplerId };
 
-	ASSERT(imageDescriptor->device);
+	vk::Device *device = imageDescriptor->device;
+	ASSERT(device);
 
-	if(auto routine = imageDescriptor->device->findInConstCache(key))
+	if(auto routine = device->findInConstCache(key))
 	{
 		return (ImageSampler *)(routine->getEntry());
 	}
 
-	vk::Device::SamplingRoutineCache *cache = imageDescriptor->device->getSamplingRoutineCache();
+	vk::Device::SamplingRoutineCache *cache = device->getSamplingRoutineCache();
 	std::lock_guard<std::mutex> lock(cache->getMutex());
 
 	auto routine = cache->query(key);
@@ -60,6 +61,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	samplerState.textureType = type;
 	samplerState.textureFormat = imageDescriptor->format;
 
+	const vk::SamplerState *sampler = samplerx->state.get();
 	samplerState.addressingModeU = convertAddressingMode(0, sampler, type);
 	samplerState.addressingModeV = convertAddressingMode(1, sampler, type);
 	samplerState.addressingModeW = convertAddressingMode(2, sampler, type);
@@ -91,11 +93,11 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 	routine = emitSamplerRoutine(instruction, samplerState);
 
-	cache->add(key, routine);
+	cache->add(key, routine, device, samplerx);
 	return (ImageSampler *)(routine->getEntry());
 }
 
-std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
+std::shared_ptr<Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
 {
 	// TODO(b/129523279): Hold a separate mutex lock for the sampler being built.
 	rr::Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)> function;
@@ -219,7 +221,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 	return function("sampler");
 }
 
-sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
+sw::FilterType SpirvShader::convertFilterMode(const vk::SamplerState *sampler)
 {
 	if(sampler->anisotropyEnable != VK_FALSE)
 	{
@@ -256,7 +258,7 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler)
 	return FILTER_POINT;
 }
 
-sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
+sw::MipmapType SpirvShader::convertMipmapMode(const vk::SamplerState *sampler)
 {
 	if(!sampler)
 	{
@@ -279,7 +281,7 @@ sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
 	}
 }
 
-sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, const vk::Sampler *sampler, VkImageViewType imageViewType)
+sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, const vk::SamplerState *sampler, VkImageViewType imageViewType)
 {
 	switch(imageViewType)
 	{

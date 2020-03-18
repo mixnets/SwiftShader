@@ -47,6 +47,7 @@ namespace vk {
 class PipelineLayout;
 class ImageView;
 class Sampler;
+struct SamplerState;
 class RenderPass;
 struct SampledImageDescriptor;
 
@@ -1179,9 +1180,9 @@ private:
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
-	static sw::FilterType convertFilterMode(const vk::Sampler *sampler);
-	static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
-	static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::Sampler *sampler, VkImageViewType imageViewType);
+	static sw::FilterType convertFilterMode(const vk::SamplerState *sampler);
+	static sw::MipmapType convertMipmapMode(const vk::SamplerState *sampler);
+	static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::SamplerState *sampler, VkImageViewType imageViewType);
 
 	// Returns 0 when invalid.
 	static VkShaderStageFlagBits executionModelToStage(spv::ExecutionModel model);

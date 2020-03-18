@@ -33,6 +33,7 @@ class Blitter;
 
 namespace vk {
 
+class Device;
 class PhysicalDevice;
 class Queue;
 
@@ -40,6 +41,16 @@ namespace dbg {
 class Context;
 class Server;
 }  // namespace dbg
+
+struct SamplingRoutine
+{
+	SamplingRoutine(std::shared_ptr<rr::Routine> routine, Device *device, std::shared_ptr<SamplerState>);
+	~SamplingRoutine();
+
+	std::shared_ptr<rr::Routine> routine;
+	Device *const device;
+	std::shared_ptr<SamplerState> sampler;            // const?
+};
 
 class Device
 {
@@ -89,13 +100,13 @@ public:
 		std::mutex &getMutex();
 
 		std::shared_ptr<rr::Routine> query(const Key &key) const;
-		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine);
+		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine, Device *device, const Sampler *sampler);
 
 		rr::Routine *queryConst(const Key &key) const;
 		void updateConstCache();
 
 	private:
-		sw::LRUConstCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
+		sw::LRUConstCache<Key, std::shared_ptr<SamplingRoutine>, Key::Hash> cache;
 		std::mutex mutex;
 	};
 
@@ -110,23 +121,25 @@ public:
 
 	//	std::mutex &getMutex();
 
-		uint32_t index(const Sampler *sampler);
-		void remove(const Sampler *sampler);
+		uint32_t index(const SamplerState *sampler);
+		void remove(const SamplerState *sampler);
 
 	private:
 		struct ID
 		{
 			uint32_t ID;
-			uint32_t count;
+			uint32_t count;          // keep count in ID -> count map?
 		};
 
-		std::map<SamplerState, ID, Sampler::Compare> map;
+		std::map<SamplerState, ID, SamplerState::Compare> map;
 		std::mutex mutex;
 
 		uint32_t nextID = 0;
 	};
 
 	SamplerIndexer *getSamplerIndexer() const;
+	void addSamplerID(const SamplerState *sampler) { samplerIndexer->index(sampler); }
+	void removeSamplerID(const SamplerState *sampler) { samplerIndexer->remove(sampler); };
 
 	std::shared_ptr<vk::dbg::Context> getDebuggerContext() const
 	{
@@ -148,8 +161,8 @@ private:
 	const VkPhysicalDeviceFeatures enabledFeatures = {};
 
 	std::shared_ptr<marl::Scheduler> scheduler;
-	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 	std::unique_ptr<SamplerIndexer> samplerIndexer;
+	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 
 #ifdef ENABLE_VK_DEBUGGER
 	struct

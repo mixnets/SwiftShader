@@ -21,6 +21,7 @@
 #include "System/Math.hpp"
 
 #include <atomic>
+#include <memory>
 
 namespace vk {
 
@@ -81,7 +82,7 @@ struct SamplerState : sw::Memset<SamplerState>
 	bool swappedChroma = false;  // Cb/Cr components in reverse order
 };
 
-class Sampler : public SamplerState, public Object<Sampler, VkSampler>
+class Sampler : public Object<Sampler, VkSampler>
 {
 public:
 	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, vk::Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion);
@@ -101,6 +102,10 @@ public:
 
 private:
 	Device *const device = nullptr;
+
+public:  // FIXME
+	// The state can live longer than the sampler.
+	std::shared_ptr<SamplerState> state;
 };
 
 class SamplerYcbcrConversion : public Object<SamplerYcbcrConversion, VkSamplerYcbcrConversion>
