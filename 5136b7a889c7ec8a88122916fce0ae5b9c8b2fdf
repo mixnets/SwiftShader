@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15567718_9c06f61b",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 674,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-18T13:43:53Z",
+      "side": 1,
+      "message": "Yes. This isn\u0027t important to us, but would indicate something went horribly wrong when Subzero wrote the image.\n\nWe should assert on debug, but still return null on release to avoid using such a broken image.\n\nOK to fix later.",
+      "range": {
+        "startLine": 674,
+        "startChar": 4,
+        "endLine": 674,
+        "endChar": 8
+      },
+      "revId": "5136b7a889c7ec8a88122916fce0ae5b9c8b2fdf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
