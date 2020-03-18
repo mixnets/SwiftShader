@@ -31,7 +31,7 @@ public:
 	virtual ~LRUCache();
 
 	Data query(const Key &key) const;
-	virtual Data add(const Key &key, const Data &data);
+	Data add(const Key &key, const Data &data);
 
 	int getSize() { return size; }
 	Key &getKey(int i) { return key[i]; }
@@ -48,20 +48,25 @@ protected:
 };
 
 template<class Key, class Data, class Hasher = std::hash<Key>>
-class LRUSnapshotCache : public LRUCache<Key, Data>
+class LRUSnapshotCache : protected LRUCache<Key, Data>
 {
-	using LRUBase = LRUCache<Key, Data>;
+	using Base = LRUCache<Key, Data>;
 
 public:
 	LRUSnapshotCache(int n)
-	    : LRUBase(n)
+	    : Base(n)
 	{}
 	~LRUSnapshotCache() { clearSnapshotCache(); }
 
-	Data add(const Key &key, const Data &data) override
+	Data query(const Key &key) const
 	{
-		snapshotCacheNeedsUpdate = true;
-		return LRUBase::add(key, data);
+		return Base::query(key);
+	}
+
+	Data add(const Key &key, const Data &data)
+	{
+		constCacheNeedsUpdate = true;
+		return Base::add(key, data);
 	}
 
 	void updateSnapshotCache();
@@ -69,8 +74,9 @@ public:
 
 private:
 	void clearSnapshotCache();
-	bool snapshotCacheNeedsUpdate = false;
-	std::unordered_map<Key, Data, Hasher> snapshotCache;
+
+	bool constCacheNeedsUpdate = false;
+	std::unordered_map<Key, Data, Hasher> constCache;
 };
 
 // Traits-like helper class for checking if objects can be compared using memcmp().
@@ -168,34 +174,34 @@ Data LRUCache<Key, Data>::add(const Key &key, const Data &data)
 template<class Key, class Data, class Hasher>
 void LRUSnapshotCache<Key, Data, Hasher>::clearSnapshotCache()
 {
-	snapshotCache.clear();
+	constCache.clear();
 }
 
 template<class Key, class Data, class Hasher>
 void LRUSnapshotCache<Key, Data, Hasher>::updateSnapshotCache()
 {
-	if(snapshotCacheNeedsUpdate)
+	if(constCacheNeedsUpdate)
 	{
 		clearSnapshotCache();
 
-		for(int i = 0; i < LRUBase::size; i++)
+		for(int i = 0; i < size; i++)
 		{
-			if(LRUBase::data[i])
+			if(data[i])
 			{
-				snapshotCache[*LRUBase::ref[i]] = LRUBase::data[i];
+				constCache[*ref[i]] = data[i];
 			}
 		}
 
-		snapshotCacheNeedsUpdate = false;
+		constCacheNeedsUpdate = false;
 	}
 }
 
 template<class Key, class Data, class Hasher>
 const Data &LRUSnapshotCache<Key, Data, Hasher>::querySnapshotCache(const Key &key) const
 {
-	auto it = snapshotCache.find(key);
+	auto it = constCache.find(key);
 	static Data null = {};
-	return (it != snapshotCache.end()) ? it->second : null;
+	return (it != constCache.end()) ? it->second : null;
 }
 
 }  // namespace sw
