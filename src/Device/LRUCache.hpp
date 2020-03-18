@@ -31,7 +31,7 @@ public:
 	virtual ~LRUCache();
 
 	Data query(const Key &key) const;
-	virtual Data add(const Key &key, const Data &data);
+	Data add(const Key &key, const Data &data);
 
 	int getSize() { return size; }
 	Key &getKey(int i) { return key[i]; }
@@ -48,20 +48,25 @@ protected:
 };
 
 template<class Key, class Data, class Hasher = std::hash<Key>>
-class LRUConstCache : public LRUCache<Key, Data>
+class LRUConstCache : protected LRUCache<Key, Data>
 {
-	using LRUBase = LRUCache<Key, Data>;
+	using Base = LRUCache<Key, Data>;
 
 public:
 	LRUConstCache(int n)
-	    : LRUBase(n)
+	    : Base(n)
 	{}
 	~LRUConstCache() { clearConstCache(); }
 
-	Data add(const Key &key, const Data &data) override
+	Data query(const Key &key) const
+	{
+		return Base::query(key);
+	}
+
+	Data add(const Key &key, const Data &data)
 	{
 		constCacheNeedsUpdate = true;
-		return LRUBase::add(key, data);
+		return Base::add(key, data);
 	}
 
 	void updateConstCache();
@@ -69,6 +74,7 @@ public:
 
 private:
 	void clearConstCache();
+
 	bool constCacheNeedsUpdate = false;
 	std::unordered_map<Key, Data, Hasher> constCache;
 };
@@ -178,11 +184,11 @@ void LRUConstCache<Key, Data, Hasher>::updateConstCache()
 	{
 		clearConstCache();
 
-		for(int i = 0; i < LRUBase::size; i++)
+		for(int i = 0; i < size; i++)
 		{
-			if(LRUBase::data[i])
+			if(data[i])
 			{
-				constCache[*LRUBase::ref[i]] = LRUBase::data[i];
+				constCache[*ref[i]] = data[i];
 			}
 		}
 
