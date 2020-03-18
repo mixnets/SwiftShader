@@ -242,8 +242,8 @@ function(DownloadBoost)
     endif()
 endfunction()
 
-if (SWIFTSHADER_BUILD_PVR)
-    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples/.git)
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples/.git)
+    if(SWIFTSHADER_BUILD_PVR)
         message(WARNING "
         third_party/PowerVR_Examples submodule missing.
         Running 'git submodule update --init' to download it:
@@ -251,7 +251,8 @@ if (SWIFTSHADER_BUILD_PVR)
 
         execute_process(COMMAND git submodule update --init ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
     endif()
-    set(PVR_BUILD_EXAMPLES TRUE CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
+else()
+    set(SWIFTSHADER_BUILD_PVR TRUE)
 endif()
 
 ###########################################################
@@ -2444,6 +2445,7 @@ if(SWIFTSHADER_BUILD_PVR)
         set(CMAKE_BUILD_RPATH "$ORIGIN")
     endif()
 
+    set(PVR_BUILD_EXAMPLES TRUE)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples)
 
     if(NOT APPLE)
