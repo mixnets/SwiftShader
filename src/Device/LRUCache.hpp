@@ -31,7 +31,7 @@ public:
 	virtual ~LRUCache();
 
 	Data query(const Key &key) const;
-	virtual Data add(const Key &key, const Data &data);
+	Data add(const Key &key, const Data &data);
 
 	int getSize() { return size; }
 	Key &getKey(int i) { return key[i]; }
@@ -48,7 +48,7 @@ protected:
 };
 
 template<class Key, class Data, class Hasher = std::hash<Key>>
-class LRUSnapshotCache : public LRUCache<Key, Data>
+class LRUSnapshotCache : protected LRUCache<Key, Data>
 {
 	using LRUBase = LRUCache<Key, Data>;
 
@@ -58,7 +58,12 @@ public:
 	{}
 	~LRUSnapshotCache() { clearSnapshotCache(); }
 
-	Data add(const Key &key, const Data &data) override
+	Data query(const Key &key) const
+	{
+		return LRUBase::query(key);
+	}
+
+	Data add(const Key &key, const Data &data)
 	{
 		snapshotCacheNeedsUpdate = true;
 		return LRUBase::add(key, data);
@@ -69,6 +74,7 @@ public:
 
 private:
 	void clearSnapshotCache();
+
 	bool snapshotCacheNeedsUpdate = false;
 	std::unordered_map<Key, Data, Hasher> snapshotCache;
 };
