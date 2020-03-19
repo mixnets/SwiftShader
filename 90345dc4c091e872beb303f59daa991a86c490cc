@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94a8c6f0_98b42392",
+        "filename": "third_party/marl/src/osfiber_x86.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T15:27:04Z",
+      "side": 1,
+      "message": "Can we document which platforms have this expectation (if not all of them)?",
+      "range": {
+        "startLine": 28,
+        "startChar": 5,
+        "endLine": 28,
+        "endChar": 71
+      },
+      "revId": "90345dc4c091e872beb303f59daa991a86c490cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8c266a1_d6ce5c30",
+        "filename": "third_party/marl/src/osfiber_x86.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T15:27:04Z",
+      "side": 1,
+      "message": "Should it? Modern x86 CPUs have hardware optimizations for call stacks.",
+      "range": {
+        "startLine": 31,
+        "startChar": 45,
+        "endLine": 31,
+        "endChar": 64
+      },
+      "revId": "90345dc4c091e872beb303f59daa991a86c490cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
