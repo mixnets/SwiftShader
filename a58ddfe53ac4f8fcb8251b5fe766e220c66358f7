@@ -16,6 +16,24 @@
       "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8ba5be6_8a54966a",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T20:50:43Z",
+      "side": 1,
+      "message": "That would be an acceptable quick workaround, but I\u0027m looking into whether we can instead treat those large 1D buffers as 2D textures. Got an ancient WIP patch for that: https://swiftshader-review.googlesource.com/c/SwiftShader/+/32008",
+      "parentUuid": "70f60b74_1024cd48",
+      "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
