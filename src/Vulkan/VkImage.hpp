@@ -96,6 +96,17 @@ public:
 	VkDeviceMemory getExternalMemory() const;
 #endif
 
+	const Device *const device = nullptr;
+	const VkImageCreateFlags flags = 0;
+	const VkImageType imageType = VK_IMAGE_TYPE_2D;
+	const Format format;
+	const VkExtent3D extent = { 0, 0, 0 };
+	const uint32_t mipLevels = 0;
+	const uint32_t arrayLayers = 0;
+	const VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+	const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
+	const VkImageUsageFlags usage = (VkImageUsageFlags)0;
+
 private:
 	void copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
@@ -115,18 +126,8 @@ private:
 	void decodeBC(const VkImageSubresourceRange &subresourceRange) const;
 	void decodeASTC(const VkImageSubresourceRange &subresourceRange) const;
 
-	const Device *const device = nullptr;
 	DeviceMemory *deviceMemory = nullptr;
 	VkDeviceSize memoryOffset = 0;
-	VkImageCreateFlags flags = 0;
-	VkImageType imageType = VK_IMAGE_TYPE_2D;
-	Format format;
-	VkExtent3D extent = { 0, 0, 0 };
-	uint32_t mipLevels = 0;
-	uint32_t arrayLayers = 0;
-	VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
-	VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
-	VkImageUsageFlags usage = (VkImageUsageFlags)0;
 	Image *decompressedImage = nullptr;
 #ifdef __ANDROID__
 	BackingMemory backingMemory = {};
