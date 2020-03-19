@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d063581f_7ad1f898",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T20:23:11Z",
+      "side": 1,
+      "message": "lock_guard can\u0027t be manually locked/unlocked, which is what we want here.",
+      "range": {
+        "startLine": 49,
+        "startChar": 6,
+        "endLine": 49,
+        "endChar": 16
+      },
+      "revId": "0b10ce7e96d80edf378ba873a92f365e14cdb8d3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
