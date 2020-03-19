@@ -126,8 +126,7 @@ bool GetNoAlphaOrUnsigned(const vk::Format &format)
 namespace vk {
 
 Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
-    : device(device)
-    , flags(pCreateInfo->flags)
+    : flags(pCreateInfo->flags)
     , imageType(pCreateInfo->imageType)
     , format(pCreateInfo->format)
     , extent(pCreateInfo->extent)
@@ -136,6 +135,7 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     , samples(pCreateInfo->samples)
     , tiling(pCreateInfo->tiling)
     , usage(pCreateInfo->usage)
+    , device(device)
 {
 	if(format.isCompressed())
 	{

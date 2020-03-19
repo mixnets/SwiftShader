@@ -1615,7 +1615,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 			case VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO_KHR:
 			{
 				const VkImageViewUsageCreateInfo *multiviewCreateInfo = reinterpret_cast<const VkImageViewUsageCreateInfo *>(extensionCreateInfo);
-				ASSERT(!(~vk::Cast(pCreateInfo->image)->getUsage() & multiviewCreateInfo->usage));
+				ASSERT(!(~vk::Cast(pCreateInfo->image)->usage & multiviewCreateInfo->usage));
 			}
 			break;
 			case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:

@@ -39,14 +39,14 @@ VkComponentMapping ResolveComponentMapping(VkComponentMapping m, vk::Format form
 	return { table[m.r], table[m.g], table[m.b], table[m.a] };
 }
 
-VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange range, const vk::Image *image)
+VkImageSubresourceRange ResolveRemainingLevelsLayers(const VkImageSubresourceRange &range, const vk::Image *image)
 {
 	return {
 		range.aspectMask,
 		range.baseMipLevel,
-		(range.levelCount == VK_REMAINING_MIP_LEVELS) ? (image->getMipLevels() - range.baseMipLevel) : range.levelCount,
+		(range.levelCount == VK_REMAINING_MIP_LEVELS) ? (image->mipLevels - range.baseMipLevel) : range.levelCount,
 		range.baseArrayLayer,
-		(range.layerCount == VK_REMAINING_ARRAY_LAYERS) ? (image->getArrayLayers() - range.baseArrayLayer) : range.layerCount,
+		(range.layerCount == VK_REMAINING_ARRAY_LAYERS) ? (image->arrayLayers - range.baseArrayLayer) : range.layerCount,
 	};
 }
 
@@ -78,7 +78,7 @@ void ImageView::destroy(const VkAllocationCallbacks *pAllocator)
 // Vulkan 1.2 Table 8. Image and image view parameter compatibility requirements
 bool ImageView::imageTypesMatch(VkImageType imageType) const
 {
-	uint32_t imageArrayLayers = image->getArrayLayers();
+	uint32_t imageArrayLayers = image->arrayLayers;
 
 	switch(viewType)
 	{
@@ -119,8 +119,8 @@ void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags a
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
-	ASSERT(imageTypesMatch(image->getImageType()));
-	ASSERT(format.isCompatible(image->getFormat()));
+	ASSERT(imageTypesMatch(image->imageType));
+	ASSERT(format.isCompatible(image->format));
 
 	VkImageSubresourceRange sr = subresourceRange;
 	sr.aspectMask = aspectMask;
@@ -131,8 +131,8 @@ void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags a
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
-	ASSERT(imageTypesMatch(image->getImageType()));
-	ASSERT(format.isCompatible(image->getFormat()));
+	ASSERT(imageTypesMatch(image->imageType));
+	ASSERT(format.isCompatible(image->format));
 
 	VkImageSubresourceRange sr;
 	sr.aspectMask = aspectMask;
@@ -238,7 +238,7 @@ const Image *ImageView::getImage(Usage usage) const
 
 Format ImageView::getFormat(Usage usage) const
 {
-	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
+	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->format;
 	return imageFormat.getAspectFormat(subresourceRange.aspectMask);
 }
 

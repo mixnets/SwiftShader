@@ -64,15 +64,9 @@ public:
 	void clear(const VkClearColorValue &color, const VkImageSubresourceRange &subresourceRange);
 	void clear(const VkClearDepthStencilValue &color, const VkImageSubresourceRange &subresourceRange);
 
-	VkImageType getImageType() const { return imageType; }
-	const Format &getFormat() const { return format; }
 	Format getFormat(VkImageAspectFlagBits aspect) const;
-	uint32_t getArrayLayers() const { return arrayLayers; }
-	uint32_t getMipLevels() const { return mipLevels; }
-	VkImageUsageFlags getUsage() const { return usage; }
 	uint32_t getLastLayerIndex(const VkImageSubresourceRange &subresourceRange) const;
 	uint32_t getLastMipLevel(const VkImageSubresourceRange &subresourceRange) const;
-	VkSampleCountFlagBits getSampleCountFlagBits() const { return samples; }
 	VkExtent3D getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
@@ -96,6 +90,16 @@ public:
 	VkDeviceMemory getExternalMemory() const;
 #endif
 
+	const VkImageCreateFlags flags = 0;
+	const VkImageType imageType = VK_IMAGE_TYPE_2D;
+	const Format format;
+	const VkExtent3D extent = { 0, 0, 0 };
+	const uint32_t mipLevels = 0;
+	const uint32_t arrayLayers = 0;
+	const VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+	const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
+	const VkImageUsageFlags usage = (VkImageUsageFlags)0;
+
 private:
 	void copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
@@ -116,17 +120,9 @@ private:
 	void decodeASTC(const VkImageSubresourceRange &subresourceRange) const;
 
 	const Device *const device = nullptr;
+
 	DeviceMemory *deviceMemory = nullptr;
 	VkDeviceSize memoryOffset = 0;
-	VkImageCreateFlags flags = 0;
-	VkImageType imageType = VK_IMAGE_TYPE_2D;
-	Format format;
-	VkExtent3D extent = { 0, 0, 0 };
-	uint32_t mipLevels = 0;
-	uint32_t arrayLayers = 0;
-	VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
-	VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
-	VkImageUsageFlags usage = (VkImageUsageFlags)0;
 	Image *decompressedImage = nullptr;
 #ifdef __ANDROID__
 	BackingMemory backingMemory = {};
