@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70f60b74_1024cd48",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-03-19T15:21:27Z",
+      "side": 1,
+      "message": "Need to make sure we account for \"large\" textures somewhere (any dimension beyond 32K). Would it be valid to just drive that from the `buffer` bit here, as it\u0027s only actually used for VkBufferView fetches?",
+      "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
