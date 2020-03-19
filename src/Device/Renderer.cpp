@@ -52,8 +52,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 
 	switch(topology)
 	{
-		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST: {
 			auto index = start;
 			auto pointBatch = &(batch[0][0]);
 			for(unsigned int i = 0; i < triangleCount; i++)
@@ -69,8 +68,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			}
 			break;
 		}
-		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST: {
 			auto index = 2 * start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
@@ -82,8 +80,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			}
 			break;
 		}
-		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP: {
 			auto index = start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
@@ -95,8 +92,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			}
 			break;
 		}
-		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST: {
 			auto index = 3 * start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
@@ -108,8 +104,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			}
 			break;
 		}
-		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP: {
 			auto index = start;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
@@ -121,8 +116,7 @@ inline bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topo
 			}
 			break;
 		}
-		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-		{
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN: {
 			auto index = start + 1;
 			for(unsigned int i = 0; i < triangleCount; i++)
 			{
@@ -555,7 +549,7 @@ void Renderer::synchronize()
 	MARL_SCOPED_EVENT("synchronize");
 	auto ticket = drawTickets.take();
 	ticket.wait();
-	device->updateSamplingRoutineConstCache();
+	device->updateSamplingRoutineSnapshotCache();
 	ticket.done();
 }
 

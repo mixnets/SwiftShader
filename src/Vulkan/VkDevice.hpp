@@ -90,17 +90,17 @@ public:
 		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine);
 
 		// Methods which don't require holding the lock.
-		rr::Routine *queryConst(const Key &key) const;
-		void updateConstCache();
+		rr::Routine *querySnapshot(const Key &key) const;
+		void updateSnapshotCache();
 
 	private:
-		sw::LRUConstCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
+		sw::LRUSnapshotCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
 		std::mutex mutex;
 	};
 
 	SamplingRoutineCache *getSamplingRoutineCache() const;
-	rr::Routine *findInConstCache(const SamplingRoutineCache::Key &key) const;
-	void updateSamplingRoutineConstCache();
+	rr::Routine *querySnapshotCache(const SamplingRoutineCache::Key &key) const;
+	void updateSamplingRoutineSnapshotCache();
 
 	std::shared_ptr<vk::dbg::Context> getDebuggerContext() const
 	{
