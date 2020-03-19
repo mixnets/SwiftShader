@@ -34,6 +34,24 @@
       "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8dfebd66_ef458dfc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T15:45:28Z",
+      "side": 1,
+      "message": "Well...\n\nThe only Vulkan spec text I could find about clamping framebuffer color output is:\n\n\"If the color attachment is fixed-point, the components of the source and destination values and blend factors are each clamped to [0,1] or [-1,1] respectively for an unsigned normalized or signed normalized color attachment prior to evaluating the blend operations. If the color attachment is floating-point, no clamping occurs.\"\n\nNo mention of unsigned floating-point.\n\nSeems rather obvious that we should clamp, so let\u0027s get that clarified in the spec. For now, please add this bug reference.",
+      "parentUuid": "aa9529e9_a735c7bf",
+      "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
