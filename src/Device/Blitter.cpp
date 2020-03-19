@@ -78,7 +78,7 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		return;
 	}
 
-	State state(format, dstFormat, 1, dest->getSampleCountFlagBits(), Options{ 0xF });
+	State state(format, dstFormat, 1, dest->samples, Options{ 0xF });
 	auto blitRoutine = getBlitRoutine(state);
 	if(!blitRoutine)
 	{
@@ -244,7 +244,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
 				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subresLayers);
 
-				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
+				for(int j = 0; j < dest->samples; j++)
 				{
 					uint8_t *d = slice;
 
@@ -1824,7 +1824,7 @@ void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subr
 
 void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
 {
-	if(dst->getFormat() == VK_FORMAT_UNDEFINED)
+	if(dst->format == VK_FORMAT_UNDEFINED)
 	{
 		return;
 	}
@@ -1867,10 +1867,10 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	bool doFilter = (filter != VK_FILTER_NEAREST);
 	bool allowSRGBConversion =
 	    doFilter ||
-	    (src->getSampleCountFlagBits() > 1) ||
+	    (src->samples > 1) ||
 	    (srcFormat.isSRGBformat() != dstFormat.isSRGBformat());
 
-	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->getSampleCountFlagBits(), dst->getSampleCountFlagBits(),
+	State state(src->getFormat(srcAspect), dst->getFormat(dstAspect), src->samples, dst->samples,
 	            Options{ doFilter, allowSRGBConversion });
 	state.clampToEdge = (region.srcOffsets[0].x < 0) ||
 	                    (region.srcOffsets[0].y < 0) ||
@@ -1999,7 +1999,7 @@ Blitter::CornerUpdateRoutineType Blitter::generateCornerUpdate(const State &stat
 
 void Blitter::updateBorders(vk::Image *image, const VkImageSubresourceLayers &subresourceLayers)
 {
-	ASSERT(image->getArrayLayers() >= (subresourceLayers.baseArrayLayer + 6));
+	ASSERT(image->arrayLayers >= (subresourceLayers.baseArrayLayer + 6));
 
 	// From Vulkan 1.1 spec, section 11.5. Image Views:
 	// "For cube and cube array image views, the layers of the image view starting
@@ -2050,7 +2050,7 @@ void Blitter::updateBorders(vk::Image *image, const VkImageSubresourceLayers &su
 	// Compute corner colors
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceLayers.aspectMask);
 	vk::Format format = image->getFormat(aspect);
-	VkSampleCountFlagBits samples = image->getSampleCountFlagBits();
+	VkSampleCountFlagBits samples = image->samples;
 	State state(format, format, samples, samples, Options{ 0xF });
 
 	// Vulkan 1.2: "If samples is not VK_SAMPLE_COUNT_1_BIT, then imageType must be
