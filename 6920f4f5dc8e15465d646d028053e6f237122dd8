@@ -88,6 +88,24 @@
       "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51fc81a3_afa19802",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-19T17:56:09Z",
+      "side": 1,
+      "message": "Yes, all I\u0027m saying is that this isn\u0027t spelled out in the spec. I opened b/147900455 for similar holes in the spec, so we can bring this up at Khonos.\n\nSo please just add b/147900455 to the commit message. LGTM with that change.\n\n(Note that values not being in the representable range isn\u0027t enough to assume clamping is required. It could be UD, requiring the app to do the clamping if negative values are expected, or some other overflow behavior. The dEQP-GLES3 test pretty much forces clamping, but the spec should mention that or the test is invalid.)",
+      "parentUuid": "7599aef5_f40f2616",
+      "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
