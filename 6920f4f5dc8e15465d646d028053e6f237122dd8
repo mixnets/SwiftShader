@@ -52,6 +52,24 @@
       "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e98ad7af_d6d98456",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-19T15:57:39Z",
+      "side": 1,
+      "message": "I don\u0027t understand your comment.\n\nThe range of values that are representable in 10bit is [0-2016] (1024 * (1 + 31/32)) and in 11 bit [0-4064] (2048 * (1 + 63/64).\nThe current behavior makes no sense, we\u0027re mapping negative values to positive values (ex.: -256 in float become 256 in 10 bit or 11 bit float).",
+      "parentUuid": "8dfebd66_ef458dfc",
+      "revId": "6920f4f5dc8e15465d646d028053e6f237122dd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
