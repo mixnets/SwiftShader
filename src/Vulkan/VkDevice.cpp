@@ -53,16 +53,16 @@ void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::K
 	cache.add(key, routine);
 }
 
-rr::Routine *Device::SamplingRoutineCache::queryConst(const vk::Device::SamplingRoutineCache::Key &key) const
+rr::Routine *Device::SamplingRoutineCache::querySnapshot(const vk::Device::SamplingRoutineCache::Key &key) const
 {
-	return cache.queryConstCache(key).get();
+	return cache.querySnapshotCache(key).get();
 }
 
-void Device::SamplingRoutineCache::updateConstCache()
+void Device::SamplingRoutineCache::updateSnapshotCache()
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
-	cache.updateConstCache();
+	cache.updateSnapshotCache();
 }
 
 Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, const std::shared_ptr<marl::Scheduler> &scheduler)
@@ -269,14 +269,14 @@ Device::SamplingRoutineCache *Device::getSamplingRoutineCache() const
 	return samplingRoutineCache.get();
 }
 
-rr::Routine *Device::findInConstCache(const SamplingRoutineCache::Key &key) const
+rr::Routine *Device::querySnapshotCache(const SamplingRoutineCache::Key &key) const
 {
-	return samplingRoutineCache->queryConst(key);
+	return samplingRoutineCache->querySnapshot(key);
 }
 
-void Device::updateSamplingRoutineConstCache()
+void Device::updateSamplingRoutineSnapshotCache()
 {
-	samplingRoutineCache->updateConstCache();
+	samplingRoutineCache->updateSnapshotCache();
 }
 
 }  // namespace vk
