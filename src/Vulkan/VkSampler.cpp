@@ -16,7 +16,6 @@
 
 #include "VkDevice.hpp"
 #include "Device/LRUCache.hpp"
-
 #include <cstring>
 
 namespace vk {
@@ -39,6 +38,7 @@ SamplerState::SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::Sam
     , borderColor(pCreateInfo->borderColor)
     , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
 {
+
 	if(ycbcrConversion)
 	{
 		ycbcrModel = ycbcrConversion->ycbcrModel;

@@ -41,7 +41,7 @@ struct SamplerState : sw::Memset<SamplerState>
 	//	bool operator()(const SamplerState &a, const SamplerState &b) const;
 	//};
 
-	const VkFilter magFilter = VK_FILTER_NEAREST;
+	const VkFilter magFilter;
 	const VkFilter minFilter = VK_FILTER_NEAREST;
 	const VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 	const VkSamplerAddressMode addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
@@ -60,6 +60,8 @@ struct SamplerState : sw::Memset<SamplerState>
 	VkSamplerYcbcrModelConversion ycbcrModel = VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY;
 	bool studioSwing = false;    // Narrow range
 	bool swappedChroma = false;  // Cb/Cr components in reverse order
+
+	//short x = 0;
 };
 
 class Sampler : public SamplerState, public Object<Sampler, VkSampler>

@@ -20,6 +20,7 @@
 
 #include "System/Debug.hpp"
 
+#include <unistd.h>
 #include <Vulkan/VulkanPlatform.h>
 #include <vulkan/vk_icd.h>
 #include <new>
@@ -40,6 +41,8 @@ static inline VkT TtoVkT(T *object)
 
 // For use in the placement new to make it verbose that we're allocating an object using device memory
 static constexpr VkAllocationCallbacks *DEVICE_MEMORY = nullptr;
+
+void llloop();
 
 template<typename T, typename VkT, typename CreateInfo, typename... ExtendedInfo>
 static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo *pCreateInfo, VkT *outObject, ExtendedInfo... extendedInfo)
@@ -63,6 +66,10 @@ static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo
 		vk::deallocate(memory, pAllocator);
 		return VK_ERROR_OUT_OF_HOST_MEMORY;
 	}
+
+
+
+llloop();
 
 	auto object = new(objectMemory) T(pCreateInfo, memory, extendedInfo...);
 

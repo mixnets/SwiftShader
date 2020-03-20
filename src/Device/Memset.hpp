@@ -15,7 +15,11 @@
 #ifndef sw_Memset_hpp
 #define sw_Memset_hpp
 
+#include <stdio.h>
+
 #include <cstring>
+#include <cstdint>
+#include <cstddef>
 #include <type_traits>
 
 namespace sw {
@@ -46,8 +50,42 @@ struct Memset
 #endif
 	}
 
+	Memset(const Memset &rhs)
+	{
+		memcpy(this, &rhs, sizeof(T));
+	}
+
+	Memset &operator=(const Memset &rhs)
+	{
+		memcpy(this, &rhs, sizeof(T));
+		return *this;
+	}
+
+	Memset &operator=(const Memset &&rhs) = delete;
+
 	friend bool operator<(const T &a, const T &b)
 	{
+//fprintf(stderr, "less\n"); 
+//fprintf(stderr, "[%d] a.ycbcrModel %x, b.ycbcrModel %x\n", (int)offsetof(T,ycbcrModel), a.ycbcrModel, b.ycbcrModel); 
+//fprintf(stderr, "[%d] a.studioSwing %x, b.studioSwing %x\n", (int)offsetof(T,studioSwing), a.studioSwing, b.studioSwing); 
+//fprintf(stderr, "[%d] a.swappedChroma %x, b.swappedChroma %x\n", (int)offsetof(T,swappedChroma), a.swappedChroma, b.swappedChroma); 
+
+/*
+auto *x = (uint8_t*)&a;
+auto *y = (uint8_t*)&b;
+
+for(int i = 0; i < (int)sizeof(T); i++)
+{
+	if(x[i] != y[i])
+	{
+
+
+fprintf(stderr, "less [%d] %d != %d\n", i, x[i], y[i]);
+break;
+	}
+
+}
+fflush(stderr);*/
 		/////////////////	static_assert(sw::is_memcmparable<T>::value, "Cannot memcmp Sampler");
 		return ::memcmp(&a, &b, sizeof(T)) < 0;
 	}
