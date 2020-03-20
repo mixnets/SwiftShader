@@ -78,13 +78,7 @@ private:
 template<typename T>
 struct is_memcmparable
 {
-// std::is_trivially_copyable is not available in older GCC versions.
-#if !defined(__GNUC__) || __GNUC__ > 5
-	static const bool value = std::is_trivially_copyable<T>::value;
-#else
-	// At least check it doesn't have virtual methods.
-	static const bool value = !std::is_polymorphic<T>::value;
-#endif
+	static const bool value = true;
 };
 }  // namespace sw
 

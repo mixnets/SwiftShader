@@ -78,6 +78,8 @@ uint32_t Device::SamplerIndexer::index(const Sampler *sampler)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
+fprintf(stderr, "index %d\n", sampler->addressModeU);
+
 	auto it = map.find(*sampler);
 
 	if(it != map.end())
@@ -96,6 +98,9 @@ uint32_t Device::SamplerIndexer::index(const Sampler *sampler)
 void Device::SamplerIndexer::remove(const Sampler *sampler)
 {
 	std::lock_guard<std::mutex> lock(mutex);
+
+
+fprintf(stderr, "remove %d\n", sampler->addressModeU);
 
 	auto it = map.find(*sampler);
 	ASSERT(it != map.end());
@@ -160,6 +165,15 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 		debugger.server = vk::dbg::Server::create(debugger.context, atoi(port));
 	}
 #endif  // ENABLE_VK_DEBUGGER
+}
+
+void llloop()
+{
+	static bool loop = false;
+		while(loop)
+{
+    sleep(1);
+}
 }
 
 void Device::destroy(const VkAllocationCallbacks *pAllocator)
