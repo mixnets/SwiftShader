@@ -69,6 +69,14 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 			samplerState.compareOp = sampler->compareOp;
 			samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates != VK_FALSE);
 
+            VkFormatProperties formatProps = {0};
+            imageDescriptor->device->getPhysicalDevice()->getFormatProperties(imageDescriptor.format, &formatProps);
+            if ((textureFilter == FILTER_LINEAR)
+                    && (formatProps.linearTilingProperties & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT == 0))
+            {
+                UNDEFINED_BEHAVIOR("Linear filtering specified for non-linear format: %s", vk::stringify(
+            }
+
 			samplerState.ycbcrModel = sampler->ycbcrModel;
 			samplerState.studioSwing = sampler->studioSwing;
 			samplerState.swappedChroma = sampler->swappedChroma;
