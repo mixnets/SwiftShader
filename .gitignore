@@ -1,5 +1,6 @@
 # Ignored folders #
 /cache/
+/coverage/
 /lib/
 /obj/
 /bin/
