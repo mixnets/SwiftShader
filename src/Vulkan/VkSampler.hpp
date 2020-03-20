@@ -15,42 +15,39 @@
 #ifndef VK_SAMPLER_HPP_
 #define VK_SAMPLER_HPP_
 
-#include "VkDevice.hpp"
 #include "VkImageView.hpp"  // For ResolveIdentityMapping()
 #include "Device/Config.hpp"
+#include "Device/Memset.hpp"
 #include "System/Math.hpp"
 
 #include <atomic>
 
 namespace vk {
 
-class Sampler : public Object<Sampler, VkSampler>
-{
-public:
-	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
-	    : magFilter(pCreateInfo->magFilter)
-	    , minFilter(pCreateInfo->minFilter)
-	    , mipmapMode(pCreateInfo->mipmapMode)
-	    , addressModeU(pCreateInfo->addressModeU)
-	    , addressModeV(pCreateInfo->addressModeV)
-	    , addressModeW(pCreateInfo->addressModeW)
-	    , mipLodBias(pCreateInfo->mipLodBias)
-	    , anisotropyEnable(pCreateInfo->anisotropyEnable)
-	    , maxAnisotropy(pCreateInfo->maxAnisotropy)
-	    , compareEnable(pCreateInfo->compareEnable)
-	    , compareOp(pCreateInfo->compareOp)
-	    , minLod(ClampLod(pCreateInfo->minLod))
-	    , maxLod(ClampLod(pCreateInfo->maxLod))
-	    , borderColor(pCreateInfo->borderColor)
-	    , unnormalizedCoordinates(pCreateInfo->unnormalizedCoordinates)
-	    , ycbcrConversion(ycbcrConversion)
-	{
-	}
+class Device;
 
-	static size_t ComputeRequiredAllocationSize(const VkSamplerCreateInfo *pCreateInfo)
-	{
-		return 0;
-	}
+//struct SamplerState
+//{
+//	VkFilter magFilter = VK_FILTER_NEAREST;
+//	VkFilter minFilter = VK_FILTER_NEAREST;
+//	VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+//	VkSamplerAddressMode addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+//	VkSamplerAddressMode addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+//	VkSamplerAddressMode addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+//	float mipLodBias = 0.0f;
+//	VkBool32 anisotropyEnable = VK_FALSE;
+//	float maxAnisotropy = 0.0f;
+//	VkBool32 compareEnable = VK_FALSE;
+//	VkCompareOp compareOp = VK_COMPARE_OP_NEVER;
+//	float minLod = 0.0f;
+//	float maxLod = 0.0f;
+//	VkBorderColor borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+//	VkBool32 unnormalizedCoordinates = VK_FALSE;
+//};
+
+struct SamplerState : sw::Memset<SamplerState>
+{
+	SamplerState(const VkSamplerCreateInfo *pCreateInfo, const vk::SamplerYcbcrConversion *ycbcrConversion);
 
 	// Prevents accessing mipmap levels out of range.
 	static float ClampLod(float lod)
@@ -58,7 +55,11 @@ public:
 		return sw::clamp(lod, 0.0f, (float)(sw::MAX_TEXTURE_LOD));
 	}
 
-	const uint32_t id = nextID++;
+	struct Compare
+	{
+		bool operator()(const SamplerState &a, const SamplerState &b) const;
+	};
+
 	const VkFilter magFilter = VK_FILTER_NEAREST;
 	const VkFilter minFilter = VK_FILTER_NEAREST;
 	const VkSamplerMipmapMode mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
@@ -75,10 +76,31 @@ public:
 	const VkBorderColor borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 	const VkBool32 unnormalizedCoordinates = VK_FALSE;
 
-	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+	VkSamplerYcbcrModelConversion ycbcrModel = VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY;
+	bool studioSwing = false;    // Narrow range
+	bool swappedChroma = false;  // Cb/Cr components in reverse order
+};
+
+class Sampler : public SamplerState, public Object<Sampler, VkSampler>
+{
+public:
+	Sampler(const VkSamplerCreateInfo *pCreateInfo, void *mem, vk::Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion);
+
+	~Sampler();
+
+	static size_t ComputeRequiredAllocationSize(const VkSamplerCreateInfo *pCreateInfo)
+	{
+		return 0;
+	}
+
+	uint32_t id = 0;
+
+	 
+
+	//const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 
 private:
-	static std::atomic<uint32_t> nextID;
+	Device *const device = nullptr;
 };
 
 class SamplerYcbcrConversion : public Object<SamplerYcbcrConversion, VkSamplerYcbcrConversion>
