@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"../cause"
+	"../cov"
 	"../shell"
 	"../testlist"
 	"../util"
@@ -63,6 +64,7 @@ type Config struct {
 	Env              []string
 	LogReplacements  map[string]string
 	NumParallelTests int
+	CoverageEnv      *cov.Env
 	TestTimeout      time.Duration
 }
 
@@ -72,6 +74,7 @@ type Results struct {
 	Version  int
 	Error    string
 	Tests    map[string]TestResult
+	Coverage *cov.Tree
 	Duration time.Duration
 }
 
@@ -81,6 +84,7 @@ type TestResult struct {
 	Status    testlist.Status
 	TimeTaken time.Duration
 	Err       string `json:",omitempty"`
+	Coverage  *cov.Coverage
 }
 
 func (r TestResult) String() string {
@@ -131,7 +135,6 @@ func (r *Results) Save(path string) error {
 
 // Run runs all the tests.
 func (c *Config) Run() (*Results, error) {
-
 	start := time.Now()
 
 	// Wait group that completes once all the tests have finished.
@@ -200,6 +203,10 @@ func (c *Config) Run() (*Results, error) {
 		Tests:   map[string]TestResult{},
 	}
 
+	if c.CoverageEnv != nil {
+		out.Coverage = &cov.Tree{}
+	}
+
 	// Collect the results.
 	finished := make(chan struct{})
 	lastUpdate := time.Now()
@@ -207,13 +214,18 @@ func (c *Config) Run() (*Results, error) {
 		start, i := time.Now(), 0
 		for r := range results {
 			i++
-			out.Tests[r.Test] = r
 			if time.Since(lastUpdate) > time.Minute {
 				lastUpdate = time.Now()
 				remaining := numTests - i
 				log.Printf("Ran %d/%d tests (%v%%). Estimated completion in %v.\n",
 					i, numTests, util.Percent(i, numTests),
 					(time.Since(start)/time.Duration(i))*time.Duration(remaining))
+			}
+			out.Tests[r.Test] = r
+			if r.Coverage != nil {
+				path := strings.Split(r.Test, ".")
+				out.Coverage.Add(cov.Path(path), r.Coverage)
+				r.Coverage = nil // Free memory
 			}
 		}
 		close(finished)
@@ -263,6 +275,11 @@ func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- Tes
 		env = append(env, v)
 	}
 
+	coverageFile := fmt.Sprintf("/home/ben/src/SwiftShader/coverage/%v", goroutineIndex) // TODO
+	if c.CoverageEnv != nil {
+		env = cov.AppendRuntimeEnv(env, coverageFile)
+	}
+
 nextTest:
 	for name := range tests {
 		// log.Printf("Running test '%s'\n", name)
@@ -282,6 +299,15 @@ nextTest:
 			out = strings.ReplaceAll(out, k, v)
 		}
 
+		var coverage *cov.Coverage
+		if c.CoverageEnv != nil {
+			coverage, err = c.CoverageEnv.Read(coverageFile, "/home/ben/src/SwiftShader/build/libvk_swiftshader.so") // TODO
+			if err != nil {
+				log.Printf("Warning: Failed to get test coverage for test '%v'. %v", name, err)
+			}
+			os.Remove(coverageFile)
+		}
+
 		for _, test := range []struct {
 			re *regexp.Regexp
 			s  testlist.Status
@@ -298,6 +324,7 @@ nextTest:
 					Status:    test.s,
 					TimeTaken: duration,
 					Err:       s,
+					Coverage:  coverage,
 				}
 				continue nextTest
 			}
@@ -319,6 +346,7 @@ nextTest:
 				Status:    testlist.Crash,
 				TimeTaken: duration,
 				Err:       out,
+				Coverage:  coverage,
 			}
 		case shell.ErrTimeout:
 			log.Printf("Timeout for test '%v'\n", name)
@@ -326,34 +354,35 @@ nextTest:
 				Test:      name,
 				Status:    testlist.Timeout,
 				TimeTaken: duration,
+				Coverage:  coverage,
 			}
 		case nil:
 			toks := deqpRE.FindStringSubmatch(out)
 			if len(toks) < 3 {
 				err := fmt.Sprintf("Couldn't parse test '%v' output:\n%s", name, out)
 				log.Println("Warning: ", err)
-				results <- TestResult{Test: name, Status: testlist.Fail, Err: err}
+				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, Coverage: coverage}
 				continue
 			}
 			switch toks[1] {
 			case "Pass":
-				results <- TestResult{Test: name, Status: testlist.Pass, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.Pass, TimeTaken: duration, Coverage: coverage}
 			case "NotSupported":
-				results <- TestResult{Test: name, Status: testlist.NotSupported, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.NotSupported, TimeTaken: duration, Coverage: coverage}
 			case "CompatibilityWarning":
-				results <- TestResult{Test: name, Status: testlist.CompatibilityWarning, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.CompatibilityWarning, TimeTaken: duration, Coverage: coverage}
 			case "QualityWarning":
-				results <- TestResult{Test: name, Status: testlist.QualityWarning, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.QualityWarning, TimeTaken: duration, Coverage: coverage}
 			case "Fail":
 				var err string
 				if toks[2] != "Fail" {
 					err = toks[2]
 				}
-				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, TimeTaken: duration, Coverage: coverage}
 			default:
 				err := fmt.Sprintf("Couldn't parse test output:\n%s", out)
 				log.Println("Warning: ", err)
-				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, TimeTaken: duration}
+				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, TimeTaken: duration, Coverage: coverage}
 			}
 		}
 	}

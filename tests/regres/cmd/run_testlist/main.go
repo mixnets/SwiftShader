@@ -24,7 +24,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -32,6 +34,7 @@ import (
 	"strings"
 	"time"
 
+	"../../cov"
 	"../../deqp"
 	"../../shell"
 	"../../testlist"
@@ -44,6 +47,9 @@ var (
 	maxProcMemory = flag.Uint64("max-proc-mem", shell.MaxProcMemory, "maximum virtual memory per child process")
 	output        = flag.String("output", "results.json", "path to an output JSON results file")
 	filter        = flag.String("filter", "", "filter for test names. Start with a '/' to indicate regex")
+	limit         = flag.Int("limit", 0, "only run a maximum of this number of tests")
+	shuffle       = flag.Bool("shuffle", false, "shuffle tests")
+	genCoverage   = flag.Bool("coverage", false, "generate test coverage")
 )
 
 const testTimeout = time.Minute * 2
@@ -70,9 +76,18 @@ func run() error {
 		}
 	}
 
-	testLists := testlist.Lists{group}
-
 	shell.MaxProcMemory = *maxProcMemory
+
+	if *shuffle {
+		rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+		rnd.Shuffle(len(group.Tests), func(i, j int) { group.Tests[i], group.Tests[j] = group.Tests[j], group.Tests[i] })
+	}
+
+	if *limit != 0 && len(group.Tests) > *limit {
+		group.Tests = group.Tests[:*limit]
+	}
+
+	log.Printf("Running %d tests...\n", len(group.Tests))
 
 	config := deqp.Config{
 		ExeEgl:           "",
@@ -81,11 +96,18 @@ func run() error {
 		ExeVulkan:        *deqpVkBinary,
 		Env:              os.Environ(),
 		NumParallelTests: *numThreads,
-		TestLists:        testLists,
+		TestLists:        testlist.Lists{group},
 		TestTimeout:      testTimeout,
 	}
 
-	log.Printf("Running %d tests...\n", len(group.Tests))
+	if *genCoverage {
+		cwd, _ := os.Getwd()
+		config.CoverageEnv = &cov.Env{
+			Profdata: "/home/ben/bin/llvm-9.0.0/bin/llvm-profdata", // TODO
+			Cov:      "/home/ben/bin/llvm-9.0.0/bin/llvm-cov",      // TODO
+			RootDir:  cwd,                                          // TODO
+		}
+	}
 
 	res, err := config.Run()
 	if err != nil {
@@ -99,6 +121,12 @@ func run() error {
 	for _, s := range testlist.Statuses {
 		if count := counts[s]; count > 0 {
 			log.Printf("%s: %d\n", string(s), count)
+		}
+	}
+
+	if *genCoverage {
+		if err := ioutil.WriteFile("coverage.json", []byte(res.Coverage.JSON()), 0666); err != nil {
+			return err
 		}
 	}
 
