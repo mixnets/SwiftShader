@@ -21,7 +21,9 @@
 #include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkImageView.hpp"
+#include "Vulkan/VkPhysicalDevice.hpp"
 #include "Vulkan/VkSampler.hpp"
+#include "Vulkan/VkStringify.hpp"
 
 #include <spirv/unified1/spirv.hpp>
 
@@ -68,6 +70,13 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 			samplerState.compareEnable = (sampler->compareEnable != VK_FALSE);
 			samplerState.compareOp = sampler->compareOp;
 			samplerState.unnormalizedCoordinates = (sampler->unnormalizedCoordinates != VK_FALSE);
+
+			VkFormatProperties formatProps = { 0 };
+			imageDescriptor->device->getPhysicalDevice()->getFormatProperties(imageDescriptor->format, &formatProps);
+			if((samplerState.textureFilter == FILTER_LINEAR) && (instruction.samplerMethod != Fetch) && (imageDescriptor->memoryOwner != nullptr && imageDescriptor->memoryOwner->getTiling() == VK_IMAGE_TILING_OPTIMAL) && ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) == 0))
+			{
+				UNDEFINED_BEHAVIOR("Linear filtering specified for non-linear format: %s", vk::Stringify(imageDescriptor->format).c_str());
+			}
 
 			samplerState.ycbcrModel = sampler->ycbcrModel;
 			samplerState.studioSwing = sampler->studioSwing;
