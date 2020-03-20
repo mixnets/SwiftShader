@@ -114,6 +114,7 @@ public:
 	const VkComponentMapping &getComponentMapping() const { return components; }
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 	size_t getSizeInBytes() const { return image->getSizeInBytes(subresourceRange); }
+	VkImageTiling getTiling() const { return image->getTiling(); }
 
 private:
 	bool imageTypesMatch(VkImageType imageType) const;
