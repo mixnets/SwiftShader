@@ -149,6 +149,12 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 #undef UNREACHABLE
 #define UNREACHABLE(format, ...) DABORT("UNREACHABLE: " format, ##__VA_ARGS__)
 
+// A macro to indicate that the current state will result in behavior not defined
+// by the Vulkan spec. This should be used when validation layers cannot detect
+// these cases.
+#undef UNDEFINED_BEHAVIOR
+#define UNDEFINED_BEHAVIOR(format, ...) DABORT("UNDEFINED_BEHAVIOR: " format, ##__VA_ARGS__)
+
 // A macro asserting a condition and returning if false.
 // Note this macro always evaluates the expression and also returns in Release builds.
 #undef ASSERT_OR_RETURN

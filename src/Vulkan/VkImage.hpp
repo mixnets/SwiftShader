@@ -83,6 +83,7 @@ public:
 	VkImageUsageFlags getUsage() const { return usage; }
 	VkSampleCountFlagBits getSampleCountFlagBits() const { return samples; }
 	VkExtent3D getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	VkImageTiling getTiling() const { return tiling; }
 	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const;
