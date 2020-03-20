@@ -2228,7 +2228,7 @@ sw::float4 Format::getScale() const
 	return sw::float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-bool Format::has16bitTextureFormat() const
+bool Format::has16bitPackedTextureFormat() const
 {
 	switch(format)
 	{
@@ -2288,6 +2288,10 @@ bool Format::has16bitTextureFormat() const
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 		case VK_FORMAT_D16_UNORM:
 		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+		case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+		case VK_FORMAT_A8B8G8R8_UINT_PACK32:
 			return false;
 		default:
 			UNSUPPORTED("Format: %d", int(format));
