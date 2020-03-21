@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b152537_c5733218",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2294,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-21T12:40:10Z",
+      "side": 1,
+      "message": "Please put new enums close to other related enums, either inserted between lines 2282 and 2283 or between lines 2261 and 2262.",
+      "range": {
+        "startLine": 2291,
+        "startChar": 0,
+        "endLine": 2294,
+        "endChar": 38
+      },
+      "revId": "042d686122ae7d9412b1f497dfd7af6b25547eda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
