@@ -69,6 +69,24 @@
       "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b64a10c1_bf9e9427",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-23T22:22:19Z",
+      "side": 1,
+      "message": "Okay, I see. In that case, perhaps a better alternative would be:\n\nreturn States::operator\u003d\u003d(state);\n\nThis works, and IMHO is easier to understand.",
+      "parentUuid": "e9a1e4d2_a62c88dc",
+      "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
