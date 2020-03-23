@@ -16,6 +16,24 @@
       "revId": "a979616a3ee3a7ce9a65bd4d509139d14622f965",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5a62b29_da3f1f9b",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-03-23T18:21:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "013bfb6c_252233ee",
+      "revId": "a979616a3ee3a7ce9a65bd4d509139d14622f965",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
