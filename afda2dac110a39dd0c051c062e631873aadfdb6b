@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71d43dc9_11e4b31f",
+        "filename": "src/Device/Memset.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-23T21:00:32Z",
+      "side": 1,
+      "message": "I think a name like MemsetBeforeConstruct might be a better name. Maybe a future change?\n\nAlso, it\u0027s very important that this class be the first derived type in a multiple inheritance situation. Looks like there isn\u0027t an official way, but we could do something like they do here: https://stackoverflow.com/questions/15144481/type-trait-to-identify-primary-base-class",
+      "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0428dc95_482065b8",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-23T21:00:32Z",
+      "side": 1,
+      "message": "Can this be: \"return *this \u003d\u003d state;\" ?\n*this should evaluate to \u0027const State\u0026\u0027, and \u0027state\u0027 is alerady a const State\u0026.",
+      "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
