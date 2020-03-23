@@ -52,6 +52,24 @@
       "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8e8e10_5d121535",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-23T20:47:47Z",
+      "side": 1,
+      "message": "As noted on b/152227757#comment2 it was actually OK due to image views being image specific.\n\nPatchset 6 captures this state in the Identifier to avoid regression.",
+      "parentUuid": "a1c56b4b_f68d5371",
+      "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
