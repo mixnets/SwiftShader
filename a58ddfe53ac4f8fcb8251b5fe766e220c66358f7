@@ -34,6 +34,24 @@
       "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1c56b4b_f68d5371",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-23T19:24:03Z",
+      "side": 1,
+      "message": "Actually, this is a pre-existing bug. \u0027largeTexture\u0027 is determined from image descriptor parameters that are not part of the image view id that we use as the routine cache key.\n\nFiled a tracker bug for it: b/152227757\n\nThanks a ton for discovering this! I\u0027ll get to it asap, but I think this patch can land as-is since it doesn\u0027t make matter worse.",
+      "parentUuid": "e8ba5be6_8a54966a",
+      "revId": "a58ddfe53ac4f8fcb8251b5fe766e220c66358f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
