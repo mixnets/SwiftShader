@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "de161905_0efcb917",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2244,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-23T14:52:16Z",
+      "side": 1,
+      "message": "Note we can avoid having to maintain this long tail of cases by first checking if bytes() \u003d\u003d 2 and returning false early. Then we only need the 16-bit formats in this switch.\n\nbytes() already provides validation that we\u0027re not encountering an unsupported (or unimplemented) format.\n\nLGTM either way as I think we should eventually have a table-based solution: b/120077522",
+      "range": {
+        "startLine": 2239,
+        "startChar": 2,
+        "endLine": 2244,
+        "endChar": 27
+      },
+      "revId": "29ecb5640175161540fc7f2840b4545d226b87bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
