@@ -207,7 +207,10 @@ func (r *regres) run() error {
 	for {
 		if now := time.Now(); toDate(now) != lastUpdatedTestLists && now.Hour() >= dailyUpdateTestListHour {
 			lastUpdatedTestLists = toDate(now)
-			if err := r.updateTestLists(client); err != nil {
+			if err := r.updateTestLists(client, llvm); err != nil {
+				log.Println(err.Error())
+			}
+			if err := r.updateTestLists(client, subzero); err != nil {
 				log.Println(err.Error())
 			}
 		}
@@ -508,7 +511,7 @@ func (r *regres) testParent(change *changeInfo, testlists testlist.Lists, d deqp
 	return results, nil
 }
 
-func (r *regres) updateTestLists(client *gerrit.Client) error {
+func (r *regres) updateTestLists(client *gerrit.Client, reactorBackend reactorBackend) error {
 	log.Println("Updating test lists")
 
 	dailyHash := git.Hash{}
@@ -523,7 +526,7 @@ func (r *regres) updateTestLists(client *gerrit.Client) error {
 	}
 
 	// Get the full test results.
-	test := r.newTest(dailyHash)
+	test := r.newTest(dailyHash).setReactorBackend(reactorBackend)
 	defer test.cleanup()
 
 	// Always need to checkout the change.
@@ -794,20 +797,34 @@ func (r *regres) newTest(commit git.Hash) *test {
 	srcDir := filepath.Join(r.cacheRoot, "src", commit.String())
 	resDir := filepath.Join(r.cacheRoot, "res", commit.String())
 	return &test{
-		r:        r,
-		commit:   commit,
-		srcDir:   srcDir,
-		resDir:   resDir,
-		buildDir: filepath.Join(srcDir, "build"),
+		r:              r,
+		commit:         commit,
+		srcDir:         srcDir,
+		resDir:         resDir,
+		buildDir:       filepath.Join(srcDir, "build"),
+		reactorBackend: llvm,
 	}
 }
 
+func (t *test) setReactorBackend(reactorBackend reactorBackend) *test {
+	t.reactorBackend = reactorBackend
+	return t
+}
+
+type reactorBackend string
+
+const (
+	llvm    reactorBackend = "LLVM"
+	subzero reactorBackend = "Subzero"
+)
+
 type test struct {
-	r        *regres
-	commit   git.Hash // hash of the commit to test
-	srcDir   string   // directory for the SwiftShader checkout
-	resDir   string   // directory for the test results
-	buildDir string   // directory for SwiftShader build
+	r              *regres
+	commit         git.Hash       // hash of the commit to test
+	srcDir         string         // directory for the SwiftShader checkout
+	resDir         string         // directory for the test results
+	buildDir       string         // directory for SwiftShader build
+	reactorBackend reactorBackend // backend for SwiftShader build
 }
 
 // cleanup removes any temporary files used by the test.
@@ -865,6 +882,7 @@ func (t *test) build() error {
 		"-DCMAKE_BUILD_TYPE=Release",
 		"-DSWIFTSHADER_DCHECK_ALWAYS_ON=1",
 		"-DREACTOR_VERIFY_LLVM_IR=1",
+		"-DREACTOR_BACKEND="+string(t.reactorBackend),
 		"-DSWIFTSHADER_WARNINGS_AS_ERRORS=0",
 		".."); err != nil {
 		return err
