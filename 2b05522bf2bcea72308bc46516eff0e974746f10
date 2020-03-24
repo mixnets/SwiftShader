@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61e3f986_9ee45e7b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T01:01:35Z",
+      "side": 1,
+      "message": "I\u0027m a bit on the fence about this. I like to keep the matrix of supported configurations small, and was hoping 32-bit Linux could go the way of the dodo: https://itsfoss.com/google-ending-chrome-32-bit/",
+      "range": {
+        "startLine": 9,
+        "startChar": 35,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad806502_7f133b4b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T01:01:35Z",
+      "side": 1,
+      "message": "This is for angleproject:4482, right? Maybe not reference it directly, but it would be good to document the usage of this (if there really is one).",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 9
+      },
+      "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
