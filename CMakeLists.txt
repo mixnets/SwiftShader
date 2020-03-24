@@ -1425,8 +1425,8 @@ if(SWIFTSHADER_BUILD_TESTS)
     endif()
 
     set(GLES_UNITTESTS_LIST
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/GLESUnitTests/unittests.cpp
+        ${TESTS_DIR}/GLESUnitTests/main.cpp
+        ${TESTS_DIR}/GLESUnitTests/unittests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
@@ -1453,8 +1453,8 @@ if(SWIFTSHADER_BUILD_TESTS)
 
     # Math unit tests
     set(MATH_UNITTESTS_LIST
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/MathUnitTests/unittests.cpp
+        ${TESTS_DIR}/MathUnitTests/main.cpp
+        ${TESTS_DIR}/MathUnitTests/unittests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
@@ -1500,10 +1500,10 @@ endif(SWIFTSHADER_BUILD_BENCHMARKS)
 
 if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
     set(VK_UNITTESTS_LIST
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Device.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/Driver.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/VulkanUnitTests/unittests.cpp
+        ${TESTS_DIR}/VulkanUnitTests/Device.cpp
+        ${TESTS_DIR}/VulkanUnitTests/Driver.cpp
+        ${TESTS_DIR}/VulkanUnitTests/main.cpp
+        ${TESTS_DIR}/VulkanUnitTests/unittests.cpp
         ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
