@@ -93,6 +93,54 @@
       "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e5555a1b_c8fd1422",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T04:27:23Z",
+      "side": 1,
+      "message": "I\u0027ll need iterators to remain valid for doing the reverse lookup, both for ensuring that sampler identifiers which are currently used by routines in the sampling routine cache remain in use, and to address b/152227757.",
+      "parentUuid": "7b8d52d9_e07e4326",
+      "range": {
+        "startLine": 119,
+        "startChar": 2,
+        "endLine": 119,
+        "endChar": 10
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "737d443f_913b8980",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T04:27:23Z",
+      "side": 1,
+      "message": "Added the comment.\n\nuber-nit: It\u0027s not 100% clear what such a comment means. Is the map automatically guarded by the mutex, so we don\u0027t have to worry about thread safety? If we reword it to \"must be guarded by mutex\", that\u0027s not entirely accurate either if there are other means of ensuring thread safety. Perhaps the comment belongs on the mutex instead, to indicate that it can be used to make the map thread-safe? Anyway, any comment that associates the two is better than no comment I guess. I\u0027m hopeful one day standard C++ will offer annotations and validation for this.",
+      "parentUuid": "c5097970_d94f8c80",
+      "range": {
+        "startLine": 119,
+        "startChar": 40,
+        "endLine": 119,
+        "endChar": 41
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
