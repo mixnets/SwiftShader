@@ -107,7 +107,7 @@
 /* #undef HAVE_PTHREAD_SETNAME_NP */
 
 /* Define to 1 if you have the `z' library (-lz). */
-/* #undef HAVE_LIBZ */
+#define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <link.h> header file. */
 #define HAVE_LINK_H 1
@@ -224,7 +224,7 @@
 /* #undef HAVE_VALGRIND_VALGRIND_H */
 
 /* Define to 1 if you have the <zlib.h> header file. */
-/* #undef HAVE_ZLIB_H */
+#define HAVE_ZLIB_H 1
 
 /* Have host's _alloca */
 /* #undef HAVE__ALLOCA */
@@ -310,7 +310,7 @@
 #endif
 
 /* Define if zlib compression is available */
-#define LLVM_ENABLE_ZLIB 0
+#define LLVM_ENABLE_ZLIB 1
 
 /* Define if overriding target triple is enabled */
 /* #undef LLVM_TARGET_TRIPLE_ENV */

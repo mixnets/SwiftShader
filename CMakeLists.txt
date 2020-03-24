@@ -1565,7 +1565,7 @@ set_target_properties(llvm PROPERTIES
 
 # Add required libraries for LLVM
 if(LINUX)
-    target_link_libraries(llvm dl)
+    target_link_libraries(llvm dl z)
 endif()
 
 
@@ -2591,4 +2591,20 @@ if(SWIFTSHADER_BUILD_PVR)
     foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER})
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
     endforeach()
+endif()
+
+
+if(SWIFTSHADER_EMIT_COVERAGE)
+    add_executable(turbo-cov
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/turbo-cov/main.cpp
+        ${LLVM_DIR}/lib/ProfileData/InstrProfReader.cpp
+        ${LLVM_DIR}/lib/ProfileData/ProfileSummaryBuilder.cpp
+        ${LLVM_DIR}/lib/ProfileData/Coverage/CoverageMapping.cpp
+        ${LLVM_DIR}/lib/ProfileData/Coverage/CoverageMappingReader.cpp
+        ${LLVM_DIR}/lib/Support/Compression.cpp
+    )
+    target_link_libraries(turbo-cov llvm z)
+    set_target_properties(turbo-cov PROPERTIES
+        INCLUDE_DIRECTORIES "${LLVM_INCLUDE_DIR}"
+    )
 endif()

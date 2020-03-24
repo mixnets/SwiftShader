@@ -130,6 +130,9 @@ func run() error {
 	}
 
 	if *genCoverage {
+		log.Printf("llvm-profdata: %v", cov.ProfdataTime)
+		log.Printf("llvm-cov: %v", cov.CovTime)
+		log.Printf("turbo-cov: %v", cov.TurboCovTime)
 		if err := ioutil.WriteFile("coverage.json", []byte(res.Coverage.JSON()), 0666); err != nil {
 			return err
 		}
@@ -185,7 +188,7 @@ func findSwiftshaderSO(vkSwiftshaderICD string) string {
 }
 
 func findLLVMToolchain(vkSwiftshaderICD string) llvm.Toolchain {
-	minVersion := llvm.Version{Major: 8}
+	minVersion := llvm.Version{Major: 7}
 
 	// Try finding the llvm toolchain via the CMake generated
 	// coverage-toolchain.txt file that sits next to vk_swiftshader_icd.json.
@@ -201,7 +204,7 @@ func findLLVMToolchain(vkSwiftshaderICD string) llvm.Toolchain {
 	}
 
 	// Fallback, try searching PATH.
-	toolchain := llvm.Search().FindAtLeast(llvm.Version{Major: 8})
+	toolchain := llvm.Search().FindAtLeast(minVersion)
 	if toolchain == nil {
 		log.Fatal("Could not find LLVM toolchain")
 	}
