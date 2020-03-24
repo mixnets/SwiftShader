@@ -34,6 +34,24 @@
       "revId": "daee1526440ce6452cc45b908acb7647b3521195",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a25a3285_c4f8fe41",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T13:24:40Z",
+      "side": 1,
+      "message": "\u003e You can\u0027t do SamplerState\u003c Object\u003cSampler, VkSampler\u003e \u003e, because that would defeat the purpose of having a trivial state.\n\nGood point. I also agree that composition would be better here. But what I wanted to know is: does Object\u003c\u003e need to be the first parent?",
+      "parentUuid": "25269861_7efe8b68",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
