@@ -70,6 +70,24 @@
       "revId": "daee1526440ce6452cc45b908acb7647b3521195",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9657dd3_2cd70e55",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T18:09:37Z",
+      "side": 1,
+      "message": "It works either way. In fact that\u0027s what vk::Object\u003c\u003e is for. VkObject.hpp mentions the multiple inheritance case, and we do it for vk::Fence already.\n\nNote also that sampler objects are not laid out in memory explicitly, and the application can\u0027t assume that the handle is a pointer.\n\nAnyway, it might help ourselves during debugging to have the handle correspond to the starting address of the object so I\u0027ll switch them around for that purpose.\n\n(I don\u0027t think we have to resort to composition. vk::Sampler previously exposed the sampler state variables as part of its \u0027interface\u0027, and we can keep it that way. When SamplerState is expected we can pass it a Sampler instance, without requiring any layer of indirection. Composition would be appropriate if encapsulation was required.)",
+      "parentUuid": "4b75df3d_e5c07c41",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
