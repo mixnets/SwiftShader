@@ -4481,10 +4481,11 @@ namespace coro {
 struct CoroutineData
 {
 	bool useInternalScheduler = false;
-	marl::Event suspended;                                // the coroutine is suspended on a yield()
-	marl::Event resumed;                                  // the caller is suspended on an await()
-	marl::Event done{ marl::Event::Mode::Manual };        // the coroutine should stop at the next yield()
-	marl::Event terminated{ marl::Event::Mode::Manual };  // the coroutine has finished.
+	bool done = false;        // the coroutine should stop at the next yield()
+	bool terminated = false;  // the coroutine has finished.
+	bool inRoutine = false;   // is the coroutine currently executing?
+	marl::Scheduler::Fiber *mainFiber = nullptr;
+	marl::Scheduler::Fiber *routineFiber = nullptr;
 	void *promisePtr = nullptr;
 };
 
@@ -4505,9 +4506,15 @@ void destroyCoroutineData(CoroutineData *coroData)
 bool suspend(Nucleus::CoroutineHandle handle)
 {
 	auto *data = reinterpret_cast<CoroutineData *>(handle);
-	data->suspended.signal();
-	data->resumed.wait();
-	return !data->done.test();
+	ASSERT(marl::Scheduler::Fiber::current() == data->routineFiber);
+	ASSERT(data->inRoutine);
+	data->inRoutine = false;
+	data->mainFiber->notify();
+	while(!data->inRoutine)
+	{
+		data->routineFiber->wait();
+	}
+	return !data->done;
 }
 
 // resume() is called by await(), blocking until the coroutine calls yield()
@@ -4515,23 +4522,38 @@ bool suspend(Nucleus::CoroutineHandle handle)
 void resume(Nucleus::CoroutineHandle handle)
 {
 	auto *data = reinterpret_cast<CoroutineData *>(handle);
-	data->resumed.signal();
-	data->suspended.wait();
+	ASSERT(marl::Scheduler::Fiber::current() == data->mainFiber);
+	ASSERT(!data->inRoutine);
+	data->inRoutine = true;
+	data->routineFiber->notify();
+	while(data->inRoutine)
+	{
+		data->mainFiber->wait();
+	}
 }
 
 // stop() is called by coroutine_destroy(), signalling that it's done, then blocks
 // until the coroutine ends, and deletes the coroutine data.
 void stop(Nucleus::CoroutineHandle handle)
 {
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	coroData->done.signal();      // signal that the coroutine should stop at next (or current) yield.
-	coroData->resumed.signal();   // wake the coroutine if blocked on a yield.
-	coroData->terminated.wait();  // wait for the coroutine to return.
-	if(coroData->useInternalScheduler)
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	ASSERT(marl::Scheduler::Fiber::current() == data->mainFiber);
+	ASSERT(!data->inRoutine);
+	if(!data->terminated)
+	{
+		data->done = true;
+		data->inRoutine = true;
+		data->routineFiber->notify();
+		while(!data->terminated)
+		{
+			data->mainFiber->wait();
+		}
+	}
+	if(data->useInternalScheduler)
 	{
 		::getOrCreateScheduler().unbind();
 	}
-	coro::destroyCoroutineData(coroData);  // free the coroutine data.
+	coro::destroyCoroutineData(data);  // free the coroutine data.
 }
 
 namespace detail {
@@ -4554,20 +4576,20 @@ Nucleus::CoroutineHandle getHandleParam()
 
 bool isDone(Nucleus::CoroutineHandle handle)
 {
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->done.test();
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	return data->done;
 }
 
 void setPromisePtr(Nucleus::CoroutineHandle handle, void *promisePtr)
 {
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	coroData->promisePtr = promisePtr;
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	data->promisePtr = promisePtr;
 }
 
 void *getPromisePtr(Nucleus::CoroutineHandle handle)
 {
-	auto *coroData = reinterpret_cast<CoroutineData *>(handle);
-	return coroData->promisePtr;
+	auto *data = reinterpret_cast<CoroutineData *>(handle);
+	return data->promisePtr;
 }
 
 }  // namespace coro
@@ -4752,10 +4774,10 @@ private:
 static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::CoroutineHandle()> beginFunc)
 {
 	// This doubles up as our coroutine handle
-	auto coroData = coro::createCoroutineData();
+	auto data = coro::createCoroutineData();
 
-	coroData->useInternalScheduler = (marl::Scheduler::get() == nullptr);
-	if(coroData->useInternalScheduler)
+	data->useInternalScheduler = (marl::Scheduler::get() == nullptr);
+	if(data->useInternalScheduler)
 	{
 		::getOrCreateScheduler().bind();
 	}
@@ -4763,19 +4785,33 @@ static Nucleus::CoroutineHandle invokeCoroutineBegin(std::function<Nucleus::Coro
 	auto run = [=] {
 		// Store handle in TLS so that the coroutine can grab it right away, before
 		// any fiber switch occurs.
-		coro::setHandleParam(coroData);
+		coro::setHandleParam(data);
+
+		ASSERT(!data->routineFiber);
+		data->routineFiber = marl::Scheduler::Fiber::current();
 
 		beginFunc();
 
-		coroData->done.signal();        // coroutine is done.
-		coroData->suspended.signal();   // resume any blocking await() call.
-		coroData->terminated.signal();  // signal that the coroutine data is ready for freeing.
+		ASSERT(data->inRoutine);
+		data->done = true;        // coroutine is done.
+		data->terminated = true;  // signal that the coroutine data is ready for freeing.
+		data->inRoutine = false;
+		data->mainFiber->notify();
 	};
+
+	ASSERT(!data->mainFiber);
+	data->mainFiber = marl::Scheduler::Fiber::current();
+
+	// block until the first yield or coroutine end
+	ASSERT(!data->inRoutine);
+	data->inRoutine = true;
 	marl::schedule(marl::Task(run, marl::Task::Flags::SameThread));
+	while(data->inRoutine)
+	{
+		data->mainFiber->wait();
+	}
 
-	coroData->suspended.wait();  // block until the first yield or coroutine end
-
-	return coroData;
+	return data;
 }
 
 void Nucleus::createCoroutine(Type *yieldType, const std::vector<Type *> &params)
