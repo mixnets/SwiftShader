@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8fe89cf7_33efb426",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T00:10:53Z",
+      "side": 1,
+      "message": "Done. Thanks! This is much nicer.",
+      "parentUuid": "fa05f680_ff53b590",
+      "range": {
+        "startLine": 210,
+        "startChar": 39,
+        "endLine": 210,
+        "endChar": 45
+      },
+      "revId": "df2c4421a4f39d248543f05aed74a7ca5af358bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6294097f_42926bbe",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "d6bca8e6_ee81767a",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 530,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T00:10:53Z",
+      "side": 1,
+      "message": "Done. Yep, made it fluent after I wrote this, and meant to do it :)",
+      "parentUuid": "6294097f_42926bbe",
+      "range": {
+        "startLine": 530,
+        "startChar": 6,
+        "endLine": 530,
+        "endChar": 38
+      },
+      "revId": "df2c4421a4f39d248543f05aed74a7ca5af358bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9c5f534e_06eb19b7",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 1
@@ -68,6 +116,30 @@
       "revId": "df2c4421a4f39d248543f05aed74a7ca5af358bb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59c260eb_809c143e",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T00:10:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c5f534e_06eb19b7",
+      "range": {
+        "startLine": 879,
+        "startChar": 23,
+        "endLine": 879,
+        "endChar": 39
+      },
+      "revId": "df2c4421a4f39d248543f05aed74a7ca5af358bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
