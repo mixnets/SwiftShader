@@ -52,6 +52,24 @@
       "revId": "daee1526440ce6452cc45b908acb7647b3521195",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b75df3d_e5c07c41",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-24T13:34:31Z",
+      "side": 1,
+      "message": "Not entirely sure. It would be better, but it doesn\u0027t look like it would prevent casting from the base class the way the code is written now in VkObject.hpp.",
+      "parentUuid": "a25a3285_c4f8fe41",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
