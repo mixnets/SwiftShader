@@ -1209,3 +1209,14 @@ if(LINUX OR APPLE)
     target_link_libraries(llvm dl z)
 endif()
 
+if(SWIFTSHADER_EMIT_COVERAGE)
+    add_executable(turbo-cov
+        ${TESTS_DIR}/turbo-cov/main.cpp
+        ${LLVM_DIR}/lib/ProfileData/InstrProfReader.cpp
+        ${LLVM_DIR}/lib/ProfileData/ProfileSummaryBuilder.cpp
+        ${LLVM_DIR}/lib/ProfileData/Coverage/CoverageMapping.cpp
+        ${LLVM_DIR}/lib/ProfileData/Coverage/CoverageMappingReader.cpp
+        ${LLVM_DIR}/lib/Support/Compression.cpp
+    )
+    target_link_libraries(turbo-cov llvm z pthread)
+endif()
