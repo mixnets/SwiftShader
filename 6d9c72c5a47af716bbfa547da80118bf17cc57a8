@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08c5c970_fcee8400",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-24T07:34:41Z",
+      "side": 1,
+      "message": "I meant have this as a member on the cache so you don\u0027t expose the mutex.",
+      "range": {
+        "startLine": 92,
+        "startChar": 31,
+        "endLine": 92,
+        "endChar": 42
+      },
+      "revId": "6d9c72c5a47af716bbfa547da80118bf17cc57a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
