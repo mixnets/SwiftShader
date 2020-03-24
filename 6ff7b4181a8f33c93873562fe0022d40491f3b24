@@ -22,6 +22,30 @@
       "revId": "6ff7b4181a8f33c93873562fe0022d40491f3b24",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ffe501a_39398bd0",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T18:40:53Z",
+      "side": 1,
+      "message": "No, the identifier isn\u0027t removed from the map until the \u0027count\u0027 goes to 0. See below.",
+      "parentUuid": "24a754cf_9edd567e",
+      "range": {
+        "startLine": 91,
+        "startChar": 1,
+        "endLine": 91,
+        "endChar": 25
+      },
+      "revId": "6ff7b4181a8f33c93873562fe0022d40491f3b24",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
