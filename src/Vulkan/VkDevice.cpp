@@ -38,20 +38,20 @@ std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now
 
 namespace vk {
 
-std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key &key)
-{
-	ASSERT_LOCKED(mutex);
-
-	return cache.query(key);
-}
-
-void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine)
-{
-	ASSERT(routine);
-	ASSERT_LOCKED(mutex);
-
-	cache.add(key, routine);
-}
+//std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Device::SamplingRoutineCache::Key &key)
+//{
+//	ASSERT_LOCKED(mutex);
+//
+//	return cache.query(key);
+//}
+//
+//void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine)
+//{
+//	ASSERT(routine);
+//	ASSERT_LOCKED(mutex);
+//
+//	cache.add(key, routine);
+//}
 
 rr::Routine *Device::SamplingRoutineCache::queryConst(const vk::Device::SamplingRoutineCache::Key &key) const
 {
