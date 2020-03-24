@@ -78,7 +78,9 @@ uint32_t Device::SamplerIndexer::index(const SamplerState &samplerState)
 
 	nextID++;
 
-	map.emplace(samplerState, Identifier{ nextID, 1 });
+	auto itpair = map.emplace(samplerState, Identifier{ nextID, 1 });
+	//	inv.emplace(nextID, &itpair.first->first);
+	inv.emplace(nextID, &(*itpair.first));
 
 	return nextID;
 }
@@ -93,7 +95,33 @@ void Device::SamplerIndexer::remove(const SamplerState &samplerState)
 	auto count = --it->second.count;
 	if(count == 0)
 	{
+		inv.erase(it->second.id);
 		map.erase(it);
+	}
+}
+
+void Device::SamplerIndexer::inc(uint32_t id)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	auto it = inv.find(id);
+	ASSERT(it != inv.end());
+
+	++it->second->second.count;
+}
+
+void Device::SamplerIndexer::dec(uint32_t id)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	auto it = inv.find(id);
+	ASSERT(it != inv.end());
+
+	auto count = --it->second->second.count;
+	if(count == 0)
+	{
+		map.erase(it->second->first);
+		inv.erase(it);
 	}
 }
 

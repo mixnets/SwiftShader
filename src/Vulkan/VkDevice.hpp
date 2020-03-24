@@ -109,6 +109,9 @@ public:
 		uint32_t index(const SamplerState &samplerState);
 		void remove(const SamplerState &samplerState);
 
+		void inc(uint32_t id);
+		void dec(uint32_t id);
+
 	private:
 		struct Identifier
 		{
@@ -116,8 +119,10 @@ public:
 			uint32_t count;  // Number of samplers sharing this state identifier.
 		};
 
-		std::map<SamplerState, Identifier> map;  // guarded by mutex
 		std::mutex mutex;
+		std::map<SamplerState, Identifier> map;                                         // guarded by mutex
+		                                                                                //	std::unordered_map<uint32_t, const SamplerState *> inv;  // guarded by mutex
+		std::unordered_map<uint32_t, std::pair<const SamplerState, Identifier> *> inv;  // guarded by mutex
 
 		uint32_t nextID = 0;
 	};
