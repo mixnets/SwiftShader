@@ -86,13 +86,23 @@ public:
 			};
 		};
 
-		std::mutex &getMutex() { return mutex; }
+		template<typename Function>
+		std::shared_ptr<rr::Routine> getOrCreate(const Key &key, Function create)
+		{
+			std::lock_guard<std::mutex> lock(mutex);
 
-		// Methods which require holding the lock.
-		std::shared_ptr<rr::Routine> query(const Key &key);
-		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine);
+			auto existingRoutine = cache.query(key);
+			if(existingRoutine)
+			{
+				return existingRoutine;
+			}
 
-		// Methods which don't require holding the lock.
+			std::shared_ptr<rr::Routine> newRoutine = create(key);
+			cache.add(key, newRoutine);
+
+			return newRoutine;
+		}
+
 		rr::Routine *querySnapshot(const Key &key) const;
 		void updateSnapshot();
 
