@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (540bdf Regres: Add new run_testlist flags)
 ---
 Language:        Cpp
 # BasedOnStyle:  Google
@@ -114,3 +115,6 @@ TabWidth:        4
 UseTab:          ForIndentation
 ...
 
+=======
+BasedOnStyle: LLVM
+>>>>>>> BRANCH (6668ae Squashed 'third_party/llvm-10.0/llvm/' content from commit d)
