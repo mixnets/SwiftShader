@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1b196f78_eaf2b2c6",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T18:40:53Z",
+      "side": 1,
+      "message": "It\u0027s all constant, so we can just access it directly.\n\nMost of these already had getters. I\u0027ll remove them. I\u0027ll make this a separate CL.",
+      "parentUuid": "db3cd440_1ef2d0d3",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 54
+      },
+      "revId": "28837fc15a22c69a80fffad2019ff2aab731ada1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "43fd3fdb_43b64254",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2020-03-24T11:48:10Z",
       "side": 1,
       "message": "This is incorrect, you should be using getMipLevelExtent() and use the ImageView\u0027s subrange. An ImageView can represent a subportion of the mip levels of an image which may not be too large, while level 0 may be too large.",
+      "range": {
+        "startLine": 69,
+        "startChar": 17,
+        "endLine": 69,
+        "endChar": 23
+      },
+      "revId": "28837fc15a22c69a80fffad2019ff2aab731ada1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1d69f08_973a0c51",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T18:40:53Z",
+      "side": 1,
+      "message": "Only texel buffers can be larger than 32k elements, and they don\u0027t have mipmaps.\n\nFor better or worse, I tried making this look similar to the code we have in SpirvShaderSampling::getImageSampler().\n\nNote the TODO that I\u0027d like to eliminate this.",
+      "parentUuid": "43fd3fdb_43b64254",
       "range": {
         "startLine": 69,
         "startChar": 17,
