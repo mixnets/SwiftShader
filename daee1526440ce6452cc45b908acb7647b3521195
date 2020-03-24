@@ -16,6 +16,24 @@
       "revId": "daee1526440ce6452cc45b908acb7647b3521195",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25269861_7efe8b68",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-24T13:20:38Z",
+      "side": 1,
+      "message": "You can\u0027t do SamplerState\u003c Object\u003cSampler, VkSampler\u003e \u003e, because that would defeat the purpose of having a trivial state.\n\nThis is a most likely a case of composition over inheritance. The Sampler object should simply have a state member.",
+      "parentUuid": "3c17c48e_5e4e4c2b",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
