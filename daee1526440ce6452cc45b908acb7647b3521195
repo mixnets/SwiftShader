@@ -88,6 +88,24 @@
       "revId": "daee1526440ce6452cc45b908acb7647b3521195",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45ba19c1_ee70a9f7",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T18:19:44Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b9657dd3_2cd70e55",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
