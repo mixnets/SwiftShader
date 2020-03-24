@@ -69,6 +69,30 @@
       "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5097970_d94f8c80",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-24T00:16:43Z",
+      "side": 1,
+      "message": "Awesome. I\u0027ve been using SAL annotations in marl:\n\n  https://docs.microsoft.com/en-us/cpp/c-runtime-library/sal-annotations?view\u003dvs-2019\n  https://github.com/google/marl/blob/master/include/marl/scheduler.h#L402-L421\n\nBut I\u0027ve found these unreliable and more than a little flaky. I\u0027ve been looking for an decent open source version that I can also enforce with presubmits, and this looks perfect. Thanks!",
+      "parentUuid": "bf6e1cb1_41bcc718",
+      "range": {
+        "startLine": 119,
+        "startChar": 40,
+        "endLine": 119,
+        "endChar": 41
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
