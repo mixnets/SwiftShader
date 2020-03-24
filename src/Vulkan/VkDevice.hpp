@@ -64,8 +64,12 @@ public:
 	const VkPhysicalDeviceFeatures &getEnabledFeatures() const { return enabledFeatures; }
 	sw::Blitter *getBlitter() const { return blitter.get(); }
 
+	class LockedSamplingRoutineCache;
+
 	class SamplingRoutineCache
 	{
+		friend LockedSamplingRoutineCache;
+
 	public:
 		SamplingRoutineCache()
 		    : cache(1024)
@@ -101,7 +105,30 @@ public:
 		std::mutex mutex;
 	};
 
-	SamplingRoutineCache *getSamplingRoutineCache() const;
+	class LockedSamplingRoutineCache
+	{
+	public:
+		LockedSamplingRoutineCache(SamplingRoutineCache *cache)
+		    : cache(cache)
+		{
+			cache->getMutex().lock();
+		}
+
+		~LockedSamplingRoutineCache()
+		{
+			cache->getMutex().unlock();
+		}
+
+		SamplingRoutineCache *operator->()
+		{
+			return cache;
+		}
+
+	private:
+		SamplingRoutineCache *cache;
+	};
+
+	LockedSamplingRoutineCache getSamplingRoutineCache() const;
 	rr::Routine *findInConstCache(const SamplingRoutineCache::Key &key) const;
 	void updateSamplingRoutineConstCache();
 

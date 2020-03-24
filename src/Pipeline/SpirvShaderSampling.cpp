@@ -45,8 +45,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 		return (ImageSampler *)(routine->getEntry());
 	}
 
-	vk::Device::SamplingRoutineCache *cache = imageDescriptor->device->getSamplingRoutineCache();
-	std::lock_guard<std::mutex> lock(cache->getMutex());
+	auto cache = imageDescriptor->device->getSamplingRoutineCache();
 
 	auto routine = cache->query(key);
 	if(routine)

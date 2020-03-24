@@ -303,7 +303,7 @@ void Device::getRequirements(VkMemoryDedicatedRequirements *requirements) const
 	requirements->requiresDedicatedAllocation = VK_FALSE;
 }
 
-Device::SamplingRoutineCache *Device::getSamplingRoutineCache() const
+Device::LockedSamplingRoutineCache Device::getSamplingRoutineCache() const
 {
 	return samplingRoutineCache.get();
 }
