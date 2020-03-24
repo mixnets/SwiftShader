@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "47fdbc3d_7cccb262",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T13:23:18Z",
+      "side": 1,
+      "message": "True, but unfortunately, there are still Win32 and Linux32 builds of Chromium and ANGLE tests. However, I agree we don\u0027t really need this change. Instead, just a note somewhere of how to cross-compile to 32-bit Linux would be enough. I\u0027ll keep this change hanging around for a bit until I do that somewhere (our new g4docs site, perhaps).",
+      "parentUuid": "61e3f986_9ee45e7b",
+      "range": {
+        "startLine": 9,
+        "startChar": 35,
+        "endLine": 9,
+        "endChar": 47
+      },
+      "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad806502_7f133b4b",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "b398919f_96c94e0b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T13:23:18Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ad806502_7f133b4b",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 9
+      },
+      "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1fed0de9_bb47bda9",
         "filename": "cmake/toolchain-linux32.cmake",
         "patchSetId": 2
@@ -59,6 +107,24 @@
       "writtenOn": "2020-03-24T08:22:11Z",
       "side": 1,
       "message": "For marl and cppdap, I\u0027ve ensured there\u0027s copyright headers on the cmake files. We don\u0027t seem to do this for SwiftShader. I wonder if we should.",
+      "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "288af3ac_50599fea",
+        "filename": "cmake/toolchain-linux32.cmake",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T13:23:18Z",
+      "side": 1,
+      "message": "Personally, I don\u0027t think it\u0027s worth putting copyright headers in anything but source code, since there isn\u0027t much to worry about in terms of copying build config files.",
+      "parentUuid": "1fed0de9_bb47bda9",
       "revId": "2b05522bf2bcea72308bc46516eff0e974746f10",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
