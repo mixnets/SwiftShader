@@ -200,6 +200,7 @@ if (NOT TARGET libbacktrace)
     endif()
 endif()
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
 # Boost is downloaded if necessary
 
 # From https://www.boost.org/users/download/
@@ -253,6 +254,12 @@ if (SWIFTSHADER_BUILD_PVR)
     endif()
     set(PVR_BUILD_EXAMPLES TRUE CACHE BOOL "Build the PowerVR SDK Examples" FORCE)
 endif()
+=======
+###########################################################
+# OS libraries
+###########################################################
+find_package(Threads REQUIRED)
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
 
 ###########################################################
 # Convenience macros
@@ -425,6 +432,7 @@ else()
         )
     endif()
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
     # Disable pedanitc warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
@@ -575,6 +583,10 @@ if(WIN32)
     add_definitions(-DWINVER=0x501 -DNOMINMAX -DSTRICT)
     set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "" "lib")
 endif()
+=======
+    target_include_directories(${target} PUBLIC $<BUILD_INTERFACE:${MARL_INCLUDE_DIR}>)
+endfunction(marl_set_target_options)
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
 
 ###########################################################
 # LLVM
@@ -1464,14 +1476,26 @@ elseif(ARCH STREQUAL "ppc64le")
     )
 endif()
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
 if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND LLVM_LIST
         ${LLVM_DIR}/lib/Demangle/ItaniumDemangle.cpp
     )
 endif()
+=======
+target_link_libraries(marl PUBLIC Threads::Threads)
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
 set(LLVM_INCLUDE_DIR "")
+=======
+# install
+if(MARL_INSTALL)
+    include(CMakePackageConfigHelpers)
+    include(GNUInstallDirs)
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
 elseif(LINUX)
@@ -1786,6 +1810,17 @@ if(REACTOR_EMIT_DEBUG_INFO)
         ${LIBBACKTRACE_DIR}/state.c
         ${LIBBACKTRACE_INCLUDE_DIR}/backtrace-supported.h
         ${LIBBACKTRACE_INCLUDE_DIR}/config.h
+=======
+    configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/marl-config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/marl-config.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+
+    install(DIRECTORY ${MARL_INCLUDE_DIR}/marl
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        USE_SOURCE_PERMISSIONS
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
     )
 
     if(WIN32)
@@ -1969,6 +2004,7 @@ elseif(LINUX)
         ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
     )
 
+<<<<<<< HEAD   (4b8b07 CMake: make SWIFTSHADER_DCHECK_ALWAYS_ON work on Windows)
     if(X11)
         list(APPEND VULKAN_LIST
             ${SOURCE_DIR}/WSI/XlibSurfaceKHR.cpp
@@ -1977,6 +2013,18 @@ elseif(LINUX)
             ${SOURCE_DIR}/WSI/libX11.hpp
         )
     endif()
+=======
+    install(EXPORT marl-targets
+        FILE marl-targets.cmake
+        NAMESPACE marl::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/marl-config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+endif(MARL_INSTALL)
+>>>>>>> BRANCH (a38d7d Squashed 'third_party/marl/' changes from ca8408f68..16e1dc3)
 
     if(XCB)
         list(APPEND VULKAN_LIST
