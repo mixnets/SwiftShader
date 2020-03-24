@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "e287899f_d2700abe",
+        "filename": "src/Device/Memset.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T04:27:23Z",
+      "side": 1,
+      "message": "b/152253831",
+      "parentUuid": "06d332b0_6cd3d31a",
+      "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0428dc95_482065b8",
         "filename": "src/Device/PixelProcessor.cpp",
         "patchSetId": 2
@@ -87,6 +105,24 @@
       "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c04fe77_5f5bedf6",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-24T04:27:23Z",
+      "side": 1,
+      "message": "It\u0027s easier to read at a glance, but I don\u0027t find it easier to understand. \u0027States\u0027 could be a completely unrelated class (I know, not without a 2-argument operator\u003d\u003d, but still that\u0027s not instantly obvious). Also in theory it may look at more variables of \u0027state\u0027 than what\u0027s in States.\n\nWith the current code it\u0027s obvious that States must be a base class of both and only this part is being compared.\n\nWe could do something like \"this-\u003estates() \u003d\u003d state-\u003estates()\", but then there\u0027s no way of telling what states() returns. Is this comparing two pointers, perhaps?\n\nIf this change doesn\u0027t look worse than what\u0027s on the left side, I suggest we land it as-is and look into improving on it later. Perhaps we can create a template class for all these state structures, that encapsulates the hashing and equality test functionality?",
+      "parentUuid": "b64a10c1_bf9e9427",
+      "revId": "afda2dac110a39dd0c051c062e631873aadfdb6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
