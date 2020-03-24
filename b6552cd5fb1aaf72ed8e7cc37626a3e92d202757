@@ -141,6 +141,54 @@
       "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a63634d1_f1cff8de",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-24T07:37:01Z",
+      "side": 1,
+      "message": "Sorry, I\u0027m probably being thick, but I\u0027m not following. Can you please point me at the code where you \u0027need iterators to remain valid for doing the reverse lookup\u0027?",
+      "parentUuid": "e5555a1b_c8fd1422",
+      "range": {
+        "startLine": 119,
+        "startChar": 2,
+        "endLine": 119,
+        "endChar": 10
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8e9b405_4e90c948",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-24T07:37:01Z",
+      "side": 1,
+      "message": "\u003e Is the map automatically guarded by the mutex, so we don\u0027t have to worry about thread safety?\n\nWhat do you mean \"automatically guarded by\"? These are just fields. I don\u0027t see how there\u0027s any ambiguity in \"guarded by\". Care to elaborate?\n\n\u003e Perhaps the comment belongs on the mutex instead\n\nThat works so long as there\u0027s only one field guarded by the mutex, which is often not the case.\n\n\u003e I\u0027m hopeful one day standard C++ will offer annotations and validation for this.\n\nYes, I agree. I\u0027m going to give these LLVM annotations a try. If they work well, I can update the SwiftShader cases too.",
+      "parentUuid": "737d443f_913b8980",
+      "range": {
+        "startLine": 119,
+        "startChar": 40,
+        "endLine": 119,
+        "endChar": 41
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
