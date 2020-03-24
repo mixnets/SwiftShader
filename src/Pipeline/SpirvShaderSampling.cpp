@@ -96,7 +96,12 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 	routine = emitSamplerRoutine(instruction, samplerState);
 
-	cache->add(key, routine);
+	vk::Device::SamplingRoutineCache::Key victim = {};
+	cache->add(key, routine, &victim);
+
+	imageDescriptor->device->incSamplerIdentifier(key.sampler);
+	if(victim.sampler) imageDescriptor->device->decSamplerIdentifier(victim.sampler);
+
 	return (ImageSampler *)(routine->getEntry());
 }
 

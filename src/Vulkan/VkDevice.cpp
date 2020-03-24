@@ -43,10 +43,10 @@ std::shared_ptr<rr::Routine> Device::SamplingRoutineCache::query(const vk::Devic
 	return cache.query(key);
 }
 
-void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine)
+void Device::SamplingRoutineCache::add(const vk::Device::SamplingRoutineCache::Key &key, const std::shared_ptr<rr::Routine> &routine, vk::Device::SamplingRoutineCache::Key *victim)
 {
 	ASSERT(routine);
-	cache.add(key, routine);
+	cache.add(key, routine, victim);
 }
 
 rr::Routine *Device::SamplingRoutineCache::queryConst(const vk::Device::SamplingRoutineCache::Key &key) const
@@ -78,7 +78,8 @@ uint32_t Device::SamplerIndexer::index(const SamplerState &samplerState)
 
 	nextID++;
 
-	map.emplace(samplerState, Identifier{ nextID, 1 });
+	auto entry = map.emplace(samplerState, Identifier{ nextID, 1 });
+	inv.emplace(nextID, entry.first);
 
 	return nextID;
 }
@@ -93,7 +94,33 @@ void Device::SamplerIndexer::remove(const SamplerState &samplerState)
 	auto count = --it->second.count;
 	if(count == 0)
 	{
+		inv.erase(it->second.id);
 		map.erase(it);
+	}
+}
+
+void Device::SamplerIndexer::inc(uint32_t id)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	auto it = inv.find(id);
+	ASSERT(it != inv.end());
+
+	++it->second->second.count;
+}
+
+void Device::SamplerIndexer::dec(uint32_t id)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	auto it = inv.find(id);
+	ASSERT(it != inv.end());
+
+	auto count = --it->second->second.count;
+	if(count == 0)
+	{
+		map.erase(it->second->first);
+		inv.erase(it);
 	}
 }
 
@@ -157,6 +184,12 @@ void Device::destroy(const VkAllocationCallbacks *pAllocator)
 	for(uint32_t i = 0; i < queueCount; i++)
 	{
 		queues[i].~Queue();
+	}
+
+	while(!samplingRoutineCache->empty())
+	{
+		SamplingRoutineCache::Key victim = samplingRoutineCache->pop();
+		samplerIndexer->dec(victim.sampler);
 	}
 
 	vk::deallocate(queues, pAllocator);
@@ -326,6 +359,16 @@ uint32_t Device::indexSampler(const SamplerState &samplerState)
 void Device::removeSampler(const SamplerState &samplerState)
 {
 	samplerIndexer->remove(samplerState);
+}
+
+void Device::incSamplerIdentifier(uint32_t id)
+{
+	return samplerIndexer->inc(id);
+}
+
+void Device::decSamplerIdentifier(uint32_t id)
+{
+	samplerIndexer->dec(id);
 }
 
 }  // namespace vk

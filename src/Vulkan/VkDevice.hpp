@@ -75,8 +75,8 @@ public:
 		struct Key
 		{
 			uint32_t instruction;
-			uint32_t sampler;
 			uint32_t imageView;
+			uint32_t sampler;
 
 			inline bool operator==(const Key &rhs) const;
 
@@ -87,10 +87,13 @@ public:
 		};
 
 		std::shared_ptr<rr::Routine> query(const Key &key) const;
-		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine);
+		void add(const Key &key, const std::shared_ptr<rr::Routine> &routine, Key *victim);
 
 		rr::Routine *queryConst(const Key &key) const;
 		void updateConstCache();
+
+		bool empty() { return cache.empty(); }
+		Key pop() { return cache.pop(); }
 
 	private:
 		sw::LRUConstCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
@@ -109,6 +112,10 @@ public:
 		uint32_t index(const SamplerState &samplerState);
 		void remove(const SamplerState &samplerState);
 
+		///////////////// TODO: combine?
+		void inc(uint32_t id);
+		void dec(uint32_t id);
+
 	private:
 		struct Identifier
 		{
@@ -116,14 +123,19 @@ public:
 			uint32_t count;  // Number of samplers sharing this state identifier.
 		};
 
-		std::map<SamplerState, Identifier> map;  // guarded by mutex
 		std::mutex mutex;
+		using SamplerIdentifierMap = std::map<SamplerState, Identifier>;
+		SamplerIdentifierMap map;                                          // guarded by mutex
+		std::unordered_map<uint32_t, SamplerIdentifierMap::iterator> inv;  // guarded by mutex
 
 		uint32_t nextID = 0;
 	};
 
 	uint32_t indexSampler(const SamplerState &samplerState);
 	void removeSampler(const SamplerState &samplerState);
+
+	void incSamplerIdentifier(uint32_t id);
+	void decSamplerIdentifier(uint32_t id);
 
 	std::shared_ptr<vk::dbg::Context> getDebuggerContext() const
 	{

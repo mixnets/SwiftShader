@@ -31,7 +31,15 @@ public:
 	virtual ~LRUCache();
 
 	Data query(const Key &key) const;
-	virtual Data add(const Key &key, const Data &data);
+	virtual Data add(const Key &key, const Data &data, Key *victim = nullptr);
+
+	bool empty() { return fill == 0; }
+	Key pop()
+	{
+		fill--;
+		///////////// TODO: write {} to corresponding data
+		return *ref[fill + 1];
+	}
 
 	int getSize() { return size; }
 	Key &getKey(int i) { return key[i]; }
@@ -58,10 +66,10 @@ public:
 	{}
 	~LRUConstCache() { clearConstCache(); }
 
-	Data add(const Key &key, const Data &data) override
+	Data add(const Key &key, const Data &data, Key *victim) override
 	{
 		constCacheNeedsUpdate = true;
-		return LRUBase::add(key, data);
+		return LRUBase::add(key, data, victim);
 	}
 
 	void updateConstCache();
@@ -141,10 +149,15 @@ Data LRUCache<Key, Data>::query(const Key &key) const
 }
 
 template<class Key, class Data>
-Data LRUCache<Key, Data>::add(const Key &key, const Data &data)
+Data LRUCache<Key, Data>::add(const Key &key, const Data &data, Key *victim)
 {
 	top = (top + 1) & mask;
 	fill = fill + 1 < size ? fill + 1 : size;
+
+	if(victim && top < fill)  /////// TODO: better way to report victims
+	{
+		*victim = *ref[top];
+	}
 
 	*ref[top] = key;
 	this->data[top] = data;
