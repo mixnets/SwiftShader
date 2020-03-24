@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed137471_4e8fe1be",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-24T12:07:26Z",
+      "side": 1,
+      "message": "How hard would it be to just pregenerate the samplers in Renderer::draw and remove the rest of this function?",
+      "revId": "e1d3f05cbc2722fb5cb2b05a91dfc7c8b6c95ad8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
