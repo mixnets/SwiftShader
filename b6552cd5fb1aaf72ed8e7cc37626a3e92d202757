@@ -45,6 +45,30 @@
       "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf6e1cb1_41bcc718",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T00:02:59Z",
+      "side": 1,
+      "message": "I haven\u0027t used this, but it might be useful to look into annotating for the clang static analyzer: https://clang.llvm.org/docs/ThreadSafetyAnalysis.html",
+      "parentUuid": "7ec1976c_470afdbc",
+      "range": {
+        "startLine": 119,
+        "startChar": 40,
+        "endLine": 119,
+        "endChar": 41
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
