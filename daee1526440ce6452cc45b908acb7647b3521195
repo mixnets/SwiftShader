@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c17c48e_5e4e4c2b",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-24T13:15:55Z",
+      "side": 1,
+      "message": "I know that we do a few reinterpret_casts in VkObject.hpp, which might mean that Object needs to be the first parent. Is this true, sugoi@?\n\nIf that\u0027s the case, we could chain these by making SamplerState a CRTP class as well, and doing:\n\nclass Sampler : public SamplerState\u003c Object\u003cSampler, VkSampler\u003e \u003e",
+      "revId": "daee1526440ce6452cc45b908acb7647b3521195",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
