@@ -22,6 +22,30 @@
       "revId": "6d9c72c5a47af716bbfa547da80118bf17cc57a8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33114f7a_230509dc",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-25T05:25:06Z",
+      "side": 1,
+      "message": "This is a member of the cache (SamplingRoutineCache to be precise), and the mutex isn\u0027t exposed from it any more (getMutex() is gone).\n\nDid you mean moving it into LRUConstCache?",
+      "parentUuid": "08c5c970_fcee8400",
+      "range": {
+        "startLine": 92,
+        "startChar": 31,
+        "endLine": 92,
+        "endChar": 42
+      },
+      "revId": "6d9c72c5a47af716bbfa547da80118bf17cc57a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
