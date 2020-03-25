@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "188d2935_a5593051",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2295,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T14:35:42Z",
+      "side": 1,
+      "message": "Does emitting coverage only work if we build SwiftShader for the Vulkan frontend, and not the GLES frontends? If not, then we should probably generate this outside of this if(SWIFTSHADER_BUILD_VULKAN).",
+      "revId": "410ce8044bbe2f1364672102f4eabd9a953444e1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
