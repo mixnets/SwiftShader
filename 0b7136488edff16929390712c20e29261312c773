@@ -159,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "28249582_b19ad247",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T15:11:42Z",
+      "side": 1,
+      "message": "But ACTIVE_BRANCH above is the same - it holds a hash. How about ACTIVE_REF and LLVM_REPO_ACTIVE_REF?",
+      "parentUuid": "2f4d7f38_b19a7639",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "36095af9_c1ef5849",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
