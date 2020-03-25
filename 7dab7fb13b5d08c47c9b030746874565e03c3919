@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "79366c18_1806a08b",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T16:23:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6f2e3f57_fad923f1",
+      "range": {
+        "startLine": 125,
+        "startChar": 38,
+        "endLine": 125,
+        "endChar": 42
+      },
+      "revId": "7dab7fb13b5d08c47c9b030746874565e03c3919",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c0f8874b_2c8f4b90",
         "filename": "tests/regres/cmd/regres/main.go",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "7dab7fb13b5d08c47c9b030746874565e03c3919",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76ed1a47_99047ce4",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T16:23:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0f8874b_2c8f4b90",
+      "range": {
+        "startLine": 617,
+        "startChar": 0,
+        "endLine": 621,
+        "endChar": 41
+      },
+      "revId": "7dab7fb13b5d08c47c9b030746874565e03c3919",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
