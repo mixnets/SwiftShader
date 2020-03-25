@@ -1,0 +1,163 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "364a98c8_10285593",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "maybe rename to LLVM_REPO_BRANCH?",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5f379ea_15feea35",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "could also use \u0027git rev-parse HEAD\u0027 which outputs the entire hash (without the quotes)",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04e10733_f28850cb",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "love it 😊",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f574f86f_a2417b53",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "Does getting depth\u003d1 for updates ensure that git log still outputs the full history?\n\nAlso, we might want to `git checkout master \u0026\u0026 git reset --hard origin/master` to make sure we\u0027re ready for pulling, though it\u0027s unlikely anyone would touch this directory.",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2eee165d_2b68af1b",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "LLVM_REPO_ACTIVE_BRANCH? Like ACTIVE_BRANCH above.",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36095af9_c1ef5849",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "Very nice. Do we need to worry about the else case?",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1855c242_efba090e",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "Consider putting this in a variable at the top of the file too, so we can easily see the bug it refers to.",
+      "range": {
+        "startLine": 65,
+        "startChar": 158,
+        "endLine": 65,
+        "endChar": 169
+      },
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b552fc24_8740fd3d",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "If ever we find this slow, we could use rsync, which does the minimal adding, deleting, overwriting required to make destination match source.",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42c2e71a_b18529bd",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T13:45:23Z",
+      "side": 1,
+      "message": "We could leave this. Then a future update on the same machine would go faster. It\u0027s in /tmp anwyay.",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
