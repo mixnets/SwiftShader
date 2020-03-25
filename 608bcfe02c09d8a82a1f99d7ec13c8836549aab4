@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a66fb3e_38efbf40",
+        "filename": "tests/regres/cmd/run_testlist/main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T23:08:44Z",
+      "side": 1,
+      "message": "I know this change goes with \u0027https://swiftshader-review.googlesource.com/c/SwiftShader/+/42889\u0027, however I\u0027m wondering if you can simplify this by finding the toolchain right here.\n\nIf you run \u0027cmake -LA -N path/to/project\u0027, it outputs all variables, including advanced (-A). I tried it locally, and got:\n\n```\namaiorano@amaiorano:~/src/SwiftShader/build$ cmake -LA -N ~/src/SwiftShader|grep CMAKE_CXX_COMPILER:\nCMAKE_CXX_COMPILER:FILEPATH\u003d/usr/bin/c++\n```\n\nAs you have the path to the SwiftShader checkout, you should be able to that here, and not bother generating the coverage-toolchain.txt file, right?",
+      "revId": "608bcfe02c09d8a82a1f99d7ec13c8836549aab4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28465f1c_32aef4a1",
+        "filename": "tests/regres/cov/coverage_test.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T23:08:44Z",
+      "side": 1,
+      "message": "I love these ascii graphs!",
+      "revId": "608bcfe02c09d8a82a1f99d7ec13c8836549aab4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
