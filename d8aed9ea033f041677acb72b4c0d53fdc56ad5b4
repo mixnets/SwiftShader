@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34dcbacd_7c8e9e6b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T14:28:55Z",
+      "side": 1,
+      "message": "As this won\u0027t work on Windows, we might want to emit a warning when it\u0027s set on an unsupported target.",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1901575_cba9d60d",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T14:28:55Z",
+      "side": 1,
+      "message": "I think we can just call this SWIFTSHADER_LIBS, even if it\u0027s not the only arg passed to target_link_libraries.",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ab8ad1a_e25d5e62",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T14:28:55Z",
+      "side": 1,
+      "message": "We could also just make SWIFTSHADER_LINK_FLAGS a string, and use string(APPEND SWIFTSHADER_LINK_FLAGS \" \" \u003cvalues\u003e) instead, and avoid doing this.",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
