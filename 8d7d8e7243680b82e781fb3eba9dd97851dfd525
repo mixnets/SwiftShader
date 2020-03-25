@@ -106,6 +106,24 @@
       "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7941a0de_7af43ad5",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:44:33Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/42971",
+      "parentUuid": "5f55df43_a4730f58",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
