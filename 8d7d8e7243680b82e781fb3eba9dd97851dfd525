@@ -16,6 +16,24 @@
       "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edb8c028_95fa7c38",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:04:55Z",
+      "side": 1,
+      "message": "I agree we should change things so that this is PUBLIC, but it doesn\u0027t appear to be currently. Omitting this causes includes to not be found.\nI\u0027ve intentionally tried to keep this change as the absolute minimum needed to get this moved without changes. Baby steps.",
+      "parentUuid": "b4cbf1e6_538aad2d",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
