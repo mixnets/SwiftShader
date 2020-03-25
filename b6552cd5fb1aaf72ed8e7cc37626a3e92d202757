@@ -189,6 +189,54 @@
       "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c183b5d_d27f4e8c",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-25T03:33:45Z",
+      "side": 1,
+      "message": "\u003e What do you mean \"automatically guarded by\"? These are just fields.\n\nThat\u0027s my point. The mutex does not guard the data structure. Using the mutex, correctly, guards the data structure. Hence in https://swiftshader-review.googlesource.com/c/SwiftShader/+/42428 I document wich methods require holding the lock, and assert it.\n\nAnyway, it was nothing more than an uber-nit. The comment doesn\u0027t hurt.",
+      "parentUuid": "f8e9b405_4e90c948",
+      "range": {
+        "startLine": 119,
+        "startChar": 40,
+        "endLine": 119,
+        "endChar": 41
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e955873_36d9f6b5",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-25T03:33:45Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/42928",
+      "parentUuid": "a63634d1_f1cff8de",
+      "range": {
+        "startLine": 119,
+        "startChar": 2,
+        "endLine": 119,
+        "endChar": 10
+      },
+      "revId": "b6552cd5fb1aaf72ed8e7cc37626a3e92d202757",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
