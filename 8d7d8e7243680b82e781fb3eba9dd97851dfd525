@@ -52,6 +52,24 @@
       "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ae1ae4e_073c5a20",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:11:05Z",
+      "side": 1,
+      "message": "Please can I keep this as a straight move and followup with cleanup changes to the existing rules?",
+      "parentUuid": "5e9a2dc5_67af426c",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
