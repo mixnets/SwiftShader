@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "22c87337_e7473962",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "364a98c8_10285593",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5f379ea_15feea35",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "0b7136488edff16929390712c20e29261312c773",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9bc9d8e1_0d9184e1",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5f379ea_15feea35",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "8f90c2aa_6bf9f9ab",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Good spot. I initially started with no need for history, but L59 probably does need the history. Done.",
+      "parentUuid": "f574f86f_a2417b53",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2eee165d_2b68af1b",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
@@ -81,6 +135,24 @@
       "writtenOn": "2020-03-25T13:45:23Z",
       "side": 1,
       "message": "LLVM_REPO_ACTIVE_BRANCH? Like ACTIVE_BRANCH above.",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f4d7f38_b19a7639",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "humm, not sure. I\u0027m after a hash here, not a name. BRANCH makes me think this should be a branch name.",
+      "parentUuid": "2eee165d_2b68af1b",
       "revId": "0b7136488edff16929390712c20e29261312c773",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -101,6 +173,24 @@
       "revId": "0b7136488edff16929390712c20e29261312c773",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e22cc003_9eed0f58",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "No, once we\u0027ve landed the first revision this should always be found.\nThe branch is already set up, and I actually used this script to do that (although I adjusted the commit message).",
+      "parentUuid": "36095af9_c1ef5849",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -127,6 +217,30 @@
     },
     {
       "key": {
+        "uuid": "bc23d6c3_31c56d67",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1855c242_efba090e",
+      "range": {
+        "startLine": 65,
+        "startChar": 158,
+        "endLine": 65,
+        "endChar": 169
+      },
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b552fc24_8740fd3d",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
@@ -144,6 +258,24 @@
     },
     {
       "key": {
+        "uuid": "c9fe6777_60adca92",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Ack. It\u0027s not slow. We\u0027re only dealing with lib and include directories.",
+      "parentUuid": "b552fc24_8740fd3d",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42c2e71a_b18529bd",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
@@ -158,6 +290,24 @@
       "revId": "0b7136488edff16929390712c20e29261312c773",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95aedc79_9ee03694",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:08:51Z",
+      "side": 1,
+      "message": "Yup we could, I\u0027ve been commenting it out to test. I think this will be called rarely enough that keeping the disk space free is preferable.",
+      "parentUuid": "42c2e71a_b18529bd",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
