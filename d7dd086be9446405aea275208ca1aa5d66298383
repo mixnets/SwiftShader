@@ -22,6 +22,30 @@
       "revId": "d7dd086be9446405aea275208ca1aa5d66298383",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3225bbf_7bedc3d7",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T16:11:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71d63e4c_4ba2ba35",
+      "range": {
+        "startLine": 223,
+        "startChar": 3,
+        "endLine": 223,
+        "endChar": 8
+      },
+      "revId": "d7dd086be9446405aea275208ca1aa5d66298383",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
