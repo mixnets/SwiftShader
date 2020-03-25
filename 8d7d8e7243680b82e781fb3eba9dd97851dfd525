@@ -70,6 +70,24 @@
       "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d2b7cfb_70b008fa",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T15:19:38Z",
+      "side": 1,
+      "message": "Okay, but then in the root CMakeLists.txt, where add_subdirectory is, please add in a comment that LLVM_INCLUDE_DIR gets added to the scope. And please add a TODO to remove this variable and use targets instead, and reference my bug: https://b.corp.google.com/issues/145758253",
+      "parentUuid": "6ae1ae4e_073c5a20",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
