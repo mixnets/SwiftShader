@@ -34,6 +34,24 @@
       "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e9a2dc5_67af426c",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T15:09:10Z",
+      "side": 1,
+      "message": "What I suggested above should work fine using `target_include_directories(llvm PUBLIC \"${LLVM_INCLUDE_DIR}\")` and will make it so that adding the next LLVM won\u0027t need to also expose this variable in parent scope. Can you give it a shot?",
+      "parentUuid": "edb8c028_95fa7c38",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
