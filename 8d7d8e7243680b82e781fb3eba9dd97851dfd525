@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4cbf1e6_538aad2d",
+        "filename": "third_party/llvm-7.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-25T14:52:09Z",
+      "side": 1,
+      "message": "Since we\u0027re already setting the INCLUDE_DIRECTORIES as a target property for \"llvm\", and we\u0027re using target_link_libraries to link to \"llvm\", there should be no need for LLVM_INCLUDE_DIR at all. The only question I have is whether set_target_properties sets these properties as PUBLIC or not. If not, we can, instead, remove the INCLUDE_DIRECTORIES line in set_target_properties, and instead use:\n\ntarget_include_directories(llvm PUBLIC \"${LLVM_INCLUDE_DIR}\")\n\nWith this, we can avoid having to add variables to the parent scope, which is better. From what I can tell, the usage of LLVM_INCLUDE_DIR in the base CMakeLists.txt can be removed.",
+      "revId": "8d7d8e7243680b82e781fb3eba9dd97851dfd525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
