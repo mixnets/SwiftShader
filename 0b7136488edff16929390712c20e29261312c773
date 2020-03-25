@@ -177,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "264955a1_b7a050c9",
+        "filename": "third_party/update-llvm-10.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-25T15:30:38Z",
+      "side": 1,
+      "message": "Gone with SWIFTSHADER_HEAD and LLVM_HEAD.",
+      "parentUuid": "28249582_b19ad247",
+      "revId": "0b7136488edff16929390712c20e29261312c773",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "36095af9_c1ef5849",
         "filename": "third_party/update-llvm-10.sh",
         "patchSetId": 3
