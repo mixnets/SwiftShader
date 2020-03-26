@@ -56,10 +56,11 @@ VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange ran
 
 namespace vk {
 
-Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, VkComponentMapping mapping)
+Identifier::Identifier(const Image *image, VkImageViewType type, VkImageAspectFlags apectMask, VkComponentMapping mapping)
 {
 	imageViewType = type;
-	format = Format::mapTo8bit(fmt);
+	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(apectMask);
+	format = Format::mapTo8bit(image->getFormat(aspect));
 	r = mapping.r;
 	g = mapping.g;
 	b = mapping.b;
@@ -86,7 +87,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , components(ResolveComponentMapping(pCreateInfo->components, format))
     , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
     , ycbcrConversion(ycbcrConversion)
-    , id(image, viewType, format, components)
+    , id(image, viewType, pCreateInfo->subresourceRange.aspectMask, components)
 {
 }
 

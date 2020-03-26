@@ -32,7 +32,7 @@ class SamplerYcbcrConversion;
 union Identifier
 {
 	// Image view identifier
-	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping);
+	Identifier(const Image *image, VkImageViewType type, VkImageAspectFlags apectMask, VkComponentMapping mapping);
 
 	// Buffer view identifier
 	Identifier(VkFormat format);
