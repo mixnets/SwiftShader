@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "365ce478_aac1c1fb",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-26T19:43:47Z",
+      "side": 1,
+      "message": "I feel like we can just disable this warning at the build level. According to https://clang.llvm.org/docs/DiagnosticsReference.html#wc-11-extra-semi this merely warns that it\u0027s not strict C++11, but since LLVM is littered with it and all toolchains we use support it, it doesn\u0027t seem useful to leave it enabled in other parts of the code base.",
+      "range": {
+        "startLine": 19,
+        "startChar": 35,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "3dae5c0a6da93461a8e2ff90d580854663b6144a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fe8c4993_6630612c",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 2
