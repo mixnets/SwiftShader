@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4cef9a63_71610965",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-26T10:52:48Z",
+      "side": 1,
+      "message": "Done as a FATAL_ERROR. Warnings might get missed.",
+      "parentUuid": "34dcbacd_7c8e9e6b",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d1901575_cba9d60d",
         "filename": "CMakeLists.txt",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "b7d674b5_7e53ad6a",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-26T10:52:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1901575_cba9d60d",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab8ad1a_e25d5e62",
         "filename": "CMakeLists.txt",
         "patchSetId": 4
@@ -47,6 +83,24 @@
       "writtenOn": "2020-03-25T14:28:55Z",
       "side": 1,
       "message": "We could also just make SWIFTSHADER_LINK_FLAGS a string, and use string(APPEND SWIFTSHADER_LINK_FLAGS \" \" \u003cvalues\u003e) instead, and avoid doing this.",
+      "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "754e484b_cd318080",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 596,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-26T10:52:48Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of having different methods for list appending - it\u0027s an accident waiting to happen, and the toolchain errors are _really_ confusing (trust me, I spent over 20 mins trying to figure out what was going wrong). I don\u0027t much like this, but it keeps the bits that are likely to change simple.",
+      "parentUuid": "9ab8ad1a_e25d5e62",
       "revId": "d8aed9ea033f041677acb72b4c0d53fdc56ad5b4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
