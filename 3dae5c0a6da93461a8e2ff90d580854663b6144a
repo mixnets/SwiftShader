@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe8c4993_6630612c",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-26T19:22:27Z",
+      "side": 1,
+      "message": "I feel like I\u0027m missing something, but none of these headers include LLVM headers (I think), so why do we need to put these includes here?",
+      "revId": "3dae5c0a6da93461a8e2ff90d580854663b6144a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a678ea5c_46043d0f",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-26T19:22:27Z",
+      "side": 1,
+      "message": "So here, we definitely include llvm headers at line 32 and below, but what do we need to include these other headers, from line 22 to 30?",
+      "revId": "3dae5c0a6da93461a8e2ff90d580854663b6144a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
