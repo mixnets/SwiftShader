@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD   (e32207 Merge "Initial drop of LLVM 10 to third_party/llvm-10.0")
 cmake_minimum_required(VERSION 3.6.3)
+=======
+#
+# The SPIR-V headers from the SPIR-V Registry
+# https://www.khronos.org/registry/spir-v/
+#
+cmake_minimum_required(VERSION 3.0)
+project(SPIRV-Headers VERSION 1.5.1)
+>>>>>>> BRANCH (a8001d Squashed 'third_party/SPIRV-Headers/' changes from 204cd131c)
 
 set(CMAKE_CXX_STANDARD 14)
 
