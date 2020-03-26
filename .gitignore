@@ -44,4 +44,14 @@ cmake-build-debug/
 *.opendb
 *.db
 *~
+<<<<<<< HEAD   (e32207 Merge "Initial drop of LLVM 10 to third_party/llvm-10.0")
 CMakeCache.txt
+=======
+
+# C-Lion
+/.idea/
+/cmake-build-*/
+
+# VSCode
+/.vscode/*
+>>>>>>> BRANCH (1b9f62 Squashed 'third_party/SPIRV-Tools/' changes from 8910ea5f1..)
