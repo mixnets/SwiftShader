@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e0c6066_11e3ca2a",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-03-26T16:56:30Z",
+      "side": 1,
+      "message": "\"from *a* typical JIT-compiler\u0027s use\"?\n\nI don\u0027t think I understand what you mean when you say \"combination of state\" here. I think what it means is the combination of sampler descriptors and sampler objects. But when the phrase \"changes in state\" comes up later, I\u0027m no longer sure what the word \"state\" is referring to anymore. Because it sounds like the two uses of \"state\" are separate.",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d923afd_2f7be6fd",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-03-26T16:56:30Z",
+      "side": 1,
+      "message": "Should this be \"the pipeline stage*\u0027s* routines\"?",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5025e866_76704b4e",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-03-26T16:56:30Z",
+      "side": 1,
+      "message": "\"hasn\u0027t changed since\" --\u003e \"haven\u0027t changed since\"",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
