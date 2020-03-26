@@ -23,7 +23,12 @@ fi
 # Lower the amount of debug info, to reduce Kokoro build times.
 LESS_DEBUG_INFO=1
 
-cmake .. "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" "-DREACTOR_BACKEND=${REACTOR_BACKEND}" "-DREACTOR_VERIFY_LLVM_IR=1" "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
+cmake .. \
+    "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
+    "-DREACTOR_BACKEND=${REACTOR_BACKEND}" \
+    "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
+    "-DREACTOR_VERIFY_LLVM_IR=1" \
+    "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
 cmake --build . -- -j $(nproc)
 
 # Run unit tests
