@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if defined(__clang__)
+// LLVM has occurrences of the extra-semi warning in its headers, which will be
+// treated as an error in SwiftShader targets.
+#	pragma clang diagnostic push
+#	pragma clang diagnostic ignored "-Wextra-semi"
+#endif  // defined(__clang__)
+
 #include "LLVMReactor.hpp"
 
 #include "CPUID.hpp"
@@ -31,6 +38,10 @@
 #include "llvm/Transforms/Coroutines.h"
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/Scalar.h"
+
+#if defined(__clang__)
+#	pragma clang diagnostic pop
+#endif  // defined(__clang__)
 
 #define ARGS(...)   \
 	{               \
