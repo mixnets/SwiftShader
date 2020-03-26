@@ -11,15 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 // SpirvShaderInstructions.inl holds additional metadata for SPIR-V opcodes.
 // SpirvShaderInstructions.inl should only be included by
 // SpirvShaderInstructions.cpp.
-
 #ifndef DECORATE_OP
 #	error "SpirvShaderInstructions.inl must be included after defining DECORATE_OP()"
 #endif
-
 //   is-statement
 //          |  op-name
 //          |    |
@@ -374,6 +371,13 @@ DECORATE_OP(T, OpSubgroupAllKHR)
 DECORATE_OP(T, OpSubgroupAnyKHR)
 DECORATE_OP(T, OpSubgroupAllEqualKHR)
 DECORATE_OP(T, OpSubgroupReadInvocationKHR)
+DECORATE_OP(T, OpTypeRayQueryProvisionalKHR)
+DECORATE_OP(T, OpRayQueryInitializeKHR)
+DECORATE_OP(T, OpRayQueryTerminateKHR)
+DECORATE_OP(T, OpRayQueryGenerateIntersectionKHR)
+DECORATE_OP(T, OpRayQueryConfirmIntersectionKHR)
+DECORATE_OP(T, OpRayQueryProceedKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionTypeKHR)
 DECORATE_OP(T, OpGroupIAddNonUniformAMD)
 DECORATE_OP(T, OpGroupFAddNonUniformAMD)
 DECORATE_OP(T, OpGroupFMinNonUniformAMD)
@@ -547,3 +551,20 @@ DECORATE_OP(T, OpSubgroupAvcSicGetIpeChromaModeINTEL)
 DECORATE_OP(T, OpSubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL)
 DECORATE_OP(T, OpSubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL)
 DECORATE_OP(T, OpSubgroupAvcSicGetInterRawSadsINTEL)
+DECORATE_OP(T, OpRayQueryGetRayTMinKHR)
+DECORATE_OP(T, OpRayQueryGetRayFlagsKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionTKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionInstanceCustomIndexKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionInstanceIdKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionGeometryIndexKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionPrimitiveIndexKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionBarycentricsKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionFrontFaceKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionCandidateAABBOpaqueKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionObjectRayDirectionKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionObjectRayOriginKHR)
+DECORATE_OP(T, OpRayQueryGetWorldRayDirectionKHR)
+DECORATE_OP(T, OpRayQueryGetWorldRayOriginKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionObjectToWorldKHR)
+DECORATE_OP(T, OpRayQueryGetIntersectionWorldToObjectKHR)
