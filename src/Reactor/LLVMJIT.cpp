@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "LLVMReactor.hpp"
-
-#include "Debug.hpp"
-#include "ExecutableMemory.hpp"
-#include "Routine.hpp"
-
 #if defined(__clang__)
 // LLVM has occurrences of the extra-semi warning in its headers, which will be
 // treated as an error in SwiftShader targets.
 #	pragma clang diagnostic push
 #	pragma clang diagnostic ignored "-Wextra-semi"
 #endif  // defined(__clang__)
+
+#include "LLVMReactor.hpp"
+
+#include "Debug.hpp"
+#include "ExecutableMemory.hpp"
+#include "Routine.hpp"
 
 // TODO(b/143539525): Eliminate when warning has been fixed.
 #ifdef _MSC_VER
@@ -595,6 +595,14 @@ class JITRoutine : public rr::Routine
 #endif
 
 public:
+#if defined(__clang__)
+// TODO(bclayton): Switch to new JIT
+// error: 'LegacyIRCompileLayer' is deprecated: ORCv1 layers (layers with the 'Legacy' prefix) are deprecated.
+// Please use the ORCv2 IRCompileLayer instead [-Werror,-Wdeprecated-declarations]
+#	pragma clang diagnostic push
+#	pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif  // defined(__clang__)
+
 	JITRoutine(
 	    std::unique_ptr<llvm::Module> module,
 	    llvm::Function **funcs,
@@ -638,6 +646,11 @@ public:
 	          })
 	    , addresses(count)
 	{
+
+#if defined(__clang__)
+#	pragma clang diagnostic pop
+#endif  // defined(__clang__)
+
 		std::vector<std::string> mangledNames(count);
 		for(size_t i = 0; i < count; i++)
 		{
