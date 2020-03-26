@@ -52,6 +52,24 @@
       "revId": "410ce8044bbe2f1364672102f4eabd9a953444e1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65761653_444959e4",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 2295,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-26T04:00:42Z",
+      "side": 1,
+      "message": "Don\u0027t bother with the legacy GLES code (or D3D for that matter). Even if we find something dubious in the coverage, it\u0027s unlikely we\u0027ll make a code change.\n\nEventually code coverage of ANGLE + SwiftShader Vulkan running dEQP-GLES could be quite useful though.",
+      "parentUuid": "9bb84db9_056b5b39",
+      "revId": "410ce8044bbe2f1364672102f4eabd9a953444e1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
