@@ -22,6 +22,30 @@
       "revId": "17c3d0d7154a3bc3d33d620ac2fcebade9245789",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44255689_9d3517d4",
+        "filename": "third_party/SPIRV-Tools/source/val/validate_builtins.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3092,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-27T12:53:23Z",
+      "side": 1,
+      "message": "Oh, right, as Ben pointed out, that warning was from the SPIRV-Headers update only, not from the SPIRV-Tools update. Never mind.",
+      "parentUuid": "73e23c04_fb930d47",
+      "range": {
+        "startLine": 3092,
+        "startChar": 0,
+        "endLine": 3092,
+        "endChar": 39
+      },
+      "revId": "17c3d0d7154a3bc3d33d620ac2fcebade9245789",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
