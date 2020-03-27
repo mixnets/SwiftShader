@@ -44,4 +44,14 @@ cmake-build-debug/
 *.opendb
 *.db
 *~
+<<<<<<< HEAD   (fadb38 Update SPIR-V Headers to f8bf11a02)
 CMakeCache.txt
+=======
+
+# C-Lion
+/.idea/
+/cmake-build-*/
+
+# VSCode
+/.vscode/*
+>>>>>>> BRANCH (b8a774 Squashed 'third_party/SPIRV-Tools/' changes from 8910ea5f1..)
