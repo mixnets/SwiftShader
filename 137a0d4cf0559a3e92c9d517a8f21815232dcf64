@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99005a83_b2a9f662",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4513,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-27T18:20:08Z",
+      "side": 1,
+      "message": "Seems like it would be useful to add a \u0027wait\u0027 function on the fiber class that takes a predicate for when to stop waiting, just like condition_variable::wait.",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a6c29c6_83e68730",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4539,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-27T18:20:08Z",
+      "side": 1,
+      "message": "I know you did this throughout the change, but would you mind reverting \u0027data\u0027 back to \u0027coroData\u0027 (and making it consistent in suspend)? First, there will be less diffs here, and second, I can more easily search for instances of its usage.",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
