@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ae7256d1_96b05bf2",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-27T17:10:57Z",
+      "side": 1,
+      "message": "Fixed to use plural posessive.\n\n\"combination of state\" is just meant generally here, as in, there are multiple state variables, and we\u0027re specializing for a specific value of each of them.\n\nI think it would sound weird if I replaced the second \"state\" with \"the combination of state\". I could drop it altogether and just leave \"changes\", but that could be interpreted too widely.\n\nI think the current sentence is a workable compromise for a first version of this file. Suggestions welcome though.",
+      "parentUuid": "5e0c6066_11e3ca2a",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4d923afd_2f7be6fd",
         "filename": "docs/SamplingRoutines.md",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "12e8851f_a0079779",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-27T17:10:57Z",
+      "side": 1,
+      "message": "There are multiple pipeline stages, so I changed it to plural posessive.",
+      "parentUuid": "4d923afd_2f7be6fd",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5025e866_76704b4e",
         "filename": "docs/SamplingRoutines.md",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe184d0b_de30fbbb",
+        "filename": "docs/SamplingRoutines.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-27T17:10:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5025e866_76704b4e",
+      "revId": "04db8d84f856975100e577b6b0b4565e884fcd60",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
