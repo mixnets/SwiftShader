@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73e23c04_fb930d47",
+        "filename": "third_party/SPIRV-Tools/source/val/validate_builtins.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3092,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-03-27T12:19:09Z",
+      "side": 1,
+      "message": "Hmmm... The SpvBuiltInRayGeometryIndexKHR case is right here.",
+      "range": {
+        "startLine": 3092,
+        "startChar": 0,
+        "endLine": 3092,
+        "endChar": 39
+      },
+      "revId": "17c3d0d7154a3bc3d33d620ac2fcebade9245789",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
