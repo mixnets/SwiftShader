@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "a95637f4_ca2dd835",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4513,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-28T16:57:27Z",
+      "side": 1,
+      "message": "If this were any other function in marl, I\u0027d probably agree with you, but this one shouldn\u0027t be convenient. It requires careful consideration for use, and adding predicate helpers might make it look safer than it is.\nAnyway, that doesn\u0027t mean we can\u0027t write a helper in SubzeroReactor.cpp.",
+      "parentUuid": "599f9602_ccdf45fb",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a6c29c6_83e68730",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
