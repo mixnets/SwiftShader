@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b840f0e5_c5b06228",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4513,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-28T01:10:13Z",
+      "side": 1,
+      "message": "The versions of wait() that take a predicate aren\u0027t for convenience - they\u0027re there because it is necessary for wait() to handle the locking and unlocking of the mutex around calling the predicate in order to be atomically correct. I don\u0027t believe we should add a predicate on this form, as it doesn\u0027t give you anything more than looping on the wait() externally.\n\nFWIW: This while() could be an if(). I\u0027m only using while() here as a defensive precaution against sporadic wake-ups, which currently should never happen. Who knows what the future holds and all that, so I decided to play safe than have one real nasty bug to trace down in the future.",
+      "parentUuid": "99005a83_b2a9f662",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a6c29c6_83e68730",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "209262af_c753f740",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4539,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-28T01:10:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a6c29c6_83e68730",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
