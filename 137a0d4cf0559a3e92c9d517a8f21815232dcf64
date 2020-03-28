@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "599f9602_ccdf45fb",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4513,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-28T01:32:09Z",
+      "side": 1,
+      "message": "Sure, but it is convenient 😊. Also, that wait also loops for spurious wakeup, as you do, so it\u0027s not that different. \nAnyway, not at all necessary for this change, but it would simplify the code a bit.",
+      "parentUuid": "b840f0e5_c5b06228",
+      "revId": "137a0d4cf0559a3e92c9d517a8f21815232dcf64",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a6c29c6_83e68730",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
