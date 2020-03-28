@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "553465b8_a13bcc51",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-03-28T22:00:20Z",
+      "side": 1,
+      "message": "completely ignorable nit, but in this sort of statement I prefer to limit the scope of the variable being tested as it is clearly a bug if you attempted to use `existingRoutine` below this if:\n\n  if(auto existingRoutine \u003d cache.query(key)) {\n      ...",
+      "range": {
+        "startLine": 95,
+        "startChar": 6,
+        "endLine": 95,
+        "endChar": 21
+      },
+      "revId": "884f5f02af4b695253bd6a206a6c75b2c8911838",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
