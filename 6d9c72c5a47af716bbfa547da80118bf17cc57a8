@@ -70,6 +70,30 @@
       "revId": "6d9c72c5a47af716bbfa547da80118bf17cc57a8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78329afe_5c92e55d",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-29T04:59:49Z",
+      "side": 1,
+      "message": "Ack. Several more changes following.",
+      "parentUuid": "f510d123_c6eb4cd8",
+      "range": {
+        "startLine": 92,
+        "startChar": 31,
+        "endLine": 92,
+        "endChar": 42
+      },
+      "revId": "6d9c72c5a47af716bbfa547da80118bf17cc57a8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
