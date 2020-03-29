@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "f37606c1_e772695a",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-29T04:37:57Z",
+      "side": 1,
+      "message": "Will definitely give it a try.",
+      "parentUuid": "733ff827_339934b1",
+      "range": {
+        "startLine": 654,
+        "startChar": 0,
+        "endLine": 657,
+        "endChar": 1
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "422df8b1_66130379",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -144,6 +168,30 @@
     },
     {
       "key": {
+        "uuid": "75ae9e97_5d9ab019",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-29T04:37:57Z",
+      "side": 1,
+      "message": "I don\u0027t agree that a comment is as good, as comments tend to lie over time. As I said, this is fairly common practice in modern cmake, where each module is in its own CMakeLists, and only one module. We can think of MODULE_NAME as similar to CMAKE_CURRENT_SOURCE and the like - they are different depending on the file it\u0027s in. I would prefer to leave it this way, unless you\u0027re really against it.",
+      "parentUuid": "fdef7f3b_25ba7d8e",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 24
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e4a977b7_20835374",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -155,6 +203,30 @@
       "writtenOn": "2020-03-29T03:00:58Z",
       "side": 1,
       "message": "nit: SUBZERO_SRC_FILES ?\n\nIt might help prevent people from adding non-Subzero source file dependencies directly to this list.",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 13
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae8ecc12_0a18eb3d",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-29T04:37:57Z",
+      "side": 1,
+      "message": "Again, in modern cmake, each CMakeLists is for exactly one module, so there should never be more than one set of source files for this file. This would be like having a class Subzero with data member m_subzeroSourceFiles. The prefix is redundant. It\u0027s actually quite freeing not to be forced to prefix every variable. In old CMake, where everything is in one file, we had no choice.",
+      "parentUuid": "e4a977b7_20835374",
       "range": {
         "startLine": 22,
         "startChar": 4,
