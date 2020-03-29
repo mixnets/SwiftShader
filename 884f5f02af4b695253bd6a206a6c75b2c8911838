@@ -22,6 +22,30 @@
       "revId": "884f5f02af4b695253bd6a206a6c75b2c8911838",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8eda00cd_5fa2d13a",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-29T04:03:21Z",
+      "side": 1,
+      "message": "I was on the fence about this for a bit. I like the ease of readability of a separate declaration and trivial conditional that can\u0027t be mistaken for an equality test even when squinting. And yes, using existingRoutine below the if would clearly be a bug. So clear in fact that it\u0027s almost unimaginable that if it was attempted it would go unnoticed.\n\nWhat convinced me is that C++17 supports if statements with an initialization statement. This will make it very common to see variables being declared in if statement, which ironically will make this more readable and make my first argument moot. And I\u0027d hate to be wrong about the second argument.",
+      "parentUuid": "553465b8_a13bcc51",
+      "range": {
+        "startLine": 95,
+        "startChar": 6,
+        "endLine": 95,
+        "endChar": 21
+      },
+      "revId": "884f5f02af4b695253bd6a206a6c75b2c8911838",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
