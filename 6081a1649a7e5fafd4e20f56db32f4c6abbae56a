@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d104eaea_2e29abe1",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-29T00:24:46Z",
+      "side": 1,
+      "message": "I\u0027m not sure, this was there before. Do you want me to try? Should we delete Common/Memory.cpp?",
+      "parentUuid": "a555fc0b_319a58e9",
+      "range": {
+        "startLine": 654,
+        "startChar": 0,
+        "endLine": 657,
+        "endChar": 1
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "422df8b1_66130379",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-03-28T21:19:06Z",
       "side": 1,
       "message": "What\u0027s the use of this indirection?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 24
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "378d92a8_24b5794a",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-29T00:24:46Z",
+      "side": 1,
+      "message": "It\u0027s a common practice for sub-project CMakeLists files, because:\n1. It shows you the name of the module at the top (the root one has the project() directive for that). Otherwise, you need to find the add_library() directive somewhere in the file.\n2, It makes it clear that this file is to define a single module.\n3. It\u0027s easier to copy relevant parts from one script to another.\n\nI like it, but if you\u0027re really against it, I can remove it and put the name directly in all the places below.",
+      "parentUuid": "422df8b1_66130379",
       "range": {
         "startLine": 15,
         "startChar": 0,
