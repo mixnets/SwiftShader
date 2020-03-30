@@ -240,6 +240,30 @@
     },
     {
       "key": {
+        "uuid": "1b632d26_b6139fec",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-30T13:57:52Z",
+      "side": 1,
+      "message": "Thanks. I think it does illustrate that a comment is as good, if not better. While I fully agree comments can lie over time, there\u0027s an equal risk of the module name not being the only one.\n\nI don\u0027t think it\u0027s comparable to CMAKE_CURRENT_SOURCE, since that one is controlled by CMake itself to be what it claims to be.",
+      "parentUuid": "d6023df7_797274ab",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 24
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4a977b7_20835374",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -287,6 +311,30 @@
     },
     {
       "key": {
+        "uuid": "3e45df02_e9bb6d84",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-30T13:57:52Z",
+      "side": 1,
+      "message": "It\u0027s great that CMake is being modernized with new features and practices, but I feel like it\u0027s a bit fragile and my argument still holds. The prefix is only redundant if it can be guaranteed that it will only contain subzero source files. Otherwise, it\u0027s useful information about the intent of this list, without having to check a bunch of context.\n\nMaybe one day CMake will add true support for modules that act like a namespace in which these variables become unambiguous. Until then, the prefix feels like a small price to improve clarity.\n\nJust my 2 cents though.",
+      "parentUuid": "ae8ecc12_0a18eb3d",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 13
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5fd3b371_429a7aa9",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -307,6 +355,30 @@
       "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0801988f_f38b4dfd",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-30T13:57:52Z",
+      "side": 1,
+      "message": "Any opinion on this? It\u0027s a nit, but I just wanted to make sure you\u0027ve considered it.",
+      "parentUuid": "5fd3b371_429a7aa9",
+      "range": {
+        "startLine": 58,
+        "startChar": 8,
+        "endLine": 58,
+        "endChar": 23
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
