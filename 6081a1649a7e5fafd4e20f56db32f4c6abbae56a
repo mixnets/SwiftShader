@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "aa06d5f7_b02726b6",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T12:54:25Z",
+      "side": 1,
+      "message": "I removed this altogether, as Reactor/ExecutableMemory.cpp was already added, and it all seems to build and link, so I guess we\u0027re good.",
+      "parentUuid": "f37606c1_e772695a",
+      "range": {
+        "startLine": 654,
+        "startChar": 0,
+        "endLine": 657,
+        "endChar": 1
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "422df8b1_66130379",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -189,6 +213,30 @@
       "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6023df7_797274ab",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T12:54:25Z",
+      "side": 1,
+      "message": "I decided to go ahead and remove MODULE_NAME, because I realized that it\u0027s not always true that a CMakeLists.txt will add a single target. For example, the one I started writing for Reactor adds ReactorLLVM and ReactorSubzero.",
+      "parentUuid": "75ae9e97_5d9ab019",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 24
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
