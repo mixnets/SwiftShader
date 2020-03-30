@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb74e3e9_af49b82e",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1371,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T15:25:37Z",
+      "side": 1,
+      "message": "Is it necessary to rename these targets? If not, I would leave it as is, and we\u0027ll eventually remove anyway.",
+      "revId": "94d874774156b018c095edc48867f94bdd76cab0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
