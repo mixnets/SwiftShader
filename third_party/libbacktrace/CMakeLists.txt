@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-list(APPEND ROOT_PROJECT_LINK_LIBRARIES
-    ${OS_LIBS}
-    ${SWIFTSHADER_LIBS}
-)
+# list(APPEND ROOT_PROJECT_LINK_LIBRARIES
+#     ${OS_LIBS}
+#     ${SWIFTSHADER_LIBS}
+# )
 
 set(LIBBACKTRACE_SRC_FILES
     src/atomic.c

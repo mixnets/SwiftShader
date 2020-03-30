@@ -47,7 +47,7 @@ function(DownloadBoost)
             file(DOWNLOAD ${BOOST_URL} ${BOOST_ARCHIVE} EXPECTED_HASH SHA256=${BOOST_HASH})
             message(STATUS "Extracting ${BOOST_ARCHIVE} to ${BOOST_THIRD_PARTY_DIR}...")
             execute_process(
-                WORKING_DIRECTORY ${BOOST_THIRD_PARTY_DIR}/..
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 COMMAND cmake -E tar xf ${BOOST_ARCHIVE}
             )
         endif()
