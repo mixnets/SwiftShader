@@ -264,6 +264,30 @@
     },
     {
       "key": {
+        "uuid": "770e369f_e7bbf55d",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T14:38:42Z",
+      "side": 1,
+      "message": "I still don\u0027t agree that a comment would be better in the case of a single module. A live variable cannot lie, as it just would do the right thing.\n\nThe truth is, for these third_party modules, they should be completely independent of the root CMakeLists, since they are \"third party\" libraries, and should be usable outside of SwiftShader. That means, they\u0027d have a \"project()\" directive, and their own build options (like marl, for e.g.). However, I\u0027m not going to do that just yet, as it\u0027s much easier to incrementally split out CMakeLists.txt this way, as we\u0027re doing. If we decide we really don\u0027t need these to be standalone third party libs, they should be moved into a separate location (src/ or better yet, a libs/ folder).",
+      "parentUuid": "1b632d26_b6139fec",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 24
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4a977b7_20835374",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -335,6 +359,30 @@
     },
     {
       "key": {
+        "uuid": "de372d33_312fb82e",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T14:38:42Z",
+      "side": 1,
+      "message": "Okay, I\u0027ll add the prefix. Your comment about namespacing reminded me that variables have \"directory\" scope, which is fine for leaf CMakeLists.txt like these... until they are no longer leaf nodes (e.g. we add_subdirectory another subdirectory from within).",
+      "parentUuid": "3e45df02_e9bb6d84",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 13
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5fd3b371_429a7aa9",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 3
@@ -379,6 +427,30 @@
       "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45441e54_1cf1712d",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-03-30T14:38:42Z",
+      "side": 1,
+      "message": "I had replied, but looks like my comment didn\u0027t get pushed through for whatever reason. Anyway, what I had said was: This was the name of the variable beforehand. It\u0027s used to set the SZ_TARGET macro. I agree with you that adding _CPU makes it more clear, so I\u0027ll do that.",
+      "parentUuid": "0801988f_f38b4dfd",
+      "range": {
+        "startLine": 58,
+        "startChar": 8,
+        "endLine": 58,
+        "endChar": 23
+      },
+      "revId": "6081a1649a7e5fafd4e20f56db32f4c6abbae56a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
