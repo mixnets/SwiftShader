@@ -16,6 +16,24 @@
       "revId": "94d874774156b018c095edc48867f94bdd76cab0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e850b7ea_2466a7f3",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1371,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-03-30T16:51:24Z",
+      "side": 1,
+      "message": "It\u0027s only to avoid any confusion with the newer OpenGLESHelloAPI sample. I\u0027m eliminating it here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/43190",
+      "parentUuid": "fb74e3e9_af49b82e",
+      "revId": "94d874774156b018c095edc48867f94bdd76cab0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
