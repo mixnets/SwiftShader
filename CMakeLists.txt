@@ -595,6 +595,14 @@ if(SWIFTSHADER_ENABLE_ASTC)
 endif()
 
 ###########################################################
+# gtest and gmock
+###########################################################
+if(SWIFTSHADER_BUILD_TESTS)
+    set(gtest_force_shared_crt TRUE)
+    add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
+endif()
+
+###########################################################
 # Include Directories
 ###########################################################
 
@@ -963,7 +971,7 @@ if(SWIFTSHADER_BUILD_VULKAN)
         # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
         set(SPIRV-Headers_SOURCE_DIR "${THIRD_PARTY_DIR}/SPIRV-Headers")
         list(APPEND VULKAN_INCLUDE_DIR "${SPIRV-Headers_SOURCE_DIR}/include")
-
+        set(SPIRV_SKIP_TESTS TRUE)
         add_subdirectory(third_party/SPIRV-Tools)
 
         set_target_properties(core_tables PROPERTIES FOLDER "SPIRV-Tools build")
@@ -1076,33 +1084,22 @@ endif()
 if(SWIFTSHADER_BUILD_TESTS)
     set(REACTOR_UNIT_TESTS_LIST
         ${SOURCE_DIR}/Reactor/ReactorUnitTests.cpp
-        ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
-    )
-
-    set(REACTOR_UNIT_TESTS_INCLUDE_DIR
-        ${THIRD_PARTY_DIR}/googletest/googletest/include
-        ${THIRD_PARTY_DIR}/googletest/googletest/
     )
 
     add_executable(ReactorUnitTests ${REACTOR_UNIT_TESTS_LIST})
     set_target_properties(ReactorUnitTests PROPERTIES
-        INCLUDE_DIRECTORIES "${REACTOR_UNIT_TESTS_INCLUDE_DIR}"
         COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS};${WARNINGS_AS_ERRORS}"
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
         FOLDER "Tests"
     )
-    target_link_libraries(ReactorUnitTests ${Reactor} ${OS_LIBS})
+    target_link_libraries(ReactorUnitTests ${Reactor} ${OS_LIBS} gtest)
 
     set(GLES_UNITTESTS_LIST
         ${TESTS_DIR}/GLESUnitTests/main.cpp
         ${TESTS_DIR}/GLESUnitTests/unittests.cpp
-        ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
     set(GLES_UNITTESTS_INCLUDE_DIR
-        ${THIRD_PARTY_DIR}/googletest/googletest/include/
-        ${THIRD_PARTY_DIR}/googletest/googlemock/include/
-        ${THIRD_PARTY_DIR}/googletest/googletest/
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
 
@@ -1115,7 +1112,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
-    target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS} ${SWIFTSHADER_LIBS})
+    target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS} ${SWIFTSHADER_LIBS} gtest gmock)
     if(ANDROID)
         target_link_libraries(gles-unittests -landroid)
     endif()
@@ -1124,13 +1121,9 @@ if(SWIFTSHADER_BUILD_TESTS)
     set(MATH_UNITTESTS_LIST
         ${TESTS_DIR}/MathUnitTests/main.cpp
         ${TESTS_DIR}/MathUnitTests/unittests.cpp
-        ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
     set(MATH_UNITTESTS_INCLUDE_DIR
-        ${THIRD_PARTY_DIR}/googletest/googletest/include/
-        ${THIRD_PARTY_DIR}/googletest/googlemock/include/
-        ${THIRD_PARTY_DIR}/googletest/googletest/
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
     )
 
@@ -1142,6 +1135,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
+    target_link_libraries(math-unittests gtest gmock)
     if(NOT WIN32)
         target_link_libraries(math-unittests pthread ${SWIFTSHADER_LIBS})
     endif()
@@ -1173,13 +1167,9 @@ if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
         ${TESTS_DIR}/VulkanUnitTests/Driver.cpp
         ${TESTS_DIR}/VulkanUnitTests/main.cpp
         ${TESTS_DIR}/VulkanUnitTests/unittests.cpp
-        ${THIRD_PARTY_DIR}/googletest/googletest/src/gtest-all.cc
     )
 
     set(VK_UNITTESTS_INCLUDE_DIR
-        ${THIRD_PARTY_DIR}/googletest/googletest/include/
-        ${THIRD_PARTY_DIR}/googletest/googlemock/include/
-        ${THIRD_PARTY_DIR}/googletest/googletest/
         ${THIRD_PARTY_DIR}/SPIRV-Tools/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
@@ -1195,7 +1185,7 @@ if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
-    target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools ${SWIFTSHADER_LIBS})
+    target_link_libraries(vk-unittests SPIRV-Tools ${OS_LIBS} ${SWIFTSHADER_LIBS} gtest gmock)
 endif(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
 
 if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
