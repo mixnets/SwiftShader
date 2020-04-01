@@ -178,6 +178,40 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	return memoryRequirements;
 }
 
+size_t Image::getSizeInBytes(const VkImageSubresourceRange &subresourceRange) const
+{
+	size_t size = 0;
+	bool multiLayer = (subresourceRange.layerCount > 1);
+	uint32_t lastMipLevel = (subresourceRange.baseMipLevel + subresourceRange.levelCount);
+	bool subMipLevel = (lastMipLevel < mipLevels);
+	auto aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
+
+	if(multiLayer)
+	{
+		if(subMipLevel)
+		{
+			size = (subresourceRange.layerCount - 1) * getLayerSize(aspect);
+			for(uint32_t mipLevel = 0; mipLevel < lastMipLevel; ++mipLevel)
+			{
+				size += getMultiSampledLevelSize(aspect, mipLevel);
+			}
+		}
+		else
+		{
+			size = subresourceRange.layerCount * getLayerSize(aspect);
+		}
+	}
+	else
+	{
+		for(uint32_t mipLevel = subresourceRange.baseMipLevel; mipLevel < lastMipLevel; ++mipLevel)
+		{
+			size += getMultiSampledLevelSize(aspect, mipLevel);
+		}
+	}
+
+	return size;
+}
+
 bool Image::canBindToMemory(DeviceMemory *pDeviceMemory) const
 {
 	return pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes);
