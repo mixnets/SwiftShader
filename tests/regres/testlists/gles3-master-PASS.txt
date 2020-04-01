@@ -10162,14 +10162,6 @@ dEQP-GLES3.functional.shaders.builtin_functions.precision.clamp.mediump_vertex.s
 dEQP-GLES3.functional.shaders.builtin_functions.precision.clamp.mediump_vertex.vec2
 dEQP-GLES3.functional.shaders.builtin_functions.precision.clamp.mediump_vertex.vec3
 dEQP-GLES3.functional.shaders.builtin_functions.precision.clamp.mediump_vertex.vec4
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_fragment.scalar
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_fragment.vec2
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_fragment.vec3
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_fragment.vec4
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_vertex.scalar
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_vertex.vec2
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_vertex.vec3
-dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.highp_vertex.vec4
 dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.lowp_fragment.scalar
 dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.lowp_fragment.vec2
 dEQP-GLES3.functional.shaders.builtin_functions.precision.cos.lowp_fragment.vec3
