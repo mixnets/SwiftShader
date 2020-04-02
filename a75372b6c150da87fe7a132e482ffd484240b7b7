@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a11cc995_4636fa6f",
+        "filename": "third_party/libbacktrace/CMakeLists.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T09:20:28Z",
+      "side": 1,
+      "message": "Where\u0027s this declared?",
+      "range": {
+        "startLine": 62,
+        "startChar": 10,
+        "endLine": 62,
+        "endChar": 37
+      },
+      "revId": "a75372b6c150da87fe7a132e482ffd484240b7b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
