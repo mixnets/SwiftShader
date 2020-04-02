@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87295d78_04d6bb29",
+        "filename": "third_party/astc-encoder/CMakeLists.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T09:29:51Z",
+      "side": 1,
+      "message": "Again, not sure about the ROOT_ prefix. Given that we\u0027re nuking any parent setting with this, couldn\u0027t it just be COMPILE_OPTIONS?",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "ea50ffd145b46c644c8872799b4e02a82fcd479c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
