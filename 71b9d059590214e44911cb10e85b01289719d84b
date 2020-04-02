@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80b27964_520ce248",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-02T06:33:09Z",
+      "side": 1,
+      "message": "Yuck. Is this fixed by upgrading to a later revision?",
+      "range": {
+        "startLine": 604,
+        "startChar": 32,
+        "endLine": 604,
+        "endChar": 52
+      },
+      "revId": "71b9d059590214e44911cb10e85b01289719d84b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
