@@ -46,6 +46,30 @@
       "revId": "a3a396ab6a139bd5769cf1ac6fd7a2661046dfa0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c5ff527_96c0f62c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T20:41:22Z",
+      "side": 0,
+      "message": "Done. I went back to add_subdirectory in the root CMakeLists.",
+      "parentUuid": "bb1f6581_570a9216",
+      "range": {
+        "startLine": 576,
+        "startChar": 0,
+        "endLine": 580,
+        "endChar": 62
+      },
+      "revId": "a3a396ab6a139bd5769cf1ac6fd7a2661046dfa0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
