@@ -2085,7 +2085,9 @@ namespace sw
 		// If we ever find cases where there are unreachable functions, we can
 		// replace this assert with NO-OPing or stripping out the dead
 		// functions.
-		for (auto it : functions) { ASSERT(it.second.reachable); }
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		for (const auto &it : functions) { ASSERT(it.second.reachable); }
+#endif
 
 		// We have now gathered all the information about each of the functions
 		// in the shader. Traverse these functions starting from the main
