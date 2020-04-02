@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7f589d04_0b5f4b2f",
+        "filename": "third_party/llvm-subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T14:41:08Z",
+      "side": 1,
+      "message": "Agreed. You know what, I\u0027ll make this an explicit list right away.",
+      "parentUuid": "8d3a9764_21ddce01",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 17
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5bbf22b8_9bd2e2e7",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 11
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "dc80460f_8b9bb886",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T14:41:08Z",
+      "side": 1,
+      "message": "So the rationale here is that third_party libs like this should not actually inherit variables from the parent, as this is doing right now. Third party libs should be self-sufficient, and not rely on variables defined in a parent scope. However, baby steps. I wanted to make clear the variables that we are inheriting, hence this variable.\n\n\u003e Given that scopes are parent public read, private write\n\nI don\u0027t understand what you mean by this? Variables are scoped to the current directory, and are not visible to parent scopes, unless you specify PARENT_SCOPE...\n\nThe plan is, ultimately, to get rid of these variables. In fact, the types of values we\u0027re putting in SWIFTSHADER_COMPILE_OPTIONS and WARNINGS_AS_ERRORS really should just be set globally before adding and subfolder. These are global options, like disabling exceptions, warnings as errors, etc. This is just a stop-gap until everything has been split out.",
+      "parentUuid": "5bbf22b8_9bd2e2e7",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cb87f4ee_1d6fce74",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 11
@@ -59,6 +107,30 @@
       "writtenOn": "2020-04-02T08:20:41Z",
       "side": 1,
       "message": "Is cmake smart enough to keep this relative to the current directory when the target is used from a parent directory? If so, neat!",
+      "range": {
+        "startLine": 105,
+        "startChar": 10,
+        "endLine": 105,
+        "endChar": 11
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "67bb8487_1486e4a5",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T14:41:08Z",
+      "side": 1,
+      "message": "Yes, absolutely. All relative paths are relative to CMAKE_CURRENT_SOURCE_DIR, which is set to the directory of the current CMakeLists.txt that is being processed.",
+      "parentUuid": "cb87f4ee_1d6fce74",
       "range": {
         "startLine": 105,
         "startChar": 10,
