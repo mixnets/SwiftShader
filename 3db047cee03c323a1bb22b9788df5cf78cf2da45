@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "fe0cd7bd_7df7ebcb",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T15:00:32Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t understand what you mean by this? Variables are scoped to the current directory, and are not visible to parent scopes, unless you specify PARENT_SCOPE...\n\nYes, I know.\n\nI was under the impression (due to the ROOT_ prefix) that these variables might be intended to used in some third_party add_subdirectory() projects. With the set() list() stuff mention above, you could adopt the parent variables, append, and pass them down to child projects....\nBut that apparently isn\u0027t want you meant by ROOT_.\n\nThis sort of reinforces my ???\u0027s about the ROOT_ prefix.",
+      "parentUuid": "dc80460f_8b9bb886",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cb87f4ee_1d6fce74",
         "filename": "third_party/subzero/CMakeLists.txt",
         "patchSetId": 11
