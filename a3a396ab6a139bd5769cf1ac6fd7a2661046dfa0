@@ -22,6 +22,30 @@
       "revId": "a3a396ab6a139bd5769cf1ac6fd7a2661046dfa0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb1f6581_570a9216",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T15:02:11Z",
+      "side": 0,
+      "message": "Right, I thought about that. So I went back and forth with the notion of adding all targets in the root CMakeLists, and then simply adding deps on them in the sub-CMakeLists vs. doing the add_subdirectory in the sub-CMakeLists directly. The latter makes more sense, in that it\u0027s modular, and the conditions for bringing in deps are usually determined at that level.\n\nI could go back to bringing in all modules in the root CMakeLists. Turns out that add_submodule also supports the EXCLUDE_FROM_ALL, so they would only be built if a dependant target is built. This means we could unconditionally add all subdirectories at the root, bringing in all targets with EXCLUDE_FROM_ALL set. Only problem is that in some cases, we do want to only conditionally bring in these libs, like for submodules, which remain optional. This means I have to repeat the condition to add these in the root CMakeLists, as well as in the sub-CMakeLists where we decide to depend on them. Maybe I could go with adding them all to the root, and I could use \"if(TARGET \u003ctarget_name\u003e)\" in sub-CMakeLists to know whether they have been added in the root.\n\nAnother thing that somewhat sucks about add_subdirectory in sub-CMakeLists is that I need to define the 2nd arg to add_subdirectory, which is the binary output folder to use. This is necessary when adding a subdirectory that\u0027s not actually a subdirectory (in a relative parent folder). It\u0027s not a big deal, but it\u0027s another pain point.\n\nOne option, if we decide to go with adding subdirectory in sub-CMakeLists is having a utility function that does it for us, checking if the target already exists. If it does, then it won\u0027t add it. This way, we could add the subdirectory in multiple places, and it will only get added once.",
+      "parentUuid": "f7f724cd_bb105cb1",
+      "range": {
+        "startLine": 576,
+        "startChar": 0,
+        "endLine": 580,
+        "endChar": 62
+      },
+      "revId": "a3a396ab6a139bd5769cf1ac6fd7a2661046dfa0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
