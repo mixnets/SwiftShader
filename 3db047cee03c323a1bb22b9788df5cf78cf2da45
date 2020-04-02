@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d3a9764_21ddce01",
+        "filename": "third_party/llvm-subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T08:20:41Z",
+      "side": 1,
+      "message": "Not necessarily for this change, especially if this is how it was before, but I think we all finally agreed that globs were a Bad Idea in general, as they require a cmake regeneration in order to detect new or removed files.",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 17
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5bbf22b8_9bd2e2e7",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T08:20:41Z",
+      "side": 1,
+      "message": "nit: The ROOT_ prefix here is a little unnecessary to me.\n\nGiven that scopes are parent public read, private write, is the plan for sub-modules to do something like:\n\n  set(ROOT_PROJECT_COMPILE_OPTIONS ${ROOT_PROJECT_COMPILE_OPTIONS})\n  list(APPEND ROOT_PROJECT_COMPILE_OPTIONS \u003cnew-private-stuff\u003e)\n\njust want to make sure I understand it\u0027s use",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb87f4ee_1d6fce74",
+        "filename": "third_party/subzero/CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T08:20:41Z",
+      "side": 1,
+      "message": "Is cmake smart enough to keep this relative to the current directory when the target is used from a parent directory? If so, neat!",
+      "range": {
+        "startLine": 105,
+        "startChar": 10,
+        "endLine": 105,
+        "endChar": 11
+      },
+      "revId": "3db047cee03c323a1bb22b9788df5cf78cf2da45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
