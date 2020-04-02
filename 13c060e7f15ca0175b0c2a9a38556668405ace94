@@ -22,6 +22,30 @@
       "revId": "13c060e7f15ca0175b0c2a9a38556668405ace94",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3039b267_92ac4b40",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T20:43:14Z",
+      "side": 1,
+      "message": "There\u0027s already a precendent for add_subdirectory(third_party/...) in this file (see marl just above). However, I will make a note to change all of these to use ${THIRD_PARTY_DIR} in a future change.",
+      "parentUuid": "dfa3c50d_5f98faf5",
+      "range": {
+        "startLine": 589,
+        "startChar": 21,
+        "endLine": 589,
+        "endChar": 32
+      },
+      "revId": "13c060e7f15ca0175b0c2a9a38556668405ace94",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
