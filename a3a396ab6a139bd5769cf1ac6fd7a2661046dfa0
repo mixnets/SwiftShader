@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7f724cd_bb105cb1",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T09:23:58Z",
+      "side": 0,
+      "message": "I suspect this is not going to work with SWIFTSHADER_EMIT_COVERAGE.",
+      "range": {
+        "startLine": 576,
+        "startChar": 0,
+        "endLine": 580,
+        "endChar": 62
+      },
+      "revId": "a3a396ab6a139bd5769cf1ac6fd7a2661046dfa0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
