@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfa3c50d_5f98faf5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-02T08:00:00Z",
+      "side": 1,
+      "message": "Given that we\u0027re using ${THIRD_PARTY_DIR} one line above, can we be consistent?",
+      "range": {
+        "startLine": 589,
+        "startChar": 21,
+        "endLine": 589,
+        "endChar": 32
+      },
+      "revId": "13c060e7f15ca0175b0c2a9a38556668405ace94",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
