@@ -22,6 +22,30 @@
       "revId": "71b9d059590214e44911cb10e85b01289719d84b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f813bb83_095ed903",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-02T16:12:00Z",
+      "side": 1,
+      "message": "Maybe, but if so, I\u0027d rather we do this in a later change. The truth is, the use of FindPythonInterp is bad, and has since been superceded by FindPython2 and FindPython3, which can coexist as I understand it (https://cmake.org/cmake/help/latest/module/FindPythonInterp.html). But both googletest and SpirV tools make use of this older script.",
+      "parentUuid": "80b27964_520ce248",
+      "range": {
+        "startLine": 604,
+        "startChar": 32,
+        "endLine": 604,
+        "endChar": 52
+      },
+      "revId": "71b9d059590214e44911cb10e85b01289719d84b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
