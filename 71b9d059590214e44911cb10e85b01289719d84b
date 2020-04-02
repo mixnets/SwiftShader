@@ -46,6 +46,30 @@
       "revId": "71b9d059590214e44911cb10e85b01289719d84b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d74c928_b1d061a1",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 604,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-02T18:04:39Z",
+      "side": 1,
+      "message": "Fair enough. Please follow up and if necessary file bugs for googletest and/or SPIRV-Tools.",
+      "parentUuid": "f813bb83_095ed903",
+      "range": {
+        "startLine": 604,
+        "startChar": 32,
+        "endLine": 604,
+        "endChar": 52
+      },
+      "revId": "71b9d059590214e44911cb10e85b01289719d84b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
