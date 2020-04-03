@@ -20,8 +20,10 @@
 #include "Reactor/Reactor.hpp"
 #include "Vulkan/VkFormat.h"
 
+#include "marl/mutex.h"
+#include "marl/tsa.h"
+
 #include <cstring>
-#include <mutex>
 
 namespace vk {
 
@@ -94,6 +96,11 @@ class Blitter
 		int srcSamples = 0;
 		int destSamples = 0;
 		bool filter3D = false;
+
+		struct Hash
+		{
+			uint64_t operator()(const State &state) const { return *reinterpret_cast<const uint64_t *>(this); }
+		};
 	};
 
 	struct BlitData
@@ -185,10 +192,14 @@ private:
 	                  const VkImageSubresourceLayers &dstSubresourceLayers, Edge dstEdge,
 	                  const VkImageSubresourceLayers &srcSubresourceLayers, Edge srcEdge);
 
-	std::mutex blitMutex;
-	RoutineCacheT<State, BlitFunction::CFunctionType> blitCache;  // guarded by blitMutex
-	std::mutex cornerUpdateMutex;
-	RoutineCacheT<State, CornerUpdateFunction::CFunctionType> cornerUpdateCache;  // guarded by cornerUpdateMutex
+	marl::mutex blitMutex;
+	GUARDED_BY(blitMutex)
+	RoutineCacheT<State, BlitFunction::CFunctionType> blitCache;
+
+	marl::mutex cornerUpdateMutex;
+
+	GUARDED_BY(cornerUpdateMutex)
+	RoutineCacheT<State, CornerUpdateFunction::CFunctionType> cornerUpdateCache;
 };
 
 }  // namespace sw

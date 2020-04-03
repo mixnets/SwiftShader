@@ -224,12 +224,14 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache *pSr
 		PipelineCache *srcCache = Cast(pSrcCaches[i]);
 
 		{
-			std::unique_lock<std::mutex> lock(spirvShadersMutex);
+			marl::lock thisLock(spirvShadersMutex);
+			marl::lock srcLock(srcCache->spirvShadersMutex);
 			spirvShaders.insert(srcCache->spirvShaders.begin(), srcCache->spirvShaders.end());
 		}
 
 		{
-			std::unique_lock<std::mutex> lock(computeProgramsMutex);
+			marl::lock thisLock(computeProgramsMutex);
+			marl::lock srcLock(srcCache->computeProgramsMutex);
 			computePrograms.insert(srcCache->computePrograms.begin(), srcCache->computePrograms.end());
 		}
 	}
@@ -237,25 +239,29 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache *pSr
 	return VK_SUCCESS;
 }
 
-const std::shared_ptr<sw::SpirvShader> *PipelineCache::operator[](const PipelineCache::SpirvShaderKey &key) const
+const std::shared_ptr<sw::SpirvShader> *PipelineCache::operator[](const PipelineCache::SpirvShaderKey &key)
 {
+	marl::lock lock(spirvShadersMutex);
 	auto it = spirvShaders.find(key);
 	return (it != spirvShaders.end()) ? &(it->second) : nullptr;
 }
 
 void PipelineCache::insert(const PipelineCache::SpirvShaderKey &key, const std::shared_ptr<sw::SpirvShader> &shader)
 {
+	marl::lock lock(spirvShadersMutex);
 	spirvShaders[key] = shader;
 }
 
-const std::shared_ptr<sw::ComputeProgram> *PipelineCache::operator[](const PipelineCache::ComputeProgramKey &key) const
+const std::shared_ptr<sw::ComputeProgram> *PipelineCache::operator[](const PipelineCache::ComputeProgramKey &key)
 {
+	marl::lock lock(computeProgramsMutex);
 	auto it = computePrograms.find(key);
 	return (it != computePrograms.end()) ? &(it->second) : nullptr;
 }
 
 void PipelineCache::insert(const PipelineCache::ComputeProgramKey &key, const std::shared_ptr<sw::ComputeProgram> &computeProgram)
 {
+	marl::lock lock(computeProgramsMutex);
 	computePrograms[key] = computeProgram;
 }
 

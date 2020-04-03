@@ -485,7 +485,6 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		{
 			PipelineCache &pipelineCache = *pPipelineCache;
 			{
-				std::unique_lock<std::mutex> lock(pipelineCache.getShaderMutex());
 				const std::shared_ptr<sw::SpirvShader> *spirvShader = pipelineCache[key];
 				if(!spirvShader)
 				{
@@ -585,7 +584,6 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	{
 		PipelineCache &pipelineCache = *pPipelineCache;
 		{
-			std::unique_lock<std::mutex> lock(pipelineCache.getShaderMutex());
 			const std::shared_ptr<sw::SpirvShader> *spirvShader = pipelineCache[shaderKey];
 			if(!spirvShader)
 			{
@@ -600,7 +598,6 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 
 		{
 			const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
-			std::unique_lock<std::mutex> lock(pipelineCache.getProgramMutex());
 			const std::shared_ptr<sw::ComputeProgram> *computeProgram = pipelineCache[programKey];
 			if(!computeProgram)
 			{
