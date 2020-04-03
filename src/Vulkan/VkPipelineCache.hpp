@@ -17,11 +17,13 @@
 
 #include "VkObject.hpp"
 
+#include "marl/mutex.h"
+#include "marl/tsa.h"
+
 #include <cstring>
 #include <functional>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -132,11 +134,11 @@ private:
 	size_t dataSize = 0;
 	uint8_t *data = nullptr;
 
-	std::mutex spirvShadersMutex;
-	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders;  // guarded by spirvShadersMutex
+	marl::mutex spirvShadersMutex;
+	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders GUARDED_BY(spirvShadersMutex);
 
-	std::mutex computeProgramsMutex;
-	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms;  // guarded by computeProgramsMutex
+	marl::mutex computeProgramsMutex;
+	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms GUARDED_BY(computeProgramsMutex);
 };
 
 static inline PipelineCache *Cast(VkPipelineCache object)
