@@ -98,7 +98,7 @@ VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
                                                       SpirvShader const *vertexShader,
                                                       const vk::DescriptorSet::Bindings &descriptorSets)
 {
-	auto routine = routineCache->query(state);
+	auto routine = routineCache->get(state);
 
 	if(!routine)  // Create one
 	{
