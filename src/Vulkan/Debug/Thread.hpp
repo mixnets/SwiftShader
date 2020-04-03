@@ -19,9 +19,11 @@
 #include "ID.hpp"
 #include "Location.hpp"
 
+#include "marl/mutex.h"
+#include "marl/tsa.h"
+
 #include <condition_variable>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -175,12 +177,12 @@ private:
 
 	void onLocationUpdate(std::unique_lock<std::mutex> &lock);
 
-	mutable std::mutex mutex;
-	std::string name_;
-	std::vector<std::shared_ptr<Frame>> frames;
-	std::condition_variable stateCV;
-	State state_ = State::Running;
-	std::shared_ptr<Frame> pauseAtFrame;
+	mutable marl::mutex mutex;
+	std::string name_ GUARDED_BY(mutex);
+	std::vector<std::shared_ptr<Frame>> frames GUARDED_BY(mutex);
+	std::condition_variable stateCV GUARDED_BY(mutex);
+	State state_ GUARDED_BY(mutex) = State::Running;
+	std::shared_ptr<Frame> pauseAtFrame GUARDED_BY(mutex);
 };
 
 }  // namespace dbg
