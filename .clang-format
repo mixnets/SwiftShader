@@ -1,5 +1,6 @@
 ---
 Language:        Cpp
+<<<<<<< HEAD   (8f02f5 CMake: use gtest and gmock targets)
 # BasedOnStyle:  Google
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
@@ -114,3 +115,5 @@ TabWidth:        4
 UseTab:          ForIndentation
 ...
 
+=======
+>>>>>>> BRANCH (05d06a Squashed 'third_party/marl/' changes from 16e1dc37c..c7f70ba)
