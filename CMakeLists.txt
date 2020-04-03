@@ -581,6 +581,10 @@ if(BUILD_MARL)
     add_subdirectory(${THIRD_PARTY_DIR}/marl)
 endif()
 
+if(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-Wthread-safety")
+endif()
+
 ###########################################################
 # cppdap
 ###########################################################
