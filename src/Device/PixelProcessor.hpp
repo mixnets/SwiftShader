@@ -102,6 +102,11 @@ public:
 		}
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	struct Stencil
