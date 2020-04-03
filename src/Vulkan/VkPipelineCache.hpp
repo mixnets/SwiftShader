@@ -17,11 +17,13 @@
 
 #include "VkObject.hpp"
 
+#include "marl/mutex.h"
+#include "marl/tsa.h"
+
 #include <cstring>
 #include <functional>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -93,8 +95,7 @@ public:
 		const SpecializationInfo specializationInfo;
 	};
 
-	std::mutex &getShaderMutex() { return spirvShadersMutex; }
-	const std::shared_ptr<sw::SpirvShader> *operator[](const PipelineCache::SpirvShaderKey &key) const;
+	const std::shared_ptr<sw::SpirvShader> *operator[](const PipelineCache::SpirvShaderKey &key);
 	void insert(const PipelineCache::SpirvShaderKey &key, const std::shared_ptr<sw::SpirvShader> &shader);
 
 	struct ComputeProgramKey
@@ -117,8 +118,7 @@ public:
 		const vk::PipelineLayout *layout;
 	};
 
-	std::mutex &getProgramMutex() { return computeProgramsMutex; }
-	const std::shared_ptr<sw::ComputeProgram> *operator[](const PipelineCache::ComputeProgramKey &key) const;
+	const std::shared_ptr<sw::ComputeProgram> *operator[](const PipelineCache::ComputeProgramKey &key);
 	void insert(const PipelineCache::ComputeProgramKey &key, const std::shared_ptr<sw::ComputeProgram> &computeProgram);
 
 private:
@@ -134,10 +134,12 @@ private:
 	size_t dataSize = 0;
 	uint8_t *data = nullptr;
 
-	std::mutex spirvShadersMutex;
+	marl::mutex spirvShadersMutex;
+	GUARDED_BY(spirvShadersMutex)
 	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders;
 
-	std::mutex computeProgramsMutex;
+	marl::mutex computeProgramsMutex;
+	GUARDED_BY(computeProgramsMutex)
 	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms;
 };
 
