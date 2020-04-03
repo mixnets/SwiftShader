@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbe0ab0f_5c0261b4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-03T20:56:05Z",
+      "side": 1,
+      "message": "Hack",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 9
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05e4fab7_34de47e5",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4376,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-03T20:56:05Z",
+      "side": 1,
+      "message": "The reason this hasn\u0027t been added before is that you can get different results based on whether Min or Max is done first, if the input isn\u0027t a finite value. At one point we had an out-of-buffer access because a clamp produced a value outside of the range. I\u0027ll try to dig up the specifics (might have involved conversion to integer too)...",
+      "range": {
+        "startLine": 4376,
+        "startChar": 15,
+        "endLine": 4376,
+        "endChar": 20
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "963ee2d5_000c0c86",
+        "filename": "src/Shader/ShaderCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-03T20:56:05Z",
+      "side": 1,
+      "message": "I\u0027d prefer if this described what we need to-do, not what\u0027s done now (or separate those two).",
+      "range": {
+        "startLine": 314,
+        "startChar": 24,
+        "endLine": 314,
+        "endChar": 29
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
