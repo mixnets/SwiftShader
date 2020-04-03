@@ -65,6 +65,11 @@ public:
 		bool operator==(const State &states) const;
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	using RoutineType = SetupFunction::RoutineType;
@@ -81,6 +86,15 @@ public:
 private:
 	using RoutineCacheType = RoutineCache<State, SetupFunction::CFunctionType>;
 	RoutineCacheType *routineCache;
+};
+
+template<>
+struct Hash<SetupProcessor::State>
+{
+	uint64_t operator()(const SetupProcessor::State &state) const
+	{
+		return state.hash;
+	}
 };
 
 }  // namespace sw

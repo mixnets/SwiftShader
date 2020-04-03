@@ -18,6 +18,7 @@
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Reactor/Reactor.hpp"
+#include "System/Hash.hpp"
 #include "Vulkan/VkFormat.h"
 
 #include <cstring>
@@ -95,6 +96,7 @@ class Blitter
 		int destSamples = 0;
 		bool filter3D = false;
 	};
+	friend struct Hash<Blitter::State>;
 
 	struct BlitData
 	{
@@ -189,6 +191,20 @@ private:
 	RoutineCache<State, BlitFunction::CFunctionType> blitCache;  // guarded by blitMutex
 	std::mutex cornerUpdateMutex;
 	RoutineCache<State, CornerUpdateFunction::CFunctionType> cornerUpdateCache;  // guarded by cornerUpdateMutex
+};
+
+template<>
+struct Hash<Blitter::State>
+{
+	uint64_t operator()(const Blitter::State &state) const
+	{
+		return sw::hash(
+		    state.sourceFormat,
+		    state.destFormat,
+		    state.srcSamples,
+		    state.destSamples,
+		    state.filter3D);
+	}
 };
 
 }  // namespace sw

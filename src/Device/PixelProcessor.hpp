@@ -101,6 +101,11 @@ public:
 		}
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	struct Stencil
@@ -160,6 +165,15 @@ public:
 private:
 	using RoutineCacheType = RoutineCache<State, RasterizerFunction::CFunctionType>;
 	RoutineCacheType *routineCache;
+};
+
+template<>
+struct Hash<PixelProcessor::State>
+{
+	uint64_t operator()(const PixelProcessor::State &state) const
+	{
+		return state.hash;
+	}
 };
 
 }  // namespace sw

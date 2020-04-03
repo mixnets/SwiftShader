@@ -818,6 +818,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         ${TESTS_DIR}/SystemUnitTests/main.cpp
         ${TESTS_DIR}/SystemUnitTests/unittests.cpp
         ${TESTS_DIR}/SystemUnitTests/HashTests.cpp
+        ${TESTS_DIR}/SystemUnitTests/LRUCacheTests.cpp
     )
 
     set(SYSTEM_UNITTESTS_INCLUDE_DIR

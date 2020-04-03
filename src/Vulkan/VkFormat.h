@@ -15,6 +15,7 @@
 #ifndef VK_FORMAT_HPP_
 #define VK_FORMAT_HPP_
 
+#include "System/Hash.hpp"
 #include "System/Types.hpp"
 
 #include <Vulkan/VulkanPlatform.h>
@@ -77,5 +78,18 @@ private:
 };
 
 }  // namespace vk
+
+namespace sw {
+
+template<>
+struct Hash<vk::Format>
+{
+	inline uint64_t operator()(vk::Format val) const
+	{
+		return static_cast<uint64_t>(val.operator VkFormat());
+	}
+};
+
+}  // namespace sw
 
 #endif  // VK_FORMAT_HPP_

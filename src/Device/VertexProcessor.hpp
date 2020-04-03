@@ -85,6 +85,11 @@ public:
 		bool operator==(const State &state) const;
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	using RoutineType = VertexRoutineFunction::RoutineType;
@@ -102,6 +107,15 @@ public:
 private:
 	using RoutineCacheType = RoutineCache<State, VertexRoutineFunction::CFunctionType>;
 	RoutineCacheType *routineCache;
+};
+
+template<>
+struct Hash<VertexProcessor::State>
+{
+	uint64_t operator()(const VertexProcessor::State &state) const
+	{
+		return state.hash;
+	}
 };
 
 }  // namespace sw
