@@ -4373,6 +4373,11 @@ RValue<Float4> Abs(RValue<Float4> x)
 	return As<Float4>(result);
 }
 
+RValue<Float4> Clamp(RValue<Float4> x, RValue<Float4> min, RValue<Float4> max)
+{
+	return Min(Max(x, min), max);
+}
+
 RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
 {
 	return RValue<Float4>(Nucleus::createInsertElement(x.value, element.value, i));

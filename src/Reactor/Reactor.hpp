@@ -2274,6 +2274,7 @@ RValue<Float4> operator-(RValue<Float4> val);
 RValue<Float4> Abs(RValue<Float4> x);
 RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y);
+RValue<Float4> Clamp(RValue<Float4> x, RValue<Float4> min, RValue<Float4> max);
 RValue<Float4> Rcp_pp(RValue<Float4> val, bool exactAtPow2 = false);
 RValue<Float4> RcpSqrt_pp(RValue<Float4> val);
 RValue<Float4> Sqrt(RValue<Float4> x);

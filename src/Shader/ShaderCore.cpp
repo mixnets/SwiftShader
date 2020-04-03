@@ -311,6 +311,9 @@ namespace sw
 			sin = sin * (Abs(sin) * D + C);
 		}
 
+		// TODO(b/151461290): Clamp to make up for minor precision loss.
+		sin = Clamp(sin, Float4(-1.f), Float4(1.f));
+
 		return sin;
 	}
 
@@ -318,7 +321,12 @@ namespace sw
 	{
 		// cos(x) = sin(x + pi/2)
 		Float4 y = x + Float4(1.57079632e+0f);
-		return sine(y, pp);
+		auto cos = sine(y, pp);
+		
+		// TODO(b/151461290): Clamp to make up for minor precision loss.
+		cos = Clamp(cos, Float4(-1.f), Float4(1.f));
+		
+		return cos;
 	}
 
 	Float4 tangent(RValue<Float4> x, bool pp)
