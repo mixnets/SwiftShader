@@ -130,7 +130,7 @@ struct SemaphoreCreateInfo
 
 void Semaphore::wait()
 {
-	std::unique_lock<std::mutex> lock(mutex);
+	marl::lock lock(mutex);
 	External *ext = tempExternal ? tempExternal : external;
 	if(ext)
 	{
@@ -141,11 +141,11 @@ void Semaphore::wait()
 			// call, it is assumed that this is negligible
 			// compared with the actual semaphore wait()
 			// operation.
-			lock.unlock();
+			lock.unlock_no_tsa();
 			marl::blocking_call([ext]() {
 				ext->wait();
 			});
-			lock.lock();
+			lock.lock_no_tsa();
 		}
 
 		// If the import was temporary, reset the semaphore to its previous state.
