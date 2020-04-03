@@ -100,7 +100,7 @@ SetupProcessor::State SetupProcessor::update(const sw::Context *context) const
 
 SetupProcessor::RoutineType SetupProcessor::routine(const State &state)
 {
-	auto routine = routineCache->query(state);
+	auto routine = routineCache->get(state);
 
 	if(!routine)
 	{

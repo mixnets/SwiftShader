@@ -85,6 +85,11 @@ public:
 		bool operator==(const State &state) const;
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	using RoutineType = VertexRoutineFunction::RoutineType;

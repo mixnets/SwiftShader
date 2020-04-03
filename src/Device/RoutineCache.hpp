@@ -15,7 +15,7 @@
 #ifndef sw_RoutineCache_hpp
 #define sw_RoutineCache_hpp
 
-#include "LRUCache.hpp"
+#include "System/LRUCache.hpp"
 
 #include "Reactor/Reactor.hpp"
 
@@ -24,7 +24,7 @@ namespace sw {
 using namespace rr;
 
 template<class State, class FunctionType>
-using RoutineCache = LRUCache<State, RoutineT<FunctionType>>;
+using RoutineCache = LRUCache<State, RoutineT<FunctionType>, typename State::Hash>;
 
 }  // namespace sw
 
