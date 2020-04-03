@@ -994,6 +994,7 @@ if(SWIFTSHADER_BUILD_TESTS)
     set(SYSTEM_UNITTESTS_LIST
         ${TESTS_DIR}/SystemUnitTests/main.cpp
         ${TESTS_DIR}/SystemUnitTests/unittests.cpp
+        ${TESTS_DIR}/SystemUnitTests/LRUCacheTests.cpp
     )
 
     # TODO: Replace with dep on System static target
