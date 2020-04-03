@@ -1175,6 +1175,7 @@ if(SWIFTSHADER_BUILD_TESTS)
 
         ${TESTS_DIR}/SystemUnitTests/main.cpp
         ${TESTS_DIR}/SystemUnitTests/unittests.cpp
+        ${TESTS_DIR}/SystemUnitTests/LRUCacheTests.cpp
     )
 
     if(LINUX OR ANDROID)
