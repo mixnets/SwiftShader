@@ -599,6 +599,10 @@ if(BUILD_MARL)
     add_subdirectory(third_party/marl)
 endif()
 
+if(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-Wthread-safety")
+endif()
+
 ###########################################################
 # cppdap
 ###########################################################
@@ -1164,6 +1168,35 @@ if(SWIFTSHADER_BUILD_TESTS)
     if(NOT WIN32)
         target_link_libraries(math-unittests pthread ${SWIFTSHADER_LIBS})
     endif()
+
+    # System unit tests
+    set(SYSTEM_UNITTESTS_LIST
+        ${SOURCE_DIR}/System/Debug.cpp
+        ${SOURCE_DIR}/System/Linux/MemFd.cpp
+        ${SOURCE_DIR}/System/Memory.cpp
+
+        ${TESTS_DIR}/SystemUnitTests/main.cpp
+        ${TESTS_DIR}/SystemUnitTests/unittests.cpp
+        ${TESTS_DIR}/SystemUnitTests/LRUCacheTests.cpp
+    )
+
+    set(SYSTEM_UNITTESTS_INCLUDE_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    )
+
+    add_executable(system-unittests ${SYSTEM_UNITTESTS_LIST})
+    set_target_properties(system-unittests PROPERTIES
+        INCLUDE_DIRECTORIES "${SYSTEM_UNITTESTS_INCLUDE_DIR}"
+        FOLDER "Tests"
+        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS};${WARNINGS_AS_ERRORS}"
+        LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
+    )
+
+    target_link_libraries(system-unittests gtest gmock)
+    if(NOT WIN32)
+        target_link_libraries(system-unittests pthread ${SWIFTSHADER_LIBS})
+    endif()
+
 endif(SWIFTSHADER_BUILD_TESTS)
 
 if(SWIFTSHADER_BUILD_BENCHMARKS)

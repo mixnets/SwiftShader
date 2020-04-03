@@ -65,6 +65,11 @@ public:
 		bool operator==(const State &states) const;
 
 		uint32_t hash;
+
+		struct Hash
+		{
+			uint32_t operator()(const State &state) const { return state.hash; }
+		};
 	};
 
 	using RoutineType = SetupFunction::RoutineType;

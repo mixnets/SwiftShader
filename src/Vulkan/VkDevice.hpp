@@ -17,12 +17,14 @@
 
 #include "VkObject.hpp"
 #include "VkSampler.hpp"
-#include "Device/LRUCache.hpp"
 #include "Reactor/Routine.hpp"
+#include "System/LRUCache.hpp"
+
+#include "marl/mutex.h"
+#include "marl/tsa.h"
 
 #include <map>
 #include <memory>
-#include <mutex>
 
 namespace marl {
 class Scheduler;
@@ -89,29 +91,34 @@ public:
 		template<typename Function>
 		std::shared_ptr<rr::Routine> getOrCreate(const Key &key, Function createRoutine)
 		{
-			std::lock_guard<std::mutex> lock(mutex);
+			auto it = snapshot.find(key);
+			if(it != snapshot.end()) { return it->second; }
 
-			if(auto existingRoutine = cache.query(key))
+			marl::lock lock(mutex);
+			if(auto existingRoutine = cache.get(key))
 			{
 				return existingRoutine;
 			}
 
 			std::shared_ptr<rr::Routine> newRoutine = createRoutine(key);
 			cache.add(key, newRoutine);
+			snapshotNeedsUpdate = true;
 
 			return newRoutine;
 		}
 
-		rr::Routine *querySnapshot(const Key &key) const;
 		void updateSnapshot();
 
 	private:
-		sw::LRUSnapshotCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;  // guarded by mutex
-		std::mutex mutex;
+		bool snapshotNeedsUpdate = false;
+		std::unordered_map<Key, std::shared_ptr<rr::Routine>, Key::Hash> snapshot;
+
+		GUARDED_BY(mutex)
+		sw::LRUCache<Key, std::shared_ptr<rr::Routine>, Key::Hash> cache;
+		marl::mutex mutex;
 	};
 
 	SamplingRoutineCache *getSamplingRoutineCache() const;
-	rr::Routine *querySnapshotCache(const SamplingRoutineCache::Key &key) const;
 	void updateSamplingRoutineSnapshotCache();
 
 	class SamplerIndexer
@@ -129,8 +136,9 @@ public:
 			uint32_t count;  // Number of samplers sharing this state identifier.
 		};
 
-		std::map<SamplerState, Identifier> map;  // guarded by mutex
-		std::mutex mutex;
+		GUARDED_BY(mutex)
+		std::map<SamplerState, Identifier> map;
+		marl::mutex mutex;
 
 		uint32_t nextID = 0;
 	};

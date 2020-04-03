@@ -71,8 +71,10 @@
 
 #include "Reactor/Nucleus.hpp"
 
+#include "marl/mutex.h"
 #include "marl/scheduler.h"
 #include "marl/thread.h"
+#include "marl/tsa.h"
 
 #include "System/CPUID.hpp"
 
@@ -131,11 +133,13 @@ void setCPUDefaults()
 	sw::CPUID::setEnableSSE(true);
 }
 
+marl::mutex schedulerMutex;
+GUARDED_BY(schedulerMutex)
+std::weak_ptr<marl::Scheduler> schedulerWeak;
+
 std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 {
-	static std::mutex mutex;
-	static std::weak_ptr<marl::Scheduler> schedulerWeak;
-	std::unique_lock<std::mutex> lock(mutex);
+	marl::lock lock(schedulerMutex);
 	auto scheduler = schedulerWeak.lock();
 	if(!scheduler)
 	{
