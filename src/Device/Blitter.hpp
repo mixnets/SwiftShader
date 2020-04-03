@@ -94,6 +94,17 @@ class Blitter
 		int srcSamples = 0;
 		int destSamples = 0;
 		bool filter3D = false;
+
+		struct Hash
+		{
+			uint64_t operator()(const State &state) const
+			{
+				// TODO(bclayton): Calculate a better / faster hash.
+				uint64_t hash = static_cast<uint64_t>(state.sourceFormat);
+				hash = hash*31 + static_cast<uint64_t>(state.destFormat);
+				return hash; // Currently hashing with just two fields.
+			}
+		};
 	};
 
 	struct BlitData
