@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dad4e623_23e42003",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-04T10:27:27Z",
+      "side": 1,
+      "message": "I\u0027m aware this hash is crappy, but it\u0027s better than the linear search it replaces!",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
