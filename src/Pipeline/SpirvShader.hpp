@@ -922,6 +922,15 @@ private:
 			return it.first->second;
 		}
 
+		// Obtains a read/write reference to an intermediate.
+		Intermediate &getIntermediateReference(Object::ID id)
+		{
+			auto it = intermediates.find(id);
+			ASSERT_MSG(it != intermediates.end(), "Unknown intermediate %d", id.value());
+			return it->second;
+		}
+
+		// Obtains a read-only intermediate.
 		Intermediate const &getIntermediate(Object::ID id) const
 		{
 			auto it = intermediates.find(id);
@@ -1134,6 +1143,9 @@ private:
 	EmitResult EmitMemoryBarrier(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
+
+	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
+	void EmitImageSampleUnconditional(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
