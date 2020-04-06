@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "f2a07ca1_b0e072f0",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4376,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T13:36:29Z",
+      "side": 1,
+      "message": "Not quite what I was looking for, but definitely related: https://swiftshader-review.googlesource.com/c/SwiftShader/+/21708\n\nAlso note that while GLSL defines clamp() as min(max(x, minVal), maxVal), SPIR-V and LLVM IR don\u0027t define it, so I think we should define it only where needed, when well-defined how it should behave.",
+      "parentUuid": "05e4fab7_34de47e5",
+      "range": {
+        "startLine": 4376,
+        "startChar": 15,
+        "endLine": 4376,
+        "endChar": 20
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "963ee2d5_000c0c86",
         "filename": "src/Shader/ShaderCore.cpp",
         "patchSetId": 1
