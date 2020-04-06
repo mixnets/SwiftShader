@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26ddc89d_05c977e3",
+        "filename": "third_party/llvm-10.0/CMakeLists.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 1200,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-06T15:30:39Z",
+      "side": 1,
+      "message": "Did you mean to add \"-Wno-error\" in the empty quotes here?",
+      "revId": "08481dc95fae4617aa1a7ca5e843a7ed1d51d8b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
