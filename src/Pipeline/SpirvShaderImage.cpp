@@ -114,197 +114,214 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	auto &resultType = getType(resultTypeId);
 
 	auto &result = state->createIntermediate(resultId, resultType.sizeInComponents);
-	auto imageDescriptor = state->getPointer(sampledImageId).base;  // vk::SampledImageDescriptor*
 
-	// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
-	auto &sampledImage = getObject(sampledImageId);
-	auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ? state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
+	const auto &mask = state->activeLaneMask();
 
-	auto coordinate = GenericValue(this, state, coordinateId);
-	auto &coordinateType = getType(coordinate.type);
+	//	BasicBlock *block1 = Nucleus::createBasicBlock();
+	//	BasicBlock *block2 = Nucleus::createBasicBlock();
 
-	Pointer<Byte> sampler = samplerDescriptor + OFFSET(vk::SampledImageDescriptor, sampler);  // vk::Sampler*
-	Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);    // sw::Texture*
-
-	// Above we assumed that if the SampledImage operand is not the result of an OpSampledImage,
-	// it must be a combined image sampler loaded straight from the descriptor set. For OpImageFetch
-	// it's just an Image operand, so there's no sampler descriptor data.
-	if(getType(sampledImage.type).opcode() != spv::OpTypeSampledImage)
-	{
-		sampler = Pointer<Byte>(nullptr);
-	}
-
-	uint32_t imageOperands = spv::ImageOperandsMaskNone;
-	bool lodOrBias = false;
-	Object::ID lodOrBiasId = 0;
-	bool grad = false;
-	Object::ID gradDxId = 0;
-	Object::ID gradDyId = 0;
-	bool constOffset = false;
-	Object::ID offsetId = 0;
-	bool sample = false;
-	Object::ID sampleId = 0;
-
-	uint32_t operand = (instruction.isDref() || instruction.samplerMethod == Gather) ? 6 : 5;
-
-	if(insn.wordCount() > operand)
-	{
-		imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(operand++));
-
-		if(imageOperands & spv::ImageOperandsBiasMask)
-		{
-			lodOrBias = true;
-			lodOrBiasId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsBiasMask;
-
-			ASSERT(instruction.samplerMethod == Implicit);
-			instruction.samplerMethod = Bias;
-		}
-
-		if(imageOperands & spv::ImageOperandsLodMask)
-		{
-			lodOrBias = true;
-			lodOrBiasId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsLodMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsGradMask)
-		{
-			ASSERT(!lodOrBias);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits." Bias is for ImplicitLod, Grad for ExplicitLod.
-			grad = true;
-			gradDxId = insn.word(operand + 0);
-			gradDyId = insn.word(operand + 1);
-			operand += 2;
-			imageOperands &= ~spv::ImageOperandsGradMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsConstOffsetMask)
-		{
-			constOffset = true;
-			offsetId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsConstOffsetMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsSampleMask)
-		{
-			sample = true;
-			sampleId = insn.word(operand);
-			imageOperands &= ~spv::ImageOperandsSampleMask;
-
-			ASSERT(instruction.samplerMethod == Fetch);
-			instruction.sample = true;
-		}
-
-		if(imageOperands != 0)
-		{
-			UNSUPPORTED("Image operand %x", imageOperands);
-		}
-	}
-
-	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
-
-	uint32_t coordinates = coordinateType.sizeInComponents - instruction.isProj();
-	instruction.coordinates = coordinates;
-
-	uint32_t i = 0;
-	for(; i < coordinates; i++)
-	{
-		if(instruction.isProj())
-		{
-			in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
-		}
-		else
-		{
-			in[i] = coordinate.Float(i);
-		}
-	}
-
-	if(instruction.isDref())
-	{
-		auto drefValue = GenericValue(this, state, insn.word(5));
-
-		if(instruction.isProj())
-		{
-			in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
-		}
-		else
-		{
-			in[i] = drefValue.Float(0);
-		}
-
-		i++;
-	}
-
-	if(lodOrBias)
-	{
-		auto lodValue = GenericValue(this, state, lodOrBiasId);
-		in[i] = lodValue.Float(0);
-		i++;
-	}
-	else if(grad)
-	{
-		auto dxValue = GenericValue(this, state, gradDxId);
-		auto dyValue = GenericValue(this, state, gradDyId);
-		auto &dxyType = getType(dxValue.type);
-		ASSERT(dxyType.sizeInComponents == getType(dyValue.type).sizeInComponents);
-
-		instruction.grad = dxyType.sizeInComponents;
-
-		for(uint32_t j = 0; j < dxyType.sizeInComponents; j++, i++)
-		{
-			in[i] = dxValue.Float(j);
-		}
-
-		for(uint32_t j = 0; j < dxyType.sizeInComponents; j++, i++)
-		{
-			in[i] = dyValue.Float(j);
-		}
-	}
-	else if(instruction.samplerMethod == Fetch)
-	{
-		// The instruction didn't provide a lod operand, but the sampler's Fetch
-		// function requires one to be present. If no lod is supplied, the default
-		// is zero.
-		in[i] = As<SIMD::Float>(SIMD::Int(0));
-		i++;
-	}
-
-	if(constOffset)
-	{
-		auto offsetValue = GenericValue(this, state, offsetId);
-		auto &offsetType = getType(offsetValue.type);
-
-		instruction.offset = offsetType.sizeInComponents;
-
-		for(uint32_t j = 0; j < offsetType.sizeInComponents; j++, i++)
-		{
-			in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
-		}
-	}
-
-	if(sample)
-	{
-		auto sampleValue = GenericValue(this, state, sampleId);
-		in[i] = As<SIMD::Float>(sampleValue.Int(0));
-	}
-
-	auto cacheIt = state->routine->samplerCache.find(resultId);
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
-
-	If(!cacheHit)
-	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
-	}
+	//	Nucleus::createCondBr(AnyTrue(mask).value, block1, block2);
+	//	Nucleus::setInsertBlock(block1);
 
 	Array<SIMD::Float> out(4);
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+
+	If(AnyTrue(mask))
+	{
+
+		auto imageDescriptor = state->getPointer(sampledImageId).base;  // vk::SampledImageDescriptor*
+
+		// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
+		auto &sampledImage = getObject(sampledImageId);
+		auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ? state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
+
+		auto coordinate = GenericValue(this, state, coordinateId);
+		auto &coordinateType = getType(coordinate.type);
+
+		Pointer<Byte> sampler = samplerDescriptor + OFFSET(vk::SampledImageDescriptor, sampler);  // vk::Sampler*
+		Pointer<Byte> texture = imageDescriptor + OFFSET(vk::SampledImageDescriptor, texture);    // sw::Texture*
+
+		// Above we assumed that if the SampledImage operand is not the result of an OpSampledImage,
+		// it must be a combined image sampler loaded straight from the descriptor set. For OpImageFetch
+		// it's just an Image operand, so there's no sampler descriptor data.
+		if(getType(sampledImage.type).opcode() != spv::OpTypeSampledImage)
+		{
+			sampler = Pointer<Byte>(nullptr);
+		}
+
+		uint32_t imageOperands = spv::ImageOperandsMaskNone;
+		bool lodOrBias = false;
+		Object::ID lodOrBiasId = 0;
+		bool grad = false;
+		Object::ID gradDxId = 0;
+		Object::ID gradDyId = 0;
+		bool constOffset = false;
+		Object::ID offsetId = 0;
+		bool sample = false;
+		Object::ID sampleId = 0;
+
+		uint32_t operand = (instruction.isDref() || instruction.samplerMethod == Gather) ? 6 : 5;
+
+		if(insn.wordCount() > operand)
+		{
+			imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(operand++));
+
+			if(imageOperands & spv::ImageOperandsBiasMask)
+			{
+				lodOrBias = true;
+				lodOrBiasId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsBiasMask;
+
+				ASSERT(instruction.samplerMethod == Implicit);
+				instruction.samplerMethod = Bias;
+			}
+
+			if(imageOperands & spv::ImageOperandsLodMask)
+			{
+				lodOrBias = true;
+				lodOrBiasId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsLodMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsGradMask)
+			{
+				ASSERT(!lodOrBias);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits." Bias is for ImplicitLod, Grad for ExplicitLod.
+				grad = true;
+				gradDxId = insn.word(operand + 0);
+				gradDyId = insn.word(operand + 1);
+				operand += 2;
+				imageOperands &= ~spv::ImageOperandsGradMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsConstOffsetMask)
+			{
+				constOffset = true;
+				offsetId = insn.word(operand);
+				operand++;
+				imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+			}
+
+			if(imageOperands & spv::ImageOperandsSampleMask)
+			{
+				sample = true;
+				sampleId = insn.word(operand);
+				imageOperands &= ~spv::ImageOperandsSampleMask;
+
+				ASSERT(instruction.samplerMethod == Fetch);
+				instruction.sample = true;
+			}
+
+			if(imageOperands != 0)
+			{
+				UNSUPPORTED("Image operand %x", imageOperands);
+			}
+		}
+
+		Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+
+		uint32_t coordinates = coordinateType.sizeInComponents - instruction.isProj();
+		instruction.coordinates = coordinates;
+
+		uint32_t i = 0;
+		for(; i < coordinates; i++)
+		{
+			if(instruction.isProj())
+			{
+				in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			}
+			else
+			{
+				in[i] = coordinate.Float(i);
+			}
+		}
+
+		if(instruction.isDref())
+		{
+			auto drefValue = GenericValue(this, state, insn.word(5));
+
+			if(instruction.isProj())
+			{
+				in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			}
+			else
+			{
+				in[i] = drefValue.Float(0);
+			}
+
+			i++;
+		}
+
+		if(lodOrBias)
+		{
+			auto lodValue = GenericValue(this, state, lodOrBiasId);
+			in[i] = lodValue.Float(0);
+			i++;
+		}
+		else if(grad)
+		{
+			auto dxValue = GenericValue(this, state, gradDxId);
+			auto dyValue = GenericValue(this, state, gradDyId);
+			auto &dxyType = getType(dxValue.type);
+			ASSERT(dxyType.sizeInComponents == getType(dyValue.type).sizeInComponents);
+
+			instruction.grad = dxyType.sizeInComponents;
+
+			for(uint32_t j = 0; j < dxyType.sizeInComponents; j++, i++)
+			{
+				in[i] = dxValue.Float(j);
+			}
+
+			for(uint32_t j = 0; j < dxyType.sizeInComponents; j++, i++)
+			{
+				in[i] = dyValue.Float(j);
+			}
+		}
+		else if(instruction.samplerMethod == Fetch)
+		{
+			// The instruction didn't provide a lod operand, but the sampler's Fetch
+			// function requires one to be present. If no lod is supplied, the default
+			// is zero.
+			in[i] = As<SIMD::Float>(SIMD::Int(0));
+			i++;
+		}
+
+		if(constOffset)
+		{
+			auto offsetValue = GenericValue(this, state, offsetId);
+			auto &offsetType = getType(offsetValue.type);
+
+			instruction.offset = offsetType.sizeInComponents;
+
+			for(uint32_t j = 0; j < offsetType.sizeInComponents; j++, i++)
+			{
+				in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+			}
+		}
+
+		if(sample)
+		{
+			auto sampleValue = GenericValue(this, state, sampleId);
+			in[i] = As<SIMD::Float>(sampleValue.Int(0));
+		}
+
+		auto cacheIt = state->routine->samplerCache.find(resultId);
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
+
+		If(!cacheHit)
+		{
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+
+		//	Nucleus::createBr(block2);
+		//Nucleus::setInsertBlock(block2);
+	}
 
 	for(auto i = 0u; i < resultType.sizeInComponents; i++) { result.move(i, out[i]); }
 
