@@ -2,6 +2,121 @@
   "comments": [
     {
       "key": {
+        "uuid": "d26214d0_db948497",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "I\u0027d love to see some real-world benchmarks on this. A frame typically only uses a handful of shaders. We just keep ~1000 older ones in case objects go out and into view again. It\u0027s still much cheaper to linearly search for it and bring it back to the top than to generate the routine again.\n\nJust curious about the actual O(1) cost of unordered_map.",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 44
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6d42d42_955bb298",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "Pointer chasing can be pretty bad for performance.\n\nHow about a circular buffer where we move the accessed item to the front? Or just a stack where we move it up one position?",
+      "range": {
+        "startLine": 10,
+        "startChar": 47,
+        "endLine": 10,
+        "endChar": 90
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31d23c2a_e00e12d7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "How about \u0027lookup\u0027 ?\n\nI don\u0027t think \u0027query\u0027 on a cache class suggests it\u0027s side-effect free. Most caches update something on lookup (see what I did there)? I dislike \u0027get\u0027 because it\u0027s unclear what it means to \"get\" a key (the argument). With \u0027lookup\u0027 it\u0027s clearer what the key is for. Also I think \u0027get\u0027 implies being side-effect free more than \u0027query\u0027 was.",
+      "range": {
+        "startLine": 12,
+        "startChar": 53,
+        "endLine": 12,
+        "endChar": 142
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bad9b958_04027acf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "Can you elaborate? It was only one field.",
+      "range": {
+        "startLine": 16,
+        "startChar": 128,
+        "endLine": 16,
+        "endChar": 146
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d606c48_e18f8954",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "You implied the old code was broken. What exactly does this change fix?\n\nIf possible I like to see refactorings separated from fixes.",
+      "range": {
+        "startLine": 18,
+        "startChar": 52,
+        "endLine": 18,
+        "endChar": 74
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dad4e623_23e42003",
         "filename": "src/Device/Blitter.hpp",
         "patchSetId": 2
@@ -22,6 +137,30 @@
       "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5be7af71_daa6d088",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T14:50:21Z",
+      "side": 1,
+      "message": "It would fall back to O(n) performance for other fields, which can become concerning if/when more state fields are added. That can be a performance issue that\u0027s hard to track down in the future (harder than O(n) for everything).\n\nI think we can address this by adding a hashing function to Memset\u003c\u003e. The sw::FNV_1a() function can be used for this.",
+      "parentUuid": "dad4e623_23e42003",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
