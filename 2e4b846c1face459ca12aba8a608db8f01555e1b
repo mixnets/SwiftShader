@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e5cc60d_d6e2dcc0",
+        "filename": "src/Shader/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T13:55:57Z",
+      "side": 1,
+      "message": "nit: I find it a little easier to read when an extra 0 is added: -1.0f",
+      "range": {
+        "startLine": 321,
+        "startChar": 28,
+        "endLine": 321,
+        "endChar": 30
+      },
+      "revId": "2e4b846c1face459ca12aba8a608db8f01555e1b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
