@@ -281,6 +281,30 @@
       "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73078394_4663ce19",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-06T19:04:53Z",
+      "side": 1,
+      "message": "Well, I can certainly use a constant for the hash, if you feel that\u0027s better than a partial hash.\nI\u0027d prefer to keep the hash logic out of this change, as getting that perfect is a fun game. Given the other state keys precalculate the hash, it may make sense to do the same here. Again though, this isn\u0027t a regression, so I\u0027d suggest doing this as a follow-up.",
+      "parentUuid": "5be7af71_daa6d088",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
