@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "c71ec796_64cbd549",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4376,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T13:40:33Z",
+      "side": 1,
+      "message": "Those existing ones are for integer formats, for which the order of min/max doesn\u0027t matter.\n\nYes to be clear I\u0027d prefer this not added at the Reactor level. Perhaps we should remove the other ones too, to not set a bad example of defining higher-level primitives at this level (without a performance benefit). Let\u0027s look into that in a separate change.",
+      "parentUuid": "f2a07ca1_b0e072f0",
+      "range": {
+        "startLine": 4376,
+        "startChar": 15,
+        "endLine": 4376,
+        "endChar": 20
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "963ee2d5_000c0c86",
         "filename": "src/Shader/ShaderCore.cpp",
         "patchSetId": 1
