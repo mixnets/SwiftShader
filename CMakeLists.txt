@@ -681,8 +681,6 @@ file(GLOB_RECURSE EGL_LIST
     ${OPENGL_DIR}/common/Object.hpp
     ${OPENGL_DIR}/common/debug.cpp
     ${OPENGL_DIR}/common/debug.h
-    ${SOURCE_DIR}/Common/SharedLibrary.cpp
-    ${SOURCE_DIR}/Common/SharedLibrary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
 )
 
@@ -693,8 +691,6 @@ file(GLOB_RECURSE GLES2_LIST
     ${OPENGL_DIR}/common/*.cpp
     ${OPENGL_DIR}/common/*.h
     ${OPENGL_DIR}/common/*.hpp
-    ${SOURCE_DIR}/Common/SharedLibrary.cpp
-    ${SOURCE_DIR}/Common/SharedLibrary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES2/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES3/*.h
@@ -707,8 +703,6 @@ file(GLOB_RECURSE GLES_CM_LIST
     ${OPENGL_DIR}/common/*.cpp
     ${OPENGL_DIR}/common/*.h
     ${OPENGL_DIR}/common/*.hpp
-    ${SOURCE_DIR}/Common/SharedLibrary.cpp
-    ${SOURCE_DIR}/Common/SharedLibrary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/KHR/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GLES/*.h
 )
@@ -801,12 +795,6 @@ elseif(LINUX)
     list(APPEND SWIFTSHADER_LIST
         ${SOURCE_DIR}/Main/FrameBufferX11.cpp
         ${SOURCE_DIR}/Main/FrameBufferX11.hpp
-        ${SOURCE_DIR}/Common/SharedLibrary.hpp
-        ${SOURCE_DIR}/Main/libX11.cpp
-        ${SOURCE_DIR}/Main/libX11.hpp
-    )
-    list(APPEND EGL_LIST
-        ${SOURCE_DIR}/Common/SharedLibrary.hpp
         ${SOURCE_DIR}/Main/libX11.cpp
         ${SOURCE_DIR}/Main/libX11.hpp
     )
@@ -930,7 +918,7 @@ if(SWIFTSHADER_BUILD_EGL)
         set_target_properties(libEGL PROPERTIES SUFFIX "_swiftshader.so")
     endif ()
     set_shared_library_export_map(libEGL ${SOURCE_DIR}/OpenGL/libEGL)
-    target_link_libraries(libEGL ${OS_LIBS} ${SWIFTSHADER_LIBS})
+    target_link_libraries(libEGL SwiftShader ${OS_LIBS} ${SWIFTSHADER_LIBS})
     add_custom_command(
         TARGET libEGL
         POST_BUILD
@@ -1170,19 +1158,9 @@ if(SWIFTSHADER_BUILD_TESTS)
 
     # System unit tests
     set(SYSTEM_UNITTESTS_LIST
-        ${SOURCE_DIR}/System/Debug.cpp
-        ${SOURCE_DIR}/System/Memory.cpp
-
         ${TESTS_DIR}/SystemUnitTests/main.cpp
         ${TESTS_DIR}/SystemUnitTests/unittests.cpp
     )
-
-    if(LINUX OR ANDROID)
-        list(APPEND SYSTEM_UNITTESTS_LIST
-            ${SOURCE_DIR}/System/Linux/MemFd.cpp
-            ${SOURCE_DIR}/System/Linux/MemFd.hpp
-        )
-    endif()
 
     set(SYSTEM_UNITTESTS_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
@@ -1196,7 +1174,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
-    target_link_libraries(system-unittests gtest gmock)
+    target_link_libraries(system-unittests SwiftShader gtest gmock)
     if(NOT WIN32)
         target_link_libraries(system-unittests pthread ${SWIFTSHADER_LIBS})
     endif()
