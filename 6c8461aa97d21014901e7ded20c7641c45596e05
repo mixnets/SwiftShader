@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "34484765_622cf04c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-06T19:14:26Z",
+      "side": 1,
+      "message": "also see base change for old numbers (they\u0027re hidden a bit due to bot messages)",
+      "parentUuid": "506505e0_532b0bb3",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 44
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e6d42d42_955bb298",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
