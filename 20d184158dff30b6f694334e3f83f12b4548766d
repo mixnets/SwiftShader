@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "7e68482d_7d6157e8",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4376,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-06T13:32:41Z",
+      "side": 1,
+      "message": "Are you saying you don\u0027t want me to add this? This isn\u0027t the only Clamp function in Reactor, there\u0027s also:\n\nhttps://cs.corp.google.com/piper///depot/google3/third_party/swiftshader/src/Reactor/Reactor.hpp?dr\u003dC\u0026g\u003d0\u0026l\u003d1145\n\nand\n\nhttps://cs.corp.google.com/piper///depot/google3/third_party/swiftshader/src/Reactor/Reactor.hpp?dr\u003dC\u0026g\u003d0\u0026l\u003d1282",
+      "parentUuid": "05e4fab7_34de47e5",
+      "range": {
+        "startLine": 4376,
+        "startChar": 15,
+        "endLine": 4376,
+        "endChar": 20
+      },
+      "revId": "20d184158dff30b6f694334e3f83f12b4548766d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "963ee2d5_000c0c86",
         "filename": "src/Shader/ShaderCore.cpp",
         "patchSetId": 1
