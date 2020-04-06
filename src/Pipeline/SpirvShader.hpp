@@ -1135,6 +1135,9 @@ private:
 	EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
+	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
+	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
 	uint32_t GetConstScalarInt(Object::ID id) const;
