@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "199b8e94_004e1593",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-06T16:31:31Z",
+      "side": 1,
+      "message": "We need it for b/139491466, and the Vulkan stack must not depend on Common/",
+      "range": {
+        "startLine": 24,
+        "startChar": 2,
+        "endLine": 24,
+        "endChar": 46
+      },
+      "revId": "579cb06b5eb680aa9af9b89fe92f96a4e4e7940e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
