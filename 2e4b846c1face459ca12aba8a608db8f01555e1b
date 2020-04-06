@@ -22,6 +22,30 @@
       "revId": "2e4b846c1face459ca12aba8a608db8f01555e1b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7404d0b2_135ec15f",
+        "filename": "src/Shader/ShaderCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-06T14:01:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e5cc60d_d6e2dcc0",
+      "range": {
+        "startLine": 321,
+        "startChar": 28,
+        "endLine": 321,
+        "endChar": 30
+      },
+      "revId": "2e4b846c1face459ca12aba8a608db8f01555e1b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
