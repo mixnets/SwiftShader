@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd3b9418_6b36e62c",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-07T15:41:54Z",
+      "side": 1,
+      "message": "Maybe we should add a TODO to add flag to perform runtime verification that at least one lane is active. When your new optimizations are added, we can then have this slow assert enabled in regres runs.\n\nJust a thought.",
+      "revId": "8d93176a34990659026b9436a05eed70c262c6f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
