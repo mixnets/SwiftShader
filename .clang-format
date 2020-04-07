@@ -1,5 +1,6 @@
 ---
 Language:        Cpp
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
 # BasedOnStyle:  Google
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
@@ -114,3 +115,5 @@ TabWidth:        4
 UseTab:          ForIndentation
 ...
 
+=======
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)

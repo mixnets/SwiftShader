@@ -12,9 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
 cmake_minimum_required(VERSION 3.6.3)
+=======
+cmake_minimum_required(VERSION 3.0)
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
 set(CMAKE_CXX_STANDARD 14)
+=======
+set(CMAKE_CXX_STANDARD 11)
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 
 project(SwiftShader C CXX ASM)
 
@@ -92,6 +100,8 @@ endif()
 
 find_library(X11 X11)
 find_library(XCB xcb)
+
+include(CheckCXXSourceCompiles)
 
 ###########################################################
 # Options
@@ -234,7 +244,37 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/PowerVR_Examples/.git)
 endif()
 
 ###########################################################
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
 # Convenience macros
+=======
+# Compiler feature tests
+###########################################################
+# Check that the Clang Thread Safety Analysis' try_acquire_capability behaves
+# correctly. This is broken on some earlier versions of clang.
+# See: https://bugs.llvm.org/show_bug.cgi?id=32954
+set(SAVE_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+set(CMAKE_REQUIRED_FLAGS "-Wthread-safety -Werror")
+check_cxx_source_compiles(
+    "int main() {
+      struct __attribute__((capability(\"mutex\"))) Mutex {
+        void Unlock() __attribute__((release_capability)) {};
+        bool TryLock() __attribute__((try_acquire_capability(true))) { return true; };
+      };
+      Mutex m;
+      if (m.TryLock()) {
+        m.Unlock();  // Should not warn.
+      }
+      return 0;
+    }"
+    MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+set(CMAKE_REQUIRED_FLAGS ${SAVE_CMAKE_REQUIRED_FLAGS})
+
+# Export MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED as this may be useful to parent projects
+set(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED PARENT_SCOPE ${MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED})
+
+###########################################################
+# File lists
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 ###########################################################
 
 # Recursively calls source_group on the files of the directory
@@ -561,16 +601,84 @@ set(USE_EXCEPTIONS
     ${REACTOR_EMIT_DEBUG_INFO} # boost::stacktrace uses exceptions
 )
 if(NOT MSVC)
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
     if (${USE_EXCEPTIONS})
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fexceptions")
+=======
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+    )
+endif(NOT MSVC)
+
+###########################################################
+# OS libraries
+###########################################################
+find_package(Threads REQUIRED)
+
+###########################################################
+# Functions
+###########################################################
+function(marl_set_target_options target)
+    if (MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+        target_compile_options(${target} PRIVATE "-Wthread-safety")
+    endif()
+
+    # Enable all warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE
+            "-W4"
+            "/wd4127" # conditional expression is constant
+        )
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
     else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fno-exceptions")
     endif()
 endif()
 
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
 # Transform SWIFTSHADER_LINK_FLAGS from semicolon delimited to whitespace
 # delimited (what is expected by LINK_FLAGS)
 string(REPLACE ";" " " SWIFTSHADER_LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}")
+=======
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} PUBLIC "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} PUBLIC "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} PUBLIC "-fsanitize=thread")
+    endif()
+
+    target_include_directories(${target} PUBLIC $<BUILD_INTERFACE:${MARL_INCLUDE_DIR}>)
+endfunction(marl_set_target_options)
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 
 ###########################################################
 # libbacktrace and boost
@@ -1122,9 +1230,28 @@ if(SWIFTSHADER_BUILD_TESTS)
     )
     target_link_libraries(ReactorUnitTests ${Reactor} ${OS_LIBS} gtest)
 
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
     set(GLES_UNITTESTS_LIST
         ${TESTS_DIR}/GLESUnitTests/main.cpp
         ${TESTS_DIR}/GLESUnitTests/unittests.cpp
+=======
+    marl_set_target_options(marl-unittests)
+
+    target_link_libraries(marl-unittests PRIVATE marl)
+endif(MARL_BUILD_TESTS)
+
+# benchmarks
+if(MARL_BUILD_BENCHMARKS)
+    set(MARL_BENCHMARK_LIST
+        ${MARL_SRC_DIR}/blockingcall_bench.cpp
+        ${MARL_SRC_DIR}/defer_bench.cpp
+        ${MARL_SRC_DIR}/event_bench.cpp
+        ${MARL_SRC_DIR}/marl_bench.cpp
+        ${MARL_SRC_DIR}/non_marl_bench.cpp
+        ${MARL_SRC_DIR}/scheduler_bench.cpp
+        ${MARL_SRC_DIR}/ticket_bench.cpp
+        ${MARL_SRC_DIR}/waitgroup_bench.cpp
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
     )
 
     set(GLES_UNITTESTS_INCLUDE_DIR
@@ -1140,10 +1267,15 @@ if(SWIFTSHADER_BUILD_TESTS)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
     target_link_libraries(gles-unittests libEGL libGLESv2 ${OS_LIBS} ${SWIFTSHADER_LIBS} gtest gmock)
     if(ANDROID)
         target_link_libraries(gles-unittests -landroid)
     endif()
+=======
+    target_link_libraries(marl-benchmarks PRIVATE benchmark::benchmark marl)
+endif(MARL_BUILD_BENCHMARKS)
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 
     # Math unit tests
     set(MATH_UNITTESTS_LIST
@@ -1182,7 +1314,13 @@ if(SWIFTSHADER_BUILD_TESTS)
             ${SOURCE_DIR}/System/Linux/MemFd.cpp
             ${SOURCE_DIR}/System/Linux/MemFd.hpp
         )
+<<<<<<< HEAD   (b4a274 Coverage: Improve uncovered visualizations)
     endif()
+=======
+        marl_set_target_options(${target})
+        target_link_libraries(${target} PRIVATE marl)
+    endfunction(build_example)
+>>>>>>> BRANCH (878789 Squashed 'third_party/marl/' changes from 16e1dc37c..5390940)
 
     set(SYSTEM_UNITTESTS_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/src/
