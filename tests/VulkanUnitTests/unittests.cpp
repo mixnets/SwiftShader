@@ -17,6 +17,7 @@
 
 #include "Device.hpp"
 #include "Driver.hpp"
+#include "Utility.hpp"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -275,21 +276,8 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 	Driver driver;
 	ASSERT_TRUE(driver.loadSwiftShader());
 
-	const VkInstanceCreateInfo createInfo = {
-		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,  // sType
-		nullptr,                                 // pNext
-		0,                                       // flags
-		nullptr,                                 // pApplicationInfo
-		0,                                       // enabledLayerCount
-		nullptr,                                 // ppEnabledLayerNames
-		0,                                       // enabledExtensionCount
-		nullptr,                                 // ppEnabledExtensionNames
-	};
-
 	VkInstance instance = VK_NULL_HANDLE;
-	VK_ASSERT(driver.vkCreateInstance(&createInfo, nullptr, &instance));
-
-	ASSERT_TRUE(driver.resolve(instance));
+	CreateBasicVkInstance(driver, &instance);
 
 	std::unique_ptr<Device> device;
 	VK_ASSERT(Device::CreateComputeDevice(&driver, instance, device));
@@ -374,14 +362,8 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 		}
 	};
 
-	VkDescriptorSetLayout descriptorSetLayout;
-	VK_ASSERT(device->CreateDescriptorSetLayout(descriptorSetLayoutBindings, &descriptorSetLayout));
-
-	VkPipelineLayout pipelineLayout;
-	VK_ASSERT(device->CreatePipelineLayout(descriptorSetLayout, &pipelineLayout));
-
-	VkPipeline pipeline;
-	VK_ASSERT(device->CreateComputePipeline(shaderModule, pipelineLayout, &pipeline));
+	BasicPipeline = { 0 };
+	CreateBasicPipeline(device, descriptorSetLayoutBindings, &pipeline);
 
 	VkDescriptorPool descriptorPool;
 	VK_ASSERT(device->CreateStorageBufferDescriptorPool(2, &descriptorPool));
@@ -1622,4 +1604,188 @@ TEST_P(SwiftShaderVulkanBufferToBufferComputeTest, LoopDivergentMergePhi)
 
 	test(
 	    src.str(), [](uint32_t i) { return i; }, [](uint32_t i) { return i; });
+}
+
+// Base class for texture format tests that go through all the formats in the above enum.
+// output buffer of same length.
+class SwiftShaderVulkanTextureFormatTest : public testing::WithParamInterface<SupportedTextureFormat>
+{
+public:
+	void test(const std::string &shader);
+};
+
+void SwiftShaderVulkanTextureFormatTest::test(const std::string &shader)
+{
+	auto code = compileSpirv(shader.c_str());
+
+	Driver driver;
+	ASSERT_TRUE(driver.loadSwiftShader());
+
+	VkInstance instance = VK_NULL_HANDLE;
+	CreateBasicVkInstance(driver, &instance);
+
+	std::unique_ptr<Device> device;
+	VK_ASSERT(Device::CreateComputeDevice(&driver, instance, device));
+	ASSERT_TRUE(device->IsValid());
+
+	// struct Buffers
+	// {
+	//     uint32_t pad0[63];
+	//     uint32_t canary0; // Check for out-of-bound writes
+	//     uint32_t in[NUM_ELEMENTS]; // Aligned to 0x100
+	//     uint32_t canary1;
+	//     uint32_t pad1[N];
+	//     uint32_t canary2;
+	//     uint32_t out[NUM_ELEMENTS]; // Aligned to 0x100
+	//     uint32_t canary3;
+	// };
+	static constexpr uint32_t canary0 = 0x01234567;
+	static constexpr uint32_t canary1 = 0x89abcdef;
+	static constexpr uint32_t canary2 = 0xfedcba99;
+	static constexpr uint32_t canary3 = 0x87654321;
+	size_t numElements = GetParam().numElements;
+	size_t alignElements = 0x100 / sizeof(uint32_t);
+	size_t canary0Offset = alignElements - 1;
+	size_t inOffset = 1 + canary0Offset;
+	size_t canary1Offset = numElements + inOffset;
+	size_t canary2Offset = alignUp(canary1Offset + 1, alignElements) - 1;
+	size_t outOffset = 1 + canary2Offset;
+	size_t canary3Offset = numElements + outOffset;
+	size_t buffersTotalElements = alignUp(1 + magic3Offset, alignElements);
+	size_t buffersSize = sizeof(uint32_t) * buffersTotalElements;
+
+	VkDeviceMemory memory;
+	VK_ASSERT(device->AllocateMemory(buffersSize,
+	                                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+	                                 &memory));
+
+	uint32_t *buffers;
+	VK_ASSERT(device->MapMemory(memory, 0, buffersSize, 0, (void **)&buffers));
+
+	buffers[canary0Offset] = canary0;
+	buffers[canary1Offset] = canary1;
+	buffers[canary2Offset] = canary2;
+	buffers[canary3Offset] = canary3;
+
+	for(size_t i = 0; i < numElements; i++)
+	{
+		buffers[inOffset + i] = input(i);
+	}
+
+	device->UnmapMemory(memory);
+	buffers = nullptr;
+
+	VkBuffer bufferIn;
+	VK_ASSERT(device->CreateStorageBuffer(memory,
+	                                      sizeof(uint32_t) * numElements,
+	                                      sizeof(uint32_t) * inOffset,
+	                                      &bufferIn));
+
+	VkBuffer bufferOut;
+	VK_ASSERT(device->CreateStorageBuffer(memory,
+	                                      sizeof(uint32_t) * numElements,
+	                                      sizeof(uint32_t) * outOffset,
+	                                      &bufferOut));
+
+	VkShaderModule shaderModule;
+	VK_ASSERT(device->CreateShaderModule(code, &shaderModule));
+
+	std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings = {
+		{
+		    0,                                  // binding
+		    VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,  // descriptorType
+		    1,                                  // descriptorCount
+		    VK_SHADER_STAGE_COMPUTE_BIT,        // stageFlags
+		    0,                                  // pImmutableSamplers
+		},
+		{
+		    1,                                  // binding
+		    VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,  // descriptorType
+		    1,                                  // descriptorCount
+		    VK_SHADER_STAGE_COMPUTE_BIT,        // stageFlags
+		    0,                                  // pImmutableSamplers
+		}
+	};
+
+	BasicPipeline pipeline = { 0 };
+	CreateBasicPipeline(device, descriptorSetLayoutBindings, &pipeline);
+
+	VkDescriptorPool descriptorPool;
+	VK_ASSERT(device->CreateStorageBufferDescriptorPool(2, &descriptorPool));
+
+	VkDescriptorSet descriptorSet;
+	VK_ASSERT(device->AllocateDescriptorSet(descriptorPool, descriptorSetLayout, &descriptorSet));
+
+	std::vector<VkDescriptorBufferInfo> descriptorBufferInfos = {
+		{
+		    bufferIn,       // buffer
+		    0,              // offset
+		    VK_WHOLE_SIZE,  // range
+		},
+		{
+		    bufferOut,      // buffer
+		    0,              // offset
+		    VK_WHOLE_SIZE,  // range
+		}
+	};
+	device->UpdateStorageBufferDescriptorSets(descriptorSet, descriptorBufferInfos);
+
+	VkCommandPool commandPool;
+	VK_ASSERT(device->CreateCommandPool(&commandPool));
+
+	VkCommandBuffer commandBuffer;
+	VK_ASSERT(device->AllocateCommandBuffer(commandPool, &commandBuffer));
+
+	VK_ASSERT(device->BeginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, commandBuffer));
+
+	driver.vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+
+	driver.vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipelineLayout, 0, 1, &descriptorSet,
+	                               0, nullptr);
+
+	driver.vkCmdDispatch(commandBuffer, numElements / GetParam().localSizeX, 1, 1);
+
+	VK_ASSERT(driver.vkEndCommandBuffer(commandBuffer));
+
+	VK_ASSERT(device->QueueSubmitAndWait(commandBuffer));
+
+	VK_ASSERT(device->MapMemory(memory, 0, buffersSize, 0, (void **)&buffers));
+
+	for(size_t i = 0; i < numElements; ++i)
+	{
+		auto got = buffers[i + outOffset];
+		EXPECT_EQ(expected(i), got) << "Unexpected output at " << i;
+	}
+
+	// Check for writes outside of bounds.
+	EXPECT_EQ(buffers[magic0Offset], magic0);
+	EXPECT_EQ(buffers[magic1Offset], magic1);
+	EXPECT_EQ(buffers[magic2Offset], magic2);
+	EXPECT_EQ(buffers[magic3Offset], magic3);
+
+	device->UnmapMemory(memory);
+	buffers = nullptr;
+
+	device->FreeCommandBuffer(commandPool, commandBuffer);
+	device->FreeMemory(memory);
+	device->DestroyPipeline(pipeline);
+	device->DestroyCommandPool(commandPool);
+	device->DestroyPipelineLayout(pipelineLayout);
+	device->DestroyDescriptorSetLayout(descriptorSetLayout);
+	device->DestroyDescriptorPool(descriptorPool);
+	device->DestroyBuffer(bufferIn);
+	device->DestroyBuffer(bufferOut);
+	device->DestroyShaderModule(shaderModule);
+	device.reset(nullptr);
+	driver.vkDestroyInstance(instance, nullptr);
+}
+
+INSTANTIATE_TEST_SUITE_P(IterateTypes, SwiftShaderTextureFormatTest, ::testing:ValuesIn(vector<My
+
+                                                                                                    // Non-multiple of SIMD-lane.
+
+
+// Test that there are no texture formats that we forget to completely support
+TEST_P(SwiftShaderTextureFormatTest, FormatCoverage)
+{
 }
