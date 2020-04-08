@@ -224,12 +224,14 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache *pSr
 		PipelineCache *srcCache = Cast(pSrcCaches[i]);
 
 		{
-			std::unique_lock<std::mutex> lock(spirvShadersMutex);
+			std::unique_lock<std::mutex> thisLock(spirvShadersMutex);
+			std::unique_lock<std::mutex> srcLock(srcCache->spirvShadersMutex);
 			spirvShaders.insert(srcCache->spirvShaders.begin(), srcCache->spirvShaders.end());
 		}
 
 		{
-			std::unique_lock<std::mutex> lock(computeProgramsMutex);
+			std::unique_lock<std::mutex> thisLock(computeProgramsMutex);
+			std::unique_lock<std::mutex> srcLock(srcCache->computeProgramsMutex);
 			computePrograms.insert(srcCache->computePrograms.begin(), srcCache->computePrograms.end());
 		}
 	}
@@ -237,25 +239,29 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache *pSr
 	return VK_SUCCESS;
 }
 
-const std::shared_ptr<sw::SpirvShader> *PipelineCache::operator[](const PipelineCache::SpirvShaderKey &key) const
+const std::shared_ptr<sw::SpirvShader> *PipelineCache::operator[](const PipelineCache::SpirvShaderKey &key)
 {
+	std::unique_lock<std::mutex> lock(spirvShadersMutex);
 	auto it = spirvShaders.find(key);
 	return (it != spirvShaders.end()) ? &(it->second) : nullptr;
 }
 
 void PipelineCache::insert(const PipelineCache::SpirvShaderKey &key, const std::shared_ptr<sw::SpirvShader> &shader)
 {
+	std::unique_lock<std::mutex> lock(spirvShadersMutex);
 	spirvShaders[key] = shader;
 }
 
-const std::shared_ptr<sw::ComputeProgram> *PipelineCache::operator[](const PipelineCache::ComputeProgramKey &key) const
+const std::shared_ptr<sw::ComputeProgram> *PipelineCache::operator[](const PipelineCache::ComputeProgramKey &key)
 {
+	std::unique_lock<std::mutex> lock(computeProgramsMutex);
 	auto it = computePrograms.find(key);
 	return (it != computePrograms.end()) ? &(it->second) : nullptr;
 }
 
 void PipelineCache::insert(const PipelineCache::ComputeProgramKey &key, const std::shared_ptr<sw::ComputeProgram> &computeProgram)
 {
+	std::unique_lock<std::mutex> lock(computeProgramsMutex);
 	computePrograms[key] = computeProgram;
 }
 
