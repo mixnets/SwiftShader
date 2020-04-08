@@ -356,7 +356,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = GenericValue(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
 			auto ptrTy = getType(getObject(ptrId).type);
-			auto ptr = GetPointerToData(ptrId, 0, state);
+			auto ptr = state->getPointer(ptrId);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
 			// TODO: GLSL modf() takes an output parameter and thus the pointer is assumed
 			// to be in bounds even for inactive lanes.
@@ -502,7 +502,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = GenericValue(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
 			auto ptrTy = getType(getObject(ptrId).type);
-			auto ptr = GetPointerToData(ptrId, 0, state);
+			auto ptr = state->getPointer(ptrId);
 			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
 			// TODO: GLSL frexp() takes an output parameter and thus the pointer is assumed
 			// to be in bounds even for inactive lanes.

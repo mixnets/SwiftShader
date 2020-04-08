@@ -52,7 +52,7 @@ SpirvShader::EmitResult SpirvShader::EmitLoad(InsnIterator insn, EmitState *stat
 		memoryOrder = MemoryOrder(memorySemantics);
 	}
 
-	auto ptr = GetPointerToData(pointerId, 0, state);
+	auto ptr = state->getPointer(pointerId);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 	auto &dst = state->createIntermediate(resultId, resultTy.sizeInComponents);
 	auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
@@ -86,7 +86,7 @@ SpirvShader::EmitResult SpirvShader::EmitStore(InsnIterator insn, EmitState *sta
 
 	ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
 
-	auto ptr = GetPointerToData(pointerId, 0, state);
+	auto ptr = state->getPointer(pointerId);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);
 	auto robustness = state->getOutOfBoundsBehavior(pointerTy.storageClass);
 
@@ -235,7 +235,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			case spv::StorageClassFunction:
 			{
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
-				auto ptr = GetPointerToData(resultId, 0, state);
+				auto ptr = state->getPointer(resultId);
 				GenericValue initialValue(this, state, initializerId);
 				VisitMemoryObject(resultId, [&](const MemoryElement &el) {
 					auto p = ptr + el.offset;
@@ -263,8 +263,8 @@ SpirvShader::EmitResult SpirvShader::EmitCopyMemory(InsnIterator insn, EmitState
 
 	bool dstInterleavedByLane = IsStorageInterleavedByLane(dstPtrTy.storageClass);
 	bool srcInterleavedByLane = IsStorageInterleavedByLane(srcPtrTy.storageClass);
-	auto dstPtr = GetPointerToData(dstPtrId, 0, state);
-	auto srcPtr = GetPointerToData(srcPtrId, 0, state);
+	auto dstPtr = state->getPointer(dstPtrId);
+	auto srcPtr = state->getPointer(srcPtrId);
 
 	std::unordered_map<uint32_t, uint32_t> srcOffsets;
 
