@@ -93,8 +93,7 @@ public:
 		const SpecializationInfo specializationInfo;
 	};
 
-	std::mutex &getShaderMutex() { return spirvShadersMutex; }
-	const std::shared_ptr<sw::SpirvShader> *operator[](const PipelineCache::SpirvShaderKey &key) const;
+	const std::shared_ptr<sw::SpirvShader> *operator[](const PipelineCache::SpirvShaderKey &key);
 	void insert(const PipelineCache::SpirvShaderKey &key, const std::shared_ptr<sw::SpirvShader> &shader);
 
 	struct ComputeProgramKey
@@ -117,8 +116,7 @@ public:
 		const vk::PipelineLayout *layout;
 	};
 
-	std::mutex &getProgramMutex() { return computeProgramsMutex; }
-	const std::shared_ptr<sw::ComputeProgram> *operator[](const PipelineCache::ComputeProgramKey &key) const;
+	const std::shared_ptr<sw::ComputeProgram> *operator[](const PipelineCache::ComputeProgramKey &key);
 	void insert(const PipelineCache::ComputeProgramKey &key, const std::shared_ptr<sw::ComputeProgram> &computeProgram);
 
 private:
@@ -135,10 +133,10 @@ private:
 	uint8_t *data = nullptr;
 
 	std::mutex spirvShadersMutex;
-	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders;
+	std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>> spirvShaders;  // guarded by spirvShadersMutex
 
 	std::mutex computeProgramsMutex;
-	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms;
+	std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>> computePrograms;  // guarded by computeProgramsMutex
 };
 
 static inline PipelineCache *Cast(VkPipelineCache object)
