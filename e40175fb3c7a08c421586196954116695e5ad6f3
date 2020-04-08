@@ -22,6 +22,30 @@
       "revId": "e40175fb3c7a08c421586196954116695e5ad6f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "251e7992_17b75311",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-08T06:59:24Z",
+      "side": 1,
+      "message": "The bug specifically says \"Perform basic sanity checks on .gn, .bp, .bazel builds\". This bug and solution was not supposed to perform real presubmits on these - I just had 5 minutes spare after I broke the build in a way that could be caught with a small script.\n\nDon\u0027t we already have a bug open for adding the android / chrome presubmits? Yuly is already working on the latter, right?",
+      "parentUuid": "4ed47cea_95e522c2",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 5
+      },
+      "revId": "e40175fb3c7a08c421586196954116695e5ad6f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
