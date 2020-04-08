@@ -17,12 +17,17 @@
 
 #include <hardware/gralloc.h>
 #include <hardware/gralloc1.h>
+
 #ifdef HAVE_GRALLOC3
 #	include <android/hardware/graphics/mapper/3.0/IMapper.h>
 #	include <utils/StrongPointer.h>
 #endif
+#ifdef HAVE_GRALLOC4
+#include <android/hardware/graphics/mapper/4.0/IMapper.h>
+#include <utils/StrongPointer.h>
+#endif
 
-#include <unistd.h>  // for close()
+#include <unistd.h> // for close()
 
 class GrallocModule
 {
@@ -46,6 +51,9 @@ private:
 #endif
 #ifdef HAVE_GRALLOC3
 	android::sp<android::hardware::graphics::mapper::V3_0::IMapper> m_gralloc3_mapper;
+#endif
+#ifdef HAVE_GRALLOC4
+	android::sp<android::hardware::graphics::mapper::V4_0::IMapper> m_gralloc4_mapper;
 #endif
 };
 
