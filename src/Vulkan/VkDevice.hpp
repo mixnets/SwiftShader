@@ -87,8 +87,14 @@ public:
 			};
 		};
 
+		// getOrCreate() queries the cache for a Routine with the given key.
+		// If one is found, it is returned, otherwise createRoutine(key) is
+		// called, the returned Routine is added to the cache, and it is
+		// returned.
+		// Function must be a function of the signature:
+		//     std::shared_ptr<rr::Routine>(const Key &)
 		template<typename Function>
-		std::shared_ptr<rr::Routine> getOrCreate(const Key &key, Function createRoutine)
+		std::shared_ptr<rr::Routine> getOrCreate(const Key &key, Function &&createRoutine)
 		{
 			auto it = snapshot.find(key);
 			if(it != snapshot.end()) { return it->second; }
