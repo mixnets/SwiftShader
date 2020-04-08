@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ed47cea_95e522c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-08T01:59:57Z",
+      "side": 1,
+      "message": "I wouldn\u0027t close that as fixed. We really need presubmit tests for these builds, and then remove this more primitive check from Kokoro.\n\nOr, close this bug but open another one blocked on the presubmit work to do the removal. Your call.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 5
+      },
+      "revId": "e40175fb3c7a08c421586196954116695e5ad6f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
