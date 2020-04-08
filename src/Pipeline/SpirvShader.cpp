@@ -2318,7 +2318,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 	auto arrayId = Type::ID(structTy.definition.word(2 + arrayFieldIdx));
 
 	auto &result = state->createIntermediate(insn.resultId(), 1);
-	auto structBase = GetPointerToData(structPtrId, 0, state);
+	auto structBase = state->getPointer(structPtrId);
 
 	Decorations structDecorations = {};
 	ApplyDecorationsForIdMember(&structDecorations, structPtrTy.element, arrayFieldIdx);

@@ -1165,7 +1165,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 				case Object::Kind::InterfaceVariable:
 				case Object::Kind::Pointer:
 				{
-					auto ptr = shader->GetPointerToData(id, 0, state) + sizeof(uint32_t) * wordOffset;
+					auto ptr = state->getPointer(id) + sizeof(uint32_t) * wordOffset;
 					auto &ptrTy = shader->getType(obj);
 					if(IsStorageInterleavedByLane(ptrTy.storageClass))
 					{
