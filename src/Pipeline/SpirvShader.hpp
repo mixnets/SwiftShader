@@ -274,9 +274,9 @@ public:
 			// Pointer held by SpirvRoutine::pointers
 			Pointer,
 
-			// A pointer to a vk::DescriptorSet*.
-			// Pointer held by SpirvRoutine::pointers.
-			DescriptorSet,
+			// An external shader resource.
+			// Pointer to a vk::DescriptorSet* held by SpirvRoutine::pointers.
+			Resource,
 		};
 
 		Kind kind = Kind::Unknown;
@@ -961,13 +961,11 @@ private:
 	// Constants are transparently widened to per-lane values in operator[].
 	// This is appropriate in most cases -- if we're not going to do something
 	// significantly different based on whether the value is uniform across lanes.
-	class GenericValue
+	class Operand
 	{
-		SpirvShader::Object const &obj;
-		Intermediate const *intermediate;
-
 	public:
-		GenericValue(SpirvShader const *shader, EmitState const *state, SpirvShader::Object::ID objId);
+		Operand(const SpirvShader *shader, const EmitState *state, SpirvShader::Object::ID objectId);
+		Operand(const Intermediate &value);
 
 		RValue<SIMD::Float> Float(uint32_t i) const
 		{
@@ -979,9 +977,7 @@ private:
 			// Constructing a constant SIMD::Float is not guaranteed to preserve the data's exact
 			// bit pattern, but SPIR-V provides 32-bit words representing "the bit pattern for the constant".
 			// Thus we must first construct an integer constant, and bitcast to float.
-			ASSERT(obj.kind == SpirvShader::Object::Kind::Constant);
-			auto constantValue = reinterpret_cast<uint32_t *>(obj.constantValue.get());
-			return As<SIMD::Float>(SIMD::UInt(constantValue[i]));
+			return As<SIMD::Float>(SIMD::UInt(constant[i]));
 		}
 
 		RValue<SIMD::Int> Int(uint32_t i) const
@@ -990,9 +986,8 @@ private:
 			{
 				return intermediate->Int(i);
 			}
-			ASSERT(obj.kind == SpirvShader::Object::Kind::Constant);
-			auto constantValue = reinterpret_cast<int *>(obj.constantValue.get());
-			return SIMD::Int(constantValue[i]);
+
+			return SIMD::Int(constant[i]);
 		}
 
 		RValue<SIMD::UInt> UInt(uint32_t i) const
@@ -1001,12 +996,18 @@ private:
 			{
 				return intermediate->UInt(i);
 			}
-			ASSERT(obj.kind == SpirvShader::Object::Kind::Constant);
-			auto constantValue = reinterpret_cast<uint32_t *>(obj.constantValue.get());
-			return SIMD::UInt(constantValue[i]);
+
+			return SIMD::UInt(constant[i]);
 		}
 
-		SpirvShader::Type::ID const type;
+		const SpirvShader::Type::ID type;
+
+	private:
+		// Delegate constructor
+		Operand(const EmitState *state, SpirvShader::Object::ID objectId, const Object &object);
+
+		const uint32_t *constant;
+		const Intermediate *intermediate;
 	};
 
 	Type const &getType(Type::ID id) const
@@ -1052,7 +1053,8 @@ private:
 	//  • InterfaceVariable
 	//  • NonDivergentPointer
 	// Calling GetPointerToData with objects of any other kind will assert.
-	SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData0(Object::ID id, EmitState const *state) const;
 
 	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 	SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
@@ -1081,6 +1083,7 @@ private:
 	EmitResult EmitVariable(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitLoad(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitStore(InsnIterator insn, EmitState *state) const;
+	void Store(EmitState *state, Object::ID pointerId, const Operand &value, bool atomic = false, std::memory_order memoryOrder = std::memory_order_relaxed) const;
 	EmitResult EmitAccessChain(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitCompositeConstruct(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitCompositeInsert(InsnIterator insn, EmitState *state) const;
@@ -1136,7 +1139,7 @@ private:
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
-	SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, GenericValue const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
+	SIMD::Pointer GetTexelAddress(EmitState const *state, SIMD::Pointer base, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const;
 	uint32_t GetConstScalarInt(Object::ID id) const;
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
@@ -1168,7 +1171,7 @@ private:
 	static bool IsStatement(spv::Op op);
 
 	// Helper as we often need to take dot products as part of doing other things.
-	SIMD::Float Dot(unsigned numComponents, GenericValue const &x, GenericValue const &y) const;
+	SIMD::Float Dot(unsigned numComponents, Operand const &x, Operand const &y) const;
 
 	// Splits x into a floating-point significand in the range [0.5, 1.0)
 	// and an integral exponent of two, such that:
