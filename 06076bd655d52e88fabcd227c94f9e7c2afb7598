@@ -52,6 +52,24 @@
       "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2ea633e_3a3c2653",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-09T14:25:42Z",
+      "side": 1,
+      "message": "I only added the make_directory stuff to the other places because they\u0027re out of the PVR conditions, and so there might not be a bin directory created.\nI guess this target could be built before PVR, so there\u0027s possible a race with the bin dir. Not that we saw it before. Done.",
+      "parentUuid": "66068c92_262c51e8",
+      "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
