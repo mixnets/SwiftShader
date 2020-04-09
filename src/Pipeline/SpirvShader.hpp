@@ -143,12 +143,19 @@ public:
 		ControlBarrier,
 	};
 
-	/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
+	// Pseudo-iterator over SPIRV instructions, designed to support range-based-for.
 	class InsnIterator
 	{
-		InsnStore::const_iterator iter;
-
 	public:
+		InsnIterator(InsnIterator const &other) = default;
+
+		InsnIterator() = default;
+
+		explicit InsnIterator(InsnStore::const_iterator iter)
+		    : iter{ iter }
+		{
+		}
+
 		spv::Op opcode() const
 		{
 			return static_cast<spv::Op>(*iter & spv::OpCodeMask);
@@ -174,6 +181,16 @@ public:
 		const char *string(uint32_t n) const
 		{
 			return reinterpret_cast<const char *>(wordPointer(n));
+		}
+
+		uint32_t resultTypeId() const
+		{
+			return word(1);
+		}
+
+		uint32_t resultId() const
+		{
+			return word(2);
 		}
 
 		bool operator==(InsnIterator const &other) const
@@ -204,14 +221,8 @@ public:
 			return ret;
 		}
 
-		InsnIterator(InsnIterator const &other) = default;
-
-		InsnIterator() = default;
-
-		explicit InsnIterator(InsnStore::const_iterator iter)
-		    : iter{ iter }
-		{
-		}
+	private:
+		InsnStore::const_iterator iter;
 	};
 
 	/* range-based-for interface */
@@ -247,9 +258,11 @@ public:
 		using ID = SpirvID<Object>;
 
 		spv::Op opcode() const { return definition.opcode(); }
+		Type::ID typeId() const { return definition.resultTypeId(); }
+		Object::ID id() const { return definition.resultId(); }
 
 		InsnIterator definition;
-		Type::ID type;
+		Type::ID type;  // TODO(b/129000021): Eliminate. Use typeId() instead.
 		std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 		enum class Kind
@@ -1006,7 +1019,12 @@ private:
 			return SIMD::UInt(constantValue[i]);
 		}
 
-		SpirvShader::Type::ID const type;
+		SpirvShader::Type::ID const type;  // TODO(b/129000021): Eliminate. Use typeId() instead.
+
+		Type::ID typeId() const
+		{
+			return obj.typeId();
+		}
 	};
 
 	Type const &getType(Type::ID id) const
@@ -1014,6 +1032,16 @@ private:
 		auto it = types.find(id);
 		ASSERT_MSG(it != types.end(), "Unknown type %d", id.value());
 		return it->second;
+	}
+
+	Type const &getType(const Object &object) const
+	{
+		return getType(object.typeId());
+	}
+
+	Type const &getType(const Operand &operand) const
+	{
+		return getType(operand.typeId());
 	}
 
 	Object const &getObject(Object::ID id) const
