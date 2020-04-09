@@ -252,7 +252,7 @@ SpirvShader::SpirvShader(
 
 					case spv::StorageClassUniform:
 					case spv::StorageClassStorageBuffer:
-						object.kind = Object::Kind::DescriptorSet;
+						object.kind = Object::Kind::Resource;
 						break;
 
 					case spv::StorageClassPushConstant:
@@ -1039,8 +1039,8 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 {
 	ApplyDecorationsForId(d, baseId);
 	auto &baseObject = getObject(baseId);
-	ApplyDecorationsForId(d, baseObject.typeId());
-	auto typeId = getType(baseObject).element;
+	ApplyDecorationsForId(d, baseObject.type);
+	auto typeId = getType(baseObject.type).element;
 
 	for(auto i = 0u; i < numIndexes; i++)
 	{
@@ -1085,22 +1085,23 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 	Decorations d = {};
 	ApplyDecorationsForId(&d, baseObject.typeId());
 
-	uint32_t arrayIndex = 0;
-	if(baseObject.kind == Object::Kind::DescriptorSet)
+	auto ptr = state->getPointer(baseId);
+
+	if(baseObject.kind == Object::Kind::Resource)
 	{
 		auto type = getType(typeId).definition.opcode();
 		if(type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
 		{
 			ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant);
-			arrayIndex = GetConstScalarInt(indexIds[0]);
+			uint32_t arrayIndex = GetConstScalarInt(indexIds[0]);
+
+			ptr = GetPointerToData(baseId, ptr, arrayIndex, state);
 
 			numIndexes--;
 			indexIds++;
 			typeId = getType(typeId).element;
 		}
 	}
-
-	auto ptr = GetPointerToData(baseId, arrayIndex, state);
 
 	int constantOffset = 0;
 
@@ -2318,7 +2319,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 	auto arrayId = Type::ID(structTy.definition.word(2 + arrayFieldIdx));
 
 	auto &result = state->createIntermediate(insn.resultId(), 1);
-	auto structBase = state->getPointer(structPtrId);
+	auto structBase = GetPointerToData0(structPtrId, state);  ////
 
 	Decorations structDecorations = {};
 	ApplyDecorationsForIdMember(&structDecorations, structPtrTy.element, arrayFieldIdx);

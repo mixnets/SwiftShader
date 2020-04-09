@@ -301,9 +301,9 @@ public:
 			// Pointer held by SpirvRoutine::pointers
 			Pointer,
 
-			// A pointer to a vk::DescriptorSet*.
-			// Pointer held by SpirvRoutine::pointers.
-			DescriptorSet,
+			// An external shader resource.
+			// Pointer to a vk::DescriptorSet* held by SpirvRoutine::pointers.
+			Resource,
 		};
 
 		Kind kind = Kind::Unknown;
@@ -1086,7 +1086,8 @@ private:
 	//  • InterfaceVariable
 	//  • NonDivergentPointer
 	// Calling GetPointerToData with objects of any other kind will assert.
-	SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData0(Object::ID id, EmitState const *state) const;
 
 	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
 	SIMD::Pointer WalkAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;
@@ -1204,10 +1205,6 @@ private:
 	// work (as opposed to declaring a type, defining a function start / end,
 	// etc).
 	static bool IsStatement(spv::Op op);
-
-	// HasTypeAndResult() returns true if the given opcode's instruction
-	// has a result type ID and result ID, i.e. defines an Object.
-	static bool HasTypeAndResult(spv::Op op);
 
 	// Helper as we often need to take dot products as part of doing other things.
 	SIMD::Float Dot(unsigned numComponents, Operand const &x, Operand const &y) const;
