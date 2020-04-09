@@ -143,6 +143,9 @@ public:
 		ControlBarrier,
 	};
 
+	class Type;
+	class Object;
+
 	// Pseudo-iterator over SPIRV instructions, designed to support range-based-for.
 	class InsnIterator
 	{
@@ -183,12 +186,12 @@ public:
 			return reinterpret_cast<const char *>(wordPointer(n));
 		}
 
-		uint32_t resultTypeId() const
+		SpirvID<Type> resultTypeId() const
 		{
 			return word(1);
 		}
 
-		uint32_t resultId() const
+		SpirvID<Object> resultId() const
 		{
 			return word(2);
 		}
@@ -1018,10 +1021,7 @@ private:
 			return SIMD::UInt(constantValue[i]);
 		}
 
-		Type::ID typeId() const
-		{
-			return obj.typeId();
-		}
+		const uint32_t sizeInComponents;
 	};
 
 	Type const &getType(Type::ID id) const
@@ -1034,11 +1034,6 @@ private:
 	Type const &getType(const Object &object) const
 	{
 		return getType(object.typeId());
-	}
-
-	Type const &getType(const Operand &operand) const
-	{
-		return getType(operand.typeId());
 	}
 
 	Object const &getObject(Object::ID id) const
