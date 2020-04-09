@@ -15,10 +15,11 @@
 #ifndef SWIFTSHADER_XCBSURFACEKHR_HPP
 #define SWIFTSHADER_XCBSURFACEKHR_HPP
 
+#include <xcb/xcb.h>
+
 #include "VkSurfaceKHR.hpp"
 #include "Vulkan/VkObject.hpp"
 #include "vulkan/vulkan_xcb.h"
-#include <xcb/xcb.h>
 
 #include <unordered_map>
 
