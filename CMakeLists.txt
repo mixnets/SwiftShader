@@ -18,16 +18,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 project(SwiftShader C CXX ASM)
 
-# On Windows we use custom solution and project files, except for certain third-
-# party projects which use CMake-generated ones. They are manually (re)generated
-# and made path relative using build/cmake.sh, so they can be checked into the
-# repository. Therefore they should not be auto-regenerated and left using
-# absolute paths by CMake's ZERO_CHECK.
-if(WIN32)
-    # Disable automatically regenerating project files on CMakeLists.txt changes.
-    set(CMAKE_SUPPRESS_REGENERATION true)
-endif()
-
 ###########################################################
 # Detect system
 ###########################################################
@@ -307,7 +297,6 @@ endif()
 ###########################################################
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(VULKAN_DIR ${SOURCE_DIR}/Vulkan)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 set(HELLO2_DIR ${THIRD_PARTY_DIR}/PowerVR_SDK/Examples/Beginner/01_HelloAPI/OGLES2)
@@ -638,31 +627,9 @@ set(VULKAN_INCLUDE_DIR
 # File Lists
 ###########################################################
 
-file(GLOB VULKAN_LIST
-    ${VULKAN_DIR}/*.cpp
-    ${VULKAN_DIR}/*.h
-    ${VULKAN_DIR}/*.hpp
-)
-
-if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
-    file(GLOB_RECURSE VULKAN_DEBUG_LIST
-        ${VULKAN_DIR}/Debug/*.cpp
-        ${VULKAN_DIR}/Debug/*.h
-        ${VULKAN_DIR}/Debug/*.hpp
-    )
-    list(APPEND VULKAN_LIST ${VULKAN_DEBUG_LIST})
-    list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_VK_DEBUGGER")
-endif()
-
 ###########################################################
 # Append OS specific files to lists
 ###########################################################
-
-if(WIN32)
-    list(APPEND VULKAN_LIST
-        ${VULKAN_DIR}/Vulkan.rc
-    )
-endif()
 
 if(WIN32)
     set(OS_LIBS odbc32 odbccp32 WS2_32 dxguid)
@@ -732,6 +699,11 @@ if(SWIFTSHADER_BUILD_VULKAN)
     # TODO: Create src/Base and make this a lib target, and move stuff from
     # src/Vulkan into it that is needed by vk_pipeline, vk_device, and vk_wsi.
     add_library(vk_base INTERFACE)
+    
+    if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
+        target_compile_definitions(vk_base INTERFACE "ENABLE_VK_DEBUGGER")
+    endif()
+
     if(WIN32)
         target_compile_definitions(vk_base INTERFACE "VK_USE_PLATFORM_WIN32_KHR")
     elseif(LINUX)
@@ -751,71 +723,7 @@ if(SWIFTSHADER_BUILD_VULKAN)
     add_subdirectory(src/Pipeline) # Add vk_pipeline target
     add_subdirectory(src/WSI) # Add vk_wsi target
     add_subdirectory(src/Device) # Add vk_device target
-
-    add_library(vk_swiftshader SHARED ${VULKAN_LIST})
-
-    set_target_properties(vk_swiftshader PROPERTIES
-        INCLUDE_DIRECTORIES "${VULKAN_INCLUDE_DIR}"
-        FOLDER "Vulkan"
-        COMPILE_OPTIONS "${SWIFTSHADER_COMPILE_OPTIONS};${WARNINGS_AS_ERRORS}"
-        COMPILE_DEFINITIONS "VK_EXPORT=;NO_SANITIZE_FUNCTION=;$<$<CONFIG:Debug>:DEBUGGER_WAIT_DIALOG>"
-        LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
-    )
-
-    set_shared_library_export_map(vk_swiftshader ${SOURCE_DIR}/Vulkan)
-
-    set(VK_SWIFTSHADER_LIBS
-        vk_system
-        vk_pipeline
-        vk_device
-        vk_wsi
-        ${Reactor}
-        marl
-        ${OS_LIBS}
-        ${SWIFTSHADER_LIBS}
-    )
-
-    if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
-        list(APPEND VK_SWIFTSHADER_LIBS cppdap)
-    endif()
-    if(SWIFTSHADER_ENABLE_ASTC)
-        list(APPEND VK_SWIFTSHADER_LIBS astc-encoder)
-    endif()
-    
-    target_link_libraries(vk_swiftshader ${VK_SWIFTSHADER_LIBS})
-
-    if(WIN32)
-        set(VULKAN_API_LIBRARY_NAME "vulkan-1.dll")
-    elseif(LINUX)
-        set(VULKAN_API_LIBRARY_NAME "libvulkan.so.1")
-    elseif(APPLE)
-        set(VULKAN_API_LIBRARY_NAME "libvulkan.dylib")
-    else()
-        message(FATAL_ERROR "Platform does not support Vulkan yet")
-    endif()
-
-    add_custom_command(
-        TARGET vk_swiftshader
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME}
-    )
-
-    # The vk_swiftshader_icd.json manifest file will point to ICD_LIBRARY_PATH.
-    # Set ICD_LIBRARY_PATH to be a relative path similar to "./libvk_swiftshader.so", so both files can be moved.
-    # A relative path is relative to the manifest file.
-    set(ICD_LIBRARY_PATH "${CMAKE_SHARED_LIBRARY_PREFIX}vk_swiftshader${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    if(WIN32)
-        # The path is output to a JSON file, which requires backslashes to be escaped.
-        set(ICD_LIBRARY_PATH ".\\\\${ICD_LIBRARY_PATH}")
-    else()
-        set(ICD_LIBRARY_PATH "./${ICD_LIBRARY_PATH}")
-    endif()
-    configure_file(
-        "${VULKAN_DIR}/vk_swiftshader_icd.json.tmpl"
-        "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/vk_swiftshader_icd.json"
-    )
+    add_subdirectory(src/Vulkan) # Add vk_swiftshader target
 
     if(SWIFTSHADER_EMIT_COVERAGE)
         add_executable(turbo-cov ${TESTS_DIR}/regres/cov/turbo-cov/main.cpp)
