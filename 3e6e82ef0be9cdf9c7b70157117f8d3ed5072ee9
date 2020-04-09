@@ -16,6 +16,24 @@
       "revId": "3e6e82ef0be9cdf9c7b70157117f8d3ed5072ee9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "710b32c5_f23d1635",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-09T12:56:06Z",
+      "side": 0,
+      "message": "I didn\u0027t see that the member type was not a ref. This is fine, though you should still pass by value and use move to avoid extra add ref + remove ref when rvalue is passed in.",
+      "parentUuid": "9c67df1b_858c6050",
+      "revId": "3e6e82ef0be9cdf9c7b70157117f8d3ed5072ee9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
