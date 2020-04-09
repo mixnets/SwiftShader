@@ -32,8 +32,8 @@ constexpr void checkForNoMissingOps(spv::Op op)
 
 	switch(op)
 	{
-#define DECORATE_OP(isStatement, op) \
-	case spv::op:                    \
+#define DECORATE_OP(isStatement, typeAndResult, op) \
+	case spv::op:                                   \
 		return;
 #include "SpirvShaderInstructions.inl"
 #undef DECORATE_OP
@@ -51,8 +51,28 @@ bool SpirvShader::IsStatement(spv::Op op)
 	{
 #define IS_STATEMENT_T(op) case spv::op:
 #define IS_STATEMENT_F(op)
-#define DECORATE_OP(isStatement, op)    \
-	CONCAT2(IS_STATEMENT_, isStatement) \
+#define DECORATE_OP(isStatement, typeAndResult, op) \
+	CONCAT2(IS_STATEMENT_, isStatement)             \
+	(op)
+#include "SpirvShaderInstructions.inl"
+#undef IS_STATEMENT_T
+#undef IS_STATEMENT_F
+#undef DECORATE_OP
+		return true;
+
+		default:
+			return false;
+	}
+}
+
+bool SpirvShader::HasTypeAndResult(spv::Op op)
+{
+	switch(op)
+	{
+#define IS_STATEMENT_T(op) case spv::op:
+#define IS_STATEMENT_F(op)
+#define DECORATE_OP(isStatement, typeAndResult, op) \
+	CONCAT2(IS_STATEMENT_, typeAndResult)           \
 	(op)
 #include "SpirvShaderInstructions.inl"
 #undef IS_STATEMENT_T
