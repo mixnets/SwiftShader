@@ -34,6 +34,24 @@
       "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66068c92_262c51e8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-09T14:17:56Z",
+      "side": 1,
+      "message": "Okay, but we don\u0027t create the directory. Either we assume it exists, and don\u0027t try to create it in all three places, or we try to create it in all three places. You added the make_directory to the other two, so may as well add it here.",
+      "parentUuid": "a0d8778c_330c064e",
+      "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
