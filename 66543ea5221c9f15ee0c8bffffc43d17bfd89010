@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "524b3001_9ea6b34f",
+        "filename": "src/OpenGL/libGLESv2/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-09T12:22:31Z",
+      "side": 1,
+      "message": "Same as for libEGl (fold into add_custom_command with comment)",
+      "revId": "66543ea5221c9f15ee0c8bffffc43d17bfd89010",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
