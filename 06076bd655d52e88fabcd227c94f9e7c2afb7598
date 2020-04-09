@@ -16,6 +16,24 @@
       "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0d8778c_330c064e",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-09T14:04:40Z",
+      "side": 1,
+      "message": "There\u0027s a comment just above the if. It\u0027s not exactly the same, but it is commented already.",
+      "parentUuid": "c062e95d_7a760c81",
+      "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
