@@ -1023,10 +1023,7 @@ private:
 			return SIMD::UInt(constantValue[i]);
 		}
 
-		Type::ID typeId() const
-		{
-			return obj.typeId();
-		}
+		const uint32_t sizeInComponents;
 	};
 
 	Type const &getType(Type::ID id) const
@@ -1039,11 +1036,6 @@ private:
 	Type const &getType(const Object &object) const
 	{
 		return getType(object.typeId());
-	}
-
-	Type const &getType(const Operand &operand) const
-	{
-		return getType(operand.typeId());
 	}
 
 	Object const &getObject(Object::ID id) const
