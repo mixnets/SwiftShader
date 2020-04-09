@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c67df1b_858c6050",
+        "filename": "src/Vulkan/Debug/Type.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-09T12:09:41Z",
+      "side": 0,
+      "message": "Rather than remove this, you could store the shared_ptr\u003cconst Type\u003e by value rather than const ref, and have the constructor take it by value and move it into the data member. This is actually more idiomatic when dealing with ownership transfer, and allows you to have a default constructible type. Even if you decide to remove the default constructor, I would recommend it.",
+      "revId": "3e6e82ef0be9cdf9c7b70157117f8d3ed5072ee9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
