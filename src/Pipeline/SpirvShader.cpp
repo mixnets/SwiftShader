@@ -2138,7 +2138,7 @@ SpirvShader::EmitResult SpirvShader::EmitSelect(InsnIterator insn, EmitState *st
 	auto &type = getType(insn.resultTypeId());
 	auto &dst = state->createIntermediate(insn.resultId(), type.sizeInComponents);
 	auto cond = Operand(this, state, insn.word(3));
-	auto condIsScalar = (getType(cond).sizeInComponents == 1);
+	auto condIsScalar = (cond.sizeInComponents == 1);
 	auto lhs = Operand(this, state, insn.word(4));
 	auto rhs = Operand(this, state, insn.word(5));
 
@@ -2422,6 +2422,7 @@ VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel mod
 SpirvShader::Operand::Operand(SpirvShader const *shader, EmitState const *state, SpirvShader::Object::ID objId)
     : obj(shader->getObject(objId))
     , intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(objId) : nullptr)
+    , sizeInComponents(shader->getType(shader->getObject(objId).typeId()).sizeInComponents)
 {}
 
 SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout)
