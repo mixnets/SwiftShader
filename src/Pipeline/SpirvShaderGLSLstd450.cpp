@@ -354,24 +354,17 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		{
 			auto val = Operand(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
-			auto ptrTy = getType(getObject(ptrId));
-			auto ptr = GetPointerToData(ptrId, 0, state);
-			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
-			// TODO: GLSL modf() takes an output parameter and thus the pointer is assumed
-			// to be in bounds even for inactive lanes.
-			// - Clarify the SPIR-V spec.
-			// - Eliminate lane masking and assume interleaving.
-			auto robustness = OutOfBoundsBehavior::UndefinedBehavior;
+
+			Intermediate whole(type.sizeInComponents);
 
 			for(auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				SIMD::Float whole, frac;
-				std::tie(whole, frac) = Modf(val.Float(i));
-				dst.move(i, frac);
-				auto p = ptr + (i * sizeof(float));
-				if(interleavedByLane) { p = InterleaveByLane(p); }
-				p.Store(whole, robustness, state->activeLaneMask());
+				auto wholeAndFrac = Modf(val.Float(i));
+				dst.move(i, wholeAndFrac.second);
+				whole.move(i, wholeAndFrac.first);
 			}
+
+			Store(state, ptrId, whole);
 			break;
 		}
 		case GLSLstd450ModfStruct:
@@ -380,10 +373,9 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < val.sizeInComponents; i++)
 			{
-				SIMD::Float whole, frac;
-				std::tie(whole, frac) = Modf(val.Float(i));
-				dst.move(i, frac);
-				dst.move(i + val.sizeInComponents, whole);
+				auto wholeAndFrac = Modf(val.Float(i));
+				dst.move(i, wholeAndFrac.second);
+				dst.move(val.sizeInComponents + i, wholeAndFrac.first);
 			}
 			break;
 		}
@@ -499,27 +491,17 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		{
 			auto val = Operand(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
-			auto ptrTy = getType(getObject(ptrId));
-			auto ptr = GetPointerToData(ptrId, 0, state);
-			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
-			// TODO: GLSL frexp() takes an output parameter and thus the pointer is assumed
-			// to be in bounds even for inactive lanes.
-			// - Clarify the SPIR-V spec.
-			// - Eliminate lane masking and assume interleaving.
-			auto robustness = OutOfBoundsBehavior::UndefinedBehavior;
+
+			Intermediate exp(type.sizeInComponents);
 
 			for(auto i = 0u; i < type.sizeInComponents; i++)
 			{
-				SIMD::Float significand;
-				SIMD::Int exponent;
-				std::tie(significand, exponent) = Frexp(val.Float(i));
-
-				dst.move(i, significand);
-
-				auto p = ptr + (i * sizeof(float));
-				if(interleavedByLane) { p = InterleaveByLane(p); }
-				p.Store(exponent, robustness, state->activeLaneMask());
+				auto significandAndExponent = Frexp(val.Float(i));
+				dst.move(i, significandAndExponent.first);
+				exp.move(i, significandAndExponent.second);
 			}
+
+			Store(state, ptrId, exp);
 			break;
 		}
 		case GLSLstd450FrexpStruct:

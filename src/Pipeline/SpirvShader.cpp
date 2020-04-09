@@ -795,7 +795,7 @@ SpirvShader::Object &SpirvShader::CreateConstant(InsnIterator insn)
 	auto &objectTy = getType(typeId);
 	object.kind = Object::Kind::Constant;
 	object.definition = insn;
-	object.constantValue = std::unique_ptr<uint32_t[]>(new uint32_t[objectTy.sizeInComponents]);
+	object.constantValue.resize(objectTy.sizeInComponents);
 
 	return object;
 }
@@ -2419,11 +2419,24 @@ VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel mod
 	}
 }
 
-SpirvShader::Operand::Operand(SpirvShader const *shader, EmitState const *state, SpirvShader::Object::ID objId)
-    : obj(shader->getObject(objId))
-    , intermediate(obj.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(objId) : nullptr)
-    , sizeInComponents(shader->getType(shader->getObject(objId).typeId()).sizeInComponents)
+SpirvShader::Operand::Operand(const SpirvShader *shader, const EmitState *state, SpirvShader::Object::ID objectId)
+    : Operand(state, shader->getObject(objectId))
 {}
+
+SpirvShader::Operand::Operand(const EmitState *state, const Object &object)
+    : constant(object.constantValue.data())
+    , intermediate(object.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(object.id()) : nullptr)
+    , sizeInComponents(intermediate ? intermediate->size : object.constantValue.size())
+{
+	ASSERT(intermediate || (object.kind == SpirvShader::Object::Kind::Constant));
+}
+
+SpirvShader::Operand::Operand(const Intermediate &value)
+    : constant(nullptr)
+    , intermediate(&value)
+    , sizeInComponents(value.size)
+{
+}
 
 SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout)
     : pipelineLayout(pipelineLayout)
