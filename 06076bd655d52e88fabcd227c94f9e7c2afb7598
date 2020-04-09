@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c062e95d_7a760c81",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 1100,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-09T13:36:40Z",
+      "side": 1,
+      "message": "I suppose for consistency, we should add this here as well:\n\n# Copy to ${CMAKE_BINARY_DIR}/bin so the library sits next to the PVR samples.\nCOMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/bin",
+      "revId": "06076bd655d52e88fabcd227c94f9e7c2afb7598",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
