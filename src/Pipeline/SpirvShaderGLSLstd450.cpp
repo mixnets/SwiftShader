@@ -354,9 +354,10 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		{
 			auto val = Operand(this, state, insn.word(5));
 			auto ptrId = Object::ID(insn.word(6));
-			auto ptrTy = getType(getObject(ptrId));
-			auto ptr = GetPointerToData(ptrId, 0, state);
-			bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
+			//	auto ptrTy = getType(getObject(ptrId));
+
+			//	auto ptr = state->getPointer(ptrId);
+			//	bool interleavedByLane = IsStorageInterleavedByLane(ptrTy.storageClass);
 			// TODO: GLSL modf() takes an output parameter and thus the pointer is assumed
 			// to be in bounds even for inactive lanes.
 			// - Clarify the SPIR-V spec.
@@ -368,9 +369,19 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 				SIMD::Float whole, frac;
 				std::tie(whole, frac) = Modf(val.Float(i));
 				dst.move(i, frac);
-				auto p = ptr + (i * sizeof(float));
-				if(interleavedByLane) { p = InterleaveByLane(p); }
-				p.Store(whole, robustness, state->activeLaneMask());
+				Intermediate xxx(1);
+				xxx.move(0, whole);
+
+				//	if(ptrTy.storageClass == spv::StorageClassFunction ||
+				//	   ptrTy.storageClass == spv::StorageClassPrivate ||
+				//	   ptrTy.storageClass == spv::StorageClassOutput)
+				{
+					Store(state, ptrId, xxx);
+				}
+
+				//	auto p = ptr + (i * sizeof(float));
+				//	if(interleavedByLane) { p = InterleaveByLane(p); }
+				//	p.Store(whole, robustness, state->activeLaneMask());
 			}
 			break;
 		}
