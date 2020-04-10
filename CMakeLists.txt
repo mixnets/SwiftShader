@@ -999,6 +999,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         ${TESTS_DIR}/SystemUnitTests/main.cpp
         ${TESTS_DIR}/SystemUnitTests/unittests.cpp
         ${TESTS_DIR}/SystemUnitTests/LRUCacheTests.cpp
+        ${TESTS_DIR}/SystemUnitTests/SyncCacheTests.cpp
     )
 
     # TODO: Replace with dep on System static target
@@ -1025,7 +1026,7 @@ if(SWIFTSHADER_BUILD_TESTS)
         LINK_FLAGS "${SWIFTSHADER_LINK_FLAGS}"
     )
 
-    target_link_libraries(system-unittests gtest gmock)
+    target_link_libraries(system-unittests marl gtest gmock)
     if(NOT WIN32)
         target_link_libraries(system-unittests pthread ${SWIFTSHADER_LIBS})
     endif()
