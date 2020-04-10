@@ -49,15 +49,10 @@ bool PixelProcessor::State::operator==(const State &state) const
 
 PixelProcessor::PixelProcessor()
 {
-	routineCache = nullptr;
 	setRoutineCacheSize(1024);
 }
 
-PixelProcessor::~PixelProcessor()
-{
-	delete routineCache;
-	routineCache = nullptr;
-}
+PixelProcessor::~PixelProcessor() = default;
 
 void PixelProcessor::setBlendConstant(const float4 &blendConstant)
 {
@@ -85,8 +80,7 @@ void PixelProcessor::setBlendConstant(const float4 &blendConstant)
 
 void PixelProcessor::setRoutineCacheSize(int cacheSize)
 {
-	delete routineCache;
-	routineCache = new RoutineCacheType(clamp(cacheSize, 1, 65536));
+	routineCache = std::make_unique<RoutineCacheType>(clamp(cacheSize, 1, 65536));
 }
 
 const PixelProcessor::State PixelProcessor::update(const Context *context) const
@@ -154,19 +148,11 @@ PixelProcessor::RoutineType PixelProcessor::routine(const State &state,
                                                     SpirvShader const *pixelShader,
                                                     const vk::DescriptorSet::Bindings &descriptorSets)
 {
-	auto routine = routineCache->get(state);
-
-	if(!routine)
-	{
-		QuadRasterizer *generator = new PixelProgram(state, pipelineLayout, pixelShader, descriptorSets);
+	return routineCache->getOrCreate(state, [&] {
+		auto generator = std::make_unique<PixelProgram>(state, pipelineLayout, pixelShader, descriptorSets);
 		generator->generate();
-		routine = (*generator)("PixelRoutine_%0.8X", state.shaderID);
-		delete generator;
-
-		routineCache->add(state, routine);
-	}
-
-	return routine;
+		return (*generator)("PixelRoutine_%0.8X", state.shaderID);
+	});
 }
 
 }  // namespace sw
