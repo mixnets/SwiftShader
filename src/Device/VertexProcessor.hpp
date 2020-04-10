@@ -21,6 +21,8 @@
 #include "Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
+#include <memory>
+
 namespace sw {
 
 struct DrawData;
@@ -106,8 +108,8 @@ protected:
 	void setRoutineCacheSize(int cacheSize);
 
 private:
-	using RoutineCacheType = RoutineCacheT<State, VertexRoutineFunction::CFunctionType>;
-	RoutineCacheType *routineCache;
+	using RoutineCacheType = RoutineCache<State, VertexRoutineFunction::CFunctionType>;
+	std::unique_ptr<RoutineCacheType> routineCache;
 };
 
 }  // namespace sw

@@ -56,20 +56,14 @@ bool VertexProcessor::State::operator==(const State &state) const
 
 VertexProcessor::VertexProcessor()
 {
-	routineCache = nullptr;
 	setRoutineCacheSize(1024);
 }
 
-VertexProcessor::~VertexProcessor()
-{
-	delete routineCache;
-	routineCache = nullptr;
-}
+VertexProcessor::~VertexProcessor() = default;
 
 void VertexProcessor::setRoutineCacheSize(int cacheSize)
 {
-	delete routineCache;
-	routineCache = new RoutineCacheType(clamp(cacheSize, 1, 65536));
+	routineCache = std::make_unique<RoutineCacheType>(clamp(cacheSize, 1, 65536));
 }
 
 const VertexProcessor::State VertexProcessor::update(const sw::Context *context)
@@ -98,19 +92,11 @@ VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
                                                       SpirvShader const *vertexShader,
                                                       const vk::DescriptorSet::Bindings &descriptorSets)
 {
-	auto routine = routineCache->get(state);
-
-	if(!routine)  // Create one
-	{
-		VertexRoutine *generator = new VertexProgram(state, pipelineLayout, vertexShader, descriptorSets);
+	return routineCache->getOrCreate(state, [&] {
+		auto generator = std::make_unique<VertexProgram>(state, pipelineLayout, vertexShader, descriptorSets);
 		generator->generate();
-		routine = (*generator)("VertexRoutine_%0.8X", state.shaderID);
-		delete generator;
-
-		routineCache->add(state, routine);
-	}
-
-	return routine;
+		return (*generator)("VertexRoutine_%0.8X", state.shaderID);
+	});
 }
 
 }  // namespace sw
