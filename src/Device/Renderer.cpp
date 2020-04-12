@@ -34,6 +34,7 @@
 
 #include "marl/containers.h"
 #include "marl/defer.h"
+#include "marl/parallelize.h"
 #include "marl/trace.h"
 
 #undef max
@@ -204,13 +205,19 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	if(update)
 	{
 		MARL_SCOPED_EVENT("update");
-		vertexState = VertexProcessor::update(context);
-		setupState = SetupProcessor::update(context);
-		pixelState = PixelProcessor::update(context);
-
-		vertexRoutine = VertexProcessor::routine(vertexState, context->pipelineLayout, context->vertexShader, context->descriptorSets);
-		setupRoutine = SetupProcessor::routine(setupState);
-		pixelRoutine = PixelProcessor::routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
+		marl::parallelize(
+		    [&] {
+			    vertexState = VertexProcessor::update(context);
+			    vertexRoutine = VertexProcessor::routine(vertexState, context->pipelineLayout, context->vertexShader, context->descriptorSets);
+		    },
+		    [&] {
+			    setupState = SetupProcessor::update(context);
+			    setupRoutine = SetupProcessor::routine(setupState);
+		    },
+		    [&] {
+			    pixelState = PixelProcessor::update(context);
+			    pixelRoutine = PixelProcessor::routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
+		    });
 	}
 
 	DrawCall::SetupFunction setupPrimitives = nullptr;
