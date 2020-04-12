@@ -19,6 +19,8 @@
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 
+#include <memory>
+
 namespace sw {
 
 class PixelShader;
@@ -146,8 +148,6 @@ public:
 
 	PixelProcessor();
 
-	virtual ~PixelProcessor();
-
 	void setBlendConstant(const float4 &blendConstant);
 
 protected:
@@ -161,7 +161,7 @@ protected:
 
 private:
 	using RoutineCacheType = RoutineCacheT<State, RasterizerFunction::CFunctionType>;
-	RoutineCacheType *routineCache;
+	std::unique_ptr<RoutineCacheType> routineCache;
 };
 
 }  // namespace sw

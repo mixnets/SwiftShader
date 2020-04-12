@@ -21,6 +21,8 @@
 #include "System/Types.hpp"
 #include <Pipeline/SpirvShader.hpp>
 
+#include <memory>
+
 namespace sw {
 
 struct Primitive;
@@ -71,9 +73,6 @@ public:
 
 	SetupProcessor();
 
-	~SetupProcessor();
-
-protected:
 	State update(const sw::Context *context) const;
 	RoutineType routine(const State &state);
 
@@ -81,7 +80,7 @@ protected:
 
 private:
 	using RoutineCacheType = RoutineCacheT<State, SetupFunction::CFunctionType>;
-	RoutineCacheType *routineCache;
+	std::unique_ptr<RoutineCacheType> routineCache;
 };
 
 }  // namespace sw

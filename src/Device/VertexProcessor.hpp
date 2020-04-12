@@ -21,6 +21,8 @@
 #include "Vertex.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
+#include <memory>
+
 namespace sw {
 
 struct DrawData;
@@ -91,9 +93,6 @@ public:
 
 	VertexProcessor();
 
-	virtual ~VertexProcessor();
-
-protected:
 	const State update(const sw::Context *context);
 	RoutineType routine(const State &state, vk::PipelineLayout const *pipelineLayout,
 	                    SpirvShader const *vertexShader, const vk::DescriptorSet::Bindings &descriptorSets);
@@ -102,7 +101,7 @@ protected:
 
 private:
 	using RoutineCacheType = RoutineCacheT<State, VertexRoutineFunction::CFunctionType>;
-	RoutineCacheType *routineCache;
+	std::unique_ptr<RoutineCacheType> routineCache;
 };
 
 }  // namespace sw
