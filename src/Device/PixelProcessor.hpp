@@ -19,6 +19,8 @@
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 
+#include <memory>
+
 namespace sw {
 
 class PixelShader;
@@ -165,8 +167,8 @@ protected:
 	Factor factor;
 
 private:
-	using RoutineCacheType = RoutineCacheT<State, RasterizerFunction::CFunctionType>;
-	RoutineCacheType *routineCache;
+	using RoutineCacheType = RoutineCache<State, RasterizerFunction::CFunctionType>;
+	std::unique_ptr<RoutineCacheType> routineCache;
 };
 
 }  // namespace sw
