@@ -49,15 +49,10 @@ bool PixelProcessor::State::operator==(const State &state) const
 
 PixelProcessor::PixelProcessor()
 {
-	routineCache = nullptr;
 	setRoutineCacheSize(1024);
 }
 
-PixelProcessor::~PixelProcessor()
-{
-	delete routineCache;
-	routineCache = nullptr;
-}
+PixelProcessor::~PixelProcessor() = default;
 
 void PixelProcessor::setBlendConstant(const float4 &blendConstant)
 {
@@ -85,8 +80,7 @@ void PixelProcessor::setBlendConstant(const float4 &blendConstant)
 
 void PixelProcessor::setRoutineCacheSize(int cacheSize)
 {
-	delete routineCache;
-	routineCache = new RoutineCacheType(clamp(cacheSize, 1, 65536));
+	routineCache = std::make_unique<RoutineCacheType>(clamp(cacheSize, 1, 65536));
 }
 
 const PixelProcessor::State PixelProcessor::update(const Context *context) const
