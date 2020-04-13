@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "784bcb5c_dedfc527",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T08:12:33Z",
+      "side": 1,
+      "message": "I have a personal vendetta against C++\u0027s love of the noun \u0027size\u0027 as it is somewhat ambiguous whether we\u0027re referring to number-of-elements or size-in-bytes.\nAs you\u0027re shuffling this stuff anyway, how do you feel about renaming this is to \u0027count\u0027 or \u0027width\u0027?",
+      "range": {
+        "startLine": 122,
+        "startChar": 1,
+        "endLine": 122,
+        "endChar": 21
+      },
+      "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a698d7c4_a916c432",
+        "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T08:12:33Z",
+      "side": 1,
+      "message": "This is nice.",
+      "range": {
+        "startLine": 494,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 9
+      },
+      "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f10cfba7_ac835612",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T08:12:33Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 98,
+        "startChar": 51,
+        "endLine": 98,
+        "endChar": 103
+      },
+      "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
