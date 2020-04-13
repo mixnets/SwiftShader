@@ -85,7 +85,7 @@ protected:
 	void setRoutineCacheSize(int cacheSize);
 
 private:
-	using RoutineCacheType = RoutineCacheT<State, SetupFunction::CFunctionType>;
+	using RoutineCacheType = RoutineCache<State, SetupFunction::CFunctionType>;
 	RoutineCacheType *routineCache;
 };
 
