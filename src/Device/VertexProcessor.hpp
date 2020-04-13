@@ -106,7 +106,7 @@ protected:
 	void setRoutineCacheSize(int cacheSize);
 
 private:
-	using RoutineCacheType = RoutineCacheT<State, VertexRoutineFunction::CFunctionType>;
+	using RoutineCacheType = RoutineCache<State, VertexRoutineFunction::CFunctionType>;
 	RoutineCacheType *routineCache;
 };
 
