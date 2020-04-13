@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca180ebd_15f86e5b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2425,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T07:56:59Z",
+      "side": 1,
+      "message": "can just be obj to avoid the double map lookup.",
+      "range": {
+        "startLine": 2425,
+        "startChar": 39,
+        "endLine": 2425,
+        "endChar": 63
+      },
+      "revId": "541b5bdfe1c0406633c1d35b28a16af82cba078b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b84b9131_f84bb4d1",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1035,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T07:56:59Z",
+      "side": 1,
+      "message": "Move next to the other fields (or move them down here).",
+      "range": {
+        "startLine": 1035,
+        "startChar": 2,
+        "endLine": 1035,
+        "endChar": 34
+      },
+      "revId": "541b5bdfe1c0406633c1d35b28a16af82cba078b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

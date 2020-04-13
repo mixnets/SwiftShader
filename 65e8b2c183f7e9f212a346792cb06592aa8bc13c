@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44544efb_db0e2c99",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-13T07:56:59Z",
+      "side": 0,
+      "message": "Do we really want to throw away these asserts? Even if you believe validation isn\u0027t SpirvShader\u0027s responsibility, it does help list expected preconditions to the reader.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 63
+      },
+      "revId": "65e8b2c183f7e9f212a346792cb06592aa8bc13c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
