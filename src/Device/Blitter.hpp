@@ -199,10 +199,10 @@ private:
 	                  const VkImageSubresourceLayers &srcSubresourceLayers, Edge srcEdge);
 
 	marl::mutex blitMutex;
-	RoutineCacheT<State, BlitFunction::CFunctionType> blitCache GUARDED_BY(blitMutex);
+	RoutineCache<State, BlitFunction::CFunctionType> blitCache GUARDED_BY(blitMutex);
 
 	marl::mutex cornerUpdateMutex;
-	RoutineCacheT<State, CornerUpdateFunction::CFunctionType> cornerUpdateCache GUARDED_BY(cornerUpdateMutex);
+	RoutineCache<State, CornerUpdateFunction::CFunctionType> cornerUpdateCache GUARDED_BY(cornerUpdateMutex);
 };
 
 }  // namespace sw
