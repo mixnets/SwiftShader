@@ -45,7 +45,6 @@ class PipelineCache : public Object<PipelineCache, VkPipelineCache>
 {
 public:
 	PipelineCache(const VkPipelineCacheCreateInfo *pCreateInfo, void *mem);
-	virtual ~PipelineCache();
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkPipelineCacheCreateInfo *pCreateInfo);
@@ -80,14 +79,6 @@ public:
 		const vk::SpecializationInfo specializationInfo;
 	};
 
-	// getOrCreateShader() queries the cache for a shader with the given key.
-	// If one is found, it is returned, otherwise create() is called, the
-	// returned shader is added to the cache, and it is returned.
-	// CREATE must be a function of the signature:
-	//     std::shared_ptr<sw::SpirvShader>()
-	template<typename CREATE>
-	inline std::shared_ptr<sw::SpirvShader> getOrCreateShader(const PipelineCache::SpirvShaderKey &key, CREATE &&create);
-
 	struct ComputeProgramKey
 	{
 		ComputeProgramKey(const sw::SpirvShader *shader, const vk::PipelineLayout *layout)
@@ -108,14 +99,12 @@ public:
 		const vk::PipelineLayout *layout;
 	};
 
-	// getOrCreateComputeProgram() queries the cache for a compute program with
-	// the given key.
-	// If one is found, it is returned, otherwise create() is called, the
-	// returned program is added to the cache, and it is returned.
-	// CREATE must be a function of the signature:
-	//     std::shared_ptr<sw::ComputeProgram>()
-	template<typename CREATE>
-	inline std::shared_ptr<sw::ComputeProgram> getOrCreateComputeProgram(const PipelineCache::ComputeProgramKey &key, CREATE &&create);
+	// TODO(bclayton): Replace use of std::map with std::unordered_map.
+	using SpirvShaderCache = sw::SyncCache<std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>>>;
+	using ComputeProgramCache = sw::SyncCache<std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>>>;
+
+	const std::shared_ptr<SpirvShaderCache> spirvShaders = std::make_shared<SpirvShaderCache>();
+	const std::shared_ptr<ComputeProgramCache> computePrograms = std::make_shared<ComputeProgramCache>();
 
 private:
 	struct CacheHeader
@@ -129,29 +118,11 @@ private:
 
 	size_t dataSize = 0;
 	uint8_t *data = nullptr;
-
-	// TODO(bclayton): Replace use of std::map with std::unordered_map.
-	using SpirvShaderCache = std::map<SpirvShaderKey, std::shared_ptr<sw::SpirvShader>>;
-	using ComputeProgramCache = std::map<ComputeProgramKey, std::shared_ptr<sw::ComputeProgram>>;
-	sw::SyncCache<SpirvShaderCache> spirvShaders;
-	sw::SyncCache<ComputeProgramCache> computePrograms;
 };
 
 static inline PipelineCache *Cast(VkPipelineCache object)
 {
 	return PipelineCache::Cast(object);
-}
-
-template<typename CREATE>
-std::shared_ptr<sw::SpirvShader> PipelineCache::getOrCreateShader(const PipelineCache::SpirvShaderKey &key, CREATE &&create)
-{
-	return spirvShaders.getOrCreate(key, create);
-}
-
-template<typename CREATE>
-std::shared_ptr<sw::ComputeProgram> PipelineCache::getOrCreateComputeProgram(const PipelineCache::ComputeProgramKey &key, CREATE &&create)
-{
-	return computePrograms.getOrCreate(key, create);
 }
 
 }  // namespace vk
