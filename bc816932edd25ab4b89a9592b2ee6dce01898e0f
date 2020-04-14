@@ -22,6 +22,30 @@
       "revId": "bc816932edd25ab4b89a9592b2ee6dce01898e0f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d45b7eb_6e94e685",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-14T08:30:24Z",
+      "side": 1,
+      "message": "Because unlike SetupProcessor, VertexProcessor and PixelProcessor had virtual destructors.\nI\u0027m guessing this is some artifact of the old Renderer?\n\nI\u0027ve created https://swiftshader-review.googlesource.com/c/SwiftShader/+/43817 to remove the inheritance so we can safely remove the destructors from all of these Processors.\n\nThanks for pointing this out!",
+      "parentUuid": "98e6e01b_d507951e",
+      "range": {
+        "startLine": 55,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 44
+      },
+      "revId": "bc816932edd25ab4b89a9592b2ee6dce01898e0f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
