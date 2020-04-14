@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "403034a9_c445b7bc",
+        "filename": "src/WSI/XcbSurfaceKHR.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T04:22:48Z",
+      "side": 1,
+      "message": "This should go below SwiftShader\u0027s headers to ensure they\u0027re not depending on it without including it themselves.\n\nThere should probably be a blank line before vulkan/vulkan_xcb.h",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "8bcda546b2a4c9af499ee4879f1ebaf82db88198",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
