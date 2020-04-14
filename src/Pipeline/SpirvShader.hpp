@@ -543,10 +543,9 @@ public:
 		int WorkgroupSizeX = 1, WorkgroupSizeY = 1, WorkgroupSizeZ = 1;
 	};
 
-	Modes const &getModes() const
-	{
-		return modes;
-	}
+	Modes const &getModes() const { return modes; }
+
+	bool hasDebuggerEnabled() const { return impl.debugger; }
 
 	struct Capabilities
 	{
