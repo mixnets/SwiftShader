@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "efea116b_c304e1b3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2425,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T05:10:50Z",
+      "side": 1,
+      "message": "Sorry, I meant to get rid of obj entirely.",
+      "parentUuid": "ca180ebd_15f86e5b",
+      "range": {
+        "startLine": 2425,
+        "startChar": 39,
+        "endLine": 2425,
+        "endChar": 63
+      },
+      "revId": "541b5bdfe1c0406633c1d35b28a16af82cba078b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b84b9131_f84bb4d1",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "541b5bdfe1c0406633c1d35b28a16af82cba078b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aaa256f2_f58a737f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1035,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T05:10:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b84b9131_f84bb4d1",
+      "range": {
+        "startLine": 1035,
+        "startChar": 2,
+        "endLine": 1035,
+        "endChar": 34
+      },
+      "revId": "541b5bdfe1c0406633c1d35b28a16af82cba078b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
