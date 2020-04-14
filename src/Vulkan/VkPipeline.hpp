@@ -19,6 +19,8 @@
 #include "Device/Renderer.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkPipelineCache.hpp"
+
+#include <future>
 #include <memory>
 
 namespace sw {
@@ -99,7 +101,7 @@ public:
 	void compileShaders(const VkAllocationCallbacks *pAllocator, const VkGraphicsPipelineCreateInfo *pCreateInfo, PipelineCache *pipelineCache);
 
 	uint32_t computePrimitiveCount(uint32_t vertexCount) const;
-	const sw::Context &getContext() const;
+	sw::Context getContext();
 	const VkRect2D &getScissor() const;
 	const VkViewport &getViewport() const;
 	const sw::float4 &getBlendConstants() const;
@@ -107,10 +109,14 @@ public:
 	bool hasPrimitiveRestartEnable() const { return primitiveRestartEnable; }
 
 private:
-	void setShader(const VkShaderStageFlagBits &stage, const std::shared_ptr<sw::SpirvShader> spirvShader);
-	const std::shared_ptr<sw::SpirvShader> getShader(const VkShaderStageFlagBits &stage) const;
-	std::shared_ptr<sw::SpirvShader> vertexShader;
-	std::shared_ptr<sw::SpirvShader> fragmentShader;
+	struct Shaders
+	{
+		std::shared_ptr<sw::SpirvShader> vertex;
+		std::shared_ptr<sw::SpirvShader> fragment;
+	};
+
+	std::future<Shaders> shadersFuture;
+	Shaders shaders;
 
 	uint32_t dynamicStateFlags = 0;
 	bool primitiveRestartEnable = false;
@@ -146,7 +152,7 @@ public:
 	         sw::PushConstantStorage const &pushConstants);
 
 protected:
-	std::shared_ptr<sw::SpirvShader> shader;
+	std::future<std::shared_ptr<sw::ComputeProgram>> programFuture;
 	std::shared_ptr<sw::ComputeProgram> program;
 };
 
