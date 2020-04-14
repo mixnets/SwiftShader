@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f1c4b1b_bb945311",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T20:37:36Z",
+      "side": 1,
+      "message": "I\u0027m not sure that\u0027s what the spec requires. The way I interpret it, using a \"floating-point representation\" is not the same as being a floating-point format. We can choose to *represent* a fixed-point depth buffer using floating-point values, which is what we do, but in this case clamping must occur just like with a fixed-point representation.\n\nOtherwise the spec should just state that all formats require clamping.\n\nAre we currently setting PixelProcessor::depthClamp in case the original format was fixed-point?\n\nDoes my above interpretation match OpenGL test expectations?",
+      "range": {
+        "startLine": 17,
+        "startChar": 12,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
