@@ -91,12 +91,6 @@ PipelineCache::PipelineCache(const VkPipelineCacheCreateInfo *pCreateInfo, void 
 	}
 }
 
-PipelineCache::~PipelineCache()
-{
-	spirvShaders.clear();
-	computePrograms.clear();
-}
-
 void PipelineCache::destroy(const VkAllocationCallbacks *pAllocator)
 {
 	vk::deallocate(data, pAllocator);
@@ -134,8 +128,8 @@ VkResult PipelineCache::merge(uint32_t srcCacheCount, const VkPipelineCache *pSr
 	for(uint32_t i = 0; i < srcCacheCount; i++)
 	{
 		PipelineCache *srcCache = Cast(pSrcCaches[i]);
-		spirvShaders.addAll(srcCache->spirvShaders);
-		computePrograms.addAll(srcCache->computePrograms);
+		spirvShaders->addAll(*srcCache->spirvShaders);
+		computePrograms->addAll(*srcCache->computePrograms);
 	}
 
 	return VK_SUCCESS;
