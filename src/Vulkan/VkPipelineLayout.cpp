@@ -54,6 +54,7 @@ PipelineLayout::PipelineLayout(const VkPipelineLayoutCreateInfo *pCreateInfo, vo
 
 void PipelineLayout::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	acquirable.destroy();
 	vk::deallocate(setLayouts, pAllocator);  // pushConstantRanges are in the same allocation
 }
 
@@ -79,6 +80,24 @@ uint32_t PipelineLayout::getDynamicOffsetBase(size_t descriptorSet) const
 {
 	ASSERT(descriptorSet < setLayoutCount);
 	return dynamicOffsetBases[descriptorSet];
+}
+
+void PipelineLayout::acquire()
+{
+	acquirable.acquire();
+	for(uint32_t i = 0; i < setLayoutCount; i++)
+	{
+		setLayouts[i]->acquire();
+	}
+}
+
+void PipelineLayout::release()
+{
+	for(uint32_t i = 0; i < setLayoutCount; i++)
+	{
+		setLayouts[i]->release();
+	}
+	acquirable.release();
 }
 
 }  // namespace vk

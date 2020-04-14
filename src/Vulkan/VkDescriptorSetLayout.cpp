@@ -71,6 +71,7 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *
 
 void DescriptorSetLayout::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	acquirable.destroy();
 	vk::deallocate(bindings, pAllocator);  // This allocation also contains pImmutableSamplers
 }
 
