@@ -22,6 +22,30 @@
       "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3042efbb_e57c8e82",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T20:40:04Z",
+      "side": 1,
+      "message": "This reinforces my interpretation: \"Attachments with other floating- or fixed-point color formats, or with depth components may be represented in a format with a precision higher than the attachment format, but must be represented with the same range.\"\n\"The framebuffer depth coordinate zf may be represented using either a fixed-point or floating-point representation. However, a floating-point representation must be used if the depth/stencil attachment has a floating-point depth component.\"",
+      "parentUuid": "1f1c4b1b_bb945311",
+      "range": {
+        "startLine": 17,
+        "startChar": 12,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
