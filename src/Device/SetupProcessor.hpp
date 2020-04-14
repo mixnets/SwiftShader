@@ -78,7 +78,6 @@ public:
 
 	~SetupProcessor();
 
-protected:
 	State update(const sw::Context *context) const;
 	RoutineType routine(const State &state);
 
