@@ -22,6 +22,30 @@
       "revId": "8bcda546b2a4c9af499ee4879f1ebaf82db88198",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9ce2936_34bfe1c8",
+        "filename": "src/WSI/XcbSurfaceKHR.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-14T17:40:38Z",
+      "side": 1,
+      "message": "Done. I reverted my change here.",
+      "parentUuid": "403034a9_c445b7bc",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "8bcda546b2a4c9af499ee4879f1ebaf82db88198",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
