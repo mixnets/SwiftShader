@@ -94,6 +94,30 @@
       "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cd7dea1_40096d66",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T22:07:41Z",
+      "side": 1,
+      "message": "Thanks, I think that the extension spec is clearer. There are three cases:\n\n1) Fixed-point depth represented with fixed-point.\n2) Fixed-point depth represented with floating-point.\n3) Floating-point depth represented with floating-point.\n\nIt\u0027s confusing that the non-extension spec mentions floating-point representation in a paragraph that starts with fixed-point, which seems to limit the clamping requirement to cases 1 and 2. With the extension spec it appears the sentence about floating-point representation refers to both cases 2 and 3, and only makes an exception for VK_EXT_depth_range_unrestricted.\n\nPlease point that out in https://gitlab.khronos.org/Tracker/vk-gl-cts/issues/2312 to have it clarified in the non-extension spec (it should probably make no distinction between fixed-point and floating-point in the first place).",
+      "parentUuid": "05944275_48a56fe4",
+      "range": {
+        "startLine": 17,
+        "startChar": 12,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
