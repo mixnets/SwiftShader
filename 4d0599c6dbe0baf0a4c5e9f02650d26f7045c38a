@@ -46,6 +46,30 @@
       "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c281f77_a5727554",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-14T21:07:25Z",
+      "side": 1,
+      "message": "I don\u0027t follow your logic, in the spec text you quote, it explicitly mentions: \"but must be represented with the same range\". There\u0027s mention of precision, but no mention of the range ever being wider in floating point.\n\nLooking at the Vulkan 1.1 spec, there are many mentions of the depth being in the [0,1] range, regardless of the format used. For example:\n\"Unless the VK_EXT_depth_range_unrestricted extension is enabled depth must be between 0.0 and 1.0, inclusive\"\n\"When copying to a depth aspect, and the VK_EXT_depth_range_unrestricted extension is not enabled, the data in buffer memory must be in the range [0,1], or the resulting values are undefined.\"\n\"Unless VK_EXT_depth_range_unrestricted extension is enabled minDepth must be between 0.0 and 1.0, inclusive\"\n\"Unless VK_EXT_depth_range_unrestricted extension is enabled maxDepth must be between 0.0 and 1.0, inclusive\"\n\"For fixed-point depth buffers, fragment depth values are always limited to the range [0,1] by clamping after depth bias addition is performed. Unless the VK_EXT_depth_range_unrestricted extension is enabled, fragment depth values are clamped even when the depth buffer uses a floating-point representation.\"\netc.\n\nAll mentions of depth range mentions a range of [0,1], UNLESS VK_EXT_depth_range_unrestricted is enabled.",
+      "parentUuid": "3042efbb_e57c8e82",
+      "range": {
+        "startLine": 17,
+        "startChar": 12,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "4d0599c6dbe0baf0a4c5e9f02650d26f7045c38a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
