@@ -18,6 +18,7 @@
 #include "VkObject.hpp"
 
 #include "Device/Sampler.hpp"
+#include "Vulkan/Acquirable.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkSampler.hpp"
 
@@ -129,6 +130,10 @@ public:
 
 	uint8_t *getOffsetPointer(DescriptorSet *descriptorSet, uint32_t binding, uint32_t arrayElement, uint32_t count, size_t *typeSize) const;
 
+	// Acquirable interface.
+	void acquire() { acquirable.acquire(); }
+	void release() { acquirable.release(); }
+
 private:
 	size_t getDescriptorSetDataSize() const;
 	uint32_t getBindingIndex(uint32_t binding) const;
@@ -138,6 +143,8 @@ private:
 	uint32_t bindingCount;
 	VkDescriptorSetLayoutBinding *bindings;
 	size_t *bindingOffsets;
+
+	Acquirable acquirable;
 };
 
 static inline DescriptorSetLayout *Cast(VkDescriptorSetLayout object)

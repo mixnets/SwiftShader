@@ -17,6 +17,9 @@
 
 #include "VkDescriptorSetLayout.hpp"
 
+#include "marl/event.h"
+#include "marl/waitgroup.h"
+
 namespace vk {
 
 class PipelineLayout : public Object<PipelineLayout, VkPipelineLayout>
@@ -36,12 +39,18 @@ public:
 
 	const uint32_t identifier;
 
+	// Acquirable interface.
+	void acquire();
+	void release();
+
 private:
 	uint32_t setLayoutCount = 0;
 	DescriptorSetLayout **setLayouts = nullptr;
 	uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
 	uint32_t *dynamicOffsetBases = nullptr;  // Base offset per set layout.
+
+	Acquirable acquirable;
 };
 
 static inline PipelineLayout *Cast(VkPipelineLayout object)
