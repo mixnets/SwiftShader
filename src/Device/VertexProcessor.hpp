@@ -98,7 +98,6 @@ public:
 
 	virtual ~VertexProcessor();
 
-protected:
 	const State update(const sw::Context *context);
 	RoutineType routine(const State &state, vk::PipelineLayout const *pipelineLayout,
 	                    SpirvShader const *vertexShader, const vk::DescriptorSet::Bindings &descriptorSets);
