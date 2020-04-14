@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a2ef1865_7dc085d7",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T05:01:13Z",
+      "side": 1,
+      "message": "Totally agree. A size is worthless without a measure.\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/43828",
+      "parentUuid": "784bcb5c_dedfc527",
+      "range": {
+        "startLine": 122,
+        "startChar": 1,
+        "endLine": 122,
+        "endChar": 21
+      },
+      "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a698d7c4_a916c432",
         "filename": "src/Pipeline/SpirvShaderGLSLstd450.cpp",
         "patchSetId": 3
@@ -68,6 +92,30 @@
       "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eec0464a_3349b06f",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-14T05:01:13Z",
+      "side": 1,
+      "message": "Oops. Part of other WIP changes. Thanks for noticing.",
+      "parentUuid": "f10cfba7_ac835612",
+      "range": {
+        "startLine": 98,
+        "startChar": 51,
+        "endLine": 98,
+        "endChar": 103
+      },
+      "revId": "45e4fd6268e6446c2bc64e4d67e4368f94c71e41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
