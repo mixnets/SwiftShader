@@ -146,6 +146,13 @@ Pipeline::Pipeline(PipelineLayout const *layout, const Device *device)
 {
 }
 
+Pipeline::CompileOptions Pipeline::getCompileOptions() const
+{
+	CompileOptions options;
+	options.debuggerEnabled = device->hasDebuggerConnection();
+	return options;
+}
+
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, const Device *device)
     : Pipeline(vk::Cast(pCreateInfo->layout), device)
 {
@@ -473,14 +480,14 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 	numPending.add(1);
 	marl::schedule([=] {
 		defer(numPending.done());
-		getOrBuild(CompileOptions{});
+		getOrBuild(getCompileOptions());
 	});
 }
 
 GraphicsPipeline::Shaders GraphicsPipeline::getOrBuild(const CompileOptions &options)
 {
 	return shaders.getOrCreate(options, [&] {
-		auto dbgCtx = device->getDebuggerContext();
+		auto dbgCtx = options.debuggerEnabled ? device->getDebuggerContext() : nullptr;
 
 		Shaders shaders;
 		marl::WaitGroup wg(static_cast<int>(env->stages.size()));
@@ -496,6 +503,7 @@ GraphicsPipeline::Shaders GraphicsPipeline::getOrBuild(const CompileOptions &opt
 					/* renderPass */ env->renderPass,
 					/* subpassIndex */ env->subpassIndex,
 					/* specializationInfo */ stage.specializationInfo,
+					/* debuggerEnabled */ options.debuggerEnabled,
 				};
 
 				std::shared_ptr<sw::SpirvShader> shader;
@@ -554,7 +562,7 @@ uint32_t GraphicsPipeline::computePrimitiveCount(uint32_t vertexCount) const
 
 sw::Context GraphicsPipeline::getContext()
 {
-	auto shaders = getOrBuild(CompileOptions{});
+	auto shaders = getOrBuild(getCompileOptions());
 
 	auto out = context;
 	out.vertexShader = shaders.vertex.get();
@@ -619,14 +627,14 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	numPending.add(1);
 	marl::schedule([=] {
 		defer(numPending.done());
-		getOrBuild(CompileOptions{});
+		getOrBuild(getCompileOptions());
 	});
 }
 
 std::shared_ptr<sw::ComputeProgram> ComputePipeline::getOrBuild(const CompileOptions &options)
 {
 	return programs.getOrCreate(options, [&] {
-		auto dbgCtx = device->getDebuggerContext();
+		auto dbgCtx = options.debuggerEnabled ? device->getDebuggerContext() : nullptr;
 
 		auto const key = PipelineCache::SpirvShaderKey{
 			/* pipelineStage */ env->stage,
@@ -635,6 +643,7 @@ std::shared_ptr<sw::ComputeProgram> ComputePipeline::getOrBuild(const CompileOpt
 			/* renderPass */ nullptr,
 			/* subpassIndex */ 0,
 			/* specializationInfo */ env->specializationInfo,
+			/* debuggerEnabled */ options.debuggerEnabled,
 		};
 
 		auto const moduleSerialID = env->moduleSerialID;
@@ -673,7 +682,7 @@ void ComputePipeline::run(uint32_t baseGroupX, uint32_t baseGroupY, uint32_t bas
 {
 	ASSERT(env);
 
-	auto program = getOrBuild(CompileOptions{});
+	auto program = getOrBuild(getCompileOptions());
 	ASSERT_OR_RETURN(program != nullptr);
 
 	program->run(
