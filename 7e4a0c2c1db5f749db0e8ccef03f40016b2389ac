@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "444079fa_b112bbc3",
+        "filename": "tests/ReactorBenchmarks/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T15:02:48Z",
+      "side": 1,
+      "message": "I\u0027m actually a fan of having tests right next to the source, but that\u0027s just me.\nAlternatively we could have the test rules in the Reactor CMakeLists.txt.",
+      "range": {
+        "startLine": 25,
+        "startChar": 21,
+        "endLine": 25,
+        "endChar": 72
+      },
+      "revId": "7e4a0c2c1db5f749db0e8ccef03f40016b2389ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01995fea_ead502c9",
+        "filename": "tests/ReactorBenchmarks/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T15:02:48Z",
+      "side": 1,
+      "message": "stray trailing whitespace.",
+      "range": {
+        "startLine": 48,
+        "startChar": 12,
+        "endLine": 48,
+        "endChar": 13
+      },
+      "revId": "7e4a0c2c1db5f749db0e8ccef03f40016b2389ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
