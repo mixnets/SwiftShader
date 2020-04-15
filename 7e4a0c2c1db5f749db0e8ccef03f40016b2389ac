@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c6eadbd5_ec5a54fa",
+        "filename": "tests/ReactorBenchmarks/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-15T15:11:13Z",
+      "side": 1,
+      "message": "Sure, I\u0027m open to that. Howevever, all tests except for Reactor are under tests/ right now, so I just proposed the same type of layout. However, as Reactor will move to libs/Reactor and become a separate thing, we can do whatever we like with it. I don\u0027t mind either way.",
+      "parentUuid": "444079fa_b112bbc3",
+      "range": {
+        "startLine": 25,
+        "startChar": 21,
+        "endLine": 25,
+        "endChar": 72
+      },
+      "revId": "7e4a0c2c1db5f749db0e8ccef03f40016b2389ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "01995fea_ead502c9",
         "filename": "tests/ReactorBenchmarks/CMakeLists.txt",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "7e4a0c2c1db5f749db0e8ccef03f40016b2389ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "062de3bc_85dd387e",
+        "filename": "tests/ReactorBenchmarks/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-15T15:11:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01995fea_ead502c9",
+      "range": {
+        "startLine": 48,
+        "startChar": 12,
+        "endLine": 48,
+        "endChar": 13
+      },
+      "revId": "7e4a0c2c1db5f749db0e8ccef03f40016b2389ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
