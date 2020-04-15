@@ -358,6 +358,30 @@
     },
     {
       "key": {
+        "uuid": "7265d820_a18a7001",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T15:08:36Z",
+      "side": 1,
+      "message": "Yes, I understand that would just be throwaway work, but there\u0027s quite a bit going on in this CL and it will affect future maintenance and refactorings if we need to take a look at this change again.\n\nAnyway, not a strong demand to split this up.",
+      "parentUuid": "df8a9180_dc035a36",
+      "range": {
+        "startLine": 16,
+        "startChar": 128,
+        "endLine": 16,
+        "endChar": 146
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d606c48_e18f8954",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -560,6 +584,30 @@
       "side": 1,
       "message": "I\u0027ve added sw::hash in the new parent change.\n\nAs I\u0027ve made clear before, I\u0027m really not sold on the Memset\u003c\u003e class. Deriving classes from this has so many hidden gotchas, it\u0027s a can of bugs just waiting for a developer to trip over.\n\nThat said, if you want to carry on pushing that class, you can specialize the new sw::Hash\u003c\u003e for Memset\u003cT\u003e. Given my loathing of Memset\u003c\u003e, I\u0027d prefer not to do this myself.\n\nFor now, I\u0027ve just used the new sw::hash() function that takes a variadic list of arguments.",
       "parentUuid": "f9964bb8_f74a2f4b",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ecc22299_c2d8167a",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T15:08:36Z",
+      "side": 1,
+      "message": "Filed b/154101086 to take care of this.\n\nI understand Memset\u003c\u003e isn\u0027t perfect, but neither are the alternatives. It\u0027s just a fact that C++ can leave padding bytes and bits uninitialized and there is no guaranteed way to iterate over all member fields (yet). At least Memset\u003c\u003e makes the hacky part explicit and easy to read. Moving the hashing over to it will also diminish chances of getting it wrong.\n\nI\u0027m not immediately convinced that we need sw::hash(), and now that I\u0027ve filed this follow-up bug my concern has been addressed so this can land as-is.",
+      "parentUuid": "dd558b62_44faec63",
       "range": {
         "startLine": 102,
         "startChar": 4,

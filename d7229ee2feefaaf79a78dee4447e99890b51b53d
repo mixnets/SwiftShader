@@ -46,6 +46,30 @@
       "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff1540d1_bbcd2be8",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T15:08:36Z",
+      "side": 1,
+      "message": "Please see go/totw/44\n\nI don\u0027t think making refactoring easier is a compelling argument. We don\u0027t suddenly change something that\u0027s intended to be a pointer into a non-pointer. That\u0027s most likely a bug, and using auto* would catch it. A notable exception is changing to a smart pointer, but that justifies closer inspection whether that\u0027s intended as well. Last but not least, raw pointers are tricky enough that they deserve an explicit * to alert the reader of what\u0027s happening and not sweep something that important under the rug.",
+      "parentUuid": "f4663a91_8729e826",
+      "range": {
+        "startLine": 221,
+        "startChar": 2,
+        "endLine": 221,
+        "endChar": 7
+      },
+      "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
