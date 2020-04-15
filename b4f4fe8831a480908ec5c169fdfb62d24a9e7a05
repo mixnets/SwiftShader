@@ -45,6 +45,30 @@
       "revId": "b4f4fe8831a480908ec5c169fdfb62d24a9e7a05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "424c8d6e_f7b8372c",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T23:55:51Z",
+      "side": 1,
+      "message": "Done. Dropped trying to explain *why* in this comment, as the whys are now subtly different between backends. The same rules pretty much apply. LLVM uses thread_local, SubZero uses a mutex. Both require same-thread behaviour.",
+      "parentUuid": "977d3a82_1a850129",
+      "range": {
+        "startLine": 138,
+        "startChar": 40,
+        "endLine": 141,
+        "endChar": 73
+      },
+      "revId": "b4f4fe8831a480908ec5c169fdfb62d24a9e7a05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
