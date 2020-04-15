@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5e415211_f7f1ecd8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:52:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01689fca_2698e228",
+      "revId": "40a914e7507486415577964ec4029c95e697d9c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7dbd2a8c_3dce8866",
         "filename": "/COMMIT_MSG",
         "patchSetId": 9
@@ -30,6 +48,30 @@
       "writtenOn": "2020-04-14T19:37:56Z",
       "side": 1,
       "message": "Claims that it\u0027s \"speeding up initial pipeline construction times.\" Are we observing any measurable benefit?",
+      "range": {
+        "startLine": 11,
+        "startChar": 7,
+        "endLine": 11,
+        "endChar": 16
+      },
+      "revId": "40a914e7507486415577964ec4029c95e697d9c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce87d6d3_574d9196",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:52:12Z",
+      "side": 1,
+      "message": "Will do some measurements. This change on its own doesn\u0027t really affect performance due to the serial nature of the calls. I expect when combined with the parallelization changes in this stack of changes, we should see some noticeable gains.\nWill do some measurements with some games.",
+      "parentUuid": "7dbd2a8c_3dce8866",
       "range": {
         "startLine": 11,
         "startChar": 7,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "ec605344_67a45668",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:52:12Z",
+      "side": 1,
+      "message": "Done. https://swiftshader-review.googlesource.com/c/SwiftShader/+/43909",
+      "parentUuid": "c17bfc89_b30f8ef4",
+      "range": {
+        "startLine": 200,
+        "startChar": 7,
+        "endLine": 200,
+        "endChar": 21
+      },
+      "revId": "40a914e7507486415577964ec4029c95e697d9c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6e386beb_e5f7eeec",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 9
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "2be6b1fc_28aa3c6f",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:52:12Z",
+      "side": 1,
+      "message": "Apparently it was not thread safe.\nTSAN tells me TargetMachine internals are modified during codegen. News to me!",
+      "parentUuid": "6e386beb_e5f7eeec",
+      "range": {
+        "startLine": 113,
+        "startChar": 42,
+        "endLine": 113,
+        "endChar": 61
+      },
+      "revId": "40a914e7507486415577964ec4029c95e697d9c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c402e18_c38a9ca1",
         "filename": "third_party/llvm-7.0/configs/android/include/llvm/Config/llvm-config.h",
         "patchSetId": 9
@@ -108,6 +198,30 @@
       "revId": "40a914e7507486415577964ec4029c95e697d9c2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0129b9ac_8caf80b9",
+        "filename": "third_party/llvm-7.0/configs/android/include/llvm/Config/llvm-config.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:52:12Z",
+      "side": 1,
+      "message": "Enables internal thread-safe code paths that would otherwise assuming single-threaded calling. Basically, TSAN explodes with a million errors if this is not enabled.",
+      "parentUuid": "5c402e18_c38a9ca1",
+      "range": {
+        "startLine": 37,
+        "startChar": 8,
+        "endLine": 37,
+        "endChar": 28
+      },
+      "revId": "40a914e7507486415577964ec4029c95e697d9c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
