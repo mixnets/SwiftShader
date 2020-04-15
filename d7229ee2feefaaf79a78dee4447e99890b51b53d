@@ -94,6 +94,30 @@
       "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e532838_04ebe403",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:01:35Z",
+      "side": 1,
+      "message": "Replaced with Entry*.",
+      "parentUuid": "de04942e_5be84e52",
+      "range": {
+        "startLine": 221,
+        "startChar": 2,
+        "endLine": 221,
+        "endChar": 7
+      },
+      "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
