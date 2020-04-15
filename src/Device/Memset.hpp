@@ -15,6 +15,8 @@
 #ifndef sw_Memset_hpp
 #define sw_Memset_hpp
 
+#include "System/Math.hpp"
+
 #include <cstring>
 #include <type_traits>
 
@@ -74,9 +76,28 @@ struct Memset
 	{
 		return ::memcmp(&a, &b, sizeof(T)) < 0;
 	}
+
+	std::size_t hash()
+	{
+		uint64_t hash64 = FNV_1a(static_cast<const uint8_t *>(this), sizeof(T));
+		return static_cast<std::size_t>(hash64);
+	}
 };
 
 }  // namespace sw
+
+namespace std {
+
+template<class T>
+struct hash<sw::Memset<T>>
+{
+	std::size_t operator()(sw::Memset<T> const &m) const noexcept
+	{
+		return m.hash();
+	}
+};
+
+}  // namespace std
 
 // Restore -Wclass-memaccess
 #if defined(__GNUC__) && (__GNUC__ >= 8)
