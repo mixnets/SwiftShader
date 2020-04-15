@@ -16,12 +16,12 @@
 
 namespace sw {
 
-inline uint64_t FNV_1a(uint64_t hash, unsigned char data)
+inline uint64_t FNV_1a(uint64_t hash, uint8_t data)
 {
 	return (hash ^ data) * 1099511628211;
 }
 
-uint64_t FNV_1a(const unsigned char *data, int size)
+uint64_t FNV_1a(const uint8_t *data, int size)
 {
 	int64_t hash = 0xCBF29CE484222325;
 
@@ -33,14 +33,14 @@ uint64_t FNV_1a(const unsigned char *data, int size)
 	return hash;
 }
 
-unsigned char sRGB8toLinear8(unsigned char value)
+uint8_t sRGB8toLinear8(uint8_t value)
 {
-	static unsigned char sRGBtoLinearTable[256] = { 255 };
+	static uint8_t sRGBtoLinearTable[256] = { 255 };
 	if(sRGBtoLinearTable[0] == 255)
 	{
 		for(int i = 0; i < 256; i++)
 		{
-			sRGBtoLinearTable[i] = static_cast<unsigned char>(sw::sRGBtoLinear(static_cast<float>(i) / 255.0f) * 255.0f + 0.5f);
+			sRGBtoLinearTable[i] = static_cast<uint8_t>(sw::sRGBtoLinear(static_cast<float>(i) / 255.0f) * 255.0f + 0.5f);
 		}
 	}
 
