@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94550d76_e00b71cb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T19:11:36Z",
+      "side": 1,
+      "message": "It was more because LLVM 3.x was not entirely thread safe. Anyway, good enough.",
+      "range": {
+        "startLine": 10,
+        "startChar": 32,
+        "endLine": 11,
+        "endChar": 48
+      },
+      "revId": "b4f4fe8831a480908ec5c169fdfb62d24a9e7a05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "977d3a82_1a850129",
+        "filename": "src/Reactor/Coroutine.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T19:11:36Z",
+      "side": 1,
+      "message": "update",
+      "range": {
+        "startLine": 138,
+        "startChar": 40,
+        "endLine": 141,
+        "endChar": 73
+      },
+      "revId": "b4f4fe8831a480908ec5c169fdfb62d24a9e7a05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
