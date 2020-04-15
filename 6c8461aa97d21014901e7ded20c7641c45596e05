@@ -287,6 +287,30 @@
     },
     {
       "key": {
+        "uuid": "e5061d8b_86546708",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:43:31Z",
+      "side": 1,
+      "message": "If the consensus is that we call it something else, please let us do renaming as another change. I\u0027m going to typing `git rebase --continue` in my dreams tonight. :D",
+      "parentUuid": "1aa1d12e_64add9d9",
+      "range": {
+        "startLine": 12,
+        "startChar": 53,
+        "endLine": 12,
+        "endChar": 142
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bad9b958_04027acf",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
