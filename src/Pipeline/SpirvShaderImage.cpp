@@ -467,7 +467,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 	return EmitResult::Continue;
 }
 
-SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, SIMD::Pointer ptr, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect) const
+SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, SIMD::Pointer ptr, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const
 {
 	auto routine = state->routine;
 	bool isArrayed = imageType.definition.word(5) != 0;
@@ -500,18 +500,43 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, SIMD::Pointer
 	                                    ? OFFSET(vk::StorageImageDescriptor, stencilSamplePitchBytes)
 	                                    : OFFSET(vk::StorageImageDescriptor, samplePitchBytes))));
 
+	bool definedOobBehavior = (outOfBoundsBehavior == OutOfBoundsBehavior::RobustBufferAccess) ||
+	                          (outOfBoundsBehavior == OutOfBoundsBehavior::Nullify);
+	SIMD::Int oobMask(0);
+	if(definedOobBehavior)
+	{
+		auto width = SIMD::Int(*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.width)));
+		oobMask |= CmpLT(u, SIMD::Int(0)) | CmpNLT(u, width);
+	}
 	ptr += u * SIMD::Int(texelSize);
 	if(dims > 1)
 	{
+		if(definedOobBehavior)
+		{
+			auto height = SIMD::Int(*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.height)));
+			oobMask |= CmpLT(v, SIMD::Int(0)) | CmpNLT(v, height);
+		}
 		ptr += v * rowPitch;
 	}
 	if(dims > 2)
 	{
-		ptr += coordinate.Int(2) * slicePitch;
+		SIMD::Int w = coordinate.Int(2);
+		if(definedOobBehavior && !isArrayed)
+		{
+			auto depth = SIMD::Int(*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.depth)));
+			oobMask |= CmpLT(w, SIMD::Int(0)) | CmpNLT(w, depth);
+		}
+		ptr += w * slicePitch;
 	}
 	if(isArrayed)
 	{
-		ptr += coordinate.Int(dims) * slicePitch;
+		SIMD::Int layer = coordinate.Int(dims);
+		if(definedOobBehavior)
+		{
+			auto arrayLayers = SIMD::Int(*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers)));
+			oobMask |= CmpLT(layer, SIMD::Int(0)) | CmpNLT(layer, arrayLayers);
+		}
+		ptr += layer * slicePitch;
 	}
 
 	if(dim == spv::DimSubpassData)
@@ -524,6 +549,12 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, SIMD::Pointer
 	{
 		Operand sample(this, state, sampleId);
 		ptr += sample.Int(0) * samplePitch;
+	}
+
+	if(definedOobBehavior)
+	{
+		// Push pointers out of bounds if they are oob in any dimension
+		ptr += oobMask & SIMD::Int(*Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, sizeInBytes)));
 	}
 
 	return ptr;
@@ -584,14 +615,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 
 	auto &dst = state->createIntermediate(insn.resultId(), resultType.componentCount);
 
-	auto texelSize = vk::Format(vkFormat).bytes();
-	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
-	auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, sampleId, useStencilAspect);
-
 	// "The value returned by a read of an invalid texel is undefined,
 	//  unless that read operation is from a buffer resource and the robustBufferAccess feature is enabled."
 	// TODO: Don't always assume a buffer resource.
 	auto robustness = OutOfBoundsBehavior::RobustBufferAccess;
+
+	auto texelSize = vk::Format(vkFormat).bytes();
+	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
+	auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, sampleId, useStencilAspect, robustness);
 
 	SIMD::Int packed[4];
 	// Round up texel size: for formats smaller than 32 bits per texel, we will emit a bunch
@@ -967,11 +998,11 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			break;
 	}
 
-	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
-	auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, 0, false);
-
 	// SPIR-V 1.4: "If the coordinates are outside the image, the memory location that is accessed is undefined."
 	auto robustness = OutOfBoundsBehavior::UndefinedValue;
+
+	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
+	auto texelPtr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, texelSize, 0, false, robustness);
 
 	for(auto i = 0u; i < numPackedElements; i++)
 	{
@@ -1003,7 +1034,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(InsnIterator insn, Em
 	auto imageSizeInBytes = *Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 	auto basePtr = SIMD::Pointer(imageBase, imageSizeInBytes);
-	auto ptr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, sizeof(uint32_t), 0, false);
+	auto ptr = GetTexelAddress(state, basePtr, coordinate, imageType, binding, sizeof(uint32_t), 0, false, OutOfBoundsBehavior::UndefinedValue);
 
 	state->createPointer(resultId, ptr);
 
