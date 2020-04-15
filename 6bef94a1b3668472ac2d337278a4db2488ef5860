@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "302ba810_6ad994b1",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0d90275_9846aa6f",
+      "range": {
+        "startLine": 121,
+        "startChar": 52,
+        "endLine": 121,
+        "endChar": 53
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45432a8b_0512d197",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "09288212_f77ccef8",
+      "range": {
+        "startLine": 121,
+        "startChar": 34,
+        "endLine": 121,
+        "endChar": 38
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42cb8fee_01cb0314",
         "filename": "src/System/LRUCache.hpp",
         "patchSetId": 10
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "ebb19547_e4263566",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42cb8fee_01cb0314",
+      "range": {
+        "startLine": 125,
+        "startChar": 9,
+        "endLine": 125,
+        "endChar": 23
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0b881966_a544e43e",
         "filename": "src/System/LRUCache.hpp",
         "patchSetId": 10
@@ -82,6 +154,30 @@
       "writtenOn": "2020-04-15T05:51:24Z",
       "side": 1,
       "message": "Maybe put a precompiler warning in place?",
+      "range": {
+        "startLine": 136,
+        "startChar": 4,
+        "endLine": 136,
+        "endChar": 26
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c3f6649_fe3d6ca2",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "Not sure that\u0027s a good idea.\nWarnings are often treated as errors, and we have no control over downstream toolchains. Do we really want to start throwing warnings / errors for people who decided to use some cutting edge version of clang or gcc?",
+      "parentUuid": "0b881966_a544e43e",
       "range": {
         "startLine": 136,
         "startChar": 4,

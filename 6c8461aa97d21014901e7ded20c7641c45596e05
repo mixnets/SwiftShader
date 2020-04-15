@@ -239,6 +239,30 @@
     },
     {
       "key": {
+        "uuid": "1304b299_347d15b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "I disagree it\u0027s a better name, but I don\u0027t care enough to argue. Done.",
+      "parentUuid": "a2ade7ff_89742e19",
+      "range": {
+        "startLine": 12,
+        "startChar": 53,
+        "endLine": 12,
+        "endChar": 142
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bad9b958_04027acf",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -298,6 +322,30 @@
       "side": 1,
       "message": "Thanks, makes sense.\n\nCan you please move that to a new CL (that comes before this one) though?",
       "parentUuid": "51278874_09d896af",
+      "range": {
+        "startLine": 16,
+        "startChar": 128,
+        "endLine": 16,
+        "endChar": 146
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df8a9180_dc035a36",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "Not easily, as the LRUSnapshotCache uses inheritance to access otherwise internal fields.\nI could do this work, but you\u0027ll end up with yet another change exposing the guts of the cache that is not quite just-remove-LRUSnapshotCache and not quite just-replace-LRUCache.",
+      "parentUuid": "0827accc_5db905a0",
       "range": {
         "startLine": 16,
         "startChar": 128,
@@ -378,6 +426,30 @@
       "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "215da5b2_7e595f66",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "See above.",
+      "parentUuid": "5e2bd3ce_007c6abc",
+      "range": {
+        "startLine": 18,
+        "startChar": 52,
+        "endLine": 18,
+        "endChar": 74
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -473,6 +545,30 @@
       "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd558b62_44faec63",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "I\u0027ve added sw::hash in the new parent change.\n\nAs I\u0027ve made clear before, I\u0027m really not sold on the Memset\u003c\u003e class. Deriving classes from this has so many hidden gotchas, it\u0027s a can of bugs just waiting for a developer to trip over.\n\nThat said, if you want to carry on pushing that class, you can specialize the new sw::Hash\u003c\u003e for Memset\u003cT\u003e. Given my loathing of Memset\u003c\u003e, I\u0027d prefer not to do this myself.\n\nFor now, I\u0027ve just used the new sw::hash() function that takes a variadic list of arguments.",
+      "parentUuid": "f9964bb8_f74a2f4b",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

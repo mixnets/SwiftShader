@@ -22,6 +22,30 @@
       "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4663a91_8729e826",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T11:36:52Z",
+      "side": 1,
+      "message": "I don\u0027t find it preferable. auto removes the type boiler plate, and makes refactoring types a whole lot easier.\n\nI look to the RHS of the assignment, and I can clearly see it\u0027s a pointer. If I want to see the type, I use brain, or my IDE by putting my cursor over the variable which reliably shows me the fully qualified type.\n\n\u0027auto *\u0027 is like a half-arsed type declaration. I see no point in this. Worse still, I\u0027ve seen people get confused whether we\u0027re introducing another level of indirection, leading to people actually writing C++ interview questions for this sort of thing: https://www.nextptr.com/question/a1156714788/auto-vs-auto-when-defining-a-pointer.",
+      "parentUuid": "97f9c472_ee7f9727",
+      "range": {
+        "startLine": 221,
+        "startChar": 2,
+        "endLine": 221,
+        "endChar": 7
+      },
+      "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
