@@ -28,6 +28,8 @@ set(SYSTEM_SRC_FILES
     Debug.hpp
     Half.cpp
     Half.hpp
+    Hash.cpp
+    Hash.hpp
     Math.cpp
     Math.hpp
     Memory.cpp

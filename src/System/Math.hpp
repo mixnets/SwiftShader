@@ -349,8 +349,6 @@ inline float linearToSRGB(float c)
 
 unsigned char sRGB8toLinear8(unsigned char value);
 
-uint64_t FNV_1a(const unsigned char *data, int size);  // Fowler-Noll-Vo hash function
-
 // Round up to the next multiple of alignment
 template<typename T>
 inline T align(T value, unsigned int alignment)
