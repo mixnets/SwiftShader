@@ -1,0 +1,164 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f10a117_d3bf5fd0",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 13
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "not sure we can allow this dep for ICDs. see my other comment about how to remove it.",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e5b6c167_c991fe9d",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "ICDs will not be allowed to connect to services directly. You should be using vk_icdInitializeConnectToServiceCallback for this. ie. the loader on fuchsia will provide you with a callback for connecting to services. See goldfish ICD for an example: https://android.googlesource.com/device/generic/goldfish-opengl/+/master/system/vulkan/goldfish_vulkan.cpp#775",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc877822_1e6e903d",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "is this sufficient for swiftshader to be efficient? no need to align or pad rows to cache line size for optimal performance?",
+      "range": {
+        "startLine": 166,
+        "startChar": 45,
+        "endLine": 166,
+        "endChar": 104
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a774de24_0e605114",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "I think this should be \u0027false\u0027. \u0027true\u0027 contradicts CPU usage above.",
+      "range": {
+        "startLine": 239,
+        "startChar": 6,
+        "endLine": 239,
+        "endChar": 44
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9e8b31a_a906486c",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "you can set this to 0. and line below is not needed.",
+      "range": {
+        "startLine": 240,
+        "startChar": 30,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b10b39c_1240df9f",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "See https://fuchsia.googlesource.com/fuchsia/+/master/src/graphics/tests/vkext/vk_ext_buffer_collection.cc#587 for example usage. This should be easy to implement here but fine to leave it as a follow up as not required by any software except this test on Fuchsia.\n\nFYI, it\u0027s much harder to support in goldfish as we don\u0027t support sharing of host-visible memory between host and guest OS yet. we only support sharing of device-local memory. we\u0027re working on improving that so this extension can be fully supported by goldfish.",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "296af763_db39b493",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "needed here?",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74714b65_ff7b16a4",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-15T13:04:56Z",
+      "side": 1,
+      "message": "is this related to this extension? maybe land this as a different CL if not?",
+      "range": {
+        "startLine": 105,
+        "startChar": 20,
+        "endLine": 105,
+        "endChar": 50
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
