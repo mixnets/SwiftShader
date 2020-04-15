@@ -16,6 +16,29 @@
       "revId": "1b34374ec7c995d78166a73e1aaa3e56c0dc50d7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4328b8a_0b14b32f",
+        "filename": "src/System/Hash.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T15:17:58Z",
+      "side": 1,
+      "message": "Note that the Fowler-Noll-Vo hash function is optimized for byte granularity.",
+      "range": {
+        "startLine": 50,
+        "startChar": 46,
+        "endLine": 50,
+        "endChar": 66
+      },
+      "revId": "1b34374ec7c995d78166a73e1aaa3e56c0dc50d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
