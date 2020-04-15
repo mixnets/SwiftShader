@@ -449,6 +449,30 @@
       "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9964bb8_f74a2f4b",
+        "filename": "src/Device/Blitter.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:58:19Z",
+      "side": 1,
+      "message": "I was thinking something along the lines of: https://swiftshader-review.googlesource.com/c/SwiftShader/+/43888\n\nI\u0027d rather take care of this now than do it as a follow-up, since it\u0027s easy to forget and end up with the worse-case hashing when we least expect it and have a hard time figuring out why some stuff is slower. Alternatively, file a bug so we definitely don\u0027t forget about it.",
+      "parentUuid": "73078394_4663ce19",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 105,
+        "endChar": 59
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
