@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1061a382_5e9014de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-15T17:19:57Z",
+      "side": 1,
+      "message": "This was the bug id used for the original code that introduced this problem, but it appears to be completely unrelated. digit@ do you know what this was supposed to be?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "31bea76c7d203a34ce94fb26613f75e025bf27ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
