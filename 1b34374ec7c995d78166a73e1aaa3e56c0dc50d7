@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f93abff9_9f974ef1",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-15T14:38:31Z",
+      "side": 1,
+      "message": "Please hold off on merging this until my change to split this out has landed: https://swiftshader-review.googlesource.com/c/SwiftShader/+/43868/2\nYou\u0027ll just need to move the adding of this cpp file into the sub-CMakeLists.",
+      "revId": "1b34374ec7c995d78166a73e1aaa3e56c0dc50d7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
