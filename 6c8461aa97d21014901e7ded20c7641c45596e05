@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "55376ddf_76696f24",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Thanks a ton!",
+      "parentUuid": "34484765_622cf04c",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 44
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e6d42d42_955bb298",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -120,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "f0060c97_e4474776",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b73128c9_9c568fc6",
+      "range": {
+        "startLine": 10,
+        "startChar": 47,
+        "endLine": 10,
+        "endChar": 90
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31d23c2a_e00e12d7",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -155,6 +203,30 @@
       "side": 1,
       "message": "I just searched google with \"lrucache \u003clang\u003e\" with lang being java, python, c#, golang. And every single top hit uses \u0027get()\u0027:\n\nhttps://github.com/hashicorp/golang-lru/blob/master/lru.go#L49\nhttps://medium.com/@krishankantsinghal/my-first-blog-on-medium-583159139237\nhttps://www.programcreek.com/2013/03/leetcode-lru-cache-java/\nhttps://gist.github.com/jianminchen/3dc7da7e0465819e6aa8c10c71901723#file-lrupractice-cs-L49\nhttps://stackoverflow.com/a/3719378\n\nI promise you I didn\u0027t cherry-pick these.\n\nI\u0027d rather stick with a term adopted by just about everyone.",
       "parentUuid": "31d23c2a_e00e12d7",
+      "range": {
+        "startLine": 12,
+        "startChar": 53,
+        "endLine": 12,
+        "endChar": 142
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2ade7ff_89742e19",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "That\u0027s interesting but I don\u0027t think it negates my arguments. It can just mean a lot of people didn\u0027t put effort into finding a better name than an overly generic \u0027get\u0027. If we adopt that due to its perceived popularity, we\u0027d just add to the problem.\n\nFor what it\u0027s worth, the top two links do use the term \u0027lookup\u0027 in the description. It\u0027s a very well understood verb in the context of a cache, whereas \u0027get\u0027 needs clarification that it is in fact a lookup operation.",
+      "parentUuid": "b3866d68_ab00ccea",
       "range": {
         "startLine": 12,
         "startChar": 53,
@@ -214,6 +286,30 @@
     },
     {
       "key": {
+        "uuid": "0827accc_5db905a0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Thanks, makes sense.\n\nCan you please move that to a new CL (that comes before this one) though?",
+      "parentUuid": "51278874_09d896af",
+      "range": {
+        "startLine": 16,
+        "startChar": 128,
+        "endLine": 16,
+        "endChar": 146
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0d606c48_e18f8954",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -249,6 +345,30 @@
       "side": 1,
       "message": "No, the cache was fine. The code surrounding the cache in vk::Device is possibly broken.",
       "parentUuid": "0d606c48_e18f8954",
+      "range": {
+        "startLine": 18,
+        "startChar": 52,
+        "endLine": 18,
+        "endChar": 74
+      },
+      "revId": "6c8461aa97d21014901e7ded20c7641c45596e05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e2bd3ce_007c6abc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Ack. Would be great if you could separate the LRUCache rewrite which isn\u0027t about thread safety in itself, from changes to the snapshot cache.",
+      "parentUuid": "f059838d_5f356166",
       "range": {
         "startLine": 18,
         "startChar": 52,

@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97f9c472_ee7f9727",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "I think it\u0027s preferable to make this an `auto *` to make it clearer that this is a pointer. Several more cases below.",
+      "range": {
+        "startLine": 221,
+        "startChar": 2,
+        "endLine": 221,
+        "endChar": 7
+      },
+      "revId": "d7229ee2feefaaf79a78dee4447e99890b51b53d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

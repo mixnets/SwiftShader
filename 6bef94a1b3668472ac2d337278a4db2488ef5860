@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0d90275_9846aa6f",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "comma",
+      "range": {
+        "startLine": 121,
+        "startChar": 52,
+        "endLine": 121,
+        "endChar": 53
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09288212_f77ccef8",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 121,
+        "startChar": 34,
+        "endLine": 121,
+        "endChar": 38
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42cb8fee_01cb0314",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Subjective, while the objective is not. I suggest just removing this.",
+      "range": {
+        "startLine": 125,
+        "startChar": 9,
+        "endLine": 125,
+        "endChar": 23
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b881966_a544e43e",
+        "filename": "src/System/LRUCache.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-15T05:51:24Z",
+      "side": 1,
+      "message": "Maybe put a precompiler warning in place?",
+      "range": {
+        "startLine": 136,
+        "startChar": 4,
+        "endLine": 136,
+        "endChar": 26
+      },
+      "revId": "6bef94a1b3668472ac2d337278a4db2488ef5860",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
