@@ -153,7 +153,7 @@ PixelProcessor::RoutineType PixelProcessor::routine(const State &state,
                                                     SpirvShader const *pixelShader,
                                                     const vk::DescriptorSet::Bindings &descriptorSets)
 {
-	auto routine = routineCache->lookup(state);
+	auto routine = routineCache->query(state);
 
 	if(!routine)
 	{
