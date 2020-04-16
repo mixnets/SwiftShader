@@ -814,6 +814,7 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
         OpenGLESSkinning
     )
 
+<<<<<<< HEAD   (199485 Update Marl to)
     set(PVR_TARGET_OTHER
         glslang
         glslangValidator
@@ -834,6 +835,31 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
         spirv-remap
         SPVRemapper
         uninstall
+=======
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/marl-config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+endif(MARL_INSTALL)
+
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/event_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/memory_test.cpp
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/parallelize_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${MARL_GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (3a9ff7 Squashed 'third_party/marl/' changes from 539094011..748d3c1)
     )
 
     set(PVR_VULKAN_TARGET
