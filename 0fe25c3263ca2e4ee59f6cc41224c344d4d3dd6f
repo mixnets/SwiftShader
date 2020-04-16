@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9fd7a161_588f3c3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-16T14:43:39Z",
+      "side": 1,
+      "message": "Lets open a bug about this. Building with different headers has the potential to break stuff. See other comment.",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 9
+      },
+      "revId": "0fe25c3263ca2e4ee59f6cc41224c344d4d3dd6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "59122353_72814420",
         "filename": "src/Vulkan/VkFormat.cpp",
         "patchSetId": 1
@@ -13,6 +36,30 @@
       "writtenOn": "2020-04-16T13:05:57Z",
       "side": 1,
       "message": "I\u0027m not sure there\u0027s any value in this static assert with this new condition.\nI\u0027d suggest just removing it. If things get reshuffled, there\u0027s a good chance the below static_assert would fire.\n\nMaybe Format::mapTo8bit() should ASSERT the returned format is not 0?",
+      "range": {
+        "startLine": 2604,
+        "startChar": 14,
+        "endLine": 2604,
+        "endChar": 38
+      },
+      "revId": "0fe25c3263ca2e4ee59f6cc41224c344d4d3dd6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a99992a0_71350116",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-16T14:43:39Z",
+      "side": 1,
+      "message": "Yep, I had an ASSERT() initially, then decided to make the whole thing statically checked. Seems okay to go back to that to unblock things for now.\n\nNote that while this particular code is unlikely to break unnoticed with newer header versions, other parts might. In particular, extensions are versioned, and can make breaking changes. We\u0027ve been bitten by that at least once.",
+      "parentUuid": "59122353_72814420",
       "range": {
         "startLine": 2604,
         "startChar": 14,
