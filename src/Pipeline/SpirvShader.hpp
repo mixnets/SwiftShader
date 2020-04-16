@@ -299,11 +299,11 @@ public:
 			Intermediate,
 
 			// Pointer held by SpirvRoutine::pointers
-			Pointer,
+			Pointer_,
 
 			// An external shader resource.
 			// Pointer to a vk::DescriptorSet* held by SpirvRoutine::pointers.
-			Resource,
+			Resource_,
 		};
 
 		Kind kind = Kind::Unknown;
@@ -1081,12 +1081,13 @@ private:
 	// Returns a SIMD::Pointer to the underlying data for the given pointer
 	// object.
 	// Handles objects of the following kinds:
-	//  • DescriptorSet
-	//  • DivergentPointer
-	//  • InterfaceVariable
-	//  • NonDivergentPointer
+	//  - DescriptorSet
+	//  - DivergentPointer yah
+	//  - InterfaceVariable
+	//  - NonDivergentPointer nope
 	// Calling GetPointerToData with objects of any other kind will assert.
-	SIMD::Pointer GetPointerToData(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData(Object::ID id, int arrayIndex, EmitState const *state) const;
+	SIMD::Pointer GetPointerToData_(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayElement, EmitState const *state) const;
 	SIMD::Pointer GetPointerToData0(Object::ID id, EmitState const *state) const;
 
 	SIMD::Pointer WalkExplicitLayoutAccessChain(Object::ID id, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const;

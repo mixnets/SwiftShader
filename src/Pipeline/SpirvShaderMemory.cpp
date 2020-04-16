@@ -378,7 +378,55 @@ void SpirvShader::VisitMemoryObject(Object::ID id, const MemoryVisitor &f) const
 	}
 }
 
-SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayIndex, EmitState const *state) const
+SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayElement, EmitState const *state) const
+{
+	auto routine = state->routine;
+	auto &object = getObject(id);
+	switch(object.kind)
+	{
+		case Object::Kind::Pointer_:
+		case Object::Kind::InterfaceVariable:
+			return state->getPointer(id);
+
+		case Object::Kind::Resource_:
+		{
+			const auto &d = descriptorDecorations.at(id);
+			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
+			ASSERT(d.Binding >= 0);
+
+			auto set = state->getPointer(id);
+
+			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
+			ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
+			int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayElement));
+
+			Pointer<Byte> descriptor = set.base + bindingOffset;                                           // BufferDescriptor*
+			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
+			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+			if(setLayout->isBindingDynamic(d.Binding))
+			{
+				uint32_t dynamicBindingIndex =
+				    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
+				    setLayout->getDynamicDescriptorOffset(d.Binding) +
+				    arrayElement;
+				Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
+				Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+
+				return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
+			}
+			else
+			{
+				return SIMD::Pointer(data, size);
+			}
+		}
+
+		default:
+			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
+			return SIMD::Pointer(Pointer<Byte>(), 0);
+	}
+}
+
+SIMD::Pointer SpirvShader::GetPointerToData_(Object::ID id, SIMD::Pointer descriptorSet, uint32_t arrayElement, EmitState const *state) const
 {
 	auto routine = state->routine;
 	const auto &d = descriptorDecorations.at(id);
@@ -387,18 +435,20 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, SIMD::Pointer descrip
 
 	auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
 	ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
-	int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
+	int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayElement));
 
 	Pointer<Byte> descriptor = descriptorSet.base + bindingOffset;                                 // BufferDescriptor*
 	Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
 	Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
+
 	if(setLayout->isBindingDynamic(d.Binding))
 	{
 		uint32_t dynamicBindingIndex =
 		    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-		    setLayout->getDynamicDescriptorOffset(d.Binding) + arrayIndex;
+		    setLayout->getDynamicDescriptorOffset(d.Binding) + arrayElement;
 		Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
 		Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+
 		return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
 	}
 	else
@@ -412,12 +462,12 @@ SIMD::Pointer SpirvShader::GetPointerToData0(Object::ID id, EmitState const *sta
 	auto &object = getObject(id);
 	switch(object.kind)
 	{
-		case Object::Kind::Pointer:
+		case Object::Kind::Pointer_:
 		case Object::Kind::InterfaceVariable:
 			return state->getPointer(id);
 
-		case Object::Kind::Resource:
-			return GetPointerToData(id, state->getPointer(id), 0, state);
+		case Object::Kind::Resource_:
+			return GetPointerToData_(id, state->getPointer(id), 0, state);
 
 		default:
 			UNREACHABLE("Invalid pointer kind %d", int(object.kind));
