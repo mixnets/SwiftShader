@@ -230,9 +230,9 @@ uint32_t DescriptorSetLayout::getDynamicDescriptorOffset(uint32_t binding) const
 	ASSERT(isDynamic(bindings[n].descriptorType));
 
 	uint32_t index = 0;
-	for(uint32_t i = 0; i < n; i++)
+	for(uint32_t i = 0; i < bindingCount; i++)
 	{
-		if(isDynamic(bindings[i].descriptorType))
+		if(getBindingIndex(i) < n && isDynamic(bindings[i].descriptorType))
 		{
 			index += bindings[i].descriptorCount;
 		}
