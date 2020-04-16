@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59122353_72814420",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T13:05:57Z",
+      "side": 1,
+      "message": "I\u0027m not sure there\u0027s any value in this static assert with this new condition.\nI\u0027d suggest just removing it. If things get reshuffled, there\u0027s a good chance the below static_assert would fire.\n\nMaybe Format::mapTo8bit() should ASSERT the returned format is not 0?",
+      "range": {
+        "startLine": 2604,
+        "startChar": 14,
+        "endLine": 2604,
+        "endChar": 38
+      },
+      "revId": "0fe25c3263ca2e4ee59f6cc41224c344d4d3dd6f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
