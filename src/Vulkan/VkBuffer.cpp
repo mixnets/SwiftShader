@@ -21,10 +21,8 @@
 namespace vk {
 
 Buffer::Buffer(const VkBufferCreateInfo *pCreateInfo, void *mem)
-    : flags(pCreateInfo->flags)
-    , size(pCreateInfo->size)
+    : size(pCreateInfo->size)
     , usage(pCreateInfo->usage)
-    , sharingMode(pCreateInfo->sharingMode)
 {
 	if(pCreateInfo->sharingMode == VK_SHARING_MODE_CONCURRENT)
 	{
