@@ -134,7 +134,6 @@ private:
 	uint32_t getBindingIndex(uint32_t binding) const;
 	static bool isDynamic(VkDescriptorType type);
 
-	VkDescriptorSetLayoutCreateFlags flags;
 	uint32_t bindingCount;
 	VkDescriptorSetLayoutBinding *bindings;
 	size_t *bindingOffsets;

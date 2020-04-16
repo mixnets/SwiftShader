@@ -19,7 +19,6 @@ namespace vk {
 
 PipelineLayout::PipelineLayout(const VkPipelineLayoutCreateInfo *pCreateInfo, void *mem)
     : setLayoutCount(pCreateInfo->setLayoutCount)
-    , pushConstantRangeCount(pCreateInfo->pushConstantRangeCount)
 {
 	char *hostMem = reinterpret_cast<char *>(mem);
 

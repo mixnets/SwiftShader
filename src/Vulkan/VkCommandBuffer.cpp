@@ -281,7 +281,6 @@ class CmdSetViewport : public vk::CommandBuffer::Command
 public:
 	CmdSetViewport(const VkViewport &viewport, uint32_t viewportID)
 	    : viewport(viewport)
-	    , viewportID(viewportID)
 	{
 	}
 
@@ -294,7 +293,6 @@ public:
 
 private:
 	const VkViewport viewport;
-	uint32_t viewportID;
 };
 
 class CmdSetScissor : public vk::CommandBuffer::Command
@@ -302,7 +300,6 @@ class CmdSetScissor : public vk::CommandBuffer::Command
 public:
 	CmdSetScissor(const VkRect2D &scissor, uint32_t scissorID)
 	    : scissor(scissor)
-	    , scissorID(scissorID)
 	{
 	}
 
@@ -315,7 +312,6 @@ public:
 
 private:
 	const VkRect2D scissor;
-	uint32_t scissorID;
 };
 
 class CmdSetDepthBias : public vk::CommandBuffer::Command
@@ -1026,7 +1022,6 @@ class CmdSignalEvent : public vk::CommandBuffer::Command
 public:
 	CmdSignalEvent(vk::Event *ev, VkPipelineStageFlags stageMask)
 	    : ev(ev)
-	    , stageMask(stageMask)
 	{
 	}
 
@@ -1040,7 +1035,7 @@ public:
 
 private:
 	vk::Event *ev;
-	VkPipelineStageFlags stageMask;  // FIXME(b/117835459) : We currently ignore the flags and signal the event at the last stage
+	// FIXME(b/117835459) : We currently ignore the flags and signal the event at the last stage
 };
 
 class CmdResetEvent : public vk::CommandBuffer::Command
@@ -1048,7 +1043,6 @@ class CmdResetEvent : public vk::CommandBuffer::Command
 public:
 	CmdResetEvent(vk::Event *ev, VkPipelineStageFlags stageMask)
 	    : ev(ev)
-	    , stageMask(stageMask)
 	{
 	}
 
@@ -1061,7 +1055,7 @@ public:
 
 private:
 	vk::Event *ev;
-	VkPipelineStageFlags stageMask;  // FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
+	// FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage
 };
 
 class CmdWaitEvent : public vk::CommandBuffer::Command
@@ -1296,6 +1290,8 @@ CommandBuffer::CommandBuffer(Device *device, VkCommandBufferLevel pLevel)
     : device(device)
     , level(pLevel)
 {
+	(void)this->device;  // Prevent unused private field warning. Used by ENABLE_VK_DEBUGGER.
+
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	commands = new std::vector<std::unique_ptr<Command>>();
 }
