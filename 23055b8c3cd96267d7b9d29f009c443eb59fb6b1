@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d78555d_5da39491",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1058,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T19:27:07Z",
+      "side": 1,
+      "message": "This comment without \"VkPipelineStageFlags stageMask;\" seems to make little sense, right? Maybe put it back in commented?\n\n// FIXME(b/117835459) : We currently ignore the flags and reset the event at the last stage\n// VkPipelineStageFlags stageMask;",
+      "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d45e5456_86106a4c",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T19:27:07Z",
+      "side": 1,
+      "message": "Have to be very careful with if-defing fields as you can get into ODR violations if ever you link libs with and without this defined. I think we\u0027re okay here because ENABLE_VK_DEBUGGER is defined at the compiler level, but maybe we should just (void) cast it in the constructor.",
+      "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
