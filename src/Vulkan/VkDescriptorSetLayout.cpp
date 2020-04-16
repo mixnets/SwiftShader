@@ -38,8 +38,7 @@ static bool UsesImmutableSamplers(const VkDescriptorSetLayoutBinding &binding)
 namespace vk {
 
 DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *pCreateInfo, void *mem)
-    : flags(pCreateInfo->flags)
-    , bindingCount(pCreateInfo->bindingCount)
+    : bindingCount(pCreateInfo->bindingCount)
     , bindings(reinterpret_cast<VkDescriptorSetLayoutBinding *>(mem))
 {
 	uint8_t *hostMemory = static_cast<uint8_t *>(mem) + bindingCount * sizeof(VkDescriptorSetLayoutBinding);

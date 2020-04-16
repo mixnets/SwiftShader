@@ -126,7 +126,6 @@ private:
 	uint32_t mipLevels = 0;
 	uint32_t arrayLayers = 0;
 	VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
-	VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags usage = (VkImageUsageFlags)0;
 	Image *decompressedImage = nullptr;
 #ifdef __ANDROID__

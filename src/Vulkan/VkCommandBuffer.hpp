@@ -202,9 +202,12 @@ private:
 		INVALID
 	};
 
-	Device *const device;
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+#ifdef ENABLE_VK_DEBUGGER
+	Device *const device;
+#endif
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	std::vector<std::unique_ptr<Command>> *commands;

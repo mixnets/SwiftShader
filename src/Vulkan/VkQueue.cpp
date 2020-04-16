@@ -80,6 +80,8 @@ namespace vk {
 Queue::Queue(Device *device, marl::Scheduler *scheduler)
     : device(device)
 {
+	(void)loaderData;  // Don't warn about this being unused.
+
 	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
 }
 

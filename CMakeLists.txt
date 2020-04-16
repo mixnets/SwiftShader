@@ -414,7 +414,6 @@ else()
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wno-unneeded-internal-declaration"  # function 'X' is not needed and will not be emitted
-            "-Wno-unused-private-field"           # private field 'offset' is not used - TODO: Consider enabling this once Vulkan is further implemented.
             "-Wno-comment"                        # multi-line comment
             "-Wno-undefined-var-template"         # instantiation of variable 'X' required here, but no definition is available
             "-Wno-extra-semi"                     # extra ';' after member function definition

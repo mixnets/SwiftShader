@@ -37,7 +37,6 @@ public:
 private:
 	uint32_t setLayoutCount = 0;
 	DescriptorSetLayout **setLayouts = nullptr;
-	uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
 	uint32_t *dynamicOffsetBases = nullptr;  // Base offset per set layout.
 };
