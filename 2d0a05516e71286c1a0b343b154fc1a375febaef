@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "5b6e7ea0_4be6c182",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-16T14:27:11Z",
+      "side": 1,
+      "message": "Totally not meant to block this, so marking Resolved.\n\nAnyway, taking a step back and thinking out loud, is there any sensible alternative to add_subdirectory that doesn\u0027t suffer from this? SwiftShader is a separate binary, so Amber could just build it independently. A convenient (but ugly) way to do that would be to invoke cmake on SwfitShader from their CMakeLists.txt. I wonder if that\u0027s accepted practice.\n\nHow is this issue avoided by the PowerVR samples? Do they consistently keep track of their own root directory?",
+      "parentUuid": "309f528e_f5ee6994",
+      "range": {
+        "startLine": 10,
+        "startChar": 31,
+        "endLine": 10,
+        "endChar": 47
+      },
+      "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "169c0360_01c400d8",
         "filename": "CMakeLists.txt",
         "patchSetId": 1
