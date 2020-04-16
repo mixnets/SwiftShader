@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "309f528e_f5ee6994",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T14:17:32Z",
+      "side": 1,
+      "message": "The problem is that CMAKE_SOURCE_DIR will be different depending on whether SwiftShader is built as a root project (as we do), or as a sub-project (e.g. like Amber does). CMAKE_CURRENT_SOURCE_DIR is the directory of the current CMakeLists.txt that\u0027s being processed. So, if I want subprojects to access files/folders relative to the SwiftShader root, I have two options:\n1. Set a variable to CMAKE_CURRENT_SOURCE_DIR in SwiftShader\u0027s root CMakeLists, and use that variable in subprojects, as I did in this change.\n2. Use relative paths, like \"../../../include\", which isn\u0027t great because we cannot easily move these folders around, and it\u0027s not clear what we\u0027re including.",
+      "parentUuid": "608a2c4b_de4f0aad",
+      "range": {
+        "startLine": 10,
+        "startChar": 31,
+        "endLine": 10,
+        "endChar": 47
+      },
+      "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "169c0360_01c400d8",
         "filename": "CMakeLists.txt",
         "patchSetId": 1
