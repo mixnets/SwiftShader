@@ -377,6 +377,8 @@ else()
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+            "-Wextra"
+            "-Wunreachable-code-loop-increment"
             "-Wunused-lambda-capture"
             "-Wstring-conversion"
             "-Wextra-semi"
@@ -416,6 +418,7 @@ else()
             "-Wno-comment"                        # multi-line comment
             "-Wno-undefined-var-template"         # instantiation of variable 'X' required here, but no definition is available
             "-Wno-extra-semi"                     # extra ';' after member function definition
+            "-Wno-unused-parameter"               # unused parameter 'X'
 
             # Silence errors caused by unknown warnings when building with older
             # versions of Clang. This demands checking that warnings added above
