@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "db71ebae_c777def9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:22:30Z",
+      "side": 1,
+      "message": "s/unusued/unused/",
+      "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d78555d_5da39491",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 2
