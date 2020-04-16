@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "169c0360_01c400d8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T12:58:47Z",
+      "side": 1,
+      "message": "nit: I do wonder if we should be prefixing these with SWIFTSHADER_, as it makes it clear that we\u0027re talking about SWIFTSHADER_SOURCE if we were to ever use these in the sub-projects (not sure if we ever would, mind you).\n\nWe could also use the option_if_not_defined so an external project could control where the third_party directory is.\n\nJust thinking out loud. Nothing blocking here.",
+      "range": {
+        "startLine": 179,
+        "startChar": 0,
+        "endLine": 181,
+        "endChar": 39
+      },
+      "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
