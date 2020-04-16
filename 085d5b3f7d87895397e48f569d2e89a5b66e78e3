@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9aab57f7_0d5ed4c6",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:16:29Z",
+      "side": 1,
+      "message": "Technically speaking, we don\u0027t really need need \u0027begin\u0027 and \u0027end\u0027 traits. The standard already defined std::begin(T) and std::end(T) to do the right thing for T (call .begin() or .end() for containers, return the pointer to the first and one-past-last for C-style arrays, etc.). This is how range-based for loops work for all kinds of range types. So you should be able to remove these and just use range-based for (or if you must, use std::begin(cache) and std::end(cache)).",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d30f5f3f_08f31c88",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:16:29Z",
+      "side": 1,
+      "message": "As this is very simialr to the std::map specialization, consider making a base \u0027MapCacheTraits\u0027 that contains all the common fields and functions, and derive these two from it, and leave the parts that are std::map or std::unordered_map-specific in each one.",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f32ac0b3_f4ef2d08",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:16:29Z",
+      "side": 1,
+      "message": "s/is//\n\nAnother way to describe SyncCache is to say that it\u0027s a thread-safe adapter over associative containers (like how std::stack is a container adapter for LIFO). In fact, with C++20, you\u0027d probably be able to rewrite this in terms of an AssociativeContainer concept (or perhaps a Cache concept).",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f3e09a5_b803c0f2",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:16:29Z",
+      "side": 1,
+      "message": "If you swap this line with using Traits \u003d ... below it, you could rewrite as:\n\nusing Cache \u003d typename Traits::template WithData\u003cEntryLoan\u003e;",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54c4457a_a1a2c7b9",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T20:16:29Z",
+      "side": 1,
+      "message": "Since \u0027cache\u0027 is actually a mapping of Entry here, is this constructor useful in practice? For std::map and unordered_map, at least, you can\u0027t really do much since Entry is a private type.",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
