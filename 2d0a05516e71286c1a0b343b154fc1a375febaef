@@ -22,6 +22,30 @@
       "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbae53bb_b911018b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-16T13:37:09Z",
+      "side": 1,
+      "message": "\u003e nit: I do wonder if we should be prefixing these with SWIFTSHADER_, as it makes it clear that we\u0027re talking about SWIFTSHADER_SOURCE if we were to ever use these in the sub-projects (not sure if we ever would, mind you).\n\nYes, I probably will do that when I move Reactor out.\n\n\u003e We could also use the option_if_not_defined so an external project could control where the third_party directory is.\n\nYou know what, after working on this for a while, I realize that a better strategy is using if (TARGET \u003ctarget-name\u003e) to determine whether to bring in a third-party target or not. This way, parent projects can bring in a subset of third-party projects, and SwiftShader will use those instead. I haven\u0027t made the changes to check if the targets already exist, but I will.\n\n\u003e Just thinking out loud. Nothing blocking here.\n\nAppreciate it 😊",
+      "parentUuid": "169c0360_01c400d8",
+      "range": {
+        "startLine": 179,
+        "startChar": 0,
+        "endLine": 181,
+        "endChar": 39
+      },
+      "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
