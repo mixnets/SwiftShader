@@ -236,8 +236,8 @@ SpirvShader::SpirvShader(
 				Object::ID resultId = insn.word(2);
 				auto storageClass = static_cast<spv::StorageClass>(insn.word(3));
 
-				auto &object = defs[resultId];
-				object.kind = Object::Kind::Pointer;
+				auto &object = defs[resultId];  ///
+				object.kind = Object::Kind::Pointer_;
 				object.definition = insn;
 
 				ASSERT(getType(typeId).definition.opcode() == spv::OpTypePointer);
@@ -247,18 +247,20 @@ SpirvShader::SpirvShader(
 				{
 					case spv::StorageClassInput:
 					case spv::StorageClassOutput:
+						object.kind = Object::Kind::InterfaceVariable;
 						ProcessInterfaceVariable(object);
 						break;
 
 					case spv::StorageClassUniform:
 					case spv::StorageClassStorageBuffer:
-						object.kind = Object::Kind::Resource;
+						object.kind = Object::Kind::Resource_;
 						break;
 
 					case spv::StorageClassPushConstant:
 					case spv::StorageClassPrivate:
 					case spv::StorageClassFunction:
 					case spv::StorageClassUniformConstant:
+						object.kind = Object::Kind::Pointer_;
 						break;  // Correctly handled.
 
 					case spv::StorageClassWorkgroup:
@@ -266,7 +268,7 @@ SpirvShader::SpirvShader(
 						auto &elTy = getType(getType(typeId).element);
 						auto sizeInBytes = elTy.componentCount * static_cast<uint32_t>(sizeof(float));
 						workgroupMemory.allocate(resultId, sizeInBytes);
-						object.kind = Object::Kind::Pointer;
+						object.kind = Object::Kind::Pointer_;
 						break;
 					}
 					case spv::StorageClassAtomicCounter:
@@ -1039,8 +1041,8 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 {
 	ApplyDecorationsForId(d, baseId);
 	auto &baseObject = getObject(baseId);
-	ApplyDecorationsForId(d, baseObject.type);
-	auto typeId = getType(baseObject.type).element;
+	ApplyDecorationsForId(d, baseObject.typeId());
+	auto typeId = getType(baseObject).element;
 
 	for(auto i = 0u; i < numIndexes; i++)
 	{
@@ -1085,23 +1087,22 @@ SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint
 	Decorations d = {};
 	ApplyDecorationsForId(&d, baseObject.typeId());
 
-	auto ptr = state->getPointer(baseId);
-
-	if(baseObject.kind == Object::Kind::Resource)
+	uint32_t arrayIndex = 0;
+	if(baseObject.kind == Object::Kind::Resource_)
 	{
 		auto type = getType(typeId).definition.opcode();
 		if(type == spv::OpTypeArray || type == spv::OpTypeRuntimeArray)
 		{
 			ASSERT(getObject(indexIds[0]).kind == Object::Kind::Constant);
-			uint32_t arrayIndex = GetConstScalarInt(indexIds[0]);
-
-			ptr = GetPointerToData(baseId, ptr, arrayIndex, state);
+			arrayIndex = GetConstScalarInt(indexIds[0]);
 
 			numIndexes--;
 			indexIds++;
 			typeId = getType(typeId).element;
 		}
 	}
+
+	auto ptr = GetPointerToData(baseId, arrayIndex, state);
 
 	int constantOffset = 0;
 
@@ -1462,7 +1463,7 @@ void SpirvShader::DefineResult(const InsnIterator &insn)
 		case spv::OpTypeImage:
 		case spv::OpTypeSampledImage:
 		case spv::OpTypeSampler:
-			object.kind = Object::Kind::Pointer;
+			object.kind = Object::Kind::Pointer_;
 			break;
 
 		default:
@@ -1975,7 +1976,7 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 	const uint32_t *indexes = insn.wordPointer(4);
 	auto &type = getType(typeId);
 	ASSERT(type.componentCount == 1);
-	ASSERT(getObject(resultId).kind == Object::Kind::Pointer);
+	ASSERT(getObject(resultId).kind == Object::Kind::Pointer_);
 
 	if(type.storageClass == spv::StorageClassPushConstant ||
 	   type.storageClass == spv::StorageClassUniform ||
@@ -2331,7 +2332,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 	Decorations arrayDecorations = {};
 	ApplyDecorationsForId(&arrayDecorations, arrayId);
 	ASSERT(arrayDecorations.HasArrayStride);
-	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayDecorations.ArrayStride);
+	auto arrayLength = arraySizeInBytes / SIMD::Int(arrayDecorations.ArrayStride);  // scalar!!
 
 	result.move(0, SIMD::Int(arrayLength));
 

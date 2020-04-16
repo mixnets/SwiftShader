@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include "ComputeProgram.hpp"
-#include "Constants.hpp"
 
+#include "Constants.hpp"
 #include "System/Debug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 
