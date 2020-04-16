@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "608a2c4b_de4f0aad",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-16T13:39:44Z",
+      "side": 1,
+      "message": "Isn\u0027t there a canonical way to do that? I thought that was the difference between CMAKE_CURRENT_SOURCE_DIR and CMAKE_SOURCE_DIR\n\nI could be confusing things with GN",
+      "range": {
+        "startLine": 10,
+        "startChar": 31,
+        "endLine": 10,
+        "endChar": 47
+      },
+      "revId": "2d0a05516e71286c1a0b343b154fc1a375febaef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "169c0360_01c400d8",
         "filename": "CMakeLists.txt",
         "patchSetId": 1
