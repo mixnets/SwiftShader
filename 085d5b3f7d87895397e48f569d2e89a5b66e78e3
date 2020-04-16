@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "63ce692b_8acb649c",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T22:36:56Z",
+      "side": 1,
+      "message": "Good spot. Done.",
+      "parentUuid": "9aab57f7_0d5ed4c6",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d30f5f3f_08f31c88",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 21
@@ -33,6 +51,24 @@
       "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f61b26ea_8b3532d0",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T22:36:56Z",
+      "side": 1,
+      "message": "Done. I couldn\u0027t easily put the Allocator stuff into the base due to nondependent template names (https://isocpp.org/wiki/faq/templates#nondependent-name-lookup-members). To get this to work, I\u0027d need to prefix AllocatorForData with the whole CacheTraits\u003c\u003e spew, and it seemed cleaner to just have that declared in each derived type.",
+      "parentUuid": "d30f5f3f_08f31c88",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7f35abc2_7e995ddb",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T22:36:56Z",
+      "side": 1,
+      "message": "Fixed.\nI\u0027m on the fence about your description because it over-generalizes. Currently it supports 2 specific std associative containers, and LRUCache. I also intend to remove support for std::map.",
+      "parentUuid": "f32ac0b3_f4ef2d08",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2f3e09a5_b803c0f2",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 21
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "89ebc28e_2f62f29e",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T22:36:56Z",
+      "side": 1,
+      "message": "Afraid not. CACHE is the outer declared cache type. Cache is the entry-remapped cache.\n\nThis is clearly confusing, so I renamed Cache to EntryCache.",
+      "parentUuid": "2f3e09a5_b803c0f2",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "54c4457a_a1a2c7b9",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 21
@@ -84,6 +156,24 @@
       "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "917ecbee_382f3ed9",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-16T22:36:56Z",
+      "side": 1,
+      "message": "\u003e Since \u0027cache\u0027 is actually a mapping of Entry here, is this constructor useful in practice?\n\nYes. LRUCache only has one usable constructor, and that takes a size_t for the immutable cache capacity.",
+      "parentUuid": "54c4457a_a1a2c7b9",
+      "revId": "085d5b3f7d87895397e48f569d2e89a5b66e78e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
