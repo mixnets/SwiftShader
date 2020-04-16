@@ -19,9 +19,9 @@
 #include "VkDescriptorSet.hpp"
 #include "VkImageView.hpp"
 #include "VkSampler.hpp"
-#include "System/Types.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
 
 namespace {
@@ -116,7 +116,7 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a layout member field.
-	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + getDescriptorSetDataSize());
+	return sw::align<alignof(DescriptorSet)>(offsetof(DescriptorSet, data) + getDescriptorSetDataSize());
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const
@@ -196,7 +196,7 @@ size_t DescriptorSetLayout::getBindingOffset(uint32_t binding, size_t arrayEleme
 {
 	uint32_t index = getBindingIndex(binding);
 	auto typeSize = GetDescriptorSize(bindings[index].descriptorType);
-	return bindingOffsets[index] + OFFSET(DescriptorSet, data[0]) + (typeSize * arrayElement);
+	return bindingOffsets[index] + /*offsetof(DescriptorSet, data[0]) /*!*/ +(typeSize * arrayElement);
 }
 
 bool DescriptorSetLayout::isDynamic(VkDescriptorType type)
@@ -252,6 +252,7 @@ uint8_t *DescriptorSetLayout::getOffsetPointer(DescriptorSet *descriptorSet, uin
 	*typeSize = GetDescriptorSize(bindings[index].descriptorType);
 	size_t byteOffset = bindingOffsets[index] + (*typeSize * arrayElement);
 	ASSERT(((*typeSize * count) + byteOffset) <= getDescriptorSetDataSize());  // Make sure the operation will not go out of bounds
+
 	return &descriptorSet->data[byteOffset];
 }
 
