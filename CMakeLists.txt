@@ -258,7 +258,7 @@ macro(set_shared_library_export_map TARGET DIR)
         endif()
     elseif(LINUX OR FUCHSIA)
         # NOTE: The Fuchsia linker script is needed to export the vk_icdInitializeConnectToServiceCallback
-        # entry point (a private implementation detail betwen the Fuchsia Vulkan loader and the ICD).
+        # entry point (a private implementation detail between the Fuchsia Vulkan loader and the ICD).
         if ((FUCHSIA) AND ("${TARGET}" STREQUAL "vk_swiftshader"))
           set(LINKER_VERSION_SCRIPT "fuchsia_vk_swiftshader.lds")
         else()

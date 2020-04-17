@@ -56,6 +56,12 @@ public:
 	{
 		return VK_ERROR_INVALID_EXTERNAL_HANDLE;
 	}
+
+	virtual bool checkBufferCollection(VkBufferCollectionFUCHSIA collection,
+	                                   uint32_t index) const
+	{
+		return (collection == VK_NULL_HANDLE);
+	}
 #endif
 
 protected:
@@ -369,6 +375,11 @@ VkResult DeviceMemory::getAhbProperties(const struct AHardwareBuffer *buffer, Vk
 VkResult DeviceMemory::exportHandle(zx_handle_t *pHandle) const
 {
 	return external->exportHandle(pHandle);
+}
+
+bool DeviceMemory::checkBufferCollection(VkBufferCollectionFUCHSIA collection, uint32_t index) const
+{
+	return external->checkBufferCollection(collection, index);
 }
 #endif
 
