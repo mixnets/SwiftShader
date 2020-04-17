@@ -230,6 +230,24 @@
     },
     {
       "key": {
+        "uuid": "cc739ffa_8a5429f5",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 35197
+      },
+      "writtenOn": "2020-04-17T15:53:31Z",
+      "side": 1,
+      "message": "Please talk to jbauman@ who is the author of this extension. It\u0027s fine to implement this as a small follow up.",
+      "parentUuid": "35a6c5d9_2ba77498",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "296af763_db39b493",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 13
