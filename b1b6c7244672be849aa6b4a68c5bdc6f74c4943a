@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4c90f39_053bc784",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-17T14:13:01Z",
+      "side": 1,
+      "message": "Instead of saying that TargetMachines \"appear\" to not me thread-safe, let\u0027s point to the fact that LLVM\u0027s MulthThreadedSimpleCompiler documents that it creates a separate instance of TargetMachine per compile: http://llvm.org/doxygen/classllvm_1_1orc_1_1MultiThreadedSimpleCompiler.html",
+      "revId": "b1b6c7244672be849aa6b4a68c5bdc6f74c4943a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
