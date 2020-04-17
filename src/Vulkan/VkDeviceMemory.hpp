@@ -38,6 +38,13 @@ public:
 
 #if VK_USE_PLATFORM_FUCHSIA
 	VkResult exportHandle(zx_handle_t *pHandle) const;
+
+	// Return true iff this device memory matches a specific buffer collection handle + index.
+	// Used to verify VkImage/VkBuffer bindings to a VkDeviceMemory instance. Note that
+	// |collection| will be VK_NULL_HANDLE if the buffer/image was created without a
+	// collection buffer index. In this case, the method should return true iff the memory
+	// does not come from a buffer collection buffer.
+	bool checkBufferCollection(VkBufferCollectionFUCHSIA collection, uint32_t index) const;
 #endif
 
 	void destroy(const VkAllocationCallbacks *pAllocator);
