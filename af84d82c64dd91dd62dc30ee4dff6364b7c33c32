@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e37c89c7_4bf9cd4b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 29
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-17T15:28:27Z",
+      "side": 1,
+      "message": "This could really use an explanation of why all the synchronization primitives are replaced with Marl ones. Note I\u0027m in no way arguing that Marl is SwiftShader\u0027s scheduling+threading library. What I mean is that it\u0027s not obvious why these replacements are part of this change.\n\nIt\u0027s essentially because TSA annotations don\u0027t work on std:: synchronization primitives, right?\n\nAnother thing I want to be cautious about is enabling cooperative threading in non-obvious ways. Sometimes we really want to block even if other work is available (see my e-mail about sampling routine caching for reasons). We do want more parallelism in many cases, but this should not be the change that enables/unlocks that. Pardon my ignorance, I haven\u0027t fully kept up with Marl development, but when I previously said \"I don\u0027t know how a marl::mutex differs from an std::mutex (and at this point I\u0027m too afraid to ask)\", I was hoping for a clarification. 😉\n\nI could look up this information myself, but it would help reviewers tremendously if the \"why\" of these things was clarified in the commit message. Thanks.",
+      "revId": "af84d82c64dd91dd62dc30ee4dff6364b7c33c32",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
