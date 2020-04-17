@@ -406,7 +406,18 @@ static const std::vector<std::pair<const char *, std::unordered_map<std::string,
 	        MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandleFUCHSIA),
 	        MAKE_VULKAN_DEVICE_ENTRY(vkGetMemoryZirconHandlePropertiesFUCHSIA),
 	    } },
-#endif
+
+	// VK_FUCHSIA_buffer_collection
+	{
+	    VK_FUCHSIA_BUFFER_COLLECTION_EXTENSION_NAME,
+	    {
+	        MAKE_VULKAN_DEVICE_ENTRY(vkCreateBufferCollectionFUCHSIA),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkSetBufferCollectionConstraintsFUCHSIA),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkSetBufferCollectionBufferConstraintsFUCHSIA),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkDestroyBufferCollectionFUCHSIA),
+	        MAKE_VULKAN_DEVICE_ENTRY(vkGetBufferCollectionPropertiesFUCHSIA),
+	    } }
+#endif  // VK_USE_PLATFORM_FUCHSIA
 };
 
 #undef MAKE_VULKAN_DEVICE_ENTRY
@@ -517,7 +528,7 @@ extern "C" hwvulkan_module_t HAL_MODULE_INFO_SYM = {
 	}
 };
 
-#endif  // __ANDROID__
+#endif
 
 #if VK_USE_PLATFORM_FUCHSIA
 PFN_vkConnectToService vk::icdFuchsiaServiceConnectCallback = nullptr;
