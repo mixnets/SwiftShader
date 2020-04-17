@@ -68,6 +68,24 @@
       "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0947674d_d51a384c",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T14:21:14Z",
+      "side": 1,
+      "message": "I think the (void) approach is the easiest. No real need to make new accessors just to satisfy a compiler warning.\nWill fix.",
+      "parentUuid": "b366f9fa_9be7c15c",
+      "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
