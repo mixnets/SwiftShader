@@ -16,6 +16,24 @@
       "revId": "af84d82c64dd91dd62dc30ee4dff6364b7c33c32",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d0d19c1_74d01a3e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 29
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T15:32:13Z",
+      "side": 1,
+      "message": "\u003e We do want more parallelism in many cases, but this should not be the change that enables/unlocks that.\n\nIt doesn\u0027t.\n\n\u003e \"I don\u0027t know how a marl::mutex differs from an std::mutex (and at this point I\u0027m too afraid to ask)\", I was hoping for a clarification.\n\nSee https://swiftshader-review.googlesource.com/c/SwiftShader/+/43436/29#message-8d3b2a6df8959daca901303c45d4472c6a2e8f03:\n\n\u003e To be fair, the marl/tsa.h and marl/mutex.h headers are mostly the recommended wrappers taken from https://clang.llvm.org/docs/ThreadSafetyAnalysis.html#mutex-h, but tweaked a bit to fit with marl\u0027s types. If we feel really strongly, we could copy them out to SwiftShader, but I\u0027m actively trying to migrate all the threading code over to marl, and this feels like a step in the wrong direction.\n\nWill add info to the commit message.",
+      "parentUuid": "e37c89c7_4bf9cd4b",
+      "revId": "af84d82c64dd91dd62dc30ee4dff6364b7c33c32",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
