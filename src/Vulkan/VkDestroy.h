@@ -36,6 +36,9 @@
 #include "VkRenderPass.hpp"
 #include "WSI/VkSurfaceKHR.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
+#if VK_USE_PLATFORM_FUCHSIA
+#include "VkBufferCollectionFUCHSIA.hpp"
+#endif
 
 #include <type_traits>
 
