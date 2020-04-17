@@ -141,6 +141,30 @@
       "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bccb257_bc5827de",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-17T14:51:17Z",
+      "side": 1,
+      "message": "Right, I\u0027ve been reading things way too fast this week :)",
+      "parentUuid": "357d3987_fb253dc2",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 72
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
