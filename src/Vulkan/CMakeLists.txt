@@ -98,6 +98,12 @@ if(WIN32)
     )
 endif()
 
+if(FUCHSIA)
+    list(APPEND VULKAN_SRC_FILES
+        VkBufferCollectionFUCHSIA.cpp
+    )
+endif()
+
 if(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER)
     list(APPEND VULKAN_SRC_FILES
         Debug/Context.cpp
@@ -181,6 +187,7 @@ target_link_libraries(vk_swiftshader
         ${SWIFTSHADER_LIBS}
         $<$<BOOL:${SWIFTSHADER_ENABLE_VULKAN_DEBUGGER}>:cppdap>
         $<$<BOOL:${SWIFTSHADER_ENABLE_ASTC}>:astc-encoder>
+	$<$<BOOL:${FUCHSIA}>:Fuchsia::fuchsia.sysmem>
 )
 
 set_shared_library_export_map(vk_swiftshader ${CMAKE_CURRENT_SOURCE_DIR})

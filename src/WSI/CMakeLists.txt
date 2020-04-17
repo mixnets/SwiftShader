@@ -77,4 +77,6 @@ target_compile_options(vk_wsi
 target_link_libraries(vk_wsi
     PUBLIC
         vk_pipeline
+    PRIVATE
+        $<$<BOOL:${FUCHSIA}>:Fuchsia::fuchsia.sysmem>
 )

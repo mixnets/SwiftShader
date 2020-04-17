@@ -67,6 +67,10 @@
 #	include <sync/sync.h>
 #endif
 
+#if VK_USE_PLATFORM_FUCHSIA
+#	include "VkBufferCollectionFUCHSIA.hpp"
+#endif
+
 #include "WSI/VkSwapchainKHR.hpp"
 
 #include "Reactor/Nucleus.hpp"
@@ -377,6 +381,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 #if VK_USE_PLATFORM_FUCHSIA
 	{ VK_FUCHSIA_EXTERNAL_SEMAPHORE_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_SEMAPHORE_SPEC_VERSION },
 	{ VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME, VK_FUCHSIA_EXTERNAL_MEMORY_SPEC_VERSION },
+	{ VK_FUCHSIA_BUFFER_COLLECTION_EXTENSION_NAME, VK_FUCHSIA_BUFFER_COLLECTION_SPEC_VERSION },
 #endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
 };
@@ -1011,6 +1016,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				}
 				break;
 			}
+			case VK_STRUCTURE_TYPE_IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA:
+			{
+				// Handled by VkDeviceMemory directly.
+				break;
+			}
 #endif  // VK_USE_PLATFORM_FUCHSIA
 			default:
 				LOG_TRAP("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
@@ -1121,6 +1131,75 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryZirconHandlePropertiesFUCHSIA(VkDevice
 	pMemoryZirconHandleProperties->memoryTypeBits = (1U << memoryProperties.memoryTypeCount) - 1U;
 
 	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferCollectionFUCHSIA(
+    VkDevice device,
+    const VkBufferCollectionCreateInfoFUCHSIA *pCreateInfo,
+    const VkAllocationCallbacks *pAllocator,
+    VkBufferCollectionFUCHSIA *pCollection)
+{
+	TRACE("(VkDevice device = %p, const VkBufferCollectionCreateInfoFUCHSIA* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkBufferCollectionFUCHSIA* pCollection = %p)",
+	      device, pCreateInfo, pAllocator, pCollection);
+
+	VkResult result = vk::BufferCollectionFUCHSIA::Create(pAllocator, pCreateInfo, pCollection);
+	if(result != VK_SUCCESS)
+	{
+		return result;
+	}
+
+	result = vk::Cast(*pCollection)->init(pCreateInfo);
+	if(result != VK_SUCCESS)
+	{
+		vk::destroy(*pCollection, pAllocator);
+		*pCollection = VK_NULL_HANDLE;
+	}
+
+	return result;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionConstraintsFUCHSIA(
+    VkDevice device,
+    VkBufferCollectionFUCHSIA collection,
+    const VkImageCreateInfo *pImageInfo)
+{
+	TRACE("(VkDevice device = %p, VkBufferCollectionFUCHSIA collection = %p, const VkImageCreateInfo pImageInfo = %p)",
+	      device, static_cast<void *>(collection), pImageInfo);
+
+	return vk::Cast(collection)->setConstraints(pImageInfo);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionBufferConstraintsFUCHSIA(
+    VkDevice device,
+    VkBufferCollectionFUCHSIA collection,
+    const VkBufferConstraintsInfoFUCHSIA *pBufferConstraintsInfo)
+{
+	TRACE("(VkDevice device = %p, VkBufferCollectionFUCHSIA collection = %p, const VkBufferConstraintsInfoFUCHSIA* pBufferConstraintsInfo = %p)",
+	      device, static_cast<void *>(collection), pBufferConstraintsInfo);
+
+	return vk::Cast(collection)->setBufferConstraints(pBufferConstraintsInfo);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroyBufferCollectionFUCHSIA(
+    VkDevice device,
+    VkBufferCollectionFUCHSIA collection,
+    const VkAllocationCallbacks *pAllocator)
+{
+	TRACE("(VkDevice device = %p, VkBufferCollectionFUCHSIA collection = %p, const VkAllocationCallbacks* pAllocator = %p)",
+	      device, static_cast<void *>(collection), pAllocator);
+
+	vk::destroy(collection, pAllocator);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetBufferCollectionPropertiesFUCHSIA(
+    VkDevice device,
+    VkBufferCollectionFUCHSIA collection,
+    VkBufferCollectionPropertiesFUCHSIA *pProperties)
+{
+	TRACE("(VkDevice device = %p, VkBufferCollectionFUCHSIA collection = %p, VkBufferCollectionPropertiesFUCHSIA* pProperties = %p)",
+	      device, static_cast<void *>(collection), pProperties);
+
+	return vk::Cast(collection)->getProperties(device, pProperties);
 }
 #endif  // VK_USE_PLATFORM_FUCHSIA
 
@@ -1526,6 +1605,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 			case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO:
 				// Do nothing. Should be handled by vk::Buffer::Create().
 				break;
+#if VK_USE_PLATFORM_FUCHSIA
+			case VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA:
+				// Do nothing. Should be handled by vk::Image::Create()
+				break;
+#endif
 			default:
 				LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
@@ -1604,6 +1688,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 				swapchainImage = true;
 			}
 			break;
+#endif
+#if VK_USE_PLATFORM_FUCHSIA
+			case VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA:
+				// Do nothing. Should be handled by vk::Image::Create()
+				break;
 #endif
 			case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
 				// Do nothing. Should be handled by vk::Image::Create()

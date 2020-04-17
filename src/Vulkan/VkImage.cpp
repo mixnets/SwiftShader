@@ -152,6 +152,14 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 			const auto *externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo *>(nextInfo);
 			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
 		}
+#if VK_USE_PLATFORM_FUCHSIA
+		if(nextInfo->sType == VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA)
+		{
+			const auto *importInfo = reinterpret_cast<const VkBufferCollectionImageCreateInfoFUCHSIA *>(nextInfo);
+			fuchsiaBufferCollectionHandle = importInfo->collection;
+			fuchsiaBufferCollectionIndex = importInfo->index;
+		}
+#endif  // VK_USE_PLATFORM_FUCHSIA
 	}
 }
 
@@ -216,7 +224,17 @@ size_t Image::getSizeInBytes(const VkImageSubresourceRange &subresourceRange) co
 
 bool Image::canBindToMemory(DeviceMemory *pDeviceMemory) const
 {
-	return pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes);
+	if(!pDeviceMemory->checkExternalMemoryHandleType(supportedExternalMemoryHandleTypes))
+	{
+		return false;
+	}
+#if VK_USE_PLATFORM_FUCHSIA
+	if(!pDeviceMemory->checkBufferCollection(fuchsiaBufferCollectionHandle, fuchsiaBufferCollectionIndex))
+	{
+		return false;
+	}
+#endif
+	return true;
 }
 
 void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
