@@ -117,6 +117,30 @@
       "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "357d3987_fb253dc2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T14:50:09Z",
+      "side": 1,
+      "message": "Yes, that\u0027s what I said. Will give it a try.",
+      "parentUuid": "aeb54d4d_737b3e62",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 72
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
