@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "609a1536_d068b3da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-17T16:05:01Z",
+      "side": 1,
+      "message": "This was done consciously: b/118401597 We can reconsider, but should weight pros/cons and ensure we have alternatives where useful.",
+      "range": {
+        "startLine": 9,
+        "startChar": 21,
+        "endLine": 9,
+        "endChar": 39
+      },
+      "revId": "d04fcf50f2a75e4e41dfc3860447f163719d3c99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78953ce6_f29295a4",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1038,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-17T16:05:01Z",
+      "side": 1,
+      "message": "The comment makes no sense without the variable, and we should still look into correctness and optimization implications: b/153087091",
+      "range": {
+        "startLine": 1038,
+        "startChar": 1,
+        "endLine": 1038,
+        "endChar": 93
+      },
+      "revId": "d04fcf50f2a75e4e41dfc3860447f163719d3c99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d846d07d_321bf7b1",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1293,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-17T16:05:01Z",
+      "side": 1,
+      "message": "I\u0027d prefer doing this for all other fields that are expected to be of use in the not too distant future.\n\nWhile we could add them back only when needed, I think it\u0027s useful to have a 1:1 correspondence with the parameters provided through the API, to avoid any confusion that this is their implementation. Also, refactorings could make it harder to bring them back later.",
+      "range": {
+        "startLine": 1293,
+        "startChar": 1,
+        "endLine": 1293,
+        "endChar": 7
+      },
+      "revId": "d04fcf50f2a75e4e41dfc3860447f163719d3c99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
