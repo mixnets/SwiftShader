@@ -54,6 +54,23 @@
     },
     {
       "key": {
+        "uuid": "0513db42_02d79d91",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 6948
+      },
+      "writtenOn": "2020-04-17T20:35:20Z",
+      "side": 1,
+      "message": "set min_coded_width and min_coded_height to 0. The requested dimensions should go into required_max_coded_width and required_max_coded_height. It\u0027s pretty confusing, but sysmem allows allocating a buffer collection at one size, then importing images from it at a smaller size, assuming the smaller size \u003e\u003d min_coded_*.",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bc877822_1e6e903d",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
@@ -89,6 +106,30 @@
       "side": 1,
       "message": "There is no code in the rest of SwiftShader to deal with alignment or padding. My understanding is that each VkSurfaceKHR implementation will get the final stride from the display surface / API (e.g. Xlib/Xcb/Win32/etc). In the case of Fuchsia, this is chosen by sysmem after token negociation, and the field here represents the minimum supported value from SwiftShader, so I think that should work fine.",
       "parentUuid": "bc877822_1e6e903d",
+      "range": {
+        "startLine": 166,
+        "startChar": 45,
+        "endLine": 166,
+        "endChar": 104
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c26b2d5c_183a5998",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 6948
+      },
+      "writtenOn": "2020-04-17T20:35:20Z",
+      "side": 1,
+      "message": "I\u0027d recommend setting this to 0 - sysmem should be able to calculate it.\n\nAlso, do you have a way to tell swiftshader the actual stride after sysmem computes it? That should be calculated using code equivalent to the code in ImageFormatMinimumRowBytes().",
+      "parentUuid": "115ca556_f678a5fe",
       "range": {
         "startLine": 166,
         "startChar": 45,
@@ -242,6 +283,24 @@
       "side": 1,
       "message": "Please talk to jbauman@ who is the author of this extension. It\u0027s fine to implement this as a small follow up.",
       "parentUuid": "35a6c5d9_2ba77498",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a08660a_0e49151f",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6948
+      },
+      "writtenOn": "2020-04-17T20:35:20Z",
+      "side": 1,
+      "message": "Yeah, it\u0027d be fine to implement this in a later patch. As you\u0027ve seen, no one\u0027s actually using it yet (though I\u0027d like to switch the posebuffer code over to it at some point).",
+      "parentUuid": "cc739ffa_8a5429f5",
       "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
