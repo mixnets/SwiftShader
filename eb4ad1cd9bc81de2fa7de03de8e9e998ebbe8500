@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19eae934_b95082f1",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-17T14:40:35Z",
+      "side": 1,
+      "message": "For these lines (and other similar changes in this cl), would it make sense to swap the order so that the mutex declaration is above the GUARDED_BY statement (for readability)?",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 19
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12df7cf8_4fe18dd1",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-17T14:40:35Z",
+      "side": 1,
+      "message": "static marl mutexes don\u0027t work? These are within scope of almost the entire file",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 72
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
