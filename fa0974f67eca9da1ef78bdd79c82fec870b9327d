@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1b787c15_e4f393a8",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "I see, this works, because the _current_ version of the Vulkan loader uses fdio_service_connect(), but this may change in the future.\n\nI\u0027ve implemented vk_icdInitializeConnectToServiceCallback in a separate CL to keep this one simpler [1] Thanks for the clarification!\n\n[1] https://swiftshader-review.googlesource.com/c/SwiftShader/+/44019",
+      "parentUuid": "e5b6c167_c991fe9d",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bc877822_1e6e903d",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
@@ -47,6 +65,30 @@
       "writtenOn": "2020-04-15T13:04:56Z",
       "side": 1,
       "message": "is this sufficient for swiftshader to be efficient? no need to align or pad rows to cache line size for optimal performance?",
+      "range": {
+        "startLine": 166,
+        "startChar": 45,
+        "endLine": 166,
+        "endChar": 104
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "115ca556_f678a5fe",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "There is no code in the rest of SwiftShader to deal with alignment or padding. My understanding is that each VkSurfaceKHR implementation will get the final stride from the display surface / API (e.g. Xlib/Xcb/Win32/etc). In the case of Fuchsia, this is chosen by sysmem after token negociation, and the field here represents the minimum supported value from SwiftShader, so I think that should work fine.",
+      "parentUuid": "bc877822_1e6e903d",
       "range": {
         "startLine": 166,
         "startChar": 45,
@@ -82,6 +124,30 @@
     },
     {
       "key": {
+        "uuid": "edf75758_9fb9de4f",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "Agreed, thanks.",
+      "parentUuid": "a774de24_0e605114",
+      "range": {
+        "startLine": 239,
+        "startChar": 6,
+        "endLine": 239,
+        "endChar": 44
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b9e8b31a_a906486c",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
@@ -93,6 +159,30 @@
       "writtenOn": "2020-04-15T13:04:56Z",
       "side": 1,
       "message": "you can set this to 0. and line below is not needed.",
+      "range": {
+        "startLine": 240,
+        "startChar": 30,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9643c4fd_8250f8c5",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "b9e8b31a_a906486c",
       "range": {
         "startLine": 240,
         "startChar": 30,
@@ -122,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "35a6c5d9_2ba77498",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "Thank you for the link. Surprisingly this code does not appear in code search at the moment [1], i.e. the same source file exists and is listed, but only loading the function pointer appears, not its actual use. Do you have pointers do documentation for this function? The test doesn\u0027t provide much information about what to expect from the implementation.\n\n[1] https://cs.corp.google.com/search/?q\u003dvkSetBufferCollectionBufferConstraintsFUCHSIA+package:%5Efuchsia$\u0026type\u003dcs",
+      "parentUuid": "4b10b39c_1240df9f",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "296af763_db39b493",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 13
@@ -139,6 +247,24 @@
     },
     {
       "key": {
+        "uuid": "776d3d15_bc74a3f2",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "Indeed, not anymore. Fixed.",
+      "parentUuid": "296af763_db39b493",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "74714b65_ff7b16a4",
         "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
         "patchSetId": 13
@@ -150,6 +276,30 @@
       "writtenOn": "2020-04-15T13:04:56Z",
       "side": 1,
       "message": "is this related to this extension? maybe land this as a different CL if not?",
+      "range": {
+        "startLine": 105,
+        "startChar": 20,
+        "endLine": 105,
+        "endChar": 50
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdcd73fd_7f8bcfa5",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-17T15:08:39Z",
+      "side": 1,
+      "message": "Indeed, this fixed some of our Vulkan graphics test that call vkWaitForIdle(). Moved it to a different CL for clarity: https://swiftshader-review.googlesource.com/c/SwiftShader/+/44018/1",
+      "parentUuid": "74714b65_ff7b16a4",
       "range": {
         "startLine": 105,
         "startChar": 20,
