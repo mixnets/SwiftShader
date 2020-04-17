@@ -50,6 +50,24 @@
       "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b366f9fa_9be7c15c",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-17T14:12:58Z",
+      "side": 1,
+      "message": "Not a huge fan of this either. Suggestion:\nMaybe create a private function in vk::CommandBuffer like this:\nstd::shared_ptr\u003cvk::dbg::Context\u003e getDebuggerContext() const\n{\n  return device-\u003egetDebuggerContext();\n}\nAnd the use it within VkCommandBuffer.cpp\nWould that get rid of the warning?",
+      "parentUuid": "d45e5456_86106a4c",
+      "revId": "23055b8c3cd96267d7b9d29f009c443eb59fb6b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
