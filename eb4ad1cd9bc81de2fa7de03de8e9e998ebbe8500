@@ -93,6 +93,30 @@
       "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aeb54d4d_737b3e62",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-17T14:48:43Z",
+      "side": 1,
+      "message": "I would argue that a class is prettier than globals :)\nAlso, you can create a class locally inside the function, I think.",
+      "parentUuid": "835510d9_6b85e11f",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 72
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
