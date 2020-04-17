@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "043afb88_3e11f9cf",
+        "filename": "src/System/Synchronization.hpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T14:46:00Z",
+      "side": 1,
+      "message": "Sure. Can do.",
+      "parentUuid": "19eae934_b95082f1",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 19
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "12df7cf8_4fe18dd1",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 27
@@ -36,6 +60,30 @@
       "writtenOn": "2020-04-17T14:40:35Z",
       "side": 1,
       "message": "static marl mutexes don\u0027t work? These are within scope of almost the entire file",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 72
+      },
+      "revId": "eb4ad1cd9bc81de2fa7de03de8e9e998ebbe8500",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "835510d9_6b85e11f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T14:46:00Z",
+      "side": 1,
+      "message": "GUARDED_BY() cannot be used on locals. Don\u0027t ask me why.\n\n\u003e These are within scope of almost the entire file\n\nYes, but are within the anonymous namespace. I could possibly try creating a class inside the function. Maybe that would work, but it\u0027s not pretty.",
+      "parentUuid": "12df7cf8_4fe18dd1",
       "range": {
         "startLine": 136,
         "startChar": 0,
