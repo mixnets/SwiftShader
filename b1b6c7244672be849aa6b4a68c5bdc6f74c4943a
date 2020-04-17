@@ -16,6 +16,24 @@
       "revId": "b1b6c7244672be849aa6b4a68c5bdc6f74c4943a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "457c2d7d_7afc7ad5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-17T14:14:50Z",
+      "side": 1,
+      "message": "Took out the \u0027appears\u0027. MulthThreadedSimpleCompiler isn\u0027t really the best example either. These classes change things significantly between versions.",
+      "parentUuid": "a4c90f39_053bc784",
+      "revId": "b1b6c7244672be849aa6b4a68c5bdc6f74c4943a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
