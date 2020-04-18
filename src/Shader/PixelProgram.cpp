@@ -20,10 +20,10 @@
 
 namespace sw
 {
-	extern bool postBlendSRGB;
-	extern bool booleanFaceRegister;
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool fullPixelPositionRegister;
+	extern std::atomic<bool> postBlendSRGB;
+	extern std::atomic<bool> booleanFaceRegister;
+	extern std::atomic<bool> halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
+	extern std::atomic<bool> fullPixelPositionRegister;
 
 	PixelProgram::PixelProgram(const PixelProcessor::State &state, const PixelShader *shader) :
 			PixelRoutine(state, shader),

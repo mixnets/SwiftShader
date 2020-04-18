@@ -132,7 +132,7 @@ static bool detectSSE()
 
 bool Display::initialize()
 {
-	if(isInitialized())
+	if(initCount++ > 0)
 	{
 		return true;
 	}
@@ -217,6 +217,11 @@ bool Display::initialize()
 
 void Display::terminate()
 {
+	if (--initCount > 0)
+	{
+		return;
+	}
+
 	while(!mSurfaceSet.empty())
 	{
 		destroySurface(*mSurfaceSet.begin());

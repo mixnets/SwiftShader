@@ -24,10 +24,10 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern bool postBlendSRGB;
-	extern bool exactColorRounding;
-	extern bool forceClearRegisters;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<bool> postBlendSRGB;
+	extern std::atomic<bool> exactColorRounding;
+	extern std::atomic<bool> forceClearRegisters;
 
 	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader)
 		: QuadRasterizer(state, shader), v(shader && shader->indirectAddressableInput)

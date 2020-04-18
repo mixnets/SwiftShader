@@ -111,6 +111,8 @@ namespace egl
 
 		gl::NameSpace<Image> mSharedImageNameSpace;
 		sw::RecursiveLock mApiMutex;
+
+		int initCount = 0;
 	};
 }
 
