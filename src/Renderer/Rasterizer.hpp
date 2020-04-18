@@ -19,6 +19,8 @@
 #include "PixelProcessor.hpp"
 #include "Main/Config.hpp"
 
+#include <mutex>
+
 namespace sw
 {
 	using namespace rr;
@@ -26,7 +28,7 @@ namespace sw
 	class Rasterizer : public Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>
 	{
 	public:
-		Rasterizer() : primitive(Arg<0>()), count(Arg<1>()), cluster(Arg<2>()), data(Arg<3>()) {}
+		Rasterizer() : primitive(Arg<0>()), count(Arg<1>()), cluster(Arg<2>()), data(Arg<3>()), lock(mutex) {}
 		virtual ~Rasterizer() {}
 
 	protected:
@@ -34,6 +36,10 @@ namespace sw
 		Int count;
 		Int cluster;
 		Pointer<Byte> data;
+
+	private:
+		static std::mutex mutex;
+		std::unique_lock<std::mutex> lock;
 	};
 }
 

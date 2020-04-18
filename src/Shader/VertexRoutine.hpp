@@ -20,12 +20,14 @@
 #include "ShaderCore.hpp"
 #include "VertexShader.hpp"
 
+#include <mutex>
+
 namespace sw
 {
 	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)>
 	{
 	public:
-		VertexRoutinePrototype() : vertex(Arg<0>()), batch(Arg<1>()), task(Arg<2>()), data(Arg<3>()) {}
+		VertexRoutinePrototype() : vertex(Arg<0>()), batch(Arg<1>()), task(Arg<2>()), data(Arg<3>()), lock(mutex) {}
 		virtual ~VertexRoutinePrototype() {}
 
 	protected:
@@ -33,6 +35,10 @@ namespace sw
 		Pointer<Byte> batch;
 		Pointer<Byte> task;
 		Pointer<Byte> data;
+
+	private:
+		static std::mutex mutex;
+		std::unique_lock<std::mutex> lock;
 	};
 
 	class VertexRoutine : public VertexRoutinePrototype

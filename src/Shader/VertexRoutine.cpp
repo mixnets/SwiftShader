@@ -23,6 +23,8 @@
 
 namespace sw
 {
+	std::mutex VertexRoutinePrototype::mutex;
+
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
 	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
 
