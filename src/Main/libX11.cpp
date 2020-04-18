@@ -51,32 +51,18 @@ LibX11exports *LibX11::operator->()
 
 LibX11exports *LibX11::loadExports()
 {
-	static void *libX11 = nullptr;
-	static void *libXext = nullptr;
-	static LibX11exports *libX11exports = nullptr;
-
-	if(!libX11)
-	{
+	static auto libX11exports = []() -> LibX11exports* {
 		if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))   // Search the global scope for pre-loaded X11 library.
 		{
-			libX11exports = new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
-			libX11 = (void*)-1;   // No need to load it.
+			return new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
 		}
-		else
+		if(auto libX11 = loadLibrary("libX11.so"))
 		{
-			libX11 = loadLibrary("libX11.so");
-
-			if(libX11)
-			{
-				libXext = loadLibrary("libXext.so");
-				libX11exports = new LibX11exports(libX11, libXext);
-			}
-			else
-			{
-				libX11 = (void*)-1;   // Don't attempt loading more than once.
-			}
+			auto libXext = loadLibrary("libXext.so");
+			return new LibX11exports(libX11, libXext);
 		}
-	}
+		return nullptr;
+	}();
 
 	return libX11exports;
 }

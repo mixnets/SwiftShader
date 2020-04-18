@@ -64,17 +64,19 @@ Display *Display::get(EGLDisplay dpy)
 		return nullptr;
 	}
 
-	static void *nativeDisplay = nullptr;
-
-	#if defined(USE_X11)
+#if defined(USE_X11)
+	static auto nativeDisplay = [&]() -> void* {
 		// Even if the application provides a native display handle, we open (and close) our own connection
-		if(!nativeDisplay && dpy != HEADLESS_DISPLAY && libX11 && libX11->XOpenDisplay)
+		if(dpy != HEADLESS_DISPLAY && libX11 && libX11->XOpenDisplay)
 		{
-			nativeDisplay = libX11->XOpenDisplay(NULL);
+			return libX11->XOpenDisplay(NULL);
 		}
-	#endif
-
-	static DisplayImplementation display(dpy, nativeDisplay);
+		return nullptr;
+	};
+	static DisplayImplementation display(dpy, nativeDisplay());
+#else
+	static DisplayImplementation display(dpy, nullptr);
+#endif
 
 	return &display;
 }
@@ -132,7 +134,7 @@ static bool detectSSE()
 
 bool Display::initialize()
 {
-	if(isInitialized())
+	if(initCount++ > 0)
 	{
 		return true;
 	}
@@ -217,6 +219,11 @@ bool Display::initialize()
 
 void Display::terminate()
 {
+	if (--initCount > 0)
+	{
+		return;
+	}
+
 	while(!mSurfaceSet.empty())
 	{
 		destroySurface(*mSurfaceSet.begin());

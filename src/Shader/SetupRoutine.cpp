@@ -22,9 +22,9 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern TranscendentalPrecision logPrecision;
-	extern bool leadingVertexFirst;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<TranscendentalPrecision> logPrecision;
+	extern std::atomic<bool> leadingVertexFirst;
 
 	SetupRoutine::SetupRoutine(const SetupProcessor::State &state) : state(state)
 	{

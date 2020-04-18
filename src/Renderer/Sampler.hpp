@@ -19,6 +19,8 @@
 #include "Renderer/Surface.hpp"
 #include "Common/Types.hpp"
 
+#include <atomic>
+
 namespace sw
 {
 	struct Mipmap
@@ -240,8 +242,8 @@ namespace sw
 		Texture texture;
 		float exp2LOD;
 
-		static FilterType maximumTextureFilterQuality;
-		static MipmapType maximumMipmapFilterQuality;
+		static std::atomic<FilterType> maximumTextureFilterQuality;
+		static std::atomic<MipmapType> maximumMipmapFilterQuality;
 	};
 }
 

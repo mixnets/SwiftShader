@@ -22,27 +22,28 @@
 #include "Common/Debug.hpp"
 
 #include <string.h>
+#include <atomic>
 
 namespace sw
 {
-	extern bool perspectiveCorrection;
+	extern std::atomic<bool> perspectiveCorrection;
 
-	bool halfIntegerCoordinates = false;     // Pixel centers are not at integer coordinates
-	bool symmetricNormalizedDepth = false;   // [-1, 1] instead of [0, 1]
-	bool booleanFaceRegister = false;
-	bool fullPixelPositionRegister = false;
-	bool leadingVertexFirst = false;         // Flat shading uses first vertex, else last
-	bool secondaryColor = false;             // Specular lighting is applied after texturing
-	bool colorsDefaultToZero = false;
+	std::atomic<bool> halfIntegerCoordinates = {false};     // Pixel centers are not at integer coordinates
+	std::atomic<bool> symmetricNormalizedDepth = {false};   // [-1, 1] instead of [0, 1]
+	std::atomic<bool> booleanFaceRegister = {false};
+	std::atomic<bool> fullPixelPositionRegister = {false};
+	std::atomic<bool> leadingVertexFirst = {false};         // Flat shading uses first vertex, else last
+	std::atomic<bool> secondaryColor = {false};             // Specular lighting is applied after texturing
+	std::atomic<bool> colorsDefaultToZero = {false};
 
-	bool forceWindowed = false;
-	bool quadLayoutEnabled = false;
-	bool veryEarlyDepthTest = true;
-	bool complementaryDepthBuffer = false;
-	bool postBlendSRGB = false;
-	bool exactColorRounding = false;
-	TransparencyAntialiasing transparencyAntialiasing = TRANSPARENCY_NONE;
-	bool forceClearRegisters = false;
+	std::atomic<bool> forceWindowed = {false};
+	std::atomic<bool> quadLayoutEnabled = {false};
+	std::atomic<bool> veryEarlyDepthTest = {true};
+	std::atomic<bool> complementaryDepthBuffer = {false};
+	std::atomic<bool> postBlendSRGB = {false};
+	std::atomic<bool> exactColorRounding = {false};
+	std::atomic<TransparencyAntialiasing> transparencyAntialiasing = {TRANSPARENCY_NONE};
+	std::atomic<bool> forceClearRegisters = {false};
 
 	Context::Context()
 	{

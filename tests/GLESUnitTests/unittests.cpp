@@ -31,6 +31,8 @@
 
 #include <string.h>
 #include <cstdint>
+#include <thread>
+#include <vector>
 
 #define EXPECT_GLENUM_EQ(expected, actual) EXPECT_EQ(static_cast<GLenum>(expected), static_cast<GLenum>(actual))
 
@@ -40,6 +42,14 @@
 class SwiftShaderTest : public testing::Test
 {
 protected:
+	struct State
+	{
+		EGLDisplay display;
+		EGLConfig config;
+		EGLSurface surface;
+		EGLContext context;
+	};
+
 	void SetUp() override
 	{
 #if defined(_WIN32) && !defined(STANDALONE)
@@ -75,24 +85,26 @@ protected:
 		EXPECT_EQ(color[3], referenceColor[3]);
 	}
 
-	void Initialize(int version, bool withChecks)
+	State Initialize(int version, bool withChecks)
 	{
+		State state;
+
 		EXPECT_NO_EGL_ERROR();
 
-		display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+		state.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
 		if(withChecks)
 		{
 			EXPECT_NO_EGL_ERROR();
-			EXPECT_NE(EGL_NO_DISPLAY, display);
+			EXPECT_NE(EGL_NO_DISPLAY, state.display);
 
-			eglQueryString(display, EGL_VENDOR);
+			eglQueryString(state.display, EGL_VENDOR);
 			EXPECT_EQ(EGL_NOT_INITIALIZED, eglGetError());
 		}
 
 		EGLint major;
 		EGLint minor;
-		EGLBoolean initialized = eglInitialize(display, &major, &minor);
+		EGLBoolean initialized = eglInitialize(state.display, &major, &minor);
 
 		if(withChecks)
 		{
@@ -101,11 +113,11 @@ protected:
 			EXPECT_EQ(1, major);
 			EXPECT_EQ(4, minor);
 
-			const char *eglVendor = eglQueryString(display, EGL_VENDOR);
+			const char *eglVendor = eglQueryString(state.display, EGL_VENDOR);
 			EXPECT_NO_EGL_ERROR();
 			EXPECT_STREQ("Google Inc.", eglVendor);
 
-			const char *eglVersion = eglQueryString(display, EGL_VERSION);
+			const char *eglVersion = eglQueryString(state.display, EGL_VERSION);
 			EXPECT_NO_EGL_ERROR();
 			EXPECT_THAT(eglVersion, testing::HasSubstr("1.4 SwiftShader "));
 		}
@@ -121,7 +133,7 @@ protected:
 		};
 
 		EGLint num_config = -1;
-		EGLBoolean success = eglChooseConfig(display, configAttributes, &config, 1, &num_config);
+		EGLBoolean success = eglChooseConfig(state.display, configAttributes, &state.config, 1, &num_config);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ(num_config, 1);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
@@ -129,17 +141,17 @@ protected:
 		if(withChecks)
 		{
 			EGLint conformant = 0;
-			eglGetConfigAttrib(display, config, EGL_CONFORMANT, &conformant);
+			eglGetConfigAttrib(state.display, state.config, EGL_CONFORMANT, &conformant);
 			EXPECT_NO_EGL_ERROR();
 			EXPECT_TRUE(conformant & EGL_OPENGL_ES2_BIT);
 
 			EGLint renderableType = 0;
-			eglGetConfigAttrib(display, config, EGL_RENDERABLE_TYPE, &renderableType);
+			eglGetConfigAttrib(state.display, state.config, EGL_RENDERABLE_TYPE, &renderableType);
 			EXPECT_NO_EGL_ERROR();
 			EXPECT_TRUE(renderableType & EGL_OPENGL_ES2_BIT);
 
 			EGLint surfaceType = 0;
-			eglGetConfigAttrib(display, config, EGL_SURFACE_TYPE, &surfaceType);
+			eglGetConfigAttrib(state.display, state.config, EGL_SURFACE_TYPE, &surfaceType);
 			EXPECT_NO_EGL_ERROR();
 			EXPECT_TRUE(surfaceType & EGL_WINDOW_BIT);
 		}
@@ -150,20 +162,20 @@ protected:
 			EGL_NONE
 		};
 
-		surface = eglCreatePbufferSurface(display, config, surfaceAttributes);
+		state.surface = eglCreatePbufferSurface(state.display, state.config, surfaceAttributes);
 		EXPECT_NO_EGL_ERROR();
-		EXPECT_NE(EGL_NO_SURFACE, surface);
+		EXPECT_NE(EGL_NO_SURFACE, state.surface);
 
 		EGLint contextAttributes[] = {
 			EGL_CONTEXT_CLIENT_VERSION, version,
 			EGL_NONE
 		};
 
-		context = eglCreateContext(display, config, NULL, contextAttributes);
+		state.context = eglCreateContext(state.display, state.config, NULL, contextAttributes);
 		EXPECT_NO_EGL_ERROR();
-		EXPECT_NE(EGL_NO_CONTEXT, context);
+		EXPECT_NE(EGL_NO_CONTEXT, state.context);
 
-		success = eglMakeCurrent(display, surface, surface, context);
+		success = eglMakeCurrent(state.display, state.surface, state.surface, state.context);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 
@@ -171,29 +183,31 @@ protected:
 		{
 			EGLDisplay currentDisplay = eglGetCurrentDisplay();
 			EXPECT_NO_EGL_ERROR();
-			EXPECT_EQ(display, currentDisplay);
+			EXPECT_EQ(state.display, currentDisplay);
 
 			EGLSurface currentDrawSurface = eglGetCurrentSurface(EGL_DRAW);
 			EXPECT_NO_EGL_ERROR();
-			EXPECT_EQ(surface, currentDrawSurface);
+			EXPECT_EQ(state.surface, currentDrawSurface);
 
 			EGLSurface currentReadSurface = eglGetCurrentSurface(EGL_READ);
 			EXPECT_NO_EGL_ERROR();
-			EXPECT_EQ(surface, currentReadSurface);
+			EXPECT_EQ(state.surface, currentReadSurface);
 
 			EGLContext currentContext = eglGetCurrentContext();
 			EXPECT_NO_EGL_ERROR();
-			EXPECT_EQ(context, currentContext);
+			EXPECT_EQ(state.context, currentContext);
 		}
 
 		EXPECT_NO_GL_ERROR();
+
+		return state;
 	}
 
-	void Uninitialize()
+	void Uninitialize(State &state)
 	{
 		EXPECT_NO_GL_ERROR();
 
-		EGLBoolean success = eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+		EGLBoolean success = eglMakeCurrent(state.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 
@@ -213,15 +227,15 @@ protected:
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ(EGL_NO_CONTEXT, currentContext);
 
-		success = eglDestroyContext(display, context);
+		success = eglDestroyContext(state.display, state.context);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 
-		success = eglDestroySurface(display, surface);
+		success = eglDestroySurface(state.display, state.surface);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 
-		success = eglTerminate(display);
+		success = eglTerminate(state.display);
 		EXPECT_NO_EGL_ERROR();
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 	}
@@ -348,7 +362,7 @@ protected:
 
 	void checkCompiles(std::string v, std::string f)
 	{
-		Initialize(3, false);
+		auto state = Initialize(3, false);
 
 		std::string vs =
 		    R"(#version 300 es
@@ -387,7 +401,7 @@ protected:
 
 		EXPECT_NO_GL_ERROR();
 
-		Uninitialize();
+		Uninitialize(state);
 	}
 
 	void checkCompiles(std::string s)
@@ -398,7 +412,7 @@ protected:
 
 	std::string checkCompileFails(std::string source, GLenum glShaderType)
 	{
-		Initialize(3, false);
+		auto state = Initialize(3, false);
 
 		GLint compileStatus = 0;
 		const char *c_source[1] = { source.c_str() };
@@ -429,7 +443,7 @@ protected:
 
 		glDeleteShader(glShader);
 
-		Uninitialize();
+		Uninitialize(state);
 
 		return log;
 	}
@@ -466,22 +480,11 @@ protected:
 		checkCompileFails(vs, GL_VERTEX_SHADER);
 		checkCompileFails(fs, GL_FRAGMENT_SHADER);
 	}
-
-	EGLDisplay getDisplay() const { return display; }
-	EGLConfig getConfig() const { return config; }
-	EGLSurface getSurface() const { return surface; }
-	EGLContext getContext() const { return context; }
-
-private:
-	EGLDisplay display;
-	EGLConfig config;
-	EGLSurface surface;
-	EGLContext context;
 };
 
 TEST_F(SwiftShaderTest, Initalization)
 {
-	Initialize(2, true);
+	auto state = Initialize(2, true);
 
 	const GLubyte *glVendor = glGetString(GL_VENDOR);
 	EXPECT_NO_GL_ERROR();
@@ -496,13 +499,13 @@ TEST_F(SwiftShaderTest, Initalization)
 	EXPECT_NO_GL_ERROR();
 	EXPECT_THAT((const char *)glVersion, testing::HasSubstr("OpenGL ES 3.0 SwiftShader "));
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test attempting to clear an incomplete framebuffer
 TEST_F(SwiftShaderTest, ClearIncomplete)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLfloat zero_float = 0;
 	GLuint renderbuffer;
@@ -523,13 +526,13 @@ TEST_F(SwiftShaderTest, ClearIncomplete)
 	glClearBufferfv(GL_DEPTH, 0, &zero_float);
 	EXPECT_GLENUM_EQ(GL_INVALID_FRAMEBUFFER_OPERATION, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test unrolling of a loop
 TEST_F(SwiftShaderTest, UnrollLoop)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	unsigned char green[4] = { 0, 255, 0, 255 };
 
@@ -585,13 +588,13 @@ TEST_F(SwiftShaderTest, UnrollLoop)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test non-canonical or non-deterministic loops do not get unrolled
 TEST_F(SwiftShaderTest, DynamicLoop)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	const std::string vs =
 	    R"(#version 300 es
@@ -649,13 +652,13 @@ TEST_F(SwiftShaderTest, DynamicLoop)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test dynamic indexing
 TEST_F(SwiftShaderTest, DynamicIndexing)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	const std::string vs =
 	    R"(#version 300 es
@@ -705,13 +708,13 @@ TEST_F(SwiftShaderTest, DynamicIndexing)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test vertex attribute location linking
 TEST_F(SwiftShaderTest, AttributeLocation)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	const std::string vs =
 	    R"(#version 300 es
@@ -842,7 +845,7 @@ TEST_F(SwiftShaderTest, AttributeLocation)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test negative layout locations
@@ -894,7 +897,7 @@ TEST_F(SwiftShaderTest, NegativeLocation)
 // Tests clearing of a texture with 'dirty' content.
 TEST_F(SwiftShaderTest, ClearDirtyTexture)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -919,13 +922,13 @@ TEST_F(SwiftShaderTest, ClearDirtyTexture)
 
 	expectFramebufferColor(clear_color, dirty_x, dirty_y);
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Tests copying between textures of different floating-point formats using a framebuffer object.
 TEST_F(SwiftShaderTest, CopyTexImage)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex1 = 1;
 	float green[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
@@ -948,13 +951,13 @@ TEST_F(SwiftShaderTest, CopyTexImage)
 	expectFramebufferColor(green, 3, 4);
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Tests copying to a texture from a pixel buffer object
 TEST_F(SwiftShaderTest, CopyTexImageFromPixelBuffer)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 	const GLuint red = 0xff0000ff;
 	const GLuint green = 0x00ff00ff;
 	const GLuint blue = 0x0000ffff;
@@ -1026,13 +1029,13 @@ TEST_F(SwiftShaderTest, CopyTexImageFromPixelBuffer)
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 2, 0, 2, 4, GL_RGBA, GL_UNSIGNED_BYTE, reinterpret_cast<void *>(offset));
 	GLenum error = glGetError();
 	EXPECT_GLENUM_EQ(GL_INVALID_OPERATION, error);
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Tests reading of half-float textures.
 TEST_F(SwiftShaderTest, ReadHalfFloat)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -1064,13 +1067,13 @@ TEST_F(SwiftShaderTest, ReadHalfFloat)
 	EXPECT_EQ(read_color[1], pixel[1]);
 	EXPECT_EQ(read_color[2], pixel[2]);
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Tests construction of a structure containing a single matrix
 TEST_F(SwiftShaderTest, MatrixInStruct)
 {
-	Initialize(2, false);
+	auto state = Initialize(2, false);
 
 	const std::string fs =
 	    R"(#version 100
@@ -1088,13 +1091,13 @@ TEST_F(SwiftShaderTest, MatrixInStruct)
 	MakeShader(fs, GL_FRAGMENT_SHADER);
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test sampling from a sampler in a struct as a function argument
 TEST_F(SwiftShaderTest, SamplerArrayInStructArrayAsFunctionArg)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -1146,13 +1149,13 @@ TEST_F(SwiftShaderTest, SamplerArrayInStructArrayAsFunctionArg)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test sampling from a sampler in a struct as a function argument
 TEST_F(SwiftShaderTest, AtanCornerCases)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	const std::string vs =
 	    R"(#version 300 es
@@ -1203,12 +1206,12 @@ TEST_F(SwiftShaderTest, AtanCornerCases)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, TransformFeedback_DrawArraysInstanced)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	std::string fs =
 	    R"(#version 300 es
@@ -1235,12 +1238,12 @@ TEST_F(SwiftShaderTest, TransformFeedback_DrawArraysInstanced)
 	glBeginTransformFeedback(GL_POINTS);
 	glDrawArraysInstanced(GL_POINTS, 0, 1, 1);
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, TransformFeedback_BadViewport)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tfBuffer;
 	glGenBuffers(1, &tfBuffer);
@@ -1322,7 +1325,7 @@ TEST_F(SwiftShaderTest, TransformFeedback_BadViewport)
 
 	EXPECT_EQ(2u, primitivesWritten);
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test conditions that should result in a GL_OUT_OF_MEMORY and not crash
@@ -1331,7 +1334,7 @@ TEST_F(SwiftShaderTest, OutOfMemory)
 	// Image sizes are assumed to fit in a 32-bit signed integer by the renderer,
 	// so test that we can't create a 2+ GiB image.
 	{
-		Initialize(3, false);
+		auto state = Initialize(3, false);
 
 		GLuint tex = 1;
 		glBindTexture(GL_TEXTURE_3D, tex);
@@ -1350,14 +1353,14 @@ TEST_F(SwiftShaderTest, OutOfMemory)
 
 		// The spec states that the GL is in an undefined state when GL_OUT_OF_MEMORY
 		// is returned, and the context must be recreated before attempting more rendering.
-		Uninitialize();
+		Uninitialize(state);
 	}
 }
 
 TEST_F(SwiftShaderTest, ViewportBounds)
 {
 	auto doRenderWithViewportSettings = [&](GLint x, GLint y, GLsizei w, GLsizei h) {
-		Initialize(3, false);
+		auto state = Initialize(3, false);
 
 		std::string vs =
 		    R"(#version 300 es
@@ -1389,7 +1392,7 @@ TEST_F(SwiftShaderTest, ViewportBounds)
 		EXPECT_NO_GL_ERROR();
 
 		deleteProgram(ph);
-		Uninitialize();
+		Uninitialize(state);
 	};
 
 	GLsizei w = 100;
@@ -1409,7 +1412,7 @@ TEST_F(SwiftShaderTest, ViewportBounds)
 
 TEST_F(SwiftShaderTest, TextureRectangle_TexImage2D)
 {
-	Initialize(2, false);
+	auto state = Initialize(2, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1438,13 +1441,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_TexImage2D)
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, maxSize, maxSize + 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	EXPECT_GLENUM_EQ(GL_INVALID_VALUE, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using CompressedTexImage2D cannot be used on a retangle texture
 TEST_F(SwiftShaderTest, TextureRectangle_CompressedTexImage2DDisallowed)
 {
-	Initialize(2, false);
+	auto state = Initialize(2, false);
 
 	const char data[128] = { 0 };
 
@@ -1464,13 +1467,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_CompressedTexImage2DDisallowed)
 		EXPECT_GLENUM_EQ(GL_INVALID_ENUM, glGetError());
 	}
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using TexStorage2D to define a rectangle texture (ES3)
 TEST_F(SwiftShaderTest, TextureRectangle_TexStorage2D)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	// Defining one level is allowed
 	{
@@ -1518,13 +1521,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_TexStorage2D)
 	glTexStorage2D(GL_TEXTURE_RECTANGLE_ARB, 1, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 16, 16);
 	EXPECT_GLENUM_EQ(GL_INVALID_ENUM, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test validation of disallowed texture parameters
 TEST_F(SwiftShaderTest, TextureRectangle_TexParameterRestriction)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1566,13 +1569,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_TexParameterRestriction)
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_BASE_LEVEL, 1);
 	EXPECT_GLENUM_EQ(GL_INVALID_OPERATION, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test validation of "level" in FramebufferTexture2D
 TEST_F(SwiftShaderTest, TextureRectangle_FramebufferTexture2DLevel)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1591,13 +1594,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_FramebufferTexture2DLevel)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE_ARB, tex, 1);
 	EXPECT_GLENUM_EQ(GL_INVALID_VALUE, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test sampling from a rectangle texture
 TEST_F(SwiftShaderTest, TextureRectangle_SamplingFromRectangle)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1642,13 +1645,74 @@ TEST_F(SwiftShaderTest, TextureRectangle_SamplingFromRectangle)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
+}
+
+// Test sampling from a rectangle texture
+TEST_F(SwiftShaderTest, MultithreadedRendering)
+{
+	std::vector<std::thread> threads;
+	for(int i = 0; i < 100; i++)
+	{
+		threads.emplace_back([this] {
+			auto state = Initialize(3, false);
+
+			GLuint tex = 1;
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
+			EXPECT_NO_GL_ERROR();
+
+			unsigned char green[4] = { 0, 255, 0, 255 };
+			glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, green);
+			EXPECT_NO_GL_ERROR();
+
+			const std::string vs =
+			    R"(attribute vec4 position;
+		void main()
+		{
+		    gl_Position = vec4(position.xy, 0.0, 1.0);
+		})";
+
+			const std::string fs =
+			    R"(#extension GL_ARB_texture_rectangle : require
+		precision mediump float;
+		uniform sampler2DRect tex;
+		void main()
+		{
+		    gl_FragColor = texture2DRect(tex, vec2(0, 0));
+		})";
+
+			const ProgramHandles ph = createProgram(vs, fs);
+
+			glUseProgram(ph.program);
+			GLint location = glGetUniformLocation(ph.program, "tex");
+			ASSERT_NE(-1, location);
+			glUniform1i(location, 0);
+
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			EXPECT_NO_GL_ERROR();
+
+			drawQuad(ph.program, "tex");
+
+			deleteProgram(ph);
+
+			expectFramebufferColor(green);
+
+			EXPECT_NO_GL_ERROR();
+
+			Uninitialize(state);
+		});
+	}
+	for(auto &thread : threads)
+	{
+		thread.join();
+	}
 }
 
 // Test sampling from a rectangle texture
 TEST_F(SwiftShaderTest, TextureRectangle_SamplingFromRectangleESSL3)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1696,13 +1760,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_SamplingFromRectangleESSL3)
 
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test attaching a rectangle texture and rendering to it.
 TEST_F(SwiftShaderTest, TextureRectangle_RenderToRectangle)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1723,12 +1787,12 @@ TEST_F(SwiftShaderTest, TextureRectangle_RenderToRectangle)
 	expectFramebufferColor(green);
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, TextureRectangle_DefaultSamplerParameters)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1745,13 +1809,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_DefaultSamplerParameters)
 	glGetTexParameteriv(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, &wrapT);
 	EXPECT_GLENUM_EQ(GL_CLAMP_TO_EDGE, wrapT);
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test glCopyTexImage with rectangle textures (ES3)
 TEST_F(SwiftShaderTest, TextureRectangle_CopyTexImage)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1777,13 +1841,13 @@ TEST_F(SwiftShaderTest, TextureRectangle_CopyTexImage)
 	expectFramebufferColor(green);
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test glCopyTexSubImage with rectangle textures (ES3)
 TEST_F(SwiftShaderTest, TextureRectangle_CopyTexSubImage)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint tex = 1;
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
@@ -1811,12 +1875,12 @@ TEST_F(SwiftShaderTest, TextureRectangle_CopyTexSubImage)
 	expectFramebufferColor(green);
 	EXPECT_NO_GL_ERROR();
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, BlitTest)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	GLuint fbos[] = { 0, 0 };
 	glGenFramebuffers(2, fbos);
@@ -1898,12 +1962,12 @@ TEST_F(SwiftShaderTest, BlitTest)
 
 	glDeleteFramebuffers(2, fbos);
 	glDeleteTextures(2, textures);
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, InvalidEnum_TexImage2D)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	const GLenum invalidTarget = GL_TEXTURE_3D;
 
@@ -1927,7 +1991,7 @@ TEST_F(SwiftShaderTest, InvalidEnum_TexImage2D)
 	glCompressedTexSubImage2D(invalidTarget, 0, 0, 0, 0, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, 0, 0);
 	EXPECT_GLENUM_EQ(GL_INVALID_ENUM, glGetError());
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 TEST_F(SwiftShaderTest, CompilerLimits_DeepNestedIfs)
@@ -2199,7 +2263,7 @@ private:
 class IOSurfaceClientBufferTest : public SwiftShaderTest
 {
 protected:
-	EGLSurface createIOSurfacePbuffer(EGLClientBuffer buffer, EGLint width, EGLint height, EGLint plane, GLenum internalFormat, GLenum type) const
+	EGLSurface createIOSurfacePbuffer(const State &state, EGLClientBuffer buffer, EGLint width, EGLint height, EGLint plane, GLenum internalFormat, GLenum type) const
 	{
 		// Make a PBuffer from it using the EGL_ANGLE_iosurface_client_buffer extension
 		const EGLint attribs[] = {
@@ -2221,18 +2285,18 @@ protected:
 			EGL_NONE,
 		};
 
-		EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, buffer, getConfig(), attribs);
+		EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, buffer, state.config, attribs);
 		EXPECT_NE(EGL_NO_SURFACE, pbuffer);
 		return pbuffer;
 	}
 
-	void bindIOSurfaceToTexture(EGLClientBuffer buffer, EGLint width, EGLint height, EGLint plane, GLenum internalFormat, GLenum type, EGLSurface *pbuffer, GLuint *texture) const
+	void bindIOSurfaceToTexture(const State &state, EGLClientBuffer buffer, EGLint width, EGLint height, EGLint plane, GLenum internalFormat, GLenum type, EGLSurface *pbuffer, GLuint *texture) const
 	{
-		*pbuffer = createIOSurfacePbuffer(buffer, width, height, plane, internalFormat, type);
+		*pbuffer = createIOSurfacePbuffer(state, buffer, width, height, plane, internalFormat, type);
 
 		// Bind the pbuffer
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB, *texture);
-		EGLBoolean result = eglBindTexImage(getDisplay(), *pbuffer, EGL_BACK_BUFFER);
+		EGLBoolean result = eglBindTexImage(state.display, *pbuffer, EGL_BACK_BUFFER);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 		EXPECT_NO_EGL_ERROR();
 	}
@@ -2257,14 +2321,14 @@ protected:
 		}
 	}
 
-	void doClearTest(EGLClientBufferWrapper &clientBufferWrapper, GLenum internalFormat, GLenum type, void *data, size_t dataSize)
+	void doClearTest(const State &state, EGLClientBufferWrapper &clientBufferWrapper, GLenum internalFormat, GLenum type, void *data, size_t dataSize)
 	{
 		ASSERT_TRUE(dataSize <= 4);
 
 		// Bind the IOSurface to a texture and clear it.
 		GLuint texture = 1;
 		EGLSurface pbuffer;
-		bindIOSurfaceToTexture(clientBufferWrapper.getClientBuffer(), 1, 1, 0, internalFormat, type, &pbuffer, &texture);
+		bindIOSurfaceToTexture(state, clientBufferWrapper.getClientBuffer(), 1, 1, 0, internalFormat, type, &pbuffer, &texture);
 
 		// glClear the pbuffer
 		GLuint fbo = 2;
@@ -2278,7 +2342,7 @@ protected:
 		doClear(internalFormat, false);
 
 		// Unbind pbuffer and check content.
-		EGLBoolean result = eglReleaseTexImage(getDisplay(), pbuffer, EGL_BACK_BUFFER);
+		EGLBoolean result = eglReleaseTexImage(state.display, pbuffer, EGL_BACK_BUFFER);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 		EXPECT_NO_EGL_ERROR();
 
@@ -2288,12 +2352,12 @@ protected:
 			EXPECT_EQ(color[i], reinterpret_cast<unsigned char *>(data)[i]);
 		}
 
-		result = eglDestroySurface(getDisplay(), pbuffer);
+		result = eglDestroySurface(state.display, pbuffer);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 		EXPECT_NO_EGL_ERROR();
 	}
 
-	void doSampleTest(EGLClientBufferWrapper &clientBufferWrapper, GLenum internalFormat, GLenum type, void *data, size_t dataSize)
+	void doSampleTest(const State &state, EGLClientBufferWrapper &clientBufferWrapper, GLenum internalFormat, GLenum type, void *data, size_t dataSize)
 	{
 		ASSERT_TRUE(dataSize <= 4);
 
@@ -2302,7 +2366,7 @@ protected:
 		// Bind the IOSurface to a texture and clear it.
 		GLuint texture = 1;
 		EGLSurface pbuffer;
-		bindIOSurfaceToTexture(clientBufferWrapper.getClientBuffer(), 1, 1, 0, internalFormat, type, &pbuffer, &texture);
+		bindIOSurfaceToTexture(state, clientBufferWrapper.getClientBuffer(), 1, 1, 0, internalFormat, type, &pbuffer, &texture);
 
 		doClear(internalFormat, true);
 
@@ -2331,7 +2395,7 @@ protected:
 		EXPECT_NO_GL_ERROR();
 
 		// Unbind pbuffer and check content.
-		EGLBoolean result = eglReleaseTexImage(getDisplay(), pbuffer, EGL_BACK_BUFFER);
+		EGLBoolean result = eglReleaseTexImage(state.display, pbuffer, EGL_BACK_BUFFER);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 		EXPECT_NO_EGL_ERROR();
 
@@ -2347,148 +2411,148 @@ protected:
 // Tests for the EGL_ANGLE_iosurface_client_buffer extension
 TEST_F(IOSurfaceClientBufferTest, RenderToBGRA8888IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[4] = { 3, 2, 1, 4 };
-		doClearTest(clientBufferWrapper, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data, 4);
+		doClearTest(state, clientBufferWrapper, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data, 4);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test reading from BGRA8888 IOSurfaces
 TEST_F(IOSurfaceClientBufferTest, ReadFromBGRA8888IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[4] = { 3, 2, 1, 4 };
-		doSampleTest(clientBufferWrapper, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data, 4);
+		doSampleTest(state, clientBufferWrapper, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data, 4);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using RGBX8888 IOSurfaces for rendering
 TEST_F(IOSurfaceClientBufferTest, RenderToRGBX8888IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[3] = { 1, 2, 3 };
-		doClearTest(clientBufferWrapper, GL_RGB, GL_UNSIGNED_BYTE, data, 3);
+		doClearTest(state, clientBufferWrapper, GL_RGB, GL_UNSIGNED_BYTE, data, 3);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test reading from RGBX8888 IOSurfaces
 TEST_F(IOSurfaceClientBufferTest, ReadFromRGBX8888IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[3] = { 1, 2, 3 };
-		doSampleTest(clientBufferWrapper, GL_RGB, GL_UNSIGNED_BYTE, data, 3);
+		doSampleTest(state, clientBufferWrapper, GL_RGB, GL_UNSIGNED_BYTE, data, 3);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using RG88 IOSurfaces for rendering
 TEST_F(IOSurfaceClientBufferTest, RenderToRG88IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[2] = { 1, 2 };
-		doClearTest(clientBufferWrapper, GL_RG, GL_UNSIGNED_BYTE, data, 2);
+		doClearTest(state, clientBufferWrapper, GL_RG, GL_UNSIGNED_BYTE, data, 2);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test reading from RG88 IOSurfaces
 TEST_F(IOSurfaceClientBufferTest, ReadFromRG88IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[2] = { 1, 2 };
-		doSampleTest(clientBufferWrapper, GL_RG, GL_UNSIGNED_BYTE, data, 2);
+		doSampleTest(state, clientBufferWrapper, GL_RG, GL_UNSIGNED_BYTE, data, 2);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using R8 IOSurfaces for rendering
 TEST_F(IOSurfaceClientBufferTest, RenderToR8IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[1] = { 1 };
-		doClearTest(clientBufferWrapper, GL_RED, GL_UNSIGNED_BYTE, data, 1);
+		doClearTest(state, clientBufferWrapper, GL_RED, GL_UNSIGNED_BYTE, data, 1);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test reading from R8 IOSurfaces
 TEST_F(IOSurfaceClientBufferTest, ReadFromR8IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		unsigned char data[1] = { 1 };
-		doSampleTest(clientBufferWrapper, GL_RED, GL_UNSIGNED_BYTE, data, 1);
+		doSampleTest(state, clientBufferWrapper, GL_RED, GL_UNSIGNED_BYTE, data, 1);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test using R16 IOSurfaces for rendering
 TEST_F(IOSurfaceClientBufferTest, RenderToR16IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		uint16_t data[1] = { 257 };
-		doClearTest(clientBufferWrapper, GL_R16UI, GL_UNSIGNED_SHORT, data, 2);
+		doClearTest(state, clientBufferWrapper, GL_R16UI, GL_UNSIGNED_SHORT, data, 2);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test reading from R8 IOSurfaces
 TEST_F(IOSurfaceClientBufferTest, ReadFromR16IOSurface)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{  // EGLClientBufferWrapper scope
 		EGLClientBufferWrapper clientBufferWrapper;
 		uint16_t data[1] = { 257 };
-		doSampleTest(clientBufferWrapper, GL_R16UI, GL_UNSIGNED_SHORT, data, 1);
+		doSampleTest(state, clientBufferWrapper, GL_R16UI, GL_UNSIGNED_SHORT, data, 1);
 	}  // end of EGLClientBufferWrapper scope
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test the validation errors for missing attributes for eglCreatePbufferFromClientBuffer with
 // IOSurface
 TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{
 		EGLClientBufferWrapper clientBufferWrapper(10, 10);
@@ -2514,10 +2578,10 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_NE(EGL_NO_SURFACE, pbuffer);
 
-			EGLBoolean result = eglDestroySurface(getDisplay(), pbuffer);
+			EGLBoolean result = eglDestroySurface(state.display, pbuffer);
 			EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 			EXPECT_NO_EGL_ERROR();
 		}
@@ -2541,7 +2605,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_PARAMETER, eglGetError());
 		}
@@ -2565,7 +2629,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_PARAMETER, eglGetError());
 		}
@@ -2589,7 +2653,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_PARAMETER, eglGetError());
 		}
@@ -2614,7 +2678,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_MATCH, eglGetError());
 		}
@@ -2638,7 +2702,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_PARAMETER, eglGetError());
 		}
@@ -2663,7 +2727,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_MATCH, eglGetError());
 		}
@@ -2687,19 +2751,19 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationMissingAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_PARAMETER, eglGetError());
 		}
 	}
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test the validation errors for bad parameters for eglCreatePbufferFromClientBuffer with IOSurface
 TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{
 		EGLClientBufferWrapper clientBufferWrapper(10, 10);
@@ -2725,10 +2789,10 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_NE(EGL_NO_SURFACE, pbuffer);
 
-			EGLBoolean result = eglDestroySurface(getDisplay(), pbuffer);
+			EGLBoolean result = eglDestroySurface(state.display, pbuffer);
 			EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 			EXPECT_NO_EGL_ERROR();
 		}
@@ -2754,7 +2818,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2780,7 +2844,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2806,7 +2870,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2833,7 +2897,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2859,7 +2923,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2885,7 +2949,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2912,7 +2976,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2938,7 +3002,7 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
@@ -2964,29 +3028,29 @@ TEST_F(IOSurfaceClientBufferTest, NegativeValidationBadAttributes)
 				EGL_NONE,
 			};
 
-			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(getDisplay(), EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), getConfig(), attribs);
+			EGLSurface pbuffer = eglCreatePbufferFromClientBuffer(state.display, EGL_IOSURFACE_ANGLE, clientBufferWrapper.getClientBuffer(), state.config, attribs);
 			EXPECT_EQ(EGL_NO_SURFACE, pbuffer);
 			EXPECT_EQ(EGL_BAD_ATTRIBUTE, eglGetError());
 		}
 	}
 
-	Uninitialize();
+	Uninitialize(state);
 }
 
 // Test IOSurface pbuffers can be made current
 TEST_F(IOSurfaceClientBufferTest, MakeCurrentAllowed)
 {
-	Initialize(3, false);
+	auto state = Initialize(3, false);
 
 	{
 		EGLClientBufferWrapper clientBufferWrapper(10, 10);
 
-		EGLSurface pbuffer = createIOSurfacePbuffer(clientBufferWrapper.getClientBuffer(), 10, 10, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE);
+		EGLSurface pbuffer = createIOSurfacePbuffer(state, clientBufferWrapper.getClientBuffer(), 10, 10, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE);
 
-		EGLBoolean result = eglMakeCurrent(getDisplay(), pbuffer, pbuffer, getContext());
+		EGLBoolean result = eglMakeCurrent(state.display, pbuffer, pbuffer, state.context);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, result);
 		EXPECT_NO_EGL_ERROR();
 	}
 
-	Uninitialize();
+	Uninitialize(state);
 }

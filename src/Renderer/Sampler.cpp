@@ -24,8 +24,8 @@
 
 namespace sw
 {
-	FilterType Sampler::maximumTextureFilterQuality = FILTER_LINEAR;
-	MipmapType Sampler::maximumMipmapFilterQuality = MIPMAP_POINT;
+	std::atomic<FilterType> Sampler::maximumTextureFilterQuality = {FILTER_LINEAR};
+	std::atomic<MipmapType> Sampler::maximumMipmapFilterQuality = {MIPMAP_POINT};
 
 	Sampler::State::State()
 	{
@@ -255,12 +255,12 @@ namespace sw
 
 	void Sampler::setTextureFilter(FilterType textureFilter)
 	{
-		this->textureFilter = (FilterType)min(textureFilter, maximumTextureFilterQuality);
+		this->textureFilter = (FilterType)min(textureFilter, maximumTextureFilterQuality.load());
 	}
 
 	void Sampler::setMipmapFilter(MipmapType mipmapFilter)
 	{
-		mipmapFilterState = (MipmapType)min(mipmapFilter, maximumMipmapFilterQuality);
+		mipmapFilterState = (MipmapType)min(mipmapFilter, maximumMipmapFilterQuality.load());
 	}
 
 	void Sampler::setGatherEnable(bool enable)
