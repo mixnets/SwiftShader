@@ -22,15 +22,16 @@
 #include "Shader/Constants.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
 #include <cstring>
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern TransparencyAntialiasing transparencyAntialiasing;
-	extern bool perspectiveCorrection;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<TransparencyAntialiasing> transparencyAntialiasing;
+	extern std::atomic<bool> perspectiveCorrection;
 
-	bool precachePixel = false;
+	std::atomic<bool> precachePixel = {false};
 
 	uint32_t PixelProcessor::States::computeHash()
 	{
@@ -969,7 +970,7 @@ namespace sw
 		{
 			state.alphaCompareMode = context->alphaCompareMode;
 
-			state.transparencyAntialiasing = context->getMultiSampleCount() > 1 ? transparencyAntialiasing : TRANSPARENCY_NONE;
+			state.transparencyAntialiasing = context->getMultiSampleCount() > 1 ? transparencyAntialiasing.load() : TRANSPARENCY_NONE;
 		}
 
 		state.depthWriteEnable = context->depthWriteActive();

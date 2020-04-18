@@ -18,7 +18,7 @@
 
 namespace sw
 {
-	extern bool forceWindowed;
+	extern std::atomic<bool> forceWindowed;
 
 	GUID secondaryDisplay = {0};
 

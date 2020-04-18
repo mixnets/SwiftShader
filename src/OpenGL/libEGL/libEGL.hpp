@@ -20,6 +20,8 @@
 
 #include "Common/SharedLibrary.hpp"
 
+#include <mutex>
+
 class LibEGLexports
 {
 public:
@@ -90,6 +92,7 @@ public:
 private:
 	LibEGLexports *loadExports()
 	{
+		std::unique_lock<std::mutex> lock(mutex);
 		if(!loadLibraryAttempted && !libEGL)
 		{
 			#if defined(_WIN32)
@@ -136,6 +139,7 @@ private:
 	void *libEGL = nullptr;
 	LibEGLexports *libEGLexports = nullptr;
 	bool loadLibraryAttempted = false;
+	std::mutex mutex;
 };
 
 #endif   // libEGL_hpp

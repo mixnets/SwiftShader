@@ -22,12 +22,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <atomic>
+
 #undef max
 #undef min
 
 namespace sw
 {
-	extern bool secondaryColor;
+	extern std::atomic<bool> secondaryColor;
 
 	VertexPipeline::VertexPipeline(const VertexProcessor::State &state) : VertexRoutine(state, 0)
 	{

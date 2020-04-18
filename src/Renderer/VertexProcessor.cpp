@@ -22,11 +22,12 @@
 #include "Common/Math.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
 #include <cstring>
 
 namespace sw
 {
-	bool precacheVertex = false;
+	std::atomic<bool> precacheVertex = {false};
 
 	void VertexCache::clear()
 	{

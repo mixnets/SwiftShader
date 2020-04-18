@@ -20,11 +20,13 @@
 #include "Common/Math.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
+
 namespace sw
 {
-	extern bool veryEarlyDepthTest;
-	extern bool complementaryDepthBuffer;
-	extern bool fullPixelPositionRegister;
+	extern std::atomic<bool> veryEarlyDepthTest;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<bool> fullPixelPositionRegister;
 
 	extern int clusterCount;
 

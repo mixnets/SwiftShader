@@ -21,10 +21,12 @@
 #include "Common/Half.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
+
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
+	extern std::atomic<bool> halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
+	extern std::atomic<bool> symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
 
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader)
 		: v(shader && shader->indirectAddressableInput),

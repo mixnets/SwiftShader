@@ -35,9 +35,9 @@
 
 namespace sw
 {
-	extern bool quadLayoutEnabled;
-	extern bool complementaryDepthBuffer;
-	extern TranscendentalPrecision logPrecision;
+	extern std::atomic<bool> quadLayoutEnabled;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<TranscendentalPrecision> logPrecision;
 
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;

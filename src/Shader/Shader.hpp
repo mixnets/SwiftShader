@@ -17,6 +17,7 @@
 
 #include "Common/Types.hpp"
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -664,7 +665,7 @@ namespace sw
 
 	private:
 		const int serialID;
-		static volatile int serialCounter;
+		static std::atomic<int> serialCounter;
 
 		bool dynamicBranching;
 		bool containsBreak;
