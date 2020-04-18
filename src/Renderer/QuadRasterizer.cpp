@@ -22,6 +22,8 @@
 
 namespace sw
 {
+	std::mutex Rasterizer::mutex;
+
 	extern bool veryEarlyDepthTest;
 	extern bool complementaryDepthBuffer;
 	extern bool fullPixelPositionRegister;
