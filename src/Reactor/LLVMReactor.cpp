@@ -59,13 +59,10 @@ extern "C" void X86CompilationCallback()
 }
 #endif
 
-#if !LLVM_ENABLE_THREADS
-#	error "LLVM_ENABLE_THREADS needs to be enabled"
-#endif
-
 namespace {
 
-thread_local std::unique_ptr<rr::JITBuilder> jit;
+std::unique_ptr<rr::JITBuilder> jit;
+std::mutex codegenMutex;
 
 // Default configuration settings. Must be accessed under mutex lock.
 std::mutex defaultConfigLock;
@@ -602,6 +599,8 @@ static ::llvm::Function *createFunction(const char *name, ::llvm::Type *retTy, c
 
 Nucleus::Nucleus()
 {
+	::codegenMutex.lock();  // Reactor and LLVM are currently not thread safe
+
 	ASSERT(jit == nullptr);
 	jit.reset(new JITBuilder(Nucleus::getDefaultConfig()));
 }
@@ -609,6 +608,7 @@ Nucleus::Nucleus()
 Nucleus::~Nucleus()
 {
 	jit.reset();
+	::codegenMutex.unlock();
 }
 
 void Nucleus::setDefaultConfig(const Config &cfg)
