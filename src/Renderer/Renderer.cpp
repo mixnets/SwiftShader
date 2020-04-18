@@ -31,6 +31,8 @@
 #include "Common/Timer.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
+
 #undef max
 
 bool disableServer = true;
@@ -42,35 +44,35 @@ unsigned int maxPrimitives = 1 << 21;
 
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
-	extern bool booleanFaceRegister;
-	extern bool fullPixelPositionRegister;
-	extern bool leadingVertexFirst;         // Flat shading uses first vertex, else last
-	extern bool secondaryColor;             // Specular lighting is applied after texturing
-	extern bool colorsDefaultToZero;
+	extern std::atomic<bool> halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
+	extern std::atomic<bool> symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
+	extern std::atomic<bool> booleanFaceRegister;
+	extern std::atomic<bool> fullPixelPositionRegister;
+	extern std::atomic<bool> leadingVertexFirst;         // Flat shading uses first vertex, else last
+	extern std::atomic<bool> secondaryColor;             // Specular lighting is applied after texturing
+	extern std::atomic<bool> colorsDefaultToZero;
 
-	extern bool forceWindowed;
-	extern bool complementaryDepthBuffer;
-	extern bool postBlendSRGB;
-	extern bool exactColorRounding;
-	extern TransparencyAntialiasing transparencyAntialiasing;
-	extern bool forceClearRegisters;
+	extern std::atomic<bool> forceWindowed;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<bool> postBlendSRGB;
+	extern std::atomic<bool> exactColorRounding;
+	extern std::atomic<TransparencyAntialiasing> transparencyAntialiasing;
+	extern std::atomic<bool> forceClearRegisters;
 
-	extern bool precacheVertex;
-	extern bool precacheSetup;
-	extern bool precachePixel;
+	extern std::atomic<bool> precacheVertex;
+	extern std::atomic<bool> precacheSetup;
+	extern std::atomic<bool> precachePixel;
 
 	static const int batchSize = 128;
 	AtomicInt threadCount(1);
 	AtomicInt Renderer::unitCount(1);
 	AtomicInt Renderer::clusterCount(1);
 
-	TranscendentalPrecision logPrecision = ACCURATE;
-	TranscendentalPrecision expPrecision = ACCURATE;
-	TranscendentalPrecision rcpPrecision = ACCURATE;
-	TranscendentalPrecision rsqPrecision = ACCURATE;
-	bool perspectiveCorrection = true;
+	std::atomic<TranscendentalPrecision> logPrecision = {ACCURATE};
+	std::atomic<TranscendentalPrecision> expPrecision = {ACCURATE};
+	std::atomic<TranscendentalPrecision> rcpPrecision = {ACCURATE};
+	std::atomic<TranscendentalPrecision> rsqPrecision = {ACCURATE};
+	std::atomic<bool> perspectiveCorrection = {true};
 
 	static void setGlobalRenderingSettings(Conventions conventions, bool exactColorRounding)
 	{

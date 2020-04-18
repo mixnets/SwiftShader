@@ -30,7 +30,7 @@
 
 namespace sw
 {
-	volatile int Shader::serialCounter = 1;
+	std::atomic<int> Shader::serialCounter = {1};
 
 	Shader::Opcode Shader::OPCODE_DP(int i)
 	{

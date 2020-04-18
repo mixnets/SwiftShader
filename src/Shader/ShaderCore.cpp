@@ -21,10 +21,10 @@
 
 namespace sw
 {
-	extern TranscendentalPrecision logPrecision;
-	extern TranscendentalPrecision expPrecision;
-	extern TranscendentalPrecision rcpPrecision;
-	extern TranscendentalPrecision rsqPrecision;
+	extern std::atomic<TranscendentalPrecision> logPrecision;
+	extern std::atomic<TranscendentalPrecision> expPrecision;
+	extern std::atomic<TranscendentalPrecision> rcpPrecision;
+	extern std::atomic<TranscendentalPrecision> rsqPrecision;
 
 	Vector4s::Vector4s()
 	{
@@ -328,10 +328,10 @@ namespace sw
 		// cos(x) = sin(x + pi/2)
 		Float4 y = x + Float4(1.57079632e+0f);
 		auto cos = sine(y, pp);
-		
+
 		// TODO(b/151461290): Fix precision loss instead of clamping.
 		cos = clamp(cos, Float4(-1.0f), Float4(1.0f));
-		
+
 		return cos;
 	}
 
