@@ -46,11 +46,11 @@ namespace sw
 		IEEE		// 2^-23
 	};
 
-	extern TranscendentalPrecision logPrecision;
-	extern TranscendentalPrecision expPrecision;
-	extern TranscendentalPrecision rcpPrecision;
-	extern TranscendentalPrecision rsqPrecision;
-	extern bool perspectiveCorrection;
+	extern std::atomic<TranscendentalPrecision> logPrecision;
+	extern std::atomic<TranscendentalPrecision> expPrecision;
+	extern std::atomic<TranscendentalPrecision> rcpPrecision;
+	extern std::atomic<TranscendentalPrecision> rsqPrecision;
+	extern std::atomic<bool> perspectiveCorrection;
 
 	struct Conventions
 	{

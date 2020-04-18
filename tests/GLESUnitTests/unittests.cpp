@@ -31,6 +31,8 @@
 
 #include <string.h>
 #include <cstdint>
+#include <thread>
+#include <vector>
 
 #define EXPECT_GLENUM_EQ(expected, actual) EXPECT_EQ(static_cast<GLenum>(expected), static_cast<GLenum>(actual))
 
@@ -121,8 +123,8 @@ protected:
 		};
 
 		EGLint num_config = -1;
-		EGLBoolean success = eglChooseConfig(display, configAttributes, &config, 1, &num_config);
 		EXPECT_NO_EGL_ERROR();
+		EGLBoolean success = eglChooseConfig(display, configAttributes, &config, 1, &num_config);
 		EXPECT_EQ(num_config, 1);
 		EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 
@@ -1643,6 +1645,150 @@ TEST_F(SwiftShaderTest, TextureRectangle_SamplingFromRectangle)
 	EXPECT_NO_GL_ERROR();
 
 	Uninitialize();
+}
+
+// Test sampling from a rectangle texture
+TEST_F(SwiftShaderTest, MultithreadedRendering)
+{
+	auto display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+	EGLint major;
+	EGLint minor;
+	eglInitialize(display, &major, &minor);
+
+	std::vector<std::thread> threads;
+	for(int i = 0; i < 100; i++)
+	{
+		threads.emplace_back([this, display] {
+			eglBindAPI(EGL_OPENGL_ES_API);
+			EXPECT_NO_EGL_ERROR();
+
+			const EGLint configAttributes[] = {
+				EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
+				EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+				EGL_ALPHA_SIZE, 8,
+				EGL_NONE
+			};
+
+			EGLConfig config = nullptr;
+			EGLint num_config = -1;
+			EGLBoolean success = eglChooseConfig(display, configAttributes, &config, 1, &num_config);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ(num_config, 1);
+			EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
+
+			EGLint surfaceAttributes[] = {
+				EGL_WIDTH, 1920,
+				EGL_HEIGHT, 1080,
+				EGL_NONE
+			};
+
+			EGLSurface surface = eglCreatePbufferSurface(display, config, surfaceAttributes);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_NE(EGL_NO_SURFACE, surface);
+
+			EGLint contextAttributes[] = {
+				EGL_CONTEXT_CLIENT_VERSION, 2,
+				EGL_NONE
+			};
+
+			EGLContext context = eglCreateContext(display, config, NULL, contextAttributes);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_NE(EGL_NO_CONTEXT, context);
+
+			success = eglMakeCurrent(display, surface, surface, context);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
+
+			EXPECT_NO_GL_ERROR();
+
+			GLuint tex = 1;
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
+			EXPECT_NO_GL_ERROR();
+
+			unsigned char green[4] = { 0, 255, 0, 255 };
+			glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, green);
+			EXPECT_NO_GL_ERROR();
+
+			const std::string vs =
+				R"(#version 300 es
+				in vec4 position;
+				void main()
+				{
+					gl_Position = vec4(position.xy, 0.0, 1.0);
+				})";
+
+			const std::string fs =
+				R"(#version 300 es
+				#extension GL_ARB_texture_rectangle : require
+				precision mediump float;
+				uniform sampler2DRect tex;
+				out vec4 fragColor;
+				void main()
+				{
+					fragColor = texture(tex, vec2(0, 0));
+				})";
+
+			const ProgramHandles ph = createProgram(vs, fs);
+
+			glUseProgram(ph.program);
+			GLint location = glGetUniformLocation(ph.program, "tex");
+			ASSERT_NE(-1, location);
+			glUniform1i(location, 0);
+
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			EXPECT_NO_GL_ERROR();
+
+			drawQuad(ph.program, "tex");
+
+			drawQuad(ph.program, "tex");
+
+			drawQuad(ph.program, "tex");
+
+			deleteProgram(ph);
+
+			expectFramebufferColor(green);
+
+			EXPECT_NO_GL_ERROR();
+
+			success = eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
+
+			EGLDisplay currentDisplay = eglGetCurrentDisplay();
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ(EGL_NO_DISPLAY, currentDisplay);
+
+			EGLSurface currentDrawSurface = eglGetCurrentSurface(EGL_DRAW);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ(EGL_NO_SURFACE, currentDrawSurface);
+
+			EGLSurface currentReadSurface = eglGetCurrentSurface(EGL_READ);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ(EGL_NO_SURFACE, currentReadSurface);
+
+			EGLContext currentContext = eglGetCurrentContext();
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ(EGL_NO_CONTEXT, currentContext);
+
+			success = eglDestroyContext(display, context);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
+
+			success = eglDestroySurface(display, surface);
+			EXPECT_NO_EGL_ERROR();
+			EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
+		});
+	}
+	for(auto &thread : threads)
+	{
+		thread.join();
+	}
+
+	auto success = eglTerminate(display);
+	EXPECT_NO_EGL_ERROR();
+	EXPECT_EQ((EGLBoolean)EGL_TRUE, success);
 }
 
 // Test sampling from a rectangle texture
