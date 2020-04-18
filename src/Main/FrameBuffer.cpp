@@ -27,7 +27,7 @@
 
 namespace sw
 {
-	extern bool forceWindowed;
+	extern std::atomic<bool> forceWindowed;
 
 	FrameBuffer::Cursor FrameBuffer::cursor = {};
 	bool FrameBuffer::topLeftOrigin = false;

@@ -17,6 +17,8 @@
 #include "Constants.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
+
 namespace
 {
 	void applySwizzle(sw::SwizzleType swizzle, sw::Short4& s, const sw::Vector4s& c)
@@ -50,7 +52,7 @@ namespace
 
 namespace sw
 {
-	extern bool colorsDefaultToZero;
+	extern std::atomic<bool> colorsDefaultToZero;
 
 	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state) : constants(constants), state(state)
 	{

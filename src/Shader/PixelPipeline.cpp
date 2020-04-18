@@ -16,9 +16,11 @@
 #include "SamplerCore.hpp"
 #include "Renderer/Renderer.hpp"
 
+#include <atomic>
+
 namespace sw
 {
-	extern bool postBlendSRGB;
+	extern std::atomic<bool> postBlendSRGB;
 
 	void PixelPipeline::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{

@@ -22,14 +22,15 @@
 #include "Shader/Constants.hpp"
 #include "Common/Debug.hpp"
 
+#include <atomic>
 #include <cstring>
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern bool fullPixelPositionRegister;
+	extern std::atomic<bool> complementaryDepthBuffer;
+	extern std::atomic<bool> fullPixelPositionRegister;
 
-	bool precacheSetup = false;
+	std::atomic<bool> precacheSetup = {false};
 
 	uint32_t SetupProcessor::States::computeHash()
 	{
