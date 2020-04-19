@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e87913d5_8bccb2e6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-19T08:07:03Z",
+      "side": 1,
+      "message": "Has this been discussed with Khronos? Entry points starting with \u0027vk\u0027 or \u0027vk_icd\u0027 are restricted and should be part of an approved extension, as far as I\u0027m aware.",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f969b9e4_a235cd82",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-19T08:07:03Z",
+      "side": 1,
+      "message": "Why would that be an issue?",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 63
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d29186b7_89c1d233",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-19T08:07:03Z",
+      "side": 1,
+      "message": "I\u0027d recommend opening a bug about this to document the need for this and have a place for follow-up discussion.",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 9
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
