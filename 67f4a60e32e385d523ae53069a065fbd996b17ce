@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "215384ac_60f37af3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 34792
+      },
+      "writtenOn": "2020-04-19T17:12:43Z",
+      "side": 1,
+      "message": "Not yet. Like most of the Fuchsia extensions, they are still considered in-development.",
+      "parentUuid": "e87913d5_8bccb2e6",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f969b9e4_a235cd82",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "c7e5036c_39d06e14",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 34792
+      },
+      "writtenOn": "2020-04-19T17:12:43Z",
+      "side": 1,
+      "message": "ABI compatibility; libfdio.so is not provided by the system and the interface isn\u0027t stable.  If the ICD depended on libfdio it would be built against one version, but then at runtime the linkage would try to be satisfied by the library packaged by the app.\n\nhttps://fuchsia.dev/fuchsia-src/concepts/system/abi/system#vulkan_icd",
+      "parentUuid": "f969b9e4_a235cd82",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 63
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d29186b7_89c1d233",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2020-04-19T08:07:03Z",
       "side": 1,
       "message": "I\u0027d recommend opening a bug about this to document the need for this and have a place for follow-up discussion.",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 9
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2e5e53d_89975646",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 34792
+      },
+      "writtenOn": "2020-04-19T17:12:43Z",
+      "side": 1,
+      "message": "If you want to reference the relevant Fuchsia side bug it\u0027s fxb/13095.",
+      "parentUuid": "d29186b7_89c1d233",
       "range": {
         "startLine": 20,
         "startChar": 5,
