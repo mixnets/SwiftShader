@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01ca3573_ac4cf185",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-19T07:54:23Z",
+      "side": 1,
+      "message": "Are you sure you want to ever abort? I don\u0027t think a graphics driver should decide to terminate a process. It could be important that it continues and gets informed about unexpected events in more benign ways. The Vulkan spec also mentions in several cases that errors and UB do not result in program termination.",
+      "range": {
+        "startLine": 107,
+        "startChar": 3,
+        "endLine": 107,
+        "endChar": 8
+      },
+      "revId": "098c1d3bc29b14ed6b3e8d8175e21b422666be77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
