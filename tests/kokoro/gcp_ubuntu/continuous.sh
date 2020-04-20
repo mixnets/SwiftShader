@@ -5,42 +5,49 @@ cd git/SwiftShader
 set -e # Fail on any error.
 set -x # Display commands being run.
 
-# Specify we want to build with GCC 7
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+cmake --version
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
 sudo apt-get update
-sudo apt-get install -y gcc-7 g++-7
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-sudo update-alternatives --set gcc "/usr/bin/gcc-7"
+sudo apt-get install -y cmake
+cmake --version
 
-mkdir -p build && cd build
+# # Specify we want to build with GCC 7
+# sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+# sudo apt-get update
+# sudo apt-get install -y gcc-7 g++-7
+# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+# sudo update-alternatives --set gcc "/usr/bin/gcc-7"
 
-if [[ -z "${REACTOR_BACKEND}" ]]; then
-  REACTOR_BACKEND="LLVM"
-fi
+# mkdir -p build && cd build
 
-# Lower the amount of debug info, to reduce Kokoro build times.
-LESS_DEBUG_INFO=1
+# if [[ -z "${REACTOR_BACKEND}" ]]; then
+#   REACTOR_BACKEND="LLVM"
+# fi
 
-cmake .. \
-    "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
-    "-DREACTOR_BACKEND=${REACTOR_BACKEND}" \
-    "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
-    "-DREACTOR_VERIFY_LLVM_IR=1" \
-    "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
-cmake --build . -- -j $(nproc)
+# # Lower the amount of debug info, to reduce Kokoro build times.
+# LESS_DEBUG_INFO=1
 
-# Run unit tests
+# cmake .. \
+#     "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
+#     "-DREACTOR_BACKEND=${REACTOR_BACKEND}" \
+#     "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
+#     "-DREACTOR_VERIFY_LLVM_IR=1" \
+#     "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
+# cmake --build . -- -j $(nproc)
 
-cd .. # Some tests must be run from project root
+# # Run unit tests
 
-build/ReactorUnitTests
-build/gles-unittests
-build/system-unittests
-build/vk-unittests
+# cd .. # Some tests must be run from project root
 
-# Incrementally build and run rr::Print unit tests
-cd build
-cmake .. "-DREACTOR_ENABLE_PRINT=1"
-cmake --build . --target ReactorUnitTests -- -j $(nproc)
-cd ..
-build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
+# build/ReactorUnitTests
+# build/gles-unittests
+# build/system-unittests
+# build/vk-unittests
+
+# # Incrementally build and run rr::Print unit tests
+# cd build
+# cmake .. "-DREACTOR_ENABLE_PRINT=1"
+# cmake --build . --target ReactorUnitTests -- -j $(nproc)
+# cd ..
+# build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
