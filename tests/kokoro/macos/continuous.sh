@@ -5,50 +5,54 @@ set -e
 # Display commands being run.
 set -x
 
-cd git/SwiftShader
+cmake --version
+brew upgrade cmake
+cmake --version
 
-mkdir -p build && cd build
+# cd git/SwiftShader
 
-if [[ -z "${REACTOR_BACKEND}" ]]; then
-  REACTOR_BACKEND="LLVM"
-fi
+# mkdir -p build && cd build
 
-if [[ "${LLVM_VERSION}" == "10.0" ]]; then
-  echo "TODO(b/152339534): LLVM 10 migration is still in progress"
-  exit 0
-fi
+# if [[ -z "${REACTOR_BACKEND}" ]]; then
+#   REACTOR_BACKEND="LLVM"
+# fi
 
-# Lower the amount of debug info, to reduce Kokoro build times.
-LESS_DEBUG_INFO=1
+# if [[ "${LLVM_VERSION}" == "10.0" ]]; then
+#   echo "TODO(b/152339534): LLVM 10 migration is still in progress"
+#   exit 0
+# fi
 
-# Disable ASAN checks for debug builds, to reduce Kokoro build times.
-# ASAN builds are recommended to be optimized.
-ASAN="ON"
-if [[ "${BUILD_TYPE}" == "Debug" ]]; then
-  ASAN="OFF"
-fi
+# # Lower the amount of debug info, to reduce Kokoro build times.
+# LESS_DEBUG_INFO=1
 
-cmake .. \
-    "-DSWIFTSHADER_ASAN=${ASAN}" \
-    "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
-    "-DREACTOR_BACKEND=${REACTOR_BACKEND}" \
-    "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
-    "-DREACTOR_VERIFY_LLVM_IR=1" \
-    "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
-cmake --build . -- -j$(sysctl -n hw.logicalcpu)
+# # Disable ASAN checks for debug builds, to reduce Kokoro build times.
+# # ASAN builds are recommended to be optimized.
+# ASAN="ON"
+# if [[ "${BUILD_TYPE}" == "Debug" ]]; then
+#   ASAN="OFF"
+# fi
 
-# Run unit tests
+# cmake .. \
+#     "-DSWIFTSHADER_ASAN=${ASAN}" \
+#     "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
+#     "-DREACTOR_BACKEND=${REACTOR_BACKEND}" \
+#     "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
+#     "-DREACTOR_VERIFY_LLVM_IR=1" \
+#     "-DLESS_DEBUG_INFO=${LESS_DEBUG_INFO}"
+# cmake --build . -- -j$(sysctl -n hw.logicalcpu)
 
-cd .. # Some tests must be run from project root
+# # Run unit tests
 
-build/ReactorUnitTests
-build/gles-unittests
-build/system-unittests
-build/vk-unittests
+# cd .. # Some tests must be run from project root
 
-# Incrementally build and run rr::Print unit tests
-cd build
-cmake .. "-DREACTOR_ENABLE_PRINT=1"
-cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
-cd ..
-build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
+# build/ReactorUnitTests
+# build/gles-unittests
+# build/system-unittests
+# build/vk-unittests
+
+# # Incrementally build and run rr::Print unit tests
+# cd build
+# cmake .. "-DREACTOR_ENABLE_PRINT=1"
+# cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
+# cd ..
+# build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
