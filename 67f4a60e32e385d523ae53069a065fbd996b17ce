@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9c92ff80_1158bceb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-20T15:50:35Z",
+      "side": 1,
+      "message": "Thanks, I\u0027ve uploaded a new patch that adds comments in libVulkan that explains the issue and points to tracking bugs (both for the vk_icdInitializerConnectToServiceCallback() definitions, and the upstream-to-Khronos one).",
+      "parentUuid": "215384ac_60f37af3",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f969b9e4_a235cd82",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
