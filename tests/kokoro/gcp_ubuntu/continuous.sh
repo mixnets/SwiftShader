@@ -5,10 +5,18 @@ cd git/SwiftShader
 set -e # Fail on any error.
 set -x # Display commands being run.
 
+# Update CMake
+sudo aptitude purge -y cmake
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
+sudo aptitude -qq update
+sudo aptitude -qq install -y cmake
+cmake --version
+
 # Specify we want to build with GCC 7
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt-get update
-sudo aptitude install -y gcc-7 g++-7
+sudo aptitude -qq update
+sudo aptitude -qq install -y gcc-7 g++-7
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 sudo update-alternatives --set gcc "/usr/bin/gcc-7"
 
