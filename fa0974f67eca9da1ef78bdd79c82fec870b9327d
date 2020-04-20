@@ -142,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "94092707_c2f269e1",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-20T21:36:33Z",
+      "side": 1,
+      "message": "As far as I understand, no :-(.\n\nLooking at the code for VkImage [1] and the various swapchain implementations in $SWIFTSHADER/src/WSI/, it looks like SwiftShader expect the swapchain image buffers to use a very specific stride, e.g. for the formats supported here, it simply assumes the stride to be ALIGNED(width, 2) * FORMAT_BYTES_PER_PIXEL. This is generally obtained with vk::Format(pImageInfo-\u003eformat).pitchB(pImageInfo-\u003eextent.width, 0, true) though.\n\nThere is no support for other stride values at all (but please correct me if I\u0027m wrong).\n\nThis is not a problem in practice for SwiftShader because it provides the swapchain implementation (under $SWIFTSHADER/src/SWI), and looking at the code, it allocates all swapchain buffers and VkImages appropriately, and will blit them on present().\n\nBut in the case of Fuchsia, all swapchain functions are redirected to our Vulkan layer instead, so these assumption doesn\u0027t hold anymore.\n\nI\u0027ve changed the code to set both .min_bytes_per_row and .max_bytes_per_row to vk::Format(format).pitchB(width, 0, true) which does the computation. This seems to be enough to pass the tests I\u0027ve been running. Let me know if this is not correct.\n\nI\u0027ve also added a comment on the latest patch explaining the issue more clearly, please take a look at https://swiftshader-review.googlesource.com/c/SwiftShader/+/37908/15",
+      "parentUuid": "c26b2d5c_183a5998",
+      "range": {
+        "startLine": 166,
+        "startChar": 45,
+        "endLine": 166,
+        "endChar": 104
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a774de24_0e605114",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
@@ -189,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "4f53a532_343e2067",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-20T21:36:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "edf75758_9fb9de4f",
+      "range": {
+        "startLine": 239,
+        "startChar": 6,
+        "endLine": 239,
+        "endChar": 44
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b9e8b31a_a906486c",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
@@ -233,6 +281,30 @@
       "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3cfc205_5afa1701",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-20T21:36:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9643c4fd_8250f8c5",
+      "range": {
+        "startLine": 240,
+        "startChar": 30,
+        "endLine": 240,
+        "endChar": 31
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -301,6 +373,24 @@
       "side": 1,
       "message": "Yeah, it\u0027d be fine to implement this in a later patch. As you\u0027ve seen, no one\u0027s actually using it yet (though I\u0027d like to switch the posebuffer code over to it at some point).",
       "parentUuid": "cc739ffa_8a5429f5",
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13412892_81861867",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-20T21:36:33Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4a08660a_0e49151f",
       "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
