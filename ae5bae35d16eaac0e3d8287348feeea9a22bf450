@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c89b06e9_9073f1b4",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-20T13:39:25Z",
+      "side": 1,
+      "message": "This seems fragile against future additions to OutOfBoundsBehavior that also affect texel load ops.",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 504,
+        "endChar": 81
+      },
+      "revId": "ae5bae35d16eaac0e3d8287348feeea9a22bf450",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1257bdf5_bee23609",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-20T13:39:25Z",
+      "side": 1,
+      "message": "If for some reason we\u0027re not doing the bounds check correctly downstream, this address might look sane and it will take us longer to find the bug. I\u0027d rather use an obviously bad pointer value. Can\u0027t we just OR with oobMask? That also saves a load op.\n\nAlso note that when sizeInBytes is set to some \"don\u0027t care\" value like -1, or intentionally left uninitialized because it\u0027s not expected to be used (e.g. robustBufferAccess is off but we still expect this zeroing behavior for texel reads), this could lead to hard to reproduce bugs.",
+      "range": {
+        "startLine": 554,
+        "startChar": 2,
+        "endLine": 556,
+        "endChar": 106
+      },
+      "revId": "ae5bae35d16eaac0e3d8287348feeea9a22bf450",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
