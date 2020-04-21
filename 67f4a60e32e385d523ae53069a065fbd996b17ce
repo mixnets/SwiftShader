@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "cb73ac9d_0318d49a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-21T20:12:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9c92ff80_1158bceb",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f969b9e4_a235cd82",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -120,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "73268c0c_1686ecf0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-21T20:12:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c7e5036c_39d06e14",
+      "range": {
+        "startLine": 17,
+        "startChar": 24,
+        "endLine": 17,
+        "endChar": 63
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d29186b7_89c1d233",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -155,6 +203,30 @@
       "side": 1,
       "message": "If you want to reference the relevant Fuchsia side bug it\u0027s fxb/13095.",
       "parentUuid": "d29186b7_89c1d233",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 9
+      },
+      "revId": "67f4a60e32e385d523ae53069a065fbd996b17ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5588a8c_2187376a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-21T20:12:28Z",
+      "side": 1,
+      "message": "David, can you add this here, and adjust tests/presubmit.sh\u0027s run_bug_in_commig_msg() to accept Fuchsia bug short links?\n\nSorry for being picky about this. I want to make sure that in X years from now we can still piece together why things were done a certain way, to facilitate refactorings and such.",
+      "parentUuid": "d2e5e53d_89975646",
       "range": {
         "startLine": 20,
         "startChar": 5,
