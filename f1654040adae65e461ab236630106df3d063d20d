@@ -16,6 +16,24 @@
       "revId": "f1654040adae65e461ab236630106df3d063d20d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f9805bd_3a39d092",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-21T15:29:19Z",
+      "side": 1,
+      "message": "Is there an equivalent to \"/dev/null\" on Windows?",
+      "parentUuid": "3ce1c0e3_ce627738",
+      "revId": "f1654040adae65e461ab236630106df3d063d20d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
