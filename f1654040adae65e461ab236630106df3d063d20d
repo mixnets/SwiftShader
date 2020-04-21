@@ -34,6 +34,24 @@
       "revId": "f1654040adae65e461ab236630106df3d063d20d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab9becfe_8eecf375",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-21T15:41:33Z",
+      "side": 1,
+      "message": "I\u0027ve never tried it, but apparently \"nul\" should work: https://stackoverflow.com/a/313118",
+      "parentUuid": "6f9805bd_3a39d092",
+      "revId": "f1654040adae65e461ab236630106df3d063d20d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
