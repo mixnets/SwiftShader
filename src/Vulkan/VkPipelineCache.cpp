@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkPipelineCache.hpp"
+
 #include <cstring>
 
 namespace vk {
@@ -20,12 +21,14 @@ namespace vk {
 PipelineCache::SpirvShaderKey::SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
                                               const std::string &entryPointName,
                                               const std::vector<uint32_t> &insns,
+                                              uint32_t pipelineLayoutIdentifier,
                                               const vk::RenderPass *renderPass,
                                               const uint32_t subpassIndex,
                                               const vk::SpecializationInfo &specializationInfo)
     : pipelineStage(pipelineStage)
     , entryPointName(entryPointName)
     , insns(insns)
+    , pipelineLayoutIdentifier(pipelineLayoutIdentifier)
     , renderPass(renderPass)
     , subpassIndex(subpassIndex)
     , specializationInfo(specializationInfo)
@@ -52,6 +55,11 @@ bool PipelineCache::SpirvShaderKey::operator<(const SpirvShaderKey &other) const
 	if(insns.size() != other.insns.size())
 	{
 		return insns.size() < other.insns.size();
+	}
+
+	if(pipelineLayoutIdentifier != other.pipelineLayoutIdentifier)
+	{
+		return pipelineLayoutIdentifier < other.pipelineLayoutIdentifier;
 	}
 
 	if(entryPointName.size() != other.entryPointName.size())

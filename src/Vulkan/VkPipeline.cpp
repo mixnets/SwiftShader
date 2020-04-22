@@ -477,6 +477,7 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 
 		const ShaderModule *module = vk::Cast(pStage->module);
 		const PipelineCache::SpirvShaderKey key(pStage->stage, pStage->pName, module->getCode(),
+		                                        vk::Cast(pCreateInfo->layout)->identifier,
 		                                        vk::Cast(pCreateInfo->renderPass), pCreateInfo->subpass,
 		                                        pStage->pSpecializationInfo);
 		auto pipelineStage = key.getPipelineStage();
@@ -569,7 +570,7 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	ASSERT(program.get() == nullptr);
 
 	const PipelineCache::SpirvShaderKey shaderKey(
-	    stage.stage, stage.pName, module->getCode(), nullptr, 0, stage.pSpecializationInfo);
+	    stage.stage, stage.pName, module->getCode(), layout->identifier, nullptr, 0, stage.pSpecializationInfo);
 	if(pPipelineCache)
 	{
 		shader = pPipelineCache->getOrCreateShader(shaderKey, [&] {
