@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "753f12c0_91b4866f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-22T13:22:40Z",
+      "side": 1,
+      "message": "nit: Why is this formatted differently from the ones below?",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 2
+      },
+      "revId": "11733377ac9d821d249142d6bd13b056212e6262",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
