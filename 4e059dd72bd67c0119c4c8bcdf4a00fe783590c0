@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "996ae9f3_4b8b89e2",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-22T15:33:10Z",
+      "side": 1,
+      "message": "Given that this is just added to ptr at the end, we don\u0027t really need this do we?\nWe can just adjust ptr like we did before?",
+      "range": {
+        "startLine": 507,
+        "startChar": 11,
+        "endLine": 507,
+        "endChar": 20
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
