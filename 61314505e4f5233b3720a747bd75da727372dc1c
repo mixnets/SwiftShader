@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "afcf40a9_f11a51b0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-22T00:55:37Z",
+      "side": 1,
+      "message": "Our Kokoro presubmit test will fail unless a bug reference is added. You can use the format \"Bug: b/***\" or \"Bug: text\"",
+      "revId": "61314505e4f5233b3720a747bd75da727372dc1c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
