@@ -22,6 +22,30 @@
       "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6998926e_70c9ee04",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-22T15:40:45Z",
+      "side": 1,
+      "message": "Correct me if I\u0027m wrong, but using a temporary integer might not be as costly as loading/storing a pointer at each arithmetic operation. Also, this was initially added to enable ORing the offset if necessary, but I ended up not going with that, so I can revert if you think this has no potential benefit.",
+      "parentUuid": "996ae9f3_4b8b89e2",
+      "range": {
+        "startLine": 507,
+        "startChar": 11,
+        "endLine": 507,
+        "endChar": 20
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
