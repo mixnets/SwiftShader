@@ -57,6 +57,7 @@ public:
 		SpirvShaderKey(const VkShaderStageFlagBits pipelineStage,
 		               const std::string &entryPointName,
 		               const std::vector<uint32_t> &insns,
+		               uint32_t pipelineLayoutIdentifier,
 		               const vk::RenderPass *renderPass,
 		               const uint32_t subpassIndex,
 		               const vk::SpecializationInfo &specializationInfo);
@@ -74,6 +75,7 @@ public:
 		const VkShaderStageFlagBits pipelineStage;
 		const std::string entryPointName;
 		const std::vector<uint32_t> insns;
+		const uint32_t pipelineLayoutIdentifier;
 		const vk::RenderPass *renderPass;
 		const uint32_t subpassIndex;
 		const vk::SpecializationInfo specializationInfo;
