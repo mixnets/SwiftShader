@@ -165,22 +165,11 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			ASSERT(d.DescriptorSet >= 0);
 			ASSERT(d.Binding >= 0);
 
-			uint32_t arrayIndex = 0;  // TODO(b/129523279)
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			if(setLayout->hasBinding(d.Binding))
-			{
-				uint32_t bindingOffset = static_cast<uint32_t>(setLayout->getBindingOffset(d.Binding, arrayIndex));
-				Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
-				Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
-				auto size = 0;                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
-				state->createPointer(resultId, SIMD::Pointer(binding, size));
-			}
-			else
-			{
-				// TODO: Error if the variable with the non-existant binding is
-				// used? Or perhaps strip these unused variable declarations as
-				// a preprocess on the SPIR-V?
-			}
+			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
+			auto size = 0;                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
+			state->createPointer(resultId, SIMD::Pointer(binding, size));
 			break;
 		}
 		case spv::StorageClassUniform:
@@ -394,23 +383,23 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, int arrayIndex, EmitS
 			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
 			ASSERT(d.Binding >= 0);
 
+			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+			uint32_t descriptorSize = routine->pipelineLayout->getDescriptorSize(d.DescriptorSet, d.Binding);
+			uint32_t descriptorOffset = bindingOffset + descriptorSize * arrayIndex;
+
 			auto set = state->getPointer(id);
-
-			auto setLayout = routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			ASSERT_MSG(setLayout->hasBinding(d.Binding), "Descriptor set %d does not contain binding %d", int(d.DescriptorSet), int(d.Binding));
-			int bindingOffset = static_cast<int>(setLayout->getBindingOffset(d.Binding, arrayIndex));
-
-			Pointer<Byte> descriptor = set.base + bindingOffset;                                           // BufferDescriptor*
+			Pointer<Byte> descriptor = set.base + descriptorOffset;                                        // BufferDescriptor*
 			Pointer<Byte> data = *Pointer<Pointer<Byte>>(descriptor + OFFSET(vk::BufferDescriptor, ptr));  // void*
 			Int size = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, sizeInBytes));
-			if(setLayout->isBindingDynamic(d.Binding))
+
+			if(routine->pipelineLayout->isDescriptorDynamic(d.DescriptorSet, d.Binding))
 			{
-				uint32_t dynamicBindingIndex =
-				    routine->pipelineLayout->getDynamicOffsetBase(d.DescriptorSet) +
-				    setLayout->getDynamicDescriptorOffset(d.Binding) +
+				uint32_t dynamicOffsetIndex =
+				    routine->pipelineLayout->getDynamicOffsetIndex(d.DescriptorSet, d.Binding) +
 				    arrayIndex;
-				Int offset = routine->descriptorDynamicOffsets[dynamicBindingIndex];
+				Int offset = routine->descriptorDynamicOffsets[dynamicOffsetIndex];
 				Int robustnessSize = *Pointer<Int>(descriptor + OFFSET(vk::BufferDescriptor, robustnessSize));
+
 				return SIMD::Pointer(data + offset, Min(size, robustnessSize - offset));
 			}
 			else
