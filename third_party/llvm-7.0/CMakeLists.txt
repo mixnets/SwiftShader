@@ -12,6 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(MSVC)
+    add_compile_options("/MP")
+endif()
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(ARCH "aarch64")
+    else()
+        set(ARCH "arm")
+    endif()
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "mips*")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(ARCH "mips64el")
+    else()
+        set(ARCH "mipsel")
+    endif()
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc*")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(ARCH "ppc64le")
+    else()
+        message(FATAL_ERROR "Architecture is not supported")
+    endif()
+else()
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(ARCH "x86_64")
+    else()
+        set(ARCH "x86")
+    endif()
+endif()
+
 set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/llvm)
 set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/configs)
 

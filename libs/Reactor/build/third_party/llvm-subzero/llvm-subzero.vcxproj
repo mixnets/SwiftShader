@@ -1,0 +1,513 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9365F43B-91C0-39EC-829F-1E173195E511}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>llvm-subzero</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">llvm-subzero.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">llvm-subzero</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">llvm-subzero.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">llvm-subzero</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">llvm-subzero.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">llvm-subzero</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">llvm-subzero.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">llvm-subzero</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4141;4146;4244;4267;4291;4334;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4141;4146;4244;4267;4291;4334;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4141;4146;4244;4267;4291;4334;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4141;4146;4244;4267;4291;4334;4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\src\SwiftShader3\third_party\llvm-subzero\include;C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/src/SwiftShader3/libs/Reactor -BC:/src/SwiftShader3/libs/Reactor/build --check-stamp-file C:/src/SwiftShader3/libs/Reactor/build/third_party/llvm-subzero/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/src/SwiftShader3/libs/Reactor -BC:/src/SwiftShader3/libs/Reactor/build --check-stamp-file C:/src/SwiftShader3/libs/Reactor/build/third_party/llvm-subzero/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/src/SwiftShader3/libs/Reactor -BC:/src/SwiftShader3/libs/Reactor/build --check-stamp-file C:/src/SwiftShader3/libs/Reactor/build/third_party/llvm-subzero/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/src/SwiftShader3/libs/Reactor -BC:/src/SwiftShader3/libs/Reactor/build --check-stamp-file C:/src/SwiftShader3/libs/Reactor/build/third_party/llvm-subzero/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/src/SwiftShader3/third_party/llvm-subzero/CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;C:\src\SwiftShader3\third_party\llvm-subzero\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\src\SwiftShader3\libs\Reactor\build\third_party\llvm-subzero\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Android\include\llvm\Config\abi-breaking.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Android\include\llvm\Config\config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Android\include\llvm\Config\llvm-config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Android\include\llvm\Support\DataTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Fuchsia\include\llvm\Config\abi-breaking.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Fuchsia\include\llvm\Config\config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Fuchsia\include\llvm\Config\llvm-config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Fuchsia\include\llvm\Support\DataTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Linux\include\llvm\Config\abi-breaking.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Linux\include\llvm\Config\config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Linux\include\llvm\Config\llvm-config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Linux\include\llvm\Support\DataTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\MacOS\include\llvm\Config\abi-breaking.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\MacOS\include\llvm\Config\config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\MacOS\include\llvm\Config\llvm-config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\MacOS\include\llvm\Support\DataTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include\llvm\Config\abi-breaking.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include\llvm\Config\config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include\llvm\Config\llvm-config.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\build\Windows\include\llvm\Support\DataTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm-c\ErrorHandling.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm-c\Support.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm-c\Types.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\APFloat.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\APInt.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ArrayRef.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\BitVector.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\DenseMap.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\DenseMapInfo.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\edit_distance.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\EpochTracker.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\FoldingSet.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\Hashing.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist_base.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist_iterator.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist_node_base.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist_node_options.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist_node.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\ilist.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\IntrusiveRefCntPtr.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\iterator_range.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\iterator.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\None.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\Optional.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\PointerIntPair.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\PointerUnion.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\simple_ilist.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\SmallPtrSet.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\SmallSet.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\SmallString.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\SmallVector.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\Statistic.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\STLExtras.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\StringExtras.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\StringMap.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\StringRef.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\StringSwitch.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\Triple.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\ADT\Twine.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Demangle\Demangle.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Argument.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Attributes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\BasicBlock.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\CallingConv.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Constant.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\DebugLoc.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\DerivedTypes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Function.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\GlobalObject.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\GlobalValue.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Instruction.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Intrinsics.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\LLVMContext.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Metadata.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\OperandTraits.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\SymbolTableListTraits.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\TrackingMDRef.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Type.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Use.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\User.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IR\Value.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\IRReader\IRReader.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\AlignOf.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Allocator.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ARMBuildAttributes.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Atomic.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Casting.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\CBindingWrapping.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Chrono.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\circular_raw_ostream.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\COFF.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\CommandLine.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Compiler.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ConvertUTF.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\DataStream.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Debug.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ELF.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Endian.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Errc.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Errno.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Error.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ErrorHandling.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ErrorOr.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FileSystem.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FileUtilities.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Format.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FormatCommon.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FormatProviders.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FormatVariadic.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\FormatVariadicDetails.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Host.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MachO.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\ManagedStatic.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MathExtras.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MD5.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Memory.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MemoryBuffer.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MemoryObject.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Mutex.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\MutexGuard.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\NativeFormatting.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Options.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Path.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\PointerLikeTypeTraits.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Process.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Program.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\raw_os_ostream.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\raw_ostream.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Regex.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Signals.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\SMLoc.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\SourceMgr.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\StreamingMemoryObject.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\StringSaver.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\SwapByteOrder.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\TargetParser.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\thread.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Threading.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Timer.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\TimeValue.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\type_traits.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\UniqueLock.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\Valgrind.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\WindowsError.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\YAMLParser.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\include\llvm\Support\YAMLTraits.h" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Demangle\ItaniumDemangle.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\APInt.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Atomic.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\circular_raw_ostream.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\CommandLine.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\ConvertUTF.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\ConvertUTFWrapper.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Debug.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Errno.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\ErrorHandling.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\FoldingSet.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Hashing.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Host.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\ManagedStatic.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\MemoryBuffer.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Mutex.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\NativeFormatting.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Path.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Process.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Program.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\raw_os_ostream.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\raw_ostream.cpp" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regcclass.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regcname.h" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regcomp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regerror.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regex_impl.h" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Regex.cpp" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regex2.h" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regexec.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regfree.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regstrlcpy.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\regutils.h" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Signals.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\SmallPtrSet.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\SmallVector.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\StringExtras.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\StringMap.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\StringRef.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\StringSaver.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\TargetParser.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Threading.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Timer.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Triple.cpp" />
+    <ClCompile Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Twine.cpp" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Unix\Unix.h" />
+    <ClInclude Include="C:\src\SwiftShader3\third_party\llvm-subzero\lib\Support\Windows\WindowsSupport.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\src\SwiftShader3\libs\Reactor\build\ZERO_CHECK.vcxproj">
+      <Project>{0DF04048-9236-3347-A061-8B35558F429C}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
