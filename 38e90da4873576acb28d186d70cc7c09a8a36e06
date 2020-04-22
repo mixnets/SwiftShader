@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5df5dabb_3fd4d75c",
+        "filename": "tests/presubmit.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-22T15:21:29Z",
+      "side": 1,
+      "message": "Needs a backslash to escape the forward slash. Can also avoid the duplication like this:\n\n^(Bug|Issue|Fixes):(\\s?)((((b|fxb)\\/)|(\\w+:))([0-9]+)|[^0-9]+)$|(^Regres:)|(^PiperOrigin-RevId:)",
+      "range": {
+        "startLine": 43,
+        "startChar": 77,
+        "endLine": 43,
+        "endChar": 78
+      },
+      "revId": "38e90da4873576acb28d186d70cc7c09a8a36e06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
