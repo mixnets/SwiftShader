@@ -70,6 +70,24 @@
       "revId": "f1654040adae65e461ab236630106df3d063d20d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "afff5568_e716b8da",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-22T14:38:41Z",
+      "side": 1,
+      "message": "Perfect. I\u0027ll probably run this again on Windows at some point, and will try it.",
+      "parentUuid": "5fb05307_089d441f",
+      "revId": "f1654040adae65e461ab236630106df3d063d20d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
