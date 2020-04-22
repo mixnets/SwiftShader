@@ -22,6 +22,30 @@
       "revId": "38e90da4873576acb28d186d70cc7c09a8a36e06",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e925ae0_008952af",
+        "filename": "tests/presubmit.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-04-22T16:43:19Z",
+      "side": 1,
+      "message": "Done. Thanks!",
+      "parentUuid": "5df5dabb_3fd4d75c",
+      "range": {
+        "startLine": 43,
+        "startChar": 77,
+        "endLine": 43,
+        "endChar": 78
+      },
+      "revId": "38e90da4873576acb28d186d70cc7c09a8a36e06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
