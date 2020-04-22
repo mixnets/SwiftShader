@@ -88,6 +88,24 @@
       "revId": "f1654040adae65e461ab236630106df3d063d20d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9783dd52_a744daa5",
+        "filename": "tests/regres/deqp/deqp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-22T15:04:18Z",
+      "side": 1,
+      "message": "👍thanks!",
+      "parentUuid": "afff5568_e716b8da",
+      "revId": "f1654040adae65e461ab236630106df3d063d20d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
