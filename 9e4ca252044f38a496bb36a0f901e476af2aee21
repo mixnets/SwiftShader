@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08dd5ad1_dedebb4a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-04-23T15:08:26Z",
+      "side": 1,
+      "message": "Since they\u0027re sorted, wouldn\u0027t \u0027n\u0027 still work here and be more efficient?",
+      "range": {
+        "startLine": 244,
+        "startChar": 25,
+        "endLine": 244,
+        "endChar": 70
+      },
+      "revId": "9e4ca252044f38a496bb36a0f901e476af2aee21",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
