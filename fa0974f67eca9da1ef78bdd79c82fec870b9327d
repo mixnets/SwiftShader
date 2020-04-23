@@ -166,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "faff53e4_aed1f1c4",
+        "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 6948
+      },
+      "writtenOn": "2020-04-23T21:29:36Z",
+      "side": 1,
+      "message": "hm, I think min_bytes_per_row should remain 0, because in the case where the input size is smaller swiftshader will treat it as tightly-packed, not as having a stride of min_bytes_per_row.\n\nWe could probably modify the implementation of Image::rowPitchBytes to support other pitches, but I\u0027m not confident enough about the design of swiftshader to say that it would actually work everywhere.",
+      "parentUuid": "94092707_c2f269e1",
+      "range": {
+        "startLine": 166,
+        "startChar": 45,
+        "endLine": 166,
+        "endChar": 104
+      },
+      "revId": "fa0974f67eca9da1ef78bdd79c82fec870b9327d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a774de24_0e605114",
         "filename": "src/Vulkan/VkBufferCollectionFUCHSIA.cpp",
         "patchSetId": 13
