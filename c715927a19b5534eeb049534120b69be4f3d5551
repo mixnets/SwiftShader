@@ -16,6 +16,24 @@
       "revId": "c715927a19b5534eeb049534120b69be4f3d5551",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44098a85_815747f5",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-23T18:08:41Z",
+      "side": 1,
+      "message": "It might just end up being the right / final solution.\nI have to assess the way inlining will work. Unlike function calls, it is possible we can end up with the last instruction executed being nested inside an inlined function, giving me no obvious place to stack pop (potentially N times!).\n\nThis is pretty stable, working for the initial enter() call in the constructor as well as any other non-pops-on-exit edge cases.",
+      "parentUuid": "0774d520_a4743cb5",
+      "revId": "c715927a19b5534eeb049534120b69be4f3d5551",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
