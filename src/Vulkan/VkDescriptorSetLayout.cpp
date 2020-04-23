@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 #include <cstring>
 
 namespace {
@@ -33,6 +34,12 @@ static bool UsesImmutableSamplers(const VkDescriptorSetLayoutBinding &binding)
 	        (binding.pImmutableSamplers != nullptr));
 }
 
+static int CompareBindings(const void *a, const void *b)
+{
+	return static_cast<const VkDescriptorSetLayoutBinding *>(a)->binding -
+	       static_cast<const VkDescriptorSetLayoutBinding *>(b)->binding;
+}
+
 }  // anonymous namespace
 
 namespace vk {
@@ -42,6 +49,9 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *
     , bindingCount(pCreateInfo->bindingCount)
     , bindings(reinterpret_cast<VkDescriptorSetLayoutBinding *>(mem))
 {
+	memcpy(bindings, pCreateInfo->pBindings, sizeof(VkDescriptorSetLayoutBinding) * bindingCount);
+	qsort(bindings, bindingCount, sizeof(VkDescriptorSetLayoutBinding), CompareBindings);
+
 	uint8_t *hostMemory = static_cast<uint8_t *>(mem) + bindingCount * sizeof(VkDescriptorSetLayoutBinding);
 	bindingOffsets = reinterpret_cast<size_t *>(hostMemory);
 	hostMemory += bindingCount * sizeof(size_t);
@@ -49,7 +59,6 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *
 	size_t offset = 0;
 	for(uint32_t i = 0; i < bindingCount; i++)
 	{
-		bindings[i] = pCreateInfo->pBindings[i];
 		if(UsesImmutableSamplers(bindings[i]))
 		{
 			size_t immutableSamplersSize = bindings[i].descriptorCount * sizeof(VkSampler);
@@ -229,8 +238,10 @@ uint32_t DescriptorSetLayout::getDynamicDescriptorOffset(uint32_t binding) const
 	uint32_t n = getBindingIndex(binding);
 	ASSERT(isDynamic(bindings[n].descriptorType));
 
+	// Bindings are sorted by binding number, so we only have to count the number
+	// of dynamic descriptors that precedes the requested binding's entry.
 	uint32_t index = 0;
-	for(uint32_t i = 0; i < n; i++)
+	for(uint32_t i = 0; i < bindingCount && bindings[i].binding < binding; i++)
 	{
 		if(isDynamic(bindings[i].descriptorType))
 		{
