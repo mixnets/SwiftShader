@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9a3297a_45c98633",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-23T17:53:56Z",
+      "side": 1,
+      "message": "Curious why this is called \u0027base\u0027 and not \u0027type\u0027?",
+      "revId": "2a5bfb9d7ab6106a87093cae1ccc35d91022795b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf77ec29_80a0d8ef",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-04-23T17:53:56Z",
+      "side": 1,
+      "message": "Any advantage to combining common stuff into a base Variable class for both GlobalVariable and LocalVariable to derive from?",
+      "revId": "2a5bfb9d7ab6106a87093cae1ccc35d91022795b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
