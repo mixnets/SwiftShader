@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f1bc3c88_00d4074d",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-23T18:04:33Z",
+      "side": 1,
+      "message": "The spec calls it \u0027base type\u0027. We\u0027re declaring types here, so there\u0027s not much else \u0027base\u0027 can be.",
+      "parentUuid": "e9a3297a_45c98633",
+      "revId": "2a5bfb9d7ab6106a87093cae1ccc35d91022795b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bf77ec29_80a0d8ef",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "2a5bfb9d7ab6106a87093cae1ccc35d91022795b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19dfe93e_e4a47745",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-23T18:04:33Z",
+      "side": 1,
+      "message": "Just trying to keep the structures close to the spec.\nI may end up deleting this struct, it isn\u0027t actually used (the data is immediately consumed where this is built).\nFor now, I\u0027m trying to construct all of the types as described in the spec so that I have some freedom to try out new approaches.",
+      "parentUuid": "bf77ec29_80a0d8ef",
+      "revId": "2a5bfb9d7ab6106a87093cae1ccc35d91022795b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
