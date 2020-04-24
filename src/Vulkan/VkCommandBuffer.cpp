@@ -1105,7 +1105,7 @@ public:
 	{
 		ASSERT_OR_RETURN((pipelineBindPoint < VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (setNumber < vk::MAX_BOUND_DESCRIPTOR_SETS));
 		auto &pipelineState = executionState.pipelineState[pipelineBindPoint];
-		auto dynamicBindingBaseIndex = pipelineLayout->getDynamicOffsetBaseIndex(setNumber);
+		auto dynamicBindingBaseIndex = (dynamicOffsetCount != 0) ? pipelineLayout->getDynamicOffsetIndex(setNumber, 0) : 0;
 		ASSERT_OR_RETURN(dynamicBindingBaseIndex + dynamicOffsetCount <= vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC);
 
 		pipelineState.descriptorSets[setNumber] = descriptorSet->data;
