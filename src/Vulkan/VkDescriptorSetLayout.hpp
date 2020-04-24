@@ -113,6 +113,9 @@ public:
 	// the given binding.
 	uint32_t getBindingOffset(uint32_t bindingNumber) const;
 
+	// Returns the number of descriptors across all bindings.
+	uint32_t getDescriptorCount(uint32_t bindingNumber) const;
+
 	// Returns the number of descriptors across all bindings that are dynamic.
 	uint32_t getDynamicDescriptorCount() const;
 
@@ -124,6 +127,10 @@ public:
 
 	// Returns the descriptor type for the given binding.
 	VkDescriptorType getDescriptorType(uint32_t bindingNumber) const;
+
+	// Returns the number of entries in the direct-indexed array of bindings.
+	// It equals the highest binding number + 1.
+	uint32_t getBindingsArraySize() const { return bindingsArraySize; }
 
 private:
 	uint8_t *getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const;
