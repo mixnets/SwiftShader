@@ -29,7 +29,7 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo *pCreateInfo);
 
 	size_t getDescriptorSetCount() const;
-	uint32_t getDynamicDescriptorCount(uint32_t setNumber) const;  ////////////// deprecate
+	//uint32_t getDynamicDescriptorCount(uint32_t setNumber) const;  ////////////// deprecate
 
 	// Returns the index into the pipeline's dynamic offsets array for
 	// the given descriptor set and binding number.
@@ -57,7 +57,7 @@ private:
 	};
 
 	Binding *sets[MAX_BOUND_DESCRIPTOR_SETS];
-	uint32_t dynamicDescriptorCount[MAX_BOUND_DESCRIPTOR_SETS];            /// deprecate
+	//uint32_t dynamicDescriptorCount[MAX_BOUND_DESCRIPTOR_SETS];            /// deprecate
 
 	const uint32_t descriptorSetCount = 0;
 	//	const DescriptorSetLayout **descriptorSetLayouts = nullptr;
