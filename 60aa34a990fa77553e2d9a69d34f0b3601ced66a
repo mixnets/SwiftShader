@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e291eef_e4559588",
+        "filename": "src/Pipeline/SpirvShaderMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-24T19:21:50Z",
+      "side": 0,
+      "message": "It\u0027s invalid to try to access a non-existing binding, and we already assert in getBindingOffset() and other methods.",
+      "range": {
+        "startLine": 185,
+        "startChar": 7,
+        "endLine": 185,
+        "endChar": 11
+      },
+      "revId": "60aa34a990fa77553e2d9a69d34f0b3601ced66a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
