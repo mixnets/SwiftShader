@@ -1105,7 +1105,8 @@ public:
 	{
 		ASSERT_OR_RETURN((pipelineBindPoint < VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (setNumber < vk::MAX_BOUND_DESCRIPTOR_SETS));
 		auto &pipelineState = executionState.pipelineState[pipelineBindPoint];
-		auto dynamicBindingBaseIndex = pipelineLayout->getDynamicOffsetBaseIndex(setNumber);
+		//auto dynamicBindingBaseIndex = pipelineLayout->getDynamicOffsetBaseIndex(setNumber);
+		auto dynamicBindingBaseIndex = pipelineLayout->getDynamicOffsetIndex(setNumber, 0);
 		ASSERT_OR_RETURN(dynamicBindingBaseIndex + dynamicOffsetCount <= vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC);
 
 		pipelineState.descriptorSets[setNumber] = descriptorSet->data;
@@ -1571,7 +1572,7 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, co
 		uint32_t numDynamicDescriptors = layout->getDynamicDescriptorCount(descriptorSetIndex);
 		ASSERT(numDynamicDescriptors == 0 || pDynamicOffsets != nullptr);
 		ASSERT(dynamicOffsetCount >= numDynamicDescriptors);
-
+		/////////////////////// single command?
 		addCommand<::CmdBindDescriptorSet>(
 		    pipelineBindPoint, layout, descriptorSetIndex, vk::Cast(pDescriptorSets[i]),
 		    dynamicOffsetCount, pDynamicOffsets);
