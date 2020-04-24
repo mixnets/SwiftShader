@@ -32,6 +32,7 @@ void Query::reset()
 	finished.clear();
 	auto prevState = state.exchange(UNAVAILABLE);
 	ASSERT(prevState != ACTIVE);
+	(void)prevState;
 	type = INVALID_TYPE;
 	value = 0;
 }
@@ -40,6 +41,7 @@ void Query::prepare(VkQueryType ty)
 {
 	auto prevState = state.exchange(ACTIVE);
 	ASSERT(prevState == UNAVAILABLE);
+	(void)prevState;
 	type = ty;
 }
 
@@ -55,6 +57,7 @@ void Query::finish()
 	{
 		auto prevState = state.exchange(FINISHED);
 		ASSERT(prevState == ACTIVE);
+		(void)prevState;
 		finished.signal();
 	}
 }

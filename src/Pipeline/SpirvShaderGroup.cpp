@@ -84,6 +84,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 	Object::ID resultId = insn.word(2);
 	auto scope = spv::Scope(GetConstScalarInt(insn.word(3)));
 	ASSERT_MSG(scope == spv::ScopeSubgroup, "Scope for Non Uniform Group Operations must be Subgroup for Vulkan 1.1");
+	(void)scope;
 
 	auto &dst = state->createIntermediate(resultId, type.componentCount);
 

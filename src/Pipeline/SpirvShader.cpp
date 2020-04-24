@@ -2339,6 +2339,7 @@ SpirvShader::EmitResult SpirvShader::EmitArrayLength(InsnIterator insn, EmitStat
 	auto &resultType = getType(insn.resultTypeId());
 	ASSERT(resultType.componentCount == 1);
 	ASSERT(resultType.definition.opcode() == spv::OpTypeInt);
+	(void)resultType;
 
 	auto &structPtrTy = getType(getObject(structPtrId));
 	auto &structTy = getType(structPtrTy.element);

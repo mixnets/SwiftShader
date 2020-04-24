@@ -144,12 +144,13 @@ JITGlobals JITGlobals::create()
 
 	llvm::StringMap<bool> features;
 	bool ok = llvm::sys::getHostCPUFeatures(features);
+	(void)ok;
 
 #if defined(__i386__) || defined(__x86_64__) || \
     (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
 	ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures returned false");
 #else
-	(void)ok;  // getHostCPUFeatures always returns false on other platforms
+	// getHostCPUFeatures always returns false on other platforms
 #endif
 
 	std::vector<std::string> mattrs;

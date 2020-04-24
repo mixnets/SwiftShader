@@ -97,6 +97,7 @@ void SpirvShader::Store(Object::ID pointerId, const Operand &value, bool atomic,
 	auto &elementTy = getType(pointerTy.element);
 
 	ASSERT(!atomic || elementTy.opcode() == spv::OpTypeInt);  // Vulkan 1.1: "Atomic instructions must declare a scalar 32-bit integer type, for the value pointed to by Pointer."
+	(void)elementTy;
 
 	auto ptr = GetPointerToData(pointerId, 0, state);
 	bool interleavedByLane = IsStorageInterleavedByLane(pointerTy.storageClass);

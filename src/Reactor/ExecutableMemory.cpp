@@ -347,6 +347,7 @@ void protectMemoryPages(void *memory, size_t bytes, int permissions)
 	int result =
 	    mprotect(memory, bytes, permissionsToMmapProt(permissions));
 	ASSERT(result == 0);
+	(void)result;
 #endif
 }
 
@@ -369,9 +370,11 @@ void deallocateMemoryPages(void *memory, size_t bytes)
 	zx_status_t status = zx_vmar_unmap(
 	    zx_vmar_root_self(), reinterpret_cast<zx_vaddr_t>(memory), length);
 	ASSERT(status == ZX_OK);
+	(void)status;
 #else
 	int result = mprotect(memory, bytes, PROT_READ | PROT_WRITE);
 	ASSERT(result == 0);
+	(void)result;
 	deallocate(memory);
 #endif
 }

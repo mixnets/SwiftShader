@@ -406,6 +406,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageQueryLevels(InsnIterator insn, Emi
 {
 	auto &resultTy = getType(Type::ID(insn.resultTypeId()));
 	ASSERT(resultTy.componentCount == 1);
+	(void)resultTy;
+
 	auto imageId = Object::ID(insn.word(3));
 
 	const DescriptorDecorations &d = descriptorDecorations.at(imageId);
@@ -440,6 +442,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySamples(InsnIterator insn, Em
 	ASSERT(imageTy.definition.opcode() == spv::OpTypeImage);
 	ASSERT(imageTy.definition.word(3) == spv::Dim2D);
 	ASSERT(imageTy.definition.word(6 /* MS */) == 1);
+	(void)imageTy;
+	(void)resultTy;
 
 	const DescriptorDecorations &d = descriptorDecorations.at(imageId);
 	auto setLayout = state->routine->pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
@@ -995,6 +999,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageTexelPointer(InsnIterator insn, Em
 	ASSERT(imageType.opcode() == spv::OpTypeImage);
 	ASSERT(resultType.storageClass == spv::StorageClassImage);
 	ASSERT(getType(resultType.element).opcode() == spv::OpTypeInt);
+	(void)resultType;
 
 	auto coordinate = Operand(this, state, insn.word(4));
 

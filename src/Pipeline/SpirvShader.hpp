@@ -756,6 +756,7 @@ public:
 			uint32_t offset = totalSize;
 			auto it = offsets.emplace(id, offset);
 			ASSERT_MSG(it.second, "WorkgroupMemory already has an allocation for object %d", int(id.value()));
+			(void)it;
 			totalSize += size;
 		}
 		// returns the byte offset of the variable with the given identifier.
@@ -975,6 +976,7 @@ private:
 		{
 			bool added = pointers.emplace(id, ptr).second;
 			ASSERT_MSG(added, "Pointer %d created twice", id.value());
+			(void)added;
 		}
 
 		SIMD::Pointer const &getPointer(Object::ID id) const
@@ -1362,6 +1364,7 @@ public:
 	{
 		bool added = variables.emplace(id, Variable(componentCount)).second;
 		ASSERT_MSG(added, "Variable %d created twice", id.value());
+		(void)added;
 	}
 
 	Variable &getVariable(SpirvShader::Object::ID id)

@@ -206,6 +206,8 @@ void ValidateRenderPassPNextChain(VkDevice device, const T *pCreateInfo)
 						ASSERT(!(aspectReference.aspectMask & VK_IMAGE_ASPECT_COLOR_BIT) || (!isDepth && !isStencil));
 						ASSERT(!(aspectReference.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT) || isDepth);
 						ASSERT(!(aspectReference.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT) || isStencil);
+						(void)isDepth;
+						(void)isStencil;
 					}
 				}
 			}
@@ -230,6 +232,7 @@ void ValidateRenderPassPNextChain(VkDevice device, const T *pCreateInfo)
 				for(uint32_t i = 0; i < multiviewCreateInfo->dependencyCount; i++)
 				{
 					const auto &dependency = pCreateInfo->pDependencies[i];
+					(void)dependency;
 					if(multiviewCreateInfo->pViewOffsets[i] != 0)
 					{
 						ASSERT(dependency.srcSubpass != dependency.dstSubpass);
@@ -554,6 +557,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 	                              VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	                              VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 	ASSERT(!(usage & ~(allRecognizedUsageBits)));
+	(void)allRecognizedUsageBits;
 
 	// "Images created with tiling equal to VK_IMAGE_TILING_LINEAR have further restrictions on their limits and capabilities
 	//  compared to images created with tiling equal to VK_IMAGE_TILING_OPTIMAL."
@@ -1700,6 +1704,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 			{
 				const VkImageViewUsageCreateInfo *multiviewCreateInfo = reinterpret_cast<const VkImageViewUsageCreateInfo *>(extensionCreateInfo);
 				ASSERT(!(~vk::Cast(pCreateInfo->image)->getUsage() & multiviewCreateInfo->usage));
+				(void)multiviewCreateInfo;
 			}
 			break;
 			case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
