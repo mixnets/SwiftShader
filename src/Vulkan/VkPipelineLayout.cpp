@@ -70,7 +70,7 @@ PipelineLayout::PipelineLayout(const VkPipelineLayoutCreateInfo *pCreateInfo, vo
 		sets[i] = bindingStorage;
 		bindingStorage += bindingsArraySize;
 
-		dynamicDescriptorCount[i] = setLayout->getDynamicDescriptorCount();
+		//dynamicDescriptorCount[i] = setLayout->getDynamicDescriptorCount();
 
 		for(uint32_t j = 0; j < bindingsArraySize; j++)
 		{
@@ -117,12 +117,12 @@ size_t PipelineLayout::getDescriptorSetCount() const
 	return descriptorSetCount;
 }
 
-uint32_t PipelineLayout::getDynamicDescriptorCount(uint32_t setNumber) const
-{
-	//	return getDescriptorSetLayout(setNumber)->getDynamicDescriptorCount();
-	ASSERT(setNumber < descriptorSetCount);
-	return dynamicDescriptorCount[setNumber];
-}
+//uint32_t PipelineLayout::getDynamicDescriptorCount(uint32_t setNumber) const
+//{
+//	//	return getDescriptorSetLayout(setNumber)->getDynamicDescriptorCount();
+//	ASSERT(setNumber < descriptorSetCount);
+//	return dynamicDescriptorCount[setNumber];
+//}
 
 //uint32_t PipelineLayout::getDynamicOffsetBaseIndex(uint32_t setNumber) const
 //{
