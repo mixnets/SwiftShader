@@ -15,6 +15,7 @@
 #ifndef VK_PIPELINE_LAYOUT_HPP_
 #define VK_PIPELINE_LAYOUT_HPP_
 
+#include "VkConfig.h"
 #include "VkDescriptorSetLayout.hpp"
 
 namespace vk {
@@ -28,11 +29,11 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo *pCreateInfo);
 
 	size_t getDescriptorSetCount() const;
-	uint32_t getDynamicDescriptorCount(uint32_t setNumber) const;
+	uint32_t getDynamicDescriptorCount(uint32_t setNumber) const;  ////////////// deprecate
 
 	// Returns the index into the pipeline's dynamic offsets array for
-	// the given descriptor set (and binding number).
-	uint32_t getDynamicOffsetBaseIndex(uint32_t setNumber) const;
+	// the given descriptor set and binding number.
+	//	uint32_t getDynamicOffsetBaseIndex(uint32_t setNumber) const;
 	uint32_t getDynamicOffsetIndex(uint32_t setNumber, uint32_t bindingNumber) const;
 
 	uint32_t getBindingOffset(uint32_t setNumber, uint32_t bindingNumber) const;
@@ -43,13 +44,26 @@ public:
 	const uint32_t identifier;
 
 private:
-	DescriptorSetLayout const *getDescriptorSetLayout(size_t descriptorSet) const;
+	// DescriptorSetLayout const *getDescriptorSetLayout_(size_t descriptorSet) const;
+
+	struct Binding
+	{
+		VkDescriptorType descriptorType;
+		//	uint32_t descriptorCount;
+		////////////////////////	const vk::Sampler **immutableSamplers;
+
+		uint32_t offset;  // Offset in bytes in the descriptor set data.
+		uint32_t dynamicOffsetIndex;
+	};
+
+	Binding *sets[MAX_BOUND_DESCRIPTOR_SETS];
+	uint32_t dynamicDescriptorCount[MAX_BOUND_DESCRIPTOR_SETS];            /// deprecate
 
 	const uint32_t descriptorSetCount = 0;
-	const DescriptorSetLayout **descriptorSetLayouts = nullptr;
+	//	const DescriptorSetLayout **descriptorSetLayouts = nullptr;
 	const uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
-	uint32_t *dynamicOffsetBaseIndices = nullptr;  // Base index per descriptor set for dynamic buffer offsets.
+	//	uint32_t *dynamicOffsetBaseIndices = nullptr;  // Base index per descriptor set for dynamic buffer offsets.
 };
 
 static inline PipelineLayout *Cast(VkPipelineLayout object)

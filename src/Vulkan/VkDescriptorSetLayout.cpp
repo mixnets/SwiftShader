@@ -202,6 +202,12 @@ uint32_t DescriptorSetLayout::getDynamicDescriptorCount() const
 	return count;
 }
 
+uint32_t DescriptorSetLayout::getDescriptorCount(uint32_t bindingNumber) const
+{
+	ASSERT(bindingNumber < bindingsArraySize);
+	return bindings[bindingNumber].descriptorCount;
+}
+
 uint32_t DescriptorSetLayout::getDynamicOffsetIndex(uint32_t bindingNumber) const
 {
 	ASSERT(bindingNumber < bindingsArraySize);
