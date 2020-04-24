@@ -15,6 +15,7 @@
 #include "ASTC_Decoder.hpp"
 
 #include "System/Math.hpp"
+#include "System/SyncCache.hpp"
 
 #ifdef SWIFTSHADER_ENABLE_ASTC
 #	include "astc_codec_internals.h"
@@ -96,7 +97,59 @@ void write_imageblock(unsigned char *img,
 		}
 	}
 }
-#endif
+
+class CommonData
+{
+public:
+	static CommonData *get()
+	{
+		static CommonData instance;
+		return &instance;
+	}
+
+	block_size_descriptor *bsd(int xBlockSize, int yBlockSize, int zBlockSize)
+	{
+		return bsds.getOrCreate({ xBlockSize, yBlockSize, zBlockSize }, [&] {
+			auto bsd = new block_size_descriptor();
+			init_block_size_descriptor(xBlockSize, yBlockSize, zBlockSize, bsd);
+			return bsd;
+		});
+	}
+
+private:
+	CommonData()
+	{
+		build_quantization_mode_table();
+	}
+
+	~CommonData()
+	{
+		bsds.foreach([](auto, auto bsd) {
+			term_block_size_descriptor(bsd);
+			delete bsd;
+		});
+	}
+
+	struct BlockSize
+	{
+		int x, y, z;
+
+		bool operator==(const BlockSize &rhs) const { return x == rhs.x && y == rhs.y && z == rhs.z; }
+	};
+	struct Hasher
+	{
+		uint64_t operator()(const BlockSize &bs) const
+		{
+			size_t hash = bs.x;
+			hash = hash * 31 + bs.y;
+			hash = hash * 31 + bs.z;
+			return hash;
+		}
+	};
+	sw::SyncCache<std::unordered_map<BlockSize, block_size_descriptor *, Hasher>> bsds;
+};
+
+#endif  // SWIFTSHADER_ENABLE_ASTC
 
 }  // namespace
 
@@ -107,12 +160,10 @@ void ASTC_Decoder::Decode(const unsigned char *source, unsigned char *dest,
                           int xblocks, int yblocks, int zblocks, bool isUnsignedByte)
 {
 #ifdef SWIFTSHADER_ENABLE_ASTC
-	build_quantization_mode_table();
+
+	auto bsd = CommonData::get()->bsd(xBlockSize, yBlockSize, zBlockSize);
 
 	astc_decode_mode decode_mode = isUnsignedByte ? DECODE_LDR : DECODE_HDR;
-
-	std::unique_ptr<block_size_descriptor> bsd(new block_size_descriptor);
-	init_block_size_descriptor(xBlockSize, yBlockSize, zBlockSize, bsd.get());
 
 	std::unique_ptr<imageblock> ib(new imageblock);
 	std::unique_ptr<symbolic_compressed_block> scb(new symbolic_compressed_block);
@@ -122,14 +173,13 @@ void ASTC_Decoder::Decode(const unsigned char *source, unsigned char *dest,
 		{
 			for(int x = 0; x < xblocks; x++, source += 16)
 			{
-				physical_to_symbolic(bsd.get(), *(physical_compressed_block *)source, scb.get());
-				decompress_symbolic_block(decode_mode, bsd.get(), x * xBlockSize, y * yBlockSize, z * zBlockSize, scb.get(), ib.get());
+				physical_to_symbolic(bsd, *(physical_compressed_block *)source, scb.get());
+				decompress_symbolic_block(decode_mode, bsd, x * xBlockSize, y * yBlockSize, z * zBlockSize, scb.get(), ib.get());
 				write_imageblock(dest, ib.get(), destWidth, destHeight, destDepth, bytes, destPitchB, destSliceB, isUnsignedByte,
 				                 xBlockSize, yBlockSize, zBlockSize, x * xBlockSize, y * yBlockSize, z * zBlockSize);
 			}
 		}
 	}
 
-	term_block_size_descriptor(bsd.get());
 #endif
 }
