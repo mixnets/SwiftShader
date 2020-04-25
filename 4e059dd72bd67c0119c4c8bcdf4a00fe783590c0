@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "35694b2f_ebdd7b46",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-25T10:18:29Z",
+      "side": 1,
+      "message": "Lets rename this to basePtr. That\u0027s what it\u0027s called when passed into this function, and would clarify that this SIMD::Pointer doesn\u0027t have offsets yet, which is important to know when we want them to become out of bounds.",
+      "range": {
+        "startLine": 470,
+        "startChar": 81,
+        "endLine": 470,
+        "endChar": 84
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36e82462_23389284",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-25T10:18:29Z",
+      "side": 1,
+      "message": "I\u0027d rename this to \u0027nullifyOutOfBounds\u0027\n\nWhile that describes the required behavior on load/store, and not the texel address calculation, \u0027definedOobBehavior\u0027 seems even more confusing to me.",
+      "range": {
+        "startLine": 505,
+        "startChar": 6,
+        "endLine": 505,
+        "endChar": 25
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "996ae9f3_4b8b89e2",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 9
@@ -42,6 +88,75 @@
         "startChar": 11,
         "endLine": 507,
         "endChar": 20
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12858c42_f5b6d854",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-25T10:18:29Z",
+      "side": 1,
+      "message": "Just use 0x7FFFFFFF. The base pointer has 0 offsets.",
+      "range": {
+        "startLine": 560,
+        "startChar": 35,
+        "endLine": 560,
+        "endChar": 99
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1f165ef_3ca90936",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-25T10:18:29Z",
+      "side": 1,
+      "message": "operations",
+      "range": {
+        "startLine": 627,
+        "startChar": 77,
+        "endLine": 627,
+        "endChar": 89
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c9ace8b_bc12e538",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1011,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-25T10:18:29Z",
+      "side": 1,
+      "message": "Pre-existing issue, but this doesn\u0027t make sense for a write op. See the definition:\n\nUndefinedValue,      // Only for load operations\n\nNote the RobustBufferAccess enum makes writes land anywhere within bounds, which corresponds to the comment here at line 1010.\n\nThat said, is this the behavior expected by GLSL? If it expects null for reads, doesn\u0027t it want us to omit out-of-bounds writes?",
+      "range": {
+        "startLine": 1011,
+        "startChar": 19,
+        "endLine": 1011,
+        "endChar": 54
       },
       "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
