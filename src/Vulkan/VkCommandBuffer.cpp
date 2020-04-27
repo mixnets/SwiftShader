@@ -1103,7 +1103,7 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		ASSERT_OR_RETURN((pipelineBindPoint < VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (set < vk::MAX_BOUND_DESCRIPTOR_SETS));
+		ASSERT_OR_RETURN((pipelineBindPoint < vk::VK_PIPELINE_BIND_POINT_RANGE_SIZE) && (set < vk::MAX_BOUND_DESCRIPTOR_SETS));
 		auto &pipelineState = executionState.pipelineState[pipelineBindPoint];
 		auto dynamicOffsetBase = pipelineLayout->getDynamicOffsetBase(set);
 		ASSERT_OR_RETURN(dynamicOffsetBase + dynamicOffsetCount <= vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC);
