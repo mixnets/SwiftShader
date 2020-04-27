@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "badaa2b8_7a35fd3d",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:33:19Z",
+      "side": 1,
+      "message": "Maybe we should have an emplace() for LRUCache\u003c\u003e ?",
+      "range": {
+        "startLine": 52,
+        "startChar": 73,
+        "endLine": 52,
+        "endChar": 76
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8aae63f7_4ad0ad61",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:33:19Z",
+      "side": 1,
+      "message": "I don\u0027t think we should be creating SyncCache versions of std::map and unordered_map. They\u0027re not caches in the typical sense. Caches have entries that can be destroyed by insertions using other keys.\n\nMulti-reader-multi-writer versions of maps could certainly have some uses, but I\u0027d rather avoid an overly generic template-in-a-template, and have a custom implementation that can be specialized for their common use cases instead of getting mixed in with true cache use cases.",
+      "range": {
+        "startLine": 78,
+        "startChar": 7,
+        "endLine": 78,
+        "endChar": 27
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0e6bb5d_bb255070",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:33:19Z",
+      "side": 1,
+      "message": "I think it\u0027s worth documenting what this achieves. Event::Shared::Shared is 704 bytes, so a unique event per cache entry would have added a lot of payload overhead. We only need an event when a thread is creating an entry and other threads might have to wait on it.\n\nIt appears we\u0027re also temporarily creating an unused event on uncontended lookup?",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 158,
+        "endChar": 44
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2c2d5dd_3b97cd91",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:33:19Z",
+      "side": 1,
+      "message": "Can we borrow pool entries that are already in the signaled state to avoid this overhead?",
+      "range": {
+        "startLine": 208,
+        "startChar": 1,
+        "endLine": 208,
+        "endChar": 23
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
