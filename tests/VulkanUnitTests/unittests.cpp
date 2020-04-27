@@ -23,6 +23,8 @@
 
 #include "spirv-tools/libspirv.hpp"
 
+#include "../third_party/astc-encoder/Source/astc_codec_internals.h"
+
 #include <cstring>
 #include <sstream>
 
@@ -39,6 +41,13 @@ class SwiftShaderVulkanTest : public testing::Test
 
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
+	auto xxx = sizeof(block_size_descriptor);
+	auto yyy = sizeof(partition_info);
+	int zzz = PARTITION_COUNT;
+
+	int www = 4 * 4 + 5 * 4 + 5 * 5 + 6 * 5 + 6 * 6 + 8 * 5 + 8 * 6 + 8 * 8 + 10 * 5 + 10 * 6 + 10 * 8 + 10 * 10 + 12 * 10 + 12 * 12 + 3 * 3 * 3 + 4 * 3 * 3 + 4 * 4 * 3 + 4 * 4 * 4 + 5 * 4 * 4 + 5 * 5 * 4 + 5 * 5 * 5 + 6 * 5 * 5 + 6 * 6 * 5 + 6 * 6 * 6;
+	int big = 216 * (14 + 10);
+
 	Driver driver;
 	ASSERT_TRUE(driver.loadSwiftShader());
 

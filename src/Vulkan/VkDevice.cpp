@@ -62,6 +62,8 @@ Device::SamplerIndexer::~SamplerIndexer()
 
 uint32_t Device::SamplerIndexer::index(const SamplerState &samplerState)
 {
+	auto xxx = sizeof(marl::Event);
+
 	marl::lock lock(mutex);
 
 	auto it = map.find(samplerState);

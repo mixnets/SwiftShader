@@ -601,11 +601,11 @@ static void construct_block_size_descriptor_2d(
 				maxprec_2planes = -1;
 			}
 
-			bsd->permit_encode[decimation_mode_count] = (x_weights <= xdim && y_weights <= ydim);
+		//	bsd->permit_encode[decimation_mode_count] = (x_weights <= xdim && y_weights <= ydim);
 
-			bsd->decimation_mode_samples[decimation_mode_count] = weight_count;
-			bsd->decimation_mode_maxprec_1plane[decimation_mode_count] = maxprec_1plane;
-			bsd->decimation_mode_maxprec_2planes[decimation_mode_count] = maxprec_2planes;
+		//	bsd->decimation_mode_samples[decimation_mode_count] = weight_count;
+		//	bsd->decimation_mode_maxprec_1plane[decimation_mode_count] = maxprec_1plane;
+		//	bsd->decimation_mode_maxprec_2planes[decimation_mode_count] = maxprec_2planes;
 			bsd->decimation_tables[decimation_mode_count] = dt;
 
 			decimation_mode_count++;
@@ -614,15 +614,15 @@ static void construct_block_size_descriptor_2d(
 
 	for (int i = 0; i < MAX_DECIMATION_MODES; i++)
 	{
-		bsd->decimation_mode_percentile[i] = 1.0f;
+	//	bsd->decimation_mode_percentile[i] = 1.0f;
 	}
 
 	for (int i = decimation_mode_count; i < MAX_DECIMATION_MODES; i++)
 	{
-		bsd->permit_encode[i] = 0;
-		bsd->decimation_mode_samples[i] = 0;
-		bsd->decimation_mode_maxprec_1plane[i] = -1;
-		bsd->decimation_mode_maxprec_2planes[i] = -1;
+	//	bsd->permit_encode[i] = 0;
+	//	bsd->decimation_mode_samples[i] = 0;
+	//	bsd->decimation_mode_maxprec_1plane[i] = -1;
+	//	bsd->decimation_mode_maxprec_2planes[i] = -1;
 	}
 
 	bsd->decimation_mode_count = decimation_mode_count;
@@ -654,9 +654,9 @@ static void construct_block_size_descriptor_2d(
 			bsd->block_modes[i].decimation_mode = -1;
 			bsd->block_modes[i].quantization_mode = -1;
 			bsd->block_modes[i].is_dual_plane = -1;
-			bsd->block_modes[i].permit_encode = 0;
+		//	bsd->block_modes[i].permit_encode = 0;
 			bsd->block_modes[i].permit_decode = 0;
-			bsd->block_modes[i].percentile = 1.0f;
+		//	bsd->block_modes[i].percentile = 1.0f;
 		}
 		else
 		{
@@ -664,12 +664,12 @@ static void construct_block_size_descriptor_2d(
 			bsd->block_modes[i].decimation_mode = decimation_mode;
 			bsd->block_modes[i].quantization_mode = quantization_mode;
 			bsd->block_modes[i].is_dual_plane = is_dual_plane;
-			bsd->block_modes[i].permit_encode = permit_encode;
+		//	bsd->block_modes[i].permit_encode = permit_encode;
 			bsd->block_modes[i].permit_decode = permit_encode;	// disallow decode of grid size larger than block size.
-			bsd->block_modes[i].percentile = percentiles[i];
+		//	bsd->block_modes[i].percentile = percentiles[i];
 
-			if (bsd->decimation_mode_percentile[decimation_mode] > percentiles[i])
-				bsd->decimation_mode_percentile[decimation_mode] = percentiles[i];
+		//	if (bsd->decimation_mode_percentile[decimation_mode] > percentiles[i])
+		//		bsd->decimation_mode_percentile[decimation_mode] = percentiles[i];
 		}
 	}
 
@@ -771,11 +771,11 @@ static void construct_block_size_descriptor_3d(
 				if ((2 * x_weights * y_weights * z_weights) > MAX_WEIGHTS_PER_BLOCK)
 					maxprec_2planes = -1;
 
-				bsd->permit_encode[decimation_mode_count] = (x_weights <= xdim && y_weights <= ydim && z_weights <= zdim);
+			//	bsd->permit_encode[decimation_mode_count] = (x_weights <= xdim && y_weights <= ydim && z_weights <= zdim);
 
-				bsd->decimation_mode_samples[decimation_mode_count] = weight_count;
-				bsd->decimation_mode_maxprec_1plane[decimation_mode_count] = maxprec_1plane;
-				bsd->decimation_mode_maxprec_2planes[decimation_mode_count] = maxprec_2planes;
+			//	bsd->decimation_mode_samples[decimation_mode_count] = weight_count;
+			//	bsd->decimation_mode_maxprec_1plane[decimation_mode_count] = maxprec_1plane;
+			//	bsd->decimation_mode_maxprec_2planes[decimation_mode_count] = maxprec_2planes;
 				bsd->decimation_tables[decimation_mode_count] = dt;
 
 				decimation_mode_count++;
@@ -785,15 +785,15 @@ static void construct_block_size_descriptor_3d(
 
 	for (int i = 0; i < MAX_DECIMATION_MODES; i++)
 	{
-		bsd->decimation_mode_percentile[i] = 1.0f;
+	//	bsd->decimation_mode_percentile[i] = 1.0f;
 	}
 
 	for (int i = decimation_mode_count; i < MAX_DECIMATION_MODES; i++)
 	{
-		bsd->permit_encode[i] = 0;
-		bsd->decimation_mode_samples[i] = 0;
-		bsd->decimation_mode_maxprec_1plane[i] = -1;
-		bsd->decimation_mode_maxprec_2planes[i] = -1;
+	//	bsd->permit_encode[i] = 0;
+	//	bsd->decimation_mode_samples[i] = 0;
+	//	bsd->decimation_mode_maxprec_1plane[i] = -1;
+	//	bsd->decimation_mode_maxprec_2planes[i] = -1;
 	}
 
 	bsd->decimation_mode_count = decimation_mode_count;
@@ -822,9 +822,9 @@ static void construct_block_size_descriptor_3d(
 			bsd->block_modes[i].decimation_mode = -1;
 			bsd->block_modes[i].quantization_mode = -1;
 			bsd->block_modes[i].is_dual_plane = -1;
-			bsd->block_modes[i].permit_encode = 0;
+		//	bsd->block_modes[i].permit_encode = 0;
 			bsd->block_modes[i].permit_decode = 0;
-			bsd->block_modes[i].percentile = 1.0f;
+		//	bsd->block_modes[i].percentile = 1.0f;
 		}
 		else
 		{
@@ -832,12 +832,12 @@ static void construct_block_size_descriptor_3d(
 			bsd->block_modes[i].decimation_mode = decimation_mode;
 			bsd->block_modes[i].quantization_mode = quantization_mode;
 			bsd->block_modes[i].is_dual_plane = is_dual_plane;
-			bsd->block_modes[i].permit_encode = permit_encode;
+		//	bsd->block_modes[i].permit_encode = permit_encode;
 			bsd->block_modes[i].permit_decode = permit_encode;
 
-			bsd->block_modes[i].percentile = 0.0f; // No percentile table
-			if (bsd->decimation_mode_percentile[decimation_mode] > 0.0f)
-				bsd->decimation_mode_percentile[decimation_mode] = 0.0f;
+		//	bsd->block_modes[i].percentile = 0.0f; // No percentile table
+		//	if (bsd->decimation_mode_percentile[decimation_mode] > 0.0f)
+		//		bsd->decimation_mode_percentile[decimation_mode] = 0.0f;
 		}
 	}
 

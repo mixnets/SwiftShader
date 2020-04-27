@@ -124,7 +124,9 @@ class Event {
 };
 
 Event::Shared::Shared(Allocator* allocator, Mode mode, bool initialState)
-    : cv(allocator), mode(mode), signalled(initialState) {}
+    : cv(allocator), mode(mode), signalled(initialState) {
+  int xxx = sizeof(*this);
+}
 
 void Event::Shared::signal() {
   marl::lock lock(mutex);

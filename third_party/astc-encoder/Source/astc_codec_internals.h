@@ -30,7 +30,7 @@
 #include "astc_mathlib.h"
 
 // ASTC parameters
-#define MAX_TEXELS_PER_BLOCK 216
+#define MAX_TEXELS_PER_BLOCK 216  // 6x6x6
 #define MAX_WEIGHTS_PER_BLOCK 64
 #define MIN_WEIGHT_BITS_PER_BLOCK 24
 #define MAX_WEIGHT_BITS_PER_BLOCK 96
@@ -64,10 +64,10 @@ enum astc_decode_mode
 struct partition_info
 {
 	int partition_count;
-	uint8_t texels_per_partition[4];
+//	uint8_t texels_per_partition[4];
 	uint8_t partition_of_texel[MAX_TEXELS_PER_BLOCK];
-	uint8_t texels_of_partition[4][MAX_TEXELS_PER_BLOCK];
-	uint64_t coverage_bitmaps[4];
+//	uint8_t texels_of_partition[4][MAX_TEXELS_PER_BLOCK];
+//	uint64_t coverage_bitmaps[4];
 };
 
 /*
@@ -103,12 +103,12 @@ struct decimation_table
 */
 struct block_mode
 {
-	int8_t decimation_mode;
-	int8_t quantization_mode;
-	int8_t is_dual_plane;
-	int8_t permit_encode;
-	int8_t permit_decode;
-	float percentile;
+	int8_t decimation_mode : 1;
+	int8_t quantization_mode : 1;
+	int8_t is_dual_plane : 1;
+//	int8_t permit_encode;
+	int8_t permit_decode : 1;
+//	float percentile;
 };
 
 struct block_size_descriptor
@@ -118,12 +118,12 @@ struct block_size_descriptor
 	int zdim;
 	int texel_count;
 
-	int decimation_mode_count;
-	int decimation_mode_samples[MAX_DECIMATION_MODES];
-	int decimation_mode_maxprec_1plane[MAX_DECIMATION_MODES];
-	int decimation_mode_maxprec_2planes[MAX_DECIMATION_MODES];
-	float decimation_mode_percentile[MAX_DECIMATION_MODES];
-	int permit_encode[MAX_DECIMATION_MODES];
+/**/	int decimation_mode_count;
+//	int decimation_mode_samples[MAX_DECIMATION_MODES];
+//	int decimation_mode_maxprec_1plane[MAX_DECIMATION_MODES];
+//	int decimation_mode_maxprec_2planes[MAX_DECIMATION_MODES];
+//	float decimation_mode_percentile[MAX_DECIMATION_MODES];
+//	int permit_encode[MAX_DECIMATION_MODES];
 	const decimation_table *decimation_tables[MAX_DECIMATION_MODES];
 	block_mode block_modes[MAX_WEIGHT_MODES];
 
