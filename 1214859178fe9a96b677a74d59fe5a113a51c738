@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94ac5b2f_8e9f9917",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-27T17:11:56Z",
+      "side": 1,
+      "message": "Why was this moved into the for loop?",
+      "range": {
+        "startLine": 1112,
+        "startChar": 3,
+        "endLine": 1112,
+        "endChar": 86
+      },
+      "revId": "1214859178fe9a96b677a74d59fe5a113a51c738",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
