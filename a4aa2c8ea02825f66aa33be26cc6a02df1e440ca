@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee6c0cc9_d0dc141b",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:35:06Z",
+      "side": 1,
+      "message": "There are only 24 defined combinations of block dimensions (of which we currently only support 14). So no need for any hashing. An array will do.",
+      "range": {
+        "startLine": 139,
+        "startChar": 1,
+        "endLine": 148,
+        "endChar": 3
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "440e058a_68e1a5c7",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:35:06Z",
+      "side": 1,
+      "message": "In addition to the above, this doesn\u0027t seem like a good use case for SyncCache\u003c\u003e since (1) it\u0027s relatively fast to compute, (2) any application will only use a few block sizes, (3) it\u0027s unlikely we\u0027ll be decoding multiple images in parallel the way this currently gets called, and (4) I\u0027m not sure ARM\u0027s code is thread-safe.\n\nIdeally this all gets computed either statically, all at once, or on-the-fly.",
+      "range": {
+        "startLine": 149,
+        "startChar": 5,
+        "endLine": 149,
+        "endChar": 14
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ea6b617_f9c1b359",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T20:35:06Z",
+      "side": 1,
+      "message": "This is very non-descriptive. \u0027CommonData\u0027 is too generic, and \u0027bsd\u0027 is too cryptic.",
+      "range": {
+        "startLine": 164,
+        "startChar": 1,
+        "endLine": 164,
+        "endChar": 34
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
