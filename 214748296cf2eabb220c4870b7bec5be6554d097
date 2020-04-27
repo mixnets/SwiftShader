@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ed0a6ff_b588f2d6",
+        "filename": "src/Vulkan/VkPipelineLayout.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-27T14:32:03Z",
+      "side": 1,
+      "message": "Note this goes away in the next change so it becomes less confusing.",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 62
+      },
+      "revId": "214748296cf2eabb220c4870b7bec5be6554d097",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
