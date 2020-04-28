@@ -65,7 +65,9 @@ extern "C" void X86CompilationCallback()
 
 namespace {
 
-thread_local std::unique_ptr<rr::JITBuilder> jit;
+// This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
+// for destructing objects at exit. See crbug.com/1074222
+thread_local rr::JITBuilder *jit;
 
 // Default configuration settings. Must be accessed under mutex lock.
 std::mutex defaultConfigLock;
@@ -549,8 +551,7 @@ static size_t typeSize(Type *type)
 		case Type_v8i8: return 8;
 		case Type_v4i8: return 4;
 		case Type_v2f32: return 8;
-		case Type_LLVM:
-		{
+		case Type_LLVM: {
 			llvm::Type *t = T(type);
 
 			if(t->isPointerTy())
@@ -603,12 +604,19 @@ static ::llvm::Function *createFunction(const char *name, ::llvm::Type *retTy, c
 Nucleus::Nucleus()
 {
 	ASSERT(jit == nullptr);
-	jit.reset(new JITBuilder(Nucleus::getDefaultConfig()));
+	jit = new JITBuilder(Nucleus::getDefaultConfig());
+
+	ASSERT(Variable::unmaterializedVariables == nullptr);
+	Variable::unmaterializedVariables = new std::unordered_set<Variable *>();
 }
 
 Nucleus::~Nucleus()
 {
-	jit.reset();
+	delete Variable::unmaterializedVariables;
+	Variable::unmaterializedVariables = nullptr;
+
+	delete jit;
+	jit = nullptr;
 }
 
 void Nucleus::setDefaultConfig(const Config &cfg)
@@ -634,10 +642,10 @@ std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config:
 {
 	std::shared_ptr<Routine> routine;
 
-	auto acquire = [&](std::unique_ptr<rr::JITBuilder> jitBuilder) {
+	auto acquire = [&](rr::JITBuilder *jitBuilder) {
 		// ::jit is thread-local, so when this is executed on a separate thread (see JIT_IN_SEPARATE_THREAD)
 		// it needs to be assigned the value from the parent thread.
-		jit = std::move(jitBuilder);
+		jit = jitBuilder;
 
 		auto cfg = cfgEdit.apply(jit->config);
 
@@ -687,7 +695,8 @@ std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config:
 		}
 
 		routine = jit->acquireRoutine(&jit->function, 1, cfg);
-		jit.reset();
+		delete jit;
+		jit = nullptr;
 	};
 
 #ifdef JIT_IN_SEPARATE_THREAD
@@ -968,8 +977,7 @@ Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int
 				return createBitCast(v, type);
 			}
 			// Fallthrough to non-emulated case.
-		case Type_LLVM:
-		{
+		case Type_LLVM: {
 			auto elTy = T(type);
 			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
@@ -1052,8 +1060,7 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 				return value;
 			}
 			// Fallthrough to non-emulated case.
-		case Type_LLVM:
-		{
+		case Type_LLVM: {
 			auto elTy = T(type);
 			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
@@ -4288,7 +4295,8 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 	funcs[Nucleus::CoroutineEntryAwait] = jit->coroutine.await;
 	funcs[Nucleus::CoroutineEntryDestroy] = jit->coroutine.destroy;
 	auto routine = jit->acquireRoutine(funcs, Nucleus::CoroutineEntryCount, cfg);
-	jit.reset();
+	delete jit;
+	jit = nullptr;
 
 	return routine;
 }
