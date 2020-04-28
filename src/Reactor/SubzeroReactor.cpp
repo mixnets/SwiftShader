@@ -533,15 +533,13 @@ static void *relocateSymbol(const ElfHeader *elfHeader, const Elf32_Rel &relocat
 			case R_ARM_NONE:
 				// No relocation
 				break;
-			case R_ARM_MOVW_ABS_NC:
-			{
+			case R_ARM_MOVW_ABS_NC: {
 				uint32_t thumb = 0;  // Calls to Thumb code not supported.
 				uint32_t lo = (uint32_t)(intptr_t)symbolValue | thumb;
 				*patchSite = (*patchSite & 0xFFF0F000) | ((lo & 0xF000) << 4) | (lo & 0x0FFF);
 			}
 			break;
-			case R_ARM_MOVT_ABS:
-			{
+			case R_ARM_MOVT_ABS: {
 				uint32_t hi = (uint32_t)(intptr_t)(symbolValue) >> 16;
 				*patchSite = (*patchSite & 0xFFF0F000) | ((hi & 0xF000) << 4) | (hi & 0x0FFF);
 			}
@@ -855,7 +853,7 @@ void VPrintf(const std::vector<Value *> &vals)
 
 Nucleus::Nucleus()
 {
-	::codegenMutex.lock();  // Reactor is currently not thread safe
+	::codegenMutex.lock();  // SubzeroReactor is currently not thread safe
 
 	Ice::ClFlags &Flags = Ice::ClFlags::Flags;
 	Ice::ClFlags::getParsedClFlags(Flags);
@@ -901,10 +899,16 @@ Nucleus::Nucleus()
 		::context = new Ice::GlobalContext(&cout, &cout, &cerr, elfMemory);
 		::routine = elfMemory;
 	}
+
+	ASSERT(Variable::unmaterializedVariables == nullptr);
+	Variable::unmaterializedVariables = new std::unordered_set<Variable *>();
 }
 
 Nucleus::~Nucleus()
 {
+	delete Variable::unmaterializedVariables;
+	Variable::unmaterializedVariables = nullptr;
+
 	delete ::routine;
 	::routine = nullptr;
 
@@ -2073,66 +2077,57 @@ Value *Nucleus::createConstantVector(const int64_t *constants, Type *type)
 	switch((int)reinterpret_cast<intptr_t>(type))
 	{
 		case Ice::IceType_v4i32:
-		case Ice::IceType_v4i1:
-		{
+		case Ice::IceType_v4i1: {
 			const int initializer[4] = { (int)i[0], (int)i[1], (int)i[2], (int)i[3] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Ice::IceType_v4f32:
-		{
+		case Ice::IceType_v4f32: {
 			const float initializer[4] = { (float)f[0], (float)f[1], (float)f[2], (float)f[3] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
 		case Ice::IceType_v8i16:
-		case Ice::IceType_v8i1:
-		{
+		case Ice::IceType_v8i1: {
 			const short initializer[8] = { (short)i[0], (short)i[1], (short)i[2], (short)i[3], (short)i[4], (short)i[5], (short)i[6], (short)i[7] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
 		case Ice::IceType_v16i8:
-		case Ice::IceType_v16i1:
-		{
+		case Ice::IceType_v16i1: {
 			const char initializer[16] = { (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[4], (char)i[5], (char)i[6], (char)i[7], (char)i[8], (char)i[9], (char)i[10], (char)i[11], (char)i[12], (char)i[13], (char)i[14], (char)i[15] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Type_v2i32:
-		{
+		case Type_v2i32: {
 			const int initializer[4] = { (int)i[0], (int)i[1], (int)i[0], (int)i[1] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Type_v2f32:
-		{
+		case Type_v2f32: {
 			const float initializer[4] = { (float)f[0], (float)f[1], (float)f[0], (float)f[1] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Type_v4i16:
-		{
+		case Type_v4i16: {
 			const short initializer[8] = { (short)i[0], (short)i[1], (short)i[2], (short)i[3], (short)i[0], (short)i[1], (short)i[2], (short)i[3] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Type_v8i8:
-		{
+		case Type_v8i8: {
 			const char initializer[16] = { (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[4], (char)i[5], (char)i[6], (char)i[7], (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[4], (char)i[5], (char)i[6], (char)i[7] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
 		}
 		break;
-		case Type_v4i8:
-		{
+		case Type_v4i8: {
 			const char initializer[16] = { (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[0], (char)i[1], (char)i[2], (char)i[3], (char)i[0], (char)i[1], (char)i[2], (char)i[3] };
 			static_assert(sizeof(initializer) == vectorSize, "!");
 			ptr = IceConstantData(initializer, vectorSize, alignment);
