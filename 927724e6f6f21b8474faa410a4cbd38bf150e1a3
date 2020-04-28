@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "ebac5364_98ac906b",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-28T13:25:31Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t think we should be creating SyncCache versions of std::map and unordered_map. They\u0027re not caches in the typical sense.\n\nThey only exist as we use std::map and std::unordered_map as caches in SamplingRoutineCache and PipelineCache. I didn\u0027t name these classes, and are clearly treated as caches.\nAs I said in an earlier code review, I want to remove the the use of std::map. If you want these to be bounded in size, we can switch them to using a LRUCache, that\u0027s fine, but this seems orthogonal to this change.\n\n\u003e Caches have entries that can be destroyed by insertions using other keys.\n\nNot entirely convinced that\u0027s required trait of a cache. The SamplingRoutineCache and PipelineCache don\u0027t have this trait.\n\n\u003e Multi-reader-multi-writer versions of maps could certainly have some uses, but I\u0027d rather avoid an overly generic template-in-a-template, and have a custom implementation that can be specialized for their common use cases instead of getting mixed in with true cache use cases.\n\nYou\u0027ve said you\u0027re not keen on it, but you haven\u0027t elaborated on why, nor any examples of how you could specialize to improve. This is only as generic as the use cases I have found, one of which I\u0027d like to remove.",
+      "parentUuid": "8aae63f7_4ad0ad61",
+      "range": {
+        "startLine": 78,
+        "startChar": 7,
+        "endLine": 78,
+        "endChar": 27
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f0e6bb5d_bb255070",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 32
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "4fa3287d_526008f9",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-28T13:25:31Z",
+      "side": 1,
+      "message": "Can do. I\u0027m actually surprised at how large Event::Shared has become. Will definitely look at reducing it.\n\n\u003e It appears we\u0027re also temporarily creating an unused event on uncontended lookup?\n\nYes we are. I\u0027m not sure of a way to avoid that, but I could certainly pool the events. They could be returned to the pool when they\u0027re signalled, which would reduce the number in use down to the number of items actively being built (as opposed to built and held).",
+      "parentUuid": "f0e6bb5d_bb255070",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 158,
+        "endChar": 44
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c2c2d5dd_3b97cd91",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 32
@@ -82,6 +130,30 @@
       "writtenOn": "2020-04-27T20:33:19Z",
       "side": 1,
       "message": "Can we borrow pool entries that are already in the signaled state to avoid this overhead?",
+      "range": {
+        "startLine": 208,
+        "startChar": 1,
+        "endLine": 208,
+        "endChar": 23
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ad92d71_6c5e0882",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-28T13:25:31Z",
+      "side": 1,
+      "message": "Signalling isn\u0027t actually that expensive.\nMarl uses internal counts to ensure there\u0027s no signalling if nothing is listening.",
+      "parentUuid": "c2c2d5dd_3b97cd91",
       "range": {
         "startLine": 208,
         "startChar": 1,
