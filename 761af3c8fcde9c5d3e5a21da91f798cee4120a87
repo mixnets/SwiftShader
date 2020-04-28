@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c0a3b6c8_0f428684",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-04-28T09:50:38Z",
+      "side": 1,
+      "message": "This recently got extended with a pipeline bind point for ray tracing. We won\u0027t support that for a long time to come (if ever). Even if we did, it\u0027s unlikely that it makes sense for this bind point to use PipelineState. In fact it\u0027s already questionable whether it\u0027s suitable for compute.\n\nI think these should be two separate fields, not an array.\n\nAnyway, LGTM as a first step and not get distracted by such refactoring.",
+      "range": {
+        "startLine": 150,
+        "startChar": 2,
+        "endLine": 150,
+        "endChar": 81
+      },
+      "revId": "761af3c8fcde9c5d3e5a21da91f798cee4120a87",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
