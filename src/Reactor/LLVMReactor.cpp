@@ -613,11 +613,9 @@ Nucleus::Nucleus()
 
 Nucleus::~Nucleus()
 {
-	delete Variable::unmaterializedVariables;
-	Variable::unmaterializedVariables = nullptr;
-
-	delete jit;
-	jit = nullptr;
+	// Reset by acquireRoutine()
+	ASSERT(jit == nullptr);
+	ASSERT(Variable::unmaterializedVariables == nullptr);
 }
 
 void Nucleus::setDefaultConfig(const Config &cfg)
@@ -641,28 +639,32 @@ Config Nucleus::getDefaultConfig()
 
 std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
+	if(jit->builder->GetInsertBlock()->empty() || !jit->builder->GetInsertBlock()->back().isTerminator())
+	{
+		llvm::Type *type = jit->function->getReturnType();
+
+		if(type->isVoidTy())
+		{
+			createRetVoid();
+		}
+		else
+		{
+			createRet(V(llvm::UndefValue::get(type)));
+		}
+	}
+
+	// We're done generating Reactor/Nucleus-level code at this point.
+	// createRet() killed all the variables that haven't been materialized yet.
+	delete Variable::unmaterializedVariables;
+	Variable::unmaterializedVariables = nullptr;
+
 	std::shared_ptr<Routine> routine;
 
-	auto acquire = [&](rr::JITBuilder *jitBuilder) {
+	auto acquire = [&](rr::JITBuilder *jit) {
 		// ::jit is thread-local, so when this is executed on a separate thread (see JIT_IN_SEPARATE_THREAD)
-		// it needs to be assigned the value from the parent thread.
-		jit = jitBuilder;
+		// it needs to only use the jit variable passed in as an argument.
 
 		auto cfg = cfgEdit.apply(jit->config);
-
-		if(jit->builder->GetInsertBlock()->empty() || !jit->builder->GetInsertBlock()->back().isTerminator())
-		{
-			llvm::Type *type = jit->function->getReturnType();
-
-			if(type->isVoidTy())
-			{
-				createRetVoid();
-			}
-			else
-			{
-				createRet(V(llvm::UndefValue::get(type)));
-			}
-		}
 
 #ifdef ENABLE_RR_DEBUG_INFO
 		if(jit->debugInfo != nullptr)
@@ -696,8 +698,6 @@ std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config:
 		}
 
 		routine = jit->acquireRoutine(&jit->function, 1, cfg);
-		delete jit;
-		jit = nullptr;
 	};
 
 #ifdef JIT_IN_SEPARATE_THREAD
@@ -705,11 +705,14 @@ std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config:
 	// FIXME(b/149829034): This is not a long-term solution. Reactor has no control
 	// over the threading and stack sizes of its users, so this should be addressed
 	// at a higher level instead.
-	std::thread thread(acquire, std::move(jit));
+	std::thread thread(acquire, jit);
 	thread.join();
 #else
-	acquire(std::move(jit));
+	acquire(jit);
 #endif
+
+	delete jit;
+	jit = nullptr;
 
 	return routine;
 }
@@ -4239,6 +4242,11 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 		jit->builder->CreateRetVoid();
 	}
 
+	// We're done generating Reactor/Nucleus-level code at this point.
+	// createRet() killed all the variables that haven't been materialized yet.
+	delete Variable::unmaterializedVariables;
+	Variable::unmaterializedVariables = nullptr;
+
 #ifdef ENABLE_RR_DEBUG_INFO
 	if(jit->debugInfo != nullptr)
 	{
@@ -4297,7 +4305,9 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 	funcs[Nucleus::CoroutineEntryBegin] = jit->function;
 	funcs[Nucleus::CoroutineEntryAwait] = jit->coroutine.await;
 	funcs[Nucleus::CoroutineEntryDestroy] = jit->coroutine.destroy;
+
 	auto routine = jit->acquireRoutine(funcs, Nucleus::CoroutineEntryCount, cfg);
+
 	delete jit;
 	jit = nullptr;
 
