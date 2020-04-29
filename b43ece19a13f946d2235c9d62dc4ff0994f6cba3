@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "3f0a42d2_8328bd31",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 619,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-29T18:59:37Z",
+      "side": 1,
+      "message": "I\u0027d keep this as it was...",
+      "range": {
+        "startLine": 615,
+        "startChar": 1,
+        "endLine": 619,
+        "endChar": 0
+      },
+      "revId": "b43ece19a13f946d2235c9d62dc4ff0994f6cba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1cc0a40_ad195fbf",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-29T18:59:37Z",
+      "side": 1,
+      "message": "... keep this ...",
+      "range": {
+        "startLine": 642,
+        "startChar": 0,
+        "endLine": 654,
+        "endChar": 2
+      },
+      "revId": "b43ece19a13f946d2235c9d62dc4ff0994f6cba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "466f8d3b_976f56de",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
@@ -13,6 +59,30 @@
       "writtenOn": "2020-04-29T18:51:03Z",
       "side": 1,
       "message": "Are we able to remove the capture of this, to prevent any other accidentials here?",
+      "range": {
+        "startLine": 663,
+        "startChar": 17,
+        "endLine": 663,
+        "endChar": 18
+      },
+      "revId": "b43ece19a13f946d2235c9d62dc4ff0994f6cba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ffafe36_20d6f0df",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-29T18:59:37Z",
+      "side": 1,
+      "message": "... and change this to [\u0026cfgEdit, \u0026name, \u0026routine]\n\nYou\u0027re then TSAN happy, and don\u0027t fall over when destructing rr::Variables.",
+      "parentUuid": "466f8d3b_976f56de",
       "range": {
         "startLine": 663,
         "startChar": 17,
