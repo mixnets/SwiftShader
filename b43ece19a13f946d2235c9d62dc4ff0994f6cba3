@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "466f8d3b_976f56de",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-29T18:51:03Z",
+      "side": 1,
+      "message": "Are we able to remove the capture of this, to prevent any other accidentials here?",
+      "range": {
+        "startLine": 663,
+        "startChar": 17,
+        "endLine": 663,
+        "endChar": 18
+      },
+      "revId": "b43ece19a13f946d2235c9d62dc4ff0994f6cba3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
