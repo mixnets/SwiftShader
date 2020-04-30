@@ -1801,7 +1801,7 @@ void CommandBuffer::submit(CommandBuffer::ExecutionState &executionState)
 #ifdef ENABLE_VK_DEBUGGER
 		if(debuggerThread)
 		{
-			debuggerThread->update([&](vk::dbg::Frame &frame) {
+			debuggerThread->update(true, [&](vk::dbg::Frame &frame) {
 				frame.location = { debuggerFile, line++, 0 };
 			});
 		}
