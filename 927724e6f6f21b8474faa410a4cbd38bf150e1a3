@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bc60075a_02f31e4d",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T12:47:58Z",
+      "side": 1,
+      "message": "What aspect(s) of emplace() are you suggesting?\n\nThere\u0027s the move ability - I agree, this could be nice for the data. We could make that work for add().\n\nBut there\u0027s also the std::[unordered_]map trait that emplace() doesn\u0027t actually replace anything if the key already exists. This is a bit odd for LRUCache - would you expect the LRU entry to be moved to the front in this case?",
+      "parentUuid": "badaa2b8_7a35fd3d",
+      "range": {
+        "startLine": 52,
+        "startChar": 73,
+        "endLine": 52,
+        "endChar": 76
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8aae63f7_4ad0ad61",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 32
@@ -119,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "c8d8e038_804f66a8",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T12:47:58Z",
+      "side": 1,
+      "message": "Added documentation.\n\nEvaluated pooling events, and decided that it probably isn\u0027t worth it. Justification:\n\nThe majority bloat of marl::Event::Shared was from marl::ConditionVariable. https://github.com/google/marl/pull/122 reduces this down by 3x, to 144 bytes.\n\nIf we want to only have the ready-signal bound to the Entry while it is being built, then we\u0027d need a concurrent-safe way to detach it. The only sensibly way I can think of to do that is to use a mutex, which is typically cache-line sized (64 bytes), and ends up re-adding half of what we\u0027re trying to remove. Yes, you\u0027d reduce the size of each entry, but at the cost of pointer indirection and slightly iffy mutex \u003c-\u003e condition_variable separation.\n\nOne approach I\u0027ve been considering is to have N shared mutexes / condition variables, indexed off the key. This would reduce lock contention down to `cache size / N`, but this would need to be profiled to compare relative performance. Can investigate as a followup if you still have concerns about size.\n\nAnyway - I\u0027ve replaced the use of `marl::Event` with a `marl::mutex`, `marl::condition_variable` and `bool`. This removes the inner `Shared` indirection and heap allocation, and drops the unneeded dependency fields (used for `marl::Event::any()`). It also addresses your comment about creating an entry already signalled.",
+      "parentUuid": "4fa3287d_526008f9",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 158,
+        "endChar": 44
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2c2d5dd_3b97cd91",
         "filename": "src/System/SyncCache.hpp",
         "patchSetId": 32
@@ -163,6 +211,30 @@
       "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a84e9f5_25cae00f",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T12:47:58Z",
+      "side": 1,
+      "message": "Fixed by inlining away marl::Event.",
+      "parentUuid": "6ad92d71_6c5e0882",
+      "range": {
+        "startLine": 208,
+        "startChar": 1,
+        "endLine": 208,
+        "endChar": 23
+      },
+      "revId": "927724e6f6f21b8474faa410a4cbd38bf150e1a3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
