@@ -69,6 +69,30 @@
       "revId": "790bd2979aaa7f10760ab760b2144eb48194ccce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d95572e_79688eb2",
+        "filename": "src/System/SyncCache.hpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T23:20:54Z",
+      "side": 1,
+      "message": "Done. Renamed `getOrCreate` to `lookupOrCreate` for symmetry despite the former being a far more common term.",
+      "parentUuid": "2eba2daf_1c2c86fa",
+      "range": {
+        "startLine": 51,
+        "startChar": 13,
+        "endLine": 51,
+        "endChar": 16
+      },
+      "revId": "790bd2979aaa7f10760ab760b2144eb48194ccce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
