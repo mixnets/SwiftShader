@@ -177,7 +177,7 @@ Function<Int(Pointer<Byte>)> function;
 }
 ```
 
-Reactor also defines an OFFSET() macro equivalent to the standard offsetof() macro.
+Reactor also defines an OFFSET() macro, which is a generalization of the offsetof() macro defined in <cstddef>. It allows e.g. getting the offset of array elements, even when indexed dynamically.
 
 ### Conditionals
 
