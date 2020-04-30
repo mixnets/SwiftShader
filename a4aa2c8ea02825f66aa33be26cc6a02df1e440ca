@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1daf821e_25449fe9",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T13:07:19Z",
+      "side": 1,
+      "message": "Based on your comments about how memory-bloaty storing all block sizes would be, I\u0027ve switched to using LRUCache with a capacity of 4. The key is now a uint32_t.",
+      "parentUuid": "ee6c0cc9_d0dc141b",
+      "range": {
+        "startLine": 139,
+        "startChar": 1,
+        "endLine": 148,
+        "endChar": 3
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "440e058a_68e1a5c7",
         "filename": "src/Device/ASTC_Decoder.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2020-04-27T20:35:06Z",
       "side": 1,
       "message": "In addition to the above, this doesn\u0027t seem like a good use case for SyncCache\u003c\u003e since (1) it\u0027s relatively fast to compute, (2) any application will only use a few block sizes, (3) it\u0027s unlikely we\u0027ll be decoding multiple images in parallel the way this currently gets called, and (4) I\u0027m not sure ARM\u0027s code is thread-safe.\n\nIdeally this all gets computed either statically, all at once, or on-the-fly.",
+      "range": {
+        "startLine": 149,
+        "startChar": 5,
+        "endLine": 149,
+        "endChar": 14
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84d12f02_26fbfa90",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T13:07:19Z",
+      "side": 1,
+      "message": "\u003e (1) it\u0027s relatively fast to compute\n\nRelative to what? See the regres timings. This makes the ASTC tests run 3x faster, and shaves off a whole minute from a dEQP test run.\n\n\u003e (2) any application will only use a few block sizes\n\nSure. Switched to using a small LRUCache.\n\n\u003e (3) it\u0027s unlikely we\u0027ll be decoding multiple images in parallel the way this currently gets called\n\nCertainly seems like something we could do in parallel in the future though. Ignoring the thread-safe aspects of SyncCache, it still cleans up a bunch of the getOrCreate() boilerplate. The SyncCache overheads are entirely negligible compared to the cost of generating the data for a block.\n\n\u003e (4) I\u0027m not sure ARM\u0027s code is thread-safe\n\nFair enough, but my points in (3) still stand.\nIf we\u0027re replacing the ASTC library in the future with something that doesn\u0027t have a silly cost to pre-computing blocks, that\u0027s fine, I have no reservations about removing this code. But we haven\u0027t made that switch yet.",
+      "parentUuid": "440e058a_68e1a5c7",
       "range": {
         "startLine": 149,
         "startChar": 5,
@@ -68,6 +116,30 @@
       "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48518ab6_3733e572",
+        "filename": "src/Device/ASTC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-04-30T13:07:19Z",
+      "side": 1,
+      "message": "Renamed.",
+      "parentUuid": "1ea6b617_f9c1b359",
+      "range": {
+        "startLine": 164,
+        "startChar": 1,
+        "endLine": 164,
+        "endChar": 34
+      },
+      "revId": "a4aa2c8ea02825f66aa33be26cc6a02df1e440ca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
