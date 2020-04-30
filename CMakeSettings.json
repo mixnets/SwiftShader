@@ -10,7 +10,23 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "Subzero",
+          "type": "STRING"
+        },
+        {
+          "name": "SWIFTSHADER_GET_PVR",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_ENABLE_PRINT",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x86-Debug",
