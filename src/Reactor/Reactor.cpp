@@ -2384,6 +2384,7 @@ Value *Int::loadValue() const
 {
 	if(isImmediate())
 	{
+		// TODO: Return null for uninitialized
 		return storeValue(Nucleus::createConstantInt(i));
 	}
 

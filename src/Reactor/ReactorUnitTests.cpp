@@ -172,7 +172,7 @@ static const std::vector<int> fibonacci = {
 	317811,
 };
 
-TEST(ReactorUnitTests, PrintPrimitiveTypes)
+TEST(ReactorUnitTests, DISABLED_PrintPrimitiveTypes)
 {
 #if defined(ENABLE_RR_PRINT) && !defined(ENABLE_RR_EMIT_PRINT_LOCATION)
 	FunctionT<void()> function;
@@ -243,7 +243,7 @@ TEST(ReactorUnitTests, PrintPrimitiveTypes)
 #endif
 }
 
-TEST(ReactorUnitTests, PrintReactorTypes)
+TEST(ReactorUnitTests, DISABLED_PrintReactorTypes)
 {
 #if defined(ENABLE_RR_PRINT) && !defined(ENABLE_RR_EMIT_PRINT_LOCATION)
 	FunctionT<void()> function;

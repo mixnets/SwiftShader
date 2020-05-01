@@ -123,9 +123,9 @@ public:
 
 	virtual Type *getType() const = 0;
 
-	virtual bool isInitialized() const
+	int getArraySize() const
 	{
-		return address || rvalue;
+		return arraySize;
 	}
 
 	bool isImmediate() const
@@ -133,16 +133,18 @@ public:
 		return !address && !rvalue;
 	}
 
-	int getArraySize() const
-	{
-		return arraySize;
-	}
-
 protected:
 	Variable(Type *type /****/, int arraySize);  //////
 	Variable(const Variable &) = default;
 
 	~Variable();
+
+	virtual bool isUninitialized() const
+	{
+		// Unmaterialized variables which have no rvalue assigned to them yet,
+		// are positively uninitialized. Note this is conservative.
+		return isImmediate();
+	}
 
 private:
 	static void materializeAll();
@@ -1215,9 +1217,9 @@ public:
 
 	Value *loadValue() const;
 
-	virtual bool isInitialized() const
+	virtual bool isUninitialized() const
 	{
-		return Variable::isInitialized() || i.isInitialized();
+		return Variable::isUninitialized() && !i.isInitialized();
 	}
 
 	static Type *type();
@@ -2730,6 +2732,13 @@ inline void Variable::materialize() const
 {
 	if(!address)
 	{
+		// Before allocating the stack space, which materializes this variable and makes it considered not uninitialized,
+		// check whether we have an initialized immediate which first has to be promoted to rvalue.
+		if(!isUninitialized())
+		{
+			rvalue = loadValue();
+		}
+
 		address = Nucleus::allocateStackVariable(getType(), arraySize);
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
@@ -2737,13 +2746,6 @@ inline void Variable::materialize() const
 		{
 			storeValue(rvalue);
 			rvalue = nullptr;
-		}
-		else  // Immediate
-		{
-			if(isInitialized())
-			{
-				storeValue(loadValue());
-			}
 		}
 	}
 }
@@ -3245,7 +3247,7 @@ Reference<T> Array<T, S>::operator[](int index)
 template<class T, int S>
 Reference<T> Array<T, S>::operator[](unsigned int index)
 {
-	assert(index < getArraySize());
+	assert(index < static_cast<unsigned int>(getArraySize()));
 	Value *element = LValue<T>::getElementPointer(Nucleus::createConstantInt(index), true);
 
 	return Reference<T>(element);
