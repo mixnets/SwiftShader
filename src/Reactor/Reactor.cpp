@@ -69,7 +69,6 @@ thread_local std::unordered_set<Variable *> *Variable::unmaterializedVariables =
 Variable::Variable(Type *type, int arraySize)
     : type(type)
     , arraySize(arraySize)
-    , initialized(false)
 {
 #if REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION
 	materialize();

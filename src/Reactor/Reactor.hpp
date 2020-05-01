@@ -115,7 +115,7 @@ class Variable
 public:
 	void materialize() const;
 
-	Value *loadValue() const;
+	virtual Value *loadValue() const;
 	Value *storeValue(Value *value) const;
 
 	Value *getBaseAddress() const;
@@ -146,8 +146,7 @@ private:
 	static thread_local std::unordered_set<Variable *> *unmaterializedVariables;
 
 	Type *const type;
-	const uint32_t arraySize : 31;
-	mutable uint32_t initialized : 1;
+	const int arraySize;
 	mutable Value *rvalue = nullptr;
 	mutable Value *address = nullptr;
 };
@@ -281,6 +280,36 @@ private:
 	Value *_value;
 };
 
+template<typename T>
+class Immediate
+{
+	Immediate(const Immediate &copy) = delete;
+	Immediate &operator=(const Immediate &assign) = delete;
+
+public:
+	Immediate() {}
+
+	Immeditate &operator=(int x)
+	{
+		initialized = true;
+		value = x;
+	}
+
+	T getValue() const
+	{
+		return value;
+	}
+
+	bool isInitialized() const
+	{
+		return initialized;
+	}
+
+private:
+	T value;
+	bool initialized = false;
+};
+
 template<>
 class RValue<Int>
 {
@@ -311,7 +340,7 @@ public:
 	}
 
 private:
-	int i;
+	Immediate<int> i;
 	mutable Value *_value = nullptr;
 };
 
@@ -2689,13 +2718,9 @@ inline void Variable::materialize() const
 		}
 		else  // Immediate
 		{
-			if(type == Int::getType())
+			if(initialized)
 			{
-				storeValue(Nucleus::createConstantInt(static_cast<const Int *>(this)->i));
-			}
-			else
-			{
-				////	assert(false);
+				storeValue(loadValue());
 			}
 		}
 	}
@@ -2719,6 +2744,8 @@ inline Value *Variable::loadValue() const
 
 inline Value *Variable::storeValue(Value *value) const
 {
+	initialized = true;
+
 	if(address)
 	{
 		return Nucleus::createStore(value, address, type, false, 0);
