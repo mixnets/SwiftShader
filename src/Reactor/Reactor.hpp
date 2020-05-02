@@ -90,12 +90,7 @@ class Float4;
 class Void
 {
 public:
-	static Type *getType();
-
-	static bool isVoid()
-	{
-		return true;
-	}
+	static Type *type();
 };
 
 template<class T>
@@ -107,7 +102,6 @@ class Pointer;
 class Variable
 {
 	friend class Nucleus;
-	friend class PrintValue;
 
 	Variable() = delete;
 	Variable &operator=(const Variable &) = delete;
@@ -121,13 +115,14 @@ public:
 	Value *getBaseAddress() const;
 	Value *getElementPointer(Value *index, bool unsignedIndex) const;
 
+	virtual Type *getType() const = 0;
+	int getArraySize() const { return arraySize; }
+
 protected:
-	Variable(Type *type, int arraySize);
+	Variable(int arraySize);
 	Variable(const Variable &) = default;
 
-	~Variable();
-
-	const int arraySize;
+	virtual ~Variable();
 
 private:
 	static void materializeAll();
@@ -135,9 +130,9 @@ private:
 
 	// This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
 	// for destructing objects at exit. See crbug.com/1074222
-	static thread_local std::unordered_set<Variable *> *unmaterializedVariables;
+	static thread_local std::unordered_set<const Variable *> *unmaterializedVariables;
 
-	Type *const type;
+	const int arraySize;
 	mutable Value *rvalue = nullptr;
 	mutable Value *address = nullptr;
 };
@@ -150,9 +145,9 @@ public:
 
 	RValue<Pointer<T>> operator&();
 
-	static bool isVoid()
+	Type *getType() const override
 	{
-		return false;
+		return T::type();
 	}
 
 	// self() returns the this pointer to this LValue<T> object.
@@ -250,6 +245,7 @@ public:
 	RValue(typename FloatLiteral<T>::type f);
 	RValue(const Reference<T> &rhs);
 
+	// Rvalues cannot be assigned to: "(a + b) = c;"
 	RValue<T> &operator=(const RValue<T> &) = delete;
 
 	Value *value;  // FIXME: Make private
@@ -281,7 +277,7 @@ public:
 	RValue<Bool> operator=(const Bool &rhs);
 	RValue<Bool> operator=(const Reference<Bool> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Bool> operator!(RValue<Bool> val);
@@ -311,7 +307,7 @@ public:
 	RValue<Byte> operator=(const Byte &rhs);
 	RValue<Byte> operator=(const Reference<Byte> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Byte> operator+(RValue<Byte> lhs, RValue<Byte> rhs);
@@ -367,7 +363,7 @@ public:
 	RValue<SByte> operator=(const SByte &rhs);
 	RValue<SByte> operator=(const Reference<SByte> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<SByte> operator+(RValue<SByte> lhs, RValue<SByte> rhs);
@@ -422,7 +418,7 @@ public:
 	RValue<Short> operator=(const Short &rhs);
 	RValue<Short> operator=(const Reference<Short> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Short> operator+(RValue<Short> lhs, RValue<Short> rhs);
@@ -478,7 +474,7 @@ public:
 	RValue<UShort> operator=(const UShort &rhs);
 	RValue<UShort> operator=(const Reference<UShort> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<UShort> operator+(RValue<UShort> lhs, RValue<UShort> rhs);
@@ -534,7 +530,7 @@ public:
 	RValue<Byte4> operator=(const Byte4 &rhs);
 	//	RValue<Byte4> operator=(const Reference<Byte4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 //	RValue<Byte4> operator+(RValue<Byte4> lhs, RValue<Byte4> rhs);
@@ -578,7 +574,7 @@ public:
 	//	RValue<SByte4> operator=(const SByte4 &rhs);
 	//	RValue<SByte4> operator=(const Reference<SByte4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 //	RValue<SByte4> operator+(RValue<SByte4> lhs, RValue<SByte4> rhs);
@@ -622,7 +618,7 @@ public:
 	RValue<Byte8> operator=(const Byte8 &rhs);
 	RValue<Byte8> operator=(const Reference<Byte8> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Byte8> operator+(RValue<Byte8> lhs, RValue<Byte8> rhs);
@@ -677,7 +673,7 @@ public:
 	RValue<SByte8> operator=(const SByte8 &rhs);
 	RValue<SByte8> operator=(const Reference<SByte8> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<SByte8> operator+(RValue<SByte8> lhs, RValue<SByte8> rhs);
@@ -728,7 +724,7 @@ public:
 	RValue<Byte16> operator=(const Byte16 &rhs);
 	RValue<Byte16> operator=(const Reference<Byte16> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 //	RValue<Byte16> operator+(RValue<Byte16> lhs, RValue<Byte16> rhs);
@@ -773,7 +769,7 @@ public:
 	//	RValue<SByte16> operator=(const SByte16 &rhs);
 	//	RValue<SByte16> operator=(const Reference<SByte16> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 //	RValue<SByte16> operator+(RValue<SByte16> lhs, RValue<SByte16> rhs);
@@ -809,7 +805,7 @@ class Short2 : public LValue<Short2>
 public:
 	explicit Short2(RValue<Short4> cast);
 
-	static Type *getType();
+	static Type *type();
 };
 
 class UShort2 : public LValue<UShort2>
@@ -817,7 +813,7 @@ class UShort2 : public LValue<UShort2>
 public:
 	explicit UShort2(RValue<UShort4> cast);
 
-	static Type *getType();
+	static Type *type();
 };
 
 class Short4 : public LValue<Short4>
@@ -845,7 +841,7 @@ public:
 	RValue<Short4> operator=(const UShort4 &rhs);
 	RValue<Short4> operator=(const Reference<UShort4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Short4> operator+(RValue<Short4> lhs, RValue<Short4> rhs);
@@ -922,7 +918,7 @@ public:
 	RValue<UShort4> operator=(const Short4 &rhs);
 	RValue<UShort4> operator=(const Reference<Short4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<UShort4> operator+(RValue<UShort4> lhs, RValue<UShort4> rhs);
@@ -975,7 +971,7 @@ public:
 	RValue<Short8> operator=(const Short8 &rhs);
 	RValue<Short8> operator=(const Reference<Short8> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Short8> operator+(RValue<Short8> lhs, RValue<Short8> rhs);
@@ -1033,7 +1029,7 @@ public:
 	RValue<UShort8> operator=(const UShort8 &rhs);
 	RValue<UShort8> operator=(const Reference<UShort8> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<UShort8> operator+(RValue<UShort8> lhs, RValue<UShort8> rhs);
@@ -1105,7 +1101,7 @@ public:
 	RValue<Int> operator=(const Reference<Int> &rhs);
 	RValue<Int> operator=(const Reference<UInt> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs);
@@ -1175,7 +1171,7 @@ public:
 	//	RValue<Long> operator=(const ULong &rhs);
 	//	RValue<Long> operator=(const Reference<ULong> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Long> operator+(RValue<Long> lhs, RValue<Long> rhs);
@@ -1242,7 +1238,7 @@ public:
 	RValue<UInt> operator=(const Reference<UInt> &rhs);
 	RValue<UInt> operator=(const Reference<Int> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<UInt> operator+(RValue<UInt> lhs, RValue<UInt> rhs);
@@ -1314,7 +1310,7 @@ public:
 	RValue<Int2> operator=(const Int2 &rhs);
 	RValue<Int2> operator=(const Reference<Int2> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Int2> operator+(RValue<Int2> lhs, RValue<Int2> rhs);
@@ -1370,7 +1366,7 @@ public:
 	RValue<UInt2> operator=(const UInt2 &rhs);
 	RValue<UInt2> operator=(const Reference<UInt2> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<UInt2> operator+(RValue<UInt2> lhs, RValue<UInt2> rhs);
@@ -1887,7 +1883,7 @@ public:
 	RValue<Int4> operator=(const Int4 &rhs);
 	RValue<Int4> operator=(const Reference<Int4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 
 private:
 	void constant(int x, int y, int z, int w);
@@ -1990,7 +1986,7 @@ public:
 	RValue<UInt4> operator=(const UInt4 &rhs);
 	RValue<UInt4> operator=(const Reference<UInt4> &rhs);
 
-	static Type *getType();
+	static Type *type();
 
 private:
 	void constant(int x, int y, int z, int w);
@@ -2060,7 +2056,7 @@ class Half : public LValue<Half>
 public:
 	explicit Half(RValue<Float> cast);
 
-	static Type *getType();
+	static Type *type();
 };
 
 class Float : public LValue<Float>
@@ -2090,7 +2086,7 @@ public:
 
 	static Float infinity();
 
-	static Type *getType();
+	static Type *type();
 };
 
 RValue<Float> operator+(RValue<Float> lhs, RValue<Float> rhs);
@@ -2182,7 +2178,7 @@ public:
 	//	template<int T>
 	//	RValue<Float2> operator=(const SwizzleMask1<T> &rhs);
 
-	static Type *getType();
+	static Type *type();
 };
 
 //	RValue<Float2> operator+(RValue<Float2> lhs, RValue<Float2> rhs);
@@ -2254,7 +2250,7 @@ public:
 
 	static Float4 infinity();
 
-	static Type *getType();
+	static Type *type();
 
 private:
 	void constant(float x, float y, float z, float w);
@@ -2376,7 +2372,7 @@ public:
 	Pointer(RValue<Pointer<S>> pointerS, int alignment = 1)
 	    : alignment(alignment)
 	{
-		Value *pointerT = Nucleus::createBitCast(pointerS.value, Nucleus::getPointerType(T::getType()));
+		Value *pointerT = Nucleus::createBitCast(pointerS.value, Nucleus::getPointerType(T::type()));
 		LValue<Pointer<T>>::storeValue(pointerT);
 	}
 
@@ -2385,7 +2381,7 @@ public:
 	    : alignment(alignment)
 	{
 		Value *pointerS = pointer.loadValue();
-		Value *pointerT = Nucleus::createBitCast(pointerS, Nucleus::getPointerType(T::getType()));
+		Value *pointerT = Nucleus::createBitCast(pointerS, Nucleus::getPointerType(T::type()));
 		LValue<Pointer<T>>::storeValue(pointerT);
 	}
 
@@ -2408,7 +2404,7 @@ public:
 	Reference<T> operator[](RValue<Int> index);
 	Reference<T> operator[](RValue<UInt> index);
 
-	static Type *getType();
+	static Type *type();
 
 private:
 	const int alignment;
@@ -2437,7 +2433,7 @@ RValue<Bool> operator==(const Pointer<T> &lhs, const Pointer<T> &rhs)
 template<typename T>
 RValue<T> Load(RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 {
-	return RValue<T>(Nucleus::createLoad(pointer.value, T::getType(), false, alignment, atomic, memoryOrder));
+	return RValue<T>(Nucleus::createLoad(pointer.value, T::type(), false, alignment, atomic, memoryOrder));
 }
 
 template<typename T>
@@ -2460,7 +2456,7 @@ void Scatter(RValue<Pointer<Int>> base, RValue<Int4> val, RValue<Int4> offsets, 
 template<typename T>
 void Store(RValue<T> value, RValue<Pointer<T>> pointer, unsigned int alignment, bool atomic, std::memory_order memoryOrder)
 {
-	Nucleus::createStore(value.value, pointer.value, T::getType(), false, alignment, atomic, memoryOrder);
+	Nucleus::createStore(value.value, pointer.value, T::type(), false, alignment, atomic, memoryOrder);
 }
 
 template<typename T>
@@ -2602,7 +2598,7 @@ namespace rr {
 
 template<class T>
 LValue<T>::LValue(int arraySize)
-    : Variable(T::getType(), arraySize)
+    : Variable(arraySize)
 {
 #ifdef ENABLE_RR_DEBUG_INFO
 	materialize();
@@ -2613,7 +2609,7 @@ inline void Variable::materialize() const
 {
 	if(!address)
 	{
-		address = Nucleus::allocateStackVariable(type, arraySize);
+		address = Nucleus::allocateStackVariable(getType(), arraySize);
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
 		if(rvalue)
@@ -2637,14 +2633,14 @@ inline Value *Variable::loadValue() const
 		materialize();
 	}
 
-	return Nucleus::createLoad(address, type, false, 0);
+	return Nucleus::createLoad(address, getType(), false, 0);
 }
 
 inline Value *Variable::storeValue(Value *value) const
 {
 	if(address)
 	{
-		return Nucleus::createStore(value, address, type, false, 0);
+		return Nucleus::createStore(value, address, getType(), false, 0);
 	}
 
 	rvalue = value;
@@ -2661,7 +2657,7 @@ inline Value *Variable::getBaseAddress() const
 
 inline Value *Variable::getElementPointer(Value *index, bool unsignedIndex) const
 {
-	return Nucleus::createGEP(getBaseAddress(), type, index, unsignedIndex);
+	return Nucleus::createGEP(getBaseAddress(), getType(), index, unsignedIndex);
 }
 
 template<class T>
@@ -2680,7 +2676,7 @@ Reference<T>::Reference(Value *pointer, int alignment)
 template<class T>
 RValue<T> Reference<T>::operator=(RValue<T> rhs) const
 {
-	Nucleus::createStore(rhs.value, address, T::getType(), false, alignment);
+	Nucleus::createStore(rhs.value, address, T::type(), false, alignment);
 
 	return rhs;
 }
@@ -2688,8 +2684,8 @@ RValue<T> Reference<T>::operator=(RValue<T> rhs) const
 template<class T>
 RValue<T> Reference<T>::operator=(const Reference<T> &ref) const
 {
-	Value *tmp = Nucleus::createLoad(ref.address, T::getType(), false, ref.alignment);
-	Nucleus::createStore(tmp, address, T::getType(), false, alignment);
+	Value *tmp = Nucleus::createLoad(ref.address, T::type(), false, ref.alignment);
+	Nucleus::createStore(tmp, address, T::type(), false, alignment);
 
 	return RValue<T>(tmp);
 }
@@ -2703,7 +2699,7 @@ RValue<T> Reference<T>::operator+=(RValue<T> rhs) const
 template<class T>
 Value *Reference<T>::loadValue() const
 {
-	return Nucleus::createLoad(address, T::getType(), false, alignment);
+	return Nucleus::createLoad(address, T::type(), false, alignment);
 }
 
 template<class T>
@@ -2724,7 +2720,7 @@ RValue<T>::RValue(const RValue<T> &rvalue)
 template<class T>
 RValue<T>::RValue(Value *rvalue)
 {
-	assert(Nucleus::createBitCast(rvalue, T::getType()) == rvalue);  // Run-time type should match T, so bitcast is no-op.
+	assert(Nucleus::createBitCast(rvalue, T::type()) == rvalue);  // Run-time type should match T, so bitcast is no-op.
 
 	value = rvalue;
 	RR_DEBUG_INFO_EMIT_VAR(value);
@@ -2974,7 +2970,7 @@ template<class T>
 Pointer<T>::Pointer(std::nullptr_t)
     : alignment(1)
 {
-	Value *value = Nucleus::createNullPointer(T::getType());
+	Value *value = Nucleus::createNullPointer(T::type());
 	LValue<Pointer<T>>::storeValue(value);
 }
 
@@ -3007,7 +3003,7 @@ RValue<Pointer<T>> Pointer<T>::operator=(const Reference<Pointer<T>> &rhs)
 template<class T>
 RValue<Pointer<T>> Pointer<T>::operator=(std::nullptr_t)
 {
-	Value *value = Nucleus::createNullPointer(T::getType());
+	Value *value = Nucleus::createNullPointer(T::type());
 	LValue<Pointer<T>>::storeValue(value);
 
 	return RValue<Pointer<T>>(this);
@@ -3023,7 +3019,7 @@ template<class T>
 Reference<T> Pointer<T>::operator[](int index)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), Nucleus::createConstantInt(index), false);
+	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::type(), Nucleus::createConstantInt(index), false);
 
 	return Reference<T>(element, alignment);
 }
@@ -3032,7 +3028,7 @@ template<class T>
 Reference<T> Pointer<T>::operator[](unsigned int index)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), Nucleus::createConstantInt(index), true);
+	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::type(), Nucleus::createConstantInt(index), true);
 
 	return Reference<T>(element, alignment);
 }
@@ -3041,7 +3037,7 @@ template<class T>
 Reference<T> Pointer<T>::operator[](RValue<Int> index)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value, false);
+	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::type(), index.value, false);
 
 	return Reference<T>(element, alignment);
 }
@@ -3050,15 +3046,15 @@ template<class T>
 Reference<T> Pointer<T>::operator[](RValue<UInt> index)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value, true);
+	Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::type(), index.value, true);
 
 	return Reference<T>(element, alignment);
 }
 
 template<class T>
-Type *Pointer<T>::getType()
+Type *Pointer<T>::type()
 {
-	return Nucleus::getPointerType(T::getType());
+	return Nucleus::getPointerType(T::type());
 }
 
 template<class T, int S>
@@ -3070,7 +3066,7 @@ Array<T, S>::Array(int size)
 template<class T, int S>
 Reference<T> Array<T, S>::operator[](int index)
 {
-	assert(index < this->arraySize);
+	assert(index < Variable::getArraySize());
 	Value *element = LValue<T>::getElementPointer(Nucleus::createConstantInt(index), false);
 
 	return Reference<T>(element);
@@ -3079,7 +3075,7 @@ Reference<T> Array<T, S>::operator[](int index)
 template<class T, int S>
 Reference<T> Array<T, S>::operator[](unsigned int index)
 {
-	assert(index < static_cast<unsigned int>(this->arraySize));
+	assert(index < static_cast<unsigned int>(Variable::getArraySize()));
 	Value *element = LValue<T>::getElementPointer(Nucleus::createConstantInt(index), true);
 
 	return Reference<T>(element);
@@ -3165,16 +3161,16 @@ Function<Return(Arguments...)>::Function()
 {
 	core = new Nucleus();
 
-	Type *types[] = { Arguments::getType()... };
+	Type *types[] = { Arguments::type()... };
 	for(Type *type : types)
 	{
-		if(type != Void::getType())
+		if(type != Void::type())
 		{
 			arguments.push_back(type);
 		}
 	}
 
-	Nucleus::createFunction(Return::getType(), arguments);
+	Nucleus::createFunction(Return::type(), arguments);
 }
 
 template<typename Return, typename... Arguments>
@@ -3213,7 +3209,7 @@ template<class T, class S>
 RValue<T> ReinterpretCast(RValue<S> val)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return RValue<T>(Nucleus::createBitCast(val.value, T::getType()));
+	return RValue<T>(Nucleus::createBitCast(val.value, T::type()));
 }
 
 template<class T, class S>
@@ -3222,7 +3218,7 @@ RValue<T> ReinterpretCast(const LValue<S> &var)
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *val = var.loadValue();
 
-	return RValue<T>(Nucleus::createBitCast(val, T::getType()));
+	return RValue<T>(Nucleus::createBitCast(val, T::type()));
 }
 
 template<class T, class S>
@@ -3235,7 +3231,7 @@ template<class T>
 RValue<T> As(Value *val)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return RValue<T>(Nucleus::createBitCast(val, T::getType()));
+	return RValue<T>(Nucleus::createBitCast(val, T::type()));
 }
 
 template<class T, class S>
@@ -3275,18 +3271,18 @@ public:
 	{
 		return RValue<RReturn>(rr::Call(
 		    ConstantPointer(reinterpret_cast<void *>(fptr)),
-		    RReturn::getType(),
+		    RReturn::type(),
 		    { ValueOf(args)... },
-		    { CToReactorT<Arguments>::getType()... }));
+		    { CToReactorT<Arguments>::type()... }));
 	}
 
 	static inline RReturn Call(Pointer<Byte> fptr, CToReactorT<Arguments>... args)
 	{
 		return RValue<RReturn>(rr::Call(
 		    fptr,
-		    RReturn::getType(),
+		    RReturn::type(),
 		    { ValueOf(args)... },
-		    { CToReactorT<Arguments>::getType()... }));
+		    { CToReactorT<Arguments>::type()... }));
 	}
 };
 
@@ -3297,17 +3293,17 @@ public:
 	static inline void Call(void(fptr)(Arguments...), CToReactorT<Arguments>... args)
 	{
 		rr::Call(ConstantPointer(reinterpret_cast<void *>(fptr)),
-		         Void::getType(),
+		         Void::type(),
 		         { ValueOf(args)... },
-		         { CToReactorT<Arguments>::getType()... });
+		         { CToReactorT<Arguments>::type()... });
 	}
 
 	static inline void Call(Pointer<Byte> fptr, CToReactorT<Arguments>... args)
 	{
 		rr::Call(fptr,
-		         Void::getType(),
+		         Void::type(),
 		         { ValueOf(args)... },
-		         { CToReactorT<Arguments>::getType()... });
+		         { CToReactorT<Arguments>::type()... });
 	}
 };
 
