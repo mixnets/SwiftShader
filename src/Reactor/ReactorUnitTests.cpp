@@ -94,21 +94,6 @@ std::ostream &operator<<(std::ostream &os, const std::pair<T, U> &value)
 }
 }  // namespace std
 
-int reference(int *p, int y)
-{
-	int x = p[-1];
-	int z = 4;
-
-	for(int i = 0; i < 10; i++)
-	{
-		z += (2 << i) - (i / 3);
-	}
-
-	int sum = x + y + z;
-
-	return sum;
-}
-
 class StdOutCapture
 {
 public:
@@ -187,7 +172,7 @@ static const std::vector<int> fibonacci = {
 	317811,
 };
 
-TEST(ReactorUnitTests, PrintPrimitiveTypes)
+TEST(ReactorUnitTests, DISABLED_PrintPrimitiveTypes)
 {
 #if defined(ENABLE_RR_PRINT) && !defined(ENABLE_RR_EMIT_PRINT_LOCATION)
 	FunctionT<void()> function;
@@ -258,7 +243,7 @@ TEST(ReactorUnitTests, PrintPrimitiveTypes)
 #endif
 }
 
-TEST(ReactorUnitTests, PrintReactorTypes)
+TEST(ReactorUnitTests, DISABLED_PrintReactorTypes)
 {
 #if defined(ENABLE_RR_PRINT) && !defined(ENABLE_RR_EMIT_PRINT_LOCATION)
 	FunctionT<void()> function;
@@ -341,6 +326,21 @@ TEST(ReactorUnitTests, PrintReactorTypes)
 #endif
 }
 
+int reference(int *p, int y)
+{
+	int x = p[-1];
+	int z = 4;
+
+	for(int i = 0; i < 10; i++)
+	{
+		z += (2 << i) - (i / 3);
+	}
+
+	int sum = x + y + z;
+
+	return sum;
+}
+
 TEST(ReactorUnitTests, Sample)
 {
 	FunctionT<int(int *, int)> function;
@@ -355,9 +355,9 @@ TEST(ReactorUnitTests, Sample)
 			z += (2 << i) - (i / 3);
 		}
 
-		Float4 v;
-		v.z = As<Float>(z);
-		z = As<Int>(Float(Float4(v.xzxx).y));
+		//Float4 v;
+		//v.z = As<Float>(z);
+		//z = As<Int>(Float(Float4(v.xzxx).y));
 
 		Int sum = x + y + z;
 
