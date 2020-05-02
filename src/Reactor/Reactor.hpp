@@ -99,6 +99,8 @@ class RValue;
 template<class T>
 class Pointer;
 
+// 'Variable' represent local variables, which are logically lvalues, but can be in one of four states:
+// lvalue, rvalue, immediate, or uninitialized. See docs/ReactorVariables.md for details.
 class Variable
 {
 	friend class Nucleus;
@@ -108,7 +110,7 @@ class Variable
 public:
 	void materialize() const;
 
-	Value *loadValue() const;
+	virtual Value *loadValue() const;
 	Value *storeValue(Value *value) const;
 
 	Value *getBaseAddress() const;
@@ -116,11 +118,23 @@ public:
 
 	virtual Type *getType() const = 0;
 
+	bool isImmediate() const
+	{
+		return !address && !rvalue;
+	}
+
 protected:
 	Variable();
 	Variable(const Variable &) = default;
 
 	virtual ~Variable();
+
+	virtual bool isUninitialized() const
+	{
+		// Unmaterialized variables which have no rvalue assigned to them yet,
+		// are positively uninitialized. Note this is conservative.
+		return isImmediate();
+	}
 
 private:
 	static void materializeAll();
@@ -267,11 +281,89 @@ private:
 };
 
 template<typename T>
-class Argument
+class Immediate
 {
 public:
-	explicit Argument(Value *val)
-	    : val(val)
+	Immediate(T x = {})
+	    : value(x)
+	{
+		// A default value is assigned for debugging reproducibility, but 'initialized' is left 'false'.
+	}
+
+	Immediate(const Immediate &copy) = default;
+	Immediate &operator=(const Immediate &assign) = default;
+
+	Immediate &operator=(T x)
+	{
+		initialized = true;
+		value = x;
+
+		return *this;
+	}
+
+	operator T() const
+	{
+		return value;
+	}
+
+	bool isInitialized() const
+	{
+		return initialized;
+	}
+
+private:
+	bool initialized = false;
+	T value;
+};
+
+template<>
+class RValue<Int>
+{
+public:
+	using rvalue_underlying_type = Int;
+
+	explicit RValue(Value *rvalue);
+
+#ifdef ENABLE_RR_DEBUG_INFO
+	RValue(const RValue<Int> &rvalue);
+#endif  // ENABLE_RR_DEBUG_INFO
+
+	RValue(const Int &lvalue);
+	RValue(int i);
+	RValue(const Reference<Int> &rhs);
+
+	RValue<Int> &operator=(const RValue<Int> &) = delete;
+
+	int immediate() const
+	{
+		return imm;
+	}
+
+	bool isImmediate() const
+	{
+		return val == nullptr;
+	}
+
+	Value *value() const
+	{
+		if(!val)
+		{
+			val = Nucleus::createConstantInt(imm);
+		}
+
+		return val;
+	}
+
+private:
+	Immediate<int> imm = 0xCCCCCCCC;
+	mutable Value *val = nullptr;
+};
+
+template<typename T>
+struct Argument
+{
+	explicit Argument(Value *value)
+	    : val(value)
 	{}
 
 	RValue<T> rvalue() const { return RValue<T>(val); }
@@ -1120,7 +1212,16 @@ public:
 	RValue<Int> operator=(const Reference<Int> &rhs);
 	RValue<Int> operator=(const Reference<UInt> &rhs);
 
+	Value *loadValue() const override;
+
+	bool isUninitialized() const override
+	{
+		return Variable::isUninitialized() && !imm.isInitialized();
+	}
+
 	static Type *type();
+
+	Immediate<int> imm = 0xCCCCCCCC;
 };
 
 RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs);
@@ -2632,7 +2733,14 @@ inline void Variable::materialize() const
 {
 	if(!address)
 	{
-		address = allocate();
+		// Before allocating the stack space, which materializes this variable and makes it considered not uninitialized,
+		// check whether we have an initialized immediate which first has to be promoted to rvalue.
+		if(!isUninitialized())
+		{
+			rvalue = loadValue();
+		}
+
+		address = address = allocate();
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
 		if(rvalue)
@@ -2784,6 +2892,46 @@ RValue<T>::RValue(typename FloatLiteral<T>::type f)
 
 template<class T>
 RValue<T>::RValue(const Reference<T> &ref)
+    : val(ref.loadValue())
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+#ifdef ENABLE_RR_DEBUG_INFO
+inline RValue<Int>::RValue(const RValue<Int> &value)
+    : val(value.val)
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+#endif  // ENABLE_RR_DEBUG_INFO
+
+inline RValue<Int>::RValue(Value *value)
+{
+	assert(Nucleus::createBitCast(value, Int::type()) == value);  // Run-time type should match Int, so bitcast is no-op.
+
+	val = value;
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+inline RValue<Int>::RValue(const Int &lvalue)
+{
+	if(lvalue.isImmediate())
+	{
+		imm = lvalue.imm;
+	}
+	else
+	{
+		val = lvalue.loadValue();
+		RR_DEBUG_INFO_EMIT_VAR(val);
+	}
+}
+
+inline RValue<Int>::RValue(int i)
+{
+	imm = i;
+}
+
+inline RValue<Int>::RValue(const Reference<Int> &ref)
     : val(ref.loadValue())
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
