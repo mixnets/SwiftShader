@@ -2231,12 +2231,31 @@ Int::Int(RValue<Float> cast)
 
 Int::Int(int x)
 {
-	storeValue(Nucleus::createConstantInt(x));
+	i = x;
+	//storeValue(RValue<Int>(x));
+}
+
+Value *Int::loadValue() const
+{
+	if(isImmediate())
+	{
+		// TODO: Return null for uninitialized
+		return storeValue(Nucleus::createConstantInt(i));
+	}
+
+	return Variable::loadValue();
 }
 
 Int::Int(RValue<Int> rhs)
 {
-	store(rhs);
+	if(rhs.isconstant())
+	{
+		i = rhs.ii();
+	}
+	else
+	{
+		store(rhs);
+	}
 }
 
 Int::Int(RValue<UInt> rhs)
@@ -2246,7 +2265,14 @@ Int::Int(RValue<UInt> rhs)
 
 Int::Int(const Int &rhs)
 {
-	store(rhs.load());
+	if(rhs.isImmediate())
+	{
+		i = rhs.i;
+	}
+	else
+	{
+		store(rhs.load());
+	}
 }
 
 Int::Int(const Reference<Int> &rhs)
@@ -2301,8 +2327,19 @@ RValue<Int> Int::operator=(const Reference<UInt> &rhs)
 	return RValue<Int>(storeValue(rhs.loadValue()));
 }
 
+template<class T>
+bool areConstant(RValue<T> x, RValue<T> y)
+{
+	return x.isconstant() && y.isconstant();
+}
+
 RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs)
 {
+	if(areConstant(lhs, rhs))
+	{
+		return lhs.ii() + rhs.ii();
+	}
+
 	return RValue<Int>(Nucleus::createAdd(lhs.value(), rhs.value()));
 }
 
@@ -2311,8 +2348,19 @@ RValue<Int> operator-(RValue<Int> lhs, RValue<Int> rhs)
 	return RValue<Int>(Nucleus::createSub(lhs.value(), rhs.value()));
 }
 
+template<typename Op>
+int fold(RValue<Int> lhs, RValue<Int> rhs, Op op)
+{
+	return op(lhs.ii(), rhs.ii());
+}
+
 RValue<Int> operator*(RValue<Int> lhs, RValue<Int> rhs)
 {
+	if(lhs.isconstant() && rhs.isconstant())  //////// bothConstant(lhs, rhs)
+	{
+		return lhs.ii() * rhs.ii();
+	}
+
 	return RValue<Int>(Nucleus::createMul(lhs.value(), rhs.value()));
 }
 
