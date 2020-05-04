@@ -56,7 +56,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 		samplerState.mipmapFilter = convertMipmapMode(sampler);
 		samplerState.swizzle = imageDescriptor->swizzle;
 		samplerState.gatherComponent = instruction.gatherComponent;
-		samplerState.highPrecisionFiltering = false;
+		samplerState.highPrecisionFiltering = (sampler->filteringPrecision == VK_SAMPLER_FILTERING_PRECISION_MODE_HIGH_GOOGLE);
 		samplerState.largeTexture = (imageDescriptor->extent.width > SHRT_MAX) ||
 		                            (imageDescriptor->extent.height > SHRT_MAX) ||
 		                            (imageDescriptor->extent.depth > SHRT_MAX);
