@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "667a4901_52546cef",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-05T19:46:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35694b2f_ebdd7b46",
+      "range": {
+        "startLine": 470,
+        "startChar": 81,
+        "endLine": 470,
+        "endChar": 84
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "36e82462_23389284",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 9
@@ -45,6 +69,30 @@
       "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de84e067_38c32345",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-05T19:46:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36e82462_23389284",
+      "range": {
+        "startLine": 505,
+        "startChar": 6,
+        "endLine": 505,
+        "endChar": 25
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -118,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "000a4fbf_016bb7d8",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-05T19:46:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12858c42_f5b6d854",
+      "range": {
+        "startLine": 560,
+        "startChar": 35,
+        "endLine": 560,
+        "endChar": 99
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d1f165ef_3ca90936",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 9
@@ -141,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "da6d311a_e0288a86",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-05T19:46:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1f165ef_3ca90936",
+      "range": {
+        "startLine": 627,
+        "startChar": 77,
+        "endLine": 627,
+        "endChar": 89
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6c9ace8b_bc12e538",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 9
@@ -161,6 +257,30 @@
       "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51b52679_c4b004fb",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1011,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-05T19:46:56Z",
+      "side": 1,
+      "message": "Right, the whole quote from the spec is:\n\"If the individual texel identified for an image load or store operation doesn’t exist, the access is treated as invalid. Invalid image loads will return a vector where the value of R, G, and B components is 0 and the value of the A component is undefined. Invalid image stores will have no effect.\"\n\nSo enabling Vulkan robustness would cover this case, but this might need to be modified by a Vulkan extension to make sure oob writes are noop.",
+      "parentUuid": "6c9ace8b_bc12e538",
+      "range": {
+        "startLine": 1011,
+        "startChar": 19,
+        "endLine": 1011,
+        "endChar": 54
+      },
+      "revId": "4e059dd72bd67c0119c4c8bcdf4a00fe783590c0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
