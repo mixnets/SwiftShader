@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2814d4b5_2ba4cd90",
+        "filename": "include/vulkan/vk_google_filtering_precision.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-06T20:58:36Z",
+      "side": 1,
+      "message": "Any comment regarding the extension itself should be instead added to: go/swangle-precision-filtering",
+      "parentUuid": "b487b717_5165e11c",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 56
+      },
+      "revId": "e08acd78ef633dd10e86bd1a6bad7be74a17f039",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ccd7a9bb_697465fc",
         "filename": "include/vulkan/vk_google_filtering_precision.h",
         "patchSetId": 5
