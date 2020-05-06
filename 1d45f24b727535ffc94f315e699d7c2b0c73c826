@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f029ef97_1c57287a",
+        "filename": "project.config",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 70076
+      },
+      "writtenOn": "2020-05-06T20:55:21Z",
+      "side": 1,
+      "message": "this looks weird in general -- why would only *admins* have access to Verified? Do you even need Verified label then?",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 62
+      },
+      "revId": "1d45f24b727535ffc94f315e699d7c2b0c73c826",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
