@@ -22,6 +22,30 @@
       "revId": "49aaafd4c438cd3ecc049b3cd707cf7f545628fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07a1f1e2_6abecab0",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-06T12:57:44Z",
+      "side": 1,
+      "message": "I\u0027ll land it to unblock ANGLE, but I logged an issue: b/155862459",
+      "parentUuid": "0ae81396_2c7705d7",
+      "range": {
+        "startLine": 569,
+        "startChar": 35,
+        "endLine": 569,
+        "endChar": 45
+      },
+      "revId": "49aaafd4c438cd3ecc049b3cd707cf7f545628fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
