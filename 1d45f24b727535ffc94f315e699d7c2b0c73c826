@@ -46,6 +46,30 @@
       "revId": "1d45f24b727535ffc94f315e699d7c2b0c73c826",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e22d72f6_c555cb33",
+        "filename": "project.config",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-06T21:00:40Z",
+      "side": 1,
+      "message": "\u0027Contributors\u0027 can set Verified+1 on refs/heads/*\n\nrefs/* changes should be more restricted?",
+      "parentUuid": "f029ef97_1c57287a",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 62
+      },
+      "revId": "1d45f24b727535ffc94f315e699d7c2b0c73c826",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
