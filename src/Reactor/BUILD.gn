@@ -239,7 +239,6 @@ if (use_swiftshader_with_subzero) {
       "$subzero_llvm_dir/lib/Support/Debug.cpp",
       "$subzero_llvm_dir/lib/Support/Errno.cpp",
       "$subzero_llvm_dir/lib/Support/ErrorHandling.cpp",
-      "$subzero_llvm_dir/lib/Support/FoldingSet.cpp",
       "$subzero_llvm_dir/lib/Support/Hashing.cpp",
       "$subzero_llvm_dir/lib/Support/Host.cpp",
       "$subzero_llvm_dir/lib/Support/ManagedStatic.cpp",
