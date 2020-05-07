@@ -566,7 +566,7 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, SIMD::Pointer
 	{
 		// Because pointers can be 32b, using 0xFFFFFFFF would wrap around to about the same point,
 		// so use a smaller number
-		static constexpr int FORCE_OOB = 0x3FFFFFFF;  // ~1 Gb, should be larger than any allocated image
+		static constexpr int FORCE_OOB = 0x7FFFFFFF;  // ~2 Gb, should be larger than any allocated image
 		// Push pointers out of bounds if they are oob in any dimension
 		ptrOffset += (oobMask & SIMD::Int(FORCE_OOB));
 	}
