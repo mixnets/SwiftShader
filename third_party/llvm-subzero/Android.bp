@@ -47,7 +47,6 @@ cc_library_static {
         "lib/Support/Debug.cpp",
         "lib/Support/Errno.cpp",
         "lib/Support/ErrorHandling.cpp",
-        "lib/Support/FoldingSet.cpp",
         "lib/Support/Hashing.cpp",
         "lib/Support/Host.cpp",
         "lib/Support/ManagedStatic.cpp",
