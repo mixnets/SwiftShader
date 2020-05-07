@@ -10,7 +10,13 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "Subzero",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x86-Debug",
