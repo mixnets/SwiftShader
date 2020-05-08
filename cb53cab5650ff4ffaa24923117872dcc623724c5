@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "078559e8_c921c755",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-08T15:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a263004_caafa923",
+      "range": {
+        "startLine": 10,
+        "startChar": 23,
+        "endLine": 10,
+        "endChar": 48
+      },
+      "revId": "cb53cab5650ff4ffaa24923117872dcc623724c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2d37e246_e8fdd7c6",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "cb53cab5650ff4ffaa24923117872dcc623724c5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a6623ba_15010bbe",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-08T15:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d37e246_e8fdd7c6",
+      "range": {
+        "startLine": 59,
+        "startChar": 40,
+        "endLine": 59,
+        "endChar": 48
+      },
+      "revId": "cb53cab5650ff4ffaa24923117872dcc623724c5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
