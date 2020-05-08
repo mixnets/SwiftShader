@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "6bfd4b22_a0e74b39",
+        "filename": "include/vulkan/vk_google_filtering_precision.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-08T13:28:18Z",
+      "side": 1,
+      "message": "Yes, no objections to landing it as-is. Just my bikeshedding opinion. Since this is currently only used internally, it won\u0027t matter much.\n\nNote you actually don\u0027t need to reflect the change in the ANGLE header copy. The ABI only sees 0 or 1 being passed around, so as long as the first means legacy precision and the second means float precision, we\u0027re good.\n\nAnyway, it\u0027s equally straightforward to adjust this now or later. Your call.",
+      "parentUuid": "fb85badf_49489752",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 56
+      },
+      "revId": "e08acd78ef633dd10e86bd1a6bad7be74a17f039",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ccd7a9bb_697465fc",
         "filename": "include/vulkan/vk_google_filtering_precision.h",
         "patchSetId": 5
@@ -117,6 +141,30 @@
       "revId": "e08acd78ef633dd10e86bd1a6bad7be74a17f039",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e2543c6_116840cb",
+        "filename": "include/vulkan/vk_google_filtering_precision.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-08T13:28:18Z",
+      "side": 1,
+      "message": "Totally fine. Your call. The current change still appears to cause crashes though?",
+      "parentUuid": "9336ca9d_bb3eb81a",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 33,
+        "endChar": 163
+      },
+      "revId": "e08acd78ef633dd10e86bd1a6bad7be74a17f039",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
