@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2ceeaea4_f0651426",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1930,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-08T16:12:52Z",
+      "side": 1,
+      "message": "No need to make changes for this patch, but why is this cast? I see some other uses of this type being cast to long in this file, but not all. We should probably make it consistent.",
+      "range": {
+        "startLine": 1930,
+        "startChar": 9,
+        "endLine": 1930,
+        "endChar": 26
+      },
+      "revId": "33da94069fda47f6596984c521d7d3a34bbdeb8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
