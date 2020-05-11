@@ -175,17 +175,41 @@ Bool::Bool(Argument<Bool> argument)
 
 Bool::Bool(bool x)
 {
-	storeValue(Nucleus::createConstantBool(x));
+	imm = x;
+}
+
+Value *Bool::loadValue() const
+{
+	if(isImmediate())
+	{
+		return storeValue(Nucleus::createConstantInt(imm));
+	}
+
+	return Variable::loadValue();
 }
 
 Bool::Bool(RValue<Bool> rhs)
 {
-	store(rhs);
+	if(rhs.isImmediate())
+	{
+		imm = rhs.immediate();
+	}
+	else
+	{
+		store(rhs);
+	}
 }
 
 Bool::Bool(const Bool &rhs)
 {
-	store(rhs.load());
+	if(rhs.isImmediate())
+	{
+		imm = rhs.imm;
+	}
+	else
+	{
+		store(rhs.load());
+	}
 }
 
 Bool::Bool(const Reference<Bool> &rhs)
@@ -215,11 +239,23 @@ RValue<Bool> operator!(RValue<Bool> val)
 
 RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs)
 {
+	if((lhs.isImmediate() && (lhs.immediate() == false)) ||
+	   (rhs.isImmediate() && (rhs.immediate() == false)))
+	{
+		return false;
+	}
+
 	return RValue<Bool>(Nucleus::createAnd(lhs.value(), rhs.value()));
 }
 
 RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs)
 {
+	if((lhs.isImmediate() && (lhs.immediate() == true)) ||
+	   (rhs.isImmediate() && (rhs.immediate() == true)))
+	{
+		return true;
+	}
+
 	return RValue<Bool>(Nucleus::createOr(lhs.value(), rhs.value()));
 }
 

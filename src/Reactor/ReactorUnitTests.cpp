@@ -54,6 +54,25 @@ TEST(ReactorUnitTests, Sample)
 			z += (2 << i) - (i / 3);
 		}
 
+		Bool a = false;
+
+		Bool b = a;
+
+		Bool c = z == 4;
+
+		int xxx = 0;
+
+		If(b && c)
+		{
+			xxx += 1;
+		}
+		Else
+		{
+			xxx += 2;
+		}
+
+		assert(xxx == 2);
+
 		Float4 v;
 		v.z = As<Float>(z);
 		z = As<Int>(Float(Float4(v.xzxx).y));

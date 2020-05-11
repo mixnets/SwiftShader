@@ -364,6 +364,49 @@ private:
 	mutable Value *val = nullptr;
 };
 
+template<>
+class RValue<Bool>
+{
+public:
+	using rvalue_underlying_type = Bool;
+
+	explicit RValue(Value *rvalue);
+
+#ifdef ENABLE_RR_DEBUG_INFO
+	RValue(const RValue<Bool> &rvalue);
+#endif  // ENABLE_RR_DEBUG_INFO
+
+	RValue(const Bool &lvalue);
+	RValue(bool b);
+	RValue(const Reference<Bool> &rhs);
+
+	RValue<Bool> &operator=(const RValue<Bool> &) = delete;
+
+	bool immediate() const
+	{
+		return imm;
+	}
+
+	bool isImmediate() const
+	{
+		return val == nullptr;
+	}
+
+	Value *value() const
+	{
+		if(!val)
+		{
+			val = Nucleus::createConstantBool(imm);
+		}
+
+		return val;
+	}
+
+private:
+	Immediate<bool> imm;
+	mutable Value *val = nullptr;
+};
+
 template<typename T>
 struct Argument
 {
@@ -388,12 +431,22 @@ public:
 	Bool(const Bool &rhs);
 	Bool(const Reference<Bool> &rhs);
 
-	//	RValue<Bool> operator=(bool rhs);   // FIXME: Implement
+	//	RValue<Bool> operator=(bool rhs);   // TODO: Implement
 	RValue<Bool> operator=(RValue<Bool> rhs);
 	RValue<Bool> operator=(const Bool &rhs);
 	RValue<Bool> operator=(const Reference<Bool> &rhs);
 
+	Value *loadValue() const override;
+
+	bool isUninitialized() const override
+	{
+		return Variable::isUninitialized() && !imm.isInitialized();
+	}
+
 	static Type *type();
+
+	//private:
+	Immediate<bool> imm;
 };
 
 RValue<Bool> operator!(RValue<Bool> val);
@@ -1226,6 +1279,7 @@ public:
 
 	static Type *type();
 
+	//private:
 	Immediate<int> imm = 0xCCCCCCCC;
 };
 
@@ -2938,6 +2992,46 @@ inline RValue<Int>::RValue(const Reference<Int> &ref)
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
 
+#ifdef ENABLE_RR_DEBUG_INFO
+inline RValue<Bool>::RValue(const RValue<Bool> &value)
+    : val(value.val)
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+#endif  // ENABLE_RR_DEBUG_INFO
+
+inline RValue<Bool>::RValue(Value *value)
+{
+	assert(Nucleus::createBitCast(value, Bool::type()) == value);  // Run-time type should match Bool, so bitcast is no-op.
+
+	val = value;
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+inline RValue<Bool>::RValue(const Bool &lvalue)
+{
+	if(lvalue.isImmediate())
+	{
+		imm = lvalue.imm;
+	}
+	else
+	{
+		val = lvalue.loadValue();
+		RR_DEBUG_INFO_EMIT_VAR(val);
+	}
+}
+
+inline RValue<Bool>::RValue(bool i)
+{
+	imm = i;
+}
+
+inline RValue<Bool>::RValue(const Reference<Bool> &ref)
+    : val(ref.loadValue())
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
 template<class Vector4, int T>
 Swizzle2<Vector4, T>::operator RValue<Vector4>() const
 {
@@ -3621,30 +3715,49 @@ private:
 	bool loopOnce = true;
 };
 
+enum
+{
+	IF_BLOCK__,
+	ELSE_CLAUSE__,
+	ELSE_BLOCK__,
+	IFELSE_END__,
+};
+
 class IfElseData
 {
 public:
 	IfElseData(RValue<Bool> cmp)
-	    : iteration(0)
 	{
-		condition = cmp.value();
+		if(cmp.isImmediate())
+		{
+			if(cmp.immediate() == false)
+			{
+				iteration = ELSE_BLOCK__;
+			}
+		}
+		else
+		{
+			condition = cmp.value();
 
-		beginBB = Nucleus::getInsertBlock();
-		trueBB = Nucleus::createBasicBlock();
-		falseBB = nullptr;
-		endBB = Nucleus::createBasicBlock();
+			beginBB = Nucleus::getInsertBlock();
+			trueBB = Nucleus::createBasicBlock();
+			endBB = Nucleus::createBasicBlock();
 
-		Nucleus::setInsertBlock(trueBB);
+			Nucleus::setInsertBlock(trueBB);
+		}
 	}
 
 	~IfElseData()
 	{
-		Nucleus::createBr(endBB);
+		if(condition)  // Not folded
+		{
+			Nucleus::createBr(endBB);
 
-		Nucleus::setInsertBlock(beginBB);
-		Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
+			Nucleus::setInsertBlock(beginBB);
+			Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
 
-		Nucleus::setInsertBlock(endBB);
+			Nucleus::setInsertBlock(endBB);
+		}
 	}
 
 	operator int()
@@ -3654,26 +3767,36 @@ public:
 
 	IfElseData &operator++()
 	{
-		++iteration;
+		if(condition)  // Not folded
+		{
+			++iteration;
+		}
+		else
+		{
+			iteration = IFELSE_END__;
+		}
 
 		return *this;
 	}
 
 	void elseClause()
 	{
-		Nucleus::createBr(endBB);
+		if(condition)  // Not folded
+		{
+			Nucleus::createBr(endBB);
 
-		falseBB = Nucleus::createBasicBlock();
-		Nucleus::setInsertBlock(falseBB);
+			falseBB = Nucleus::createBasicBlock();
+			Nucleus::setInsertBlock(falseBB);
+		}
 	}
 
 private:
-	Value *condition;
-	BasicBlock *beginBB;
-	BasicBlock *trueBB;
-	BasicBlock *falseBB;
-	BasicBlock *endBB;
-	int iteration;
+	Value *condition = nullptr;
+	BasicBlock *beginBB = nullptr;
+	BasicBlock *trueBB = nullptr;
+	BasicBlock *falseBB = nullptr;
+	BasicBlock *endBB = nullptr;
+	int iteration = IF_BLOCK__;
 };
 
 #define For(init, cond, inc)                        \
@@ -3697,16 +3820,8 @@ private:
 	{                                                     \
 	} while(false)  // Require a semi-colon at the end of the Until()
 
-enum
-{
-	IF_BLOCK__,
-	ELSE_CLAUSE__,
-	ELSE_BLOCK__,
-	IFELSE_NUM__
-};
-
 #define If(cond)                                                        \
-	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_NUM__; ++ifElse__) \
+	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_END__; ++ifElse__) \
 		if(ifElse__ == IF_BLOCK__)
 
 #define Else                           \
