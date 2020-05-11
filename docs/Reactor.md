@@ -309,3 +309,76 @@ But now there's a lot of repeated code. It could be made more manageable using m
 This is especially the case when implementing APIs which offer a broad set of features but developers are likely to only use a select set. The quintessential example is graphics processing, where there are are long pipelines of optional operations and both fixed-function and programmable stages. Applications configure the state of these stages between each draw call.
 
 With Reactor, we can write the code for such pipelines in a syntax that is as easy to read as a naive unoptimized implementation, while at the same time specializing the code for exactly the operations required by the pipeline configuration.
+
+### Branch short-cicuiting
+
+Sometimes we need to combine C++ conditionals for specialization, with Reactor conditionals:
+
+```C++
+Function<Int(Int)> function;
+{
+    Int x = function.Arg<0>();
+
+    if(state.canBeNegative)
+    {
+        If(x < 0)
+        {
+            Return(-1);
+        }
+    }
+
+    If(x > 0)
+    {
+        Return(1);
+    }
+    
+    Return(0);
+}
+```
+
+This can be written more concisely as:
+
+```C++
+Function<Int(Int)> function;
+{
+    Int x = function.Arg<0>();
+
+    If(state.canBeNegative && (x < 0))
+    {
+        Return(-1);
+    }
+
+    If(x > 0)
+    {
+        Return(1);
+    }
+    
+    Return(0);
+}
+```
+
+Without adding any run-time cost. This is due to [constant folding](ReactorVariables.md) and `If/Else` skipping the code generation for the branch, as well as skipping the code for the block that won't be taken, just like the equivalent C++ code would. One minor difference is that no short-circuiting is performed on the expression itself; code for `x < 0` is getting generated regardless of the value of `canBeNegative`. However, the result is not used and thus the JIT-compiler easily eliminates it as dead code.
+
+Note that in the absence of folding opportunities, both blocks of an `If/Else` are visited:
+
+```C++
+Function<Int(Int)> function;
+{
+    Int x = function.Arg<0>();
+
+    int visitor = 0;
+    If(x > 0)
+    {
+        Return(1);
+        visitor += 5;  // I was here
+    }
+    Else
+    {
+        Return(0);
+        visitor += 10;  // I was here too
+    }
+    assert(visitor == 15);
+}
+```
+
+It is therefore best not to put C++ statements which have side-effects into Reactor conditional blocks to avoid confusion, unless for the purpose of checking whether code for a block was generated or folded away.
