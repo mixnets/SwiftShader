@@ -3666,30 +3666,49 @@ private:
 	bool loopOnce = true;
 };
 
+enum
+{
+	IF_BLOCK__,
+	ELSE_CLAUSE__,
+	ELSE_BLOCK__,
+	IFELSE_END__,
+};
+
 class IfElseData
 {
 public:
 	IfElseData(RValue<Bool> cmp)
-	    : iteration(0)
 	{
-		condition = cmp.value();
+		if(cmp.isImmediate())
+		{
+			if(cmp.immediate() == false)
+			{
+				iteration = ELSE_BLOCK__;
+			}
+		}
+		else
+		{
+			condition = cmp.value();
 
-		beginBB = Nucleus::getInsertBlock();
-		trueBB = Nucleus::createBasicBlock();
-		falseBB = nullptr;
-		endBB = Nucleus::createBasicBlock();
+			beginBB = Nucleus::getInsertBlock();
+			trueBB = Nucleus::createBasicBlock();
+			endBB = Nucleus::createBasicBlock();
 
-		Nucleus::setInsertBlock(trueBB);
+			Nucleus::setInsertBlock(trueBB);
+		}
 	}
 
 	~IfElseData()
 	{
-		Nucleus::createBr(endBB);
+		if(condition)  // Not folded
+		{
+			Nucleus::createBr(endBB);
 
-		Nucleus::setInsertBlock(beginBB);
-		Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
+			Nucleus::setInsertBlock(beginBB);
+			Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
 
-		Nucleus::setInsertBlock(endBB);
+			Nucleus::setInsertBlock(endBB);
+		}
 	}
 
 	operator int()
@@ -3699,26 +3718,36 @@ public:
 
 	IfElseData &operator++()
 	{
-		++iteration;
+		if(condition)  // Not folded
+		{
+			++iteration;
+		}
+		else
+		{
+			iteration = IFELSE_END__;
+		}
 
 		return *this;
 	}
 
 	void elseClause()
 	{
-		Nucleus::createBr(endBB);
+		if(condition)  // Not folded
+		{
+			Nucleus::createBr(endBB);
 
-		falseBB = Nucleus::createBasicBlock();
-		Nucleus::setInsertBlock(falseBB);
+			falseBB = Nucleus::createBasicBlock();
+			Nucleus::setInsertBlock(falseBB);
+		}
 	}
 
 private:
-	Value *condition;
-	BasicBlock *beginBB;
-	BasicBlock *trueBB;
-	BasicBlock *falseBB;
-	BasicBlock *endBB;
-	int iteration;
+	Value *condition = nullptr;
+	BasicBlock *beginBB = nullptr;
+	BasicBlock *trueBB = nullptr;
+	BasicBlock *falseBB = nullptr;
+	BasicBlock *endBB = nullptr;
+	int iteration = IF_BLOCK__;
 };
 
 #define For(init, cond, inc)                        \
@@ -3742,16 +3771,8 @@ private:
 	{                                                     \
 	} while(false)  // Require a semi-colon at the end of the Until()
 
-enum
-{
-	IF_BLOCK__,
-	ELSE_CLAUSE__,
-	ELSE_BLOCK__,
-	IFELSE_NUM__
-};
-
 #define If(cond)                                                        \
-	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_NUM__; ++ifElse__) \
+	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_END__; ++ifElse__) \
 		if(ifElse__ == IF_BLOCK__)
 
 #define Else                           \
