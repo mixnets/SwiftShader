@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9bd755f9_57080cd3",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-11T19:56:36Z",
+      "side": 1,
+      "message": "I\u0027m just always wary of const member functions that return modifiable objects. Yes, of course I know that it means the member itself -- the pointer in this case -- will not be modified, but the fact that the thing it points to can be modified means that the expected invariant that const members do not have side effects is broken, which is why we typically return a const pointer/reference from a const member function.\n\nMy guess is that we can probably remove the \u0027const\u0027 on the member function itself, and things would still compile, and be more consistent.",
+      "parentUuid": "dec0f188_617b09e0",
+      "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f860a9de_75442d72",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 9
@@ -69,6 +87,24 @@
       "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92fa38e4_0181a979",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-11T19:56:36Z",
+      "side": 1,
+      "message": "Fair enough.",
+      "parentUuid": "3bc8ead6_7cd83f28",
+      "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
