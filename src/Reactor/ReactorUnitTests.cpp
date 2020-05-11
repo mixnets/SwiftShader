@@ -49,6 +49,25 @@ TEST(ReactorUnitTests, Sample)
 		Int y = function.Arg<1>();
 		Int z = 4;
 
+		Bool a = false;
+
+		Bool b = a;
+
+		Bool c = z == 4;
+
+		int xxx = 0;
+
+		If(b && c)
+		{
+			xxx += 1;
+		}
+		Else
+		{
+			xxx += 2;
+		}
+
+		assert(xxx == 2);
+
 		For(Int i = 0, i < 10, i++)
 		{
 			z += (2 << i) - (i / 3);
