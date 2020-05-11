@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fcf8c2f_a095b29f",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-11T15:27:19Z",
+      "side": 1,
+      "message": "Should this not return \u0027const Value *\u0027 since it\u0027s a const member function? Normally we should provide the two overloads:\n\nconst Value *value() const { return val; }\nValue *value() { return val; }",
+      "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f860a9de_75442d72",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-11T15:27:19Z",
+      "side": 1,
+      "message": "I wonder if we should just call this function \u0027value\u0027 rather than \u0027rvalue\u0027. Is it important or significant to the caller that we\u0027re getting an r-value? It would make Argument consistent with LValue and RValue. In fact, we might want to derive Argument from RValue in the future so that we can pass them directly to functions that accept a RValue, and having the function named \u0027value\u0027 would mean having less to change (though I know there aren\u0027t many calls to this function).",
+      "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
