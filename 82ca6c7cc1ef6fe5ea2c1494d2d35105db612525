@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5234e42a_e5effef4",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-11T19:05:07Z",
+      "side": 1,
+      "message": "if geom is null, windowExtent is uninitialized",
+      "range": {
+        "startLine": 28,
+        "startChar": 12,
+        "endLine": 28,
+        "endChar": 24
+      },
+      "revId": "82ca6c7cc1ef6fe5ea2c1494d2d35105db612525",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
