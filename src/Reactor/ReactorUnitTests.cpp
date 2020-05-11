@@ -70,6 +70,66 @@ TEST(ReactorUnitTests, Sample)
 	EXPECT_EQ(result, reference(&one[1], 2));
 }
 
+TEST(ReactorUnitTests, ShortCircuit)
+{
+	FunctionT<void(void)> function;
+	{
+		Bool t = true;
+		Bool f = false;
+		int x = 0x00000000;
+
+		If(t)
+		{
+			x |= 0x00000001;  // yes
+		}
+
+		If(f)
+		{
+			x |= 0x00000002;  // no
+		}
+
+		If(t || f)
+		{
+			x |= 0x00000004;  // yes
+		}
+
+		If(f || t)
+		{
+			x |= 0x00000008;  // yes
+		}
+
+		If(t && f)
+		{
+			x |= 0x00000010;  // no
+		}
+
+		If(f && t)
+		{
+			x |= 0x00000020;  // no
+		}
+
+		If(t)
+		{
+			x |= 0x00000040;  // yes
+		}
+		Else
+		{
+			x |= 0x00000080;  // no
+		}
+
+		If(f)
+		{
+			x |= 0x00000100;  // no
+		}
+		Else
+		{
+			x |= 0x00000200;  // yes
+		}
+
+		EXPECT_EQ(x, 0x0000024D);
+	}
+}
+
 TEST(ReactorUnitTests, Uninitialized)
 {
 	FunctionT<int()> function;
