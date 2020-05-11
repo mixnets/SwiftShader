@@ -66,6 +66,8 @@ public:
 						exportFd = true;
 					}
 					break;
+					case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
+						break;
 
 					default:
 						WARN("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
