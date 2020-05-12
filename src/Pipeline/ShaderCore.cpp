@@ -989,7 +989,7 @@ SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robus
 
 	if(isStaticallyInBounds(accessSize, robustness))
 	{
-		return SIMD::Int(0xffffffff);
+		return SIMD::Int(0xFFFFFFFF);
 	}
 
 	if(!hasDynamicOffsets && !hasDynamicLimit)
@@ -997,13 +997,13 @@ SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robus
 		// Common fast paths.
 		static_assert(SIMD::Width == 4, "Expects SIMD::Width to be 4");
 		return SIMD::Int(
-		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xffffffff : 0);
+		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
+		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
+		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0,
+		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xFFFFFFFF : 0);
 	}
 
-	return CmpLT(offsets() + SIMD::Int(accessSize - 1), SIMD::Int(limit()));
+	return As<SIMD::Int>(CmpLT(As<SIMD::UInt>(offsets() + SIMD::Int(accessSize - 1)), SIMD::UInt(limit())));
 }
 
 bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
@@ -1033,7 +1033,7 @@ bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior 
 
 	for(int i = 0; i < SIMD::Width; i++)
 	{
-		if(staticOffsets[i] + accessSize - 1 >= staticLimit)
+		if((staticOffsets[i] < 0) || ((staticOffsets[i] + accessSize - 1) >= staticLimit))
 		{
 			return false;
 		}
