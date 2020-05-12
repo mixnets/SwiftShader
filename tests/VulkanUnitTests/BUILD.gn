@@ -14,7 +14,7 @@
 
 import("//testing/test.gni")
 
-test("swiftshader_vulkan_unittests") {
+test("swiftshader_vulkan_unittests_compute") {
   deps = [
     "//base",
     "//base/test:test_support",
@@ -26,9 +26,9 @@ test("swiftshader_vulkan_unittests") {
 
   sources = [
     "//gpu/swiftshader_tests_main.cc",
-    "Device.cpp",
-    "Driver.cpp",
-    "unittests.cpp",
+    "common/Device.cpp",
+    "common/Driver.cpp",
+    "Compute/unittests.cpp",
   ]
 
   include_dirs = [

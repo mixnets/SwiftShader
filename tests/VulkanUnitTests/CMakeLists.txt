@@ -22,55 +22,9 @@ set(ROOT_PROJECT_LINK_LIBRARIES
     ${SWIFTSHADER_LIBS}
 )
 
-set(VULKAN_UNIT_TESTS_SRC_FILES
-    Device.hpp
-    Driver.hpp
-    VkGlobalFuncs.hpp
-    VkInstanceFuncs.hpp
-    Device.cpp
-    Driver.cpp
-    main.cpp
-    unittests.cpp
+set(VULKAN_UNITTESTS_ROOT_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(vk-unittests
-    ${VULKAN_UNIT_TESTS_SRC_FILES}
-)
-
-# vk-unittests loads vk_swiftshader, so make sure it gets built first
-add_dependencies(vk-unittests
-    vk_swiftshader
-)
-
-set_target_properties(vk-unittests PROPERTIES
-    FOLDER "Tests"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-)
-
-target_include_directories(vk-unittests
-    PRIVATE
-        "${SWIFTSHADER_DIR}/include"
-)
-
-target_compile_definitions(vk-unittests
-    PRIVATE
-        "STANDALONE"
-)
-
-target_compile_options(vk-unittests
-    PRIVATE
-        ${ROOT_PROJECT_COMPILE_OPTIONS}
-)
-
-target_link_options(vk-unittests
-    PRIVATE
-        ${SWIFTSHADER_LINK_FLAGS}
-)
-
-target_link_libraries(vk-unittests
-    PRIVATE
-        gtest
-        gmock
-        SPIRV-Tools
-        ${ROOT_PROJECT_LINK_LIBRARIES}
-)
+add_subdirectory(common)
+add_subdirectory(Compute)
