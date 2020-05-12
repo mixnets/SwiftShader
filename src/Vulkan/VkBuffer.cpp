@@ -13,8 +13,10 @@
 // limitations under the License.
 
 #include "VkBuffer.hpp"
+
 #include "VkConfig.hpp"
 #include "VkDeviceMemory.hpp"
+#include "System/Math.hpp"
 
 #include <cstring>
 
@@ -56,26 +58,32 @@ size_t Buffer::ComputeRequiredAllocationSize(const VkBufferCreateInfo *pCreateIn
 
 const VkMemoryRequirements Buffer::getMemoryRequirements() const
 {
-	VkMemoryRequirements memoryRequirements = {};
+	VkDeviceSize alignment = 0;
 	if(usage & (VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT))
 	{
-		memoryRequirements.alignment = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
+		alignment = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
 	}
 	else if(usage & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)
 	{
-		memoryRequirements.alignment = vk::MIN_STORAGE_BUFFER_OFFSET_ALIGNMENT;
+		alignment = vk::MIN_STORAGE_BUFFER_OFFSET_ALIGNMENT;
 	}
 	else if(usage & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
 	{
-		memoryRequirements.alignment = vk::MIN_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
+		alignment = vk::MIN_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
 	}
 	else
 	{
-		memoryRequirements.alignment = REQUIRED_MEMORY_ALIGNMENT;
+		alignment = REQUIRED_MEMORY_ALIGNMENT;
 	}
+
+	ASSERT(alignment >= 16);  // Must be at least the maximum texel size (b/159114695).
+
+	VkMemoryRequirements memoryRequirements = {};
+	memoryRequirements.size = sw::align(size, alignment);  // TODO(b/???): also reserve space for a header containing
+	                                                       // the size of the buffer (for robust buffer access)
+	memoryRequirements.alignment = alignment;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = size;  // TODO: also reserve space for a header containing
-	                                 // the size of the buffer (for robust buffer access)
+
 	return memoryRequirements;
 }
 

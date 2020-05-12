@@ -170,11 +170,15 @@ size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo *pCreateInfo
 
 const VkMemoryRequirements Image::getMemoryRequirements() const
 {
-	VkMemoryRequirements memoryRequirements;
-	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
+	VkDeviceSize unpaddedSize = getStorageSize(format.getAspects()) +
+	                            (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
+	VkDeviceSize alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
+
+	VkMemoryRequirements memoryRequirements = {};
+	memoryRequirements.size = sw::align(unpaddedSize, alignment);
+	memoryRequirements.alignment = alignment;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = getStorageSize(format.getAspects()) +
-	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
+
 	return memoryRequirements;
 }
 

@@ -983,13 +983,11 @@ SIMD::Int Pointer::offsets() const
 	return dynamicOffsets + SIMD::Int(staticOffsets[0], staticOffsets[1], staticOffsets[2], staticOffsets[3]);
 }
 
-SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+SIMD::Int Pointer::isInBounds(OutOfBoundsBehavior robustness) const
 {
-	ASSERT(accessSize > 0);
-
-	if(isStaticallyInBounds(accessSize, robustness))
+	if(isStaticallyInBounds(robustness))
 	{
-		return SIMD::Int(0xffffffff);
+		return SIMD::Int(0xFFFFFFFF);
 	}
 
 	if(!hasDynamicOffsets && !hasDynamicLimit)
@@ -997,16 +995,16 @@ SIMD::Int Pointer::isInBounds(unsigned int accessSize, OutOfBoundsBehavior robus
 		// Common fast paths.
 		static_assert(SIMD::Width == 4, "Expects SIMD::Width to be 4");
 		return SIMD::Int(
-		    (staticOffsets[0] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[1] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[2] + accessSize - 1 < staticLimit) ? 0xffffffff : 0,
-		    (staticOffsets[3] + accessSize - 1 < staticLimit) ? 0xffffffff : 0);
+		    isStaticOffsetInBounds(0) ? 0xFFFFFFFF : 0,
+		    isStaticOffsetInBounds(1) ? 0xFFFFFFFF : 0,
+		    isStaticOffsetInBounds(2) ? 0xFFFFFFFF : 0,
+		    isStaticOffsetInBounds(3) ? 0xFFFFFFFF : 0);
 	}
 
-	return CmpLT(offsets() + SIMD::Int(accessSize - 1), SIMD::Int(limit()));
+	return As<SIMD::Int>(CmpLT(As<SIMD::UInt>(offsets()), SIMD::UInt(limit())));
 }
 
-bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const
+bool Pointer::isStaticallyInBounds(OutOfBoundsBehavior robustness) const
 {
 	if(hasDynamicOffsets)
 	{
@@ -1015,7 +1013,7 @@ bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior 
 
 	if(hasDynamicLimit)
 	{
-		if(hasStaticEqualOffsets() || hasStaticSequentialOffsets(accessSize))
+		if(hasStaticEqualOffsets() || hasStaticSequentialOffsets(sizeof(float)))
 		{
 			switch(robustness)
 			{
@@ -1033,13 +1031,18 @@ bool Pointer::isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior 
 
 	for(int i = 0; i < SIMD::Width; i++)
 	{
-		if(staticOffsets[i] + accessSize - 1 >= staticLimit)
+		if(!isStaticOffsetInBounds(i))
 		{
 			return false;
 		}
 	}
 
 	return true;
+}
+
+bool Pointer::isStaticOffsetInBounds(int component) const
+{
+	return (staticOffsets[component] >= 0) && (static_cast<unsigned int>(staticOffsets[component]) < staticLimit);
 }
 
 Int Pointer::limit() const

@@ -39,6 +39,7 @@ enum
 	// Alignment of all Vulkan objects, pools, device memory, images, buffers, descriptors.
 	REQUIRED_MEMORY_ALIGNMENT = 16,  // 16 bytes for 128-bit vector types.
 
+	// Vulkan 1.2 requires buffer offset alignment to be at most 256.
 	MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT = 256,
 	MIN_UNIFORM_BUFFER_OFFSET_ALIGNMENT = 256,
 	MIN_STORAGE_BUFFER_OFFSET_ALIGNMENT = 256,

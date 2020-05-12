@@ -101,9 +101,9 @@ struct Pointer
 
 	SIMD::Int offsets() const;
 
-	SIMD::Int isInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const;
-
-	bool isStaticallyInBounds(unsigned int accessSize, OutOfBoundsBehavior robustness) const;
+	SIMD::Int isInBounds(OutOfBoundsBehavior robustness) const;
+	bool isStaticallyInBounds(OutOfBoundsBehavior robustness) const;
+	bool isStaticOffsetInBounds(int component) const;
 
 	Int limit() const;
 
@@ -303,7 +303,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 {
 	using EL = typename Element<T>::type;
 
-	if(isStaticallyInBounds(sizeof(float), robustness))
+	if(isStaticallyInBounds(robustness))
 	{
 		// All elements are statically known to be in-bounds.
 		// We can avoid costly conditional on masks.
@@ -326,7 +326,7 @@ inline T SIMD::Pointer::Load(OutOfBoundsBehavior robustness, Int mask, bool atom
 			case OutOfBoundsBehavior::Nullify:
 			case OutOfBoundsBehavior::RobustBufferAccess:
 			case OutOfBoundsBehavior::UndefinedValue:
-				mask &= isInBounds(sizeof(float), robustness);  // Disable out-of-bounds reads.
+				mask &= isInBounds(robustness);  // Disable out-of-bounds reads.
 				break;
 			case OutOfBoundsBehavior::UndefinedBehavior:
 				// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
@@ -416,9 +416,9 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 	switch(robustness)
 	{
 		case OutOfBoundsBehavior::Nullify:
-		case OutOfBoundsBehavior::RobustBufferAccess:       // TODO: Allows writing anywhere within bounds. Could be faster than masking.
-		case OutOfBoundsBehavior::UndefinedValue:           // Should not be used for store operations. Treat as robust buffer access.
-			mask &= isInBounds(sizeof(float), robustness);  // Disable out-of-bounds writes.
+		case OutOfBoundsBehavior::RobustBufferAccess:  // TODO: Allows writing anywhere within bounds. Could be faster than masking.
+		case OutOfBoundsBehavior::UndefinedValue:      // Should not be used for store operations. Treat as robust buffer access.
+			mask &= isInBounds(robustness);            // Disable out-of-bounds writes.
 			break;
 		case OutOfBoundsBehavior::UndefinedBehavior:
 			// Nothing to do. Application/compiler must guarantee no out-of-bounds accesses.
@@ -444,7 +444,7 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		}
 		else if(hasStaticSequentialOffsets(sizeof(float)))
 		{
-			if(isStaticallyInBounds(sizeof(float), robustness))
+			if(isStaticallyInBounds(robustness))
 			{
 				// Pointer has no elements OOB, and the store is not atomic.
 				// Perform a RMW.
