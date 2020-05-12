@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "159cab0f_fc70a9e8",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-12T05:17:46Z",
+      "side": 1,
+      "message": "\u003e but the fact that the thing it points to can be modified\n\nIt\u0027s a pointer to an undefined type. It could have just as well been an integer identifier. But one wouldn\u0027t write \"const int value() const;\" because that doesn\u0027t express that the object it identifies shouldn\u0027t be modified. Likewise I can\u0027t directly call any methods on a Value*, despite the fact that it\u0027s non-const. Functions that take a Value* could modify it, but as long as those modifications are not observable, const correctness is preserved.\n\n\u003e means that the expected invariant that const members do not have side effects is broken\n\nI think we should reason about this in terms of observable constness, not absolute constness. None of the other methods of RValue\u003c\u003e return something different after calling value(). Not even when the Value* is passed to functions that might modify it internally. This is also why the \u0027mutable\u0027 keyword exists, so that one can have internal state which can change while externally things still appear the same, e.g. a cache of sorts. Note that even without mutables or returning an object which could be modified, a const method will still affect things like the CPU caches. So it all depends on what one considers an observable side-effect or not.\n\nAnyway, it really comes down to what one can do with a Value*. It represents an SSA value, so by definition it can\u0027t be assigned a new value or otherwise be manipulated in an observable way. RValue\u003c\u003e has to preserve that behavior by not allowing \u0027val\u0027 to be assigned a new pointer value, but otherwise doesn\u0027t have to worry that the pointee is non-const since there are no functions that violate its SSA nature.\n\n\u003e My guess is that we can probably remove the \u0027const\u0027 on the member function itself, and things would still compile, and be more consistent.\n\nIt breaks quite a few functions that take RValues by const reference. It would also allow our guarantee that \u0027val\u0027 must not be modified, to be broken.",
+      "parentUuid": "9bd755f9_57080cd3",
+      "revId": "3447333d674f709a1bd3720cc38255a2ac8cff36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f860a9de_75442d72",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 9
