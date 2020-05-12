@@ -1,0 +1,2 @@
+dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_vertex
+dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x2_fragment
