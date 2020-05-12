@@ -16,3 +16,6 @@
 [submodule "third_party/benchmark"]
 	path = third_party/benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "third_party/SaschaWillems_VulkanExamples"]
+	path = third_party/SaschaWillems_VulkanExamples
+	url = https://github.com/SaschaWillems/Vulkan
