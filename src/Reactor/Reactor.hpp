@@ -186,16 +186,18 @@ public:
 		return initialized;
 	}
 
+	Value *createValue() const;
+
 private:
 	bool initialized = false;
 	T value;
 };
 
-template<typename T, typename I>
-class LValue : public Variable
+template<typename T>
+class LValueBase : public Variable
 {
 public:
-	LValue(int arraySize = 0);
+	LValueBase(int arraySize = 0);
 
 	RValue<Pointer<T>> operator&();
 
@@ -219,8 +221,25 @@ public:
 	// self() returns the this pointer to this LValue<T> object.
 	// This function exists because operator&() is overloaded.
 	inline LValue<T, void> *self() { return this; }
+};
 
-	Value *loadValue() const override = 0;
+template<typename T, typename I>
+class LValue : public LValueBase<T>
+{
+public:
+	LValue(int arraySize = 0)
+	    : LValueBase(arraySize)
+	{}
+
+	Value *loadValue() const override
+	{
+		if(isImmediate())
+		{
+			return storeValue(imm.createValue());
+		}
+
+		return Variable::loadValue();
+	}
 
 	bool isUninitialized() const override
 	{
@@ -232,33 +251,12 @@ public:
 };
 
 template<typename T>
-class LValue<T, void> : public Variable
+class LValue<T, void> : public LValueBase<T>
 {
 public:
-	LValue(int arraySize = 0);
-
-	RValue<Pointer<T>> operator&();
-
-	RValue<T> load() const
-	{
-		return RValue<T>(Variable::loadValue());
-	}
-
-	RValue<T> store(RValue<T> rvalue) const
-	{
-		Variable::storeValue(rvalue.value());
-
-		return rvalue;
-	}
-
-	Type *getType() const override
-	{
-		return T::type();
-	}
-
-	// self() returns the this pointer to this LValue<T> object.
-	// This function exists because operator&() is overloaded.
-	inline LValue<T, void> *self() { return this; }
+	LValue(int arraySize = 0)
+	    : LValueBase(arraySize)
+	{}
 };
 
 template<class T>
@@ -476,7 +474,7 @@ public:
 	RValue<Bool> operator=(const Bool &rhs);
 	RValue<Bool> operator=(const Reference<Bool> &rhs);
 
-	Value *loadValue() const override;
+	//Value *loadValue() const override;
 
 	//bool isUninitialized() const override
 	//{
@@ -1310,7 +1308,7 @@ public:
 	RValue<Int> operator=(const Reference<Int> &rhs);
 	RValue<Int> operator=(const Reference<UInt> &rhs);
 
-	Value *loadValue() const override;
+	//Value *loadValue() const override;
 
 	//bool isUninitialized() const override
 	//{
@@ -2815,23 +2813,23 @@ RValue<Long> Ticks();
 
 namespace rr {
 
-template<class T, class I>
-LValue<T, I>::LValue(int arraySize)
-    : Variable(arraySize)
-{
-#ifdef ENABLE_RR_DEBUG_INFO
-	materialize();
-#endif  // ENABLE_RR_DEBUG_INFO
-}
-
 template<class T>
-LValue<T, void>::LValue(int arraySize)
+LValueBase<T>::LValueBase(int arraySize)
     : Variable(arraySize)
 {
 #ifdef ENABLE_RR_DEBUG_INFO
 	materialize();
 #endif  // ENABLE_RR_DEBUG_INFO
 }
+//
+//template<class T>
+//LValue<T, void>::LValue(int arraySize)
+//    : Variable(arraySize)
+//{
+//#ifdef ENABLE_RR_DEBUG_INFO
+//	materialize();
+//#endif  // ENABLE_RR_DEBUG_INFO
+//}
 
 //inline LValue<Int, int>::LValue(int arraySize)
 //    : Variable(arraySize)
@@ -2911,14 +2909,8 @@ inline Value *Variable::getElementPointer(Value *index, bool unsignedIndex) cons
 	return Nucleus::createGEP(getBaseAddress(), getType(), index, unsignedIndex);
 }
 
-template<class T, class I>
-RValue<Pointer<T>> LValue<T, I>::operator&()
-{
-	return RValue<Pointer<T>>(getBaseAddress());
-}
-
 template<class T>
-RValue<Pointer<T>> LValue<T, void>::operator&()
+RValue<Pointer<T>> LValueBase<T>::operator&()
 {
 	return RValue<Pointer<T>>(getBaseAddress());
 }
