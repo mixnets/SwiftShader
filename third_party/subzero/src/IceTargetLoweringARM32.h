@@ -311,11 +311,6 @@ protected:
   /// Returns a vector in a register with the given constant entries.
   Variable *makeVectorOfZeros(Type Ty, RegNumT RegNum = RegNumT());
 
-  void
-  makeRandomRegisterPermutation(llvm::SmallVectorImpl<RegNumT> &Permutation,
-                                const SmallBitVector &ExcludeRegisters,
-                                uint64_t Salt) const override;
-
   // If a divide-by-zero check is needed, inserts a: test; branch .LSKIP; trap;
   // .LSKIP: <continuation>. If no check is needed nothing is inserted.
   void div0Check(Type Ty, Operand *SrcLo, Operand *SrcHi);

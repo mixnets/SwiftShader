@@ -202,7 +202,6 @@ public:
   void deletePhis();
   void advancedPhiLowering();
   void reorderNodes();
-  void shuffleNodes();
   void localCSE(bool AssumeSSA);
   void floatConstantCSE();
   void shortCircuitJumps();
@@ -217,7 +216,6 @@ public:
   /// replaced by a shufflevector instruction.
   void materializeVectorShuffles();
   void doArgLowering();
-  void doNopInsertion();
   void genCode();
   void genFrame();
   void generateLoopInfo();

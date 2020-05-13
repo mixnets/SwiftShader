@@ -325,7 +325,6 @@ SRCS = \
   IceRangeSpec.cpp \
   IceRegAlloc.cpp \
   IceRevision.cpp \
-  IceRNG.cpp \
   IceSwitchLowering.cpp \
   IceThreading.cpp \
   IceTimerTree.cpp \

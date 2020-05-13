@@ -316,8 +316,6 @@ protected:
   void doAddressOptLoadSubVector() override;
   void doAddressOptStoreSubVector() override;
   void doMockBoundsCheck(Operand *Opnd) override;
-  void randomlyInsertNop(float Probability,
-                         RandomNumberGenerator &RNG) override;
 
   /// Naive lowering of cmpxchg.
   void lowerAtomicCmpxchg(Variable *DestPrev, Operand *Ptr, Operand *Expected,
@@ -464,11 +462,6 @@ protected:
   /// Return a memory operand corresponding to a stack allocated Variable.
   X86OperandMem *getMemoryOperandForStackSlot(Type Ty, Variable *Slot,
                                               uint32_t Offset = 0);
-
-  void
-  makeRandomRegisterPermutation(llvm::SmallVectorImpl<RegNumT> &Permutation,
-                                const SmallBitVector &ExcludeRegisters,
-                                uint64_t Salt) const override;
 
   /// AutoMemorySandboxer emits a bundle-lock/bundle-unlock pair if the
   /// instruction's operand is a memory reference. This is only needed for
@@ -1244,7 +1237,7 @@ public:
 private:
   ENABLE_MAKE_UNIQUE;
 
-  explicit TargetDataX86(GlobalContext *Ctx) : TargetDataLowering(Ctx){}
+  explicit TargetDataX86(GlobalContext *Ctx) : TargetDataLowering(Ctx) {}
   template <typename T> static void emitConstantPool(GlobalContext *Ctx);
 };
 

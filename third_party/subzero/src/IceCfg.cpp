@@ -44,15 +44,6 @@ Cfg::Cfg(GlobalContext *Ctx, uint32_t SequenceNumber)
   Target = TargetLowering::createLowering(getFlags().getTargetArch(), this);
   VMetadata.reset(new VariablesMetadata(this));
   TargetAssembler = Target->createAssembler();
-
-  if (getFlags().getRandomizeAndPoolImmediatesOption() == RPI_Randomize) {
-    // If -randomize-pool-immediates=randomize, create a random number
-    // generator to generate a cookie for constant blinding.
-    RandomNumberGenerator RNG(getFlags().getRandomSeed(), RPE_ConstantBlinding,
-                              this->SequenceNumber);
-    ConstantBlindingCookie =
-        (uint32_t)RNG.next((uint64_t)std::numeric_limits<uint32_t>::max() + 1);
-  }
 }
 
 Cfg::~Cfg() {
@@ -94,8 +85,8 @@ std::string Cfg::getFunctionNameAndSize() const {
         ++InstCount;
     }
   }
-  return getFunctionName() + "(i=" + std::to_string(InstCount) + ":b=" +
-         std::to_string(NodeCount) + ")";
+  return getFunctionName() + "(i=" + std::to_string(InstCount) +
+         ":b=" + std::to_string(NodeCount) + ")";
 }
 
 void Cfg::setError(const std::string &Message) {
@@ -228,9 +219,9 @@ void Cfg::translate() {
   if (BuildDefs::dump()) {
     if (isVerbose(IceV_Status) &&
         getFlags().matchTestStatus(getFunctionName(), getSequenceNumber())) {
-      getContext()->getStrDump() << ">>>Translating "
-                                 << getFunctionNameAndSize()
-                                 << " seq=" << getSequenceNumber() << "\n";
+      getContext()->getStrDump()
+          << ">>>Translating " << getFunctionNameAndSize()
+          << " seq=" << getSequenceNumber() << "\n";
     }
   }
   TimerMarker T_func(getContext(), getFunctionName().toStringOrEmpty());
@@ -484,52 +475,6 @@ void Cfg::reorderNodes() {
     Reordered.push_back(Node);
   assert(getNumNodes() == Reordered.size());
   swapNodes(Reordered);
-}
-
-namespace {
-void getRandomPostOrder(CfgNode *Node, BitVector &ToVisit,
-                        Ice::NodeList &PostOrder,
-                        Ice::RandomNumberGenerator *RNG) {
-  assert(ToVisit[Node->getIndex()]);
-  ToVisit[Node->getIndex()] = false;
-  NodeList Outs = Node->getOutEdges();
-  Ice::RandomShuffle(Outs.begin(), Outs.end(),
-                     [RNG](int N) { return RNG->next(N); });
-  for (CfgNode *Next : Outs) {
-    if (ToVisit[Next->getIndex()])
-      getRandomPostOrder(Next, ToVisit, PostOrder, RNG);
-  }
-  PostOrder.push_back(Node);
-}
-} // end of anonymous namespace
-
-void Cfg::shuffleNodes() {
-  if (!getFlags().getReorderBasicBlocks())
-    return;
-
-  NodeList ReversedReachable;
-  NodeList Unreachable;
-  BitVector ToVisit(Nodes.size(), true);
-  // Create Random number generator for function reordering
-  RandomNumberGenerator RNG(getFlags().getRandomSeed(),
-                            RPE_BasicBlockReordering, SequenceNumber);
-  // Traverse from entry node.
-  getRandomPostOrder(getEntryNode(), ToVisit, ReversedReachable, &RNG);
-  // Collect the unreachable nodes.
-  for (CfgNode *Node : Nodes)
-    if (ToVisit[Node->getIndex()])
-      Unreachable.push_back(Node);
-  // Copy the layout list to the Nodes.
-  NodeList Shuffled;
-  Shuffled.reserve(ReversedReachable.size() + Unreachable.size());
-  for (CfgNode *Node : reverse_range(ReversedReachable))
-    Shuffled.push_back(Node);
-  for (CfgNode *Node : Unreachable)
-    Shuffled.push_back(Node);
-  assert(Nodes.size() == Shuffled.size());
-  swapNodes(Shuffled);
-
-  dump("After basic block shuffling");
 }
 
 void Cfg::localCSE(bool AssumeSSA) {
@@ -1517,16 +1462,6 @@ void Cfg::materializeVectorShuffles() {
       LoweringContext.insert(ShuffleVector);
     }
   }
-}
-
-void Cfg::doNopInsertion() {
-  if (!getFlags().getShouldDoNopInsertion())
-    return;
-  TimerMarker T(TimerStack::TT_doNopInsertion, this);
-  RandomNumberGenerator RNG(getFlags().getRandomSeed(), RPE_NopInsertion,
-                            SequenceNumber);
-  for (CfgNode *Node : Nodes)
-    Node->doNopInsertion(RNG);
 }
 
 void Cfg::genCode() {

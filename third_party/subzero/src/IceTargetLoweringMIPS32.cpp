@@ -260,7 +260,7 @@ inline uint64_t getConstantMemoryOrder(Operand *Opnd) {
     return Integer->getValue();
   return Intrinsics::MemoryOrderInvalid;
 }
-}
+} // namespace
 
 void TargetMIPS32::genTargetHelperCallFor(Inst *Instr) {
   constexpr bool NoTailCall = false;
@@ -965,11 +965,6 @@ void TargetMIPS32::translateO2() {
   // to reduce the amount of work needed for searching for opportunities.
   Func->doBranchOpt();
   Func->dump("After branch optimization");
-
-  // Nop insertion
-  if (getFlags().getShouldDoNopInsertion()) {
-    Func->doNopInsertion();
-  }
 }
 
 void TargetMIPS32::translateOm1() {
@@ -1019,11 +1014,6 @@ void TargetMIPS32::translateOm1() {
   if (Func->hasError())
     return;
   Func->dump("After postLowerLegalization");
-
-  // Nop insertion
-  if (getFlags().getShouldDoNopInsertion()) {
-    Func->doNopInsertion();
-  }
 }
 
 bool TargetMIPS32::doBranchOpt(Inst *Instr, const CfgNode *NextNode) {
@@ -1398,7 +1388,9 @@ void TargetMIPS32::lowerArguments() {
       }
     } else {
       switch (Ty) {
-      default: { RegisterArg->setRegNum(RegNum); } break;
+      default: {
+        RegisterArg->setRegNum(RegNum);
+      } break;
       case IceType_i64: {
         auto *RegisterArg64 = llvm::cast<Variable64On32>(RegisterArg);
         RegisterArg64->initHiLo(Func);
@@ -5702,15 +5694,6 @@ void TargetMIPS32::postLower() {
     return;
   markRedefinitions();
   Context.availabilityUpdate();
-}
-
-void TargetMIPS32::makeRandomRegisterPermutation(
-    llvm::SmallVectorImpl<RegNumT> &Permutation,
-    const SmallBitVector &ExcludeRegisters, uint64_t Salt) const {
-  (void)Permutation;
-  (void)ExcludeRegisters;
-  (void)Salt;
-  UnimplementedError(getFlags());
 }
 
 /* TODO(jvoung): avoid duplicate symbols with multiple targets.

@@ -18,8 +18,8 @@
 #ifndef SUBZERO_SRC_ICEREGALLOC_H
 #define SUBZERO_SRC_ICEREGALLOC_H
 
-#include "IceDefs.h"
 #include "IceBitVector.h"
+#include "IceDefs.h"
 #include "IceOperand.h"
 #include "IceTypes.h"
 
@@ -33,7 +33,7 @@ class LinearScan {
 public:
   explicit LinearScan(Cfg *Func);
   void init(RegAllocKind Kind, CfgSet<Variable *> ExcludeVars);
-  void scan(const SmallBitVector &RegMask, bool Randomized);
+  void scan(const SmallBitVector &RegMask);
   // Returns the number of times some variable has been assigned a register but
   // later evicted because of a higher-priority allocation.  The idea is that we
   // can implement "second-chance bin-packing" by rerunning register allocation
@@ -106,8 +106,7 @@ private:
   void allocateFreeRegister(IterationState &Iter, bool Filtered);
   void handleNoFreeRegisters(IterationState &Iter);
   void assignFinalRegisters(const SmallBitVector &RegMaskFull,
-                            const SmallBitVector &PreDefinedRegisters,
-                            bool Randomized);
+                            const SmallBitVector &PreDefinedRegisters);
   /// @}
 
   void dumpLiveRangeTrace(const char *Label, const Variable *Item);

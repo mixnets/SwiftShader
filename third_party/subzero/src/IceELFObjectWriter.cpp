@@ -36,8 +36,7 @@ constexpr struct {
   uint32_t ELFFlags;
 } ELFTargetInfo[TargetArch_NUM] = {
 #define X(tag, str, is_elf64, e_machine, e_flags)                              \
-  { is_elf64, e_machine, e_flags }                                             \
-  ,
+  {is_elf64, e_machine, e_flags},
     TARGETARCH_TABLE
 #undef X
 };
@@ -543,17 +542,6 @@ template <typename ConstType> void ELFObjectWriter::writeConstantPool(Type Ty) {
   constexpr SizeT SymbolSize = 0;
   Section->setFileOffset(alignFileOffset(Align));
 
-  // If the -reorder-pooled-constant option is set to true, we should shuffle
-  // the constants before we emit them.
-  if (getFlags().getReorderPooledConstants() && !Pool.empty()) {
-    // Use the constant's kind value as the salt for creating random number
-    // generator.
-    Operand::OperandKind K = (*Pool.begin())->getKind();
-    RandomNumberGenerator RNG(getFlags().getRandomSeed(),
-                              RPE_PooledConstantReordering, K);
-    RandomShuffle(Pool.begin(), Pool.end(),
-                  [&RNG](uint64_t N) { return (uint32_t)RNG.next(N); });
-  }
   // Write the data.
   for (Constant *C : Pool) {
     if (!C->getShouldBePooled())
