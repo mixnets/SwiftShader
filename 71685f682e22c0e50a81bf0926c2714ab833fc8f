@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a27e91f3_ff7ff190",
+        "filename": "tests/VulkanUnitTests/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Let\u0027s not mix case here -- \"common\" starts with lower-case \"c\" while \"Compute\" with upper-case. For consistency, pick one. I propose Common and Compute, since the parent folder uses upper-case letters (VulkanUnitTests). Note that the target names, themselves, should still be lower-case.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "534a8b0c_a2a80f5b",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "This add_dependencies is not needed at all here because this target depends on vk-unittests-common (via target_link_libraries), and vk-unittests-common already depends on vk_swiftshader. Remove entirely.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08b3fa3c_e7bc0ef9",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Remove this entirely. Instead, add \n\ntarget_include_directories(vk-unittests-common\n    PUBLIC .\n)\n\nto Common/CMakeLists.txt. This way, you automatically get this public header include by depending on vk-unittests-common.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbce84dd_60b87f5c",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "You can remove this section entirely. \"STANDALONE\" is only needed by Driver.cpp, which is part of vk-unitests-common, and already defines this private definition.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a45ac091_f7f7def8",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Remove entirely, this is inherited from vk-unittests-common.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7708a07a_aa8001b5",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Remove entirely, this is inherited by vk-unittests-common.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e11f8bd_4e083cc2",
+        "filename": "tests/VulkanUnitTests/Compute/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Remove SPIRV-Tools and ${ROOT_PROJECT_LINK_LIBRARIES} as these should be inherited from vk-unittests-common.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4475aad7_7a273ec8",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "Please sort alphabetically, like in the other CMakeLists files.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "624d8aff_240787ba",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "\" RUNTIME_OUTPUT_DIRECTORY \" -- this should be set on the executable target, not this static lib. Remove this line.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c20a55a9_eaf5d25d",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "PUBLIC.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59cfb140_8b47cfeb",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "PUBLIC.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3235cbc_497f80f3",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "PUBLIC.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f2520c6_e8b9856e",
+        "filename": "tests/VulkanUnitTests/common/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-13T17:50:27Z",
+      "side": 1,
+      "message": "This section should contain PUBLIC libraries that dependent targets need to inherit, usually because they are visible via public includes. It should also contain PRIVATE libraries that are necessary to build this target.\n\nI think \"gtest\" and \"gmock\" should be removed, as none of the source in this target deal with them. I think SPIRV-Tools might need to be made PUBLIC here, and I would also make ${ROOT_PROJECT_LINK_LIBRARIES} PUBLIC, so both of these would be inherited.",
+      "revId": "71685f682e22c0e50a81bf0926c2714ab833fc8f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
