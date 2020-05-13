@@ -353,10 +353,7 @@ public:
 
 	explicit RValue(Value *rvalue);
 
-#ifdef ENABLE_RR_DEBUG_INFO
 	RValue(const RValue<T> &rvalue);
-#endif  // ENABLE_RR_DEBUG_INFO
-
 	RValue(const T &lvalue);
 	RValue(typename BoolLiteral<T>::type i);
 	RValue(typename IntLiteral<T>::type i);
@@ -372,25 +369,23 @@ private:
 	Value *const val;
 };
 
-template<>
-class RValue<Int>
+template<typename T, typename I>
+class FoldableRValue
 {
 public:
-	using rvalue_underlying_type = Int;
+	using rvalue_underlying_type = T;
 
-	explicit RValue(Value *rvalue);
+	explicit FoldableRValue(Value *rvalue);
 
-#ifdef ENABLE_RR_DEBUG_INFO
-	RValue(const RValue<Int> &rvalue);
-#endif  // ENABLE_RR_DEBUG_INFO
+	FoldableRValue(const FoldableRValue<T, I> &rvalue);
+	FoldableRValue(const T &lvalue);
+	FoldableRValue(typename I i);
+	FoldableRValue(const Reference<T> &rhs);
 
-	RValue(const Int &lvalue);
-	RValue(int i);
-	RValue(const Reference<Int> &rhs);
+	// Rvalues cannot be assigned to: "(a + b) = c;"
+	RValue<T> &operator=(const RValue<T> &) = delete;
 
-	RValue<Int> &operator=(const RValue<Int> &) = delete;
-
-	int immediate() const
+	I immediate() const
 	{
 		return imm;
 	}
@@ -404,59 +399,40 @@ public:
 	{
 		if(!val)
 		{
-			val = Nucleus::createConstantInt(imm);
+			val = imm.createValue();
 		}
 
 		return val;
 	}
 
 private:
-	Immediate<int> imm = 0xCCCCCCCC;
+	Immediate<I> imm;
 	mutable Value *val = nullptr;
+};
+
+// clang-format off
+template<>
+class RValue<Int> : public FoldableRValue<Int, int>
+{
+public:
+	explicit RValue(Value *rvalue) : FoldableRValue(rvalue) {}
+	RValue(const RValue<Int> &rvalue) : FoldableRValue(rvalue) {}
+	RValue(const Int &lvalue) : FoldableRValue(lvalue) {}
+	RValue(int i) : FoldableRValue(i) {}
+	RValue(const Reference<Int> &rhs) : FoldableRValue(rhs) {}
 };
 
 template<>
-class RValue<Bool>
+class RValue<Bool> : public FoldableRValue<Bool, bool>
 {
 public:
-	using rvalue_underlying_type = Bool;
-
-	explicit RValue(Value *rvalue);
-
-#ifdef ENABLE_RR_DEBUG_INFO
-	RValue(const RValue<Bool> &rvalue);
-#endif  // ENABLE_RR_DEBUG_INFO
-
-	RValue(const Bool &lvalue);
-	RValue(bool b);
-	RValue(const Reference<Bool> &rhs);
-
-	RValue<Bool> &operator=(const RValue<Bool> &) = delete;
-
-	bool immediate() const
-	{
-		return imm;
-	}
-
-	bool isImmediate() const
-	{
-		return val == nullptr;
-	}
-
-	Value *value() const
-	{
-		if(!val)
-		{
-			val = Nucleus::createConstantBool(imm);
-		}
-
-		return val;
-	}
-
-private:
-	Immediate<bool> imm;
-	mutable Value *val = nullptr;
+	explicit RValue(Value *rvalue) : FoldableRValue(rvalue) {}
+	RValue(const RValue<Bool> &rvalue) : FoldableRValue(rvalue) {}
+	RValue(const Bool &lvalue) : FoldableRValue(lvalue) {}
+	RValue(bool b) : FoldableRValue(b) {}
+	RValue(const Reference<Bool> &rhs) : FoldableRValue(rhs) {}
 };
+// clang-format on
 
 template<typename T>
 struct Argument
@@ -2931,14 +2907,12 @@ int Reference<T>::getAlignment() const
 	return alignment;
 }
 
-#ifdef ENABLE_RR_DEBUG_INFO
 template<class T>
 RValue<T>::RValue(const RValue<T> &rvalue)
     : val(rvalue.val)
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
-#endif  // ENABLE_RR_DEBUG_INFO
 
 template<class T>
 RValue<T>::RValue(Value *value)
@@ -2983,23 +2957,25 @@ RValue<T>::RValue(const Reference<T> &ref)
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
 
-#ifdef ENABLE_RR_DEBUG_INFO
-inline RValue<Int>::RValue(const RValue<Int> &value)
-    : val(value.val)
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const FoldableRValue<T, I> &value)
+    : imm(value.imm)
+    , val(value.val)
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
-#endif  // ENABLE_RR_DEBUG_INFO
 
-inline RValue<Int>::RValue(Value *value)
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(Value *value)
 {
-	assert(Nucleus::createBitCast(value, Int::type()) == value);  // Run-time type should match Int, so bitcast is no-op.
+	assert(Nucleus::createBitCast(value, T::type()) == value);  // Run-time type should match Int, so bitcast is no-op.
 
 	val = value;
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
 
-inline RValue<Int>::RValue(const Int &lvalue)
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const T &lvalue)
 {
 	if(lvalue.isImmediate())
 	{
@@ -3012,52 +2988,14 @@ inline RValue<Int>::RValue(const Int &lvalue)
 	}
 }
 
-inline RValue<Int>::RValue(int i)
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(I i)
 {
 	imm = i;
 }
 
-inline RValue<Int>::RValue(const Reference<Int> &ref)
-    : val(ref.loadValue())
-{
-	RR_DEBUG_INFO_EMIT_VAR(val);
-}
-
-#ifdef ENABLE_RR_DEBUG_INFO
-inline RValue<Bool>::RValue(const RValue<Bool> &value)
-    : val(value.val)
-{
-	RR_DEBUG_INFO_EMIT_VAR(val);
-}
-#endif  // ENABLE_RR_DEBUG_INFO
-
-inline RValue<Bool>::RValue(Value *value)
-{
-	assert(Nucleus::createBitCast(value, Bool::type()) == value);  // Run-time type should match Bool, so bitcast is no-op.
-
-	val = value;
-	RR_DEBUG_INFO_EMIT_VAR(val);
-}
-
-inline RValue<Bool>::RValue(const Bool &lvalue)
-{
-	if(lvalue.isImmediate())
-	{
-		imm = lvalue.imm;
-	}
-	else
-	{
-		val = lvalue.loadValue();
-		RR_DEBUG_INFO_EMIT_VAR(val);
-	}
-}
-
-inline RValue<Bool>::RValue(bool i)
-{
-	imm = i;
-}
-
-inline RValue<Bool>::RValue(const Reference<Bool> &ref)
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const Reference<T> &ref)
     : val(ref.loadValue())
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
