@@ -42,7 +42,7 @@ class Float4;
 
 template<class T>
 class Pointer;
-template<class T, class I>
+template<class T>
 class LValue;
 template<class T>
 class RValue;

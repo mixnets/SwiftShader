@@ -119,7 +119,7 @@ public:
 
 	virtual Type *getType() const = 0;
 
-	int getArraySize() const
+	int getArraySize() const  /////////////
 	{
 		return arraySize;
 	}
@@ -194,10 +194,59 @@ private:
 };
 
 template<typename T>
-class LValueBase : public Variable
+struct TypedVariable : public Variable
+{
+	TypedVariable(int arraySize)
+	    : Variable(arraySize)
+	{}
+};
+
+template<typename T>
+struct FoldableVariable : public Variable
+{
+	FoldableVariable(int arraySize)
+	    : Variable(arraySize)
+	{}
+
+	Value *loadValue() const override
+	{
+		if(isImmediate())
+		{
+			return storeValue(imm.createValue());
+		}
+
+		return Variable::loadValue();
+	}
+
+	bool isUninitialized() const override
+	{
+		return Variable::isUninitialized() && !imm.isInitialized();
+	}
+
+	Immediate<T> imm;
+};
+
+template<>
+struct TypedVariable<Bool> : public FoldableVariable<bool>
+{
+	TypedVariable(int arraySize)
+	    : FoldableVariable(arraySize)
+	{}
+};
+
+template<>
+struct TypedVariable<Int> : public FoldableVariable<int>
+{
+	TypedVariable(int arraySize)
+	    : FoldableVariable(arraySize)
+	{}
+};
+
+template<typename T>
+class LValue : public TypedVariable<T>
 {
 public:
-	LValueBase(int arraySize = 0);
+	LValue(int arraySize = 0);
 
 	RValue<Pointer<T>> operator&();
 
@@ -220,34 +269,7 @@ public:
 
 	// self() returns the this pointer to this LValue<T> object.
 	// This function exists because operator&() is overloaded.
-	inline LValueBase<T> *self() { return this; }
-};
-
-template<typename T, typename I>
-class LValue : public LValueBase<T>
-{
-public:
-	LValue(int arraySize = 0)
-	    : LValueBase(arraySize)
-	{}
-
-	Value *loadValue() const override
-	{
-		if(isImmediate())
-		{
-			return storeValue(imm.createValue());
-		}
-
-		return Variable::loadValue();
-	}
-
-	bool isUninitialized() const override
-	{
-		return Variable::isUninitialized() && !imm.isInitialized();
-	}
-
-	//////////////////////private:
-	Immediate<I> imm;
+	inline LValue<T> *self() { return this; }
 };
 
 template<class T>
@@ -449,7 +471,7 @@ private:
 	Value *const val;
 };
 
-class Bool : public LValue<Bool, bool>
+class Bool : public LValue<Bool>
 {
 public:
 	Bool(Argument<Bool> argument);
@@ -474,7 +496,7 @@ RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs);
 RValue<Bool> operator!=(RValue<Bool> lhs, RValue<Bool> rhs);
 RValue<Bool> operator==(RValue<Bool> lhs, RValue<Bool> rhs);
 
-class Byte : public LValueBase<Byte>
+class Byte : public LValue<Byte>
 {
 public:
 	Byte(Argument<Byte> argument);
@@ -532,7 +554,7 @@ RValue<Bool> operator>=(RValue<Byte> lhs, RValue<Byte> rhs);
 RValue<Bool> operator!=(RValue<Byte> lhs, RValue<Byte> rhs);
 RValue<Bool> operator==(RValue<Byte> lhs, RValue<Byte> rhs);
 
-class SByte : public LValueBase<SByte>
+class SByte : public LValue<SByte>
 {
 public:
 	SByte(Argument<SByte> argument);
@@ -588,7 +610,7 @@ RValue<Bool> operator>=(RValue<SByte> lhs, RValue<SByte> rhs);
 RValue<Bool> operator!=(RValue<SByte> lhs, RValue<SByte> rhs);
 RValue<Bool> operator==(RValue<SByte> lhs, RValue<SByte> rhs);
 
-class Short : public LValueBase<Short>
+class Short : public LValue<Short>
 {
 public:
 	Short(Argument<Short> argument);
@@ -643,7 +665,7 @@ RValue<Bool> operator>=(RValue<Short> lhs, RValue<Short> rhs);
 RValue<Bool> operator!=(RValue<Short> lhs, RValue<Short> rhs);
 RValue<Bool> operator==(RValue<Short> lhs, RValue<Short> rhs);
 
-class UShort : public LValueBase<UShort>
+class UShort : public LValue<UShort>
 {
 public:
 	UShort(Argument<UShort> argument);
@@ -699,7 +721,7 @@ RValue<Bool> operator>=(RValue<UShort> lhs, RValue<UShort> rhs);
 RValue<Bool> operator!=(RValue<UShort> lhs, RValue<UShort> rhs);
 RValue<Bool> operator==(RValue<UShort> lhs, RValue<UShort> rhs);
 
-class Byte4 : public LValueBase<Byte4>
+class Byte4 : public LValue<Byte4>
 {
 public:
 	explicit Byte4(RValue<Byte8> cast);
@@ -749,7 +771,7 @@ public:
 //	RValue<Byte4> operator--(Byte4 &val, int);   // Post-decrement
 //	const Byte4 &operator--(Byte4 &val);   // Pre-decrement
 
-class SByte4 : public LValueBase<SByte4>
+class SByte4 : public LValue<SByte4>
 {
 public:
 	SByte4() = default;
@@ -793,7 +815,7 @@ public:
 //	RValue<SByte4> operator--(SByte4 &val, int);   // Post-decrement
 //	const SByte4 &operator--(SByte4 &val);   // Pre-decrement
 
-class Byte8 : public LValueBase<Byte8>
+class Byte8 : public LValue<Byte8>
 {
 public:
 	Byte8() = default;
@@ -848,7 +870,7 @@ RValue<Int> SignMask(RValue<Byte8> x);
 RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y);
 RValue<Byte8> Swizzle(RValue<Byte8> x, uint32_t select);
 
-class SByte8 : public LValueBase<SByte8>
+class SByte8 : public LValue<SByte8>
 {
 public:
 	SByte8() = default;
@@ -900,7 +922,7 @@ RValue<Int> SignMask(RValue<SByte8> x);
 RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y);
 RValue<Byte8> CmpEQ(RValue<SByte8> x, RValue<SByte8> y);
 
-class Byte16 : public LValueBase<Byte16>
+class Byte16 : public LValue<Byte16>
 {
 public:
 	Byte16() = default;
@@ -944,7 +966,7 @@ public:
 //	const Byte16 &operator--(Byte16 &val);   // Pre-decrement
 RValue<Byte16> Swizzle(RValue<Byte16> x, uint64_t select);
 
-class SByte16 : public LValueBase<SByte16>
+class SByte16 : public LValue<SByte16>
 {
 public:
 	SByte16() = default;
@@ -988,7 +1010,7 @@ public:
 //	RValue<SByte16> operator--(SByte16 &val, int);   // Post-decrement
 //	const SByte16 &operator--(SByte16 &val);   // Pre-decrement
 
-class Short2 : public LValueBase<Short2>
+class Short2 : public LValue<Short2>
 {
 public:
 	explicit Short2(RValue<Short4> cast);
@@ -996,7 +1018,7 @@ public:
 	static Type *type();
 };
 
-class UShort2 : public LValueBase<UShort2>
+class UShort2 : public LValue<UShort2>
 {
 public:
 	explicit UShort2(RValue<UShort4> cast);
@@ -1004,7 +1026,7 @@ public:
 	static Type *type();
 };
 
-class Short4 : public LValueBase<Short4>
+class Short4 : public LValue<Short4>
 {
 public:
 	explicit Short4(RValue<Int> cast);
@@ -1083,7 +1105,7 @@ RValue<Short> Extract(RValue<Short4> val, int i);
 RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y);
 RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y);
 
-class UShort4 : public LValueBase<UShort4>
+class UShort4 : public LValue<UShort4>
 {
 public:
 	explicit UShort4(RValue<Int4> cast);
@@ -1144,7 +1166,7 @@ RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y);
 RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y);
 RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y);
 
-class Short8 : public LValueBase<Short8>
+class Short8 : public LValue<Short8>
 {
 public:
 	Short8() = default;
@@ -1202,7 +1224,7 @@ RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y);
 RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y);
 RValue<Int4> Abs(RValue<Int4> x);
 
-class UShort8 : public LValueBase<UShort8>
+class UShort8 : public LValue<UShort8>
 {
 public:
 	UShort8() = default;
@@ -1259,7 +1281,7 @@ RValue<UShort8> operator~(RValue<UShort8> val);
 RValue<UShort8> Swizzle(RValue<UShort8> x, uint32_t select);
 RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y);
 
-class Int : public LValue<Int, int>
+class Int : public LValue<Int>
 {
 public:
 	Int(Argument<Int> argument);
@@ -1331,7 +1353,7 @@ RValue<Int> Min(RValue<Int> x, RValue<Int> y);
 RValue<Int> Clamp(RValue<Int> x, RValue<Int> min, RValue<Int> max);
 RValue<Int> RoundInt(RValue<Float> cast);
 
-class Long : public LValueBase<Long>
+class Long : public LValue<Long>
 {
 public:
 	//	Long(Argument<Long> argument);
@@ -1399,7 +1421,7 @@ RValue<Long> operator-=(Long &lhs, RValue<Long> rhs);
 //	RValue<Long> RoundLong(RValue<Float> cast);
 RValue<Long> AddAtomic(RValue<Pointer<Long>> x, RValue<Long> y);
 
-class UInt : public LValueBase<UInt>
+class UInt : public LValue<UInt>
 {
 public:
 	UInt(Argument<UInt> argument);
@@ -1481,7 +1503,7 @@ RValue<UInt> CompareExchangeAtomic(RValue<Pointer<UInt>> x, RValue<UInt> y, RVal
 
 //	RValue<UInt> RoundUInt(RValue<Float> cast);
 
-class Int2 : public LValueBase<Int2>
+class Int2 : public LValue<Int2>
 {
 public:
 	//	explicit Int2(RValue<Int> cast);
@@ -1541,7 +1563,7 @@ RValue<Short4> UnpackHigh(RValue<Int2> x, RValue<Int2> y);
 RValue<Int> Extract(RValue<Int2> val, int i);
 RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i);
 
-class UInt2 : public LValueBase<UInt2>
+class UInt2 : public LValue<UInt2>
 {
 public:
 	UInt2() = default;
@@ -2042,7 +2064,7 @@ public:
 	};
 };
 
-class Int4 : public LValueBase<Int4>, public XYZW<Int4>
+class Int4 : public LValue<Int4>, public XYZW<Int4>
 {
 public:
 	explicit Int4(RValue<Byte4> cast);
@@ -2149,7 +2171,7 @@ RValue<Int4> Swizzle(RValue<Int4> x, uint16_t select);
 RValue<Int4> Shuffle(RValue<Int4> x, RValue<Int4> y, uint16_t select);
 RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y);
 
-class UInt4 : public LValueBase<UInt4>, public XYZW<UInt4>
+class UInt4 : public LValue<UInt4>, public XYZW<UInt4>
 {
 public:
 	explicit UInt4(RValue<Float4> cast);
@@ -2239,7 +2261,7 @@ RValue<UInt4> Insert(RValue<UInt4> val, RValue<UInt> element, int i);
 RValue<UInt4> Swizzle(RValue<UInt4> x, uint16_t select);
 RValue<UInt4> Shuffle(RValue<UInt4> x, RValue<UInt4> y, uint16_t select);
 
-class Half : public LValueBase<Half>
+class Half : public LValue<Half>
 {
 public:
 	explicit Half(RValue<Float> cast);
@@ -2247,7 +2269,7 @@ public:
 	static Type *type();
 };
 
-class Float : public LValueBase<Float>
+class Float : public LValue<Float>
 {
 public:
 	explicit Float(RValue<Int> cast);
@@ -2333,7 +2355,7 @@ RValue<Float> Ceil(RValue<Float> x);
 RValue<Float> Exp2(RValue<Float> x);
 RValue<Float> Log2(RValue<Float> x);
 
-class Float2 : public LValueBase<Float2>
+class Float2 : public LValue<Float2>
 {
 public:
 	//	explicit Float2(RValue<Byte2> cast);
@@ -2388,7 +2410,7 @@ public:
 //	RValue<Float2> Swizzle(RValue<Float2> x, uint16_t select);
 //	RValue<Float2> Mask(Float2 &lhs, RValue<Float2> rhs, uint16_t select);
 
-class Float4 : public LValueBase<Float4>, public XYZW<Float4>
+class Float4 : public LValue<Float4>, public XYZW<Float4>
 {
 public:
 	explicit Float4(RValue<Byte4> cast);
@@ -2553,7 +2575,7 @@ RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef);
 RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef);
 
 template<class T>
-class Pointer : public LValueBase<Pointer<T>>
+class Pointer : public LValue<Pointer<T>>
 {
 public:
 	template<class S>
@@ -2666,7 +2688,7 @@ void Store(T value, Pointer<T> pointer, unsigned int alignment, bool atomic, std
 void Fence(std::memory_order memoryOrder);
 
 template<class T, int S = 1>
-class Array : public LValueBase<T>
+class Array : public LValue<T>
 {
 public:
 	Array(int size = S);
@@ -2785,8 +2807,8 @@ RValue<Long> Ticks();
 namespace rr {
 
 template<class T>
-LValueBase<T>::LValueBase(int arraySize)
-    : Variable(arraySize)
+LValue<T>::LValue(int arraySize)
+    : TypedVariable(arraySize)
 {
 #ifdef ENABLE_RR_DEBUG_INFO
 	materialize();
@@ -2856,7 +2878,7 @@ inline Value *Variable::getElementPointer(Value *index, bool unsignedIndex) cons
 }
 
 template<class T>
-RValue<Pointer<T>> LValueBase<T>::operator&()
+RValue<Pointer<T>> LValue<T>::operator&()
 {
 	return RValue<Pointer<T>>(getBaseAddress());
 }
@@ -3339,7 +3361,7 @@ Type *Pointer<T>::type()
 
 template<class T, int S>
 Array<T, S>::Array(int size)
-    : LValueBase<T>(size)
+    : LValue<T>(size)
 {
 }
 
@@ -3493,7 +3515,7 @@ RValue<T> ReinterpretCast(RValue<S> val)
 }
 
 template<class T, class S>
-RValue<T> ReinterpretCast(const LValueBase<S> &var)
+RValue<T> ReinterpretCast(const LValue<S> &var)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	Value *val = var.loadValue();
@@ -3521,7 +3543,7 @@ RValue<T> As(RValue<S> val)
 }
 
 template<class T, class S>
-RValue<T> As(const LValueBase<S> &var)
+RValue<T> As(const LValue<S> &var)
 {
 	return ReinterpretCast<T>(var);
 }
