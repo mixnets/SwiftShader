@@ -42,7 +42,7 @@ class Float4;
 
 template<class T>
 class Pointer;
-template<class T>
+template<class T, class I>
 class LValue;
 template<class T>
 class RValue;
@@ -227,7 +227,7 @@ struct IsRValue<T, std::enable_if_t<IsDefined<typename T::rvalue_underlying_type
 template<typename T>
 struct IsLValue
 {
-	static constexpr bool value = std::is_base_of<LValue<T>, T>::value;
+	static constexpr bool value = std::is_base_of<Variable, T>::value;
 };
 
 // IsReference::value is true if T is of type Reference<X>, where X is any type.
