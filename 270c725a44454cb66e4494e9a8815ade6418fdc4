@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8c1d7c9_644439dc",
+        "filename": ".gitmodules",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-13T03:11:41Z",
+      "side": 1,
+      "message": "His name is Sascha Willems, not Sascha Williams.\nSame name as in the git repo name on the line below.",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 49
+      },
+      "revId": "270c725a44454cb66e4494e9a8815ade6418fdc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
