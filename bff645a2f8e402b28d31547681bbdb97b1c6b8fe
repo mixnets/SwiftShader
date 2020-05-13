@@ -22,6 +22,30 @@
       "revId": "bff645a2f8e402b28d31547681bbdb97b1c6b8fe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "582bd6ef_1dac4d12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-13T19:23:27Z",
+      "side": 1,
+      "message": "Added the dependency in the buganizer issue",
+      "parentUuid": "95038487_f68362db",
+      "range": {
+        "startLine": 17,
+        "startChar": 5,
+        "endLine": 17,
+        "endChar": 16
+      },
+      "revId": "bff645a2f8e402b28d31547681bbdb97b1c6b8fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
