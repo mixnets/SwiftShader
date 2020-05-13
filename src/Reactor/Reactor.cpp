@@ -162,6 +162,18 @@ static Value *createMask4(Value *lhs, Value *rhs, uint16_t select)
 	return Nucleus::createShuffleVector(lhs, rhs, swizzle);
 }
 
+template<>
+Value *Immediate<bool>::createValue() const
+{
+	return Nucleus::createConstantBool(value);
+}
+
+template<>
+Value *Immediate<int>::createValue() const
+{
+	return Nucleus::createConstantInt(value);
+}
+
 Bool::Bool(Argument<Bool> argument)
 {
 	store(argument.rvalue());
@@ -170,16 +182,6 @@ Bool::Bool(Argument<Bool> argument)
 Bool::Bool(bool x)
 {
 	imm = x;
-}
-
-Value *Bool::loadValue() const
-{
-	if(isImmediate())
-	{
-		return storeValue(Nucleus::createConstantBool(imm));
-	}
-
-	return Variable::loadValue();
 }
 
 Bool::Bool(RValue<Bool> rhs)
@@ -233,10 +235,14 @@ RValue<Bool> operator!(RValue<Bool> val)
 
 RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs)
 {
-	if((lhs.isImmediate() && (lhs.immediate() == false)) ||
-	   (rhs.isImmediate() && (rhs.immediate() == false)))
+	if(lhs.isImmediate())
 	{
-		return false;
+		return (lhs.immediate() == false) ? false : rhs;
+	}
+
+	if(rhs.isImmediate())
+	{
+		return (rhs.immediate() == false) ? false : lhs;
 	}
 
 	return RValue<Bool>(Nucleus::createAnd(lhs.value(), rhs.value()));
@@ -244,10 +250,14 @@ RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs)
 
 RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs)
 {
-	if((lhs.isImmediate() && (lhs.immediate() == true)) ||
-	   (rhs.isImmediate() && (rhs.immediate() == true)))
+	if(lhs.isImmediate())
 	{
-		return true;
+		return (lhs.immediate() == true) ? true : rhs;
+	}
+
+	if(rhs.isImmediate())
+	{
+		return (rhs.immediate() == true) ? true : lhs;
 	}
 
 	return RValue<Bool>(Nucleus::createOr(lhs.value(), rhs.value()));
@@ -2262,16 +2272,6 @@ Int::Int(RValue<Float> cast)
 Int::Int(int x)
 {
 	imm = x;
-}
-
-Value *Int::loadValue() const
-{
-	if(isImmediate())
-	{
-		return storeValue(Nucleus::createConstantInt(imm));
-	}
-
-	return Variable::loadValue();
 }
 
 Int::Int(RValue<Int> rhs)
