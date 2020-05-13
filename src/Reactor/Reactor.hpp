@@ -105,7 +105,6 @@ class Variable
 {
 	friend class Nucleus;
 
-	Variable() = delete;
 	Variable &operator=(const Variable &) = delete;
 
 public:
@@ -119,18 +118,13 @@ public:
 
 	virtual Type *getType() const = 0;
 
-	int getArraySize() const  /////////////
-	{
-		return arraySize;
-	}
-
 	bool isImmediate() const
 	{
 		return !address && !rvalue;
 	}
 
 protected:
-	Variable(int arraySize);
+	Variable();
 	Variable(const Variable &) = default;
 
 	virtual ~Variable();
@@ -146,11 +140,12 @@ private:
 	static void materializeAll();
 	static void killUnmaterialized();
 
+	virtual Value *allocate() const;
+
 	// This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
 	// for destructing objects at exit. See crbug.com/1074222
 	static thread_local std::unordered_set<const Variable *> *unmaterializedVariables;
 
-	const int arraySize;
 	mutable Value *rvalue = nullptr;
 	mutable Value *address = nullptr;
 };
@@ -196,18 +191,11 @@ private:
 template<typename T>
 struct TypedVariable : public Variable
 {
-	TypedVariable(int arraySize)
-	    : Variable(arraySize)
-	{}
 };
 
 template<typename T>
 struct FoldableVariable : public Variable
 {
-	FoldableVariable(int arraySize)
-	    : Variable(arraySize)
-	{}
-
 	Value *loadValue() const override
 	{
 		if(isImmediate())
@@ -229,24 +217,18 @@ struct FoldableVariable : public Variable
 template<>
 struct TypedVariable<Bool> : public FoldableVariable<bool>
 {
-	TypedVariable(int arraySize)
-	    : FoldableVariable(arraySize)
-	{}
 };
 
 template<>
 struct TypedVariable<Int> : public FoldableVariable<int>
 {
-	TypedVariable(int arraySize)
-	    : FoldableVariable(arraySize)
-	{}
 };
 
 template<typename T>
 class LValue : public TypedVariable<T>
 {
 public:
-	LValue(int arraySize = 0);
+	LValue();
 
 	RValue<Pointer<T>> operator&();
 
@@ -2677,6 +2659,11 @@ public:
 	// self() returns the this pointer to this Array object.
 	// This function exists because operator&() is overloaded by LValue<T>.
 	inline Array *self() { return this; }
+
+private:
+	Value *allocate() const override;
+
+	const int arraySize;
 };
 
 //	RValue<Array<T>> operator++(Array<T> &val, int);   // Post-increment
@@ -2783,8 +2770,7 @@ RValue<Long> Ticks();
 namespace rr {
 
 template<class T>
-LValue<T>::LValue(int arraySize)
-    : TypedVariable(arraySize)
+LValue<T>::LValue()
 {
 #ifdef ENABLE_RR_DEBUG_INFO
 	materialize();
@@ -2802,7 +2788,7 @@ inline void Variable::materialize() const
 			rvalue = loadValue();
 		}
 
-		address = Nucleus::allocateStackVariable(getType(), arraySize);
+		address = allocate();
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
 		if(rvalue)
@@ -3299,14 +3285,20 @@ Type *Pointer<T>::type()
 
 template<class T, int S>
 Array<T, S>::Array(int size)
-    : LValue<T>(size)
+    : arraySize(size)
 {
+}
+
+template<class T, int S>
+Value *Array<T, S>::allocate() const
+{
+	return Nucleus::allocateStackVariable(T::type(), arraySize);
 }
 
 template<class T, int S>
 Reference<T> Array<T, S>::operator[](int index)
 {
-	assert(index < this->getArraySize());
+	assert(index < arraySize);
 	Value *element = this->getElementPointer(Nucleus::createConstantInt(index), false);
 
 	return Reference<T>(element);
@@ -3315,7 +3307,7 @@ Reference<T> Array<T, S>::operator[](int index)
 template<class T, int S>
 Reference<T> Array<T, S>::operator[](unsigned int index)
 {
-	assert(index < static_cast<unsigned int>(this->getArraySize()));
+	assert(index < static_cast<unsigned int>(arraySize));
 	Value *element = this->getElementPointer(Nucleus::createConstantInt(index), true);
 
 	return Reference<T>(element);
