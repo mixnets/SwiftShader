@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83810202_30ac3be6",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2240,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-14T18:33:38Z",
+      "side": 0,
+      "message": "2 byte format",
+      "range": {
+        "startLine": 2240,
+        "startChar": 2,
+        "endLine": 2240,
+        "endChar": 28
+      },
+      "revId": "d9ba4b7dd30b2a5d824d7230d176c0ff99c2e5a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
