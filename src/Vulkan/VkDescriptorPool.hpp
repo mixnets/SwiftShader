@@ -15,7 +15,7 @@
 #ifndef VK_DESCRIPTOR_POOL_HPP_
 #define VK_DESCRIPTOR_POOL_HPP_
 
-#include "VkObject.hpp"
+#include "VkDevice.hpp"
 #include <set>
 
 namespace vk {
@@ -29,13 +29,13 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorPoolCreateInfo *pCreateInfo);
 
 	VkResult allocateSets(uint32_t descriptorSetCount, const VkDescriptorSetLayout *pSetLayouts, VkDescriptorSet *pDescriptorSets);
-	void freeSets(uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets);
+	void freeSets(Device* device, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets);
 	VkResult reset();
 
 private:
 	VkResult allocateSets(size_t *sizes, uint32_t numAllocs, VkDescriptorSet *pDescriptorSets);
 	uint8_t *findAvailableMemory(size_t size);
-	void freeSet(const VkDescriptorSet descriptorSet);
+	void freeSet(Device* device, const VkDescriptorSet descriptorSet);
 	size_t computeTotalFreeSize() const;
 
 	struct Node

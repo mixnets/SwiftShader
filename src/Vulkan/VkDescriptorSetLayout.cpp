@@ -17,6 +17,7 @@
 #include "VkBuffer.hpp"
 #include "VkBufferView.hpp"
 #include "VkDescriptorSet.hpp"
+#include "VkDevice.hpp"
 #include "VkImageView.hpp"
 #include "VkSampler.hpp"
 
@@ -253,6 +254,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	ASSERT(dstLayout);
 	ASSERT(binding.descriptorType == entry.descriptorType);
 
+	device->unregisterDescriptorSet(dstSet);
+
 	size_t typeSize = 0;
 	uint8_t *memToWrite = dstLayout->getDescriptorPointer(dstSet, entry.dstBinding, entry.dstArrayElement, entry.descriptorCount, &typeSize);
 
@@ -282,6 +285,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 		{
 			auto update = reinterpret_cast<VkBufferView const *>(src + entry.offset + entry.stride * i);
 			auto bufferView = vk::Cast(*update);
+
+			device->registerView(dstSet, bufferView);
 
 			imageSampler[i].type = VK_IMAGE_VIEW_TYPE_1D;
 			imageSampler[i].imageViewId = bufferView->id;
@@ -321,6 +326,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 
 			vk::ImageView *imageView = vk::Cast(update->imageView);
 			Format format = imageView->getFormat(ImageView::SAMPLING);
+
+			device->registerView(dstSet, imageView);
 
 			sw::Texture *texture = &imageSampler[i].texture;
 
@@ -426,6 +433,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 		{
 			auto update = reinterpret_cast<VkDescriptorImageInfo const *>(src + entry.offset + entry.stride * i);
 			auto imageView = vk::Cast(update->imageView);
+			device->registerView(dstSet, imageView);
 			descriptor[i].ptr = imageView->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
@@ -455,6 +463,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 		{
 			auto update = reinterpret_cast<VkBufferView const *>(src + entry.offset + entry.stride * i);
 			auto bufferView = vk::Cast(*update);
+			device->registerView(dstSet, bufferView);
 			descriptor[i].ptr = bufferView->getPointer();
 			descriptor[i].extent = { bufferView->getElementCount(), 1, 1 };
 			descriptor[i].rowPitchBytes = 0;
@@ -475,6 +484,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 		{
 			auto update = reinterpret_cast<VkDescriptorBufferInfo const *>(src + entry.offset + entry.stride * i);
 			auto buffer = vk::Cast(update->buffer);
+			device->registerView(dstSet, buffer);
 			descriptor[i].ptr = buffer->getOffsetPointer(update->offset);
 			descriptor[i].sizeInBytes = static_cast<int>((update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range);
 			descriptor[i].robustnessSize = static_cast<int>(buffer->getSize() - update->offset);
@@ -611,7 +621,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, const VkWriteDescri
 	WriteDescriptorSet(device, dstSet, e, reinterpret_cast<char const *>(ptr));
 }
 
-void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet &descriptorCopies)
+void DescriptorSetLayout::CopyDescriptorSet(Device *device, const VkCopyDescriptorSet &descriptorCopies)
 {
 	DescriptorSet *srcSet = vk::Cast(descriptorCopies.srcSet);
 	DescriptorSetLayout *srcLayout = srcSet->header.layout;
@@ -620,6 +630,8 @@ void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet &descripto
 	DescriptorSet *dstSet = vk::Cast(descriptorCopies.dstSet);
 	DescriptorSetLayout *dstLayout = dstSet->header.layout;
 	ASSERT(dstLayout);
+
+	// FIXME: needs a way to only unregister relevant views from dstSet and and only add relevant views from srcSet
 
 	size_t srcTypeSize = 0;
 	uint8_t *memToRead = srcLayout->getDescriptorPointer(srcSet, descriptorCopies.srcBinding, descriptorCopies.srcArrayElement, descriptorCopies.descriptorCount, &srcTypeSize);

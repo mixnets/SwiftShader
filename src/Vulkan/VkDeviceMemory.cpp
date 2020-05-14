@@ -260,8 +260,9 @@ static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
 	parseCreateInfo<DeviceMemoryHostExternalBase>(pAllocateInfo, pTraits);
 }
 
-DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem)
-    : size(pAllocateInfo->allocationSize)
+DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem, Device* device)
+    : DescriptorView(device)
+	, size(pAllocateInfo->allocationSize)
     , memoryTypeIndex(pAllocateInfo->memoryTypeIndex)
     , external(reinterpret_cast<ExternalBase *>(mem))
 {
@@ -274,6 +275,10 @@ DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem)
 
 void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	if(image)
+	{
+		image->unbind(this);
+	}
 	if(buffer)
 	{
 		external->deallocate(buffer, size);
@@ -288,6 +293,36 @@ size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo *p
 	ExternalMemoryTraits traits;
 	findTraits(pAllocateInfo, &traits);
 	return traits.instanceSize;
+}
+
+void DeviceMemory::notify(AccessType accessType)
+{
+	if(image)
+	{
+		// If the buffer was modified, the associated image using the same device memory must be notified
+		if(accessType & AccessType::WRITE_BUFFER_ACCESS)
+		{
+			accessType = static_cast<vk::DescriptorView::AccessType>(accessType | vk::DescriptorView::WRITE_IMAGE_ACCESS);
+		}
+		image->notify(accessType);
+	}
+}
+
+void DeviceMemory::bind(Image* img)
+{
+	image = img;
+}
+
+void DeviceMemory::unbind(Image* img)
+{
+	if(image == img)
+	{
+		image = nullptr;
+	}
+	else
+	{
+		UNREACHABLE("Unbinding wrong image");
+	}
 }
 
 VkResult DeviceMemory::allocate()

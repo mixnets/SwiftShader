@@ -79,8 +79,9 @@ Identifier::Identifier(VkFormat fmt)
 	format = Format::mapTo8bit(fmt);
 }
 
-ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
-    : image(vk::Cast(pCreateInfo->image))
+ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, Device* device, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : DescriptorView(device) 
+	, image(vk::Cast(pCreateInfo->image))
     , viewType(pCreateInfo->viewType)
     , format(pCreateInfo->format)
     , components(ResolveComponentMapping(pCreateInfo->components, format))
@@ -260,6 +261,20 @@ const Image *ImageView::getImage(Usage usage) const
 	}
 }
 
+Image* ImageView::getImage(Usage usage)
+{
+	switch(usage)
+	{
+	case RAW:
+		return image;
+	case SAMPLING:
+		return image->getSampledImage(format);
+	default:
+		UNREACHABLE("usage %d", int(usage));
+		return nullptr;
+	}
+}
+
 Format ImageView::getFormat(Usage usage) const
 {
 	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
@@ -292,18 +307,19 @@ VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
+void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage)
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
 
-	VkImageSubresourceLayers imageSubresourceLayers = {
+	VkImageSubresourceRange imageSubresourceRange = {
 		static_cast<VkImageAspectFlags>(aspect),
 		subresourceRange.baseMipLevel + mipLevel,
+		subresourceRange.levelCount - mipLevel,
 		subresourceRange.baseArrayLayer + layer,
-		subresourceRange.layerCount
+		subresourceRange.layerCount - layer
 	};
 
-	return getImage(usage)->getTexelPointer(offset, imageSubresourceLayers);
+	return getImage(usage)->getTexelPointer(offset, imageSubresourceRange, true);
 }
 
 }  // namespace vk

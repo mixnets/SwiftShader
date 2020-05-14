@@ -168,7 +168,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 			// all entries of the pDescriptorSets array to VK_NULL_HANDLE and return the error.
 			for(uint32_t j = 0; j < i; j++)
 			{
-				freeSet(pDescriptorSets[j]);
+				freeSet(nullptr, pDescriptorSets[j]);
 				pDescriptorSets[j] = VK_NULL_HANDLE;
 			}
 			return (computeTotalFreeSize() > totalSize) ? VK_ERROR_FRAGMENTED_POOL : VK_ERROR_OUT_OF_POOL_MEMORY;
@@ -179,16 +179,21 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 	return VK_SUCCESS;
 }
 
-void DescriptorPool::freeSets(uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets)
+void DescriptorPool::freeSets(Device* device, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets)
 {
 	for(uint32_t i = 0; i < descriptorSetCount; i++)
 	{
-		freeSet(pDescriptorSets[i]);
+		freeSet(device, pDescriptorSets[i]);
 	}
 }
 
-void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
+void DescriptorPool::freeSet(Device* device, const VkDescriptorSet descriptorSet)
 {
+	if(device)
+	{
+		device->unregisterDescriptorSet(vk::Cast(descriptorSet));
+	}
+
 	const auto itEnd = nodes.end();
 	auto it = std::find(nodes.begin(), itEnd, asMemory(descriptorSet));
 	if(it != itEnd)

@@ -1021,7 +1021,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 		allocationInfo = allocationInfo->pNext;
 	}
 
-	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory);
+	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory, vk::Cast(device));
 	if(result != VK_SUCCESS)
 	{
 		return result;
@@ -1563,7 +1563,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferView(VkDevice device, const VkBuffe
 		extInfo = extInfo->pNext;
 	}
 
-	return vk::BufferView::Create(pAllocator, pCreateInfo, pView);
+	return vk::BufferView::Create(pAllocator, pCreateInfo, pView, vk::Cast(device));
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyBufferView(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks *pAllocator)
@@ -1725,7 +1725,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::ImageView::Create(pAllocator, pCreateInfo, pView, ycbcrConversion);
+	return vk::ImageView::Create(pAllocator, pCreateInfo, pView, vk::Cast(device), ycbcrConversion);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks *pAllocator)
@@ -2067,7 +2067,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkFreeDescriptorSets(VkDevice device, VkDescripto
 	TRACE("(VkDevice device = %p, VkDescriptorPool descriptorPool = %p, uint32_t descriptorSetCount = %d, const VkDescriptorSet* pDescriptorSets = %p)",
 	      device, static_cast<void *>(descriptorPool), descriptorSetCount, pDescriptorSets);
 
-	vk::Cast(descriptorPool)->freeSets(descriptorSetCount, pDescriptorSets);
+	vk::Cast(descriptorPool)->freeSets(vk::Cast(device), descriptorSetCount, pDescriptorSets);
 
 	return VK_SUCCESS;
 }

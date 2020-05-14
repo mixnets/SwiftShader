@@ -213,6 +213,9 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 		pixelRoutine = pixelProcessor.routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
 	}
 
+	draw->containsImageWrite = (context->vertexShader && context->vertexShader->containsImageWrite()) ||
+	                           (context->pixelShader && context->pixelShader->containsImageWrite());
+
 	DrawCall::SetupFunction setupPrimitives = nullptr;
 	unsigned int numPrimitivesPerBatch = MaxBatchSize / ms;
 
@@ -387,6 +390,12 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	}
 
 	draw->events = events;
+	draw->device = device;
+
+	for(auto descriptorSet : data->descriptorSets)
+	{
+		device->notifyViews(descriptorSet, vk::DescriptorView::READ_ACCESS);
+	}
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }
@@ -424,6 +433,25 @@ void DrawCall::teardown()
 	vertexRoutine = {};
 	setupRoutine = {};
 	pixelRoutine = {};
+
+	for(int index = 0; index < RENDERTARGETS; index++)
+	{
+		if(renderTarget[index])
+		{
+			renderTarget[index]->markDirty();
+		}
+	}
+
+	vk::DescriptorView::AccessType accessType = vk::DescriptorView::WRITE_BUFFER_ACCESS;
+	if(containsImageWrite)
+	{
+		accessType = static_cast<vk::DescriptorView::AccessType>(accessType | vk::DescriptorView::WRITE_IMAGE_ACCESS);
+	}
+
+	for(auto descriptorSet : data->descriptorSets)
+	{
+		device->notifyViews(descriptorSet, accessType);
+	}
 }
 
 void DrawCall::run(const marl::Loan<DrawCall> &draw, marl::Ticket::Queue *tickets, marl::Ticket::Queue clusterQueues[MaxClusterCount])

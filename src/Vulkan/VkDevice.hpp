@@ -26,6 +26,7 @@
 #include <map>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace marl {
 class Scheduler;
@@ -160,6 +161,11 @@ public:
 #endif  // ENABLE_VK_DEBUGGER
 	}
 
+	void unregisterDescriptorSet(void* descriptorSet);
+	void registerView(void* descriptor, DescriptorView* view);
+	void unregisterView(DescriptorView* view);
+	void notifyViews(void* descriptor, DescriptorView::AccessType accessType);
+
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
 	Queue *const queues = nullptr;
@@ -173,6 +179,7 @@ private:
 	std::shared_ptr<marl::Scheduler> scheduler;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 	std::unique_ptr<SamplerIndexer> samplerIndexer;
+	std::unordered_map<void*, std::unordered_set<DescriptorView*> > descriptorSetViews;
 
 #ifdef ENABLE_VK_DEBUGGER
 	struct

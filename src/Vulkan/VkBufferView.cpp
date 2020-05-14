@@ -18,8 +18,9 @@
 
 namespace vk {
 
-BufferView::BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem)
-    : id(pCreateInfo->format)
+BufferView::BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem, Device* device)
+    : DescriptorView(device)
+	, id(pCreateInfo->format)
     , buffer(vk::Cast(pCreateInfo->buffer))
     , format(pCreateInfo->format)
     , offset(pCreateInfo->offset)

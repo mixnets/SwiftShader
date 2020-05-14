@@ -99,7 +99,7 @@ public:
 	static bool IsDescriptorDynamic(VkDescriptorType type);
 
 	static void WriteDescriptorSet(Device *device, const VkWriteDescriptorSet &descriptorWrites);
-	static void CopyDescriptorSet(const VkCopyDescriptorSet &descriptorCopies);
+	static void CopyDescriptorSet(Device *device, const VkCopyDescriptorSet &descriptorCopies);
 
 	static void WriteDescriptorSet(Device *device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
 	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);

@@ -283,7 +283,7 @@ void Device::updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDe
 
 	for(uint32_t i = 0; i < descriptorCopyCount; i++)
 	{
-		DescriptorSetLayout::CopyDescriptorSet(pDescriptorCopies[i]);
+		DescriptorSetLayout::CopyDescriptorSet(this, pDescriptorCopies[i]);
 	}
 }
 
@@ -311,6 +311,39 @@ uint32_t Device::indexSampler(const SamplerState &samplerState)
 void Device::removeSampler(const SamplerState &samplerState)
 {
 	samplerIndexer->remove(samplerState);
+}
+
+void Device::unregisterDescriptorSet(void* descriptorSet)
+{
+	auto it = descriptorSetViews.find(descriptorSet);
+	if(it != descriptorSetViews.end())
+	{
+		descriptorSetViews.erase(it);
+	}
+}
+
+void Device::registerView(void* descriptor, DescriptorView* view)
+{
+	descriptorSetViews[descriptor].insert(view);
+}
+
+void Device::unregisterView(DescriptorView* view)
+{
+	auto it = descriptorSetViews.find(view);
+	auto itEnd = descriptorSetViews.end();
+	while(it != itEnd)
+	{
+		descriptorSetViews.erase(it);
+		it = descriptorSetViews.find(view);
+	}
+}
+
+void Device::notifyViews(void* descriptor, DescriptorView::AccessType accessType)
+{
+	for(auto view : descriptorSetViews[descriptor])
+	{
+		view->notify(accessType);
+	}
 }
 
 }  // namespace vk
