@@ -27,7 +27,7 @@ using namespace rr;
 
 int reference(int *p, int y)
 {
-	int x = p[-1];
+	int x = p[-1] * 5;
 	int z = 4;
 
 	for(int i = 0; i < 10; i++)
@@ -45,7 +45,7 @@ TEST(ReactorUnitTests, Sample)
 	FunctionT<int(int *, int)> function;
 	{
 		Pointer<Int> p = function.Arg<0>();
-		Int x = p[-1];
+		Int x = p[-1] * 5;
 		Int y = function.Arg<1>();
 		Int z = 4;
 
