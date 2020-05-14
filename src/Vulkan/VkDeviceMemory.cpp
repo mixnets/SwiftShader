@@ -274,6 +274,10 @@ DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem)
 
 void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	for(auto image : images)
+	{
+		image->unbind(this);
+	}
 	if(buffer)
 	{
 		external->deallocate(buffer, size);
@@ -288,6 +292,37 @@ size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo *p
 	ExternalMemoryTraits traits;
 	findTraits(pAllocateInfo, &traits);
 	return traits.instanceSize;
+}
+
+void DeviceMemory::notify(AccessType accessType)
+{
+	// If the buffer was modified, the associated image using the same device memory must be notified
+	if(accessType & AccessType::WRITE_BUFFER_ACCESS)
+	{
+		accessType = static_cast<vk::DescriptorView::AccessType>(accessType | vk::DescriptorView::WRITE_IMAGE_ACCESS);
+	}
+	for(auto image : images)
+	{
+		image->notify(accessType);
+	}
+}
+
+void DeviceMemory::bind(Image* image)
+{
+	images.insert(image);
+}
+
+void DeviceMemory::unbind(Image* image)
+{
+	auto it = images.find(image);
+	if(it != images.end())
+	{
+		images.erase(it);
+	}
+	else
+	{
+		UNREACHABLE("Unbinding wrong image");
+	}
 }
 
 VkResult DeviceMemory::allocate()

@@ -157,6 +157,10 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 
 void Image::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	if(deviceMemory)
+	{
+		deviceMemory->unbind(this);
+	}
 	if(decompressedImage)
 	{
 		vk::deallocate(decompressedImage, pAllocator);
@@ -228,6 +232,19 @@ void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 		decompressedImage->deviceMemory = deviceMemory;
 		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
 	}
+	pDeviceMemory->bind(this);
+}
+
+void Image::unbind(DeviceMemory *pDeviceMemory)
+{
+	if(deviceMemory == pDeviceMemory)
+	{
+		deviceMemory = nullptr;
+	}
+	else
+	{
+		UNREACHABLE("Unbinding wrong device memory");
+	}
 }
 
 #ifdef __ANDROID__
@@ -292,7 +309,7 @@ void Image::getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubre
 	pLayout->arrayPitch = getLayerSize(aspect);
 }
 
-void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
+void Image::copyTo(Image *dstImage, const VkImageCopy &region)
 {
 	// Image copy does not perform any conversion, it simply copies memory from
 	// an image to another image that has the same number of bytes per pixel.
@@ -345,8 +362,8 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	int srcBytesPerBlock = srcFormat.bytesPerBlock();
 	ASSERT(srcBytesPerBlock == dstFormat.bytesPerBlock());
 
-	const uint8_t *srcMem = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, region.srcSubresource));
-	uint8_t *dstMem = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, region.dstSubresource));
+	const uint8_t *srcMem = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, region.srcSubresource, true));
+	uint8_t *dstMem = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, region.dstSubresource, false));
 
 	int srcRowPitchBytes = rowPitchBytes(srcAspect, region.srcSubresource.mipLevel);
 	int srcSlicePitchBytes = slicePitchBytes(srcAspect, region.srcSubresource.mipLevel);
@@ -430,8 +447,8 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 		}
 	}
 
-	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
-	                               region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
+	dstImage->markDirty({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
+	                      region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
 }
 
 void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource)
@@ -460,7 +477,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 	int bufferSlicePitchBytes = bufferExtent.height * bufferRowPitchBytes;
 
 	uint8_t *bufferMemory = static_cast<uint8_t *>(buffer->getOffsetPointer(region.bufferOffset));
-	uint8_t *imageMemory = static_cast<uint8_t *>(getTexelPointer(region.imageOffset, region.imageSubresource));
+	uint8_t *imageMemory = static_cast<uint8_t *>(getTexelPointer(region.imageOffset, region.imageSubresource, !bufferIsSource));
 	uint8_t *srcMemory = bufferIsSource ? bufferMemory : imageMemory;
 	uint8_t *dstMemory = bufferIsSource ? imageMemory : bufferMemory;
 	int imageRowPitchBytes = rowPitchBytes(aspect, region.imageSubresource.mipLevel);
@@ -559,8 +576,8 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 
 	if(bufferIsSource)
 	{
-		prepareForSampling({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
-		                     region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
+		markDirty({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
+		            region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
 	}
 }
 
@@ -574,7 +591,7 @@ void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region)
 	copy(srcBuffer, region, true);
 }
 
-void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const
+void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource, bool prepareForReadAccessNow)
 {
 	VkImageSubresourceRange subresourceRange = {
 		subresource.aspectMask,
@@ -583,10 +600,10 @@ void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource 
 		subresource.arrayLayer,
 		1
 	};
-	return getTexelPointer(offset, subresourceRange);
+	return getTexelPointer(offset, subresourceRange, prepareForReadAccessNow);
 }
 
-void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceLayers &subresourceLayers) const
+void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceLayers &subresourceLayers, bool prepareForReadAccessNow)
 {
 	VkImageSubresourceRange subresourceRange = {
 		subresourceLayers.aspectMask,
@@ -595,11 +612,16 @@ void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceL
 		subresourceLayers.baseArrayLayer,
 		subresourceLayers.layerCount
 	};
-	return getTexelPointer(offset, subresourceRange);
+	return getTexelPointer(offset, subresourceRange, prepareForReadAccessNow);
 }
 
-void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceRange &subresourceRange) const
+void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceRange &subresourceRange, bool prepareForReadAccessNow)
 {
+	if(prepareForReadAccessNow)
+	{
+		prepareForReadAccess(subresourceRange);
+	}
+
 	VkImageSubresource subresource = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
@@ -901,7 +923,7 @@ VkDeviceSize Image::getStorageSize(VkImageAspectFlags aspectMask) const
 	return arrayLayers * storageSize;
 }
 
-const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
+Image *Image::getSampledImage(const vk::Format &imageViewFormat)
 {
 	bool isImageViewCompressed = imageViewFormat.isCompressed();
 	if(decompressedImage && !isImageViewCompressed)
@@ -916,25 +938,17 @@ const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
 	return (decompressedImage && isImageViewCompressed) ? decompressedImage : this;
 }
 
-void Image::blit(Image *dstImage, const VkImageBlit &region, VkFilter filter) const
+void Image::blit(Image *dstImage, const VkImageBlit &region, VkFilter filter)
 {
 	device->getBlitter()->blit(this, dstImage, region, filter);
-	VkImageSubresourceRange subresourceRange = {
-		region.dstSubresource.aspectMask,
-		region.dstSubresource.mipLevel,
-		1,
-		region.dstSubresource.baseArrayLayer,
-		region.dstSubresource.layerCount
-	};
-	dstImage->prepareForSampling(subresourceRange);
 }
 
-void Image::blitToBuffer(VkImageSubresourceLayers subresource, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int bufferRowPitch, int bufferSlicePitch) const
+void Image::blitToBuffer(VkImageSubresourceLayers subresource, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int bufferRowPitch, int bufferSlicePitch)
 {
 	device->getBlitter()->blitToBuffer(this, subresource, offset, extent, dst, bufferRowPitch, bufferSlicePitch);
 }
 
-void Image::resolve(Image *dstImage, const VkImageResolve &region) const
+void Image::resolve(Image *dstImage, const VkImageResolve &region)
 {
 	VkImageBlit blitRegion;
 
@@ -1040,7 +1054,38 @@ void Image::clear(const VkClearValue &clearValue, const vk::Format &viewFormat, 
 	}
 }
 
-void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
+void Image::notify(DescriptorView::AccessType accessType)
+{
+	VkImageSubresourceRange subresourceRange =
+	{
+		VK_IMAGE_ASPECT_COLOR_BIT, // FIXME: Check if this image has a color aspect
+		0,
+		mipLevels,
+		0,
+		arrayLayers
+	};
+	notify(accessType, subresourceRange);
+}
+
+void Image::notify(DescriptorView::AccessType accessType, const VkImageSubresourceRange& subresourceRange)
+{
+	if(accessType & DescriptorView::READ_ACCESS)
+	{
+		prepareForReadAccess(subresourceRange);
+	}
+	else if((accessType & DescriptorView::WRITE_IMAGE_ACCESS) &&
+	        (usage & VK_IMAGE_USAGE_STORAGE_BIT)) // The image must have write access enabled
+	{
+		markDirty(subresourceRange);
+	}
+}
+
+void Image::markDirty(const VkImageSubresource &subresource)
+{
+	dirtySubresource.insert(subresource);
+}
+
+void Image::markDirty(const VkImageSubresourceRange &subresourceRange)
 {
 	uint32_t lastLayer = getLastLayerIndex(subresourceRange);
 	uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
@@ -1051,26 +1096,84 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 		subresourceRange.baseArrayLayer
 	};
 
-	// First, decompress all relevant dirty subregions
 	for(; subresource.arrayLayer <= lastLayer; subresource.arrayLayer++)
 	{
 		for(; subresource.mipLevel <= lastMipLevel; subresource.mipLevel++)
 		{
-			decompress(subresource);
+			markDirty(subresource);
 		}
 	}
+}
 
-	subresource = {
+void Image::prepareForReadAccess(const VkImageSubresourceRange& subresourceRange)
+{
+	// Prevent any kind of recursion into this function
+	if(preparingForReadAccess) { return; }
+
+	preparingForReadAccess = true;
+
+	uint32_t lastLayer = getLastLayerIndex(subresourceRange);
+	uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
+
+	VkImageSubresource subresource = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer
 	};
 
-	// Second, update cubemap borders
-	for(; subresource.mipLevel <= lastMipLevel; subresource.mipLevel++)
+	// First, decompress all relevant dirty subregions
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+		subresource.arrayLayer <= lastLayer;
+		subresource.arrayLayer++)
 	{
-		updateCube(subresource);
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+			subresource.mipLevel <= lastMipLevel;
+			subresource.mipLevel++)
+		{
+			auto it = dirtySubresource.find(subresource);
+			if(it != dirtySubresource.end())
+			{
+				decompress(subresource);
+			}
+		}
 	}
+
+	// Second, update cubemap borders
+	// NOTE: This step may remove entries from dirtySubresource, to avoid duplicating effort
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+		subresource.arrayLayer <= lastLayer;
+		subresource.arrayLayer++)
+	{
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+			subresource.mipLevel <= lastMipLevel;
+			subresource.mipLevel++)
+		{
+			auto it = dirtySubresource.find(subresource);
+			if(it != dirtySubresource.end())
+			{
+				updateCube(subresource);
+			}
+		}
+	}
+
+	// Finally, erase all remaining updated subregions from dirtySubresource
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+		subresource.arrayLayer <= lastLayer;
+		subresource.arrayLayer++)
+	{
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+			subresource.mipLevel <= lastMipLevel;
+			subresource.mipLevel++)
+		{
+			auto it = dirtySubresource.find(subresource);
+			if(it != dirtySubresource.end())
+			{
+				dirtySubresource.erase(it);
+			}
+		}
+	}
+
+	preparingForReadAccess = false;
 }
 
 void Image::decompress(const VkImageSubresource &subresource)
@@ -1167,9 +1270,13 @@ void Image::updateCube(const VkImageSubresource& subres)
 
 		// Update the borders of all the groups of 6 layers that can be part of a cubemaps but don't
 		// touch leftover layers that cannot be part of cubemaps.
-		for(subresource.arrayLayer = 0; subresource.arrayLayer < arrayLayers - 5; subresource.arrayLayer += 6)
+		for(subresource.arrayLayer = 0; subresource.arrayLayer < arrayLayers - 5;)
 		{
 			device->getBlitter()->updateBorders(decompressedImage ? decompressedImage : this, subresource);
+			for(uint32_t i = 0; i < 6; i++, subresource.arrayLayer++)
+			{
+				dirtySubresource.erase(subresource);
+			}
 		}
 	}
 }
@@ -1198,8 +1305,9 @@ void Image::decodeETC2(const VkImageSubresource &subresource)
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t *>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		// We're going to read from this memory, but we want it raw, not prepared, so we mark prepareForReadAccessNow as false
+		uint8_t *source = static_cast<uint8_t *>(getTexelPointer({ 0, 0, depth }, subresource, false));
+		uint8_t *dest = static_cast<uint8_t *>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource, false));
 
 		if(fakeAlpha)
 		{
@@ -1227,8 +1335,9 @@ void Image::decodeBC(const VkImageSubresource &subresource)
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t*>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t*>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		// We're going to read from this memory, but we want it raw, not prepared, so we mark prepareForReadAccessNow as false
+		uint8_t* source = static_cast<uint8_t*>(getTexelPointer({ 0, 0, depth }, subresource, false));
+		uint8_t* dest = static_cast<uint8_t*>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource, false));
 
 		BC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height,
 			pitchB, bytes, n, noAlphaU);
@@ -1262,8 +1371,9 @@ void Image::decodeASTC(const VkImageSubresource &subresource)
 
 	for(int32_t depth = 0; depth < static_cast<int32_t>(mipLevelExtent.depth); depth++)
 	{
-		uint8_t *source = static_cast<uint8_t*>(getTexelPointer({ 0, 0, depth }, subresource));
-		uint8_t *dest = static_cast<uint8_t*>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource));
+		// We're going to read from this memory, but we want it raw, not prepared, so we mark prepareForReadAccessNow as false
+		uint8_t* source = static_cast<uint8_t*>(getTexelPointer({ 0, 0, depth }, subresource, false));
+		uint8_t* dest = static_cast<uint8_t*>(decompressedImage->getTexelPointer({ 0, 0, depth }, subresource, false));
 
 		ASTC_Decoder::Decode(source, dest, mipLevelExtent.width, mipLevelExtent.height, mipLevelExtent.depth, bytes, pitchB, sliceB,
 			xBlockSize, yBlockSize, zBlockSize, xblocks, yblocks, zblocks, isUnsigned);
