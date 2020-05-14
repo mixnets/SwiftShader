@@ -99,6 +99,8 @@ class RValue;
 template<class T>
 class Pointer;
 
+// 'Variable' represent local variables, which are logically lvalues, but can be in one of four states:
+// lvalue, rvalue, immediate, or uninitialized. See docs/ReactorVariables.md for details.
 class Variable
 {
 	friend class Nucleus;
@@ -108,7 +110,7 @@ class Variable
 public:
 	void materialize() const;
 
-	Value *loadValue() const;
+	virtual Value *loadValue() const;
 	Value *storeValue(Value *value) const;
 
 	Value *getBaseAddress() const;
@@ -116,11 +118,23 @@ public:
 
 	virtual Type *getType() const = 0;
 
+	bool isImmediate() const
+	{
+		return !address && !rvalue;
+	}
+
 protected:
 	Variable();
 	Variable(const Variable &) = default;
 
 	virtual ~Variable();
+
+	virtual bool isUninitialized() const
+	{
+		// Unmaterialized variables which have no rvalue assigned to them yet,
+		// are positively uninitialized. Note this is conservative.
+		return isImmediate();
+	}
 
 private:
 	static void materializeAll();
@@ -136,8 +150,77 @@ private:
 	mutable Value *address = nullptr;
 };
 
-template<class T>
-class LValue : public Variable
+template<typename T>
+class Immediate
+{
+public:
+	Immediate(T x = {})
+	    : value(x)
+	{
+		// A default value is assigned for debugging reproducibility, but 'initialized' is left 'false'.
+	}
+
+	Immediate(const Immediate &copy) = default;
+	Immediate &operator=(const Immediate &assign) = default;
+
+	Immediate &operator=(T x)
+	{
+		initialized = true;
+		value = x;
+
+		return *this;
+	}
+
+	operator T() const
+	{
+		return value;
+	}
+
+	bool isInitialized() const
+	{
+		return initialized;
+	}
+
+	Value *createValue() const;
+
+private:
+	bool initialized = false;
+	T value;
+};
+
+template<typename T>
+struct TypedVariable : public Variable
+{
+};
+
+template<typename T>
+struct FoldableVariable : public Variable
+{
+	Value *loadValue() const override
+	{
+		if(isImmediate())
+		{
+			return storeValue(imm.createValue());
+		}
+
+		return Variable::loadValue();
+	}
+
+	bool isUninitialized() const override
+	{
+		return Variable::isUninitialized() && !imm.isInitialized();
+	}
+
+	Immediate<T> imm;
+};
+
+template<>
+struct TypedVariable<Int> : public FoldableVariable<int>
+{
+};
+
+template<typename T>
+class LValue : public TypedVariable<T>
 {
 public:
 	LValue();
@@ -263,12 +346,65 @@ private:
 	Value *const val;
 };
 
-template<typename T>
-class Argument
+template<typename T, typename I>
+class FoldableRValue
 {
 public:
-	explicit Argument(Value *val)
-	    : val(val)
+	using rvalue_underlying_type = T;
+
+	explicit FoldableRValue(Value *rvalue);
+
+	FoldableRValue(const FoldableRValue<T, I> &rvalue);
+	FoldableRValue(const T &lvalue);
+	FoldableRValue(typename I i);
+	FoldableRValue(const Reference<T> &rhs);
+
+	// Rvalues cannot be assigned to: "(a + b) = c;"
+	RValue<T> &operator=(const RValue<T> &) = delete;
+
+	I immediate() const
+	{
+		return imm;
+	}
+
+	bool isImmediate() const
+	{
+		return val == nullptr;
+	}
+
+	Value *value() const
+	{
+		if(!val)
+		{
+			val = imm.createValue();
+		}
+
+		return val;
+	}
+
+private:
+	Immediate<I> imm;
+	mutable Value *val = nullptr;
+};
+
+// clang-format off
+template<>
+class RValue<Int> : public FoldableRValue<Int, int>
+{
+public:
+	explicit RValue(Value *rvalue) : FoldableRValue(rvalue) {}
+	RValue(const RValue<Int> &rvalue) : FoldableRValue(rvalue) {}
+	RValue(const Int &lvalue) : FoldableRValue(lvalue) {}
+	RValue(int i) : FoldableRValue(i) {}
+	RValue(const Reference<Int> &rhs) : FoldableRValue(rhs) {}
+};
+// clang-format on
+
+template<typename T>
+struct Argument
+{
+	explicit Argument(Value *value)
+	    : val(value)
 	{}
 
 	RValue<T> rvalue() const { return RValue<T>(val); }
@@ -2629,6 +2765,13 @@ inline void Variable::materialize() const
 {
 	if(!address)
 	{
+		// Before allocating the stack space, which materializes this variable and makes it considered not uninitialized,
+		// check whether we have an initialized immediate which first has to be instantiated as rvalue.
+		if(!isUninitialized())
+		{
+			rvalue = loadValue();
+		}
+
 		address = allocate();
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
@@ -2779,6 +2922,50 @@ RValue<T>::RValue(typename FloatLiteral<T>::type f)
 
 template<class T>
 RValue<T>::RValue(const Reference<T> &ref)
+    : val(ref.loadValue())
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const FoldableRValue<T, I> &value)
+    : imm(value.imm)
+    , val(value.val)
+{
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(Value *value)
+{
+	assert(Nucleus::createBitCast(value, T::type()) == value);  // Run-time type should match T, so bitcast is no-op.
+
+	val = value;
+	RR_DEBUG_INFO_EMIT_VAR(val);
+}
+
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const T &lvalue)
+{
+	if(lvalue.isImmediate())
+	{
+		imm = lvalue.imm;
+	}
+	else
+	{
+		val = lvalue.loadValue();
+		RR_DEBUG_INFO_EMIT_VAR(val);
+	}
+}
+
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(I i)
+{
+	imm = i;
+}
+
+template<typename T, typename I>
+inline FoldableRValue<T, I>::FoldableRValue(const Reference<T> &ref)
     : val(ref.loadValue())
 {
 	RR_DEBUG_INFO_EMIT_VAR(val);
