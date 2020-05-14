@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e3a13db_4e7e8c8a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-14T13:39:14Z",
+      "side": 1,
+      "message": "Can you add some details as to why? The spec doesn\u0027t offer much explanation for its existence. I assume some drivers use it for optimization purposes, but it\u0027s not clear to me which ones and why, and why this would never (?) apply to SwiftShader.",
+      "range": {
+        "startLine": 14,
+        "startChar": 24,
+        "endLine": 14,
+        "endChar": 53
+      },
+      "revId": "1fbf764468ed5bfe025533b4fa21b43d3fa333fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1aaf87c0_df59b6af",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-14T13:39:14Z",
+      "side": 1,
+      "message": "Please add a comment like https://swiftshader.googlesource.com/SwiftShader/+/d748e1651af8254eec5d4f5c561713dc85d14ab6/src/Vulkan/libVulkan.cpp#945",
+      "revId": "1fbf764468ed5bfe025533b4fa21b43d3fa333fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
