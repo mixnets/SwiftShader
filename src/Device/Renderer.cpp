@@ -424,6 +424,14 @@ void DrawCall::teardown()
 	vertexRoutine = {};
 	setupRoutine = {};
 	pixelRoutine = {};
+
+	for(int index = 0; index < RENDERTARGETS; index++)
+	{
+		if(renderTarget[index])
+		{
+			renderTarget[index]->markDirty();
+		}
+	}
 }
 
 void DrawCall::run(const marl::Loan<DrawCall> &draw, marl::Ticket::Queue *tickets, marl::Ticket::Queue clusterQueues[MaxClusterCount])
