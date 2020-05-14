@@ -2860,7 +2860,6 @@ dEQP-GLES2.functional.rasterization.interpolation.projected.triangle_strip
 dEQP-GLES2.functional.rasterization.interpolation.projected.triangles
 dEQP-GLES2.functional.rasterization.limits.points
 dEQP-GLES2.functional.rasterization.primitives.line_loop
-dEQP-GLES2.functional.rasterization.primitives.line_strip
 dEQP-GLES2.functional.rasterization.primitives.lines
 dEQP-GLES2.functional.rasterization.primitives.points
 dEQP-GLES2.functional.rasterization.primitives.triangle_fan
