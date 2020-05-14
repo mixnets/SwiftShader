@@ -163,6 +163,12 @@ static Value *createMask4(Value *lhs, Value *rhs, uint16_t select)
 }
 
 template<>
+Value *Immediate<bool>::createValue() const
+{
+	return Nucleus::createConstantBool(value);
+}
+
+template<>
 Value *Immediate<int>::createValue() const
 {
 	return Nucleus::createConstantInt(value);
@@ -175,17 +181,31 @@ Bool::Bool(Argument<Bool> argument)
 
 Bool::Bool(bool x)
 {
-	storeValue(Nucleus::createConstantBool(x));
+	imm = x;
 }
 
 Bool::Bool(RValue<Bool> rhs)
 {
-	store(rhs);
+	if(rhs.isImmediate())
+	{
+		imm = rhs.immediate();
+	}
+	else
+	{
+		store(rhs);
+	}
 }
 
 Bool::Bool(const Bool &rhs)
 {
-	store(rhs.load());
+	if(rhs.isImmediate())
+	{
+		imm = rhs.imm;
+	}
+	else
+	{
+		store(rhs.load());
+	}
 }
 
 Bool::Bool(const Reference<Bool> &rhs)
@@ -215,11 +235,31 @@ RValue<Bool> operator!(RValue<Bool> val)
 
 RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs)
 {
+	if(lhs.isImmediate())
+	{
+		return (lhs.immediate() == false) ? false : rhs;
+	}
+
+	if(rhs.isImmediate())
+	{
+		return (rhs.immediate() == false) ? false : lhs;
+	}
+
 	return RValue<Bool>(Nucleus::createAnd(lhs.value(), rhs.value()));
 }
 
 RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs)
 {
+	if(lhs.isImmediate())
+	{
+		return (lhs.immediate() == true) ? true : rhs;
+	}
+
+	if(rhs.isImmediate())
+	{
+		return (rhs.immediate() == true) ? true : lhs;
+	}
+
 	return RValue<Bool>(Nucleus::createOr(lhs.value(), rhs.value()));
 }
 
