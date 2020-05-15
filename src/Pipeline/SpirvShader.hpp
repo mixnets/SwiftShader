@@ -87,18 +87,18 @@ public:
 	// decide the format used to print the intermediate data.
 	enum class TypeHint
 	{
-		Float,
+		//	Float,
 		Int,
-		UInt
+		//	UInt
 	};
 
-	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), TypeHint::Float); }
+	void move(uint32_t i, RValue<SIMD::Float> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 	void move(uint32_t i, RValue<SIMD::Int> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
-	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, RValue<SIMD::UInt> &&scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 
-	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), TypeHint::Float); }
+	void move(uint32_t i, const RValue<SIMD::Float> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 	void move(uint32_t i, const RValue<SIMD::Int> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
-	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value(), TypeHint::UInt); }
+	void move(uint32_t i, const RValue<SIMD::UInt> &scalar) { emplace(i, scalar.value(), TypeHint::Int); }
 
 	// Value retrieval functions.
 	RValue<SIMD::Float> Float(uint32_t i) const
@@ -143,7 +143,7 @@ private:
 
 #ifdef ENABLE_RR_PRINT
 	friend struct rr::PrintValue::Ty<sw::Intermediate>;
-	TypeHint typeHint = TypeHint::Float;
+	TypeHint typeHint = TypeHint::Int;
 #endif  // ENABLE_RR_PRINT
 };
 
@@ -555,7 +555,9 @@ public:
 		bool NeedsCentroid : 1;
 
 		// Compute workgroup dimensions
-		int WorkgroupSizeX = 1, WorkgroupSizeY = 1, WorkgroupSizeZ = 1;
+		int WorkgroupSizeX = 1;
+		int WorkgroupSizeY = 1;
+		int WorkgroupSizeZ = 1;
 	};
 
 	Modes const &getModes() const

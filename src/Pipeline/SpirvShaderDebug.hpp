@@ -15,21 +15,8 @@
 #ifndef sw_SpirvShaderDebug_hpp
 #define sw_SpirvShaderDebug_hpp
 
-// Enable this to print verbose debug messages as each SPIR-V instructon is
-// executed. Very handy for performing text diffs when the thread count is
-// reduced to 1 and execution is deterministic.
-#define SPIRV_SHADER_ENABLE_DBG 0
+#include "spirv-tools/libspirv.h"
 
-// Enable this to write a GraphViz dot file containing a graph of the shader's
-// control flow to the given file path. Helpful for diagnosing control-flow
-// related issues.
-#if 0
-#	define SPIRV_SHADER_CFG_GRAPHVIZ_DOT_FILEPATH "swiftshader_%d.dot"
-#endif
-
-#if SPIRV_SHADER_ENABLE_DBG
-#	define SPIRV_SHADER_DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
-#	include "spirv-tools/libspirv.h"
 namespace spvtools {
 // Function implemented in third_party/SPIRV-Tools/source/disassemble.cpp
 // but with no public header.
@@ -41,6 +28,22 @@ std::string spvInstructionBinaryToText(const spv_target_env env,
                                        const uint32_t options);
 
 }  // namespace spvtools
+
+// Enable this to print verbose debug messages as each SPIR-V instructon is
+// executed. Very handy for performing text diffs when the thread count is
+// reduced to 1 and execution is deterministic.
+#define SPIRV_SHADER_ENABLE_DBG 1
+
+// Enable this to write a GraphViz dot file containing a graph of the shader's
+// control flow to the given file path. Helpful for diagnosing control-flow
+// related issues.
+#if 0
+#	define SPIRV_SHADER_CFG_GRAPHVIZ_DOT_FILEPATH "swiftshader_%d.dot"
+#endif
+
+#if SPIRV_SHADER_ENABLE_DBG
+#	define SPIRV_SHADER_DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
+
 #else
 #	define SPIRV_SHADER_DBG(...)
 #endif  // SPIRV_SHADER_ENABLE_DBG
@@ -71,28 +74,28 @@ struct PrintValue::Ty<sw::Intermediate>
 {
 	static inline std::string fmt(const sw::Intermediate &v, uint32_t i)
 	{
-		switch(v.typeHint)
+		//	switch(v.typeHint)
 		{
-			case sw::Intermediate::TypeHint::Float:
-				return PrintValue::Ty<sw::SIMD::Float>::fmt(v.Float(i));
-			case sw::Intermediate::TypeHint::Int:
-				return PrintValue::Ty<sw::SIMD::Int>::fmt(v.Int(i));
-			case sw::Intermediate::TypeHint::UInt:
-				return PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(i));
+			//	case sw::Intermediate::TypeHint::Float:
+			//		return PrintValue::Ty<sw::SIMD::Float>::fmt(v.Float(i));
+			//	case sw::Intermediate::TypeHint::Int:
+			return PrintValue::Ty<sw::SIMD::Int>::fmt(v.Int(i));
+			//	case sw::Intermediate::TypeHint::UInt:
+			//		return PrintValue::Ty<sw::SIMD::UInt>::fmt(v.UInt(i));
 		}
 		return "";
 	}
 
 	static inline std::vector<Value *> val(const sw::Intermediate &v, uint32_t i)
 	{
-		switch(v.typeHint)
+		//	switch(v.typeHint)
 		{
-			case sw::Intermediate::TypeHint::Float:
-				return PrintValue::Ty<sw::SIMD::Float>::val(v.Float(i));
-			case sw::Intermediate::TypeHint::Int:
-				return PrintValue::Ty<sw::SIMD::Int>::val(v.Int(i));
-			case sw::Intermediate::TypeHint::UInt:
-				return PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(i));
+			//	case sw::Intermediate::TypeHint::Float:
+			//		return PrintValue::Ty<sw::SIMD::Float>::val(v.Float(i));
+			//	case sw::Intermediate::TypeHint::Int:
+			return PrintValue::Ty<sw::SIMD::Int>::val(v.Int(i));
+			//	case sw::Intermediate::TypeHint::UInt:
+			//		return PrintValue::Ty<sw::SIMD::UInt>::val(v.UInt(i));
 		}
 		return {};
 	}

@@ -309,7 +309,7 @@ struct PrintValue::Ty<Float>
 template<>
 struct PrintValue::Ty<Float4>
 {
-	static std::string fmt(const RValue<Float4> &v) { return "[%f, %f, %f, %f]"; }
+	static std::string fmt(const RValue<Float4> &v) { return "[%d, %d, %d, %d]"; }
 	static std::vector<Value *> val(const RValue<Float4> &v);
 };
 template<>

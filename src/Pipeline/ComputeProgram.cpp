@@ -169,6 +169,8 @@ void ComputeProgram::setSubgroupBuiltins(Pointer<Byte> data, SpirvRoutine *routi
 
 void ComputeProgram::emit(SpirvRoutine *routine)
 {
+	Print("ComputeProgram::emit\n");
+
 	Pointer<Byte> data = Arg<0>();
 	Int workgroupX = Arg<1>();
 	Int workgroupY = Arg<2>();
@@ -176,6 +178,7 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 	Pointer<Byte> workgroupMemory = Arg<4>();
 	Int firstSubgroup = Arg<5>();
 	Int subgroupCount = Arg<6>();
+	RR_WATCH(subgroupCount);
 
 	routine->descriptorSets = data + OFFSET(Data, descriptorSets);
 	routine->descriptorDynamicOffsets = data + OFFSET(Data, descriptorDynamicOffsets);
@@ -188,9 +191,11 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 	Int workgroupID[3] = { workgroupX, workgroupY, workgroupZ };
 	setWorkgroupBuiltins(data, routine, workgroupID);
 
+	RR_WATCH(subgroupCount);
 	For(Int i = 0, i < subgroupCount, i++)
 	{
 		auto subgroupIndex = firstSubgroup + i;
+		RR_WATCH(i, subgroupIndex);
 
 		// TODO: Replace SIMD::Int(0, 1, 2, 3) with SIMD-width equivalent
 		auto localInvocationIndex = SIMD::Int(subgroupIndex * SIMD::Width) + SIMD::Int(0, 1, 2, 3);
@@ -202,6 +207,8 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 
 		shader->emit(routine, activeLaneMask, activeLaneMask, descriptorSets);
 	}
+
+	Print("~ComputeProgram::emit\n");
 }
 
 void ComputeProgram::run(

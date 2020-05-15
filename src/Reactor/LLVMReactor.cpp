@@ -1648,7 +1648,7 @@ Type *Nucleus::getType(Value *value)
 	return T(V(value)->getType());
 }
 
-Type *Nucleus::getContainedType(Type *vectorType)
+Type *Nucleus::getContainedType(Type *vectorType) /*vectorElement*/
 {
 	return T(T(vectorType)->getContainedType(0));
 }
@@ -1658,7 +1658,7 @@ Type *Nucleus::getPointerType(Type *ElementType)
 	return T(llvm::PointerType::get(T(ElementType), 0));
 }
 
-static ::llvm::Type *getNaturalIntType()
+static ::llvm::Type *getNaturalIntType()  //bleh
 {
 	return ::llvm::Type::getIntNTy(jit->context, sizeof(int) * 8);
 }

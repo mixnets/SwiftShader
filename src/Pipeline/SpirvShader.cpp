@@ -21,6 +21,7 @@
 
 #include "marl/defer.h"
 
+#include "spirv-tools/libspirv.h"
 #include <spirv/unified1/spirv.hpp>
 
 namespace sw {
@@ -189,7 +190,7 @@ SpirvShader::SpirvShader(
 			case spv::OpBranchConditional:
 			case spv::OpSwitch:
 			case spv::OpReturn:
-			// fallthrough
+			// [[fallthrough]]
 
 			// Termination instruction:
 			case spv::OpKill:
@@ -874,6 +875,12 @@ void SpirvShader::ProcessInterfaceVariable(Object &object)
 
 void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 {
+	Function::ID function = insn.word(1);
+	if(function != entryPoint)
+	{
+		return;
+	}
+
 	auto mode = static_cast<spv::ExecutionMode>(insn.word(2));
 	switch(mode)
 	{
@@ -1579,7 +1586,7 @@ void SpirvShader::emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLan
 	defer(dbgEndEmit(&state));
 
 	// Emit everything up to the first label
-	// TODO: Separate out dispatch of block from non-block instructions?
+	// TODO: Separate out dispatch of block from  non-block instructions?
 	for(auto insn : *this)
 	{
 		if(insn.opcode() == spv::OpLabel)
@@ -1627,9 +1634,20 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		    insns.data(),
 		    insns.size(),
 		    SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
-		SPIRV_SHADER_DBG("{0}", text);
+		SPIRV_SHADER_DBG("exec {0}", text);
 	}
 #endif  // ENABLE_DBG_MSGS
+
+	auto text = spvtools::spvInstructionBinaryToText(
+	    SPV_ENV_VULKAN_1_1,
+	    insn.wordPointer(0),
+	    insn.wordCount(),
+	    insns.data(),
+	    insns.size(),
+	    SPV_BINARY_TO_TEXT_OPTION_NO_HEADER);
+	//SPIRV_SHADER_DBG("emit {0}", text);
+
+	printf("emit %s\n", text.c_str());
 
 	switch(opcode)
 	{

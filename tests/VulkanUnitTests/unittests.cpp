@@ -116,7 +116,7 @@ TEST_F(SwiftShaderVulkanTest, Version)
 	driver.vkDestroyInstance(instance, nullptr);
 }
 
-TEST_F(SwiftShaderVulkanTest, UnsupportedDeviceExtension)
+TEST_F(SwiftShaderVulkanTest, DISABLED_UnsupportedDeviceExtension)
 {
 	Driver driver;
 	ASSERT_TRUE(driver.loadSwiftShader());

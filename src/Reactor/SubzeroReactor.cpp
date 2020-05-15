@@ -846,10 +846,31 @@ private:
 	std::vector<std::unique_ptr<uint8_t[]>> constantData;
 };
 
+static int myprintf(const char *fmt, ...)
+{
+	//if(fmt)
+	//	myprintf("%f %f %f %f", 1.0f, 2.0f, 3.0f, 4.0f);
+
+	/* Declare a va_list type variable */
+	va_list myargs;
+
+	/* Initialise the va_list variable with the ... after fmt */
+
+	va_start(myargs, fmt);
+
+	/* Forward the '...' to vprintf */
+	int ret = vprintf(fmt, myargs);
+
+	/* Clean up the va_list */
+	va_end(myargs);
+
+	return ret;
+}
+
 #ifdef ENABLE_RR_PRINT
 void VPrintf(const std::vector<Value *> &vals)
 {
-	sz::Call(::function, ::basicBlock, Ice::IceType_i32, reinterpret_cast<const void *>(::printf), V(vals), true);
+	sz::Call(::function, ::basicBlock, Ice::IceType_i32, reinterpret_cast<const void *>(myprintf), V(vals), true);
 }
 #endif  // ENABLE_RR_PRINT
 

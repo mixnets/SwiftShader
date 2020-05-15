@@ -4406,7 +4406,6 @@ static std::string replaceAll(std::string str, const std::string &substr, const 
 
 // extractAll returns a vector containing the extracted n scalar value of
 // the vector vec.
-// TODO: Move to Reactor.cpp (LLVMReactor can use this too)
 static std::vector<Value *> extractAll(Value *vec, int n)
 {
 	Type *elemTy = Nucleus::getContainedType(Nucleus::getType(vec));
@@ -4440,7 +4439,7 @@ static std::vector<Value *> toInt(const std::vector<Value *> &vals, bool isSigne
 	return elements;
 }
 
-// toFloat returns all the float values in vals extended to extended to a printf-required storage value
+// toFloat returns all the float values in vals extended to a printf-required storage value
 static std::vector<Value *> toFloat(const std::vector<Value *> &vals)
 {
 	auto storageTy = Nucleus::getPrintfStorageType(Float::type());
@@ -4448,7 +4447,7 @@ static std::vector<Value *> toFloat(const std::vector<Value *> &vals)
 	elements.reserve(vals.size());
 	for(auto v : vals)
 	{
-		elements.push_back(Nucleus::createFPExt(v, storageTy));
+		elements.push_back(Nucleus::createFPExt(Nucleus::createBitCast(v, Float::type()), storageTy));
 	}
 	return elements;
 }
@@ -4527,7 +4526,7 @@ std::vector<Value *> PrintValue::Ty<Float>::val(const RValue<Float> &v)
 
 std::vector<Value *> PrintValue::Ty<Float4>::val(const RValue<Float4> &v)
 {
-	return toFloat(extractAll(v.value(), 4));
+	return toInt(extractAll(As<Int4>(v).value(), 4), true);
 }
 
 std::vector<Value *> PrintValue::Ty<const char *>::val(const char *v)

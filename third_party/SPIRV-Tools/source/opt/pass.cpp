@@ -28,7 +28,9 @@ const uint32_t kTypePointerTypeIdInIdx = 1;
 
 }  // namespace
 
-Pass::Pass() : consumer_(nullptr), context_(nullptr), already_run_(false) {}
+Pass::Pass() : consumer_(nullptr), context_(nullptr), already_run_(false) {
+  printf("pass!!!\n");
+}
 
 Pass::Status Pass::Run(IRContext* ctx) {
   if (already_run_) {
