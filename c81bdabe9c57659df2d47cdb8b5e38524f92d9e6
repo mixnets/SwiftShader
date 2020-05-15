@@ -16,6 +16,24 @@
       "revId": "c81bdabe9c57659df2d47cdb8b5e38524f92d9e6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3392b35_2e10897e",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-15T14:58:39Z",
+      "side": 0,
+      "message": "\u0027Sample\u0027 doesn\u0027t use this, and never will, so I don\u0027t think it makes sense to define it above it. It\u0027s very distracting and I don\u0027t want to have to scroll down to find \u0027Sample\u0027.\n\nIdeally these helpers should probably go into a class so that TEST_F() can be used by any tests that depend on it. That\u0027s a bit more work, so I opened b/156739423",
+      "parentUuid": "0eff8ff9_9a090b30",
+      "revId": "c81bdabe9c57659df2d47cdb8b5e38524f92d9e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
