@@ -1,0 +1,1 @@
+dEQP-VK.pipeline.image.suballocation.sampling_type.combined.view_type.2d.format.r32g32b32_uint.count_1.size.23x8
