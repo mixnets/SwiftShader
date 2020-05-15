@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0eff8ff9_9a090b30",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-15T14:03:57Z",
+      "side": 0,
+      "message": "I agree with moving Sample back to being the first test, but IMHO, I don\u0027t think we should be moving all these constants, utility functions, and definitions lower down. I know that you want them close to their usage, but in many cases, they are used in many tests (e.g. invokeRoutine, fibonacci). My experience has been that trying to declare constants and utilities just above function definitions where they are used quickly breaks down as soon as you need to use them in more than one function, and you may as well just group them at the top, usually in an anonymous namespace (you can do that, if you prefer).",
+      "revId": "c81bdabe9c57659df2d47cdb8b5e38524f92d9e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
