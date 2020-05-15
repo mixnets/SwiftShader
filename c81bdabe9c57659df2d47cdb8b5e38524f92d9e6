@@ -34,6 +34,24 @@
       "revId": "c81bdabe9c57659df2d47cdb8b5e38524f92d9e6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ced21101_14e789ee",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-05-15T15:07:05Z",
+      "side": 0,
+      "message": "I still disagree, as it\u0027s very common in C++ to group all utilities at the top of the cpp file in an anonymous namespace, regardless of whether it\u0027s only used by a subset of the functions below. Going to Sample is as easy as Ctrl+F \"Sample\". It\u0027s true that creating fixtures would help, but I doubt we\u0027ll do it anytime soon. Anyway, I\u0027ll +2 because I don\u0027t think it\u0027s worth arguing over.",
+      "parentUuid": "a3392b35_2e10897e",
+      "revId": "c81bdabe9c57659df2d47cdb8b5e38524f92d9e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
