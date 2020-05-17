@@ -1,0 +1,5 @@
+dEQP-GLES3.functional.shaders.indexing.matrix_subscript.mat4_static_write_static_loop_read_fragment
+dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4_float_fragment
+dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift.highp_uvec4_ivec4_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_vertex
+dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec2_fragment
