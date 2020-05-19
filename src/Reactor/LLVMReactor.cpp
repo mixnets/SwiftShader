@@ -747,13 +747,15 @@ Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
 
 	llvm::Instruction *declaration;
 
+	auto align = jit->module->getDataLayout().getPrefTypeAlign(T(type));
+
 	if(arraySize)
 	{
-		declaration = new llvm::AllocaInst(T(type), 0, V(Nucleus::createConstantInt(arraySize)));
+		declaration = new llvm::AllocaInst(T(type), 0, V(Nucleus::createConstantInt(arraySize)), align);
 	}
 	else
 	{
-		declaration = new llvm::AllocaInst(T(type), 0, (llvm::Value *)nullptr);
+		declaration = new llvm::AllocaInst(T(type), 0, (llvm::Value *)nullptr, align);
 	}
 
 	entryBlock.getInstList().push_front(declaration);
