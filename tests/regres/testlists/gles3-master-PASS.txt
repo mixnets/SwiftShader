@@ -78,7 +78,6 @@ dEQP-GLES3.functional.attribute_location.bind_relink_hole.ivec4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x3
-dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x3
@@ -4168,7 +4167,6 @@ dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_d
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_constant_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_dst_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_dst_color
-dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_src_alpha_saturate
@@ -5032,7 +5030,6 @@ dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_one_minus_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_alpha_saturate
-dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_zero
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_src_alpha_constant_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_src_alpha_constant_color
@@ -8686,7 +8683,6 @@ dEQP-GLES3.functional.pbo.renderbuffer.rgba8ui_triangles
 dEQP-GLES3.functional.pbo.renderbuffer.srgb8_alpha8_clears
 dEQP-GLES3.functional.pbo.renderbuffer.srgb8_alpha8_triangles
 dEQP-GLES3.functional.polygon_offset.fixed16_displacement_with_units
-dEQP-GLES3.functional.polygon_offset.fixed16_enable
 dEQP-GLES3.functional.polygon_offset.fixed16_factor_0_slope
 dEQP-GLES3.functional.polygon_offset.fixed16_render_with_factor
 dEQP-GLES3.functional.polygon_offset.fixed16_render_with_units
@@ -18217,7 +18213,6 @@ dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat2x4_mat2x4_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_fragment
-dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_mat3x2_fragment
@@ -32369,7 +32364,6 @@ dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.never_depth_compo
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.never_depth_component32f
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth24_stencil8
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth_component16
-dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth_component32f
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_nearest.always_depth24_stencil8
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_nearest.always_depth_component16
 dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_nearest.always_depth_component32f
@@ -39123,7 +39117,6 @@ dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_stru
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.bool_bvec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_fragment
-dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_vertex
@@ -39272,7 +39265,6 @@ dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.u
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uint_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uint_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_both
-dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.vec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.vec4_fragment

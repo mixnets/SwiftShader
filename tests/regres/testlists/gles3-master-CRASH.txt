@@ -1,0 +1,8 @@
+dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x4
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_alpha
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_color
+dEQP-GLES3.functional.polygon_offset.fixed16_enable
+dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
+dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth_component32f
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_fragment
