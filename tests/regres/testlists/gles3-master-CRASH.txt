@@ -1,0 +1,5 @@
+dEQP-GLES3.functional.draw.random.207
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_src_alpha
+dEQP-GLES3.functional.state_query.integers.stencil_back_fail_separate_getinteger
+dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_linear
+dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat4
