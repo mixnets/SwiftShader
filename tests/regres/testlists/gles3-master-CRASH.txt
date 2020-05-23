@@ -1,0 +1,12 @@
+dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_none
+dEQP-GLES3.functional.polygon_offset.fixed16_enable
+dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec4
+dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
+dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec2_fragment
+dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.6x5
+dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_npot
+dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth_component32f
+dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_nearest_divisible
+dEQP-GLES3.functional.ubo.multi_nested_struct.single_buffer.std140_instance_array_vertex
+dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2_fragment
+dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_fragment
