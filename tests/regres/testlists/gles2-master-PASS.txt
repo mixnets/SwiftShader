@@ -4937,7 +4937,6 @@ dEQP-GLES2.functional.shaders.loops.do_while_uniform_iterations.unconditional_co
 dEQP-GLES2.functional.shaders.loops.do_while_uniform_iterations.vector_counter_fragment
 dEQP-GLES2.functional.shaders.loops.for_constant_iterations.101_iterations_fragment
 dEQP-GLES2.functional.shaders.loops.for_constant_iterations.basic_highp_float_fragment
-dEQP-GLES2.functional.shaders.loops.for_constant_iterations.basic_highp_int_fragment
 dEQP-GLES2.functional.shaders.loops.for_constant_iterations.basic_lowp_float_fragment
 dEQP-GLES2.functional.shaders.loops.for_constant_iterations.basic_lowp_int_fragment
 dEQP-GLES2.functional.shaders.loops.for_constant_iterations.basic_mediump_int_fragment
