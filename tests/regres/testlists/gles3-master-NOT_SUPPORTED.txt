@@ -891,7 +891,6 @@ dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_clamp_nearest_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_clamp_nearest_not_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_linear_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_linear_not_divisible
-dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_nearest_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_nearest_not_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_repeat_linear_divisible
 dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_repeat_linear_not_divisible
@@ -1043,7 +1042,6 @@ dEQP-GLES3.functional.texture.wrap.astc_5x5.clamp_repeat_nearest_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.clamp_repeat_nearest_not_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_clamp_linear_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_clamp_linear_not_divisible
-dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_clamp_nearest_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_clamp_nearest_not_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_mirror_linear_divisible
 dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_mirror_linear_not_divisible
