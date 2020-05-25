@@ -2023,6 +2023,10 @@ SpirvShader::EmitResult SpirvShader::EmitAccessChain(InsnIterator insn, EmitStat
 		auto ptr = WalkExplicitLayoutAccessChain(baseId, numIndexes, indexes, state);
 		state->createPointer(resultId, ptr);
 	}
+	else if(type.storageClass == spv::StorageClassFunction)
+	{
+		ASSERT(false);
+	}
 	else
 	{
 		auto ptr = WalkAccessChain(baseId, numIndexes, indexes, state);
