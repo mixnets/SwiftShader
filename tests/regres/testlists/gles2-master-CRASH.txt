@@ -1,0 +1,2 @@
+dEQP-GLES2.functional.shaders.matrix.div_assign.dynamic_highp_mat2_vertex
+dEQP-GLES2.functional.shaders.preprocessor.undefined_identifiers.undefined_identifier_1_vertex
