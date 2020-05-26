@@ -14,6 +14,7 @@
 
 #include "VkPipeline.hpp"
 
+#include "VkDestroy.hpp"
 #include "VkDevice.hpp"
 #include "VkPipelineCache.hpp"
 #include "VkPipelineLayout.hpp"
@@ -142,6 +143,22 @@ Pipeline::Pipeline(PipelineLayout const *layout, const Device *device)
     , device(device)
     , robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
 {
+	vk::PipelineLayout *pPipelineLayout = const_cast<vk::PipelineLayout *>(layout);
+	if(pPipelineLayout)
+	{
+		pPipelineLayout->incRefCount();
+	}
+}
+
+void Pipeline::destroy(const VkAllocationCallbacks *pAllocator)
+{
+	destroyPipeline(pAllocator);
+
+	vk::PipelineLayout *pPipelineLayout = const_cast<vk::PipelineLayout *>(layout);
+	if(pPipelineLayout)
+	{
+		vk::destroy(static_cast<VkPipelineLayout>(*pPipelineLayout), pAllocator);
+	}
 }
 
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, const Device *device)
