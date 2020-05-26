@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "972a304b_c3b2ae82",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1888,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-05-26T20:11:13Z",
+      "side": 1,
+      "message": "Vulkan explicitly allows calling vkDestroy*() with VK_NULL_HANDLE. You need to not reach into the object in this case.",
+      "revId": "cf2324193ba5ac200cde6d4578da5cd094106c6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
