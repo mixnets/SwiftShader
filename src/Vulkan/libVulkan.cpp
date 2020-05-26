@@ -1823,6 +1823,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 		if(result == VK_SUCCESS)
 		{
 			static_cast<vk::GraphicsPipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+
+			auto pPipelineLayout = vk::Cast(pCreateInfos[i].layout);
+			pPipelineLayout->incRefCount();
 		}
 		else
 		{
@@ -1855,6 +1858,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipel
 		if(result == VK_SUCCESS)
 		{
 			static_cast<vk::ComputePipeline *>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i], vk::Cast(pipelineCache));
+
+			auto pPipelineLayout = vk::Cast(pCreateInfos[i].layout);
+			pPipelineLayout->incRefCount();
 		}
 		else
 		{
@@ -1879,7 +1885,19 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipeline(VkDevice device, VkPipeline pipelin
 	TRACE("(VkDevice device = %p, VkPipeline pipeline = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      device, static_cast<void *>(pipeline), pAllocator);
 
+	vk::PipelineLayout *pPipelineLayout = nullptr;
+	if(pipeline != VK_NULL_HANDLE)
+		pPipelineLayout = const_cast<vk::PipelineLayout *>(vk::Cast(pipeline)->getLayout());
+
 	vk::destroy(pipeline, pAllocator);
+
+	if(pPipelineLayout)
+	{
+		if(pPipelineLayout->decRefCount() == 0)
+		{
+			vk::destroy(VkPipelineLayout(*pPipelineLayout), pAllocator);
+		}
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineLayout *pPipelineLayout)
@@ -1900,7 +1918,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(VkDevice device, const VkP
 		nextInfo = nextInfo->pNext;
 	}
 
-	return vk::PipelineLayout::Create(pAllocator, pCreateInfo, pPipelineLayout);
+	VkResult result = vk::PipelineLayout::Create(pAllocator, pCreateInfo, pPipelineLayout);
+	if(result == VK_SUCCESS)
+	{
+		vk::Cast(*pPipelineLayout)->incRefCount();
+	}
+
+	return result;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks *pAllocator)
@@ -1908,7 +1932,10 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(VkDevice device, VkPipelineLa
 	TRACE("(VkDevice device = %p, VkPipelineLayout pipelineLayout = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      device, static_cast<void *>(pipelineLayout), pAllocator);
 
-	vk::destroy(pipelineLayout, pAllocator);
+	if(vk::Cast(pipelineLayout)->decRefCount() == 0)
+	{
+		vk::destroy(pipelineLayout, pAllocator);
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSampler *pSampler)

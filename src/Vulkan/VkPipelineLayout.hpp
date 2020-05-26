@@ -39,6 +39,9 @@ public:
 	uint32_t getDescriptorSize(uint32_t setNumber, uint32_t bindingNumber) const;
 	bool isDescriptorDynamic(uint32_t setNumber, uint32_t bindingNumber) const;
 
+	uint32_t incRefCount();
+	uint32_t decRefCount();
+
 	const uint32_t identifier;
 
 private:
@@ -60,6 +63,8 @@ private:
 	const uint32_t descriptorSetCount = 0;
 	const uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
+
+	std::atomic<uint32_t> refCount{ 0 };
 };
 
 static inline PipelineLayout *Cast(VkPipelineLayout object)
