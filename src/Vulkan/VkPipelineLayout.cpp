@@ -104,4 +104,14 @@ bool PipelineLayout::isDescriptorDynamic(uint32_t setNumber, uint32_t bindingNum
 	return DescriptorSetLayout::IsDescriptorDynamic(getDescriptorType(setNumber, bindingNumber));
 }
 
+uint32_t PipelineLayout::incRefCount()
+{
+  return refCount.fetch_add(1, std::memory_order_seq_cst) + 1;
+}
+
+uint32_t PipelineLayout::decRefCount()
+{
+  return refCount.fetch_sub(1, std::memory_order_seq_cst) - 1;
+}
+
 }  // namespace vk
