@@ -142,6 +142,14 @@ Pipeline::Pipeline(PipelineLayout const *layout, const Device *device)
     , device(device)
     , robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
 {
+	const_cast<vk::PipelineLayout *>(layout)->incRefCount();
+}
+
+void Pipeline::destroy(const VkAllocationCallbacks *pAllocator)
+{
+	destroyPipeline(pAllocator);
+
+	const_cast<vk::PipelineLayout *>(layout)->destroy(pAllocator);
 }
 
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateInfo, void *mem, const Device *device)

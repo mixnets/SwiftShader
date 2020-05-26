@@ -60,6 +60,11 @@ private:
 	const uint32_t descriptorSetCount = 0;
 	const uint32_t pushConstantRangeCount = 0;
 	VkPushConstantRange *pushConstantRanges = nullptr;
+
+	friend class Pipeline;
+	std::atomic<uint32_t> refCount{ 0 };
+	uint32_t incRefCount();
+	uint32_t decRefCount();
 };
 
 static inline PipelineLayout *Cast(VkPipelineLayout object)

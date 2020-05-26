@@ -55,10 +55,7 @@ public:
 		return vk::VkTtoT<Pipeline, VkPipeline>(object);
 	}
 
-	void destroy(const VkAllocationCallbacks *pAllocator)
-	{
-		destroyPipeline(pAllocator);
-	}
+	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	virtual void destroyPipeline(const VkAllocationCallbacks *pAllocator) = 0;
 #ifndef NDEBUG
