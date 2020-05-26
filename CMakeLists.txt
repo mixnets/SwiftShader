@@ -22,6 +22,7 @@ project(SwiftShader C CXX ASM)
 # Detect system
 ###########################################################
 
+<<<<<<< HEAD   (79dcb2 Document helper invocations being considered active)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(LINUX TRUE)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
@@ -33,6 +34,30 @@ elseif(FUCHSIA)
     # NOTE: Building for Fuchsia requires a Fuchsia CMake-based SDK.
     # See https://fuchsia-review.googlesource.com/c/fuchsia/+/379673
     find_package(FuchsiaLibraries)
+=======
+option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  add_definitions(-DSPIRV_LINUX)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    add_definitions(-DSPIRV_EMSCRIPTEN)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
+  add_definitions(-DSPIRV_WINDOWS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+  add_definitions(-DSPIRV_MAC)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
+  add_definitions(-DSPIRV_IOS)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+  add_definitions(-DSPIRV_ANDROID)
+  set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+  add_definitions(-DSPIRV_FREEBSD)
+elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+  add_definitions(-DSPIRV_FUCHSIA)
+>>>>>>> BRANCH (38e469 Squashed 'third_party/SPIRV-Tools/' changes from fd773eb50d6)
 else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
@@ -217,9 +242,39 @@ if(EXISTS ${THIRD_PARTY_DIR}/PowerVR_Examples/.git)
     set(HAVE_PVR_SUBMODULE TRUE)
 endif()
 
+<<<<<<< HEAD   (79dcb2 Document helper invocations being considered active)
 if(SWIFTSHADER_BUILD_CPPDAP)
     InitSubmodule(json ${THIRD_PARTY_DIR}/json)
     InitSubmodule(cppdap ${THIRD_PARTY_DIR}/cppdap)
+=======
+# Precompiled header macro. Parameters are source file list and filename for pch cpp file.
+macro(spvtools_pch SRCS PCHPREFIX)
+  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND NOT "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set(PCH_NAME "$(IntDir)\\${PCHPREFIX}.pch")
+    # make source files use/depend on PCH_NAME
+    set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yu${PCHPREFIX}.h /FI${PCHPREFIX}.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
+    # make PCHPREFIX.cpp file compile and generate PCH_NAME
+    set_source_files_properties("${PCHPREFIX}.cpp" PROPERTIES COMPILE_FLAGS "/Yc${PCHPREFIX}.h /Fp${PCH_NAME} /Zm300" OBJECT_OUTPUTS "${PCH_NAME}")
+    list(APPEND ${SRCS} "${PCHPREFIX}.cpp")
+  endif()
+endmacro(spvtools_pch)
+
+add_subdirectory(external)
+
+# Warning about extra semi-colons.
+#
+# This is not supported on all compilers/versions. so enabling only
+# for clang, since that works for all versions that our bots run.
+#
+# This is intentionally done after adding the external subdirectory,
+# so we don't enforce this flag on our dependencies, some of which do
+# not pass it.
+#
+# If the minimum version of CMake supported is updated to 3.0 or
+# later, then check_cxx_compiler_flag could be used instead.
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    add_compile_options("-Wextra-semi")
+>>>>>>> BRANCH (38e469 Squashed 'third_party/SPIRV-Tools/' changes from fd773eb50d6)
 endif()
 
 
