@@ -145,6 +145,30 @@
     },
     {
       "key": {
+        "uuid": "c214ae33_ec8c51f7",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-27T21:40:14Z",
+      "side": 1,
+      "message": "Note to self: Why did we write \"PipelineLayout const *\" here and \"const \u003cobject\u003e *\" everywhere else in the code, including the second argument of the same constructor?",
+      "parentUuid": "f7e67669_20873465",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 33
+      },
+      "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "096c3d24_9f45b05d",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 4
