@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ad45ffe_6675d5ee",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-05-27T21:00:08Z",
+      "side": 1,
+      "message": "I\u0027m pretty sure it\u0027s necessary?\n\n`PipelineLayout const *layout` :\u003d\n\"layout is a pointer to a const PipelineLayout\"\n\nUnless I\u0027ve been wrong for years about this,\n\n`PipelineLayout* const layout` :\u003d\n\"layout is a const pointer to a PipelineLayout",
+      "parentUuid": "ad2878c4_a9bbad99",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 33
+      },
+      "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "096c3d24_9f45b05d",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8a6e882_0d5614f4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-05-27T21:00:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "096c3d24_9f45b05d",
+      "range": {
+        "startLine": 152,
+        "startChar": 0,
+        "endLine": 152,
+        "endChar": 63
+      },
+      "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
