@@ -3466,17 +3466,43 @@ RValue<Long> Ticks()
 RValue<Pointer<Byte>> ConstantPointer(void const *ptr)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+
+	auto it = jit->constantPointers.find(ptr);
+	if(it != jit->constantPointers.end())
+	{
+		return RValue<Pointer<Byte>>(V(it->second));
+	}
+
+	llvm::IRBuilderBase::InsertPointGuard saveIP(*jit->builder);
+
+	jit->builder->SetInsertPoint(&jit->function->getEntryBlock());
+	auto ptrAsInt = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(jit->context), reinterpret_cast<uintptr_t>(ptr));
 	// Note: this should work for 32-bit pointers as well because 'inttoptr'
 	// is defined to truncate (and zero extend) if necessary.
-	auto ptrAsInt = ::llvm::ConstantInt::get(::llvm::Type::getInt64Ty(jit->context), reinterpret_cast<uintptr_t>(ptr));
-	return RValue<Pointer<Byte>>(V(jit->builder->CreateIntToPtr(ptrAsInt, T(Pointer<Byte>::type()))));
+	auto val = jit->builder->CreateIntToPtr(ptrAsInt, T(Pointer<Byte>::type()));
+	jit->constantPointers.emplace(ptr, val);
+
+	return RValue<Pointer<Byte>>(V(val));
 }
 
 RValue<Pointer<Byte>> ConstantData(void const *data, size_t size)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+
 	auto str = ::std::string(reinterpret_cast<const char *>(data), size);
+
+	auto it = jit->constantData.find(str);
+	if(it != jit->constantData.end())
+	{
+		return RValue<Pointer<Byte>>(V(it->second));
+	}
+
+	llvm::IRBuilderBase::InsertPointGuard saveIP(*jit->builder);
+
+	jit->builder->SetInsertPoint(&jit->function->getEntryBlock());
 	auto ptr = jit->builder->CreateGlobalStringPtr(str);
+	jit->constantData.emplace(str, ptr);
+
 	return RValue<Pointer<Byte>>(V(ptr));
 }
 
