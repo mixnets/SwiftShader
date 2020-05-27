@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "9d489847_550d4e7b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1827,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-27T17:12:26Z",
+      "side": 1,
+      "message": "nit: It is preferable for auto raw pointer types to have an explicit * qualifier as this can avoid subtle bugs. See go/totow/44",
+      "range": {
+        "startLine": 1827,
+        "startChar": 24,
+        "endLine": 1827,
+        "endChar": 30
+      },
+      "revId": "cf2324193ba5ac200cde6d4578da5cd094106c6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a6b7c90_6e66f2ac",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1828,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-05-27T17:12:26Z",
+      "side": 1,
+      "message": "Perhaps the Pipeline class itself can do the reference counting to avoid exposing this implementation detail in this higher-up layer? You could even make the inc/dec methods private and make Pipeline a friend of PipelineLayout.",
+      "range": {
+        "startLine": 1828,
+        "startChar": 24,
+        "endLine": 1828,
+        "endChar": 55
+      },
+      "revId": "cf2324193ba5ac200cde6d4578da5cd094106c6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "972a304b_c3b2ae82",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
