@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "f7e67669_20873465",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-27T21:34:44Z",
+      "side": 1,
+      "message": "In short: PipelineLayout const *layout \u003d\u003d const PipelineLayout *layout",
+      "parentUuid": "06c728b4_fe9ea58c",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 33
+      },
+      "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "096c3d24_9f45b05d",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 4
