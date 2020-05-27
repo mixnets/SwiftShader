@@ -34,6 +34,7 @@ __pragma(warning(push))
 #endif
 
 #include <memory>
+#include <unordered_map>
 
         namespace llvm
 {
@@ -99,6 +100,8 @@ public:
 	std::unique_ptr<llvm::Module> module;
 	std::unique_ptr<llvm::IRBuilder<>> builder;
 	llvm::Function *function = nullptr;
+	std::unordered_map<const void *, llvm::Value *> constantPointers;
+	std::unordered_map<std::string, llvm::Value *> constantData;
 
 	struct CoroutineState
 	{
