@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c8e7862_86f7354e",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-27T22:05:07Z",
+      "side": 1,
+      "message": "this is guaranteed to not be null, or you would have crashed at line 146",
+      "range": {
+        "startLine": 153,
+        "startChar": 1,
+        "endLine": 153,
+        "endChar": 11
+      },
+      "revId": "251adcc3565e8bd41fa1f2d4bcf4739be00ae9bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
