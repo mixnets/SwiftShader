@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c85bc375_88df9488",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-05-27T21:04:48Z",
+      "side": 1,
+      "message": "PipelineLayout const *layout -\u003e layout is a constant pointer to a non constant object\nconst PipelineLayout *layout -\u003e layout is a non constant pointer to a constant object\nconst PipelineLayout const *layout -\u003e layout is a constant pointer to a constant object",
+      "parentUuid": "5ad45ffe_6675d5ee",
+      "range": {
+        "startLine": 145,
+        "startChar": 1,
+        "endLine": 145,
+        "endChar": 33
+      },
+      "revId": "e844d591494a94da03d69a3c6fcfb1384026fca1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "096c3d24_9f45b05d",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 4
