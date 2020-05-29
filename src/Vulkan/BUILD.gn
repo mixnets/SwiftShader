@@ -105,7 +105,7 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
   }
 }
 
-swiftshader_shared_library("swiftshader_libvulkan") {
+swiftshader_static_library("swiftshader_libvulkan") {
   sources = [
     "VkBuffer.cpp",
     "VkBufferView.cpp",
