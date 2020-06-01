@@ -22,6 +22,30 @@
       "revId": "2b97e7e3e2a9252b47e02b64a5403a95d46a9928",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e287f1ae_90ecb333",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-01T17:19:46Z",
+      "side": 1,
+      "message": "We\u0027d potentially leak the memory that was allocated. I notice vk::Create\u003cT\u003e() returns null when the ComputeRequiredAllocationSize() returns 0, but while bindingCount could be 0, pCreateInfo-\u003epushConstantRangeCount could be non-0 and thus still cause memory to be allocated, which wouldn\u0027t be freed at destroy() if descriptorSets[0].bindings was initialized to null.",
+      "parentUuid": "2734f78d_073bd932",
+      "range": {
+        "startLine": 32,
+        "startChar": 30,
+        "endLine": 32,
+        "endChar": 44
+      },
+      "revId": "2b97e7e3e2a9252b47e02b64a5403a95d46a9928",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
