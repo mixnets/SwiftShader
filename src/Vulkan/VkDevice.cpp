@@ -112,9 +112,10 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 	{
 		const VkDeviceQueueCreateInfo &queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
 
-		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
+		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++)
 		{
 			new(&queues[queueID]) Queue(this, scheduler.get());
+			queueID++;
 		}
 	}
 
@@ -130,7 +131,7 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 		UNSUPPORTED("enabledLayerCount");
 	}
 
-	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+	// FIXME(b/119409619): use an allocator here so we can control all memory allocations
 	blitter.reset(new sw::Blitter());
 	samplingRoutineCache.reset(new SamplingRoutineCache());
 	samplerIndexer.reset(new SamplerIndexer());
