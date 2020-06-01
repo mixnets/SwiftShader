@@ -30,9 +30,12 @@ public:
 
 	size_t getDescriptorSetCount() const;
 
+#ifndef NDEBUG
 	// Returns the index into the pipeline's dynamic offsets array for
 	// the given descriptor set and binding number.
 	uint32_t getDynamicOffsetIndex(uint32_t setNumber, uint32_t bindingNumber) const;
+	uint32_t getDescriptorCount(uint32_t setNumber, uint32_t bindingNumber) const;
+#endif
 
 	uint32_t getBindingOffset(uint32_t setNumber, uint32_t bindingNumber) const;
 	VkDescriptorType getDescriptorType(uint32_t setNumber, uint32_t bindingNumber) const;
@@ -45,8 +48,12 @@ private:
 	struct Binding
 	{
 		VkDescriptorType descriptorType;
-		uint32_t offset;              // Offset in bytes in the descriptor set data.
-		uint32_t dynamicOffsetIndex;  // TODO(b/154914395): Debug only.
+		uint32_t offset;  // Offset in bytes in the descriptor set data.
+
+#ifndef NDEBUG
+		uint32_t dynamicOffsetIndex;
+		uint32_t descriptorCount;
+#endif
 	};
 
 	struct DescriptorSet
