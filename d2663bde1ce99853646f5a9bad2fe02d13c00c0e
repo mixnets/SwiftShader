@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97a78b85_b6608bd9",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-01T18:11:31Z",
+      "side": 1,
+      "message": "I think you can just return ++refCount. std::atomic\u003c\u003e has a specialization of it for integer types, which makes it potentially more efficient than the generic implementation, or a hand-rolled one like this. Note that memory_order_seq_cst is a very strong memory ordering, which can be costly.",
+      "range": {
+        "startLine": 124,
+        "startChar": 8,
+        "endLine": 124,
+        "endChar": 60
+      },
+      "revId": "d2663bde1ce99853646f5a9bad2fe02d13c00c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
