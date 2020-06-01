@@ -16,14 +16,14 @@
 
 #include "SpirvShader.hpp"
 
-#include "spirv-tools/libspirv.h"
+//#include "spirv-tools/libspirv.h"
 #include "spirv/unified1/spirv.h"
 
 namespace sw {
 
 std::string SpirvShader::OpcodeName(spv::Op op)
 {
-	return spvOpcodeString(static_cast<SpvOp>(op));
+	return "";  //spvOpcodeString(static_cast<SpvOp>(op));
 }
 
 }  // namespace sw

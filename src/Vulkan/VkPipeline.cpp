@@ -25,7 +25,7 @@
 
 #include "marl/trace.h"
 
-#include "spirv-tools/optimizer.hpp"
+//#include "spirv-tools/optimizer.hpp"
 
 #include <iostream>
 
@@ -37,57 +37,59 @@ std::vector<uint32_t> preprocessSpirv(
     VkSpecializationInfo const *specializationInfo,
     bool optimize)
 {
-	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
+	//	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
 
-	opt.SetMessageConsumer([](spv_message_level_t level, const char *, const spv_position_t &p, const char *m) {
-		switch(level)
-		{
-			case SPV_MSG_FATAL: sw::warn("SPIR-V FATAL: %d:%d %s\n", int(p.line), int(p.column), m);
-			case SPV_MSG_INTERNAL_ERROR: sw::warn("SPIR-V INTERNAL_ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
-			case SPV_MSG_ERROR: sw::warn("SPIR-V ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
-			case SPV_MSG_WARNING: sw::warn("SPIR-V WARNING: %d:%d %s\n", int(p.line), int(p.column), m);
-			case SPV_MSG_INFO: sw::trace("SPIR-V INFO: %d:%d %s\n", int(p.line), int(p.column), m);
-			case SPV_MSG_DEBUG: sw::trace("SPIR-V DEBUG: %d:%d %s\n", int(p.line), int(p.column), m);
-			default: sw::trace("SPIR-V MESSAGE: %d:%d %s\n", int(p.line), int(p.column), m);
-		}
-	});
+	//opt.SetMessageConsumer([](spv_message_level_t level, const char *, const spv_position_t &p, const char *m) {
+	//	switch(level)
+	//	{
+	//		case SPV_MSG_FATAL: sw::warn("SPIR-V FATAL: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		case SPV_MSG_INTERNAL_ERROR: sw::warn("SPIR-V INTERNAL_ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		case SPV_MSG_ERROR: sw::warn("SPIR-V ERROR: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		case SPV_MSG_WARNING: sw::warn("SPIR-V WARNING: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		case SPV_MSG_INFO: sw::trace("SPIR-V INFO: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		case SPV_MSG_DEBUG: sw::trace("SPIR-V DEBUG: %d:%d %s\n", int(p.line), int(p.column), m);
+	//		default: sw::trace("SPIR-V MESSAGE: %d:%d %s\n", int(p.line), int(p.column), m);
+	//	}
+	//});
 
-	// If the pipeline uses specialization, apply the specializations before freezing
-	if(specializationInfo)
-	{
-		std::unordered_map<uint32_t, std::vector<uint32_t>> specializations;
-		for(auto i = 0u; i < specializationInfo->mapEntryCount; ++i)
-		{
-			auto const &e = specializationInfo->pMapEntries[i];
-			auto value_ptr =
-			    static_cast<uint32_t const *>(specializationInfo->pData) + e.offset / sizeof(uint32_t);
-			specializations.emplace(e.constantID,
-			                        std::vector<uint32_t>{ value_ptr, value_ptr + e.size / sizeof(uint32_t) });
-		}
-		opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass(specializations));
-	}
+	//// If the pipeline uses specialization, apply the specializations before freezing
+	//if(specializationInfo)
+	//{
+	//	std::unordered_map<uint32_t, std::vector<uint32_t>> specializations;
+	//	for(auto i = 0u; i < specializationInfo->mapEntryCount; ++i)
+	//	{
+	//		auto const &e = specializationInfo->pMapEntries[i];
+	//		auto value_ptr =
+	//		    static_cast<uint32_t const *>(specializationInfo->pData) + e.offset / sizeof(uint32_t);
+	//		specializations.emplace(e.constantID,
+	//		                        std::vector<uint32_t>{ value_ptr, value_ptr + e.size / sizeof(uint32_t) });
+	//	}
+	//	opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass(specializations));
+	//}
 
-	if(optimize)
-	{
-		// Full optimization list taken from spirv-opt.
-		opt.RegisterPerformancePasses();
-	}
+	//if(optimize)
+	//{
+	//	// Full optimization list taken from spirv-opt.
+	//	opt.RegisterPerformancePasses();
+	//}
 
-	std::vector<uint32_t> optimized;
-	opt.Run(code.data(), code.size(), &optimized);
+	//std::vector<uint32_t> optimized;
+	//opt.Run(code.data(), code.size(), &optimized);
 
-	if(false)
-	{
-		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
-		std::string preOpt;
-		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
-		std::string postOpt;
-		core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
-		std::cout << "PRE-OPT: " << preOpt << std::endl
-		          << "POST-OPT: " << postOpt << std::endl;
-	}
+	//if(false)
+	//{
+	//	spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
+	//	std::string preOpt;
+	//	core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+	//	std::string postOpt;
+	//	core.Disassemble(optimized, &postOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
+	//	std::cout << "PRE-OPT: " << preOpt << std::endl
+	//	          << "POST-OPT: " << postOpt << std::endl;
+	//}
 
-	return optimized;
+	//return optimized;
+
+	return code;
 }
 
 std::shared_ptr<sw::SpirvShader> createShader(

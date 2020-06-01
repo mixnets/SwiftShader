@@ -681,12 +681,7 @@ if(SWIFTSHADER_BUILD_GLES_CM)
 endif(SWIFTSHADER_BUILD_GLES_CM)
 
 if(SWIFTSHADER_BUILD_VULKAN)
-    if (NOT TARGET SPIRV-Tools)
-        # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
-        set(SPIRV-Headers_SOURCE_DIR "${THIRD_PARTY_DIR}/SPIRV-Headers")
-        set(SPIRV_SKIP_TESTS TRUE CACHE BOOL "" FORCE)
-        add_subdirectory(${THIRD_PARTY_DIR}/SPIRV-Tools) # Add SPIRV-Tools target
-    endif()
+	set(SPIRV-Headers_SOURCE_DIR "${THIRD_PARTY_DIR}/SPIRV-Headers")
 
     # Add a vk_base interface library for shared vulkan build options.
     # TODO: Create src/Base and make this a lib target, and move stuff from
