@@ -22,6 +22,30 @@
       "revId": "d2663bde1ce99853646f5a9bad2fe02d13c00c0e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54feabe_ccd98f0c",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-01T19:13:15Z",
+      "side": 1,
+      "message": "\u003e ++refCount would default to memory_order_seq_cst, ala: https://en.cppreference.com/w/cpp/atomic/atomic/fetch_add\n\nAh, I see, https://en.cppreference.com/w/cpp/atomic/atomic/operator_arith states it\u0027s equivalent to \u0027fetch_add(1)+1\u0027, and https://en.cppreference.com/w/cpp/atomic/atomic/fetch_add defines that the default ordering is `memory_order_seq_cst`.\n\n\u003e I was aware of the increment/decrement operating when writing this code, but I elected for being explicit.\n\nWhile I\u0027m a big proponent of being explicit when there\u0027s something non-trivial going on behind the scenes, we haven\u0027t explicitly used fetch_add() before for these kind of cases (nor have I seen it done in other projects). Using \"++refCount\" seems more readable to me, whereas \"refCount.fetch_add(1, std::memory_order_seq_cst) + 1\" is hard to parse and leaves one wondering if something non-standard is going on.\n\nAnyway, it\u0027s just a nit at this point.",
+      "parentUuid": "97a78b85_b6608bd9",
+      "range": {
+        "startLine": 124,
+        "startChar": 8,
+        "endLine": 124,
+        "endChar": 60
+      },
+      "revId": "d2663bde1ce99853646f5a9bad2fe02d13c00c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
