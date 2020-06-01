@@ -56,17 +56,6 @@ add_library(vk_pipeline EXCLUDE_FROM_ALL
     ${PIPELINE_SRC_FILES}
 )
 
-# Add SPIRV-Tools dep
-if (NOT TARGET SPIRV-Tools)
-    message(FATAL_ERROR "Missing required target: SPIRV-Tools")
-endif()
-
-set_target_properties(core_tables PROPERTIES FOLDER "SPIRV-Tools build")
-set_target_properties(enum_string_mapping PROPERTIES FOLDER "SPIRV-Tools build")
-set_target_properties(extinst_tables PROPERTIES FOLDER "SPIRV-Tools build")
-set_target_properties(spirv-tools-pkg-config PROPERTIES FOLDER "SPIRV-Tools build")
-set_target_properties(spirv-tools-shared-pkg-config PROPERTIES FOLDER "SPIRV-Tools build")
-
 set_target_properties(vk_pipeline PROPERTIES
     POSITION_INDEPENDENT_CODE 1
     FOLDER "SwiftShader VK"
@@ -95,6 +84,4 @@ target_link_libraries(vk_pipeline
         vk_base
         vk_system
         marl
-        SPIRV-Tools
-        SPIRV-Tools-opt
 )
