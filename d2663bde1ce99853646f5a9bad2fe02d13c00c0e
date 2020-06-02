@@ -46,6 +46,30 @@
       "revId": "d2663bde1ce99853646f5a9bad2fe02d13c00c0e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2613f1dd_d471deca",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-02T19:00:42Z",
+      "side": 1,
+      "message": "I\u0027m also of the opinion that you should probably use the simpler syntax, unless you\u0027re doing something explicitly non standard.",
+      "parentUuid": "b54feabe_ccd98f0c",
+      "range": {
+        "startLine": 124,
+        "startChar": 8,
+        "endLine": 124,
+        "endChar": 60
+      },
+      "revId": "d2663bde1ce99853646f5a9bad2fe02d13c00c0e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
