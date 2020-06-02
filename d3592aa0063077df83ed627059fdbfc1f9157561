@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3104ddd1_6a08e9c4",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T15:02:34Z",
+      "side": 1,
+      "message": "Have you considered displaying globals under a \"Globals\" dap::Scope, but still giving them the \"locals\" presentation hint?",
+      "revId": "d3592aa0063077df83ed627059fdbfc1f9157561",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
