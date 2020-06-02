@@ -87,6 +87,12 @@ endif()
 find_library(X11 X11)
 find_library(XCB xcb)
 
+# MARL_IS_SUBPROJECT is 1 if added via add_subdirectory() from another project.
+get_directory_property(MARL_IS_SUBPROJECT PARENT_DIRECTORY)
+if(MARL_IS_SUBPROJECT)
+    set(MARL_IS_SUBPROJECT 1)
+endif()
+
 ###########################################################
 # Options
 ###########################################################
@@ -304,10 +310,17 @@ endif()
 # Compile flags
 ###########################################################
 
+<<<<<<< HEAD   (497e62 Fix LLVM_VERSION_MAJOR for LLVM 10 on macOS)
 # Flags for project code (non 3rd party)
 set(SWIFTSHADER_COMPILE_OPTIONS "")
 set(SWIFTSHADER_LINK_FLAGS "")
 set(SWIFTSHADER_LIBS "")
+=======
+if(MARL_IS_SUBPROJECT)
+    # Export MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED as this may be useful to parent projects
+    set(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED PARENT_SCOPE ${MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED})
+endif()
+>>>>>>> BRANCH (068a0c Squashed 'third_party/marl/' changes from 3c643dd4c..38c0c7a)
 
 macro(set_cpp_flag FLAG)
     if(${ARGC} GREATER 1)
