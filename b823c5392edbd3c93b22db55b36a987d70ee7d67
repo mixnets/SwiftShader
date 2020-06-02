@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e9485a65_498aff66",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-06-02T16:16:33Z",
+      "side": 1,
+      "message": "Correct, good spot.",
+      "parentUuid": "95343def_2876a866",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "66aa851e_ca4fcc02",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a21c4a04_052d3a15",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-06-02T16:16:33Z",
+      "side": 1,
+      "message": "Renamed the template types, added documentation as this stuff is super complex.",
+      "parentUuid": "66aa851e_ca4fcc02",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "66557218_8029b313",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-06-02T16:16:33Z",
+      "side": 1,
+      "message": "Force of habit. Type is an interface, a company I worked at (15 odd years ago mind you!) had a policy of starting all interface implementations with `// \u003cinterface\u003e compliance`\nI find myself typing this stuff without even thinking.\n\nRemoved as this isn\u0027t a SwiftShader code style (not that swiftshader uses interface much).",
+      "parentUuid": "caa6a914_ee54a8ba",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2839293f_d3c2abe9",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
@@ -67,6 +121,24 @@
       "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f155e63_3b2a27c5",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-06-02T16:16:33Z",
+      "side": 1,
+      "message": "Wrapped in a preprocessor flag. Really useful for debugging when things are all wrong.",
+      "parentUuid": "2839293f_d3c2abe9",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
