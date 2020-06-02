@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02a3ace2_0a48e743",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1625,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T15:34:59Z",
+      "side": 1,
+      "message": "Consider adding as a comment just above this line something like:\n\n// Don\u0027t display SSA values if rich debug info is available",
+      "revId": "649b322e10ea1f7f06914888aec1721034a8d828",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
