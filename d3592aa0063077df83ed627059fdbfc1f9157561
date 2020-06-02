@@ -16,6 +16,24 @@
       "revId": "d3592aa0063077df83ed627059fdbfc1f9157561",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd446f91_bdb5d0a3",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-06-02T16:12:47Z",
+      "side": 1,
+      "message": "So you\u0027d have two (or more) scopes with the same presentation hint?\nI hadn\u0027t considered it, as I\u0027m not too sure if all clients would sensibly handle it, but I can certainly give it a try.\nThanks for the suggestion!",
+      "parentUuid": "3104ddd1_6a08e9c4",
+      "revId": "d3592aa0063077df83ed627059fdbfc1f9157561",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
