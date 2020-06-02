@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "95343def_2876a866",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T14:57:16Z",
+      "side": 1,
+      "message": "Probably didn\u0027t mean to enable this, right?",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66aa851e_ca4fcc02",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T14:57:16Z",
+      "side": 1,
+      "message": "nit: function template types like ENTER and ELEMENT should probably have the name FUNC or CALLBACK in there to make it clearer that\u0027s what they are (e.g. ENTER_FUNC, ENTER_CALLBACK).",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "caa6a914_ee54a8ba",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T14:57:16Z",
+      "side": 1,
+      "message": "Why do you add this \"Type compliance\" comment to overrides of this function?",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2839293f_d3c2abe9",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-02T14:57:16Z",
+      "side": 1,
+      "message": "Did you mean to leave this commented code here? I see it in all the implementations, so I suppose this is to help you debug?",
+      "revId": "b823c5392edbd3c93b22db55b36a987d70ee7d67",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
