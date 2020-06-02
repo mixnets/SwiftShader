@@ -57,7 +57,6 @@ bool Driver::loadSwiftShader()
 	// The DLL is delay loaded (see BUILD.gn), so we can load
 	// the correct ones from Chrome's swiftshader subdirectory.
 	HMODULE libvulkan = LoadLibraryA("swiftshader\\libvulkan.dll");
-	EXPECT_NE((HMODULE)NULL, libvulkan);
 	return true;
 #	elif defined(NDEBUG)
 #		if defined(_WIN64)

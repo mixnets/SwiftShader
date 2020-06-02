@@ -23,9 +23,11 @@ VK_INSTANCE(vkAllocateMemory, VkResult, VkDevice, const VkMemoryAllocateInfo *, 
             VkDeviceMemory *);
 VK_INSTANCE(vkBeginCommandBuffer, VkResult, VkCommandBuffer, const VkCommandBufferBeginInfo *);
 VK_INSTANCE(vkBindBufferMemory, VkResult, VkDevice, VkBuffer, VkDeviceMemory, VkDeviceSize);
+VK_INSTANCE(vkBindImageMemory, VkResult, VkDevice, VkImage, VkDeviceMemory, VkDeviceSize);
 VK_INSTANCE(vkCmdBindDescriptorSets, void, VkCommandBuffer, VkPipelineBindPoint, VkPipelineLayout, uint32_t, uint32_t,
             const VkDescriptorSet *, uint32_t, const uint32_t *);
 VK_INSTANCE(vkCmdBindPipeline, void, VkCommandBuffer, VkPipelineBindPoint, VkPipeline);
+VK_INSTANCE(vkCmdClearColorImage, void, VkCommandBuffer, VkImage, VkImageLayout, const VkClearColorValue *, uint32_t, const VkImageSubresourceRange *);
 VK_INSTANCE(vkCmdDispatch, void, VkCommandBuffer, uint32_t, uint32_t, uint32_t);
 VK_INSTANCE(vkCreateBuffer, VkResult, VkDevice, const VkBufferCreateInfo *, const VkAllocationCallbacks *, VkBuffer *);
 VK_INSTANCE(vkCreateCommandPool, VkResult, VkDevice, const VkCommandPoolCreateInfo *, const VkAllocationCallbacks *,
@@ -40,6 +42,7 @@ VK_INSTANCE(vkCreateDevice, VkResult, VkPhysicalDevice, const VkDeviceCreateInfo
             VkDevice *);
 VK_INSTANCE(vkCreatePipelineLayout, VkResult, VkDevice, const VkPipelineLayoutCreateInfo *, const VkAllocationCallbacks *,
             VkPipelineLayout *);
+VK_INSTANCE(vkCreateImage, VkResult, VkDevice, const VkImageCreateInfo *, const VkAllocationCallbacks *, VkImage *);
 VK_INSTANCE(vkCreateShaderModule, VkResult, VkDevice, const VkShaderModuleCreateInfo *, const VkAllocationCallbacks *,
             VkShaderModule *);
 VK_INSTANCE(vkDestroyBuffer, void, VkDevice, VkBuffer, const VkAllocationCallbacks *);
@@ -56,6 +59,7 @@ VK_INSTANCE(vkEnumeratePhysicalDevices, VkResult, VkInstance, uint32_t *, VkPhys
 VK_INSTANCE(vkFreeCommandBuffers, void, VkDevice, VkCommandPool, uint32_t, const VkCommandBuffer *);
 VK_INSTANCE(vkFreeMemory, void, VkDevice, VkDeviceMemory, const VkAllocationCallbacks *);
 VK_INSTANCE(vkGetDeviceQueue, void, VkDevice, uint32_t, uint32_t, VkQueue *);
+VK_INSTANCE(vkGetImageMemoryRequirements, void, VkDevice, VkImage, VkMemoryRequirements *);
 VK_INSTANCE(vkGetPhysicalDeviceMemoryProperties, void, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties *);
 VK_INSTANCE(vkGetPhysicalDeviceProperties, void, VkPhysicalDevice, VkPhysicalDeviceProperties *);
 VK_INSTANCE(vkGetPhysicalDeviceProperties2, void, VkPhysicalDevice, VkPhysicalDeviceProperties2 *);
