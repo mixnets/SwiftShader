@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "60d7e86f_75fd8376",
+        "filename": "tests/regres/cmd/regres/main.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 995,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-02T14:21:40Z",
+      "side": 1,
+      "message": "I\u0027m not sure how this works when multiple people add the same vote. It could be a comma separated list, so the HasSuffix() may not work exactly as intended, or it could be just one of the voters. Anyway, we can correct this if and when it becomes an issue.",
+      "range": {
+        "startLine": 995,
+        "startChar": 49,
+        "endLine": 995,
+        "endChar": 60
+      },
+      "revId": "2a85f71f58a85de3146a953bbe901a5ed6f0ad3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
