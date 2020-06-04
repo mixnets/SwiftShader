@@ -663,6 +663,12 @@ void SpirvShader::LoadPhi(InsnIterator insn, EmitState *state) const
 	auto type = getType(typeId);
 	auto objectId = Object::ID(insn.word(2));
 
+	if(type.storageClass != static_cast<spv::StorageClass>(-1))
+	{
+		UNSUPPORTED("VariablePointer feature not supported. OpPhi with StorageClass %d not yet supported", (int)type.storageClass);
+		return;
+	}
+
 	auto storageIt = state->routine->phis.find(objectId);
 	ASSERT(storageIt != state->routine->phis.end());
 	auto &storage = storageIt->second;
@@ -680,6 +686,12 @@ void SpirvShader::StorePhi(Block::ID currentBlock, InsnIterator insn, EmitState 
 	auto typeId = Type::ID(insn.word(1));
 	auto type = getType(typeId);
 	auto objectId = Object::ID(insn.word(2));
+
+	if(type.storageClass != static_cast<spv::StorageClass>(-1))
+	{
+		UNSUPPORTED("VariablePointer feature not supported. OpPhi with StorageClass %d not yet supported", (int)type.storageClass);
+		return;
+	}
 
 	auto storageIt = state->routine->phis.find(objectId);
 	ASSERT(storageIt != state->routine->phis.end());
