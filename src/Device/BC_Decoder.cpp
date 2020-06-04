@@ -14,6 +14,7 @@
 
 #include "BC_Decoder.hpp"
 
+#include "Common/Math.hpp"
 #include "System/Debug.hpp"
 
 #include <algorithm>
@@ -218,6 +219,905 @@ private:
 
 	uint64_t data;
 };
+
+namespace BC6h {
+
+static constexpr int MaxPartitions = 64;
+static constexpr int MaxSubsets = 2;
+
+static constexpr uint8_t PartitionTable2[MaxPartitions][16] = {
+	{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
+	{ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 },
+	{ 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 },
+	{ 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 },
+	{ 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1 },
+	{ 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1 },
+	{ 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0 },
+	{ 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1 },
+	{ 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 },
+	{ 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0 },
+	{ 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 },
+	{ 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0 },
+	{ 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
+	{ 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0 },
+	{ 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1 },
+	{ 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1 },
+	{ 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0 },
+	{ 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0 },
+	{ 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1 },
+	{ 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1 },
+	{ 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0 },
+	{ 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0 },
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0 },
+	{ 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1 },
+	{ 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1 },
+	{ 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0 },
+	{ 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1 },
+	{ 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1 },
+	{ 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1 },
+	{ 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
+	{ 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 },
+	{ 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1 },
+};
+
+static constexpr uint8_t AnchorTable2[MaxPartitions] = {
+	// clang-format off
+	0xf, 0xf, 0xf, 0xf, 0xf, 0xf, 0xf, 0xf,
+	0xf, 0xf, 0xf, 0xf, 0xf, 0xf, 0xf, 0xf,
+	0xf, 0x2, 0x8, 0x2, 0x2, 0x8, 0x8, 0xf,
+	0x2, 0x8, 0x2, 0x2, 0x8, 0x8, 0x2, 0x2,
+	0xf, 0xf, 0x6, 0x8, 0x2, 0x8, 0xf, 0xf,
+	0x2, 0x8, 0x2, 0x2, 0x2, 0xf, 0xf, 0x6,
+	0x6, 0x2, 0x6, 0x8, 0xf, 0xf, 0x2, 0x2,
+	0xf, 0xf, 0xf, 0xf, 0xf, 0x2, 0x2, 0xf,
+	// clang-format on
+};
+
+const uint16_t halfFloat1 = 0x3C00;
+
+struct Color
+{
+    struct RGBA {
+        uint16_t r;
+        uint16_t g;
+        uint16_t b;
+        // Should always be 1.0 in half-float precision (or 0x3C00)
+        uint16_t a;
+
+        RGBA(uint16_t r, uint16_t g, uint16_t b)
+            : r(r)
+            , g(g)
+            , b(b)
+            , a(halfFloat1)
+        {
+        }
+
+        RGBA()
+            : r(0)
+            , g(0)
+            , b(0)
+            , a(halfFloat1)
+        {
+        }
+		RGBA(int r, int g, int b)
+		    : r(static_cast<uint16_t>(r))
+		    , g(static_cast<uint16_t>(g))
+		    , b(static_cast<uint16_t>(b))
+            , a(halfFloat1)
+		{}
+
+        RGBA(int r, int g, int b, int a)
+		    : r(static_cast<uint16_t>(r))
+		    , g(static_cast<uint16_t>(g))
+		    , b(static_cast<uint16_t>(b))
+            , a(static_cast<uint16_t>(a))
+        {
+        }
+
+    };
+
+    Color(uint16_t r, uint16_t g, uint16_t b) :
+        rgba(r, g, b)
+    {
+    }
+
+    Color() = default;
+
+    RGBA rgba;
+};
+
+struct RGBf
+{
+    uint16_t r;
+    uint16_t g;
+    uint16_t b;
+
+    size_t rSize;
+    size_t gSize;
+    size_t bSize;
+
+    RGBf() = default;
+
+
+    void ExtendSign()
+    {
+        // Suppose we have a 2-bit integer being stored in 4 bit variable:
+        //    x = 0b00AB
+        //
+        // In order to sign extend x, we need to turn the 0s into As:
+        //    x_extend = 0bAAAB
+        //
+        // We can do that by flipping A in x then subtracting 0b10 from x.
+        // Suppose A is 1:
+        //    x       = 0b001B
+        //    x_flip  = 0b000B
+        //    x_minus = 0b000B - 0b0010 = 0b111B
+        // Since A is flipped to 0, subtracting the mask sets it and all the bits above it to 1.
+        // And if A is 0:
+        //    x       = 0b000B
+        //    x_flip  = 0b001B
+        //    x_minus = 0b001B - 0b0010 = 0b000B
+        // All we do is unset the bit we flipped, and we're left with an unchanged number.
+        uint16_t rMask = 1u << (rSize - 1);
+        uint16_t gMask = 1u << (gSize - 1);
+        uint16_t bMask = 1u << (bSize - 1);
+
+        r = (r ^ rMask) - rMask;
+        g = (g ^ gMask) - gMask;
+        b = (b ^ bMask) - bMask;
+    }
+
+    // Assuming this is an endpoint, take a delta and calculate its proper endpoint.
+    // This function assumes both the endpoint and delta have been properly sign extended.
+    //
+    // The final computed endpoint is truncated to the base endpoint's size;
+    RGBf ResolveDelta(RGBf delta)
+    {
+        RGBf ret;
+
+        ret.rSize = rSize;
+        ret.gSize = gSize;
+        ret.bSize = bSize;
+
+        ret.r = (r + delta.r) & ((1 << rSize) - 1);
+        ret.g = (g + delta.g) & ((1 << gSize) - 1);
+        ret.b = (b + delta.b) & ((1 << bSize) - 1);
+
+        return ret;
+    }
+
+    void UnquantizeUnsigned()
+    {
+        auto UnquantizeValue = [](uint16_t value, size_t size)
+        {
+            uint32_t ret = 0;
+            if (size >= 15 || value == 0)
+            {
+                ret = value;
+            }
+            else if (value == ((1 << size) - 1))
+            {
+                ret = 0xFFFF;
+            }
+            else
+            {
+                // Need 32 bits to avoid overflow.
+                uint32_t tmp = value;
+                ret = ((tmp << 15) + 0x4000) >> (size - 1);
+            }
+
+            // Truncate top 16 bits when returning.
+            return (uint16_t) ret;
+        };
+
+        r = UnquantizeValue(r, rSize);
+        g = UnquantizeValue(g, rSize);
+        b = UnquantizeValue(b, rSize);
+    }
+
+    void UnquantizeSigned()
+    {
+        auto UnquantizeValue = [](uint16_t value, size_t size)
+        {
+            int32_t ret = 0;
+
+            if (size >= 16 || value == 0)
+            {
+                ret = value;
+            }
+            else
+            {
+                int16_t sValue = sw::bit_cast<int16_t>(value);
+                bool signBit = false;
+                if (sValue < 0)
+                {
+                    signBit = true;
+                    sValue = -sValue;
+                }
+
+                if (sValue >= ((1 << (size - 1)) - 1))
+                {
+                    ret = 0x7FFF;
+                }
+                else
+                {
+                    // Need 32-bits of space to avoid overflow.
+                    int32_t tmp = sValue;
+                    ret = ((tmp << 15) + 0x4000) >> (size - 1);
+                }
+
+                if (signBit)
+                {
+                    ret = -ret;
+                }
+            }
+
+            // Truncate top 16 bits when returning.
+            return (uint16_t) ret;
+        };
+
+        r = UnquantizeValue(r, rSize);
+        g = UnquantizeValue(g, rSize);
+        b = UnquantizeValue(b, rSize);
+    }
+};
+
+struct Data
+{
+    uint64_t low64;
+    uint64_t high64;
+
+    Data() = default;
+    Data(uint64_t low64, uint64_t high64) :
+        low64(low64), high64(high64)
+    {
+    }
+
+    // Consumes the lowest N bits from from low64 and high64 where N is:
+    //      abs(MSB - LSB)
+    // MSB and LSB come from the block description of the BC6h spec and specify
+    // the location of the bits in the returned bitstring.
+    //
+    // If MSB < LSB, then the bits are reversed. Otherwise, the bitstring is read and
+    // shifted without further modification.
+    //
+    uint32_t ConsumeBits(uint32_t MSB, uint32_t LSB)
+    {
+        uint32_t bits = 0;
+        uint32_t numBits = 0;
+        uint32_t shift;
+        bool reversed = MSB < LSB;
+
+        if (reversed)
+        {
+            std::swap(MSB, LSB);
+        }
+
+        numBits = MSB - LSB + 1;
+        shift = LSB;
+
+        if (numBits >= 8*sizeof(bits) - 1)
+        {
+            numBits = 8*sizeof(bits) - 1;
+        }
+
+        uint32_t mask = (1 << numBits) - 1;
+        // Read the low N bits
+        bits = (low64 & mask);
+        // Shift the 128-bit number down N bits
+        low64 >>= numBits;
+        low64 |= (high64 & mask) << (sizeof(high64) * 8 - numBits);
+        high64 >>= numBits;
+
+        if (reversed)
+        {
+            uint32_t tmp = 0;
+            for (uint32_t numSwaps = numBits; numSwaps > 0; numSwaps--)
+            {
+                tmp <<= 1;
+                tmp |= (bits & 1);
+                bits >>= 1;
+            }
+
+            bits = tmp;
+        }
+        return bits << shift;
+    }
+};
+
+struct IndexInfo
+{
+    uint64_t value;
+    int numBits;
+};
+
+uint16_t interpolate(uint16_t e0, uint16_t e1, const IndexInfo &index, bool isSigned)
+{
+    static constexpr uint16_t weights3[] = { 0, 9, 18, 27, 37, 46, 55, 64 };
+    static constexpr uint16_t weights4[] = { 0, 4, 9, 13, 17, 21, 26, 30,
+                                             34, 38, 43, 47, 51, 55, 60, 64 };
+    static constexpr uint16_t const *weightsN[] = {
+        nullptr, nullptr, nullptr, weights3, weights4
+    };
+    auto weights = weightsN[index.numBits];
+    ASSERT_MSG(weights != nullptr, "Unexpected number of index bits: %d", (int)index.numBits);
+    uint16_t value = (uint16_t)(((64 - weights[index.value]) * uint16_t(e0) + weights[index.value] * uint16_t(e1) + 32) >> 6);
+
+    // Need to unquantize value to limit it to the legal range of half-precision float values
+    // We do this by scaling by 31/32 or 31/64 depending on if the value is signed or unsigned.
+    // In order to prevent loss of precision, we need to do these calculations in 32-bit.
+    if (isSigned)
+    {
+        int16_t sValue = sw::bit_cast<int16_t>(value);
+        int32_t tmp = std::abs(sValue);
+        int signBit = value >> 15;
+        // Scale abs(tmp) by 31/32, then restore the sign-bit
+        tmp = ((tmp * 31) >> 5) | (signBit << 15);
+        return (uint16_t) tmp;
+    }
+    else
+    {
+        uint32_t tmp = value;
+        // Scale unsigned values by 31/64
+        return (uint16_t) (tmp * 31) >> 6;
+    }
+}
+
+struct Block
+{
+    // BC6h blocks are composed of 128 bits in little endian order per-the-spec:
+    // https://www.khronos.org/registry/DataFormat/specs/1.3/dataformat.1.3.html#_bc6h
+    uint64_t low64;
+    uint64_t high64;
+
+	void decode(uint8_t *dst, int dstX, int dstY, int dstWidth, int dstHeight, size_t dstPitch, bool isSigned) const
+	{
+        uint8_t mode = 0;
+        Data data(low64, high64);
+
+        if ((data.low64 & 0x2) == 0)
+        {
+            mode = data.ConsumeBits(2, 0);
+        }
+        else
+        {
+            mode = data.ConsumeBits(5, 0);
+        }
+
+        // The 4 potential endpoints we'll be using
+        RGBf E0, E1, E2, E3;
+        int partitionCount = 2;
+        int partition = 0;
+        bool hasDeltaBits = true;
+        switch (mode)
+        {
+            // These numbers come from the block descriptions for BC6h
+            case 0:
+                E0.rSize = E0.gSize = E0.bSize = 10;
+                E1.rSize = E2.rSize = E3.rSize = 5;
+                E1.gSize = E2.gSize = E3.gSize = 5;
+                E1.bSize = E2.bSize = E3.bSize = 5;
+
+                E2.g |= data.ConsumeBits(4, 4);
+                E2.b |= data.ConsumeBits(4, 4);
+                E3.b |= data.ConsumeBits(4, 4);
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+
+                E0.b |= data.ConsumeBits(9, 0);
+                E1.r |= data.ConsumeBits(4, 0);
+                E3.g |= data.ConsumeBits(4, 4);
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(4, 0);
+
+                E3.b |= data.ConsumeBits(0, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(1, 1);
+                E2.b |= data.ConsumeBits(3, 0);
+
+                E2.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 1:
+                E0.rSize = E0.gSize = E0.bSize = 7;
+                E1.rSize = E2.rSize = E3.rSize = 6;
+                E1.gSize = E2.gSize = E3.gSize = 6;
+                E1.bSize = E2.bSize = E3.bSize = 6;
+
+                E2.g |= data.ConsumeBits(5, 5);
+                E3.g |= data.ConsumeBits(4, 5);
+                E0.r |= data.ConsumeBits(6, 0);
+                E3.b |= data.ConsumeBits(0, 1);
+                E2.b |= data.ConsumeBits(4, 4);
+
+                E0.g |= data.ConsumeBits(6, 0);
+                E2.b |= data.ConsumeBits(5, 5);
+                E3.b |= data.ConsumeBits(2, 2);
+                E2.g |= data.ConsumeBits(4, 4);
+                E0.b |= data.ConsumeBits(6, 0);
+
+                E3.b |= data.ConsumeBits(3, 3);
+                E3.b |= data.ConsumeBits(5, 4);
+                E1.r |= data.ConsumeBits(5, 0);
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(5, 0);
+
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(5, 0);
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(5, 0);
+                E3.r |= data.ConsumeBits(5, 0);
+
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 2:
+                E0.rSize = E0.gSize = E0.bSize = 11;
+                E1.rSize = E2.rSize = E3.rSize = 5;
+                E1.gSize = E2.gSize = E3.gSize = 4;
+                E1.bSize = E2.bSize = E3.bSize = 4;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+                E1.r |= data.ConsumeBits(4, 0);
+                E0.r |= data.ConsumeBits(10, 10);
+
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(3, 0);
+                E0.g |= data.ConsumeBits(10, 10);
+                E3.b |= data.ConsumeBits(0, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+
+                E1.b |= data.ConsumeBits(3, 0);
+                E0.b |= data.ConsumeBits(10, 10);
+                E3.b |= data.ConsumeBits(1, 1);
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(4, 0);
+
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 6:
+                E0.rSize = E0.gSize = E0.bSize = 11;
+                E1.rSize = E2.rSize = E3.rSize = 4;
+                E1.gSize = E2.gSize = E3.gSize = 5;
+                E1.bSize = E2.bSize = E3.bSize = 4;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+                E1.r |= data.ConsumeBits(3, 0);
+                E0.r |= data.ConsumeBits(10, 10);
+
+                E3.g |= data.ConsumeBits(4, 4);
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(4, 0);
+                E0.g |= data.ConsumeBits(10, 10);
+                E3.g |= data.ConsumeBits(3, 0);
+
+                E1.b |= data.ConsumeBits(3, 0);
+                E0.b |= data.ConsumeBits(10, 10);
+                E3.b |= data.ConsumeBits(1, 1);
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(3, 0);
+
+                E3.b |= data.ConsumeBits(0, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(3, 0);
+                E2.g |= data.ConsumeBits(4, 4);
+                E3.b |= data.ConsumeBits(3, 3);
+
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 10:
+                E0.rSize = E0.gSize = E0.bSize = 11;
+                E1.rSize = E2.rSize = E3.rSize = 4;
+                E1.gSize = E2.gSize = E3.gSize = 4;
+                E1.bSize = E2.bSize = E3.bSize = 5;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+                E1.r |= data.ConsumeBits(3, 0);
+                E0.r |= data.ConsumeBits(10, 10);
+
+                E2.b |= data.ConsumeBits(4, 0);
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(3, 0);
+                E0.g |= data.ConsumeBits(10, 10);
+                E3.b |= data.ConsumeBits(0, 0);
+
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(4, 0);
+                E0.b |= data.ConsumeBits(10, 10);
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(3, 0);
+
+                E3.b |= data.ConsumeBits(1, 2);
+                E3.r |= data.ConsumeBits(3, 0);
+                E3.b |= data.ConsumeBits(4, 4);
+                E3.b |= data.ConsumeBits(3, 3);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 14:
+                E0.rSize = E0.gSize = E0.bSize = 9;
+                E1.rSize = E2.rSize = E3.rSize = 5;
+                E1.gSize = E2.gSize = E3.gSize = 5;
+                E1.bSize = E2.bSize = E3.bSize = 5;
+
+                E0.r |= data.ConsumeBits(8, 0);
+                E2.b |= data.ConsumeBits(4, 4);
+                E0.g |= data.ConsumeBits(8, 0);
+                E2.g |= data.ConsumeBits(4, 4);
+                E0.b |= data.ConsumeBits(8, 0);
+
+                E3.b |= data.ConsumeBits(4, 4);
+                E1.r |= data.ConsumeBits(4, 0);
+                E3.g |= data.ConsumeBits(4, 0);
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(4, 0);
+
+                E3.b |= data.ConsumeBits(0, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(1, 1);
+                E2.b |= data.ConsumeBits(3, 0);
+
+                E2.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 18:
+                E0.rSize = E0.gSize = E0.bSize = 8;
+                E1.rSize = E2.rSize = E3.rSize = 6;
+                E1.gSize = E2.gSize = E3.gSize = 5;
+                E1.bSize = E2.bSize = E3.bSize = 5;
+
+                E0.r |= data.ConsumeBits(7, 0);
+                E3.g |= data.ConsumeBits(4, 4);
+                E2.b |= data.ConsumeBits(4, 4);
+                E0.g |= data.ConsumeBits(7, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+
+                E2.g |= data.ConsumeBits(4, 4);
+                E0.b |= data.ConsumeBits(7, 0);
+                E3.b |= data.ConsumeBits(3, 4);
+                E1.r |= data.ConsumeBits(5, 0);
+                E2.g |= data.ConsumeBits(3, 0);
+
+                E1.g |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(1, 1);
+
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(5, 0);
+                E3.r |= data.ConsumeBits(5, 0);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 22:
+                E0.rSize = E0.gSize = E0.bSize = 8;
+                E1.rSize = E2.rSize = E3.rSize = 5;
+                E1.gSize = E2.gSize = E3.gSize = 6;
+                E1.bSize = E2.bSize = E3.bSize = 5;
+
+                E0.r |= data.ConsumeBits(7, 0);
+                E3.b |= data.ConsumeBits(0, 0);
+                E2.b |= data.ConsumeBits(4, 4);
+                E0.g |= data.ConsumeBits(7, 0);
+                E2.g |= data.ConsumeBits(5, 4);
+
+                E0.b |= data.ConsumeBits(7, 0);
+                E3.g |= data.ConsumeBits(5, 5);
+                E3.b |= data.ConsumeBits(4, 4);
+                E1.r |= data.ConsumeBits(4, 0);
+                E3.g |= data.ConsumeBits(4, 4);
+
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(5, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(1, 1);
+
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 26:
+                E0.rSize = E0.gSize = E0.bSize = 8;
+                E1.rSize = E2.rSize = E3.rSize = 5;
+                E1.gSize = E2.gSize = E3.gSize = 5;
+                E1.bSize = E2.bSize = E3.bSize = 6;
+
+                E0.r |= data.ConsumeBits(7, 0);
+                E3.b |= data.ConsumeBits(1, 1);
+                E2.b |= data.ConsumeBits(4, 4);
+                E0.g |= data.ConsumeBits(7, 0);
+                E2.b |= data.ConsumeBits(5, 5);
+
+                E2.g |= data.ConsumeBits(4, 4);
+                E0.b |= data.ConsumeBits(7, 0);
+                E3.b |= data.ConsumeBits(5, 4);
+                E1.r |= data.ConsumeBits(4, 0);
+                E3.g |= data.ConsumeBits(4, 4);
+
+                E2.g |= data.ConsumeBits(3, 0);
+                E1.g |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(0, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(5, 0);
+
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(2, 2);
+                E3.r |= data.ConsumeBits(4, 0);
+                E3.b |= data.ConsumeBits(3, 3);
+
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 30:
+                hasDeltaBits = false;
+                E0.rSize = E0.gSize = E0.bSize = 6;
+                E1.rSize = E2.rSize = E3.rSize = 6;
+                E1.gSize = E2.gSize = E3.gSize = 6;
+                E1.bSize = E2.bSize = E3.bSize = 6;
+
+                hasDeltaBits = false;
+                E0.r |= data.ConsumeBits(5, 0);
+                E3.g |= data.ConsumeBits(4, 4);
+                E3.b |= data.ConsumeBits(0, 1);
+                E2.b |= data.ConsumeBits(4, 4);
+                E0.g |= data.ConsumeBits(5, 0);
+
+                E2.g |= data.ConsumeBits(5, 5);
+                E2.b |= data.ConsumeBits(5, 5);
+                E3.b |= data.ConsumeBits(2, 2);
+                E2.g |= data.ConsumeBits(4, 4);
+                E0.b |= data.ConsumeBits(5, 0);
+
+                E3.g |= data.ConsumeBits(5, 5);
+                E3.b |= data.ConsumeBits(3, 3);
+                E3.b |= data.ConsumeBits(5, 4);
+                E1.r |= data.ConsumeBits(5, 0);
+                E2.g |= data.ConsumeBits(3, 0);
+
+                E1.g |= data.ConsumeBits(5, 0);
+                E3.g |= data.ConsumeBits(3, 0);
+                E1.b |= data.ConsumeBits(5, 0);
+                E2.b |= data.ConsumeBits(3, 0);
+                E2.r |= data.ConsumeBits(5, 0);
+
+                E3.r |= data.ConsumeBits(5, 0);
+                partition |= data.ConsumeBits(4, 0);
+                break;
+            case 3:
+                hasDeltaBits = false;
+                partitionCount = 1;
+                E0.rSize = E0.gSize = E0.bSize = 10;
+                E1.rSize = E1.gSize = E1.bSize = 10;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+
+                E1.r |= data.ConsumeBits(9, 0);
+                E1.g |= data.ConsumeBits(9, 0);
+                E1.b |= data.ConsumeBits(9, 0);
+                break;
+            case 7:
+                partitionCount = 1;
+                E0.rSize = E0.gSize = E0.bSize = 11;
+                E1.rSize = E1.gSize = E1.bSize = 9;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+
+                E1.r |= data.ConsumeBits(8, 0);
+                E0.r |= data.ConsumeBits(10, 10);
+                E1.g |= data.ConsumeBits(8, 0);
+                E0.g |= data.ConsumeBits(10, 10);
+                E1.b |= data.ConsumeBits(8, 0);
+                E0.b |= data.ConsumeBits(10, 10);
+                break;
+            case 11:
+                partitionCount = 1;
+                E0.rSize = E0.gSize = E0.bSize = 12;
+                E1.rSize = E1.gSize = E1.bSize = 8;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+
+                E1.r |= data.ConsumeBits(7, 0);
+                E0.r |= data.ConsumeBits(10, 11);
+                E1.g |= data.ConsumeBits(7, 0);
+                E0.g |= data.ConsumeBits(10, 11);
+                E1.b |= data.ConsumeBits(7, 0);
+                E0.b |= data.ConsumeBits(10, 11);
+                break;
+            case 15:
+                partitionCount = 1;
+                E0.rSize = E0.gSize = E0.bSize = 16;
+                E1.rSize = E1.gSize = E1.bSize = 4;
+
+                E0.r |= data.ConsumeBits(9, 0);
+                E0.g |= data.ConsumeBits(9, 0);
+                E0.b |= data.ConsumeBits(9, 0);
+
+                E1.r |= data.ConsumeBits(3, 0);
+                E0.r |= data.ConsumeBits(10, 15);
+                E1.g |= data.ConsumeBits(3, 0);
+                E0.g |= data.ConsumeBits(10, 15);
+                E1.b |= data.ConsumeBits(3, 0);
+                E0.b |= data.ConsumeBits(10, 15);
+                break;
+            default:
+                // Reserved or invalid mode
+                for(int y = 0; y < 4 && y + dstY < dstHeight; y++)
+                {
+                    for(int x = 0; x < 4 && x + dstX < dstWidth; x++)
+                    {
+                        auto out = reinterpret_cast<Color *>(dst + sizeof(Color) * x + dstPitch * y);
+                        out->rgba = { 0, 0, 0, halfFloat1 };
+                    }
+                }
+                return;
+        }
+
+        // Sign extension
+        if (isSigned)
+        {
+            E0.ExtendSign();
+            E1.ExtendSign();
+            if (partitionCount == 2)
+            {
+                E2.ExtendSign();
+                E3.ExtendSign();
+            }
+        }
+        else if (hasDeltaBits)
+        {
+            E1.ExtendSign();
+            if (partitionCount == 2)
+            {
+                E2.ExtendSign();
+                E3.ExtendSign();
+            }
+        }
+
+        // Resolving deltas into endpoints
+        if (hasDeltaBits)
+        {
+            E1 = E0.ResolveDelta(E1);
+            if (partitionCount == 2)
+            {
+                E2 = E0.ResolveDelta(E2);
+                E3 = E0.ResolveDelta(E3);
+            }
+        }
+
+        // Unquantizing endpoints
+        if (isSigned)
+        {
+            E0.UnquantizeSigned();
+            E1.UnquantizeSigned();
+            if (partitionCount == 2)
+            {
+                E2.UnquantizeSigned();
+                E3.UnquantizeSigned();
+            }
+        }
+        else
+        {
+            E0.UnquantizeUnsigned();
+            E1.UnquantizeUnsigned();
+            if (partitionCount == 2)
+            {
+                E2.UnquantizeUnsigned();
+                E3.UnquantizeUnsigned();
+            }
+        }
+
+        // Get the indices, calculate final colors, and output
+        for (int y = 0; y < 4; y++)
+        {
+            for (int x = 0; x < 4; x++)
+            {
+                size_t bitsToConsume = 0;
+                IndexInfo idx;
+                // Get the next index
+                if (partitionCount == 1)
+                {
+                    idx.numBits = 4;
+                    bitsToConsume = idx.numBits;
+                    // There's an implicit leading 0 bit for the first idx
+                    if (x == 0 && y == 0)
+                    {
+                        bitsToConsume -= 1;
+                    }
+                }
+                else
+                {
+                    idx.numBits = 3;
+                    bitsToConsume = idx.numBits;
+                    // There are 2 indices with implicit leading 0-bits.
+                    if ((x == 0 && y == 0) || ((x + 4 * y) == AnchorTable2[partition]))
+                    {
+                        bitsToConsume -= 1;
+                    }
+                }
+
+                idx.value = data.ConsumeBits(bitsToConsume, 0);
+
+                Color color;
+                if (partitionCount == 1 || PartitionTable2[partition][idx.value] == 0)
+                {
+                    color.rgba.r = interpolate(E0.r, E1.r, idx, isSigned);
+                    color.rgba.g = interpolate(E0.g, E1.g, idx, isSigned);
+                    color.rgba.b = interpolate(E0.b, E1.b, idx, isSigned);
+                }
+                else // if (partitionCount == 2 && PartitionTable2[...][...] == 1)
+                {
+                    color.rgba.r = interpolate(E2.r, E3.r, idx, isSigned);
+                    color.rgba.g = interpolate(E2.g, E3.g, idx, isSigned);
+                    color.rgba.b = interpolate(E2.b, E3.b, idx, isSigned);
+                }
+
+                auto out = reinterpret_cast<Color *>(dst + sizeof(Color) * x + dstPitch * y);
+                *out = color;
+            }
+        }
+	}
+
+};
+
+} // namespace BC6h
 
 namespace BC7 {
 // https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_compression_bptc.txt
@@ -873,6 +1773,20 @@ bool BC_Decoder::Decode(const uint8_t *src, uint8_t *dst, int w, int h, int dstP
 			}
 		}
 		break;
+        case 6:  // BC6h
+        {
+            const BC6h::Block *block = reinterpret_cast<const BC6h::Block *>(src);
+            BC6h::Block tmp = *block;
+            for (int y = 0; y < h; y += BlockHeight, dst += dy)
+            {
+                uint8_t *dstRow = dst;
+                for (int x = 0; x < w; x += BlockWidth, ++block, dstRow += dx)
+                {
+                    tmp.decode(dstRow, x, y, w, h, dstPitch, isSigned);
+                }
+            }
+        }
+        break;
 		case 7:  // BC7
 		{
 			const BC7::Block *block = reinterpret_cast<const BC7::Block *>(src);
