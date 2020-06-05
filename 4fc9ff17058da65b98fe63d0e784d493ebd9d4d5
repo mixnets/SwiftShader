@@ -22,6 +22,30 @@
       "revId": "4fc9ff17058da65b98fe63d0e784d493ebd9d4d5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79f62d73_45bd9d5b",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-05T13:15:25Z",
+      "side": 1,
+      "message": "Yes, SpirvShader validates that the OpCapability instructions don\u0027t declare use of an unsupported feature, while SpirvTools::Validate ensures that features which are used have been properly declared.\n\nThere could be bugs in the latter, but we have various checks in place at the instruction implementations, like the ones that caught b/151213403. So I think we have ample coverage.",
+      "parentUuid": "b30a309d_f7758a64",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 7
+      },
+      "revId": "4fc9ff17058da65b98fe63d0e784d493ebd9d4d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
