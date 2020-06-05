@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_STANDARD 14)
 
 project(SwiftShader C CXX ASM)
-
+SET(SKIP_GLSLANG_INSTALL TRUE CACHE BOOL "Skip glslang install")
 ###########################################################
 # Detect system
 ###########################################################
@@ -203,6 +203,7 @@ endif()
 
 if(SWIFTSHADER_BUILD_BENCHMARKS)
     InitSubmodule(benchmark::benchmark ${THIRD_PARTY_DIR}/benchmark)
+    InitSubmodule(glslang ${THIRD_PARTY_DIR}/glslang)
 endif()
 
 if(REACTOR_EMIT_DEBUG_INFO)
@@ -732,29 +733,7 @@ endif()
 # Sample programs and tests
 ###########################################################
 
-if(SWIFTSHADER_BUILD_TESTS)
-    add_subdirectory(${TESTS_DIR}/ReactorUnitTests) # Add ReactorUnitTests target
-    add_subdirectory(${TESTS_DIR}/GLESUnitTests) # Add gles-unittests target
-    add_subdirectory(${TESTS_DIR}/MathUnitTests) # Add math-unittests target
-    add_subdirectory(${TESTS_DIR}/SystemUnitTests) # Add system-unittests target
-endif()
-
-if(SWIFTSHADER_BUILD_BENCHMARKS)
-    if (NOT TARGET benchmark::benchmark)
-        set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
-        add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
-    endif()
-
-    add_subdirectory(${TESTS_DIR}/ReactorBenchmarks) # Add ReactorBenchmarks target
-    add_subdirectory(${TESTS_DIR}/SystemBenchmarks) # Add system-benchmarks target
-    add_subdirectory(${TESTS_DIR}/VulkanBenchmarks) # Add VulkanBenchmarks target
-endif()
-
-if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
-    add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
-endif()
-
-if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
+if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR AND FALSE)
     if(UNIX AND NOT APPLE)
         set(PVR_WINDOW_SYSTEM XCB)
 
@@ -871,4 +850,31 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
     foreach(pvr_target ${PVR_TARGET_OTHER} ${PVR_VULKAN_TARGET_OTHER} ${PVR_GLES_TARGET_OTHER})
         set_target_properties(${pvr_target} PROPERTIES FOLDER Samples/PowerVR-Build)
     endforeach()
+endif()
+
+if(SWIFTSHADER_BUILD_TESTS)
+    add_subdirectory(${TESTS_DIR}/ReactorUnitTests) # Add ReactorUnitTests target
+    add_subdirectory(${TESTS_DIR}/GLESUnitTests) # Add gles-unittests target
+    add_subdirectory(${TESTS_DIR}/MathUnitTests) # Add math-unittests target
+    add_subdirectory(${TESTS_DIR}/SystemUnitTests) # Add system-unittests target
+endif()
+
+if(SWIFTSHADER_BUILD_BENCHMARKS)
+    if (NOT TARGET benchmark::benchmark)
+        set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
+        add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
+    endif()
+
+    if (NOT TARGET glslang)
+    
+        add_subdirectory(${THIRD_PARTY_DIR}/glslang)
+    endif()
+
+    add_subdirectory(${TESTS_DIR}/ReactorBenchmarks) # Add ReactorBenchmarks target
+    add_subdirectory(${TESTS_DIR}/SystemBenchmarks) # Add system-benchmarks target
+    add_subdirectory(${TESTS_DIR}/VulkanBenchmarks) # Add VulkanBenchmarks target
+endif()
+
+if(SWIFTSHADER_BUILD_TESTS AND SWIFTSHADER_BUILD_VULKAN)
+    add_subdirectory(${TESTS_DIR}/VulkanUnitTests) # Add VulkanUnitTests target
 endif()

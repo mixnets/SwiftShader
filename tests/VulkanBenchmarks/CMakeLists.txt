@@ -31,6 +31,22 @@ add_executable(VulkanBenchmarks
     ${VULKAN_BENCHMARKS_SRC_FILES}
 )
 
+if (NOT TARGET benchmark::benchmark)
+    message(FATAL_ERROR "Missing required target: benchmark::benchmark")
+endif()
+
+if (NOT TARGET glslang)
+    message(FATAL_ERROR "Missing required target: glslang")
+endif()
+
+if (NOT TARGET glslang-default-resource-limits)
+    message(FATAL_ERROR "Missing required target: glslang-default-resource-limits")
+endif()
+
+if (NOT TARGET SPIRV)
+    message(FATAL_ERROR "Missing required target: SPIRV")
+endif()
+
 add_dependencies(VulkanBenchmarks
     vk_swiftshader
 )
@@ -42,7 +58,8 @@ set_target_properties(VulkanBenchmarks PROPERTIES
 
 target_include_directories(VulkanBenchmarks
     PRIVATE
-        "${SWIFTSHADER_DIR}/include"
+        "${SWIFTSHADER_DIR}/include/"
+        "${SWIFTSHADER_DIR}/third_party/glslang/"
 )
 
 target_compile_options(VulkanBenchmarks
@@ -58,5 +75,8 @@ target_link_options(VulkanBenchmarks
 target_link_libraries(VulkanBenchmarks
     PRIVATE
         benchmark::benchmark
+        glslang
+        glslang-default-resource-limits
+        SPIRV
         ${ROOT_PROJECT_LINK_LIBRARIES}
 )
