@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62452d71_499abad1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-05T15:42:40Z",
+      "side": 1,
+      "message": "nit: I think design decision discussions belong mostly in the tracker bug, or even a design doc for larger features, so that if it needs revisiting or follow-up we have a central place to discuss it. Commit messages are best reserved for summarizing what a specific patch does, and maybe clarify some implementation details if it helps avoid having to dig through the code to understand the change. Of course there\u0027s a large area of overlap between design and implementation, but this commit message feels a little verbose. :)\n\nNote that if you\u0027re looking for feedback on things, you can also add Gerrit comments to areas of code where you think reviewers might raise questions about why you wrote it that way. That also greatly helps the reviewers know what code you\u0027re talking about exactly.",
+      "range": {
+        "startLine": 12,
+        "startChar": 9,
+        "endLine": 12,
+        "endChar": 22
+      },
+      "revId": "10952d7203a5b08dd582920bf9b4472c7af7cbba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
