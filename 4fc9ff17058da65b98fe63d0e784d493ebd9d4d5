@@ -70,6 +70,30 @@
       "revId": "4fc9ff17058da65b98fe63d0e784d493ebd9d4d5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43ebcc56_7afee4b6",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-05T14:07:58Z",
+      "side": 1,
+      "message": "There\u0027s an UNSUPPORTED() for the features: https://swiftshader.googlesource.com/SwiftShader/+/e3eb327e8c3c724a415fa4d5f4805f2e281f4760/src/Pipeline/SpirvShader.cpp#360\n\nHere it\u0027s an ASSERT() since it \"should\" never trigger, not even when an unsupported feature is used.",
+      "parentUuid": "b3b16401_0d23f385",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 7
+      },
+      "revId": "4fc9ff17058da65b98fe63d0e784d493ebd9d4d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
