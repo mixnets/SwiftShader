@@ -1709,122 +1709,22 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 	return cornerUpdateRoutine;
 }
 
-void Blitter::blitToBuffer(const vk::Image *src, VkImageSubresourceLayers subresource, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int bufferRowPitch, int bufferSlicePitch)
+void Blitter::blitToBuffer(const vk::Image *src, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int dstPitch)
 {
-	auto aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
+	auto aspect = VK_IMAGE_ASPECT_COLOR_BIT;
 	auto format = src->getFormat(aspect);
-	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{ false, false });
+	int srcPitch = src->rowPitchBytes(aspect, 0);
+	VkImageSubresourceLayers subresourceLayers = { VK_IMAGE_ASPECT_COLOR_BIT };
 
-	auto blitRoutine = getBlitRoutine(state);
-	if(!blitRoutine)
+	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, subresourceLayers);
+	uint8_t *d = dst;
+
+	for(uint32_t y = 0; y < extent.height; y++)
 	{
-		return;
-	}
+		memcpy(d, s, format.bytes() * extent.width);
 
-	BlitData data = {
-		nullptr,                                             // source
-		dst,                                                 // dest
-		src->rowPitchBytes(aspect, subresource.mipLevel),    // sPitchB
-		bufferRowPitch,                                      // dPitchB
-		src->slicePitchBytes(aspect, subresource.mipLevel),  // sSliceB
-		bufferSlicePitch,                                    // dSliceB
-
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-
-		0,                                // x0d
-		static_cast<int>(extent.width),   // x1d
-		0,                                // y0d
-		static_cast<int>(extent.height),  // y1d
-		0,                                // z0d
-		static_cast<int>(extent.depth),   // z1d
-
-		static_cast<int>(extent.width),   // sWidth
-		static_cast<int>(extent.height),  // sHeight
-		static_cast<int>(extent.depth),   // sDepth
-
-		false,  // filter3D
-	};
-
-	VkImageSubresourceLayers srcSubresLayers = subresource;
-	srcSubresLayers.layerCount = 1;
-
-	VkImageSubresourceRange srcSubresRange = {
-		subresource.aspectMask,
-		subresource.mipLevel,
-		1,
-		subresource.baseArrayLayer,
-		subresource.layerCount
-	};
-
-	uint32_t lastLayer = src->getLastLayerIndex(srcSubresRange);
-
-	for(; srcSubresLayers.baseArrayLayer <= lastLayer; srcSubresLayers.baseArrayLayer++)
-	{
-		data.source = src->getTexelPointer({ 0, 0, 0 }, srcSubresLayers);
-		ASSERT(data.source < src->end());
-		blitRoutine(&data);
-	}
-}
-
-void Blitter::blitFromBuffer(const vk::Image *dst, VkImageSubresourceLayers subresource, VkOffset3D offset, VkExtent3D extent, uint8_t *src, int bufferRowPitch, int bufferSlicePitch)
-{
-	auto aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
-	auto format = dst->getFormat(aspect);
-	State state(format, format, VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT, Options{ false, false });
-
-	auto blitRoutine = getBlitRoutine(state);
-	if(!blitRoutine)
-	{
-		return;
-	}
-
-	BlitData data = {
-		src,                                                 // source
-		nullptr,                                             // dest
-		bufferRowPitch,                                      // sPitchB
-		dst->rowPitchBytes(aspect, subresource.mipLevel),    // dPitchB
-		bufferSlicePitch,                                    // sSliceB
-		dst->slicePitchBytes(aspect, subresource.mipLevel),  // dSliceB
-
-		static_cast<float>(-offset.x),  // x0
-		static_cast<float>(-offset.y),  // y0
-		static_cast<float>(-offset.z),  // z0
-		1.0f,                           // w
-		1.0f,                           // h
-		1.0f,                           // d
-
-		offset.x,                                    // x0d
-		static_cast<int>(offset.x + extent.width),   // x1d
-		offset.y,                                    // y0d
-		static_cast<int>(offset.y + extent.height),  // y1d
-		offset.z,                                    // z0d
-		static_cast<int>(offset.z + extent.depth),   // z1d
-
-		static_cast<int>(extent.width),   // sWidth
-		static_cast<int>(extent.height),  // sHeight;
-		static_cast<int>(extent.depth),   // sDepth;
-
-		false,  // filter3D
-	};
-
-	VkImageSubresourceLayers dstSubresLayers = subresource;
-	dstSubresLayers.layerCount = 1;
-
-	VkImageSubresourceRange dstSubresRange = {
-		subresource.aspectMask,
-		subresource.mipLevel,
-		1,
-		subresource.baseArrayLayer,
-		subresource.layerCount
-	};
-
-	uint32_t lastLayer = dst->getLastLayerIndex(dstSubresRange);
-
-	for(; dstSubresLayers.baseArrayLayer <= lastLayer; dstSubresLayers.baseArrayLayer++)
-	{
-		data.dest = dst->getTexelPointer({ 0, 0, 0 }, dstSubresLayers);
-		ASSERT(data.dest < dst->end());
-		blitRoutine(&data);
+		s += srcPitch;
+		d += dstPitch;
 	}
 }
 
