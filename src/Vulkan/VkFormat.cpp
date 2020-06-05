@@ -2284,6 +2284,7 @@ bool Format::has8bitTextureComponents() const
 		case VK_FORMAT_R8G8B8A8_SINT:
 		case VK_FORMAT_R8G8B8A8_UINT:
 		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
 			return true;
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
 		case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
