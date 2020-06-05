@@ -14,7 +14,10 @@
 
 #include "VkShaderModule.hpp"
 
+#include "spirv-tools/libspirv.hpp"
+
 #include <cstring>
+#include <vector>
 
 namespace vk {
 
@@ -26,6 +29,11 @@ ShaderModule::ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *me
 {
 	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
 	wordCount = static_cast<uint32_t>(pCreateInfo->codeSize / sizeof(uint32_t));
+
+#ifndef NDEBUG
+	spvtools::SpirvTools spirvTools(SPV_ENV_VULKAN_1_1);
+	ASSERT(spirvTools.Validate(getCode()));  // The SPIR-V code passed to vkCreateShaderModule must be valid (b/158228522)
+#endif
 }
 
 void ShaderModule::destroy(const VkAllocationCallbacks *pAllocator)
