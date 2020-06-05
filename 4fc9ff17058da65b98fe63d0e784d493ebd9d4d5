@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b30a309d_f7758a64",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-05T11:58:57Z",
+      "side": 1,
+      "message": "Nit: is there a way to distinguish between completely bad SPIR-V and just SPIR-V using unsupported features?",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 7
+      },
+      "revId": "4fc9ff17058da65b98fe63d0e784d493ebd9d4d5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
