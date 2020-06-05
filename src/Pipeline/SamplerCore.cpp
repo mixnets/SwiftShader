@@ -1556,6 +1556,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 					case VK_FORMAT_R8G8B8A8_SINT:
 					case VK_FORMAT_R8G8B8A8_SNORM:
 					case VK_FORMAT_R8G8B8A8_SRGB:
+					case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
 						c.z = As<Short4>(UnpackHigh(c.x, c.y));
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
 						c.y = c.x;
