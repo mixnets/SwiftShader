@@ -5645,7 +5645,6 @@ dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat2_fragment
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat2_vertex
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat3_fragment
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat3_vertex
-dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat4_vertex
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_mediump_mat2_fragment
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_mediump_mat2_vertex
 dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_mediump_mat3_fragment
@@ -8161,7 +8160,6 @@ dEQP-GLES2.functional.shaders.operator.selection.highp_ivec2_vertex
 dEQP-GLES2.functional.shaders.operator.selection.highp_ivec3_fragment
 dEQP-GLES2.functional.shaders.operator.selection.highp_ivec3_vertex
 dEQP-GLES2.functional.shaders.operator.selection.highp_ivec4_fragment
-dEQP-GLES2.functional.shaders.operator.selection.highp_ivec4_vertex
 dEQP-GLES2.functional.shaders.operator.selection.highp_vec2_fragment
 dEQP-GLES2.functional.shaders.operator.selection.highp_vec2_vertex
 dEQP-GLES2.functional.shaders.operator.selection.highp_vec3_fragment

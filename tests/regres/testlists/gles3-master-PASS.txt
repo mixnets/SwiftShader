@@ -51,7 +51,6 @@ dEQP-GLES3.functional.attribute_location.bind_max_attributes.int
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec3
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec4
-dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x3
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x4
@@ -78,7 +77,6 @@ dEQP-GLES3.functional.attribute_location.bind_relink_hole.ivec4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x3
-dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x3
@@ -2983,7 +2981,6 @@ dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_rbo_tex
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_none
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_rbo
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_tex
-dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_none
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_rbo
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_tex
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_rbo_none
@@ -3688,7 +3685,6 @@ dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32f_depth_stencil_rbo_de
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32i_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32ui_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba4_depth_stencil_rbo_depth24_stencil8
-dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8i_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8ui_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_srgb8_alpha8_depth_stencil_rbo_depth24_stencil8
@@ -4168,7 +4164,6 @@ dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_d
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_constant_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_dst_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_dst_color
-dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_src_alpha_saturate
@@ -4384,7 +4379,6 @@ dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_d
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_constant_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_dst_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_dst_color
-dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_saturate_constant_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_saturate_constant_color
@@ -10137,7 +10131,6 @@ dEQP-GLES3.functional.shaders.builtin_functions.precision.atan.highp_vertex.vec4
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.scalar
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec2
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec3
-dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec4
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_vertex.scalar
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_vertex.vec2
 dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_vertex.vec3
@@ -13480,7 +13473,6 @@ dEQP-GLES3.functional.shaders.functions.qualifiers.in_highp_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_int_fragment
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_float_fragment
-dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_float_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_int_fragment
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.inout_bool_fragment
@@ -14256,7 +14248,6 @@ dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_wr
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_fragment
-dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_static_loop_subscript_read_fragment
@@ -15053,7 +15044,6 @@ dEQP-GLES3.functional.shaders.invariance.lowp.loop_2
 dEQP-GLES3.functional.shaders.invariance.lowp.loop_3
 dEQP-GLES3.functional.shaders.invariance.lowp.loop_4
 dEQP-GLES3.functional.shaders.invariance.lowp.subexpression_precision_highp
-dEQP-GLES3.functional.shaders.invariance.lowp.subexpression_precision_lowp
 dEQP-GLES3.functional.shaders.invariance.lowp.subexpression_precision_mediump
 dEQP-GLES3.functional.shaders.invariance.mediump.common_subexpression_0
 dEQP-GLES3.functional.shaders.invariance.mediump.common_subexpression_1
@@ -18016,7 +18006,6 @@ dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat3x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat3x2_float_vertex
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat3x4_float_fragment
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat3x4_float_vertex
-dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4_float_fragment
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4_float_vertex
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4x2_float_vertex
@@ -18217,7 +18206,6 @@ dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat2x4_mat2x4_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_fragment
-dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_mat3x2_fragment
@@ -19586,7 +19574,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uint_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec2_uint_fragment
-dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec2_uint_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec2_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec3_uint_fragment
@@ -22098,7 +22085,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.mul_assign_result.mediump
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul_assign_result.mediump_vec4_float_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul_assign_result.mediump_vec4_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul_assign_result.mediump_vec4_vertex
-dEQP-GLES3.functional.shaders.operator.binary_operator.not_equal.bool_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.not_equal.bool_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.not_equal.bvec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.not_equal.bvec2_vertex
@@ -22265,7 +22251,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_ivec4_ve
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uint_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uint_int_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uint_int_vertex
-dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uint_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uvec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uvec2_int_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uvec2_int_vertex
@@ -22929,7 +22914,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uv
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_uint_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_uint_vertex
-dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec4_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec4_uint_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec4_uint_vertex
@@ -24918,7 +24902,6 @@ dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_float_vertex
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_int_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_int_vertex
-dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec2_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec2_vertex
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec3_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec3_vertex
@@ -27855,7 +27838,6 @@ dEQP-GLES3.functional.shaders.switch.const_expr_in_label_dynamic_vertex
 dEQP-GLES3.functional.shaders.switch.const_expr_in_label_static_fragment
 dEQP-GLES3.functional.shaders.switch.const_expr_in_label_static_vertex
 dEQP-GLES3.functional.shaders.switch.const_expr_in_label_uniform_fragment
-dEQP-GLES3.functional.shaders.switch.const_expr_in_label_uniform_vertex
 dEQP-GLES3.functional.shaders.switch.default_in_do_while_loop_fragment
 dEQP-GLES3.functional.shaders.switch.default_in_do_while_loop_vertex
 dEQP-GLES3.functional.shaders.switch.default_in_for_loop_fragment
@@ -30200,7 +30182,6 @@ dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getfloat
 dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getfloat
-dEQP-GLES3.functional.state_query.integers.max_varying_components_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getfloat
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getinteger64
@@ -30815,7 +30796,6 @@ dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_linear
 dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_linear_mipmap_linear
 dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_linear_mipmap_nearest
 dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest
-dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_linear
 dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_nearest
 dEQP-GLES3.functional.texture.filtering.2d.formats.r11f_g11f_b10f_linear
 dEQP-GLES3.functional.texture.filtering.2d.formats.r11f_g11f_b10f_linear_mipmap_linear
@@ -31540,7 +31520,6 @@ dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_alpha8_npot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_alpha8_pot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_npot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_pot
-dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_npot
 dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_pot
 dEQP-GLES3.functional.texture.format.sized.3d.r16f_npot
 dEQP-GLES3.functional.texture.format.sized.3d.r16f_pot
@@ -32030,7 +32009,6 @@ dEQP-GLES3.functional.texture.mipmap.cube.generate.rgba8888_fastest
 dEQP-GLES3.functional.texture.mipmap.cube.generate.rgba8888_nicest
 dEQP-GLES3.functional.texture.mipmap.cube.max_level.linear_linear
 dEQP-GLES3.functional.texture.mipmap.cube.max_level.nearest_linear
-dEQP-GLES3.functional.texture.mipmap.cube.min_lod.linear_linear
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.linear_nearest
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.nearest_linear
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.nearest_nearest
@@ -32320,7 +32298,6 @@ dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.never_depth
 dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.never_depth_component16
 dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.never_depth_component32f
 dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.not_equal_depth24_stencil8
-dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.not_equal_depth_component16
 dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.not_equal_depth_component32f
 dEQP-GLES3.functional.texture.shadow.cube.linear.always_depth24_stencil8
 dEQP-GLES3.functional.texture.shadow.cube.linear.always_depth_component16
@@ -33309,7 +33286,6 @@ dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16f_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16i_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16i_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16ui_3d
-dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32f_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32i_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32i_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32ui_2d_array
@@ -34652,7 +34628,6 @@ dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat2x4
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat3
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat3x2
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat3x4
-dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat4
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat4x2
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_mat4x3
 dEQP-GLES3.functional.transform_feedback.array.interleaved.points.mediump_uint
@@ -36714,7 +36689,6 @@ dEQP-GLES3.functional.ubo.single_basic_array.shared.mat4x3_both
 dEQP-GLES3.functional.ubo.single_basic_array.shared.mat4x3_fragment
 dEQP-GLES3.functional.ubo.single_basic_array.shared.mat4x3_vertex
 dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2_both
-dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2_fragment
 dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2_vertex
 dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2x3_both
 dEQP-GLES3.functional.ubo.single_basic_array.shared.row_major_mat2x3_fragment
@@ -38425,7 +38399,6 @@ dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_both
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_fragment
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_vertex
-dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_both
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_fragment
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_vertex
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat3_both
@@ -39272,7 +39245,6 @@ dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.u
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uint_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uint_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_both
-dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.vec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.vec4_fragment
@@ -39881,7 +39853,6 @@ dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_bot
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_both
-dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.uint_both
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.uint_fragment
@@ -40274,7 +40245,6 @@ dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_s
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_byte2_vec2_unsigned_short2_vec2
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_byte2_vec2
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_fixed2_vec2
-dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_short2_vec2
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_unsigned_byte2_vec2
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_unsigned_short2_vec2
 dEQP-GLES3.functional.vertex_arrays.multiple_attributes.storage.3_buffer_buffer_buffer
@@ -40880,7 +40850,6 @@ dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffe
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride16_components4_quads256
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride32_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride32_components4_quads256
-dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride16_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride16_components4_quads256
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride17_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride17_components4_quads256

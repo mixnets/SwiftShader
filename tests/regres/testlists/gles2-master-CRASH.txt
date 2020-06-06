@@ -1,0 +1,2 @@
+dEQP-GLES2.functional.shaders.matrix.post_decrement.dynamic_lowp_mat4_vertex
+dEQP-GLES2.functional.shaders.operator.selection.highp_ivec4_vertex
