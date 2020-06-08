@@ -387,7 +387,6 @@ dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_neg
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_neg_y_neg_z
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_neg_y_pos_z
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_neg_y
-dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_neg_y_neg_z
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_neg_y_pos_z
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_neg_z
 dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_pos_y
@@ -11653,7 +11652,6 @@ dEQP-GLES2.functional.shaders.texture_functions.invalid.texturecubelod_in_fragme
 dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2d
 dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2dproj_vec3
 dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2dproj_vec4
-dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2dprojlod_vec3
 dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2dprojlod_vec4
 dEQP-GLES2.functional.shaders.texture_functions.vertex.texturecube
 dEQP-GLES2.functional.state_query.boolean.blend_getboolean

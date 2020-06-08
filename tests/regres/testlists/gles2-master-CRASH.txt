@@ -1,0 +1,2 @@
+dEQP-GLES2.functional.clipping.triangle_vertex.clip_two.clip_neg_x_neg_y_and_pos_x_neg_y_neg_z
+dEQP-GLES2.functional.shaders.texture_functions.vertex.texture2dprojlod_vec3
