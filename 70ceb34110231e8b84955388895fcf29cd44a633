@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bc2708d_b9b6dd20",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-09T21:00:42Z",
+      "side": 1,
+      "message": "This is incorrect, as it unregisters all views from a given descriptor set. Only the area about to be written to (defined by entry.dstBinding, entry.dstArrayElement and entry.descriptorCount) should be replaced.",
+      "range": {
+        "startLine": 257,
+        "startChar": 1,
+        "endLine": 257,
+        "endChar": 41
+      },
+      "revId": "70ceb34110231e8b84955388895fcf29cd44a633",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98d39e09_bf536d4a",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-09T21:00:42Z",
+      "side": 1,
+      "message": "This is the main issue left. The granularity here may require registering a lot of different entries, one for each element of each binding.",
+      "range": {
+        "startLine": 634,
+        "startChar": 1,
+        "endLine": 634,
+        "endChar": 112
+      },
+      "revId": "70ceb34110231e8b84955388895fcf29cd44a633",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
