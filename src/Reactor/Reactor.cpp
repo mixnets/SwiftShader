@@ -20,6 +20,19 @@
 #include <algorithm>
 #include <cmath>
 
+#if defined(_WIN32)
+#	ifndef WIN32_LEAN_AND_MEAN
+#		define WIN32_LEAN_AND_MEAN
+#	endif
+#	include <windows.h>
+#endif
+
+// Define REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION to non-zero to ensure all
+// variables have a stack location obtained throuch alloca().
+#ifndef REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION
+#	define REACTOR_MATERIALIZE_LVALUES_ON_DEFINITION 0
+#endif
+
 namespace rr {
 
 const Config::Edit Config::Edit::None = {};
@@ -4568,6 +4581,39 @@ void Printv(const char *function, const char *file, int line, const char *fmt, s
 	// This call is implemented by each backend
 	VPrintf(vals);
 }
+
+// This is the function that is called by VPrintf from the backends
+int DebugPrintf(const char *format, ...)
+{
+#	define RR_PRINT_OUTPUT_TYPE_STDOUT 1   /* Print to stdout */
+#	define RR_PRINT_OUTPUT_TYPE_DEBUGGER 2 /* Print to debugger (OutputDebugString on Windows) */
+#	define RR_PRINT_OUTPUT_TYPE_STUB 3     /* Do not print, but call to function is emitted */
+
+	// Set this to the type of output you want for rr::Print calls
+#	define RR_PRINT_OUTPUT_TYPE RR_PRINT_OUTPUT_TYPE_STDOUT
+
+#	if RR_PRINT_OUTPUT_TYPE == RR_PRINT_OUTPUT_TYPE_STUB
+	return 0;
+#	else
+
+	int result;
+	va_list args;
+
+	va_start(args, format);
+	char buffer[2048];
+	result = vsprintf(buffer, format, args);
+	va_end(args);
+
+#		if RR_PRINT_OUTPUT_TYPE == RR_PRINT_OUTPUT_TYPE_STDOUT
+	std::fputs(buffer, stdout);
+#		elif RR_PRINT_OUTPUT_TYPE == RR_PRINT_OUTPUT_TYPE_DEBUGGER
+	OutputDebugString(buffer);
+#		endif
+
+	return result;
+#	endif
+}
+
 #endif  // ENABLE_RR_PRINT
 
 }  // namespace rr
