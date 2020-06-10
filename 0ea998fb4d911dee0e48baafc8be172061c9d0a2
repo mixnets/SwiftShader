@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e8ffc79_8b6a1b0f",
+        "filename": "tests/VulkanBenchmarks/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-10T19:03:03Z",
+      "side": 1,
+      "message": "I noticed that you added a lot of these, and it\u0027s true that it\u0027s nice to get this kind of error message, but if you don\u0027t add this, CMake will still complain about the missing dependency upon processing the target_link_libraries.\n\nHaving said that, I had a todo that I didn\u0027t get to which was to add a utility function like `CheckForDependencies` which would take a list of target names and perform the if (NOT TARGET ...) check in a loop and complain as soon as one isn\u0027t found. This would avoid having to add these messages everywhere. Perhaps as a follow-up, we can do that.",
+      "revId": "0ea998fb4d911dee0e48baafc8be172061c9d0a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
