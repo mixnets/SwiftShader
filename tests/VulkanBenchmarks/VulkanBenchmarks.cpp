@@ -225,9 +225,9 @@ BENCHMARK_DEFINE_F(ClearImageBenchmark, Clear)
 	device.freeMemory(memory);
 	device.destroyImage(image);
 }
-BENCHMARK_REGISTER_F(ClearImageBenchmark, Clear)
-    ->Unit(benchmark::kMillisecond)
-    ->DenseRange(0, clearBenchmarkVariants.size() - 1, 1);
+//BENCHMARK_REGISTER_F(ClearImageBenchmark, Clear)
+//    ->Unit(benchmark::kMillisecond)
+//    ->DenseRange(0, clearBenchmarkVariants.size() - 1, 1);
 
 class Window
 {
@@ -629,12 +629,48 @@ protected:
 
 	std::vector<vk::Framebuffer> createFramebuffers(vk::RenderPass renderPass)
 	{
+		vk::ImageCreateInfo imageInfo;
+		imageInfo.imageType = vk::ImageType::e2D;
+		imageInfo.format = swapchain->colorFormat;
+		imageInfo.tiling = vk::ImageTiling::eOptimal;
+		imageInfo.initialLayout = vk::ImageLayout::eGeneral;
+		imageInfo.usage = vk::ImageUsageFlagBits::eColorAttachment;
+		imageInfo.samples = vk::SampleCountFlagBits::e4;
+		imageInfo.extent = { windowSize.width, windowSize.height, 1 };
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+
+		msaaImage = device.createImage(imageInfo);
+
+		vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements(msaaImage);
+
+		vk::MemoryAllocateInfo allocateInfo;
+		allocateInfo.allocationSize = memoryRequirements.size;
+		allocateInfo.memoryTypeIndex = 0;////////////////////////////////////////////////////////////////////
+
+		msaaImageMemory = device.allocateMemory(allocateInfo);
+
+		device.bindImageMemory(msaaImage, msaaImageMemory, 0);
+
+		vk::ImageViewCreateInfo colorAttachmentView;
+		colorAttachmentView.image = msaaImage;
+		colorAttachmentView.viewType = vk::ImageViewType::e2D;
+		colorAttachmentView.format = swapchain->colorFormat;
+		colorAttachmentView.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		colorAttachmentView.subresourceRange.baseMipLevel = 0;
+		colorAttachmentView.subresourceRange.levelCount = 1;
+		colorAttachmentView.subresourceRange.baseArrayLayer = 0;
+		colorAttachmentView.subresourceRange.layerCount = 1;
+
+		msaaImageView = device.createImageView(colorAttachmentView);
+
 		std::vector<vk::Framebuffer> framebuffers(swapchain->imageCount());
 
 		for(size_t i = 0; i < framebuffers.size(); i++)
 		{
-			std::array<vk::ImageView, 1> attachments;  // color only
-			attachments[0] = swapchain->getImageView(i);
+			std::array<vk::ImageView, 2> attachments;  // color only
+			attachments[0] = msaaImageView;
+			attachments[1] = swapchain->getImageView(i);
 
 			vk::FramebufferCreateInfo framebufferCreateInfo;
 
@@ -653,25 +689,39 @@ protected:
 
 	vk::RenderPass createRenderPass(vk::Format colorFormat)
 	{
-		std::array<vk::AttachmentDescription, 1> attachments;
+		std::array<vk::AttachmentDescription, 2> attachments;
 
 		attachments[0].format = colorFormat;
-		attachments[0].samples = vk::SampleCountFlagBits::e1;
+		attachments[0].samples = vk::SampleCountFlagBits::e4;
 		attachments[0].loadOp = vk::AttachmentLoadOp::eClear;
 		attachments[0].storeOp = vk::AttachmentStoreOp::eStore;
 		attachments[0].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
 		attachments[0].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
 		attachments[0].initialLayout = vk::ImageLayout::eUndefined;
-		attachments[0].finalLayout = vk::ImageLayout::ePresentSrcKHR;
+		attachments[0].finalLayout = vk::ImageLayout::eColorAttachmentOptimal;
+
+		attachments[1].format = colorFormat;
+		attachments[1].samples = vk::SampleCountFlagBits::e1;
+		attachments[1].loadOp = vk::AttachmentLoadOp::eDontCare;
+		attachments[1].storeOp = vk::AttachmentStoreOp::eStore;
+		attachments[1].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+		attachments[1].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+		attachments[1].initialLayout = vk::ImageLayout::eUndefined;
+		attachments[1].finalLayout = vk::ImageLayout::ePresentSrcKHR;
 
 		vk::AttachmentReference colorReference;
-		colorReference.attachment = 0;
+		colorReference.attachment = 1;
 		colorReference.layout = vk::ImageLayout::eColorAttachmentOptimal;
+
+		vk::AttachmentReference msaaReference;
+		msaaReference.attachment = 0;
+		msaaReference.layout = vk::ImageLayout::eColorAttachmentOptimal;
 
 		vk::SubpassDescription subpassDescription;
 		subpassDescription.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
 		subpassDescription.colorAttachmentCount = 1;
-		subpassDescription.pColorAttachments = &colorReference;
+		subpassDescription.pResolveAttachments = &colorReference;
+		subpassDescription.pColorAttachments = &msaaReference;
 
 		std::array<vk::SubpassDependency, 2> dependencies;
 
@@ -765,7 +815,7 @@ protected:
 		depthStencilState.front = depthStencilState.back;
 
 		vk::PipelineMultisampleStateCreateInfo multisampleState;
-		multisampleState.rasterizationSamples = vk::SampleCountFlagBits::e1;
+		multisampleState.rasterizationSamples = vk::SampleCountFlagBits::e4;
 		multisampleState.pSampleMask = nullptr;
 
 		const char *vertexShader = R"(#version 310 es
@@ -829,6 +879,10 @@ protected:
 	std::vector<vk::Framebuffer> framebuffers;
 	uint32_t currentFrameBuffer = 0;
 
+	vk::Image msaaImage;
+	vk::DeviceMemory msaaImageMemory;
+	vk::ImageView msaaImageView;
+
 	struct VertexBuffer
 	{
 		vk::Buffer buffer;
@@ -855,7 +909,7 @@ protected:
 BENCHMARK_DEFINE_F(TriangleBenchmark, Triangle)
 (benchmark::State &state)
 {
-	if(false) window->show();  // Enable for visual verification.
+	if(true) window->show();  // Enable for visual verification.
 
 	// Warmup
 	renderFrame();
