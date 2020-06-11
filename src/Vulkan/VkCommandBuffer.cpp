@@ -72,7 +72,7 @@ public:
 		executionState.renderPass = renderPass;
 		executionState.renderPassFramebuffer = framebuffer;
 		executionState.subpassIndex = 0;
-		framebuffer->clear(executionState.renderPass, clearValueCount, clearValues, renderArea);
+		framebuffer->clearForBeginRenderPass(executionState.renderPass, clearValueCount, clearValues, renderArea);
 	}
 
 	std::string description() override { return "vkCmdBeginRenderPass()"; }
@@ -898,7 +898,7 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		image->clear(color, range);
+		image->clear2(color, range);
 	}
 
 	std::string description() override { return "vkCmdClearColorImage()"; }
@@ -921,7 +921,7 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		image->clear(depthStencil, range);
+		image->clear3(depthStencil, range);
 	}
 
 	std::string description() override { return "vkCmdClearDepthStencilImage()"; }
@@ -947,7 +947,7 @@ public:
 		// however, we don't do the clear through the rasterizer, so need to ensure prior drawing
 		// has completed first.
 		executionState.renderer->synchronize();
-		executionState.renderPassFramebuffer->clearAttachment(executionState.renderPass, executionState.subpassIndex, attachment, rect);
+		executionState.renderPassFramebuffer->clearAttachment(attachment, executionState.renderPass, executionState.subpassIndex, rect);
 	}
 
 	std::string description() override { return "vkCmdClearAttachment()"; }

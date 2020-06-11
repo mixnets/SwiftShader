@@ -95,7 +95,7 @@ VkResult Win32SurfaceKHR::present(PresentImage *image)
 		return VK_ERROR_OUT_OF_DATE_KHR;
 	}
 
-	image->getImage()->blitToBuffer(VkOffset3D{}, extent, reinterpret_cast<uint8_t *>(framebuffer), bitmapRowPitch);
+	image->getImage()->copyTo(reinterpret_cast<uint8_t *>(framebuffer), bitmapRowPitch);
 
 	StretchBlt(windowContext, 0, 0, extent.width, extent.height, bitmapContext, 0, 0, extent.width, extent.height, SRCCOPY);
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkImageView.hpp"
+
 #include "VkImage.hpp"
 #include "System/Math.hpp"
 
@@ -139,7 +140,7 @@ bool ImageView::imageTypesMatch(VkImageType imageType) const
 	return false;
 }
 
-void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkRect2D &renderArea)
+void ImageView::clear1a(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkRect2D &renderArea)
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
@@ -148,10 +149,10 @@ void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags a
 
 	VkImageSubresourceRange sr = subresourceRange;
 	sr.aspectMask = aspectMask;
-	image->clear(clearValue, format, renderArea, sr);
+	image->clear1(clearValue, format, renderArea, sr);
 }
 
-void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkClearRect &renderArea)
+void ImageView::clear1b(const VkClearValue &clearValue, const VkImageAspectFlags aspectMask, const VkClearRect &renderArea)
 {
 	// Note: clearing ignores swizzling, so components is ignored.
 
@@ -165,7 +166,7 @@ void ImageView::clear(const VkClearValue &clearValue, const VkImageAspectFlags a
 	sr.baseArrayLayer = renderArea.baseArrayLayer + subresourceRange.baseArrayLayer;
 	sr.layerCount = renderArea.layerCount;
 
-	image->clear(clearValue, format, renderArea.rect, sr);
+	image->clear1(clearValue, format, renderArea.rect, sr);
 }
 
 void ImageView::clearWithLayerMask(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkRect2D &renderArea, uint32_t layerMask)
@@ -176,7 +177,8 @@ void ImageView::clearWithLayerMask(const VkClearValue &clearValue, VkImageAspect
 		layerMask &= ~(1 << layer);
 		VkClearRect r = { renderArea, layer, 1 };
 		r.baseArrayLayer = layer;
-		clear(clearValue, aspectMask, r);
+
+		clear1b(clearValue, aspectMask, r);
 	}
 }
 

@@ -74,8 +74,8 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo);
 
-	void clear(const VkClearValue &clearValues, VkImageAspectFlags aspectMask, const VkRect2D &renderArea);
-	void clear(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkClearRect &renderArea);
+	void clear1a(const VkClearValue &clearValues, VkImageAspectFlags aspectMask, const VkRect2D &renderArea);
+	void clear1b(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkClearRect &renderArea);
 	void clearWithLayerMask(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkRect2D &renderArea, uint32_t layerMask);
 	void resolve(ImageView *resolveAttachment);
 	void resolve(ImageView *resolveAttachment, int layer);

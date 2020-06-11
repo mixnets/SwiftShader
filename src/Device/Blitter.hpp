@@ -141,10 +141,9 @@ public:
 	Blitter();
 	virtual ~Blitter();
 
-	void clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea = nullptr);
+	void clear(vk::Image *dest, void *pixel, vk::Format format, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea = nullptr);
 
-	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter);
-	void blitToBuffer(const vk::Image *src, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int dstPitch);
+	void blitx(vk::Image *dst, const vk::Image *src, VkImageBlit region, VkFilter filter);
 
 	void updateBorders(vk::Image *image, const VkImageSubresourceLayers &subresourceLayers);
 

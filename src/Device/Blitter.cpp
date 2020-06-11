@@ -48,7 +48,7 @@ Blitter::~Blitter()
 {
 }
 
-void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
+void Blitter::clear(vk::Image *dest, void *pixel, vk::Format format, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask);
 	vk::Format dstFormat = viewFormat.getAspectFormat(aspect);
@@ -85,7 +85,7 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		return;
 	}
 
-	VkImageSubresourceLayers subresLayers = {
+	VkImageSubresourceLayers subresourceLayers = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer,
@@ -102,9 +102,9 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		area = *renderArea;
 	}
 
-	for(; subresLayers.mipLevel <= lastMipLevel; subresLayers.mipLevel++)
+	for(; subresourceLayers.mipLevel <= lastMipLevel; subresourceLayers.mipLevel++)
 	{
-		VkExtent3D extent = dest->getMipLevelExtent(aspect, subresLayers.mipLevel);
+		VkExtent3D extent = dest->getMipLevelExtent(aspect, subresourceLayers.mipLevel);
 		if(!renderArea)
 		{
 			area.extent.width = extent.width;
@@ -114,10 +114,10 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		BlitData data = {
 			pixel, nullptr,  // source, dest
 
-			format.bytes(),                                        // sPitchB
-			dest->rowPitchBytes(aspect, subresLayers.mipLevel),    // dPitchB
-			0,                                                     // sSliceB (unused in clear operations)
-			dest->slicePitchBytes(aspect, subresLayers.mipLevel),  // dSliceB
+			format.bytes(),                                             // sPitchB
+			dest->rowPitchBytes(aspect, subresourceLayers.mipLevel),    // dPitchB
+			0,                                                          // sSliceB (unused in clear operations)
+			dest->slicePitchBytes(aspect, subresourceLayers.mipLevel),  // dSliceB
 
 			0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,  // x0, y0, z0, w, h, d
 
@@ -133,21 +133,21 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		if(renderArea && dest->is3DSlice())
 		{
 			// Reinterpret layers as depth slices
-			subresLayers.baseArrayLayer = 0;
-			subresLayers.layerCount = 1;
+			subresourceLayers.baseArrayLayer = 0;
+			subresourceLayers.layerCount = 1;
 			for(uint32_t depth = subresourceRange.baseArrayLayer; depth <= lastLayer; depth++)
 			{
-				data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subresLayers);
+				data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subresourceLayers);
 				blitRoutine(&data);
 			}
 		}
 		else
 		{
-			for(subresLayers.baseArrayLayer = subresourceRange.baseArrayLayer; subresLayers.baseArrayLayer <= lastLayer; subresLayers.baseArrayLayer++)
+			for(subresourceLayers.baseArrayLayer = subresourceRange.baseArrayLayer; subresourceLayers.baseArrayLayer <= lastLayer; subresourceLayers.baseArrayLayer++)
 			{
 				for(uint32_t depth = 0; depth < extent.depth; depth++)
 				{
-					data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subresLayers);
+					data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subresourceLayers);
 
 					blitRoutine(&data);
 				}
@@ -156,18 +156,33 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 	}
 }
 
-bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
+bool Blitter::fastClear(void *data, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea)
 {
-	if(format != VK_FORMAT_R32G32B32A32_SFLOAT)
+	if(format != VK_FORMAT_R32G32B32A32_SFLOAT &&
+	   format != VK_FORMAT_D32_SFLOAT &&
+	   format != VK_FORMAT_S8_UINT)
 	{
 		return false;
 	}
 
-	float *color = (float *)pixel;
-	float r = color[0];
-	float g = color[1];
-	float b = color[2];
-	float a = color[3];
+	union Pixel
+	{
+		float color[4];
+
+		struct
+		{
+			float r32f;
+			float g32f;
+			float b32f;
+			float a32f;
+		};
+
+		float d32f;
+
+		uint8_t s8u;
+	};
+
+	Pixel pixel = *reinterpret_cast<Pixel *>(data);
 
 	uint32_t packed;
 
@@ -175,40 +190,46 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 	switch(viewFormat)
 	{
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
-			packed = ((uint16_t)(31 * b + 0.5f) << 0) |
-			         ((uint16_t)(63 * g + 0.5f) << 5) |
-			         ((uint16_t)(31 * r + 0.5f) << 11);
+			packed = ((uint16_t)(31 * pixel.b32f + 0.5f) << 0) |
+			         ((uint16_t)(63 * pixel.g32f + 0.5f) << 5) |
+			         ((uint16_t)(31 * pixel.r32f + 0.5f) << 11);
 			break;
 		case VK_FORMAT_B5G6R5_UNORM_PACK16:
-			packed = ((uint16_t)(31 * r + 0.5f) << 0) |
-			         ((uint16_t)(63 * g + 0.5f) << 5) |
-			         ((uint16_t)(31 * b + 0.5f) << 11);
+			packed = ((uint16_t)(31 * pixel.r32f + 0.5f) << 0) |
+			         ((uint16_t)(63 * pixel.g32f + 0.5f) << 5) |
+			         ((uint16_t)(31 * pixel.b32f + 0.5f) << 11);
 			break;
 		case VK_FORMAT_A8B8G8R8_UINT_PACK32:
 		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
 		case VK_FORMAT_R8G8B8A8_UNORM:
-			packed = ((uint32_t)(255 * a + 0.5f) << 24) |
-			         ((uint32_t)(255 * b + 0.5f) << 16) |
-			         ((uint32_t)(255 * g + 0.5f) << 8) |
-			         ((uint32_t)(255 * r + 0.5f) << 0);
+			packed = ((uint32_t)(255 * pixel.a32f + 0.5f) << 24) |
+			         ((uint32_t)(255 * pixel.b32f + 0.5f) << 16) |
+			         ((uint32_t)(255 * pixel.g32f + 0.5f) << 8) |
+			         ((uint32_t)(255 * pixel.r32f + 0.5f) << 0);
 			break;
 		case VK_FORMAT_B8G8R8A8_UNORM:
-			packed = ((uint32_t)(255 * a + 0.5f) << 24) |
-			         ((uint32_t)(255 * r + 0.5f) << 16) |
-			         ((uint32_t)(255 * g + 0.5f) << 8) |
-			         ((uint32_t)(255 * b + 0.5f) << 0);
+			packed = ((uint32_t)(255 * pixel.a32f + 0.5f) << 24) |
+			         ((uint32_t)(255 * pixel.r32f + 0.5f) << 16) |
+			         ((uint32_t)(255 * pixel.g32f + 0.5f) << 8) |
+			         ((uint32_t)(255 * pixel.b32f + 0.5f) << 0);
 			break;
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-			packed = R11G11B10F(color);
+			packed = R11G11B10F(pixel.color);
 			break;
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-			packed = RGB9E5(color);
+			packed = RGB9E5(pixel.color);
+			break;
+		case VK_FORMAT_D32_SFLOAT:
+			packed = pixel.d32f;
+			break;
+		case VK_FORMAT_S8_UINT:
+			packed = pixel.s8u | ((uint32_t)pixel.s8u << 8) | ((uint32_t)pixel.s8u << 16) | ((uint32_t)pixel.s8u << 24);
 			break;
 		default:
 			return false;
 	}
 
-	VkImageSubresourceLayers subresLayers = {
+	VkImageSubresourceLayers subresourceLayers = {
 		subresourceRange.aspectMask,
 		subresourceRange.baseMipLevel,
 		subresourceRange.baseArrayLayer,
@@ -224,11 +245,11 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 		area = *renderArea;
 	}
 
-	for(; subresLayers.mipLevel <= lastMipLevel; subresLayers.mipLevel++)
+	for(uint32_t mipLevel = subresourceRange.baseMipLevel; mipLevel <= lastMipLevel; mipLevel++)
 	{
-		int rowPitchBytes = dest->rowPitchBytes(aspect, subresLayers.mipLevel);
-		int slicePitchBytes = dest->slicePitchBytes(aspect, subresLayers.mipLevel);
-		VkExtent3D extent = dest->getMipLevelExtent(aspect, subresLayers.mipLevel);
+		int rowPitchBytes = dest->rowPitchBytes(aspect, mipLevel);
+		int slicePitchBytes = dest->slicePitchBytes(aspect, mipLevel);
+		VkExtent3D extent = dest->getMipLevelExtent(aspect, mipLevel);
 		if(!renderArea)
 		{
 			area.extent.width = extent.width;
@@ -239,12 +260,12 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 			extent.depth = 1;  // The 3D image is instead interpreted as a 2D image with layers
 		}
 
-		for(subresLayers.baseArrayLayer = subresourceRange.baseArrayLayer; subresLayers.baseArrayLayer <= lastLayer; subresLayers.baseArrayLayer++)
+		for(uint32_t arrayLayer = subresourceRange.baseArrayLayer; arrayLayer <= lastLayer; arrayLayer++)
 		{
 			for(uint32_t depth = 0; depth < extent.depth; depth++)
 			{
 				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
-				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subresLayers);
+				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subresourceLayers);
 
 				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
 				{
@@ -252,14 +273,6 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 
 					switch(viewFormat.bytes())
 					{
-						case 2:
-							for(uint32_t i = 0; i < area.extent.height; i++)
-							{
-								ASSERT(d < dest->end());
-								sw::clear((uint16_t *)d, static_cast<uint16_t>(packed), area.extent.width);
-								d += rowPitchBytes;
-							}
-							break;
 						case 4:
 							for(uint32_t i = 0; i < area.extent.height; i++)
 							{
@@ -268,6 +281,23 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 								d += rowPitchBytes;
 							}
 							break;
+						case 2:
+							for(uint32_t i = 0; i < area.extent.height; i++)
+							{
+								ASSERT(d < dest->end());
+								sw::clear((uint16_t *)d, static_cast<uint16_t>(packed), area.extent.width);
+								d += rowPitchBytes;
+							}
+							break;
+						case 1:
+							for(uint32_t i = 0; i < area.extent.height; i++)
+							{
+								ASSERT(d < dest->end());
+								memset(d, packed, area.extent.width);
+								d += rowPitchBytes;
+							}
+							break;
+
 						default:
 							assert(false);
 					}
@@ -1709,26 +1739,7 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 	return cornerUpdateRoutine;
 }
 
-void Blitter::blitToBuffer(const vk::Image *src, VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int dstPitch)
-{
-	auto aspect = VK_IMAGE_ASPECT_COLOR_BIT;
-	auto format = src->getFormat(aspect);
-	int srcPitch = src->rowPitchBytes(aspect, 0);
-	VkImageSubresourceLayers subresourceLayers = { aspect };
-
-	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, subresourceLayers);
-	uint8_t *d = dst;
-
-	for(uint32_t y = 0; y < extent.height; y++)
-	{
-		memcpy(d, s, format.bytes() * extent.width);
-
-		s += srcPitch;
-		d += dstPitch;
-	}
-}
-
-void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
+void Blitter::blitx(vk::Image *dst, const vk::Image *src, VkImageBlit region, VkFilter filter)
 {
 	if(dst->getFormat() == VK_FORMAT_UNDEFINED)
 	{

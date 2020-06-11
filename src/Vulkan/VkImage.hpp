@@ -57,13 +57,13 @@ public:
 	void copyTo(Image *dstImage, const VkImageCopy &pRegion) const;
 	void copyTo(Buffer *dstBuffer, const VkBufferImageCopy &region);
 	void copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region);
+	void copyTo(uint8_t *dst, int dstPitch) const;
 
 	void blit(Image *dstImage, const VkImageBlit &region, VkFilter filter) const;
-	void blitToBuffer(VkOffset3D offset, VkExtent3D extent, uint8_t *dst, int dstPitch) const;
 	void resolve(Image *dstImage, const VkImageResolve &region) const;
-	void clear(const VkClearValue &clearValue, const vk::Format &viewFormat, const VkRect2D &renderArea, const VkImageSubresourceRange &subresourceRange);
-	void clear(const VkClearColorValue &color, const VkImageSubresourceRange &subresourceRange);
-	void clear(const VkClearDepthStencilValue &color, const VkImageSubresourceRange &subresourceRange);
+	void clear1(const VkClearValue &clearValue, const vk::Format &viewFormat, const VkRect2D &renderArea, const VkImageSubresourceRange &subresourceRange);
+	void clear2(const VkClearColorValue &color, const VkImageSubresourceRange &subresourceRange);
+	void clear3(const VkClearDepthStencilValue &color, const VkImageSubresourceRange &subresourceRange);
 
 	VkImageType getImageType() const { return imageType; }
 	const Format &getFormat() const { return format; }
@@ -110,7 +110,7 @@ private:
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFlagBits aspect) const;
 	VkExtent2D bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferImageCopy &region) const;
 	VkFormat getClearFormat() const;
-	void clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea);
+	void clear4(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea);
 	int borderSize() const;
 	void decodeETC2(const VkImageSubresourceRange &subresourceRange) const;
 	void decodeBC(const VkImageSubresourceRange &subresourceRange) const;
