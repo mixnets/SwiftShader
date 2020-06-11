@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f2e2f9f6_787ece84",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-11T18:37:40Z",
+      "side": 1,
+      "message": "Done. I was thinking we wouldn\u0027t want to pay the extra perf cost of calling OutputDebugString if we only want stdout, but I suppose we could just as easily comment out the call to OutputDebugString in that case.",
+      "parentUuid": "c09f4fba_893f0fb7",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 86
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7056aceb_19ba001d",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2020-06-11T01:19:49Z",
       "side": 1,
       "message": "I\u0027d prefer using the REACTOR_ prefix. Can be done later.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 3
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "95b89008_04044609",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-11T18:37:40Z",
+      "side": 1,
+      "message": "So in CMake, the options are called REACTOR_* (e.g. REACTOR_ENABLE_PRINT), but these enable macros like \"ENABLE_RR_DEBUG_INFO\", \"ENABLE_RR_PRINT\", etc. Since this is for ENABLE_RR_PRINT, I went with the RR prefix here.",
+      "parentUuid": "7056aceb_19ba001d",
       "range": {
         "startLine": 14,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "027fe3f9_a00290c4",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-11T18:37:40Z",
+      "side": 1,
+      "message": "Currently, DebugPrintf is only ever called from VPrintf in the backends, and that code, and all related code is currently wrapped up in ifdef ENABLE_RR_PRINT, so I think I\u0027ll leave it like this.",
+      "parentUuid": "9d68f944_888558af",
+      "range": {
+        "startLine": 437,
+        "startChar": 0,
+        "endLine": 437,
+        "endChar": 22
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8eb3d52_8774bdfb",
         "filename": "src/Reactor/Reactor.cpp",
         "patchSetId": 2
@@ -91,6 +163,30 @@
       "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dafcb2b7_cdd03d1f",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-11T18:37:40Z",
+      "side": 1,
+      "message": "Done. Yes, bad merge. Thanks!",
+      "parentUuid": "e8eb3d52_8774bdfb",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
