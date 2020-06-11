@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c09f4fba_893f0fb7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-11T01:19:49Z",
+      "side": 1,
+      "message": "Should we just always print to both instead? I\u0027m not sure there\u0027s a scenario where we only want one of them.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 86
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7056aceb_19ba001d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-11T01:19:49Z",
+      "side": 1,
+      "message": "I\u0027d prefer using the REACTOR_ prefix. Can be done later.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 3
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d68f944_888558af",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-11T01:19:49Z",
+      "side": 1,
+      "message": "This print functionality has a tiny binary size footprint, so I think we can have it always compiled (similar to e.g. rr::Breakpoint() which is only meaningful for debug builds). Doesn\u0027t have to change this patch.",
+      "range": {
+        "startLine": 437,
+        "startChar": 0,
+        "endLine": 437,
+        "endChar": 22
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8eb3d52_8774bdfb",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-11T01:19:49Z",
+      "side": 1,
+      "message": "I removed this recently. Is it necessary to bring it back, or the result of a bad rebase?",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "823f3da8d234c07e69971de8ea017e81e27bfb52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
