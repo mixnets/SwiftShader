@@ -22,6 +22,30 @@
       "revId": "3a6748ab2d6fa3cc968434696e5d26c870d873c9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "673207c8_6baafe70",
+        "filename": "tests/VulkanBenchmarks/VulkanBenchmarks.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 789,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-11T02:54:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5310fcdd_0e4268ff",
+      "range": {
+        "startLine": 788,
+        "startChar": 14,
+        "endLine": 789,
+        "endChar": 4
+      },
+      "revId": "3a6748ab2d6fa3cc968434696e5d26c870d873c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
