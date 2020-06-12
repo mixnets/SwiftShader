@@ -321,6 +321,9 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
+	// The sample count affects the batch size, so it needs initialization even if rasterization is disabled.
+	context.sampleCount = 1;
+
 	const VkPipelineMultisampleStateCreateInfo *multisampleState = pCreateInfo->pMultisampleState;
 	if(multisampleState)
 	{
@@ -355,6 +358,10 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo *pCreateIn
 		if(multisampleState->pSampleMask)
 		{
 			context.sampleMask = multisampleState->pSampleMask[0];
+		}
+		else  // "If pSampleMask is NULL, it is treated as if the mask has all bits set to 1."
+		{
+			context.sampleMask = ~0;
 		}
 
 		context.alphaToCoverage = (multisampleState->alphaToCoverageEnable != VK_FALSE);
