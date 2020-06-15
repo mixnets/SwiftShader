@@ -77,7 +77,9 @@ public:
 	VkExtent3D getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
-	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceLayers &subresource) const;
+	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const;
+	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceLayers &subresourceLayers) const;
+	void *getTexelPointer(const VkOffset3D &offset, const VkImageSubresourceRange &subresourceRange) const;
 	bool isCube() const;
 	bool is3DSlice() const;
 	uint8_t *end() const;
@@ -104,7 +106,7 @@ private:
 	VkDeviceSize getLayerOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer) const;
-	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D &offset, const VkImageSubresourceLayers &subresource) const;
+	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D &offset, const VkImageSubresource &subresource) const;
 	VkDeviceSize getMemoryOffset(VkImageAspectFlagBits aspect) const;
 	VkExtent3D imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFlagBits aspect) const;
 	VkOffset3D imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFlagBits aspect) const;
@@ -112,9 +114,11 @@ private:
 	VkFormat getClearFormat() const;
 	void clear(void *pixelData, VkFormat pixelFormat, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D &renderArea);
 	int borderSize() const;
-	void decodeETC2(const VkImageSubresourceRange &subresourceRange) const;
-	void decodeBC(const VkImageSubresourceRange &subresourceRange) const;
-	void decodeASTC(const VkImageSubresourceRange &subresourceRange) const;
+	void decompress(const VkImageSubresource &subresource);
+	void updateCube(const VkImageSubresource &subresource);
+	void decodeETC2(const VkImageSubresource &subresource);
+	void decodeBC(const VkImageSubresource &subresource);
+	void decodeASTC(const VkImageSubresource &subresource);
 
 	const Device *const device = nullptr;
 	DeviceMemory *deviceMemory = nullptr;
