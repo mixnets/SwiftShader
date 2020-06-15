@@ -15,19 +15,21 @@
 #ifndef VK_BUFFER_HPP_
 #define VK_BUFFER_HPP_
 
-#include "VkObject.hpp"
+#include "DescriptorView.hpp"
+#include "VkDeviceMemory.hpp"
 
 namespace vk {
 
-class DeviceMemory;
-
-class Buffer : public Object<Buffer, VkBuffer>
+class Buffer : public Object<Buffer, VkBuffer>, public DescriptorView
 {
 public:
 	Buffer(const VkBufferCreateInfo *pCreateInfo, void *mem);
+	virtual ~Buffer() {}
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkBufferCreateInfo *pCreateInfo);
+
+	void notify(DescriptorView::AccessType accessType) override { deviceMemory->notify(accessType); }
 
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset);
@@ -49,6 +51,8 @@ private:
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
 	uint32_t *queueFamilyIndices = nullptr;
+
+	DeviceMemory *deviceMemory = nullptr;
 
 	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 };

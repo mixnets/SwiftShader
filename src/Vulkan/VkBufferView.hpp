@@ -15,23 +15,27 @@
 #ifndef VK_BUFFER_VIEW_HPP_
 #define VK_BUFFER_VIEW_HPP_
 
+#include "DescriptorView.hpp"
+#include "VkBuffer.hpp"
 #include "VkFormat.hpp"
 #include "VkImageView.hpp"
-#include "VkObject.hpp"
 
 namespace vk {
 
 class Buffer;
 
-class BufferView : public Object<BufferView, VkBufferView>
+class BufferView : public Object<BufferView, VkBufferView>, public DescriptorView
 {
 public:
 	BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem);
+	virtual ~BufferView() {}
 
 	static size_t ComputeRequiredAllocationSize(const VkBufferViewCreateInfo *pCreateInfo)
 	{
 		return 0;
 	}
+
+	void notify(DescriptorView::AccessType accessType) override { buffer->notify(accessType); }
 
 	void *getPointer() const;
 	uint32_t getElementCount() const { return static_cast<uint32_t>(range / Format(format).bytes()); }
