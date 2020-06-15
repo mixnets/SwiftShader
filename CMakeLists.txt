@@ -14,9 +14,23 @@
 
 cmake_minimum_required(VERSION 3.13)
 
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 set(CMAKE_CXX_STANDARD 14)
+=======
+include(cmake/parse_version.cmake)
+parse_version("${CMAKE_CURRENT_SOURCE_DIR}/VERSION" MARL)
 
+set(CMAKE_CXX_STANDARD 11)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
+
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 project(SwiftShader C CXX ASM)
+=======
+project(Marl
+    VERSION   "${MARL_VERSION_MAJOR}.${MARL_VERSION_MINOR}.${MARL_VERSION_PATCH}"
+    LANGUAGES C CXX ASM
+)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
 
 ###########################################################
 # Detect system
@@ -90,6 +104,7 @@ find_library(XCB xcb)
 ###########################################################
 # Options
 ###########################################################
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
@@ -97,12 +112,34 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 function (option_if_not_defined name description default)
+=======
+function(option_if_not_defined name description default)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
     if(NOT DEFINED ${name})
         option(${name} ${description} ${default})
     endif()
 endfunction()
 
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 function (set_if_not_defined name value)
+=======
+option_if_not_defined(MARL_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option_if_not_defined(MARL_BUILD_EXAMPLES "Build example applications" OFF)
+option_if_not_defined(MARL_BUILD_TESTS "Build tests" OFF)
+option_if_not_defined(MARL_BUILD_BENCHMARKS "Build benchmarks" OFF)
+option_if_not_defined(MARL_BUILD_SHARED "Build marl as a shared / dynamic library (default static)" OFF)
+option_if_not_defined(MARL_ASAN "Build marl with address sanitizer" OFF)
+option_if_not_defined(MARL_MSAN "Build marl with memory sanitizer" OFF)
+option_if_not_defined(MARL_TSAN "Build marl with thread sanitizer" OFF)
+option_if_not_defined(MARL_INSTALL "Create marl install target" OFF)
+option_if_not_defined(MARL_FULL_BENCHMARK "Run benchmarks for [0 .. numLogicalCPUs] with no stepping" OFF)
+option_if_not_defined(MARL_DEBUG_ENABLED "Enable debug checks even in release builds" OFF)
+
+###########################################################
+# Directories
+###########################################################
+function(set_if_not_defined name value)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
     if(NOT DEFINED ${name})
         set(${name} ${value} PARENT_SCOPE)
     endif()
@@ -549,13 +586,86 @@ set(USE_EXCEPTIONS
     ${REACTOR_EMIT_DEBUG_INFO} # boost::stacktrace uses exceptions
 )
 if(NOT MSVC)
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
     if (${USE_EXCEPTIONS})
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fexceptions")
+=======
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+    )
+endif(NOT MSVC)
+
+###########################################################
+# OS libraries
+###########################################################
+find_package(Threads REQUIRED)
+
+###########################################################
+# Functions
+###########################################################
+function(marl_set_target_options target)
+    if(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+        target_compile_options(${target} PRIVATE "-Wthread-safety")
+    endif()
+
+    # Enable all warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE
+            "-W4"
+            "/wd4127" # conditional expression is constant
+        )
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
     else()
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fno-exceptions")
     endif()
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 endif()
 unset(USE_EXCEPTIONS)
+=======
+
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} PUBLIC "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} PUBLIC "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} PUBLIC "-fsanitize=thread")
+    endif()
+
+    if(MARL_DEBUG_ENABLED)
+        target_compile_definitions(${target} PRIVATE "MARL_DEBUG_ENABLED=1")
+    endif()
+
+    target_include_directories(${target} PUBLIC $<BUILD_INTERFACE:${MARL_INCLUDE_DIR}>)
+endfunction(marl_set_target_options)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
 
 ###########################################################
 # libbacktrace and boost
@@ -578,6 +688,7 @@ add_subdirectory(${THIRD_PARTY_DIR}/subzero EXCLUDE_FROM_ALL)
 
 ###########################################################
 # marl
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 ###########################################################
 if(BUILD_MARL)
     set(MARL_THIRD_PARTY_DIR ${THIRD_PARTY_DIR})
@@ -664,6 +775,18 @@ target_link_libraries(gl_swiftshader_core INTERFACE
     # Transitively depends on shader, main, core, Reactor,
     # OS_LIBS and SWIFTSHADER_LIBS
     gl_renderer
+=======
+if(MARL_BUILD_SHARED) # Can also be controlled by BUILD_SHARED_LIBS
+    add_library(marl SHARED ${MARL_LIST})
+else()
+    add_library(marl ${MARL_LIST})
+endif()
+
+set_target_properties(marl PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    VERSION ${MARL_VERSION}
+    SOVERSION "${MARL_VERSION_MAJOR}"
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
 )
 
 add_subdirectory(src/OpenGL/common EXCLUDE_FROM_ALL) # Add libGLESCommon target
@@ -802,6 +925,7 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
         OpenGLESSkinning
     )
 
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
     set(PVR_TARGET_OTHER
         glslang
         glslangValidator
@@ -822,6 +946,32 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
         spirv-remap
         SPVRemapper
         uninstall
+=======
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/marl-config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marl
+    )
+endif(MARL_INSTALL)
+
+# tests
+if(MARL_BUILD_TESTS)
+    set(MARL_TEST_LIST
+        ${MARL_SRC_DIR}/blockingcall_test.cpp
+        ${MARL_SRC_DIR}/conditionvariable_test.cpp
+        ${MARL_SRC_DIR}/containers_test.cpp
+        ${MARL_SRC_DIR}/defer_test.cpp
+        ${MARL_SRC_DIR}/event_test.cpp
+        ${MARL_SRC_DIR}/marl_test.cpp
+        ${MARL_SRC_DIR}/marl_test.h
+        ${MARL_SRC_DIR}/memory_test.cpp
+        ${MARL_SRC_DIR}/osfiber_test.cpp
+        ${MARL_SRC_DIR}/parallelize_test.cpp
+        ${MARL_SRC_DIR}/pool_test.cpp
+        ${MARL_SRC_DIR}/scheduler_test.cpp
+        ${MARL_SRC_DIR}/thread_test.cpp
+        ${MARL_SRC_DIR}/ticket_test.cpp
+        ${MARL_SRC_DIR}/waitgroup_test.cpp
+        ${MARL_GOOGLETEST_DIR}/googletest/src/gtest-all.cc
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
     )
 
     set(PVR_VULKAN_TARGET
@@ -859,11 +1009,20 @@ if(SWIFTSHADER_BUILD_TESTS)
     add_subdirectory(${TESTS_DIR}/SystemUnitTests) # Add system-unittests target
 endif()
 
+<<<<<<< HEAD   (7e24d3 Repoint marl branch from master to main)
 if(SWIFTSHADER_BUILD_BENCHMARKS)
     if (NOT TARGET benchmark::benchmark)
         set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
         add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
     endif()
+=======
+    target_compile_definitions(marl-benchmarks PRIVATE
+        "MARL_FULL_BENCHMARK=${MARL_FULL_BENCHMARK}"
+    )
+
+    target_link_libraries(marl-benchmarks PRIVATE benchmark::benchmark marl)
+endif(MARL_BUILD_BENCHMARKS)
+>>>>>>> BRANCH (1e6233 Squashed 'third_party/marl/' changes from 38c0c7a0f..c512711)
 
     if (NOT TARGET glslang)
         add_subdirectory(${THIRD_PARTY_DIR}/glslang)
