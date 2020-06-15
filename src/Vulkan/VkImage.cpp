@@ -430,8 +430,8 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 		}
 	}
 
-	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
-	                               region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
+	dstImage->markDirty({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
+	                      region.dstSubresource.baseArrayLayer, region.dstSubresource.layerCount });
 }
 
 void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource)
@@ -559,8 +559,8 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 
 	if(bufferIsSource)
 	{
-		prepareForSampling({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
-		                     region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
+		markDirty({ region.imageSubresource.aspectMask, region.imageSubresource.mipLevel, 1,
+		            region.imageSubresource.baseArrayLayer, region.imageSubresource.layerCount });
 	}
 }
 
@@ -889,15 +889,6 @@ const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
 void Image::blitTo(Image *dstImage, const VkImageBlit &region, VkFilter filter) const
 {
 	device->getBlitter()->blit(this, dstImage, region, filter);
-
-	VkImageSubresourceRange subresourceRange = {
-		region.dstSubresource.aspectMask,
-		region.dstSubresource.mipLevel,
-		1,
-		region.dstSubresource.baseArrayLayer,
-		region.dstSubresource.layerCount
-	};
-	dstImage->prepareForSampling(subresourceRange);
 }
 
 void Image::copyTo(uint8_t *dst, unsigned int dstPitch) const
@@ -1011,7 +1002,30 @@ void Image::clear(const VkClearValue &clearValue, const vk::Format &viewFormat, 
 	}
 }
 
-void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
+bool Image::requiresNotifications() const
+{
+	return (isCube() && (arrayLayers >= 6)) || decompressedImage;
+}
+
+void Image::notify(AccessType accessType, const VkImageSubresourceRange &subresourceRange)
+{
+	if(!requiresNotifications())
+	{
+		return;
+	}
+
+	if(accessType & READ_ACCESS)
+	{
+		prepareForReadAccess(subresourceRange);
+	}
+	else if((accessType & WRITE_ACCESS) &&
+	        (usage & VK_IMAGE_USAGE_STORAGE_BIT))  // The image must have write access enabled
+	{
+		markDirty(subresourceRange);
+	}
+}
+
+void Image::markDirty(const VkImageSubresourceRange &subresourceRange)
 {
 	uint32_t lastLayer = getLastLayerIndex(subresourceRange);
 	uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
@@ -1022,6 +1036,33 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 		subresourceRange.baseArrayLayer
 	};
 
+	marl::lock lock(mutex);
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+	    subresource.arrayLayer <= lastLayer;
+	    subresource.arrayLayer++)
+	{
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+		    subresource.mipLevel <= lastMipLevel;
+		    subresource.mipLevel++)
+		{
+			dirtySubresources.insert(subresource);
+		}
+	}
+}
+
+void Image::prepareForReadAccess(const VkImageSubresourceRange &subresourceRange)
+{
+	uint32_t lastLayer = getLastLayerIndex(subresourceRange);
+	uint32_t lastMipLevel = getLastMipLevel(subresourceRange);
+
+	VkImageSubresource subresource = {
+		subresourceRange.aspectMask,
+		subresourceRange.baseMipLevel,
+		subresourceRange.baseArrayLayer
+	};
+
+	marl::lock lock(mutex);
+
 	// First, decompress all relevant dirty subregions
 	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
 	    subresource.arrayLayer <= lastLayer;
@@ -1031,17 +1072,62 @@ void Image::prepareForSampling(const VkImageSubresourceRange &subresourceRange)
 		    subresource.mipLevel <= lastMipLevel;
 		    subresource.mipLevel++)
 		{
-			decompress(subresource);
+			auto it = dirtySubresources.find(subresource);
+			if(it != dirtySubresources.end())
+			{
+				decompress(subresource);
+			}
 		}
 	}
 
 	// Second, update cubemap borders
-	subresource.arrayLayer = subresourceRange.baseArrayLayer;
-	for(subresource.mipLevel = subresourceRange.baseMipLevel;
-	    subresource.mipLevel <= lastMipLevel;
-	    subresource.mipLevel++)
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+	    subresource.arrayLayer <= lastLayer;
+	    subresource.arrayLayer++)
 	{
-		updateCube(subresource);
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+		    subresource.mipLevel <= lastMipLevel;
+		    subresource.mipLevel++)
+		{
+			auto it = dirtySubresources.find(subresource);
+			if(it != dirtySubresources.end())
+			{
+				if(updateCube(subresource))
+				{
+					// updateCube() updates all layers of all cubemaps at once, so remove entries to avoid duplicating effort
+					VkImageSubresource cleanSubresource = subresource;
+					for(cleanSubresource.arrayLayer = 0; cleanSubresource.arrayLayer < arrayLayers - 5;)
+					{
+						// Delete one cube's worth of dirty subregions
+						for(uint32_t i = 0; i < 6; i++, cleanSubresource.arrayLayer++)
+						{
+							auto it = dirtySubresources.find(cleanSubresource);
+							if(it != dirtySubresources.end())
+							{
+								dirtySubresources.erase(it);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Finally, mark all updated subregions clean
+	for(subresource.arrayLayer = subresourceRange.baseArrayLayer;
+	    subresource.arrayLayer <= lastLayer;
+	    subresource.arrayLayer++)
+	{
+		for(subresource.mipLevel = subresourceRange.baseMipLevel;
+		    subresource.mipLevel <= lastMipLevel;
+		    subresource.mipLevel++)
+		{
+			auto it = dirtySubresources.find(subresource);
+			if(it != dirtySubresources.end())
+			{
+				dirtySubresources.erase(it);
+			}
+		}
 	}
 }
 
@@ -1131,7 +1217,7 @@ void Image::decompress(const VkImageSubresource &subresource)
 	}
 }
 
-void Image::updateCube(const VkImageSubresource &subres)
+bool Image::updateCube(const VkImageSubresource &subres)
 {
 	if(isCube() && (arrayLayers >= 6))
 	{
@@ -1143,7 +1229,11 @@ void Image::updateCube(const VkImageSubresource &subres)
 		{
 			device->getBlitter()->updateBorders(decompressedImage ? decompressedImage : this, subresource);
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
 void Image::decodeETC2(const VkImageSubresource &subresource)

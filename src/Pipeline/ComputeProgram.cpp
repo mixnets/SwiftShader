@@ -217,6 +217,11 @@ void ComputeProgram::run(
 	auto invocationsPerWorkgroup = modes.WorkgroupSizeX * modes.WorkgroupSizeY * modes.WorkgroupSizeZ;
 	auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
+	for(auto descriptorSet : descriptorSets)
+	{
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::READ_ACCESS);
+	}
+
 	Data data;
 	data.descriptorSets = descriptorSets;
 	data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -297,6 +302,14 @@ void ComputeProgram::run(
 	}
 
 	wg.wait();
+
+	if(shader->containsImageWrite())
+	{
+		for(auto descriptorSet : descriptorSets)
+		{
+			vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::WRITE_ACCESS);
+		}
+	}
 }
 
 }  // namespace sw
