@@ -217,6 +217,11 @@ void ComputeProgram::run(
 	auto invocationsPerWorkgroup = modes.WorkgroupSizeX * modes.WorkgroupSizeY * modes.WorkgroupSizeZ;
 	auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
+	for(auto descriptorSet : descriptorSets)
+	{
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::DescriptorView::READ_ACCESS);
+	}
+
 	Data data;
 	data.descriptorSets = descriptorSets;
 	data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -297,6 +302,11 @@ void ComputeProgram::run(
 	}
 
 	wg.wait();
+
+	for(auto descriptorSet : descriptorSets)
+	{
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::DescriptorView::READ_ACCESS);
+	}
 }
 
 }  // namespace sw
