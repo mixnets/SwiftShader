@@ -749,7 +749,7 @@ private:
 class CmdImageToImageCopy : public vk::CommandBuffer::Command
 {
 public:
-	CmdImageToImageCopy(const vk::Image *srcImage, vk::Image *dstImage, const VkImageCopy &region)
+	CmdImageToImageCopy(vk::Image *srcImage, vk::Image *dstImage, const VkImageCopy &region)
 	    : srcImage(srcImage)
 	    , dstImage(dstImage)
 	    , region(region)
@@ -764,7 +764,7 @@ public:
 	std::string description() override { return "vkCmdImageToImageCopy()"; }
 
 private:
-	const vk::Image *srcImage;
+	vk::Image *srcImage;
 	vk::Image *dstImage;
 	const VkImageCopy region;
 };
@@ -960,7 +960,7 @@ private:
 class CmdBlitImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdBlitImage(const vk::Image *srcImage, vk::Image *dstImage, const VkImageBlit &region, VkFilter filter)
+	CmdBlitImage(vk::Image *srcImage, vk::Image *dstImage, const VkImageBlit &region, VkFilter filter)
 	    : srcImage(srcImage)
 	    , dstImage(dstImage)
 	    , region(region)
@@ -976,7 +976,7 @@ public:
 	std::string description() override { return "vkCmdBlitImage()"; }
 
 private:
-	const vk::Image *srcImage;
+	vk::Image *srcImage;
 	vk::Image *dstImage;
 	VkImageBlit region;
 	VkFilter filter;
@@ -985,7 +985,7 @@ private:
 class CmdResolveImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdResolveImage(const vk::Image *srcImage, vk::Image *dstImage, const VkImageResolve &region)
+	CmdResolveImage(vk::Image *srcImage, vk::Image *dstImage, const VkImageResolve &region)
 	    : srcImage(srcImage)
 	    , dstImage(dstImage)
 	    , region(region)
@@ -1000,7 +1000,7 @@ public:
 	std::string description() override { return "vkCmdBlitImage()"; }
 
 private:
-	const vk::Image *srcImage;
+	vk::Image *srcImage;
 	vk::Image *dstImage;
 	VkImageResolve region;
 };
@@ -1612,7 +1612,7 @@ void CommandBuffer::copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint3
 	}
 }
 
-void CommandBuffer::copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+void CommandBuffer::copyImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
                               uint32_t regionCount, const VkImageCopy *pRegions)
 {
 	ASSERT(state == RECORDING);
@@ -1627,7 +1627,7 @@ void CommandBuffer::copyImage(const Image *srcImage, VkImageLayout srcImageLayou
 	}
 }
 
-void CommandBuffer::blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+void CommandBuffer::blitImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
                               uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter)
 {
 	ASSERT(state == RECORDING);
@@ -1715,7 +1715,7 @@ void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAtta
 	}
 }
 
-void CommandBuffer::resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+void CommandBuffer::resolveImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
                                  uint32_t regionCount, const VkImageResolve *pRegions)
 {
 	ASSERT(state == RECORDING);

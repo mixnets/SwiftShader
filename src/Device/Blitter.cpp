@@ -135,9 +135,10 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 			subres.arrayLayer = 0;
 			for(uint32_t depth = subresourceRange.baseArrayLayer; depth <= lastLayer; depth++)
 			{
-				data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subres);
+				data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subres, false);
 				blitRoutine(&data);
 			}
+			dest->markDirty(subres);
 		}
 		else
 		{
@@ -145,10 +146,11 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 			{
 				for(uint32_t depth = 0; depth < extent.depth; depth++)
 				{
-					data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subres);
+					data.dest = dest->getTexelPointer({ 0, 0, static_cast<int32_t>(depth) }, subres, false);
 
 					blitRoutine(&data);
 				}
+				dest->markDirty(subres);
 			}
 		}
 	}
@@ -241,7 +243,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 			for(uint32_t depth = 0; depth < extent.depth; depth++)
 			{
 				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
-				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subres);
+				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subres, false);
 
 				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
 				{
@@ -272,6 +274,7 @@ bool Blitter::fastClear(void *pixel, vk::Format format, vk::Image *dest, const v
 					slice += slicePitchBytes;
 				}
 			}
+			dest->markDirty(subres);
 		}
 	}
 
@@ -1706,14 +1709,15 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 	return cornerUpdateRoutine;
 }
 
-void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
+void Blitter::copy(vk::Image *src, uint8_t *dst, unsigned int dstPitch)
 {
 	VkExtent3D extent = src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes() * extent.width;
 	unsigned int srcPitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 	ASSERT(dstPitch >= rowBytes && srcPitch >= rowBytes && src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0).height >= extent.height);
 
-	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 });
+	VkImageSubresource subresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 };
+	const uint8_t *s = (uint8_t *)src->getTexelPointer({0, 0, 0}, subresource, false);
 	uint8_t *d = dst;
 
 	for(uint32_t y = 0; y < extent.height; y++)
@@ -1725,7 +1729,7 @@ void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
 	}
 }
 
-void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
+void Blitter::blit(vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
 {
 	if(dst->getFormat() == VK_FORMAT_UNDEFINED)
 	{
@@ -1848,13 +1852,15 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 
 	for(; dstSubres.arrayLayer <= lastLayer; srcSubres.arrayLayer++, dstSubres.arrayLayer++)
 	{
-		data.source = src->getTexelPointer({ 0, 0, 0 }, srcSubres);
-		data.dest = dst->getTexelPointer({ 0, 0, 0 }, dstSubres);
+		data.source = src->getTexelPointer({ 0, 0, 0 }, srcSubres, true);
+		data.dest = dst->getTexelPointer({ 0, 0, 0 }, dstSubres, false);
 
 		ASSERT(data.source < src->end());
 		ASSERT(data.dest < dst->end());
 
 		blitRoutine(&data);
+
+		dst->markDirty(dstSubres);
 	}
 }
 
@@ -1973,7 +1979,8 @@ void Blitter::updateBorders(vk::Image *image, const VkImageSubresource &subresou
 
 	VkExtent3D extent = image->getMipLevelExtent(aspect, subresource.mipLevel);
 	CubeBorderData data = {
-		image->getTexelPointer({ 0, 0, 0 }, posX),
+		// We're going to read from this memory, but we want it raw, not prepared, so we mark prepareForReadAccessNow as false
+		image->getTexelPointer({ 0, 0, 0 }, posX, false),
 		image->rowPitchBytes(aspect, subresource.mipLevel),
 		static_cast<uint32_t>(image->getLayerSize(aspect)),
 		extent.width
@@ -2035,8 +2042,9 @@ void Blitter::copyCubeEdge(vk::Image *image,
 		dstOffset.y += reverse ? h : 1;
 	}
 
-	const uint8_t *src = static_cast<const uint8_t *>(image->getTexelPointer(srcOffset, srcSubresource));
-	uint8_t *dst = static_cast<uint8_t *>(image->getTexelPointer(dstOffset, dstSubresource));
+	// We're going to read from this memory, but we want it raw, not prepared, so we mark prepareForReadAccessNow as false
+	const uint8_t *src = static_cast<const uint8_t *>(image->getTexelPointer(srcOffset, srcSubresource, false));
+	uint8_t *dst = static_cast<uint8_t *>(image->getTexelPointer(dstOffset, dstSubresource, false));
 	ASSERT((src < image->end()) && ((src + (w * srcDelta)) < image->end()));
 	ASSERT((dst < image->end()) && ((dst + (w * dstDelta)) < image->end()));
 

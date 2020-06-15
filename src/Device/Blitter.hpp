@@ -143,8 +143,8 @@ public:
 
 	void clear(void *pixel, vk::Format format, vk::Image *dest, const vk::Format &viewFormat, const VkImageSubresourceRange &subresourceRange, const VkRect2D *renderArea = nullptr);
 
-	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter);
-	void copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch);
+	void blit(vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter);
+	void copy(vk::Image *src, uint8_t *dst, unsigned int dstPitch);
 
 	void updateBorders(vk::Image *image, const VkImageSubresource &subresource);
 
