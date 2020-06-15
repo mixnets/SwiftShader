@@ -44,6 +44,7 @@ DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo *pCreateInfo, vo
 
 void DescriptorPool::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	reset();
 	vk::deallocate(pool, pAllocator);
 }
 
@@ -143,7 +144,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		{
 			for(uint32_t i = 0; i < numAllocs; i++)
 			{
-				pDescriptorSets[i] = asDescriptorSet(memory);
+				pDescriptorSets[i] = *(new(memory) DescriptorSet());
 				nodes.insert(Node(memory, sizes[i]));
 				memory += sizes[i];
 			}
@@ -158,7 +159,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		uint8_t *memory = findAvailableMemory(sizes[i]);
 		if(memory)
 		{
-			pDescriptorSets[i] = asDescriptorSet(memory);
+			pDescriptorSets[i] = *(new(memory) DescriptorSet());
 		}
 		else
 		{
@@ -189,6 +190,11 @@ void DescriptorPool::freeSets(uint32_t descriptorSetCount, const VkDescriptorSet
 
 void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 {
+	if(descriptorSet != VK_NULL_HANDLE)
+	{
+		vk::Cast(descriptorSet)->header.freeMemoryOwners();
+	}
+
 	const auto itEnd = nodes.end();
 	auto it = std::find(nodes.begin(), itEnd, asMemory(descriptorSet));
 	if(it != itEnd)
@@ -199,6 +205,10 @@ void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 
 VkResult DescriptorPool::reset()
 {
+	for(auto node : nodes)
+	{
+		vk::Cast(asDescriptorSet(node.set))->header.freeMemoryOwners();
+	}
 	nodes.clear();
 
 	return VK_SUCCESS;
