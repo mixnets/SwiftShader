@@ -297,6 +297,14 @@ void ComputeProgram::run(
 	}
 
 	wg.wait();
+
+	if(shader->containsImageWrite())
+	{
+		for(auto descriptorSet : descriptorSets)
+		{
+			vk::DescriptorSetLayout::ContentsChanged(descriptorSet);
+		}
+	}
 }
 
 }  // namespace sw
