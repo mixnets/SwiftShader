@@ -20,6 +20,8 @@
 #include "VkImageView.hpp"
 #include "VkSampler.hpp"
 
+#include "Reactor/Reactor.hpp"
+
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
@@ -31,6 +33,33 @@ static bool UsesImmutableSamplers(const VkDescriptorSetLayoutBinding &binding)
 	return (((binding.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER) ||
 	         (binding.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)) &&
 	        (binding.pImmutableSamplers != nullptr));
+}
+
+static bool IsReadOnlyResource(VkDescriptorType descriptorType)
+{
+	switch(descriptorType)
+	{
+		case VK_DESCRIPTOR_TYPE_SAMPLER:
+		case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+		case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+		case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+		case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+		case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+		case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+		case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT:
+		case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR:  // Same as VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV
+			return true;
+		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+		case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+		case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+		case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+			return false;
+		default:
+			UNSUPPORTED("Unsupported Descriptor Type: %d", int(descriptorType));
+			break;
+	}
+
+	return false;
 }
 
 DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *pCreateInfo, void *mem)
@@ -128,7 +157,7 @@ uint32_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 		case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
 			return static_cast<uint32_t>(sizeof(BufferDescriptor));
 		default:
-			UNSUPPORTED("Unsupported Descriptor Type");
+			UNSUPPORTED("Unsupported Descriptor Type: %d", int(type));
 			return 0;
 	}
 }
@@ -142,7 +171,7 @@ bool DescriptorSetLayout::IsDescriptorDynamic(VkDescriptorType type)
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a header with a pointer to the layout.
-	return sw::align<alignof(DescriptorSet)>(offsetof(DescriptorSet, data) + getDescriptorSetDataSize());
+	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + getDescriptorSetDataSize());
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const
@@ -158,6 +187,8 @@ size_t DescriptorSetLayout::getDescriptorSetDataSize() const
 
 void DescriptorSetLayout::initialize(DescriptorSet *descriptorSet)
 {
+	ASSERT(descriptorSet->header.layout == nullptr);
+
 	// Use a pointer to this descriptor set layout as the descriptor set's header
 	descriptorSet->header.layout = this;
 	uint8_t *mem = descriptorSet->data;
@@ -256,6 +287,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	size_t typeSize = 0;
 	uint8_t *memToWrite = dstLayout->getDescriptorPointer(dstSet, entry.dstBinding, entry.dstArrayElement, entry.descriptorCount, &typeSize);
 
+	bool readOnlyResource = IsReadOnlyResource(entry.descriptorType);
+
 	ASSERT(reinterpret_cast<intptr_t>(memToWrite) % 16 == 0);  // Each descriptor must be 16-byte aligned.
 
 	if(entry.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER)
@@ -343,6 +376,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			imageSampler[i].swizzle = imageView->getComponentMapping();
 			imageSampler[i].format = format;
 			imageSampler[i].device = device;
+			imageSampler[i].memoryOwner.view = imageView;
+			imageSampler[i].memoryOwner.readOnly = readOnlyResource;
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 
@@ -436,6 +471,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			descriptor[i].sampleCount = imageView->getSampleCount();
 			descriptor[i].sizeInBytes = static_cast<int>(imageView->getSizeInBytes());
+			descriptor[i].memoryOwner.view = imageView;
+			descriptor[i].memoryOwner.readOnly = readOnlyResource;
 
 			if(imageView->getFormat().isStencil())
 			{
