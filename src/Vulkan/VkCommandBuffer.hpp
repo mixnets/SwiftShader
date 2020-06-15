@@ -103,9 +103,9 @@ public:
 	void dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
 	void dispatchIndirect(Buffer *buffer, VkDeviceSize offset);
 	void copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions);
-	void copyImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	void copyImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	               uint32_t regionCount, const VkImageCopy *pRegions);
-	void blitImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	void blitImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	               uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter);
 	void copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImageLayout dstImageLayout,
 	                       uint32_t regionCount, const VkBufferImageCopy *pRegions);
@@ -119,7 +119,7 @@ public:
 	                            uint32_t rangeCount, const VkImageSubresourceRange *pRanges);
 	void clearAttachments(uint32_t attachmentCount, const VkClearAttachment *pAttachments,
 	                      uint32_t rectCount, const VkClearRect *pRects);
-	void resolveImage(const Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
+	void resolveImage(Image *srcImage, VkImageLayout srcImageLayout, Image *dstImage, VkImageLayout dstImageLayout,
 	                  uint32_t regionCount, const VkImageResolve *pRegions);
 	void setEvent(Event *event, VkPipelineStageFlags stageMask);
 	void resetEvent(Event *event, VkPipelineStageFlags stageMask);
