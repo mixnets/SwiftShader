@@ -143,7 +143,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		{
 			for(uint32_t i = 0; i < numAllocs; i++)
 			{
-				pDescriptorSets[i] = asDescriptorSet(memory);
+				pDescriptorSets[i] = *(new(memory) DescriptorSet());
 				nodes.insert(Node(memory, sizes[i]));
 				memory += sizes[i];
 			}
@@ -158,7 +158,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		uint8_t *memory = findAvailableMemory(sizes[i]);
 		if(memory)
 		{
-			pDescriptorSets[i] = asDescriptorSet(memory);
+			pDescriptorSets[i] = *(new(memory) DescriptorSet());
 		}
 		else
 		{
