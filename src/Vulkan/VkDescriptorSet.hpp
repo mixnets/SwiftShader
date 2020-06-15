@@ -16,18 +16,46 @@
 #define VK_DESCRIPTOR_SET_HPP_
 
 // Intentionally not including VkObject.hpp here due to b/127920555
+#include "VkConfig.hpp"
+#include "Vulkan/VulkanPlatform.hpp"
 
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <vector>
+
+#include "marl/mutex.h"
 
 namespace vk {
 
 class DescriptorSetLayout;
+class ImageView;
+
+class DescriptorSetMetaData
+{
+public:
+	DescriptorSetMetaData(DescriptorSetLayout *layout);
+	void increment(uint32_t &bindingNumber, uint32_t &arrayElement) const;
+	void prepareForSampling();
+	void contentsChanged();
+	void storeMetaData(uint32_t bindingNumber, uint32_t arrayElement, ImageView *imageView, bool readOnly);
+	void copyTo(uint32_t descriptorCount, uint32_t srcBinding, uint32_t srcArrayElement, uint32_t dstBinding, uint32_t dstArrayElement, DescriptorSetMetaData *dstSet);
+
+private:
+	struct MetaDatum
+	{
+		ImageView *view = nullptr;
+		bool readOnly = false;
+	};
+
+	marl::mutex mutex;
+	std::vector<std::vector<MetaDatum> > data GUARDED_BY(mutex);
+};
 
 struct alignas(16) DescriptorSetHeader
 {
 	DescriptorSetLayout *layout;
+	DescriptorSetMetaData *metadata;
 };
 
 class alignas(16) DescriptorSet
@@ -38,6 +66,15 @@ public:
 		return static_cast<DescriptorSet *>(static_cast<void *>(object));
 	}
 
+	void init();
+	void destroyMetadata();
+	void increment(uint32_t &bindingNumber, uint32_t &arrayElement);
+	void prepareForSampling() const;
+	void contentsChanged() const;
+	void storeMetaData(uint32_t bindingNumber, uint32_t arrayElement, ImageView *imageView, bool readOnly);
+	void copyMetadata(uint32_t descriptorCount, uint32_t srcBinding, uint32_t srcArrayElement, uint32_t dstBinding, uint32_t dstArrayElement, DescriptorSet *dstSet) const;
+
+	using Array = std::array<DescriptorSet *, vk::MAX_BOUND_DESCRIPTOR_SETS>;
 	using Bindings = std::array<uint8_t *, vk::MAX_BOUND_DESCRIPTOR_SETS>;
 	using DynamicOffsets = std::array<uint32_t, vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC>;
 
