@@ -219,7 +219,7 @@ void ComputeProgram::run(
 
 	for(auto descriptorSet : descriptorSets)
 	{
-		vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::READ_ACCESS);
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::DescriptorView::READ_ACCESS);
 	}
 
 	Data data;
@@ -303,12 +303,12 @@ void ComputeProgram::run(
 
 	wg.wait();
 
-	if(shader->containsImageWrite())
+	vk::DescriptorView::AccessType accessType =
+	    shader->containsImageWrite() ? vk::DescriptorView::WRITE_ANY_ACCESS : vk::DescriptorView::WRITE_BUFFER_ACCESS;
+
+	for(auto descriptorSet : descriptorSets)
 	{
-		for(auto descriptorSet : descriptorSets)
-		{
-			vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::WRITE_ACCESS);
-		}
+		vk::DescriptorSetLayout::Notify(descriptorSet, accessType);
 	}
 }
 

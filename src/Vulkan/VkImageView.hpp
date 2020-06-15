@@ -57,7 +57,7 @@ union Identifier
 	};
 };
 
-class ImageView : public Object<ImageView, VkImageView>
+class ImageView : public Object<ImageView, VkImageView>, public DescriptorView
 {
 public:
 	// Image usage:
@@ -70,12 +70,13 @@ public:
 	};
 
 	ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
+	virtual ~ImageView() {}
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo);
 
-	bool requiresNotifications() const { return image->requiresNotifications(); }
-	void notify(Image::AccessType accessType) { image->notify(accessType, subresourceRange); }
+	bool requiresNotifications() const override { return image->requiresNotifications(); }
+	void notify(DescriptorView::AccessType accessType) override { image->notify(accessType, subresourceRange); }
 
 	void clear(const VkClearValue &clearValues, VkImageAspectFlags aspectMask, const VkRect2D &renderArea);
 	void clear(const VkClearValue &clearValue, VkImageAspectFlags aspectMask, const VkClearRect &renderArea);

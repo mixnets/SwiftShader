@@ -15,6 +15,7 @@
 #ifndef VK_IMAGE_HPP_
 #define VK_IMAGE_HPP_
 
+#include "DescriptorView.hpp"
 #include "VkFormat.hpp"
 #include "VkObject.hpp"
 
@@ -58,6 +59,7 @@ public:
 	size_t getSizeInBytes(const VkImageSubresourceRange &subresourceRange) const;
 	void getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const;
 	void bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset);
+	void unbind(DeviceMemory *pDeviceMemory);
 	void copyTo(Image *dstImage, const VkImageCopy &pRegion);
 	void copyTo(Buffer *dstBuffer, const VkBufferImageCopy &region);
 	void copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region);
@@ -91,13 +93,9 @@ public:
 	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
 
-	enum AccessType
-	{
-		READ_ACCESS = 0x1,
-		WRITE_ACCESS = 0x2,
-	};
 	bool requiresNotifications() const;
-	void notify(AccessType accessType, const VkImageSubresourceRange &subresourceRange);
+	void notify(DescriptorView::AccessType accessType);
+	void notify(DescriptorView::AccessType accessType, const VkImageSubresourceRange &subresourceRange);
 	void markDirty(const VkImageSubresource &subresource);
 	void markDirty(const VkImageSubresourceRange &subresourceRange);
 	Image *getSampledImage(const vk::Format &imageViewFormat);
