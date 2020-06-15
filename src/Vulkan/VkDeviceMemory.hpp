@@ -15,10 +15,15 @@
 #ifndef VK_DEVICE_MEMORY_HPP_
 #define VK_DEVICE_MEMORY_HPP_
 
+#include "DescriptorView.hpp"
 #include "VkConfig.hpp"
 #include "VkObject.hpp"
 
+#include <unordered_set>
+
 namespace vk {
+
+class Image;
 
 class DeviceMemory : public Object<DeviceMemory, VkDeviceMemory>
 {
@@ -40,6 +45,10 @@ public:
 	VkResult exportHandle(zx_handle_t *pHandle) const;
 #endif
 
+	void notify(DescriptorView::AccessType accessType);
+	void bind(Image *image);
+	void unbind(Image *image);
+
 	void destroy(const VkAllocationCallbacks *pAllocator);
 	VkResult allocate();
 	VkResult map(VkDeviceSize offset, VkDeviceSize size, void **ppData);
@@ -60,6 +69,8 @@ private:
 	VkDeviceSize size = 0;
 	uint32_t memoryTypeIndex = 0;
 	ExternalBase *external = nullptr;
+
+	std::unordered_set<Image *> images;
 };
 
 static inline DeviceMemory *Cast(VkDeviceMemory object)
