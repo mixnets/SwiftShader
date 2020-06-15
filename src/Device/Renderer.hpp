@@ -157,6 +157,7 @@ struct DrawCall
 	VertexProcessor::RoutineType vertexRoutine;
 	SetupProcessor::RoutineType setupRoutine;
 	PixelProcessor::RoutineType pixelRoutine;
+	bool containsImageWrite;
 
 	SetupFunction setupPrimitives;
 	SetupProcessor::State setupState;
@@ -164,6 +165,7 @@ struct DrawCall
 	vk::ImageView *renderTarget[RENDERTARGETS];
 	vk::ImageView *depthBuffer;
 	vk::ImageView *stencilBuffer;
+	vk::DescriptorSet::Array descriptorSetObjects;
 	TaskEvents *events;
 
 	vk::Query *occlusionQuery;
