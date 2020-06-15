@@ -180,7 +180,7 @@ bool DescriptorSetLayout::IsDescriptorDynamic(VkDescriptorType type)
 	       type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
 }
 
-void DescriptorSetLayout::Notify(uint8_t *descriptorSetData, Image::AccessType accessType)
+void DescriptorSetLayout::Notify(uint8_t *descriptorSetData, DescriptorView::AccessType accessType)
 {
 	if(descriptorSetData)
 	{
@@ -205,7 +205,7 @@ void DescriptorSetLayout::Unregister(DescriptorSet *descriptorSet)
 	}
 }
 
-void DescriptorSetLayout::notify(DescriptorSet *descriptorSet, Image::AccessType accessType)
+void DescriptorSetLayout::notify(DescriptorSet *descriptorSet, DescriptorView::AccessType accessType)
 {
 	marl::lock lock(mutex);
 	auto it = descriptorMetaData.find(descriptorSet);
@@ -216,7 +216,7 @@ void DescriptorSetLayout::notify(DescriptorSet *descriptorSet, Image::AccessType
 		{
 			for(auto arrayElementData : bindingData)
 			{
-				if(arrayElementData.view && (!arrayElementData.readOnly || (accessType & Image::READ_ACCESS)))
+				if(arrayElementData.view && (!arrayElementData.readOnly || (accessType & DescriptorView::READ_ACCESS)))
 				{
 					arrayElementData.view->notify(accessType);
 				}
@@ -426,7 +426,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			mipmap.onePitchP[0] = mipmap.onePitchP[2] = 1;
 			mipmap.onePitchP[1] = mipmap.onePitchP[3] = static_cast<short>(numElements);
 
-			metaData[bindingNumber][arrayElement] = { nullptr, readOnlyInShader };
+			metaData[bindingNumber][arrayElement] = { bufferView->requiresNotifications() ? bufferView : nullptr, readOnlyInShader };
 			dstLayout->increment(bindingNumber, arrayElement);
 		}
 	}
@@ -590,7 +590,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].sampleCount = 1;
 			descriptor[i].sizeInBytes = bufferView->getRangeInBytes();
 
-			metaData[bindingNumber][arrayElement] = { nullptr, readOnlyInShader };
+			metaData[bindingNumber][arrayElement] = { bufferView->requiresNotifications() ? bufferView : nullptr, readOnlyInShader };
 			dstLayout->increment(bindingNumber, arrayElement);
 		}
 	}
@@ -608,7 +608,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].sizeInBytes = static_cast<int>((update->range == VK_WHOLE_SIZE) ? buffer->getSize() - update->offset : update->range);
 			descriptor[i].robustnessSize = static_cast<int>(buffer->getSize() - update->offset);
 
-			metaData[bindingNumber][arrayElement] = { nullptr, readOnlyInShader };
+			metaData[bindingNumber][arrayElement] = { buffer->requiresNotifications() ? buffer : nullptr, readOnlyInShader };
 			dstLayout->increment(bindingNumber, arrayElement);
 		}
 	}

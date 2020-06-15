@@ -388,7 +388,7 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 	for(auto descriptorSet : data->descriptorSets)
 	{
-		vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::READ_ACCESS);
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::DescriptorView::READ_ACCESS);
 	}
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
@@ -436,12 +436,12 @@ void DrawCall::teardown()
 		}
 	}
 
-	if(containsImageWrite)
+	vk::DescriptorView::AccessType accessType =
+	    containsImageWrite ? vk::DescriptorView::WRITE_ANY_ACCESS : vk::DescriptorView::WRITE_BUFFER_ACCESS;
+
+	for(auto descriptorSet : data->descriptorSets)
 	{
-		for(auto descriptorSet : data->descriptorSets)
-		{
-			vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::WRITE_ACCESS);
-		}
+		vk::DescriptorSetLayout::Notify(descriptorSet, accessType);
 	}
 }
 

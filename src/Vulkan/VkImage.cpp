@@ -157,6 +157,10 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 
 void Image::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	if(deviceMemory)
+	{
+		deviceMemory->unbind(this);
+	}
 	if(decompressedImage)
 	{
 		vk::deallocate(decompressedImage, pAllocator);
@@ -227,6 +231,19 @@ void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 	{
 		decompressedImage->deviceMemory = deviceMemory;
 		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
+	}
+	pDeviceMemory->bind(this);
+}
+
+void Image::unbind(DeviceMemory *pDeviceMemory)
+{
+	if(deviceMemory == pDeviceMemory)
+	{
+		deviceMemory = nullptr;
+	}
+	else
+	{
+		UNREACHABLE("Unbinding wrong device memory");
 	}
 }
 
@@ -1042,7 +1059,7 @@ bool Image::requiresNotifications() const
 	return (isCube() && (arrayLayers >= 6)) || decompressedImage;
 }
 
-void Image::notify(AccessType accessType)
+void Image::notify(DescriptorView::AccessType accessType)
 {
 	VkImageSubresourceRange subresourceRange = {
 		format.getAspects(),
@@ -1054,13 +1071,13 @@ void Image::notify(AccessType accessType)
 	notify(accessType, subresourceRange);
 }
 
-void Image::notify(AccessType accessType, const VkImageSubresourceRange &subresourceRange)
+void Image::notify(DescriptorView::AccessType accessType, const VkImageSubresourceRange &subresourceRange)
 {
-	if(accessType & READ_ACCESS)
+	if(accessType & DescriptorView::READ_ACCESS)
 	{
 		prepareForReadAccess(subresourceRange);
 	}
-	else if((accessType & WRITE_ACCESS) &&
+	else if((accessType & DescriptorView::WRITE_IMAGE_ACCESS) &&
 	        (usage & VK_IMAGE_USAGE_STORAGE_BIT))  // The image must have write access enabled
 	{
 		markDirty(subresourceRange);

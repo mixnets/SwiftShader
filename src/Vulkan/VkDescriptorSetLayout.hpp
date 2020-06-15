@@ -18,6 +18,7 @@
 #include "VkObject.hpp"
 
 #include "Device/Sampler.hpp"
+#include "Vulkan/DescriptorView.hpp"
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkSampler.hpp"
 
@@ -108,7 +109,7 @@ public:
 	static void WriteDescriptorSet(Device *device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
 	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
 
-	static void Notify(uint8_t *descriptorSetData, Image::AccessType accessType);
+	static void Notify(uint8_t *descriptorSetData, DescriptorView::AccessType accessType);
 	static void Unregister(DescriptorSet *descriptorSet);
 
 	void initialize(DescriptorSet *descriptorSet);
@@ -151,7 +152,7 @@ private:
 
 	struct DescriptorSetMetaDatum
 	{
-		ImageView *view = nullptr;
+		DescriptorView *view = nullptr;
 		bool readOnly = false;
 	};
 	using DescriptorSetMetaData = std::vector<std::vector<DescriptorSetMetaDatum> >;
@@ -159,7 +160,7 @@ private:
 	marl::mutex mutex;
 	std::unordered_map<DescriptorSet *, DescriptorSetMetaData> descriptorMetaData GUARDED_BY(mutex);
 
-	void notify(DescriptorSet *descriptorSet, Image::AccessType accessType);
+	void notify(DescriptorSet *descriptorSet, DescriptorView::AccessType accessType);
 	void unregister(DescriptorSet *descriptorSet);
 	DescriptorSetMetaData &getOrCreateDescriptorSetMetaData(DescriptorSet *set);
 };
