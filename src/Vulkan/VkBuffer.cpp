@@ -87,6 +87,7 @@ bool Buffer::canBindToMemory(DeviceMemory *pDeviceMemory) const
 void Buffer::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
 	memory = pDeviceMemory->getOffsetPointer(pMemoryOffset);
+	deviceMemory = pDeviceMemory;
 }
 
 void Buffer::copyFrom(const void *srcMemory, VkDeviceSize pSize, VkDeviceSize pOffset)
