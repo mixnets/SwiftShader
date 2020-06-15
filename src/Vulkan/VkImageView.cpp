@@ -260,6 +260,20 @@ const Image *ImageView::getImage(Usage usage) const
 	}
 }
 
+Image *ImageView::getImage(Usage usage)
+{
+	switch(usage)
+	{
+		case RAW:
+			return image;
+		case SAMPLING:
+			return image->getSampledImage(format);
+		default:
+			UNREACHABLE("usage %d", int(usage));
+			return nullptr;
+	}
+}
+
 Format ImageView::getFormat(Usage usage) const
 {
 	Format imageFormat = ((usage == RAW) || (getImage(usage) == image)) ? format : getImage(usage)->getFormat();
@@ -292,17 +306,19 @@ VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
-void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
+void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, bool prepareForReadAccessNow, Usage usage)
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
 
-	VkImageSubresource imageSubresource = {
+	VkImageSubresourceRange imageSubresourceRange = {
 		static_cast<VkImageAspectFlags>(aspect),
 		subresourceRange.baseMipLevel + mipLevel,
+		subresourceRange.levelCount - mipLevel,
 		subresourceRange.baseArrayLayer + layer,
+		subresourceRange.layerCount - layer
 	};
 
-	return getImage(usage)->getTexelPointer(offset, imageSubresource);
+	return getImage(usage)->getTexelPointer(offset, imageSubresourceRange, prepareForReadAccessNow);
 }
 
 }  // namespace vk
