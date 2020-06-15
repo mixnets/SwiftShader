@@ -28,6 +28,12 @@ namespace vk {
 class DescriptorSet;
 class Device;
 
+struct MemoryOwner
+{
+	ImageView *view = nullptr;  // Pointer to the view which owns the memory used by the descriptor set
+	bool readOnly = false;      // Whether the descriptor set can be used to write to the memory or only read from it
+};
+
 // TODO(b/129523279): Move to the Device or Pipeline layer.
 struct alignas(16) SampledImageDescriptor
 {
@@ -48,6 +54,8 @@ struct alignas(16) SampledImageDescriptor
 	int arrayLayers;
 	int mipLevels;
 	int sampleCount;
+
+	MemoryOwner memoryOwner;
 };
 
 struct alignas(16) StorageImageDescriptor
@@ -67,6 +75,8 @@ struct alignas(16) StorageImageDescriptor
 	int stencilRowPitchBytes;
 	int stencilSlicePitchBytes;
 	int stencilSamplePitchBytes;
+
+	MemoryOwner memoryOwner;
 };
 
 struct alignas(16) BufferDescriptor
