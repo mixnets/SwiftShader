@@ -21,7 +21,11 @@
 #include "Vulkan/VkImageView.hpp"
 #include "Vulkan/VkSampler.hpp"
 
+#include "marl/mutex.h"
+
 #include <cstdint>
+#include <unordered_map>
+#include <vector>
 
 namespace vk {
 
@@ -104,6 +108,9 @@ public:
 	static void WriteDescriptorSet(Device *device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
 	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
 
+	static void Notify(uint8_t *descriptorSetData, Image::AccessType accessType);
+	static void Unregister(DescriptorSet *descriptorSet);
+
 	void initialize(DescriptorSet *descriptorSet);
 
 	// Returns the total size of the descriptor set in bytes.
@@ -134,12 +141,27 @@ public:
 
 private:
 	uint8_t *getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const;
+	void increment(uint32_t &bindingNumber, uint32_t &arrayElement) const;
 	size_t getDescriptorSetDataSize() const;
 	static bool isDynamic(VkDescriptorType type);
 
 	const VkDescriptorSetLayoutCreateFlags flags;
 	uint32_t bindingsArraySize = 0;
 	Binding *const bindings;  // Direct-indexed array of bindings.
+
+	struct DescriptorSetMetaDatum
+	{
+		ImageView *view = nullptr;
+		bool readOnly = false;
+	};
+	using DescriptorSetMetaData = std::vector<std::vector<DescriptorSetMetaDatum> >;
+
+	marl::mutex mutex;
+	std::unordered_map<DescriptorSet *, DescriptorSetMetaData> descriptorMetaData GUARDED_BY(mutex);
+
+	void notify(DescriptorSet *descriptorSet, Image::AccessType accessType);
+	void unregister(DescriptorSet *descriptorSet);
+	DescriptorSetMetaData &getOrCreateDescriptorSetMetaData(DescriptorSet *set);
 };
 
 static inline DescriptorSetLayout *Cast(VkDescriptorSetLayout object)
