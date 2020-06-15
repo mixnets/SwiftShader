@@ -882,6 +882,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 
 SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState *state) const
 {
+	imageWriteEmitted = true;
+
 	auto imageId = Object::ID(insn.word(1));
 	auto &image = getObject(imageId);
 	auto &imageType = getType(image);
