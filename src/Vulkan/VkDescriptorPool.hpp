@@ -15,8 +15,13 @@
 #ifndef VK_DESCRIPTOR_POOL_HPP_
 #define VK_DESCRIPTOR_POOL_HPP_
 
+#include "VkDescriptorSet.hpp"
 #include "VkObject.hpp"
+
+#include "marl/mutex.h"
+
 #include <set>
+#include <unordered_map>
 
 namespace vk {
 
@@ -31,6 +36,11 @@ public:
 	VkResult allocateSets(uint32_t descriptorSetCount, const VkDescriptorSetLayout *pSetLayouts, VkDescriptorSet *pDescriptorSets);
 	void freeSets(uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets);
 	VkResult reset();
+
+	void prepareForSampling(DescriptorSet *descriptorSet);
+	void contentsChanged(DescriptorSet *descriptorSet);
+	void storeMetaData(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, ImageView *imageView, bool readOnly);
+	void copyMetadata(DescriptorSet *srcSet, uint32_t srcBinding, uint32_t srcArrayElement, DescriptorSet *dstSet, uint32_t dstBinding, uint32_t dstArrayElement, uint32_t descriptorCount);
 
 private:
 	VkResult allocateSets(size_t *sizes, uint32_t numAllocs, VkDescriptorSet *pDescriptorSets);
@@ -54,6 +64,11 @@ private:
 
 	uint8_t *pool = nullptr;
 	size_t poolSize = 0;
+
+	void freeMetaData(DescriptorSet *descriptorSet);
+
+	marl::mutex mutex;
+	std::unordered_map<DescriptorSet *, DescriptorSetMetaData> descriptorSetMetaData GUARDED_BY(mutex);
 };
 
 static inline DescriptorPool *Cast(VkDescriptorPool object)
