@@ -27,6 +27,7 @@
 #include "System/Memory.hpp"
 #include "System/Timer.hpp"
 #include "Vulkan/VkConfig.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkFence.hpp"
 #include "Vulkan/VkImageView.hpp"
@@ -206,6 +207,9 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 		pixelRoutine = pixelProcessor.routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
 	}
 
+	draw->containsImageWrite = (context->vertexShader && context->vertexShader->containsImageWrite()) ||
+	                           (context->pixelShader && context->pixelShader->containsImageWrite());
+
 	DrawCall::SetupFunction setupPrimitives = nullptr;
 	int ms = context->sampleCount;
 	unsigned int numPrimitivesPerBatch = MaxBatchSize / ms;
@@ -343,7 +347,7 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 			if(draw->renderTarget[index])
 			{
-				data->colorBuffer[index] = (unsigned int *)context->renderTarget[index]->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, data->viewID);
+				data->colorBuffer[index] = (unsigned int *)context->renderTarget[index]->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, data->viewID, true);
 				data->colorPitchB[index] = context->renderTarget[index]->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 				data->colorSliceB[index] = context->renderTarget[index]->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			}
@@ -354,14 +358,14 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 		if(draw->depthBuffer)
 		{
-			data->depthBuffer = (float *)context->depthBuffer->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, data->viewID);
+			data->depthBuffer = (float *)context->depthBuffer->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_DEPTH_BIT, 0, data->viewID, true);
 			data->depthPitchB = context->depthBuffer->rowPitchBytes(VK_IMAGE_ASPECT_DEPTH_BIT, 0);
 			data->depthSliceB = context->depthBuffer->slicePitchBytes(VK_IMAGE_ASPECT_DEPTH_BIT, 0);
 		}
 
 		if(draw->stencilBuffer)
 		{
-			data->stencilBuffer = (unsigned char *)context->stencilBuffer->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, data->viewID);
+			data->stencilBuffer = (unsigned char *)context->stencilBuffer->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, data->viewID, true);
 			data->stencilPitchB = context->stencilBuffer->rowPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 			data->stencilSliceB = context->stencilBuffer->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
 		}
@@ -381,6 +385,11 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	}
 
 	draw->events = events;
+
+	for(auto descriptorSet : data->descriptorSets)
+	{
+		vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::READ_ACCESS);
+	}
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }
@@ -418,6 +427,22 @@ void DrawCall::teardown()
 	vertexRoutine = {};
 	setupRoutine = {};
 	pixelRoutine = {};
+
+	for(int index = 0; index < RENDERTARGETS; index++)
+	{
+		if(renderTarget[index])
+		{
+			renderTarget[index]->markDirty();
+		}
+	}
+
+	if(containsImageWrite)
+	{
+		for(auto descriptorSet : data->descriptorSets)
+		{
+			vk::DescriptorSetLayout::Notify(descriptorSet, vk::Image::WRITE_ACCESS);
+		}
+	}
 }
 
 void DrawCall::run(const marl::Loan<DrawCall> &draw, marl::Ticket::Queue *tickets, marl::Ticket::Queue clusterQueues[MaxClusterCount])

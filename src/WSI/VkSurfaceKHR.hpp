@@ -43,7 +43,7 @@ public:
 	void clear();
 	VkImage asVkImage() const;
 
-	const Image *getImage() const { return image; }
+	Image *getImage() const { return image; }
 	DeviceMemory *getImageMemory() const { return imageMemory; }
 	bool isAvailable() const { return (imageStatus == AVAILABLE); }
 	bool exists() const { return (imageStatus != NONEXISTENT); }
