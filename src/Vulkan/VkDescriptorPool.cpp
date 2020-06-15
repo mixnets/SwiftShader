@@ -44,6 +44,7 @@ DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo *pCreateInfo, vo
 
 void DescriptorPool::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	reset();
 	vk::deallocate(pool, pAllocator);
 }
 
@@ -75,7 +76,9 @@ VkResult DescriptorPool::allocateSets(uint32_t descriptorSetCount, const VkDescr
 	{
 		for(uint32_t i = 0; i < descriptorSetCount; i++)
 		{
-			vk::Cast(pSetLayouts[i])->initialize(vk::Cast(pDescriptorSets[i]));
+			auto descriptorSet = vk::Cast(pDescriptorSets[i]);
+			vk::Cast(pSetLayouts[i])->initialize(descriptorSet);
+			descriptorSet->header.pool = this;
 		}
 	}
 	return result;
@@ -144,6 +147,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 			for(uint32_t i = 0; i < numAllocs; i++)
 			{
 				pDescriptorSets[i] = asDescriptorSet(memory);
+				vk::Cast(pDescriptorSets[i])->init();
 				nodes.insert(Node(memory, sizes[i]));
 				memory += sizes[i];
 			}
@@ -159,6 +163,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		if(memory)
 		{
 			pDescriptorSets[i] = asDescriptorSet(memory);
+			vk::Cast(pDescriptorSets[i])->init();
 		}
 		else
 		{
@@ -189,6 +194,11 @@ void DescriptorPool::freeSets(uint32_t descriptorSetCount, const VkDescriptorSet
 
 void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 {
+	if(descriptorSet != VK_NULL_HANDLE)
+	{
+		freeMetaData(vk::Cast(descriptorSet));
+	}
+
 	const auto itEnd = nodes.end();
 	auto it = std::find(nodes.begin(), itEnd, asMemory(descriptorSet));
 	if(it != itEnd)
@@ -200,6 +210,9 @@ void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 VkResult DescriptorPool::reset()
 {
 	nodes.clear();
+
+	marl::lock lock(mutex);
+	descriptorSetMemoryOwners.clear();
 
 	return VK_SUCCESS;
 }
@@ -226,6 +239,94 @@ size_t DescriptorPool::computeTotalFreeSize() const
 	}
 
 	return totalFreeSize;
+}
+
+void DescriptorPool::prepareForSampling(DescriptorSet *descriptorSet)
+{
+	marl::lock lock(mutex);
+	auto it = descriptorSetMemoryOwners.find(descriptorSet);
+	if(it != descriptorSetMemoryOwners.end())
+	{
+		it->second.prepareForSampling();
+	}
+}
+
+void DescriptorPool::contentsChanged(DescriptorSet *descriptorSet)
+{
+	marl::lock lock(mutex);
+	auto it = descriptorSetMemoryOwners.find(descriptorSet);
+	if(it != descriptorSetMemoryOwners.end())
+	{
+		it->second.contentsChanged();
+	}
+}
+
+void DescriptorPool::storeMetaData(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, ImageView *imageView, bool readOnly)
+{
+	marl::lock lock(mutex);
+
+	// Ensure metadata is initialized
+	auto it = descriptorSetMemoryOwners.find(descriptorSet);
+	if(it == descriptorSetMemoryOwners.end())
+	{
+		it = descriptorSetMemoryOwners.insert({ descriptorSet, { descriptorSet->header.layout } }).first;
+	}
+
+	it->second.storeMetaData(bindingNumber, arrayElement, imageView, readOnly);
+}
+
+void DescriptorPool::copyMetadata(DescriptorSet *srcSet, uint32_t srcBinding, uint32_t srcArrayElement, DescriptorSet *dstSet, uint32_t dstBinding, uint32_t dstArrayElement, uint32_t descriptorCount)
+{
+	DescriptorPool *srcPool = srcSet->header.pool;
+	DescriptorPool *dstPool = dstSet->header.pool;
+	ASSERT(srcPool == this);
+
+	marl::lock lock(mutex);
+
+	// Ensure source metadata is initialized
+	auto itSrc = descriptorSetMemoryOwners.find(srcSet);
+	if(itSrc == descriptorSetMemoryOwners.end())
+	{
+		itSrc = descriptorSetMemoryOwners.insert({ srcSet, { srcSet->header.layout } }).first;
+	}
+
+	if(dstPool)
+	{
+		if(srcPool == dstPool)
+		{
+			// Ensure destination metadata is initialized
+			auto itDst = descriptorSetMemoryOwners.find(dstSet);
+			if(itDst == descriptorSetMemoryOwners.end())
+			{
+				itDst = descriptorSetMemoryOwners.insert({ dstSet, { dstSet->header.layout } }).first;
+			}
+
+			itSrc->second.copyTo(srcBinding, srcArrayElement, itDst->second, dstBinding, dstArrayElement, descriptorCount);
+		}
+		else
+		{
+			marl::lock lock(dstPool->mutex);
+
+			// Ensure destination metadata is initialized
+			auto itDst = dstPool->descriptorSetMemoryOwners.find(dstSet);
+			if(itDst == dstPool->descriptorSetMemoryOwners.end())
+			{
+				itDst = dstPool->descriptorSetMemoryOwners.insert({ dstSet, { dstSet->header.layout } }).first;
+			}
+
+			itSrc->second.copyTo(srcBinding, srcArrayElement, itDst->second, dstBinding, dstArrayElement, descriptorCount);
+		}
+	}
+}
+
+void DescriptorPool::freeMetaData(DescriptorSet *descriptorSet)
+{
+	marl::lock lock(mutex);
+	auto it = descriptorSetMemoryOwners.find(descriptorSet);
+	if(it != descriptorSetMemoryOwners.end())
+	{
+		descriptorSetMemoryOwners.erase(it);
+	}
 }
 
 }  // namespace vk
