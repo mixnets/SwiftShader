@@ -205,6 +205,7 @@ void ComputeProgram::emit(SpirvRoutine *routine)
 }
 
 void ComputeProgram::run(
+    vk::DescriptorSet::Array const &descriptorSetObjects,
     vk::DescriptorSet::Bindings const &descriptorSets,
     vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
     PushConstantStorage const &pushConstants,
@@ -297,6 +298,17 @@ void ComputeProgram::run(
 	}
 
 	wg.wait();
+
+	if(shader->containsImageWrite())
+	{
+		for(auto descriptorSet : descriptorSetObjects)
+		{
+			if(descriptorSet)
+			{
+				descriptorSet->contentsChanged();
+			}
+		}
+	}
 }
 
 }  // namespace sw
