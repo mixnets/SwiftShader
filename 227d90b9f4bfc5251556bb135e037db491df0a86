@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "508346c4_9f9e79f5",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-16T16:09:43Z",
+      "side": 1,
+      "message": "I think this can be null.\nAll the spec mentions is:\n\"If the rasterizerDiscardEnable member of pRasterizationState is VK_FALSE, pViewportState must be a valid pointer to a valid VkPipelineViewportStateCreateInfo structure\"",
+      "range": {
+        "startLine": 306,
+        "startChar": 5,
+        "endLine": 306,
+        "endChar": 18
+      },
+      "revId": "227d90b9f4bfc5251556bb135e037db491df0a86",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
