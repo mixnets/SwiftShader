@@ -22,6 +22,30 @@
       "revId": "d5411acf961baaed810ace906af196078f4e8d2c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89fec0d8_c120ecb4",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-16T18:24:27Z",
+      "side": 1,
+      "message": "That\u0027s for the follow-up cl in the stack. I thought it was cleaner/more readable to separate it this way for the review process.",
+      "parentUuid": "06780cd9_0e52e788",
+      "range": {
+        "startLine": 80,
+        "startChar": 1,
+        "endLine": 82,
+        "endChar": 104
+      },
+      "revId": "d5411acf961baaed810ace906af196078f4e8d2c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
