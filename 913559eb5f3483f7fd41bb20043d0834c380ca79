@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a33ef8d_6a73b1c5",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-16T13:18:20Z",
+      "side": 1,
+      "message": "Ha, that\u0027s clever 😊",
+      "range": {
+        "startLine": 442,
+        "startChar": 49,
+        "endLine": 442,
+        "endChar": 71
+      },
+      "revId": "913559eb5f3483f7fd41bb20043d0834c380ca79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
