@@ -46,6 +46,30 @@
       "revId": "d5411acf961baaed810ace906af196078f4e8d2c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e4d2170_2cc0813b",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-16T18:35:52Z",
+      "side": 1,
+      "message": "Ah, so the getTexelPointer() calls would record which levels and layers are accessed?\n\nIt\u0027s a big change in semantics, which I\u0027d rather keep separate from this refactoring which is just a cleanup of the current functionality.",
+      "parentUuid": "89fec0d8_c120ecb4",
+      "range": {
+        "startLine": 80,
+        "startChar": 1,
+        "endLine": 82,
+        "endChar": 104
+      },
+      "revId": "d5411acf961baaed810ace906af196078f4e8d2c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
