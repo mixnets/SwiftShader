@@ -64,17 +64,14 @@ void rr::Config::Edit::apply(const std::vector<std::pair<ListEdit, T>> &edits, s
 	}
 }
 
-// Set of variables that do not have a stack location yet.
-thread_local std::unordered_set<const Variable *> *Variable::unmaterializedVariables = nullptr;
-
 Variable::Variable()
 {
-	unmaterializedVariables->emplace(this);
+	getUnmaterializedVariables()->emplace(this);
 }
 
 Variable::~Variable()
 {
-	unmaterializedVariables->erase(this);
+	getUnmaterializedVariables()->erase(this);
 }
 
 void Variable::materialize() const
@@ -137,8 +134,19 @@ Value *Variable::allocate() const
 	return Nucleus::allocateStackVariable(getType());
 }
 
+std::unordered_set<const Variable *> *&Variable::getUnmaterializedVariables()
+{
+	// This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
+	// for destructing objects at exit. See crbug.com/1074222
+	static thread_local std::unordered_set<const Variable *> *unmaterializedVariables = nullptr;
+
+	return unmaterializedVariables;
+}
+
 void Variable::materializeAll()
 {
+	auto *unmaterializedVariables = getUnmaterializedVariables();
+
 	for(auto *var : *unmaterializedVariables)
 	{
 		var->materialize();
@@ -149,7 +157,7 @@ void Variable::materializeAll()
 
 void Variable::killUnmaterialized()
 {
-	unmaterializedVariables->clear();
+	getUnmaterializedVariables()->clear();
 }
 
 // NOTE: Only 12 bits out of 16 of the |select| value are used.

@@ -129,14 +129,12 @@ protected:
 	virtual ~Variable();
 
 private:
+	// Returns the set of variables that do not have a stack location yet.
+	static std::unordered_set<const Variable *> *&getUnmaterializedVariables();
 	static void materializeAll();
 	static void killUnmaterialized();
 
 	virtual Value *allocate() const;
-
-	// This has to be a raw pointer because glibc 2.17 doesn't support __cxa_thread_atexit_impl
-	// for destructing objects at exit. See crbug.com/1074222
-	static thread_local std::unordered_set<const Variable *> *unmaterializedVariables;
 
 	mutable Value *rvalue = nullptr;
 	mutable Value *address = nullptr;
