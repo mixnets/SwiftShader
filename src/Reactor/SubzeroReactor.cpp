@@ -902,14 +902,14 @@ Nucleus::Nucleus()
 		::routine = elfMemory;
 	}
 
-	ASSERT(Variable::unmaterializedVariables == nullptr);
-	Variable::unmaterializedVariables = new std::unordered_set<const Variable *>();
+	ASSERT(Variable::getUnmaterializedVariables() == nullptr);
+	Variable::getUnmaterializedVariables() = new std::unordered_set<const Variable *>();
 }
 
 Nucleus::~Nucleus()
 {
-	delete Variable::unmaterializedVariables;
-	Variable::unmaterializedVariables = nullptr;
+	delete Variable::getUnmaterializedVariables();
+	Variable::getUnmaterializedVariables() = nullptr;
 
 	delete ::routine;
 	::routine = nullptr;
