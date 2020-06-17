@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ed3337e_cdadd1e4",
+        "filename": "tests/VulkanBenchmarks/VulkanBenchmarks.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 581,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-17T19:15:05Z",
+      "side": 1,
+      "message": "Perhaps for a future change, but we may as well use unique_ptr for framebuffer, swapchain, and window so we don\u0027t need to worry about deleting them. As we wrap up more stuff, the Teardown will become practically unnecessary.",
+      "revId": "8feb8167e5ab3ffd237a85f2e456db1be6a46b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
