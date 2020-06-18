@@ -22,6 +22,30 @@
       "revId": "db09da8950c9774d3fc7c65abac06d2b9f6d200e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f1ad65d_a82361e2",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-18T16:29:38Z",
+      "side": 1,
+      "message": "Fair point. It reminded me we actually need to ensure this gets tested: b/159329067",
+      "parentUuid": "a87447bc_3fdf1e57",
+      "range": {
+        "startLine": 547,
+        "startChar": 0,
+        "endLine": 565,
+        "endChar": 3
+      },
+      "revId": "db09da8950c9774d3fc7c65abac06d2b9f6d200e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
