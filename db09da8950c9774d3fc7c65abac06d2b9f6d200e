@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a87447bc_3fdf1e57",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-18T15:57:56Z",
+      "side": 1,
+      "message": "nit: It\u0027s now a bit easier to modify the code above and forget to modify this part",
+      "range": {
+        "startLine": 547,
+        "startChar": 0,
+        "endLine": 565,
+        "endChar": 3
+      },
+      "revId": "db09da8950c9774d3fc7c65abac06d2b9f6d200e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
