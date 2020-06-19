@@ -10,7 +10,13 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "SWIFTSHADER_BUILD_BENCHMARKS",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x86-Debug",
