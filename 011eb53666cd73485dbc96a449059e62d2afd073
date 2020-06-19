@@ -22,6 +22,30 @@
       "revId": "011eb53666cd73485dbc96a449059e62d2afd073",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb47cc99_efe2ac5e",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-19T18:10:22Z",
+      "side": 1,
+      "message": "It\u0027s not clear from these couple of lines of code that \u0027color\u0027 is floating-point, so I don\u0027t think that helps. Note the assert at 208 clarifies that \u0027clearValue\u0027 is an SFLOAT. The comment is just to be extra clear about what\u0027s intended.\n\nAlso, this handles clearing depth, so using \u0027color\u0027 would be confusing imo.\n\n\"packed \u003d *reinterpret_cast\u003cuint32_t*\u003e(clearValue);\" seems a bit overly redundant to me, but I could settle for it if we also use reinterpret_cast\u003c\u003e for the other cases?",
+      "parentUuid": "e0b4591d_44476db4",
+      "range": {
+        "startLine": 209,
+        "startChar": 12,
+        "endLine": 209,
+        "endChar": 70
+      },
+      "revId": "011eb53666cd73485dbc96a449059e62d2afd073",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
