@@ -46,6 +46,30 @@
       "revId": "011eb53666cd73485dbc96a449059e62d2afd073",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d9b7533_b450ea59",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T18:13:50Z",
+      "side": 1,
+      "message": "I\u0027m a fan of using reinterpret_cast over c style casts.",
+      "parentUuid": "fb47cc99_efe2ac5e",
+      "range": {
+        "startLine": 209,
+        "startChar": 12,
+        "endLine": 209,
+        "endChar": 70
+      },
+      "revId": "011eb53666cd73485dbc96a449059e62d2afd073",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
