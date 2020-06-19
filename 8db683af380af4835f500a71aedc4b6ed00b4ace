@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a491111b_37b785d1",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 1052,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T14:44:12Z",
+      "side": 1,
+      "message": "lock and markDirty have opposite meanings in my mind\nmarkDirty means \"you\u0027ll need to preprocess it next time you need to read it\"\nlock means \"I\u0027m accessing it, preprocess it now\"",
+      "parentUuid": "cd0b1d5b_9b47b8ed",
+      "range": {
+        "startLine": 1052,
+        "startChar": 0,
+        "endLine": 1052,
+        "endChar": 91
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "69202b18_2d9025c3",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
@@ -36,6 +60,30 @@
       "writtenOn": "2020-06-19T03:45:56Z",
       "side": 1,
       "message": "There seems to be a bit of semantic overload in this new interface. If we keep the original getTexelPointer() and instead add \u0027lock\u0027 methods for indicating which subresource will be read/written this could make it clearer what happens under the hood.\n\nBasically getTexelPointer() would still just be responsible for computing the pointer, and could remain \u0027const\u0027. It\u0027s also what would be used for \u0027raw\u0027 access to the data during the actual \u0027preprocess\u0027 operations. The \u0027lock\u0027 methods would subsume some of the methods below. By indicating that we\u0027re done reading/writing with an \u0027unlock\u0027 method I think it would also make it easier to check that a subresource isn\u0027t \u0027locked\u0027 for reading and writing simultaneously.",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06c3e182_82139f98",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T14:44:12Z",
+      "side": 1,
+      "message": "I agree that getTexelPointer() could stay const and that I could use another non const function to just take care of handling the dirty subregions structure, but lock/unlock doesn\u0027t make sense here, IMHO. We can write multiple times before we read, there\u0027s no locking happening, we\u0027re just marking subregions are require preprocessing later, so markDirty makes more sense to me.",
+      "parentUuid": "69202b18_2d9025c3",
       "range": {
         "startLine": 84,
         "startChar": 1,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "6def7683_b62f487a",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T14:44:12Z",
+      "side": 1,
+      "message": "The thing is this culls 99% of cases, it\u0027s probably worth keeping.\nAgain, the lock/unlock logic doesn\u0027t make sense to me here.",
+      "parentUuid": "e37cd879_846a045b",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 27
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81619cce_e54e9ca7",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
@@ -91,6 +163,30 @@
       "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef7be600_e05c21b5",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T14:44:12Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "81619cce_e54e9ca7",
+      "range": {
+        "startLine": 186,
+        "startChar": 56,
+        "endLine": 186,
+        "endChar": 72
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
