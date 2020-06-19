@@ -214,9 +214,6 @@ static void ClearImage(benchmark::State &state, vk::Format clearFormat, vk::Imag
 		benchmark.clear();
 	}
 }
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond);
 
 class Window
 {
@@ -421,6 +418,10 @@ public:
 
 		imageMemory = device.allocateMemory(allocateInfo);
 
+		void *data = device.mapMemory(imageMemory, 0, VK_WHOLE_SIZE);
+		memset(data, 255, memoryRequirements.size);
+		device.unmapMemory(imageMemory);
+
 		device.bindImageMemory(image, imageMemory, 0);
 
 		vk::ImageViewCreateInfo imageViewInfo;
@@ -569,6 +570,10 @@ public:
 
 	~TriangleBenchmark()
 	{
+		delete texture;
+
+		device.destroySampler(sampler);
+
 		device.destroyPipelineLayout(pipelineLayout);
 		device.destroyPipelineCache(pipelineCache);
 
@@ -643,6 +648,63 @@ protected:
 
 	void createCommandBuffers(vk::RenderPass renderPass)
 	{
+		texture = new Image(device, 16, 16, vk::Format::eR8G8B8A8Unorm);
+
+		vk::SamplerCreateInfo samplerInfo;
+		samplerInfo.magFilter = vk::Filter::eLinear;
+		samplerInfo.minFilter = vk::Filter::eLinear;
+		samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
+		samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
+		samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
+		samplerInfo.anisotropyEnable = VK_FALSE;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 0.0f;
+
+		sampler = device.createSampler(samplerInfo);
+
+		std::array<vk::DescriptorPoolSize, 1> poolSizes = {};
+		poolSizes[0].type = vk::DescriptorType::eCombinedImageSampler;
+		poolSizes[0].descriptorCount = 1;
+
+		vk::DescriptorPoolCreateInfo poolInfo;
+		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+		poolInfo.pPoolSizes = poolSizes.data();
+		poolInfo.maxSets = 1;
+
+		vk::DescriptorPool descriptorPool = device.createDescriptorPool(poolInfo);
+
+		std::vector<vk::DescriptorSetLayout> layouts(1, descriptorSetLayout);
+		vk::DescriptorSetAllocateInfo allocInfo;
+		allocInfo.descriptorPool = descriptorPool;
+		allocInfo.descriptorSetCount = 1;
+		allocInfo.pSetLayouts = layouts.data();
+
+		std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets(allocInfo);
+
+		vk::DescriptorImageInfo imageInfo;
+		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		imageInfo.imageView = texture->getImageView();
+		imageInfo.sampler = sampler;
+
+		std::array<vk::WriteDescriptorSet, 1> descriptorWrites = {};
+
+		descriptorWrites[0].dstSet = descriptorSets[0];
+		descriptorWrites[0].dstBinding = 1;
+		descriptorWrites[0].dstArrayElement = 0;
+		descriptorWrites[0].descriptorType = vk::DescriptorType::eCombinedImageSampler;
+		descriptorWrites[0].descriptorCount = 1;
+		descriptorWrites[0].pImageInfo = &imageInfo;
+
+		device.updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+		/// <summary>
+		/// //////////////////////////////////////////////////
+		/// </summary>
+		/// <param name="renderPass"></param>
+
 		vk::CommandPoolCreateInfo commandPoolCreateInfo;
 		commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 		commandPoolCreateInfo.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
@@ -680,6 +742,8 @@ protected:
 			vk::Rect2D scissor(vk::Offset2D(0, 0), windowSize);
 			commandBuffers[i].setScissor(0, 1, &scissor);
 
+			commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
+
 			// Draw a triangle
 			commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
 			commandBuffers[i].bindVertexBuffers(0, { vertices.buffer }, { 0 });
@@ -696,12 +760,13 @@ protected:
 		{
 			float position[3];
 			float color[3];
+			float texCoord[2];
 		};
 
 		Vertex vertexBufferData[] = {
-			{ { 1.0f, 1.0f, 0.05f }, { 1.0f, 0.0f, 0.0f } },
-			{ { -1.0f, 1.0f, 0.5f }, { 0.0f, 1.0f, 0.0f } },
-			{ { 0.0f, -1.0f, 0.5f }, { 0.0f, 0.0f, 1.0f } }
+			{ { 1.0f, 1.0f, 0.05f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
+			{ { -1.0f, 1.0f, 0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f } },
+			{ { 0.0f, -1.0f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } }
 		};
 
 		vk::BufferCreateInfo vertexBufferInfo;
@@ -726,6 +791,7 @@ protected:
 
 		vertices.inputAttributes.push_back(vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, position)));
 		vertices.inputAttributes.push_back(vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, color)));
+		vertices.inputAttributes.push_back(vk::VertexInputAttributeDescription(2, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, texCoord)));
 
 		vertices.inputState.vertexBindingDescriptionCount = 1;
 		vertices.inputState.pVertexBindingDescriptions = &vertices.inputBinding;
@@ -837,9 +903,26 @@ protected:
 
 	vk::UniquePipeline createGraphicsPipeline(vk::RenderPass renderPass)
 	{
-		vk::PipelineLayoutCreateInfo pPipelineLayoutCreateInfo;
-		pPipelineLayoutCreateInfo.setLayoutCount = 0;
-		pipelineLayout = device.createPipelineLayout(pPipelineLayoutCreateInfo);
+		vk::DescriptorSetLayoutBinding samplerLayoutBinding;
+		samplerLayoutBinding.binding = 1;
+		samplerLayoutBinding.descriptorCount = 1;
+		samplerLayoutBinding.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+		samplerLayoutBinding.pImmutableSamplers = nullptr;
+		samplerLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eFragment;
+
+		std::array<vk::DescriptorSetLayoutBinding, 1> bindings = { samplerLayoutBinding };
+		vk::DescriptorSetLayoutCreateInfo layoutInfo;
+		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+		layoutInfo.pBindings = bindings.data();
+
+		descriptorSetLayout = device.createDescriptorSetLayout(layoutInfo);
+
+		std::vector<vk::DescriptorSetLayout> setLayouts(1, descriptorSetLayout);
+
+		vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+		pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
+		pipelineLayoutCreateInfo.pSetLayouts = setLayouts.data();
+		pipelineLayout = device.createPipelineLayout(pipelineLayoutCreateInfo);
 
 		vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
 		pipelineCreateInfo.layout = pipelineLayout;
@@ -893,12 +976,15 @@ protected:
 		const char *vertexShader = R"(#version 310 es
 			layout(location = 0) in vec3 inPos;
 			layout(location = 1) in vec3 inColor;
+
 			layout(location = 0) out vec3 outColor;
+			layout(location = 1) out vec2 fragTexCoord;
 
 			void main()
 			{
 				outColor = inColor;
 				gl_Position = vec4(inPos.xyz, 1.0);
+				fragTexCoord = inPos.xy;
 			}
 		)";
 
@@ -906,11 +992,15 @@ protected:
 			precision highp float;
 
 			layout(location = 0) in vec3 inColor;
+			layout(location = 1) in vec2 fragTexCoord;
+
 			layout(location = 0) out vec4 outColor;
+
+			layout(binding = 0) uniform sampler2D texSampler;
 
 			void main()
 			{
-				outColor = vec4(inColor, 1.0);
+				outColor = texture(texSampler, fragTexCoord) * vec4(inColor, 1.0);
 			}
 		)";
 
@@ -962,9 +1052,12 @@ protected:
 		std::vector<vk::VertexInputAttributeDescription> inputAttributes;
 	} vertices;
 
+	vk::DescriptorSetLayout descriptorSetLayout;
 	vk::PipelineLayout pipelineLayout;
 	vk::PipelineCache pipelineCache;
 	vk::UniquePipeline pipeline;
+
+	vk::Sampler sampler;
 
 	vk::CommandPool commandPool;
 	std::vector<vk::CommandBuffer> commandBuffers;
@@ -973,13 +1066,15 @@ protected:
 	vk::Semaphore renderCompleteSemaphore;
 
 	std::vector<vk::Fence> waitFences;
+
+	Image *texture = nullptr;
 };
 
 static void Triangle(benchmark::State &state, bool multisample)
 {
 	TriangleBenchmark benchmark(multisample);
 
-	if(false) benchmark.show();  // Enable for visual verification.
+	if(true) benchmark.show();  // Enable for visual verification.
 
 	// Warmup
 	benchmark.renderFrame();
@@ -989,5 +1084,8 @@ static void Triangle(benchmark::State &state, bool multisample)
 		benchmark.renderFrame();
 	}
 }
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond);
 BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);
