@@ -322,19 +322,27 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
-
-	If(!cacheHit)
+	if(false)  // inline
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
+		Sampler samplerState = {};
+		emitSamplerRoutine(instruction, samplerState, texture, &in[0], &out[0], state->routine->constants);
 	}
+	else  // trampoline
+	{
+		auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+		If(!cacheHit)
+		{
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
