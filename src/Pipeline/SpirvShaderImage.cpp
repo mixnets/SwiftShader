@@ -114,7 +114,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	// TODO(b/153380916): When we're in a code path that is always executed,
 	// i.e. post-dominators of the entry block, we don't have to dynamically
 	// check whether any lanes are active, and can elide the jump.
-	If(AnyTrue(state->activeLaneMask()))
+	//	If(AnyTrue(state->activeLaneMask()))
 	{
 		EmitImageSampleUnconditional(out, instruction, insn, state);
 	}
@@ -302,7 +302,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+	/*auto cacheIt = state->routine->samplerCache.find(insn.resultId());
 	ASSERT(cacheIt != state->routine->samplerCache.end());
 	auto &cache = cacheIt->second;
 	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
@@ -312,9 +312,27 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
 		cache.imageDescriptor = imageDescriptor;
 		cache.sampler = sampler;
-	}
+	}*/
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	//Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+
+	Sampler samplerState = { 0 };
+	samplerState.textureType = VK_IMAGE_VIEW_TYPE_2D;
+	samplerState.textureFormat = VK_FORMAT_R8G8B8A8_UNORM;
+	samplerState.textureFilter = FILTER_LINEAR;
+	samplerState.addressingModeU = ADDRESSING_WRAP;
+	samplerState.addressingModeV = ADDRESSING_WRAP;
+	samplerState.addressingModeW = ADDRESSING_WRAP;
+	samplerState.addressingModeY = ADDRESSING_WRAP;
+	samplerState.mipmapFilter = MIPMAP_POINT;
+	samplerState.swizzle.r = VK_COMPONENT_SWIZZLE_R;
+	samplerState.swizzle.g = VK_COMPONENT_SWIZZLE_G;
+	samplerState.swizzle.b = VK_COMPONENT_SWIZZLE_B;
+	samplerState.swizzle.a = VK_COMPONENT_SWIZZLE_A;
+	samplerState.highPrecisionFiltering = false;
+	samplerState.compareEnable = false;
+
+	emitSamplerRoutine(instruction, samplerState, texture, &in[0], &out[0], state->routine->constants);
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
