@@ -33,16 +33,21 @@ public:
 protected:
 	Pointer<Byte> constants;
 
-	Float4 Dz[4];
+	Float4 Dz[MAX_SAMPLES];
 	Float4 Dw;
 	Float4 Dv[MAX_INTERFACE_COMPONENTS];
 	Float4 Df;
 	Float4 DclipDistance[MAX_CLIP_DISTANCES];
 	Float4 DcullDistance[MAX_CULL_DISTANCES];
 
+	Pointer<Byte> cBuffer[RENDERTARGETS];
+	Pointer<Byte> resolveBuffer;
+	Pointer<Byte> zBuffer;
+	Pointer<Byte> sBuffer;
+
 	UInt occlusion;
 
-	virtual void quad(Pointer<Byte> cBuffer[4], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y) = 0;
+	virtual void quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[MAX_SAMPLES], Int &x, Int &y) = 0;
 
 	bool interpolateZ() const;
 	bool interpolateW() const;

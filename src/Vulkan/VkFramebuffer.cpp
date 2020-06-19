@@ -122,6 +122,8 @@ ImageView *Framebuffer::getAttachment(uint32_t index) const
 
 void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 {
+	return;
+
 	auto const &subpass = renderPass->getSubpass(subpassIndex);
 	if(subpass.pResolveAttachments)
 	{

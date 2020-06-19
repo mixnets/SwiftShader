@@ -347,6 +347,11 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 				data->colorPitchB[index] = context->renderTarget[index]->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 				data->colorSliceB[index] = context->renderTarget[index]->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			}
+
+			if(context->resolveTarget[index])
+			{
+				data->resolve[index] = (unsigned int *)context->resolveTarget[index]->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, data->viewID);
+			}
 		}
 
 		draw->depthBuffer = context->depthBuffer;

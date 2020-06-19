@@ -33,9 +33,9 @@ public:
 	virtual ~PixelRoutine();
 
 protected:
-	Float4 z[4];  // Multisampled z
-	Float4 w;     // Used as is
-	Float4 rhw;   // Reciprocal w
+	Float4 z[MAX_SAMPLES];  // Multisampled z
+	Float4 w;               // Used as is
+	Float4 rhw;             // Reciprocal w
 
 	SpirvRoutine routine;
 	const vk::DescriptorSet::Bindings &descriptorSets;
@@ -43,15 +43,15 @@ protected:
 	// Depth output
 	Float4 oDepth;
 
-	virtual void setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4]) = 0;
-	virtual void applyShader(Int cMask[4], Int sMask[4], Int zMask[4]) = 0;
-	virtual Bool alphaTest(Int cMask[4]) = 0;
-	virtual void rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4]) = 0;
+	virtual void setBuiltins(Int &x, Int &y, Float4 (&z)[MAX_SAMPLES], Float4 &w, Int cMask[MAX_SAMPLES]) = 0;
+	virtual void applyShader(Int cMask[MAX_SAMPLES], Int sMask[MAX_SAMPLES], Int zMask[MAX_SAMPLES]) = 0;
+	virtual Bool alphaTest(Int cMask[MAX_SAMPLES]) = 0;
+	virtual void rasterOperation(Pointer<Byte> cBuffer[RENDERTARGETS], Int &x, Int sMask[MAX_SAMPLES], Int zMask[MAX_SAMPLES], Int cMask[MAX_SAMPLES]) = 0;
 
-	void quad(Pointer<Byte> cBuffer[4], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y) override;
+	void quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[MAX_SAMPLES], Int &x, Int &y) override;
 
 	void alphaTest(Int &aMask, const Short4 &alpha);
-	void alphaToCoverage(Int cMask[4], const Float4 &alpha);
+	void alphaToCoverage(Int cMask[MAX_SAMPLES], const Float4 &alpha);
 
 	// Raster operations
 	void alphaBlend(int index, const Pointer<Byte> &cBuffer, Vector4s &current, const Int &x);
@@ -63,7 +63,7 @@ protected:
 	UShort4 convertFixed16(const Float4 &cf, bool saturate = true);
 	void linearToSRGB12_16(Vector4s &c);
 
-private:
+protected:
 	Float4 interpolateCentroid(const Float4 &x, const Float4 &y, const Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
 	Byte8 stencilReplaceRef(bool isBack);
 	void stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x, Int &sMask, const Int &cMask);

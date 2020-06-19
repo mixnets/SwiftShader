@@ -1860,6 +1860,8 @@ void CommandBuffer::ExecutionState::bindAttachments(sw::Context &context)
 		{
 			context.renderTarget[i] = renderPassFramebuffer->getAttachment(attachmentReference.attachment);
 		}
+
+		context.resolveTarget[i] = renderPassFramebuffer->getAttachment(subpass.pResolveAttachments[i].attachment);
 	}
 
 	auto attachmentReference = subpass.pDepthStencilAttachment;

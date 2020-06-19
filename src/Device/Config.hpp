@@ -30,6 +30,7 @@ enum
 	MAX_TEXEL_OFFSET = 7,
 	MAX_TEXTURE_LOD = MIPMAP_LEVELS - 2,  // Trilinear accesses lod+1
 	RENDERTARGETS = 8,
+	MAX_SAMPLES = 4,
 	MAX_INTERFACE_COMPONENTS = 32 * 4,  // Must be multiple of 4 for 16-byte alignment.
 };
 

@@ -69,10 +69,6 @@ void QuadRasterizer::generate()
 
 void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 {
-	Pointer<Byte> cBuffer[RENDERTARGETS];
-	Pointer<Byte> zBuffer;
-	Pointer<Byte> sBuffer;
-
 	Int clusterCountLog2 = 31 - Ctlz(UInt(clusterCount), false);
 
 	for(int index = 0; index < RENDERTARGETS; index++)
@@ -80,6 +76,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 		if(state.colorWriteActive(index))
 		{
 			cBuffer[index] = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, colorBuffer[index])) + yMin * *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+			resolveBuffer = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, resolve[index])) + yMin * *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
 		}
 	}
 
@@ -173,8 +170,8 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 				}
 			}
 
-			Short4 xLeft[4];
-			Short4 xRight[4];
+			Short4 xLeft[MAX_SAMPLES];
+			Short4 xRight[MAX_SAMPLES];
 
 			for(unsigned int q = 0; q < state.multiSampleCount; q++)
 			{
@@ -188,7 +185,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			For(Int x = x0, x < x1, x += 2)
 			{
 				Short4 xxxx = Short4(x);
-				Int cMask[4];
+				Int cMask[MAX_SAMPLES];
 
 				for(unsigned int q = 0; q < state.multiSampleCount; q++)
 				{
@@ -212,18 +209,19 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 		{
 			if(state.colorWriteActive(index))
 			{
-				cBuffer[index] += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index])) << (1 + clusterCountLog2);  // FIXME: Precompute
+				cBuffer[index] += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index])) << (1 + clusterCountLog2);  // TODO: Precompute
+				resolveBuffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index])) << (1 + clusterCountLog2);   // TODO: Precompute
 			}
 		}
 
 		if(state.depthTestActive)
 		{
-			zBuffer += *Pointer<Int>(data + OFFSET(DrawData, depthPitchB)) << (1 + clusterCountLog2);  // FIXME: Precompute
+			zBuffer += *Pointer<Int>(data + OFFSET(DrawData, depthPitchB)) << (1 + clusterCountLog2);  // TODO: Precompute
 		}
 
 		if(state.stencilActive)
 		{
-			sBuffer += *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB)) << (1 + clusterCountLog2);  // FIXME: Precompute
+			sBuffer += *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB)) << (1 + clusterCountLog2);  // TODO: Precompute
 		}
 
 		y += 2 * clusterCount;

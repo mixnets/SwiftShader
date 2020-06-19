@@ -91,6 +91,7 @@ struct DrawData
 	float depthNear;
 
 	unsigned int *colorBuffer[RENDERTARGETS];
+	unsigned int *resolve[RENDERTARGETS];
 	int colorPitchB[RENDERTARGETS];
 	int colorSliceB[RENDERTARGETS];
 	float *depthBuffer;

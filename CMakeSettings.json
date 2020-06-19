@@ -10,7 +10,23 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "LLVM",
+          "type": "STRING"
+        },
+        {
+          "name": "SWIFTSHADER_ENABLE_ASTC",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "SWIFTSHADER_BUILD_BENCHMARKS",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x86-Debug",
@@ -46,7 +62,23 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "SWIFTSHADER_ENABLE_ASTC",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "SWIFTSHADER_BUILD_BENCHMARKS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "LLVM",
+          "type": "STRING"
+        }
+      ]
     }
   ]
 }

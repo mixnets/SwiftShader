@@ -113,6 +113,7 @@ public:
 	bool robustBufferAccess;
 
 	vk::ImageView *renderTarget[RENDERTARGETS];
+	vk::ImageView *resolveTarget[RENDERTARGETS];
 	vk::ImageView *depthBuffer;
 	vk::ImageView *stencilBuffer;
 

@@ -50,13 +50,13 @@ PixelRoutine::~PixelRoutine()
 {
 }
 
-void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
+void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[MAX_SAMPLES], Int &x, Int &y)
 {
 	// TODO: consider shader which modifies sample mask in general
 	const bool earlyDepthTest = !spirvShader || (spirvShader->getModes().EarlyFragmentTests && !spirvShader->getModes().DepthReplacing && !state.alphaToCoverage);
 
-	Int zMask[4];  // Depth mask
-	Int sMask[4];  // Stencil mask
+	Int zMask[MAX_SAMPLES];  // Depth mask
+	Int sMask[MAX_SAMPLES];  // Stencil mask
 
 	for(unsigned int q = 0; q < state.multiSampleCount; q++)
 	{
@@ -549,7 +549,7 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
 }
 
-void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha)
+void PixelRoutine::alphaToCoverage(Int cMask[MAX_SAMPLES], const Float4 &alpha)
 {
 	Int4 coverage0 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData, a2c0)));
 	Int4 coverage1 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData, a2c1)));

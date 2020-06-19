@@ -39,7 +39,7 @@ Int4 PixelProgram::maskAny(Int cMask[4]) const
 }
 
 // Union all cMask/sMask/zMask and return it as 4 booleans
-Int4 PixelProgram::maskAny(Int cMask[4], Int sMask[4], Int zMask[4]) const
+Int4 PixelProgram::maskAny(Int cMask[MAX_SAMPLES], Int sMask[MAX_SAMPLES], Int zMask[MAX_SAMPLES]) const
 {
 	// See if at least 1 sample is used
 	Int maskUnion = cMask[0] & sMask[0] & zMask[0];
@@ -56,7 +56,7 @@ Int4 PixelProgram::maskAny(Int cMask[4], Int sMask[4], Int zMask[4]) const
 	return mask;
 }
 
-void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4])
+void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[MAX_SAMPLES], Float4 &w, Int cMask[MAX_SAMPLES])
 {
 	routine.setImmutableInputBuiltins(spirvShader);
 
@@ -106,7 +106,7 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 	});
 }
 
-void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
+void PixelProgram::applyShader(Int cMask[MAX_SAMPLES], Int sMask[MAX_SAMPLES], Int zMask[MAX_SAMPLES])
 {
 	routine.descriptorSets = data + OFFSET(DrawData, descriptorSets);
 	routine.descriptorDynamicOffsets = data + OFFSET(DrawData, descriptorDynamicOffsets);
@@ -185,7 +185,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4])
 	}
 }
 
-Bool PixelProgram::alphaTest(Int cMask[4])
+Bool PixelProgram::alphaTest(Int cMask[MAX_SAMPLES])
 {
 	if(!state.alphaToCoverage)
 	{
@@ -204,7 +204,7 @@ Bool PixelProgram::alphaTest(Int cMask[4])
 	return pass != 0x0;
 }
 
-void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4])
+void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[RENDERTARGETS], Int &x, Int sMask[MAX_SAMPLES], Int zMask[MAX_SAMPLES], Int cMask[MAX_SAMPLES])
 {
 	for(int index = 0; index < RENDERTARGETS; index++)
 	{
@@ -230,13 +230,20 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 			case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 			case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
+			{
+				//Vector4s color;
+				//color.x = convertFixed16(c[index].x, false);
+				//color.y = convertFixed16(c[index].y, false);
+				//color.z = convertFixed16(c[index].z, false);
+				//color.w = convertFixed16(c[index].w, false);
+
 				for(unsigned int q = 0; q < state.multiSampleCount; q++)
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
 						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
-						Vector4s color;
 
+						Vector4s color;
 						color.x = convertFixed16(c[index].x, false);
 						color.y = convertFixed16(c[index].y, false);
 						color.z = convertFixed16(c[index].z, false);
@@ -246,7 +253,39 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 						writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 					}
 				}
+
+				Vector4s pixel[MAX_SAMPLES];
+
+				for(unsigned int q = 0; q < state.multiSampleCount; q++)
+				{
+					if(state.multiSampleMask & (1 << q))
+					{
+						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+
+						readPixel(index, buffer, x, pixel[q]);
+					}
+				}
+
+				pixel[0].x = As<UShort4>(Average(As<UShort4>(pixel[0].x), As<UShort4>(pixel[1].x)));
+				pixel[0].y = As<UShort4>(Average(As<UShort4>(pixel[0].y), As<UShort4>(pixel[1].y)));
+				pixel[0].z = As<UShort4>(Average(As<UShort4>(pixel[0].z), As<UShort4>(pixel[1].z)));
+				pixel[0].w = As<UShort4>(Average(As<UShort4>(pixel[0].w), As<UShort4>(pixel[1].w)));
+
+				pixel[2].x = As<UShort4>(Average(As<UShort4>(pixel[2].x), As<UShort4>(pixel[3].x)));
+				pixel[2].y = As<UShort4>(Average(As<UShort4>(pixel[2].y), As<UShort4>(pixel[3].y)));
+				pixel[2].z = As<UShort4>(Average(As<UShort4>(pixel[2].z), As<UShort4>(pixel[3].z)));
+				pixel[2].w = As<UShort4>(Average(As<UShort4>(pixel[2].w), As<UShort4>(pixel[3].w)));
+
+				pixel[0].x = As<UShort4>(Average(As<UShort4>(pixel[0].x), As<UShort4>(pixel[2].x)));
+				pixel[0].y = As<UShort4>(Average(As<UShort4>(pixel[0].y), As<UShort4>(pixel[2].y)));
+				pixel[0].z = As<UShort4>(Average(As<UShort4>(pixel[0].z), As<UShort4>(pixel[2].z)));
+				pixel[0].w = As<UShort4>(Average(As<UShort4>(pixel[0].w), As<UShort4>(pixel[2].w)));
+
+				Pointer<Byte> buffer = resolveBuffer;
+				writeColor(index, buffer, x, pixel[0], 0xF, 0xF, 0xF);  // TODO: Maskless
+
 				break;
+			}
 			case VK_FORMAT_R16_SFLOAT:
 			case VK_FORMAT_R16G16_SFLOAT:
 			case VK_FORMAT_R16G16B16A16_SFLOAT:

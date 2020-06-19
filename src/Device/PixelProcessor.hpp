@@ -137,10 +137,10 @@ public:
 	{
 		word4 alphaReference4;
 
-		word4 blendConstant4W[4];
-		float4 blendConstant4F[4];
-		word4 invBlendConstant4W[4];
-		float4 invBlendConstant4F[4];
+		word4 blendConstant4W[RENDERTARGETS];
+		float4 blendConstant4F[RENDERTARGETS];
+		word4 invBlendConstant4W[RENDERTARGETS];
+		float4 invBlendConstant4F[RENDERTARGETS];
 	};
 
 public:
