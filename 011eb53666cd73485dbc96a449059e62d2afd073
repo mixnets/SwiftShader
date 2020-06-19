@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0b4591d_44476db4",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-19T17:09:32Z",
+      "side": 1,
+      "message": "nit: would it be more explicit to just write:\npacked \u003d *reinterpret_cast\u003cuint32_t*\u003e(color);",
+      "range": {
+        "startLine": 209,
+        "startChar": 12,
+        "endLine": 209,
+        "endChar": 70
+      },
+      "revId": "011eb53666cd73485dbc96a449059e62d2afd073",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
