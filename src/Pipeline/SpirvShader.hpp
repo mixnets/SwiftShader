@@ -1266,6 +1266,11 @@ private:
 	std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
 	static ImageSampler *getImageSampler(uint32_t instruction, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler);
+
+	static void emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState, Pointer<Byte> texture,
+	                               Pointer<SIMD::Float> in,
+	                               Pointer<SIMD::Float> out,
+	                               Pointer<Byte> constants);
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
