@@ -4092,7 +4092,6 @@ dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_loop_
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_read_fragment
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_loop_read_fragment
-dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_loop_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_read_fragment
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec4_dynamic_loop_write_dynamic_loop_read_fragment
