@@ -4092,7 +4092,6 @@ dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_loop_
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_read_fragment
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_dynamic_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_loop_read_fragment
-dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_loop_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_read_fragment
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec3_static_write_static_read_vertex
 dEQP-GLES2.functional.shaders.indexing.tmp_array.vec4_dynamic_loop_write_dynamic_loop_read_fragment
@@ -8469,7 +8468,6 @@ dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_ivec4_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec2_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec2_vertex
-dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec3_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec3_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec4_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec4_vertex
