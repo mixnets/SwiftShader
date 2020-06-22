@@ -57,6 +57,24 @@
       "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fe66896_a46bc533",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-22T19:43:01Z",
+      "side": 1,
+      "message": "ACK.",
+      "parentUuid": "729bb7b2_a1d36b30",
+      "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
