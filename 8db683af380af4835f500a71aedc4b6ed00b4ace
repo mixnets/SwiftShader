@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "52318972_ed78bfa1",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-22T15:30:16Z",
+      "side": 1,
+      "message": "Also note: input textures would only ever get locked and never unlocked, whereas render targets would only ever get unlocked and never locked. It would be really weird to read.\n\nI did the change regarding getTexelPointer(), though.",
+      "parentUuid": "06c3e182_82139f98",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
@@ -143,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "8d030e37_a4c593fa",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-22T15:30:16Z",
+      "side": 1,
+      "message": "I made the change, I\u0027ll let Regres decide if performance is good enough. Hopefully it doesn\u0027t change anything.",
+      "parentUuid": "6def7683_b62f487a",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 27
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81619cce_e54e9ca7",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
@@ -178,6 +226,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "81619cce_e54e9ca7",
+      "range": {
+        "startLine": 186,
+        "startChar": 56,
+        "endLine": 186,
+        "endChar": 72
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bbc1f2b2_c4e7d8c9",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-22T15:30:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef7be600_e05c21b5",
       "range": {
         "startLine": 186,
         "startChar": 56,
