@@ -39,6 +39,24 @@
       "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "729bb7b2_a1d36b30",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-22T19:24:23Z",
+      "side": 1,
+      "message": "Indeed this wouldn\u0027t be endianness safe, but be only support little endian. ARM and Power also support LE now, so basically BE lost and I don\u0027t think we have to worry about it any more.",
+      "parentUuid": "ba35faa4_74508ac6",
+      "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
