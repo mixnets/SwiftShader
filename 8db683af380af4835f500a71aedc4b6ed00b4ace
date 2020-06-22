@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "e9af6e6b_7cfc8aaf",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-22T18:01:16Z",
+      "side": 1,
+      "message": "\u003e input textures would only ever get locked and never unlocked, whereas render targets would only ever get unlocked and never locked\n\nMy suggestion is to always lock and unlock, even when one or the other (or both) don\u0027t do anything. That makes it easier to verify that they\u0027re used symmetrically and we\u0027re not reading while something is still writing. It also shifts the complexity to the Image class, which is arguably the right place since the users of this class shouldn\u0027t have to know the details of the dirtying mechanism and when to call what. Locking and unlocking is easily understood.",
+      "parentUuid": "52318972_ed78bfa1",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
