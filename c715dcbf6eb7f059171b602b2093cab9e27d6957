@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e6d5d66_98c3ae79",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-22T17:26:43Z",
+      "side": 1,
+      "message": "I\u0027ve looked into whether we can replace the void* with a VkClearValue or other less bug prone structure, but it\u0027s non-trivial. There are three cases to deal with: color and depth/stencil image clears, and attachment image view clears. The generic code path of the Blitter treats clears as blitting from a 1x1 image, so it just wants that pointer to the pixel. If we have three clear() methods instead, the Blitter class\u0027s interface becomes a lot more specific for Vulkan\u0027s API, while still requiring obtaining a pointer to the pixel. It\u0027s no less bug prone.\n\nWe can still follow-up later if anyone has ideas.",
+      "range": {
+        "startLine": 157,
+        "startChar": 24,
+        "endLine": 157,
+        "endChar": 40
+      },
+      "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
