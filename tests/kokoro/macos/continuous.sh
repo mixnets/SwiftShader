@@ -49,3 +49,15 @@ cmake .. "-DREACTOR_ENABLE_PRINT=1"
 cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
 cd ..
 build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
+
+# Incrementally build with REACTOR_EMIT_DEBUG_INFO to ensure it builds
+cd build
+cmake .. "-DREACTOR_EMIT_DEBUG_INFO=1"
+cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
+cd ..
+
+# Incrementally build with REACTOR_EMIT_PRINT_LOCATION to ensure it builds
+cd build
+cmake .. "-REACTOR_EMIT_PRINT_LOCATION=1"
+cmake --build . --target ReactorUnitTests -- -j$(sysctl -n hw.logicalcpu)
+cd ..

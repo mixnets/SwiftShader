@@ -48,6 +48,16 @@ cmake --build . --target ReactorUnitTests || goto :error
 cd %SRC% || goto :error
 build\Debug\ReactorUnitTests.exe --gtest_filter=ReactorUnitTests.Print* || goto :error
 
+REM Incrementally build with REACTOR_EMIT_DEBUG_INFO to ensure it builds
+cd %SRC%\build || goto :error
+cmake "-DREACTOR_EMIT_DEBUG_INFO=1" .. || goto :error
+cmake --build . --target ReactorUnitTests || goto :error
+
+REM Incrementally build with REACTOR_EMIT_PRINT_LOCATION to ensure it builds
+cd %SRC%\build || goto :error
+cmake "-REACTOR_EMIT_PRINT_LOCATION=1" .. || goto :error
+cmake --build . --target ReactorUnitTests || goto :error
+
 exit /b 0
 
 :error
