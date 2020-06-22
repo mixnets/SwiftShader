@@ -2829,7 +2829,6 @@ dEQP-GLES2.functional.rasterization.culling.back_triangle_strip
 dEQP-GLES2.functional.rasterization.culling.back_triangle_strip_reverse
 dEQP-GLES2.functional.rasterization.culling.back_triangles
 dEQP-GLES2.functional.rasterization.culling.back_triangles_reverse
-dEQP-GLES2.functional.rasterization.culling.both_triangle_fan
 dEQP-GLES2.functional.rasterization.culling.both_triangle_fan_reverse
 dEQP-GLES2.functional.rasterization.culling.both_triangle_strip
 dEQP-GLES2.functional.rasterization.culling.both_triangle_strip_reverse
