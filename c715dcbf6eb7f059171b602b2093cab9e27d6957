@@ -22,6 +22,23 @@
       "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba35faa4_74508ac6",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-22T17:48:08Z",
+      "side": 1,
+      "message": "Is there any concern here about endianess wrt this struct? If the input data, clearValue, points to memory not in the exact same order as what the compiler produces for this union, it will be wrong. Technically, it\u0027s only safe if the same union was used to write and read the memory (or at least, two unions that are equivalent).",
+      "revId": "c715dcbf6eb7f059171b602b2093cab9e27d6957",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
