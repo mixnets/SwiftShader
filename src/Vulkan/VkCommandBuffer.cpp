@@ -1100,7 +1100,7 @@ public:
 	{
 		for(uint32_t i = 0; i < descriptorSetCount; i++)
 		{
-			descriptorSets[firstSet + i] = vk::Cast(pDescriptorSets[i])->data;
+			descriptorSets[firstSet + i] = vk::Cast(pDescriptorSets[i]);
 		}
 
 		for(uint32_t i = 0; i < dynamicOffsetCount; i++)
