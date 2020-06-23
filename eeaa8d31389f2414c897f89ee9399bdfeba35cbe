@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "256a7e35_6a9c4efd",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T03:39:53Z",
+      "side": 1,
+      "message": "My bad, I thought I actually tested it. :-/",
+      "range": {
+        "startLine": 402,
+        "startChar": 25,
+        "endLine": 402,
+        "endChar": 29
+      },
+      "revId": "eeaa8d31389f2414c897f89ee9399bdfeba35cbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
