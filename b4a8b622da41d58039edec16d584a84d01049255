@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b10a7614_17bc5063",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T04:39:30Z",
+      "side": 1,
+      "message": "Descriptors are always for shader resource access, so this seems redundant and potentially confusing (as in, is there another function for non-shader accesses).\n\nI would replace \"InShader\" with \"Resource\", because it could still be confused for the descriptor data itself being read-only (as in immutable samplers).",
+      "range": {
+        "startLine": 36,
+        "startChar": 22,
+        "endLine": 36,
+        "endChar": 30
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2e5a62f_1f3bcc62",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T04:39:30Z",
+      "side": 1,
+      "message": "UNSUPPORTED\n\nUNREACHABLE is for code wich we assert cannot be reached under any circumstance.",
+      "range": {
+        "startLine": 56,
+        "startChar": 3,
+        "endLine": 56,
+        "endChar": 14
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5809c163_2852b656",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T04:39:30Z",
+      "side": 1,
+      "message": "This is very hacky and will not work if there are any padding bytes between the header and the data. We might have to revert https://swiftshader-review.googlesource.com/c/SwiftShader/+/43968",
+      "range": {
+        "startLine": 65,
+        "startChar": 89,
+        "endLine": 65,
+        "endChar": 90
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d924b882_2a0ccec0",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T04:39:30Z",
+      "side": 1,
+      "message": "This could really use a more descriptive or more intuitively understood name. I\u0027m not dead set on the lock/unlock nomenclature, but at least that one\u0027s well known.",
+      "range": {
+        "startLine": 98,
+        "startChar": 6,
+        "endLine": 98,
+        "endChar": 12
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

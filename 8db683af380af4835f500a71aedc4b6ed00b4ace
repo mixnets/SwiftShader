@@ -168,6 +168,30 @@
     },
     {
       "key": {
+        "uuid": "d88fdca3_27a60563",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T04:39:30Z",
+      "side": 1,
+      "message": "Okay, so maybe not try to track and validate everything, at least not in a Release build. My main concern is improving readability. Specifically, the \u0027notify()\u0027 method doesn\u0027t just take note of something as the name implies, it can also alter the image (preparing for sampling). It\u0027s also not very clear when we should call \u0027markDirty()\u0027 and when we should call \u0027notify(WRITE)\u0027.\n\nI still wonder if we can replace them by a lock(READ|WRITE|READ_AND_WRITE) + unlock() interface. The unlock() method doesn\u0027t have to do anything at this point.\n\nIn a follow-up change we could add a Debug-only field to ImageSubresource to indicate what state it\u0027s in (e.g. unlocked but dirty, clean but read lock held, etc.) so that unlock() plays a role in validation. I think that would give us much better robustness guarantees, and help catch bugs early during refactorings.",
+      "parentUuid": "855e18bf_4ab97a94",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
