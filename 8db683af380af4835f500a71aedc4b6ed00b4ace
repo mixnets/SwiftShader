@@ -216,6 +216,30 @@
     },
     {
       "key": {
+        "uuid": "36f4f9e5_1faff016",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-23T14:14:33Z",
+      "side": 1,
+      "message": "I\u0027m a little late to the discussion, and perhaps I\u0027m not seeing the whole thing, but I\u0027ll throw in my two cents. I agree that a markDirty interface is easy to mess up, and having it be done automatically is nice. One example from my past is the Havok physics/animation engine, where they had a class to represent hierarchical skeletal transforms in world and local space, and it internally kept track of dirtiness, and lazily updated transforms as needed. What I liked about their interface is that they exposed \"modify*\" functions, which return non-const pointers, and internally set dirty flags, and \"read*\" functions, which returned const pointers, which would lazily update transforms if needed (actually, modify* would also update if needed). So you\u0027d have code like:\n\n  // This returns the local-space transform of \"torso\", and marks the local-space dirty\n  // bit to true\n  hkTransform* p \u003d skel.modifyBoneLocal(\"torso\");\n  p-\u003epos \u003d ...;\n\n  // This gets the lazily updated world-space transform of \"torso\" because the local\n  // space bit is true, then sets the bit back to false.\n  const hkTransform* p2 \u003d skel.readBoneWorld(\"torso\");\n\nIn general, from the outside, you don\u0027t worry about dirtiness. Of course, for performance reasons, you would try to combine modify calls before read calls if possibly to avoid needless updates, but it worked out quite well most of the time.\n\nPerhaps there\u0027s a way to do something similar on the Image class?",
+      "parentUuid": "9628e240_5098c8db",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
