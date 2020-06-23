@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9d522d0f_5f987196",
+        "filename": "tests/kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-23T01:39:48Z",
+      "side": 1,
+      "message": "After making the switch to LLVM 10, I\u0027d like to fix up the DREACTOR_EMIT_DEBUG_INFO stuff to work with it. For now, it only works with LLVM 7.",
+      "revId": "171a607efcf92694b79e746adf78984a8b1258cb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
