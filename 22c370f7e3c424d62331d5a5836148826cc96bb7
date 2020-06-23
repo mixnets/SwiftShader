@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a9bd1a66_92456192",
+        "filename": "src/Reactor/LLVMReactorDebugInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-06-23T01:39:43Z",
+      "side": 1,
+      "message": "This failed to compile after capn@ made that rename change \"getType\" -\u003e \"type\". This change fixes the issue, and the next (https://swiftshader-review.googlesource.com/c/SwiftShader/+/45970) adds some builds to Kokoro to make sure we at least compile this code.",
+      "revId": "22c370f7e3c424d62331d5a5836148826cc96bb7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
