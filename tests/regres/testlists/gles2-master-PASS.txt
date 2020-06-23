@@ -8654,7 +8654,6 @@ dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_int_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_int_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_ivec2_fragment
-dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_ivec2_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_ivec3_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_ivec3_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.pre_increment_effect.lowp_ivec4_fragment
