@@ -192,6 +192,30 @@
     },
     {
       "key": {
+        "uuid": "9628e240_5098c8db",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "IMHO, the notify function is more readable that lock/unlock functions that may do nothing.\n\nI wouldn\u0027t have a choice to track subregions from the lock function, I would need them in the unlock method. If both function take a subregion argument, it\u0027s going to be super confusing.",
+      "parentUuid": "d88fdca3_27a60563",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20

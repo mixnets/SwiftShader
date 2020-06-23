@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "14abfe8c_f31f84b8",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ack, will comment",
+      "parentUuid": "b5f10694_d775e918",
+      "range": {
+        "startLine": 222,
+        "startChar": 27,
+        "endLine": 222,
+        "endChar": 72
+      },
+      "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f22c0296_59be2e17",
         "filename": "src/Pipeline/ComputeProgram.cpp",
         "patchSetId": 25
@@ -36,6 +60,30 @@
       "writtenOn": "2020-06-23T04:39:30Z",
       "side": 1,
       "message": "Can we move this up where the READ notification is made? I don\u0027t think it hurts to mark the images as dirty before the first actual write, but it might cause some issues at some point to only be marking it dirty after all the writes are done.",
+      "range": {
+        "startLine": 310,
+        "startChar": 28,
+        "endLine": 310,
+        "endChar": 74
+      },
+      "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "881a0ee3_0fd0534e",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "This might be named wrong. WRITE_ACCESS acutally means \"has been written to\".",
+      "parentUuid": "f22c0296_59be2e17",
       "range": {
         "startLine": 310,
         "startChar": 28,
@@ -68,6 +116,30 @@
       "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5753ae39_9982e999",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "734b0de3_255eea60",
+      "range": {
+        "startLine": 154,
+        "startChar": 7,
+        "endLine": 154,
+        "endChar": 12
+      },
+      "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

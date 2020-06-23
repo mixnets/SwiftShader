@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "24905325_8e9acfad",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b10a7614_17bc5063",
+      "range": {
+        "startLine": 36,
+        "startChar": 22,
+        "endLine": 36,
+        "endChar": 30
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2e5a62f_1f3bcc62",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 23
@@ -45,6 +69,30 @@
       "revId": "b4a8b622da41d58039edec16d584a84d01049255",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55ab0a53_d08665aa",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e2e5a62f_1f3bcc62",
+      "range": {
+        "startLine": 56,
+        "startChar": 3,
+        "endLine": 56,
+        "endChar": 14
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "6c681e8a_0352903e",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ok, can you (or should I) create a revert of it?",
+      "parentUuid": "5809c163_2852b656",
+      "range": {
+        "startLine": 65,
+        "startChar": 89,
+        "endLine": 65,
+        "endChar": 90
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d924b882_2a0ccec0",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 23
@@ -82,6 +154,30 @@
       "writtenOn": "2020-06-23T04:39:30Z",
       "side": 1,
       "message": "This could really use a more descriptive or more intuitively understood name. I\u0027m not dead set on the lock/unlock nomenclature, but at least that one\u0027s well known.",
+      "range": {
+        "startLine": 98,
+        "startChar": 6,
+        "endLine": 98,
+        "endChar": 12
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "750ef5ca_e70c2f5a",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T12:58:26Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll think of something that would allow us to not increase the number of call sites, if possible. It\u0027s mostly what I dislike about the lock/unlock approach.",
+      "parentUuid": "d924b882_2a0ccec0",
       "range": {
         "startLine": 98,
         "startChar": 6,
