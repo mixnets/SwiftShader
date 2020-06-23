@@ -171,9 +171,9 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			ASSERT(d.Binding >= 0);
 
 			uint32_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
-			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];  // DescriptorSet*
-			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset);    // vk::SampledImageDescriptor*
-			auto size = 0;                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet];                                  // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + OFFSET(vk::DescriptorSet, data) + bindingOffset);  // vk::SampledImageDescriptor*
+			auto size = 0;                                                                                 // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
 			state->createPointer(resultId, SIMD::Pointer(binding, size));
 			break;
 		}
@@ -188,7 +188,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			// is valid. In this case make the value nullptr to make it easier to diagnose an attempt to dereference it.
 			if(d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS)
 			{
-				state->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet], size));
+				state->createPointer(resultId, SIMD::Pointer(routine->descriptorSets[d.DescriptorSet] + OFFSET(vk::DescriptorSet, data), size));
 			}
 			else
 			{
