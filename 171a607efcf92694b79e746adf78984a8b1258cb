@@ -16,6 +16,24 @@
       "revId": "171a607efcf92694b79e746adf78984a8b1258cb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39a0dd4d_8597e0ac",
+        "filename": "tests/kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-06-23T03:40:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9d522d0f_5f987196",
+      "revId": "171a607efcf92694b79e746adf78984a8b1258cb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
