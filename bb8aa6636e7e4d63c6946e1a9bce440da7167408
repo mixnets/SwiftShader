@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "88de9093_48f476e1",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T14:48:24Z",
+      "side": 1,
+      "message": "Actually, it looks cleaner to just remove it.",
+      "parentUuid": "14abfe8c_f31f84b8",
+      "range": {
+        "startLine": 222,
+        "startChar": 27,
+        "endLine": 222,
+        "endChar": 72
+      },
+      "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f22c0296_59be2e17",
         "filename": "src/Pipeline/ComputeProgram.cpp",
         "patchSetId": 25
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "This might be named wrong. WRITE_ACCESS acutally means \"has been written to\".",
       "parentUuid": "f22c0296_59be2e17",
+      "range": {
+        "startLine": 310,
+        "startChar": 28,
+        "endLine": 310,
+        "endChar": 74
+      },
+      "revId": "bb8aa6636e7e4d63c6946e1a9bce440da7167408",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07b57434_9fda1841",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T14:48:24Z",
+      "side": 1,
+      "message": "I\u0027ve renamed it \"ContentsChanged\". That might be clearer.",
+      "parentUuid": "881a0ee3_0fd0534e",
       "range": {
         "startLine": 310,
         "startChar": 28,
