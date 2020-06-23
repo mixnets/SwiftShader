@@ -240,6 +240,30 @@
     },
     {
       "key": {
+        "uuid": "d1d97e78_dd026639",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-06-23T14:17:22Z",
+      "side": 1,
+      "message": "There are no read* functions in Vulkan. We pass data though descriptor sets without ever notifying the image object, which is why some sort of notification mechanism is necessary.",
+      "parentUuid": "36f4f9e5_1faff016",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20
