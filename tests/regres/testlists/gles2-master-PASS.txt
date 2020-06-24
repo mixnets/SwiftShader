@@ -6749,7 +6749,6 @@ dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vec2_ve
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vec3_fragment
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vec3_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vec4_fragment
-dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vec4_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_float_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_int_fragment
 dEQP-GLES2.functional.shaders.operator.binary_operator.mul.mediump_int_ivec2_fragment
