@@ -46,7 +46,8 @@ namespace {
 
 bool IsUnderDebugger()
 {
-#if defined(PTRACE) && !defined(__APPLE__) && !defined(__MACH__)
+#if !defined(NDEBUG)
+#	if defined(PTRACE) && !defined(__APPLE__) && !defined(__MACH__)
 	static bool checked = false;
 	static bool res = false;
 
@@ -66,9 +67,9 @@ bool IsUnderDebugger()
 	}
 
 	return res;
-#elif defined(_WIN32) || defined(_WIN64)
+#	elif defined(_WIN32) || defined(_WIN64)
 	return IsDebuggerPresent() != 0;
-#elif defined(__APPLE__) || defined(__MACH__)
+#	elif defined(__APPLE__) || defined(__MACH__)
 	// Code comes from the Apple Technical Q&A QA1361
 
 	// Tell sysctl what info we're requestion. Specifically we're asking for
@@ -91,9 +92,12 @@ bool IsUnderDebugger()
 
 	// We're being debugged if the P_TRACED flag is set
 	return ((info.kp_proc.p_flag & P_TRACED) != 0);
+#	else
+	return false;
+#	endif
 #else
 	return false;
-#endif
+#endif  // !defined(NDEBUG)
 }
 
 enum class Level
