@@ -1,0 +1,12 @@
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.reverse_subtract_src_alpha_one_minus_src_alpha
+dEQP-GLES3.functional.polygon_offset.fixed16_enable
+dEQP-GLES3.functional.shaders.builtin_functions.precision.sub.lowp_vertex.scalar
+dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
+dEQP-GLES3.functional.shaders.matrix.post_decrement.lowp_mat4_float_fragment
+dEQP-GLES3.functional.shaders.matrix.sub.uniform.highp_mat2x4_float_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.not_equal.bool_fragment
+dEQP-GLES3.functional.shaders.operator.geometric.dot.highp_vec4_fragment
+dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_result.highp_ivec2_fragment
+dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_npot
+dEQP-GLES3.functional.texture.shadow.cube.linear_mipmap_linear.not_equal_depth_component32f
+dEQP-GLES3.functional.texture.swizzle.multi_channel.rgb_all_blue
