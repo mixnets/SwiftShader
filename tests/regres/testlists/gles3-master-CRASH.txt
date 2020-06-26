@@ -1,0 +1,7 @@
+dEQP-GLES3.functional.polygon_offset.fixed16_enable
+dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
+dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_vertex
+dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_linear
+dEQP-GLES3.functional.texture.swizzle.multi_channel.rgb_all_blue
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
