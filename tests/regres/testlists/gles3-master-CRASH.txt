@@ -1,0 +1,4 @@
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_alpha
+dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec4
+dEQP-GLES3.functional.shaders.operator.binary_operator.right_shift.lowp_uint_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.sub_assign_effect.lowp_uvec3_vertex
