@@ -1,0 +1,8 @@
+dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2
+dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec4_vertex
+dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec2_vertex
+dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
+dEQP-GLES3.functional.shaders.preprocessor.line_continuation.middle_of_line_vertex
+dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_nearest_divisible
+dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_both
+dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.int_ivec4_both

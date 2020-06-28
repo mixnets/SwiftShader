@@ -51,7 +51,6 @@ dEQP-GLES3.functional.attribute_location.bind_max_attributes.int
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec3
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.ivec4
-dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x2
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x3
 dEQP-GLES3.functional.attribute_location.bind_max_attributes.mat2x4
@@ -12461,7 +12460,6 @@ dEQP-GLES3.functional.shaders.conversions.vector_combine.vec3_float_to_vec4_vert
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec3_fragment
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec3_vertex
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec4_fragment
-dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec4_vertex
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_ivec3_fragment
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_ivec3_vertex
 dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_ivec4_fragment
@@ -13306,7 +13304,6 @@ dEQP-GLES3.functional.shaders.functions.datatypes.struct_struct_vertex
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uint_fragment
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uint_vertex
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec2_fragment
-dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec2_vertex
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec3_fragment
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec3_vertex
 dEQP-GLES3.functional.shaders.functions.datatypes.uint_uvec4_fragment
@@ -14256,7 +14253,6 @@ dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_wr
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_fragment
-dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_static_loop_subscript_read_fragment
@@ -25527,7 +25523,6 @@ dEQP-GLES3.functional.shaders.preprocessor.line_continuation.comment_vertex
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.define_fragment
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.define_vertex
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.middle_of_line_fragment
-dEQP-GLES3.functional.shaders.preprocessor.line_continuation.middle_of_line_vertex
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.preprocessing_token_fragment
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.preprocessing_token_vertex
 dEQP-GLES3.functional.shaders.preprocessor.line_continuation.token_fragment
@@ -38425,7 +38420,6 @@ dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_both
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_fragment
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x3_vertex
-dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_both
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_fragment
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat2x4_vertex
 dEQP-GLES3.functional.uniform_api.info_query.indices_active_uniformsiv.basic.mat3_both
@@ -40126,7 +40120,6 @@ dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.bool_bvec
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.float_vec4_both
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.float_vec4_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.float_vec4_vertex
-dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.int_ivec4_both
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.int_ivec4_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.int_ivec4_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.mat4_mat2_both
