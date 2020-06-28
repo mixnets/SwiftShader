@@ -10754,7 +10754,6 @@ dEQP-GLES2.functional.shaders.random.trigonometric.fragment.58
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.59
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.6
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.60
-dEQP-GLES2.functional.shaders.random.trigonometric.fragment.61
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.62
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.63
 dEQP-GLES2.functional.shaders.random.trigonometric.fragment.64
