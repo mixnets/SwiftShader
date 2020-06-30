@@ -1,0 +1,7 @@
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_color
+dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
+dEQP-GLES3.functional.texture.mipmap.cube.min_lod.linear_linear
+dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32f_2d_array
+dEQP-GLES3.functional.texture.wrap.astc_4x4.clamp_mirror_nearest_divisible
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
+dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_fragment

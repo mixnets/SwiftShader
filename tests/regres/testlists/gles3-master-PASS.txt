@@ -5032,7 +5032,6 @@ dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_one_minus_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_alpha_saturate
-dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_color
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_zero
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_src_alpha_constant_alpha
 dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_src_alpha_constant_color
@@ -18217,7 +18216,6 @@ dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat2x4_mat2x4_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_fragment
-dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_float_vertex
 dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3x2_mat3x2_fragment
@@ -32030,7 +32028,6 @@ dEQP-GLES3.functional.texture.mipmap.cube.generate.rgba8888_fastest
 dEQP-GLES3.functional.texture.mipmap.cube.generate.rgba8888_nicest
 dEQP-GLES3.functional.texture.mipmap.cube.max_level.linear_linear
 dEQP-GLES3.functional.texture.mipmap.cube.max_level.nearest_linear
-dEQP-GLES3.functional.texture.mipmap.cube.min_lod.linear_linear
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.linear_nearest
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.nearest_linear
 dEQP-GLES3.functional.texture.mipmap.cube.min_lod.nearest_nearest
@@ -33309,7 +33306,6 @@ dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16f_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16i_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16i_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r16ui_3d
-dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32f_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32i_2d_array
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32i_3d
 dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32ui_2d_array
@@ -39123,7 +39119,6 @@ dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_stru
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.bool_bvec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_fragment
-dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_vertex
@@ -39881,7 +39876,6 @@ dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_bot
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.mat4_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_both
-dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.sampler2D_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.uint_both
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic_array.uint_fragment
