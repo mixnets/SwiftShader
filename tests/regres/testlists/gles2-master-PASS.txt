@@ -73,7 +73,6 @@ dEQP-GLES2.functional.buffer.write.use.index_array.array
 dEQP-GLES2.functional.buffer.write.use.index_array.element_array
 dEQP-GLES2.functional.buffer.write.use.vertex_array.array
 dEQP-GLES2.functional.buffer.write.use.vertex_array.element_array
-dEQP-GLES2.functional.clipping.line.line_attrib_clip
 dEQP-GLES2.functional.clipping.line.line_z_clip
 dEQP-GLES2.functional.clipping.line.line_z_clip_viewport_center
 dEQP-GLES2.functional.clipping.line.line_z_clip_viewport_corner

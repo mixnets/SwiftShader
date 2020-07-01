@@ -1,0 +1,5 @@
+dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x4
+dEQP-GLES3.functional.fbo.depth.depth_test_clamp.depth24_stencil8
+dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_float_vertex
+dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_vertex

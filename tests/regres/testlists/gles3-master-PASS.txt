@@ -78,7 +78,6 @@ dEQP-GLES3.functional.attribute_location.bind_relink_hole.ivec4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x3
-dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat2x4
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x2
 dEQP-GLES3.functional.attribute_location.bind_relink_hole.mat3x3
@@ -3483,7 +3482,6 @@ dEQP-GLES3.functional.fbo.depth.basic.depth32f_stencil8
 dEQP-GLES3.functional.fbo.depth.basic.depth_component16
 dEQP-GLES3.functional.fbo.depth.basic.depth_component24
 dEQP-GLES3.functional.fbo.depth.basic.depth_component32f
-dEQP-GLES3.functional.fbo.depth.depth_test_clamp.depth24_stencil8
 dEQP-GLES3.functional.fbo.depth.depth_test_clamp.depth32f_stencil8
 dEQP-GLES3.functional.fbo.depth.depth_test_clamp.depth_component16
 dEQP-GLES3.functional.fbo.depth.depth_test_clamp.depth_component24
@@ -13480,7 +13478,6 @@ dEQP-GLES3.functional.shaders.functions.qualifiers.in_highp_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_int_fragment
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_float_fragment
-dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_float_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_int_fragment
 dEQP-GLES3.functional.shaders.functions.qualifiers.in_lowp_int_vertex
 dEQP-GLES3.functional.shaders.functions.qualifiers.inout_bool_fragment
@@ -14256,7 +14253,6 @@ dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_wr
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_direct_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_fragment
-dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_fragment
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_subscript_read_vertex
 dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_static_loop_subscript_read_fragment
@@ -21235,7 +21231,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_uint_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_uvec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_uvec2_vertex
-dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec3_int_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec3_int_vertex
