@@ -635,6 +635,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 	// While we could be using OutOfBoundsBehavior::RobustBufferAccess for read operations from buffer resources,
 	// emulating the glsl function loadImage() requires that this function returns 0 when used with out of bounds
 	// coordinates, so we have to use OutOfBoundsBehavior::Nullify in that case.
+	// TODO(b/159329067): VK_EXT_image_robustness
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
 	auto texelSize = vk::Format(vkFormat).bytes();
@@ -918,7 +919,6 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	auto imageSizeInBytes = *Pointer<Int>(binding + OFFSET(vk::StorageImageDescriptor, sizeInBytes));
 
 	SIMD::Int packed[4];
-	auto numPackedElements = 0u;
 	int texelSize = 0;
 	auto format = static_cast<spv::ImageFormat>(imageType.definition.word(8));
 	switch(format)
@@ -931,14 +931,12 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			packed[1] = texel.Int(1);
 			packed[2] = texel.Int(2);
 			packed[3] = texel.Int(3);
-			numPackedElements = 4;
 			break;
 		case spv::ImageFormatR32f:
 		case spv::ImageFormatR32i:
 		case spv::ImageFormatR32ui:
 			texelSize = 4;
 			packed[0] = texel.Int(0);
-			numPackedElements = 1;
 			break;
 		case spv::ImageFormatRgba8:
 			texelSize = 4;
@@ -946,7 +944,6 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			            ((SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 8) |
 			            ((SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 16) |
 			            ((SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(255.0f)))) << 24);
-			numPackedElements = 1;
 			break;
 		case spv::ImageFormatRgba8Snorm:
 			texelSize = 4;
@@ -961,7 +958,6 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			            ((SIMD::Int(Round(Min(Max(texel.Float(3), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(127.0f))) &
 			              SIMD::Int(0xFF))
 			             << 24);
-			numPackedElements = 1;
 			break;
 		case spv::ImageFormatRgba8i:
 		case spv::ImageFormatRgba8ui:
@@ -970,20 +966,17 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xff)) << 8) |
 			            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xff)) << 16) |
 			            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xff)) << 24);
-			numPackedElements = 1;
 			break;
 		case spv::ImageFormatRgba16f:
 			texelSize = 8;
 			packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
 			packed[1] = floatToHalfBits(texel.UInt(2), false) | floatToHalfBits(texel.UInt(3), true);
-			numPackedElements = 2;
 			break;
 		case spv::ImageFormatRgba16i:
 		case spv::ImageFormatRgba16ui:
 			texelSize = 8;
 			packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
 			packed[1] = SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xFFFF)) << 16);
-			numPackedElements = 2;
 			break;
 		case spv::ImageFormatRg32f:
 		case spv::ImageFormatRg32i:
@@ -991,45 +984,96 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			texelSize = 8;
 			packed[0] = texel.Int(0);
 			packed[1] = texel.Int(1);
-			numPackedElements = 2;
 			break;
 		case spv::ImageFormatRg16f:
 			texelSize = 4;
 			packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
-			numPackedElements = 1;
 			break;
 		case spv::ImageFormatRg16i:
 		case spv::ImageFormatRg16ui:
 			texelSize = 4;
 			packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
-			numPackedElements = 1;
 			break;
-
 		case spv::ImageFormatR11fG11fB10f:
-		case spv::ImageFormatR16f:
-		case spv::ImageFormatRgba16:
-		case spv::ImageFormatRgb10A2:
-		case spv::ImageFormatRg16:
-		case spv::ImageFormatRg8:
-		case spv::ImageFormatR16:
-		case spv::ImageFormatR8:
-		case spv::ImageFormatRgba16Snorm:
-		case spv::ImageFormatRg16Snorm:
-		case spv::ImageFormatRg8Snorm:
-		case spv::ImageFormatR16Snorm:
-		case spv::ImageFormatR8Snorm:
-		case spv::ImageFormatRg8i:
-		case spv::ImageFormatR16i:
-		case spv::ImageFormatR8i:
-		case spv::ImageFormatRgb10a2ui:
-		case spv::ImageFormatRg8ui:
-		case spv::ImageFormatR16ui:
-		case spv::ImageFormatR8ui:
-			UNSUPPORTED("spv::ImageFormat %d", int(format));
+			UNIMPLEMENTED("b/146579770");
 			break;
-
+		case spv::ImageFormatR16f:
+			texelSize = 2;
+			packed[0] = floatToHalfBits(texel.UInt(0), false);
+			break;
+		case spv::ImageFormatRgba16:
+			texelSize = 8;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
+			packed[1] = SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
+			break;
+		case spv::ImageFormatRgb10A2:
+			UNIMPLEMENTED("b/146579770");
+			break;
+		case spv::ImageFormatRg16:
+			texelSize = 4;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
+			break;
+		case spv::ImageFormatRg8:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF))) << 16);
+			break;
+		case spv::ImageFormatR16:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFFFF)));
+			break;
+		case spv::ImageFormatR8:
+			texelSize = 1;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0xFF)));
+			break;
+		case spv::ImageFormatRgba16Snorm:
+			texelSize = 8;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
+			packed[1] = SIMD::UInt(Round(Min(Max(texel.Float(2), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(3), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
+			break;
+		case spv::ImageFormatRg16Snorm:
+			texelSize = 4;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF))) << 16);
+			break;
+		case spv::ImageFormatRg8Snorm:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F))) |
+			            (SIMD::UInt(Round(Min(Max(texel.Float(1), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F))) << 8);
+			break;
+		case spv::ImageFormatR16Snorm:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7FFF)));
+			break;
+		case spv::ImageFormatR8Snorm:
+			texelSize = 1;
+			packed[0] = SIMD::UInt(Round(Min(Max(texel.Float(0), SIMD::Float(0.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F)));
+			break;
+		case spv::ImageFormatRg8i:
+		case spv::ImageFormatRg8ui:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFF)) << 8);
+			break;
+		case spv::ImageFormatR16i:
+		case spv::ImageFormatR16ui:
+			texelSize = 2;
+			packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF));
+			break;
+		case spv::ImageFormatR8i:
+		case spv::ImageFormatR8ui:
+			texelSize = 1;
+			packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF));
+			break;
+		case spv::ImageFormatRgb10a2ui:
+			UNIMPLEMENTED("b/146579770");
+			break;
 		default:
-			UNREACHABLE("spv::ImageFormat %d", int(format));
+			UNSUPPORTED("spv::ImageFormat %d", int(format));
 			break;
 	}
 
@@ -1037,15 +1081,47 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 
 	// Emulating the glsl function imageStore() requires that this function is noop when used with out of bounds
 	// coordinates, so we have to use OutOfBoundsBehavior::Nullify in that case.
+	// TODO(b/159329067): VK_EXT_image_robustness
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
 	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, 0, false, robustness);
 
-	for(auto i = 0u; i < numPackedElements; i++)
+	if(texelSize == 4 || texelSize == 8 || texelSize == 16)
 	{
-		texelPtr.Store(packed[i], robustness, state->activeLaneMask());
-		texelPtr += sizeof(float);
+		for(auto i = 0; i < texelSize / 4; i++)
+		{
+			texelPtr.Store(packed[i], robustness, state->activeLaneMask());
+			texelPtr += sizeof(float);
+		}
 	}
+	else if(texelSize == 2)  // TODO: 16-bit scatter
+	{
+		SIMD::Int offsets = texelPtr.offsets();
+		SIMD::Int mask = state->activeLaneMask() & texelPtr.isInBounds(2, robustness);
+
+		for(int i = 0; i < SIMD::Width; i++)
+		{
+			If(Extract(mask, i) != 0)  // TODO: mask[i]
+			{
+				*Pointer<Short>(texelPtr.base + Extract(offsets, i)) = Short(Extract(packed[0], i));
+			}
+		}
+	}
+	else if(texelSize == 1)  // TODO: 8-bit scatter
+	{
+		SIMD::Int offsets = texelPtr.offsets();
+		SIMD::Int mask = state->activeLaneMask() & texelPtr.isInBounds(1, robustness);
+
+		for(int i = 0; i < SIMD::Width; i++)
+		{
+			If(Extract(mask, i) != 0)  // TODO: mask[i]
+			{
+				*Pointer<Byte>(texelPtr.base + Extract(offsets, i)) = Byte(Extract(packed[0], i));
+			}
+		}
+	}
+	else
+		UNREACHABLE("texelSize: %d", int(texelSize));
 
 	return EmitResult::Continue;
 }
