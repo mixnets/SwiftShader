@@ -264,6 +264,30 @@
     },
     {
       "key": {
+        "uuid": "13623ff9_38b6b3aa",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-02T19:58:44Z",
+      "side": 1,
+      "message": "New naming convention hopefully makes this clearer",
+      "parentUuid": "d1d97e78_dd026639",
+      "range": {
+        "startLine": 84,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 128
+      },
+      "revId": "8db683af380af4835f500a71aedc4b6ed00b4ace",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e37cd879_846a045b",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 20

@@ -191,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "d3789754_65fd04c5",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-02T19:58:44Z",
+      "side": 1,
+      "message": "ended up using a separate array of descriptor set objects instead",
+      "parentUuid": "6c681e8a_0352903e",
+      "range": {
+        "startLine": 65,
+        "startChar": 89,
+        "endLine": 65,
+        "endChar": 90
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d924b882_2a0ccec0",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 23
@@ -235,6 +259,30 @@
       "revId": "b4a8b622da41d58039edec16d584a84d01049255",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0de21bd4_677c6da7",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-02T19:58:44Z",
+      "side": 1,
+      "message": "The notify function is gone. The prepareForSampling() function is used only by the renderer/image view. The contentsChanged() function is used by the renderer, compute programs and the blitter.",
+      "parentUuid": "750ef5ca_e70c2f5a",
+      "range": {
+        "startLine": 98,
+        "startChar": 6,
+        "endLine": 98,
+        "endChar": 12
+      },
+      "revId": "b4a8b622da41d58039edec16d584a84d01049255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
