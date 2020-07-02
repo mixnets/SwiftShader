@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8f3bc5e2_3fd7b662",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-02T20:10:39Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4b2b5a71_d846a401",
+      "range": {
+        "startLine": 33,
+        "startChar": 19,
+        "endLine": 33,
+        "endChar": 27
+      },
+      "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "12a87312_9cc560c8",
         "filename": "src/Vulkan/VkDescriptorSet.hpp",
         "patchSetId": 31
@@ -45,6 +69,30 @@
       "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af7ed4de_4242bff9",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-02T20:10:39Z",
+      "side": 1,
+      "message": "Allocating/deallocating each metadata structure separately is too costly, there were some runtime regressions in some tests.\nGoing through the pool has a few advantages:\n1) Can lazily construct the metadata only when required\n2) Can just call reset() on the metadata std container in the pool instead of manually calling delete on each individual metadata structure",
+      "parentUuid": "12a87312_9cc560c8",
+      "range": {
+        "startLine": 57,
+        "startChar": 1,
+        "endLine": 57,
+        "endChar": 22
+      },
+      "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
