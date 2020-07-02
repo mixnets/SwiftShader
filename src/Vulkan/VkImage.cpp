@@ -359,7 +359,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	VkExtent3D dstExtent = dstImage->getMipLevelExtent(dstAspect, region.dstSubresource.mipLevel);
 	VkExtent3D copyExtent = imageExtentInBlocks(region.extent, srcAspect);
 
-	bool isSinglePlane = (copyExtent.depth == 1);
+	bool isSinglePlane = (copyExtent.depth == 1) && (region.srcSubresource.layerCount == 1);
 	bool isSingleLine = (copyExtent.height == 1) && isSinglePlane;
 	// In order to copy multiple lines using a single memcpy call, we
 	// have to make sure that we need to copy the entire line and that
@@ -419,7 +419,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	{
 		size_t copySize = copyExtent.width * srcBytesPerBlock;
 
-		for(uint32_t z = 0; z < copyExtent.depth; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+		for(uint32_t z = 0; z < copyExtent.depth * region.srcSubresource.layerCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
 		{
 			const uint8_t *srcSlice = srcMem;
 			uint8_t *dstSlice = dstMem;
