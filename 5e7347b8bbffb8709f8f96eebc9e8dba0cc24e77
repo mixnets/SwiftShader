@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0739b02_216cd9cf",
+        "filename": "third_party/astc-encoder/Source/astc_codec_internals.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-02T20:10:08Z",
+      "side": 1,
+      "message": "Can also be eliminated. See https://swiftshader-review.googlesource.com/c/SwiftShader/+/44448",
+      "range": {
+        "startLine": 95,
+        "startChar": 1,
+        "endLine": 95,
+        "endChar": 18
+      },
+      "revId": "5e7347b8bbffb8709f8f96eebc9e8dba0cc24e77",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
