@@ -325,6 +325,8 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 
 	if((samples > VK_SAMPLE_COUNT_1_BIT) && (imageType == VK_IMAGE_TYPE_2D) && !format.isUnnormalizedInteger())
 	{
+		ASSERT(false);
+
 		// Requires multisampling resolve
 		VkImageBlit blitRegion;
 		blitRegion.srcSubresource = region.srcSubresource;
