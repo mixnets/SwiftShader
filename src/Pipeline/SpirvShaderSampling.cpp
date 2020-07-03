@@ -57,6 +57,12 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 		samplerState.swizzle = imageDescriptor->swizzle;
 		samplerState.gatherComponent = instruction.gatherComponent;
 
+		bool largeTexture = (imageDescriptor->extent.width > SHRT_MAX) ||
+		                    (imageDescriptor->extent.height > SHRT_MAX) ||
+		                    (imageDescriptor->extent.depth > SHRT_MAX);
+
+		assert(!largeTexture || (instruction.samplerMethod == Fetch));
+
 		if(sampler)
 		{
 			samplerState.textureFilter = (instruction.samplerMethod == Gather) ? FILTER_GATHER : convertFilterMode(sampler);
