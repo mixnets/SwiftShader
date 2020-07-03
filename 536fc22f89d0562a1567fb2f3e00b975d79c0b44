@@ -117,6 +117,30 @@
       "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2271a74d_2375c91b",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T14:31:36Z",
+      "side": 1,
+      "message": "What needs to be allocated/deallocated is the structure (array of arrays) which contains the metadatum for each binding / element index. It could be solved if we knew which layout will be used by which descriptor set in advance, when we allocate the descriptor pool, but we don\u0027t, so we have to allocate the metadata when allocating the descriptorsets in the pool. I\u0027ll try to see if I can find a better solution.",
+      "parentUuid": "7f185706_244c0016",
+      "range": {
+        "startLine": 57,
+        "startChar": 1,
+        "endLine": 57,
+        "endChar": 22
+      },
+      "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
