@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9680c013_98718520",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:00:32Z",
+      "side": 1,
+      "message": "Still too generic, and even with a better name it could use a comment explaining what this is for.\n\nCould be moot if it can be eliminated by storing things in the descriptors themselves.",
+      "range": {
+        "startLine": 33,
+        "startChar": 19,
+        "endLine": 33,
+        "endChar": 27
+      },
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbe32d26_a167e4fd",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:00:32Z",
+      "side": 1,
+      "message": "Can we just avoid storing the read-only ones? It appears to only be used for skipping over them.",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 16
+      },
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24b538ea_f36b5a7d",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:00:32Z",
+      "side": 1,
+      "message": "Seems too generic. Would \"dirtyImages\" or \"trackedImages\" work?",
+      "range": {
+        "startLine": 51,
+        "startChar": 38,
+        "endLine": 51,
+        "endChar": 42
+      },
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

@@ -93,6 +93,30 @@
       "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f185706_244c0016",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:00:32Z",
+      "side": 1,
+      "message": "Why can\u0027t point (1) be the case if we store it in the descriptor itself? They could be pointers which are only initialized when necesary?\n\n(2) std containers are likely going to cause issues for project Bunker, as they are practically impossible to marshall over IPC. That far outweighs the convenience of easy deallocation. I\u0027m also not entirely sure there is anything to deallocate. Don\u0027t we just need a weak pointer to the image view?",
+      "parentUuid": "af7ed4de_4242bff9",
+      "range": {
+        "startLine": 57,
+        "startChar": 1,
+        "endLine": 57,
+        "endChar": 22
+      },
+      "revId": "536fc22f89d0562a1567fb2f3e00b975d79c0b44",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
