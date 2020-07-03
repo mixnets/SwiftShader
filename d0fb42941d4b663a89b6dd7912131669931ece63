@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0484ed7c_ef37b5c9",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 39
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T20:24:58Z",
+      "side": 1,
+      "message": "Is the standard in this codebase not to start functions with lower-case (aka camelCase rather than PascalCase)? Or do we differentiate between static and non-static member functions? Same for PrepareForSampling below.",
+      "revId": "d0fb42941d4b663a89b6dd7912131669931ece63",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
