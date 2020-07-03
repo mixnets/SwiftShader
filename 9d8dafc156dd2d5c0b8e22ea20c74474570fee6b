@@ -2,6 +2,125 @@
   "comments": [
     {
       "key": {
+        "uuid": "0a403e5e_baf6932a",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "Should this be renamed to descriptorSetBindings?",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8318aeb5_25f3a54a",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "These loops could be replaced with a call to a function template like:\n\n  template \u003ctypename T\u003e\n  void contentsChanged(T\u0026 container)\n  {\n    for (auto* c : container)\n    {\n      if (c)\n      {\n        c-\u003econtentsChanged();\n      }\n    }\n  }\n\nThen this becomes:\n\n  contentsChanged(renderTarget);\n  if (containsImageWrite)\n  {\n    contentsChanged(descriptorSetObjects);\n  }",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8988eaff_9301fc7b",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "unordered_map::insert returns a pair where the first element is the iterator to the inserted element. You don\u0027t need to find again and assert here.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad76639e_398cd2ae",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "Same comment as above: use result of insert to get iterator.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c520359_3dde3cee",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "Same comment as above: use result of insert to get iterator.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aeb83620_167c410e",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "Same comment as above: use result of insert to get iterator.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1d2cc5d_2941fea1",
+        "filename": "src/Vulkan/VkDescriptorSet.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "This loop is unnecessary. MetaDatum\u0027s default constructor already initializes both elements to nullptr and false. Simply resizing is enough.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9680c013_98718520",
         "filename": "src/Vulkan/VkDescriptorSet.hpp",
         "patchSetId": 34
@@ -137,6 +256,40 @@
         "endLine": 51,
         "endChar": 42
       },
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5b74fde_8ae024e9",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "This lock will be held for a relatively long period while the real work is done below. This means that new regions cannot be added to dirtySubresources while this function executes. Is this what we want?\n\nIf not, one option would be to move the subresources we\u0027re going to update to local variables. In fact, you could create 2 local vectors of VkImageSubresource: one with all the ones to update, and one with only the cubemap subresources to update. This would not only allow you to release the lock sooner, but will simplify the update logic below, as you won\u0027t have to \u0027find\u0027 twice in the set, and you won\u0027t have to erase elements from the set as you go.",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7595448_02f20f74",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-03T15:14:06Z",
+      "side": 1,
+      "message": "I assume this comment relates to the \u0027true\u0027 second argument of the call to image-\u003econtentsChanged here. I would move this comment inside the function body. As an aside, I\u0027m not a fan of bool parameters when it\u0027s not obvious what they mean at the call site, and would consider replacing with an enum.",
       "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
