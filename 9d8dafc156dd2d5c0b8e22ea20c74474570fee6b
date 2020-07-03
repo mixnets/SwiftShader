@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1d06657b_ff89846c",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Noted. Could be done as a cleanup, but I don\u0027t what to add this to this cl, which is already large enough 😊",
+      "parentUuid": "0a403e5e_baf6932a",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8318aeb5_25f3a54a",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 34
@@ -51,6 +69,24 @@
       "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17dd0acf_ca6d7b72",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8318aeb5_25f3a54a",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "3afa9a55_14570bfd",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Good catch! Done.",
+      "parentUuid": "8988eaff_9301fc7b",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad76639e_398cd2ae",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 34
@@ -85,6 +139,24 @@
       "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ebf0ab4_790958af",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad76639e_398cd2ae",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "d541f04e_369a5c29",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c520359_3dde3cee",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aeb83620_167c410e",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 34
@@ -122,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "e7e47906_226350eb",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aeb83620_167c410e",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1d2cc5d_2941fea1",
         "filename": "src/Vulkan/VkDescriptorSet.cpp",
         "patchSetId": 34
@@ -136,6 +244,24 @@
       "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f523f29_e9f3227a",
+        "filename": "src/Vulkan/VkDescriptorSet.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1d2cc5d_2941fea1",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -297,6 +423,24 @@
     },
     {
       "key": {
+        "uuid": "dfca14aa_d189daa7",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1068,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Yes, this is what I want, because I don\u0027t want a region to be added between the moment where I do the preprocessing and the moment where I mark the regions clean.",
+      "parentUuid": "f5b74fde_8ae024e9",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7595448_02f20f74",
         "filename": "src/Vulkan/VkImageView.hpp",
         "patchSetId": 34
@@ -311,6 +455,24 @@
       "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26069c3f_783d8dda",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T17:33:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7595448_02f20f74",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
