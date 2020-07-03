@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "e3a510b4_27f235fa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T15:00:58Z",
+      "side": 1,
+      "message": "Also Bug: swiftshader:152",
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a19b99e8_60a59432",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
