@@ -151,8 +151,8 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvw[4], Float
 	bool force32BitFiltering = state.highPrecisionFiltering && !isYcbcrFormat() && (state.textureFilter != FILTER_POINT);
 	bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 	bool use32BitFiltering = hasFloatTexture() || hasUnnormalizedIntegerTexture() || force32BitFiltering ||
-	                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable || state.largeTexture ||
-	                         borderModeActive() || (function == Gather);
+	                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable ||
+	                         borderModeActive() || (function == Gather) || (function == Fetch);
 
 	if(use32BitFiltering)
 	{
