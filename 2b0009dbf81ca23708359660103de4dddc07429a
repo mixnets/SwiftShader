@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "11145d47_a9136964",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T21:04:06Z",
+      "side": 1,
+      "message": "This isn\u0027t clear to me. VK_REMAINING_ARRAY_LAYERS is mentioned directly within the definition of the VkImageSubresourceRange structure, seeming to imply that when you have layerCount, it\u0027s valid to use VK_REMAINING_ARRAY_LAYERS.\n\nThis sentence isn\u0027t tied to any specific function call:\n\"The number of mipmap levels and array layers must be a subset of the image subresources in the image. If an application wants to use all mip levels or layers in an image after the baseMipLevel or baseArrayLayer, it can set levelCount and layerCount to the special values VK_REMAINING_MIP_LEVELS and VK_REMAINING_ARRAY_LAYERS without knowing the exact number of mip levels or layers.\"",
+      "parentUuid": "a19b99e8_60a59432",
+      "range": {
+        "startLine": 385,
+        "startChar": 25,
+        "endLine": 385,
+        "endChar": 42
+      },
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3c6808b3_53bc4957",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
