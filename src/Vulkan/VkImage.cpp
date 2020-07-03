@@ -329,18 +329,35 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	const uint8_t *srcMem = static_cast<const uint8_t *>(getTexelPointer(region.srcOffset, { region.srcSubresource.aspectMask, region.srcSubresource.mipLevel, region.srcSubresource.baseArrayLayer }));
 	uint8_t *dstMem = static_cast<uint8_t *>(dstImage->getTexelPointer(region.dstOffset, { region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, region.dstSubresource.baseArrayLayer }));
 
-	int srcRowPitchBytes = rowPitchBytes(srcAspect, region.srcSubresource.mipLevel);
-	int srcSlicePitchBytes = slicePitchBytes(srcAspect, region.srcSubresource.mipLevel);
-	int dstRowPitchBytes = dstImage->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel);
-	int dstSlicePitchBytes = dstImage->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel);
-
 	VkExtent3D srcExtent = getMipLevelExtent(srcAspect, region.srcSubresource.mipLevel);
 	VkExtent3D dstExtent = dstImage->getMipLevelExtent(dstAspect, region.dstSubresource.mipLevel);
 	VkExtent3D copyExtent = imageExtentInBlocks(region.extent, srcAspect);
 
+	// Texel layout piches, using the VkSubresourceLayout nomenclature.
+	int srcRowPitch = rowPitchBytes(srcAspect, region.srcSubresource.mipLevel);
+	int srcDepthPitch = slicePitchBytes(srcAspect, region.srcSubresource.mipLevel);
+	int dstRowPitch = dstImage->rowPitchBytes(dstAspect, region.dstSubresource.mipLevel);
+	int dstDepthPitch = dstImage->slicePitchBytes(dstAspect, region.dstSubresource.mipLevel);
+	VkDeviceSize srcArrayPitch = getLayerSize(srcAspect);
+	VkDeviceSize dstArrayPitch = dstImage->getLayerSize(dstAspect);
+	VkImageType srcImageType = imageType;
+	VkImageType dstImageType = dstImage->getImageType();
+
+	// These are the pitches used when iterating over the layers that are being copied by the
+	// vkCmdCopyImage command. They can differ from the above array piches because the spec states that:
+	// "If one image is VK_IMAGE_TYPE_3D and the other image is VK_IMAGE_TYPE_2D with multiple
+	//  layers, then each slice is copied to or from a different layer."
+	VkDeviceSize srcLayerPitch = (srcImageType == VK_IMAGE_TYPE_3D) ? srcDepthPitch : srcArrayPitch;
+	VkDeviceSize dstLayerPitch = (dstImageType == VK_IMAGE_TYPE_3D) ? dstDepthPitch : dstArrayPitch;
+
 	// Multisample images are currently implemented similar to 3D images by storing one sample per slice.
 	// TODO(b/160600347): Store samples consecutively.
 	uint32_t sliceCount = copyExtent.depth * samples;
+
+	// If either image is 3D, extent.depth must match the layer count. If both images are 2D,
+	// depth is 1 but the source and destination subresource layer count must match.
+	bool is3D = (srcImageType == VK_IMAGE_TYPE_3D) || (dstImageType == VK_IMAGE_TYPE_3D);
+	uint32_t layerCount = is3D ? copyExtent.depth : region.srcSubresource.layerCount;
 
 	bool isSingleSlice = (sliceCount == 1);
 	bool isSingleLine = (copyExtent.height == 1) && isSingleSlice;
@@ -349,70 +366,76 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	// both source and destination lines have the same length in bytes
 	bool isEntireLine = (region.extent.width == srcExtent.width) &&
 	                    (region.extent.width == dstExtent.width) &&
-	                    // For non compressed formats, blockWidth is 1. For compressed
+	                    // For non-compressed formats, blockWidth is 1. For compressed
 	                    // formats, rowPitchBytes returns the number of bytes for a row of
 	                    // blocks, so we have to divide by the block height, which means:
 	                    // srcRowPitchBytes / srcBlockWidth == dstRowPitchBytes / dstBlockWidth
 	                    // And, to avoid potential non exact integer division, for example if a
 	                    // block has 16 bytes and represents 5 lines, we change the equation to:
 	                    // srcRowPitchBytes * dstBlockWidth == dstRowPitchBytes * srcBlockWidth
-	                    ((srcRowPitchBytes * dstFormat.blockWidth()) ==
-	                     (dstRowPitchBytes * srcFormat.blockWidth()));
+	                    ((srcRowPitch * dstFormat.blockWidth()) ==
+	                     (dstRowPitch * srcFormat.blockWidth()));
 	// In order to copy multiple slices using a single memcpy call, we
 	// have to make sure that we need to copy the entire slice and that
 	// both source and destination slices have the same length in bytes
 	bool isEntireSlice = isEntireLine &&
 	                     (copyExtent.height == srcExtent.height) &&
 	                     (copyExtent.height == dstExtent.height) &&
-	                     (srcSlicePitchBytes == dstSlicePitchBytes);
+	                     (srcDepthPitch == dstDepthPitch);
 
-	if(isSingleLine)  // Copy one line
+	for(uint32_t layer = 0; layer < layerCount; layer++)
 	{
-		size_t copySize = copyExtent.width * bytesPerBlock;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireLine && isSingleSlice)  // Copy one slice
-	{
-		size_t copySize = copyExtent.height * srcRowPitchBytes;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireSlice)  // Copy multiple slices
-	{
-		size_t copySize = sliceCount * srcSlicePitchBytes;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireLine)  // Copy slice by slice
-	{
-		size_t copySize = copyExtent.height * srcRowPitchBytes;
-
-		for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+		if(isSingleLine)  // Copy one line
 		{
+			size_t copySize = copyExtent.width * bytesPerBlock;
 			ASSERT((srcMem + copySize) < end());
 			ASSERT((dstMem + copySize) < dstImage->end());
 			memcpy(dstMem, srcMem, copySize);
 		}
-	}
-	else  // Copy line by line
-	{
-		size_t copySize = copyExtent.width * bytesPerBlock;
-
-		for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+		else if(isEntireLine && isSingleSlice)  // Copy one slice
 		{
-			const uint8_t *srcSlice = srcMem;
-			uint8_t *dstSlice = dstMem;
-			for(uint32_t y = 0; y < copyExtent.height; y++, dstSlice += dstRowPitchBytes, srcSlice += srcRowPitchBytes)
+			size_t copySize = copyExtent.height * srcRowPitch;
+			ASSERT((srcMem + copySize) < end());
+			ASSERT((dstMem + copySize) < dstImage->end());
+			memcpy(dstMem, srcMem, copySize);
+		}
+		else if(isEntireSlice)  // Copy multiple slices
+		{
+			size_t copySize = sliceCount * srcDepthPitch;
+			ASSERT((srcMem + copySize) < end());
+			ASSERT((dstMem + copySize) < dstImage->end());
+			memcpy(dstMem, srcMem, copySize);
+		}
+		else if(isEntireLine)  // Copy slice by slice
+		{
+			size_t copySize = copyExtent.height * srcRowPitch;
+
+			for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstDepthPitch, srcMem += srcDepthPitch)
 			{
-				ASSERT((srcSlice + copySize) < end());
-				ASSERT((dstSlice + copySize) < dstImage->end());
-				memcpy(dstSlice, srcSlice, copySize);
+				ASSERT((srcMem + copySize) < end());
+				ASSERT((dstMem + copySize) < dstImage->end());
+				memcpy(dstMem, srcMem, copySize);
 			}
 		}
+		else  // Copy line by line
+		{
+			size_t copySize = copyExtent.width * bytesPerBlock;
+
+			for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstDepthPitch, srcMem += srcDepthPitch)
+			{
+				const uint8_t *srcSlice = srcMem;
+				uint8_t *dstSlice = dstMem;
+				for(uint32_t y = 0; y < copyExtent.height; y++, dstSlice += dstRowPitch, srcSlice += srcRowPitch)
+				{
+					ASSERT((srcSlice + copySize) < end());
+					ASSERT((dstSlice + copySize) < dstImage->end());
+					memcpy(dstSlice, srcSlice, copySize);
+				}
+			}
+		}
+
+		srcMem += srcLayerPitch;
+		dstMem += dstLayerPitch;
 	}
 
 	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
