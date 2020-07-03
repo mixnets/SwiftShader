@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "87f460c7_db789656",
+        "filename": "src/Device/Context.hpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T17:05:35Z",
+      "side": 1,
+      "message": "It\u0027s tricky. There are four different things called a \u0027binding\u0027 by the spec. Specifically, each element in a descriptor set, which is either a single descriptor or an array of descriptors, is called a binding, while there can also be multiple descriptor sets, and each reference to them is called a binding.\n\nSo \u0027descriptorSetBindings\u0027 could mistakenly refer to the bindings within one descriptor set, whereas \u0027descriptorSets\u0027 is more clearly multiple sets.",
+      "parentUuid": "0a403e5e_baf6932a",
+      "revId": "9d8dafc156dd2d5c0b8e22ea20c74474570fee6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8318aeb5_25f3a54a",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 34
