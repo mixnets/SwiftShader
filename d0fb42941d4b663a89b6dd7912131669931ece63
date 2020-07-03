@@ -16,6 +16,24 @@
       "revId": "d0fb42941d4b663a89b6dd7912131669931ece63",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1632c757_69ba2cf4",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 39
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-03T20:30:04Z",
+      "side": 1,
+      "message": "I always start static function names with an uppercase letter to differentiate them easily.\nI don\u0027t know if we have an official style regarding this.",
+      "parentUuid": "0484ed7c_ef37b5c9",
+      "revId": "d0fb42941d4b663a89b6dd7912131669931ece63",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
