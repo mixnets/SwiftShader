@@ -366,53 +366,65 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	                     (copyExtent.height == dstExtent.height) &&
 	                     (srcSlicePitchBytes == dstSlicePitchBytes);
 
-	if(isSingleLine)  // Copy one line
-	{
-		size_t copySize = copyExtent.width * bytesPerBlock;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireLine && isSingleSlice)  // Copy one slice
-	{
-		size_t copySize = copyExtent.height * srcRowPitchBytes;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireSlice)  // Copy multiple slices
-	{
-		size_t copySize = sliceCount * srcSlicePitchBytes;
-		ASSERT((srcMem + copySize) < end());
-		ASSERT((dstMem + copySize) < dstImage->end());
-		memcpy(dstMem, srcMem, copySize);
-	}
-	else if(isEntireLine)  // Copy slice by slice
-	{
-		size_t copySize = copyExtent.height * srcRowPitchBytes;
+	ASSERT(region.srcSubresource.layerCount == region.dstSubresource.layerCount);
+	ASSERT(region.srcSubresource.layerCount != VK_REMAINING_ARRAY_LAYERS);  // Only valid for VkImageSubresourceRange
+	uint32_t layerCount = region.srcSubresource.layerCount;
+	VkDeviceSize srcLayerSize = getLayerSize(srcAspect);
+	VkDeviceSize dstLayerSize = dstImage->getLayerSize(dstAspect);
 
-		for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+	for(uint32_t layer = 0; layer < layerCount; layer++)
+	{
+		if(isSingleLine)  // Copy one line
 		{
+			size_t copySize = copyExtent.width * bytesPerBlock;
 			ASSERT((srcMem + copySize) < end());
 			ASSERT((dstMem + copySize) < dstImage->end());
 			memcpy(dstMem, srcMem, copySize);
 		}
-	}
-	else  // Copy line by line
-	{
-		size_t copySize = copyExtent.width * bytesPerBlock;
-
-		for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+		else if(isEntireLine && isSingleSlice)  // Copy one slice
 		{
-			const uint8_t *srcSlice = srcMem;
-			uint8_t *dstSlice = dstMem;
-			for(uint32_t y = 0; y < copyExtent.height; y++, dstSlice += dstRowPitchBytes, srcSlice += srcRowPitchBytes)
+			size_t copySize = copyExtent.height * srcRowPitchBytes;
+			ASSERT((srcMem + copySize) < end());
+			ASSERT((dstMem + copySize) < dstImage->end());
+			memcpy(dstMem, srcMem, copySize);
+		}
+		else if(isEntireSlice)  // Copy multiple slices
+		{
+			size_t copySize = sliceCount * srcSlicePitchBytes;
+			ASSERT((srcMem + copySize) < end());
+			ASSERT((dstMem + copySize) < dstImage->end());
+			memcpy(dstMem, srcMem, copySize);
+		}
+		else if(isEntireLine)  // Copy slice by slice
+		{
+			size_t copySize = copyExtent.height * srcRowPitchBytes;
+
+			for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
 			{
-				ASSERT((srcSlice + copySize) < end());
-				ASSERT((dstSlice + copySize) < dstImage->end());
-				memcpy(dstSlice, srcSlice, copySize);
+				ASSERT((srcMem + copySize) < end());
+				ASSERT((dstMem + copySize) < dstImage->end());
+				memcpy(dstMem, srcMem, copySize);
 			}
 		}
+		else  // Copy line by line
+		{
+			size_t copySize = copyExtent.width * bytesPerBlock;
+
+			for(uint32_t z = 0; z < sliceCount; z++, dstMem += dstSlicePitchBytes, srcMem += srcSlicePitchBytes)
+			{
+				const uint8_t *srcSlice = srcMem;
+				uint8_t *dstSlice = dstMem;
+				for(uint32_t y = 0; y < copyExtent.height; y++, dstSlice += dstRowPitchBytes, srcSlice += srcRowPitchBytes)
+				{
+					ASSERT((srcSlice + copySize) < end());
+					ASSERT((dstSlice + copySize) < dstImage->end());
+					memcpy(dstSlice, srcSlice, copySize);
+				}
+			}
+		}
+
+		srcMem += srcLayerSize;
+		dstMem += dstLayerSize;
 	}
 
 	dstImage->prepareForSampling({ region.dstSubresource.aspectMask, region.dstSubresource.mipLevel, 1,
