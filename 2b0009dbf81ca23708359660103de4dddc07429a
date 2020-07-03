@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a19b99e8_60a59432",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:59:16Z",
+      "side": 1,
+      "message": "The vkCmdCopyImage spec states that \"The srcSubresource.baseArrayLayer + srcSubresource.layerCount of each element of pRegions must be less than or equal to the arrayLayers specified in VkImageCreateInfo when srcImage was created\". It doesn\u0027t say anything about VK_REMAINING_ARRAY_LAYERS, so we shouldn\u0027t try to handle that case and hide a bug.\n\nAn assert would be welcome though.",
+      "range": {
+        "startLine": 385,
+        "startChar": 25,
+        "endLine": 385,
+        "endChar": 42
+      },
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c6808b3_53bc4957",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-03T14:59:16Z",
+      "side": 1,
+      "message": "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageCopy.html states \"The number of slices of the extent (for 3D) or layers of the srcSubresource (for non-3D) must match the number of slices of the extent (for 3D) or layers of the dstSubresource (for non-3D)\"",
+      "range": {
+        "startLine": 389,
+        "startChar": 28,
+        "endLine": 389,
+        "endChar": 31
+      },
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
