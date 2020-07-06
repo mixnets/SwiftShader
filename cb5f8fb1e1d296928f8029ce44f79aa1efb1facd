@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "b6c9dce1_52d983bd",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-06T15:54:21Z",
+      "side": 1,
+      "message": "Okay, but I will say that when it comes to copy-paste, a lot of this code looks very similar, and is quite verbose, so I feel like copy-paste errors are even more likely to occur here than if we use some higher-level functions to wrap this up. This includes, for example, code where we shift, mask, cast, min, max, etc. For me, it\u0027s not easy enough to tell what the code is trying to do at a higher level. I think we can make this code both easier to read and maintain with some refactoring into well named functions.",
+      "parentUuid": "8bd7ba1f_8e955399",
+      "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2faa779_73e2a5e1",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 1
