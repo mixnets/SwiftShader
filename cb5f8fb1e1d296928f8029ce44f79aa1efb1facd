@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8bd7ba1f_8e955399",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-06T15:36:06Z",
+      "side": 1,
+      "message": "Yes, that\u0027s why I added the TODO(b/160531165) at line 644. I have to give it a bit more thought. Load() is already a complex function, and adding another parameter to indicate the effective access size could make it very difficult to maintain (we still have open bugs related to that code). Having separate functions would avoid that but obviously results in some duplication which has its own set of issues.\n\nI\u0027m sidestepping the issue for now. It will be good to have the added code coverage from shaderStorageImageExtendedFormats before refactoring this.",
+      "parentUuid": "f3d36dd1_8532a6f8",
+      "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e2faa779_73e2a5e1",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3dec03cf_c8ce4154",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1082,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-06T15:36:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e2faa779_73e2a5e1",
+      "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
