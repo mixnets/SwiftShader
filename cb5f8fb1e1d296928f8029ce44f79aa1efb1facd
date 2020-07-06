@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3d36dd1_8532a6f8",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-06T14:43:04Z",
+      "side": 1,
+      "message": "In the same way we\u0027re using texelPtr.Load\u003cSIMD::Int\u003e for the 4-byte case above, could we not make Load, or add another function, that could read back 1 or 2 bytes given an offset/index?",
+      "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2faa779_73e2a5e1",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1082,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-06T14:43:04Z",
+      "side": 1,
+      "message": "Same comment as above, but for texelPtr.Store?",
+      "revId": "cb5f8fb1e1d296928f8029ce44f79aa1efb1facd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
