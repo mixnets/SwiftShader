@@ -323,25 +323,6 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	Format srcFormat = getFormat(srcAspect);
 	Format dstFormat = dstImage->getFormat(dstAspect);
 
-	if((samples > VK_SAMPLE_COUNT_1_BIT) && (imageType == VK_IMAGE_TYPE_2D) && !format.isUnnormalizedInteger())
-	{
-		// Requires multisampling resolve
-		VkImageBlit blitRegion;
-		blitRegion.srcSubresource = region.srcSubresource;
-		blitRegion.srcOffsets[0] = region.srcOffset;
-		blitRegion.srcOffsets[1].x = blitRegion.srcOffsets[0].x + region.extent.width;
-		blitRegion.srcOffsets[1].y = blitRegion.srcOffsets[0].y + region.extent.height;
-		blitRegion.srcOffsets[1].z = blitRegion.srcOffsets[0].z + region.extent.depth;
-
-		blitRegion.dstSubresource = region.dstSubresource;
-		blitRegion.dstOffsets[0] = region.dstOffset;
-		blitRegion.dstOffsets[1].x = blitRegion.dstOffsets[0].x + region.extent.width;
-		blitRegion.dstOffsets[1].y = blitRegion.dstOffsets[0].y + region.extent.height;
-		blitRegion.dstOffsets[1].z = blitRegion.dstOffsets[0].z + region.extent.depth;
-
-		return device->getBlitter()->blit(this, dstImage, blitRegion, VK_FILTER_NEAREST);
-	}
-
 	int srcBytesPerBlock = srcFormat.bytesPerBlock();
 	ASSERT(srcBytesPerBlock == dstFormat.bytesPerBlock());
 
@@ -364,7 +345,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 	// both source and destination lines have the same length in bytes
 	bool isEntireLine = (region.extent.width == srcExtent.width) &&
 	                    (region.extent.width == dstExtent.width) &&
-	                    // For non compressed formats, blockWidth is 1. For compressed
+	                    // For non-compressed formats, blockWidth is 1. For compressed
 	                    // formats, rowPitchBytes returns the number of bytes for a row of
 	                    // blocks, so we have to divide by the block height, which means:
 	                    // srcRowPitchBytes / srcBlockWidth == dstRowPitchBytes / dstBlockWidth
@@ -717,7 +698,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 		return extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.pitchB(mipLevelExtent.width, borderSize(), true);
+	return usedFormat.pitchB(mipLevelExtent.width, samples, borderSize(), true);
 }
 
 int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -734,7 +715,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 		return extentInBlocks.height * extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), true);
+	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, samples, borderSize(), true);
 }
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
@@ -1152,7 +1133,7 @@ void Image::decodeETC2(const VkImageSubresource &subresource)
 
 	ETC_Decoder::InputType inputType = GetInputType(format);
 
-	int bytes = decompressedImage->format.bytes();
+	int bytes = decompressedImage->format.bytes1();
 	bool fakeAlpha = (format == VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK) || (format == VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK);
 	size_t sizeToWrite = 0;
 
@@ -1191,7 +1172,7 @@ void Image::decodeBC(const VkImageSubresource &subresource)
 	int n = GetBCn(format);
 	int noAlphaU = GetNoAlphaOrUnsigned(format);
 
-	int bytes = decompressedImage->format.bytes();
+	int bytes = decompressedImage->format.bytes1();
 
 	VkExtent3D mipLevelExtent = getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresource.aspectMask), subresource.mipLevel);
 
@@ -1216,7 +1197,7 @@ void Image::decodeASTC(const VkImageSubresource &subresource)
 	int zBlockSize = 1;
 	bool isUnsigned = format.isUnsignedComponent(0);
 
-	int bytes = decompressedImage->format.bytes();
+	int bytes = decompressedImage->format.bytes1();
 
 	VkExtent3D mipLevelExtent = getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresource.aspectMask), subresource.mipLevel);
 

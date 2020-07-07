@@ -1407,16 +1407,6 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 		index[3] = Extract(As<Int2>(uuu2), 1);
 	}
 
-	if(function.sample)
-	{
-		UInt4 sampleOffset = Min(As<UInt4>(sampleId), *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sampleMax), 16)) *
-		                     *Pointer<UInt4>(mipmap + OFFSET(Mipmap, samplePitchP), 16);
-		for(int i = 0; i < 4; i++)
-		{
-			index[i] += Extract(sampleOffset, i);
-		}
-	}
-
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
 		UInt4 cubeLayerOffset = As<UInt4>(cubeArrayId) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP)) * UInt4(6);
@@ -1445,8 +1435,11 @@ void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww,
 
 	if(function.sample)
 	{
-		indices += Min(As<UInt4>(sampleId), *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sampleMax), 16)) *
-		           *Pointer<UInt4>(mipmap + OFFSET(Mipmap, samplePitchP), 16);
+		// TODO: Optimize for constant sample
+		UInt4 sample = Min(As<UInt4>(sampleId), *Pointer<UInt4>(mipmap + OFFSET(Mipmap, samples), 16));
+		UInt4 sampleOffset = sample * UInt4(state.textureFormat.bytes1());  // TODO: Optimize for power-of-two
+
+		indices += sampleOffset;
 	}
 
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)

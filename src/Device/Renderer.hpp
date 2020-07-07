@@ -92,13 +92,10 @@ struct DrawData
 
 	unsigned int *colorBuffer[RENDERTARGETS];
 	int colorPitchB[RENDERTARGETS];
-	int colorSliceB[RENDERTARGETS];
 	float *depthBuffer;
 	int depthPitchB;
-	int depthSliceB;
 	unsigned char *stencilBuffer;
 	int stencilPitchB;
-	int stencilSliceB;
 
 	int scissorX0;
 	int scissorX1;

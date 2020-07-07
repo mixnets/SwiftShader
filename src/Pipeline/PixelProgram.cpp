@@ -14,6 +14,7 @@
 
 #include "PixelProgram.hpp"
 
+#include "Constants.hpp"
 #include "SamplerCore.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
@@ -204,8 +205,94 @@ Bool PixelProgram::alphaTest(Int cMask[4])
 	return pass != 0x0;
 }
 
+Int4 merge(Int4 a, Int4 b, Int4 mask)
+{
+	return (b & mask) | (a & ~mask);
+}
+
 void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4])
 {
+	static const uint32_t expand4_shift0[16] = {
+		0x00000000,
+		0x00000001,
+		0x00000010,
+		0x00000011,
+		0x00000100,
+		0x00000101,
+		0x00000110,
+		0x00000111,
+		0x00001000,
+		0x00001001,
+		0x00001010,
+		0x00001011,
+		0x00001100,
+		0x00001101,
+		0x00001110,
+		0x00001111,
+	};
+
+	static const uint32_t expand4_shift1[16] = {
+		0x00000000,
+		0x00000002,
+		0x00000020,
+		0x00000022,
+		0x00000200,
+		0x00000202,
+		0x00000220,
+		0x00000222,
+		0x00002000,
+		0x00002002,
+		0x00002020,
+		0x00002022,
+		0x00002200,
+		0x00002202,
+		0x00002220,
+		0x00002222,
+	};
+
+	static const uint32_t expand4_shift2[16] = {
+		0x00000000,
+		0x00000004,
+		0x00000040,
+		0x00000044,
+		0x00000400,
+		0x00000404,
+		0x00000440,
+		0x00000444,
+		0x00004000,
+		0x00004004,
+		0x00004040,
+		0x00004044,
+		0x00004400,
+		0x00004404,
+		0x00004440,
+		0x00004444,
+	};
+
+	static const uint32_t expand4_shift3[16] = {
+		0x00000000,
+		0x00000008,
+		0x00000080,
+		0x00000088,
+		0x00000800,
+		0x00000808,
+		0x00000880,
+		0x00000888,
+		0x00008000,
+		0x00008008,
+		0x00008080,
+		0x00008088,
+		0x00008800,
+		0x00008808,
+		0x00008880,
+		0x00008888,
+	};
+
+	Int cMaskQ = *Pointer<Int>(ConstantPointer(expand4_shift0) + cMask[0] * 4) |
+	             *Pointer<Int>(ConstantPointer(expand4_shift1) + cMask[1] * 4) |
+	             *Pointer<Int>(ConstantPointer(expand4_shift2) + cMask[2] * 4) |
+	             *Pointer<Int>(ConstantPointer(expand4_shift3) + cMask[3] * 4);
+
 	for(int index = 0; index < RENDERTARGETS; index++)
 	{
 		if(!state.colorWriteActive(index))
@@ -230,11 +317,11 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 			case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 			case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 			case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-				for(unsigned int q = 0; q < state.multiSampleCount; q++)
+				/*for(unsigned int q = 0; q < state.multiSampleCount; q++)
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
-						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+						Pointer<Byte> buffer = cBuffer[index] + q * format.bytes(1);
 						Vector4s color;
 
 						color.x = convertFixed16(c[index].x, false);
@@ -245,6 +332,40 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 						alphaBlend(index, buffer, color, x);
 						writeColor(index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 					}
+				}*/
+
+				{
+					Int4 c4 = (RoundInt(c[index].x * Float4(0xFF)) |
+					           (RoundInt(c[index].y * Float4(0xFF)) << 8)) |
+					          ((RoundInt(c[index].z * Float4(0xFF)) << 16) |
+					           (RoundInt(c[index].w * Float4(0xFF)) << 24));
+
+					Int4 c0 = c4.xxxx;
+					Int4 c1 = c4.yyyy;
+					Int4 c2 = c4.zzzz;
+					Int4 c3 = c4.wwww;
+
+					Int4 mask0 = *Pointer<Int4>(constants + OFFSET(Constants, maskD4X) + (cMaskQ & 0xF) * 16, 16);
+					Int4 mask1 = *Pointer<Int4>(constants + OFFSET(Constants, maskD4X) + ((cMaskQ >> 4) & 0xF) * 16, 16);
+					Int4 mask2 = *Pointer<Int4>(constants + OFFSET(Constants, maskD4X) + ((cMaskQ >> 8) & 0xF) * 16, 16);
+					Int4 mask3 = *Pointer<Int4>(constants + OFFSET(Constants, maskD4X) + ((cMaskQ >> 12) & 0xF) * 16, 16);
+
+					Pointer<Byte> buffer = cBuffer[index] + x * 16;
+					Int pitchB = *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+					Int4 c0old = *Pointer<Int4>(buffer);
+					Int4 c1old = *Pointer<Int4>(buffer + 16);
+
+					*Pointer<Int4>(buffer) = merge(c0old, c0, mask0);
+					*Pointer<Int4>(buffer + 16) = merge(c1old, c1, mask1);
+
+					buffer += pitchB;
+
+					Int4 c2old = *Pointer<Int4>(buffer);
+					Int4 c3old = *Pointer<Int4>(buffer + 16);
+
+					*Pointer<Int4>(buffer) = merge(c2old, c2, mask2);
+					*Pointer<Int4>(buffer + 16) = merge(c3old, c3, mask3);
 				}
 				break;
 			case VK_FORMAT_R16_SFLOAT:
@@ -280,7 +401,7 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
-						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+						Pointer<Byte> buffer = cBuffer[index] + q * format.bytes1();
 						Vector4f color = c[index];
 
 						alphaBlend(index, buffer, color, x);
