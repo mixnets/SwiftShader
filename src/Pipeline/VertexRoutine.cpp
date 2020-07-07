@@ -183,7 +183,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	if(robustBufferAccess)
 	{
 		// TODO(b/141124876): Optimize for wide-vector gather operations.
-		UInt4 limits = offsets + UInt4(format.bytes());
+		UInt4 limits = offsets + UInt4(format.bytes1());
 		Pointer<Byte> zeroSource = As<Pointer<Byte>>(&zero);
 		source0 = IfThenElse(limits.x <= robustnessSize, source0, zeroSource);
 		source1 = IfThenElse(limits.y <= robustnessSize, source1, zeroSource);

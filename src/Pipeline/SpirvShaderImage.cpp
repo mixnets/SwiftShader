@@ -658,7 +658,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 	// TODO(b/159329067): Claim VK_EXT_image_robustness
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto texelSize = vk::Format(vkFormat).bytes();
+	auto texelSize = vk::Format(vkFormat).bytes1();
 	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, sampleId, useStencilAspect, robustness);
 
 	// Gather packed texel data. Texels larger than 4 bytes occupy multiple SIMD::Int elements.
