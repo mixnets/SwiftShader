@@ -299,7 +299,7 @@ void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, stencilSliceB));
+		buffer += q * sizeof(uint8_t);
 	}
 
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
@@ -388,7 +388,7 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+		buffer += q * sizeof(float);
 	}
 
 	Float4 zValue;
@@ -467,7 +467,7 @@ Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+		buffer += q * sizeof(uint16_t);
 	}
 
 	Short4 zValue;
@@ -581,7 +581,7 @@ void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, co
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+		buffer += q * sizeof(float);
 	}
 
 	Float4 zValue;
@@ -616,7 +616,7 @@ void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, con
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+		buffer += q * sizeof(uint16_t);
 	}
 
 	Short4 zValue;
@@ -676,7 +676,7 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, con
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, stencilSliceB));
+		buffer += q * sizeof(uint8_t);
 	}
 
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
@@ -954,7 +954,7 @@ void PixelRoutine::readPixel(int index, const Pointer<Byte> &cBuffer, const Int 
 	switch(state.targetFormat[index])
 	{
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
-			buffer += 2 * x;
+			buffer += 2 * x;  //
 			buffer2 = buffer + pitchB;
 			c01 = As<Short4>(Int2(*Pointer<Int>(buffer), *Pointer<Int>(buffer2)));
 
@@ -1439,14 +1439,13 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		xMask &= sMask;
 	}
 
-	Pointer<Byte> buffer = cBuffer;
+	Pointer<Byte> buffer = cBuffer + state.targetFormat[index].bytes(state.multiSampleCount) * x;
 	Int pitchB = *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
 
 	switch(state.targetFormat[index])
 	{
 		case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
 		{
-			buffer += 2 * x;
 			Int value = *Pointer<Int>(buffer);
 
 			Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask5551Q[bgraWriteMask & 0xF][0]));
@@ -1473,7 +1472,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		break;
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
 		{
-			buffer += 2 * x;
 			Int value = *Pointer<Int>(buffer);
 
 			Int channelMask = *Pointer<Int>(constants + OFFSET(Constants, mask565Q[bgraWriteMask & 0x7][0]));
@@ -1501,7 +1499,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		case VK_FORMAT_B8G8R8A8_UNORM:
 		case VK_FORMAT_B8G8R8A8_SRGB:
 		{
-			buffer += x * 4;
 			Short4 value = *Pointer<Short4>(buffer);
 			Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[bgraWriteMask][0]));
 
@@ -1528,7 +1525,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
 		case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
 		{
-			buffer += x * 4;
 			Short4 value = *Pointer<Short4>(buffer);
 			Short4 channelMask = *Pointer<Short4>(constants + OFFSET(Constants, maskB4Q[rgbaWriteMask][0]));
 
@@ -1553,7 +1549,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		case VK_FORMAT_R8G8_UNORM:
 			if((rgbaWriteMask & 0x00000003) != 0x0)
 			{
-				buffer += 2 * x;
 				Int2 value;
 				value = Insert(value, *Pointer<Int>(buffer), 0);
 				value = Insert(value, *Pointer<Int>(buffer + pitchB), 1);
@@ -1577,7 +1572,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		case VK_FORMAT_R8_UNORM:
 			if(rgbaWriteMask & 0x00000001)
 			{
-				buffer += 1 * x;
 				Short4 value;
 				value = Insert(value, *Pointer<Short>(buffer), 0);
 				value = Insert(value, *Pointer<Short>(buffer + pitchB), 1);
@@ -1592,8 +1586,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			break;
 		case VK_FORMAT_R16G16_UNORM:
 		{
-			buffer += 4 * x;
-
 			Short4 value = *Pointer<Short4>(buffer);
 
 			if((rgbaWriteMask & 0x00000003) != 0x00000003)
@@ -1629,8 +1621,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 		break;
 		case VK_FORMAT_R16G16B16A16_UNORM:
 		{
-			buffer += 8 * x;
-
 			{
 				Short4 value = *Pointer<Short4>(buffer);
 
@@ -1707,8 +1697,6 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 			// [[fallthrough]]
 		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
 		{
-			buffer += 4 * x;
-
 			Int2 value = *Pointer<Int2>(buffer, 16);
 			Int2 mergedMask = *Pointer<Int2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
 			if(rgbaWriteMask != 0xF)

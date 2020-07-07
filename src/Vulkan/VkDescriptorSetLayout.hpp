@@ -58,7 +58,7 @@ struct alignas(16) StorageImageDescriptor
 	VkExtent3D extent;
 	int rowPitchBytes;
 	int slicePitchBytes;
-	int samplePitchBytes;
+	int samplePitchBytes;  //
 	int arrayLayers;
 	int sampleCount;
 	int sizeInBytes;
@@ -66,7 +66,7 @@ struct alignas(16) StorageImageDescriptor
 	void *stencilPtr;
 	int stencilRowPitchBytes;
 	int stencilSlicePitchBytes;
-	int stencilSamplePitchBytes;
+	int stencilSamplePitchBytes;  //
 };
 
 struct alignas(16) BufferDescriptor
@@ -102,7 +102,7 @@ public:
 	static void CopyDescriptorSet(const VkCopyDescriptorSet &descriptorCopies);
 
 	static void WriteDescriptorSet(Device *device, DescriptorSet *dstSet, VkDescriptorUpdateTemplateEntry const &entry, char const *src);
-	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
+	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int sampleMax);
 
 	void initialize(DescriptorSet *descriptorSet);
 
