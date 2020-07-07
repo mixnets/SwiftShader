@@ -214,9 +214,6 @@ static void ClearImage(benchmark::State &state, vk::Format clearFormat, vk::Imag
 		benchmark.clear();
 	}
 }
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond);
 
 class Window
 {
@@ -650,7 +647,7 @@ protected:
 			renderPassBeginInfo.renderArea.offset.x = 0;
 			renderPassBeginInfo.renderArea.offset.y = 0;
 			renderPassBeginInfo.renderArea.extent = windowSize;
-			renderPassBeginInfo.clearValueCount = 2;
+			renderPassBeginInfo.clearValueCount = 1;
 			renderPassBeginInfo.pClearValues = clearValues;
 			commandBuffers[i].beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
@@ -960,7 +957,7 @@ static void Triangle(benchmark::State &state, bool multisample)
 {
 	TriangleBenchmark benchmark(multisample);
 
-	if(false) benchmark.show();  // Enable for visual verification.
+	if(true) benchmark.show();  // Enable for visual verification.
 
 	// Warmup
 	benchmark.renderFrame();
@@ -970,5 +967,9 @@ static void Triangle(benchmark::State &state, bool multisample)
 		benchmark.renderFrame();
 	}
 }
-BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
+
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
 BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);

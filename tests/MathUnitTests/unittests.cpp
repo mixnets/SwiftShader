@@ -71,6 +71,9 @@ unsigned int RGB9E5_reference(float r, float g, float b)
 
 TEST(MathTest, SharedExponentSparse)
 {
+	sw::half inf16 = half(INFINITY);
+	float inf32 = inf16;
+
 	for(uint64_t i = 0; i < 0x0000000100000000; i += 0x400)
 	{
 		float f = bit_cast<float>(i);

@@ -234,7 +234,7 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
-						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+						Pointer<Byte> buffer = cBuffer[index] + q * format.bytes(1);
 						Vector4s color;
 
 						color.x = convertFixed16(c[index].x, false);
@@ -280,7 +280,7 @@ void PixelProgram::rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4
 				{
 					if(state.multiSampleMask & (1 << q))
 					{
-						Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
+						Pointer<Byte> buffer = cBuffer[index] + q * format.bytes1();
 						Vector4f color = c[index];
 
 						alphaBlend(index, buffer, color, x);

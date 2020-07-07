@@ -24,7 +24,7 @@ half::half(float fp32)
 
 	if(abs > 0x47FFEFFF)  // Infinity
 	{
-		fp16i = sign | 0x7FFF;
+		fp16i = sign | 0x7C00;
 	}
 	else if(abs < 0x38800000)  // Denormal
 	{
