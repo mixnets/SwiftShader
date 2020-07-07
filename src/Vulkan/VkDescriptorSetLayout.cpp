@@ -367,16 +367,16 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 				int width = extent.width;
 				int height = extent.height;
 				int pitchP0 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_0_BIT, level, ImageView::SAMPLING) /
-				              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_0_BIT).bytes();
+				              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_0_BIT).bytes1();
 
 				// Write plane 0 parameters to mipmap level 0.
-				WriteTextureLevelInfo(texture, 0, width, height, 1, pitchP0, 0, 0, 0);
+				WriteTextureLevelInfo(texture, 0, width, height, 1, pitchP0, 0, 0);
 
 				// Plane 2, if present, has equal parameters to plane 1, so we use mipmap level 1 for both.
 				int pitchP1 = imageView->rowPitchBytes(VK_IMAGE_ASPECT_PLANE_1_BIT, level, ImageView::SAMPLING) /
-				              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_1_BIT).bytes();
+				              imageView->getFormat(VK_IMAGE_ASPECT_PLANE_1_BIT).bytes1();
 
-				WriteTextureLevelInfo(texture, 1, width / 2, height / 2, 1, pitchP1, 0, 0, 0);
+				WriteTextureLevelInfo(texture, 1, width / 2, height / 2, 1, pitchP1, 0, 0);
 			}
 			else
 			{
@@ -405,15 +405,14 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 
 					int width = extent.width;
 					int height = extent.height;
-					int bytes = format.bytes();
+					int bytes = format.bytes(imageView->getSampleCount());
 					int layers = imageView->getSubresourceRange().layerCount;  // TODO(b/129523279): Untangle depth vs layers throughout the sampler
 					int depth = layers > 1 ? layers : extent.depth;
 					int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
 					int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / bytes;
-					int samplePitchP = imageView->getMipLevelSize(aspect, level, ImageView::SAMPLING) / bytes;
-					int sampleMax = imageView->getSampleCount() - 1;
+					int samples = imageView->getSampleCount() - 1;
 
-					WriteTextureLevelInfo(texture, mipmapLevel, width, height, depth, pitchP, sliceP, samplePitchP, sampleMax);
+					WriteTextureLevelInfo(texture, mipmapLevel, width, height, depth, pitchP, sliceP, samples);
 				}
 			}
 		}
@@ -482,7 +481,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 	}
 }
 
-void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax)
+void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int sampleMax)
 {
 	if(level == 0)
 	{
@@ -558,15 +557,10 @@ void DescriptorSetLayout::WriteTextureLevelInfo(sw::Texture *texture, int level,
 	mipmap.sliceP[2] = sliceP;
 	mipmap.sliceP[3] = sliceP;
 
-	mipmap.samplePitchP[0] = samplePitchP;
-	mipmap.samplePitchP[1] = samplePitchP;
-	mipmap.samplePitchP[2] = samplePitchP;
-	mipmap.samplePitchP[3] = samplePitchP;
-
-	mipmap.sampleMax[0] = sampleMax;
-	mipmap.sampleMax[1] = sampleMax;
-	mipmap.sampleMax[2] = sampleMax;
-	mipmap.sampleMax[3] = sampleMax;
+	mipmap.samples[0] = sampleMax;
+	mipmap.samples[1] = sampleMax;
+	mipmap.samples[2] = sampleMax;
+	mipmap.samples[3] = sampleMax;
 }
 
 void DescriptorSetLayout::WriteDescriptorSet(Device *device, const VkWriteDescriptorSet &writeDescriptorSet)

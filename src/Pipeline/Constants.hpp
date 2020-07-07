@@ -137,7 +137,7 @@ struct Constants
 	float4 unscaleUInt;
 	float4 unscaleFixed;
 
-	float half2float[65536];
+	float half2float[65536];  //
 };
 
 extern Constants constants;

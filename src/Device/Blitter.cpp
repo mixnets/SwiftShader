@@ -113,7 +113,7 @@ void Blitter::clear(void *pixel, vk::Format format, vk::Image *dest, const vk::F
 		BlitData data = {
 			pixel, nullptr,  // source, dest
 
-			format.bytes(),                                  // sPitchB
+			0,                                               // sPitchB (unused in clear operations)
 			dest->rowPitchBytes(aspect, subres.mipLevel),    // dPitchB
 			0,                                               // sSliceB (unused in clear operations)
 			dest->slicePitchBytes(aspect, subres.mipLevel),  // dSliceB
@@ -247,8 +247,8 @@ bool Blitter::fastClear(void *clearValue, vk::Format clearFormat, vk::Image *des
 
 	for(; subres.mipLevel <= lastMipLevel; subres.mipLevel++)
 	{
+		int rowLength = area.extent.width * viewFormat.bytes(dest->getSampleCountFlagBits());
 		int rowPitchBytes = dest->rowPitchBytes(aspect, subres.mipLevel);
-		int slicePitchBytes = dest->slicePitchBytes(aspect, subres.mipLevel);
 		VkExtent3D extent = dest->getMipLevelExtent(aspect, subres.mipLevel);
 		if(!renderArea)
 		{
@@ -264,44 +264,37 @@ bool Blitter::fastClear(void *clearValue, vk::Format clearFormat, vk::Image *des
 		{
 			for(uint32_t depth = 0; depth < extent.depth; depth++)
 			{
-				uint8_t *slice = (uint8_t *)dest->getTexelPointer(
+				uint8_t *d = (uint8_t *)dest->getTexelPointer(
 				    { area.offset.x, area.offset.y, static_cast<int32_t>(depth) }, subres);
 
-				for(int j = 0; j < dest->getSampleCountFlagBits(); j++)
+				switch(viewFormat.bytes(1))
 				{
-					uint8_t *d = slice;
-
-					switch(viewFormat.bytes())
-					{
-						case 4:
-							for(uint32_t i = 0; i < area.extent.height; i++)
-							{
-								ASSERT(d < dest->end());
-								sw::clear((uint32_t *)d, packed, area.extent.width);
-								d += rowPitchBytes;
-							}
-							break;
-						case 2:
-							for(uint32_t i = 0; i < area.extent.height; i++)
-							{
-								ASSERT(d < dest->end());
-								sw::clear((uint16_t *)d, static_cast<uint16_t>(packed), area.extent.width);
-								d += rowPitchBytes;
-							}
-							break;
-						case 1:
-							for(uint32_t i = 0; i < area.extent.height; i++)
-							{
-								ASSERT(d < dest->end());
-								memset(d, packed, area.extent.width);
-								d += rowPitchBytes;
-							}
-							break;
-						default:
-							assert(false);
-					}
-
-					slice += slicePitchBytes;
+					case 4:
+						for(uint32_t i = 0; i < area.extent.height; i++)
+						{
+							ASSERT(d < dest->end());
+							sw::clear((uint32_t *)d, packed, rowLength);
+							d += rowPitchBytes;
+						}
+						break;
+					case 2:
+						for(uint32_t i = 0; i < area.extent.height; i++)
+						{
+							ASSERT(d < dest->end());
+							sw::clear((uint16_t *)d, static_cast<uint16_t>(packed), rowLength);
+							d += rowPitchBytes;
+						}
+						break;
+					case 1:
+						for(uint32_t i = 0; i < area.extent.height; i++)
+						{
+							ASSERT(d < dest->end());
+							memset(d, packed, rowLength);
+							d += rowPitchBytes;
+						}
+						break;
+					default:
+						assert(false);
 				}
 			}
 		}
@@ -654,8 +647,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_R16_SFLOAT:
 			if(writeR) { *Pointer<Half>(element) = Half(c.x); }
 			break;
-		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		{
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32: {
 			UInt rgb = r11g11b10Pack(c);
 
 			UInt old = *Pointer<UInt>(element);
@@ -667,8 +659,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
 		}
 		break;
-		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-		{
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: {
 			ASSERT(writeRGBA);  // Can't sensibly write just part of this format.
 
 			// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion
@@ -1421,7 +1412,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
                        Int &sSliceB, Int &sPitchB, const State &state)
 {
 	bool intSrc = state.sourceFormat.isUnnormalizedInteger();
-	int srcBytes = state.sourceFormat.bytes();
+	int srcBytes = state.sourceFormat.bytes1();
 
 	Float4 color;
 
@@ -1439,7 +1430,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 			Z = Clamp(Z, 0, sDepth - 1);
 		}
 
-		Pointer<Byte> s = source + ComputeOffset(X, Y, Z, sSliceB, sPitchB, srcBytes);
+		Pointer<Byte> s = source + ComputeOffset(X, Y, Z, sSliceB, sPitchB, srcBytes * state.srcSamples);
 
 		color = readFloat4(s, state);
 
@@ -1453,7 +1444,7 @@ Float4 Blitter::sample(Pointer<Byte> &source, Float &x, Float &y, Float &z,
 			Float4 accum = color;
 			for(int sample = 1; sample < state.srcSamples; sample++)
 			{
-				s += sSliceB;
+				s += srcBytes;
 				color = readFloat4(s, state);
 
 				if(state.allowSRGBConversion && state.sourceFormat.isSRGBformat())  // sRGB -> RGB
@@ -1612,8 +1603,8 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 		bool intSrc = state.sourceFormat.isUnnormalizedInteger();
 		bool intDst = state.destFormat.isUnnormalizedInteger();
 		bool intBoth = intSrc && intDst;
-		int srcBytes = state.sourceFormat.bytes();
-		int dstBytes = state.destFormat.bytes();
+		int srcBytes = state.sourceFormat.bytes(1);
+		int dstBytes = state.destFormat.bytes(1);
 
 		bool hasConstantColorI = false;
 		Int4 constantColorI;
@@ -1648,24 +1639,24 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 				For(Int i = x0d, i < x1d, i++)
 				{
 					Float x = state.clearOperation ? RValue<Float>(x0) : x0 + Float(i) * w;
-					Pointer<Byte> d = destLine + i * dstBytes;
+					Pointer<Byte> d = destLine + i * dstBytes * state.destSamples;
 
 					if(hasConstantColorI)
 					{
-						for(int s = 0; s < state.destSamples; s++)
+						for(int s = 0; s < state.destSamples; s++)  //
 						{
 							write(constantColorI, d, state);
 
-							d += dSliceB;
+							d += dstBytes;
 						}
 					}
 					else if(hasConstantColorF)
 					{
-						for(int s = 0; s < state.destSamples; s++)
+						for(int s = 0; s < state.destSamples; s++)  //
 						{
 							write(constantColorF, d, state);
 
-							d += dSliceB;
+							d += dstBytes;
 						}
 					}
 					else if(intBoth)  // Integer types do not support filtering
@@ -1685,22 +1676,22 @@ Blitter::BlitRoutineType Blitter::generate(const State &state)
 
 						// When both formats are true integer types, we don't go to float to avoid losing precision
 						Int4 color = readInt4(s, state);
-						for(int s = 0; s < state.destSamples; s++)
+						for(int s = 0; s < state.destSamples; s++)  //
 						{
 							write(color, d, state);
 
-							d += dSliceB;
+							d += dstBytes;
 						}
 					}
 					else
 					{
 						Float4 color = sample(source, x, y, z, sWidth, sHeight, sDepth, sSliceB, sPitchB, state);
 
-						for(int s = 0; s < state.destSamples; s++)
+						for(int s = 0; s < state.destSamples; s++)  //
 						{
 							write(color, d, state);
 
-							d += dSliceB;
+							d += dstBytes;
 						}
 					}
 				}
@@ -1742,7 +1733,7 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
 {
 	VkExtent3D extent = src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes() * extent.width;
+	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes(1) * extent.width;
 	unsigned int srcPitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 	ASSERT(dstPitch >= rowBytes && srcPitch >= rowBytes && src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0).height >= extent.height);
 
@@ -1893,7 +1884,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 
 void Blitter::computeCubeCorner(Pointer<Byte> &layer, Int &x0, Int &x1, Int &y0, Int &y1, Int &pitchB, const State &state)
 {
-	int bytes = state.sourceFormat.bytes();
+	int bytes = state.sourceFormat.bytes(1);
 
 	Float4 c = readFloat4(layer + ComputeOffset(x0, y1, pitchB, bytes), state) +
 	           readFloat4(layer + ComputeOffset(x1, y0, pitchB, bytes), state) +
@@ -2037,7 +2028,7 @@ void Blitter::copyCubeEdge(vk::Image *image,
 	               ((srcEdge == LEFT) && (dstEdge == BOTTOM));
 
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(srcSubresource.aspectMask);
-	int bytes = image->getFormat(aspect).bytes();
+	int bytes = image->getFormat(aspect).bytes(1);
 	int pitchB = image->rowPitchBytes(aspect, srcSubresource.mipLevel);
 
 	VkExtent3D extent = image->getMipLevelExtent(aspect, srcSubresource.mipLevel);

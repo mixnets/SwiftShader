@@ -1219,7 +1219,7 @@ int Format::bytesPerBlock() const
 		case VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK_EXT:
 			return 16;
 		default:
-			return bytes();
+			return bytes1();
 	}
 }
 
@@ -1657,7 +1657,7 @@ bool Format::isUnsignedComponent(int component) const
 	return false;
 }
 
-int Format::bytes() const
+int Format::bytes1() const
 {
 	switch(format)
 	{
@@ -1897,7 +1897,12 @@ int Format::bytes() const
 	return 0;
 }
 
-int Format::pitchB(int width, int border, bool target) const
+int Format::bytes(int samples) const
+{
+	return bytes1() * samples;
+}
+
+int Format::pitchB(int width, int samples, int border, bool target) const
 {
 	width += 2 * border;
 
@@ -1921,6 +1926,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
 		case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
 		case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
+			ASSERT(samples == 1);
 			return 8 * ((width + 3) / 4);  // 64 bit per 4x4 block, computed per 4 rows
 		case VK_FORMAT_BC2_UNORM_BLOCK:
 		case VK_FORMAT_BC2_SRGB_BLOCK:
@@ -1939,6 +1945,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_4x4_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 3) / 4);  // 128 bit per 4x4 block, computed per 4 rows
 		case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
@@ -1946,6 +1953,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_5x5_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 4) / 5);
 		case VK_FORMAT_ASTC_6x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_6x5_SRGB_BLOCK:
@@ -1953,6 +1961,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_6x6_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 5) / 6);
 		case VK_FORMAT_ASTC_8x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_8x5_SRGB_BLOCK:
@@ -1963,6 +1972,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_8x8_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 7) / 8);
 		case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
@@ -1976,6 +1986,7 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_10x10_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 9) / 10);
 		case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
@@ -1983,16 +1994,18 @@ int Format::pitchB(int width, int border, bool target) const
 		case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK_EXT:
+			ASSERT(samples == 1);
 			return 16 * ((width + 11) / 12);
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			ASSERT(samples == 1);
 			return sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
 		default:
-			return bytes() * width;
+			return bytes(samples) * width;
 	}
 }
 
-int Format::sliceBUnpadded(int width, int height, int border, bool target) const
+int Format::sliceBUnpadded(int width, int height, int samples, int border, bool target) const
 {
 	height += 2 * border;
 
@@ -2032,7 +2045,8 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 		case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_5x4_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 3) / 4);  // Pitch computed per 4 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 3) / 4);  // Pitch computed per 4 rows
 		case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_5x5_SFLOAT_BLOCK_EXT:
@@ -2045,7 +2059,8 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 		case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_10x5_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 4) / 5);  // Pitch computed per 5 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 4) / 5);  // Pitch computed per 5 rows
 		case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_6x6_SFLOAT_BLOCK_EXT:
@@ -2055,37 +2070,42 @@ int Format::sliceBUnpadded(int width, int height, int border, bool target) const
 		case VK_FORMAT_ASTC_10x6_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x6_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_10x6_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 5) / 6);  // Pitch computed per 6 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 5) / 6);  // Pitch computed per 6 rows
 		case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_8x8_SFLOAT_BLOCK_EXT:
 		case VK_FORMAT_ASTC_10x8_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x8_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_10x8_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 7) / 8);  // Pitch computed per 8 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 7) / 8);  // Pitch computed per 8 rows
 		case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_10x10_SFLOAT_BLOCK_EXT:
 		case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_12x10_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 9) / 10);  // Pitch computed per 10 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 9) / 10);  // Pitch computed per 10 rows
 		case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 		case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK_EXT:
-			return pitchB(width, border, target) * ((height + 11) / 12);  // Pitch computed per 12 rows
+			ASSERT(samples == 1);
+			return pitchB(width, 1, border, target) * ((height + 11) / 12);  // Pitch computed per 12 rows
 		case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 		case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
+			ASSERT(samples == 1);
 			// "Images in this format must be defined with a width and height that is a multiple of two."
-			return pitchB(width, border, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
+			return pitchB(width, samples, border, target) * (height + height / 2);  // U and V planes are 1/4 size of Y plane.
 		default:
-			return pitchB(width, border, target) * height;  // Pitch computed per row
+			return pitchB(width, samples, border, target) * height;  // Pitch computed per row
 	}
 }
 
-int Format::sliceB(int width, int height, int border, bool target) const
+int Format::sliceB(int width, int height, int samples, int border, bool target) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border, target) + 15);
+	return sw::align<16>(sliceBUnpadded(width, height, samples, border, target) + 15);
 }
 
 sw::float4 Format::getScale() const
@@ -2261,7 +2281,7 @@ bool Format::supportsColorAttachmentBlend() const
 
 bool Format::has16bitPackedTextureFormat() const
 {
-	if(bytes() != 2)
+	if(bytes1() != 2)
 	{
 		return false;
 	}
