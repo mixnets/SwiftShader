@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "a3935820_c1576944",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-08T17:27:34Z",
+      "side": 1,
+      "message": "darwin",
+      "range": {
+        "startLine": 9,
+        "startChar": 62,
+        "endLine": 9,
+        "endChar": 67
+      },
+      "revId": "e2c3aaf97fe3ecf565a87e0dceffc04656dc9cb2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f492774a_eea4dcdf",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -13,6 +36,23 @@
       "writtenOn": "2020-07-08T15:58:05Z",
       "side": 1,
       "message": "Similar to https://swiftshader-review.googlesource.com/c/SwiftShader/+/46248 but for MacOS.",
+      "revId": "e2c3aaf97fe3ecf565a87e0dceffc04656dc9cb2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b6ba6bd_b3745f43",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-08T17:27:34Z",
+      "side": 1,
+      "message": "Needs minor commit message update:",
       "revId": "e2c3aaf97fe3ecf565a87e0dceffc04656dc9cb2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
