@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f492774a_eea4dcdf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-08T15:58:05Z",
+      "side": 1,
+      "message": "Similar to https://swiftshader-review.googlesource.com/c/SwiftShader/+/46248 but for MacOS.",
+      "revId": "e2c3aaf97fe3ecf565a87e0dceffc04656dc9cb2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
