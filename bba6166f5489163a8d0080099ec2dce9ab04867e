@@ -16,6 +16,24 @@
       "revId": "bba6166f5489163a8d0080099ec2dce9ab04867e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d14bf60_e66b318f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-08T17:29:00Z",
+      "side": 1,
+      "message": "Sorry about that. I gave you the access rights now. Can you try Submit again?",
+      "parentUuid": "13fe6119_d5f2bab2",
+      "revId": "bba6166f5489163a8d0080099ec2dce9ab04867e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
