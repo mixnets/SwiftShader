@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e81e418_6721fba7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-08T15:56:44Z",
+      "side": 1,
+      "message": "As you\u0027ll see in the diffs, this:\n\n* Removes targets we don\u0027t need to support, since the update.py script specifies the exact targets we \nwant to build. When Ben first added LLVM 10 configs, he ran the default build, which built all targets.\n\n* It also removes defines for certain options that were in update.py. Again, Ben\u0027s initial run was not done with update.py, which explains the differences.\n\n* Finally, and as discussed in chat, there\u0027s a MIPS header in the \"common\" folder that shows diffs. This diff is between the version of this file generated from a Windows build vs a Linux build. This implies that perhaps this shouldn\u0027t be considered \"common\" afterall; however, since the original MIPS target was built from Linux, let\u0027s keep this version. I\u0027ll make sure to document this in the LLVM update doc I will write.",
+      "revId": "c14332627afe3b70f1d11ac4500794b1b1147e27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
