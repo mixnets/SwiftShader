@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13fe6119_d5f2bab2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 82706
+      },
+      "writtenOn": "2020-07-08T09:08:44Z",
+      "side": 1,
+      "message": "I do not have permission to send to CQ nor to land this CL. Could you do it for me?",
+      "revId": "bba6166f5489163a8d0080099ec2dce9ab04867e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
