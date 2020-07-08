@@ -16,6 +16,41 @@
       "revId": "c14332627afe3b70f1d11ac4500794b1b1147e27",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25bd8c04_fa5209b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-08T17:26:36Z",
+      "side": 1,
+      "message": "Please add these details to the commit message. It will be easier to find this info that way if related questions are raised about it later.",
+      "parentUuid": "4e81e418_6721fba7",
+      "revId": "c14332627afe3b70f1d11ac4500794b1b1147e27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2a56888_1802b47e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-08T17:26:36Z",
+      "side": 1,
+      "message": "LGTM but could use commit message update:",
+      "revId": "c14332627afe3b70f1d11ac4500794b1b1147e27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
