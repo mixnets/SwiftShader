@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c5c2a0d0_fd69f095",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-09T17:31:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3a510b4_27f235fa",
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a19b99e8_60a59432",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
@@ -63,6 +81,30 @@
       "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41ecfba9_0cd82e31",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-09T17:31:03Z",
+      "side": 1,
+      "message": "Despite bearing the same names, no use of VkImageSubresourceLayers::layerCount in the spec mentions VK_REMAINING_ARRAY_LAYERS (most notably the documentation for the struct itself https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageSubresourceLayers.html), whereas every use VkImageSubresourceRange::layerCount explicitly mentions handling of VK_REMAINING_ARRAY_LAYERS.\n\nI\u0027ll put some comments and asserts in place.",
+      "parentUuid": "11145d47_a9136964",
+      "range": {
+        "startLine": 385,
+        "startChar": 25,
+        "endLine": 385,
+        "endChar": 42
+      },
+      "revId": "2b0009dbf81ca23708359660103de4dddc07429a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
