@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "410ffdeb_e0282854",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T20:31:35Z",
+      "side": 1,
+      "message": "I\u0027m not sure if we want to commit this one right away. This is the change that \"flips the switch\" so that Android builds against LLVM 10. What do you think?",
+      "revId": "df499b1f352325e7c7917526bd921689f72b3309",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
