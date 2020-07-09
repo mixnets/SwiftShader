@@ -746,10 +746,10 @@ private:
 	uint32_t stride;
 };
 
-class CmdImageToImageCopy : public vk::CommandBuffer::Command
+class CmdCopyImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdImageToImageCopy(const vk::Image *srcImage, vk::Image *dstImage, const VkImageCopy &region)
+	CmdCopyImage(const vk::Image *srcImage, vk::Image *dstImage, const VkImageCopy &region)
 	    : srcImage(srcImage)
 	    , dstImage(dstImage)
 	    , region(region)
@@ -769,10 +769,10 @@ private:
 	const VkImageCopy region;
 };
 
-class CmdBufferToBufferCopy : public vk::CommandBuffer::Command
+class CmdCopyBuffer : public vk::CommandBuffer::Command
 {
 public:
-	CmdBufferToBufferCopy(const vk::Buffer *srcBuffer, vk::Buffer *dstBuffer, const VkBufferCopy &region)
+	CmdCopyBuffer(const vk::Buffer *srcBuffer, vk::Buffer *dstBuffer, const VkBufferCopy &region)
 	    : srcBuffer(srcBuffer)
 	    , dstBuffer(dstBuffer)
 	    , region(region)
@@ -792,10 +792,10 @@ private:
 	const VkBufferCopy region;
 };
 
-class CmdImageToBufferCopy : public vk::CommandBuffer::Command
+class CmdCopyImageToBuffer : public vk::CommandBuffer::Command
 {
 public:
-	CmdImageToBufferCopy(vk::Image *srcImage, vk::Buffer *dstBuffer, const VkBufferImageCopy &region)
+	CmdCopyImageToBuffer(vk::Image *srcImage, vk::Buffer *dstBuffer, const VkBufferImageCopy &region)
 	    : srcImage(srcImage)
 	    , dstBuffer(dstBuffer)
 	    , region(region)
@@ -815,10 +815,10 @@ private:
 	const VkBufferImageCopy region;
 };
 
-class CmdBufferToImageCopy : public vk::CommandBuffer::Command
+class CmdCopyBufferToImage : public vk::CommandBuffer::Command
 {
 public:
-	CmdBufferToImageCopy(vk::Buffer *srcBuffer, vk::Image *dstImage, const VkBufferImageCopy &region)
+	CmdCopyBufferToImage(vk::Buffer *srcBuffer, vk::Image *dstImage, const VkBufferImageCopy &region)
 	    : srcBuffer(srcBuffer)
 	    , dstImage(dstImage)
 	    , region(region)
@@ -1608,7 +1608,7 @@ void CommandBuffer::copyBuffer(const Buffer *srcBuffer, Buffer *dstBuffer, uint3
 
 	for(uint32_t i = 0; i < regionCount; i++)
 	{
-		addCommand<::CmdBufferToBufferCopy>(srcBuffer, dstBuffer, pRegions[i]);
+		addCommand<::CmdCopyBuffer>(srcBuffer, dstBuffer, pRegions[i]);
 	}
 }
 
@@ -1623,7 +1623,7 @@ void CommandBuffer::copyImage(const Image *srcImage, VkImageLayout srcImageLayou
 
 	for(uint32_t i = 0; i < regionCount; i++)
 	{
-		addCommand<::CmdImageToImageCopy>(srcImage, dstImage, pRegions[i]);
+		addCommand<::CmdCopyImage>(srcImage, dstImage, pRegions[i]);
 	}
 }
 
@@ -1649,7 +1649,7 @@ void CommandBuffer::copyBufferToImage(Buffer *srcBuffer, Image *dstImage, VkImag
 
 	for(uint32_t i = 0; i < regionCount; i++)
 	{
-		addCommand<::CmdBufferToImageCopy>(srcBuffer, dstImage, pRegions[i]);
+		addCommand<::CmdCopyBufferToImage>(srcBuffer, dstImage, pRegions[i]);
 	}
 }
 
@@ -1661,7 +1661,7 @@ void CommandBuffer::copyImageToBuffer(Image *srcImage, VkImageLayout srcImageLay
 
 	for(uint32_t i = 0; i < regionCount; i++)
 	{
-		addCommand<::CmdImageToBufferCopy>(srcImage, dstBuffer, pRegions[i]);
+		addCommand<::CmdCopyImageToBuffer>(srcImage, dstBuffer, pRegions[i]);
 	}
 }
 
