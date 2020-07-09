@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4eaccc8a_f98e4c79",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T17:53:26Z",
+      "side": 1,
+      "message": "There\u0027s a search \u0026 replace typo to fix. LGTM.",
+      "revId": "2029d4db693e92f7f162a0f1edee5709bd1ecad3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5d3da42_ac5de49b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T17:53:26Z",
+      "side": 1,
+      "message": "Oops, s/plice/slice/g\n\n(more below)",
+      "revId": "2029d4db693e92f7f162a0f1edee5709bd1ecad3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a71bbd6_3b7bfc16",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T17:53:26Z",
+      "side": 1,
+      "message": "here",
+      "revId": "2029d4db693e92f7f162a0f1edee5709bd1ecad3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50573a7d_6ce86dc6",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T17:53:26Z",
+      "side": 1,
+      "message": "and here",
+      "revId": "2029d4db693e92f7f162a0f1edee5709bd1ecad3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
