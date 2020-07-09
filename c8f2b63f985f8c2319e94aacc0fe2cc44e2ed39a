@@ -16,6 +16,29 @@
       "revId": "c8f2b63f985f8c2319e94aacc0fe2cc44e2ed39a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "433c488d_f6461935",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-09T19:46:23Z",
+      "side": 1,
+      "message": "This was wrong because it only checks whether the source image is 3D. Since extent.depth applies to both source and destination, we can simply multiply it by samples instead, as done in the new patchset.",
+      "range": {
+        "startLine": 343,
+        "startChar": 23,
+        "endLine": 343,
+        "endChar": 73
+      },
+      "revId": "c8f2b63f985f8c2319e94aacc0fe2cc44e2ed39a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
