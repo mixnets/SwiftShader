@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c864684_c3c480c9",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T14:08:29Z",
+      "side": 1,
+      "message": "I think it\u0027s a shame that the code now has these inconsistent operations for the high 8 bits. Someone reading this code would not understand why, and you don\u0027t want to be putting comments on every line where we do this.\n\nI think a good solution here is to factor this operations out into a function, and we can put the comment about \"unsigned integer to floating-point conversion does not have efficient instructions on x86 until AVX-512.\" in the function. Indeed, when we do add support for AVX-512, we\u0027d only have to change that one function.\n\nAs for what this function could look like, maybe something like:\n\n    // Efficiently emits (v \u0026 mask) / mask\n    template \u003ctypename T\u003e\n    SIMD::Float MaskedRatio(T\u0026 v, unsigned mask)\n    {\n        // unsigned integer to floating-point conversion does not have efficient instructions on x86 until AVX-512\n        if (mask \u003d\u003d 0xFF000000)\n        {\n            return SIMD::Float(As\u003cSIMD::UInt\u003e(v) \u003e\u003e 24) * SIMD::Float(1.0f / 0xFF));\n        }\n\n        return SIMD::Float(packed[0] \u0026 SIMD::Int(mask)) * SIMD::Float(1.0f / mask));\n    }\n\nThen this code would become:\n\n    dst.move(0, MaskedRatio(packed[0], 0x000000FF));\n    dst.move(1, MaskedRatio(packed[0], 0x0000FF00));\n    dst.move(2, MaskedRatio(packed[0], 0x00FF0000));\n    dst.move(3, MaskedRatio(packed[0], 0xFF000000));",
+      "revId": "4c75ee65fb89060247aaa31018594220c6733282",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d45c2d5_afdff70d",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 808,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T14:08:29Z",
+      "side": 1,
+      "message": "I understand we\u0027re optimizing away the masking, but I was wondering whether the compiler backend doesn\u0027t already optimize this away?",
+      "revId": "4c75ee65fb89060247aaa31018594220c6733282",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "460dac3e_699a2564",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 952,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-09T14:08:29Z",
+      "side": 1,
+      "message": "This part is definitely more difficult to understand now that we need to specify inline hex masks like this. Maybe it would be more clear if we did, for e.g., (0x3FF\u003c\u003c10) instead of of 0x000FFC00, and (0x3FF\u003c\u003c20) instead of 0x3FF00000.\n\nIt\u0027s less important for the masks above like 0x00FF00, though (0xFF\u003c\u003c8) would still be clear.",
+      "revId": "4c75ee65fb89060247aaa31018594220c6733282",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
