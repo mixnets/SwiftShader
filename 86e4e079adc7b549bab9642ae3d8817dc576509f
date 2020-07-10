@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e34cf5e_6d3f0cdb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-10T09:54:37Z",
+      "side": 1,
+      "message": "update.py ?\n\nuber-nit: without more context it\u0027s not clear what this is for. I\u0027d be inclined to use a first line like\n\"Add validation and platform restrictions to LLVM update script\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 8
+      },
+      "revId": "86e4e079adc7b549bab9642ae3d8817dc576509f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
