@@ -43,7 +43,7 @@ class Queue
 	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
 
 public:
-	Queue(Device *device, marl::Scheduler *scheduler);
+	Queue(Device *device);
 	~Queue();
 
 	operator VkQueue()
@@ -72,7 +72,7 @@ private:
 		Type type = SUBMIT_QUEUE;
 	};
 
-	void taskLoop(marl::Scheduler *scheduler);
+	void taskLoop();
 	void garbageCollect();
 	void submitQueue(const Task &task);
 
@@ -81,6 +81,8 @@ private:
 	sw::Chan<Task> pending;
 	sw::Chan<VkSubmitInfo *> toDelete;
 	std::thread queueThread;
+
+	std::shared_ptr<marl::Scheduler> scheduler;
 };
 
 static inline Queue *Cast(VkQueue object)

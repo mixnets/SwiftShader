@@ -49,7 +49,7 @@ class Device
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
-	Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures, const std::shared_ptr<marl::Scheduler> &scheduler);
+	Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice *physicalDevice, const VkPhysicalDeviceFeatures *enabledFeatures);
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkDeviceCreateInfo *pCreateInfo);
@@ -170,7 +170,7 @@ private:
 	ExtensionName *extensions = nullptr;
 	const VkPhysicalDeviceFeatures enabledFeatures = {};
 
-	std::shared_ptr<marl::Scheduler> scheduler;
+	std::shared_ptr<marl::Scheduler> scheduler_;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 	std::unique_ptr<SamplerIndexer> samplerIndexer;
 

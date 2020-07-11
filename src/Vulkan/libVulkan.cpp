@@ -42,6 +42,7 @@
 #include "VkShaderModule.hpp"
 #include "VkStringify.hpp"
 
+#include "System/CPUID.hpp"
 #include "System/Debug.hpp"
 
 #if defined(VK_USE_PLATFORM_METAL_EXT) || defined(VK_USE_PLATFORM_MACOS_MVK)
@@ -70,13 +71,6 @@
 #include "WSI/VkSwapchainKHR.hpp"
 
 #include "Reactor/Nucleus.hpp"
-
-#include "marl/mutex.h"
-#include "marl/scheduler.h"
-#include "marl/thread.h"
-#include "marl/tsa.h"
-
-#include "System/CPUID.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -131,32 +125,6 @@ void setCPUDefaults()
 	sw::CPUID::setEnableSSE3(true);
 	sw::CPUID::setEnableSSE2(true);
 	sw::CPUID::setEnableSSE(true);
-}
-
-std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
-{
-	struct Scheduler
-	{
-		marl::mutex mutex;
-		std::weak_ptr<marl::Scheduler> weakptr GUARDED_BY(mutex);
-	};
-
-	static Scheduler scheduler;
-
-	marl::lock lock(scheduler.mutex);
-	auto sptr = scheduler.weakptr.lock();
-	if(!sptr)
-	{
-		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
-		cfg.setWorkerThreadInitializer([](int) {
-			sw::CPUID::setFlushToZero(true);
-			sw::CPUID::setDenormalsAreZero(true);
-		});
-		sptr = std::make_shared<marl::Scheduler>(cfg);
-		scheduler.weakptr = sptr;
-	}
-	return sptr;
 }
 
 // initializeLibrary() is called by vkCreateInstance() to perform one-off global
@@ -821,8 +789,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		(void)queueFamilyPropertyCount;  // Silence unused variable warning
 	}
 
-	auto scheduler = getOrCreateScheduler();
-	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures, scheduler);
+	return vk::DispatchableDevice::Create(pAllocator, pCreateInfo, pDevice, vk::Cast(physicalDevice), enabledFeatures);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDevice(VkDevice device, const VkAllocationCallbacks *pAllocator)

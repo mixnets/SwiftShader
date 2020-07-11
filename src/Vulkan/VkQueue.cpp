@@ -13,16 +13,20 @@
 // limitations under the License.
 
 #include "VkQueue.hpp"
+
 #include "VkCommandBuffer.hpp"
 #include "VkFence.hpp"
 #include "VkSemaphore.hpp"
 #include "Device/Renderer.hpp"
+#include "System/CPUID.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 
 #include "marl/defer.h"
+#include "marl/mutex.h"
 #include "marl/scheduler.h"
 #include "marl/thread.h"
 #include "marl/trace.h"
+#include "marl/tsa.h"
 
 #include <cstring>
 
@@ -77,10 +81,10 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 
 namespace vk {
 
-Queue::Queue(Device *device, marl::Scheduler *scheduler)
+Queue::Queue(Device *device)
     : device(device)
 {
-	queueThread = std::thread(&Queue::taskLoop, this, scheduler);
+	queueThread = std::thread(&Queue::taskLoop, this);
 }
 
 Queue::~Queue()
@@ -114,11 +118,40 @@ VkResult Queue::submit(uint32_t submitCount, const VkSubmitInfo *pSubmits, Fence
 	return VK_SUCCESS;
 }
 
+std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
+{
+	struct Scheduler
+	{
+		marl::mutex mutex;
+		std::weak_ptr<marl::Scheduler> weakptr GUARDED_BY(mutex);
+	};
+
+	static Scheduler scheduler;
+
+	marl::lock lock(scheduler.mutex);
+	auto sptr = scheduler.weakptr.lock();
+	if(!sptr)
+	{
+		marl::Scheduler::Config cfg;
+		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+		cfg.setWorkerThreadInitializer([](int) {
+			sw::CPUID::setFlushToZero(true);
+			sw::CPUID::setDenormalsAreZero(true);
+		});
+		sptr = std::make_shared<marl::Scheduler>(cfg);
+		scheduler.weakptr = sptr;
+	}
+	return sptr;
+}
+
 void Queue::submitQueue(const Task &task)
 {
 	if(renderer == nullptr)
 	{
 		renderer.reset(new sw::Renderer(device));
+
+		this->scheduler = getOrCreateScheduler();
+		scheduler.get()->bind();
 	}
 
 	for(uint32_t i = 0; i < task.submitCount; i++)
@@ -159,11 +192,11 @@ void Queue::submitQueue(const Task &task)
 	}
 }
 
-void Queue::taskLoop(marl::Scheduler *scheduler)
+void Queue::taskLoop()
 {
 	marl::Thread::setName("Queue<%p>", this);
-	scheduler->bind();
-	defer(scheduler->unbind());
+	//scheduler->bind();
+	defer(this->scheduler->unbind());
 
 	while(true)
 	{
