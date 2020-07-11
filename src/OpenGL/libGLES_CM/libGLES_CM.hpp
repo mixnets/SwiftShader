@@ -20,11 +20,12 @@
 #include <EGL/egl.h>
 
 #include "Common/SharedLibrary.hpp"
+#include "Common/Types.hpp"
 
 namespace sw
 {
 class FrameBuffer;
-enum Format : unsigned char;
+enum Format ENUM_UNDERLYING_TYPE_UNSIGNED_INT;
 }
 
 namespace egl
