@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c787d469_da916603",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 38
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-13T14:03:24Z",
+      "side": 1,
+      "message": "Liking this a lot better than \"MetaData\" :)",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 34,
+        "endChar": 19
+      },
+      "revId": "cbeee331667b0e2ce0e02dbfa05c8c2a782b2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03c8ead7_0fbbc886",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 38
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-13T14:03:24Z",
+      "side": 1,
+      "message": "What is this for? Since it\u0027s a non-dispatchable handle, shouldn\u0027t we derive DescriptorSet from Object\u003cDescriptorSet, VkDescriptorSet\u003e to provide this functionality?",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 69,
+        "endChar": 2
+      },
+      "revId": "cbeee331667b0e2ce0e02dbfa05c8c2a782b2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

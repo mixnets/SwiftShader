@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "52bce286_e1604f58",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 43
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-13T14:03:24Z",
+      "side": 1,
+      "message": "Let\u0027s remove these to make sure we hit the UNIMPLEMENTED below in case they\u0027re encountered.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 110
+      },
+      "revId": "a70e2b90f387c93d73fe31056d392dd0e0585dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa685331_21965ffc",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 43
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-13T14:03:24Z",
+      "side": 1,
+      "message": "Does offsetof not work any more?",
+      "range": {
+        "startLine": 174,
+        "startChar": 42,
+        "endLine": 174,
+        "endChar": 48
+      },
+      "revId": "a70e2b90f387c93d73fe31056d392dd0e0585dda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

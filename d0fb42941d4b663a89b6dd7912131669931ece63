@@ -34,6 +34,24 @@
       "revId": "d0fb42941d4b663a89b6dd7912131669931ece63",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7a7d8a3_9a0c3f22",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 39
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-13T14:03:24Z",
+      "side": 1,
+      "message": "I think capitalizing static functions can cause confusion with class names. For example does \"auto x \u003d X();\" construct an object of type X, or does X() return some other type? When using \"auto\" I think we should be able to tell from the right-hand-side what the type will be, or at least be able to tell when it does *not* represent the type.\n\nAlso note that methods can become static or non-static based on minor design changes, and I don\u0027t think this needs reflecting in the name. If it\u0027s critical to know that a static method is being called, use \"Type::method()\".\n\nAnyway, no biggie.",
+      "parentUuid": "1632c757_69ba2cf4",
+      "revId": "d0fb42941d4b663a89b6dd7912131669931ece63",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
