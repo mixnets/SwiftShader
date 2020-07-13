@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d11e0d29_62df9535",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 46
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-13T17:29:55Z",
+      "side": 1,
+      "message": "Further simplified the code since the new version allows us to know the descriptor type while performing the notifications",
+      "revId": "a74e4f235cda0290f5e409bd5e06076ecae29317",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
