@@ -39,8 +39,6 @@ class Fence;
 
 class Queue
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
 	Queue(Device *device, marl::Scheduler *scheduler);
 	~Queue();
@@ -82,9 +80,11 @@ private:
 	std::thread queueThread;
 };
 
+using DispatchableQueue = DispatchableObject<Queue, VkQueue>;
+
 static inline Queue *Cast(VkQueue object)
 {
-	return reinterpret_cast<Queue *>(object);
+	return DispatchableQueue::Cast(object);
 }
 
 }  // namespace vk
