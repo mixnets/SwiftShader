@@ -45,6 +45,30 @@
       "revId": "cbeee331667b0e2ce0e02dbfa05c8c2a782b2858",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94707958_96b34c7f",
+        "filename": "src/Vulkan/VkDescriptorSet.hpp",
+        "patchSetId": 38
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-13T14:48:29Z",
+      "side": 1,
+      "message": "See line 18 above about not including VkObject.hpp. If this needs to be changed, I would rather do it in its own separate cl, if that\u0027s ok with you.\nAnyway, this is for ease of use in the descriptor pool, so that I can use:\n*(new(memory) ...",
+      "parentUuid": "03c8ead7_0fbbc886",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 69,
+        "endChar": 2
+      },
+      "revId": "cbeee331667b0e2ce0e02dbfa05c8c2a782b2858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
