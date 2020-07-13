@@ -15,9 +15,8 @@
 #ifndef VK_DESCRIPTOR_SET_HPP_
 #define VK_DESCRIPTOR_SET_HPP_
 
-// Intentionally not including VkObject.hpp here due to b/127920555
 #include "VkConfig.hpp"
-
+#include "VkObject.hpp"
 #include "marl/mutex.h"
 
 #include <array>
@@ -35,7 +34,7 @@ struct alignas(16) DescriptorSetHeader
 	marl::mutex mutex;
 };
 
-class alignas(16) DescriptorSet
+class alignas(16) DescriptorSet : public Object<DescriptorSet, VkDescriptorSet>
 {
 public:
 	static inline DescriptorSet *Cast(VkDescriptorSet object)
