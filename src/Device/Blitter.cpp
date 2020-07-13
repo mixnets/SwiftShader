@@ -654,8 +654,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 		case VK_FORMAT_R16_SFLOAT:
 			if(writeR) { *Pointer<Half>(element) = Half(c.x); }
 			break;
-		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-		{
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32: {
 			UInt rgb = r11g11b10Pack(c);
 
 			UInt old = *Pointer<UInt>(element);
@@ -667,8 +666,7 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			*Pointer<UInt>(element) = (rgb & mask) | (old & ~mask);
 		}
 		break;
-		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-		{
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: {
 			ASSERT(writeRGBA);  // Can't sensibly write just part of this format.
 
 			// Vulkan 1.1.117 section 15.2.1 RGB to Shared Exponent Conversion

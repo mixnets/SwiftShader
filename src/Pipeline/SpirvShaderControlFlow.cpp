@@ -15,9 +15,8 @@
 #include "SpirvShader.hpp"
 #include "SpirvShaderDebug.hpp"
 
-#include "Reactor/Coroutine.hpp"  // rr::Yield
-
 #include "ShaderCore.hpp"
+#include "Reactor/Coroutine.hpp"  // rr::Yield
 
 #include <spirv/unified1/spirv.hpp>
 

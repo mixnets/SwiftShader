@@ -15,39 +15,44 @@
 #ifndef egl_Context_hpp
 #define egl_Context_hpp
 
-#include "common/Object.hpp"
 #include "Renderer/Surface.hpp"
+#include "common/Object.hpp"
 
 #include <EGL/egl.h>
+#undef Bool
+
 #include <GLES/gl.h>
 
-namespace gl { class Surface; }
+namespace gl {
+class Surface;
+}
 
-namespace egl
-{
+namespace egl {
 class Display;
 class Image;
 
 class [[clang::lto_visibility_public]] Context : public gl::Object
 {
 public:
-	virtual void makeCurrent(gl::Surface *surface) = 0;
-	virtual void bindTexImage(gl::Surface *surface) = 0;
+	virtual void makeCurrent(gl::Surface * surface) = 0;
+	virtual void bindTexImage(gl::Surface * surface) = 0;
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual EGLint getClientVersion() const = 0;
 	virtual EGLint getConfigID() const = 0;
 	virtual void finish() = 0;
-	virtual void blit(sw::Surface *source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect) = 0;
+	virtual void blit(sw::Surface * source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect) = 0;
 
 	Display *getDisplay() const { return display; }
 
 protected:
-	Context(egl::Display *display) : display(display) {}
+	Context(egl::Display * display)
+	    : display(display)
+	{}
 	virtual ~Context() {}
 
 	egl::Display *const display;
 };
-}
+}  // namespace egl
 
-#endif   // egl_Context_hpp
+#endif  // egl_Context_hpp

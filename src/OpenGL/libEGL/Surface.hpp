@@ -19,15 +19,13 @@
 #ifndef INCLUDE_EGL_SURFACE_H_
 #define INCLUDE_EGL_SURFACE_H_
 
+#include "Main/FrameBuffer.hpp"
 #include "common/Object.hpp"
 #include "common/Surface.hpp"
 
-#include "Main/FrameBuffer.hpp"
-
 #include <EGL/egl.h>
 
-namespace egl
-{
+namespace egl {
 class Display;
 class Config;
 
@@ -86,29 +84,29 @@ protected:
 	bool reset(int backbufferWidth, int backbufferHeight);
 
 	// Surface attributes:
-	EGLint width = 0;                                // Width of surface
-	EGLint height= 0;                                // Height of surface
-//	EGLint horizontalResolution = EGL_UNKNOWN;       // Horizontal dot pitch
-//	EGLint verticalResolution = EGL_UNKNOWN;         // Vertical dot pitch
-	EGLBoolean largestPBuffer = EGL_FALSE;           // If true, create largest pbuffer possible
-//	EGLBoolean mipmapTexture = EGL_FALSE;            // True if texture has mipmaps
-	EGLint mipmapLevel = 0;                          // Mipmap level to render to
-	EGLenum multisampleResolve = EGL_MULTISAMPLE_RESOLVE_DEFAULT;   // Multisample resolve behavior
-	EGLint pixelAspectRatio = EGL_UNKNOWN;           // Display aspect ratio
-	EGLenum renderBuffer = EGL_BACK_BUFFER;          // Render buffer
-	EGLenum swapBehavior = EGL_BUFFER_PRESERVED;     // Buffer swap behavior (initial value chosen by implementation)
-	EGLenum textureFormat = EGL_NO_TEXTURE;          // Format of texture: RGB, RGBA, or no texture
-	EGLenum textureTarget = EGL_NO_TEXTURE;          // Type of texture: 2D or no texture
-//	EGLenum vgAlphaFormat = EGL_VG_ALPHA_FORMAT_NONPRE;   // Alpha format for OpenVG
-//	EGLenum vgColorSpace = EGL_VG_COLORSPACE_sRGB;   // Color space for OpenVG
+	EGLint width = 0;                                              // Width of surface
+	EGLint height = 0;                                             // Height of surface
+	                                                               //	EGLint horizontalResolution = EGL_UNKNOWN;       // Horizontal dot pitch
+	                                                               //	EGLint verticalResolution = EGL_UNKNOWN;         // Vertical dot pitch
+	EGLBoolean largestPBuffer = EGL_FALSE;                         // If true, create largest pbuffer possible
+	                                                               //	EGLBoolean mipmapTexture = EGL_FALSE;            // True if texture has mipmaps
+	EGLint mipmapLevel = 0;                                        // Mipmap level to render to
+	EGLenum multisampleResolve = EGL_MULTISAMPLE_RESOLVE_DEFAULT;  // Multisample resolve behavior
+	EGLint pixelAspectRatio = EGL_UNKNOWN;                         // Display aspect ratio
+	EGLenum renderBuffer = EGL_BACK_BUFFER;                        // Render buffer
+	EGLenum swapBehavior = EGL_BUFFER_PRESERVED;                   // Buffer swap behavior (initial value chosen by implementation)
+	EGLenum textureFormat = EGL_NO_TEXTURE;                        // Format of texture: RGB, RGBA, or no texture
+	EGLenum textureTarget = EGL_NO_TEXTURE;                        // Type of texture: 2D or no texture
+	                                                               //	EGLenum vgAlphaFormat = EGL_VG_ALPHA_FORMAT_NONPRE;   // Alpha format for OpenVG
+	                                                               //	EGLenum vgColorSpace = EGL_VG_COLORSPACE_sRGB;   // Color space for OpenVG
 
 	EGLint swapInterval = 1;
 
 	// EGL_ANGLE_iosurface_client_buffer attributes:
 	EGLClientBuffer clientBuffer = nullptr;
 	EGLint clientBufferPlane;
-	EGLenum clientBufferFormat;    // Format of the client buffer
-	EGLenum clientBufferType;      // Type of the client buffer
+	EGLenum clientBufferFormat;  // Format of the client buffer
+	EGLenum clientBufferType;    // Type of the client buffer
 };
 
 class WindowSurface : public Surface
@@ -150,6 +148,6 @@ public:
 private:
 	void deleteResources() override;
 };
-}
+}  // namespace egl
 
-#endif   // INCLUDE_EGL_SURFACE_H_
+#endif  // INCLUDE_EGL_SURFACE_H_

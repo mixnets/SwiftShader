@@ -44,8 +44,7 @@ struct SpirvShader::Impl::Group
 			TYPE v = As<TYPE>(v_uint);
 			switch(spv::GroupOperation(insn.word(4)))
 			{
-				case spv::GroupOperationReduce:
-				{
+				case spv::GroupOperationReduce: {
 					// NOTE: floating-point add and multiply are not really commutative so
 					//       ensure that all values in the final lanes are identical
 					TYPE v2 = apply(v.xxzz, v.yyww);    // [xy]   [xy]   [zw]   [zw]
@@ -53,15 +52,13 @@ struct SpirvShader::Impl::Group
 					dst.move(i, v3);
 					break;
 				}
-				case spv::GroupOperationInclusiveScan:
-				{
+				case spv::GroupOperationInclusiveScan: {
 					TYPE v2 = apply(v, Shuffle(v, identity, 0x4012) /* [id, v.y, v.z, v.w] */);      // [x] [xy] [yz]  [zw]
 					TYPE v3 = apply(v2, Shuffle(v2, identity, 0x4401) /* [id,  id, v2.x, v2.y] */);  // [x] [xy] [xyz] [xyzw]
 					dst.move(i, v3);
 					break;
 				}
-				case spv::GroupOperationExclusiveScan:
-				{
+				case spv::GroupOperationExclusiveScan: {
 					TYPE v2 = apply(v, Shuffle(v, identity, 0x4012) /* [id, v.y, v.z, v.w] */);      // [x] [xy] [yz]  [zw]
 					TYPE v3 = apply(v2, Shuffle(v2, identity, 0x4401) /* [id,  id, v2.x, v2.y] */);  // [x] [xy] [xyz] [xyzw]
 					auto v4 = Shuffle(v3, identity, 0x4012 /* [id, v3.x, v3.y, v3.z] */);            // [i] [x]  [xy]  [xyz]
@@ -89,8 +86,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 
 	switch(insn.opcode())
 	{
-		case spv::OpGroupNonUniformElect:
-		{
+		case spv::OpGroupNonUniformElect: {
 			// Result is true only in the active invocation with the lowest id
 			// in the group, otherwise result is false.
 			SIMD::Int active = state->activeLaneMask();  // Considers helper invocations active. See b/151137030
@@ -102,22 +98,19 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformAll:
-		{
+		case spv::OpGroupNonUniformAll: {
 			Operand predicate(this, state, insn.word(4));
 			dst.move(0, AndAll(predicate.UInt(0) | ~As<SIMD::UInt>(state->activeLaneMask())));  // Considers helper invocations active. See b/151137030
 			break;
 		}
 
-		case spv::OpGroupNonUniformAny:
-		{
+		case spv::OpGroupNonUniformAny: {
 			Operand predicate(this, state, insn.word(4));
 			dst.move(0, OrAll(predicate.UInt(0) & As<SIMD::UInt>(state->activeLaneMask())));  // Considers helper invocations active. See b/151137030
 			break;
 		}
 
-		case spv::OpGroupNonUniformAllEqual:
-		{
+		case spv::OpGroupNonUniformAllEqual: {
 			Operand value(this, state, insn.word(4));
 			auto res = SIMD::UInt(0xffffffff);
 			SIMD::UInt active = As<SIMD::UInt>(state->activeLaneMask());  // Considers helper invocations active. See b/151137030
@@ -136,8 +129,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBroadcast:
-		{
+		case spv::OpGroupNonUniformBroadcast: {
 			auto valueId = Object::ID(insn.word(4));
 			auto id = SIMD::Int(GetConstScalarInt(insn.word(5)));
 			Operand value(this, state, valueId);
@@ -149,8 +141,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBroadcastFirst:
-		{
+		case spv::OpGroupNonUniformBroadcastFirst: {
 			auto valueId = Object::ID(insn.word(4));
 			Operand value(this, state, valueId);
 			// Result is true only in the active invocation with the lowest id
@@ -167,8 +158,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBallot:
-		{
+		case spv::OpGroupNonUniformBallot: {
 			ASSERT(type.componentCount == 4);
 			Operand predicate(this, state, insn.word(4));
 			dst.move(0, SIMD::Int(SignMask(state->activeLaneMask() & predicate.Int(0))));  // Considers helper invocations active. See b/151137030
@@ -178,8 +168,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformInverseBallot:
-		{
+		case spv::OpGroupNonUniformInverseBallot: {
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getType(getObject(valueId)).componentCount == 4);
@@ -189,8 +178,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBallotBitExtract:
-		{
+		case spv::OpGroupNonUniformBallotBitExtract: {
 			auto valueId = Object::ID(insn.word(4));
 			auto indexId = Object::ID(insn.word(5));
 			ASSERT(type.componentCount == 1);
@@ -208,8 +196,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBallotBitCount:
-		{
+		case spv::OpGroupNonUniformBallotBitCount: {
 			auto operation = spv::GroupOperation(insn.word(4));
 			auto valueId = Object::ID(insn.word(5));
 			ASSERT(type.componentCount == 1);
@@ -232,8 +219,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBallotFindLSB:
-		{
+		case spv::OpGroupNonUniformBallotFindLSB: {
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getType(getObject(valueId)).componentCount == 4);
@@ -242,8 +228,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformBallotFindMSB:
-		{
+		case spv::OpGroupNonUniformBallotFindMSB: {
 			auto valueId = Object::ID(insn.word(4));
 			ASSERT(type.componentCount == 1);
 			ASSERT(getType(getObject(valueId)).componentCount == 4);
@@ -252,8 +237,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformShuffle:
-		{
+		case spv::OpGroupNonUniformShuffle: {
 			Operand value(this, state, insn.word(4));
 			Operand id(this, state, insn.word(5));
 			auto x = CmpEQ(SIMD::Int(0), id.Int(0));
@@ -268,8 +252,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformShuffleXor:
-		{
+		case spv::OpGroupNonUniformShuffleXor: {
 			Operand value(this, state, insn.word(4));
 			Operand mask(this, state, insn.word(5));
 			auto x = CmpEQ(SIMD::Int(0), SIMD::Int(0, 1, 2, 3) ^ mask.Int(0));
@@ -284,8 +267,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformShuffleUp:
-		{
+		case spv::OpGroupNonUniformShuffleUp: {
 			Operand value(this, state, insn.word(4));
 			Operand delta(this, state, insn.word(5));
 			auto d0 = CmpEQ(SIMD::Int(0), delta.Int(0));
@@ -300,8 +282,7 @@ SpirvShader::EmitResult SpirvShader::EmitGroupNonUniform(InsnIterator insn, Emit
 			break;
 		}
 
-		case spv::OpGroupNonUniformShuffleDown:
-		{
+		case spv::OpGroupNonUniformShuffleDown: {
 			Operand value(this, state, insn.word(4));
 			Operand delta(this, state, insn.word(5));
 			auto d0 = CmpEQ(SIMD::Int(0), delta.Int(0));

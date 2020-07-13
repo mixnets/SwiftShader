@@ -17,13 +17,12 @@
 #ifndef LIBGLESV2_QUERY_H_
 #define LIBGLESV2_QUERY_H_
 
-#include "common/Object.hpp"
 #include "Renderer/Renderer.hpp"
+#include "common/Object.hpp"
 
 #include <GLES2/gl2.h>
 
-namespace es2
-{
+namespace es2 {
 
 class Query : public gl::NamedObject
 {
@@ -41,12 +40,12 @@ public:
 private:
 	GLboolean testQuery();
 
-	sw::Query* mQuery;
+	sw::Query *mQuery;
 	GLenum mType;
 	GLboolean mStatus;
 	GLint mResult;
 };
 
-}
+}  // namespace es2
 
-#endif   // LIBGLESV2_QUERY_H_
+#endif  // LIBGLESV2_QUERY_H_

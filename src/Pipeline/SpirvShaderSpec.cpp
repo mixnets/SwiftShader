@@ -65,8 +65,7 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			EvalSpecConstantUnaryOp(insn);
 			break;
 
-		case spv::OpSelect:
-		{
+		case spv::OpSelect: {
 			auto &result = CreateConstant(insn);
 			auto const &cond = getObject(insn.word(4));
 			auto condIsScalar = (getType(cond).componentCount == 1);
@@ -81,8 +80,7 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			break;
 		}
 
-		case spv::OpCompositeExtract:
-		{
+		case spv::OpCompositeExtract: {
 			auto &result = CreateConstant(insn);
 			auto const &compositeObject = getObject(insn.word(4));
 			auto firstComponent = WalkLiteralAccessChain(compositeObject.typeId(), insn.wordCount() - 5, insn.wordPointer(5));
@@ -94,8 +92,7 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			break;
 		}
 
-		case spv::OpCompositeInsert:
-		{
+		case spv::OpCompositeInsert: {
 			auto &result = CreateConstant(insn);
 			auto const &newPart = getObject(insn.word(4));
 			auto const &oldObject = getObject(insn.word(5));
@@ -119,8 +116,7 @@ void SpirvShader::EvalSpecConstantOp(InsnIterator insn)
 			break;
 		}
 
-		case spv::OpVectorShuffle:
-		{
+		case spv::OpVectorShuffle: {
 			auto &result = CreateConstant(insn);
 			auto const &firstHalf = getObject(insn.word(4));
 			auto const &secondHalf = getObject(insn.word(5));
@@ -182,8 +178,7 @@ void SpirvShader::EvalSpecConstantUnaryOp(InsnIterator insn)
 				v = ~l;
 				break;
 
-			case spv::OpQuantizeToF16:
-			{
+			case spv::OpQuantizeToF16: {
 				// Can do this nicer with host code, but want to perfectly mirror the reactor code we emit.
 				auto abs = bit_cast<float>(l & 0x7FFFFFFF);
 				auto sign = l & 0x80000000;

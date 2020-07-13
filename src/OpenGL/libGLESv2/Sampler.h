@@ -17,18 +17,18 @@
 #ifndef LIBGLESV2_SAMPLER_H_
 #define LIBGLESV2_SAMPLER_H_
 
-#include "common/Object.hpp"
 #include "Renderer/Renderer.hpp"
+#include "common/Object.hpp"
 
 #include <GLES2/gl2.h>
 
-namespace es2
-{
+namespace es2 {
 
 class Sampler : public gl::NamedObject
 {
 public:
-	Sampler(GLuint name) : NamedObject(name)
+	Sampler(GLuint name)
+	    : NamedObject(name)
 	{
 		mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
 		mMagFilter = GL_LINEAR;
@@ -81,6 +81,6 @@ private:
 	GLfloat mMaxAnisotropy;
 };
 
-}
+}  // namespace es2
 
-#endif // LIBGLESV2_SAMPLER_H_
+#endif  // LIBGLESV2_SAMPLER_H_

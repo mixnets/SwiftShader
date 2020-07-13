@@ -1498,8 +1498,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 	{
 		switch(textureComponentCount())
 		{
-			case 4:
-			{
+			case 4: {
 				Byte4 c0 = Pointer<Byte4>(buffer)[index[0]];
 				Byte4 c1 = Pointer<Byte4>(buffer)[index[1]];
 				Byte4 c2 = Pointer<Byte4>(buffer)[index[2]];
@@ -1582,8 +1581,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 						ASSERT(false);
 				}
 				break;
-			case 1:
-			{
+			case 1: {
 				Int c0 = Int(*Pointer<Byte>(buffer + index[0]));
 				Int c1 = Int(*Pointer<Byte>(buffer + index[1]));
 				Int c2 = Int(*Pointer<Byte>(buffer + index[2]));
@@ -1594,8 +1592,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				{
 					case VK_FORMAT_R8_SINT:
 					case VK_FORMAT_R8_UINT:
-					case VK_FORMAT_S8_UINT:
-					{
+					case VK_FORMAT_S8_UINT: {
 						Int zero(0);
 						c.x = Unpack(As<Byte4>(c0), As<Byte4>(zero));
 						// Propagate sign bit
@@ -1974,8 +1971,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 				c.w = *Pointer<Float4>(buffer + index[3] * 16, 16);
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
-			case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-			{
+			case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: {
 				Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
 				t.x = *Pointer<Float>(buffer + index[0] * 4);
 				t.y = *Pointer<Float>(buffer + index[1] * 4);
@@ -1988,8 +1984,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 				c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
 				break;
 			}
-			case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-			{
+			case VK_FORMAT_B10G11R11_UFLOAT_PACK32: {
 				Float4 t;  // TODO: add Insert(UInt4, RValue<UInt>)
 				t.x = *Pointer<Float>(buffer + index[0] * 4);
 				t.y = *Pointer<Float>(buffer + index[1] * 4);
@@ -2331,16 +2326,14 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 							coord = Min(Max(coord, Float4(0.0f)), one);
 						}
 						break;
-					case ADDRESSING_MIRROR:
-					{
+					case ADDRESSING_MIRROR: {
 						Float4 half = As<Float4>(Int4(halfBits));
 						Float4 one = As<Float4>(Int4(oneBits));
 						Float4 two = As<Float4>(Int4(twoBits));
 						coord = one - Abs(two * Frac(coord * half) - one);
 					}
 					break;
-					case ADDRESSING_MIRRORONCE:
-					{
+					case ADDRESSING_MIRRORONCE: {
 						Float4 half = As<Float4>(Int4(halfBits));
 						Float4 one = As<Float4>(Int4(oneBits));
 						Float4 two = As<Float4>(Int4(twoBits));

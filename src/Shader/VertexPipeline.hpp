@@ -18,28 +18,28 @@
 #include "VertexRoutine.hpp"
 
 #include "Renderer/Context.hpp"
+
 #include "Renderer/VertexProcessor.hpp"
 
-namespace sw
+namespace sw {
+class VertexPipeline : public VertexRoutine
 {
-	class VertexPipeline : public VertexRoutine
-	{
-	public:
-		VertexPipeline(const VertexProcessor::State &state);
+public:
+	VertexPipeline(const VertexProcessor::State &state);
 
-		virtual ~VertexPipeline();
+	virtual ~VertexPipeline();
 
-	private:
-		void pipeline(UInt &index) override;
-		void processTextureCoordinate(int stage, Vector4f &normal, Vector4f &position);
-		void processPointSize();
+private:
+	void pipeline(UInt &index) override;
+	void processTextureCoordinate(int stage, Vector4f &normal, Vector4f &position);
+	void processPointSize();
 
-		Vector4f transformBlend(const Register &src, const Pointer<Byte> &matrix, bool homogenous);
-		Vector4f transform(const Register &src, const Pointer<Byte> &matrix, bool homogenous);
-		Vector4f transform(const Register &src, const Pointer<Byte> &matrix, UInt index[4], bool homogenous);
-		Vector4f normalize(Vector4f &src);
-		Float4 power(Float4 &src0, Float4 &src1);
-	};
-}
+	Vector4f transformBlend(const Register &src, const Pointer<Byte> &matrix, bool homogenous);
+	Vector4f transform(const Register &src, const Pointer<Byte> &matrix, bool homogenous);
+	Vector4f transform(const Register &src, const Pointer<Byte> &matrix, UInt index[4], bool homogenous);
+	Vector4f normalize(Vector4f &src);
+	Float4 power(Float4 &src0, Float4 &src1);
+};
+}  // namespace sw
 
-#endif   // sw_VertexPipeline_hpp
+#endif  // sw_VertexPipeline_hpp

@@ -201,8 +201,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_R32_SFLOAT:
 		case VK_FORMAT_R32G32_SFLOAT:
 		case VK_FORMAT_R32G32B32_SFLOAT:
-		case VK_FORMAT_R32G32B32A32_SFLOAT:
-		{
+		case VK_FORMAT_R32G32B32A32_SFLOAT: {
 			if(componentCount == 0)
 			{
 				// Null stream, all default components
@@ -359,8 +358,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 			break;
 		case VK_FORMAT_R16_SFLOAT:
 		case VK_FORMAT_R16G16_SFLOAT:
-		case VK_FORMAT_R16G16B16A16_SFLOAT:
-		{
+		case VK_FORMAT_R16G16B16A16_SFLOAT: {
 			if(componentCount >= 1)
 			{
 				UShort x0 = *Pointer<UShort>(source0 + 0);
@@ -417,8 +415,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_A2R10G10B10_SNORM_PACK32:
 			bgra = true;
 			// [[fallthrough]]
-		case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
-		{
+		case VK_FORMAT_A2B10G10R10_SNORM_PACK32: {
 			Int4 src;
 			src = Insert(src, *Pointer<Int>(source0), 0);
 			src = Insert(src, *Pointer<Int>(source1), 1);
@@ -438,8 +435,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_A2R10G10B10_SINT_PACK32:
 			bgra = true;
 			// [[fallthrough]]
-		case VK_FORMAT_A2B10G10R10_SINT_PACK32:
-		{
+		case VK_FORMAT_A2B10G10R10_SINT_PACK32: {
 			Int4 src;
 			src = Insert(src, *Pointer<Int>(source0), 0);
 			src = Insert(src, *Pointer<Int>(source1), 1);
@@ -454,8 +450,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
 			bgra = true;
 			// [[fallthrough]]
-		case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-		{
+		case VK_FORMAT_A2B10G10R10_UNORM_PACK32: {
 			Int4 src;
 			src = Insert(src, *Pointer<Int>(source0), 0);
 			src = Insert(src, *Pointer<Int>(source1), 1);
@@ -476,8 +471,7 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 		case VK_FORMAT_A2R10G10B10_UINT_PACK32:
 			bgra = true;
 			// [[fallthrough]]
-		case VK_FORMAT_A2B10G10R10_UINT_PACK32:
-		{
+		case VK_FORMAT_A2B10G10R10_UINT_PACK32: {
 			Int4 src;
 			src = Insert(src, *Pointer<Int>(source0), 0);
 			src = Insert(src, *Pointer<Int>(source1), 1);

@@ -16,15 +16,13 @@
 #define sw_RoutineCache_hpp
 
 #include "LRUCache.hpp"
-
 #include "Reactor/Reactor.hpp"
 
-namespace sw
-{
-	using namespace rr;
+namespace sw {
+using namespace rr;
 
-	template<class State>
-	using RoutineCache = LRUCache<State, std::shared_ptr<Routine>>;
-}
+template<class State>
+using RoutineCache = LRUCache<State, std::shared_ptr<Routine>>;
+}  // namespace sw
 
-#endif   // sw_RoutineCache_hpp
+#endif  // sw_RoutineCache_hpp

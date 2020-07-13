@@ -1508,8 +1508,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 		{
 			case Object::Kind::InterfaceVariable:
 			case Object::Kind::Pointer:
-			case Object::Kind::DescriptorSet:
-			{
+			case Object::Kind::DescriptorSet: {
 				ASSERT(wordOffset == 0);                            // TODO.
 				auto ptr = shader->GetPointerToData(id, 0, state);  //  + sizeof(uint32_t) * wordOffset;
 				auto &ptrTy = shader->getType(obj);
@@ -1524,8 +1523,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 			break;
 
 			case Object::Kind::Constant:
-			case Object::Kind::Intermediate:
-			{
+			case Object::Kind::Intermediate: {
 				if(auto ty = debug::cast<debug::BasicType>(type))
 				{
 					auto val = Operand(shader, state, id).Int(wordOffset);
@@ -1627,20 +1625,17 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 	// No debug type information. Derive from SPIR-V.
 	switch(shader->getType(obj).opcode())
 	{
-		case spv::OpTypeInt:
-		{
+		case spv::OpTypeInt: {
 			Operand val(shader, state, id);
 			group.put<Key, int>(key, Extract(val.Int(0), lane));
 		}
 		break;
-		case spv::OpTypeFloat:
-		{
+		case spv::OpTypeFloat: {
 			Operand val(shader, state, id);
 			group.put<Key, float>(key, Extract(val.Float(0), lane));
 		}
 		break;
-		case spv::OpTypeVector:
-		{
+		case spv::OpTypeVector: {
 			Operand val(shader, state, id);
 			auto count = shader->getType(obj).definition.word(3);
 			switch(count)
@@ -1657,8 +1652,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 				case 4:
 					group.put<Key, float>(key, Extract(val.Float(0), lane), Extract(val.Float(1), lane), Extract(val.Float(2), lane), Extract(val.Float(3), lane));
 					break;
-				default:
-				{
+				default: {
 					auto vec = group.group<Key>(key);
 					for(uint32_t i = 0; i < count; i++)
 					{
@@ -1669,8 +1663,7 @@ void SpirvShader::Impl::Debugger::exposeVariable(
 			}
 		}
 		break;
-		case spv::OpTypePointer:
-		{
+		case spv::OpTypePointer: {
 			auto objectTy = shader->getType(shader->getObject(id));
 			bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 			auto ptr = state->getPointer(id);

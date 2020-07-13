@@ -16,14 +16,14 @@
 
 #include "main.h"
 
-#include "libEGL.hpp"
 #include "Context.hpp"
-#include "Surface.hpp"
 #include "Display.h"
+#include "Surface.hpp"
+#include "libEGL.hpp"
 
 #include "resource.h"
-#include "Common/Thread.hpp"
 #include "Common/SharedLibrary.hpp"
+#include "Common/Thread.hpp"
 #include "common/debug.h"
 
 #include <EGL/eglext.h>
@@ -31,21 +31,20 @@
 static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 #if !defined(_MSC_VER)
-#define CONSTRUCTOR __attribute__((constructor))
-#define DESTRUCTOR __attribute__((destructor))
+#	define CONSTRUCTOR __attribute__((constructor))
+#	define DESTRUCTOR __attribute__((destructor))
 #else
-#define CONSTRUCTOR
-#define DESTRUCTOR
+#	define CONSTRUCTOR
+#	define DESTRUCTOR
 #endif
 
-namespace egl
-{
+namespace egl {
 void releaseCurrent(void *storage)
 {
 	// This pthread destructor is called after the TLS is already reset to NULL,
 	// so we can't call EGL functions here to do the cleanup.
 
-	Current *current = (Current*)storage;
+	Current *current = (Current *)storage;
 
 	if(current)
 	{
@@ -77,7 +76,7 @@ Current *attachThread()
 		currentTLS = sw::Thread::allocateLocalStorageKey(releaseCurrent);
 	}
 
-	Current *current = (Current*)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
+	Current *current = (Current *)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
 
 	current->error = EGL_SUCCESS;
 	current->API = EGL_OPENGL_ES_API;
@@ -101,16 +100,16 @@ CONSTRUCTOR void attachProcess()
 {
 	TRACE("()");
 
-	#if !defined(ANGLE_DISABLE_TRACE) && defined(TRACE_OUTPUT_FILE)
-		FILE *debug = fopen(TRACE_OUTPUT_FILE, "rt");
+#if !defined(ANGLE_DISABLE_TRACE) && defined(TRACE_OUTPUT_FILE)
+	FILE *debug = fopen(TRACE_OUTPUT_FILE, "rt");
 
-		if(debug)
-		{
-			fclose(debug);
-			debug = fopen(TRACE_OUTPUT_FILE, "wt");   // Erase
-			fclose(debug);
-		}
-	#endif
+	if(debug)
+	{
+		fclose(debug);
+		debug = fopen(TRACE_OUTPUT_FILE, "wt");  // Erase
+		fclose(debug);
+	}
+#endif
 
 	attachThread();
 }
@@ -122,32 +121,32 @@ DESTRUCTOR void detachProcess()
 	detachThread();
 	sw::Thread::freeLocalStorageKey(currentTLS);
 }
-}
+}  // namespace egl
 
 #if defined(_WIN32)
-#ifdef DEBUGGER_WAIT_DIALOG
+#	ifdef DEBUGGER_WAIT_DIALOG
 static INT_PTR CALLBACK DebuggerWaitDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	RECT rect;
 
 	switch(uMsg)
 	{
-	case WM_INITDIALOG:
-		GetWindowRect(GetDesktopWindow(), &rect);
-		SetWindowPos(hwnd, HWND_TOP, rect.right / 2, rect.bottom / 2, 0, 0, SWP_NOSIZE);
-		SetTimer(hwnd, 1, 100, NULL);
-		return TRUE;
-	case WM_COMMAND:
-		if(LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hwnd, 0);
-		}
-		break;
-	case WM_TIMER:
-		if(IsDebuggerPresent())
-		{
-			EndDialog(hwnd, 0);
-		}
+		case WM_INITDIALOG:
+			GetWindowRect(GetDesktopWindow(), &rect);
+			SetWindowPos(hwnd, HWND_TOP, rect.right / 2, rect.bottom / 2, 0, 0, SWP_NOSIZE);
+			SetTimer(hwnd, 1, 100, NULL);
+			return TRUE;
+		case WM_COMMAND:
+			if(LOWORD(wParam) == IDCANCEL)
+			{
+				EndDialog(hwnd, 0);
+			}
+			break;
+		case WM_TIMER:
+			if(IsDebuggerPresent())
+			{
+				EndDialog(hwnd, 0);
+			}
 	}
 
 	return FALSE;
@@ -158,18 +157,18 @@ static void WaitForDebugger(HINSTANCE instance)
 	if(!IsDebuggerPresent())
 	{
 		HRSRC dialog = FindResource(instance, MAKEINTRESOURCE(IDD_DIALOG1), RT_DIALOG);
-		DLGTEMPLATE *dialogTemplate = (DLGTEMPLATE*)LoadResource(instance, dialog);
+		DLGTEMPLATE *dialogTemplate = (DLGTEMPLATE *)LoadResource(instance, dialog);
 		DialogBoxIndirect(instance, dialogTemplate, NULL, DebuggerWaitDialogProc);
 	}
 }
-#endif
+#	endif
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 {
 	switch(reason)
 	{
-	case DLL_PROCESS_ATTACH:
-		#ifdef DEBUGGER_WAIT_DIALOG
+		case DLL_PROCESS_ATTACH:
+#	ifdef DEBUGGER_WAIT_DIALOG
 		{
 			char disable_debugger_wait_dialog[] = "0";
 			GetEnvironmentVariable("SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG", disable_debugger_wait_dialog, sizeof(disable_debugger_wait_dialog));
@@ -179,31 +178,30 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 				WaitForDebugger(instance);
 			}
 		}
-		#endif
-		egl::attachProcess();
-		break;
-	case DLL_THREAD_ATTACH:
-		egl::attachThread();
-		break;
-	case DLL_THREAD_DETACH:
-		egl::detachThread();
-		break;
-	case DLL_PROCESS_DETACH:
-		egl::detachProcess();
-		break;
-	default:
-		break;
+#	endif
+			egl::attachProcess();
+			break;
+		case DLL_THREAD_ATTACH:
+			egl::attachThread();
+			break;
+		case DLL_THREAD_DETACH:
+			egl::detachThread();
+			break;
+		case DLL_PROCESS_DETACH:
+			egl::detachProcess();
+			break;
+		default:
+			break;
 	}
 
 	return TRUE;
 }
 #endif
 
-namespace egl
-{
+namespace egl {
 static Current *getCurrent(void)
 {
-	Current *current = (Current*)sw::Thread::getLocalStorage(currentTLS);
+	Current *current = (Current *)sw::Thread::getLocalStorage(currentTLS);
 
 	if(!current)
 	{
@@ -321,29 +319,28 @@ void error(EGLint errorCode)
 	{
 		switch(errorCode)
 		{
-		case EGL_NOT_INITIALIZED:     TRACE("\t! Error generated: not initialized\n");     break;
-		case EGL_BAD_ACCESS:          TRACE("\t! Error generated: bad access\n");          break;
-		case EGL_BAD_ALLOC:           TRACE("\t! Error generated: bad alloc\n");           break;
-		case EGL_BAD_ATTRIBUTE:       TRACE("\t! Error generated: bad attribute\n");       break;
-		case EGL_BAD_CONFIG:          TRACE("\t! Error generated: bad config\n");          break;
-		case EGL_BAD_CONTEXT:         TRACE("\t! Error generated: bad context\n");         break;
-		case EGL_BAD_CURRENT_SURFACE: TRACE("\t! Error generated: bad current surface\n"); break;
-		case EGL_BAD_DISPLAY:         TRACE("\t! Error generated: bad display\n");         break;
-		case EGL_BAD_MATCH:           TRACE("\t! Error generated: bad match\n");           break;
-		case EGL_BAD_NATIVE_PIXMAP:   TRACE("\t! Error generated: bad native pixmap\n");   break;
-		case EGL_BAD_NATIVE_WINDOW:   TRACE("\t! Error generated: bad native window\n");   break;
-		case EGL_BAD_PARAMETER:       TRACE("\t! Error generated: bad parameter\n");       break;
-		case EGL_BAD_SURFACE:         TRACE("\t! Error generated: bad surface\n");         break;
-		case EGL_CONTEXT_LOST:        TRACE("\t! Error generated: context lost\n");        break;
-		default:                      TRACE("\t! Error generated: <0x%X>\n", errorCode);   break;
+			case EGL_NOT_INITIALIZED: TRACE("\t! Error generated: not initialized\n"); break;
+			case EGL_BAD_ACCESS: TRACE("\t! Error generated: bad access\n"); break;
+			case EGL_BAD_ALLOC: TRACE("\t! Error generated: bad alloc\n"); break;
+			case EGL_BAD_ATTRIBUTE: TRACE("\t! Error generated: bad attribute\n"); break;
+			case EGL_BAD_CONFIG: TRACE("\t! Error generated: bad config\n"); break;
+			case EGL_BAD_CONTEXT: TRACE("\t! Error generated: bad context\n"); break;
+			case EGL_BAD_CURRENT_SURFACE: TRACE("\t! Error generated: bad current surface\n"); break;
+			case EGL_BAD_DISPLAY: TRACE("\t! Error generated: bad display\n"); break;
+			case EGL_BAD_MATCH: TRACE("\t! Error generated: bad match\n"); break;
+			case EGL_BAD_NATIVE_PIXMAP: TRACE("\t! Error generated: bad native pixmap\n"); break;
+			case EGL_BAD_NATIVE_WINDOW: TRACE("\t! Error generated: bad native window\n"); break;
+			case EGL_BAD_PARAMETER: TRACE("\t! Error generated: bad parameter\n"); break;
+			case EGL_BAD_SURFACE: TRACE("\t! Error generated: bad surface\n"); break;
+			case EGL_CONTEXT_LOST: TRACE("\t! Error generated: context lost\n"); break;
+			default: TRACE("\t! Error generated: <0x%X>\n", errorCode); break;
 		}
 	}
 }
 
-}
+}  // namespace egl
 
-namespace egl
-{
+namespace egl {
 EGLint EGLAPIENTRY GetError(void);
 EGLDisplay EGLAPIENTRY GetDisplay(EGLNativeDisplayType display_id);
 EGLBoolean EGLAPIENTRY Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor);
@@ -393,10 +390,9 @@ EGLint EGLAPIENTRY ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint fla
 EGLBoolean EGLAPIENTRY GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value);
 EGLBoolean EGLAPIENTRY GetSyncAttrib(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLAttrib *value);
 __eglMustCastToProperFunctionPointerType EGLAPIENTRY GetProcAddress(const char *procname);
-}
+}  // namespace egl
 
-extern "C"
-{
+extern "C" {
 EGLAPI EGLint EGLAPIENTRY eglGetError(void)
 {
 	return egl::GetError();

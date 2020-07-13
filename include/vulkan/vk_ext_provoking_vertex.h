@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "vulkan.h"
+#include "vulkan_core.h"
 
 // THIS FILE SHOULD BE DELETED IF VK_EXT_provoking_vertex IS EVER ADDED TO THE VULKAN HEADERS
 #ifdef VK_EXT_provoking_vertex
-#error "VK_EXT_provoking_vertex is already defined in the Vulkan headers, you can delete this file"
+#	error "VK_EXT_provoking_vertex is already defined in the Vulkan headers, you can delete this file"
 #endif
 
 static constexpr VkStructureType VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT = static_cast<VkStructureType>(1000254000);
@@ -27,30 +27,33 @@ static constexpr VkStructureType VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VER
 #define VK_EXT_PROVOKING_VERTEX_SPEC_VERSION 1
 #define VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME "VK_EXT_provoking_vertex"
 
-typedef enum VkProvokingVertexModeEXT {
-    VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT = 0,
-    VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT = 1,
-    VK_PROVOKING_VERTEX_MODE_BEGIN_RANGE_EXT = VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT,
-    VK_PROVOKING_VERTEX_MODE_END_RANGE_EXT = VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT,
-    VK_PROVOKING_VERTEX_MODE_RANGE_SIZE_EXT = (VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT - VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT + 1),
-    VK_PROVOKING_VERTEX_MODE_MAX_ENUM_EXT = 0x7FFFFFFF
+typedef enum VkProvokingVertexModeEXT
+{
+	VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT = 0,
+	VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT = 1,
+	VK_PROVOKING_VERTEX_MODE_BEGIN_RANGE_EXT = VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT,
+	VK_PROVOKING_VERTEX_MODE_END_RANGE_EXT = VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT,
+	VK_PROVOKING_VERTEX_MODE_RANGE_SIZE_EXT = (VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT - VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT + 1),
+	VK_PROVOKING_VERTEX_MODE_MAX_ENUM_EXT = 0x7FFFFFFF
 } VkProvokingVertexModeEXT;
 
-typedef struct VkPhysicalDeviceProvokingVertexFeaturesEXT {
-    VkStructureType    sType;
-    void*              pNext;
-    VkBool32           provokingVertexLast;
+typedef struct VkPhysicalDeviceProvokingVertexFeaturesEXT
+{
+	VkStructureType sType;
+	void *pNext;
+	VkBool32 provokingVertexLast;
 } VkPhysicalDeviceProvokingVertexFeaturesEXT;
 
-typedef struct VkPhysicalDeviceProvokingVertexPropertiesEXT {
-    VkStructureType    sType;
-    void*              pNext;
-    VkBool32           provokingVertexModePerPipeline;
+typedef struct VkPhysicalDeviceProvokingVertexPropertiesEXT
+{
+	VkStructureType sType;
+	void *pNext;
+	VkBool32 provokingVertexModePerPipeline;
 } VkPhysicalDeviceProvokingVertexPropertiesEXT;
 
-typedef struct VkPipelineRasterizationProvokingVertexStateCreateInfoEXT {
-    VkStructureType             sType;
-    const void*                 pNext;
-    VkProvokingVertexModeEXT    provokingVertexMode;
+typedef struct VkPipelineRasterizationProvokingVertexStateCreateInfoEXT
+{
+	VkStructureType sType;
+	const void *pNext;
+	VkProvokingVertexModeEXT provokingVertexMode;
 } VkPipelineRasterizationProvokingVertexStateCreateInfoEXT;
-

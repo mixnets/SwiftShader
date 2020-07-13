@@ -18,6 +18,7 @@
 #include "Config.hpp"
 #include "Memset.hpp"
 #include "Stream.hpp"
+
 #include "System/Types.hpp"
 #include "Vulkan/VkConfig.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"

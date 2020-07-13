@@ -15,38 +15,37 @@
 #ifndef sw_FrameBufferX11_hpp
 #define sw_FrameBufferX11_hpp
 
-#include "Main/FrameBuffer.hpp"
 #include "Common/Debug.hpp"
+#include "Main/FrameBuffer.hpp"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 
-namespace sw
+namespace sw {
+class FrameBufferX11 : public FrameBuffer
 {
-	class FrameBufferX11 : public FrameBuffer
-	{
-	public:
-		FrameBufferX11(Display *display, Window window, int width, int height);
+public:
+	FrameBufferX11(Display *display, Window window, int width, int height);
 
-		~FrameBufferX11() override;
+	~FrameBufferX11() override;
 
-		void flip(sw::Surface *source) override { blit(source, nullptr, nullptr); }
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+	void flip(sw::Surface *source) override { blit(source, nullptr, nullptr); }
+	void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
-		void *lock() override;
-		void unlock() override;
+	void *lock() override;
+	void unlock() override;
 
-	private:
-		const bool ownX11;
-		Display *x_display;
-		const Window x_window;
-		XImage *x_image = nullptr;
-		GC x_gc;
+private:
+	const bool ownX11;
+	Display *x_display;
+	const Window x_window;
+	XImage *x_image = nullptr;
+	GC x_gc;
 
-		bool mit_shm;
-		XShmSegmentInfo shminfo;
-	};
-}
+	bool mit_shm;
+	XShmSegmentInfo shminfo;
+};
+}  // namespace sw
 
-#endif   // sw_FrameBufferX11_hpp
+#endif  // sw_FrameBufferX11_hpp

@@ -16,6 +16,7 @@
 #define sw_PixelProcessor_hpp
 
 #include "Context.hpp"
+
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Vulkan/VkFormat.hpp"

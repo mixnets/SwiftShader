@@ -21,15 +21,16 @@
 #include "main.h"
 #include "utilities.h"
 
-#include <string>
 #include <algorithm>
+#include <string>
 
-namespace es2
-{
+namespace es2 {
 std::mutex Shader::mutex;
 bool Shader::compilerInitialized = false;
 
-Shader::Shader(ResourceManager *manager, GLuint handle) : mHandle(handle), mResourceManager(manager)
+Shader::Shader(ResourceManager *manager, GLuint handle)
+    : mHandle(handle)
+    , mResourceManager(manager)
 {
 	mSource = nullptr;
 
@@ -97,7 +98,7 @@ size_t Shader::getInfoLogLength() const
 	}
 	else
 	{
-	   return infoLog.size() + 1;
+		return infoLog.size() + 1;
 	}
 }
 
@@ -130,7 +131,7 @@ size_t Shader::getSourceLength() const
 	}
 	else
 	{
-	   return strlen(mSource) + 1;
+		return strlen(mSource) + 1;
 	}
 }
 
@@ -316,80 +317,81 @@ bool Shader::compareVarying(const glsl::Varying &x, const glsl::Varying &y)
 
 	switch(x.type)
 	{
-	case GL_FLOAT_MAT4: return true;
-	case GL_FLOAT_MAT2:
-		switch(y.type)
-		{
-		case GL_FLOAT_MAT4: return false;
-		case GL_FLOAT_MAT2: return true;
-		case GL_FLOAT_VEC4: return true;
-		case GL_FLOAT_MAT3: return true;
-		case GL_FLOAT_VEC3: return true;
-		case GL_FLOAT_VEC2: return true;
-		case GL_FLOAT:      return true;
-		default: UNREACHABLE(y.type);
-		}
-		break;
-	case GL_FLOAT_VEC4:
-		switch(y.type)
-		{
-		case GL_FLOAT_MAT4: return false;
-		case GL_FLOAT_MAT2: return false;
-		case GL_FLOAT_VEC4: return true;
-		case GL_FLOAT_MAT3: return true;
-		case GL_FLOAT_VEC3: return true;
-		case GL_FLOAT_VEC2: return true;
-		case GL_FLOAT:      return true;
-		default: UNREACHABLE(y.type);
-		}
-		break;
-	case GL_FLOAT_MAT3:
-		switch(y.type)
-		{
-		case GL_FLOAT_MAT4: return false;
-		case GL_FLOAT_MAT2: return false;
-		case GL_FLOAT_VEC4: return false;
-		case GL_FLOAT_MAT3: return true;
-		case GL_FLOAT_VEC3: return true;
-		case GL_FLOAT_VEC2: return true;
-		case GL_FLOAT:      return true;
-		default: UNREACHABLE(y.type);
-		}
-		break;
-	case GL_FLOAT_VEC3:
-		switch(y.type)
-		{
-		case GL_FLOAT_MAT4: return false;
-		case GL_FLOAT_MAT2: return false;
-		case GL_FLOAT_VEC4: return false;
-		case GL_FLOAT_MAT3: return false;
-		case GL_FLOAT_VEC3: return true;
-		case GL_FLOAT_VEC2: return true;
-		case GL_FLOAT:      return true;
-		default: UNREACHABLE(y.type);
-		}
-		break;
-	case GL_FLOAT_VEC2:
-		switch(y.type)
-		{
-		case GL_FLOAT_MAT4: return false;
-		case GL_FLOAT_MAT2: return false;
-		case GL_FLOAT_VEC4: return false;
-		case GL_FLOAT_MAT3: return false;
-		case GL_FLOAT_VEC3: return false;
-		case GL_FLOAT_VEC2: return true;
-		case GL_FLOAT:      return true;
-		default: UNREACHABLE(y.type);
-		}
-		break;
-	case GL_FLOAT: return false;
-	default: UNREACHABLE(x.type);
+		case GL_FLOAT_MAT4: return true;
+		case GL_FLOAT_MAT2:
+			switch(y.type)
+			{
+				case GL_FLOAT_MAT4: return false;
+				case GL_FLOAT_MAT2: return true;
+				case GL_FLOAT_VEC4: return true;
+				case GL_FLOAT_MAT3: return true;
+				case GL_FLOAT_VEC3: return true;
+				case GL_FLOAT_VEC2: return true;
+				case GL_FLOAT: return true;
+				default: UNREACHABLE(y.type);
+			}
+			break;
+		case GL_FLOAT_VEC4:
+			switch(y.type)
+			{
+				case GL_FLOAT_MAT4: return false;
+				case GL_FLOAT_MAT2: return false;
+				case GL_FLOAT_VEC4: return true;
+				case GL_FLOAT_MAT3: return true;
+				case GL_FLOAT_VEC3: return true;
+				case GL_FLOAT_VEC2: return true;
+				case GL_FLOAT: return true;
+				default: UNREACHABLE(y.type);
+			}
+			break;
+		case GL_FLOAT_MAT3:
+			switch(y.type)
+			{
+				case GL_FLOAT_MAT4: return false;
+				case GL_FLOAT_MAT2: return false;
+				case GL_FLOAT_VEC4: return false;
+				case GL_FLOAT_MAT3: return true;
+				case GL_FLOAT_VEC3: return true;
+				case GL_FLOAT_VEC2: return true;
+				case GL_FLOAT: return true;
+				default: UNREACHABLE(y.type);
+			}
+			break;
+		case GL_FLOAT_VEC3:
+			switch(y.type)
+			{
+				case GL_FLOAT_MAT4: return false;
+				case GL_FLOAT_MAT2: return false;
+				case GL_FLOAT_VEC4: return false;
+				case GL_FLOAT_MAT3: return false;
+				case GL_FLOAT_VEC3: return true;
+				case GL_FLOAT_VEC2: return true;
+				case GL_FLOAT: return true;
+				default: UNREACHABLE(y.type);
+			}
+			break;
+		case GL_FLOAT_VEC2:
+			switch(y.type)
+			{
+				case GL_FLOAT_MAT4: return false;
+				case GL_FLOAT_MAT2: return false;
+				case GL_FLOAT_VEC4: return false;
+				case GL_FLOAT_MAT3: return false;
+				case GL_FLOAT_VEC3: return false;
+				case GL_FLOAT_VEC2: return true;
+				case GL_FLOAT: return true;
+				default: UNREACHABLE(y.type);
+			}
+			break;
+		case GL_FLOAT: return false;
+		default: UNREACHABLE(x.type);
 	}
 
 	return false;
 }
 
-VertexShader::VertexShader(ResourceManager *manager, GLuint handle) : Shader(manager, handle)
+VertexShader::VertexShader(ResourceManager *manager, GLuint handle)
+    : Shader(manager, handle)
 {
 	vertexShader = 0;
 }
@@ -442,7 +444,8 @@ void VertexShader::deleteShader()
 	vertexShader = nullptr;
 }
 
-FragmentShader::FragmentShader(ResourceManager *manager, GLuint handle) : Shader(manager, handle)
+FragmentShader::FragmentShader(ResourceManager *manager, GLuint handle)
+    : Shader(manager, handle)
 {
 	pixelShader = 0;
 }
@@ -479,4 +482,4 @@ void FragmentShader::deleteShader()
 	pixelShader = nullptr;
 }
 
-}
+}  // namespace es2

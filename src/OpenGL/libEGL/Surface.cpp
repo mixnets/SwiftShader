@@ -18,29 +18,28 @@
 
 #include "Surface.hpp"
 
-#include "main.h"
+#include "Context.hpp"
 #include "Display.h"
 #include "Texture.hpp"
-#include "common/Image.hpp"
-#include "Context.hpp"
-#include "common/debug.h"
+#include "main.h"
 #include "Main/FrameBuffer.hpp"
+#include "common/Image.hpp"
+#include "common/debug.h"
 
 #if defined(USE_X11)
-#include "Main/libX11.hpp"
+#	include "Main/libX11.hpp"
 #elif defined(_WIN32)
-#include <tchar.h>
+#	include <tchar.h>
 #elif defined(__APPLE__)
-#include "OSXUtils.hpp"
+#	include "OSXUtils.hpp"
 #endif
 #if defined(__ANDROID__) && defined(ANDROID_NDK_BUILD)
-#include <android/native_window.h>
+#	include <android/native_window.h>
 #endif
 
 #include <algorithm>
 
-namespace gl
-{
+namespace gl {
 Surface::Surface()
 {
 }
@@ -48,11 +47,12 @@ Surface::Surface()
 Surface::~Surface()
 {
 }
-}
+}  // namespace gl
 
-namespace egl
-{
-Surface::Surface(const Display *display, const Config *config) : display(display), config(config)
+namespace egl {
+Surface::Surface(const Display *display, const Config *config)
+    : display(display)
+    , config(config)
 {
 }
 
@@ -70,7 +70,7 @@ bool Surface::initialize()
 		if(clientBuffer)
 		{
 			backBuffer = libGLESv2->createBackBufferFromClientBuffer(
-				egl::ClientBuffer(width, height, getClientBufferFormat(), clientBuffer, clientBufferPlane));
+			    egl::ClientBuffer(width, height, getClientBufferFormat(), clientBuffer, clientBufferPlane));
 		}
 		else
 		{
@@ -243,45 +243,45 @@ sw::Format Surface::getClientBufferFormat() const
 {
 	switch(clientBufferType)
 	{
-	case GL_UNSIGNED_BYTE:
-		switch(clientBufferFormat)
-		{
-		case GL_RED:
-			return sw::FORMAT_R8;
-		case GL_RG:
-			return sw::FORMAT_G8R8;
-		case GL_RGB:
-			return sw::FORMAT_X8R8G8B8;
-		case GL_BGRA_EXT:
-			return sw::FORMAT_A8R8G8B8;
-		default:
-			UNREACHABLE(clientBufferFormat);
+		case GL_UNSIGNED_BYTE:
+			switch(clientBufferFormat)
+			{
+				case GL_RED:
+					return sw::FORMAT_R8;
+				case GL_RG:
+					return sw::FORMAT_G8R8;
+				case GL_RGB:
+					return sw::FORMAT_X8R8G8B8;
+				case GL_BGRA_EXT:
+					return sw::FORMAT_A8R8G8B8;
+				default:
+					UNREACHABLE(clientBufferFormat);
+					break;
+			}
 			break;
-		}
-		break;
-	case GL_UNSIGNED_SHORT:
-		switch(clientBufferFormat)
-		{
-		case GL_R16UI:
-			return sw::FORMAT_R16UI;
-		default:
-			UNREACHABLE(clientBufferFormat);
+		case GL_UNSIGNED_SHORT:
+			switch(clientBufferFormat)
+			{
+				case GL_R16UI:
+					return sw::FORMAT_R16UI;
+				default:
+					UNREACHABLE(clientBufferFormat);
+					break;
+			}
 			break;
-		}
-		break;
-	case GL_HALF_FLOAT_OES:
-	case GL_HALF_FLOAT:
-		switch(clientBufferFormat)
-		{
-		case GL_RGBA:
-			return sw::FORMAT_A16B16G16R16F;
+		case GL_HALF_FLOAT_OES:
+		case GL_HALF_FLOAT:
+			switch(clientBufferFormat)
+			{
+				case GL_RGBA:
+					return sw::FORMAT_A16B16G16R16F;
+				default:
+					UNREACHABLE(clientBufferFormat);
+					break;
+			}
 		default:
-			UNREACHABLE(clientBufferFormat);
+			UNREACHABLE(clientBufferType);
 			break;
-		}
-	default:
-		UNREACHABLE(clientBufferType);
-		break;
 	}
 
 	return sw::FORMAT_NULL;
@@ -298,9 +298,10 @@ egl::Texture *Surface::getBoundTexture() const
 }
 
 WindowSurface::WindowSurface(Display *display, const Config *config, EGLNativeWindowType window)
-	: Surface(display, config), window(window)
+    : Surface(display, config)
+    , window(window)
 {
-	pixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
+	pixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);  // FIXME: Determine actual pixel aspect ratio
 }
 
 WindowSurface::~WindowSurface()
@@ -332,51 +333,53 @@ EGLNativeWindowType WindowSurface::getWindowHandle() const
 
 bool WindowSurface::checkForResize()
 {
-	#if defined(_WIN32)
-		RECT client;
-		BOOL status = GetClientRect(window, &client);
+#if defined(_WIN32)
+	RECT client;
+	BOOL status = GetClientRect(window, &client);
 
-		if(status == 0)
-		{
-			return error(EGL_BAD_NATIVE_WINDOW, false);
-		}
+	if(status == 0)
+	{
+		return error(EGL_BAD_NATIVE_WINDOW, false);
+	}
 
-		int windowWidth = client.right - client.left;
-		int windowHeight = client.bottom - client.top;
-	#elif defined(__ANDROID__)
-	#ifdef ANDROID_NDK_BUILD
-		int windowWidth = ANativeWindow_getWidth(window);
-		int windowHeight = ANativeWindow_getHeight(window);
-	#else
-		int windowWidth;  window->query(window, NATIVE_WINDOW_WIDTH, &windowWidth);
-		int windowHeight; window->query(window, NATIVE_WINDOW_HEIGHT, &windowHeight);
-	#endif
-	#elif defined(USE_X11)
-		XWindowAttributes windowAttributes;
-		Status status = libX11->XGetWindowAttributes((::Display*)display->getNativeDisplay(), window, &windowAttributes);
+	int windowWidth = client.right - client.left;
+	int windowHeight = client.bottom - client.top;
+#elif defined(__ANDROID__)
+#	ifdef ANDROID_NDK_BUILD
+	int windowWidth = ANativeWindow_getWidth(window);
+	int windowHeight = ANativeWindow_getHeight(window);
+#	else
+	int windowWidth;
+	window->query(window, NATIVE_WINDOW_WIDTH, &windowWidth);
+	int windowHeight;
+	window->query(window, NATIVE_WINDOW_HEIGHT, &windowHeight);
+#	endif
+#elif defined(USE_X11)
+	XWindowAttributes windowAttributes;
+	Status status = libX11->XGetWindowAttributes((::Display *)display->getNativeDisplay(), window, &windowAttributes);
 
-		if(status == 0)
-		{
-			return error(EGL_BAD_NATIVE_WINDOW, false);
-		}
+	if(status == 0)
+	{
+		return error(EGL_BAD_NATIVE_WINDOW, false);
+	}
 
-		int windowWidth = windowAttributes.width;
-		int windowHeight = windowAttributes.height;
-	#elif defined(__linux__)
-		// Non X11 linux is headless only
-		int windowWidth = 100;
-		int windowHeight = 100;
-	#elif defined(__APPLE__)
-		int windowWidth;
-		int windowHeight;
-		sw::OSX::GetNativeWindowSize(window, windowWidth, windowHeight);
-	#elif defined(__Fuchsia__)
-		// TODO(crbug.com/800951): Integrate with Mozart.
-		int windowWidth = 100;
-		int windowHeight = 100;
-	#else
-		#error "WindowSurface::checkForResize unimplemented for this platform"
-	#endif
+	int windowWidth = windowAttributes.width;
+	int windowHeight = windowAttributes.height;
+#elif defined(__linux__)
+	// Non X11 linux is headless only
+	int windowWidth = 100;
+	int windowHeight = 100;
+#elif defined(__APPLE__)
+	int windowWidth;
+	int windowHeight;
+	sw::OSX::GetNativeWindowSize(window, windowWidth, windowHeight);
+#elif defined(__Fuchsia__)
+	// TODO(crbug.com/800951): Integrate with Mozart.
+	int windowWidth = 100;
+	int windowHeight = 100;
+#else
+#	error "WindowSurface::checkForResize unimplemented for this platform"
+#endif
 
 	if((windowWidth != width) || (windowHeight != height))
 	{
@@ -390,7 +393,7 @@ bool WindowSurface::checkForResize()
 		return success;
 	}
 
-	return true;   // Success
+	return true;  // Success
 }
 
 void WindowSurface::deleteResources()
@@ -434,7 +437,7 @@ PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint wi
                                EGLenum textureFormat, EGLenum textureTarget, EGLenum clientBufferFormat,
                                EGLenum clientBufferType, EGLBoolean largestPBuffer, EGLClientBuffer clientBuffer,
                                EGLint clientBufferPlane)
-	: Surface(display, config)
+    : Surface(display, config)
 {
 	this->width = width;
 	this->height = height;
@@ -459,7 +462,7 @@ void PBufferSurface::swap()
 
 EGLNativeWindowType PBufferSurface::getWindowHandle() const
 {
-	UNREACHABLE(-1);   // Should not be called. Only WindowSurface has a window handle.
+	UNREACHABLE(-1);  // Should not be called. Only WindowSurface has a window handle.
 
 	return 0;
 }
@@ -469,4 +472,4 @@ void PBufferSurface::deleteResources()
 	Surface::deleteResources();
 }
 
-}
+}  // namespace egl

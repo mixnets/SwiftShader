@@ -14,7 +14,6 @@
 
 // libGLESv3.cpp: Implements the exported OpenGL ES 3.0 functions.
 
-#include "main.h"
 #include "Buffer.h"
 #include "Fence.h"
 #include "Framebuffer.h"
@@ -22,13 +21,14 @@
 #include "Query.h"
 #include "Sampler.h"
 #include "Texture.h"
-#include "mathutil.h"
 #include "TransformFeedback.h"
 #include "VertexArray.h"
+#include "main.h"
+#include "mathutil.h"
 #include "common/debug.h"
 
-#include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
+#include <GLES3/gl3.h>
 
 #include <limits.h>
 
@@ -48,12 +48,12 @@ static bool ValidateQueryTarget(GLenum target)
 {
 	switch(target)
 	{
-	case GL_ANY_SAMPLES_PASSED:
-	case GL_ANY_SAMPLES_PASSED_CONSERVATIVE:
-	case GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
-		break;
-	default:
-		return false;
+		case GL_ANY_SAMPLES_PASSED:
+		case GL_ANY_SAMPLES_PASSED_CONSERVATIVE:
+		case GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
+			break;
+		default:
+			return false;
 	}
 
 	return true;
@@ -63,127 +63,127 @@ bool ValidateTexParamParameters(GLenum pname, GLint param)
 {
 	switch(pname)
 	{
-	case GL_TEXTURE_WRAP_S:
-	case GL_TEXTURE_WRAP_T:
-	case GL_TEXTURE_WRAP_R:
-		switch(param)
-		{
-		case GL_REPEAT:
-		case GL_CLAMP_TO_EDGE:
-		case GL_MIRRORED_REPEAT:
+		case GL_TEXTURE_WRAP_S:
+		case GL_TEXTURE_WRAP_T:
+		case GL_TEXTURE_WRAP_R:
+			switch(param)
+			{
+				case GL_REPEAT:
+				case GL_CLAMP_TO_EDGE:
+				case GL_MIRRORED_REPEAT:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+
+		case GL_TEXTURE_MIN_FILTER:
+			switch(param)
+			{
+				case GL_NEAREST:
+				case GL_LINEAR:
+				case GL_NEAREST_MIPMAP_NEAREST:
+				case GL_LINEAR_MIPMAP_NEAREST:
+				case GL_NEAREST_MIPMAP_LINEAR:
+				case GL_LINEAR_MIPMAP_LINEAR:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_MAG_FILTER:
+			switch(param)
+			{
+				case GL_NEAREST:
+				case GL_LINEAR:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_USAGE_ANGLE:
+			switch(param)
+			{
+				case GL_NONE:
+				case GL_FRAMEBUFFER_ATTACHMENT_ANGLE:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
+			// we assume the parameter passed to this validation method is truncated, not rounded
+			if(param < 1)
+			{
+				return error(GL_INVALID_VALUE, false);
+			}
 			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
 
-	case GL_TEXTURE_MIN_FILTER:
-		switch(param)
-		{
-		case GL_NEAREST:
-		case GL_LINEAR:
-		case GL_NEAREST_MIPMAP_NEAREST:
-		case GL_LINEAR_MIPMAP_NEAREST:
-		case GL_NEAREST_MIPMAP_LINEAR:
-		case GL_LINEAR_MIPMAP_LINEAR:
+		case GL_TEXTURE_MIN_LOD:
+		case GL_TEXTURE_MAX_LOD:
+			// any value is permissible
 			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
 
-	case GL_TEXTURE_MAG_FILTER:
-		switch(param)
-		{
-		case GL_NEAREST:
-		case GL_LINEAR:
+		case GL_TEXTURE_COMPARE_MODE:
+			// Acceptable mode parameters from GLES 3.0.2 spec, table 3.17
+			switch(param)
+			{
+				case GL_NONE:
+				case GL_COMPARE_REF_TO_TEXTURE:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_COMPARE_FUNC:
+			// Acceptable function parameters from GLES 3.0.2 spec, table 3.17
+			switch(param)
+			{
+				case GL_LEQUAL:
+				case GL_GEQUAL:
+				case GL_LESS:
+				case GL_GREATER:
+				case GL_EQUAL:
+				case GL_NOTEQUAL:
+				case GL_ALWAYS:
+				case GL_NEVER:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_SWIZZLE_R:
+		case GL_TEXTURE_SWIZZLE_G:
+		case GL_TEXTURE_SWIZZLE_B:
+		case GL_TEXTURE_SWIZZLE_A:
+			switch(param)
+			{
+				case GL_RED:
+				case GL_GREEN:
+				case GL_BLUE:
+				case GL_ALPHA:
+				case GL_ZERO:
+				case GL_ONE:
+					return true;
+				default:
+					return error(GL_INVALID_ENUM, false);
+			}
+			break;
+
+		case GL_TEXTURE_BASE_LEVEL:
+		case GL_TEXTURE_MAX_LEVEL:
+			if(param < 0)
+			{
+				return error(GL_INVALID_VALUE, false);
+			}
 			return true;
+
 		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
-
-	case GL_TEXTURE_USAGE_ANGLE:
-		switch(param)
-		{
-		case GL_NONE:
-		case GL_FRAMEBUFFER_ATTACHMENT_ANGLE:
-			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
-
-	case GL_TEXTURE_MAX_ANISOTROPY_EXT:
-		// we assume the parameter passed to this validation method is truncated, not rounded
-		if(param < 1)
-		{
-			return error(GL_INVALID_VALUE, false);
-		}
-		return true;
-
-	case GL_TEXTURE_MIN_LOD:
-	case GL_TEXTURE_MAX_LOD:
-		// any value is permissible
-		return true;
-
-	case GL_TEXTURE_COMPARE_MODE:
-		// Acceptable mode parameters from GLES 3.0.2 spec, table 3.17
-		switch(param)
-		{
-		case GL_NONE:
-		case GL_COMPARE_REF_TO_TEXTURE:
-			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
-
-	case GL_TEXTURE_COMPARE_FUNC:
-		// Acceptable function parameters from GLES 3.0.2 spec, table 3.17
-		switch(param)
-		{
-		case GL_LEQUAL:
-		case GL_GEQUAL:
-		case GL_LESS:
-		case GL_GREATER:
-		case GL_EQUAL:
-		case GL_NOTEQUAL:
-		case GL_ALWAYS:
-		case GL_NEVER:
-			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
-
-	case GL_TEXTURE_SWIZZLE_R:
-	case GL_TEXTURE_SWIZZLE_G:
-	case GL_TEXTURE_SWIZZLE_B:
-	case GL_TEXTURE_SWIZZLE_A:
-		switch(param)
-		{
-		case GL_RED:
-		case GL_GREEN:
-		case GL_BLUE:
-		case GL_ALPHA:
-		case GL_ZERO:
-		case GL_ONE:
-			return true;
-		default:
-			return error(GL_INVALID_ENUM, false);
-		}
-		break;
-
-	case GL_TEXTURE_BASE_LEVEL:
-	case GL_TEXTURE_MAX_LEVEL:
-		if(param < 0)
-		{
-			return error(GL_INVALID_VALUE, false);
-		}
-		return true;
-
-	default:
-		break;
+			break;
 	}
 
 	return error(GL_INVALID_ENUM, false);
@@ -193,24 +193,23 @@ static bool ValidateSamplerObjectParameter(GLenum pname)
 {
 	switch(pname)
 	{
-	case GL_TEXTURE_MIN_FILTER:
-	case GL_TEXTURE_MAG_FILTER:
-	case GL_TEXTURE_WRAP_S:
-	case GL_TEXTURE_WRAP_T:
-	case GL_TEXTURE_WRAP_R:
-	case GL_TEXTURE_MIN_LOD:
-	case GL_TEXTURE_MAX_LOD:
-	case GL_TEXTURE_COMPARE_MODE:
-	case GL_TEXTURE_COMPARE_FUNC:
-	case GL_TEXTURE_MAX_ANISOTROPY_EXT:
-		return true;
-	default:
-		return false;
+		case GL_TEXTURE_MIN_FILTER:
+		case GL_TEXTURE_MAG_FILTER:
+		case GL_TEXTURE_WRAP_S:
+		case GL_TEXTURE_WRAP_T:
+		case GL_TEXTURE_WRAP_R:
+		case GL_TEXTURE_MIN_LOD:
+		case GL_TEXTURE_MAX_LOD:
+		case GL_TEXTURE_COMPARE_MODE:
+		case GL_TEXTURE_COMPARE_FUNC:
+		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
+			return true;
+		default:
+			return false;
 	}
 }
 
-namespace gl
-{
+namespace gl {
 
 void GL_APIENTRY ReadBuffer(GLenum src)
 {
@@ -224,49 +223,48 @@ void GL_APIENTRY ReadBuffer(GLenum src)
 
 		switch(src)
 		{
-		case GL_BACK:
-			if(readFramebufferName != 0)
-			{
-				return error(GL_INVALID_OPERATION);
-			}
-			context->setFramebufferReadBuffer(src);
-			break;
-		case GL_NONE:
-			context->setFramebufferReadBuffer(src);
-			break;
-		case GL_COLOR_ATTACHMENT0:
-		case GL_COLOR_ATTACHMENT1:
-		case GL_COLOR_ATTACHMENT2:
-		case GL_COLOR_ATTACHMENT3:
-		case GL_COLOR_ATTACHMENT4:
-		case GL_COLOR_ATTACHMENT5:
-		case GL_COLOR_ATTACHMENT6:
-		case GL_COLOR_ATTACHMENT7:
-		case GL_COLOR_ATTACHMENT8:
-		case GL_COLOR_ATTACHMENT9:
-		case GL_COLOR_ATTACHMENT10:
-		case GL_COLOR_ATTACHMENT11:
-		case GL_COLOR_ATTACHMENT12:
-		case GL_COLOR_ATTACHMENT13:
-		case GL_COLOR_ATTACHMENT14:
-		case GL_COLOR_ATTACHMENT15:
-		case GL_COLOR_ATTACHMENT16:
-		case GL_COLOR_ATTACHMENT17:
-		case GL_COLOR_ATTACHMENT18:
-		case GL_COLOR_ATTACHMENT19:
-		case GL_COLOR_ATTACHMENT20:
-		case GL_COLOR_ATTACHMENT21:
-		case GL_COLOR_ATTACHMENT22:
-		case GL_COLOR_ATTACHMENT23:
-		case GL_COLOR_ATTACHMENT24:
-		case GL_COLOR_ATTACHMENT25:
-		case GL_COLOR_ATTACHMENT26:
-		case GL_COLOR_ATTACHMENT27:
-		case GL_COLOR_ATTACHMENT28:
-		case GL_COLOR_ATTACHMENT29:
-		case GL_COLOR_ATTACHMENT30:
-		case GL_COLOR_ATTACHMENT31:
-			{
+			case GL_BACK:
+				if(readFramebufferName != 0)
+				{
+					return error(GL_INVALID_OPERATION);
+				}
+				context->setFramebufferReadBuffer(src);
+				break;
+			case GL_NONE:
+				context->setFramebufferReadBuffer(src);
+				break;
+			case GL_COLOR_ATTACHMENT0:
+			case GL_COLOR_ATTACHMENT1:
+			case GL_COLOR_ATTACHMENT2:
+			case GL_COLOR_ATTACHMENT3:
+			case GL_COLOR_ATTACHMENT4:
+			case GL_COLOR_ATTACHMENT5:
+			case GL_COLOR_ATTACHMENT6:
+			case GL_COLOR_ATTACHMENT7:
+			case GL_COLOR_ATTACHMENT8:
+			case GL_COLOR_ATTACHMENT9:
+			case GL_COLOR_ATTACHMENT10:
+			case GL_COLOR_ATTACHMENT11:
+			case GL_COLOR_ATTACHMENT12:
+			case GL_COLOR_ATTACHMENT13:
+			case GL_COLOR_ATTACHMENT14:
+			case GL_COLOR_ATTACHMENT15:
+			case GL_COLOR_ATTACHMENT16:
+			case GL_COLOR_ATTACHMENT17:
+			case GL_COLOR_ATTACHMENT18:
+			case GL_COLOR_ATTACHMENT19:
+			case GL_COLOR_ATTACHMENT20:
+			case GL_COLOR_ATTACHMENT21:
+			case GL_COLOR_ATTACHMENT22:
+			case GL_COLOR_ATTACHMENT23:
+			case GL_COLOR_ATTACHMENT24:
+			case GL_COLOR_ATTACHMENT25:
+			case GL_COLOR_ATTACHMENT26:
+			case GL_COLOR_ATTACHMENT27:
+			case GL_COLOR_ATTACHMENT28:
+			case GL_COLOR_ATTACHMENT29:
+			case GL_COLOR_ATTACHMENT30:
+			case GL_COLOR_ATTACHMENT31: {
 				GLuint index = (src - GL_COLOR_ATTACHMENT0);
 				if(index >= MAX_COLOR_ATTACHMENTS)
 				{
@@ -279,40 +277,41 @@ void GL_APIENTRY ReadBuffer(GLenum src)
 				context->setFramebufferReadBuffer(src);
 			}
 			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
 
 void GL_APIENTRY DrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices)
 {
-	TRACE("(GLenum mode = 0x%X, GLuint start = %d, GLuint end = %d, "
-		  "GLsizei count = %d, GLenum type = 0x%x, const void* indices = %p)",
-		  mode, start, end, count, type, indices);
+	TRACE(
+	    "(GLenum mode = 0x%X, GLuint start = %d, GLuint end = %d, "
+	    "GLsizei count = %d, GLenum type = 0x%x, const void* indices = %p)",
+	    mode, start, end, count, type, indices);
 
 	switch(mode)
 	{
-	case GL_POINTS:
-	case GL_LINES:
-	case GL_LINE_LOOP:
-	case GL_LINE_STRIP:
-	case GL_TRIANGLES:
-	case GL_TRIANGLE_FAN:
-	case GL_TRIANGLE_STRIP:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_POINTS:
+		case GL_LINES:
+		case GL_LINE_LOOP:
+		case GL_LINE_STRIP:
+		case GL_TRIANGLES:
+		case GL_TRIANGLE_FAN:
+		case GL_TRIANGLE_STRIP:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	switch(type)
 	{
-	case GL_UNSIGNED_BYTE:
-	case GL_UNSIGNED_SHORT:
-	case GL_UNSIGNED_INT:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_UNSIGNED_BYTE:
+		case GL_UNSIGNED_SHORT:
+		case GL_UNSIGNED_INT:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((count < 0) || (end < start))
@@ -324,7 +323,7 @@ void GL_APIENTRY DrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsize
 
 	if(context)
 	{
-		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		es2::TransformFeedback *transformFeedback = context->getTransformFeedback();
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
@@ -336,18 +335,19 @@ void GL_APIENTRY DrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsize
 
 void GL_APIENTRY TexImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void *data)
 {
-	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, "
-	      "GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, GLint border = %d, "
-	      "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
-	      target, level, internalformat, width, height, depth, border, format, type, data);
+	TRACE(
+	    "(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, "
+	    "GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, GLint border = %d, "
+	    "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
+	    target, level, internalformat, width, height, depth, border, format, type, data);
 
 	switch(target)
 	{
-	case GL_TEXTURE_3D:
-	case GL_TEXTURE_2D_ARRAY:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_3D:
+		case GL_TEXTURE_2D_ARRAY:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
@@ -396,18 +396,19 @@ void GL_APIENTRY TexImage3D(GLenum target, GLint level, GLint internalformat, GL
 
 void GL_APIENTRY TexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void *data)
 {
-	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
-		"GLint zoffset = %d, GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, "
-		"GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
-		target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);
+	TRACE(
+	    "(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
+	    "GLint zoffset = %d, GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, "
+	    "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
+	    target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);
 
 	switch(target)
 	{
-	case GL_TEXTURE_3D:
-	case GL_TEXTURE_2D_ARRAY:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_3D:
+		case GL_TEXTURE_2D_ARRAY:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
@@ -444,17 +445,18 @@ void GL_APIENTRY TexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint 
 
 void GL_APIENTRY CopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
-	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
-		"GLint zoffset = %d, GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d)",
-		target, level, xoffset, yoffset, zoffset, x, y, width, height);
+	TRACE(
+	    "(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
+	    "GLint zoffset = %d, GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d)",
+	    target, level, xoffset, yoffset, zoffset, x, y, width, height);
 
 	switch(target)
 	{
-	case GL_TEXTURE_3D:
-	case GL_TEXTURE_2D_ARRAY:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_3D:
+		case GL_TEXTURE_2D_ARRAY:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
@@ -507,17 +509,18 @@ void GL_APIENTRY CopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GL
 
 void GL_APIENTRY CompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void *data)
 {
-	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, GLsizei width = %d, "
-		"GLsizei height = %d, GLsizei depth = %d, GLint border = %d, GLsizei imageSize = %d, const GLvoid* data = %p)",
-		target, level, internalformat, width, height, depth, border, imageSize, data);
+	TRACE(
+	    "(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, GLsizei width = %d, "
+	    "GLsizei height = %d, GLsizei depth = %d, GLint border = %d, GLsizei imageSize = %d, const GLvoid* data = %p)",
+	    target, level, internalformat, width, height, depth, border, imageSize, data);
 
 	switch(target)
 	{
-	case GL_TEXTURE_3D:
-	case GL_TEXTURE_2D_ARRAY:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_3D:
+		case GL_TEXTURE_2D_ARRAY:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
@@ -564,18 +567,19 @@ void GL_APIENTRY CompressedTexImage3D(GLenum target, GLint level, GLenum interna
 
 void GL_APIENTRY CompressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *data)
 {
-	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
-	      "GLint zoffset = %d, GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, "
-	      "GLenum format = 0x%X, GLsizei imageSize = %d, const void *data = %p)",
-	      target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+	TRACE(
+	    "(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
+	    "GLint zoffset = %d, GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, "
+	    "GLenum format = 0x%X, GLsizei imageSize = %d, const void *data = %p)",
+	    target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
 
 	switch(target)
 	{
-	case GL_TEXTURE_3D:
-	case GL_TEXTURE_2D_ARRAY:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_3D:
+		case GL_TEXTURE_2D_ARRAY:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if(level < 0 || level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
@@ -601,31 +605,31 @@ void GL_APIENTRY CompressedTexSubImage3D(GLenum target, GLint level, GLint xoffs
 	bool is_ETC2_EAC = false;
 	switch(format)
 	{
-	case GL_COMPRESSED_R11_EAC:
-	case GL_COMPRESSED_SIGNED_R11_EAC:
-	case GL_COMPRESSED_RG11_EAC:
-	case GL_COMPRESSED_SIGNED_RG11_EAC:
-	case GL_COMPRESSED_RGB8_ETC2:
-	case GL_COMPRESSED_SRGB8_ETC2:
-	case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
-	case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
-	case GL_COMPRESSED_RGBA8_ETC2_EAC:
-	case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
-		if(target != GL_TEXTURE_2D_ARRAY)
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+		case GL_COMPRESSED_R11_EAC:
+		case GL_COMPRESSED_SIGNED_R11_EAC:
+		case GL_COMPRESSED_RG11_EAC:
+		case GL_COMPRESSED_SIGNED_RG11_EAC:
+		case GL_COMPRESSED_RGB8_ETC2:
+		case GL_COMPRESSED_SRGB8_ETC2:
+		case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case GL_COMPRESSED_RGBA8_ETC2_EAC:
+		case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+			if(target != GL_TEXTURE_2D_ARRAY)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
 
-		if(((width % 4) != 0) || ((height % 4) != 0) ||
-		   ((xoffset % 4) != 0) || ((yoffset % 4) != 0))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+			if(((width % 4) != 0) || ((height % 4) != 0) ||
+			   ((xoffset % 4) != 0) || ((yoffset % 4) != 0))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
 
-		is_ETC2_EAC = true;
-		break;
-	default:
-		break;
+			is_ETC2_EAC = true;
+			break;
+		default:
+			break;
 	}
 
 	auto context = es2::getContext();
@@ -765,7 +769,7 @@ void GL_APIENTRY EndQuery(GLenum target)
 void GL_APIENTRY GetQueryiv(GLenum target, GLenum pname, GLint *params)
 {
 	TRACE("(GLenum target = 0x%X, GLenum pname = 0x%X, GLint *params = %p)",
-		  target, pname, params);
+	      target, pname, params);
 
 	if(!ValidateQueryTarget(target) || (pname != GL_CURRENT_QUERY))
 	{
@@ -787,11 +791,11 @@ void GL_APIENTRY GetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params)
 
 	switch(pname)
 	{
-	case GL_QUERY_RESULT:
-	case GL_QUERY_RESULT_AVAILABLE:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_QUERY_RESULT:
+		case GL_QUERY_RESULT_AVAILABLE:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	auto context = es2::getContext();
@@ -812,14 +816,14 @@ void GL_APIENTRY GetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params)
 
 		switch(pname)
 		{
-		case GL_QUERY_RESULT:
-			params[0] = queryObject->getResult();
-			break;
-		case GL_QUERY_RESULT_AVAILABLE:
-			params[0] = queryObject->isResultAvailable();
-			break;
-		default:
-			ASSERT(false);
+			case GL_QUERY_RESULT:
+				params[0] = queryObject->getResult();
+				break;
+			case GL_QUERY_RESULT_AVAILABLE:
+				params[0] = queryObject->isResultAvailable();
+				break;
+			default:
+				ASSERT(false);
 		}
 	}
 }
@@ -882,7 +886,7 @@ void GL_APIENTRY GetBufferPointerv(GLenum target, GLenum pname, void **params)
 			return error(GL_INVALID_OPERATION);
 		}
 
-		*params = buffer->isMapped() ? (void*)(((const char*)buffer->data()) + buffer->offset()) : nullptr;
+		*params = buffer->isMapped() ? (void *)(((const char *)buffer->data()) + buffer->offset()) : nullptr;
 	}
 }
 
@@ -910,47 +914,46 @@ void GL_APIENTRY DrawBuffers(GLsizei n, const GLenum *bufs)
 		{
 			switch(bufs[i])
 			{
-			case GL_BACK:
-				if(drawFramebufferName != 0)
-				{
-					return error(GL_INVALID_OPERATION);
-				}
-				break;
-			case GL_NONE:
-				break;
-			case GL_COLOR_ATTACHMENT0:
-			case GL_COLOR_ATTACHMENT1:
-			case GL_COLOR_ATTACHMENT2:
-			case GL_COLOR_ATTACHMENT3:
-			case GL_COLOR_ATTACHMENT4:
-			case GL_COLOR_ATTACHMENT5:
-			case GL_COLOR_ATTACHMENT6:
-			case GL_COLOR_ATTACHMENT7:
-			case GL_COLOR_ATTACHMENT8:
-			case GL_COLOR_ATTACHMENT9:
-			case GL_COLOR_ATTACHMENT10:
-			case GL_COLOR_ATTACHMENT11:
-			case GL_COLOR_ATTACHMENT12:
-			case GL_COLOR_ATTACHMENT13:
-			case GL_COLOR_ATTACHMENT14:
-			case GL_COLOR_ATTACHMENT15:
-			case GL_COLOR_ATTACHMENT16:
-			case GL_COLOR_ATTACHMENT17:
-			case GL_COLOR_ATTACHMENT18:
-			case GL_COLOR_ATTACHMENT19:
-			case GL_COLOR_ATTACHMENT20:
-			case GL_COLOR_ATTACHMENT21:
-			case GL_COLOR_ATTACHMENT22:
-			case GL_COLOR_ATTACHMENT23:
-			case GL_COLOR_ATTACHMENT24:
-			case GL_COLOR_ATTACHMENT25:
-			case GL_COLOR_ATTACHMENT26:
-			case GL_COLOR_ATTACHMENT27:
-			case GL_COLOR_ATTACHMENT28:
-			case GL_COLOR_ATTACHMENT29:
-			case GL_COLOR_ATTACHMENT30:
-			case GL_COLOR_ATTACHMENT31:
-				{
+				case GL_BACK:
+					if(drawFramebufferName != 0)
+					{
+						return error(GL_INVALID_OPERATION);
+					}
+					break;
+				case GL_NONE:
+					break;
+				case GL_COLOR_ATTACHMENT0:
+				case GL_COLOR_ATTACHMENT1:
+				case GL_COLOR_ATTACHMENT2:
+				case GL_COLOR_ATTACHMENT3:
+				case GL_COLOR_ATTACHMENT4:
+				case GL_COLOR_ATTACHMENT5:
+				case GL_COLOR_ATTACHMENT6:
+				case GL_COLOR_ATTACHMENT7:
+				case GL_COLOR_ATTACHMENT8:
+				case GL_COLOR_ATTACHMENT9:
+				case GL_COLOR_ATTACHMENT10:
+				case GL_COLOR_ATTACHMENT11:
+				case GL_COLOR_ATTACHMENT12:
+				case GL_COLOR_ATTACHMENT13:
+				case GL_COLOR_ATTACHMENT14:
+				case GL_COLOR_ATTACHMENT15:
+				case GL_COLOR_ATTACHMENT16:
+				case GL_COLOR_ATTACHMENT17:
+				case GL_COLOR_ATTACHMENT18:
+				case GL_COLOR_ATTACHMENT19:
+				case GL_COLOR_ATTACHMENT20:
+				case GL_COLOR_ATTACHMENT21:
+				case GL_COLOR_ATTACHMENT22:
+				case GL_COLOR_ATTACHMENT23:
+				case GL_COLOR_ATTACHMENT24:
+				case GL_COLOR_ATTACHMENT25:
+				case GL_COLOR_ATTACHMENT26:
+				case GL_COLOR_ATTACHMENT27:
+				case GL_COLOR_ATTACHMENT28:
+				case GL_COLOR_ATTACHMENT29:
+				case GL_COLOR_ATTACHMENT30:
+				case GL_COLOR_ATTACHMENT31: {
 					GLuint index = (bufs[i] - GL_COLOR_ATTACHMENT0);
 
 					if(index >= MAX_COLOR_ATTACHMENTS)
@@ -969,8 +972,8 @@ void GL_APIENTRY DrawBuffers(GLsizei n, const GLenum *bufs)
 					}
 				}
 				break;
-			default:
-				return error(GL_INVALID_ENUM);
+				default:
+					return error(GL_INVALID_ENUM);
 			}
 		}
 
@@ -1172,23 +1175,24 @@ void GL_APIENTRY UniformMatrix4x3fv(GLint location, GLsizei count, GLboolean tra
 
 void GL_APIENTRY BlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
 {
-	TRACE("(GLint srcX0 = %d, GLint srcY0 = %d, GLint srcX1 = %d, GLint srcY1 = %d, "
-	      "GLint dstX0 = %d, GLint dstY0 = %d, GLint dstX1 = %d, GLint dstY1 = %d, "
-	      "GLbitfield mask = 0x%X, GLenum filter = 0x%X)",
-	      srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+	TRACE(
+	    "(GLint srcX0 = %d, GLint srcY0 = %d, GLint srcX1 = %d, GLint srcY1 = %d, "
+	    "GLint dstX0 = %d, GLint dstY0 = %d, GLint dstX1 = %d, GLint dstY1 = %d, "
+	    "GLbitfield mask = 0x%X, GLenum filter = 0x%X)",
+	    srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 
 	switch(filter)
 	{
-	case GL_NEAREST:
-		break;
-	case GL_LINEAR:
-		if((mask & GL_DEPTH_BUFFER_BIT) || (mask & GL_STENCIL_BUFFER_BIT))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_NEAREST:
+			break;
+		case GL_LINEAR:
+			if((mask & GL_DEPTH_BUFFER_BIT) || (mask & GL_STENCIL_BUFFER_BIT))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if((mask & ~(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)) != 0)
@@ -1228,7 +1232,7 @@ void GL_APIENTRY FramebufferTextureLayer(GLenum target, GLenum attachment, GLuin
 
 	if(context)
 	{
-		Texture* textureObject = context->getTexture(texture);
+		Texture *textureObject = context->getTexture(texture);
 		GLenum textarget = GL_NONE;
 		if(texture != 0)
 		{
@@ -1245,20 +1249,20 @@ void GL_APIENTRY FramebufferTextureLayer(GLenum target, GLenum attachment, GLuin
 			textarget = textureObject->getTarget();
 			switch(textarget)
 			{
-			case GL_TEXTURE_3D:
-				if(layer >= es2::IMPLEMENTATION_MAX_3D_TEXTURE_SIZE)
-				{
-					return error(GL_INVALID_VALUE);
-				}
-				break;
-			case GL_TEXTURE_2D_ARRAY:
-				if(layer >= es2::IMPLEMENTATION_MAX_ARRAY_TEXTURE_LAYERS)
-				{
-					return error(GL_INVALID_VALUE);
-				}
-				break;
-			default:
-				return error(GL_INVALID_OPERATION);
+				case GL_TEXTURE_3D:
+					if(layer >= es2::IMPLEMENTATION_MAX_3D_TEXTURE_SIZE)
+					{
+						return error(GL_INVALID_VALUE);
+					}
+					break;
+				case GL_TEXTURE_2D_ARRAY:
+					if(layer >= es2::IMPLEMENTATION_MAX_ARRAY_TEXTURE_LAYERS)
+					{
+						return error(GL_INVALID_VALUE);
+					}
+					break;
+				default:
+					return error(GL_INVALID_OPERATION);
 			}
 
 			if(textureObject->isCompressed(textarget, level))
@@ -1270,23 +1274,23 @@ void GL_APIENTRY FramebufferTextureLayer(GLenum target, GLenum attachment, GLuin
 		es2::Framebuffer *framebuffer = nullptr;
 		switch(target)
 		{
-		case GL_DRAW_FRAMEBUFFER:
-		case GL_FRAMEBUFFER:
-			if(context->getDrawFramebufferName() == 0)
-			{
-				return error(GL_INVALID_OPERATION);
-			}
-			framebuffer = context->getDrawFramebuffer();
-			break;
-		case GL_READ_FRAMEBUFFER:
-			if(context->getReadFramebufferName() == 0)
-			{
-				return error(GL_INVALID_OPERATION);
-			}
-			framebuffer = context->getReadFramebuffer();
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_DRAW_FRAMEBUFFER:
+			case GL_FRAMEBUFFER:
+				if(context->getDrawFramebufferName() == 0)
+				{
+					return error(GL_INVALID_OPERATION);
+				}
+				framebuffer = context->getDrawFramebuffer();
+				break;
+			case GL_READ_FRAMEBUFFER:
+				if(context->getReadFramebufferName() == 0)
+				{
+					return error(GL_INVALID_OPERATION);
+				}
+				framebuffer = context->getReadFramebuffer();
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 
 		if(!framebuffer)
@@ -1296,29 +1300,29 @@ void GL_APIENTRY FramebufferTextureLayer(GLenum target, GLenum attachment, GLuin
 
 		switch(attachment)
 		{
-		case GL_DEPTH_ATTACHMENT:
-			framebuffer->setDepthbuffer(textarget, texture, level, layer);
-			break;
-		case GL_STENCIL_ATTACHMENT:
-			framebuffer->setStencilbuffer(textarget, texture, level, layer);
-			break;
-		case GL_DEPTH_STENCIL_ATTACHMENT:
-			framebuffer->setDepthbuffer(textarget, texture, level, layer);
-			framebuffer->setStencilbuffer(textarget, texture, level, layer);
-			break;
-		default:
-			if(attachment < GL_COLOR_ATTACHMENT0 || attachment > GL_COLOR_ATTACHMENT31)
-			{
-				return error(GL_INVALID_ENUM);
-			}
+			case GL_DEPTH_ATTACHMENT:
+				framebuffer->setDepthbuffer(textarget, texture, level, layer);
+				break;
+			case GL_STENCIL_ATTACHMENT:
+				framebuffer->setStencilbuffer(textarget, texture, level, layer);
+				break;
+			case GL_DEPTH_STENCIL_ATTACHMENT:
+				framebuffer->setDepthbuffer(textarget, texture, level, layer);
+				framebuffer->setStencilbuffer(textarget, texture, level, layer);
+				break;
+			default:
+				if(attachment < GL_COLOR_ATTACHMENT0 || attachment > GL_COLOR_ATTACHMENT31)
+				{
+					return error(GL_INVALID_ENUM);
+				}
 
-			if((attachment - GL_COLOR_ATTACHMENT0) >= MAX_COLOR_ATTACHMENTS)
-			{
-				return error(GL_INVALID_OPERATION);
-			}
+				if((attachment - GL_COLOR_ATTACHMENT0) >= MAX_COLOR_ATTACHMENTS)
+				{
+					return error(GL_INVALID_OPERATION);
+				}
 
-			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0, level, layer);
-			break;
+				framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0, level, layer);
+				break;
 		}
 	}
 }
@@ -1478,7 +1482,7 @@ void GL_APIENTRY DeleteVertexArrays(GLsizei n, const GLuint *arrays)
 	{
 		for(int i = 0; i < n; i++)
 		{
-			if(arrays[i] != 0)   // Attempts to delete default vertex array silently ignored.
+			if(arrays[i] != 0)  // Attempts to delete default vertex array silently ignored.
 			{
 				context->deleteVertexArray(arrays[i]);
 			}
@@ -1564,7 +1568,7 @@ void GL_APIENTRY GetIntegeri_v(GLenum target, GLuint index, GLint *data)
 				return error(GL_INVALID_ENUM);
 
 			if(numParams == 0)
-				return; // it is known that target is valid, but there are no parameters to return
+				return;  // it is known that target is valid, but there are no parameters to return
 
 			if(nativeType == GL_BOOL)
 			{
@@ -1611,12 +1615,12 @@ void GL_APIENTRY BeginTransformFeedback(GLenum primitiveMode)
 
 	switch(primitiveMode)
 	{
-	case GL_POINTS:
-	case GL_LINES:
-	case GL_TRIANGLES:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_POINTS:
+		case GL_LINES:
+		case GL_TRIANGLES:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	auto context = es2::getContext();
@@ -1681,32 +1685,32 @@ void GL_APIENTRY BindBufferRange(GLenum target, GLuint index, GLuint buffer, GLi
 	{
 		switch(target)
 		{
-		case GL_TRANSFORM_FEEDBACK_BUFFER:
-			if(index >= MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			if(size & 0x3 || offset & 0x3) // size and offset must be multiples of 4
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			context->bindIndexedTransformFeedbackBuffer(buffer, index, offset, size);
-			context->bindGenericTransformFeedbackBuffer(buffer);
-			break;
-		case GL_UNIFORM_BUFFER:
-			if(index >= MAX_UNIFORM_BUFFER_BINDINGS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			if(offset % UNIFORM_BUFFER_OFFSET_ALIGNMENT != 0)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			context->bindIndexedUniformBuffer(buffer, index, offset, size);
-			context->bindGenericUniformBuffer(buffer);
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_TRANSFORM_FEEDBACK_BUFFER:
+				if(index >= MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				if(size & 0x3 || offset & 0x3)  // size and offset must be multiples of 4
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				context->bindIndexedTransformFeedbackBuffer(buffer, index, offset, size);
+				context->bindGenericTransformFeedbackBuffer(buffer);
+				break;
+			case GL_UNIFORM_BUFFER:
+				if(index >= MAX_UNIFORM_BUFFER_BINDINGS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				if(offset % UNIFORM_BUFFER_OFFSET_ALIGNMENT != 0)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				context->bindIndexedUniformBuffer(buffer, index, offset, size);
+				context->bindGenericUniformBuffer(buffer);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -1722,44 +1726,44 @@ void GL_APIENTRY BindBufferBase(GLenum target, GLuint index, GLuint buffer)
 	{
 		switch(target)
 		{
-		case GL_TRANSFORM_FEEDBACK_BUFFER:
-			if(index >= MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			context->bindIndexedTransformFeedbackBuffer(buffer, index, 0, 0);
-			context->bindGenericTransformFeedbackBuffer(buffer);
-			break;
-		case GL_UNIFORM_BUFFER:
-			if(index >= MAX_UNIFORM_BUFFER_BINDINGS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			context->bindIndexedUniformBuffer(buffer, index, 0, 0);
-			context->bindGenericUniformBuffer(buffer);
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_TRANSFORM_FEEDBACK_BUFFER:
+				if(index >= MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				context->bindIndexedTransformFeedbackBuffer(buffer, index, 0, 0);
+				context->bindGenericTransformFeedbackBuffer(buffer);
+				break;
+			case GL_UNIFORM_BUFFER:
+				if(index >= MAX_UNIFORM_BUFFER_BINDINGS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				context->bindIndexedUniformBuffer(buffer, index, 0, 0);
+				context->bindGenericUniformBuffer(buffer);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
 
-void GL_APIENTRY TransformFeedbackVaryings(GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode)
+void GL_APIENTRY TransformFeedbackVaryings(GLuint program, GLsizei count, const GLchar *const *varyings, GLenum bufferMode)
 {
 	TRACE("(GLuint program = %d, GLsizei count = %d, const GLchar *const*varyings = %p, GLenum bufferMode = 0x%X)",
 	      program, count, varyings, bufferMode);
 
 	switch(bufferMode)
 	{
-	case GL_SEPARATE_ATTRIBS:
-		if(count > MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-	case GL_INTERLEAVED_ATTRIBS:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_SEPARATE_ATTRIBS:
+			if(count > MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+		case GL_INTERLEAVED_ATTRIBS:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	auto context = es2::getContext();
@@ -1824,22 +1828,22 @@ void GL_APIENTRY VertexAttribIPointer(GLuint index, GLint size, GLenum type, GLs
 
 	switch(type)
 	{
-	case GL_BYTE:
-	case GL_UNSIGNED_BYTE:
-	case GL_SHORT:
-	case GL_UNSIGNED_SHORT:
-	case GL_INT:
-	case GL_UNSIGNED_INT:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_BYTE:
+		case GL_UNSIGNED_BYTE:
+		case GL_SHORT:
+		case GL_UNSIGNED_SHORT:
+		case GL_INT:
+		case GL_UNSIGNED_INT:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	auto context = es2::getContext();
 
 	if(context)
 	{
-		es2::VertexArray* vertexArray = context->getCurrentVertexArray();
+		es2::VertexArray *vertexArray = context->getCurrentVertexArray();
 		if((context->getArrayBufferName() == 0) && vertexArray && (vertexArray->name != 0) && pointer)
 		{
 			// GL_INVALID_OPERATION is generated if a non-zero vertex array object is bound, zero is bound
@@ -1869,40 +1873,39 @@ void GL_APIENTRY GetVertexAttribIiv(GLuint index, GLenum pname, GLint *params)
 
 		switch(pname)
 		{
-		case GL_VERTEX_ATTRIB_ARRAY_ENABLED:
-			*params = (attribState.mArrayEnabled ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_SIZE:
-			*params = attribState.mSize;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_STRIDE:
-			*params = attribState.mStride;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_TYPE:
-			*params = attribState.mType;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:
-			*params = (attribState.mNormalized ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:
-			*params = attribState.mBoundBuffer.name();
-			break;
-		case GL_CURRENT_VERTEX_ATTRIB:
-			{
-				const VertexAttribute& attrib = context->getCurrentVertexAttributes()[index];
+			case GL_VERTEX_ATTRIB_ARRAY_ENABLED:
+				*params = (attribState.mArrayEnabled ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_SIZE:
+				*params = attribState.mSize;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_STRIDE:
+				*params = attribState.mStride;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_TYPE:
+				*params = attribState.mType;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:
+				*params = (attribState.mNormalized ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:
+				*params = attribState.mBoundBuffer.name();
+				break;
+			case GL_CURRENT_VERTEX_ATTRIB: {
+				const VertexAttribute &attrib = context->getCurrentVertexAttributes()[index];
 				for(int i = 0; i < 4; ++i)
 				{
 					params[i] = attrib.getCurrentValueI(i);
 				}
 			}
 			break;
-		case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
-			*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
-			*params = attribState.mDivisor;
-			break;
-		default: return error(GL_INVALID_ENUM);
+			case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
+				*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
+				*params = attribState.mDivisor;
+				break;
+			default: return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -1910,7 +1913,7 @@ void GL_APIENTRY GetVertexAttribIiv(GLuint index, GLenum pname, GLint *params)
 void GL_APIENTRY GetVertexAttribIuiv(GLuint index, GLenum pname, GLuint *params)
 {
 	TRACE("(GLuint index = %d, GLenum pname = 0x%X, GLuint *params = %p)",
-		index, pname, params);
+	      index, pname, params);
 
 	auto context = es2::getContext();
 
@@ -1925,40 +1928,39 @@ void GL_APIENTRY GetVertexAttribIuiv(GLuint index, GLenum pname, GLuint *params)
 
 		switch(pname)
 		{
-		case GL_VERTEX_ATTRIB_ARRAY_ENABLED:
-			*params = (attribState.mArrayEnabled ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_SIZE:
-			*params = attribState.mSize;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_STRIDE:
-			*params = attribState.mStride;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_TYPE:
-			*params = attribState.mType;
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:
-			*params = (attribState.mNormalized ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:
-			*params = attribState.mBoundBuffer.name();
-			break;
-		case GL_CURRENT_VERTEX_ATTRIB:
-			{
-				const VertexAttribute& attrib = context->getCurrentVertexAttributes()[index];
+			case GL_VERTEX_ATTRIB_ARRAY_ENABLED:
+				*params = (attribState.mArrayEnabled ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_SIZE:
+				*params = attribState.mSize;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_STRIDE:
+				*params = attribState.mStride;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_TYPE:
+				*params = attribState.mType;
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:
+				*params = (attribState.mNormalized ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:
+				*params = attribState.mBoundBuffer.name();
+				break;
+			case GL_CURRENT_VERTEX_ATTRIB: {
+				const VertexAttribute &attrib = context->getCurrentVertexAttributes()[index];
 				for(int i = 0; i < 4; ++i)
 				{
 					params[i] = attrib.getCurrentValueUI(i);
 				}
 			}
 			break;
-		case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
-			*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
-			break;
-		case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
-			*params = attribState.mDivisor;
-			break;
-		default: return error(GL_INVALID_ENUM);
+			case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
+				*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
+				break;
+			case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
+				*params = attribState.mDivisor;
+				break;
+			default: return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2244,21 +2246,21 @@ void GL_APIENTRY Uniform2ui(GLint location, GLuint v0, GLuint v1)
 {
 	GLuint xy[2] = { v0, v1 };
 
-	Uniform2uiv(location, 1, (GLuint*)&xy);
+	Uniform2uiv(location, 1, (GLuint *)&xy);
 }
 
 void GL_APIENTRY Uniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2)
 {
 	GLuint xyz[3] = { v0, v1, v2 };
 
-	Uniform3uiv(location, 1, (GLuint*)&xyz);
+	Uniform3uiv(location, 1, (GLuint *)&xyz);
 }
 
 void GL_APIENTRY Uniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)
 {
 	GLuint xyzw[4] = { v0, v1, v2, v3 };
 
-	Uniform4uiv(location, 1, (GLuint*)&xyzw);
+	Uniform4uiv(location, 1, (GLuint *)&xyzw);
 }
 
 void GL_APIENTRY ClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *value)
@@ -2272,28 +2274,28 @@ void GL_APIENTRY ClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *val
 	{
 		switch(buffer)
 		{
-		case GL_COLOR:
-			if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearColorBuffer(drawbuffer, value);
-			}
-			break;
-		case GL_STENCIL:
-			if(drawbuffer != 0)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearStencilBuffer(value[0]);
-			}
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_COLOR:
+				if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearColorBuffer(drawbuffer, value);
+				}
+				break;
+			case GL_STENCIL:
+				if(drawbuffer != 0)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearStencilBuffer(value[0]);
+				}
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2309,18 +2311,18 @@ void GL_APIENTRY ClearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint *v
 	{
 		switch(buffer)
 		{
-		case GL_COLOR:
-			if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearColorBuffer(drawbuffer, value);
-			}
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_COLOR:
+				if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearColorBuffer(drawbuffer, value);
+				}
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2336,28 +2338,28 @@ void GL_APIENTRY ClearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat *v
 	{
 		switch(buffer)
 		{
-		case GL_COLOR:
-			if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearColorBuffer(drawbuffer, value);
-			}
-			break;
-		case GL_DEPTH:
-			if(drawbuffer != 0)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearDepthBuffer(value[0]);
-			}
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_COLOR:
+				if(drawbuffer < 0 || drawbuffer >= MAX_DRAW_BUFFERS)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearColorBuffer(drawbuffer, value);
+				}
+				break;
+			case GL_DEPTH:
+				if(drawbuffer != 0)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearDepthBuffer(value[0]);
+				}
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2373,19 +2375,19 @@ void GL_APIENTRY ClearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, G
 	{
 		switch(buffer)
 		{
-		case GL_DEPTH_STENCIL:
-			if(drawbuffer != 0)
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			else
-			{
-				context->clearDepthBuffer(depth);
-				context->clearStencilBuffer(stencil);
-			}
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_DEPTH_STENCIL:
+				if(drawbuffer != 0)
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				else
+				{
+					context->clearDepthBuffer(depth);
+					context->clearStencilBuffer(stencil);
+				}
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2402,19 +2404,19 @@ const GLubyte *GL_APIENTRY GetStringi(GLenum name, GLuint index)
 
 		if(index >= numExtensions)
 		{
-			return error(GL_INVALID_VALUE, (GLubyte*)nullptr);
+			return error(GL_INVALID_VALUE, (GLubyte *)nullptr);
 		}
 
 		switch(name)
 		{
-		case GL_EXTENSIONS:
-			return context->getExtensions(index);
-		default:
-			return error(GL_INVALID_ENUM, (GLubyte*)nullptr);
+			case GL_EXTENSIONS:
+				return context->getExtensions(index);
+			default:
+				return error(GL_INVALID_ENUM, (GLubyte *)nullptr);
 		}
 	}
 
-	return (GLubyte*)nullptr;
+	return (GLubyte *)nullptr;
 }
 
 void GL_APIENTRY CopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)
@@ -2456,11 +2458,11 @@ void GL_APIENTRY CopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintp
 			return error(GL_INVALID_VALUE);
 		}
 
-		writeBuffer->bufferSubData(((char*)readBuffer->data()) + readOffset, size, writeOffset);
+		writeBuffer->bufferSubData(((char *)readBuffer->data()) + readOffset, size, writeOffset);
 	}
 }
 
-void GL_APIENTRY GetUniformIndices(GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint *uniformIndices)
+void GL_APIENTRY GetUniformIndices(GLuint program, GLsizei uniformCount, const GLchar *const *uniformNames, GLuint *uniformIndices)
 {
 	TRACE("(GLuint program = %d, GLsizei uniformCount = %d, const GLchar *const*uniformNames = %p, GLuint *uniformIndices = %p)",
 	      program, uniformCount, uniformNames, uniformIndices);
@@ -2512,17 +2514,17 @@ void GL_APIENTRY GetActiveUniformsiv(GLuint program, GLsizei uniformCount, const
 
 	switch(pname)
 	{
-	case GL_UNIFORM_TYPE:
-	case GL_UNIFORM_SIZE:
-	case GL_UNIFORM_NAME_LENGTH:
-	case GL_UNIFORM_BLOCK_INDEX:
-	case GL_UNIFORM_OFFSET:
-	case GL_UNIFORM_ARRAY_STRIDE:
-	case GL_UNIFORM_MATRIX_STRIDE:
-	case GL_UNIFORM_IS_ROW_MAJOR:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_UNIFORM_TYPE:
+		case GL_UNIFORM_SIZE:
+		case GL_UNIFORM_NAME_LENGTH:
+		case GL_UNIFORM_BLOCK_INDEX:
+		case GL_UNIFORM_OFFSET:
+		case GL_UNIFORM_ARRAY_STRIDE:
+		case GL_UNIFORM_MATRIX_STRIDE:
+		case GL_UNIFORM_IS_ROW_MAJOR:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if(uniformCount < 0)
@@ -2618,19 +2620,19 @@ void GL_APIENTRY GetActiveUniformBlockiv(GLuint program, GLuint uniformBlockInde
 
 		switch(pname)
 		{
-		case GL_UNIFORM_BLOCK_BINDING:
-			*params = static_cast<GLint>(programObject->getUniformBlockBinding(uniformBlockIndex));
-			break;
-		case GL_UNIFORM_BLOCK_DATA_SIZE:
-		case GL_UNIFORM_BLOCK_NAME_LENGTH:
-		case GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS:
-		case GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES:
-		case GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER:
-		case GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER:
-			programObject->getActiveUniformBlockiv(uniformBlockIndex, pname, params);
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_UNIFORM_BLOCK_BINDING:
+				*params = static_cast<GLint>(programObject->getUniformBlockBinding(uniformBlockIndex));
+				break;
+			case GL_UNIFORM_BLOCK_DATA_SIZE:
+			case GL_UNIFORM_BLOCK_NAME_LENGTH:
+			case GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS:
+			case GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES:
+			case GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER:
+			case GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER:
+				programObject->getActiveUniformBlockiv(uniformBlockIndex, pname, params);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -2702,16 +2704,16 @@ void GL_APIENTRY DrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GL
 
 	switch(mode)
 	{
-	case GL_POINTS:
-	case GL_LINES:
-	case GL_LINE_LOOP:
-	case GL_LINE_STRIP:
-	case GL_TRIANGLES:
-	case GL_TRIANGLE_FAN:
-	case GL_TRIANGLE_STRIP:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_POINTS:
+		case GL_LINES:
+		case GL_LINE_LOOP:
+		case GL_LINE_STRIP:
+		case GL_TRIANGLES:
+		case GL_TRIANGLE_FAN:
+		case GL_TRIANGLE_STRIP:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if(count < 0 || instanceCount < 0)
@@ -2723,7 +2725,7 @@ void GL_APIENTRY DrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GL
 
 	if(context)
 	{
-		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		es2::TransformFeedback *transformFeedback = context->getTransformFeedback();
 		if(transformFeedback && transformFeedback->isActive() && (mode != transformFeedback->primitiveMode()))
 		{
 			return error(GL_INVALID_OPERATION);
@@ -2740,26 +2742,26 @@ void GL_APIENTRY DrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, 
 
 	switch(mode)
 	{
-	case GL_POINTS:
-	case GL_LINES:
-	case GL_LINE_LOOP:
-	case GL_LINE_STRIP:
-	case GL_TRIANGLES:
-	case GL_TRIANGLE_FAN:
-	case GL_TRIANGLE_STRIP:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_POINTS:
+		case GL_LINES:
+		case GL_LINE_LOOP:
+		case GL_LINE_STRIP:
+		case GL_TRIANGLES:
+		case GL_TRIANGLE_FAN:
+		case GL_TRIANGLE_STRIP:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	switch(type)
 	{
-	case GL_UNSIGNED_BYTE:
-	case GL_UNSIGNED_SHORT:
-	case GL_UNSIGNED_INT:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_UNSIGNED_BYTE:
+		case GL_UNSIGNED_SHORT:
+		case GL_UNSIGNED_INT:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	if(count < 0 || instanceCount < 0)
@@ -2771,7 +2773,7 @@ void GL_APIENTRY DrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, 
 
 	if(context)
 	{
-		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		es2::TransformFeedback *transformFeedback = context->getTransformFeedback();
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
@@ -2787,10 +2789,10 @@ GLsync GL_APIENTRY FenceSync(GLenum condition, GLbitfield flags)
 
 	switch(condition)
 	{
-	case GL_SYNC_GPU_COMMANDS_COMPLETE:
-		break;
-	default:
-		return error(GL_INVALID_ENUM, nullptr);
+		case GL_SYNC_GPU_COMMANDS_COMPLETE:
+			break;
+		default:
+			return error(GL_INVALID_ENUM, nullptr);
 	}
 
 	if(flags != 0)
@@ -2924,7 +2926,7 @@ void GL_APIENTRY GetInteger64v(GLenum pname, GLint64 *data)
 				return error(GL_INVALID_ENUM);
 
 			if(numParams == 0)
-				return; // it is known that pname is valid, but there are no parameters to return
+				return;  // it is known that pname is valid, but there are no parameters to return
 
 			if(nativeType == GL_BOOL)
 			{
@@ -3007,7 +3009,7 @@ void GL_APIENTRY GetInteger64i_v(GLenum target, GLuint index, GLint64 *data)
 				return error(GL_INVALID_ENUM);
 
 			if(numParams == 0)
-				return; // it is known that target is valid, but there are no parameters to return
+				return;  // it is known that target is valid, but there are no parameters to return
 
 			if(nativeType == GL_BOOL)
 			{
@@ -3071,26 +3073,26 @@ void GL_APIENTRY GetBufferParameteri64v(GLenum target, GLenum pname, GLint64 *pa
 
 		switch(pname)
 		{
-		case GL_BUFFER_USAGE:
-			*params = buffer->usage();
-			break;
-		case GL_BUFFER_SIZE:
-			*params = buffer->size();
-			break;
-		case GL_BUFFER_ACCESS_FLAGS:
-			*params = buffer->access();
-			break;
-		case GL_BUFFER_MAPPED:
-			*params = buffer->isMapped();
-			break;
-		case GL_BUFFER_MAP_LENGTH:
-			*params = buffer->length();
-			break;
-		case GL_BUFFER_MAP_OFFSET:
-			*params = buffer->offset();
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_BUFFER_USAGE:
+				*params = buffer->usage();
+				break;
+			case GL_BUFFER_SIZE:
+				*params = buffer->size();
+				break;
+			case GL_BUFFER_ACCESS_FLAGS:
+				*params = buffer->access();
+				break;
+			case GL_BUFFER_MAPPED:
+				*params = buffer->isMapped();
+				break;
+			case GL_BUFFER_MAP_LENGTH:
+				*params = buffer->length();
+				break;
+			case GL_BUFFER_MAP_OFFSET:
+				*params = buffer->offset();
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -3356,7 +3358,7 @@ void GL_APIENTRY DeleteTransformFeedbacks(GLsizei n, const GLuint *ids)
 	{
 		for(int i = 0; i < n; i++)
 		{
-			if(ids[i] != 0)   // Attempts to delete default transform feedback silently ignored.
+			if(ids[i] != 0)  // Attempts to delete default transform feedback silently ignored.
 			{
 				es2::TransformFeedback *transformFeedbackObject = context->getTransformFeedback(ids[i]);
 
@@ -3527,15 +3529,15 @@ void GL_APIENTRY ProgramParameteri(GLuint program, GLenum pname, GLint value)
 
 		switch(pname)
 		{
-		case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
-			if((value != GL_TRUE) && (value != GL_FALSE))
-			{
-				return error(GL_INVALID_VALUE);
-			}
-			programObject->setBinaryRetrievable(value != GL_FALSE);
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
+				if((value != GL_TRUE) && (value != GL_FALSE))
+				{
+					return error(GL_INVALID_VALUE);
+				}
+				programObject->setBinaryRetrievable(value != GL_FALSE);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -3557,15 +3559,15 @@ void GL_APIENTRY InvalidateSubFramebuffer(GLenum target, GLsizei numAttachments,
 		es2::Framebuffer *framebuffer = nullptr;
 		switch(target)
 		{
-		case GL_DRAW_FRAMEBUFFER:
-		case GL_FRAMEBUFFER:
-			framebuffer = context->getDrawFramebuffer();
-			break;
-		case GL_READ_FRAMEBUFFER:
-			framebuffer = context->getReadFramebuffer();
-			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			case GL_DRAW_FRAMEBUFFER:
+			case GL_FRAMEBUFFER:
+				framebuffer = context->getDrawFramebuffer();
+				break;
+			case GL_READ_FRAMEBUFFER:
+				framebuffer = context->getReadFramebuffer();
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 
 		if(framebuffer)
@@ -3574,32 +3576,32 @@ void GL_APIENTRY InvalidateSubFramebuffer(GLenum target, GLsizei numAttachments,
 			{
 				switch(attachments[i])
 				{
-				case GL_COLOR:
-				case GL_DEPTH:
-				case GL_STENCIL:
-					if(!framebuffer->isDefaultFramebuffer())
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
-				case GL_DEPTH_ATTACHMENT:
-				case GL_STENCIL_ATTACHMENT:
-				case GL_DEPTH_STENCIL_ATTACHMENT:
-					break;
-				default:
-					if(attachments[i] >= GL_COLOR_ATTACHMENT0 &&
-					   attachments[i] <= GL_COLOR_ATTACHMENT31)
-					{
-						if(attachments[i] - GL_COLOR_ATTACHMENT0 >= MAX_DRAW_BUFFERS)
+					case GL_COLOR:
+					case GL_DEPTH:
+					case GL_STENCIL:
+						if(!framebuffer->isDefaultFramebuffer())
 						{
-							return error(GL_INVALID_OPERATION);
+							return error(GL_INVALID_ENUM);
 						}
-					}
-					else
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
+						break;
+					case GL_DEPTH_ATTACHMENT:
+					case GL_STENCIL_ATTACHMENT:
+					case GL_DEPTH_STENCIL_ATTACHMENT:
+						break;
+					default:
+						if(attachments[i] >= GL_COLOR_ATTACHMENT0 &&
+						   attachments[i] <= GL_COLOR_ATTACHMENT31)
+						{
+							if(attachments[i] - GL_COLOR_ATTACHMENT0 >= MAX_DRAW_BUFFERS)
+							{
+								return error(GL_INVALID_OPERATION);
+							}
+						}
+						else
+						{
+							return error(GL_INVALID_ENUM);
+						}
+						break;
 				}
 			}
 		}
@@ -3643,14 +3645,13 @@ void GL_APIENTRY TexStorage2D(GLenum target, GLsizei levels, GLenum internalform
 	{
 		switch(target)
 		{
-		case GL_TEXTURE_RECTANGLE_ARB:
-			if(isCompressed) // Rectangle textures cannot be compressed
-			{
-				return error(GL_INVALID_ENUM);
-			}
-			// Fall through to GL_TEXTURE_2D case.
-		case GL_TEXTURE_2D:
-			{
+			case GL_TEXTURE_RECTANGLE_ARB:
+				if(isCompressed)  // Rectangle textures cannot be compressed
+				{
+					return error(GL_INVALID_ENUM);
+				}
+				// Fall through to GL_TEXTURE_2D case.
+			case GL_TEXTURE_2D: {
 				if((width > es2::IMPLEMENTATION_MAX_TEXTURE_SIZE) ||
 				   (height > es2::IMPLEMENTATION_MAX_TEXTURE_SIZE))
 				{
@@ -3672,8 +3673,7 @@ void GL_APIENTRY TexStorage2D(GLenum target, GLsizei levels, GLenum internalform
 				texture->makeImmutable(levels);
 			}
 			break;
-		case GL_TEXTURE_CUBE_MAP:
-			{
+			case GL_TEXTURE_CUBE_MAP: {
 				if((width > es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE) ||
 				   (height > es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE))
 				{
@@ -3698,8 +3698,8 @@ void GL_APIENTRY TexStorage2D(GLenum target, GLsizei levels, GLenum internalform
 				texture->makeImmutable(levels);
 			}
 			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -3725,8 +3725,7 @@ void GL_APIENTRY TexStorage3D(GLenum target, GLsizei levels, GLenum internalform
 	{
 		switch(target)
 		{
-		case GL_TEXTURE_3D:
-			{
+			case GL_TEXTURE_3D: {
 				if(levels > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS || levels > (log2(std::max(std::max(width, height), depth)) + 1))
 				{
 					return error(GL_INVALID_OPERATION);
@@ -3748,8 +3747,7 @@ void GL_APIENTRY TexStorage3D(GLenum target, GLsizei levels, GLenum internalform
 				texture->makeImmutable(levels);
 			}
 			break;
-		case GL_TEXTURE_2D_ARRAY:
-			{
+			case GL_TEXTURE_2D_ARRAY: {
 				if(levels > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS || levels > (log2(std::max(width, height)) + 1))
 				{
 					return error(GL_INVALID_OPERATION);
@@ -3771,8 +3769,8 @@ void GL_APIENTRY TexStorage3D(GLenum target, GLsizei levels, GLenum internalform
 				texture->makeImmutable(levels);
 			}
 			break;
-		default:
-			return error(GL_INVALID_ENUM);
+			default:
+				return error(GL_INVALID_ENUM);
 		}
 	}
 }
@@ -3795,7 +3793,7 @@ void GL_APIENTRY GetInternalformativ(GLenum target, GLenum internalformat, GLenu
 	// OpenGL ES 3.0, section 4.4.4: "An internal format is color-renderable if it is one of the formats
 	// from table 3.13 noted as color-renderable or if it is unsized format RGBA or RGB."
 	// Since we only use sized formats internally, replace them here (assuming type = GL_UNSIGNED_BYTE).
-	if(internalformat == GL_RGB)  internalformat = GL_RGB8;
+	if(internalformat == GL_RGB) internalformat = GL_RGB8;
 	if(internalformat == GL_RGBA) internalformat = GL_RGBA8;
 
 	if(!IsColorRenderable(internalformat) &&
@@ -3807,10 +3805,10 @@ void GL_APIENTRY GetInternalformativ(GLenum target, GLenum internalformat, GLenu
 
 	switch(target)
 	{
-	case GL_RENDERBUFFER:
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_RENDERBUFFER:
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 
 	GLint numMultisampleCounts = NUM_MULTISAMPLE_COUNTS;
@@ -3824,18 +3822,18 @@ void GL_APIENTRY GetInternalformativ(GLenum target, GLenum internalformat, GLenu
 
 	switch(pname)
 	{
-	case GL_NUM_SAMPLE_COUNTS:
-		*params = numMultisampleCounts;
-		break;
-	case GL_SAMPLES:
-		for(int i = 0; i < numMultisampleCounts && i < bufSize; i++)
-		{
-			params[i] = multisampleCount[i];
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		case GL_NUM_SAMPLE_COUNTS:
+			*params = numMultisampleCounts;
+			break;
+		case GL_SAMPLES:
+			for(int i = 0; i < numMultisampleCounts && i < bufSize; i++)
+			{
+				params[i] = multisampleCount[i];
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
 	}
 }
 
-}
+}  // namespace gl

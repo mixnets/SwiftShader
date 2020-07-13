@@ -128,8 +128,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 	{
 		case spv::StorageClassOutput:
 		case spv::StorageClassPrivate:
-		case spv::StorageClassFunction:
-		{
+		case spv::StorageClassFunction: {
 			ASSERT(objectTy.opcode() == spv::OpTypePointer);
 			auto base = &routine->getVariable(resultId)[0];
 			auto elementTy = getType(objectTy.element);
@@ -137,16 +136,14 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			state->createPointer(resultId, SIMD::Pointer(base, size));
 			break;
 		}
-		case spv::StorageClassWorkgroup:
-		{
+		case spv::StorageClassWorkgroup: {
 			ASSERT(objectTy.opcode() == spv::OpTypePointer);
 			auto base = &routine->workgroupMemory[0];
 			auto size = workgroupMemory.size();
 			state->createPointer(resultId, SIMD::Pointer(base, size, workgroupMemory.offsetOf(resultId)));
 			break;
 		}
-		case spv::StorageClassInput:
-		{
+		case spv::StorageClassInput: {
 			if(object.kind == Object::Kind::InterfaceVariable)
 			{
 				auto &dst = routine->getVariable(resultId);
@@ -164,8 +161,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			state->createPointer(resultId, SIMD::Pointer(base, size));
 			break;
 		}
-		case spv::StorageClassUniformConstant:
-		{
+		case spv::StorageClassUniformConstant: {
 			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0);
 			ASSERT(d.Binding >= 0);
@@ -178,8 +174,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			break;
 		}
 		case spv::StorageClassUniform:
-		case spv::StorageClassStorageBuffer:
-		{
+		case spv::StorageClassStorageBuffer: {
 			const auto &d = descriptorDecorations.at(resultId);
 			ASSERT(d.DescriptorSet >= 0);
 			auto size = 0;  // Not required as this pointer is not directly used by SIMD::Read or SIMD::Write.
@@ -196,8 +191,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 			}
 			break;
 		}
-		case spv::StorageClassPushConstant:
-		{
+		case spv::StorageClassPushConstant: {
 			state->createPointer(resultId, SIMD::Pointer(routine->pushConstants, vk::MAX_PUSH_CONSTANT_SIZE));
 			break;
 		}
@@ -218,8 +212,7 @@ SpirvShader::EmitResult SpirvShader::EmitVariable(InsnIterator insn, EmitState *
 		{
 			case spv::StorageClassOutput:
 			case spv::StorageClassPrivate:
-			case spv::StorageClassFunction:
-			{
+			case spv::StorageClassFunction: {
 				bool interleavedByLane = IsStorageInterleavedByLane(objectTy.storageClass);
 				auto ptr = GetPointerToData(resultId, 0, state);
 				Operand initialValue(this, state, initializerId);
@@ -306,8 +299,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 		case spv::OpTypeRuntimeArray:
 			f(MemoryElement{ index++, offset, type });
 			break;
-		case spv::OpTypeVector:
-		{
+		case spv::OpTypeVector: {
 			auto elemStride = (d.InsideMatrix && d.HasRowMajor && d.RowMajor) ? d.MatrixStride : static_cast<int32_t>(sizeof(float));
 			for(auto i = 0u; i < type.definition.word(3); i++)
 			{
@@ -315,8 +307,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 			}
 			break;
 		}
-		case spv::OpTypeMatrix:
-		{
+		case spv::OpTypeMatrix: {
 			auto columnStride = (d.HasRowMajor && d.RowMajor) ? static_cast<int32_t>(sizeof(float)) : d.MatrixStride;
 			d.InsideMatrix = true;
 			for(auto i = 0u; i < type.definition.word(3); i++)
@@ -333,8 +324,7 @@ void SpirvShader::VisitMemoryObjectInner(sw::SpirvShader::Type::ID id, sw::Spirv
 				VisitMemoryObjectInner(type.definition.word(i + 2), d, index, offset, f);
 			}
 			break;
-		case spv::OpTypeArray:
-		{
+		case spv::OpTypeArray: {
 			auto arraySize = GetConstScalarInt(type.definition.word(3));
 			for(auto i = 0u; i < arraySize; i++)
 			{
@@ -382,8 +372,7 @@ SIMD::Pointer SpirvShader::GetPointerToData(Object::ID id, Int arrayIndex, EmitS
 		case Object::Kind::InterfaceVariable:
 			return state->getPointer(id);
 
-		case Object::Kind::DescriptorSet:
-		{
+		case Object::Kind::DescriptorSet: {
 			const auto &d = descriptorDecorations.at(id);
 			ASSERT(d.DescriptorSet >= 0 && d.DescriptorSet < vk::MAX_BOUND_DESCRIPTOR_SETS);
 			ASSERT(d.Binding >= 0);

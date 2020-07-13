@@ -16,6 +16,7 @@
 #define sw_QuadRasterizer_hpp
 
 #include "Rasterizer.hpp"
+
 #include "Pipeline/ShaderCore.hpp"
 #include "Pipeline/SpirvShader.hpp"
 #include "System/Types.hpp"

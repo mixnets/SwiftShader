@@ -16,90 +16,93 @@
 #define sw_SetupProcessor_hpp
 
 #include "Context.hpp"
+
 #include "RoutineCache.hpp"
-#include "Shader/VertexShader.hpp"
-#include "Shader/PixelShader.hpp"
+
 #include "Common/Types.hpp"
+#include "Shader/PixelShader.hpp"
+#include "Shader/VertexShader.hpp"
 
-namespace sw
+namespace sw {
+struct Primitive;
+struct Triangle;
+struct Polygon;
+struct Vertex;
+struct DrawCall;
+struct DrawData;
+
+class SetupProcessor
 {
-	struct Primitive;
-	struct Triangle;
-	struct Polygon;
-	struct Vertex;
-	struct DrawCall;
-	struct DrawData;
-
-	class SetupProcessor
+public:
+	struct States : Memset<States>
 	{
-	public:
-		struct States : Memset<States>
+		States()
+		    : Memset(this, 0)
+		{}
+
+		uint32_t computeHash();
+
+		bool isDrawPoint : 1;
+		bool isDrawLine : 1;
+		bool isDrawTriangle : 1;
+		bool isDrawSolidTriangle : 1;
+		bool interpolateZ : 1;
+		bool interpolateW : 1;
+		bool perspective : 1;
+		bool pointSprite : 1;
+		unsigned int positionRegister : BITS(VERTEX_OUTPUT_LAST);
+		unsigned int pointSizeRegister : BITS(VERTEX_OUTPUT_LAST);
+		CullMode cullMode : BITS(CULL_LAST);
+		bool twoSidedStencil : 1;
+		bool slopeDepthBias : 1;
+		bool vFace : 1;
+		unsigned int multiSample : 3;  // 1, 2 or 4
+		bool rasterizerDiscard : 1;
+
+		struct Gradient
 		{
-			States() : Memset(this, 0) {}
-
-			uint32_t computeHash();
-
-			bool isDrawPoint               : 1;
-			bool isDrawLine                : 1;
-			bool isDrawTriangle            : 1;
-			bool isDrawSolidTriangle       : 1;
-			bool interpolateZ              : 1;
-			bool interpolateW              : 1;
-			bool perspective               : 1;
-			bool pointSprite               : 1;
-			unsigned int positionRegister  : BITS(VERTEX_OUTPUT_LAST);
-			unsigned int pointSizeRegister : BITS(VERTEX_OUTPUT_LAST);
-			CullMode cullMode              : BITS(CULL_LAST);
-			bool twoSidedStencil           : 1;
-			bool slopeDepthBias            : 1;
-			bool vFace                     : 1;
-			unsigned int multiSample       : 3;   // 1, 2 or 4
-			bool rasterizerDiscard         : 1;
-
-			struct Gradient
-			{
-				unsigned char attribute : BITS(VERTEX_OUTPUT_LAST);
-				bool flat               : 1;
-				bool wrap               : 1;
-			};
-
-			union
-			{
-				struct
-				{
-					Gradient color[2][4];
-					Gradient texture[8][4];
-					Gradient fog;
-				};
-
-				Gradient gradient[MAX_FRAGMENT_INPUTS][4];
-			};
+			unsigned char attribute : BITS(VERTEX_OUTPUT_LAST);
+			bool flat : 1;
+			bool wrap : 1;
 		};
 
-		struct State : States
+		union
 		{
-			bool operator==(const State &states) const;
+			struct
+			{
+				Gradient color[2][4];
+				Gradient texture[8][4];
+				Gradient fog;
+			};
 
-			uint32_t hash;
+			Gradient gradient[MAX_FRAGMENT_INPUTS][4];
 		};
-
-		typedef bool (*RoutinePointer)(Primitive *primitive, const Triangle *triangle, const Polygon *polygon, const DrawData *draw);
-
-		SetupProcessor(Context *context);
-
-		~SetupProcessor();
-
-	protected:
-		State update() const;
-		std::shared_ptr<Routine> routine(const State &state);
-
-		void setRoutineCacheSize(int cacheSize);
-
-	private:
-		Context *const context;
-
-		RoutineCache<State> *routineCache;
 	};
-}
 
-#endif   // sw_SetupProcessor_hpp
+	struct State : States
+	{
+		bool operator==(const State &states) const;
+
+		uint32_t hash;
+	};
+
+	typedef bool (*RoutinePointer)(Primitive *primitive, const Triangle *triangle, const Polygon *polygon, const DrawData *draw);
+
+	SetupProcessor(Context *context);
+
+	~SetupProcessor();
+
+protected:
+	State update() const;
+	std::shared_ptr<Routine> routine(const State &state);
+
+	void setRoutineCacheSize(int cacheSize);
+
+private:
+	Context *const context;
+
+	RoutineCache<State> *routineCache;
+};
+}  // namespace sw
+
+#endif  // sw_SetupProcessor_hpp

@@ -18,30 +18,29 @@
 #ifndef LIBGLESV2_CONTEXT_H_
 #define LIBGLESV2_CONTEXT_H_
 
-#include "ResourceManager.h"
 #include "Buffer.h"
-#include "libEGL/Context.hpp"
-#include "common/NameSpace.hpp"
-#include "common/Object.hpp"
-#include "common/Image.hpp"
+#include "ResourceManager.h"
 #include "Renderer/Sampler.hpp"
 
+#include "common/Image.hpp"
+#include "common/NameSpace.hpp"
+#include "common/Object.hpp"
+#include "libEGL/Context.hpp"
+
+#include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl3.h>
-#include <EGL/egl.h>
 
 #include <map>
 #include <string>
 
-namespace egl
-{
+namespace egl {
 class Display;
 class Config;
-}
+}  // namespace egl
 
-namespace es2
-{
+namespace es2 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
 
@@ -75,13 +74,13 @@ class TransformFeedback;
 enum
 {
 	MAX_VERTEX_ATTRIBS = sw::MAX_VERTEX_INPUTS,
-	MAX_UNIFORM_VECTORS = 256,   // Device limit
-	MAX_VERTEX_UNIFORM_VECTORS = sw::VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
+	MAX_UNIFORM_VECTORS = 256,                                    // Device limit
+	MAX_VERTEX_UNIFORM_VECTORS = sw::VERTEX_UNIFORM_VECTORS - 3,  // Reserve space for gl_DepthRange
 	MAX_VARYING_VECTORS = MIN(sw::MAX_FRAGMENT_INPUTS, sw::MAX_VERTEX_OUTPUTS),
 	MAX_TEXTURE_IMAGE_UNITS = sw::TEXTURE_IMAGE_UNITS,
 	MAX_VERTEX_TEXTURE_IMAGE_UNITS = sw::VERTEX_TEXTURE_IMAGE_UNITS,
 	MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
-	MAX_FRAGMENT_UNIFORM_VECTORS = sw::FRAGMENT_UNIFORM_VECTORS - 3,    // Reserve space for gl_DepthRange
+	MAX_FRAGMENT_UNIFORM_VECTORS = sw::FRAGMENT_UNIFORM_VECTORS - 3,  // Reserve space for gl_DepthRange
 	MAX_ELEMENT_INDEX = 0x7FFFFFFF,
 	MAX_ELEMENTS_INDICES = 0x7FFFFFFF,
 	MAX_ELEMENTS_VERTICES = 0x7FFFFFFF,
@@ -108,14 +107,13 @@ enum
 	MAX_SHADER_CALL_STACK_SIZE = sw::MAX_SHADER_CALL_STACK_SIZE,
 };
 
-const GLenum compressedTextureFormats[] =
-{
+const GLenum compressedTextureFormats[] = {
 	GL_ETC1_RGB8_OES,
 	GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
 	GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
 	GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE,
 	GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE,
-#if (GL_ES_VERSION_3_0)
+#if(GL_ES_VERSION_3_0)
 	GL_COMPRESSED_R11_EAC,
 	GL_COMPRESSED_SIGNED_R11_EAC,
 	GL_COMPRESSED_RG11_EAC,
@@ -126,7 +124,7 @@ const GLenum compressedTextureFormats[] =
 	GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2,
 	GL_COMPRESSED_RGBA8_ETC2_EAC,
 	GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC,
-#if (ASTC_SUPPORT)
+#	if(ASTC_SUPPORT)
 	GL_COMPRESSED_RGBA_ASTC_4x4_KHR,
 	GL_COMPRESSED_RGBA_ASTC_5x4_KHR,
 	GL_COMPRESSED_RGBA_ASTC_5x5_KHR,
@@ -155,15 +153,15 @@ const GLenum compressedTextureFormats[] =
 	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR,
 	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR,
 	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR,
-#endif // ASTC_SUPPORT
-#endif // GL_ES_VERSION_3_0
+#	endif  // ASTC_SUPPORT
+#endif      // GL_ES_VERSION_3_0
 };
 
 const GLenum GL_TEXTURE_FILTERING_HINT_CHROMIUM = 0x8AF0;
 
 const GLint NUM_COMPRESSED_TEXTURE_FORMATS = sizeof(compressedTextureFormats) / sizeof(compressedTextureFormats[0]);
 
-const GLint multisampleCount[] = {4, 2, 1};
+const GLint multisampleCount[] = { 4, 2, 1 };
 const GLint NUM_MULTISAMPLE_COUNTS = sizeof(multisampleCount) / sizeof(multisampleCount[0]);
 const GLint IMPLEMENTATION_MAX_SAMPLES = multisampleCount[0];
 
@@ -194,7 +192,15 @@ struct Color
 class VertexAttribute
 {
 public:
-	VertexAttribute() : mType(GL_FLOAT), mSize(4), mNormalized(false), mPureInteger(false), mStride(0), mDivisor(0), mPointer(nullptr), mArrayEnabled(false)
+	VertexAttribute()
+	    : mType(GL_FLOAT)
+	    , mSize(4)
+	    , mNormalized(false)
+	    , mPureInteger(false)
+	    , mStride(0)
+	    , mDivisor(0)
+	    , mPointer(nullptr)
+	    , mArrayEnabled(false)
 	{
 		mCurrentValue[0].f = 0.0f;
 		mCurrentValue[1].f = 0.0f;
@@ -207,19 +213,19 @@ public:
 	{
 		switch(mType)
 		{
-		case GL_BYTE:           return mSize * sizeof(GLbyte);
-		case GL_UNSIGNED_BYTE:  return mSize * sizeof(GLubyte);
-		case GL_SHORT:          return mSize * sizeof(GLshort);
-		case GL_UNSIGNED_SHORT: return mSize * sizeof(GLushort);
-		case GL_INT:            return mSize * sizeof(GLint);
-		case GL_UNSIGNED_INT:   return mSize * sizeof(GLuint);
-		case GL_FIXED:          return mSize * sizeof(GLfixed);
-		case GL_FLOAT:          return mSize * sizeof(GLfloat);
-		case GL_HALF_FLOAT_OES:
-		case GL_HALF_FLOAT:     return mSize * sizeof(GLhalf);
-		case GL_INT_2_10_10_10_REV:          return sizeof(GLint);
-		case GL_UNSIGNED_INT_2_10_10_10_REV: return sizeof(GLuint);
-		default: UNREACHABLE(mType); return mSize * sizeof(GLfloat);
+			case GL_BYTE: return mSize * sizeof(GLbyte);
+			case GL_UNSIGNED_BYTE: return mSize * sizeof(GLubyte);
+			case GL_SHORT: return mSize * sizeof(GLshort);
+			case GL_UNSIGNED_SHORT: return mSize * sizeof(GLushort);
+			case GL_INT: return mSize * sizeof(GLint);
+			case GL_UNSIGNED_INT: return mSize * sizeof(GLuint);
+			case GL_FIXED: return mSize * sizeof(GLfixed);
+			case GL_FLOAT: return mSize * sizeof(GLfloat);
+			case GL_HALF_FLOAT_OES:
+			case GL_HALF_FLOAT: return mSize * sizeof(GLhalf);
+			case GL_INT_2_10_10_10_REV: return sizeof(GLint);
+			case GL_UNSIGNED_INT_2_10_10_10_REV: return sizeof(GLuint);
+			default: UNREACHABLE(mType); return mSize * sizeof(GLfloat);
 		}
 	}
 
@@ -242,10 +248,10 @@ public:
 	{
 		switch(mCurrentValueType)
 		{
-		case GL_FLOAT:        return mCurrentValue[i].f;
-		case GL_INT:          return static_cast<float>(mCurrentValue[i].i);
-		case GL_UNSIGNED_INT: return static_cast<float>(mCurrentValue[i].ui);
-		default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].f;
+			case GL_FLOAT: return mCurrentValue[i].f;
+			case GL_INT: return static_cast<float>(mCurrentValue[i].i);
+			case GL_UNSIGNED_INT: return static_cast<float>(mCurrentValue[i].ui);
+			default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].f;
 		}
 	}
 
@@ -253,10 +259,10 @@ public:
 	{
 		switch(mCurrentValueType)
 		{
-		case GL_FLOAT:        return static_cast<GLint>(mCurrentValue[i].f);
-		case GL_INT:          return mCurrentValue[i].i;
-		case GL_UNSIGNED_INT: return static_cast<GLint>(mCurrentValue[i].ui);
-		default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].i;
+			case GL_FLOAT: return static_cast<GLint>(mCurrentValue[i].f);
+			case GL_INT: return mCurrentValue[i].i;
+			case GL_UNSIGNED_INT: return static_cast<GLint>(mCurrentValue[i].ui);
+			default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].i;
 		}
 	}
 
@@ -264,10 +270,10 @@ public:
 	{
 		switch(mCurrentValueType)
 		{
-		case GL_FLOAT:        return static_cast<GLuint>(mCurrentValue[i].f);
-		case GL_INT:          return static_cast<GLuint>(mCurrentValue[i].i);
-		case GL_UNSIGNED_INT: return mCurrentValue[i].ui;
-		default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].ui;
+			case GL_FLOAT: return static_cast<GLuint>(mCurrentValue[i].f);
+			case GL_INT: return static_cast<GLuint>(mCurrentValue[i].i);
+			case GL_UNSIGNED_INT: return mCurrentValue[i].ui;
+			default: UNREACHABLE(mCurrentValueType); return mCurrentValue[i].ui;
 		}
 	}
 
@@ -303,8 +309,8 @@ public:
 	GLint mSize;
 	bool mNormalized;
 	bool mPureInteger;
-	GLsizei mStride;   // 0 means natural stride
-	GLuint mDivisor;   // From glVertexAttribDivisor
+	GLsizei mStride;  // 0 means natural stride
+	GLuint mDivisor;  // From glVertexAttribDivisor
 
 	union
 	{
@@ -312,9 +318,9 @@ public:
 		intptr_t mOffset;
 	};
 
-	gl::BindingPointer<Buffer> mBoundBuffer;   // Captured when glVertexAttribPointer is called.
+	gl::BindingPointer<Buffer> mBoundBuffer;  // Captured when glVertexAttribPointer is called.
 
-	bool mArrayEnabled;   // From glEnable/DisableVertexAttribArray
+	bool mArrayEnabled;  // From glEnable/DisableVertexAttribArray
 
 private:
 	union ValueUnion
@@ -324,7 +330,7 @@ private:
 		GLuint ui;
 	};
 
-	ValueUnion mCurrentValue[4];   // From glVertexAttrib
+	ValueUnion mCurrentValue[4];  // From glVertexAttrib
 	GLenum mCurrentValueType;
 };
 
@@ -403,7 +409,7 @@ struct State
 	bool colorMaskAlpha;
 	bool depthMask;
 
-	unsigned int activeSampler;   // Active texture unit selector - GL_TEXTURE0
+	unsigned int activeSampler;  // Active texture unit selector - GL_TEXTURE0
 	gl::BindingPointer<Buffer> arrayBuffer;
 	gl::BindingPointer<Buffer> copyReadBuffer;
 	gl::BindingPointer<Buffer> copyWriteBuffer;
@@ -432,9 +438,9 @@ struct State
 class [[clang::lto_visibility_public]] Context : public egl::Context
 {
 public:
-	Context(egl::Display *display, const Context *shareContext, const egl::Config *config);
+	Context(egl::Display * display, const Context *shareContext, const egl::Config *config);
 
-	void makeCurrent(gl::Surface *surface) override;
+	void makeCurrent(gl::Surface * surface) override;
 	EGLint getClientVersion() const override;
 	EGLint getConfigID() const override;
 
@@ -604,9 +610,9 @@ public:
 	void beginQuery(GLenum target, GLuint query);
 	void endQuery(GLenum target);
 
-	void setFramebufferZero(Framebuffer *framebuffer);
+	void setFramebufferZero(Framebuffer * framebuffer);
 
-	void setRenderbufferStorage(RenderbufferStorage *renderbuffer);
+	void setRenderbufferStorage(RenderbufferStorage * renderbuffer);
 
 	void setVertexAttrib(GLuint index, const GLfloat *values);
 	void setVertexAttrib(GLuint index, const GLint *values);
@@ -639,7 +645,7 @@ public:
 	Buffer *getGenericUniformBuffer() const;
 	size_t getRequiredBufferSize(GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type) const;
 	GLenum getPixels(const GLvoid **data, GLenum type, size_t imageSize) const;
-	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	bool getBuffer(GLenum target, es2::Buffer * *buffer) const;
 	Program *getCurrentProgram() const;
 	Texture *getTargetTexture(GLenum target) const;
 	Texture2D *getTexture2D() const;
@@ -653,24 +659,27 @@ public:
 	Framebuffer *getReadFramebuffer() const;
 	Framebuffer *getDrawFramebuffer() const;
 
-	bool getFloatv(GLenum pname, GLfloat *params) const;
-	template<typename T> bool getIntegerv(GLenum pname, T *params) const;
-	bool getBooleanv(GLenum pname, GLboolean *params) const;
-	template<typename T> bool getTransformFeedbackiv(GLuint index, GLenum pname, T *param) const;
-	template<typename T> bool getUniformBufferiv(GLuint index, GLenum pname, T *param) const;
+	bool getFloatv(GLenum pname, GLfloat * params) const;
+	template<typename T>
+	bool getIntegerv(GLenum pname, T * params) const;
+	bool getBooleanv(GLenum pname, GLboolean * params) const;
+	template<typename T>
+	bool getTransformFeedbackiv(GLuint index, GLenum pname, T * param) const;
+	template<typename T>
+	bool getUniformBufferiv(GLuint index, GLenum pname, T * param) const;
 	void samplerParameteri(GLuint sampler, GLenum pname, GLint param);
 	void samplerParameterf(GLuint sampler, GLenum pname, GLfloat param);
 	GLint getSamplerParameteri(GLuint sampler, GLenum pname);
 	GLfloat getSamplerParameterf(GLuint sampler, GLenum pname);
 
-	bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const;
+	bool getQueryParameterInfo(GLenum pname, GLenum * type, unsigned int *numParams) const;
 
 	bool hasZeroDivisor() const;
 
 	void drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount = 1);
 	void drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount = 1);
-	void blit(sw::Surface *source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect) override;
-	void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
+	void blit(sw::Surface * source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect) override;
+	void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei * bufSize, void *pixels);
 	void clear(GLbitfield mask);
 	void clearColorBuffer(GLint drawbuffer, const GLint *value);
 	void clearColorBuffer(GLint drawbuffer, const GLuint *value);
@@ -694,7 +703,7 @@ public:
 	                     GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
 	                     GLbitfield mask, bool filter, bool allowPartialDepthStencilBlit);
 
-	void bindTexImage(gl::Surface *surface) override;
+	void bindTexImage(gl::Surface * surface) override;
 	EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
 	egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
 	egl::Image *getSharedImage(GLeglImageOES image);
@@ -775,29 +784,41 @@ private:
 };
 
 // ptr to a context, which also holds the context's resource manager's lock.
-class ContextPtr {
+class ContextPtr
+{
 public:
-	explicit ContextPtr(Context *context) : ptr(context)
+	explicit ContextPtr(Context *context)
+	    : ptr(context)
 	{
-		if (ptr) { ptr->getResourceLock()->lock(); }
+		if(ptr) { ptr->getResourceLock()->lock(); }
 	}
 
-	~ContextPtr() {
-		if (ptr) { ptr->getResourceLock()->unlock(); }
+	~ContextPtr()
+	{
+		if(ptr) { ptr->getResourceLock()->unlock(); }
 	}
 
 	ContextPtr(ContextPtr const &) = delete;
-	ContextPtr & operator=(ContextPtr const &) = delete;
-	ContextPtr(ContextPtr && other) : ptr(other.ptr) { other.ptr = nullptr; }
-	ContextPtr & operator=(ContextPtr && other) { ptr = other.ptr; other.ptr = nullptr; return *this; }
+	ContextPtr &operator=(ContextPtr const &) = delete;
+	ContextPtr(ContextPtr &&other)
+	    : ptr(other.ptr)
+	{
+		other.ptr = nullptr;
+	}
+	ContextPtr &operator=(ContextPtr &&other)
+	{
+		ptr = other.ptr;
+		other.ptr = nullptr;
+		return *this;
+	}
 
-	Context *operator ->() { return ptr; }
+	Context *operator->() { return ptr; }
 	operator bool() const { return ptr != nullptr; }
 
 private:
 	Context *ptr;
 };
 
-}
+}  // namespace es2
 
-#endif   // INCLUDE_CONTEXT_H_
+#endif  // INCLUDE_CONTEXT_H_

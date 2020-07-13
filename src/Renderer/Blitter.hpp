@@ -16,107 +16,125 @@
 #define sw_Blitter_hpp
 
 #include "Surface.hpp"
+
 #include "RoutineCache.hpp"
+
 #include "Reactor/Reactor.hpp"
 
 #include <string.h>
 
-namespace sw
+namespace sw {
+class Blitter
 {
-	class Blitter
+	struct Options
 	{
-		struct Options
+		Options() = default;
+		Options(bool filter, bool useStencil, bool convertSRGB)
+		    : writeMask(0xF)
+		    , clearOperation(false)
+		    , filter(filter)
+		    , useStencil(useStencil)
+		    , convertSRGB(convertSRGB)
+		    , clampToEdge(false)
+		{}
+		Options(unsigned int writeMask)
+		    : writeMask(writeMask)
+		    , clearOperation(true)
+		    , filter(false)
+		    , useStencil(false)
+		    , convertSRGB(true)
+		    , clampToEdge(false)
+		{}
+
+		union
 		{
-			Options() = default;
-			Options(bool filter, bool useStencil, bool convertSRGB)
-				: writeMask(0xF), clearOperation(false), filter(filter), useStencil(useStencil), convertSRGB(convertSRGB), clampToEdge(false) {}
-			Options(unsigned int writeMask)
-				: writeMask(writeMask), clearOperation(true), filter(false), useStencil(false), convertSRGB(true), clampToEdge(false) {}
-
-			union
+			struct
 			{
-				struct
-				{
-					bool writeRed : 1;
-					bool writeGreen : 1;
-					bool writeBlue : 1;
-					bool writeAlpha : 1;
-				};
-
-				unsigned char writeMask;
+				bool writeRed : 1;
+				bool writeGreen : 1;
+				bool writeBlue : 1;
+				bool writeAlpha : 1;
 			};
 
-			bool clearOperation : 1;
-			bool filter : 1;
-			bool useStencil : 1;
-			bool convertSRGB : 1;
-			bool clampToEdge : 1;
+			unsigned char writeMask;
 		};
 
-		struct State : Memset<State>, Options
-		{
-			State() : Memset(this, 0) {}
-			State(const Options &options) : Memset(this, 0), Options(options) {}
-
-			bool operator==(const State &state) const
-			{
-				static_assert(is_memcmparable<State>::value, "Cannot memcmp State");
-				return memcmp(this, &state, sizeof(State)) == 0;
-			}
-
-			Format sourceFormat;
-			Format destFormat;
-			int destSamples;
-		};
-
-		struct BlitData
-		{
-			void *source;
-			void *dest;
-			int sPitchB;
-			int dPitchB;
-			int dSliceB;
-
-			float x0;
-			float y0;
-			float w;
-			float h;
-
-			int y0d;
-			int y1d;
-			int x0d;
-			int x1d;
-
-			int sWidth;
-			int sHeight;
-		};
-
-	public:
-		Blitter();
-		virtual ~Blitter();
-
-		void clear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
-		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Options &options);
-		void blit3D(Surface *source, Surface *dest);
-
-	private:
-		bool fastClear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
-
-		bool read(Float4 &color, Pointer<Byte> element, const State &state);
-		bool write(Float4 &color, Pointer<Byte> element, const State &state);
-		bool read(Int4 &color, Pointer<Byte> element, const State &state);
-		bool write(Int4 &color, Pointer<Byte> element, const State &state);
-		static bool GetScale(float4& scale, Format format);
-		static bool ApplyScaleAndClamp(Float4 &value, const State &state, bool preScaled = false);
-		static Int ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout);
-		static Float4 LinearToSRGB(Float4 &color);
-		static Float4 sRGBtoLinear(Float4 &color);
-		bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Options &options);
-		std::shared_ptr<Routine> generate(const State &state);
-
-		RoutineCache<State> *blitCache;
-		MutexLock criticalSection;
+		bool clearOperation : 1;
+		bool filter : 1;
+		bool useStencil : 1;
+		bool convertSRGB : 1;
+		bool clampToEdge : 1;
 	};
-}
 
-#endif   // sw_Blitter_hpp
+	struct State : Memset<State>, Options
+	{
+		State()
+		    : Memset(this, 0)
+		{}
+		State(const Options &options)
+		    : Memset(this, 0)
+		    , Options(options)
+		{}
+
+		bool operator==(const State &state) const
+		{
+			static_assert(is_memcmparable<State>::value, "Cannot memcmp State");
+			return memcmp(this, &state, sizeof(State)) == 0;
+		}
+
+		Format sourceFormat;
+		Format destFormat;
+		int destSamples;
+	};
+
+	struct BlitData
+	{
+		void *source;
+		void *dest;
+		int sPitchB;
+		int dPitchB;
+		int dSliceB;
+
+		float x0;
+		float y0;
+		float w;
+		float h;
+
+		int y0d;
+		int y1d;
+		int x0d;
+		int x1d;
+
+		int sWidth;
+		int sHeight;
+	};
+
+public:
+	Blitter();
+	virtual ~Blitter();
+
+	void clear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
+	void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Options &options);
+	void blit3D(Surface *source, Surface *dest);
+
+private:
+	bool fastClear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
+
+	bool read(Float4 &color, Pointer<Byte> element, const State &state);
+	bool write(Float4 &color, Pointer<Byte> element, const State &state);
+	bool read(Int4 &color, Pointer<Byte> element, const State &state);
+	bool write(Int4 &color, Pointer<Byte> element, const State &state);
+	static bool GetScale(float4 &scale, Format format);
+	static bool ApplyScaleAndClamp(Float4 &value, const State &state, bool preScaled = false);
+	static Int ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout);
+	static Float4 LinearToSRGB(Float4 &color);
+	static Float4 sRGBtoLinear(Float4 &color);
+	bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Options &options);
+	std::shared_ptr<Routine> generate(const State &state);
+
+	RoutineCache<State> *blitCache;
+	MutexLock criticalSection;
+};
+}  // namespace sw
+
+#endif  // sw_Blitter_hpp

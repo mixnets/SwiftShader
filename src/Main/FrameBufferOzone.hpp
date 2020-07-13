@@ -17,24 +17,23 @@
 
 #include "Main/FrameBuffer.hpp"
 
-namespace sw
+namespace sw {
+class FrameBufferOzone : public FrameBuffer
 {
-	class FrameBufferOzone : public FrameBuffer
-	{
-	public:
-		FrameBufferOzone(intptr_t display, intptr_t window, int width, int height);
+public:
+	FrameBufferOzone(intptr_t display, intptr_t window, int width, int height);
 
-		~FrameBufferOzone() override;
+	~FrameBufferOzone() override;
 
-		void flip(sw::Surface *source) override {blit(source, nullptr, nullptr);};
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+	void flip(sw::Surface *source) override { blit(source, nullptr, nullptr); };
+	void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
-		void *lock() override;
-		void unlock() override;
+	void *lock() override;
+	void unlock() override;
 
-	private:
-		sw::Surface* buffer;
-	};
-}
+private:
+	sw::Surface *buffer;
+};
+}  // namespace sw
 
-#endif   // sw_FrameBufferOzone_hpp
+#endif  // sw_FrameBufferOzone_hpp

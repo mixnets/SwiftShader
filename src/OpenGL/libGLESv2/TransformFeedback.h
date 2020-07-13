@@ -19,13 +19,13 @@
 
 #include "Buffer.h"
 #include "Context.h"
-#include "common/Object.hpp"
+
 #include "Renderer/Renderer.hpp"
+#include "common/Object.hpp"
 
 #include <GLES2/gl2.h>
 
-namespace es2
-{
+namespace es2 {
 
 class TransformFeedback : public gl::NamedObject
 {
@@ -33,9 +33,9 @@ public:
 	TransformFeedback(GLuint name);
 	~TransformFeedback();
 
-	BufferBinding* getBuffers() { return mBuffer; }
+	BufferBinding *getBuffers() { return mBuffer; }
 
-	Buffer* getBuffer(GLuint index) const;
+	Buffer *getBuffer(GLuint index) const;
 	GLuint getBufferName(GLuint index) const;
 	int getOffset(GLuint index) const;
 	int getSize(GLuint index) const;
@@ -44,8 +44,8 @@ public:
 	GLenum primitiveMode() const;
 	int vertexOffset() const;
 
-	void setBuffer(GLuint index, Buffer* buffer);
-	void setBuffer(GLuint index, Buffer* buffer, GLintptr offset, GLsizeiptr size);
+	void setBuffer(GLuint index, Buffer *buffer);
+	void setBuffer(GLuint index, Buffer *buffer, GLintptr offset, GLsizeiptr size);
 	void detachBuffer(GLuint buffer);
 	void begin(GLenum primitiveMode);
 	void end();
@@ -61,6 +61,6 @@ private:
 	int mVertexOffset;
 };
 
-}
+}  // namespace es2
 
-#endif // LIBGLESV2_TRANSFORM_FEEDBACK_H_
+#endif  // LIBGLESV2_TRANSFORM_FEEDBACK_H_

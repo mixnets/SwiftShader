@@ -25,7 +25,6 @@
 #include "System/Types.hpp"
 #include "Vulkan/VkConfig.hpp"
 #include "Vulkan/VkDescriptorSet.hpp"
-
 #define SPV_ENABLE_UTILITY_CODE
 #include <spirv/unified1/spirv.hpp>
 

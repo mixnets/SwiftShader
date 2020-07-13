@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ShaderCore.hpp"
 #include "SpirvShader.hpp"
 #include "SpirvShaderDebug.hpp"
-
-#include "ShaderCore.hpp"
 
 #include <spirv/unified1/spirv.hpp>
 
@@ -158,8 +157,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			case spv::OpLogicalNot:  // logical not == bitwise not due to all-bits boolean representation
 				dst.move(i, ~src.UInt(i));
 				break;
-			case spv::OpBitFieldInsert:
-			{
+			case spv::OpBitFieldInsert: {
 				auto insert = Operand(this, state, insn.word(4)).UInt(i);
 				auto offset = Operand(this, state, insn.word(5)).UInt(0);
 				auto count = Operand(this, state, insn.word(6)).UInt(0);
@@ -170,8 +168,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				break;
 			}
 			case spv::OpBitFieldSExtract:
-			case spv::OpBitFieldUExtract:
-			{
+			case spv::OpBitFieldUExtract: {
 				auto offset = Operand(this, state, insn.word(4)).UInt(0);
 				auto count = Operand(this, state, insn.word(5)).UInt(0);
 				auto one = SIMD::UInt(1);
@@ -186,8 +183,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dst.move(i, out);
 				break;
 			}
-			case spv::OpBitReverse:
-			{
+			case spv::OpBitReverse: {
 				// TODO: Add an intrinsic to reactor. Even if there isn't a
 				// single vector instruction, there may be target-dependent
 				// ways to make this faster.
@@ -247,8 +243,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			case spv::OpFwidthCoarse:
 				dst.move(i, SIMD::Float(Abs(Extract(src.Float(i), 1) - Extract(src.Float(i), 0)) + Abs(Extract(src.Float(i), 2) - Extract(src.Float(i), 0))));
 				break;
-			case spv::OpDPdxFine:
-			{
+			case spv::OpDPdxFine: {
 				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
 				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
 				SIMD::Float v = SIMD::Float(firstRow);
@@ -257,8 +252,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dst.move(i, v);
 				break;
 			}
-			case spv::OpDPdyFine:
-			{
+			case spv::OpDPdyFine: {
 				auto firstColumn = Extract(src.Float(i), 2) - Extract(src.Float(i), 0);
 				auto secondColumn = Extract(src.Float(i), 3) - Extract(src.Float(i), 1);
 				SIMD::Float v = SIMD::Float(firstColumn);
@@ -267,8 +261,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dst.move(i, v);
 				break;
 			}
-			case spv::OpFwidthFine:
-			{
+			case spv::OpFwidthFine: {
 				auto firstRow = Extract(src.Float(i), 1) - Extract(src.Float(i), 0);
 				auto secondRow = Extract(src.Float(i), 3) - Extract(src.Float(i), 2);
 				SIMD::Float dpdx = SIMD::Float(firstRow);
@@ -282,8 +275,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dst.move(i, Abs(dpdx) + Abs(dpdy));
 				break;
 			}
-			case spv::OpQuantizeToF16:
-			{
+			case spv::OpQuantizeToF16: {
 				// Note: keep in sync with the specialization constant version in EvalSpecConstantUnaryOp
 				auto abs = Abs(src.Float(i));
 				auto sign = src.Int(i) & SIMD::Int(0x80000000);
@@ -327,8 +319,7 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 			case spv::OpIMul:
 				dst.move(i, lhs.Int(i) * rhs.Int(i));
 				break;
-			case spv::OpSDiv:
-			{
+			case spv::OpSDiv: {
 				SIMD::Int a = lhs.Int(i);
 				SIMD::Int b = rhs.Int(i);
 				b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
@@ -336,14 +327,12 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				dst.move(i, a / b);
 				break;
 			}
-			case spv::OpUDiv:
-			{
+			case spv::OpUDiv: {
 				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
 				dst.move(i, lhs.UInt(i) / (rhs.UInt(i) | zeroMask));
 				break;
 			}
-			case spv::OpSRem:
-			{
+			case spv::OpSRem: {
 				SIMD::Int a = lhs.Int(i);
 				SIMD::Int b = rhs.Int(i);
 				b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
@@ -351,8 +340,7 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				dst.move(i, a % b);
 				break;
 			}
-			case spv::OpSMod:
-			{
+			case spv::OpSMod: {
 				SIMD::Int a = lhs.Int(i);
 				SIMD::Int b = rhs.Int(i);
 				b = b | CmpEQ(b, SIMD::Int(0));                                       // prevent divide-by-zero
@@ -369,8 +357,7 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				dst.move(i, As<SIMD::Float>(fixedMod));
 				break;
 			}
-			case spv::OpUMod:
-			{
+			case spv::OpUMod: {
 				auto zeroMask = As<SIMD::UInt>(CmpEQ(rhs.Int(i), SIMD::Int(0)));
 				dst.move(i, lhs.UInt(i) % (rhs.UInt(i) | zeroMask));
 				break;

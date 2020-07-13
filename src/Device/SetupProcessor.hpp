@@ -19,6 +19,7 @@
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "System/Types.hpp"
+
 #include <Pipeline/SpirvShader.hpp>
 
 #include <memory>

@@ -17,66 +17,64 @@
 
 #include "Renderer/Renderer.hpp"
 
-namespace egl
-{
-	class Image;
+namespace egl {
+class Image;
 }
 
-namespace es1
+namespace es1 {
+class Texture;
+
+struct Viewport
 {
-	class Texture;
+	int x0;
+	int y0;
+	unsigned int width;
+	unsigned int height;
+	float minZ;
+	float maxZ;
+};
 
-	struct Viewport
-	{
-		int x0;
-		int y0;
-		unsigned int width;
-		unsigned int height;
-		float minZ;
-		float maxZ;
-	};
+class Device : public sw::Renderer
+{
+public:
+	explicit Device(sw::Context *context);
 
-	class Device : public sw::Renderer
-	{
-	public:
-		explicit Device(sw::Context *context);
+	virtual ~Device();
 
-		virtual ~Device();
+	void *operator new(size_t size);
+	void operator delete(void *mem);
 
-		void *operator new(size_t size);
-		void operator delete(void * mem);
+	void clearColor(float red, float green, float blue, float alpha, unsigned int rgbaMask);
+	void clearDepth(float z);
+	void clearStencil(unsigned int stencil, unsigned int mask);
+	void drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount);
+	void drawPrimitive(sw::DrawType type, unsigned int primiveCount);
+	void setScissorEnable(bool enable);
+	void setRenderTarget(int index, egl::Image *renderTarget);
+	void setDepthBuffer(egl::Image *depthBuffer);
+	void setStencilBuffer(egl::Image *stencilBuffer);
+	void setScissorRect(const sw::Rect &rect);
+	void setViewport(const Viewport &viewport);
 
-		void clearColor(float red, float green, float blue, float alpha, unsigned int rgbaMask);
-		void clearDepth(float z);
-		void clearStencil(unsigned int stencil, unsigned int mask);
-		void drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount);
-		void drawPrimitive(sw::DrawType type, unsigned int primiveCount);
-		void setScissorEnable(bool enable);
-		void setRenderTarget(int index, egl::Image *renderTarget);
-		void setDepthBuffer(egl::Image *depthBuffer);
-		void setStencilBuffer(egl::Image *stencilBuffer);
-		void setScissorRect(const sw::Rect &rect);
-		void setViewport(const Viewport &viewport);
+	bool stretchRect(sw::Surface *sourceSurface, const sw::SliceRect *sourceRect, sw::Surface *destSurface, const sw::SliceRect *destRect, bool filter);
+	void finish();
 
-		bool stretchRect(sw::Surface *sourceSurface, const sw::SliceRect *sourceRect, sw::Surface *destSurface, const sw::SliceRect *destRect, bool filter);
-		void finish();
+private:
+	sw::Context *const context;
 
-	private:
-		sw::Context *const context;
+	bool bindResources();
+	bool bindViewport();  // Also adjusts for scissoring
 
-		bool bindResources();
-		bool bindViewport();   // Also adjusts for scissoring
+	bool validRectangle(const sw::Rect *rect, sw::Surface *surface);
 
-		bool validRectangle(const sw::Rect *rect, sw::Surface *surface);
+	Viewport viewport;
+	sw::Rect scissorRect;
+	bool scissorEnable;
 
-		Viewport viewport;
-		sw::Rect scissorRect;
-		bool scissorEnable;
+	egl::Image *renderTarget;
+	egl::Image *depthBuffer;
+	egl::Image *stencilBuffer;
+};
+}  // namespace es1
 
-		egl::Image *renderTarget;
-		egl::Image *depthBuffer;
-		egl::Image *stencilBuffer;
-	};
-}
-
-#endif   // gl_Device_hpp
+#endif  // gl_Device_hpp

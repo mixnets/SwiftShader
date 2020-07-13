@@ -25,8 +25,7 @@
 
 #include <set>
 
-namespace egl
-{
+namespace egl {
 class Display;
 
 class Config
@@ -40,43 +39,43 @@ public:
 	const sw::Format mDepthStencilFormat;
 	const EGLint mMultiSample;
 
-	EGLint mBufferSize;              // Depth of the color buffer
-	EGLint mRedSize;                 // Bits of Red in the color buffer
-	EGLint mGreenSize;               // Bits of Green in the color buffer
-	EGLint mBlueSize;                // Bits of Blue in the color buffer
-	EGLint mLuminanceSize;           // Bits of Luminance in the color buffer
-	EGLint mAlphaSize;               // Bits of Alpha in the color buffer
-	EGLint mAlphaMaskSize;           // Bits of Alpha Mask in the mask buffer
-	EGLBoolean mBindToTextureRGB;    // True if bindable to RGB textures.
-	EGLBoolean mBindToTextureRGBA;   // True if bindable to RGBA textures.
-	EGLenum mColorBufferType;        // Color buffer type
-	EGLenum mConfigCaveat;           // Any caveats for the configuration
-	EGLint mConfigID;                // Unique EGLConfig identifier
-	EGLint mConformant;              // Whether contexts created with this config are conformant
-	EGLint mDepthSize;               // Bits of Z in the depth buffer
-	EGLint mLevel;                   // Frame buffer level
-	EGLBoolean mMatchNativePixmap;   // Match the native pixmap format
-	EGLint mMaxPBufferWidth;         // Maximum width of pbuffer
-	EGLint mMaxPBufferHeight;        // Maximum height of pbuffer
-	EGLint mMaxPBufferPixels;        // Maximum size of pbuffer
-	EGLint mMaxSwapInterval;         // Maximum swap interval
-	EGLint mMinSwapInterval;         // Minimum swap interval
-	EGLBoolean mNativeRenderable;    // EGL_TRUE if native rendering APIs can render to surface
-	EGLint mNativeVisualID;          // Handle of corresponding native visual
-	EGLint mNativeVisualType;        // Native visual type of the associated visual
-	EGLint mRenderableType;          // Which client rendering APIs are supported.
-	EGLint mSampleBuffers;           // Number of multisample buffers
-	EGLint mSamples;                 // Number of samples per pixel
-	EGLint mStencilSize;             // Bits of Stencil in the stencil buffer
-	EGLint mSurfaceType;             // Which types of EGL surfaces are supported.
-	EGLenum mTransparentType;        // Type of transparency supported
-	EGLint mTransparentRedValue;     // Transparent red value
-	EGLint mTransparentGreenValue;   // Transparent green value
-	EGLint mTransparentBlueValue;    // Transparent blue value
+	EGLint mBufferSize;             // Depth of the color buffer
+	EGLint mRedSize;                // Bits of Red in the color buffer
+	EGLint mGreenSize;              // Bits of Green in the color buffer
+	EGLint mBlueSize;               // Bits of Blue in the color buffer
+	EGLint mLuminanceSize;          // Bits of Luminance in the color buffer
+	EGLint mAlphaSize;              // Bits of Alpha in the color buffer
+	EGLint mAlphaMaskSize;          // Bits of Alpha Mask in the mask buffer
+	EGLBoolean mBindToTextureRGB;   // True if bindable to RGB textures.
+	EGLBoolean mBindToTextureRGBA;  // True if bindable to RGBA textures.
+	EGLenum mColorBufferType;       // Color buffer type
+	EGLenum mConfigCaveat;          // Any caveats for the configuration
+	EGLint mConfigID;               // Unique EGLConfig identifier
+	EGLint mConformant;             // Whether contexts created with this config are conformant
+	EGLint mDepthSize;              // Bits of Z in the depth buffer
+	EGLint mLevel;                  // Frame buffer level
+	EGLBoolean mMatchNativePixmap;  // Match the native pixmap format
+	EGLint mMaxPBufferWidth;        // Maximum width of pbuffer
+	EGLint mMaxPBufferHeight;       // Maximum height of pbuffer
+	EGLint mMaxPBufferPixels;       // Maximum size of pbuffer
+	EGLint mMaxSwapInterval;        // Maximum swap interval
+	EGLint mMinSwapInterval;        // Minimum swap interval
+	EGLBoolean mNativeRenderable;   // EGL_TRUE if native rendering APIs can render to surface
+	EGLint mNativeVisualID;         // Handle of corresponding native visual
+	EGLint mNativeVisualType;       // Native visual type of the associated visual
+	EGLint mRenderableType;         // Which client rendering APIs are supported.
+	EGLint mSampleBuffers;          // Number of multisample buffers
+	EGLint mSamples;                // Number of samples per pixel
+	EGLint mStencilSize;            // Bits of Stencil in the stencil buffer
+	EGLint mSurfaceType;            // Which types of EGL surfaces are supported.
+	EGLenum mTransparentType;       // Type of transparency supported
+	EGLint mTransparentRedValue;    // Transparent red value
+	EGLint mTransparentGreenValue;  // Transparent green value
+	EGLint mTransparentBlueValue;   // Transparent blue value
 
-	EGLBoolean mRecordableAndroid;          // EGL_ANDROID_recordable
-	EGLBoolean mFramebufferTargetAndroid;   // EGL_ANDROID_framebuffer_target
-	EGLenum mBindToTextureTargetANGLE;      // EGL_ANGLE_iosurface_client_buffer
+	EGLBoolean mRecordableAndroid;         // EGL_ANDROID_recordable
+	EGLBoolean mFramebufferTargetAndroid;  // EGL_ANDROID_framebuffer_target
+	EGLenum mBindToTextureTargetANGLE;     // EGL_ANGLE_iosurface_client_buffer
 };
 
 struct CompareConfig
@@ -101,6 +100,6 @@ private:
 	typedef Set::iterator Iterator;
 	Set mSet;
 };
-}
+}  // namespace egl
 
-#endif   // INCLUDE_CONFIG_H_
+#endif  // INCLUDE_CONFIG_H_

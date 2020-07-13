@@ -25,8 +25,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-namespace es2
-{
+namespace es2 {
 ResourceManager::ResourceManager()
 {
 	mRefCount = 1;
@@ -102,7 +101,8 @@ GLuint ResourceManager::createShader(GLenum type)
 	{
 		mShaderNameSpace.insert(name, new FragmentShader(this, name));
 	}
-	else UNREACHABLE(type);
+	else
+		UNREACHABLE(type);
 
 	return name;
 }
@@ -351,4 +351,4 @@ bool ResourceManager::isSampler(GLuint sampler)
 	return mSamplerNameSpace.isReserved(sampler);
 }
 
-}
+}  // namespace es2

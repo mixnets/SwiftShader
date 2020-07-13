@@ -21,15 +21,14 @@
 #include "Renderer/Surface.hpp"
 
 #include <EGL/egl.h>
+#undef Bool
 
-namespace egl
-{
+namespace egl {
 class Texture;
 class Image;
-}
+}  // namespace egl
 
-namespace gl
-{
+namespace gl {
 class [[clang::lto_visibility_public]] Surface
 {
 protected:
@@ -44,8 +43,8 @@ public:
 	virtual EGLint getHeight() const = 0;
 	virtual EGLenum getTextureTarget() const = 0;
 
-	virtual void setBoundTexture(egl::Texture *texture) = 0;
+	virtual void setBoundTexture(egl::Texture * texture) = 0;
 };
-}
+}  // namespace gl
 
-#endif   // INCLUDE_SURFACE_H_
+#endif  // INCLUDE_SURFACE_H_
