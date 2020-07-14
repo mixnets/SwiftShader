@@ -8469,7 +8469,6 @@ dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_ivec4_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec2_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec2_vertex
-dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec3_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec3_vertex
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec4_fragment
 dEQP-GLES2.functional.shaders.operator.unary_operator.post_increment_effect.lowp_vec4_vertex
