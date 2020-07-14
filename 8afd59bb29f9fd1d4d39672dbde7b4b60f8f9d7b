@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac8b15c3_cf3e266a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-14T17:13:21Z",
+      "side": 1,
+      "message": "Chris is on leave, but I can rubberstamp this. Frank, Trevor, any comments?",
+      "revId": "8afd59bb29f9fd1d4d39672dbde7b4b60f8f9d7b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
