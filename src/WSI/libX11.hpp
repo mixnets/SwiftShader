@@ -15,7 +15,7 @@
 #ifndef libX11_hpp
 #define libX11_hpp
 
-#define Bool int
+#define Bool int  // b/127920555
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>

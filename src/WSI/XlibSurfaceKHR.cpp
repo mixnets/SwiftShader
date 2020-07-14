@@ -14,12 +14,41 @@
 
 #include "XlibSurfaceKHR.hpp"
 
+#include "libX11.hpp"
 #include "Vulkan/VkDeviceMemory.hpp"
 #include "Vulkan/VkImage.hpp"
+#include "Vulkan/VkObject.hpp"
+
+#include <vulkan/vulkan_xlib.h>
+
+#include <unordered_map>
 
 namespace vk {
 
-XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem)
+class XlibSurface : public SurfaceKHR, public ObjectBase<XlibSurface, VkSurfaceKHR>
+{
+public:
+	XlibSurface(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem);
+
+	void destroySurface(const VkAllocationCallbacks *pAllocator) override;
+
+	static size_t ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo);
+
+	void getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
+
+	virtual void attachImage(PresentImage *image) override;
+	virtual void detachImage(PresentImage *image) override;
+	VkResult present(PresentImage *image) override;
+
+private:
+	Display *const pDisplay;
+	const Window window;
+	GC gc;
+	Visual *visual = nullptr;
+	std::unordered_map<PresentImage *, XImage *> imageMap;
+};
+
+XlibSurface::XlibSurface(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem)
     : pDisplay(pCreateInfo->dpy)
     , window(pCreateInfo->window)
 {
@@ -32,16 +61,16 @@ XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, vo
 	visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
 }
 
-void XlibSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
+void XlibSurface::destroySurface(const VkAllocationCallbacks *pAllocator)
 {
 }
 
-size_t XlibSurfaceKHR::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo)
+size_t XlibSurface::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo)
 {
 	return 0;
 }
 
-void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+void XlibSurface::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
 	SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
 
@@ -54,7 +83,7 @@ void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCa
 	pSurfaceCapabilities->maxImageExtent = extent;
 }
 
-void XlibSurfaceKHR::attachImage(PresentImage *image)
+void XlibSurface::attachImage(PresentImage *image)
 {
 	XWindowAttributes attr;
 	libX11->XGetWindowAttributes(pDisplay, window, &attr);
@@ -69,7 +98,7 @@ void XlibSurfaceKHR::attachImage(PresentImage *image)
 	imageMap[image] = xImage;
 }
 
-void XlibSurfaceKHR::detachImage(PresentImage *image)
+void XlibSurface::detachImage(PresentImage *image)
 {
 	auto it = imageMap.find(image);
 	if(it != imageMap.end())
@@ -81,7 +110,7 @@ void XlibSurfaceKHR::detachImage(PresentImage *image)
 	}
 }
 
-VkResult XlibSurfaceKHR::present(PresentImage *image)
+VkResult XlibSurface::present(PresentImage *image)
 {
 	auto it = imageMap.find(image);
 	if(it != imageMap.end())
@@ -105,6 +134,11 @@ VkResult XlibSurfaceKHR::present(PresentImage *image)
 	}
 
 	return VK_SUCCESS;
+}
+
+VkResult XlibSurfaceKHR::Create(const VkAllocationCallbacks *pAllocator, const VkXlibSurfaceCreateInfoKHR *pCreateInfo, VkSurfaceKHR *outObject)
+{
+	return vk::Create<XlibSurface, VkSurfaceKHR, VkXlibSurfaceCreateInfoKHR>(pAllocator, pCreateInfo, outObject);
 }
 
 }  // namespace vk

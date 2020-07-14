@@ -16,37 +16,19 @@
 #define SWIFTSHADER_XLIBSURFACEKHR_HPP
 
 #include "VkSurfaceKHR.hpp"
-#include "libX11.hpp"
-#include "Vulkan/VkObject.hpp"
 
 #include <vulkan/vulkan_xlib.h>
 
-#include <unordered_map>
-
 namespace vk {
 
-class XlibSurfaceKHR : public SurfaceKHR, public ObjectBase<XlibSurfaceKHR, VkSurfaceKHR>
+class XlibSurfaceKHR
 {
 public:
-	XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, void *mem);
+	XlibSurfaceKHR() = delete;  // Use the factory method below.
 
-	void destroySurface(const VkAllocationCallbacks *pAllocator) override;
-
-	static size_t ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo);
-
-	void getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
-
-	virtual void attachImage(PresentImage *image) override;
-	virtual void detachImage(PresentImage *image) override;
-	VkResult present(PresentImage *image) override;
-
-private:
-	Display *const pDisplay;
-	const Window window;
-	GC gc;
-	Visual *visual = nullptr;
-	std::unordered_map<PresentImage *, XImage *> imageMap;
+	static VkResult Create(const VkAllocationCallbacks *pAllocator, const VkXlibSurfaceCreateInfoKHR *pCreateInfo, VkSurfaceKHR *outObject);
 };
 
 }  // namespace vk
+
 #endif  //SWIFTSHADER_XLIBSURFACEKHR_HPP
