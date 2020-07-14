@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8c15fdc_baf68096",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-14T18:16:01Z",
+      "side": 1,
+      "message": "This will require all of us to upgrade to clang-format 10 (as far as I\u0027m aware more recent versions are still compatible too).",
+      "revId": "edf7b14191df465207ab626c960904a37a9d4e99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
