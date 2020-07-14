@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8cc9d571_1fa267b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-14T17:33:03Z",
+      "side": 1,
+      "message": "\u003e dEQP-VK.binding_model.shader_access.primary_cmd_buf.combined_image_sampler_immutable.compute.descriptor_array.1d - [PASS -\u003e ABORT]\n\nThis is a compute shader test, which can only access images through OpImageFetch, OpImageRead, and OpImageWrite SPIR-V instructions, which don\u0027t take a sampler parameter. The latter two instructions aren\u0027t handled by this code path, but we should skip the assert in case of a Fetch.\n\n\u003e dEQP-VK.texture.explicit_lod.2d.sizes.31x55_linear_linear_mipmap_linear_repeat - [FAIL -\u003e ABORT]\n\u003e \u003cSwiftShader\u003e/src/Pipeline/SpirvShaderSampling.cpp:78 ABORT: UNDEFINED_BEHAVIOR: Linear filtering specified for non-linear format: 37\n\nThis is odd. Format 37 is VK_FORMAT_R8G8B8A8_UNORM which should have linear filtering capabilities according to PhysicalDevice::getFormatProperties().",
+      "revId": "43a1983d058a85ae94a16469ea807405847016b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
