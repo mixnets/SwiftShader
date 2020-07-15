@@ -39,6 +39,30 @@
       "revId": "fc12db7e5d8e337e7f76b800c65efd312def5e80",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad2bd59e_873afef1",
+        "filename": "docs/Regres.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-07-15T16:28:16Z",
+      "side": 1,
+      "message": "Acknowledged. I do find GitHub\u0027s UI far nicer to navigate though.",
+      "parentUuid": "7218a36b_1e4d6419",
+      "range": {
+        "startLine": 20,
+        "startChar": 71,
+        "endLine": 20,
+        "endChar": 89
+      },
+      "revId": "fc12db7e5d8e337e7f76b800c65efd312def5e80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
