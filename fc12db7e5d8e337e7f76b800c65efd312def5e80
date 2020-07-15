@@ -63,6 +63,30 @@
       "revId": "fc12db7e5d8e337e7f76b800c65efd312def5e80",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "064e5759_9f99a1d3",
+        "filename": "docs/Regres.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-15T18:13:38Z",
+      "side": 1,
+      "message": "Agreed, but I have a tiny concern about people cloning the github repo and trying to make pull requests, which we can\u0027t process.\n\nAnyway, we can adjust it when we have a better solution: go/osscs-onboarding b/161366708",
+      "parentUuid": "ad2bd59e_873afef1",
+      "range": {
+        "startLine": 20,
+        "startChar": 71,
+        "endLine": 20,
+        "endChar": 89
+      },
+      "revId": "fc12db7e5d8e337e7f76b800c65efd312def5e80",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
