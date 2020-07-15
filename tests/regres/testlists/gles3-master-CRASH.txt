@@ -1,0 +1,9 @@
+dEQP-GLES3.functional.shaders.builtin_functions.precision.atanh.lowp_fragment.vec4
+dEQP-GLES3.functional.shaders.indexing.vector_subscript.vec4_static_subscript_write_dynamic_loop_subscript_read_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.bitwise_and_assign_effect.lowp_uvec2_uint_vertex
+dEQP-GLES3.functional.shaders.switch.const_expr_in_label_uniform_vertex
+dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_linear
+dEQP-GLES3.functional.texture.shadow.2d_array.nearest_mipmap_nearest.not_equal_depth_component16
+dEQP-GLES3.functional.transform_feedback.array.separate.lines.lowp_vec3
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.basic_array.uvec4_fragment
+dEQP-GLES3.functional.vertex_arrays.multiple_attributes.input_types.3_unsigned_short2_vec2_unsigned_short2_vec2_short2_vec2
