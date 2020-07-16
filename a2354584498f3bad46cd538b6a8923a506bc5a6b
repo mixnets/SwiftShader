@@ -39,6 +39,30 @@
       "revId": "a2354584498f3bad46cd538b6a8923a506bc5a6b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84437675_d7a2de7c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 535,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2020-07-16T13:03:10Z",
+      "side": 1,
+      "message": "What do you refer to by \"this\"?",
+      "parentUuid": "7700d81d_586702ab",
+      "range": {
+        "startLine": 535,
+        "startChar": 63,
+        "endLine": 535,
+        "endChar": 85
+      },
+      "revId": "a2354584498f3bad46cd538b6a8923a506bc5a6b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
