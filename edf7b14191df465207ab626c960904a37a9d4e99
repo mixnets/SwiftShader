@@ -33,6 +33,24 @@
       "revId": "edf7b14191df465207ab626c960904a37a9d4e99",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c378529_cf87368b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-16T19:46:25Z",
+      "side": 1,
+      "message": "I\u0027ve documented the clang-format version used by Kokoro presubmit in the README.md. The commit message already mentions version 10. Note our gLinux workstations have a rolling build of clang-format without version info.\n\nSince the usage is platform and IDE-specific, I\u0027m not sure any scripts to download version 10 would be useful. Anyway, those can still be added later if it helps out multiple contributors.",
+      "parentUuid": "44a9b661_a5a64203",
+      "revId": "edf7b14191df465207ab626c960904a37a9d4e99",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
