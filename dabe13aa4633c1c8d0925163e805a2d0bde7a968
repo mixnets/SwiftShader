@@ -33,6 +33,23 @@
       "revId": "dabe13aa4633c1c8d0925163e805a2d0bde7a968",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b26df0f_f4f07c22",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-16T13:08:06Z",
+      "side": 1,
+      "message": "Thanks Corentin! Could you update https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2452 to point out that vkCmdCopyBufferToImage and vkCmdCopyImageToBuffer are also missing array image coverage?",
+      "revId": "dabe13aa4633c1c8d0925163e805a2d0bde7a968",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
