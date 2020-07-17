@@ -16,6 +16,41 @@
       "revId": "22edf4647745bff8e10cab45e467e0b67ed39d05",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "715e528b_eda0c00f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-17T15:11:37Z",
+      "side": 1,
+      "message": "Sorry about those build failure emails. I\u0027ve been meaning to fix external CI builds since forever, but I don\u0027t think we\u0027ll get much value out of it at this point and it\u0027s probably better to start with a clean slate if we have a use for them again at some point.",
+      "parentUuid": "ca8b13ec_ce2f4eb2",
+      "revId": "22edf4647745bff8e10cab45e467e0b67ed39d05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b04a83e9_4bef7d80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-17T15:11:37Z",
+      "side": 1,
+      "message": "https://storage.googleapis.com/swiftshader-binaries/index.html is still serving a build from 2019.. I\u0027ll take that down too.",
+      "revId": "22edf4647745bff8e10cab45e467e0b67ed39d05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
