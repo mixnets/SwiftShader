@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e1db201_53073b3e",
+        "filename": ".travis.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-17T15:13:13Z",
+      "side": 0,
+      "message": "I also deleted this cloud storage bucket for good measure.",
+      "range": {
+        "startLine": 40,
+        "startChar": 10,
+        "endLine": 40,
+        "endChar": 30
+      },
+      "revId": "db74776104f5ff6504c8d613f177517502f0e20f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
