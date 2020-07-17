@@ -524,21 +524,25 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 	                     (imageSlicePitchBytes == bufferSlicePitchBytes);
 
 	VkDeviceSize copySize = 0;
-	if(isSingleRow)
+	if(imageExtent.width == 0 || imageExtent.height == 0 || imageExtent.depth == 0)
+	{
+		copySize = 0;
+	}
+	else if(isSingleRow)
 	{
 		copySize = imageExtent.width * bytesPerBlock;
 	}
 	else if(isEntireRow && isSingleSlice)
 	{
-		copySize = imageExtent.height * imageRowPitchBytes;
+		copySize = (imageExtent.height - 1) * imageRowPitchBytes + imageExtent.width * bytesPerBlock;
 	}
 	else if(isEntireSlice)
 	{
-		copySize = imageExtent.depth * imageSlicePitchBytes;  // Copy multiple slices
+		copySize = (imageExtent.depth - 1) * imageSlicePitchBytes + (imageExtent.height - 1) * imageRowPitchBytes + imageExtent.width * bytesPerBlock;  // Copy multiple slices
 	}
 	else if(isEntireRow)  // Copy slice by slice
 	{
-		copySize = imageExtent.height * imageRowPitchBytes;
+		copySize = (imageExtent.height - 1) * imageRowPitchBytes + imageExtent.width * bytesPerBlock;
 	}
 	else  // Copy row by row
 	{
