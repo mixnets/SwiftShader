@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca8b13ec_ce2f4eb2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-17T14:50:55Z",
+      "side": 1,
+      "message": "Just last night, I thought about talking to you about getting rid of the Travis build! 😊",
+      "revId": "22edf4647745bff8e10cab45e467e0b67ed39d05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
