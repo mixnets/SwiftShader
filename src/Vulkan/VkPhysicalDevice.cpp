@@ -257,8 +257,8 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		128,                                              // maxComputeWorkGroupInvocations
 		{ 128, 128, 64 },                                 // maxComputeWorkGroupSize[3]
 		vk::SUBPIXEL_PRECISION_BITS,                      // subPixelPrecisionBits
-		4,                                                // subTexelPrecisionBits
-		4,                                                // mipmapPrecisionBits
+		8,                                                // subTexelPrecisionBits
+		8,                                                // mipmapPrecisionBits
 		UINT32_MAX,                                       // maxDrawIndexedIndexValue
 		UINT32_MAX,                                       // maxDrawIndirectCount
 		vk::MAX_SAMPLER_LOD_BIAS,                         // maxSamplerLodBias
