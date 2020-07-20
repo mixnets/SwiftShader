@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39ac0498_b3ce76ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-20T19:09:57Z",
+      "side": 1,
+      "message": "It\u0027s great to know the root cause for the last remaining failures, but I\u0027m not sure this is the correct fix. It seems backwards that a test would pass when increasing our advertised precision, or rather, that it would start to fail again if we lowered it. Sure, this is closer to our actual precision (for small textures), but I think it\u0027s wrong for the test to fail if we report lower precision.\n\nI\u0027ll open an issue or two with Khronos to see if we can get the spec to clarify that higher effective precision is allowed, and adjust the tests.",
+      "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
