@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "856b26fc_2fcb7dac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86041
+      },
+      "writtenOn": "2020-07-20T21:15:05Z",
+      "side": 1,
+      "message": "Thanks. I don’t seem to have permission to land this myself. Can you press the magic button?",
+      "revId": "c37373d8e9a71439f4e5c7a12b915ee189061945",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
