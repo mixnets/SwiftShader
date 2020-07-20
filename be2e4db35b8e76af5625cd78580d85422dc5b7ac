@@ -16,6 +16,24 @@
       "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3f20f15_87fde059",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-20T19:54:18Z",
+      "side": 1,
+      "message": "This is going to be difficult to do. The test performs linear filtering of mipmap levels, which are then interpolated based on the LOD.\nIn order to get this right, they\u0027d have to recursively retry the whole test at a progressively higher precision until it passes, and these tests are already somewhat time consuming, so we probably want to provide the test with a fairly good approximation of the precision we\u0027re using.\n\nAnyway, let\u0027s see how Khronos solves this.",
+      "parentUuid": "39ac0498_b3ce76ba",
+      "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
