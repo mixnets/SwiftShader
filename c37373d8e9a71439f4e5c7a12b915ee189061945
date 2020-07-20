@@ -34,6 +34,24 @@
       "revId": "c37373d8e9a71439f4e5c7a12b915ee189061945",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4671268f_3da6afe0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-20T21:16:29Z",
+      "side": 1,
+      "message": "Just waiting for our presubmits to pass, then will submit.",
+      "parentUuid": "a56d2f94_1ef41df3",
+      "revId": "c37373d8e9a71439f4e5c7a12b915ee189061945",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
