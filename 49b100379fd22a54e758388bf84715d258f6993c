@@ -16,6 +16,24 @@
       "revId": "49b100379fd22a54e758388bf84715d258f6993c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6091ee04_4cf454ad",
+        "filename": "tests/kokoro/gcp_ubuntu/reactor_subzero/debug/continuous.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-21T14:05:12Z",
+      "side": 1,
+      "message": "Yeah, it does matter for now, because we always add_subdirectory for llvm:\n\n    ###########################################################\n    # LLVM\n    ###########################################################\n    add_subdirectory(${THIRD_PARTY_DIR}/llvm-${SWIFTSHADER_LLVM_VERSION} EXCLUDE_FROM_ALL)\n\nI could wrap this up in if(REACTOR_BACKEND \u003d\u003d \"LLVM\"), and same for Subzero, but I like being able to see the targets, even if not built, in Visual Studio (hence the EXCLUDE_FROM_ALL). We can certainly change this in the future.",
+      "parentUuid": "8c5ac9dd_f707b777",
+      "revId": "49b100379fd22a54e758388bf84715d258f6993c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
