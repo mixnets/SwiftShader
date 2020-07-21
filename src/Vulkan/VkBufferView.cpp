@@ -19,7 +19,7 @@
 namespace vk {
 
 BufferView::BufferView(const VkBufferViewCreateInfo *pCreateInfo, void *mem)
-    : id(pCreateInfo->format)
+    : id(pCreateInfo)
     , buffer(vk::Cast(pCreateInfo->buffer))
     , format(pCreateInfo->format)
     , offset(pCreateInfo->offset)

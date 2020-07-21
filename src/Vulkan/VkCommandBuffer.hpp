@@ -148,7 +148,9 @@ public:
 		sw::TaskEvents *events = nullptr;
 		RenderPass *renderPass = nullptr;
 		Framebuffer *renderPassFramebuffer = nullptr;
-		std::array<PipelineState, vk::VK_PIPELINE_BIND_POINT_RANGE_SIZE> pipelineState;
+
+		PipelineState graphicsPipelineState;
+		PipelineState computePipelineState;
 
 		struct DynamicState
 		{

@@ -145,10 +145,10 @@ private:
 	const vk::CommandBuffer *commandBuffer;
 };
 
-class CmdPipelineBind : public vk::CommandBuffer::Command
+class CmdBindPipeline : public vk::CommandBuffer::Command
 {
 public:
-	CmdPipelineBind(VkPipelineBindPoint pipelineBindPoint, vk::Pipeline *pipeline)
+	CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, vk::Pipeline *pipeline)
 	    : pipelineBindPoint(pipelineBindPoint)
 	    , pipeline(pipeline)
 	{
@@ -156,10 +156,19 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		executionState.pipelineState[pipelineBindPoint].pipeline = pipeline;
+		if(pipelineBindPoint == VK_PIPELINE_BIND_POINT_GRAPHICS)
+		{
+			executionState.graphicsPipelineState.pipeline = pipeline;
+		}
+		else if(pipelineBindPoint == VK_PIPELINE_BIND_POINT_COMPUTE)
+		{
+			executionState.computePipelineState.pipeline = pipeline;
+		}
+		else
+			UNSUPPORTED("VkPipelineBindPoint %d", int(pipelineBindPoint));
 	}
 
-	std::string description() override { return "vkCmdPipelineBind()"; }
+	std::string description() override { return "vkCmdBindPipelineBind"; }
 
 private:
 	VkPipelineBindPoint pipelineBindPoint;
@@ -181,7 +190,7 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_COMPUTE];
+		auto const &pipelineState = executionState.computePipelineState;
 
 		vk::ComputePipeline *pipeline = static_cast<vk::ComputePipeline *>(pipelineState.pipeline);
 		pipeline->run(baseGroupX, baseGroupY, baseGroupZ,
@@ -216,7 +225,7 @@ public:
 	{
 		auto cmd = reinterpret_cast<VkDispatchIndirectCommand const *>(buffer->getOffsetPointer(offset));
 
-		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_COMPUTE];
+		auto const &pipelineState = executionState.computePipelineState;
 
 		auto pipeline = static_cast<vk::ComputePipeline *>(pipelineState.pipeline);
 		pipeline->run(0, 0, 0, cmd->x, cmd->y, cmd->z,
@@ -528,7 +537,7 @@ public:
 	void draw(vk::CommandBuffer::ExecutionState &executionState, bool indexed,
 	          uint32_t count, uint32_t instanceCount, uint32_t first, int32_t vertexOffset, uint32_t firstInstance)
 	{
-		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_GRAPHICS];
+		auto const &pipelineState = executionState.graphicsPipelineState;
 
 		auto *pipeline = static_cast<vk::GraphicsPipeline *>(pipelineState.pipeline);
 
@@ -1116,21 +1125,30 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		ASSERT(pipelineBindPoint < vk::VK_PIPELINE_BIND_POINT_RANGE_SIZE);
 		ASSERT(firstSet + descriptorSetCount <= vk::MAX_BOUND_DESCRIPTOR_SETS);
 		ASSERT(firstDynamicOffset + dynamicOffsetCount <= vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC);
 
-		auto &pipelineState = executionState.pipelineState[pipelineBindPoint];
+		vk::CommandBuffer::ExecutionState::PipelineState *pipelineState = nullptr;
+		if(pipelineBindPoint == VK_PIPELINE_BIND_POINT_GRAPHICS)
+		{
+			pipelineState = &executionState.graphicsPipelineState;
+		}
+		else if(pipelineBindPoint == VK_PIPELINE_BIND_POINT_COMPUTE)
+		{
+			pipelineState = &executionState.computePipelineState;
+		}
+		else
+			UNSUPPORTED("VkPipelineBindPoint %d", int(pipelineBindPoint));
 
 		for(uint32_t i = firstSet; i < firstSet + descriptorSetCount; i++)
 		{
-			pipelineState.descriptorSetObjects[i] = descriptorSetObjects[i];
-			pipelineState.descriptorSets[i] = descriptorSets[i];
+			pipelineState->descriptorSetObjects[i] = descriptorSetObjects[i];
+			pipelineState->descriptorSets[i] = descriptorSets[i];
 		}
 
 		for(uint32_t i = firstDynamicOffset; i < firstDynamicOffset + dynamicOffsetCount; i++)
 		{
-			pipelineState.descriptorDynamicOffsets[i] = dynamicOffsets[i];
+			pipelineState->descriptorDynamicOffsets[i] = dynamicOffsets[i];
 		}
 	}
 
@@ -1462,7 +1480,7 @@ void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline
 	{
 		case VK_PIPELINE_BIND_POINT_COMPUTE:
 		case VK_PIPELINE_BIND_POINT_GRAPHICS:
-			addCommand<::CmdPipelineBind>(pipelineBindPoint, pipeline);
+			addCommand<::CmdBindPipeline>(pipelineBindPoint, pipeline);
 			break;
 		default:
 			UNSUPPORTED("VkPipelineBindPoint %d", int(pipelineBindPoint));

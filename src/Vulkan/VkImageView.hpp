@@ -31,11 +31,8 @@ class SamplerYcbcrConversion;
 // ID space shared by image views and buffer views.
 union Identifier
 {
-	// Image view identifier
 	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping);
-
-	// Buffer view identifier
-	Identifier(VkFormat format);
+	Identifier(const VkBufferViewCreateInfo *bufferView);
 
 	operator uint32_t() const
 	{
@@ -48,6 +45,7 @@ union Identifier
 	struct
 	{
 		uint32_t imageViewType : 3;
+		uint32_t buffer : 1;
 		uint32_t format : 8;
 		uint32_t r : 3;
 		uint32_t g : 3;

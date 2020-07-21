@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkImageView.hpp"
+
 #include "VkImage.hpp"
 #include "System/Math.hpp"
 
@@ -66,11 +67,10 @@ Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, V
 	a = mapping.a;
 }
 
-Identifier::Identifier(VkFormat fmt)
+Identifier::Identifier(const VkBufferViewCreateInfo *bufferView)
 {
-	static_assert(vk::VK_IMAGE_VIEW_TYPE_END_RANGE == 6, "VkImageViewType does not allow using 7 to indicate buffer view");
 	imageViewType = 7;  // Still fits in 3-bit field
-	format = Format::mapTo8bit(fmt);
+	format = Format::mapTo8bit(bufferView->format);
 }
 
 ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
