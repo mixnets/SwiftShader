@@ -443,6 +443,25 @@ void SetupRoutine::generate()
 
 			C = Float4(c * *Pointer<Float>(data + OFFSET(DrawData, depthRange)) + *Pointer<Float>(data + OFFSET(DrawData, depthNear)));
 
+			if(state.applyDepthBiasClamp)
+			{
+				Float clamp = *Pointer<Float>(data + OFFSET(DrawData, depthBiasClamp));
+				If(clamp > 0.0f)
+				{
+					C.x = Min(clamp, C.x);
+					C.y = Min(clamp, C.y);
+					C.z = Min(clamp, C.z);
+					C.w = Min(clamp, C.w);
+				}
+				Else
+				{
+					C.x = Max(clamp, C.x);
+					C.y = Max(clamp, C.y);
+					C.z = Max(clamp, C.z);
+					C.w = Max(clamp, C.w);
+				}
+			}
+
 			*Pointer<Float4>(primitive + OFFSET(Primitive, z.C), 16) = C;
 		}
 
