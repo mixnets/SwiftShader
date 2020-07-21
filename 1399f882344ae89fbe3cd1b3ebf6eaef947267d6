@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f68b1978_0cacf2ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-21T19:41:38Z",
+      "side": 1,
+      "message": "Can we get the new tests first? They appear to have landed yesterday.\nhttps://github.com/KhronosGroup/VK-GL-CTS/commit/ab2b0eb2921b649bee5f0c81f6cd42c1aad471a5",
+      "revId": "1399f882344ae89fbe3cd1b3ebf6eaef947267d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
