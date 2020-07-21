@@ -86,6 +86,30 @@
       "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d119478_eb89c4a1",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-21T19:15:11Z",
+      "side": 1,
+      "message": "Looks safe to me. Just quoting the spec should be enough. Thanks!",
+      "parentUuid": "83723338_4e079f6b",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 268,
+        "endChar": 2
+      },
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
