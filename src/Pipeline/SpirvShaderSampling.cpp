@@ -87,6 +87,16 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	return (ImageSampler *)(routine->getEntry());
 }
 
+void SpirvShader::prepareImageSampler(vk::SampledImageDescriptor* sampledImageDescriptor)
+{
+	if((samplingParameters != UNINITIALIZED_PARAMETERS) &&
+	   (samplingParameters != NON_UNIQUE_PARAMETERS))
+	{
+		getImageSampler(samplingParameters, sampledImageDescriptor, &(sampledImageDescriptor->sampler));
+		sampledImageDescriptor->device->getSamplingRoutineCache()->updateSnapshot();
+	}
+}
+
 std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
 {
 	// TODO(b/129523279): Hold a separate mutex lock for the sampler being built.

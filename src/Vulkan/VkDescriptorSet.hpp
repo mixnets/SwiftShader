@@ -22,6 +22,10 @@
 #include <cstdint>
 #include <memory>
 
+namespace sw {
+class SpirvShader;
+}  // namespace sw
+
 namespace vk {
 
 class DescriptorSetLayout;
@@ -42,6 +46,7 @@ public:
 
 	static void ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout);
 	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout);
+	static void PrepareSamplingFunction(const Array &descriptorSets, const PipelineLayout *layout, sw::SpirvShader* shader);
 
 	DescriptorSetHeader header;
 	alignas(16) uint8_t data[1];
@@ -50,9 +55,10 @@ private:
 	enum NotificationType
 	{
 		CONTENTS_CHANGED,
-		PREPARE_FOR_SAMPLING
+		PREPARE_FOR_SAMPLING,
+		PREPARE_SAMPLING_FUNCTION
 	};
-	static void ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, NotificationType notificationType);
+	static void ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, sw::SpirvShader* shader, NotificationType notificationType);
 };
 
 inline DescriptorSet *Cast(VkDescriptorSet object)

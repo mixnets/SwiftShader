@@ -15,10 +15,11 @@
 #include "VkDescriptorSet.hpp"
 #include "VkImageView.hpp"
 #include "VkPipelineLayout.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 namespace vk {
 
-void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, NotificationType notificationType)
+void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, sw::SpirvShader* shader, NotificationType notificationType)
 {
 	if(layout)
 	{
@@ -44,12 +45,14 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 
 				for(uint32_t k = 0; k < descriptorCount; k++)
 				{
+					SampledImageDescriptor *sampledImageDescriptor = nullptr;
 					ImageView *memoryOwner = nullptr;
 					switch(type)
 					{
 						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-							memoryOwner = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory)->memoryOwner;
+							sampledImageDescriptor = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory);
+							memoryOwner = sampledImageDescriptor->memoryOwner;
 							break;
 						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 						case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
@@ -60,13 +63,25 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 					}
 					if(memoryOwner)
 					{
-						if(notificationType == PREPARE_FOR_SAMPLING)
+						switch(notificationType)
 						{
+						case PREPARE_FOR_SAMPLING:
 							memoryOwner->prepareForSampling();
-						}
-						else if((notificationType == CONTENTS_CHANGED) && (type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE))
-						{
-							memoryOwner->contentsChanged();
+							break;
+						case CONTENTS_CHANGED:
+							if(type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+							{
+								memoryOwner->contentsChanged();
+							}
+							break;
+						case PREPARE_SAMPLING_FUNCTION:
+							if(sampledImageDescriptor)
+							{
+								shader->prepareImageSampler(sampledImageDescriptor);
+							}
+							break;
+						default:
+							UNREACHABLE("Notification Type: %d", (int)notificationType);
 						}
 					}
 					descriptorMemory += descriptorSize;
@@ -78,12 +93,20 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 
 void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout)
 {
-	ParseDescriptors(descriptorSets, layout, CONTENTS_CHANGED);
+	ParseDescriptors(descriptorSets, layout, nullptr, CONTENTS_CHANGED);
 }
 
 void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout)
 {
-	ParseDescriptors(descriptorSets, layout, PREPARE_FOR_SAMPLING);
+	ParseDescriptors(descriptorSets, layout, nullptr, PREPARE_FOR_SAMPLING);
+}
+
+void DescriptorSet::PrepareSamplingFunction(const Array& descriptorSets, const PipelineLayout* layout, sw::SpirvShader* shader)
+{
+	if(shader)
+	{
+		ParseDescriptors(descriptorSets, layout, shader, PREPARE_SAMPLING_FUNCTION);
+	}
 }
 
 }  // namespace vk
