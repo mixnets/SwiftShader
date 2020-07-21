@@ -16,6 +16,24 @@
       "revId": "53dbf725530374674fafe27b17c59d23d491b09d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca2c0283_cfd371da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T17:28:09Z",
+      "side": 1,
+      "message": "http://crbug.com/937268, which had fallen off my radar but recently got a ping. Then I noticed it was affected by code in our llvm-subzero folder which I\u0027ve been meaning to minimize/eliminate for a while. Two birds one stone.\n\n-5k lines is a nice start. 😊",
+      "parentUuid": "4d947019_5d6f56eb",
+      "revId": "53dbf725530374674fafe27b17c59d23d491b09d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
