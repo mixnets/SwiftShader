@@ -52,6 +52,24 @@
       "revId": "c37373d8e9a71439f4e5c7a12b915ee189061945",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "70ee3d61_fdff7844",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T17:44:22Z",
+      "side": 1,
+      "message": "Antonio, note you can give people tryjob and submit rights by adding them to the tryjob-access group: go/swiftshader/development/code-reviews.md#access-rights",
+      "parentUuid": "4671268f_3da6afe0",
+      "revId": "c37373d8e9a71439f4e5c7a12b915ee189061945",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
