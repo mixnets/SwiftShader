@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "4604a31b_67fbe3d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-21T18:40:05Z",
+      "side": 1,
+      "message": "If you want to test cases that aren\u0027t already in the PASS list, you need to add them in your cl description.\n\nIf you have no idea which tests get triggered by your feature, you can add:\n\nTests: dEQP-VK.*\n\nBut that will take over 50 minutes instead of about 22 minutes.",
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "94176f2a_46de9f35",
         "filename": "src/Pipeline/SetupRoutine.cpp",
         "patchSetId": 1
