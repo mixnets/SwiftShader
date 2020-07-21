@@ -425,7 +425,21 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 
 	draw->events = events;
 
-	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, device);
+	// Prepare all texture samplers that can be prepared before rendering starts
+	{
+		std::vector<sw::SpirvShader *> shaders;
+		sw::SpirvShader *vertexShader = pipeline->getShader(VK_SHADER_STAGE_VERTEX_BIT).get();
+		if(vertexShader)
+		{
+			shaders.push_back(vertexShader);
+		}
+		sw::SpirvShader *fragmentShader = pipeline->getShader(VK_SHADER_STAGE_FRAGMENT_BIT).get();
+		if(fragmentShader)
+		{
+			shaders.push_back(fragmentShader);
+		}
+		vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, device, shaders);
+	}
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }
