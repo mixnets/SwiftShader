@@ -23,7 +23,7 @@
 
 namespace vk {
 
-void wl_registry_handle_global(void *data, struct wl_registry *registry, unsigned int name, const char *interface, unsigned int version)
+static void wl_registry_handle_global(void *data, struct wl_registry *registry, unsigned int name, const char *interface, unsigned int version)
 {
 	struct wl_shm **pshm = (struct wl_shm **)data;
 	if(!strcmp(interface, "wl_shm"))
@@ -32,11 +32,11 @@ void wl_registry_handle_global(void *data, struct wl_registry *registry, unsigne
 	}
 }
 
-void wl_registry_handle_global_remove(void *data, struct wl_registry *registry, unsigned int name)
+static void wl_registry_handle_global_remove(void *data, struct wl_registry *registry, unsigned int name)
 {
 }
 
-struct wl_registry_listener wl_registry_listener = { wl_registry_handle_global, wl_registry_handle_global_remove };
+static const struct wl_registry_listener wl_registry_listener = { wl_registry_handle_global, wl_registry_handle_global_remove };
 
 WaylandSurfaceKHR::WaylandSurfaceKHR(const VkWaylandSurfaceCreateInfoKHR *pCreateInfo, void *mem)
     : display(pCreateInfo->display)
