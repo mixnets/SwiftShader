@@ -194,7 +194,8 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 
 	// If using a separate sampler, look through the OpSampledImage instruction to find the sampler descriptor
 	auto &sampledImage = getObject(sampledImageId);
-	auto samplerDescriptor = (sampledImage.opcode() == spv::OpSampledImage) ? state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
+	bool separateSampler = (sampledImage.opcode() == spv::OpSampledImage);
+	auto samplerDescriptor = separateSampler ? state->getPointer(sampledImage.definition.word(4)).base : imageDescriptor;
 
 	auto coordinate = Operand(this, state, coordinateId);
 
@@ -204,7 +205,8 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 	// Above we assumed that if the SampledImage operand is not the result of an OpSampledImage,
 	// it must be a combined image sampler loaded straight from the descriptor set. For OpImageFetch
 	// it's just an Image operand, so there's no sampler descriptor data.
-	if(getType(sampledImage).opcode() != spv::OpTypeSampledImage)
+	bool useSampler = getType(sampledImage).opcode() == spv::OpTypeSampledImage;
+	if(!useSampler)
 	{
 		sampler = Pointer<Byte>(nullptr);
 	}
@@ -363,19 +365,38 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
-
-	If(!cacheHit)
+	if(false)  // inline
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
+		Sampler samplerState = {};
+		emitSamplerRoutine(instruction, samplerState, texture, &in[0], &out[0], state->routine->constants);
 	}
+	else  // trampoline
+	{
+		auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+		If(!cacheHit)
+		{
+			if(useSampler && !separateSampler && (samplingParameters != instruction.parameters))
+			{
+				if(samplingParameters == UNINITIALIZED_PARAMETERS)
+				{
+					samplingParameters = instruction.parameters;
+				}
+				else
+				{
+					samplingParameters = NON_UNIQUE_PARAMETERS;
+				}
+			}
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const
