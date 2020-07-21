@@ -15,10 +15,11 @@
 #include "VkDescriptorSet.hpp"
 #include "VkImageView.hpp"
 #include "VkPipelineLayout.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 namespace vk {
 
-void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, NotificationType notificationType)
+void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, const std::vector<sw::SpirvShader *> &shaders, NotificationType notificationType)
 {
 	if(layout)
 	{
@@ -44,12 +45,14 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 
 				for(uint32_t k = 0; k < descriptorCount; k++)
 				{
+					SampledImageDescriptor *sampledImageDescriptor = nullptr;
 					ImageView *memoryOwner = nullptr;
 					switch(type)
 					{
 						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-							memoryOwner = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory)->memoryOwner;
+							sampledImageDescriptor = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory);
+							memoryOwner = sampledImageDescriptor->memoryOwner;
 							break;
 						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 						case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
@@ -63,6 +66,7 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 						if(notificationType == PREPARE_FOR_SAMPLING)
 						{
 							memoryOwner->prepareForSampling();
+							sw::SpirvShader::PrepareImageSamplers(shaders, sampledImageDescriptor);
 						}
 						else if((notificationType == CONTENTS_CHANGED) && (type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE))
 						{
@@ -78,12 +82,13 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 
 void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout)
 {
-	ParseDescriptors(descriptorSets, layout, CONTENTS_CHANGED);
+	std::vector<sw::SpirvShader *> noShaders;
+	ParseDescriptors(descriptorSets, layout, noShaders, CONTENTS_CHANGED);
 }
 
-void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout)
+void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, const std::vector<sw::SpirvShader *> &shaders)
 {
-	ParseDescriptors(descriptorSets, layout, PREPARE_FOR_SAMPLING);
+	ParseDescriptors(descriptorSets, layout, shaders, PREPARE_FOR_SAMPLING);
 }
 
 }  // namespace vk

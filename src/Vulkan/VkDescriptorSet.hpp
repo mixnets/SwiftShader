@@ -21,6 +21,11 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <vector>
+
+namespace sw {
+class SpirvShader;
+}  // namespace sw
 
 namespace vk {
 
@@ -41,7 +46,7 @@ public:
 	using DynamicOffsets = std::array<uint32_t, vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC>;
 
 	static void ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout);
-	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout);
+	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, const std::vector<sw::SpirvShader *> &shaders);
 
 	DescriptorSetHeader header;
 	alignas(16) uint8_t data[1];
@@ -52,7 +57,7 @@ private:
 		CONTENTS_CHANGED,
 		PREPARE_FOR_SAMPLING
 	};
-	static void ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, NotificationType notificationType);
+	static void ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, const std::vector<sw::SpirvShader *> &shaders, NotificationType notificationType);
 };
 
 inline DescriptorSet *Cast(VkDescriptorSet object)

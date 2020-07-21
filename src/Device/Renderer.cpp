@@ -389,7 +389,16 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 	draw->events = events;
 
-	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout);
+	std::vector<sw::SpirvShader *> shaders;
+	if(context->vertexShader)
+	{
+		shaders.push_back(context->vertexShader);
+	}
+	if(context->pixelShader)
+	{
+		shaders.push_back(context->pixelShader);
+	}
+	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, shaders);
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }

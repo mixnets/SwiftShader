@@ -120,8 +120,8 @@ public:
 	vk::PipelineLayout const *pipelineLayout;
 
 	// Shaders
-	const SpirvShader *pixelShader;
-	const SpirvShader *vertexShader;
+	SpirvShader *pixelShader;
+	SpirvShader *vertexShader;
 
 	bool occlusionEnabled;
 
