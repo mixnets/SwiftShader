@@ -1593,9 +1593,27 @@ void SpirvShader::emitProlog(SpirvRoutine *routine) const
 			case spv::OpImageSampleProjDrefImplicitLod:
 			case spv::OpImageSampleProjExplicitLod:
 			case spv::OpImageSampleProjImplicitLod:
+			{
+				Object::ID sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
+				auto &sampledImage = getObject(sampledImageId);
+				bool separateSampler = (sampledImage.opcode() == spv::OpSampledImage);
+				bool useSampler = getType(sampledImage).opcode() == spv::OpTypeSampledImage;
+				ImageInstruction instruction = GetImageInstructionWithIds(insn).imageInstruction;
+				if(useSampler && !separateSampler && (samplingParameters != instruction.parameters))
+				{
+					if(samplingParameters == UNINITIALIZED_PARAMETERS)
+					{
+						samplingParameters = instruction.parameters;
+					}
+					else
+					{
+						samplingParameters = NON_UNIQUE_PARAMETERS;
+					}
+				}
+
 				routine->samplerCache.emplace(insn.resultId(), SpirvRoutine::SamplerCache{});
 				break;
-
+			}
 			default:
 				// Nothing else produces interface variables, so can all be safely ignored.
 				break;
