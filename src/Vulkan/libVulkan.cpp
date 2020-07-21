@@ -353,6 +353,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 	{ VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME, VK_EXT_LINE_RASTERIZATION_SPEC_VERSION },
 	// The following extension is used by ANGLE to emulate blitting the stencil buffer
 	{ VK_EXT_SHADER_STENCIL_EXPORT_EXTENSION_NAME, VK_EXT_SHADER_STENCIL_EXPORT_SPEC_VERSION },
+	{ VK_EXT_IMAGE_ROBUSTNESS_EXTENSION_NAME, VK_EXT_IMAGE_ROBUSTNESS_SPEC_VERSION },
 #ifndef __ANDROID__
 	// We fully support the KHR_swapchain v70 additions, so just track the spec version.
 	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_KHR_SWAPCHAIN_SPEC_VERSION },
@@ -780,6 +781,16 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				// No action needs to be taken on our end in either case; it's the apps responsibility to check
 				// that the provokingVertexLast feature is enabled before using the provoking vertex convention.
 				(void)provokingVertexFeatures->provokingVertexLast;
+			}
+			break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT:
+			{
+				const VkPhysicalDeviceImageRobustnessFeaturesEXT *imageRobustnessFeatures = reinterpret_cast<const VkPhysicalDeviceImageRobustnessFeaturesEXT *>(extensionCreateInfo);
+
+				// We currently always provide robust image accesses. When the feature is disabled, results are
+				// undefined (for images with Dim != Buffer), so providing robustness is also acceptable.
+				// TODO(b/159329067): Only provide robustness when requested.
+				(void)imageRobustnessFeatures->robustImageAccess;
 			}
 			break;
 			default:
