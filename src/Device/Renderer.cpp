@@ -390,6 +390,8 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	draw->events = events;
 
 	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout);
+	vk::DescriptorSet::PrepareSamplingFunction(draw->descriptorSetObjects, draw->pipelineLayout, context->vertexShader);
+	vk::DescriptorSet::PrepareSamplingFunction(draw->descriptorSetObjects, draw->pipelineLayout, context->pixelShader);
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }

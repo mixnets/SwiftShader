@@ -783,6 +783,7 @@ public:
 	void emitEpilog(SpirvRoutine *routine) const;
 
 	bool containsImageWrite() const { return imageWriteEmitted; }
+	void prepareImageSampler(vk::SampledImageDescriptor *sampledImageDescriptor);
 
 	using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
 	std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
@@ -801,6 +802,12 @@ private:
 	std::unordered_set<Extension::Name> extensionsImported;
 	Function::ID entryPoint;
 	mutable bool imageWriteEmitted = false;
+	enum SamplingParameters
+	{
+		UNINITIALIZED_PARAMETERS = 0,
+		NON_UNIQUE_PARAMETERS = 0xFFFFFFFFu
+	};
+	mutable uint32_t samplingParameters = UNINITIALIZED_PARAMETERS;
 
 	const bool robustBufferAccess = true;
 	spv::ExecutionModel executionModel = spv::ExecutionModelMax;  // Invalid prior to OpEntryPoint parsing.
