@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12451fde_f95fda62",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T21:32:49Z",
+      "side": 1,
+      "message": "dEQP-VK.dynamic_state.rs_state.depth_bias_clamp",
+      "range": {
+        "startLine": 13,
+        "startChar": 7,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "ffa50bc0449e95d3df1f75a211bf40b1e56c8b45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdc22f0d_016878b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T21:32:49Z",
+      "side": 1,
+      "message": "Nice job! Couple of minor things:",
+      "revId": "ffa50bc0449e95d3df1f75a211bf40b1e56c8b45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49f51244_bf2e239b",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T21:32:49Z",
+      "side": 1,
+      "message": "Instead of doing this test dynamically and repeating it per pixel, it could be made part of the state, similar to applyDepthBiasClamp. Basically, a mutually-exclusive applyDepthBiasClampMin and applyDepthBiasClampMax boolean, or an enum representing the three options, would do the trick.\n\nAnyway, that could be left as a future optimization. The applyDepthBiasClamp already ensures there\u0027s no per-pixel cost when the clamp value is 0.0.",
+      "range": {
+        "startLine": 449,
+        "startChar": 4,
+        "endLine": 449,
+        "endChar": 20
+      },
+      "revId": "ffa50bc0449e95d3df1f75a211bf40b1e56c8b45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c31d7c1a_a7be8fd4",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T21:32:49Z",
+      "side": 1,
+      "message": "You could do something like \"C \u003d Min(Float4(clamp), C)\" instead, which is two instructions instead of four.",
+      "range": {
+        "startLine": 451,
+        "startChar": 5,
+        "endLine": 454,
+        "endChar": 27
+      },
+      "revId": "ffa50bc0449e95d3df1f75a211bf40b1e56c8b45",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
