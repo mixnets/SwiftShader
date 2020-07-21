@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94176f2a_46de9f35",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-21T18:34:34Z",
+      "side": 1,
+      "message": "Just curious, is something like this possible?\n\nFloat4 clamp4 \u003d Float4(clamp);\nC \u003d IfThenElse(clamp \u003e 0.0f, Min(clamp4, C), Max(clamp4, C));",
+      "range": {
+        "startLine": 449,
+        "startChar": 0,
+        "endLine": 462,
+        "endChar": 5
+      },
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47367998_6ca369bb",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-21T18:34:34Z",
+      "side": 1,
+      "message": "Is this in the spec? If so, it would be nice to quote the spec regarding this.",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 268,
+        "endChar": 2
+      },
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
