@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "827219ad_a8897e47",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:47:25Z",
+      "side": 1,
+      "message": "We require all commit messages to refer to a bug entry. This makes discussing bugs and features easier, especially when follow-up and maintenance is required. They have the following format:\n\nBug: b/\u003cbugtracker-id-number\u003e\n\nYou can file them here: https://g.co/swiftshaderbugs",
+      "revId": "5549df63f868ff490272678e8245c665eee30402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b287722d_c95015b0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:47:25Z",
+      "side": 1,
+      "message": "Thank you for working on this feature! I\u0027m not sure if this is meant to be ready for review yet, but here\u0027s some early feedback:",
+      "revId": "5549df63f868ff490272678e8245c665eee30402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5406e16_8857a6d3",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:47:25Z",
+      "side": 1,
+      "message": "This will link in the Wayland client library depending on whether it was found on the build system, not whether the deployment target is expected to have it too. Can we make this conditional on a flag (defaulting to false, for now)?",
+      "range": {
+        "startLine": 630,
+        "startChar": 16,
+        "endLine": 630,
+        "endChar": 28
+      },
+      "revId": "5549df63f868ff490272678e8245c665eee30402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5356326_0ed93a71",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:47:25Z",
+      "side": 1,
+      "message": "Same as above.",
+      "range": {
+        "startLine": 711,
+        "startChar": 8,
+        "endLine": 711,
+        "endChar": 19
+      },
+      "revId": "5549df63f868ff490272678e8245c665eee30402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa77a518_2e8f9dea",
+        "filename": "src/WSI/WaylandSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:47:25Z",
+      "side": 1,
+      "message": "I\u0027d make these static to avoid external linkage.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 1
+      },
+      "revId": "5549df63f868ff490272678e8245c665eee30402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
