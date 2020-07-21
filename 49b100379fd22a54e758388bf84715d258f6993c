@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0138cb3_70ca461e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:22:40Z",
+      "side": 0,
+      "message": "Note to self: I\u0027ve confirmed that things like https://llvm.org/docs/LangRef.html#llvm-uadd-sat-intrinsics are non-optional intrinsics, so there\u0027s indeed no value in keeping this, assuming no bugs in LLVM. This fallback implementation is pretty horrid for performance unless LLVM can match it perfectly to the intended native instructions (but even then, this transform adds some backend cost).",
+      "range": {
+        "startLine": 176,
+        "startChar": 13,
+        "endLine": 176,
+        "endChar": 22
+      },
+      "revId": "49b100379fd22a54e758388bf84715d258f6993c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

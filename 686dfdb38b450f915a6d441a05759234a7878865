@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3cfd0072_f3c01928",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3572,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:22:40Z",
+      "side": 1,
+      "message": "Note these implementations are now no longer x86-specific. In future patches we can get rid of these as well as the lowerPSADDSAT etc. by simply calling CreateBinaryIntrinsic(llvm::Intrinsic::sadd_sat) where we would previously call this x86 intrinsic.",
+      "range": {
+        "startLine": 3572,
+        "startChar": 15,
+        "endLine": 3572,
+        "endChar": 21
+      },
+      "revId": "686dfdb38b450f915a6d441a05759234a7878865",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
