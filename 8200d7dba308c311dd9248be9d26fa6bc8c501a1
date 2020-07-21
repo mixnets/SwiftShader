@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e580314_e2b41f5c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-21T13:27:44Z",
+      "side": 1,
+      "message": "LGTM but let\u0027s wait with landing this for a bit. If for some unexpected valid reason we need to keep LLVM 7 support, reverting this is going to massive deltas (only to be deleted at a later point again).",
+      "revId": "8200d7dba308c311dd9248be9d26fa6bc8c501a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
