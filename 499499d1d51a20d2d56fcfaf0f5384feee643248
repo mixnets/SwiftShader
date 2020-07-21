@@ -62,6 +62,30 @@
       "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83723338_4e079f6b",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-07-21T18:56:01Z",
+      "side": 1,
+      "message": "The spec states:\n\nthe bias value O for a polygon is: O \u003d dbclamp(...)\nwhere dbclamp(x) \u003d\n   * x (if depthBiasClamp \u003d 0 or NaN)\n   * min(x, depthBiasClamp) (if depthBiasClamp \u003e 0)\n   * max(x, depthBiasClamp) (if depthBiasClamp \u003c 0)\n\nwhich I figured meant it was safe to preemptively turn NaN values into 0 rather than handle that logic later. I\u0027ll add a comment citing this portion of the spec if this is indeed safe, or I\u0027ll handle NaNs at a different point in the code.",
+      "parentUuid": "47367998_6ca369bb",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 268,
+        "endChar": 2
+      },
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
