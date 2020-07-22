@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc267498_49d8980b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T17:08:21Z",
+      "side": 1,
+      "message": "Seems reasonable. It already had the limitation of one variable declaration per line. Might as well make sure the trace points to the right one.",
+      "revId": "b481fc15fb933ccdb8281948f781d898bc6094e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
