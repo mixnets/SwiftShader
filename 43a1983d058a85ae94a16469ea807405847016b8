@@ -16,6 +16,52 @@
       "revId": "43a1983d058a85ae94a16469ea807405847016b8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92a46b9b_5a7cbb87",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T15:44:17Z",
+      "side": 1,
+      "message": "Should be checking optimal tiling features. Good find Antonio!",
+      "range": {
+        "startLine": 76,
+        "startChar": 69,
+        "endLine": 76,
+        "endChar": 90
+      },
+      "revId": "43a1983d058a85ae94a16469ea807405847016b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6ddfa0d_60a17554",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T15:44:17Z",
+      "side": 1,
+      "message": "This could be confused with linear tiling. Let\u0027s call it a filterable format.",
+      "range": {
+        "startLine": 78,
+        "startChar": 55,
+        "endLine": 78,
+        "endChar": 72
+      },
+      "revId": "43a1983d058a85ae94a16469ea807405847016b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
