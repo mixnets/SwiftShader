@@ -42,6 +42,23 @@
     },
     {
       "key": {
+        "uuid": "b36f80cc_6916e320",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-22T15:44:48Z",
+      "side": 1,
+      "message": "As discussed during GVC, I\u0027m not sure if you can read `formatProps.linearTilingFeatures` unless the image was created with VK_IMAGE_TILING_LINEAR (see https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageTiling.html). Probably need to get this property of the image, and add this to your check here.",
+      "revId": "43a1983d058a85ae94a16469ea807405847016b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a6ddfa0d_60a17554",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 5
