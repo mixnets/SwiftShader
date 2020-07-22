@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d49fe1a_69bd37db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T17:13:36Z",
+      "side": 1,
+      "message": "Note we use a linear Git history, so stacks of changes are rebased instead of merged. Hence adding this flag should be done either before the previous change, or as part of it. Note you can use \u0027git commit --amend\u0027 and push it to the same refs/for/master, and Gerrit will figure out it\u0027s a new revision of the same change based on the Change-Id line of the commit message.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "d99237708b520381413f7c2d5c3cc5e7ec9e5544",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
