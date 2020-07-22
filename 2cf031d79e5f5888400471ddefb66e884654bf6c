@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "d9a9f632_fb644ef4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T13:56:39Z",
+      "side": 1,
+      "message": "This is a bit unspecific. I\u0027d describe it as something like:\n\nFix copying between images and buffers with padding",
+      "range": {
+        "startLine": 7,
+        "startChar": 7,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a4b5543_06fd0d59",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T13:56:39Z",
+      "side": 1,
+      "message": "Very interesting find!\n\nI think this code might even be wrong to access the padding on the other rows: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#memory-model-memory-location\n\nThe spec for https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkBufferImageCopy.html states that \"imageExtent is the size in texels of the image to copy in width, height and depth\", so it shouldn\u0027t copy any texels not in that extent. Likewise for VkImageCopy.",
+      "range": {
+        "startLine": 12,
+        "startChar": 60,
+        "endLine": 14,
+        "endChar": 57
+      },
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "853e42db_70f967bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T13:56:39Z",
+      "side": 1,
+      "message": "Please open a bug at g.co/swiftshaderbugs so we can use a new b/### bug reference here instead of the already closed swiftshader:152 (which was vkCmdCopyImage specific).",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 20
+      },
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "52b30b3b_1fb49e6e",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
@@ -13,6 +82,23 @@
       "writtenOn": "2020-07-22T11:05:11Z",
       "side": 1,
       "message": "PTAL!",
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d4ea60c1_ad36fdb7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T13:56:39Z",
+      "side": 1,
+      "message": "Great work! I think there\u0027s actually a larger underlying bug here. Basically we might need to get rid of the \u0027isEntireSlice\u0027 and \u0027isEntireRow\u0027 optimizations:",
       "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
