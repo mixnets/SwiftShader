@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a596cd89_3781aad4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T20:06:02Z",
+      "side": 1,
+      "message": "Thanks for filing the tracker bug. You can now add the following line here:\n\nBug: b/161736397",
+      "revId": "b7440e626c49117bccb643ad6b379ce4ce18c7b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
