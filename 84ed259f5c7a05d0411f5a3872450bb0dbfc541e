@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d7462b2c_b209926c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-22T18:15:14Z",
+      "side": 1,
+      "message": "Hi Avi,\n\nThanks for this, but looks like we both did this at the same time: https://swiftshader-review.googlesource.com/c/SwiftShader/+/46928\n\nIf you don\u0027t mind, since the changes are equivalent, we\u0027ll go with mine so that I can take ownership of any follow up issues, if any.",
+      "revId": "84ed259f5c7a05d0411f5a3872450bb0dbfc541e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
