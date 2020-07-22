@@ -34,6 +34,24 @@
       "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c9212845_259b0bc1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T17:43:27Z",
+      "side": 1,
+      "message": "Khronos discussion: https://gitlab.khronos.org/vulkan/vulkan/-/issues/2276\n\nI don\u0027t think dEQP would have to retry multiple times. It could compute a high-precision reference result with floating-point math, as well as a low-precision one based on the claimed \u0027minimum\u0027 precision bits. The actual result should be within the range defined by these two.\n\nTo not pessimize performance for implementations which pass with the current tests, they could first compute the low-precision reference only, check if that\u0027s fine, and if not compute the high-precision one and do the range comparison.",
+      "parentUuid": "a3f20f15_87fde059",
+      "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
