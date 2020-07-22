@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0932bbfe_931ee7e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T18:28:38Z",
+      "side": 1,
+      "message": "+2 assuming the dEQP test still passes. Did you check whether it provides coverage for all three cases?",
+      "revId": "7adc0599fa0f170a6f3aa7dc4b52b21cb7365798",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
