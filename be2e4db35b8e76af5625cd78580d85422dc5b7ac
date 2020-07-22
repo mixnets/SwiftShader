@@ -52,6 +52,24 @@
       "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eae43902_b789d3c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-22T19:31:47Z",
+      "side": 1,
+      "message": "Maybe they should just compute the full precision result and not the low precision one and adjust the threshold accordingly. Even if an implementation mentions supporting 4 bits of precision, does that mean \"16 equidistant possible texture coordinates between 0 and 1, starting at exactly 0\"? If it doesn\u0027t mention HOW the 4 bits should be used, then it\u0027s probably wrong for the test to assume anything based on the number of bits of precision alone.",
+      "parentUuid": "c9212845_259b0bc1",
+      "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
