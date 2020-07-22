@@ -70,6 +70,24 @@
       "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "536500aa_1059f438",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T19:52:48Z",
+      "side": 1,
+      "message": "\u003e Maybe they should just compute the full precision result and not the low precision one and adjust the threshold accordingly.\n\nThat would allow implementations which claim 8 bits of subtexel precision to pass the tests when in practice they only achieve 4 bits. If you meant adjusting the threshold according to the precision, that seems difficult to accomplish universally since it depends on the texel values too, and likely results in a wide threshold which allows actual bugs to slip through.\n\n\u003e Even if an implementation mentions supporting 4 bits of precision, does that mean \"16 equidistant possible texture coordinates between 0 and 1, starting at exactly 0\"?\n\nThe spec does spell that out exactly: \"2^subTexelPrecisionBits is the actual number of divisions along each axis of the image represented. Sub-texel values calculated during image sampling will snap to these locations when generating the filtered results.\"\n\nHowever, this is new in Vulkan. The OpenGL spec does not include such language, and the CTS determined the required precision. Vulkan was intended not to add new minimum requirements over GL. These dEQP tests have only started to fail between 1.1.6 and 1.2.1, so I don\u0027t think that\u0027s intentional. I appreciate that Vulkan defines how subtexel precision works, but the limit value should be a minimum not an exact number of bits retained.",
+      "parentUuid": "eae43902_b789d3c9",
+      "revId": "be2e4db35b8e76af5625cd78580d85422dc5b7ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
