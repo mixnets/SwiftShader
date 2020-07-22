@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "1773d977_1f3d5347",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 86456
+      },
+      "writtenOn": "2020-07-22T14:54:16Z",
+      "side": 1,
+      "message": "I\u0027m not really sure if the more general fix is necessary. It seems to me that we\u0027re sometimes copying a useless byte per row and the only thing that is wrong with that is that it\u0027s not efficient to do that, but on the other hand the point of this optimization was to do a single memcpy, so it might still be worth it. But maybe I\u0027m missing something and writing to the padded bytes in the texture is wrong.",
+      "parentUuid": "27e00287_d18005bd",
+      "range": {
+        "startLine": 12,
+        "startChar": 60,
+        "endLine": 14,
+        "endChar": 57
+      },
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "853e42db_70f967bb",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -179,6 +203,30 @@
       "side": 1,
       "message": "b/161888255",
       "parentUuid": "554d7403_91483851",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 20
+      },
+      "revId": "2cf031d79e5f5888400471ddefb66e884654bf6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edb9ba55_4cf66aa9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 86456
+      },
+      "writtenOn": "2020-07-22T14:54:16Z",
+      "side": 1,
+      "message": "Sorry, I submitted the change without updating the bug :/",
+      "parentUuid": "e57be204_f9b7f90a",
       "range": {
         "startLine": 19,
         "startChar": 5,
