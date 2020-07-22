@@ -83,6 +83,30 @@
     },
     {
       "key": {
+        "uuid": "df3efee2_bb779fcc",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-22T16:53:55Z",
+      "side": 1,
+      "message": "Yes, it only applies to VK_IMAGE_TILING_OPTIMAL images. Since we currently don\u0027t support filtering of VK_IMAGE_TILING_LINEAR images, we forces applications to create optimal tiled ones so we should never see linear tiles ones here.\n\nWould be good to actually validate that here too. :-)",
+      "parentUuid": "ef7485c0_921166bc",
+      "range": {
+        "startLine": 76,
+        "startChar": 69,
+        "endLine": 76,
+        "endChar": 90
+      },
+      "revId": "43a1983d058a85ae94a16469ea807405847016b8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a6ddfa0d_60a17554",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 5
