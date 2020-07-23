@@ -24,7 +24,7 @@ class Instance
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE; }
 
-	Instance(const VkInstanceCreateInfo *pCreateInfo, void *mem, VkPhysicalDevice physicalDevice);
+	Instance(const VkInstanceCreateInfo *pCreateInfo, void *mem, VkPhysicalDevice physicalDevice, VkDebugUtilsMessengerEXT messenger);
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkInstanceCreateInfo *) { return 0; }
@@ -33,8 +33,11 @@ public:
 	VkResult getPhysicalDeviceGroups(uint32_t *pPhysicalDeviceGroupCount,
 	                                 VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const;
 
+	void submitDebugUtilsMessage(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData);
+
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	VkDebugUtilsMessengerEXT messenger = { VK_NULL_HANDLE };
 };
 
 using DispatchableInstance = DispatchableObject<Instance, VkInstance>;

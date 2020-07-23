@@ -83,6 +83,18 @@ static const std::unordered_map<std::string, PFN_vkVoidFunction> instanceFunctio
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceQueueFamilyProperties2KHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceMemoryProperties2KHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSparseImageFormatProperties2KHR),
+	// VK_EXT_debug_utils
+	MAKE_VULKAN_INSTANCE_ENTRY(vkCmdBeginDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkCmdEndDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkCmdInsertDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkCreateDebugUtilsMessengerEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkDestroyDebugUtilsMessengerEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkQueueBeginDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkQueueEndDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkQueueInsertDebugUtilsLabelEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkSetDebugUtilsObjectNameEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkSetDebugUtilsObjectTagEXT),
+	MAKE_VULKAN_INSTANCE_ENTRY(vkSubmitDebugUtilsMessageEXT),
 #ifndef __ANDROID__
 	// VK_KHR_surface
 	MAKE_VULKAN_INSTANCE_ENTRY(vkDestroySurfaceKHR),
