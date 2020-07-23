@@ -13,10 +13,14 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.13)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 14)
+set(ARCH "aarch64")
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
 project(SwiftShader C CXX ASM)
+set(ARCH "aarch64")
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
 ###########################################################
 # Detect system
@@ -35,32 +39,6 @@ elseif(FUCHSIA)
     find_package(FuchsiaLibraries)
 else()
     message(FATAL_ERROR "Platform is not supported")
-endif()
-
-if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(ARCH "aarch64")
-    else()
-        set(ARCH "arm")
-    endif()
-elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "mips*")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(ARCH "mips64el")
-    else()
-        set(ARCH "mipsel")
-    endif()
-elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc*")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(ARCH "ppc64le")
-    else()
-        message(FATAL_ERROR "Architecture is not supported")
-    endif()
-else()
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(ARCH "x86_64")
-    else()
-        set(ARCH "x86")
-    endif()
 endif()
 
 set(CMAKE_MACOSX_RPATH TRUE)
@@ -117,7 +95,7 @@ option_if_not_defined(SWIFTSHADER_GET_PVR "Check out the PowerVR submodule" FALS
 
 option_if_not_defined(SWIFTSHADER_USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Studio" TRUE)
 
-option_if_not_defined(SWIFTSHADER_BUILD_TESTS "Build unit tests" TRUE)
+option_if_not_defined(SWIFTSHADER_BUILD_TESTS "Build unit tests" FALSE)
 option_if_not_defined(SWIFTSHADER_BUILD_BENCHMARKS "Build benchmarks" FALSE)
 
 option_if_not_defined(SWIFTSHADER_MSAN "Build with memory sanitizer" FALSE)
@@ -125,7 +103,7 @@ option_if_not_defined(SWIFTSHADER_ASAN "Build with address sanitizer" FALSE)
 option_if_not_defined(SWIFTSHADER_TSAN "Build with thread sanitizer" FALSE)
 option_if_not_defined(SWIFTSHADER_UBSAN "Build with undefined behavior sanitizer" FALSE)
 option_if_not_defined(SWIFTSHADER_EMIT_COVERAGE "Emit code coverage information" FALSE)
-option_if_not_defined(SWIFTSHADER_WARNINGS_AS_ERRORS "Treat all warnings as errors" TRUE)
+option_if_not_defined(SWIFTSHADER_WARNINGS_AS_ERRORS "Treat all warnings as errors" FALSE)
 option_if_not_defined(SWIFTSHADER_DCHECK_ALWAYS_ON "Check validation macros even in release builds" FALSE)
 option_if_not_defined(REACTOR_EMIT_DEBUG_INFO "Emit debug info for JIT functions" FALSE)
 option_if_not_defined(REACTOR_EMIT_PRINT_LOCATION "Emit printing of location info for JIT functions" FALSE)
@@ -147,7 +125,7 @@ set(DEFAULT_REACTOR_BACKEND "LLVM")
 set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
 
-set(DEFAULT_SWIFTSHADER_LLVM_VERSION "7.0")
+set(DEFAULT_SWIFTSHADER_LLVM_VERSION "10.0")
 set(SWIFTSHADER_LLVM_VERSION ${DEFAULT_SWIFTSHADER_LLVM_VERSION} CACHE STRING "LLVM version to use")
 set_property(CACHE SWIFTSHADER_LLVM_VERSION PROPERTY STRINGS "7.0" "10.0")
 
@@ -394,6 +372,9 @@ else()
         endif()
     endif()
 
+    list(APPEND SWIFTSHADER_COMPILE_OPTIONS
+        "-Wno-range-loop-analysis")
+
     # Disable pedanitc warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
@@ -502,6 +483,8 @@ else()
         set_cpp_flag("-fsanitize=undefined")
         set_linker_flag("-fsanitize=undefined")
     endif()
+
+    set_linker_flag("-v")
 endif()
 
 if(SWIFTSHADER_DCHECK_ALWAYS_ON)

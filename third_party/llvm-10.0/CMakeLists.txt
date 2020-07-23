@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set(ARCH "aarch64")
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
+
 set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/llvm)
 set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/configs)
 
@@ -158,7 +162,10 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/CodeGen/GCMetadataPrinter.cpp
     ${LLVM_DIR}/lib/CodeGen/GCRootLowering.cpp
     ${LLVM_DIR}/lib/CodeGen/GCStrategy.cpp
+    ${LLVM_DIR}/lib/CodeGen/GlobalMerge.cpp
     ${LLVM_DIR}/lib/CodeGen/GlobalISel/CallLowering.cpp
+    ${LLVM_DIR}/lib/CodeGen/GlobalISel/Combiner.cpp
+    ${LLVM_DIR}/lib/CodeGen/GlobalISel/CombinerHelper.cpp
     ${LLVM_DIR}/lib/CodeGen/GlobalISel/CSEInfo.cpp
     ${LLVM_DIR}/lib/CodeGen/GlobalISel/CSEMIRBuilder.cpp
     ${LLVM_DIR}/lib/CodeGen/GlobalISel/GISelChangeObserver.cpp
@@ -264,6 +271,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/CodeGen/RegAllocBasic.cpp
     ${LLVM_DIR}/lib/CodeGen/RegAllocFast.cpp
     ${LLVM_DIR}/lib/CodeGen/RegAllocGreedy.cpp
+    ${LLVM_DIR}/lib/CodeGen/RegAllocPBQP.cpp
     ${LLVM_DIR}/lib/CodeGen/RegisterClassInfo.cpp
     ${LLVM_DIR}/lib/CodeGen/RegisterCoalescer.cpp
     ${LLVM_DIR}/lib/CodeGen/RegisterPressure.cpp
@@ -453,6 +461,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/IR/Value.cpp
     ${LLVM_DIR}/lib/IR/ValueSymbolTable.cpp
     ${LLVM_DIR}/lib/IR/Verifier.cpp
+    ${LLVM_DIR}/lib/MC/ConstantPools.cpp
     ${LLVM_DIR}/lib/MC/ELFObjectWriter.cpp
     ${LLVM_DIR}/lib/MC/MachObjectWriter.cpp
     ${LLVM_DIR}/lib/MC/MCAsmBackend.cpp
@@ -551,6 +560,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Remarks/RemarkStringTable.cpp
     ${LLVM_DIR}/lib/Remarks/YAMLRemarkParser.cpp
     ${LLVM_DIR}/lib/Remarks/YAMLRemarkSerializer.cpp
+    ${LLVM_DIR}/lib/Support/AArch64TargetParser.cpp
     ${LLVM_DIR}/lib/Support/ABIBreak.cpp
     ${LLVM_DIR}/lib/Support/APFloat.cpp
     ${LLVM_DIR}/lib/Support/APInt.cpp
@@ -725,6 +735,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Scalar/InstSimplifyPass.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/JumpThreading.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/LICM.cpp
+    ${LLVM_DIR}/lib/Transforms/Scalar/LoopDataPrefetch.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/LoopDeletion.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/LoopDistribute.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/LoopIdiomRecognize.cpp
@@ -750,6 +761,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Scalar/PartiallyInlineLibCalls.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/Reassociate.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/SCCP.cpp
+    ${LLVM_DIR}/lib/Transforms/Scalar/SeparateConstOffsetFromGEP.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/SimpleLoopUnswitch.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/SimplifyCFGPass.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/SpeculativeExecution.cpp

@@ -35,6 +35,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 option(SPIRV_ALLOW_TIMERS "Allow timers via clock_gettime on supported platforms" ON)
 
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
   add_definitions(-DSPIRV_LINUX)
   set(SPIRV_TIMER_ENABLED ${SPIRV_ALLOW_TIMERS})
@@ -79,7 +81,7 @@ if(SPIRV_BUILD_COMPRESSION)
           "Please remove SPIRV_BUILD_COMPRESSION from your build options.")
 endif(SPIRV_BUILD_COMPRESSION)
 
-option(SPIRV_WERROR "Enable error on warning" ON)
+option(SPIRV_WERROR "Enable error on warning" OFF)
 if(("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR (("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") AND (NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC")))
   set(COMPILER_IS_LIKE_GNU TRUE)
 endif()
@@ -230,6 +232,8 @@ if(ENABLE_SPIRV_TOOLS_INSTALL)
   endmacro()
 endif()
 
+set(SPIRV_SKIP_EXECUTABLES ON)
+set(SPIRV_SKIP_TESTS ON)
 # Defaults to OFF if the user didn't set it.
 option(SPIRV_SKIP_EXECUTABLES
   "Skip building the executable and tests along with the library"
