@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "391521f2_5763faac",
+        "filename": "src/Vulkan/VkInstance.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-23T18:09:56Z",
+      "side": 1,
+      "message": "Oops, yeah, forgot to change that when I changed this variable from VkDebugUtilsMessengerExt to DebugUtilsMessenger* locally. Will fix.",
+      "parentUuid": "6ecd63fb_9255c9ed",
+      "range": {
+        "startLine": 42,
+        "startChar": 34,
+        "endLine": 42,
+        "endChar": 52
+      },
+      "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2245877_f01e2c09",
         "filename": "src/Vulkan/vk_swiftshader.def",
         "patchSetId": 2
@@ -62,6 +86,30 @@
       "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78d3a16a_276893a9",
+        "filename": "src/Vulkan/vk_swiftshader.def",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-23T18:09:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e2245877_f01e2c09",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 215,
+        "endChar": 29
+      },
+      "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
