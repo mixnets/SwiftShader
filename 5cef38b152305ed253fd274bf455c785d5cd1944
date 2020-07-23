@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd591e20_56aef58f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-23T18:00:55Z",
+      "side": 1,
+      "message": "s/passs/pass",
+      "range": {
+        "startLine": 21,
+        "startChar": 43,
+        "endLine": 21,
+        "endChar": 49
+      },
+      "revId": "5cef38b152305ed253fd274bf455c785d5cd1944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
