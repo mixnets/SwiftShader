@@ -16,6 +16,24 @@
       "revId": "2d224c2da87bc3f53061f1dde146ae5f8022b1a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71c5d88d_2d3216f6",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3444,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T18:20:42Z",
+      "side": 1,
+      "message": "\u003e I think for consistency, we should name this \"createIntrinsic\".\n\nI think the distinction is useful. C++ intrinsics are syntactically function-like expressions which nowadays are implemented using one or more instructions, for multiple CPU architectures. Historically, LLVM\u0027s intrinsics had a 1-to-1 mapping with a native instruction, but they\u0027ve since evolved toward this more abstract concept of intrinsics. Some but not all of the historic instruction-intrinsics have been superseded by them. So we now have two distinct classes of LLVM intrinsics, and somewhat to my surprise the IRBuilder\u003c\u003e::CreateBinaryIntrinsic() doesn\u0027t even work for the native instruction ones.\n\nSo I think we have an opportunity to make that distinction clearer than what LLVM has. I think naming this \"createIntrinsic()\" cause more confusion when things don\u0027t work as expected. More on the direction I\u0027d like to take this below:\n\n\u003e Also, I think the second parameter should be an llvm::Value* to match that of CreateUnary/BinaryInstrinsic.\n\nI\u0027d like to work towards intrinsics, and instructions, to be part of the Nucleus interface. As we\u0027ve discussed before, that would allow things like debug location updates to be more centralized, and also probably allows for more reuse between the implementation of higher-level abstractions, as well as across backends.\n\nThis Nucleus interface would use rr::Value* operands, and a backend agnostic intrinsic/instruction enum. In other words, I\u0027d like to make the first parameter non-llvm instead.\n\n\u003e I have some more ideas for making this code even clearer and easier to use:\n\u003e \n\u003e 1. We could name these two overloads \"createNativeIntrinsic\", and add a new set of overloads named \"createInstrinsic\" that simply forward to CreateUnaryInstrinsic and CreateBinaryIntrinsic. This way, all the code below would look uniform, and we\u0027d get some idea of which one we should use.\n\u003e \n\u003e OR\n\u003e \n\u003e 2. Have just the \"createIntrinsic\" overloads here, and check if \u0027id\u0027 is within the range of \u0027native\u0027 intrinsics, in which case, you do the CreateCall(), otherwise, you do the CreateUnary/BinaryIntrinsic. That would result in the simplest code below, assuming id range checking is easy enough (it might not be).\n\nThe range checking could be very fragile, as there\u0027s no guarantee that LLVM keeps them in the same order. A mapping from Nucleus intrinsic and instruction enums to LLVM intrinsics seems to me like a more robust way to manage this mapping.",
+      "parentUuid": "235700b5_8a823df5",
+      "revId": "2d224c2da87bc3f53061f1dde146ae5f8022b1a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
