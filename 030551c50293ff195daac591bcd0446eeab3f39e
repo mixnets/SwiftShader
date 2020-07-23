@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70e5e828_ecb64c9e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T17:43:09Z",
+      "side": 1,
+      "message": "Couple of small things:",
+      "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ecd63fb_9255c9ed",
+        "filename": "src/Vulkan/VkInstance.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T17:43:09Z",
+      "side": 1,
+      "message": "Since the lhs is a raw pointer, can\u0027t we assign VK_NULL_HANDLE or even nullptr here? It looks like this assigns an initializer list, and I\u0027m not sure how that behaves.",
+      "range": {
+        "startLine": 42,
+        "startChar": 34,
+        "endLine": 42,
+        "endChar": 52
+      },
+      "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2245877_f01e2c09",
+        "filename": "src/Vulkan/vk_swiftshader.def",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T17:43:09Z",
+      "side": 1,
+      "message": "Please also add these to vk_swiftshader.lds for loaderless testing on Linux.",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 215,
+        "endChar": 29
+      },
+      "revId": "030551c50293ff195daac591bcd0446eeab3f39e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
