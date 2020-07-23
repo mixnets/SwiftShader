@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "aebb8094_4d2ed1ea",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T16:19:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e3a13db_4e7e8c8a",
+      "range": {
+        "startLine": 14,
+        "startChar": 24,
+        "endLine": 14,
+        "endChar": 53
+      },
+      "revId": "1fbf764468ed5bfe025533b4fa21b43d3fa333fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aaf87c0_df59b6af",
         "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
         "patchSetId": 2
@@ -39,6 +63,24 @@
       "revId": "1fbf764468ed5bfe025533b4fa21b43d3fa333fe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3fa2ab5_d8a56ff6",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T16:19:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1aaf87c0_df59b6af",
+      "revId": "1fbf764468ed5bfe025533b4fa21b43d3fa333fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
