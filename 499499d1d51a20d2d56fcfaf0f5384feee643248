@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "783736fc_b75aa90c",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-07-23T20:37:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94176f2a_46de9f35",
+      "range": {
+        "startLine": 449,
+        "startChar": 0,
+        "endLine": 462,
+        "endChar": 5
+      },
+      "revId": "499499d1d51a20d2d56fcfaf0f5384feee643248",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "47367998_6ca369bb",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 1
