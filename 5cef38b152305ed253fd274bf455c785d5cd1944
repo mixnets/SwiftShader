@@ -39,6 +39,23 @@
       "revId": "5cef38b152305ed253fd274bf455c785d5cd1944",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f65e8d2_1c7d2752",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-23T19:49:37Z",
+      "side": 1,
+      "message": "\u003e Patch Set 2:\n\u003e \n\u003e \u003e Patch Set 2: Code-Review+1\n\u003e \u003e \n\u003e \u003e (2 comments)\n\u003e \u003e \n\u003e \u003e Chris or Alexis do you have details on the use of this struct? We ignore it in libVulkan.cpp since https://swiftshader-review.googlesource.com/c/SwiftShader/+/23728\n\u003e \n\u003e There\u0027s two purposes for this.\n\u003e \n\u003e 1) For private allocations, some drivers can do a better job of allocating if they know that a VkDeviceMemory will contain exactly one object with known properties. This is the case for nvidia.\n\u003e \n\u003e 2) For external memory, on some platforms (including Android) the shareable object isn\u0027t just a flat blob of memory, it carries format/dimensions/etc. This is the case for Android, where the gralloc needs to know these details.\n\nThanks Chris, very helpful!",
+      "revId": "5cef38b152305ed253fd274bf455c785d5cd1944",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
