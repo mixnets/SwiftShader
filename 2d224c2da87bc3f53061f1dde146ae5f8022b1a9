@@ -34,6 +34,24 @@
       "revId": "2d224c2da87bc3f53061f1dde146ae5f8022b1a9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85d214a2_b55d2680",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3444,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-23T18:34:51Z",
+      "side": 1,
+      "message": "Okay, fair points. As you said, we will work our way towards exposing these in Nucleus, which should make things a lot clearer.\n\nMy issue was with how the code looks right now, which isn\u0027t 100% clear to me. Like if I needed to add a new thing, it\u0027s not obvious whether I should use createInstruction or CreateUnary/BinaryIntrinsic. And the fact that one is a wrapper, and one isn\u0027t, is also inconsistent. But I suppose we can clean that up in a future change.",
+      "parentUuid": "71c5d88d_2d3216f6",
+      "revId": "2d224c2da87bc3f53061f1dde146ae5f8022b1a9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
