@@ -27,11 +27,9 @@
 #include "System/Memory.hpp"
 #include "System/Timer.hpp"
 #include "Vulkan/VkConfig.hpp"
-#include "Vulkan/VkDescriptorSet.hpp"
 #include "Vulkan/VkDevice.hpp"
 #include "Vulkan/VkFence.hpp"
 #include "Vulkan/VkImageView.hpp"
-#include "Vulkan/VkPipelineLayout.hpp"
 #include "Vulkan/VkQueryPool.hpp"
 
 #include "marl/containers.h"
@@ -208,9 +206,6 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 		pixelRoutine = pixelProcessor.routine(pixelState, context->pipelineLayout, context->pixelShader, context->descriptorSets);
 	}
 
-	draw->containsImageWrite = (context->vertexShader && context->vertexShader->containsImageWrite()) ||
-	                           (context->pixelShader && context->pixelShader->containsImageWrite());
-
 	DrawCall::SetupFunction setupPrimitives = nullptr;
 	int ms = context->sampleCount;
 	unsigned int numPrimitivesPerBatch = MaxBatchSize / ms;
@@ -254,8 +249,6 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	draw->provokingVertexMode = context->provokingVertexMode;
 	draw->indexType = indexType;
 	draw->lineRasterizationMode = context->lineRasterizationMode;
-	draw->descriptorSetObjects = context->descriptorSetObjects;
-	draw->pipelineLayout = context->pipelineLayout;
 
 	draw->vertexRoutine = vertexRoutine;
 	draw->setupRoutine = setupRoutine;
@@ -390,8 +383,6 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 	draw->events = events;
 
-	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout);
-
 	DrawCall::run(draw, &drawTickets, clusterQueues);
 }
 
@@ -428,19 +419,6 @@ void DrawCall::teardown()
 	vertexRoutine = {};
 	setupRoutine = {};
 	pixelRoutine = {};
-
-	for(auto *rt : renderTarget)
-	{
-		if(rt)
-		{
-			rt->contentsChanged();
-		}
-	}
-
-	if(containsImageWrite)
-	{
-		vk::DescriptorSet::ContentsChanged(descriptorSetObjects, pipelineLayout);
-	}
 }
 
 void DrawCall::run(const marl::Loan<DrawCall> &draw, marl::Ticket::Queue *tickets, marl::Ticket::Queue clusterQueues[MaxClusterCount])

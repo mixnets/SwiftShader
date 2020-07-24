@@ -54,7 +54,6 @@ public:
 
 	// run executes the compute shader routine for all workgroups.
 	void run(
-	    vk::DescriptorSet::Array const &descriptorSetObjects,
 	    vk::DescriptorSet::Bindings const &descriptorSetBindings,
 	    vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 	    PushConstantStorage const &pushConstants,

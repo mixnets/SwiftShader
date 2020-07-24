@@ -22,6 +22,11 @@
 
 namespace {
 
+inline VkDescriptorSet asDescriptorSet(uint8_t *memory)
+{
+	return vk::TtoVkT<vk::DescriptorSet, VkDescriptorSet>(reinterpret_cast<vk::DescriptorSet *>(memory));
+}
+
 inline uint8_t *asMemory(VkDescriptorSet descriptorSet)
 {
 	return reinterpret_cast<uint8_t *>(vk::Cast(descriptorSet));
@@ -138,7 +143,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		{
 			for(uint32_t i = 0; i < numAllocs; i++)
 			{
-				pDescriptorSets[i] = *(new(memory) DescriptorSet());
+				pDescriptorSets[i] = asDescriptorSet(memory);
 				nodes.insert(Node(memory, sizes[i]));
 				memory += sizes[i];
 			}
@@ -153,7 +158,7 @@ VkResult DescriptorPool::allocateSets(size_t *sizes, uint32_t numAllocs, VkDescr
 		uint8_t *memory = findAvailableMemory(sizes[i]);
 		if(memory)
 		{
-			pDescriptorSets[i] = *(new(memory) DescriptorSet());
+			pDescriptorSets[i] = asDescriptorSet(memory);
 		}
 		else
 		{

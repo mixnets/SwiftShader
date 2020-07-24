@@ -114,7 +114,6 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "VkCommandPool.cpp",
     "VkDebugUtilsMessenger.cpp",
     "VkDescriptorPool.cpp",
-    "VkDescriptorSet.cpp",
     "VkDescriptorSetLayout.cpp",
     "VkDescriptorUpdateTemplate.cpp",
     "VkDevice.cpp",

@@ -143,7 +143,6 @@ public:
 		struct PipelineState
 		{
 			Pipeline *pipeline = nullptr;
-			vk::DescriptorSet::Array descriptorSetObjects = {};
 			vk::DescriptorSet::Bindings descriptorSets = {};
 			vk::DescriptorSet::DynamicOffsets descriptorDynamicOffsets = {};
 		};
