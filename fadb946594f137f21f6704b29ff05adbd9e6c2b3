@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6757a718_96768f14",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-24T03:36:38Z",
+      "side": 1,
+      "message": "LGTM with open comments addressed.",
+      "revId": "fadb946594f137f21f6704b29ff05adbd9e6c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7eda32e2_78e7c1f3",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-24T03:36:38Z",
+      "side": 1,
+      "message": "Just {}",
+      "range": {
+        "startLine": 74,
+        "startChar": 36,
+        "endLine": 74,
+        "endChar": 41
+      },
+      "revId": "fadb946594f137f21f6704b29ff05adbd9e6c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
