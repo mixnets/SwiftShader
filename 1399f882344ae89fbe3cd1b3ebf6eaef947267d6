@@ -16,6 +16,24 @@
       "revId": "1399f882344ae89fbe3cd1b3ebf6eaef947267d6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24a6fec0_ae604f25",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-24T14:31:46Z",
+      "side": 1,
+      "message": "The test is skipped when shaderStorageImageReadWithoutFormat isn\u0027t supported. That\u0027s probably something that needs improving: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2502",
+      "parentUuid": "f68b1978_0cacf2ef",
+      "revId": "1399f882344ae89fbe3cd1b3ebf6eaef947267d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
