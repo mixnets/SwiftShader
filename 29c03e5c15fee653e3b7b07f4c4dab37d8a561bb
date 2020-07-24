@@ -16,6 +16,24 @@
       "revId": "29c03e5c15fee653e3b7b07f4c4dab37d8a561bb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a04bcb4_ed2e3177",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-07-24T19:15:59Z",
+      "side": 1,
+      "message": "Woops, should have specified how:\n\nI got the failing patch mentioned in the bug from dEQP\u0027s gerrit and ran the tests in question with my code and confirmed that the undefined behavior was being reported.",
+      "parentUuid": "36d648f3_d49b972f",
+      "revId": "29c03e5c15fee653e3b7b07f4c4dab37d8a561bb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
