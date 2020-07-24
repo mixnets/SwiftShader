@@ -631,6 +631,11 @@ public:
 		}
 	}
 
+	~JITRoutine()
+	{
+		targetMachine.reset();
+	}
+
 	const void *getEntry(int index) const override
 	{
 		return addresses[index];
