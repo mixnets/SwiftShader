@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74cb8f11_df4628f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-24T14:07:32Z",
+      "side": 1,
+      "message": "I know this is WIP, but there are many changes here that aren\u0027t ready for merging, as I\u0027m sure you know. The added source files for LLVM-10 are good, though. For the rest, there\u0027s some rework to do. Do you need help with that?",
+      "revId": "d345609b42e4c883de2c0ce65cf86f7daed84ebc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
