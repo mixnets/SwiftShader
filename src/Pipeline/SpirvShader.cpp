@@ -1501,6 +1501,8 @@ void SpirvShader::DefineResult(const InsnIterator &insn)
 
 OutOfBoundsBehavior SpirvShader::EmitState::getOutOfBoundsBehavior(spv::StorageClass storageClass) const
 {
+	return OutOfBoundsBehavior::Nullify;
+	;
 	switch(storageClass)
 	{
 		case spv::StorageClassUniform:
