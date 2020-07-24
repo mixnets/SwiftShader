@@ -224,7 +224,7 @@ if(SPIRV_BUILD_FUZZER)
 
   if(MSVC)
     # Enable parallel builds across four cores for this lib
-    add_definitions(/MP4)
+    #add_definitions(/MP4)
   endif()
 
   spvtools_pch(SPIRV_TOOLS_FUZZ_SOURCES pch_source_fuzz)

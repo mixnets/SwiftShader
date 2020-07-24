@@ -72,7 +72,7 @@ set(SPIRV_TOOLS_REDUCE_SOURCES
 
 if(MSVC)
   # Enable parallel builds across four cores for this lib
-  add_definitions(/MP4)
+  #add_definitions(/MP4)
 endif()
 
 spvtools_pch(SPIRV_TOOLS_REDUCE_SOURCES pch_source_reduce)

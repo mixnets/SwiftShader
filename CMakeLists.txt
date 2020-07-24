@@ -327,7 +327,16 @@ macro(set_linker_flag FLAG)
 endmacro()
 
 if(MSVC)
-    set_cpp_flag("/MP")
+    #set_cpp_flag("/MP")
+
+    # clang-cl supports ASan
+    if(SWIFTSHADER_ASAN AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+       # set_cpp_flag("-fsanitize=address")
+        set_cpp_flag("-Wno-unused-variable")
+        set_cpp_flag("-Wno-unused-private-field")
+        set_cpp_flag("-Wno-unused-function")
+    endif()
+
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
