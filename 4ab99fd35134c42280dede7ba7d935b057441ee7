@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3cf83117_7d3e14b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-24T13:37:09Z",
+      "side": 1,
+      "message": "Looks like both the LLVM and Subzero results differ from what I had checked in initially for the dEQP 1.2.1 -\u003e 1.2.3 upgrade. Could be flaky. I\u0027ll compare again on Monday when we have several more results.\n\nIf it\u0027s flakes we might also be seeing them on other changes. https://swiftshader-review.googlesource.com/c/SwiftShader/+/45048 was suspicious.",
+      "revId": "4ab99fd35134c42280dede7ba7d935b057441ee7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
