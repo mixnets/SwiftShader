@@ -2249,8 +2249,10 @@ SpirvShader::EmitResult SpirvShader::EmitAtomicOp(InsnIterator insn, EmitState *
 	auto ptr = state->getPointer(insn.word(3));
 	auto ptrOffsets = ptr.offsets();
 
+	SIMD::Int oob = ptr.isInBounds(sizeof(int32_t), OutOfBoundsBehavior::Nullify);
+
 	SIMD::UInt x(0);
-	auto mask = state->activeLaneMask() & state->storesAndAtomicsMask();
+	auto mask = state->activeLaneMask() & state->storesAndAtomicsMask() & oob;
 	for(int j = 0; j < SIMD::Width; j++)
 	{
 		If(Extract(mask, j) != 0)
