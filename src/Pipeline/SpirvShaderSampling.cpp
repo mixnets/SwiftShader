@@ -78,6 +78,10 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 			samplerState.minLod = sampler->minLod;
 			samplerState.maxLod = sampler->maxLod;
 		}
+		else
+		{
+			ASSERT(samplerState.border == VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK);
+		}
 
 		return emitSamplerRoutine(instruction, samplerState);
 	};
@@ -356,7 +360,7 @@ sw::AddressingMode SpirvShader::convertAddressingMode(int coordinateIndex, const
 		//  is enabled. In that case, an invalid texel is replaced as described by the
 		//  robustBufferAccess feature." - Vulkan 1.1
 
-		return ADDRESSING_WRAP;
+		return ADDRESSING_BORDER;
 	}
 
 	VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
