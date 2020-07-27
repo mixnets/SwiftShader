@@ -379,6 +379,7 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityGroupNonUniformBallot: capabilities.GroupNonUniformBallot = true; break;
 					case spv::CapabilityGroupNonUniformShuffle: capabilities.GroupNonUniformShuffle = true; break;
 					case spv::CapabilityGroupNonUniformShuffleRelative: capabilities.GroupNonUniformShuffleRelative = true; break;
+					case spv::CapabilityStorageBuffer16BitAccess: capabilities.StorageBuffer16BitAccess = true; break;
 					case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 					case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 					case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
@@ -469,18 +470,6 @@ SpirvShader::SpirvShader(
 				// TODO(b/141246700): Add full support for spv::OpFunctionCall
 				break;
 
-			case spv::OpFConvert:
-				UNSUPPORTED("SPIR-V Float16 or Float64 Capability (OpFConvert)");
-				break;
-
-			case spv::OpSConvert:
-				UNSUPPORTED("SPIR-V Int16 or Int64 Capability (OpSConvert)");
-				break;
-
-			case spv::OpUConvert:
-				UNSUPPORTED("SPIR-V Int16 or Int64 Capability (OpUConvert)");
-				break;
-
 			case spv::OpLoad:
 			case spv::OpAccessChain:
 			case spv::OpInBoundsAccessChain:
@@ -533,6 +522,9 @@ SpirvShader::SpirvShader(
 			case spv::OpSNegate:
 			case spv::OpFNegate:
 			case spv::OpLogicalNot:
+			case spv::OpUConvert:
+			case spv::OpSConvert:
+			case spv::OpFConvert:
 			case spv::OpQuantizeToF16:
 			// Binary ops
 			case spv::OpIAdd:
@@ -1777,6 +1769,9 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		case spv::OpConvertFToS:
 		case spv::OpConvertSToF:
 		case spv::OpConvertUToF:
+		case spv::OpUConvert:
+		case spv::OpSConvert:
+		case spv::OpFConvert:
 		case spv::OpBitcast:
 		case spv::OpIsInf:
 		case spv::OpIsNan:

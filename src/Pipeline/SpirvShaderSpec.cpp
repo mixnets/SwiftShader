@@ -171,7 +171,7 @@ void SpirvShader::EvalSpecConstantUnaryOp(InsnIterator insn)
 			case spv::OpSConvert:
 			case spv::OpFConvert:
 			case spv::OpUConvert:
-				UNREACHABLE("Not possible until we have multiple bit widths");
+				v = l;  // FIXME: do proper 16b <-> 32b conversion
 				break;
 
 			case spv::OpSNegate:

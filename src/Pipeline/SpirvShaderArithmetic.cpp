@@ -222,6 +222,15 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 			case spv::OpConvertUToF:
 				dst.move(i, SIMD::Float(src.UInt(i)));
 				break;
+			case spv::OpUConvert:
+				dst.move(i, src.UInt(i));  // FIXME: do proper 16b <-> 32b conversion
+				break;
+			case spv::OpSConvert:
+				dst.move(i, src.Int(i));  // FIXME: do proper 16b <-> 32b conversion
+				break;
+			case spv::OpFConvert:
+				dst.move(i, src.Float(i));  // FIXME: do proper 16b <-> 32b conversion
+				break;
 			case spv::OpBitcast:
 				dst.move(i, src.Float(i));
 				break;
