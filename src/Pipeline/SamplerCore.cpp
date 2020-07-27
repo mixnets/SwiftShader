@@ -2252,13 +2252,13 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 		return;
 	}
 
-	Int4 dim = *Pointer<Int4>(mipmap + whd, 16);
-	Int4 maxXYZ = dim - Int4(1);
+	UInt4 dim = *Pointer<UInt4>(mipmap + whd, 16);
+	UInt4 maxXYZ = dim - UInt4(1);
 
 	if(function == Fetch)  // Unnormalized coordinates
 	{
 		Int4 xyz = function.offset ? As<Int4>(uvw) + offset : As<Int4>(uvw);
-		xyz0 = Min(Max(xyz, Int4(0)), maxXYZ);
+		xyz0 = As<Int4>(Min(As<UInt4>(xyz), maxXYZ));
 
 		// VK_EXT_image_robustness requires checking for out-of-bounds accesses.
 		// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
@@ -2315,8 +2315,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 
 			xyz1 = xyz0 + Int4(1);
 
-			xyz0 = (maxXYZ)-mirror(mod(xyz0, Int4(2) * dim) - dim);
-			xyz1 = (maxXYZ)-mirror(mod(xyz1, Int4(2) * dim) - dim);
+			xyz0 = As<Int4>(maxXYZ) - mirror(mod(xyz0, Int4(2) * As<Int4>(dim)) - As<Int4>(dim));
+			xyz1 = As<Int4>(maxXYZ) - mirror(mod(xyz1, Int4(2) * As<Int4>(dim)) - As<Int4>(dim));
 
 			return;
 		}
@@ -2408,8 +2408,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 		if(addressingMode == ADDRESSING_BORDER)
 		{
 			// Replace the coordinates with -1 if they're out of range.
-			Int4 border0 = CmpLT(xyz0, Int4(0)) | CmpNLT(xyz0, dim);
-			Int4 border1 = CmpLT(xyz1, Int4(0)) | CmpNLT(xyz1, dim);
+			Int4 border0 = As<Int4>(CmpNLT(As<UInt4>(xyz0), dim));
+			Int4 border1 = As<Int4>(CmpNLT(As<UInt4>(xyz1), dim));
 			xyz0 |= border0;
 			xyz1 |= border1;
 		}
@@ -2424,8 +2424,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 				// TODO: Implement ADDRESSING_MIRROR and ADDRESSING_MIRRORONCE.
 				// Fall through to Clamp.
 			case ADDRESSING_CLAMP:
-				xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
-				xyz1 = Min(Max(xyz1, Int4(0)), maxXYZ);
+				xyz0 = Min(Max(xyz0, Int4(0)), As<Int4>(maxXYZ));
+				xyz1 = Min(Max(xyz1, Int4(0)), As<Int4>(maxXYZ));
 				break;
 			default:  // Wrap
 				xyz0 = mod(xyz0, dim);
@@ -2443,14 +2443,14 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 			case ADDRESSING_MIRRORONCE:
 			case ADDRESSING_CLAMP:
 				xyz0 = Max(xyz0, Int4(0));
-				xyz1 = Min(xyz1, maxXYZ);
+				xyz1 = Min(xyz1, As<Int4>(maxXYZ));
 				break;
 			default:  // Wrap
 				{
 					Int4 under = CmpLT(xyz0, Int4(0));
-					xyz0 = (under & maxXYZ) | (~under & xyz0);  // xyz < 0 ? dim - 1 : xyz   // TODO: IfThenElse()
+					xyz0 = (under & As<Int4>(maxXYZ)) | (~under & xyz0);  // xyz < 0 ? dim - 1 : xyz   // TODO: IfThenElse()
 
-					Int4 nover = CmpLT(xyz1, dim);
+					Int4 nover = CmpLT(xyz1, As<Int4>(dim));
 					xyz1 = nover & xyz1;  // xyz >= dim ? 0 : xyz
 				}
 				break;
@@ -2466,13 +2466,13 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, Samp
 		return {};
 	}
 
-	Int4 layers = *Pointer<Int4>(mipmap + OFFSET(Mipmap, depth), 16);
-	Int4 maxLayer = layers - Int4(1);
+	UInt4 layers = *Pointer<UInt4>(mipmap + OFFSET(Mipmap, depth), 16);
+	UInt4 maxLayer = layers - UInt4(1);
 
 	if(function == Fetch)  // Unnormalized coordinates
 	{
 		Int4 xyz = As<Int4>(a);
-		Int4 xyz0 = Min(Max(xyz, Int4(0)), maxLayer);
+		Int4 xyz0 = As<Int4>(Min(As<UInt4>(xyz), maxLayer));
 
 		// VK_EXT_image_robustness requires checking for out-of-bounds accesses.
 		// TODO(b/162327166): Only perform bounds checks when VK_EXT_image_robustness is enabled.
@@ -2485,7 +2485,7 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, Samp
 	}
 	else
 	{
-		return Min(Max(RoundInt(a), Int4(0)), maxLayer);
+		return As<Int4>(Min(As<UInt4>(RoundInt(a)), maxLayer));
 	}
 }
 
