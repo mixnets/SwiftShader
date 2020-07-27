@@ -34,6 +34,46 @@
       "revId": "021912a6395b97b4efa1fcf08c3d2cec45449f79",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "064f92f0_8a0e7112",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-27T18:42:59Z",
+      "side": 1,
+      "message": "Ben can you review this?",
+      "revId": "021912a6395b97b4efa1fcf08c3d2cec45449f79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06cf2991_9631f33f",
+        "filename": "src/Pipeline/SpirvShaderInstructions.inl",
+        "patchSetId": 1
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-27T18:42:59Z",
+      "side": 1,
+      "message": "If this is like OpMergeLoop, it\u0027s not a result-producing statement. Anyway, since it\u0027s unlikely we\u0027ll implement this soon/ever, it probably doesn\u0027t matter.\n\nI wonder if we can use spv::HasResultAndType() instead to avoid requiring updates here.",
+      "range": {
+        "startLine": 560,
+        "startChar": 15,
+        "endLine": 560,
+        "endChar": 33
+      },
+      "revId": "021912a6395b97b4efa1fcf08c3d2cec45449f79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
