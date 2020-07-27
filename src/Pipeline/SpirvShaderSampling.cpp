@@ -106,7 +106,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		SIMD::Float lodOrBias = 0;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
 		Vector4f dsx = { 0, 0, 0, 0 };
 		Vector4f dsy = { 0, 0, 0, 0 };
-		Vector4f offset = { 0, 0, 0, 0 };
+		Vector4i offset = { 0, 0, 0, 0 };
 		SIMD::Int sampleId = 0;
 		SamplerFunction samplerFunction = instruction.getSamplerFunction();
 
@@ -154,7 +154,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 
 		for(uint32_t j = 0; j < instruction.offset; j++, i++)
 		{
-			offset[j] = in[i];
+			offset[j] = As<SIMD::Int>(in[i]);
 		}
 
 		if(instruction.sample)
