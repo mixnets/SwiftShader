@@ -587,6 +587,7 @@ public:
 		bool GroupNonUniformShuffle : 1;
 		bool GroupNonUniformShuffleRelative : 1;
 		bool GroupNonUniformArithmetic : 1;
+		bool StorageBuffer16BitAccess : 1;
 		bool DeviceGroup : 1;
 		bool MultiView : 1;
 		bool StencilExportEXT : 1;

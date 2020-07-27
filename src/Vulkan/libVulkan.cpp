@@ -721,8 +721,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			{
 				const VkPhysicalDevice16BitStorageFeatures *storage16BitFeatures = reinterpret_cast<const VkPhysicalDevice16BitStorageFeatures *>(extensionCreateInfo);
 
-				if(storage16BitFeatures->storageBuffer16BitAccess != VK_FALSE ||
-				   storage16BitFeatures->uniformAndStorageBuffer16BitAccess != VK_FALSE ||
+				if(storage16BitFeatures->uniformAndStorageBuffer16BitAccess != VK_FALSE ||
 				   storage16BitFeatures->storagePushConstant16 != VK_FALSE ||
 				   storage16BitFeatures->storageInputOutput16 != VK_FALSE)
 				{

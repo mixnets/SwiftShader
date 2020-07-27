@@ -379,6 +379,7 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityGroupNonUniformBallot: capabilities.GroupNonUniformBallot = true; break;
 					case spv::CapabilityGroupNonUniformShuffle: capabilities.GroupNonUniformShuffle = true; break;
 					case spv::CapabilityGroupNonUniformShuffleRelative: capabilities.GroupNonUniformShuffleRelative = true; break;
+					case spv::CapabilityStorageBuffer16BitAccess: capabilities.StorageBuffer16BitAccess = true; break;
 					case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 					case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 					case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;

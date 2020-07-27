@@ -135,7 +135,7 @@ void PhysicalDevice::getFeatures(VkPhysicalDeviceSamplerYcbcrConversionFeatures 
 
 void PhysicalDevice::getFeatures(VkPhysicalDevice16BitStorageFeatures *features) const
 {
-	features->storageBuffer16BitAccess = VK_FALSE;
+	features->storageBuffer16BitAccess = VK_TRUE;
 	features->storageInputOutput16 = VK_FALSE;
 	features->storagePushConstant16 = VK_FALSE;
 	features->uniformAndStorageBuffer16BitAccess = VK_FALSE;
