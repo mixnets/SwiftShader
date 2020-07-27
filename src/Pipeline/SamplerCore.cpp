@@ -2123,7 +2123,7 @@ Vector4f SamplerCore::replaceBorderTexel(const Vector4f &c, Int4 valid)
 	}
 
 	Vector4f out;
-	out.x = As<Float4>((valid & As<Int4>(c.x)) | (~valid & borderRGB));
+	out.x = As<Float4>((valid & As<Int4>(c.x)) | (~valid & borderRGB));  // TODO: IfThenElse()
 	out.y = As<Float4>((valid & As<Int4>(c.y)) | (~valid & borderRGB));
 	out.z = As<Float4>((valid & As<Int4>(c.z)) | (~valid & borderRGB));
 	out.w = As<Float4>((valid & As<Int4>(c.w)) | (~valid & borderA));
@@ -2252,7 +2252,11 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 
 	if(function == Fetch)
 	{
-		xyz0 = Min(Max(((function.offset != 0) && (addressingMode != ADDRESSING_LAYER)) ? As<Int4>(uvw) + As<Int4>(texOffset) : As<Int4>(uvw), Int4(0)), maxXYZ);
+		Int4 xyz = As<Int4>(uvw);
+		xyz0 = Min(Max(((function.offset != 0) && (addressingMode != ADDRESSING_LAYER)) ? xyz + As<Int4>(texOffset) : xyz, Int4(0)), maxXYZ);
+
+		Int4 outOfBounds = CmpNEQ(xyz, xyz0);
+		xyz0 |= outOfBounds;
 	}
 	else if(addressingMode == ADDRESSING_LAYER)  // Note: Offset does not apply to array layers
 	{
@@ -2408,7 +2412,7 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 		if(addressingMode == ADDRESSING_BORDER)
 		{
 			// Replace the coordinates with -1 if they're out of range.
-			Int4 border0 = CmpLT(xyz0, Int4(0)) | CmpNLT(xyz0, dim);
+			Int4 border0 = CmpLT(xyz0, Int4(0)) | CmpNLT(xyz0, dim);  /// No need to check lower limit? Already negative.
 			Int4 border1 = CmpLT(xyz1, Int4(0)) | CmpNLT(xyz1, dim);
 			xyz0 |= border0;
 			xyz1 |= border1;
