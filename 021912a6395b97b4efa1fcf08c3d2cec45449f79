@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61686f60_c7a34ec4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-27T18:33:42Z",
+      "side": 1,
+      "message": "@Nicolas: are the test changes flakes?",
+      "revId": "021912a6395b97b4efa1fcf08c3d2cec45449f79",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
