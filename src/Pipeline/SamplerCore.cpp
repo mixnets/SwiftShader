@@ -2411,9 +2411,9 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 
 		if(addressingMode == ADDRESSING_BORDER)
 		{
-			// Replace the coordinates with -1 if they're out of range.
-			Int4 border0 = CmpLT(xyz0, Int4(0)) | CmpNLT(xyz0, dim);  /// No need to check lower limit? Already negative.
-			Int4 border1 = CmpLT(xyz1, Int4(0)) | CmpNLT(xyz1, dim);
+			// Make the coordinates negative if they're out of range.
+			Int4 border0 = CmpNLT(xyz0, dim);
+			Int4 border1 = CmpNLT(xyz1, dim);
 			xyz0 |= border0;
 			xyz1 |= border1;
 		}
