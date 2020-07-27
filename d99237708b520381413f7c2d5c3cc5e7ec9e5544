@@ -22,6 +22,23 @@
       "revId": "d99237708b520381413f7c2d5c3cc5e7ec9e5544",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11549b8b_7fcbffc6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-27T17:24:10Z",
+      "side": 1,
+      "message": "\u003e Patch Set 1:\n\u003e \n\u003e OK but I\u0027m not sure what git commands to type, especially since I\n\u003e understand the changes are rebased.\n\u003e If you can provide me the git commands to type, thanks.\n\nThis change was merged into the parent change (https://swiftshader-review.googlesource.com/c/SwiftShader/+/46768), so it\u0027s not longer needed and can be abandoned by clicking the Abandon button at the top of this Gerrit page.\n\nAs for landing the parent change, that\u0027s also done from Gerrit, not the Git command line. Click Reply to add the Verified +1 vote, then a Submit button should appear.",
+      "revId": "d99237708b520381413f7c2d5c3cc5e7ec9e5544",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
