@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aea237e_930d9613",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-28T21:01:42Z",
+      "side": 1,
+      "message": "I don\u0027t think this has been established yet. It could be a test bug. I\u0027d replace this with:\n\nWork around dEQP-VK output_location test flakiness",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 39
+      },
+      "revId": "23a95dc2a292057bfe7d46b96e86ec034bfd3f61",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68e6c505_190fe9d7",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-28T21:01:42Z",
+      "side": 1,
+      "message": "What happens when you instead zero out these components, or write other values in them?",
+      "revId": "23a95dc2a292057bfe7d46b96e86ec034bfd3f61",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fa1add6_690bf7f2",
+        "filename": "src/Pipeline/PixelRoutine.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-28T21:01:42Z",
+      "side": 1,
+      "message": "Please add  // TODO(b/162348737): Determine whether unwritten output should be left untouched",
+      "revId": "23a95dc2a292057bfe7d46b96e86ec034bfd3f61",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
