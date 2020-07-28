@@ -16,6 +16,24 @@
       "revId": "4d220b395673ee2dc7bf04f2c64a035825d6f2b0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "59cfc1fe_2cd4ae42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-28T17:04:43Z",
+      "side": 1,
+      "message": "lol, yeah, well you do need depot_tools, Python 2, and hopefully all goes well. Worked fine on my Linux and Windows. Have you given it a try?",
+      "parentUuid": "6ecd97bd_966c8474",
+      "revId": "4d220b395673ee2dc7bf04f2c64a035825d6f2b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
