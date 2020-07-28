@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ecd97bd_966c8474",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-28T16:59:07Z",
+      "side": 1,
+      "message": "Pleasantly surprised ANGLE can be built by just compiling all .cpp files. 8-)",
+      "revId": "4d220b395673ee2dc7bf04f2c64a035825d6f2b0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
