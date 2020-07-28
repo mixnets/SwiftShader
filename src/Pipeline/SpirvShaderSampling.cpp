@@ -51,7 +51,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 		samplerState.addressingModeU = convertAddressingMode(0, sampler, type);
 		samplerState.addressingModeV = convertAddressingMode(1, sampler, type);
 		samplerState.addressingModeW = convertAddressingMode(2, sampler, type);
-		samplerState.addressingModeY = convertAddressingMode(3, sampler, type);
+		samplerState.addressingModeA = convertAddressingMode(3, sampler, type);
 
 		samplerState.mipmapFilter = convertMipmapMode(sampler);
 		samplerState.swizzle = imageDescriptor->swizzle;

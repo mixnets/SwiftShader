@@ -527,7 +527,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	Short4 cubeArrayId(0);
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		cubeArrayId = address(cubeArrayCoord, state.addressingModeY, mipmap);
+		cubeArrayId = address(cubeArrayCoord, state.addressingModeA, mipmap);
 	}
 
 	if(state.textureFilter == FILTER_POINT)
@@ -734,7 +734,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 	Short4 cubeArrayId(0);
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		cubeArrayId = address(cubeArrayCoord, state.addressingModeY, mipmap);
+		cubeArrayId = address(cubeArrayCoord, state.addressingModeA, mipmap);
 	}
 
 	if(state.textureFilter == FILTER_POINT)
@@ -987,7 +987,7 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	Int4 cubeArrayId(0);
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		address(cubeArrayCoord, cubeArrayId, cubeArrayId, fw, mipmap, offset.w, filter, OFFSET(Mipmap, depth), state.addressingModeY, function);
+		address(cubeArrayCoord, cubeArrayId, cubeArrayId, fw, mipmap, offset.w, filter, OFFSET(Mipmap, depth), state.addressingModeA, function);
 	}
 
 	Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
@@ -1069,7 +1069,7 @@ Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	Int4 cubeArrayId(0);
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		address(cubeArrayCoord, cubeArrayId, cubeArrayId, fw, mipmap, offset.w, filter, OFFSET(Mipmap, depth), state.addressingModeY, function);
+		address(cubeArrayCoord, cubeArrayId, cubeArrayId, fw, mipmap, offset.w, filter, OFFSET(Mipmap, depth), state.addressingModeA, function);
 	}
 
 	Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
@@ -1888,9 +1888,10 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z,
 	{
 		// Valid texels have positive coordinates.
 		Int4 negative = Int4(0);
-		if(state.addressingModeU == ADDRESSING_BORDER) negative |= uuuu;
-		if(state.addressingModeV == ADDRESSING_BORDER) negative |= vvvv;
-		if(state.addressingModeW == ADDRESSING_BORDER) negative |= wwww;
+		if(state.addressingModeU != ADDRESSING_UNUSED) negative |= uuuu;
+		if(state.addressingModeV != ADDRESSING_UNUSED) negative |= vvvv;
+		if(state.addressingModeW != ADDRESSING_UNUSED) negative |= wwww;
+		if(state.addressingModeA != ADDRESSING_UNUSED) negative |= cubeArrayId;
 		valid = CmpNLT(negative, Int4(0));
 	}
 

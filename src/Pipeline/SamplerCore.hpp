@@ -26,14 +26,14 @@ using namespace rr;
 
 enum SamplerMethod : uint32_t
 {
-	Implicit,  // Compute gradients (pixel shader only).
-	Bias,      // Compute gradients and add provided bias.
+	Implicit,  // Compute LOD from gradients (pixel shader only).
+	Bias,      // Compute LOD from gradients and add provided bias.
 	Lod,       // Use provided LOD.
 	Grad,      // Use provided gradients.
-	Fetch,     // Use provided integer coordinates.
+	Fetch,     // Unnormalized coordinates, no sampler.
 	Base,      // Sample base level.
 	Query,     // Return implicit LOD.
-	Gather,    // Return one channel of each texel in footprint.
+	Gather,    // Return one component of each texel in 2x2 footprint.
 	SAMPLER_METHOD_LAST = Gather,
 };
 
