@@ -37,6 +37,8 @@ protected:
 	Float4 w;     // Used as is
 	Float4 rhw;   // Reciprocal w
 
+	uint32_t outputMasks[RENDERTARGETS];
+
 	SpirvRoutine routine;
 	const vk::DescriptorSet::Bindings &descriptorSets;
 
