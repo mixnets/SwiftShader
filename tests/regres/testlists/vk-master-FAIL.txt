@@ -4,10 +4,9 @@ dEQP-VK.draw.output_location.array.b10g11r11-ufloat-pack32-highp-output-float
 dEQP-VK.draw.output_location.array.b10g11r11-ufloat-pack32-lowp-output-float
 dEQP-VK.draw.output_location.array.b10g11r11-ufloat-pack32-mediump-output-float
 dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-highp-output-vec2
-dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-highp-output-vec3
 dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-lowp-output-vec2
 dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-lowp-output-vec3
-dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-mediump-output-vec3
+dEQP-VK.draw.output_location.array.b8g8r8a8-unorm-mediump-output-vec2
 dEQP-VK.draw.output_location.array.r16g16-sfloat-highp-output-float
 dEQP-VK.draw.output_location.array.r16g16-sfloat-lowp-output-float
 dEQP-VK.draw.output_location.array.r16g16-sfloat-mediump-output-float
