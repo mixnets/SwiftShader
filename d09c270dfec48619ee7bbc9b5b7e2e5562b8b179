@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2933279_5b12f122",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-28T15:33:34Z",
+      "side": 1,
+      "message": "Let\u0027s limit this to dEQP-VK.*16bit_storage*",
+      "range": {
+        "startLine": 16,
+        "startChar": 7,
+        "endLine": 16,
+        "endChar": 16
+      },
+      "revId": "d09c270dfec48619ee7bbc9b5b7e2e5562b8b179",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
