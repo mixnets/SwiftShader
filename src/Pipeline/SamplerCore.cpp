@@ -1403,7 +1403,7 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		UInt4 cubeLayerOffset = As<UInt4>(cubeArrayId) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP)) * UInt4(6);
+		UInt4 cubeLayerOffset = As<UInt4>(cubeArrayId) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP));
 		for(int i = 0; i < 4; i++)
 		{
 			index[i] += Extract(cubeLayerOffset, i);
@@ -1428,7 +1428,7 @@ void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww,
 
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 	{
-		indices += As<UInt4>(cubeArrayId) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP)) * UInt4(6);
+		indices += As<UInt4>(cubeArrayId) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP));
 	}
 
 	if(borderModeActive())
@@ -2171,13 +2171,14 @@ Short4 SamplerCore::address(const Float4 &uw, AddressingMode addressingMode, Poi
 	else if(addressingMode == ADDRESSING_LAYER)
 	{
 		Int4 dim = *Pointer<Int4>(mipmap + OFFSET(Mipmap, depth));
+		Int4 x = RoundInt(uw);
 		// For cube maps, the layer argument is per cube, each of which has 6 layers
 		if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 		{
-			dim = dim / Int4(6);
+			x = x * Int4(6);
 		}
 
-		return Short4(Min(Max(RoundInt(uw), Int4(0)), dim - Int4(1)));
+		return Short4(Min(Max(x, Int4(0)), dim - Int4(1)));
 	}
 	else if(addressingMode == ADDRESSING_CLAMP || addressingMode == ADDRESSING_BORDER)
 	{
@@ -2249,13 +2250,14 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 	}
 	else if(addressingMode == ADDRESSING_LAYER)  // Note: Offset does not apply to array layers
 	{
+		Int4 x = RoundInt(uvw);
 		// For cube maps, the layer argument is per cube, each of which has 6 layers
 		if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 		{
-			dim = dim / Int4(6);
+			x = x * Int4(6);
 		}
 
-		xyz0 = Min(Max(RoundInt(uvw), Int4(0)), dim - Int4(1));
+		xyz0 = Min(Max(x, Int4(0)), dim - Int4(1));
 	}
 	else if(addressingMode == ADDRESSING_CUBEFACE)
 	{
