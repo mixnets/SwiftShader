@@ -22,6 +22,30 @@
       "revId": "0f01d4584203b3557444e791c4742d46fc67e393",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccf9ae76_459feb36",
+        "filename": "docs/TestingWithSWANGLE.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-07-29T18:55:32Z",
+      "side": 1,
+      "message": "Hmm, so it\u0027s true that for PVR, you need to pass in -DSWIFTSHADER_GET_PVR\u003d1 to have it check out the submodule. On the other hand, SWIFTSHADER_BUILD_ANGLE works like the other flags: if enabled, it will check out its submodule. I still am not a fan of PVR being special like that, but I know it\u0027s because of the weird way Visual Studio manages per-config CMake builds.\n\nOkay, I\u0027ll add a couples lines to this that does the git submodule init of those 2 directories.",
+      "parentUuid": "7100daf3_402928b9",
+      "range": {
+        "startLine": 17,
+        "startChar": 7,
+        "endLine": 17,
+        "endChar": 57
+      },
+      "revId": "0f01d4584203b3557444e791c4742d46fc67e393",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
