@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7060aded_39189d37",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T15:04:37Z",
+      "side": 0,
+      "message": "I think we should keep an UNSUPPORTED here for when the flag is anything other than something expected/handled.",
+      "range": {
+        "startLine": 195,
+        "startChar": 1,
+        "endLine": 198,
+        "endChar": 2
+      },
+      "revId": "4d23b48503dc4d7278c0df737a417bfb6ac6913a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
