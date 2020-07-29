@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ca0eab2_7c445905",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-29T16:12:45Z",
+      "side": 1,
+      "message": "Rubberstamping, assuming no regressions",
+      "revId": "c90e39b328eca0095526606763ed246e70fe1a3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
