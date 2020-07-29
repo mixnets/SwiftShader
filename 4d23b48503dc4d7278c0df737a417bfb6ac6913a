@@ -22,6 +22,30 @@
       "revId": "4d23b48503dc4d7278c0df737a417bfb6ac6913a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "758ecb6c_fa04e924",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-07-29T18:09:30Z",
+      "side": 0,
+      "message": "There\u0027s currently only 1 active bit in VkQueryControlFlags as of 1.2, and that\u0027s the VK_QUERY_CONTROL_PRECISE_BIT. Is it really necessary to check for unsupported bits that aren\u0027t used anywhere?",
+      "parentUuid": "7060aded_39189d37",
+      "range": {
+        "startLine": 195,
+        "startChar": 1,
+        "endLine": 198,
+        "endChar": 2
+      },
+      "revId": "4d23b48503dc4d7278c0df737a417bfb6ac6913a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
