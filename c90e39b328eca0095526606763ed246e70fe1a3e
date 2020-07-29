@@ -16,6 +16,23 @@
       "revId": "c90e39b328eca0095526606763ed246e70fe1a3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6d264a8_137bd613",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T19:55:37Z",
+      "side": 1,
+      "message": "Note the majority of these deleted Subzero files are for LLVM to Ice tests and related tools. We don\u0027t use those since we directly generate Ice. Also we should get plenty of coverage from dEQP, Reactor, and all our dependent projects (but not necessarily unit tests).",
+      "revId": "c90e39b328eca0095526606763ed246e70fe1a3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
