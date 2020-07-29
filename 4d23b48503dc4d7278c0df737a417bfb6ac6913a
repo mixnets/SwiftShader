@@ -46,6 +46,30 @@
       "revId": "4d23b48503dc4d7278c0df737a417bfb6ac6913a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5f485b9_960fecc2",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T20:03:12Z",
+      "side": 0,
+      "message": "Yes, it catches potential application bugs and implementation bugs, and new flags may be added in future that we want to be notified about if they were used.",
+      "parentUuid": "758ecb6c_fa04e924",
+      "range": {
+        "startLine": 195,
+        "startChar": 1,
+        "endLine": 198,
+        "endChar": 2
+      },
+      "revId": "4d23b48503dc4d7278c0df737a417bfb6ac6913a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
