@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97f9ce8a_1b3f614a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T06:06:51Z",
+      "side": 1,
+      "message": "Looking good!",
+      "revId": "22cfbd8a768fcf01ff1448f4e279ce3535c1e864",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc1f38f2_40c7fb94",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 147120,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T06:06:51Z",
+      "side": 1,
+      "message": "https://swiftshader-review.googlesource.com/c/SwiftShader/+/47095",
+      "range": {
+        "startLine": 147120,
+        "startChar": 19,
+        "endLine": 147120,
+        "endChar": 35
+      },
+      "revId": "22cfbd8a768fcf01ff1448f4e279ce3535c1e864",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dd76aa7b_4ef76764",
+        "filename": "tests/regres/testlists/vk-master-UNIMPLEMENTED.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-29T06:06:51Z",
+      "side": 1,
+      "message": "Caused by running directly against SwiftShader\u0027s libvulkan.so.1 instead of through the loader. I wanted to see if that speeds things up. Runs into a benign assert causing this test to fail.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 56
+      },
+      "revId": "22cfbd8a768fcf01ff1448f4e279ce3535c1e864",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
