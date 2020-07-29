@@ -16,6 +16,24 @@
       "revId": "8c993f31b0282dea0233141cce6c1f0d96e9a990",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "19ec7340_bd7f06aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-07-29T15:23:14Z",
+      "side": 1,
+      "message": "Bug filed here: http://anglebug.com/4904",
+      "parentUuid": "cb6ddfc8_151d5da7",
+      "revId": "8c993f31b0282dea0233141cce6c1f0d96e9a990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
