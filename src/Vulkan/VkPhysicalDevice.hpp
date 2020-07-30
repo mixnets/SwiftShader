@@ -46,6 +46,9 @@ public:
 	void getFeatures(VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR *features) const;
 	void getFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT *features) const;
 	void getFeatures(VkPhysicalDeviceImageRobustnessFeaturesEXT *features) const;
+	void getFeatures(VkPhysicalDeviceFeatures2 *features) const;
+	void getFeatures(VkPhysicalDeviceVulkan11Features *features) const;
+	void getFeatures(VkPhysicalDeviceVulkan12Features *features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
