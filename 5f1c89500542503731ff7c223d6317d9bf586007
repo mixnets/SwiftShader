@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "de273d0b_8a4d2977",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 14780,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-07-30T18:58:04Z",
+      "side": 1,
+      "message": "I switched back to using the Vulkan loader for running Regres.",
+      "range": {
+        "startLine": 14780,
+        "startChar": 0,
+        "endLine": 14780,
+        "endChar": 56
+      },
+      "revId": "5f1c89500542503731ff7c223d6317d9bf586007",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
