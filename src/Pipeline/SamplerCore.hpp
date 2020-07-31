@@ -80,10 +80,10 @@ private:
 	Int4 cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M);
 	Short4 applyOffset(Short4 &uvw, Int4 &offset, const Int4 &whd, AddressingMode mode);
 	void computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Short4 &cubeArrayLayer, Vector4i &offset, const Int4 &sample, const Pointer<Byte> &mipmap, SamplerFunction function);
-	void computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &cubeArrayLayer, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function);
+	void computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function);
 	Vector4s sampleTexel(Short4 &u, Short4 &v, Short4 &w, const Short4 &cubeArrayLayer, Vector4i &offset, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function);
 	Vector4s sampleTexel(UInt index[4], Pointer<Byte> buffer);
-	Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &w, const Int4 &cubeArrayLayer, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function);
+	Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &w, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function);
 	Vector4f replaceBorderTexel(const Vector4f &c, Int4 valid);
 	void selectMipmap(const Pointer<Byte> &texture, Pointer<Byte> &mipmap, Pointer<Byte> &buffer, const Float &lod, bool secondLOD);
 	Short4 address(const Float4 &uvw, AddressingMode addressingMode, Pointer<Byte> &mipmap);
