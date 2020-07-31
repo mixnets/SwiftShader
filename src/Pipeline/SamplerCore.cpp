@@ -164,7 +164,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	                         seamlessCube || state.unnormalizedCoordinates || state.compareEnable ||
 	                         borderModeActive() || (function == Gather) || (function == Fetch);
 
-	if(use32BitFiltering)
+	if(true || use32BitFiltering)
 	{
 		c = sampleFloatFilter(texture, uuuu, vvvv, wwww, arrayCoord, dRef, offset, sample, lod, anisotropy, uDelta, vDelta, function);
 
@@ -982,33 +982,31 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU, function);
 	address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 	address(w, z0, z0, fw, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
-	Int4 layerIndex = computeLayerIndex(a, mipmap, function);
+
+	if(state.addressingModeW != ADDRESSING_UNUSED || state.isArrayed())
+	{
+		Int4 layerIndex = computeLayerIndex(a, mipmap, function);
+
+		z0 = state.addressingModeW != ADDRESSING_UNUSED ? z0 : layerIndex;
+		z0 = (state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) ? z0 + layerIndex : z0;
+		z0 *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
+	}
 
 	Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 	y0 *= pitchP;
 
-	if(state.addressingModeW != ADDRESSING_UNUSED)
-	{
-		z0 *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
-	}
-
-	if(state.isArrayed())
-	{
-		layerIndex *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
-	}
-
 	if(state.textureFilter == FILTER_POINT || (function == Fetch))
 	{
-		c = sampleTexel(x0, y0, z0, layerIndex, dRef, sample, mipmap, buffer, function);
+		c = sampleTexel(x0, y0, z0, dRef, sample, mipmap, buffer, function);
 	}
 	else
 	{
 		y1 *= pitchP;
 
-		Vector4f c00 = sampleTexel(x0, y0, z0, layerIndex, dRef, sample, mipmap, buffer, function);
-		Vector4f c10 = sampleTexel(x1, y0, z0, layerIndex, dRef, sample, mipmap, buffer, function);
-		Vector4f c01 = sampleTexel(x0, y1, z0, layerIndex, dRef, sample, mipmap, buffer, function);
-		Vector4f c11 = sampleTexel(x1, y1, z0, layerIndex, dRef, sample, mipmap, buffer, function);
+		Vector4f c00 = sampleTexel(x0, y0, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c10 = sampleTexel(x1, y0, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c01 = sampleTexel(x0, y1, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c11 = sampleTexel(x1, y1, z0, dRef, sample, mipmap, buffer, function);
 
 		if(!gather)  // Blend
 		{
@@ -1073,21 +1071,21 @@ Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 
 	if(state.textureFilter == FILTER_POINT || (function == Fetch))
 	{
-		c = sampleTexel(x0, y0, z0, 0, dRef, sample, mipmap, buffer, function);
+		c = sampleTexel(x0, y0, z0, dRef, sample, mipmap, buffer, function);
 	}
 	else
 	{
 		y1 *= pitchP;
 		z1 *= sliceP;
 
-		Vector4f c000 = sampleTexel(x0, y0, z0, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c100 = sampleTexel(x1, y0, z0, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c010 = sampleTexel(x0, y1, z0, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c110 = sampleTexel(x1, y1, z0, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c001 = sampleTexel(x0, y0, z1, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c101 = sampleTexel(x1, y0, z1, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c011 = sampleTexel(x0, y1, z1, 0, dRef, sample, mipmap, buffer, function);
-		Vector4f c111 = sampleTexel(x1, y1, z1, 0, dRef, sample, mipmap, buffer, function);
+		Vector4f c000 = sampleTexel(x0, y0, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c100 = sampleTexel(x1, y0, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c010 = sampleTexel(x0, y1, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c110 = sampleTexel(x1, y1, z0, dRef, sample, mipmap, buffer, function);
+		Vector4f c001 = sampleTexel(x0, y0, z1, dRef, sample, mipmap, buffer, function);
+		Vector4f c101 = sampleTexel(x1, y0, z1, dRef, sample, mipmap, buffer, function);
+		Vector4f c011 = sampleTexel(x0, y1, z1, dRef, sample, mipmap, buffer, function);
+		Vector4f c111 = sampleTexel(x1, y1, z1, dRef, sample, mipmap, buffer, function);
 
 		// Blend first slice
 		if(componentCount >= 1) c000.x = c000.x + fu * (c100.x - c000.x);
@@ -1412,18 +1410,13 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 	index[3] = Extract(As<Int4>(uv), 3);
 }
 
-void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &layerIndex, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function)
+void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function)
 {
 	UInt4 indices = uuuu + vvvv;
 
-	if(state.addressingModeW != ADDRESSING_UNUSED)
+	if(state.addressingModeW != ADDRESSING_UNUSED || state.isArrayed())
 	{
 		indices += As<UInt4>(wwww);
-	}
-
-	if(state.isArrayed())
-	{
-		indices += As<UInt4>(layerIndex);
 	}
 
 	if(function.sample)
@@ -1865,7 +1858,7 @@ Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, cons
 	return c;
 }
 
-Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, const Int4 &layerIndex, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
+Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
 {
 	Int4 valid;
 
@@ -1875,12 +1868,12 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, const Int4
 		Int4 negative = uuuu;
 		if(state.addressingModeV != ADDRESSING_UNUSED) negative |= vvvv;
 		if(state.addressingModeW != ADDRESSING_UNUSED) negative |= wwww;
-		if(state.isArrayed()) negative |= layerIndex;
+		//	if(state.isArrayed()) negative |= layerIndex;
 		valid = CmpNLT(negative, Int4(0));
 	}
 
 	UInt index[4];
-	computeIndices(index, uuuu, vvvv, wwww, layerIndex, sample, valid, mipmap, function);
+	computeIndices(index, uuuu, vvvv, wwww, sample, valid, mipmap, function);
 
 	Vector4f c;
 
