@@ -28,7 +28,7 @@ namespace vk {
 
 enum
 {
-	API_VERSION = VK_API_VERSION_1_1,
+	API_VERSION = VK_API_VERSION_1_2,
 	DRIVER_VERSION = VK_MAKE_VERSION(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION),
 	VENDOR_ID = 0x1AE0,  // Google, Inc.: https://pcisig.com/google-inc-1
 	DEVICE_ID = 0xC0DE,  // SwiftShader (placeholder)
