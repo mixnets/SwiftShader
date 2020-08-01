@@ -992,8 +992,19 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		Int4 face = As<Int4>(w);
 		Int4 layerIndex = computeLayerIndex(a, mipmap, function);
 
-		//	z0 = state.addressingModeW == ADDRESSING_CUBEFACE ? face : layerIndex;
-		z = (state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) ? face + layerIndex : As<Int4>(layerIndex);
+		// For cube maps, the layer argument is per cube, each of which has 6 layers
+		if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
+		{
+			layerIndex *= Int4(6);
+		}
+
+		z = (state.addressingModeW == ADDRESSING_CUBEFACE) ? face : layerIndex;
+
+		if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
+		{
+			z += layerIndex;
+		}
+
 		z *= *Pointer<Int4>(mipmap + OFFSET(Mipmap, sliceP), 16);
 	}
 
@@ -2464,17 +2475,7 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, Samp
 	}
 	else
 	{
-		maxLayer = layers / Int4(6) - Int4(1);  //////////////////////////////////////////////////////////////////////////////////
-
-		Int4 l = Min(Max(RoundInt(a), Int4(0)), maxLayer);
-
-		// For cube maps, the layer argument is per cube, each of which has 6 layers
-		if(state.textureType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
-		{
-			l *= Int4(6);
-		}
-
-		return l;
+		return Min(Max(RoundInt(a), Int4(0)), maxLayer);
 	}
 }
 
