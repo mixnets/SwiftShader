@@ -411,8 +411,9 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 					int width = extent.width;
 					int height = extent.height;
 					int bytes = format.bytes();
-					int layers = imageView->getSubresourceRange().layerCount;  // TODO(b/129523279): Untangle depth vs layers throughout the sampler
+					int layers = imageView->getSubresourceRange().layerCount;
 					int depth = layers > 1 ? layers : extent.depth;
+					if(imageView->getType() == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) depth /= 6;
 					int pitchP = imageView->rowPitchBytes(aspect, level, ImageView::SAMPLING) / bytes;
 					int sliceP = (layers > 1 ? imageView->layerPitchBytes(aspect, ImageView::SAMPLING) : imageView->slicePitchBytes(aspect, level, ImageView::SAMPLING)) / bytes;
 					int samplePitchP = imageView->getMipLevelSize(aspect, level, ImageView::SAMPLING) / bytes;
