@@ -2464,6 +2464,8 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, Samp
 	}
 	else
 	{
+		maxLayer = layers / Int4(6) - Int4(1);  //////////////////////////////////////////////////////////////////////////////////
+
 		Int4 l = Min(Max(RoundInt(a), Int4(0)), maxLayer);
 
 		// For cube maps, the layer argument is per cube, each of which has 6 layers
