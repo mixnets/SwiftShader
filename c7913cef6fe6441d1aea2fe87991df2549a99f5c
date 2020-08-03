@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00dcd36a_e7dd6c11",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-03T19:13:13Z",
+      "side": 1,
+      "message": "We\u0027d first need to take care of b/159114695, because we currently have code which assumes all buffer accesses to be 32-bit. And since this extension became an optional Vulkan 1.1 core feature with only ~20% support on Android, I think we should simply remove it instead: https://swiftshader-review.googlesource.com/c/SwiftShader/+/47408\n\nWe can look into implementing it properly when we have someone requesting support for it.",
+      "revId": "c7913cef6fe6441d1aea2fe87991df2549a99f5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
