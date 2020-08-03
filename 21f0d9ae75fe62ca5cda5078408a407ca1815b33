@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2408a23b_846c3b52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-03T18:46:55Z",
+      "side": 1,
+      "message": "The dEQP-VK.wsi.xlib.swapchain changes are unrelated flakiness: b/162249856",
+      "revId": "21f0d9ae75fe62ca5cda5078408a407ca1815b33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
