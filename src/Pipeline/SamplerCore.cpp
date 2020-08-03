@@ -38,15 +38,10 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	Float4 a;  // Array layer coordinate
 	switch(state.textureType)
 	{
-		case VK_IMAGE_VIEW_TYPE_1D_ARRAY:  // Treated as 2D array
-		case VK_IMAGE_VIEW_TYPE_2D_ARRAY:
-			a = uvwa[2];
-			break;
-		case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
-			a = uvwa[3];
-			break;
-		default:
-			break;
+		case VK_IMAGE_VIEW_TYPE_1D_ARRAY: a = uvwa[1]; break;
+		case VK_IMAGE_VIEW_TYPE_2D_ARRAY: a = uvwa[2]; break;
+		case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: a = uvwa[3]; break;
+		default: break;
 	}
 
 	Float lod;
@@ -63,16 +58,17 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 
 	if(function == Implicit || function == Bias || function == Grad || function == Query)
 	{
-		if(state.textureType != VK_IMAGE_VIEW_TYPE_3D)
+		if(state.addressingModeV == ADDRESSING_UNUSED)
 		{
-			if(!isCube())
-			{
-				computeLod(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy, function);
-			}
-			else
-			{
-				computeLodCube(texture, lod, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M, function);
-			}
+			computeLod1D(texture, lod, u, dsx, dsy, function);
+		}
+		else if(state.addressingModeW == ADDRESSING_UNUSED)
+		{
+			computeLod2D(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy, function);
+		}
+		else if(isCube())
+		{
+			computeLodCube(texture, lod, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M, function);
 		}
 		else
 		{
@@ -423,7 +419,7 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 {
 	Vector4s c;
 
-	if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
+	if(state.textureFilter != FILTER_ANISOTROPIC)
 	{
 		c = sampleQuad(texture, u, v, w, a, offset, sample, lod, secondLOD, function);
 	}
@@ -1137,9 +1133,9 @@ Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	return c;
 }
 
-Float SamplerCore::log2sqrt(Float lod)
+static Float log2sqrt(Float lod)
 {
-	// log2(sqrt(lod))                               // Equals 0.25 * log2(lod^2).
+	// log2(sqrt(lod))                              // Equals 0.25 * log2(lod^2).
 	lod *= lod;                                     // Squaring doubles the exponent and produces an extra bit of precision.
 	lod = Float(As<Int>(lod)) - Float(0x3F800000);  // Interpret as integer and subtract the exponent bias.
 	lod *= As<Float>(Int(0x33000000));              // Scale by 0.25 * 2^-23 (mantissa length).
@@ -1147,7 +1143,7 @@ Float SamplerCore::log2sqrt(Float lod)
 	return lod;
 }
 
-Float SamplerCore::log2(Float lod)
+static Float log2(Float lod)
 {
 	lod *= lod;                                     // Squaring doubles the exponent and produces an extra bit of precision.
 	lod = Float(As<Int>(lod)) - Float(0x3F800000);  // Interpret as integer and subtract the exponent bias.
@@ -1156,7 +1152,28 @@ Float SamplerCore::log2(Float lod)
 	return lod;
 }
 
-void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+{
+	Float4 dudxy;
+
+	if(function != Grad)  // Implicit
+	{
+		dudxy = uuuu.yz - uuuu.xx;
+	}
+	else
+	{
+		dudxy = UnpackLow(dsx, dsy);
+	}
+
+	// Scale by texture dimensions.
+	Float4 dUdxy = dudxy * *Pointer<Float4>(texture + OFFSET(Texture, widthWidthHeightHeight));
+
+	lod = Max(Float(dUdxy.x), Float(dUdxy.y));
+
+	lod = log2(lod);
+}
+
+void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerFunction function)
 {
 	Float4 duvdxy;
 
@@ -1363,21 +1380,30 @@ Short4 SamplerCore::applyOffset(Short4 &uvw, Int4 &offset, const Int4 &whd, Addr
 void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Short4 &layerIndex, Vector4i &offset, const Int4 &sample, const Pointer<Byte> &mipmap, SamplerFunction function)
 {
 	uuuu = MulHigh(As<UShort4>(uuuu), UShort4(*Pointer<Int4>(mipmap + OFFSET(Mipmap, width))));
-	vvvv = MulHigh(As<UShort4>(vvvv), UShort4(*Pointer<Int4>(mipmap + OFFSET(Mipmap, height))));
 
 	if(function.offset)
 	{
 		uuuu = applyOffset(uuuu, offset.x, *Pointer<Int4>(mipmap + OFFSET(Mipmap, width)), state.addressingModeU);
-		vvvv = applyOffset(vvvv, offset.y, *Pointer<Int4>(mipmap + OFFSET(Mipmap, height)), state.addressingModeV);
 	}
 
-	Short4 uuu2 = uuuu;
-	uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
-	uuu2 = As<Short4>(UnpackHigh(uuu2, vvvv));
-	uuuu = As<Short4>(MulAdd(uuuu, *Pointer<Short4>(mipmap + OFFSET(Mipmap, onePitchP))));
-	uuu2 = As<Short4>(MulAdd(uuu2, *Pointer<Short4>(mipmap + OFFSET(Mipmap, onePitchP))));
+	UInt4 indices = Int4(uuuu);
 
-	UInt4 uv(As<UInt2>(uuuu), As<UInt2>(uuu2));
+	if(state.addressingModeV != ADDRESSING_UNUSED)
+	{
+		vvvv = MulHigh(As<UShort4>(vvvv), UShort4(*Pointer<Int4>(mipmap + OFFSET(Mipmap, height))));
+
+		if(function.offset)
+		{
+			vvvv = applyOffset(vvvv, offset.y, *Pointer<Int4>(mipmap + OFFSET(Mipmap, height)), state.addressingModeV);
+		}
+
+		Short4 uv0uv1 = As<Short4>(UnpackLow(uuuu, vvvv));
+		Short4 uv2uv3 = As<Short4>(UnpackHigh(uuuu, vvvv));
+		Int2 i01 = MulAdd(uv0uv1, *Pointer<Short4>(mipmap + OFFSET(Mipmap, onePitchP)));
+		Int2 i23 = MulAdd(uv2uv3, *Pointer<Short4>(mipmap + OFFSET(Mipmap, onePitchP)));
+
+		indices = UInt4(As<UInt2>(i01), As<UInt2>(i23));
+	}
 
 	if(state.textureType == VK_IMAGE_VIEW_TYPE_3D)
 	{
@@ -1388,7 +1414,7 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 			wwww = applyOffset(wwww, offset.z, *Pointer<Int4>(mipmap + OFFSET(Mipmap, depth)), state.addressingModeW);
 		}
 
-		uv += As<UInt4>(Int4(As<UShort4>(wwww))) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP));
+		indices += As<UInt4>(Int4(As<UShort4>(wwww))) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP));
 	}
 
 	if(state.isArrayed())
@@ -1402,25 +1428,30 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 
 		UInt4 layerOffset = As<UInt4>(layer) * *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sliceP));
 
-		uv += layerOffset;
+		indices += layerOffset;
 	}
 
 	if(function.sample)
 	{
 		UInt4 sampleOffset = Min(As<UInt4>(sample), *Pointer<UInt4>(mipmap + OFFSET(Mipmap, sampleMax), 16)) *
 		                     *Pointer<UInt4>(mipmap + OFFSET(Mipmap, samplePitchP), 16);
-		uv += sampleOffset;
+		indices += sampleOffset;
 	}
 
-	index[0] = Extract(As<Int4>(uv), 0);
-	index[1] = Extract(As<Int4>(uv), 1);
-	index[2] = Extract(As<Int4>(uv), 2);
-	index[3] = Extract(As<Int4>(uv), 3);
+	index[0] = Extract(indices, 0);
+	index[1] = Extract(indices, 1);
+	index[2] = Extract(indices, 2);
+	index[3] = Extract(indices, 3);
 }
 
 void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function)
 {
-	UInt4 indices = uuuu + vvvv;
+	UInt4 indices = uuuu;
+
+	if(state.addressingModeV != ADDRESSING_UNUSED)
+	{
+		indices += As<UInt4>(vvvv);
+	}
 
 	if(state.addressingModeW != ADDRESSING_UNUSED || state.isArrayed())
 	{
@@ -2167,7 +2198,7 @@ Short4 SamplerCore::address(const Float4 &uw, AddressingMode addressingMode, Poi
 {
 	if(addressingMode == ADDRESSING_UNUSED)
 	{
-		return Short4();
+		return Short4(0);  // TODO(b/134669567): Optimize for 1D filtering
 	}
 	else if(addressingMode == ADDRESSING_CLAMP || addressingMode == ADDRESSING_BORDER)
 	{
@@ -2231,6 +2262,7 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 {
 	if(addressingMode == ADDRESSING_UNUSED)
 	{
+		f = Float4(0.0f);  // TODO(b/134669567): Optimize for 1D filtering
 		return;
 	}
 
@@ -2276,8 +2308,8 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 					// Don't map to a valid range here.
 					break;
 				default:
-					// If unnormalizedCoordinates is VK_TRUE, addressModeU and addressModeV must each be
-					// either VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE or VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
+					// "If unnormalizedCoordinates is VK_TRUE, addressModeU and addressModeV must each be
+					//  either VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE or VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER"
 					UNREACHABLE("addressingMode %d", int(addressingMode));
 					break;
 			}
@@ -2514,13 +2546,6 @@ bool SamplerCore::hasUnsignedTextureComponent(int component) const
 int SamplerCore::textureComponentCount() const
 {
 	return state.textureFormat.componentCount();
-}
-
-bool SamplerCore::hasThirdCoordinate() const
-{
-	return (state.textureType == VK_IMAGE_VIEW_TYPE_3D) ||
-	       (state.textureType == VK_IMAGE_VIEW_TYPE_2D_ARRAY) ||
-	       (state.textureType == VK_IMAGE_VIEW_TYPE_1D_ARRAY);  // Treated as 2D texture with second coordinate 0. TODO(b/134669567)
 }
 
 bool SamplerCore::has16bitPackedTextureFormat() const
