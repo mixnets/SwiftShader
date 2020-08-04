@@ -16,6 +16,24 @@
       "revId": "b3f1bccb2d5c828c39ea148a5db2a68a4c112572",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "161e18ff_e21179f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-04T01:06:59Z",
+      "side": 1,
+      "message": "No, that was a minor clang-format violation someone else landed. Would go away if you rebased your change, but that\u0027s not necessary. The RegressionBot failures are also issues which have been fixed since. Sorry about the noise.",
+      "parentUuid": "05f62ff9_75e70641",
+      "revId": "b3f1bccb2d5c828c39ea148a5db2a68a4c112572",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
