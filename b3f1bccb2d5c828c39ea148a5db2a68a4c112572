@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05f62ff9_75e70641",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 87761
+      },
+      "writtenOn": "2020-08-04T00:54:46Z",
+      "side": 1,
+      "message": "That Kokoro failure doesn\u0027t tell me anything. Should I care about it?",
+      "revId": "b3f1bccb2d5c828c39ea148a5db2a68a4c112572",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
