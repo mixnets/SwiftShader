@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1903ad9c_82c1947c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-04T13:40:17Z",
+      "side": 1,
+      "message": "As expected.",
+      "revId": "b99240302bce3c6c705a36f087e759f64c82fdca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "122bddff_3fe4e0c9",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 70321,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-04T13:40:17Z",
+      "side": 1,
+      "message": "Fixed by https://swiftshader-review.googlesource.com/c/SwiftShader/+/47408",
+      "range": {
+        "startLine": 70321,
+        "startChar": 0,
+        "endLine": 70321,
+        "endChar": 38
+      },
+      "revId": "b99240302bce3c6c705a36f087e759f64c82fdca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
