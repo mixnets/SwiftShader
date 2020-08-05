@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e42e0a08_1736ec43",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T17:57:40Z",
+      "side": 1,
+      "message": "I thought it was usually better not to burden classes with member functions which don\u0027t access any of the members and leave those entirely located in the cpp file. Not sure why this function had to be made a class member.",
+      "range": {
+        "startLine": 293,
+        "startChar": 7,
+        "endLine": 293,
+        "endChar": 32
+      },
+      "revId": "662a53baeb6de60c9c642fea38ce4f445dc5811f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
