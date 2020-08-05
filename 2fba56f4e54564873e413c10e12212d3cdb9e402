@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "672916db_2b28d710",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T17:49:27Z",
+      "side": 1,
+      "message": "duplicated code",
+      "range": {
+        "startLine": 1434,
+        "startChar": 1,
+        "endLine": 1446,
+        "endChar": 2
+      },
+      "revId": "2fba56f4e54564873e413c10e12212d3cdb9e402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd3009dd_ccf37145",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 515,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T17:49:27Z",
+      "side": 1,
+      "message": "Nit: Not a fan of putting /**/ for comments, as it prevents easily commenting out whole sections of code.",
+      "range": {
+        "startLine": 515,
+        "startChar": 4,
+        "endLine": 515,
+        "endChar": 6
+      },
+      "revId": "2fba56f4e54564873e413c10e12212d3cdb9e402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
