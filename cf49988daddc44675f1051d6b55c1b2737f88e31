@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dc1a553b_a00cd601",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b914053_41f865fd",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 43
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1f8beff_dade3c51",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9c5806d_ba64b9af",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1f8beff_dade3c51",
+      "range": {
+        "startLine": 206,
+        "startChar": 0,
+        "endLine": 208,
+        "endChar": 50
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "2b06c23d_7ba69d7e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f908a38_3c3b343e",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 39
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9cf6c23_cb9fbd31",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -91,6 +163,30 @@
       "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06070135_59799b57",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9cf6c23_cb9fbd31",
+      "range": {
+        "startLine": 211,
+        "startChar": 1,
+        "endLine": 211,
+        "endChar": 38
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "8fd8d86c_05f59b48",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a661d8e8_23227463",
+      "range": {
+        "startLine": 212,
+        "startChar": 1,
+        "endLine": 212,
+        "endChar": 44
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a7807f7_9aecbdea",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
@@ -137,6 +257,30 @@
       "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9cd43ce_d1b6abc1",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-05T19:03:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a7807f7_9aecbdea",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 43
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
