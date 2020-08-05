@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0b914053_41f865fd",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "You should get this info from:\ngetFeatures(VkPhysicalDevice16BitStorageFeatures *features)\n\nJust create a local VkPhysicalDevice16BitStorageFeatures structure",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 43
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1f8beff_dade3c51",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "Same, with:\ngetFeatures(VkPhysicalDeviceMultiviewFeatures *features)",
+      "range": {
+        "startLine": 206,
+        "startChar": 0,
+        "endLine": 208,
+        "endChar": 50
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f908a38_3c3b343e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "Same, with:\ngetFeatures(VkPhysicalDeviceVariablePointersFeatures *features)",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 39
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9cf6c23_cb9fbd31",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "Same, with:\ngetFeatures(VkPhysicalDeviceProtectedMemoryFeatures *features)",
+      "range": {
+        "startLine": 211,
+        "startChar": 1,
+        "endLine": 211,
+        "endChar": 38
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a661d8e8_23227463",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "Same, with:\ngetFeatures(VkPhysicalDeviceSamplerYcbcrConversionFeatures *features)",
+      "range": {
+        "startLine": 212,
+        "startChar": 1,
+        "endLine": 212,
+        "endChar": 44
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a7807f7_9aecbdea",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-05T18:09:07Z",
+      "side": 1,
+      "message": "Same, with:\ngetFeatures(VkPhysicalDeviceShaderDrawParameterFeatures *features)",
+      "range": {
+        "startLine": 213,
+        "startChar": 1,
+        "endLine": 213,
+        "endChar": 43
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
