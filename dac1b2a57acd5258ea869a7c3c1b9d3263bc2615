@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "750a0fd6_97ee61c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T18:00:37Z",
+      "side": 1,
+      "message": "I\u0027d suggest running this with \"Tests: dEQP-VK.*\" to discover tests that are currently not being run because they previously were marked NOT_SUPPORTED.",
+      "revId": "dac1b2a57acd5258ea869a7c3c1b9d3263bc2615",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
