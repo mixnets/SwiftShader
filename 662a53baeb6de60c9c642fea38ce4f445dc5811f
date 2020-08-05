@@ -22,6 +22,30 @@
       "revId": "662a53baeb6de60c9c642fea38ce4f445dc5811f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0c31975_bfaabded",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T18:22:33Z",
+      "side": 1,
+      "message": "I just wanted to move it away from the top of the file since it\u0027s distracting. Note we also have eg. SamplerCore::convertSigned15() which doesn\u0027t access any class members, while others which may look similar access the \u0027state\u0027 or \u0027constants\u0027 member. So it seems a bit arbitrary to make some of them static but others not.\n\nAnyway, we can refactor these some more later if there\u0027s a marked advantage.",
+      "parentUuid": "e42e0a08_1736ec43",
+      "range": {
+        "startLine": 293,
+        "startChar": 7,
+        "endLine": 293,
+        "endChar": 32
+      },
+      "revId": "662a53baeb6de60c9c642fea38ce4f445dc5811f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
