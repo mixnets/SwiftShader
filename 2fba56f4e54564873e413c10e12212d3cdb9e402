@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d04dbcc7_91330e68",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T17:55:55Z",
+      "side": 1,
+      "message": "Good catch! Bad cherry-pick when I split the patch...",
+      "parentUuid": "672916db_2b28d710",
+      "range": {
+        "startLine": 1434,
+        "startChar": 1,
+        "endLine": 1446,
+        "endChar": 2
+      },
+      "revId": "2fba56f4e54564873e413c10e12212d3cdb9e402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cd3009dd_ccf37145",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 8
@@ -45,6 +69,30 @@
       "revId": "2fba56f4e54564873e413c10e12212d3cdb9e402",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f080638_eae351a8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 515,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T17:55:55Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of it either, but the way clang-format aligned the // made it really confusing.",
+      "parentUuid": "cd3009dd_ccf37145",
+      "range": {
+        "startLine": 515,
+        "startChar": 4,
+        "endLine": 515,
+        "endChar": 6
+      },
+      "revId": "2fba56f4e54564873e413c10e12212d3cdb9e402",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
