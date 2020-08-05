@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f3e403a_bfda9885",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T17:57:54Z",
+      "side": 1,
+      "message": "Note this and others are already part of other feature structures defined for individual extensions (i.e. this one bundles features from extensions promoted to Core Vulkan 1.1).\n\nWe risk updating one but not the other when implementing the actual functionality.",
+      "range": {
+        "startLine": 202,
+        "startChar": 11,
+        "endLine": 202,
+        "endChar": 36
+      },
+      "revId": "1edfadc23627d3c1b2acc2e9a8f6697d9c3c0a05",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
