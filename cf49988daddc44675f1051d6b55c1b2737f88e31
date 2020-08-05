@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "631fba17_2012ee94",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-05T19:06:07Z",
+      "side": 1,
+      "message": "I wonder if we should do something like:\n\ntemplate\u003ctypename T\u003e\nvoid getPhysicalDevice16BitStorageFeatures(T *features)\n{\n    features-\u003estorageBuffer16BitAddess \u003d VK_FALSE;\n    ...\n}\n\nYou can then call it passing either a VkPhysicalDevice16BitStorageFeatures\n or VkPhysicalDeviceVulkan11Features structure.\n\nIt would avoid having to manually copy all the VkPhysicalDevice16BitStorageFeatures fields into VkPhysicalDeviceVulkan11Features.",
+      "parentUuid": "0b914053_41f865fd",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 43
+      },
+      "revId": "cf49988daddc44675f1051d6b55c1b2737f88e31",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a1f8beff_dade3c51",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 3
