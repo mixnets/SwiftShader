@@ -98,7 +98,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_FALSE,  // shaderTessellationAndGeometryPointSize
 		VK_FALSE,  // shaderImageGatherExtended
 		VK_TRUE,   // shaderStorageImageExtendedFormats
-		VK_FALSE,  // shaderStorageImageMultisample
+		VK_TRUE,   // shaderStorageImageMultisample
 		VK_FALSE,  // shaderStorageImageReadWithoutFormat
 		VK_FALSE,  // shaderStorageImageWriteWithoutFormat
 		VK_TRUE,   // shaderUniformBufferArrayDynamicIndexing
