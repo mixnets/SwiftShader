@@ -435,10 +435,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].ptr = imageView->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-			descriptor[i].samplePitchBytes = imageView->getSubresourceRange().layerCount > 1
-			                                     ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT)
-			                                     : imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-			descriptor[i].slicePitchBytes = descriptor[i].samplePitchBytes * imageView->getSampleCount();
+			descriptor[i].samplePitchBytes = imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			descriptor[i].layerPitchBytes = imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT);
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			descriptor[i].sampleCount = imageView->getSampleCount();
 			descriptor[i].sizeInBytes = static_cast<int>(imageView->getSizeInBytes());
@@ -448,10 +446,8 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			{
 				descriptor[i].stencilPtr = imageView->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_STENCIL_BIT, 0, 0);
 				descriptor[i].stencilRowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
-				descriptor[i].stencilSamplePitchBytes = (imageView->getSubresourceRange().layerCount > 1)
-				                                            ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT)
-				                                            : imageView->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
-				descriptor[i].stencilSlicePitchBytes = descriptor[i].stencilSamplePitchBytes * imageView->getSampleCount();
+				descriptor[i].stencilSamplePitchBytes = imageView->slicePitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT, 0);
+				descriptor[i].stencilLayerPitchBytes = imageView->layerPitchBytes(VK_IMAGE_ASPECT_STENCIL_BIT);
 			}
 		}
 	}
@@ -465,7 +461,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].ptr = bufferView->getPointer();
 			descriptor[i].extent = { bufferView->getElementCount(), 1, 1 };
 			descriptor[i].rowPitchBytes = 0;
-			descriptor[i].slicePitchBytes = 0;
+			descriptor[i].layerPitchBytes = 0;
 			descriptor[i].samplePitchBytes = 0;
 			descriptor[i].arrayLayers = 1;
 			descriptor[i].sampleCount = 1;

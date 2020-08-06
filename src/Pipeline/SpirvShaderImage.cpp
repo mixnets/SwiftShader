@@ -115,7 +115,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(Variant variant,
 		return EmitImageSample({ variant, Grad }, insn, state);
 	}
 	else
-		UNSUPPORTED("Image Operands %x", imageOperands);
+		UNSUPPORTED("Image operands 0x%08X", imageOperands);
 
 	return EmitResult::Continue;
 }
@@ -234,7 +234,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		if(imageOperands != 0)
 		{
-			UNSUPPORTED("Image operand %x", imageOperands);
+			UNSUPPORTED("Image operands 0x%08X", imageOperands);
 		}
 	}
 
@@ -520,10 +520,10 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	auto rowPitch = SIMD::Int(*Pointer<Int>(descriptor + (useStencilAspect
 	                                                          ? OFFSET(vk::StorageImageDescriptor, stencilRowPitchBytes)
 	                                                          : OFFSET(vk::StorageImageDescriptor, rowPitchBytes))));
-	auto slicePitch = SIMD::Int(
+	auto layerPitch = SIMD::Int(
 	    *Pointer<Int>(descriptor + (useStencilAspect
-	                                    ? OFFSET(vk::StorageImageDescriptor, stencilSlicePitchBytes)
-	                                    : OFFSET(vk::StorageImageDescriptor, slicePitchBytes))));
+	                                    ? OFFSET(vk::StorageImageDescriptor, stencilLayerPitchBytes)
+	                                    : OFFSET(vk::StorageImageDescriptor, layerPitchBytes))));
 	auto samplePitch = SIMD::Int(
 	    *Pointer<Int>(descriptor + (useStencilAspect
 	                                    ? OFFSET(vk::StorageImageDescriptor, stencilSamplePitchBytes)
@@ -549,13 +549,13 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 			w += coordinate.Int(dims);
 		}
 
-		ptrOffset += w * slicePitch;
+		ptrOffset += w * layerPitch;
 	}
 
 	if(dim == spv::DimSubpassData)
 	{
 		// Multiview input attachment access is to the layer corresponding to the current view
-		ptrOffset += SIMD::Int(routine->viewID) * slicePitch;
+		ptrOffset += SIMD::Int(routine->viewID) * layerPitch;
 	}
 
 	if(sampleId.value())
@@ -605,7 +605,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 	if(insn.wordCount() > 5)
 	{
 		int operand = 6;
-		auto imageOperands = insn.word(5);
+		uint32_t imageOperands = insn.word(5);
 		if(imageOperands & spv::ImageOperandsSampleMask)
 		{
 			sampleId = insn.word(operand++);
@@ -613,7 +613,10 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 		}
 
 		// Should be no remaining image operands.
-		ASSERT(!imageOperands);
+		if(imageOperands != 0)
+		{
+			UNSUPPORTED("Image operands 0x%08X", imageOperands);
+		}
 	}
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
@@ -990,8 +993,24 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 
 	ASSERT(imageType.definition.opcode() == spv::OpTypeImage);
 
-	// TODO(b/131171141): Not handling any image operands yet.
-	ASSERT(insn.wordCount() == 4);
+	Object::ID sampleId = 0;
+
+	if(insn.wordCount() > 4)
+	{
+		int operand = 5;
+		uint32_t imageOperands = insn.word(4);
+		if(imageOperands & spv::ImageOperandsSampleMask)
+		{
+			sampleId = insn.word(operand++);
+			imageOperands &= ~spv::ImageOperandsSampleMask;
+		}
+
+		// Should be no remaining image operands.
+		if(imageOperands != 0)
+		{
+			UNSUPPORTED("Image operands 0x%08X", (int)imageOperands);
+		}
+	}
 
 	auto coordinate = Operand(this, state, insn.word(2));
 	auto texel = Operand(this, state, insn.word(3));
@@ -1176,7 +1195,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	// - https://www.khronos.org/registry/vulkan/specs/1.2/html/chap16.html#textures-output-coordinate-validation
 	auto robustness = OutOfBoundsBehavior::Nullify;
 
-	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, 0, false, robustness);
+	auto texelPtr = GetTexelAddress(state, imageBase, imageSizeInBytes, coordinate, imageType, binding, texelSize, sampleId, false, robustness);
 
 	// Scatter packed texel data.
 	// TODO(b/160531165): Provide scatter abstractions for various element sizes.
