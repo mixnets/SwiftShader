@@ -325,4 +325,52 @@ VkResult Device::setDebugUtilsObjectTag(const VkDebugUtilsObjectTagInfoEXT *pTag
 	return VK_SUCCESS;
 }
 
+void Device::registerImageView(ImageView *imageView)
+{
+	if(imageView != nullptr)
+	{
+		marl::lock lock(imageViewSetMutex);
+		imageViewSet.insert(imageView);
+	}
+}
+
+void Device::unregisterImageView(ImageView *imageView)
+{
+	if(imageView != nullptr)
+	{
+		marl::lock lock(imageViewSetMutex);
+		auto it = imageViewSet.find(imageView);
+		if(it != imageViewSet.end())
+		{
+			imageViewSet.erase(it);
+		}
+	}
+}
+
+bool Device::lockImageView(ImageView *imageView)
+{
+	if(imageView != nullptr)
+	{
+		imageViewSetMutex.lock();
+
+		auto it = imageViewSet.find(imageView);
+		if(it != imageViewSet.end())
+		{
+			return true;
+		}
+
+		imageViewSetMutex.unlock();
+	}
+
+	return false;
+}
+
+void Device::unlockImageView(ImageView *imageView)
+{
+	if(imageView != nullptr)
+	{
+		imageViewSetMutex.unlock();
+	}
+}
+
 }  // namespace vk

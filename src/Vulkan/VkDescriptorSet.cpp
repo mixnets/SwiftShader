@@ -13,12 +13,67 @@
 // limitations under the License.
 
 #include "VkDescriptorSet.hpp"
+#include "VkDevice.hpp"
 #include "VkImageView.hpp"
 #include "VkPipelineLayout.hpp"
 
 namespace vk {
 
-void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, NotificationType notificationType)
+class ImageViewGuard
+{
+public:
+	ImageViewGuard(Device *device, uint8_t *descriptor, VkDescriptorType type)
+	    : device(device)
+	    , type(type)
+	{
+		switch(type)
+		{
+			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+			case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+				imageView = reinterpret_cast<SampledImageDescriptor *>(descriptor)->memoryOwner;
+				break;
+			case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+			case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+				imageView = reinterpret_cast<StorageImageDescriptor *>(descriptor)->memoryOwner;
+				break;
+			default:
+				break;
+		}
+
+		if(!device->lockImageView(imageView))
+		{
+			imageView = nullptr;
+		}
+	}
+
+	~ImageViewGuard()
+	{
+		device->unlockImageView(imageView);
+	}
+
+	void prepareForSampling()
+	{
+		if(imageView)
+		{
+			imageView->prepareForSampling();
+		}
+	}
+
+	void contentsChanged()
+	{
+		if(imageView && (type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE))
+		{
+			imageView->contentsChanged();
+		}
+	}
+
+private:
+	ImageView *imageView = nullptr;
+	Device *const device = nullptr;
+	const VkDescriptorType type = (VkDescriptorType)0;
+};
+
+void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const PipelineLayout *layout, Device *device, NotificationType notificationType)
 {
 	if(layout)
 	{
@@ -44,30 +99,17 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 
 				for(uint32_t k = 0; k < descriptorCount; k++)
 				{
-					ImageView *memoryOwner = nullptr;
-					switch(type)
+					ImageViewGuard imageViewGuard(device, descriptorMemory, type);
+					switch(notificationType)
 					{
-						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-							memoryOwner = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory)->memoryOwner;
+						case PREPARE_FOR_SAMPLING:
+							imageViewGuard.prepareForSampling();
 							break;
-						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-						case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-							memoryOwner = reinterpret_cast<StorageImageDescriptor *>(descriptorMemory)->memoryOwner;
+						case CONTENTS_CHANGED:
+							imageViewGuard.contentsChanged();
 							break;
 						default:
-							break;
-					}
-					if(memoryOwner)
-					{
-						if(notificationType == PREPARE_FOR_SAMPLING)
-						{
-							memoryOwner->prepareForSampling();
-						}
-						else if((notificationType == CONTENTS_CHANGED) && (type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE))
-						{
-							memoryOwner->contentsChanged();
-						}
+							UNREACHABLE("notificationType: %d", int(notificationType));
 					}
 					descriptorMemory += descriptorSize;
 				}
@@ -76,14 +118,14 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 	}
 }
 
-void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout)
+void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout, Device *device)
 {
-	ParseDescriptors(descriptorSets, layout, CONTENTS_CHANGED);
+	ParseDescriptors(descriptorSets, layout, device, CONTENTS_CHANGED);
 }
 
-void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout)
+void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout, Device *device)
 {
-	ParseDescriptors(descriptorSets, layout, PREPARE_FOR_SAMPLING);
+	ParseDescriptors(descriptorSets, layout, device, PREPARE_FOR_SAMPLING);
 }
 
 }  // namespace vk

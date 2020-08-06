@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkImageView.hpp"
+#include "VkDevice.hpp"
 #include "VkImage.hpp"
 #include "System/Math.hpp"
 
@@ -73,8 +74,9 @@ Identifier::Identifier(VkFormat fmt)
 	format = Format::mapTo8bit(fmt);
 }
 
-ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
-    : image(vk::Cast(pCreateInfo->image))
+ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion)
+    : device(device)
+    , image(vk::Cast(pCreateInfo->image))
     , viewType(pCreateInfo->viewType)
     , format(pCreateInfo->format)
     , components(ResolveComponentMapping(pCreateInfo->components, format))
@@ -82,6 +84,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , ycbcrConversion(ycbcrConversion)
     , id(image, viewType, format.getAspectFormat(subresourceRange.aspectMask), components)
 {
+	device->registerImageView(this);
 }
 
 size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo)
@@ -91,6 +94,7 @@ size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCr
 
 void ImageView::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	device->unregisterImageView(this);
 }
 
 // Vulkan 1.2 Table 8. Image and image view parameter compatibility requirements
