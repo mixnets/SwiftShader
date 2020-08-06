@@ -68,7 +68,7 @@ public:
 		SAMPLING
 	};
 
-	ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
+	ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, Device *device, const vk::SamplerYcbcrConversion *ycbcrConversion);
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo);
@@ -119,6 +119,7 @@ private:
 	bool imageTypesMatch(VkImageType imageType) const;
 	const Image *getImage(Usage usage) const;
 
+	Device *const device = nullptr;
 	Image *const image = nullptr;
 	const VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D;
 	const Format format = VK_FORMAT_UNDEFINED;
