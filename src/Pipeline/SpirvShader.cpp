@@ -361,12 +361,13 @@ SpirvShader::SpirvShader(
 				{
 					case spv::CapabilityMatrix: capabilities.Matrix = true; break;
 					case spv::CapabilityShader: capabilities.Shader = true; break;
+					case spv::CapabilityStorageImageMultisample: capabilities.StorageImageMultisample = true; break;
 					case spv::CapabilityClipDistance: capabilities.ClipDistance = true; break;
 					case spv::CapabilityCullDistance: capabilities.CullDistance = true; break;
+					case spv::CapabilityImageCubeArray: capabilities.ImageCubeArray = true; break;
 					case spv::CapabilityInputAttachment: capabilities.InputAttachment = true; break;
 					case spv::CapabilitySampled1D: capabilities.Sampled1D = true; break;
 					case spv::CapabilityImage1D: capabilities.Image1D = true; break;
-					case spv::CapabilityImageCubeArray: capabilities.ImageCubeArray = true; break;
 					case spv::CapabilitySampledBuffer: capabilities.SampledBuffer = true; break;
 					case spv::CapabilitySampledCubeArray: capabilities.SampledCubeArray = true; break;
 					case spv::CapabilityImageBuffer: capabilities.ImageBuffer = true; break;
