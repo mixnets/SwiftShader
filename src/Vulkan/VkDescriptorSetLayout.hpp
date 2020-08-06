@@ -140,6 +140,8 @@ private:
 	uint8_t *getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const;
 	size_t getDescriptorSetDataSize() const;
 	static bool isDynamic(VkDescriptorType type);
+	ImageView *getMemoryOwner(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement) const;
+	void increment(uint32_t &bindingNumber, uint32_t &arrayElement) const;
 
 	const VkDescriptorSetLayoutCreateFlags flags;
 	uint32_t bindingsArraySize = 0;

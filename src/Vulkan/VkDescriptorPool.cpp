@@ -22,6 +22,11 @@
 
 namespace {
 
+inline VkDescriptorSet asDescriptorSet(uint8_t *memory)
+{
+	return vk::TtoVkT<vk::DescriptorSet, VkDescriptorSet>(reinterpret_cast<vk::DescriptorSet *>(memory));
+}
+
 inline uint8_t *asMemory(VkDescriptorSet descriptorSet)
 {
 	return reinterpret_cast<uint8_t *>(vk::Cast(descriptorSet));
@@ -39,6 +44,8 @@ DescriptorPool::DescriptorPool(const VkDescriptorPoolCreateInfo *pCreateInfo, vo
 
 void DescriptorPool::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	reset();
+
 	vk::deallocate(pool, pAllocator);
 }
 
@@ -188,12 +195,18 @@ void DescriptorPool::freeSet(const VkDescriptorSet descriptorSet)
 	auto it = std::find(nodes.begin(), itEnd, asMemory(descriptorSet));
 	if(it != itEnd)
 	{
+		vk::Cast(asDescriptorSet(it->set))->~DescriptorSet();
 		nodes.erase(it);
 	}
 }
 
 VkResult DescriptorPool::reset()
 {
+	for(auto &node : nodes)
+	{
+		vk::Cast(asDescriptorSet(node.set))->~DescriptorSet();
+	}
+
 	nodes.clear();
 
 	return VK_SUCCESS;

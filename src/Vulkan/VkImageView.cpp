@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "VkImageView.hpp"
-#include "VkImage.hpp"
+#include "VkDescriptorSet.hpp"
 #include "System/Math.hpp"
 
 #include <climits>
@@ -91,6 +91,21 @@ size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCr
 
 void ImageView::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	for(auto descriptorSet : descriptorSets)
+	{
+		descriptorSet->releaseMemoryOwner(this);
+	}
+
+	descriptorSets.clear();
+}
+
+void ImageView::releaseDescriptorSet(DescriptorSet *descriptorSet)
+{
+	auto it = descriptorSets.find(descriptorSet);
+	if(it != descriptorSets.end())
+	{
+		descriptorSets.erase(it);
+	}
 }
 
 // Vulkan 1.2 Table 8. Image and image view parameter compatibility requirements
@@ -297,6 +312,23 @@ void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBit
 	};
 
 	return getImage(usage)->getTexelPointer(offset, imageSubresource);
+}
+
+void ImageView::ref(vk::DescriptorSet *descriptorSet)
+{
+	descriptorSet->ref(this);
+	descriptorSets.insert(descriptorSet);
+}
+
+void ImageView::unref(vk::DescriptorSet *descriptorSet)
+{
+	descriptorSet->unref(this);
+
+	auto it = descriptorSets.find(descriptorSet);
+	if(it != descriptorSets.end())
+	{
+		descriptorSets.erase(it);
+	}
 }
 
 }  // namespace vk
