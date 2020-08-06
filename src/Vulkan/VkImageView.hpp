@@ -15,9 +15,7 @@
 #ifndef VK_IMAGE_VIEW_HPP_
 #define VK_IMAGE_VIEW_HPP_
 
-#include "VkFormat.hpp"
 #include "VkImage.hpp"
-#include "VkObject.hpp"
 
 #include "System/Debug.hpp"
 
@@ -25,6 +23,7 @@
 
 namespace vk {
 
+class DescriptorSet;
 class SamplerYcbcrConversion;
 
 // Uniquely identifies state used by sampling routine generation.
@@ -70,6 +69,7 @@ public:
 
 	ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion);
 	void destroy(const VkAllocationCallbacks *pAllocator);
+	void releaseDescriptorSet(DescriptorSet *descriptorSet);
 
 	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo);
 
@@ -115,6 +115,9 @@ public:
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 	size_t getSizeInBytes() const { return image->getSizeInBytes(subresourceRange); }
 
+	void ref(vk::DescriptorSet *descriptorSet);
+	void unref(vk::DescriptorSet *descriptorSet);
+
 private:
 	bool imageTypesMatch(VkImageType imageType) const;
 	const Image *getImage(Usage usage) const;
@@ -126,6 +129,8 @@ private:
 	const VkImageSubresourceRange subresourceRange = {};
 
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+
+	std::unordered_set<vk::DescriptorSet *> descriptorSets;
 
 public:
 	const Identifier id;

@@ -21,15 +21,19 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <unordered_set>
 
 namespace vk {
 
 class DescriptorSetLayout;
+class ImageView;
 class PipelineLayout;
 
 struct alignas(16) DescriptorSetHeader
 {
 	DescriptorSetLayout *layout;
+	std::unordered_set<ImageView *> currentMemoryOwners;
+	std::unordered_set<ImageView *> deletedMemoryOwners;
 	marl::mutex mutex;
 };
 
@@ -39,6 +43,12 @@ public:
 	using Array = std::array<DescriptorSet *, vk::MAX_BOUND_DESCRIPTOR_SETS>;
 	using Bindings = std::array<uint8_t *, vk::MAX_BOUND_DESCRIPTOR_SETS>;
 	using DynamicOffsets = std::array<uint32_t, vk::MAX_DESCRIPTOR_SET_COMBINED_BUFFERS_DYNAMIC>;
+
+	virtual ~DescriptorSet();
+	void releaseMemoryOwner(ImageView *imageView);
+
+	void ref(ImageView *imageView);
+	void unref(ImageView *imageView);
 
 	static void ContentsChanged(const Array &descriptorSets, const PipelineLayout *layout);
 	static void PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout);
