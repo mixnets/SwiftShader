@@ -435,9 +435,7 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].ptr = imageView->getOffsetPointer({ 0, 0, 0 }, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
 			descriptor[i].extent = imageView->getMipLevelExtent(0);
 			descriptor[i].rowPitchBytes = imageView->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-			descriptor[i].samplePitchBytes = imageView->getSubresourceRange().layerCount > 1
-			                                     ? imageView->layerPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT)
-			                                     : imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			descriptor[i].samplePitchBytes = imageView->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
 			descriptor[i].slicePitchBytes = descriptor[i].samplePitchBytes * imageView->getSampleCount();
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			descriptor[i].sampleCount = imageView->getSampleCount();
