@@ -99,6 +99,7 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo *pCreateInfo);
 
+	static size_t GetDescriptorSetDataOffset();
 	static uint32_t GetDescriptorSize(VkDescriptorType type);
 	static bool IsDescriptorDynamic(VkDescriptorType type);
 

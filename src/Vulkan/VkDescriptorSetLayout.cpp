@@ -141,10 +141,15 @@ bool DescriptorSetLayout::IsDescriptorDynamic(VkDescriptorType type)
 	       type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
 }
 
+size_t DescriptorSetLayout::GetDescriptorSetDataOffset()
+{
+	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data));
+}
+
 size_t DescriptorSetLayout::getDescriptorSetAllocationSize() const
 {
 	// vk::DescriptorSet has a header with a pointer to the layout.
-	return sw::align<alignof(DescriptorSet)>(OFFSET(DescriptorSet, data) + getDescriptorSetDataSize());
+	return GetDescriptorSetDataOffset() + sw::align<16>(getDescriptorSetDataSize());
 }
 
 size_t DescriptorSetLayout::getDescriptorSetDataSize() const
