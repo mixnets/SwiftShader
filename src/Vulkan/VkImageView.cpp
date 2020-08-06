@@ -91,6 +91,7 @@ size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCr
 
 void ImageView::destroy(const VkAllocationCallbacks *pAllocator)
 {
+	ASSERT(refCount == 0);
 }
 
 // Vulkan 1.2 Table 8. Image and image view parameter compatibility requirements

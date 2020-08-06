@@ -115,6 +115,9 @@ public:
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 	size_t getSizeInBytes() const { return image->getSizeInBytes(subresourceRange); }
 
+	void ref() { ++refCount; }
+	void unref() { --refCount; }
+
 private:
 	bool imageTypesMatch(VkImageType imageType) const;
 	const Image *getImage(Usage usage) const;
@@ -126,6 +129,8 @@ private:
 	const VkImageSubresourceRange subresourceRange = {};
 
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
+
+	int refCount = 0;
 
 public:
 	const Identifier id;

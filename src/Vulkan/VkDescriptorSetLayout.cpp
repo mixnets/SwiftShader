@@ -176,12 +176,79 @@ void DescriptorSetLayout::initialize(DescriptorSet *descriptorSet)
 			{
 				SampledImageDescriptor *imageSamplerDescriptor = reinterpret_cast<SampledImageDescriptor *>(mem);
 				imageSamplerDescriptor->updateSampler(bindings[i].immutableSamplers[j]);
+				imageSamplerDescriptor->memoryOwner = nullptr;
 				mem += descriptorSize;
 			}
 		}
 		else
 		{
-			mem += bindings[i].descriptorCount * descriptorSize;
+			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
+			{
+				if(bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+				   bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+				{
+					SampledImageDescriptor* descriptor = reinterpret_cast<SampledImageDescriptor *>(mem);
+					descriptor->memoryOwner = nullptr;
+				}
+				else if(bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+					    bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
+				{
+					StorageImageDescriptor* descriptor = reinterpret_cast<StorageImageDescriptor*>(mem);
+					descriptor->memoryOwner = nullptr;
+				}
+				mem += descriptorSize;
+			}
+		}
+	}
+}
+
+void DescriptorSetLayout::release(DescriptorSet *descriptorSet)
+{
+	uint8_t *mem = descriptorSet->data;
+
+	for(uint32_t i = 0; i < bindingsArraySize; i++)
+	{
+		size_t descriptorSize = GetDescriptorSize(bindings[i].descriptorType);
+
+		if(bindings[i].immutableSamplers)
+		{
+			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
+			{
+				SampledImageDescriptor* descriptor = reinterpret_cast<SampledImageDescriptor*>(mem);
+				if(descriptor->memoryOwner)
+				{
+					descriptor->memoryOwner->unref();
+					descriptor->memoryOwner = nullptr;
+				}
+				mem += descriptorSize;
+			}
+		}
+		else
+		{
+			for(uint32_t j = 0; j < bindings[i].descriptorCount; j++)
+			{
+				if(bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+					bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+				{
+					SampledImageDescriptor* descriptor = reinterpret_cast<SampledImageDescriptor*>(mem);
+					if(descriptor->memoryOwner)
+					{
+						descriptor->memoryOwner->unref();
+						descriptor->memoryOwner = nullptr;
+					}
+				}
+				else if(bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+					bindings[i].descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
+				{
+					StorageImageDescriptor* descriptor = reinterpret_cast<StorageImageDescriptor*>(mem);
+					if(descriptor->memoryOwner)
+					{
+						descriptor->memoryOwner->unref();
+						descriptor->memoryOwner = nullptr;
+					}
+				}
+				mem += descriptorSize;
+			}
 		}
 	}
 }
@@ -233,6 +300,28 @@ VkDescriptorType DescriptorSetLayout::getDescriptorType(uint32_t bindingNumber) 
 {
 	ASSERT(bindingNumber < bindingsArraySize);
 	return bindings[bindingNumber].descriptorType;
+}
+
+ImageView *DescriptorSetLayout::getMemoryOwner(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement) const
+{
+	size_t typeSize = 0;
+	uint8_t* mem = getDescriptorPointer(descriptorSet, bindingNumber, arrayElement, 1, &typeSize);
+	VkDescriptorType descriptorType = bindings[bindingNumber].descriptorType;
+
+	if(descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+	   descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+	{
+		SampledImageDescriptor* descriptor = reinterpret_cast<SampledImageDescriptor*>(mem);
+		return descriptor->memoryOwner;
+	}
+	else if(descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+	        descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
+	{
+		StorageImageDescriptor* descriptor = reinterpret_cast<StorageImageDescriptor*>(mem);
+		return descriptor->memoryOwner;
+	}
+
+	return nullptr;
 }
 
 uint8_t *DescriptorSetLayout::getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const
@@ -347,7 +436,15 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			imageSampler[i].swizzle = imageView->getComponentMapping();
 			imageSampler[i].format = format;
 			imageSampler[i].device = device;
-			imageSampler[i].memoryOwner = imageView;
+			if(imageSampler[i].memoryOwner != imageView)
+			{
+				if(imageSampler[i].memoryOwner != nullptr)
+				{
+					imageSampler[i].memoryOwner->unref();
+				}
+				imageSampler[i].memoryOwner = imageView;
+				imageSampler[i].memoryOwner->ref();
+			}
 
 			auto &subresourceRange = imageView->getSubresourceRange();
 
@@ -441,7 +538,15 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, DescriptorSet *dstS
 			descriptor[i].arrayLayers = imageView->getSubresourceRange().layerCount;
 			descriptor[i].sampleCount = imageView->getSampleCount();
 			descriptor[i].sizeInBytes = static_cast<int>(imageView->getSizeInBytes());
-			descriptor[i].memoryOwner = imageView;
+			if(descriptor[i].memoryOwner != imageView)
+			{
+				if(descriptor[i].memoryOwner != nullptr)
+				{
+					descriptor[i].memoryOwner->unref();
+				}
+				descriptor[i].memoryOwner = imageView;
+				descriptor[i].memoryOwner->ref();
+			}
 
 			if(imageView->getFormat().isStencil())
 			{
@@ -617,6 +722,19 @@ void DescriptorSetLayout::WriteDescriptorSet(Device *device, const VkWriteDescri
 	WriteDescriptorSet(device, dstSet, e, reinterpret_cast<char const *>(ptr));
 }
 
+void DescriptorSetLayout::increment(uint32_t& bindingNumber, uint32_t& arrayElement) const
+{
+	if(arrayElement >= (bindings[bindingNumber].descriptorCount - 1))
+	{
+		++bindingNumber;
+		arrayElement = 0;
+	}
+	else
+	{
+		++arrayElement;
+	}
+}
+
 void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet &descriptorCopies)
 {
 	DescriptorSet *srcSet = vk::Cast(descriptorCopies.srcSet);
@@ -632,6 +750,32 @@ void DescriptorSetLayout::CopyDescriptorSet(const VkCopyDescriptorSet &descripto
 
 	size_t dstTypeSize = 0;
 	uint8_t *memToWrite = dstLayout->getDescriptorPointer(dstSet, descriptorCopies.dstBinding, descriptorCopies.dstArrayElement, descriptorCopies.descriptorCount, &dstTypeSize);
+
+	uint32_t srcBinding = descriptorCopies.srcBinding;
+	uint32_t srcArrayElement = descriptorCopies.srcArrayElement;
+	uint32_t dstBinding = descriptorCopies.dstBinding;
+	uint32_t dstArrayElement = descriptorCopies.dstArrayElement;
+	for(uint32_t i = 0; i < descriptorCopies.descriptorCount; ++i)
+	{
+		ImageView* srcMemoryOwner = srcLayout->getMemoryOwner(srcSet, srcBinding, srcArrayElement);
+		ImageView* dstMemoryOwner = dstLayout->getMemoryOwner(dstSet, dstBinding, dstArrayElement);
+
+		if(srcMemoryOwner != dstMemoryOwner)
+		{
+			if(srcMemoryOwner)
+			{
+				srcMemoryOwner->ref();
+			}
+
+			if(dstMemoryOwner)
+			{
+				dstMemoryOwner->unref();
+			}
+		}
+
+		srcLayout->increment(srcBinding, srcArrayElement);
+		dstLayout->increment(dstBinding, dstArrayElement);
+	}
 
 	ASSERT(srcTypeSize == dstTypeSize);
 	size_t writeSize = dstTypeSize * descriptorCopies.descriptorCount;

@@ -109,6 +109,7 @@ public:
 	static void WriteTextureLevelInfo(sw::Texture *texture, int level, int width, int height, int depth, int pitchP, int sliceP, int samplePitchP, int sampleMax);
 
 	void initialize(DescriptorSet *descriptorSet);
+	void release(DescriptorSet *descriptorSet);
 
 	// Returns the total size of the descriptor set in bytes.
 	size_t getDescriptorSetAllocationSize() const;
@@ -140,6 +141,8 @@ private:
 	uint8_t *getDescriptorPointer(DescriptorSet *descriptorSet, uint32_t bindingNumber, uint32_t arrayElement, uint32_t count, size_t *typeSize) const;
 	size_t getDescriptorSetDataSize() const;
 	static bool isDynamic(VkDescriptorType type);
+	ImageView* getMemoryOwner(DescriptorSet* descriptorSet, uint32_t bindingNumber, uint32_t arrayElement) const;
+	void increment(uint32_t& bindingNumber, uint32_t& arrayElement) const;
 
 	const VkDescriptorSetLayoutCreateFlags flags;
 	uint32_t bindingsArraySize = 0;
