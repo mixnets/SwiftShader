@@ -49,12 +49,30 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 					{
 						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-							memoryOwner = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory)->memoryOwner;
-							break;
+						{
+							SampledImageDescriptor *descriptor = reinterpret_cast<SampledImageDescriptor *>(descriptorMemory);
+							if(descriptor->memoryOwner &&
+							   (descriptorSet->header.deletedMemoryOwners.find(descriptor->memoryOwner) !=
+							    descriptorSet->header.deletedMemoryOwners.end()))
+							{
+								descriptor->memoryOwner = nullptr;
+							}
+							memoryOwner = descriptor->memoryOwner;
+						}
+						break;
 						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 						case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-							memoryOwner = reinterpret_cast<StorageImageDescriptor *>(descriptorMemory)->memoryOwner;
-							break;
+						{
+							StorageImageDescriptor *descriptor = reinterpret_cast<StorageImageDescriptor *>(descriptorMemory);
+							if(descriptor->memoryOwner &&
+							   (descriptorSet->header.deletedMemoryOwners.find(descriptor->memoryOwner) !=
+							    descriptorSet->header.deletedMemoryOwners.end()))
+							{
+								descriptor->memoryOwner = nullptr;
+							}
+							memoryOwner = descriptor->memoryOwner;
+						}
+						break;
 						default:
 							break;
 					}
@@ -72,6 +90,7 @@ void DescriptorSet::ParseDescriptors(const Array &descriptorSets, const Pipeline
 					descriptorMemory += descriptorSize;
 				}
 			}
+			descriptorSet->header.deletedMemoryOwners.clear();
 		}
 	}
 }
@@ -84,6 +103,41 @@ void DescriptorSet::ContentsChanged(const Array &descriptorSets, const PipelineL
 void DescriptorSet::PrepareForSampling(const Array &descriptorSets, const PipelineLayout *layout)
 {
 	ParseDescriptors(descriptorSets, layout, PREPARE_FOR_SAMPLING);
+}
+
+DescriptorSet::~DescriptorSet()
+{
+	marl::lock lock(header.mutex);
+	for(auto memoryOwner : header.currentMemoryOwners)
+	{
+		memoryOwner->releaseDescriptorSet(this);
+	}
+	header.currentMemoryOwners.clear();
+	header.deletedMemoryOwners.clear();
+}
+
+void DescriptorSet::releaseMemoryOwner(ImageView *imageView)
+{
+	unref(imageView);
+
+	marl::lock lock(header.mutex);
+	header.deletedMemoryOwners.insert(imageView);
+}
+
+void DescriptorSet::ref(ImageView *imageView)
+{
+	marl::lock lock(header.mutex);
+	header.currentMemoryOwners.insert(imageView);
+}
+
+void DescriptorSet::unref(ImageView *imageView)
+{
+	marl::lock lock(header.mutex);
+	auto it = header.currentMemoryOwners.find(imageView);
+	if(it != header.currentMemoryOwners.end())
+	{
+		header.currentMemoryOwners.erase(it);
+	}
 }
 
 }  // namespace vk
