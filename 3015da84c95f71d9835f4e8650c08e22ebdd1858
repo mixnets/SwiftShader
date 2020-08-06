@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4323f7bf_b19b3cfb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-06T20:11:48Z",
+      "side": 1,
+      "message": "Found a few DescriptorPool issues. Will fix that first in a separate cl.",
+      "revId": "3015da84c95f71d9835f4e8650c08e22ebdd1858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
