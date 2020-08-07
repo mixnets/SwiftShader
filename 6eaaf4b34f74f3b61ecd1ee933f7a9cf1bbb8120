@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "289da132_65ff206b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-07T06:04:23Z",
+      "side": 1,
+      "message": "I don\u0027t think we have to do that. If we took care of b/152227757 we\u0027d have a single map of image view identifiers (a serial integer) to the image view objects. Deleting an image view then results in failing to find it in the map. No need to update identifiers in the descriptor sets.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 35
+      },
+      "revId": "6eaaf4b34f74f3b61ecd1ee933f7a9cf1bbb8120",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "084460ed_30ba5575",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-07T06:04:23Z",
+      "side": 1,
+      "message": "Isn\u0027t that already established by the descriptors themselves?\n\nAlso, let\u0027s separate fixing the SwiftShader bug, from attempts to be able to detect application bugs.",
+      "range": {
+        "startLine": 10,
+        "startChar": 36,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "6eaaf4b34f74f3b61ecd1ee933f7a9cf1bbb8120",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25d87095_e26ad4ab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-07T06:04:23Z",
+      "side": 1,
+      "message": "Let\u0027s open a new b/ for this, which references b/159045555 since that was the cause of it (also, I don\u0027t seem to have access to chromium:1110549).",
+      "range": {
+        "startLine": 17,
+        "startChar": 5,
+        "endLine": 17,
+        "endChar": 21
+      },
+      "revId": "6eaaf4b34f74f3b61ecd1ee933f7a9cf1bbb8120",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
