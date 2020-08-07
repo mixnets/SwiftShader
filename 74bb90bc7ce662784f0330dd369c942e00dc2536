@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b54a6241_70b5fd19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-07T19:10:58Z",
+      "side": 1,
+      "message": "dEQP-VK.info.device_mandatory_features seems affected",
+      "revId": "74bb90bc7ce662784f0330dd369c942e00dc2536",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
