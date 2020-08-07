@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "feba14ee_ea847026",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-07T19:26:32Z",
+      "side": 1,
+      "message": "Rebased on top of master, the descriptor pool fixes are unrelated to this, and I verified that they are not necessary for the Clusterfuzz issue fix.",
+      "revId": "95451fe1d5ae7b18a96e5a0a8ce236f8ff1cc278",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
