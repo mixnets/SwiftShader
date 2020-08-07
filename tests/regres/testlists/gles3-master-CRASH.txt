@@ -1,0 +1,2 @@
+dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x2_fragment
+dEQP-GLES3.functional.uniform_api.value.initial.render.struct_in_array.int_ivec4_both
