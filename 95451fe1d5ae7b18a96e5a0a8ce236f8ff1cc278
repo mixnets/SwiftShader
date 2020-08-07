@@ -16,6 +16,23 @@
       "revId": "95451fe1d5ae7b18a96e5a0a8ce236f8ff1cc278",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a8dfa2c_fb8f4992",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-07T20:17:22Z",
+      "side": 1,
+      "message": "Seems like MacOS only likes explicit lock/unlock in the same scope. I\u0027ll move some code around to satisfy that.",
+      "revId": "95451fe1d5ae7b18a96e5a0a8ce236f8ff1cc278",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
