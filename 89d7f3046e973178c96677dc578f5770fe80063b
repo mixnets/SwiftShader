@@ -128,6 +128,30 @@
     },
     {
       "key": {
+        "uuid": "cff6fb1f_5c6397ba",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T15:07:22Z",
+      "side": 1,
+      "message": "b/163318287",
+      "parentUuid": "e517d93c_9923a427",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 44
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6962665c_11193ecf",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 3
