@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "488b4a78_87b424b4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "Please describe why we\u0027re accessing them in the first place.",
+      "range": {
+        "startLine": 9,
+        "startChar": 35,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86e8304b_a1d3cf85",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "still exist",
+      "range": {
+        "startLine": 10,
+        "startChar": 41,
+        "endLine": 10,
+        "endChar": 57
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09144d7d_1eac091d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "Also b/152227757",
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01dbf171_75a0b950",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "I get \u0027permission denied\u0027 on that bug. Is it a new iteration of chromium:1106505 ? Perhaps we should open a new internal b/ since this isn\u0027t Chrome specific. There should also be related to b/159045555 since that\u0027s the source of the issue. Also, we could really use a unit test for this.",
+      "range": {
+        "startLine": 14,
+        "startChar": 5,
+        "endLine": 14,
+        "endChar": 13
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7626bc1a_acac00ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "We need to rethink the encapsulation of these implementation details a bit. Anyway, lets first fix the bug.",
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e517d93c_9923a427",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "note: This is exposing these implementation details. I think it might be feasible to encapsulate it by making the Device responsible for tracking these objects, as well as updating the images. I\u0027ll open a bug for that.",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 44
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6962665c_11193ecf",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-10T14:57:27Z",
+      "side": 1,
+      "message": "The image view doesn\u0027t have to know about the device and register/unregister itself. We have the device handle at both vkCreateImageView and vkDestroyImageView.",
+      "range": {
+        "startLine": 78,
+        "startChar": 6,
+        "endLine": 78,
+        "endChar": 20
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
