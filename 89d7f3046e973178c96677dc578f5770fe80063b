@@ -88,6 +88,30 @@
     },
     {
       "key": {
+        "uuid": "97cb760f_af5b46e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-10T15:10:10Z",
+      "side": 1,
+      "message": "I cced you on it.",
+      "parentUuid": "01dbf171_75a0b950",
+      "range": {
+        "startLine": 14,
+        "startChar": 5,
+        "endLine": 14,
+        "endChar": 13
+      },
+      "revId": "89d7f3046e973178c96677dc578f5770fe80063b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7626bc1a_acac00ed",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
