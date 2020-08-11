@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "902d11af_b0e240c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-11T16:20:59Z",
+      "side": 1,
+      "message": "New tests added by https://gerrit.khronos.org/#/c/6008/ also pass.",
+      "revId": "684af950a9f3b2457c0f8a69032ed18d38fdfcc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
