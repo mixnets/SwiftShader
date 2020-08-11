@@ -16,6 +16,29 @@
       "revId": "684af950a9f3b2457c0f8a69032ed18d38fdfcc4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba261ed7_5afd6f6c",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-11T19:38:44Z",
+      "side": 1,
+      "message": "Uber nit: maybe this comment could have more/shorter lines",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 170
+      },
+      "revId": "684af950a9f3b2457c0f8a69032ed18d38fdfcc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
