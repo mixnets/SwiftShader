@@ -16,6 +16,24 @@
       "revId": "5295499afb02cab9b116cc6a8c59ef6bec45774e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8234aedb_a7e4fd95",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-11T20:40:17Z",
+      "side": 1,
+      "message": "Not sure what to say here. It\u0027s fairly self-explanatory and, from what I understand, our implementation of vkAcquireNextImageKHR/vkQueuePresentKHR is completely sync while I\u0027m guessing that other drivers have an async implementation of these. I don\u0027t think it\u0027s less clear than our usage of the semaphore and the fence a few lines above this one ¯\\_(ツ)_/¯",
+      "parentUuid": "94b52cb3_a293e289",
+      "revId": "5295499afb02cab9b116cc6a8c59ef6bec45774e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
