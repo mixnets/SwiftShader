@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "18cdb274_6b2e9438",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T20:11:12Z",
+      "side": 1,
+      "message": "Fixed. Was missing new limits value.",
+      "parentUuid": "98cf605e_85c9df55",
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ac5832e_310ac6b5",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 7
@@ -88,6 +106,30 @@
     },
     {
       "key": {
+        "uuid": "08498f02_af43d555",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T20:11:12Z",
+      "side": 1,
+      "message": "Yes, this operand is optional, and there could be more.",
+      "parentUuid": "4f17cb40_7741a0fe",
+      "range": {
+        "startLine": 1008,
+        "startChar": 2,
+        "endLine": 1008,
+        "endChar": 18
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31c1013a_5f713f8f",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 7
@@ -108,6 +150,30 @@
       "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "591ce567_809818e5",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T20:11:12Z",
+      "side": 1,
+      "message": "We\u0027d have to change it back to operand++ when we need to parse more operands. I just copied this code from other places where we use this operand. Probably some opportunity to refactor the common code in a follow-up...",
+      "parentUuid": "31c1013a_5f713f8f",
+      "range": {
+        "startLine": 1012,
+        "startChar": 24,
+        "endLine": 1012,
+        "endChar": 33
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -154,6 +220,30 @@
       "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6b0f34c_cde5d055",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T20:11:12Z",
+      "side": 1,
+      "message": "Inside layerPitchBytes. One layer is all the sample slices. So this didn\u0027t work for multisampled arrayed images.",
+      "parentUuid": "aa8122fa_d46be00f",
+      "range": {
+        "startLine": 439,
+        "startChar": 17,
+        "endLine": 439,
+        "endChar": 32
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
