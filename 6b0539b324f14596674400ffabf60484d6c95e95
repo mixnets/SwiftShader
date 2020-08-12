@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0aec9d2f_1e3f7356",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-12T01:44:21Z",
+      "side": 1,
+      "message": "Both tests fixed. No regressions. All bots green. PTAL.",
+      "revId": "6b0539b324f14596674400ffabf60484d6c95e95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
