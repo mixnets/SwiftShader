@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "98cf605e_85c9df55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-12T19:21:31Z",
+      "side": 1,
+      "message": "Why is this breaking dEQP-VK.info.device_properties?",
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ac5832e_310ac6b5",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 7
@@ -48,6 +65,52 @@
     },
     {
       "key": {
+        "uuid": "4f17cb40_7741a0fe",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-12T19:21:31Z",
+      "side": 1,
+      "message": "Is this here because we\u0027re expecting the code below to be a loop someday?",
+      "range": {
+        "startLine": 1008,
+        "startChar": 2,
+        "endLine": 1008,
+        "endChar": 18
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31c1013a_5f713f8f",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-12T19:21:31Z",
+      "side": 1,
+      "message": "I guess this could just be 5?",
+      "range": {
+        "startLine": 1012,
+        "startChar": 24,
+        "endLine": 1012,
+        "endChar": 33
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "13225bc9_b13c942b",
         "filename": "src/Pipeline/SpirvShaderImage.cpp",
         "patchSetId": 7
@@ -68,6 +131,29 @@
       "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aa8122fa_d46be00f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-12T19:21:31Z",
+      "side": 1,
+      "message": "This used to be multiplied by \"imageView-\u003egetSampleCount()\", so I\u0027m guessing this was then applied again, considering the sample count twice. Where was the other multiplication happening?",
+      "range": {
+        "startLine": 439,
+        "startChar": 17,
+        "endLine": 439,
+        "endChar": 32
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
