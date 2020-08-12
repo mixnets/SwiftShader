@@ -381,26 +381,25 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 
 	Pointer<Byte> descriptor = state->getPointer(imageId).base;
 
-	Pointer<Int> extent;
-	Int arrayLayers;
+	Int width;
+	Int height;
+	Int depth;
 
 	switch(descriptorType)
 	{
 		case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 		case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-		{
-			extent = descriptor + OFFSET(vk::StorageImageDescriptor, extent);                           // int[3]*
-			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers));  // uint32_t
+			width = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, width));
+			height = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, height));
+			depth = *Pointer<Int>(descriptor + OFFSET(vk::StorageImageDescriptor, depth));
 			break;
-		}
 		case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 		case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 		case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-		{
-			extent = descriptor + OFFSET(vk::SampledImageDescriptor, extent);                           // int[3]*
-			arrayLayers = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, arrayLayers));  // uint32_t
+			width = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, width));
+			height = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, height));
+			depth = *Pointer<Int>(descriptor + OFFSET(vk::SampledImageDescriptor, depth));
 			break;
-		}
 		default:
 			UNREACHABLE("Image descriptorType: %d", int(descriptorType));
 	}
@@ -413,23 +412,22 @@ void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultT
 		ASSERT(lodVal.componentCount == 1);
 		auto lod = lodVal.Int(0);
 		auto one = SIMD::Int(1);
-		for(uint32_t i = 0; i < dimensions; i++)
-		{
-			dst.move(i, Max(SIMD::Int(extent[i]) >> lod, one));
-		}
+
+		if(dimensions >= 1) dst.move(0, Max(SIMD::Int(width) >> lod, one));
+		if(dimensions >= 2) dst.move(1, Max(SIMD::Int(height) >> lod, one));
+		if(dimensions >= 3) dst.move(2, Max(SIMD::Int(depth) >> lod, one));
 	}
 	else
 	{
-		for(uint32_t i = 0; i < dimensions; i++)
-		{
-			dst.move(i, SIMD::Int(extent[i]));
-		}
+
+		if(dimensions >= 1) dst.move(0, SIMD::Int(width));
+		if(dimensions >= 2) dst.move(1, SIMD::Int(height));
+		if(dimensions >= 3) dst.move(2, SIMD::Int(depth));
 	}
 
 	if(isArrayed)
 	{
-		auto numElements = isCubeMap ? (arrayLayers / 6) : RValue<Int>(arrayLayers);
-		dst.move(dimensions, SIMD::Int(numElements));
+		dst.move(dimensions, SIMD::Int(depth));
 	}
 }
 
@@ -570,20 +568,19 @@ SIMD::Pointer SpirvShader::GetTexelAddress(EmitState const *state, Pointer<Byte>
 	// Other out-of-bounds behaviors work properly by just comparing the offset against the total size.
 	if(outOfBoundsBehavior == OutOfBoundsBehavior::Nullify)
 	{
-		auto width = SIMD::UInt(*Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.width)));
+		SIMD::UInt width = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, width));
 		SIMD::Int oobMask = As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(u), width));
 
 		if(dims > 1)
 		{
-			auto height = SIMD::UInt(*Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.height)));
+			SIMD::UInt height = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, height));
 			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(v), height));
 		}
 
 		if((dims > 2) || isArrayed)
 		{
-			auto depth = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, extent.depth));
-			auto arrayLayers = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, arrayLayers));
-			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(w), SIMD::UInt(depth * arrayLayers)));  // TODO: Precompute extent. 3D image can't have layers.
+			SIMD::UInt depth = *Pointer<UInt>(descriptor + OFFSET(vk::StorageImageDescriptor, depth));
+			oobMask |= As<SIMD::Int>(CmpNLT(As<SIMD::UInt>(w), depth));
 		}
 
 		if(sampleId.value())

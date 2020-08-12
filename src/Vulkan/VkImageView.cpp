@@ -286,6 +286,20 @@ VkExtent3D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 	                                subresourceRange.baseMipLevel + mipLevel);
 }
 
+int ImageView::getDepthOrLayerCount(int level) const
+{
+	VkExtent3D extent = getMipLevelExtent(level);
+	int layers = subresourceRange.layerCount;
+	int depthOrLayers = layers > 1 ? layers : extent.depth;
+
+	if(viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
+	{
+		depthOrLayers /= 6;
+	}
+
+	return depthOrLayers;
+}
+
 void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBits aspect, uint32_t mipLevel, uint32_t layer, Usage usage) const
 {
 	ASSERT(mipLevel < subresourceRange.levelCount);
