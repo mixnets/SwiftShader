@@ -30,6 +30,21 @@
 #include <string>
 #include <stdlib.h>
 
+namespace
+{
+
+bool greaterThan(int a, int b, int value)
+{
+	return (a > value) || (b > value) || (a + b) > value;
+}
+
+bool greaterThanEqual(int a, int b, int value)
+{
+	return (a >= value) || (b >= value) || (a + b) >= value;
+}
+
+}
+
 namespace es2
 {
 	unsigned int Program::currentSerial = 1;
@@ -1367,7 +1382,7 @@ namespace es2
 						continue;
 					}
 
-					if(in + registers >= MAX_VARYING_VECTORS)
+					if(greaterThanEqual(in, registers, MAX_VARYING_VECTORS))
 					{
 						appendToInfoLog("Too many varyings");
 						return false;
@@ -1375,7 +1390,7 @@ namespace es2
 
 					if(out >= 0)
 					{
-						if(out + registers >= MAX_VARYING_VECTORS)
+						if(greaterThanEqual(out, registers, MAX_VARYING_VECTORS))
 						{
 							appendToInfoLog("Too many varyings");
 							return false;
@@ -1414,7 +1429,7 @@ namespace es2
 
 						if(out >= 0)
 						{
-							if(out + registers >= MAX_VARYING_VECTORS)
+							if(greaterThanEqual(out, registers, MAX_VARYING_VECTORS))
 							{
 								appendToInfoLog("Too many varyings");
 								return false;
@@ -1650,7 +1665,7 @@ namespace es2
 		{
 			location = AllocateFirstFreeBits(&usedLocations, rows, MAX_VERTEX_ATTRIBS);
 
-			if(location == -1 || location + rows > MAX_VERTEX_ATTRIBS)
+			if(location == -1 || greaterThan(location, rows, MAX_VERTEX_ATTRIBS))
 			{
 				appendToInfoLog("Too many active attributes (%s)", attribute.name.c_str());
 				return false;   // Fail to link
@@ -1658,7 +1673,7 @@ namespace es2
 		}
 		else
 		{
-			if(rows + location > MAX_VERTEX_ATTRIBS)
+			if(greaterThan(rows, location, MAX_VERTEX_ATTRIBS))
 			{
 				appendToInfoLog("Active attribute (%s) at location %d is too big to fit", attribute.name.c_str(), location);
 				return false;
@@ -1679,7 +1694,7 @@ namespace es2
 						return false;
 					}
 
-					if(location <= previousLocation && location + rows > previousLocation)
+					if(location <= previousLocation && greaterThan(location, rows, previousLocation))
 					{
 						appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute.name.c_str(), previousAttrib.name.c_str(), previousLocation);
 						return false;
@@ -1840,7 +1855,7 @@ namespace es2
 
 				index++;
 			}
-			while(index < glslUniform.registerIndex + static_cast<int>(glslUniform.arraySize));
+			while(greaterThan(glslUniform.registerIndex, static_cast<int>(glslUniform.arraySize), index));
 		}
 
 		Uniform *uniform = getUniform(glslUniform.name);
@@ -1891,7 +1906,7 @@ namespace es2
 		{
 			if(shader == GL_VERTEX_SHADER)
 			{
-				if(glslUniform.registerIndex + uniform->registerCount() > MAX_VERTEX_UNIFORM_VECTORS)
+				if(greaterThan(glslUniform.registerIndex, uniform->registerCount(), MAX_VERTEX_UNIFORM_VECTORS))
 				{
 					appendToInfoLog("Vertex shader active uniforms exceed GL_MAX_VERTEX_UNIFORM_VECTORS (%d)", MAX_VERTEX_UNIFORM_VECTORS);
 					return false;
@@ -1899,7 +1914,7 @@ namespace es2
 			}
 			else if(shader == GL_FRAGMENT_SHADER)
 			{
-				if(glslUniform.registerIndex + uniform->registerCount() > MAX_FRAGMENT_UNIFORM_VECTORS)
+				if(greaterThan(glslUniform.registerIndex, uniform->registerCount(), MAX_FRAGMENT_UNIFORM_VECTORS))
 				{
 					appendToInfoLog("Fragment shader active uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (%d)", MAX_FRAGMENT_UNIFORM_VECTORS);
 					return false;
