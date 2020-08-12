@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ac5832e_310ac6b5",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 575,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T18:40:53Z",
+      "side": 1,
+      "message": "The other members were in corresponding SPIR-V enum value order, so I corrected this one.",
+      "range": {
+        "startLine": 575,
+        "startChar": 7,
+        "endLine": 575,
+        "endChar": 22
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c82f1fc_ea30e552",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T18:40:53Z",
+      "side": 1,
+      "message": "While read operations are allowed to return undefined values, so clamping would suffice (as done in our OpImageFetch implementation), write operations have to be no-op. I don\u0027t think it\u0027s worth optimizing out ~1 instruction for read operations here, but will look into optimizing for the sample index being constant 0.",
+      "range": {
+        "startLine": 592,
+        "startChar": 28,
+        "endLine": 592,
+        "endChar": 34
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13225bc9_b13c942b",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1265,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-12T18:40:53Z",
+      "side": 1,
+      "message": "The spec for OpImageTexelPointer states this operand is always present (i.e. it\u0027s not an optional one like for other OpImage instructions). We had just been ignoring it so far due to not supporting multisample storage images.",
+      "range": {
+        "startLine": 1265,
+        "startChar": 23,
+        "endLine": 1265,
+        "endChar": 35
+      },
+      "revId": "8020ad8ac85542e59c65d9f8ff670550326803f6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
