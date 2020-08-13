@@ -56,9 +56,11 @@ public:
 	void getProperties(VkPhysicalDeviceProtectedMemoryProperties *properties) const;
 	void getProperties(VkPhysicalDeviceSubgroupProperties *properties) const;
 	void getProperties(const VkExternalMemoryHandleTypeFlagBits *handleType, VkExternalImageFormatProperties *properties) const;
+	void getProperties(const VkExternalMemoryHandleTypeFlagBits *handleType, VkExternalBufferProperties *properties) const;
 	void getProperties(VkSamplerYcbcrConversionImageFormatProperties *properties) const;
 #ifdef __ANDROID__
 	void getProperties(VkPhysicalDevicePresentationPropertiesANDROID *properties) const;
+	void getProperties(VkAndroidHardwareBufferUsageANDROID *properties) const;
 #endif
 	void getProperties(const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) const;
 	void getProperties(const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) const;

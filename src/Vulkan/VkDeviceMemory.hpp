@@ -33,7 +33,8 @@ public:
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 	VkResult exportAhb(struct AHardwareBuffer **pAhb) const;
-	static VkResult getAhbProperties(const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties);
+	static VkResult getAhbProperties(VkDevice &device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties);
+	static uint32_t getAhbDescFormat(VkFormat format);
 #endif
 
 #if VK_USE_PLATFORM_FUCHSIA
