@@ -46,6 +46,30 @@
       "revId": "c4f3b713800f6cde50452999223f6fb34e973cd0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "daf0c632_3c4cd20a",
+        "filename": "src/OpenGL/libGLESv2/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-13T05:53:43Z",
+      "side": 1,
+      "message": "Right, the ImageView::Usage only affects compressed images. We add a border to the \u0027original\u0027 cube images.\n\nWe need test coverage for this. We determine whether we need a border based on the VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT flag. Presumably other Vulkan implementations have a material difference between cube compatible 2D array images, and non-cube compatibe ones, so this merits a dEQP test.",
+      "parentUuid": "f8db38bb_14567036",
+      "range": {
+        "startLine": 578,
+        "startChar": 21,
+        "endLine": 578,
+        "endChar": 47
+      },
+      "revId": "c4f3b713800f6cde50452999223f6fb34e973cd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
