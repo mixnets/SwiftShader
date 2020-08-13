@@ -63,6 +63,24 @@
       "revId": "f81d8fbde5b5f6b0796458215f97150e090535b1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b7a9ea0_cd2a7140",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-13T14:21:42Z",
+      "side": 1,
+      "message": "I generally agree with that, if the issue is raised from internal testing, but in this case, this comes from an external source, so I think the priority is bit higher. Your call though, I\u0027ll let you comment on the issue if you think the priority should be lowered.",
+      "parentUuid": "1d15e74e_caa00e34",
+      "revId": "f81d8fbde5b5f6b0796458215f97150e090535b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
