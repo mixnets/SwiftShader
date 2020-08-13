@@ -70,6 +70,30 @@
       "revId": "c4f3b713800f6cde50452999223f6fb34e973cd0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cfdd1d4_46ef84e2",
+        "filename": "src/OpenGL/libGLESv2/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-13T05:57:25Z",
+      "side": 1,
+      "message": "b/163915698 for follow-up.\ndEQP-VK test request: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2542",
+      "parentUuid": "daf0c632_3c4cd20a",
+      "range": {
+        "startLine": 578,
+        "startChar": 21,
+        "endLine": 578,
+        "endChar": 47
+      },
+      "revId": "c4f3b713800f6cde50452999223f6fb34e973cd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
