@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "961ad5b1_e73ace43",
+        "filename": "src/OpenGL/libGLESv2/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-13T00:27:20Z",
+      "side": 1,
+      "message": "Our Vulkan implementation is not vulnerable to this because we\u0027re always copying between the \u0027RAW\u0027 images, right? Just making sure.",
+      "range": {
+        "startLine": 578,
+        "startChar": 21,
+        "endLine": 578,
+        "endChar": 47
+      },
+      "revId": "c4f3b713800f6cde50452999223f6fb34e973cd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
