@@ -235,14 +235,14 @@ namespace vk {
 static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
                        ExternalMemoryTraits *pTraits)
 {
-#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	if(parseCreateInfo<OpaqueFdExternalMemory>(pAllocateInfo, pTraits))
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+	if(parseCreateInfo<AHardwareBufferExternalMemory>(pAllocateInfo, pTraits))
 	{
 		return;
 	}
 #endif
-#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
-	if(parseCreateInfo<AHardwareBufferExternalMemory>(pAllocateInfo, pTraits))
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
+	if(parseCreateInfo<OpaqueFdExternalMemory>(pAllocateInfo, pTraits))
 	{
 		return;
 	}
@@ -359,10 +359,11 @@ VkResult DeviceMemory::exportAhb(struct AHardwareBuffer **pAhb) const
 	return external->exportAhb(pAhb);
 }
 
-VkResult DeviceMemory::getAhbProperties(const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties)
+VkResult DeviceMemory::getAndroidHardwareBufferProperties(VkDevice &device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties)
 {
-	return AHardwareBufferExternalMemory::getAhbProperties(buffer, pProperties);
+	return AHardwareBufferExternalMemory::getAndroidHardwareBufferProperties(device, buffer, pProperties);
 }
+
 #endif
 
 #if VK_USE_PLATFORM_FUCHSIA
