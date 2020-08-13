@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae86508_0bca4179",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-13T03:57:18Z",
+      "side": 1,
+      "message": "Please CC me.",
+      "range": {
+        "startLine": 14,
+        "startChar": 5,
+        "endLine": 14,
+        "endChar": 21
+      },
+      "revId": "f81d8fbde5b5f6b0796458215f97150e090535b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d15e74e_caa00e34",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-13T03:57:18Z",
+      "side": 1,
+      "message": "I\u0027m not sure we should be making any more changes in the GLES code base. These kind of issues are very old, and probably very common in GPU drivers too but not likely to receive a dEQP test. If we\u0027re concerned about them, we should have ANGLE\u0027s GLSL translator sanitize shaders.",
+      "revId": "f81d8fbde5b5f6b0796458215f97150e090535b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
