@@ -19,6 +19,41 @@
     },
     {
       "key": {
+        "uuid": "18b6d1a3_1fcce083",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-14T19:47:54Z",
+      "side": 1,
+      "message": "This is the first of _at least_ 3 CLs necessary to get AHB in.\nSo, I can swing back around for this issue.\n\nCreated separate issue: b/164473868 to track this",
+      "parentUuid": "7df82607_b8b8c480",
+      "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca490413_f24fdaa9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-14T19:47:54Z",
+      "side": 1,
+      "message": "changes header name so that it built correctly.",
+      "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51c7664f_79bdc8f3",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -39,6 +74,30 @@
       "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f31916e6_85084940",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-14T19:47:54Z",
+      "side": 1,
+      "message": "I could have sworn that I deleted that. New commit incoming",
+      "parentUuid": "51c7664f_79bdc8f3",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 1
+      },
+      "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
