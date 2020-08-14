@@ -98,6 +98,30 @@
       "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1a8d772_76faa042",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-14T20:20:45Z",
+      "side": 1,
+      "message": "It looks like every change gets put in a new cl. Could you append your commits so that they all get combined into a single cl?",
+      "parentUuid": "f31916e6_85084940",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 1
+      },
+      "revId": "04951d70ae7e485c9d4ea23f21bb97c114a1fcf9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
