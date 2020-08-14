@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VkDestroy.h"
+#include "VkDestroy.hpp"
 #include "VkDevice.hpp"
 #include "VkObject.hpp"
 #include "VkStringify.hpp"
