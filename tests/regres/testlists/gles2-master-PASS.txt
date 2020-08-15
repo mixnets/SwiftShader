@@ -8987,7 +8987,6 @@ dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.argument
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_4_vertex
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_5_fragment
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_5_vertex
-dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_6_fragment
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_6_vertex
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_7_fragment
 dEQP-GLES2.functional.shaders.preprocessor.invalid_function_definitions.arguments_7_vertex
@@ -11074,7 +11073,6 @@ dEQP-GLES2.functional.shaders.struct.uniform.dynamic_loop_struct_array_fragment
 dEQP-GLES2.functional.shaders.struct.uniform.dynamic_loop_struct_array_vertex
 dEQP-GLES2.functional.shaders.struct.uniform.equal_fragment
 dEQP-GLES2.functional.shaders.struct.uniform.equal_vertex
-dEQP-GLES2.functional.shaders.struct.uniform.loop_nested_struct_array_fragment
 dEQP-GLES2.functional.shaders.struct.uniform.loop_nested_struct_array_vertex
 dEQP-GLES2.functional.shaders.struct.uniform.loop_struct_array_fragment
 dEQP-GLES2.functional.shaders.struct.uniform.loop_struct_array_vertex
@@ -13705,7 +13703,6 @@ dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16_stride17_quads5
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16_stride2_quads256
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16_stride2_quads5
-dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16_stride32_quads256
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset16_stride32_quads5
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset17_stride17_quads256
 dEQP-GLES2.functional.vertex_arrays.single_attribute.first.byte_first24_offset17_stride17_quads5
