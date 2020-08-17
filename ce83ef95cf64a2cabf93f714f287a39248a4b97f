@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "64d0a02a_c1faaa29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "Changed in amend",
+      "parentUuid": "018012b1_76d2be12",
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f7ef4e37_525d02a9",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -59,6 +77,30 @@
     },
     {
       "key": {
+        "uuid": "5c05dcf3_3a7facbc",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "What exactly do you mean?\nDo you want a quick 1 line comment for each of exportAhb and getAhbProperties?",
+      "parentUuid": "4dad715d_7a2ea4b1",
+      "range": {
+        "startLine": 36,
+        "startChar": 20,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f601dfa_b0748d57",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -79,6 +121,30 @@
       "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae56c087_de94a1b2",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6f601dfa_b0748d57",
+      "range": {
+        "startLine": 15,
+        "startChar": 20,
+        "endLine": 15,
+        "endChar": 21
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +171,30 @@
     },
     {
       "key": {
+        "uuid": "ed5bbf37_8da29286",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "UNIMPLEMENTED needs a bug associated with it. What is the bug for 24bit depth?",
+      "parentUuid": "ced763dd_e8044848",
+      "range": {
+        "startLine": 161,
+        "startChar": 4,
+        "endLine": 161,
+        "endChar": 15
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a64257b_79916b40",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -128,6 +218,30 @@
     },
     {
       "key": {
+        "uuid": "303a78c6_c94795e5",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "3a64257b_79916b40",
+      "range": {
+        "startLine": 187,
+        "startChar": 3,
+        "endLine": 187,
+        "endChar": 4
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e97a4160_501f2a41",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
@@ -148,6 +262,30 @@
       "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a531a12_c5918885",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "done.",
+      "parentUuid": "e97a4160_501f2a41",
+      "range": {
+        "startLine": 354,
+        "startChar": 5,
+        "endLine": 354,
+        "endChar": 9
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

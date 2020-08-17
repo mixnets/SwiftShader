@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47d3855b_50593cb6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T21:05:59Z",
+      "side": 1,
+      "message": "How do changes get incorporated?\nIs it new commits or amending old commits?",
+      "revId": "ca1a2bf7f1a641872ca8c0b944382e2f0d020f41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
