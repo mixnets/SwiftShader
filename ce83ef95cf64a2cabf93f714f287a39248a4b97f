@@ -101,6 +101,30 @@
     },
     {
       "key": {
+        "uuid": "01b58ac6_aa167883",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-17T22:44:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c05dcf3_3a7facbc",
+      "range": {
+        "startLine": 36,
+        "startChar": 20,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6f601dfa_b0748d57",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 1
