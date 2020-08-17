@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "018012b1_76d2be12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "nit: Git commit messages usually start with a short one-line description, to help with viewing log histories. https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53",
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f7ef4e37_525d02a9",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -16,6 +33,121 @@
       "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4dad715d_7a2ea4b1",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "uber-nit: I wouldn\u0027t mind if these were spelled out for clarity (note vkGetAndroidHardwareBufferPropertiesANDROID).",
+      "range": {
+        "startLine": 36,
+        "startChar": 20,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6f601dfa_b0748d57",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "hpp?",
+      "range": {
+        "startLine": 15,
+        "startChar": 20,
+        "endLine": 15,
+        "endChar": 21
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ced763dd_e8044848",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "Should this use UNIMPLEMENTED() instead? UNIMPLEMENTED is for functionality which must still be implemented (i.e. a SwiftShader issue), while UNSUPPORTED is for functionality which we report as not supported (i.e. an application issue should it be used).",
+      "range": {
+        "startLine": 161,
+        "startChar": 4,
+        "endLine": 161,
+        "endChar": 15
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a64257b_79916b40",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "Please add an UNSUPPORTED() or macro here and in the switch statements below so we\u0027d be alerted if an unknown enum was used.",
+      "range": {
+        "startLine": 187,
+        "startChar": 3,
+        "endLine": 187,
+        "endChar": 4
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e97a4160_501f2a41",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:43:06Z",
+      "side": 1,
+      "message": "Please associate a bug with it. Probably TODO(b/141698760) in this case.",
+      "range": {
+        "startLine": 354,
+        "startChar": 5,
+        "endLine": 354,
+        "endChar": 9
+      },
+      "revId": "ce83ef95cf64a2cabf93f714f287a39248a4b97f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
