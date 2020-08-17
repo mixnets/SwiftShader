@@ -30200,7 +30200,6 @@ dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getfloat
 dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getfloat
-dEQP-GLES3.functional.state_query.integers.max_varying_components_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getfloat
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getinteger64
@@ -31540,7 +31539,6 @@ dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_alpha8_npot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_alpha8_pot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_npot
 dEQP-GLES3.functional.texture.format.sized.2d_array.srgb8_pot
-dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_npot
 dEQP-GLES3.functional.texture.format.sized.3d.r11f_g11f_b10f_pot
 dEQP-GLES3.functional.texture.format.sized.3d.r16f_npot
 dEQP-GLES3.functional.texture.format.sized.3d.r16f_pot
@@ -39818,7 +39816,6 @@ dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4_both
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x2_both
-dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x2_fragment
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x2_vertex
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x3_both
 dEQP-GLES3.functional.uniform_api.value.initial.get_uniform.basic.mat4x3_fragment
