@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7242d54_cfa88511",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-17T17:04:05Z",
+      "side": 1,
+      "message": "uber-nit: --parallel\n\nPeople can use the shorter option themselves if they\u0027re familiar with it.",
+      "range": {
+        "startLine": 24,
+        "startChar": 17,
+        "endLine": 24,
+        "endChar": 20
+      },
+      "revId": "e1db8cf4206856636316cc0d1cd8e605d1db9eb1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
