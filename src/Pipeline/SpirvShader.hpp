@@ -1069,6 +1069,24 @@ private:
 			return SIMD::UInt(constant[i]);
 		}
 
+		bool isZero() const
+		{
+			if(intermediate)
+			{
+				return false;
+			}
+
+			for(uint32_t i = 0; i < componentCount; i++)
+			{
+				if(constant[i] != 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
 
