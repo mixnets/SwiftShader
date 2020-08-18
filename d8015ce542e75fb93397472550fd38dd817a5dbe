@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ec06172b_ea96e1b0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-18T18:07:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed472598_ebb96014",
+      "range": {
+        "startLine": 11,
+        "startChar": 46,
+        "endLine": 11,
+        "endChar": 49
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3a96d36_37923541",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-08-18T17:51:09Z",
       "side": 1,
       "message": "assigns the pointer after the object has been constructed",
+      "range": {
+        "startLine": 13,
+        "startChar": 8,
+        "endLine": 13,
+        "endChar": 31
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24d09f17_0bd74cd4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-18T18:07:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3a96d36_37923541",
       "range": {
         "startLine": 13,
         "startChar": 8,
