@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "f49539d4_24744e1b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-18T18:45:08Z",
+      "side": 1,
+      "message": "I\u0027m going to stop further development on this CL and context switch to AHB import/export.\n\nMore changes need to be made for getAHBProperties.\n- Once import/export complete, getAHBProperties can be adequately tested.\n- Clean up needs static functions in PhysicalDevice, see b/165323781\n",
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1da696b_ed3c8712",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 6
@@ -42,6 +59,30 @@
     },
     {
       "key": {
+        "uuid": "81810e6c_b12f161f",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-18T18:45:08Z",
+      "side": 1,
+      "message": "PhysicalDevice::getFormatProperties() isn\u0027t static. And I don\u0027t have a local instance of a PhysicalDevice.\n\nIt was easier to copy code in.\nIt looks like getFormatProperties might be able to be static.\n\nThis needs to be looped around on. see b/165323781",
+      "parentUuid": "e1da696b_ed3c8712",
+      "range": {
+        "startLine": 232,
+        "startChar": 29,
+        "endLine": 232,
+        "endChar": 48
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "43b1fcab_3e656f8a",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 6
@@ -53,6 +94,30 @@
       "writtenOn": "2020-08-18T17:09:51Z",
       "side": 1,
       "message": "I don\u0027t think we can just combine them like that. Optimal tiling is for images with an opaque data layout, thus only accessible by the \"GPU\", while linear tiling has a well-defined linear order of the texels so they are \"CPU\" readable. It\u0027s going to depend on the AHardwareBuffer_UsageFlags (https://developer.android.com/ndk/reference/group/a-hardware-buffer#group___a_hardware_buffer_1ga47c480435db00c8e88023eea28ccce90) which ones we want.  bufferFeatures is only relevant to AHARDWAREBUFFER_USAGE_GPU_DATA_BUFFER, I believe.\n\nThat said, SwiftShader currently uses linear tiling for all images, so it probably doesn\u0027t matter too much for getting things up and running, but it\u0027s best to make a note about this for future follow-up.",
+      "range": {
+        "startLine": 328,
+        "startChar": 9,
+        "endLine": 328,
+        "endChar": 70
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "147f342a_742bf1b2",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-08-18T18:45:08Z",
+      "side": 1,
+      "message": "I xor\u0027ed them until someone told me what made the most sense.\n\nI\u0027m still not sure what the consumer of this function wants.",
+      "parentUuid": "43b1fcab_3e656f8a",
       "range": {
         "startLine": 328,
         "startChar": 9,
