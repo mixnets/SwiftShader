@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "ed472598_ebb96014",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:51:09Z",
+      "side": 1,
+      "message": "nit: placement new",
+      "range": {
+        "startLine": 11,
+        "startChar": 46,
+        "endLine": 11,
+        "endChar": 49
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3a96d36_37923541",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:51:09Z",
+      "side": 1,
+      "message": "assigns the pointer after the object has been constructed",
+      "range": {
+        "startLine": 13,
+        "startChar": 8,
+        "endLine": 13,
+        "endChar": 31
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51c1bb64_a0c4511f",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
@@ -63,6 +109,30 @@
       "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a834b876_51d8a464",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:51:09Z",
+      "side": 1,
+      "message": "I like this better. Passing the pointer twice was weird.",
+      "parentUuid": "a5e57970_39743183",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 272,
+        "endChar": 50
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

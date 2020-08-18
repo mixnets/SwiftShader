@@ -22,6 +22,30 @@
       "revId": "6f74415e2f74b36784f4a8a08647db405473fbfc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6431d576_7553222a",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:51:09Z",
+      "side": 0,
+      "message": "Thanks, makes sense now. There was never truly a bug though, right? CFI just doesn\u0027t know we fix up the memory by using placement new later. It\u0027s being picky about pointers always being a valid object (or null or left uninitialized)?",
+      "parentUuid": "ec490871_95f6edab",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 266,
+        "endChar": 53
+      },
+      "revId": "6f74415e2f74b36784f4a8a08647db405473fbfc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
