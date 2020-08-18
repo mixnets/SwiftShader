@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec490871_95f6edab",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-18T14:39:34Z",
+      "side": 0,
+      "message": "The bug was here. The memory, \"mem\", isn\u0027t initialized yet and contains garbage in the vtable (ExternalBase is a base class). If we assign \"mem\" to external AFTER the new operator has been called, all is fine.",
+      "range": {
+        "startLine": 266,
+        "startChar": 4,
+        "endLine": 266,
+        "endChar": 53
+      },
+      "revId": "6f74415e2f74b36784f4a8a08647db405473fbfc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
