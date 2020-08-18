@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc772da5_14e2c27d",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-18T15:59:47Z",
+      "side": 1,
+      "message": "I changed for a different fix to make it more obvious what is getting fixed.\nThe \"external\" member is not allowed to be assigned memory with garbage in the vtable.\nIf we assign is after the memory is initialized, all is well.",
+      "range": {
+        "startLine": 272,
+        "startChar": 1,
+        "endLine": 272,
+        "endChar": 50
+      },
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
