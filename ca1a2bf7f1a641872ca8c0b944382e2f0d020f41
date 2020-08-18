@@ -16,6 +16,24 @@
       "revId": "ca1a2bf7f1a641872ca8c0b944382e2f0d020f41",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "302fb040_fc9f0f90",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:09:51Z",
+      "side": 1,
+      "message": "The SwiftShader repository maintains a linear history. This is in contrast to the typical workflow on GitHub where changes are chained on a branch and then merged into the main branch. Gerrit allows replacing changes which are in review by new \"Patchsets\" by simply amending your local change and pushing it again, while keeping the same \u0027Change-Id\u0027 in the commit message.\n\nIndependent changes can be chained, and after review they can be committed together and will be rebased on tip-of-tree.",
+      "parentUuid": "47d3855b_50593cb6",
+      "revId": "ca1a2bf7f1a641872ca8c0b944382e2f0d020f41",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6820ca88_73a72fcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:09:51Z",
+      "side": 1,
+      "message": "Looks like a reasonable starting point! I believe you should be able to keep this applied to your checkout while working on the Android-side changes, so you can revisit it if necessary? Let me know if have a need for committing it sooner.",
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1da696b_ed3c8712",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:09:51Z",
+      "side": 1,
+      "message": "Can\u0027t we use PhysicalDevice::getFormatProperties() for this?",
+      "range": {
+        "startLine": 232,
+        "startChar": 29,
+        "endLine": 232,
+        "endChar": 48
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43b1fcab_3e656f8a",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-18T17:09:51Z",
+      "side": 1,
+      "message": "I don\u0027t think we can just combine them like that. Optimal tiling is for images with an opaque data layout, thus only accessible by the \"GPU\", while linear tiling has a well-defined linear order of the texels so they are \"CPU\" readable. It\u0027s going to depend on the AHardwareBuffer_UsageFlags (https://developer.android.com/ndk/reference/group/a-hardware-buffer#group___a_hardware_buffer_1ga47c480435db00c8e88023eea28ccce90) which ones we want.  bufferFeatures is only relevant to AHARDWAREBUFFER_USAGE_GPU_DATA_BUFFER, I believe.\n\nThat said, SwiftShader currently uses linear tiling for all images, so it probably doesn\u0027t matter too much for getting things up and running, but it\u0027s best to make a note about this for future follow-up.",
+      "range": {
+        "startLine": 328,
+        "startChar": 9,
+        "endLine": 328,
+        "endChar": 70
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
