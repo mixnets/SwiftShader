@@ -72,7 +72,7 @@ class ExternalMemoryTraits
 public:
 	VkExternalMemoryHandleTypeFlagBits typeFlagBit;
 	size_t instanceSize;
-	void (*instanceInit)(void *external, const VkMemoryAllocateInfo *pAllocateInfo);
+	void (*instanceInit)(DeviceMemory::ExternalBase **external, void *mem, const VkMemoryAllocateInfo *pAllocateInfo);
 };
 
 // Template function that parses a |pAllocateInfo.pNext| chain to verify that
@@ -87,9 +87,9 @@ static bool parseCreateInfo(const VkMemoryAllocateInfo *pAllocateInfo,
 	{
 		pTraits->typeFlagBit = T::typeFlagBit;
 		pTraits->instanceSize = sizeof(T);
-		pTraits->instanceInit = [](void *external,
+		pTraits->instanceInit = [](DeviceMemory::ExternalBase **external, void *mem,
 		                           const VkMemoryAllocateInfo *pAllocateInfo) {
-			new(external) T(pAllocateInfo);
+			(*external) = new(mem) T(pAllocateInfo);
 		};
 		return true;
 	}
@@ -263,13 +263,12 @@ static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
 DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem)
     : size(pAllocateInfo->allocationSize)
     , memoryTypeIndex(pAllocateInfo->memoryTypeIndex)
-    , external(reinterpret_cast<ExternalBase *>(mem))
 {
 	ASSERT(size);
 
 	ExternalMemoryTraits traits;
 	findTraits(pAllocateInfo, &traits);
-	traits.instanceInit(external, pAllocateInfo);
+	traits.instanceInit(&external, mem, pAllocateInfo);
 }
 
 void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
