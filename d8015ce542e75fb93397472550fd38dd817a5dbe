@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "51c1bb64_a0c4511f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-18T16:00:07Z",
+      "side": 1,
+      "message": "New simpler fix, PTAL",
+      "revId": "d8015ce542e75fb93397472550fd38dd817a5dbe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc772da5_14e2c27d",
         "filename": "src/Vulkan/VkDeviceMemory.cpp",
         "patchSetId": 3
