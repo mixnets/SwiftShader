@@ -34,6 +34,24 @@
       "revId": "74bb90bc7ce662784f0330dd369c942e00dc2536",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "585a14b0_9cec79cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-20T18:20:58Z",
+      "side": 1,
+      "message": "You might be running into b/162742397. After we upgraded to dEQP 1.2.3, it noticed that we advertised the VK_KHR_16bit_storage extension but did not enable the storageBuffer16BitAccess flag. The fix was to simply remove the extension. It\u0027s an extension that got promoted to core in Vulkan 1.1, but does not actually have to be supported besides correctly reporting the feature bit.\n\nWith b/162742397 fixed, you should be able to rebase your change to check if it still causes unexpected test result differences.",
+      "parentUuid": "c50df052_3e11c909",
+      "revId": "74bb90bc7ce662784f0330dd369c942e00dc2536",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
