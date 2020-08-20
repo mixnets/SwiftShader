@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff894d54_c249fe52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-20T19:43:51Z",
+      "side": 1,
+      "message": "Yeah, that was it. What I\u0027m curious about is why this cl was rebased on 4568d85 (from August 2nd) last time it was rebased (on August 7th).\n\nSean, were you working with an outdated version of SwiftShader locally?",
+      "revId": "b1d2821dbb69fbc56e65810891054635ee35a650",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
