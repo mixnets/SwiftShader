@@ -16,6 +16,24 @@
       "revId": "74bb90bc7ce662784f0330dd369c942e00dc2536",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c50df052_3e11c909",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-20T18:14:00Z",
+      "side": 1,
+      "message": "So the mandatory feature that\u0027s not supported is storageBuffer16BitAccess, which is a Vulkan 1.2 feature. I\u0027m not sure why dEQP is madating this feature after I rebased this change away from the CL that switched our version from 1.1 to 1.2.",
+      "parentUuid": "b54a6241_70b5fd19",
+      "revId": "74bb90bc7ce662784f0330dd369c942e00dc2536",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
