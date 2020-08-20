@@ -322,7 +322,6 @@ static const VkExtensionProperties instanceExtensionProperties[] = {
 static const VkExtensionProperties deviceExtensionProperties[] = {
 	{ VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION },
 	// Vulkan 1.1 promoted extensions
-	{ VK_KHR_16BIT_STORAGE_EXTENSION_NAME, VK_KHR_16BIT_STORAGE_SPEC_VERSION },
 	{ VK_KHR_BIND_MEMORY_2_EXTENSION_NAME, VK_KHR_BIND_MEMORY_2_SPEC_VERSION },
 	{ VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, VK_KHR_CREATE_RENDERPASS_2_SPEC_VERSION },
 	{ VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, VK_KHR_DEDICATED_ALLOCATION_SPEC_VERSION },
@@ -379,6 +378,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 #endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
 	{ VK_GOOGLE_SAMPLER_FILTERING_PRECISION_EXTENSION_NAME, VK_GOOGLE_SAMPLER_FILTERING_PRECISION_SPEC_VERSION },
+	{ VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, VK_EXT_DEPTH_RANGE_UNRESTRICTED_SPEC_VERSION }
 };
 
 static bool hasExtension(const char *extensionName, const VkExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -1772,7 +1772,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImageView(VkDevice device, const VkImageV
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	return vk::ImageView::Create(pAllocator, pCreateInfo, pView, ycbcrConversion);
+	VkResult result = vk::ImageView::Create(pAllocator, pCreateInfo, pView, ycbcrConversion);
+	if(result == VK_SUCCESS)
+	{
+		vk::Cast(device)->registerImageView(vk::Cast(*pView));
+	}
+
+	return result;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks *pAllocator)
@@ -1780,6 +1786,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyImageView(VkDevice device, VkImageView image
 	TRACE("(VkDevice device = %p, VkImageView imageView = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      device, static_cast<void *>(imageView), pAllocator);
 
+	vk::Cast(device)->unregisterImageView(vk::Cast(imageView));
 	vk::destroy(imageView, pAllocator);
 }
 

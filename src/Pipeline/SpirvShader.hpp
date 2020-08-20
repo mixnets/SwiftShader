@@ -511,12 +511,12 @@ public:
 				uint32_t gatherComponent : 2;
 
 				// Parameters are passed to the sampling routine in this order:
-				uint32_t coordinates : 3;  // 1-4 (does not contain projection component)
-				                           //	uint32_t dref : 1;              // Indicated by Variant::ProjDref|Dref
-				                           //	uint32_t lodOrBias : 1;         // Indicated by SamplerMethod::Lod|Bias|Fetch
-				uint32_t grad : 2;         // 0-3 components (for each of dx / dy)
-				uint32_t offset : 2;       // 0-3 components
-				uint32_t sample : 1;       // 0-1 scalar integer
+				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
+				/*	uint32_t dref : 1; */       // Indicated by Variant::ProjDref|Dref
+				/*	uint32_t lodOrBias : 1; */  // Indicated by SamplerMethod::Lod|Bias|Fetch
+				uint32_t grad : 2;              // 0-3 components (for each of dx / dy)
+				uint32_t offset : 2;            // 0-3 components
+				uint32_t sample : 1;            // 0-1 scalar integer
 			};
 
 			uint32_t parameters;
@@ -569,15 +569,17 @@ public:
 	{
 		bool Matrix : 1;
 		bool Shader : 1;
+		bool StorageImageMultisample : 1;
 		bool ClipDistance : 1;
 		bool CullDistance : 1;
+		bool ImageCubeArray : 1;
 		bool InputAttachment : 1;
 		bool Sampled1D : 1;
 		bool Image1D : 1;
-		bool ImageCubeArray : 1;
 		bool SampledBuffer : 1;
 		bool SampledCubeArray : 1;
 		bool ImageBuffer : 1;
+		bool ImageMSArray : 1;
 		bool StorageImageExtendedFormats : 1;
 		bool ImageQuery : 1;
 		bool DerivativeControl : 1;
@@ -1272,7 +1274,7 @@ private:
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
-	static sw::FilterType convertFilterMode(const vk::Sampler *sampler);
+	static sw::FilterType convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, ImageInstruction instruction);
 	static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
 	static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::Sampler *sampler, VkImageViewType imageViewType);
 
