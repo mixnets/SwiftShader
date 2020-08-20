@@ -361,15 +361,17 @@ SpirvShader::SpirvShader(
 				{
 					case spv::CapabilityMatrix: capabilities.Matrix = true; break;
 					case spv::CapabilityShader: capabilities.Shader = true; break;
+					case spv::CapabilityStorageImageMultisample: capabilities.StorageImageMultisample = true; break;
 					case spv::CapabilityClipDistance: capabilities.ClipDistance = true; break;
 					case spv::CapabilityCullDistance: capabilities.CullDistance = true; break;
+					case spv::CapabilityImageCubeArray: capabilities.ImageCubeArray = true; break;
 					case spv::CapabilityInputAttachment: capabilities.InputAttachment = true; break;
 					case spv::CapabilitySampled1D: capabilities.Sampled1D = true; break;
 					case spv::CapabilityImage1D: capabilities.Image1D = true; break;
-					case spv::CapabilityImageCubeArray: capabilities.ImageCubeArray = true; break;
 					case spv::CapabilitySampledBuffer: capabilities.SampledBuffer = true; break;
 					case spv::CapabilitySampledCubeArray: capabilities.SampledCubeArray = true; break;
 					case spv::CapabilityImageBuffer: capabilities.ImageBuffer = true; break;
+					case spv::CapabilityImageMSArray: capabilities.ImageMSArray = true; break;
 					case spv::CapabilityStorageImageExtendedFormats: capabilities.StorageImageExtendedFormats = true; break;
 					case spv::CapabilityImageQuery: capabilities.ImageQuery = true; break;
 					case spv::CapabilityDerivativeControl: capabilities.DerivativeControl = true; break;
@@ -1018,8 +1020,9 @@ int SpirvShader::VisitInterfaceInner(Type::ID id, Decorations d, const Interface
 			// iterate over members, which may themselves have Location/Component decorations
 			for(auto i = 0u; i < obj.definition.wordCount() - 2; i++)
 			{
-				ApplyDecorationsForIdMember(&d, id, i);
-				d.Location = VisitInterfaceInner(obj.definition.word(i + 2), d, f);
+				Decorations dMember = d;
+				ApplyDecorationsForIdMember(&dMember, id, i);
+				d.Location = VisitInterfaceInner(obj.definition.word(i + 2), dMember, f);
 				d.Component = 0;  // Implicit locations always have component=0
 			}
 			return d.Location;

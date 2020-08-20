@@ -99,7 +99,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_FALSE,  // shaderTessellationAndGeometryPointSize
 		VK_FALSE,  // shaderImageGatherExtended
 		VK_TRUE,   // shaderStorageImageExtendedFormats
-		VK_FALSE,  // shaderStorageImageMultisample
+		VK_TRUE,   // shaderStorageImageMultisample
 		VK_FALSE,  // shaderStorageImageReadWithoutFormat
 		VK_FALSE,  // shaderStorageImageWriteWithoutFormat
 		VK_TRUE,   // shaderUniformBufferArrayDynamicIndexing
@@ -430,7 +430,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		sampleCounts,                                     // sampledImageIntegerSampleCounts
 		sampleCounts,                                     // sampledImageDepthSampleCounts
 		sampleCounts,                                     // sampledImageStencilSampleCounts
-		VK_SAMPLE_COUNT_1_BIT,                            // storageImageSampleCounts (unsupported)
+		sampleCounts,                                     // storageImageSampleCounts
 		1,                                                // maxSampleMaskWords
 		VK_FALSE,                                         // timestampComputeAndGraphics
 		60,                                               // timestampPeriod
