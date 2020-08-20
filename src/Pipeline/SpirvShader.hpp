@@ -258,6 +258,14 @@ public:
 	/* range-based-for interface */
 	InsnIterator begin() const
 	{
+		assert(iter[0] == 0x07230203);  //magic
+		assert(iter[1] <= 0x00010300);  //version
+		(void)iter[2];                  //Generator’s magic number
+		assert(iter[3] > 1);            //bound
+		assert(iter[4] == 0);           // reserved for instruction schema
+
+assert(iter[3] <= 4096);
+
 		return InsnIterator{ insns.cbegin() + 5 };
 	}
 
@@ -965,6 +973,7 @@ private:
 		void addActiveLaneMaskEdge(Block::ID from, Block::ID to, RValue<SIMD::Int> mask);
 
 		SpirvRoutine *routine = nullptr;                 // The current routine being built.
+		bool validShader = true;                         // TODO(b/119321052): Provide log through VK_EXT_debug_utils
 		Function::ID function;                           // The current function being built.
 		Block::ID block;                                 // The current block being built.
 		rr::Value *activeLaneMaskValue = nullptr;        // The current active lane mask.
