@@ -202,8 +202,10 @@ class R11G11B10F
 				// Convert it to a denormalized value.
 				const unsigned int shift = (float32ExponentBias - float11ExponentBias) -
 				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
+				// Check shift to avoid undefined behavior. According to the C++ standard:
+				// "The behavior is undefined if the right operand is negative, or greater
+				//  than or equal to the length in bits of the promoted left operand."
+				float32Val = (shift >= 32) ? 0 : ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
 			}
 			else
 			{
@@ -275,8 +277,10 @@ class R11G11B10F
 				// Convert it to a denormalized value.
 				const unsigned int shift = (float32ExponentBias - float10ExponentBias) -
 				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
+				// Check shift to avoid undefined behavior. According to the C++ standard:
+				// "The behavior is undefined if the right operand is negative, or greater
+				//  than or equal to the length in bits of the promoted left operand."
+				float32Val = (shift >= 32) ? 0 : ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
 			}
 			else
 			{
