@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "1ed7943e_8838d2af",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-21T18:06:31Z",
+      "side": 1,
+      "message": "I tried to add a check before, as suggested, but I find it less obvious/straightforward as a return to 0 here, so I\u0027m proposing that instead.",
+      "parentUuid": "2f8a4f64_f856ace4",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1
