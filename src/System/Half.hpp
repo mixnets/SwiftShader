@@ -148,14 +148,11 @@ class R11G11B10F
 		const unsigned int float32ExponentMask = 0x7F800000;
 		const unsigned int float32SignMask = 0x80000000;
 		const unsigned int float32ValueMask = ~float32SignMask;
-		const unsigned int float32ExponentFirstBit = 23;
-		const unsigned int float32ExponentBias = 127;
 
 		const unsigned short float11Max = 0x7BF;
 		const unsigned short float11MantissaMask = 0x3F;
 		const unsigned short float11ExponentMask = 0x7C0;
 		const unsigned short float11BitMask = 0x7FF;
-		const unsigned int float11ExponentBias = 14;
 
 		const unsigned int float32Maxfloat11 = 0x477E0000;
 		const unsigned int float32Minfloat11 = 0x38800000;
@@ -194,22 +191,15 @@ class R11G11B10F
 			// The number is too large to be represented as a float11, set to max
 			return float11Max;
 		}
+		else if(float32Val < float32Minfloat11)
+		{
+			// The number is too small to be represented as a float11, set to 0
+			return 0;
+		}
 		else
 		{
-			if(float32Val < float32Minfloat11)
-			{
-				// The number is too small to be represented as a normalized float11
-				// Convert it to a denormalized value.
-				const unsigned int shift = (float32ExponentBias - float11ExponentBias) -
-				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
-			}
-			else
-			{
-				// Rebias the exponent to represent the value as a normalized float11
-				float32Val += 0xC8000000;
-			}
+			// Rebias the exponent to represent the value as a normalized float11
+			float32Val += 0xC8000000;
 
 			return ((float32Val + 0xFFFF + ((float32Val >> 17) & 1)) >> 17) & float11BitMask;
 		}
@@ -221,14 +211,11 @@ class R11G11B10F
 		const unsigned int float32ExponentMask = 0x7F800000;
 		const unsigned int float32SignMask = 0x80000000;
 		const unsigned int float32ValueMask = ~float32SignMask;
-		const unsigned int float32ExponentFirstBit = 23;
-		const unsigned int float32ExponentBias = 127;
 
 		const unsigned short float10Max = 0x3DF;
 		const unsigned short float10MantissaMask = 0x1F;
 		const unsigned short float10ExponentMask = 0x3E0;
 		const unsigned short float10BitMask = 0x3FF;
-		const unsigned int float10ExponentBias = 14;
 
 		const unsigned int float32Maxfloat10 = 0x477C0000;
 		const unsigned int float32Minfloat10 = 0x38800000;
@@ -249,7 +236,7 @@ class R11G11B10F
 			}
 			else if(float32Sign)
 			{
-				// -INF is clamped to 0 since float11 is positive only
+				// -INF is clamped to 0 since float10 is positive only
 				return 0;
 			}
 			else
@@ -264,25 +251,18 @@ class R11G11B10F
 		}
 		else if(float32Val > float32Maxfloat10)
 		{
-			// The number is too large to be represented as a float11, set to max
+			// The number is too large to be represented as a float10, set to max
 			return float10Max;
+		}
+		else if(float32Val < float32Minfloat10)
+		{
+			// The number is too small to be represented as a float10, set to 0
+			return 0;
 		}
 		else
 		{
-			if(float32Val < float32Minfloat10)
-			{
-				// The number is too small to be represented as a normalized float11
-				// Convert it to a denormalized value.
-				const unsigned int shift = (float32ExponentBias - float10ExponentBias) -
-				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
-			}
-			else
-			{
-				// Rebias the exponent to represent the value as a normalized float11
-				float32Val += 0xC8000000;
-			}
+			// Rebias the exponent to represent the value as a normalized float10
+			float32Val += 0xC8000000;
 
 			return ((float32Val + 0x1FFFF + ((float32Val >> 18) & 1)) >> 18) & float10BitMask;
 		}
