@@ -22,6 +22,30 @@
       "revId": "08dabf920270329eaabddadd20fd7a215acdbec2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5ee096c_c47f34f6",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-08-21T20:21:12Z",
+      "side": 1,
+      "message": "Yes, it did reduce the size by about 12KiB. Not huge, but these are the two main flags that MinSizeRel sets for CMake.",
+      "parentUuid": "78ad9938_5410e7f5",
+      "range": {
+        "startLine": 36,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 115
+      },
+      "revId": "08dabf920270329eaabddadd20fd7a215acdbec2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
