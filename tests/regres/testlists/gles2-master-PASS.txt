@@ -764,7 +764,6 @@ dEQP-GLES2.functional.draw.random.70
 dEQP-GLES2.functional.draw.random.71
 dEQP-GLES2.functional.draw.random.8
 dEQP-GLES2.functional.draw.random.9
-dEQP-GLES2.functional.fbo.api.attach_names
 dEQP-GLES2.functional.fbo.api.attach_to_default_fbo
 dEQP-GLES2.functional.fbo.api.attachment_query_rbo
 dEQP-GLES2.functional.fbo.api.attachment_query_tex2d
