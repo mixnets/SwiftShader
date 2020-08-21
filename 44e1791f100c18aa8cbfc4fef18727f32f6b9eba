@@ -16,6 +16,29 @@
       "revId": "44e1791f100c18aa8cbfc4fef18727f32f6b9eba",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "133488ab_f2399c6d",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-21T02:31:52Z",
+      "side": 1,
+      "message": "I had missed during review that this replaces the previous per-struct interface. I\u0027m not sure it serves a good purpose. As illustrated by anglebug.com/4502 it\u0027s impossible to see which structs are accepted by this new interface, and which will cause run-time errors. Also, while very minimal, we can avoid the cost of the switch statement by keeping the old interface, which is also more type safe.",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 44,
+        "endChar": 2
+      },
+      "revId": "44e1791f100c18aa8cbfc4fef18727f32f6b9eba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
