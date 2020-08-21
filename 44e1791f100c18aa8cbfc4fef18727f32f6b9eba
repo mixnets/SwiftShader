@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69c4c7f0_ace8b999",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5845
+      },
+      "writtenOn": "2020-08-21T00:30:48Z",
+      "side": 1,
+      "message": "Looks like you forgot to keep VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT in the new version of PhysicalDevice::getFeatures(). Please double check that all the previously handled enums are present in the new function.\n\nSee anglebug.com/4502",
+      "revId": "44e1791f100c18aa8cbfc4fef18727f32f6b9eba",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
