@@ -194,22 +194,15 @@ class R11G11B10F
 			// The number is too large to be represented as a float11, set to max
 			return float11Max;
 		}
+		else if(float32Val < float32Minfloat11)
+		{
+			// The number is too small to be represented as a float11, set to 0
+			return 0;
+		}
 		else
 		{
-			if(float32Val < float32Minfloat11)
-			{
-				// The number is too small to be represented as a normalized float11
-				// Convert it to a denormalized value.
-				const unsigned int shift = (float32ExponentBias - float11ExponentBias) -
-				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
-			}
-			else
-			{
-				// Rebias the exponent to represent the value as a normalized float11
-				float32Val += 0xC8000000;
-			}
+			// Rebias the exponent to represent the value as a normalized float11
+			float32Val += 0xC8000000;
 
 			return ((float32Val + 0xFFFF + ((float32Val >> 17) & 1)) >> 17) & float11BitMask;
 		}
@@ -249,7 +242,7 @@ class R11G11B10F
 			}
 			else if(float32Sign)
 			{
-				// -INF is clamped to 0 since float11 is positive only
+				// -INF is clamped to 0 since float10 is positive only
 				return 0;
 			}
 			else
@@ -264,25 +257,18 @@ class R11G11B10F
 		}
 		else if(float32Val > float32Maxfloat10)
 		{
-			// The number is too large to be represented as a float11, set to max
+			// The number is too large to be represented as a float10, set to max
 			return float10Max;
+		}
+		else if(float32Val < float32Minfloat10)
+		{
+			// The number is too small to be represented as a float10, set to 0
+			return 0;
 		}
 		else
 		{
-			if(float32Val < float32Minfloat10)
-			{
-				// The number is too small to be represented as a normalized float11
-				// Convert it to a denormalized value.
-				const unsigned int shift = (float32ExponentBias - float10ExponentBias) -
-				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
-			}
-			else
-			{
-				// Rebias the exponent to represent the value as a normalized float11
-				float32Val += 0xC8000000;
-			}
+			// Rebias the exponent to represent the value as a normalized float10
+			float32Val += 0xC8000000;
 
 			return ((float32Val + 0x1FFFF + ((float32Val >> 18) & 1)) >> 18) & float10BitMask;
 		}
