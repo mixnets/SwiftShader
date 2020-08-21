@@ -16,6 +16,52 @@
       "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f8a4f64_f856ace4",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-21T15:47:57Z",
+      "side": 1,
+      "message": "Let\u0027s not treat this as a denorm case, it\u0027s making the expression quite hard to read. Instead we can compare float32Val against the value known to always round to zero (i.e. before line 199 add another comparison).",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eed165ca_0ee6a8ef",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-21T15:47:57Z",
+      "side": 1,
+      "message": "10\n\nhere and some other spots in this function",
+      "range": {
+        "startLine": 276,
+        "startChar": 70,
+        "endLine": 276,
+        "endChar": 72
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
