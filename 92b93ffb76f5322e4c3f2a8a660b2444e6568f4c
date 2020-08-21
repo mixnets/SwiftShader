@@ -16,6 +16,23 @@
       "revId": "92b93ffb76f5322e4c3f2a8a660b2444e6568f4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2df217e1_a8ac72bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2020-08-21T11:53:16Z",
+      "side": 1,
+      "message": "Looks like there are failures. Can I get the log please? ",
+      "revId": "92b93ffb76f5322e4c3f2a8a660b2444e6568f4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
