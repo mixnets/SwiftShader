@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d38f3990_b4dc2a1a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-21T15:21:14Z",
+      "side": 1,
+      "message": "CCing Geoff and Jamie. I\u0027ll apply the same fix to ANGLE once we all agree on it.",
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
