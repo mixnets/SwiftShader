@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "325aada5_619c38ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7273
+      },
+      "writtenOn": "2020-08-21T10:50:37Z",
+      "side": 1,
+      "message": "Nicolas, would you please review and run the cq dry-run as well? thanks!",
+      "revId": "92b93ffb76f5322e4c3f2a8a660b2444e6568f4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
