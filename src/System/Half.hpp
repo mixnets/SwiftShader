@@ -202,8 +202,16 @@ class R11G11B10F
 				// Convert it to a denormalized value.
 				const unsigned int shift = (float32ExponentBias - float11ExponentBias) -
 				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
+
+				// Check shift to avoid undefined behavior. According to the C++ standard:
+				// "The behavior is undefined if the right operand is negative, or greater
+				//  than or equal to the length in bits of the promoted left operand."
+				if(shift >= 32)
+				{
+					return 0;
+				}
+
+				float32Val = ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
 			}
 			else
 			{
@@ -249,7 +257,7 @@ class R11G11B10F
 			}
 			else if(float32Sign)
 			{
-				// -INF is clamped to 0 since float11 is positive only
+				// -INF is clamped to 0 since float10 is positive only
 				return 0;
 			}
 			else
@@ -264,23 +272,31 @@ class R11G11B10F
 		}
 		else if(float32Val > float32Maxfloat10)
 		{
-			// The number is too large to be represented as a float11, set to max
+			// The number is too large to be represented as a float10, set to max
 			return float10Max;
 		}
 		else
 		{
 			if(float32Val < float32Minfloat10)
 			{
-				// The number is too small to be represented as a normalized float11
+				// The number is too small to be represented as a normalized float10
 				// Convert it to a denormalized value.
 				const unsigned int shift = (float32ExponentBias - float10ExponentBias) -
 				                           (float32Val >> float32ExponentFirstBit);
-				float32Val =
-				    ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
+
+				// Check shift to avoid undefined behavior. According to the C++ standard:
+				// "The behavior is undefined if the right operand is negative, or greater
+				//  than or equal to the length in bits of the promoted left operand."
+				if(shift >= 32)
+				{
+					return 0;
+				}
+
+				float32Val = ((1 << float32ExponentFirstBit) | (float32Val & float32MantissaMask)) >> shift;
 			}
 			else
 			{
-				// Rebias the exponent to represent the value as a normalized float11
+				// Rebias the exponent to represent the value as a normalized float10
 				float32Val += 0xC8000000;
 			}
 
