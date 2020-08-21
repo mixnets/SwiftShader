@@ -35,17 +35,35 @@ public:
 	static size_t ComputeRequiredAllocationSize(const void *) { return 0; }
 
 	const VkPhysicalDeviceFeatures &getFeatures() const;
-	void getFeatures(VkPhysicalDeviceSamplerYcbcrConversionFeatures *features) const;
-	void getFeatures(VkPhysicalDevice16BitStorageFeatures *features) const;
-	void getFeatures(VkPhysicalDeviceVariablePointerFeatures *features) const;
-	void getFeatures(VkPhysicalDevice8BitStorageFeaturesKHR *features) const;
-	void getFeatures(VkPhysicalDeviceMultiviewFeatures *features) const;
-	void getFeatures(VkPhysicalDeviceProtectedMemoryFeatures *features) const;
-	void getFeatures(VkPhysicalDeviceShaderDrawParameterFeatures *features) const;
-	void getFeatures(VkPhysicalDeviceLineRasterizationFeaturesEXT *features) const;
-	void getFeatures(VkPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR *features) const;
-	void getFeatures(VkPhysicalDeviceProvokingVertexFeaturesEXT *features) const;
-	void getFeatures(VkPhysicalDeviceImageRobustnessFeaturesEXT *features) const;
+	void getFeatures2(VkPhysicalDeviceFeatures2 *features) const;
+	template<typename T>
+	void getPhysicalDeviceSamplerYcbcrConversionFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDevice16BitStorageFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceVariablePointersFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDevice8BitStorageFeaturesKHR(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceMultiviewFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceProtectedMemoryFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceShaderDrawParameterFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceLineRasterizationFeaturesEXT(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceProvokingVertexFeaturesEXT(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceImageRobustnessFeaturesEXT(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceShaderDrawParametersFeatures(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceVulkan11Features(T *features) const;
+	template<typename T>
+	void getPhysicalDeviceVulkan12Features(T *features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const;
 
 	const VkPhysicalDeviceProperties &getProperties() const;
