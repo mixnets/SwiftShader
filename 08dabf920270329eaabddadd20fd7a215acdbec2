@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78ad9938_5410e7f5",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-21T20:17:38Z",
+      "side": 1,
+      "message": "Does this actually further reduce size? Some functions can be smaller inlined than when making a call. According to https://docs.microsoft.com/en-us/cpp/build/reference/o1-o2-minimize-size-maximize-speed?view\u003dvs-2019, /O1 is equivalent to a set of flags including /Ob2, which does allow inlining when smaller.",
+      "range": {
+        "startLine": 36,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 115
+      },
+      "revId": "08dabf920270329eaabddadd20fd7a215acdbec2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
