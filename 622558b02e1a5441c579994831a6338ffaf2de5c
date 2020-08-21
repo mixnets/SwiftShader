@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfab326e_4bb2bd29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-21T20:25:16Z",
+      "side": 1,
+      "message": "I think it broke SwANGLE tests, which doesn\u0027t ship yet, not ANGLE. So a revert wasn\u0027t that necessary. A forward fix of non-critical issues results in having a nice separate patch which illustrates how it was fixed, which is easier to review than a brand new patch which is non-trivial to diff against the previous attempt.\n\nAnyway, no biggie, just my 2 cents.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 45
+      },
+      "revId": "622558b02e1a5441c579994831a6338ffaf2de5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
