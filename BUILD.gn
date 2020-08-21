@@ -30,6 +30,13 @@ config("swiftshader_config") {
       "/D_ENABLE_EXTENDED_ALIGNED_STORAGE",
     ]
 
+    if (is_official_build) {
+      cflags += [
+        "/O1", # Optimize for size
+        "/Ob1", # Inline only functions marked inline, __inline or defined within the class declaration are inlined
+      ]
+    }
+
     if (!use_custom_libcxx) {
       # Disable EH usage in STL headers.
       # libc++ uses a predefined macro to control whether to use exceptions, so
