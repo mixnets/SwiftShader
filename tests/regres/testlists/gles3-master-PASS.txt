@@ -2983,7 +2983,6 @@ dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_rbo_tex
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_none
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_rbo
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_none_tex_tex
-dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_none
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_rbo
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_tex
 dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_rbo_none
@@ -30200,7 +30199,6 @@ dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getfloat
 dEQP-GLES3.functional.state_query.integers.max_uniform_buffer_bindings_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_components_getfloat
-dEQP-GLES3.functional.state_query.integers.max_varying_components_getinteger64
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getboolean
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getfloat
 dEQP-GLES3.functional.state_query.integers.max_varying_vectors_getinteger64
@@ -39123,7 +39121,6 @@ dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_stru
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.bool_bvec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_fragment
-dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_both
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_fragment
 dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.int_ivec4_vertex

@@ -1,0 +1,3 @@
+dEQP-GLES3.functional.fbo.completeness.attachment_combinations.tex_rbo_none_none
+dEQP-GLES3.functional.state_query.integers.max_varying_components_getinteger64
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
