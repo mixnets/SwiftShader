@@ -22,6 +22,30 @@
       "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7766a76f_b53f530d",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-25T17:31:43Z",
+      "side": 1,
+      "message": "After taking a step back to look at how these functions are used, they were only ever called from libVulkan.cpp which had its own implementation of getPhysicalDeviceFeatures2. My CL changes it to a call to getFeatures2 so that all feature handling code is in VkPhysicalDevice.cpp. We could actually get rid of these functions from the .hpp file entirely.\n\nSo really, at this point we only want the template functions to avoid having to update multiple places whenever we add support for a feature and avoid copying data from one struct to another. We could also avoid these things with macros (which avoids increasing runtime memory usage or binary size), or compile-time defined constants (which avoids macros).\n\nI think I would prefer using a different solution than templated functions after what\u0027s happened. I\u0027m generally adverse to template functions because they\u0027re heavier than the small bit of code within them would imply.",
+      "parentUuid": "d50976d3_8c07c9c7",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
