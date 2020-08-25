@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21f5c9a2_18697acd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-25T19:04:49Z",
+      "side": 1,
+      "message": "This looks good to me! Please wait for the swangle tryjob results. Alexis, any concerns I missed?",
+      "revId": "7d2e08c0b086ec23ff8daf9c3eb82e63cfa268ef",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
