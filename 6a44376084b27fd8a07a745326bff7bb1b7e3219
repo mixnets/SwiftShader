@@ -46,6 +46,30 @@
       "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31b338e5_5e90e92a",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-25T18:13:13Z",
+      "side": 1,
+      "message": "\u003e We could actually get rid of these functions from the .hpp file entirely.\n\nGood point. Just need to make the functions static. Please go ahead with that and I think it will be in good shape for +2.\n\n\u003e I think I would prefer using a different solution than templated functions after what\u0027s happened.\n\nI don\u0027t think there\u0027s any long term risk to using templates here, as long as we\u0027re not casting pointers where we don\u0027t absolutely have to, is there? What alternative did you have in mind?\n\n\u003e I\u0027m generally adverse to template functions because they\u0027re heavier than the small bit of code within them would imply.\n\nI agree there can be non-trivial costs to using templates that require one to consider avoiding them, but in this case I see some clear benefits in assigning these feature bits in a type-safe way while avoiding code duplication that would risk going out of sync. I\u0027m also not concerned about the binary-level code duplication in this case since it\u0027s very light code.",
+      "parentUuid": "7766a76f_b53f530d",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
