@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e4d4948_4d6ed96e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-08-25T20:22:04Z",
+      "side": 1,
+      "message": "LGTM. Thanks Jaebaek!",
+      "revId": "3776e1aad00dab0449bb7a27ed3da0f5b64832f0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
