@@ -90,6 +90,30 @@
     },
     {
       "key": {
+        "uuid": "01e42d69_58a64990",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-25T14:58:28Z",
+      "side": 1,
+      "message": "I\u0027ll write the alternate fix when I have a second and we can compare and choose which one you prefer.",
+      "parentUuid": "61185a02_bcb5ef1e",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1
