@@ -16,6 +16,29 @@
       "revId": "b501dbede7569e5dc1cc39ca7205c6d70f711b96",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0250890_7bf25a67",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1271,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-25T20:31:05Z",
+      "side": 1,
+      "message": "uber-nit: consider mentioning a bug (b/148401179 ?) instead of a person",
+      "range": {
+        "startLine": 1271,
+        "startChar": 12,
+        "endLine": 1271,
+        "endChar": 20
+      },
+      "revId": "b501dbede7569e5dc1cc39ca7205c6d70f711b96",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
