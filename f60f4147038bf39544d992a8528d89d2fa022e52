@@ -66,6 +66,30 @@
     },
     {
       "key": {
+        "uuid": "61185a02_bcb5ef1e",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-25T14:15:59Z",
+      "side": 1,
+      "message": "I\u0027m not sure I understand your argument, considering it would just be an \"if(float32Val \u003c `smallest-representable-denorm-value`) { return 0; }\". Quite clear and straightforward in my opinion.\n\nIf you meant it\u0027s less obvious as the most direct fix for the UB, then yes, I agree. But at its core this isn\u0027t just about avoiding UB. We can return any value to satisfy UBSan. The current patch does not explain why it has to be 0. Without knowing the history of this code, and the fact that most implementations will produce 0 when shifting by more than 32, it\u0027s not easy to tell what this code really accomplishes.\n\nThe root issue is treating these underflow cases the same as denormals, which accidentally works(*) if shifting by more than 32 is well-defined. Treating it as a separate case arguably makes it clearer and leaves no room for UB.\n\nHowever, to address the minor concern about having a more direct fix for the UB which mimics the behavior we\u0027ve been expecting, we could land this iff it\u0027s followed by a change to treat the underflow case separately.\n\n(*) I\u0027m really not sure it\u0027s entirely correct. There could ideally be a need for rounding values up or down at another cutoff then when `shift` hits 32. Anyway, all of this seems somewhat poorly defined by the spec. See b/147900455",
+      "parentUuid": "1ed7943e_8838d2af",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1
