@@ -70,6 +70,30 @@
       "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dce3645_467224e0",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-08-25T19:01:51Z",
+      "side": 1,
+      "message": "\u003e What alternative did you have in mind?\n\nI was thinking we could ditch the function calls entirely and use a table with all our supported feature bits, and just have the switch statement in getFeatures2 read from that table into the features structs. But if you think it\u0027s good with templates then let\u0027s just go with that.",
+      "parentUuid": "31b338e5_5e90e92a",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "6a44376084b27fd8a07a745326bff7bb1b7e3219",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
