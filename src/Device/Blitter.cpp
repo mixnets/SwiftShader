@@ -1741,31 +1741,9 @@ Blitter::CornerUpdateRoutineType Blitter::getCornerUpdateRoutine(const State &st
 	return cornerUpdateRoutine;
 }
 
-void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
-{
-	VkExtent3D extent = src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes() * extent.width;
-	unsigned int srcPitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	ASSERT(dstPitch >= rowBytes && srcPitch >= rowBytes && src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0).height >= extent.height);
-
-	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 });
-	uint8_t *d = dst;
-
-	for(uint32_t y = 0; y < extent.height; y++)
-	{
-		memcpy(d, s, rowBytes);
-
-		s += srcPitch;
-		d += dstPitch;
-	}
-}
-
 void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter)
 {
-	if(dst->getFormat() == VK_FORMAT_UNDEFINED)
-	{
-		return;
-	}
+	ASSERT(dst->getFormat() != VK_FORMAT_UNDEFINED);
 
 	// Vulkan 1.2 section 18.5. Image Copies with Scaling:
 	// "The layerCount member of srcSubresource and dstSubresource must match"
@@ -1893,6 +1871,30 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	}
 
 	dst->contentsChanged(dstSubresRange);
+}
+
+void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageBlit region)
+{
+	blit(src, dst, region, VK_FILTER_NEAREST);
+}
+
+void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
+{
+	VkExtent3D extent = src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+	size_t rowBytes = src->getFormat(VK_IMAGE_ASPECT_COLOR_BIT).bytes() * extent.width;
+	unsigned int srcPitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+	ASSERT(dstPitch >= rowBytes && srcPitch >= rowBytes && src->getMipLevelExtent(VK_IMAGE_ASPECT_COLOR_BIT, 0).height >= extent.height);
+
+	const uint8_t *s = (uint8_t *)src->getTexelPointer({ 0, 0, 0 }, { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0 });
+	uint8_t *d = dst;
+
+	for(uint32_t y = 0; y < extent.height; y++)
+	{
+		memcpy(d, s, rowBytes);
+
+		s += srcPitch;
+		d += dstPitch;
+	}
 }
 
 void Blitter::computeCubeCorner(Pointer<Byte> &layer, Int &x0, Int &x1, Int &y0, Int &y1, Int &pitchB, const State &state)

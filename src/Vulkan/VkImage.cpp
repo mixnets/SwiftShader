@@ -957,7 +957,7 @@ void Image::resolveTo(Image *dstImage, const VkImageResolve &region) const
 	blitRegion.srcSubresource = region.srcSubresource;
 	blitRegion.dstSubresource = region.dstSubresource;
 
-	device->getBlitter()->blit(this, dstImage, blitRegion, VK_FILTER_NEAREST);
+	device->getBlitter()->resolve(this, dstImage, blitRegion);
 }
 
 VkFormat Image::getClearFormat() const
