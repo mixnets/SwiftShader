@@ -1,6 +1,6 @@
 {
     "remote": "https://android.googlesource.com/platform/external/deqp",
-    "sha": "dc4441d7695aadce377cdaa270f0027f94471a99",
+    "sha": "f3b873529b8f1b62e8a79055045c1a368ce21ea4",
     "patches": [
         "tests/regres/deqp-patches/deqp-x11.patch"
     ]
