@@ -344,6 +344,8 @@ if(MSVC)
     set_linker_flag("/DEBUG:FASTLINK" DEBUG)
     set_linker_flag("/DEBUG:FASTLINK" RELWITHDEBINFO)
 
+    set_cpp_flag("/std:c++14")
+
     # Disable specific warnings
     # TODO: Not all of these should be disabled, but for now, we want a warning-free msvc build. Remove these one by one
     #       and fix the actual warnings in code.
