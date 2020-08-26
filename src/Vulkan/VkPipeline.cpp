@@ -70,8 +70,11 @@ std::vector<uint32_t> preprocessSpirv(
 
 	if(optimize)
 	{
-		// Full optimization list taken from spirv-opt.
-		opt.RegisterPerformancePasses();
+		// Only add specific optimizations we need from spirv-opt (see Optimizer::RegisterPerformancePasses)
+		opt.RegisterPass(spvtools::CreateWrapOpKillPass())
+		    .RegisterPass(spvtools::CreateDeadBranchElimPass())
+		    .RegisterPass(spvtools::CreateMergeReturnPass())
+		    .RegisterPass(spvtools::CreateInlineExhaustivePass());
 	}
 
 	std::vector<uint32_t> optimized;
