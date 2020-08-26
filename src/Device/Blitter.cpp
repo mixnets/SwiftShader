@@ -25,6 +25,11 @@
 
 #include <utility>
 
+#if defined(__i386__) || defined(__x86_64__)
+#	include <xmmintrin.h>
+#	include <emmintrin.h>
+#endif
+
 namespace {
 rr::RValue<rr::Int> PackFields(rr::Int4 const &ints, const sw::int4 shifts)
 {
@@ -1985,9 +1990,43 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 	if(format == VK_FORMAT_R8G8B8A8_UNORM || format == VK_FORMAT_B8G8R8A8_UNORM || format == VK_FORMAT_A8B8G8R8_UNORM_PACK32 ||
 	   format == VK_FORMAT_R8G8B8A8_SRGB || format == VK_FORMAT_B8G8R8A8_SRGB || format == VK_FORMAT_A8B8G8R8_SRGB_PACK32)
 	{
+#if defined(__i386__) || defined(__x86_64__)
+		if(CPUID::supportsSSE2() && (width % 4) == 0)
+		{
+			if(samples == 4)
+			{
+				for(int y = 0; y < height; y++)
+				{
+					for(int x = 0; x < width; x += 4)
+					{
+						__m128i c0 = _mm_load_si128((__m128i *)(source0 + 4 * x));
+						__m128i c1 = _mm_load_si128((__m128i *)(source1 + 4 * x));
+						__m128i c2 = _mm_load_si128((__m128i *)(source2 + 4 * x));
+						__m128i c3 = _mm_load_si128((__m128i *)(source3 + 4 * x));
+
+						c0 = _mm_avg_epu8(c0, c1);
+						c2 = _mm_avg_epu8(c2, c3);
+						c0 = _mm_avg_epu8(c0, c2);
+
+						_mm_store_si128((__m128i *)(dest + 4 * x), c0);
+					}
+
+					source0 += pitch;
+					source1 += pitch;
+					source2 += pitch;
+					source3 += pitch;
+					dest += pitch;
+				}
+			}
+			else
+				ASSERT(false);
+		}
+		else
+#endif
+
 #define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
-		if(samples == 4)
+		    if(samples == 4)
 		{
 			for(int y = 0; y < height; y++)
 			{
