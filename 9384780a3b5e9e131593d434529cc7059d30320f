@@ -16,6 +16,24 @@
       "revId": "9384780a3b5e9e131593d434529cc7059d30320f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91fd7a1e_cf8ebcf7",
+        "filename": "src/Pipeline/SpirvShaderImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-26T15:23:41Z",
+      "side": 1,
+      "message": "LLVM and Subzero both do a very good job at eliminating load operations for values which are not used afterwards. So to improve readability I think we can avoid such conditionals.\n\nWhen we do some arithmetic work which an optimizing compiler may eliminate, I do think it\u0027s worth putting some effort into avoiding it altogether, both to ensure LLVM doesn\u0027t spend too many cycles on it and Subzero doesn\u0027t miss the optimization.",
+      "parentUuid": "e0479315_158b81e0",
+      "revId": "9384780a3b5e9e131593d434529cc7059d30320f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
