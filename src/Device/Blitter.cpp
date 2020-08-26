@@ -25,6 +25,11 @@
 
 #include <utility>
 
+#if defined(__i386__) || defined(__x86_64__)
+#	include <xmmintrin.h>
+#	include <emmintrin.h>
+#endif
+
 namespace {
 rr::RValue<rr::Int> PackFields(rr::Int4 const &ints, const sw::int4 shifts)
 {
@@ -1901,6 +1906,31 @@ void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve regio
 
 bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
 {
+	if(region.dstOffset != VkOffset3D{ 0, 0, 0 })
+	{
+		return false;
+	}
+
+	if(region.srcOffset.x != 0 || region.srcOffset.y != 0 || region.srcOffset.z != 0)
+	{
+		return false;
+	}
+
+	// "The aspectMask member of srcSubresource and dstSubresource must only contain VK_IMAGE_ASPECT_COLOR_BIT"
+	ASSERT(region.srcSubresource.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT);
+	ASSERT(region.dstSubresource.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT);
+
+	if(region.srcSubresource.layerCount != 1)
+	{
+		return false;
+	}
+
+	if(region.extent != src->getExtent() ||
+	   region.extent != dst->getExtent())
+	{
+		return false;
+	}
+
 	//BlitData data = {
 	//	nullptr,                                                          // source
 	//	nullptr,                                                          // dest
@@ -1951,10 +1981,6 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 	};
 
 	//uint32_t lastLayer = src->getLastLayerIndex(dstSubresRange);
-	if(region.srcSubresource.layerCount != 1)
-	{
-		return false;
-	}
 
 	//for(; dstSubres.arrayLayer <= lastLayer; srcSubres.arrayLayer++, dstSubres.arrayLayer++)
 	//{
@@ -1980,14 +2006,47 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 	uint8_t *source1 = source0 + slice;
 	uint8_t *source2 = source1 + slice;
 	uint8_t *source3 = source2 + slice;
-	uint8_t *source4 = source3 + slice;
 
 	if(format == VK_FORMAT_R8G8B8A8_UNORM || format == VK_FORMAT_B8G8R8A8_UNORM || format == VK_FORMAT_A8B8G8R8_UNORM_PACK32 ||
 	   format == VK_FORMAT_R8G8B8A8_SRGB || format == VK_FORMAT_B8G8R8A8_SRGB || format == VK_FORMAT_A8B8G8R8_SRGB_PACK32)
 	{
+#if defined(__i386__) || defined(__x86_64__)
+		if(CPUID::supportsSSE2() && (width % 4) == 0)
+		{
+			if(samples == 4)
+			{
+				for(int y = 0; y < height; y++)
+				{
+					for(int x = 0; x < width; x += 4)
+					{
+						__m128i c0 = _mm_load_si128((__m128i *)(source0 + 4 * x));
+						__m128i c1 = _mm_load_si128((__m128i *)(source1 + 4 * x));
+						__m128i c2 = _mm_load_si128((__m128i *)(source2 + 4 * x));
+						__m128i c3 = _mm_load_si128((__m128i *)(source3 + 4 * x));
+
+						c0 = _mm_avg_epu8(c0, c1);
+						c2 = _mm_avg_epu8(c2, c3);
+						c0 = _mm_avg_epu8(c0, c2);
+
+						_mm_store_si128((__m128i *)(dest + 4 * x), c0);
+					}
+
+					source0 += pitch;
+					source1 += pitch;
+					source2 += pitch;
+					source3 += pitch;
+					dest += pitch;
+				}
+			}
+			else
+				ASSERT(false);
+		}
+		else
+#endif
+
 #define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
-		if(samples == 4)
+		    if(samples == 4)
 		{
 			for(int y = 0; y < height; y++)
 			{
