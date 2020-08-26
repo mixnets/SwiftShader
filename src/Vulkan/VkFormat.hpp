@@ -62,7 +62,7 @@ public:
 
 	bool supportsColorAttachmentBlend() const;
 
-	// Texture sampling utilities
+	// Image sampling utilities
 	bool has16bitPackedTextureFormat() const;
 	bool has8bitTextureComponents() const;
 	bool has16bitTextureComponents() const;

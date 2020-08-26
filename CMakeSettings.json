@@ -67,6 +67,11 @@
           "name": "SWIFTSHADER_BUILD_BENCHMARKS",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "SWIFTSHADER_ENABLE_ASTC",
+          "value": "False",
+          "type": "BOOL"
         }
       ]
     }

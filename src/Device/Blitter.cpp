@@ -16,6 +16,7 @@
 
 #include "Pipeline/ShaderCore.hpp"
 #include "Reactor/Reactor.hpp"
+#include "System/CPUID.hpp"
 #include "System/Debug.hpp"
 #include "System/Half.hpp"
 #include "System/Memory.hpp"
@@ -23,6 +24,11 @@
 #include "Vulkan/VkImage.hpp"
 
 #include <utility>
+
+#if defined(__i386__) || defined(__x86_64__)
+#	include <xmmintrin.h>
+#	include <emmintrin.h>
+#endif
 
 namespace {
 rr::RValue<rr::Int> PackFields(rr::Int4 const &ints, const sw::int4 shifts)
@@ -1852,7 +1858,7 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	VkImageSubresourceRange dstSubresRange = {
 		region.dstSubresource.aspectMask,
 		region.dstSubresource.mipLevel,
-		1,
+		1,  // levelCount
 		region.dstSubresource.baseArrayLayer,
 		region.dstSubresource.layerCount
 	};
@@ -1873,9 +1879,140 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 	dst->contentsChanged(dstSubresRange);
 }
 
-void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageBlit region)
+void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
 {
-	blit(src, dst, region, VK_FILTER_NEAREST);
+	if(fastResolve(src, dst, region))
+	{
+		return;
+	}
+
+	VkImageBlit blitRegion;
+
+	blitRegion.srcOffsets[0] = blitRegion.srcOffsets[1] = region.srcOffset;
+	blitRegion.srcOffsets[1].x += region.extent.width;
+	blitRegion.srcOffsets[1].y += region.extent.height;
+	blitRegion.srcOffsets[1].z += region.extent.depth;
+
+	blitRegion.dstOffsets[0] = blitRegion.dstOffsets[1] = region.dstOffset;
+	blitRegion.dstOffsets[1].x += region.extent.width;
+	blitRegion.dstOffsets[1].y += region.extent.height;
+	blitRegion.dstOffsets[1].z += region.extent.depth;
+
+	blitRegion.srcSubresource = region.srcSubresource;
+	blitRegion.dstSubresource = region.dstSubresource;
+
+	blit(src, dst, blitRegion, VK_FILTER_NEAREST);
+}
+
+bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
+{
+	if(region.dstOffset != VkOffset3D{ 0, 0, 0 })
+	{
+		return false;
+	}
+
+	if(region.srcOffset.x != 0 || region.srcOffset.y != 0 || region.srcOffset.z != 0)
+	{
+		return false;
+	}
+
+	// "The aspectMask member of srcSubresource and dstSubresource must only contain VK_IMAGE_ASPECT_COLOR_BIT"
+	ASSERT(region.srcSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT);
+	ASSERT(region.dstSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT);
+	ASSERT(region.srcSubresource.layerCount == region.dstSubresource.layerCount);
+
+	if(region.srcSubresource.layerCount != 1)
+	{
+		return false;
+	}
+
+	if(region.extent != src->getExtent() ||
+	   region.extent != dst->getExtent() ||
+	   region.extent.depth != 1)
+	{
+		return false;
+	}
+
+	VkImageSubresource srcSubresource = {
+		region.srcSubresource.aspectMask,
+		region.srcSubresource.mipLevel,
+		region.srcSubresource.baseArrayLayer
+	};
+
+	VkImageSubresource dstSubresource = {
+		region.dstSubresource.aspectMask,
+		region.dstSubresource.mipLevel,
+		region.dstSubresource.baseArrayLayer
+	};
+
+	VkImageSubresourceRange dstSubresourceRange = {
+		region.dstSubresource.aspectMask,
+		region.dstSubresource.mipLevel,
+		1,  // levelCount
+		region.dstSubresource.baseArrayLayer,
+		region.dstSubresource.layerCount
+	};
+
+	void *source = src->getTexelPointer({ 0, 0, 0 }, srcSubresource);
+	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getTexelPointer({ 0, 0, 0 }, dstSubresource));
+
+	auto format = src->getFormat();
+	auto samples = src->getSampleCountFlagBits();
+	auto extent = src->getExtent();
+
+	int width = extent.width;
+	int height = extent.height;
+	int pitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
+	int slice = src->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
+
+	uint8_t *source0 = (uint8_t *)source;
+	uint8_t *source1 = source0 + slice;
+	uint8_t *source2 = source1 + slice;
+	uint8_t *source3 = source2 + slice;
+
+	if(format == VK_FORMAT_R8G8B8A8_UNORM || format == VK_FORMAT_B8G8R8A8_UNORM || format == VK_FORMAT_A8B8G8R8_UNORM_PACK32 ||
+	   format == VK_FORMAT_R8G8B8A8_SRGB || format == VK_FORMAT_B8G8R8A8_SRGB || format == VK_FORMAT_A8B8G8R8_SRGB_PACK32)
+	{
+#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
+
+		if(samples == 4)
+		{
+			for(int y = 0; y < height; y++)
+			{
+				for(int x = 0; x < width; x++)
+				{
+					unsigned int c0 = *(unsigned int *)(source0 + 4 * x);
+					unsigned int c1 = *(unsigned int *)(source1 + 4 * x);
+					unsigned int c2 = *(unsigned int *)(source2 + 4 * x);
+					unsigned int c3 = *(unsigned int *)(source3 + 4 * x);
+
+					c0 = AVERAGE(c0, c1);
+					c2 = AVERAGE(c2, c3);
+					c0 = AVERAGE(c0, c2);
+
+					*(unsigned int *)(dest + 4 * x) = c0;
+				}
+
+				source0 += pitch;
+				source1 += pitch;
+				source2 += pitch;
+				source3 += pitch;
+				dest += pitch;
+			}
+		}
+		else
+			UNSUPPORTED("Samples", );
+
+#undef AVERAGE
+	}
+	else
+	{
+		return false;
+	}
+
+	dst->contentsChanged(dstSubresourceRange);
+
+	return true;
 }
 
 void Blitter::copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch)
