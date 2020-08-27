@@ -174,7 +174,7 @@ swiftshader_shared_library("swiftshader_libvulkan") {
   }
 
   deps = [
-    "${swiftshader_spirv_tools_dir}:SPIRV-Tools",
+    "${swiftshader_spirv_tools_dir}:spvtools_opt",
     "../../third_party/marl:Marl",
     "../Device",
     "../Pipeline",
@@ -182,6 +182,10 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "../System",
     "../WSI",
   ]
+
+  if (is_debug) {
+    deps += [ "${swiftshader_spirv_tools_dir}:spvtools_val" ]
+  }
 
   include_dirs = [
     "..",

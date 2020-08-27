@@ -30,6 +30,25 @@
 
 #include <iostream>
 
+// To reduce binary size for Chrome, we don't link against spirv-val and
+// stub the few functions required by spirv-opt. This saves ~500 KB.
+// See b/158000914
+#if defined(SWIFTSHADER_GN_BUILD) && defined(NDEBUG)
+spv_result_t spvValidateBinary(const spv_const_context context,
+                               const uint32_t *words, const size_t num_words,
+                               spv_diagnostic *pDiagnostic)
+{
+	return SPV_SUCCESS;
+}
+spv_result_t spvValidateWithOptions(const spv_const_context context,
+                                    spv_const_validator_options options,
+                                    const spv_const_binary binary,
+                                    spv_diagnostic *pDiagnostic)
+{
+	return SPV_SUCCESS;
+}
+#endif
+
 namespace {
 
 // preprocessSpirv applies and freezes specializations into constants, and inlines all functions.
