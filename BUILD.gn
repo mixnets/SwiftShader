@@ -17,7 +17,7 @@ import("//build/config/compiler/compiler.gni")
 import("//build/config/mips.gni")
 
 config("swiftshader_config") {
-  defines = []
+  defines = [ "SWIFTSHADER_GN_BUILD" ]
 
   if (is_win) {
     cflags = [
