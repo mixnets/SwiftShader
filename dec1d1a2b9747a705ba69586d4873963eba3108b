@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ef82589_065880c4",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1978,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-27T20:57:50Z",
+      "side": 1,
+      "message": "Why this restriction? I understand that the logic at line 1984 would need to be slightly modified, but you could complete the remaining 1 to 3 pixels with the code below (line 2015 and below), but still accelerate all previous pixels up to the highest multiple of 4 in all cases. All you need to do is have x and y declared above this code instead of within the loops and remove the else at line 2008, if I\u0027m not mistaken.",
+      "range": {
+        "startLine": 1978,
+        "startChar": 30,
+        "endLine": 1978,
+        "endChar": 46
+      },
+      "revId": "dec1d1a2b9747a705ba69586d4873963eba3108b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
