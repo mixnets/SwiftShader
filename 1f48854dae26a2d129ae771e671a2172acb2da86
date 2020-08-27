@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c73b6e94_dce749cf",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1744,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-27T20:15:23Z",
+      "side": 0,
+      "message": "I merely moved this below resolve() to match the declaration order.",
+      "range": {
+        "startLine": 1744,
+        "startChar": 5,
+        "endLine": 1744,
+        "endChar": 18
+      },
+      "revId": "1f48854dae26a2d129ae771e671a2172acb2da86",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
