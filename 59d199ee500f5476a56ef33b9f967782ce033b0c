@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "e08e4ad4_08d921ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T14:51:41Z",
+      "side": 1,
+      "message": "I see you stacked this change on top of the optimize for size change. Is this saving in addition to the ~350 kB that saves, or independently?\n\n(Just curious, since they would affect one another)",
+      "range": {
+        "startLine": 12,
+        "startChar": 42,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a1f4266_d9f1a3c6",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
