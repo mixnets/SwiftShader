@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a1f4266_d9f1a3c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T14:48:52Z",
+      "side": 1,
+      "message": "Awesome result which easily justifies the hackiness until we have a cleaner solution! :)",
+      "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5e69e67_a66e0fd6",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T14:48:52Z",
+      "side": 1,
+      "message": "nit: This link doesn\u0027t work publicly, and wouldn\u0027t be where we want people (internal or external) to inform us about issues. I suggest replacing this with https://issuetracker.google.com/158000914, and putting the link to the doc in that bug for our convenience. Also please mention the SPIRV-Tools feature request for dealing with this more cleanly in there.",
+      "range": {
+        "startLine": 35,
+        "startChar": 7,
+        "endLine": 35,
+        "endChar": 59
+      },
+      "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
