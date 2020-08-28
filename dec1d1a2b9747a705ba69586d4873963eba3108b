@@ -46,6 +46,30 @@
       "revId": "dec1d1a2b9747a705ba69586d4873963eba3108b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7570a5d9_6982337b",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1978,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T18:13:22Z",
+      "side": 1,
+      "message": "The other thing the code in Patchset 5 accomplished was ensure each row starts on a 16-byte aligned address, so aligned SSE load and store instructions could be used. I forgot about that and therefore got crashes for Patchset 6. :) Interestingly I couldn\u0027t repro it with MSVC. It turns out it always uses the unaligned load/store instructions.\n\nAnyway, the penalty for unaligned 128-bit accesses is negligible since Intel Nehalem, so let\u0027s follow suit.",
+      "parentUuid": "aefdd461_5263a3a4",
+      "range": {
+        "startLine": 1978,
+        "startChar": 30,
+        "endLine": 1978,
+        "endChar": 46
+      },
+      "revId": "dec1d1a2b9747a705ba69586d4873963eba3108b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
