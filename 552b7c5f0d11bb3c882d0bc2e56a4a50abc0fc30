@@ -16,6 +16,24 @@
       "revId": "552b7c5f0d11bb3c882d0bc2e56a4a50abc0fc30",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3299f4ce_9be5ee3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T18:42:25Z",
+      "side": 1,
+      "message": "It is different. Note though that Triangle/Hello remains unaffected, it\u0027s single-sample. It\u0027s just there as a reference for how expensive multisample is in comparison (and you can also observe how much noise the results have).\n\nTriangle/Multisample for Subzero goes from 40.3 ms to 11.8 ms to 4.62 ms.",
+      "parentUuid": "5f2b531e_144ba269",
+      "revId": "552b7c5f0d11bb3c882d0bc2e56a4a50abc0fc30",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
