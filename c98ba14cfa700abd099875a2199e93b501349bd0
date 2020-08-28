@@ -22,6 +22,30 @@
       "revId": "c98ba14cfa700abd099875a2199e93b501349bd0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "faab3572_e3ed444d",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1906,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-28T20:15:44Z",
+      "side": 1,
+      "message": "Interesting suggestion. I had always considered inline functions to have internal linkage. But apparently they just have external linkage like other functions, unless declared static (or inside an unnamed namespace).\n\nEven more surprising is that if the same function is defined differently elsewhere, the behavior is undefined (e.g. the linker may pick one of them so we may end up calling the wrong one - it wouldn\u0027t be an ODR failure).\n\nhttp://gudok.xyz/inline/ provides a great discussion on the topic. However, it doesn\u0027t mention \u0027static inline\u0027 within a named namespace as a solution. I think that\u0027s cleaner since we can keep the inline function close to where we\u0027ll use it, and should have no downsides: https://stackoverflow.com/a/14385568/1377354",
+      "parentUuid": "cd26ca2a_262a589a",
+      "range": {
+        "startLine": 1902,
+        "startChar": 0,
+        "endLine": 1906,
+        "endChar": 1
+      },
+      "revId": "c98ba14cfa700abd099875a2199e93b501349bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
