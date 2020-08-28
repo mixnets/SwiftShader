@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f2b531e_144ba269",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-28T18:36:19Z",
+      "side": 1,
+      "message": "Nit: It would be nice if the benchmark in your cl description was different from the one in the previous cl, to see how each cl impacts performance",
+      "revId": "552b7c5f0d11bb3c882d0bc2e56a4a50abc0fc30",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
