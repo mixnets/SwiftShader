@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c258d5e1_a44339f8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2020-08-28T04:42:40Z",
+      "side": 1,
+      "message": "The code has been updated to align with the \"1f48854 Refactor image Extract Retrieval\" commit.\nIs there an issue with this implementation of the VK_EXT_directfb_surface extension?",
+      "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
