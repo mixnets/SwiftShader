@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd26ca2a_262a589a",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1906,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-28T15:26:24Z",
+      "side": 1,
+      "message": "Nit: it would be better to have this function in the unnamed namespace at the top of this file.",
+      "range": {
+        "startLine": 1902,
+        "startChar": 0,
+        "endLine": 1906,
+        "endChar": 1
+      },
+      "revId": "c98ba14cfa700abd099875a2199e93b501349bd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
