@@ -114,6 +114,30 @@
     },
     {
       "key": {
+        "uuid": "c47a8dd7_7e99a290",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-31T21:26:33Z",
+      "side": 1,
+      "message": "I hadn\u0027t realized that the encompassing if statement was already checking (float32Val \u003c float32Minfloat1X) and thought I had to add math to compute the lowest value based on the number of bits available when I wrote my original comment. I should sleep more.\n\nSo, yeah, it\u0027s really simple to just set low values to 0. If ANGLE folks agree, I\u0027ll land it here and do the same in ANGLE.",
+      "parentUuid": "01e42d69_58a64990",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1

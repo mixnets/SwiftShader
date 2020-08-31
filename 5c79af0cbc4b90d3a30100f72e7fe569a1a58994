@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "41a99b6d_7866f82a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-31T21:26:33Z",
+      "side": 1,
+      "message": "Removed denormals altogether to end up just setting small values to 0.",
+      "revId": "5c79af0cbc4b90d3a30100f72e7fe569a1a58994",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
