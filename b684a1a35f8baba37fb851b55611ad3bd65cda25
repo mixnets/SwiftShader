@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "6522da70_86832dce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-08-31T20:53:02Z",
+      "side": 1,
+      "message": "Because this is implementation dependent, there are no test that specifically enforces an error type, but we do have dEQP tests that will trigger this code.",
+      "parentUuid": "6ca44a7e_fb143966",
+      "range": {
+        "startLine": 15,
+        "startChar": 2,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "b684a1a35f8baba37fb851b55611ad3bd65cda25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a66f5844_ea1722e3",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 1
