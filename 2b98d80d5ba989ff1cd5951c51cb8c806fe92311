@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "a549fe7c_fd8fabde",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-31T17:09:19Z",
+      "side": 1,
+      "message": "LGTM provided the loose ends will be followed up on:",
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1da696b_ed3c8712",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 6
@@ -83,6 +100,30 @@
     },
     {
       "key": {
+        "uuid": "021d67c4_2fd8908e",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-31T17:09:19Z",
+      "side": 1,
+      "message": "Thanks for filing that. We\u0027ll follow up as part of that bug.",
+      "parentUuid": "81810e6c_b12f161f",
+      "range": {
+        "startLine": 232,
+        "startChar": 29,
+        "endLine": 232,
+        "endChar": 48
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "43b1fcab_3e656f8a",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
         "patchSetId": 6
@@ -127,6 +168,30 @@
       "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "855091f2_5f850321",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-08-31T17:09:19Z",
+      "side": 1,
+      "message": "Okay, we can land this as-is since it doesn\u0027t affect anything other than the new AHB implementation, but please make sure to follow up on this. Best way would be to file a new bug.",
+      "parentUuid": "147f342a_742bf1b2",
+      "range": {
+        "startLine": 328,
+        "startChar": 9,
+        "endLine": 328,
+        "endChar": 70
+      },
+      "revId": "2b98d80d5ba989ff1cd5951c51cb8c806fe92311",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
