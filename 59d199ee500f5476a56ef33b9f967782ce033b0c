@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dcd18bee_93d50587",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-08-31T15:26:46Z",
+      "side": 1,
+      "message": "Yes it is. I just tried this change alone, without stacking on top of optimize for size, and the results are close, but actually less good, surprisingly:\n\n4,324,352 bytes - 3,815,424 bytes \u003d 508,928 bytes saved",
+      "parentUuid": "e08e4ad4_08d921ca",
+      "range": {
+        "startLine": 12,
+        "startChar": 42,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a1f4266_d9f1a3c6",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -62,6 +86,30 @@
       "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e28c6aa5_ff3f6e7f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-08-31T15:26:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5e69e67_a66e0fd6",
+      "range": {
+        "startLine": 35,
+        "startChar": 7,
+        "endLine": 35,
+        "endChar": 59
+      },
+      "revId": "59d199ee500f5476a56ef33b9f967782ce033b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
