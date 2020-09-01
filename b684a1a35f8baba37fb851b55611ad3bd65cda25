@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "187864d7_a88d70da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T14:46:53Z",
+      "side": 1,
+      "message": "We\u0027re still going to need test coverage for this, implementation-dependent if necessary. The spec states that \"This should be returned in preference to VK_ERROR_OUT_OF_POOL_MEMORY, but only if the implementation is certain that the pool allocation failure was due to fragmentation.\" We were violating the second part of that sentence.\n\nAlso note that while currently this function is only used to decide between which error to return, this might not always be the case and cause more severe issues.\n\nIt might still be feasible to have an implementation-independent test for this. No implementation should return VK_ERROR_FRAGMENTED_POOL when we\u0027re actually out of memory.\n\nAnyway, please file a new bug so we can follow up from there and get this landed.",
+      "parentUuid": "6522da70_86832dce",
+      "range": {
+        "startLine": 15,
+        "startChar": 2,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "b684a1a35f8baba37fb851b55611ad3bd65cda25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a66f5844_ea1722e3",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 1
