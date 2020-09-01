@@ -430,12 +430,12 @@ public:
 
 		enum Name
 		{
-			Unknown,
-			GLSLstd450,
-			OpenCLDebugInfo100
+			Unknown = 0,
+			GLSLstd450 = 1,
+			OpenCLDebugInfo100 = 2
 		};
 
-		Name name;
+		uint32_t name;
 	};
 
 	struct TypeOrObject
@@ -800,7 +800,7 @@ private:
 	HandleMap<Function> functions;
 	std::unordered_map<StringID, String> strings;
 	HandleMap<Extension> extensionsByID;
-	std::unordered_set<Extension::Name> extensionsImported;
+	std::unordered_set<uint32_t> extensionsImported;
 	Function::ID entryPoint;
 	mutable bool imageWriteEmitted = false;
 
