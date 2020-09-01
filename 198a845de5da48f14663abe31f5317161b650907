@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acf22f7b_d9df7498",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 53354
+      },
+      "writtenOn": "2020-09-01T21:45:18Z",
+      "side": 1,
+      "message": "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.DebugInfo.100.html#DebugTypeFunction\n\nThis CL handles the case: \"If the function has no return value, this operand is OpTypeVoid\".",
+      "revId": "198a845de5da48f14663abe31f5317161b650907",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
