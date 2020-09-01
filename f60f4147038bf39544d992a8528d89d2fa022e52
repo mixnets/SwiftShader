@@ -138,6 +138,30 @@
     },
     {
       "key": {
+        "uuid": "3b534b32_cb79db01",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T14:04:31Z",
+      "side": 1,
+      "message": "Removing denormals support altogether is not what I meant. There are small values that should be represented as denormals, and even smaller values that underflow to zero.\n\nAll we need is to check for the cutoff between the two: https://swiftshader-review.googlesource.com/c/SwiftShader/+/48069",
+      "parentUuid": "c47a8dd7_7e99a290",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1
