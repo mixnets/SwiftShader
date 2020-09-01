@@ -716,6 +716,10 @@ private:
 	// addNone().
 	bool isNone(debug::Object::ID id) const;
 
+	// isDebugType() returns true if the given id was registered as
+	// a debug type with add().
+	bool isDebugType(debug::Type::ID id) const;
+
 	// get() returns the debug object with the given id.
 	// The object must exist and be of type (or derive from type) T.
 	// A returned nullptr represents a None value or type.
@@ -1195,7 +1199,16 @@ void SpirvShader::Impl::Debugger::process(const SpirvShader *shader, const InsnI
 		case OpenCLDebugInfo100DebugTypeFunction:
 			defineOrEmit(insn, pass, [&](debug::FunctionType *type) {
 				type->flags = insn.word(5);
-				type->returnTy = get(debug::Type::ID(insn.word(6)));
+				if(isDebugType(insn.word(6)))
+				{
+					type->returnTy = get(debug::Type::ID(insn.word(6)));
+				}
+				else
+				{
+					// If the function has no return value, 'Return Type' operand is OpTypeVoid
+					ASSERT_MSG(shader->getType(insn.word(6)).opcode() == spv::Op::OpTypeVoid, "Invalid return type of DebugTypeFunction: %d", insn.word(6));
+					type->returnTy = nullptr;
+				}
 				for(uint32_t i = 7; i < insn.wordCount(); i++)
 				{
 					type->paramTys.push_back(get(debug::Type::ID(insn.word(i))));
@@ -1470,6 +1483,11 @@ bool SpirvShader::Impl::Debugger::isNone(debug::Object::ID id) const
 	auto it = objects.find(debug::Object::ID(id.value()));
 	if(it == objects.end()) { return false; }
 	return it->second.get() == nullptr;
+}
+
+bool SpirvShader::Impl::Debugger::isDebugType(debug::Type::ID id) const
+{
+	return objects.find(debug::Type::ID(id.value())) != objects.end();
 }
 
 template<typename T>
