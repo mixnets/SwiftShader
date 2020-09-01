@@ -1,0 +1,14 @@
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.equation_src_func_dst_func.add_src_alpha_saturate_one_minus_src_alpha
+dEQP-GLES3.functional.fragment_ops.blend.default_framebuffer.rgb_func_alpha_func.src.one_minus_dst_color_src_color
+dEQP-GLES3.functional.shaders.conversions.vector_illegal.bvec2_to_bvec4_vertex
+dEQP-GLES3.functional.shaders.indexing.matrix_subscript.mat4_static_write_static_loop_read_fragment
+dEQP-GLES3.functional.shaders.matrix.sub.const.highp_mat3_mat3_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift.highp_uvec4_ivec4_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.left_shift_assign_result.lowp_ivec2_vertex
+dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_vertex
+dEQP-GLES3.functional.shaders.operator.unary_operator.post_increment_effect.lowp_ivec3_vertex
+dEQP-GLES3.functional.shaders.switch.const_expr_in_label_uniform_vertex
+dEQP-GLES3.functional.state_query.integers.max_varying_components_getinteger64
+dEQP-GLES3.functional.texture.filtering.2d.formats.etc1_rgb8_nearest_mipmap_linear
+dEQP-GLES3.functional.texture.specification.texstorage3d.format.r32f_2d_array
+dEQP-GLES3.functional.uniform_api.value.assigned.by_pointer.render.array_in_struct.float_vec4_vertex
