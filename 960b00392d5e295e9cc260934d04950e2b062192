@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "49769cea_23d3aa3e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:36:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa545451_b760a336",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 5
+      },
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f10399a4_227d0d88",
         "filename": "src/System/Half.hpp",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "5aaa3e22_c4e2ac9b",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:36:58Z",
+      "side": 1,
+      "message": "Ack. Yes, we make a lot of assumptions about little endian across the code base, and this has never caused any issues. x86 is always little endian, and ever since ARM 3 their default mode is little endian too.",
+      "parentUuid": "f10399a4_227d0d88",
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e09b861_c69526e2",
         "filename": "tests/MathUnitTests/unittests.cpp",
         "patchSetId": 2
@@ -56,6 +98,24 @@
       "revId": "960b00392d5e295e9cc260934d04950e2b062192",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "912a01ca_5d5635fd",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:36:58Z",
+      "side": 1,
+      "message": "No. This test verifies the mandatory result. It should not be implementation dependent. We happen to have UB which may cause this test to fail on exotic platforms, where we should instead also produce 0.",
+      "parentUuid": "4e09b861_c69526e2",
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
