@@ -50,6 +50,24 @@
       "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a45d58a7_fe624853",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T18:12:51Z",
+      "side": 1,
+      "message": "I verified that the `shift` value never exceeds 7 for the 11-bit minifloat (it has a 6-bit mantissa, and 6 for the 10-bit minifloat (which has a 5-bit mantissa). So there are very safe margins. I think it would be a bit overkill to add an assert, which would have implied having to add asserts for every shift in the code base. We have UBSan to check it without affecting readability.\n\nAnyway, while checking the the \u0027shift\u0027 value range I noticed a benign off-by-one in the cutoff value, which I\u0027ve corrected in the new Patchset.",
+      "parentUuid": "f23866eb_6c9ab3ac",
+      "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
