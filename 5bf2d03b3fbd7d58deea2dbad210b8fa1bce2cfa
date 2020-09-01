@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "adfb4a97_a38826bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:07:57Z",
+      "side": 1,
+      "message": "nit: All changes in the SwiftShader repo are for SwiftShader, so this seems redundant. :) You could just omit it, or use something more descriptive like fix enum hashing.",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 8
+      },
+      "revId": "5bf2d03b3fbd7d58deea2dbad210b8fa1bce2cfa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7bb65ceb_2773c409",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:07:57Z",
+      "side": 1,
+      "message": "Why explicitly assign them a value? This runs the risk of inadvertently assigning the same value twice. If you want to make sure they\u0027re 32-bit values, you can specify the base type with \"enum Name : uint32_t\", but I\u0027m not sure that\u0027s necessary here?",
+      "range": {
+        "startLine": 433,
+        "startChar": 10,
+        "endLine": 433,
+        "endChar": 14
+      },
+      "revId": "5bf2d03b3fbd7d58deea2dbad210b8fa1bce2cfa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3759c3c5_9b0a543a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:07:57Z",
+      "side": 1,
+      "message": "Can we keep using Name here? It seems to me the real issue is fixed on line 803, and the enums would implicitly be casted to integers on storing in `extensionsImported`?",
+      "range": {
+        "startLine": 438,
+        "startChar": 2,
+        "endLine": 438,
+        "endChar": 10
+      },
+      "revId": "5bf2d03b3fbd7d58deea2dbad210b8fa1bce2cfa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "615fddbf_d2917518",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-01T19:07:57Z",
+      "side": 1,
+      "message": "Good find. Obviously this could also be fixed by having a boolean per extension (it\u0027s a very finite number) or a bitfield. I\u0027ve made a remark about using a set to be a bit overkill before: https://swiftshader-review.googlesource.com/c/SwiftShader/+/40092/comment/c8028502_ab50d1e4/\n\nAnyway, let\u0027s keep the change small for addressing the current issue. LGTM",
+      "range": {
+        "startLine": 803,
+        "startChar": 1,
+        "endLine": 803,
+        "endChar": 49
+      },
+      "revId": "5bf2d03b3fbd7d58deea2dbad210b8fa1bce2cfa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
