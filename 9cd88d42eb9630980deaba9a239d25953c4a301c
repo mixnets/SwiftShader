@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2b4ae86_b1244e5e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-01T17:08:18Z",
+      "side": 1,
+      "message": "I wonder if we could get a mac-swangle-try-tot-swiftshader-x64 bot for cases like these",
+      "revId": "9cd88d42eb9630980deaba9a239d25953c4a301c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
