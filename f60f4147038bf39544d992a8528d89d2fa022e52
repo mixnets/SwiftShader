@@ -162,6 +162,30 @@
     },
     {
       "key": {
+        "uuid": "296300e7_cf072911",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-01T14:25:11Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll just abandon this change.",
+      "parentUuid": "3b534b32_cb79db01",
+      "range": {
+        "startLine": 208,
+        "startChar": 17,
+        "endLine": 208,
+        "endChar": 39
+      },
+      "revId": "f60f4147038bf39544d992a8528d89d2fa022e52",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eed165ca_0ee6a8ef",
         "filename": "src/System/Half.hpp",
         "patchSetId": 1
