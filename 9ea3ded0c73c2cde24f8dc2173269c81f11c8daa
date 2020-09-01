@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c1363798_a26c86a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-01T14:57:48Z",
+      "side": 1,
+      "message": "+geofflang, so that we can agree to do the same fix in SwiftShader and ANGLE",
+      "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
