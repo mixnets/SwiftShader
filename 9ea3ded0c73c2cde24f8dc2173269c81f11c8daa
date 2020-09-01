@@ -16,6 +16,40 @@
       "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b01553fe_60d7e7f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2020-09-01T15:26:50Z",
+      "side": 1,
+      "message": "Yup, this looks good.",
+      "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f23866eb_6c9ab3ac",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5315
+      },
+      "writtenOn": "2020-09-01T15:26:50Z",
+      "side": 1,
+      "message": "Good chance to add an assert that the shift is in an expected range.",
+      "revId": "9ea3ded0c73c2cde24f8dc2173269c81f11c8daa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
