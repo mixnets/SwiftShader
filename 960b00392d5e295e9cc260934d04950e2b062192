@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa545451_b760a336",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-01T18:50:58Z",
+      "side": 1,
+      "message": "This sentence is confusing. As discussed, let\u0027s say something along the lines of validating that it produces the implementation-defined behaviour we expect (that is, producing zero).",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 5
+      },
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f10399a4_227d0d88",
+        "filename": "src/System/Half.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-01T18:50:58Z",
+      "side": 1,
+      "message": "I\u0027ve mentioned this before, but the use of bit masks like this combined with reinterpret_casting to int is not guaranteed to produce what you expect, as the storage layout is implementation-defined (usually the reverse order for different endianness). But I think you said last time that we can reasonable assume we\u0027re always on little endian now?",
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e09b861_c69526e2",
+        "filename": "tests/MathUnitTests/unittests.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-01T18:50:58Z",
+      "side": 1,
+      "message": "This comment should also mention that the 0 is implementation-defined, right?",
+      "revId": "960b00392d5e295e9cc260934d04950e2b062192",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
