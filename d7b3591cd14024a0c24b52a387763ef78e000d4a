@@ -16,6 +16,47 @@
       "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "807915d8_9b1ef028",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-02T13:57:52Z",
+      "side": 1,
+      "message": "Sorry for the delay. Busy times. :)\n\nWhile I see nothing wrong with this patch in itself, I\u0027m curious about the utility of supporting DirectFB. I have no direct experience with it myself, but from what I\u0027ve read it\u0027s not widely used and XCB, Wayland, or X11 are generally considered to supersede it. Also I\u0027m not sure if we have any way of testing it, so it could easily break due to changes similar to the \"1f48854 Refactor image Extract Retrieval\" one.\n\nAnyway, this is not an objection. I just want to make sure there\u0027s value in it and you\u0027re happy to maintain it.",
+      "parentUuid": "c258d5e1_a44339f8",
+      "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8a3040c_4b19c257",
+        "filename": "src/WSI/DirectFBSurfaceEXT.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-02T13:57:52Z",
+      "side": 1,
+      "message": "Can these be sorted alphabetically, as suggested by clang-format? If not, please separate them with a blank line.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 21
+      },
+      "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
