@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b60f6604_43ec5e2a",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-02T14:40:06Z",
+      "side": 1,
+      "message": "Isn\u0027t this the return type ID, while isDebugInstruction takes an object ID?\n\nIs there a spec reference for these instructions, or are they still under development?",
+      "range": {
+        "startLine": 1202,
+        "startChar": 26,
+        "endLine": 1202,
+        "endChar": 38
+      },
+      "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
