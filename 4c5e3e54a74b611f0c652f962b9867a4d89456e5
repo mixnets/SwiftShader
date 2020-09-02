@@ -22,6 +22,30 @@
       "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bff0014_d66c2054",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 53354
+      },
+      "writtenOn": "2020-09-02T18:34:30Z",
+      "side": 1,
+      "message": "Ah I did not know the rule for `Type` and `Object`.\nI changed the parameter of `isDebugType()` to `debug::Type::ID id`.\nDo you think now it is fine?\n\nIn terms of the spec, the URL is https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.DebugInfo.100.html#DebugTypeFunction",
+      "parentUuid": "b60f6604_43ec5e2a",
+      "range": {
+        "startLine": 1202,
+        "startChar": 26,
+        "endLine": 1202,
+        "endChar": 38
+      },
+      "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
