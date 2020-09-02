@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97b7bc9d_096320e7",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1490,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-02T19:28:14Z",
+      "side": 1,
+      "message": "This map takes an Object::ID as key, so I don\u0027t think this is working as intended. But see my other comment. \"shader-\u003egetType(insn.word(6)).opcode() \u003d\u003d spv::Op::OpTypeVoid\" probably does the trick.",
+      "range": {
+        "startLine": 1490,
+        "startChar": 8,
+        "endLine": 1490,
+        "endChar": 15
+      },
+      "revId": "8fef1463dc9ebc0f7e730981944c91626a8ffbda",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

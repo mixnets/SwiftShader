@@ -46,6 +46,30 @@
       "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4d7cf45_c304f535",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-02T19:28:14Z",
+      "side": 1,
+      "message": "Object refers to this definition: https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#Object:~:text\u003dsection.-,Object\nType refers to any of these: https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_types:~:text\u003dTypes,-Boolean\n\nThey\u0027re both just uint32 underneath, but using these boxed Object::ID and Type::ID types helps add some type safety and make things a bit more readable.\n\nThanks for the spec reference. Note that you can actually just use what you wrote for the assert at line 1209 to detect whether the function\u0027s return type is void or not. The isDebugType() method is a bit confusing to me, and I\u0027m not sure if a void type is the same as having no type. I\u0027ll let Ben chime in on this since the debugging SPIRV is handled slightly differently from other SPIRV code.",
+      "parentUuid": "8bff0014_d66c2054",
+      "range": {
+        "startLine": 1202,
+        "startChar": 26,
+        "endLine": 1202,
+        "endChar": 38
+      },
+      "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
