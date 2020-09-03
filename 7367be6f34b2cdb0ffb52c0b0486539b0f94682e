@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b1abcf9_f89833f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-03T20:53:00Z",
+      "side": 1,
+      "message": "Something went wrong with the testlist processing (a lot of tests for unsupported features are marked as fail), but I think we can go ahead and do the upgrade, and let Regres regenerate the testlist overnight and produce the diff.",
+      "revId": "7367be6f34b2cdb0ffb52c0b0486539b0f94682e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
