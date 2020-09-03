@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "b5a22111_da7e76db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-03T02:16:16Z",
+      "side": 1,
+      "message": "Created a new bug and updated the bug ID on this CL.",
+      "parentUuid": "187864d7_a88d70da",
+      "range": {
+        "startLine": 15,
+        "startChar": 2,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "b684a1a35f8baba37fb851b55611ad3bd65cda25",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a66f5844_ea1722e3",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 1
