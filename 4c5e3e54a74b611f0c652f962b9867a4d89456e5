@@ -70,6 +70,30 @@
       "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b89c82e7_8073a532",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 53354
+      },
+      "writtenOn": "2020-09-03T17:16:38Z",
+      "side": 1,
+      "message": "\u003e Note that you can actually just use what you wrote for the assert at line 1209 to detect whether the function\u0027s return type is void or not.\n\nNo, I cannot use it before I know it is not a debug type.\nSpirvShader::getType() in src/Pipeline/SpirvShader.hpp has an assert\n`ASSERT_MSG(it !\u003d types.end(), \"Unknown type %d\", id.value())`.\nIf I use it for a debug type (not OpVoidType), it will fail by the assert.\n\n\u003e The isDebugType() method is a bit confusing to me, and I\u0027m not sure if a void type is the same as having no type. I\u0027ll let Ben chime in on this since the debugging SPIRV is handled slightly differently from other SPIRV code.\n\nBasically, all OpenCL.DebugInfo.100 instructions use OpExtInst (see https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.DebugInfo.100.html).\n\nExample:\n```\n%ext \u003d OpExtInstImport \"OpenCL.DebugInfo.100\"\n%ty_name \u003d OpString \"int\"\n%void \u003d OpTypeVoid\n%foo_ty \u003d OpExtInst %void %ext DebugTypeFunction FlagIsPublic %void\n%debug_int \u003d OpExtInst %void %ext DebugTypeBasic %ty_name %int_32 Signed\n%bar_ty \u003d OpExtInst %void %ext DebugTypeFunction FlagIsPublic %debug_int %debug_int\n```\nwe can use `%foo_ty` for the debug type of `void foo()` and `%bar_ty` for `int bar(int)`.\n\n\nTherefore, I guess debug instructions including debug types are objects in the view of SPIR-V. However, src/Pipeline/SpirvShaderDebugger.cpp has both debug::Type and debug::Object. debug::Type is a child class of debug::Object.\n\nWhen the function type has the \"void\" return type, it must be `OpTypeVoid` that is a SPIR-V type. On the other hand, a non-void return type (e.g., int) must be a debug type i.e., debug::Type, not SPIR-V type.\n\nIt seems src/Pipeline/SpirvShaderDebugger.cpp puts both debug::Type and debug::Object to `std::unordered_map\u003cdebug::Object::ID, std::unique_ptr\u003cdebug::Object\u003e\u003e objects` of SpirvShader::Impl::Debugger.\n\nI guess the current code is fine .. sorry for the long comment, but what do you think?",
+      "parentUuid": "b4d7cf45_c304f535",
+      "range": {
+        "startLine": 1202,
+        "startChar": 26,
+        "endLine": 1202,
+        "endChar": 38
+      },
+      "revId": "4c5e3e54a74b611f0c652f962b9867a4d89456e5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
