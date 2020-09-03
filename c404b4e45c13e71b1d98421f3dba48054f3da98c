@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14ab8f4e_2aa253c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-03T20:47:56Z",
+      "side": 1,
+      "message": "Does this fix most of the 1.2.3 failures?",
+      "revId": "c404b4e45c13e71b1d98421f3dba48054f3da98c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
