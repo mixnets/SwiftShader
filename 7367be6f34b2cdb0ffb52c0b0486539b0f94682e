@@ -16,6 +16,24 @@
       "revId": "7367be6f34b2cdb0ffb52c0b0486539b0f94682e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10f94f92_b96c2853",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-03T21:07:23Z",
+      "side": 1,
+      "message": "Oh, I think I see what happened. When running \"tests/regres/run.sh --keep --dailynow --dailychange \u003chash-of-deqp-update-change\u003e\", subsequent changes that it tests use the *old* dEQP but the new testlist.\n\nI\u0027ll play it safe and just run it again at the end of the day, with no other tests following, and make sure the results look good, before landing it.",
+      "parentUuid": "8b1abcf9_f89833f9",
+      "revId": "7367be6f34b2cdb0ffb52c0b0486539b0f94682e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
