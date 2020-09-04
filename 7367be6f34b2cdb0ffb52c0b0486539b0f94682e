@@ -51,6 +51,24 @@
       "revId": "7367be6f34b2cdb0ffb52c0b0486539b0f94682e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "428a1903_3300382e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-04T02:54:20Z",
+      "side": 1,
+      "message": "Actually, I simply forgot step 2 of http://go/swiftshader/development/regres-service.md#updating-deqp\n\nRunning full test suite again now...",
+      "parentUuid": "10f94f92_b96c2853",
+      "revId": "7367be6f34b2cdb0ffb52c0b0486539b0f94682e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
