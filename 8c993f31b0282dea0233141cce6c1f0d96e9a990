@@ -34,6 +34,52 @@
       "revId": "8c993f31b0282dea0233141cce6c1f0d96e9a990",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81dd56ee_381b750f",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-04T05:09:51Z",
+      "side": 1,
+      "message": "We should be checking the original, non-decompressed format here. See http://crbug.com/angleproject/4904#c9",
+      "range": {
+        "startLine": 76,
+        "startChar": 86,
+        "endLine": 76,
+        "endChar": 92
+      },
+      "revId": "8c993f31b0282dea0233141cce6c1f0d96e9a990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1c509b0_b30783c6",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-04T05:09:51Z",
+      "side": 1,
+      "message": "This should also check for FILTER_MIN_POINT_MAG_LINEAR and\nFILTER_MIN_LINEAR_MAG_POINT, as well as checking mipmapFilter for FILTER_LINEAR.",
+      "range": {
+        "startLine": 77,
+        "startChar": 37,
+        "endLine": 77,
+        "endChar": 50
+      },
+      "revId": "8c993f31b0282dea0233141cce6c1f0d96e9a990",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
