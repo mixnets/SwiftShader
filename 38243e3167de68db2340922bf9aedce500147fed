@@ -22,6 +22,30 @@
       "revId": "38243e3167de68db2340922bf9aedce500147fed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83cd7ad7_63c99f4a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-08T16:38:02Z",
+      "side": 1,
+      "message": "Good catch that these are all 1D. I just wanted to quickly check whether we\u0027d pass the tests with the assert removed.\n\nIt will be a little more complex to fixt this properly: https://issuetracker.google.com/168025369 Note we do pass the tests with the assert removed, despite imageExtentInBlocks() returning a height of 1.",
+      "parentUuid": "fff1250b_f5fadbb3",
+      "range": {
+        "startLine": 675,
+        "startChar": 6,
+        "endLine": 675,
+        "endChar": 55
+      },
+      "revId": "38243e3167de68db2340922bf9aedce500147fed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
