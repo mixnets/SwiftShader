@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fff1250b_f5fadbb3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-08T14:26:11Z",
+      "side": 1,
+      "message": "According to the spec, copy operations have to specify and extent which \"must be a multiple of the compressed texel block dimension\".\nImage::bufferExtentInBlocks() is only used within Image::copy(), so that rule should apply here too.\nIf there\u0027s an exception for 1D images, it should only affect height, and only \"1\" should be allowed in that scenario.",
+      "range": {
+        "startLine": 675,
+        "startChar": 6,
+        "endLine": 675,
+        "endChar": 55
+      },
+      "revId": "38243e3167de68db2340922bf9aedce500147fed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
