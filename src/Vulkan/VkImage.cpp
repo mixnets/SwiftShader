@@ -672,7 +672,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockWidth = usedFormat.blockWidth();
-			ASSERT((adjustedExtent.width % blockWidth) == 0);
+			//	ASSERT((adjustedExtent.width % blockWidth) == 0);
 			adjustedExtent.width /= blockWidth;
 		}
 	}
@@ -683,7 +683,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockHeight = usedFormat.blockHeight();
-			ASSERT((adjustedExtent.height % blockHeight) == 0);
+			//	ASSERT((adjustedExtent.height % blockHeight) == 0);
 			adjustedExtent.height /= blockHeight;
 		}
 	}
