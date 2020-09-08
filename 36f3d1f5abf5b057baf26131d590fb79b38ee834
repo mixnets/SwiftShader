@@ -16,6 +16,24 @@
       "revId": "36f3d1f5abf5b057baf26131d590fb79b38ee834",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5bb4c80_bbc9a550",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-08T17:36:39Z",
+      "side": 1,
+      "message": "Yeah, it\u0027s only 10 warnings, I won\u0027t dig further, I\u0027ll mark the issue as won\u0027t fix.",
+      "parentUuid": "55ddfc56_85099724",
+      "revId": "36f3d1f5abf5b057baf26131d590fb79b38ee834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
