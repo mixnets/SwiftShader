@@ -45,7 +45,7 @@ namespace egl
 	const EGLDisplay PRIMARY_DISPLAY  = reinterpret_cast<EGLDisplay>((intptr_t)1);
 	const EGLDisplay HEADLESS_DISPLAY = reinterpret_cast<EGLDisplay>((intptr_t)0xFACE1E55);
 
-	class [[clang::lto_visibility_public]] Display
+	class LTO_VISIBILITY_PUBLIC Display
 	{
 	protected:
 		explicit Display(EGLDisplay eglDisplay, void *nativeDisplay);

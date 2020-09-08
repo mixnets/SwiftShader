@@ -31,7 +31,7 @@ class Image;
 
 namespace gl
 {
-class [[clang::lto_visibility_public]] Surface
+class LTO_VISIBILITY_PUBLIC Surface
 {
 protected:
 	Surface();

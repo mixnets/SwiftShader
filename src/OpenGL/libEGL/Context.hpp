@@ -30,7 +30,7 @@ namespace egl
 class Display;
 class Image;
 
-class [[clang::lto_visibility_public]] Context : public gl::Object
+class LTO_VISIBILITY_PUBLIC Context : public gl::Object
 {
 public:
 	virtual void makeCurrent(gl::Surface *surface) = 0;

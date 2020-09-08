@@ -28,6 +28,12 @@ namespace {enum E {}; static_assert(!std::numeric_limits<std::underlying_type<E>
 #define ENUM_UNDERLYING_TYPE_UNSIGNED_INT : unsigned int
 #endif
 
+#if defined(__clang__)
+#define LTO_VISIBILITY_PUBLIC [[clang::lto_visibility_public]]
+#else
+#define LTO_VISIBILITY_PUBLIC
+#endif
+
 #if defined(_MSC_VER)
 	typedef signed __int8 int8_t;
 	typedef signed __int16 int16_t;
