@@ -46,6 +46,30 @@
       "revId": "38243e3167de68db2340922bf9aedce500147fed",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34518723_4f066724",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-08T16:44:32Z",
+      "side": 1,
+      "message": "\u003e despite imageExtentInBlocks() returning a height of 1.\n\nI meant 0, actually",
+      "parentUuid": "83cd7ad7_63c99f4a",
+      "range": {
+        "startLine": 675,
+        "startChar": 6,
+        "endLine": 675,
+        "endChar": 55
+      },
+      "revId": "38243e3167de68db2340922bf9aedce500147fed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
