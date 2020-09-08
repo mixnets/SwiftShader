@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55ddfc56_85099724",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-08T16:49:42Z",
+      "side": 1,
+      "message": "I don\u0027t think this is worth putting any time into. The warning has existed for many months (years?). Surely they can wait until the SwANGLE switch is completed to \u0027resolve\u0027 this.\n\nI\u0027m also not sure this patch is ideal. C++11 standardized attributes precisely to avoid requiring macros. The warning should be suppressed if it bothers anyone.",
+      "revId": "36f3d1f5abf5b057baf26131d590fb79b38ee834",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
