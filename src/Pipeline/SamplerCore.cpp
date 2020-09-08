@@ -2011,6 +2011,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 				c.x = Float4(t0 & UInt4(0x1FF)) * c.w;
 				c.y = Float4((t0 >> 9) & UInt4(0x1FF)) * c.w;
 				c.z = Float4((t0 >> 18) & UInt4(0x1FF)) * c.w;
+				c.w = Float4(1.0f);
 				break;
 			}
 			case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
@@ -2024,6 +2025,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 				c.x = As<Float4>(halfToFloatBits((t0 << 4) & UInt4(0x7FF0)));
 				c.y = As<Float4>(halfToFloatBits((t0 >> 7) & UInt4(0x7FF0)));
 				c.z = As<Float4>(halfToFloatBits((t0 >> 17) & UInt4(0x7FE0)));
+				c.w = Float4(1.0f);
 				break;
 			}
 			default:
