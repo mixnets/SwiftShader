@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f475b578_e0351e29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-09T02:10:51Z",
+      "side": 1,
+      "message": "The issue is actually bigger than these formats. All uniform texel buffers with less than 4 components are affected.",
+      "range": {
+        "startLine": 10,
+        "startChar": 63,
+        "endLine": 12,
+        "endChar": 30
+      },
+      "revId": "c946e8da7da4657e6255e9d127bcb616fbebc484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dda4bc78_5e6206c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-09T02:10:51Z",
+      "side": 1,
+      "message": "Thanks for narrowing in on the issue, but there\u0027s actually a different root cause and fix: https://swiftshader-review.googlesource.com/c/SwiftShader/+/48268",
+      "revId": "c946e8da7da4657e6255e9d127bcb616fbebc484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cab524a0_d0ac3cc4",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2028,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-09T02:10:51Z",
+      "side": 1,
+      "message": "This method does not set any of the values for components not present in the texel format, because then we\u0027d also have to waste cycles filtering them. Instead these components are assigned at the same time we perform component swizzle: https://swiftshader-review.googlesource.com/c/SwiftShader/+/31388",
+      "range": {
+        "startLine": 2028,
+        "startChar": 4,
+        "endLine": 2028,
+        "endChar": 23
+      },
+      "revId": "c946e8da7da4657e6255e9d127bcb616fbebc484",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
