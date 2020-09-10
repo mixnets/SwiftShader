@@ -87,45 +87,84 @@ sw::SIMD::Float sRGBtoLinear(sw::SIMD::Float c)
 
 namespace sw {
 
-SpirvShader::EmitResult SpirvShader::EmitImageSampleImplicitLod(Variant variant, InsnIterator insn, EmitState *state) const
+SpirvShader::ImageInstruction SpirvShader::GetImageInstruction(InsnIterator insn) const
 {
-	return EmitImageSample({ variant, Implicit }, insn, state);
-}
-
-SpirvShader::EmitResult SpirvShader::EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const
-{
-	ImageInstruction instruction = { variant, Gather };
-	instruction.gatherComponent = !instruction.isDref() ? getObject(insn.word(5)).constantValue[0] : 0;
-
-	return EmitImageSample(instruction, insn, state);
-}
-
-SpirvShader::EmitResult SpirvShader::EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const
-{
-	auto isDref = (variant == Dref) || (variant == ProjDref);
-	uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(isDref ? 6 : 5));
-	imageOperands &= ~spv::ImageOperandsConstOffsetMask;  // Dealt with later.
-
-	if((imageOperands & spv::ImageOperandsLodMask) == imageOperands)
+	ImageInstruction imageInstruction(0);
+	switch(insn.opcode())
 	{
-		return EmitImageSample({ variant, Lod }, insn, state);
+		case spv::OpImageFetch:
+		case spv::OpImageGather:
+		case spv::OpImageQueryLod:
+		case spv::OpImageSampleExplicitLod:
+		case spv::OpImageSampleImplicitLod:
+			imageInstruction.variant = None;
+			break;
+		case spv::OpImageDrefGather:
+		case spv::OpImageSampleDrefExplicitLod:
+		case spv::OpImageSampleDrefImplicitLod:
+			imageInstruction.variant = Dref;
+			break;
+		case spv::OpImageSampleProjExplicitLod:
+		case spv::OpImageSampleProjImplicitLod:
+			imageInstruction.variant = Proj;
+			break;
+		case spv::OpImageSampleProjDrefExplicitLod:
+		case spv::OpImageSampleProjDrefImplicitLod:
+			imageInstruction.variant = ProjDref;
+			break;
+		default:
+			UNREACHABLE("Unexpected opcode %d", int(insn.opcode()));
 	}
-	else if((imageOperands & spv::ImageOperandsGradMask) == imageOperands)
+
+	switch(insn.opcode())
 	{
-		return EmitImageSample({ variant, Grad }, insn, state);
+		case spv::OpImageGather:
+			imageInstruction.gatherComponent = getObject(insn.word(5)).constantValue[0];
+			// [[fallthrough]]
+		case spv::OpImageDrefGather:
+			imageInstruction.samplerMethod = Gather;
+			break;
+		case spv::OpImageFetch:
+			imageInstruction.samplerMethod = Fetch;
+			break;
+		case spv::OpImageQueryLod:
+			imageInstruction.samplerMethod = Query;
+			break;
+		case spv::OpImageSampleDrefImplicitLod:
+		case spv::OpImageSampleImplicitLod:
+		case spv::OpImageSampleProjDrefImplicitLod:
+		case spv::OpImageSampleProjImplicitLod:
+			imageInstruction.samplerMethod = Implicit;
+			break;
+		case spv::OpImageSampleDrefExplicitLod:
+		case spv::OpImageSampleExplicitLod:
+		case spv::OpImageSampleProjDrefExplicitLod:
+		case spv::OpImageSampleProjExplicitLod:
+		{
+			auto isDref = (imageInstruction.variant == Dref) || (imageInstruction.variant == ProjDref);
+			uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(isDref ? 6 : 5));
+			imageOperands &= ~spv::ImageOperandsConstOffsetMask;  // Dealt with later.
+
+			if((imageOperands & spv::ImageOperandsLodMask) == imageOperands)
+			{
+				imageInstruction.samplerMethod = Lod;
+			}
+			else if((imageOperands & spv::ImageOperandsGradMask) == imageOperands)
+			{
+				imageInstruction.samplerMethod = Grad;
+			}
+			else
+				UNSUPPORTED("Image operands 0x%08X", imageOperands);
+		}
+		break;
+		default:
+			UNREACHABLE("Unexpected opcode %d", int(insn.opcode()));
 	}
-	else
-		UNSUPPORTED("Image operands 0x%08X", imageOperands);
 
-	return EmitResult::Continue;
+	return imageInstruction;
 }
 
-SpirvShader::EmitResult SpirvShader::EmitImageFetch(InsnIterator insn, EmitState *state) const
-{
-	return EmitImageSample({ None, Fetch }, insn, state);
-}
-
-SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+SpirvShader::EmitResult SpirvShader::EmitImageSample(InsnIterator insn, EmitState *state) const
 {
 	auto &resultType = getType(insn.resultTypeId());
 	auto &result = state->createIntermediate(insn.resultId(), resultType.componentCount);
@@ -136,7 +175,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	// check whether any lanes are active, and can elide the jump.
 	If(AnyTrue(state->activeLaneMask()))
 	{
-		EmitImageSampleUnconditional(out, instruction, insn, state);
+		EmitImageSampleUnconditional(out, insn, state);
 	}
 
 	for(auto i = 0u; i < resultType.componentCount; i++) { result.move(i, out[i]); }
@@ -144,8 +183,10 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	return EmitResult::Continue;
 }
 
-void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIterator insn, EmitState *state) const
 {
+	ImageInstruction instruction = GetImageInstruction(insn);
+
 	Object::ID sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
 	Object::ID coordinateId = insn.word(4);
 
@@ -359,11 +400,6 @@ SpirvShader::EmitResult SpirvShader::EmitImageQuerySize(InsnIterator insn, EmitS
 	GetImageDimensions(state, resultTy, imageId, lodId, dst);
 
 	return EmitResult::Continue;
-}
-
-SpirvShader::EmitResult SpirvShader::EmitImageQueryLod(InsnIterator insn, EmitState *state) const
-{
-	return EmitImageSample({ None, Query }, insn, state);
 }
 
 void SpirvShader::GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const
