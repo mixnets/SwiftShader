@@ -16,6 +16,23 @@
       "revId": "eb4744b21ad8ff4c3b128ebe74ac2e4725839dff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab3b72a_84d278c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-10T15:49:10Z",
+      "side": 1,
+      "message": "The kokoro failures seem to be infra related (mac debug losing connection issues)",
+      "revId": "eb4744b21ad8ff4c3b128ebe74ac2e4725839dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
