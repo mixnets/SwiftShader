@@ -49,10 +49,17 @@ class RenderPass;
 
 class CommandBuffer
 {
+	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
+
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 
 	CommandBuffer(Device *device, VkCommandBufferLevel pLevel);
+
+	operator VkCommandBuffer()
+	{
+		return reinterpret_cast<VkCommandBuffer>(this);
+	}
 
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
@@ -191,7 +198,13 @@ public:
 	void submit(CommandBuffer::ExecutionState &executionState);
 	void submitSecondary(CommandBuffer::ExecutionState &executionState) const;
 
-	class Command;
+	class Command
+	{
+	public:
+		virtual void play(ExecutionState &executionState) = 0;
+		virtual std::string description() = 0;
+		virtual ~Command() {}
+	};
 
 private:
 	void resetState();
@@ -212,18 +225,16 @@ private:
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
-	std::vector<std::unique_ptr<Command>> *commands;
+	std::vector<std::unique_ptr<Command>> commands;
 
 #ifdef ENABLE_VK_DEBUGGER
 	std::shared_ptr<vk::dbg::File> debuggerFile;
 #endif  // ENABLE_VK_DEBUGGER
 };
 
-using DispatchableCommandBuffer = DispatchableObject<CommandBuffer, VkCommandBuffer>;
-
 static inline CommandBuffer *Cast(VkCommandBuffer object)
 {
-	return DispatchableCommandBuffer::Cast(object);
+	return reinterpret_cast<CommandBuffer *>(object);
 }
 
 }  // namespace vk
