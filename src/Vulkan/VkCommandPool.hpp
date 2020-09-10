@@ -21,6 +21,7 @@
 
 namespace vk {
 
+class CommandBuffer;
 class Device;
 
 class CommandPool : public Object<CommandPool, VkCommandPool>
@@ -37,7 +38,7 @@ public:
 	void trim(VkCommandPoolTrimFlags flags);
 
 private:
-	std::set<VkCommandBuffer> *commandBuffers;
+	std::set<CommandBuffer *> commandBuffers;
 };
 
 static inline CommandPool *Cast(VkCommandPool object)
