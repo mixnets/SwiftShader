@@ -1180,14 +1180,9 @@ private:
 	EmitResult EmitKill(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitFunctionCall(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitPhi(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSampleImplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageFetch(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSample(SamplerMethod samplerMethod, Variant variant, InsnIterator insn, EmitState *state) const;
+	EmitResult EmitImageSample(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageQueryLod(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQueryLevels(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySamples(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageRead(InsnIterator insn, EmitState *state) const;
@@ -1203,8 +1198,11 @@ private:
 	EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
+	Variant GetVariant(InsnIterator insn) const;
+	SamplerMethod GetSamplerMethod(InsnIterator insn, Variant variant) const;
+
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
-	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, SamplerMethod samplerMethod, Variant variant, InsnIterator insn, EmitState *state) const;
+	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIterator insn, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
