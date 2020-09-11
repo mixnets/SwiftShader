@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1c55a6c_b4407871",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 91561
+      },
+      "writtenOn": "2020-09-11T07:18:10Z",
+      "side": 1,
+      "message": "This is the fix for Chromium. Could you take a look?\nNote that I\u0027m new to swiftshader, so if there\u0027s anything I should take care, please let me know.\nAlso, I do not seem to have permission to run CI, etc. I\u0027d appreciate it if you help me.\n\nThank you for review in advance,\n- hidehiko",
+      "revId": "310c3b571b6389c0b59de68feec136c1b427902f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
