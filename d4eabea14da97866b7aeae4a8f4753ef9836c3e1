@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b559ded8_8c70ed4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-11T14:34:19Z",
+      "side": 1,
+      "message": "After inspecting the code again, I think vk::destroy() was handling this case properly and not leaking the VK_LOADER_DATA structure. Still, the cleanup is valid and will help reduce potential leaks.",
+      "revId": "d4eabea14da97866b7aeae4a8f4753ef9836c3e1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
