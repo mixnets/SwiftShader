@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1395cf24_aeb36f52",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T15:52:50Z",
+      "side": 1,
+      "message": "What\u0027s the advantage of that? I\u0027ve always considered having to add the VK_LOADER_DATA magic value explicitly a bit of a flaw of the Queue class. I have a WIP patch to do the opposite of this: https://swiftshader-review.googlesource.com/c/SwiftShader/+/46370 (yes it break everything, haven\u0027t found the time yet to look more into this).",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 67
+      },
+      "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb069419_bf113a2e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T15:52:50Z",
+      "side": 1,
+      "message": "Note we actually want to work towards using flattening the command buffers, so we can send them over the wire for project Bunker. See also b/119409619",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 53
+      },
+      "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f087a88_80f53875",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T15:52:50Z",
+      "side": 1,
+      "message": "It\u0027s not clear to me which of the above addresses this leak. Can you split it in two and point out the actual bugs in the commit messages?",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
