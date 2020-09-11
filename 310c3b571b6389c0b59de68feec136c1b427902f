@@ -16,6 +16,23 @@
       "revId": "310c3b571b6389c0b59de68feec136c1b427902f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49a4e1f9_8ec08127",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T13:45:28Z",
+      "side": 1,
+      "message": "Thanks for the patch! I\u0027ve provided you with committer privileges. I\u0027ve started some try jobs, and if they pass feel free to manually set Verified+1 and Submit.",
+      "revId": "310c3b571b6389c0b59de68feec136c1b427902f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
