@@ -33,6 +33,23 @@
       "revId": "310c3b571b6389c0b59de68feec136c1b427902f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef0455f5_e8b9528f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T15:00:43Z",
+      "side": 1,
+      "message": "I\u0027m not sure what caused those Regres timeouts, but it can\u0027t be these .gn file changes. Feel free to ignore those results. Try jobs look good.",
+      "revId": "310c3b571b6389c0b59de68feec136c1b427902f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
