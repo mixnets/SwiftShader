@@ -16,6 +16,24 @@
       "revId": "ab048f9be8f5d0aec71bf90782eafea42bc31335",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d081ea1_e2b48b6e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-11T18:41:14Z",
+      "side": 1,
+      "message": "The goal was not really to follow folder structure, but rather to separate the stuff we don\u0027t author ourselves into a separate logical folder, which I called third_party, but could just as easily have been called \"external\" or something. Anyway, we can certainly revisit this in the future.",
+      "parentUuid": "b2df71f6_170bfbc3",
+      "revId": "ab048f9be8f5d0aec71bf90782eafea42bc31335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
