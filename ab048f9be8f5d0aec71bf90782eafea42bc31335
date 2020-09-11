@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2df71f6_170bfbc3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-11T15:34:24Z",
+      "side": 1,
+      "message": "LGTM, but I\u0027m not sure if our project\u0027s structure should follow the folder structure. I\u0027ve never been a huge fan of having a third_party folder. It\u0027s imposed on us because it makes copyright/license checking easier (debatable), but arguably things like Subzero and LLVM should be under the Reactor project folder to better match our architecture.\n\nAnyway, matching the folder structure is still far better than what we had before. :)",
+      "revId": "ab048f9be8f5d0aec71bf90782eafea42bc31335",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
