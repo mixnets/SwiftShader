@@ -1879,6 +1879,13 @@ void CommandBuffer::ExecutionState::bindAttachments(sw::Context &context)
 		if(attachmentReference.attachment != VK_ATTACHMENT_UNUSED)
 		{
 			context.renderTarget[i] = renderPassFramebuffer->getAttachment(attachmentReference.attachment);
+
+			for(auto j = 0u; j < subpass.inputAttachmentCount; j++)
+			{
+				auto inputAttachment = subpass.pInputAttachments[j];
+
+				assert(attachmentReference.attachment != inputAttachment.attachment);
+			}
 		}
 	}
 
