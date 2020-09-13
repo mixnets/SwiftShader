@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fae7f953_cf7600f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2020-09-13T20:03:15Z",
+      "side": 1,
+      "message": "While graphics rendering on GNU/Linux systems can rely on free software like X11, XCB, or Wayland, each with their pros and cons, DirectFB is also an option that primarily targets certain embedded systems.\nThe DirectFB interface has been widely used in the GNU/Linux embedded world, and yes, it is not used as much as it once was.\nSome simple devices only have a small screen (like a TFT display) and no GPU: DirectFB combined with the CPU implementation of Vulkan provided by SwiftShader is worth considering for these types of platforms.\n\nThe popular vkcube example from Vulkan-Tools can work with the VK_EXT_directfb_surface extension. The DirectFB package provided on Linux distributions can probably be used. And for use on an embedded system, DirectFB is typically provided with drivers coming from Soc vendors that support DirectFB.\n\nAs you have seen, the DirectFB port is simple. Yes definitely, I can maintain it if it is broken due to some changes!\n\nNicolas Caramelli",
+      "parentUuid": "807915d8_9b1ef028",
+      "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8a3040c_4b19c257",
         "filename": "src/WSI/DirectFBSurfaceEXT.hpp",
         "patchSetId": 3
@@ -57,6 +75,30 @@
       "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06853ac3_46bd6592",
+        "filename": "src/WSI/DirectFBSurfaceEXT.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2020-09-13T20:03:15Z",
+      "side": 1,
+      "message": "Ok it\u0027s done",
+      "parentUuid": "f8a3040c_4b19c257",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 21
+      },
+      "revId": "d7b3591cd14024a0c24b52a387763ef78e000d4a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
