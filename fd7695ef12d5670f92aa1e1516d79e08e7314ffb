@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed702857_715267d8",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 53354
+      },
+      "writtenOn": "2020-09-14T15:14:41Z",
+      "side": 1,
+      "message": "s/return {};/return out; ?",
+      "revId": "fd7695ef12d5670f92aa1e1516d79e08e7314ffb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
