@@ -16,6 +16,24 @@
       "revId": "91d51624e8801a494e56483807e339a6b4f45b54",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25ef7a6c_73c218ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-15T13:57:54Z",
+      "side": 1,
+      "message": "That\u0027s what https://cs.opensource.google/swiftshader/SwiftShader/+/master:tests/regres/deqp-patches/deqp-x11.patch is for, but sometimes it still goes haywire and there\u0027s a bunch of crashes.\n\nNote it only happens on the dEQP-GLES tests, so it will go away once we disable that.\n\nFor now I think we can land Patchset 11. I\u0027ll re-upload it.",
+      "parentUuid": "28ba4702_12994baa",
+      "revId": "91d51624e8801a494e56483807e339a6b4f45b54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
