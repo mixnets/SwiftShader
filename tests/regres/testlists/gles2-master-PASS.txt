@@ -3896,7 +3896,6 @@ dEQP-GLES2.functional.shaders.functions.qualifiers.in_lowp_int_fragment
 dEQP-GLES2.functional.shaders.functions.qualifiers.inout_bool_fragment
 dEQP-GLES2.functional.shaders.functions.qualifiers.inout_bool_vertex
 dEQP-GLES2.functional.shaders.functions.qualifiers.inout_float_fragment
-dEQP-GLES2.functional.shaders.functions.qualifiers.inout_float_vertex
 dEQP-GLES2.functional.shaders.functions.qualifiers.inout_int_fragment
 dEQP-GLES2.functional.shaders.functions.qualifiers.out_bool_fragment
 dEQP-GLES2.functional.shaders.functions.qualifiers.out_bool_vertex
@@ -10139,7 +10138,6 @@ dEQP-GLES2.functional.shaders.random.exponential.vertex.81
 dEQP-GLES2.functional.shaders.random.exponential.vertex.82
 dEQP-GLES2.functional.shaders.random.exponential.vertex.83
 dEQP-GLES2.functional.shaders.random.exponential.vertex.84
-dEQP-GLES2.functional.shaders.random.exponential.vertex.85
 dEQP-GLES2.functional.shaders.random.exponential.vertex.86
 dEQP-GLES2.functional.shaders.random.exponential.vertex.87
 dEQP-GLES2.functional.shaders.random.exponential.vertex.88

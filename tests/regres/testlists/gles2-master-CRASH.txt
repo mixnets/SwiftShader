@@ -1,0 +1,2 @@
+dEQP-GLES2.functional.shaders.functions.qualifiers.inout_float_vertex
+dEQP-GLES2.functional.shaders.random.exponential.vertex.85

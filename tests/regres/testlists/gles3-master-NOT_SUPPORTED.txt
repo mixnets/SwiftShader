@@ -250,7 +250,6 @@ dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.12x1
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.4x4
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.5x4
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.5x5
-dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.6x5
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.6x6
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.8x5
 dEQP-GLES3.functional.texture.compressed.astc.endpoint_value_hdr_cem_not_15.8x6
