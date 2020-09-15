@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28ba4702_12994baa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-15T12:23:08Z",
+      "side": 1,
+      "message": "Still a bunch of \"Maximum number of clients reached\" crashes. Is there no way to prevent those?",
+      "revId": "91d51624e8801a494e56483807e339a6b4f45b54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
