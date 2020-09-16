@@ -257,7 +257,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	features->runtimeDescriptorArray = VK_FALSE;
 	features->samplerFilterMinmax = VK_FALSE;
 	features->scalarBlockLayout = VK_FALSE;
-	features->imagelessFramebuffer = VK_FALSE;
+	features->imagelessFramebuffer = VK_TRUE;
 	features->uniformBufferStandardLayout = VK_FALSE;
 	features->shaderSubgroupExtendedTypes = VK_FALSE;
 	getPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR(features);
