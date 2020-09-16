@@ -110,7 +110,10 @@ public:
 	}
 	bool hasExternalMemory() const { return backingMemory.externalMemory; }
 	VkDeviceMemory getExternalMemory() const;
+	VkExternalMemoryHandleTypeFlags getSupportedExternalMemoryHandleTypes() const { return supportedExternalMemoryHandleTypes; }
 #endif
+
+	DeviceMemory *deviceMemory = nullptr;
 
 private:
 	void copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource);
@@ -135,7 +138,6 @@ private:
 	void decodeASTC(const VkImageSubresource &subresource);
 
 	const Device *const device = nullptr;
-	DeviceMemory *deviceMemory = nullptr;
 	VkDeviceSize memoryOffset = 0;
 	VkImageCreateFlags flags = 0;
 	VkImageType imageType = VK_IMAGE_TYPE_2D;
