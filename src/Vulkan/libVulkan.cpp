@@ -71,6 +71,9 @@
 #	include <android/log.h>
 #	include <hardware/gralloc1.h>
 #	include <sync/sync.h>
+#	ifdef SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+#		include "VkDeviceMemoryExternalAndroid.hpp"
+#	endif
 #endif
 
 #include "WSI/VkSwapchainKHR.hpp"
@@ -509,7 +512,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties(VkPhysicalDevice 
 	TRACE("GetPhysicalDeviceFormatProperties(VkPhysicalDevice physicalDevice = %p, VkFormat format = %d, VkFormatProperties* pFormatProperties = %p)",
 	      physicalDevice, (int)format, pFormatProperties);
 
-	vk::Cast(physicalDevice)->getFormatProperties(format, pFormatProperties);
+	vk::PhysicalDevice::GetFormatProperties(format, pFormatProperties);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkImageFormatProperties *pImageFormatProperties)
@@ -522,7 +525,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties(VkPhysic
 	memset(pImageFormatProperties, 0, sizeof(VkImageFormatProperties));
 
 	VkFormatProperties properties;
-	vk::Cast(physicalDevice)->getFormatProperties(format, &properties);
+	vk::PhysicalDevice::GetFormatProperties(format, &properties);
 
 	VkFormatFeatureFlags features;
 	switch(tiling)
@@ -1069,7 +1072,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 		allocationInfo = allocationInfo->pNext;
 	}
 
-	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory);
+	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory, vk::Cast(device));
 	if(result != VK_SUCCESS)
 	{
 		return result;
@@ -1194,7 +1197,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryAndroidHardwareBufferANDROID(VkDevice 
 	TRACE("(VkDevice device = %p, const VkMemoryGetAndroidHardwareBufferInfoANDROID *pInfo = %p, struct AHardwareBuffer **pBuffer = %p)",
 	      device, pInfo, pBuffer);
 
-	return vk::Cast(pInfo->memory)->exportAhb(pBuffer);
+	return vk::Cast(pInfo->memory)->exportAndroidHardwareBuffer(pBuffer);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkGetAndroidHardwareBufferPropertiesANDROID(VkDevice device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties)
@@ -1202,7 +1205,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetAndroidHardwareBufferPropertiesANDROID(VkDev
 	TRACE("(VkDevice device = %p, const struct AHardwareBuffer *buffer = %p, VkAndroidHardwareBufferPropertiesANDROID *pProperties = %p)",
 	      device, buffer, pProperties);
 
-	return vk::DeviceMemory::getAhbProperties(buffer, pProperties);
+	return vk::DeviceMemory::GetAndroidHardwareBufferProperties(device, buffer, pProperties);
 }
 #endif  // SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 
@@ -1653,6 +1656,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 				swapchainImage = true;
 			}
 			break;
+			case VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID:
+				break;
 #endif
 			case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
 				// Do nothing. Should be handled by vk::Image::Create()
@@ -2832,6 +2837,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements2(VkDevice device, const 
 			{
 				auto requirements = reinterpret_cast<VkMemoryDedicatedRequirements *>(extensionRequirements);
 				vk::Cast(device)->getRequirements(requirements);
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+				if(vk::Cast(pInfo->image)->getSupportedExternalMemoryHandleTypes() == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
+				{
+					requirements->requiresDedicatedAllocation = VK_TRUE;
+				}
+#endif
 			}
 			break;
 			default:
@@ -3090,6 +3101,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 				ASSERT(!hasDeviceExtension(VK_AMD_TEXTURE_GATHER_BIAS_LOD_EXTENSION_NAME));
 			}
 			break;
+#ifdef __ANDROID__
+			case VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID:
+			{
+				auto properties = reinterpret_cast<VkAndroidHardwareBufferUsageANDROID *>(extensionProperties);
+				vk::Cast(physicalDevice)->getProperties(properties);
+			}
+			break;
+#endif
 			default:
 				LOG_TRAP("pImageFormatProperties->pNext sType = %s", vk::Stringify(extensionProperties->sType).c_str());
 				break;
