@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae9a0801_feeb4ff7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-16T15:26:57Z",
+      "side": 1,
+      "message": "This is interesting. The LLVM test run (Patchset 1) has a couple of graphicsfuzz failures, while the Subzero test run suffers from X11 contention in GLES. Ironically the former could be the result of a stack overflow due to attempting to optimize a complex shader, while the latter could be the result of running \"too fast\".\n\nThe X11 issues will go away when we\u0027ve fully removed GLES, so I don\u0027t think we need to take action on this. We have other, non-flaky failures that are worth investigating though.",
+      "revId": "62c4d081fadaa5a32a9df0c0e7841fce85960710",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
