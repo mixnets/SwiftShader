@@ -20,6 +20,8 @@
 
 namespace vk {
 
+class Device;
+
 class DeviceMemory : public Object<DeviceMemory, VkDeviceMemory>
 {
 public:
@@ -32,8 +34,9 @@ public:
 #endif
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
-	VkResult exportAhb(struct AHardwareBuffer **pAhb) const;
-	static VkResult getAhbProperties(const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties);
+	void setDevicePtr(Device *pDevice);
+	VkResult exportAndroidHardwareBuffer(struct AHardwareBuffer **pAhb) const;
+	static VkResult getAndroidHardwareBufferProperties(VkDevice &device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties);
 #endif
 
 #if VK_USE_PLATFORM_FUCHSIA
@@ -55,11 +58,19 @@ public:
 	// Internal implementation class for external memory. Platform-specific.
 	class ExternalBase;
 
+	ExternalBase *getExternal()
+	{
+		return external;
+	}
+
 private:
 	void *buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t memoryTypeIndex = 0;
 	ExternalBase *external = nullptr;
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+	Device *device;
+#endif
 };
 
 static inline DeviceMemory *Cast(VkDeviceMemory object)
