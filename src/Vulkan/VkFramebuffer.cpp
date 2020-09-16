@@ -21,13 +21,44 @@
 namespace vk {
 
 Framebuffer::Framebuffer(const VkFramebufferCreateInfo *pCreateInfo, void *mem)
-    : attachmentCount(pCreateInfo->attachmentCount)
-    , attachments(reinterpret_cast<ImageView **>(mem))
-    , extent{ pCreateInfo->width, pCreateInfo->height, pCreateInfo->layers }
+    : extent{ pCreateInfo->width, pCreateInfo->height, pCreateInfo->layers }
 {
-	for(uint32_t i = 0; i < attachmentCount; i++)
+	// If VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT is included in the flags, then
+	// pCreateInfo->pAttachments is ignored.
+	if((pCreateInfo->flags & VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT) == 0)
 	{
-		attachments[i] = vk::Cast(pCreateInfo->pAttachments[i]);
+		attachmentCount = pCreateInfo->attachmentCount;
+		attachments = reinterpret_cast<ImageView **>(mem);
+		for(uint32_t i = 0; i < attachmentCount; i++)
+		{
+			attachments[i] = vk::Cast(pCreateInfo->pAttachments[i]);
+		}
+	}
+	else
+	{
+		// If flags includes VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, the pNext chain **must**
+		// include a VkFramebufferAttachmentsCreateInfo.
+		const VkBaseInStructure *curInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+		const VkFramebufferAttachmentsCreateInfo *attachmentsCreateInfo = nullptr;
+		while(curInfo)
+		{
+			if(curInfo->sType == VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO)
+			{
+				attachmentsCreateInfo = reinterpret_cast<const VkFramebufferAttachmentsCreateInfo *>(curInfo);
+				break;
+			}
+			curInfo = curInfo->pNext;
+		}
+
+		ASSERT(attachmentsCreateInfo != nullptr);
+		attachmentCount = attachmentsCreateInfo->attachmentImageInfoCount;
+		attachments = reinterpret_cast<ImageView **>(mem);
+		attachmentInfos = reinterpret_cast<VkFramebufferAttachmentImageInfo *>(reinterpret_cast<uint8_t *>(mem) + attachmentCount * sizeof(void *));
+		for(uint32_t i = 0; i < attachmentCount; i++)
+		{
+			attachments[i] = nullptr;
+			attachmentInfos[i] = attachmentsCreateInfo->pAttachmentImageInfos[i];
+		}
 	}
 }
 
@@ -115,6 +146,13 @@ void Framebuffer::clearAttachment(const RenderPass *renderPass, uint32_t subpass
 	}
 }
 
+void Framebuffer::addAttachment(ImageView *imageView, uint32_t index)
+{
+	ASSERT(index < attachmentCount);
+	ASSERT(attachments[index] == nullptr);
+	attachments[index] = imageView;
+}
+
 ImageView *Framebuffer::getAttachment(uint32_t index) const
 {
 	return attachments[index];
@@ -147,7 +185,30 @@ void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 
 size_t Framebuffer::ComputeRequiredAllocationSize(const VkFramebufferCreateInfo *pCreateInfo)
 {
-	return pCreateInfo->attachmentCount * sizeof(void *);
+	if((pCreateInfo->flags & VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT) == 0)
+	{
+		return pCreateInfo->attachmentCount * sizeof(void *);
+	}
+	else
+	{
+		const VkBaseInStructure *curInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+		const VkFramebufferAttachmentsCreateInfo *attachmentsInfo = nullptr;
+		while(curInfo)
+		{
+			if(curInfo->sType == VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO)
+			{
+				attachmentsInfo = reinterpret_cast<const VkFramebufferAttachmentsCreateInfo *>(curInfo);
+				break;
+			}
+
+			curInfo = curInfo->pNext;
+		}
+
+		ASSERT(attachmentsInfo != nullptr);
+		// Allocate enough memory for both the attachmentImageInfos and the ImageViews this
+		// framebuffer will use later.
+		return attachmentsInfo->attachmentImageInfoCount * sizeof(VkFramebufferAttachmentImageInfo) + attachmentsInfo->attachmentImageInfoCount * sizeof(void *);
+	}
 }
 
 }  // namespace vk

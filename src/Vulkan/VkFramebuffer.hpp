@@ -32,6 +32,7 @@ public:
 	void clearAttachment(const RenderPass *renderPass, uint32_t subpassIndex, const VkClearAttachment &attachment, const VkClearRect &rect);
 
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo *pCreateInfo);
+	void addAttachment(ImageView *imageView, uint32_t index);
 	ImageView *getAttachment(uint32_t index) const;
 	void resolve(const RenderPass *renderPass, uint32_t subpassIndex);
 
@@ -40,6 +41,7 @@ public:
 private:
 	uint32_t attachmentCount = 0;
 	ImageView **attachments = nullptr;
+	VkFramebufferAttachmentImageInfo *attachmentInfos = nullptr;
 	const VkExtent3D extent = {};
 };
 
