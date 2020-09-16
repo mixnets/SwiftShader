@@ -43,8 +43,7 @@ public:
 			{
 				switch(createInfo->sType)
 				{
-					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
-					{
+					case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR: {
 						const auto *importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(createInfo);
 
 						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
@@ -55,8 +54,7 @@ public:
 						fd = importInfo->fd;
 					}
 					break;
-					case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-					{
+					case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO: {
 						const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
 
 						if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
