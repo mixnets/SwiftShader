@@ -378,7 +378,8 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 #endif
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
 	{ VK_GOOGLE_SAMPLER_FILTERING_PRECISION_EXTENSION_NAME, VK_GOOGLE_SAMPLER_FILTERING_PRECISION_SPEC_VERSION },
-	{ VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, VK_EXT_DEPTH_RANGE_UNRESTRICTED_SPEC_VERSION }
+	{ VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, VK_EXT_DEPTH_RANGE_UNRESTRICTED_SPEC_VERSION },
+	{ VK_KHR_IMAGELESS_FRAMEBUFFER_EXTENSION_NAME, VK_KHR_IMAGELESS_FRAMEBUFFER_SPEC_VERSION }
 };
 
 static bool hasExtension(const char *extensionName, const VkExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -827,6 +828,17 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT:
 				ASSERT(!hasDeviceExtension(VK_EXT_ROBUSTNESS_2_EXTENSION_NAME));
 				break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR:
+			{
+				const VkPhysicalDeviceImagelessFramebufferFeaturesKHR *imagelessFramebufferFeatures = reinterpret_cast<const VkPhysicalDeviceImagelessFramebufferFeaturesKHR *>(extensionCreateInfo);
+				// Always provide Imageless Framebuffers
+				(void)imagelessFramebufferFeatures->imagelessFramebuffer;
+			}
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES:
+			{
+				const VkPhysicalDeviceVulkan12Features *vulkan12Features = reinterpret_cast<const VkPhysicalDeviceVulkan12Features *>(extensionCreateInfo);
+				enabledVulkan12Features = *vulkan12Features;
+			}
 			default:
 				// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 				LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
@@ -2139,18 +2151,6 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateFramebuffer(VkDevice device, const VkFram
 	TRACE("(VkDevice device = %p, const VkFramebufferCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkFramebuffer* pFramebuffer = %p)",
 	      device, pCreateInfo, pAllocator, pFramebuffer);
 
-	if(pCreateInfo->flags != 0)
-	{
-		UNSUPPORTED("pCreateInfo->flags %d", int(pCreateInfo->flags));
-	}
-
-	auto *nextInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
-	while(nextInfo)
-	{
-		LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(nextInfo->sType).c_str());
-		nextInfo = nextInfo->pNext;
-	}
-
 	return vk::Framebuffer::Create(pAllocator, pCreateInfo, pFramebuffer);
 }
 
@@ -2620,6 +2620,7 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 	      commandBuffer, pRenderPassBegin, contents);
 
 	const VkBaseInStructure *renderPassBeginInfo = reinterpret_cast<const VkBaseInStructure *>(pRenderPassBegin->pNext);
+	const VkRenderPassAttachmentBeginInfo *attachmentBeginInfo = nullptr;
 	while(renderPassBeginInfo)
 	{
 		switch(renderPassBeginInfo->sType)
@@ -2629,6 +2630,9 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 				// in order to distribute rendering between multiple physical devices.
 				// SwiftShader only has a single physical device, so this extension does nothing in this case.
 				break;
+			case VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO:
+				attachmentBeginInfo = reinterpret_cast<const VkRenderPassAttachmentBeginInfo *>(renderPassBeginInfo);
+				break;
 			default:
 				LOG_TRAP("pRenderPassBegin->pNext sType = %s", vk::Stringify(renderPassBeginInfo->sType).c_str());
 				break;
@@ -2637,7 +2641,7 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 		renderPassBeginInfo = renderPassBeginInfo->pNext;
 	}
 
-	vk::Cast(commandBuffer)->beginRenderPass(vk::Cast(pRenderPassBegin->renderPass), vk::Cast(pRenderPassBegin->framebuffer), pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount, pRenderPassBegin->pClearValues, contents);
+	vk::Cast(commandBuffer)->beginRenderPass(vk::Cast(pRenderPassBegin->renderPass), vk::Cast(pRenderPassBegin->framebuffer), pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount, pRenderPassBegin->pClearValues, contents, attachmentBeginInfo);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass2KHR(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, const VkSubpassBeginInfoKHR *pSubpassBeginInfo)
@@ -2645,7 +2649,7 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass2KHR(VkCommandBuffer commandBuffe
 	TRACE("(VkCommandBuffer commandBuffer = %p, const VkRenderPassBeginInfo* pRenderPassBegin = %p, const VkSubpassBeginInfoKHR* pSubpassBeginInfo = %p)",
 	      commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
 
-	vk::Cast(commandBuffer)->beginRenderPass(vk::Cast(pRenderPassBegin->renderPass), vk::Cast(pRenderPassBegin->framebuffer), pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount, pRenderPassBegin->pClearValues, pSubpassBeginInfo->contents);
+	vk::Cast(commandBuffer)->beginRenderPass(vk::Cast(pRenderPassBegin->renderPass), vk::Cast(pRenderPassBegin->framebuffer), pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount, pRenderPassBegin->pClearValues, pSubpassBeginInfo->contents, nullptr);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass(VkCommandBuffer commandBuffer, VkSubpassContents contents)
