@@ -16,6 +16,24 @@
       "revId": "62c4d081fadaa5a32a9df0c0e7841fce85960710",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7d298ac_d1001edd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-17T13:33:56Z",
+      "side": 1,
+      "message": "Same pattern for Patchset 3 and 4.",
+      "parentUuid": "ae9a0801_feeb4ff7",
+      "revId": "62c4d081fadaa5a32a9df0c0e7841fce85960710",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
