@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ee1662b_97bdf43a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-09-17T17:07:10Z",
+      "side": 1,
+      "message": "I cleaned up the code a bit so there are fewer places we need to update if we start supporting more framebuffer extensions. ",
+      "revId": "3ff52726d3de13b5ce3b394fc7d40b1363a21865",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
