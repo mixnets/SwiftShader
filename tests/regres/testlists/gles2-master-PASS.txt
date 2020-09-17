@@ -2346,7 +2346,6 @@ dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.replace_zero_keep
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.replace_zero_replace
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.replace_zero_zero
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.zero_invert_invert
-dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.zero_invert_keep
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.zero_invert_replace
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.zero_invert_zero
 dEQP-GLES2.functional.fragment_ops.depth_stencil.stencil_ops.zero_keep_invert
