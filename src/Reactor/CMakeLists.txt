@@ -21,9 +21,12 @@ set(REACTOR_SRC_FILES
     Debug.cpp
     Debug.hpp
     EmulatedReactor.cpp
+    EmulatedReactor.hpp
     ExecutableMemory.cpp
     ExecutableMemory.hpp
     Nucleus.hpp
+    OptimalReactor.cpp
+    OptimalReactor.hpp
     Print.hpp
     Reactor.cpp
     Reactor.hpp
