@@ -226,6 +226,7 @@ bool Blitter::fastClear(void *clearValue, vk::Format clearFormat, vk::Image *des
 			packed = RGB9E5(c.rgb);
 			break;
 		case VK_FORMAT_D32_SFLOAT:
+		case VK_FORMAT_X8_D24_UNORM_PACK32:
 			ASSERT(clearFormat == VK_FORMAT_D32_SFLOAT);
 			packed = c.d_as_u32;  // float reinterpreted as uint32
 			break;
@@ -491,11 +492,11 @@ Float4 Blitter::readFloat4(Pointer<Byte> element, const State &state)
 			c.w = Float(Int((*Pointer<UInt>(element) & UInt(0xC0000000)) >> 30));
 			break;
 		case VK_FORMAT_D16_UNORM:
-			c.x = Float(Int((*Pointer<UShort>(element))));
-			break;
+			//c.x = Float(Int((*Pointer<UShort>(element))));
+			//break;
 		case VK_FORMAT_X8_D24_UNORM_PACK32:
-			c.x = Float(Int((*Pointer<UInt>(element) & UInt(0xFFFFFF00)) >> 8));
-			break;
+			//c.x = Float(Int((*Pointer<UInt>(element) & UInt(0xFFFFFF00)) >> 8));
+			//break;
 		case VK_FORMAT_D32_SFLOAT:
 			c.x = *Pointer<Float>(element);
 			break;
@@ -996,11 +997,11 @@ void Blitter::write(Float4 &c, Pointer<Byte> element, const State &state)
 			}
 			break;
 		case VK_FORMAT_D16_UNORM:
-			*Pointer<UShort>(element) = UShort(RoundInt(Float(c.x)));
-			break;
+		//	*Pointer<UShort>(element) = UShort(RoundInt(Float(c.x)));//
+		//break;
 		case VK_FORMAT_X8_D24_UNORM_PACK32:
-			*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)) << 8);
-			break;
+			//*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)) << 8);
+			//break;
 		case VK_FORMAT_D32_SFLOAT:
 			*Pointer<Float>(element) = c.x;
 			break;

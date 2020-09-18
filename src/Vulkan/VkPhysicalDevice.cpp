@@ -722,9 +722,13 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties *pFor
 		case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
 		case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
 #endif
-		case VK_FORMAT_D16_UNORM:
+			//	case VK_FORMAT_D16_UNORM:
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+
+			//	case VK_FORMAT_X8_D24_UNORM_PACK32:
+			//	case VK_FORMAT_D16_UNORM_S8_UINT:
+			//	case VK_FORMAT_D24_UNORM_S8_UINT:
 			pFormatProperties->optimalTilingFeatures |=
 			    VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
 			// [[fallthrough]]
@@ -883,9 +887,13 @@ void PhysicalDevice::getFormatProperties(Format format, VkFormatProperties *pFor
 			    VK_FORMAT_FEATURE_BLIT_DST_BIT;
 			break;
 		case VK_FORMAT_S8_UINT:
-		case VK_FORMAT_D16_UNORM:
+		//case VK_FORMAT_D16_UNORM:
 		case VK_FORMAT_D32_SFLOAT:          // Note: either VK_FORMAT_D32_SFLOAT or VK_FORMAT_X8_D24_UNORM_PACK32 must be supported
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:  // Note: either VK_FORMAT_D24_UNORM_S8_UINT or VK_FORMAT_D32_SFLOAT_S8_UINT must be supported
+
+			//	case VK_FORMAT_X8_D24_UNORM_PACK32:
+			//	case VK_FORMAT_D16_UNORM_S8_UINT:
+			//	case VK_FORMAT_D24_UNORM_S8_UINT:
 			pFormatProperties->optimalTilingFeatures |=
 			    VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
 			break;

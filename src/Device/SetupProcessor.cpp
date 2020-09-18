@@ -65,7 +65,7 @@ SetupProcessor::State SetupProcessor::update(const sw::Context *context) const
 	state.isDrawPoint = context->isDrawPoint(true);
 	state.isDrawLine = context->isDrawLine(true);
 	state.isDrawTriangle = context->isDrawTriangle(true);
-	state.fixedPointDepthBuffer = context->depthBuffer && context->depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT);
+	state.fixedPointDepthBuffer = false;  //context->depthBuffer && context->depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT);
 	state.applyConstantDepthBias = context->isDrawTriangle(false) && (context->constantDepthBias != 0.0f);
 	state.applySlopeDepthBias = context->isDrawTriangle(false) && (context->slopeDepthBias != 0.0f);
 	state.applyDepthBiasClamp = context->isDrawTriangle(false) && (context->depthBiasClamp != 0.0f);

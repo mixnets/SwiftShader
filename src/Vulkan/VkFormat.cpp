@@ -181,6 +181,7 @@ Format Format::getAspectFormat(VkImageAspectFlags aspect) const
 					return VK_FORMAT_X8_D24_UNORM_PACK32;
 				case VK_FORMAT_D32_SFLOAT:
 				case VK_FORMAT_D32_SFLOAT_S8_UINT:
+				case VK_FORMAT_X8_D24_UNORM_PACK32:
 					return VK_FORMAT_D32_SFLOAT;
 				default:
 					UNSUPPORTED("format %d", int(format));
@@ -421,8 +422,8 @@ bool Format::isFloatFormat() const
 		case VK_FORMAT_R64G64B64_SINT:
 		case VK_FORMAT_R64G64B64A64_UINT:
 		case VK_FORMAT_R64G64B64A64_SINT:
-		case VK_FORMAT_D16_UNORM:
-		case VK_FORMAT_X8_D24_UNORM_PACK32:
+		
+			//	case VK_FORMAT_X8_D24_UNORM_PACK32:
 		case VK_FORMAT_S8_UINT:
 		case VK_FORMAT_D16_UNORM_S8_UINT:
 		case VK_FORMAT_D24_UNORM_S8_UINT:
@@ -445,6 +446,8 @@ bool Format::isFloatFormat() const
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
+		case VK_FORMAT_X8_D24_UNORM_PACK32:
+			case VK_FORMAT_D16_UNORM:
 			return true;
 		default:
 			UNSUPPORTED("Format: %d", int(format));
@@ -1624,7 +1627,7 @@ int Format::bytes() const
 			return 32;
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32: return 4;
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: return 4;
-		case VK_FORMAT_D16_UNORM: return 2;
+		case VK_FORMAT_D16_UNORM: return 4;
 		case VK_FORMAT_X8_D24_UNORM_PACK32: return 4;
 		case VK_FORMAT_D32_SFLOAT: return 4;
 		case VK_FORMAT_S8_UINT: return 1;
@@ -1976,10 +1979,10 @@ sw::float4 Format::getScale() const
 		case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
 			return sw::float4(0x1FF, 0x1FF, 0x1FF, 0x01);
 		case VK_FORMAT_D16_UNORM:
-			return sw::float4(0xFFFF, 0.0f, 0.0f, 0.0f);
+		//	return sw::float4(0xFFFF, 0.0f, 0.0f, 0.0f);
 		case VK_FORMAT_D24_UNORM_S8_UINT:
 		case VK_FORMAT_X8_D24_UNORM_PACK32:
-			return sw::float4(0xFFFFFF, 0.0f, 0.0f, 0.0f);
+		//	return sw::float4(0xFFFFFF, 0.0f, 0.0f, 0.0f);
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D32_SFLOAT_S8_UINT:
 		case VK_FORMAT_S8_UINT:
@@ -2121,6 +2124,8 @@ bool Format::has8bitTextureComponents() const
 		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
 		case VK_FORMAT_D16_UNORM:
+
+		case VK_FORMAT_X8_D24_UNORM_PACK32:
 			return false;
 		default:
 			UNSUPPORTED("Format: %d", int(format));
@@ -2344,6 +2349,7 @@ bool Format::isRGBComponent(int component) const
 		case VK_FORMAT_D32_SFLOAT:
 		case VK_FORMAT_D16_UNORM:
 		case VK_FORMAT_S8_UINT:
+		case VK_FORMAT_X8_D24_UNORM_PACK32:
 			return false;
 		default:
 			UNSUPPORTED("Format: %d", int(format));

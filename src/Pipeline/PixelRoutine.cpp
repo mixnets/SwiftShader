@@ -548,10 +548,10 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 		return true;
 	}
 
-	if(state.depthFormat == VK_FORMAT_D16_UNORM)
-		return depthTest16(zBuffer, q, x, z, sMask, zMask, cMask);
-	else
-		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
+	//if(state.depthFormat == VK_FORMAT_D16_UNORM)
+	//	return depthTest16(zBuffer, q, x, z, sMask, zMask, cMask);
+	//else
+	return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
 }
 
 void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha)
@@ -630,7 +630,7 @@ void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, con
 	{
 		// FIXME: Properly optimizes?
 		zValue = *Pointer<Short4>(buffer) & Short4(-1, -1, 0, 0);
-		zValue = zValue | (*Pointer<Short4>(buffer + pitch - 4) & Short4(0, 0, -1, -1));
+		zValue = zValue | (*Pointer<Short4>(buffer + pitch - 4) & Short4(0, 0, -1, -1));  //
 	}
 
 	Z = Z & *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q) + zMask * 8, 8);
@@ -651,10 +651,10 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, int q, const Int &x, const
 		return;
 	}
 
-	if(state.depthFormat == VK_FORMAT_D16_UNORM)
-		writeDepth16(zBuffer, q, x, z, zMask);
-	else
-		writeDepth32F(zBuffer, q, x, z, zMask);
+	//if(state.depthFormat == VK_FORMAT_D16_UNORM)
+	//		writeDepth16(zBuffer, q, x, z, zMask);
+	//else
+	writeDepth32F(zBuffer, q, x, z, zMask);
 }
 
 void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask)
