@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49578362_131fc35f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2020-09-18T09:25:05Z",
+      "side": 1,
+      "message": "The native_window parameter for the X11 platform differs between eglCreateWindowSurface() and eglCreatePlatformWindowSurface() as described in EGL specification:\nhttps://www.khronos.org/registry/EGL/extensions/KHR/EGL_KHR_platform_x11.txt\n\nSee example code:\n\n    #ifdef USE_EGL_KHR_PLATFORM_X11\n        window.egl \u003d eglCreatePlatformWindowSurface(config.dpy.egl,\n                                                    config.egl,\n                                                    \u0026window.x11,\n                                                    NULL);\n    #else\n        window.egl \u003d eglCreateWindowSurface(config.dpy.egl,\n                                            config.egl,\n                                            window.x11,\n                                            NULL);\n    #endif\n\nNicolas Caramelli",
+      "revId": "f2199413ca67509d71e5e09225640404b6ae6d5d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
