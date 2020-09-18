@@ -196,6 +196,7 @@ cc_defaults {
         "Reactor/ExecutableMemory.cpp",
         "Reactor/LLVMJIT.cpp",
         "Reactor/LLVMReactor.cpp",
+        "Reactor/OptimalReactor.cpp",
         "Reactor/Reactor.cpp",
     ],
 
@@ -227,6 +228,7 @@ cc_defaults {
         "Reactor/ExecutableMemory.cpp",
         "Reactor/LLVMJIT.cpp",
         "Reactor/LLVMReactor.cpp",
+        "Reactor/OptimalReactor.cpp",
         "Reactor/Reactor.cpp",
     ],
 
