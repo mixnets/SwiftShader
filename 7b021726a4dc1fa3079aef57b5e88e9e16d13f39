@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "491ef474_fc24751e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T18:34:46Z",
+      "side": 1,
+      "message": "nit: Let\u0027s be explicit about this being an extension: \"Implement VK_KHR_imageless_framebuffer\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 38
+      },
+      "revId": "7b021726a4dc1fa3079aef57b5e88e9e16d13f39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e68700ec_91937799",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T18:34:46Z",
+      "side": 1,
+      "message": "extension",
+      "range": {
+        "startLine": 10,
+        "startChar": 26,
+        "endLine": 10,
+        "endChar": 33
+      },
+      "revId": "7b021726a4dc1fa3079aef57b5e88e9e16d13f39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "667c80a5_79d298f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T18:34:46Z",
+      "side": 1,
+      "message": "Not a SwiftShader bug entry",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "7b021726a4dc1fa3079aef57b5e88e9e16d13f39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7781e80_8bee2fea",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 839,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T18:34:46Z",
+      "side": 1,
+      "message": "Note that most extensions change things from undefined behavior, to well-defined behavior. Hence we don\u0027t actually have to track whether they\u0027re enabled or not, since the well-defined behavior also counts as valid undefined behavior. See the comment at line 821. I\u0027m only aware of one extension that changes things from one well-defined behavior, to another, when enabled.\n\nI haven\u0027t checked the specifics of this one...",
+      "range": {
+        "startLine": 831,
+        "startChar": 3,
+        "endLine": 839,
+        "endChar": 4
+      },
+      "revId": "7b021726a4dc1fa3079aef57b5e88e9e16d13f39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b10a2411_c03ea3ed",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 886,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T18:34:46Z",
+      "side": 1,
+      "message": "Note that one can obtain the enabled extensions from pCreateInfo again inside the Device class constructor. I think libVulkan.cpp should only perform basic validation before handing things over to the implementations of the objects. Otherwise some of their implementation lives outside of the objects.",
+      "range": {
+        "startLine": 886,
+        "startChar": 116,
+        "endLine": 886,
+        "endChar": 139
+      },
+      "revId": "7b021726a4dc1fa3079aef57b5e88e9e16d13f39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
