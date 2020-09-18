@@ -33,6 +33,23 @@
       "revId": "f2199413ca67509d71e5e09225640404b6ae6d5d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca2eaec0_3d31d92f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29190
+      },
+      "writtenOn": "2020-09-18T13:47:46Z",
+      "side": 1,
+      "message": "Hey Nicolas. Yes ANGLE supports EGL 1.5. We seem to handle this EP correctly:\n\nhttps://source.chromium.org/chromium/chromium/src/+/master:third_party/angle/src/libGLESv2/entry_points_egl.cpp;l\u003d1027?q\u003dentry_points_egl%20createplatformwind\u0026ss\u003dchromium",
+      "revId": "f2199413ca67509d71e5e09225640404b6ae6d5d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
