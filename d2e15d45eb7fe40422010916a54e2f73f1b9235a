@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4055874_44f3479e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-18T20:15:59Z",
+      "side": 1,
+      "message": "I\u0027m going to cease the CL here.\n\nWork on getting suballocated to pass is low priority, and will be done in a future CL.\n\nThis is the CL as it",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
