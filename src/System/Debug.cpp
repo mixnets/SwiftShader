@@ -169,7 +169,7 @@ void logv(Level level, const char *format, va_list args)
 #	endif
 	}
 
-	const Level traceToFileLevel = Level::Disabled;
+	const Level traceToFileLevel = Level::Verbose;
 	if(static_cast<int>(level) >= static_cast<int>(traceToFileLevel))
 	{
 		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");

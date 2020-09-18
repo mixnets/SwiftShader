@@ -38,7 +38,7 @@ void Framebuffer::destroy(const VkAllocationCallbacks *pAllocator)
 
 void Framebuffer::clear(const RenderPass *renderPass, uint32_t clearValueCount, const VkClearValue *pClearValues, const VkRect2D &renderArea)
 {
-	ASSERT(attachmentCount == renderPass->getAttachmentCount());
+	//ASSERT(attachmentCount == renderPass->getAttachmentCount());
 
 	const uint32_t count = std::min(clearValueCount, attachmentCount);
 	for(uint32_t i = 0; i < count; i++)

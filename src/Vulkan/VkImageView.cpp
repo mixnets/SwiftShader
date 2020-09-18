@@ -89,6 +89,11 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , ycbcrConversion(ycbcrConversion)
     , id(image, viewType, format.getAspectFormat(subresourceRange.aspectMask), components)
 {
+	if((image->usage & (VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)) == (VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT))
+	{
+		if(format == VK_FORMAT_D32_SFLOAT)
+			abort();
+	}
 }
 
 size_t ImageView::ComputeRequiredAllocationSize(const VkImageViewCreateInfo *pCreateInfo)

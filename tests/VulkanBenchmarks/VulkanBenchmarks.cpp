@@ -214,9 +214,9 @@ static void ClearImage(benchmark::State &state, vk::Format clearFormat, vk::Imag
 		benchmark.clear();
 	}
 }
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond);
+BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R8G8B8A8_UNORM, vk::Format::eR8G8B8A8Unorm, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_R32_SFLOAT, vk::Format::eR32Sfloat, vk::ImageAspectFlagBits::eColor)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(ClearImage, VK_FORMAT_D32_SFLOAT, vk::Format::eD32Sfloat, vk::ImageAspectFlagBits::eDepth)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
 
 class Window
 {
@@ -970,5 +970,5 @@ static void Triangle(benchmark::State &state, bool multisample)
 		benchmark.renderFrame();
 	}
 }
-BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);
+BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();

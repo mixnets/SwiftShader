@@ -141,7 +141,7 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 	if(!sptr)
 	{
 		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));  //
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
@@ -1659,6 +1659,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 			case VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR:
 				/* Do nothing. We don't actually need the swapchain handle yet; we'll do all the work in vkBindImageMemory2. */
 				break;
+			case VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO:
+				break;
 			default:
 				// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 				LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
@@ -1872,6 +1874,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 	VkResult errorResult = VK_SUCCESS;
 	for(uint32_t i = 0; i < createInfoCount; i++)
 	{
+		if(!pCreateInfos[i].renderPass)
+			return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+
 		VkResult result = vk::GraphicsPipeline::Create(pAllocator, &pCreateInfos[i], &pPipelines[i], vk::Cast(device));
 
 		if(result == VK_SUCCESS)

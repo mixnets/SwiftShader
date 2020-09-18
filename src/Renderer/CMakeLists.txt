@@ -74,6 +74,7 @@ set_target_properties(gl_renderer PROPERTIES
 target_include_directories(gl_renderer
     PUBLIC
         ".."
+        "../../third_party/marl/include"
 )
 
 target_compile_definitions(gl_renderer
@@ -94,4 +95,5 @@ target_link_options(gl_renderer
 target_link_libraries(gl_renderer
     PUBLIC
         gl_shader
+        marl
 )

@@ -112,7 +112,7 @@ public:
 	VkDeviceMemory getExternalMemory() const;
 #endif
 
-private:
+	//private:
 	void copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsSource);
 	VkDeviceSize getStorageSize(VkImageAspectFlags flags) const;
 	VkDeviceSize getMultiSampledLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;

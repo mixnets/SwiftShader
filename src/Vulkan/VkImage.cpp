@@ -137,6 +137,12 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     , tiling(pCreateInfo->tiling)
     , usage(pCreateInfo->usage)
 {
+	if((usage & (VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)) == (VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT))
+	{
+		if(format == VK_FORMAT_D32_SFLOAT)
+			abort();
+	}
+
 	if(format.isCompressed())
 	{
 		VkImageCreateInfo compressedImageCreateInfo = *pCreateInfo;

@@ -1011,6 +1011,14 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		Vector4f c01 = sampleTexel(x0, y1, z, dRef, sample, mipmap, buffer, function);
 		Vector4f c11 = sampleTexel(x1, y1, z, dRef, sample, mipmap, buffer, function);
 
+		//if(state.compareEnable)
+		//{
+		//	c01.x = Float4(1.0f);
+		//	c01.z = Float4(1.0f);
+		//	c11.x = Float4(0.0f);
+		//	c11.w = Float4(0.0f);
+		//}
+
 		if(!gather)  // Blend
 		{
 			if(componentCount >= 1) c00.x = c00.x + fu * (c10.x - c00.x);
@@ -1045,6 +1053,10 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 					break;
 			}
 		}
+	}
+	if(state.compareEnable)
+	{
+		//c.x = Float4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	return c;
@@ -1963,6 +1975,8 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			case VK_FORMAT_R32_SINT:
 			case VK_FORMAT_R32_UINT:
 			case VK_FORMAT_D32_SFLOAT:
+			case VK_FORMAT_X8_D24_UNORM_PACK32:
+			case VK_FORMAT_D16_UNORM:
 				// FIXME: Optimal shuffling?
 				c.x.x = *Pointer<Float>(buffer + index[0] * 4);
 				c.x.y = *Pointer<Float>(buffer + index[1] * 4);
@@ -2072,9 +2086,14 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 		if(!hasFloatTexture())
 		{
 			// D16_UNORM: clamp reference, normalize texel value
-			ref = Min(Max(ref, Float4(0.0f)), Float4(1.0f));
+			//	ref = Min(Max(ref, Float4(0.0f)), Float4(1.0f));
+			ref.x = 0.5f;
+			ref.y = 0.0f;
+			ref.z = 1.0f;
 			c.x = c.x * Float4(1.0f / 0xFFFF);
 		}
+
+		//	ref = -ref;
 
 		Int4 boolean;
 

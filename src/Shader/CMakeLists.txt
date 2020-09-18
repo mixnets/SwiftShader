@@ -73,9 +73,11 @@ target_compile_options(gl_shader
 target_link_options(gl_shader
     PUBLIC
         ${SWIFTSHADER_LINK_FLAGS}
+        
 )
 
 target_link_libraries(gl_shader
     PUBLIC
         gl_main
+        marl
 )
