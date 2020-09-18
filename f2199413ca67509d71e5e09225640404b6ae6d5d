@@ -16,6 +16,23 @@
       "revId": "f2199413ca67509d71e5e09225640404b6ae6d5d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "839ab3ba_7a690e3b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T13:26:34Z",
+      "side": 1,
+      "message": "Nice find! This entry function is part of EGL 1.5, which we never finished support for, but I\u0027m not sure if this affects any projects that might be passing in the wrong window handle type. It was introduced here: https://swiftshader-review.googlesource.com/15909. Alexis, feel free to +2 if you\u0027re not aware of anything that might be using this.\n\nAlso note this is getting deprecated with the switch to SwANGLE. Jamie, does ANGLE support EGL 1.5? Does it handle this correctly?",
+      "revId": "f2199413ca67509d71e5e09225640404b6ae6d5d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
