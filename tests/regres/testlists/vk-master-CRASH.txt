@@ -1,0 +1,2 @@
+dEQP-VK.graphicsfuzz.spv-composite-phi
+dEQP-VK.graphicsfuzz.spv-null-in-phi-and-unroll
