@@ -39,6 +39,24 @@
       "revId": "4c363dcbc125dca23906aa34f248aef90e648f68",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da34c1b3_28ee3ec4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-18T15:25:41Z",
+      "side": 1,
+      "message": "That\u0027s easy to track by the validation layers, so I assume it already does this. I don\u0027t think SwiftShader can offer additional value when reporting violations.",
+      "parentUuid": "b850f81a_131d39e9",
+      "revId": "4c363dcbc125dca23906aa34f248aef90e648f68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
