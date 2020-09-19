@@ -83,10 +83,12 @@ target_compile_options(gl_main
 target_link_options(gl_main
     PUBLIC
         ${SWIFTSHADER_LINK_FLAGS}
+       
 )
 
 target_link_libraries(gl_main
     PUBLIC
         gl_common
         ${Reactor}
+         marl
 )

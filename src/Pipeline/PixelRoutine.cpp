@@ -630,7 +630,7 @@ void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, con
 	{
 		// FIXME: Properly optimizes?
 		zValue = *Pointer<Short4>(buffer) & Short4(-1, -1, 0, 0);
-		zValue = zValue | (*Pointer<Short4>(buffer + pitch - 4) & Short4(0, 0, -1, -1));
+		zValue = zValue | (*Pointer<Short4>(buffer + pitch - 4) & Short4(0, 0, -1, -1));  //
 	}
 
 	Z = Z & *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q) + zMask * 8, 8);

@@ -255,7 +255,7 @@ Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<By
 
 bool QuadRasterizer::interpolateZ() const
 {
-	return state.depthTestActive || (spirvShader && spirvShader->hasBuiltinInput(spv::BuiltInFragCoord));
+	return true;  //state.depthTestActive || (spirvShader && spirvShader->hasBuiltinInput(spv::BuiltInFragCoord));
 }
 
 bool QuadRasterizer::interpolateW() const

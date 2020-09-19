@@ -82,9 +82,11 @@ target_compile_options(gl_common
 target_link_options(gl_common
     PUBLIC
         ${SWIFTSHADER_LINK_FLAGS}
+        
 )
 
 target_link_libraries(gl_common
     PRIVATE
         ${ROOT_PROJECT_LINK_LIBRARIES}
+        #marl
 )
