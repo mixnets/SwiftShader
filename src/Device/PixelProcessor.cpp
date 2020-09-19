@@ -156,6 +156,11 @@ PixelProcessor::RoutineType PixelProcessor::routine(const State &state,
 
 	if(!routine)
 	{
+		if(state.shaderID == 0)
+		{
+			pixelShader = 0;
+		}
+
 		QuadRasterizer *generator = new PixelProgram(state, pipelineLayout, pixelShader, descriptorSets);
 		generator->generate();
 		routine = (*generator)("PixelRoutine_%0.8X", state.shaderID);

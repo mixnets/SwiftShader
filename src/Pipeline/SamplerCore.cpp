@@ -1452,6 +1452,8 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 		indices += sampleOffset;
 	}
 
+	indices &= UInt4(0x7FFFFFFF);
+
 	index[0] = Extract(indices, 0);
 	index[1] = Extract(indices, 1);
 	index[2] = Extract(indices, 2);
@@ -1484,6 +1486,8 @@ void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww,
 		// with the border color, so sample them at linear index 0.
 		indices &= As<UInt4>(valid);
 	}
+
+	indices &= UInt4(0x7FFFFFFF);
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -2093,7 +2097,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			c.x = c.x * Float4(1.0f / 0xFFFF);
 		}
 
-		//	ref = -ref;
+		//	ref = Float4(-1.0f) / ref;
 
 		Int4 boolean;
 
@@ -2109,6 +2113,8 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 			case VK_COMPARE_OP_NEVER: boolean = Int4(0); break;
 			default: ASSERT(false);
 		}
+
+		//c.x = Float4(100.0f) * c.x;
 
 		c.x = As<Float4>(boolean & As<Int4>(Float4(1.0f)));
 		c.y = Float4(0.0f);
