@@ -332,7 +332,15 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 
 		if(context->isDrawTriangle(false))
 		{
-			N += context->depthBias;
+			if(context->depthBuffer && context->depthBuffer->getFormat(VK_IMAGE_ASPECT_DEPTH_BIT) == VK_FORMAT_D16_UNORM)
+			{
+				N += context->depthBias / 0x10000;
+			}
+			else
+			{
+				// FIXME(b/139341727): Take the depth format resolution and polygon's maximum z component into account.
+				N += context->depthBias;
+			}
 		}
 
 		data->WxF = float4(W * subPixF);
