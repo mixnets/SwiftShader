@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe200193_ccaec49d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2654,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-21T20:40:36Z",
+      "side": 1,
+      "message": "Is it not possible for this functions\u0027 pRenderPassBegin argument to contain a VkRenderPassAttachmentBeginInfo structure?\nWhat works for vk\u003cFunction name\u003e() usually also works for vk\u003cFunction name\u003e2(), I think.\nAFAIK, vkCmdBeginRenderPass2KHR should be exactly the same as vkCmdBeginRenderPass(commandBuffer, pRenderPassBegin, pSubpassBeginInfo-\u003econtents), unless pSubpassBeginInfo-\u003epNext is allowed to be anything other than NULL, which I don\u0027t think is the case at the moment, so they should behave the same way.",
+      "range": {
+        "startLine": 2654,
+        "startChar": 249,
+        "endLine": 2654,
+        "endChar": 256
+      },
+      "revId": "16194131ba142cfea39ed86d5a5ea16c8cc7e691",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
