@@ -1,0 +1,1 @@
+dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic_array.bool_api_float_both

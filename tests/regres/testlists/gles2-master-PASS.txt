@@ -13313,7 +13313,6 @@ dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic.vec3_vertex
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic.vec4_both
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic.vec4_fragment
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic.vec4_vertex
-dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic_array.bool_api_float_both
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic_array.bool_api_float_fragment
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic_array.bool_api_float_vertex
 dEQP-GLES2.functional.uniform_api.value.initial.get_uniform.basic_array.bool_api_int_both
