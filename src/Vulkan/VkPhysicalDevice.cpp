@@ -701,6 +701,14 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceProvokingVertexPropertiesEXT 
 	properties->provokingVertexModePerPipeline = VK_TRUE;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceDepthStencilResolveProperties *properties) const
+{
+	properties->supportedDepthResolveModes = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT | VK_RESOLVE_MODE_NONE;
+	properties->supportedStencilResolveModes = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT | VK_RESOLVE_MODE_NONE;
+	properties->independentResolveNone = VK_FALSE;
+	properties->independentResolve = VK_FALSE;
+}
+
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const
 {
 	const VkPhysicalDeviceFeatures &supportedFeatures = getFeatures();
