@@ -145,6 +145,7 @@ public:
 
 	void blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkFilter filter);
 	void resolve(const vk::Image *src, vk::Image *dst, VkImageResolve region);
+	void resolveDepthStencil(const vk::Image *src, vk::Image *dst, VkImageResolve region, const VkSubpassDescriptionDepthStencilResolve *depthStencilResolve);
 	void copy(const vk::Image *src, uint8_t *dst, unsigned int dstPitch);
 
 	void updateBorders(vk::Image *image, const VkImageSubresource &subresource);

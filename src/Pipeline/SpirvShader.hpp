@@ -592,6 +592,7 @@ public:
 		bool DeviceGroup : 1;
 		bool MultiView : 1;
 		bool StencilExportEXT : 1;
+		bool SampleRateShading : 1;
 	};
 
 	Capabilities const &getUsedCapabilities() const

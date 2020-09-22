@@ -1879,6 +1879,219 @@ void Blitter::blit(const vk::Image *src, vk::Image *dst, VkImageBlit region, VkF
 
 	dst->contentsChanged(dstSubresRange);
 }
+static inline uint32_t averageByte4(uint32_t x, uint32_t y)
+{
+	return (x & y) + (((x ^ y) >> 1) & 0x7F7F7F7F) + ((x ^ y) & 0x01010101);
+}
+
+void writeDSR(uint8_t *dst, uint32_t data, size_t bytes)
+{
+	switch(bytes)
+	{
+		case 4:
+			*(uint32_t *)dst = (uint32_t) data;
+			break;
+		case 2:
+			*(uint16_t *)dst = (uint16_t) data;
+			break;
+		case 1:
+			*(uint8_t *)dst = (uint8_t) data;
+			break;
+		default:
+			ASSERT(false);
+			break;
+	}
+}
+
+uint32_t readDSR(const uint8_t *src, size_t bytes)
+{
+	uint32_t ret;
+	switch(bytes)
+	{
+		case 4:
+			ret = *(uint32_t *)src;
+			break;
+		case 2:
+			ret = *(uint16_t *)src;
+			break;
+		case 1:
+			ret = *(uint8_t *)src;
+			break;
+		default:
+			ASSERT(false);
+			break;
+	}
+
+	return ret;
+}
+
+void Blitter::resolveDepthStencil(const vk::Image *src, vk::Image *dst, VkImageResolve region, const VkSubpassDescriptionDepthStencilResolve *depthStencilResolve)
+{
+	// VK_KHR_depth_stencil_resolve extends VkSubpassDescription2 to include a depth stencil resolve attachment
+	// This function has been created to resolve depth stencil attachments.
+	ASSERT(region.srcSubresource.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT);
+	ASSERT(region.dstSubresource.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT);
+	// "The layerCount member of srcSubresource and dstSubresource must match"
+	ASSERT(region.srcSubresource.layerCount == region.dstSubresource.layerCount);
+
+	// We use this method both for explicit resolves from vkCmdResolveImage, and implicit ones for resolve attachments.
+	// - vkCmdResolveImage: "srcImage and dstImage must have been created with the same image format."
+	// - VkSubpassDescription: "each resolve attachment that is not VK_ATTACHMENT_UNUSED must have the same VkFormat as its corresponding color attachment."
+	ASSERT(src->getFormat() == dst->getFormat());
+
+	if(depthStencilResolve == nullptr)
+	{
+		return;
+	}
+
+	if(region.dstOffset != VkOffset3D{ 0, 0, 0 })
+	{
+		ASSERT(false);
+	}
+
+	if(region.srcOffset != VkOffset3D{ 0, 0, 0 })
+	{
+		ASSERT(false);
+	}
+
+	if(region.srcSubresource.layerCount != 1)
+	{
+		ASSERT(false);
+	}
+
+	if(region.extent != src->getExtent() ||
+	   region.extent != dst->getExtent() ||
+	   region.extent.depth != 1)
+	{
+		ASSERT(false);
+	}
+
+	if((region.srcSubresource.aspectMask & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) == (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT))
+	{
+		region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		resolveDepthStencil(src, dst, region, depthStencilResolve);
+		region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+		region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+		resolveDepthStencil(src, dst, region, depthStencilResolve);
+
+		return;
+	}
+
+	VkImageSubresource srcSubresource = {
+		region.srcSubresource.aspectMask,
+		region.srcSubresource.mipLevel,
+		region.srcSubresource.baseArrayLayer
+	};
+
+	VkImageSubresource dstSubresource = {
+		region.dstSubresource.aspectMask,
+		region.dstSubresource.mipLevel,
+		region.dstSubresource.baseArrayLayer
+	};
+
+	VkImageSubresourceRange dstSubresourceRange = {
+		region.dstSubresource.aspectMask,
+		region.dstSubresource.mipLevel,
+		1,  // levelCount
+		region.dstSubresource.baseArrayLayer,
+		region.dstSubresource.layerCount
+	};
+
+	void *source = src->getTexelPointer({ 0, 0, 0 }, srcSubresource);
+	uint8_t *dest = reinterpret_cast<uint8_t *>(dst->getTexelPointer({ 0, 0, 0 }, dstSubresource));
+
+	VkImageAspectFlagBits aspect;
+	if(srcSubresource.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)
+	{
+		aspect = VK_IMAGE_ASPECT_DEPTH_BIT;
+	}
+	else if(srcSubresource.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT)
+	{
+		aspect = VK_IMAGE_ASPECT_STENCIL_BIT;
+	}
+	else
+	{
+		ASSERT(false);
+	}
+
+	vk::Format format = src->getFormat(aspect);
+	auto samples = src->getSampleCountFlagBits();
+	auto extent = src->getExtent();
+
+	int width = extent.width;
+	int height = extent.height;
+	int pitch = src->rowPitchBytes(static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask), region.srcSubresource.mipLevel);
+	int slice = src->slicePitchBytes(static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask), region.srcSubresource.mipLevel);
+
+	uint8_t *source0 = (uint8_t *)source;
+	uint8_t *source1 = source0 + slice;
+	uint8_t *source2 = source1 + slice;
+	uint8_t *source3 = source2 + slice;
+
+	VkResolveModeFlagBits dsrMode = VK_RESOLVE_MODE_NONE;
+	if(region.srcSubresource.aspectMask & VK_IMAGE_ASPECT_DEPTH_BIT)
+	{
+		dsrMode = depthStencilResolve->depthResolveMode;
+	}
+	else if(region.srcSubresource.aspectMask & VK_IMAGE_ASPECT_STENCIL_BIT)
+	{
+		dsrMode = depthStencilResolve->stencilResolveMode;
+	}
+
+	if(dsrMode == VK_RESOLVE_MODE_NONE)
+	{
+		// No work to do for this resource
+		return;
+	}
+
+	uint32_t c0 = 0, c1 = 0, c2 = 0, c3 = 0;
+	size_t formatSize = format.bytes();
+	ASSERT(formatSize <= 4);
+	// TODO support different sample ranges
+	ASSERT(samples == 4);
+	for(int y = 0; y < height; y++)
+	{
+		int x = 0;
+		for(; x < width; x++)
+		{
+			c0 = readDSR(source0 + formatSize * x, formatSize);
+			c1 = readDSR(source1 + formatSize * x, formatSize);
+			c2 = readDSR(source2 + formatSize * x, formatSize);
+			c3 = readDSR(source3 + formatSize * x, formatSize);
+			uint32_t out;
+
+			switch(dsrMode)
+			{
+				case VK_RESOLVE_MODE_SAMPLE_ZERO_BIT:
+					// No need to sample any other plane
+					out = c0;
+					break;
+				default:
+					UNSUPPORTED("Unsupported depth/stencil mode: %d", dsrMode);
+					break;
+			}
+
+			writeDSR(dest + formatSize * x, out, formatSize);
+		}
+
+		source0 += pitch;
+		source1 += pitch;
+		source2 += pitch;
+		source3 += pitch;
+		dest += pitch;
+
+		ASSERT(source0 < src->end());
+		ASSERT(source3 < src->end());
+		ASSERT(dest < dst->end());
+	}
+	(void)c0;
+	(void)c1;
+	(void)c2;
+	(void)c3;
+
+	dst->contentsChanged(dstSubresourceRange);
+}
 
 void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
 {
@@ -1915,11 +2128,6 @@ void Blitter::resolve(const vk::Image *src, vk::Image *dst, VkImageResolve regio
 	blitRegion.dstSubresource = region.dstSubresource;
 
 	blit(src, dst, blitRegion, VK_FILTER_NEAREST);
-}
-
-static inline uint32_t averageByte4(uint32_t x, uint32_t y)
-{
-	return (x & y) + (((x ^ y) >> 1) & 0x7F7F7F7F) + ((x ^ y) & 0x01010101);
 }
 
 bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve region)
@@ -1975,8 +2183,8 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 
 	int width = extent.width;
 	int height = extent.height;
-	int pitch = src->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
-	int slice = src->slicePitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, region.srcSubresource.mipLevel);
+	int pitch = src->rowPitchBytes(static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask), region.srcSubresource.mipLevel);
+	int slice = src->slicePitchBytes(static_cast<VkImageAspectFlagBits>(region.srcSubresource.aspectMask), region.srcSubresource.mipLevel);
 
 	uint8_t *source0 = (uint8_t *)source;
 	uint8_t *source1 = source0 + slice;
@@ -2018,10 +2226,11 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 					uint32_t c1 = *(uint32_t *)(source1 + 4 * x);
 					uint32_t c2 = *(uint32_t *)(source2 + 4 * x);
 					uint32_t c3 = *(uint32_t *)(source3 + 4 * x);
+					uint32_t c01, c23, c03;
 
-					uint32_t c01 = averageByte4(c0, c1);
-					uint32_t c23 = averageByte4(c2, c3);
-					uint32_t c03 = averageByte4(c01, c23);
+					c01 = averageByte4(c0, c1);
+					c23 = averageByte4(c2, c3);
+					c03 = averageByte4(c01, c23);
 
 					*(uint32_t *)(dest + 4 * x) = c03;
 				}
