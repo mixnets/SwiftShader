@@ -16,6 +16,253 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d03efece_b246bbdd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "Some initial comments.\nChris should probably review VkDeviceMemoryExternalAndroid.cpp, because I\u0027m unfamiliar with the ahb portion of that code.\n",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3eae5929_ed852624",
+        "filename": "src/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "All the indentations in this file should be spaces, not tabs",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 2
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f52e4f6_6297118c",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "You could add \", Device* device\" here and remove the \"setDevicePtr\" function below.",
+      "range": {
+        "startLine": 28,
+        "startChar": 64,
+        "endLine": 28,
+        "endChar": 65
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2bd69c9_42db2bbe",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "Nit: This is just my personal taste, so you don\u0027t have to do it if you prefer not to, but I like when static functions start with an upper case (like ComputeRequiredAllocationSize above), so that they are easily differentiable from non static functions.",
+      "range": {
+        "startLine": 39,
+        "startChar": 17,
+        "endLine": 39,
+        "endChar": 18
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9cffb58_025ba4b2",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "Where is this used?",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7aa19fa4_f006a3b5",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "It\u0027s ok to not ifdef this member.",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aeae7717_b3f32ac7",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "That probably doesn\u0027t compile on Fuchsia, please remove it or move it to the right spot.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "415f1eba_f07a6142",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "Is there a plan to address this soon?",
+      "range": {
+        "startLine": 591,
+        "startChar": 0,
+        "endLine": 595,
+        "endChar": 124
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f4a751b_999d0422",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "Nit: This is just my personal taste, so you don\u0027t have to do it if you prefer not to, but I like when static functions start with an upper case (like ComputeRequiredAllocationSize above), so that they are easily differentiable from non static functions.",
+      "range": {
+        "startLine": 63,
+        "startChar": 13,
+        "endLine": 63,
+        "endChar": 14
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63757d70_f5d3180a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1071,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "I think you could just add \"device\" as an argument here, and add it to DeviceMemory\u0027s constructor, rather than have a \"setDevicePtr\" function.",
+      "range": {
+        "startLine": 1071,
+        "startChar": 78,
+        "endLine": 1071,
+        "endChar": 79
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6fe323d_12d7a409",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2816,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T20:34:36Z",
+      "side": 1,
+      "message": "We tend to put even local #ifdefed includes at the top of the file",
+      "range": {
+        "startLine": 2814,
+        "startChar": 0,
+        "endLine": 2816,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
