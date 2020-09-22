@@ -226,8 +226,6 @@ void log_trap(const char *format, ...)
 		va_start(vararg, format);
 		logv(Level::Fatal, format, vararg);
 		va_end(vararg);
-
-		::abort();
 	}
 	else if(!asserted)
 	{
