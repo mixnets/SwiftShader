@@ -162,7 +162,20 @@ ImageView *Framebuffer::getAttachment(uint32_t index) const
 
 void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 {
+	VkSubpassDescriptionDepthStencilResolve dsResolve;
+	bool hasDepthStencilResolve = renderPass->hasDepthStencilResolve();
 	auto const &subpass = renderPass->getSubpass(subpassIndex);
+
+	if(hasDepthStencilResolve)
+	{
+		dsResolve = renderPass->getSubpassDepthStencilResolve(subpassIndex);
+
+		if(dsResolve.pDepthStencilResolveAttachment == nullptr || dsResolve.pDepthStencilResolveAttachment->attachment == VK_ATTACHMENT_UNUSED)
+		{
+			hasDepthStencilResolve = false;
+		}
+	}
+
 	if(subpass.pResolveAttachments)
 	{
 		for(uint32_t i = 0; i < subpass.colorAttachmentCount; i++)
@@ -180,6 +193,23 @@ void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 				{
 					imageView->resolve(attachments[resolveAttachment]);
 				}
+			}
+		}
+	}
+
+	if(hasDepthStencilResolve && subpass.pDepthStencilAttachment != nullptr)
+	{
+		uint32_t depthStencilAttachment = subpass.pDepthStencilAttachment->attachment;
+		if(depthStencilAttachment != VK_ATTACHMENT_UNUSED)
+		{
+			ImageView *imageView = attachments[depthStencilAttachment];
+			if(renderPass->isMultiView())
+			{
+				imageView->resolveDepthStencilWithLayerMask(attachments[dsResolve.pDepthStencilResolveAttachment->attachment], renderPass->getViewMask(subpassIndex), &dsResolve);
+			}
+			else
+			{
+				imageView->resolveDepthStencil(attachments[dsResolve.pDepthStencilResolveAttachment->attachment], &dsResolve);
 			}
 		}
 	}

@@ -262,6 +262,72 @@ void ImageView::resolveWithLayerMask(ImageView *resolveAttachment, uint32_t laye
 	}
 }
 
+void ImageView::resolveDepthStencil(ImageView *resolveAttachment, int layer, const VkSubpassDescriptionDepthStencilResolve *dsResolve)
+{
+	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
+	{
+		UNIMPLEMENTED("b/148242443: levelCount != 1");  // FIXME(b/148242443)
+	}
+
+	VkImageResolve region;
+	region.srcSubresource = {
+		subresourceRange.aspectMask,
+		subresourceRange.baseMipLevel,
+		subresourceRange.baseArrayLayer + layer,
+		1
+	};
+	region.srcOffset = { 0, 0, 0 };
+	region.dstSubresource = {
+		resolveAttachment->subresourceRange.aspectMask,
+		resolveAttachment->subresourceRange.baseMipLevel,
+		resolveAttachment->subresourceRange.baseArrayLayer + layer,
+		1
+	};
+	region.dstOffset = { 0, 0, 0 };
+	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                         subresourceRange.baseMipLevel);
+
+	image->resolveDepthStencilTo(resolveAttachment->image, region, dsResolve);
+}
+
+void ImageView::resolveDepthStencil(ImageView *resolveAttachment, const VkSubpassDescriptionDepthStencilResolve *dsResolve)
+{
+	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
+	{
+		UNIMPLEMENTED("b/148242443: levelCount != 1");  // FIXME(b/148242443)
+	}
+
+	VkImageResolve region;
+	region.srcSubresource = {
+		subresourceRange.aspectMask,
+		subresourceRange.baseMipLevel,
+		subresourceRange.baseArrayLayer,
+		subresourceRange.layerCount
+	};
+	region.srcOffset = { 0, 0, 0 };
+	region.dstSubresource = {
+		resolveAttachment->subresourceRange.aspectMask,
+		resolveAttachment->subresourceRange.baseMipLevel,
+		resolveAttachment->subresourceRange.baseArrayLayer,
+		resolveAttachment->subresourceRange.layerCount
+	};
+	region.dstOffset = { 0, 0, 0 };
+	region.extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
+	                                         subresourceRange.baseMipLevel);
+
+	image->resolveDepthStencilTo(resolveAttachment->image, region, dsResolve);
+}
+
+void ImageView::resolveDepthStencilWithLayerMask(ImageView *resolveAttachment, uint32_t layerMask, const VkSubpassDescriptionDepthStencilResolve *dsResolve)
+{
+	while(layerMask)
+	{
+		int layer = sw::log2i(layerMask);
+		layerMask &= ~(1 << layer);
+		resolveDepthStencil(resolveAttachment, layer, dsResolve);
+	}
+}
+
 const Image *ImageView::getImage(Usage usage) const
 {
 	switch(usage)

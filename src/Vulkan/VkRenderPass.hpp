@@ -53,6 +53,16 @@ public:
 		return subpasses[subpassIndex];
 	}
 
+	bool hasDepthStencilResolve() const
+	{
+		return subpassResolveCount > 0;
+	}
+
+	VkSubpassDescriptionDepthStencilResolve getSubpassDepthStencilResolve(uint32_t subpassIndex) const
+	{
+		return subpassDepthStencilResolves[subpassIndex];
+	}
+
 	uint32_t getDependencyCount() const
 	{
 		return dependencyCount;
@@ -88,6 +98,9 @@ private:
 	VkAttachmentDescription *attachments = nullptr;
 	uint32_t subpassCount = 0;
 	VkSubpassDescription *subpasses = nullptr;
+	uint32_t subpassResolveCount = 0;
+	uint32_t subpassResolveAttachmentCount = 0;
+	VkSubpassDescriptionDepthStencilResolve *subpassDepthStencilResolves = nullptr;
 	uint32_t dependencyCount = 0;
 	VkSubpassDependency *dependencies = nullptr;
 	int *attachmentFirstUse = nullptr;
@@ -96,7 +109,7 @@ private:
 
 	void MarkFirstUse(int attachment, int subpass);
 	template<class T>
-	void init(const T *pCreateInfo, void *mem);
+	void init(const T *pCreateInfo, void **mem);
 };
 
 static inline RenderPass *Cast(VkRenderPass object)
