@@ -754,11 +754,12 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 	if(mipLevelExtent.height == 0) { mipLevelExtent.height = 1; }
 	if(mipLevelExtent.depth == 0) { mipLevelExtent.depth = 1; }
 
-	switch(aspect)
+	switch((int)aspect)
 	{
 		case VK_IMAGE_ASPECT_COLOR_BIT:
 		case VK_IMAGE_ASPECT_DEPTH_BIT:
 		case VK_IMAGE_ASPECT_STENCIL_BIT:
+		case VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT:
 		case VK_IMAGE_ASPECT_PLANE_0_BIT:  // Vulkan 1.1 Table 31. Plane Format Compatibility Table: plane 0 of all defined formats is full resolution.
 			break;
 		case VK_IMAGE_ASPECT_PLANE_1_BIT:
@@ -990,6 +991,11 @@ void Image::copyTo(uint8_t *dst, unsigned int dstPitch) const
 void Image::resolveTo(Image *dstImage, const VkImageResolve &region) const
 {
 	device->getBlitter()->resolve(this, dstImage, region);
+}
+
+void Image::resolveDepthStencilTo(Image *dstImage, const VkImageResolve &region, const VkSubpassDescriptionDepthStencilResolve *dsResolve) const
+{
+	device->getBlitter()->resolveDepthStencil(this, dstImage, region, dsResolve);
 }
 
 VkFormat Image::getClearFormat() const
