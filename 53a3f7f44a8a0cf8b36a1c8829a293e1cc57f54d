@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "422c5537_fb70b6b4",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T17:45:03Z",
+      "side": 1,
+      "message": "nit: you can improve readability by putting those number in constants",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 56
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84d0661e_a36cc20b",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T17:45:03Z",
+      "side": 1,
+      "message": "Nit: same in both branches, can probably be removed from the if/else statements",
+      "range": {
+        "startLine": 56,
+        "startChar": 34,
+        "endLine": 56,
+        "endChar": 83
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "047ded37_1286f60e",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T17:45:03Z",
+      "side": 1,
+      "message": "Nit: same comment about putting numbers in constants",
+      "range": {
+        "startLine": 232,
+        "startChar": 19,
+        "endLine": 232,
+        "endChar": 29
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa603a51_7ce28346",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2220,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-22T17:45:03Z",
+      "side": 1,
+      "message": "Seems below your precision above. Shouldn\u0027t it be 0.9999?",
+      "range": {
+        "startLine": 2220,
+        "startChar": 114,
+        "endLine": 2220,
+        "endChar": 127
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
