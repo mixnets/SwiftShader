@@ -262,6 +262,37 @@ void ImageView::resolveWithLayerMask(ImageView *resolveAttachment, uint32_t laye
 	}
 }
 
+void ImageView::resolveDepthStencil(ImageView *resolveAttachment, int layer, const VkSubpassDescriptionDepthStencilResolve &dsResolve)
+{
+	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
+	{
+		UNIMPLEMENTED("b/148242443: levelCount != 1");  // FIXME(b/148242443)
+	}
+
+	image->resolveDepthStencilTo(this, resolveAttachment, dsResolve);
+}
+
+void ImageView::resolveDepthStencil(ImageView *resolveAttachment, const VkSubpassDescriptionDepthStencilResolve &dsResolve)
+{
+	if((subresourceRange.levelCount != 1) || (resolveAttachment->subresourceRange.levelCount != 1))
+	{
+		UNIMPLEMENTED("b/148242443: levelCount != 1");  // FIXME(b/148242443)
+	}
+
+	image->resolveDepthStencilTo(this, resolveAttachment, dsResolve);
+}
+
+void ImageView::resolveDepthStencilWithLayerMask(ImageView *resolveAttachment, uint32_t layerMask, const VkSubpassDescriptionDepthStencilResolve &dsResolve)
+{
+	for(uint32_t layer = 0; layer < 32; layer++)
+	{
+		if(layerMask & (1u << layer))
+		{
+			resolveDepthStencil(resolveAttachment, layer, dsResolve);
+		}
+	}
+}
+
 const Image *ImageView::getImage(Usage usage) const
 {
 	switch(usage)
@@ -306,6 +337,13 @@ VkExtent2D ImageView::getMipLevelExtent(uint32_t mipLevel) const
 {
 	VkExtent3D extent = image->getMipLevelExtent(static_cast<VkImageAspectFlagBits>(subresourceRange.aspectMask),
 	                                             subresourceRange.baseMipLevel + mipLevel);
+
+	return { extent.width, extent.height };
+}
+
+VkExtent2D ImageView::getMipLevelExtent(uint32_t mipLevel, VkImageAspectFlagBits aspect) const
+{
+	VkExtent3D extent = image->getMipLevelExtent(aspect, subresourceRange.baseMipLevel + mipLevel);
 
 	return { extent.width, extent.height };
 }
