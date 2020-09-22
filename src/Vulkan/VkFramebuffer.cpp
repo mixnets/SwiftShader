@@ -162,7 +162,20 @@ ImageView *Framebuffer::getAttachment(uint32_t index) const
 
 void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 {
+	VkSubpassDescriptionDepthStencilResolve dsResolve = {};
+	bool hasDepthStencilResolve = renderPass->hasDepthStencilResolve();
 	auto const &subpass = renderPass->getSubpass(subpassIndex);
+
+	if(hasDepthStencilResolve)
+	{
+		dsResolve = renderPass->getSubpassDepthStencilResolve(subpassIndex);
+
+		if(dsResolve.pDepthStencilResolveAttachment == nullptr)
+		{
+			hasDepthStencilResolve = false;
+		}
+	}
+
 	if(subpass.pResolveAttachments)
 	{
 		for(uint32_t i = 0; i < subpass.colorAttachmentCount; i++)
@@ -175,10 +188,19 @@ void Framebuffer::resolve(const RenderPass *renderPass, uint32_t subpassIndex)
 				{
 					imageView->resolveWithLayerMask(attachments[resolveAttachment],
 					                                renderPass->getViewMask(subpassIndex));
+					if(hasDepthStencilResolve)
+					{
+						imageView->resolveWithLayerMask(attachments[dsResolve.pDepthStencilResolveAttachment->attachment], renderPass->getViewMask(subpassIndex));
+					}
 				}
 				else
 				{
 					imageView->resolve(attachments[resolveAttachment]);
+
+					if(hasDepthStencilResolve)
+					{
+						imageView->resolve(attachments[dsResolve.pDepthStencilResolveAttachment->attachment]);
+					}
 				}
 			}
 		}
