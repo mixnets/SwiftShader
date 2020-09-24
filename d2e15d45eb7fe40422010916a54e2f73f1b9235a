@@ -192,6 +192,80 @@
     },
     {
       "key": {
+        "uuid": "6cf527e3_c99b415b",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:53:17Z",
+      "side": 1,
+      "message": "There should be a block of comments somewhere describing broadly all the entanglements with DRM \u0026 cros_gralloc.",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc82c2ad_a7ca3b1f",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:53:17Z",
+      "side": 1,
+      "message": "Needs at least explaining *why* you\u0027re singling out this format.",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1fcbc30c_ba3a18c6",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:53:17Z",
+      "side": 1,
+      "message": "Can we pull this out into a helper function so it doesnt need to be duplicated in both import and export branches?",
+      "range": {
+        "startLine": 172,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 3
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81b4bd2d_04f61022",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:53:17Z",
+      "side": 1,
+      "message": "Dead?",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "68ceec3f_a4b6099b",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
         "patchSetId": 4
