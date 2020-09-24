@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "36e79290_828dd31d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 82706
+      },
+      "writtenOn": "2020-09-24T10:07:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe621aca_4947a6c3",
+      "range": {
+        "startLine": 13,
+        "startChar": 19,
+        "endLine": 13,
+        "endChar": 30
+      },
+      "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d250ec1_c1a9561a",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -53,6 +77,24 @@
       "writtenOn": "2020-09-24T10:05:39Z",
       "side": 1,
       "message": "LGTM, let\u0027s wait a bit for Kokoro results but it should pass without issues.",
+      "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b77e825_9cdfd9d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 82706
+      },
+      "writtenOn": "2020-09-24T10:07:28Z",
+      "side": 1,
+      "message": "Sure. Thank you for the quick review.",
+      "parentUuid": "88ad1a23_97a058e8",
       "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
