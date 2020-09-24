@@ -1,0 +1,4 @@
+dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8_depth_stencil_rbo_depth24_stencil8
+dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_vertex
+dEQP-GLES3.functional.texture.wrap.astc_5x5.mirror_clamp_nearest_divisible
+dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride16_components4_quads1

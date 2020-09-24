@@ -3688,7 +3688,6 @@ dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32f_depth_stencil_rbo_de
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32i_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba32ui_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba4_depth_stencil_rbo_depth24_stencil8
-dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8i_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_rgba8ui_depth_stencil_rbo_depth24_stencil8
 dEQP-GLES3.functional.fbo.render.recreate_color.rbo_srgb8_alpha8_depth_stencil_rbo_depth24_stencil8
@@ -21736,7 +21735,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_float_vec4_verte
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_float_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_fragment
-dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec2_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec3_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.mul.lowp_int_ivec4_fragment
@@ -40880,7 +40878,6 @@ dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffe
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride16_components4_quads256
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride32_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.buffer_stride32_components4_quads256
-dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride16_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride16_components4_quads256
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride17_components4_quads1
 dEQP-GLES3.functional.vertex_arrays.single_attribute.strides.int2_10_10_10.user_ptr_stride17_components4_quads256
