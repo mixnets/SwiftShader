@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fe621aca_4947a6c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2020-09-24T10:05:39Z",
+      "side": 1,
+      "message": "nit: SwiftShader",
+      "range": {
+        "startLine": 13,
+        "startChar": 19,
+        "endLine": 13,
+        "endChar": 30
+      },
+      "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0d250ec1_c1a9561a",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -13,6 +36,23 @@
       "writtenOn": "2020-09-24T09:57:03Z",
       "side": 1,
       "message": "Please take a look.\n\nI\u0027ve tested that this works for Chromium. This is needed to land https://chromium-review.googlesource.com/c/chromium/src/+/2426564 in Chromium.",
+      "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88ad1a23_97a058e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2020-09-24T10:05:39Z",
+      "side": 1,
+      "message": "LGTM, let\u0027s wait a bit for Kokoro results but it should pass without issues.",
       "revId": "11b9cda62dddf4d0ea63ac260f2e550820eb5a5f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
