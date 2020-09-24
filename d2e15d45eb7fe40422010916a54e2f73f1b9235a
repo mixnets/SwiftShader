@@ -59,6 +59,23 @@
     },
     {
       "key": {
+        "uuid": "44644016_3bfdf528",
+        "filename": "src/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:23:48Z",
+      "side": 1,
+      "message": "Do we need to do something in the build to make minigbm/libdrm entanglement optional? [\"only for products that enable AHB\"] ?\n\nI\u0027m not sure how this is going to work out on a QCOM device, etc.",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f52e4f6_6297118c",
         "filename": "src/Vulkan/VkDeviceMemory.hpp",
         "patchSetId": 4
@@ -70,6 +87,30 @@
       "writtenOn": "2020-09-22T20:34:36Z",
       "side": 1,
       "message": "You could add \", Device* device\" here and remove the \"setDevicePtr\" function below.",
+      "range": {
+        "startLine": 28,
+        "startChar": 64,
+        "endLine": 28,
+        "endChar": 65
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79984440_addba7c2",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:23:48Z",
+      "side": 1,
+      "message": "+1 for this",
+      "parentUuid": "6f52e4f6_6297118c",
       "range": {
         "startLine": 28,
         "startChar": 64,
@@ -145,6 +186,23 @@
         "endLine": 73,
         "endChar": 6
       },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68ceec3f_a4b6099b",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-09-24T20:23:48Z",
+      "side": 1,
+      "message": "This doesn\u0027t look right. Shouldn\u0027t this be a mask of memory types usable with the AHB?",
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
