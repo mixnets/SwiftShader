@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "564c377a_7b8aa01d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 92506
+      },
+      "writtenOn": "2020-09-24T00:40:17Z",
+      "side": 1,
+      "message": "\u003e Patch Set 2:\n\u003e \n\u003e Looks good. Set to Verified+1 and then submit. If you can\u0027t, I\u0027ll do it.\n\u003e \n\u003e Antonio Maiorano\n\nYou might have to; I don\u0027t seem to have permission to edit the labels",
+      "revId": "7fe19148f1352894bfb738d138e2dbe8c1ee3ceb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
