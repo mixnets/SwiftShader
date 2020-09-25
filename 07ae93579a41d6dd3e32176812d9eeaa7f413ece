@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a7a90bd_3e6f15ff",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-25T17:51:13Z",
+      "side": 1,
+      "message": "Why even keep the pointCoord member? If it\u0027s unused, it could just be removed from SpirvRoutine.",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 19
+      },
+      "revId": "07ae93579a41d6dd3e32176812d9eeaa7f413ece",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
