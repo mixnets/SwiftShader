@@ -46,6 +46,30 @@
       "revId": "07ae93579a41d6dd3e32176812d9eeaa7f413ece",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "025e3ba8_2f596a46",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-25T18:01:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "60fbfe1c_928c3834",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 19
+      },
+      "revId": "07ae93579a41d6dd3e32176812d9eeaa7f413ece",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
