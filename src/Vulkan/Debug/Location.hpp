@@ -16,6 +16,7 @@
 #define VK_DEBUG_LOCATION_HPP_
 
 #include <memory>
+#include <tuple>
 
 namespace vk {
 namespace dbg {
@@ -30,6 +31,7 @@ struct Location
 
 	inline bool operator==(const Location &o) const;
 	inline bool operator!=(const Location &o) const;
+	inline bool operator<(const Location &o) const;
 
 	std::shared_ptr<File> file;
 	int line = 0;    // 1 based. 0 represents no line.
@@ -52,7 +54,30 @@ bool Location::operator!=(const Location &o) const
 	return !(*this == o);
 }
 
+bool Location::operator<(const Location &o) const
+{
+	if(file.get() < o.file.get()) { return true; }
+	if(file.get() > o.file.get()) { return false; }
+	return std::tie(line, column) < std::tie(o.line, o.column);
+}
+
 }  // namespace dbg
 }  // namespace vk
+
+namespace std {
+
+template<>
+struct hash<vk::dbg::Location>
+{
+	size_t operator()(const vk::dbg::Location &l) const
+	{
+		auto h = std::hash<vk::dbg::File *>()(l.file.get());
+		h = h * 31 + l.line;
+		h = h * 31 + l.column;
+		return h;
+	}
+};
+
+}  // namespace std
 
 #endif  // VK_DEBUG_LOCATION_HPP_
