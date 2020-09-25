@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73982914_3ca7c9fc",
+        "filename": "src/Vulkan/Debug/File.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-25T17:57:38Z",
+      "side": 1,
+      "message": "I haven\u0027t seen this convention used elsewhere in SwiftShader. Why the change? The new function could be called getBreakpoints() or anything in that order of idea.",
+      "range": {
+        "startLine": 37,
+        "startChar": 36,
+        "endLine": 37,
+        "endChar": 37
+      },
+      "revId": "260ba381b1ae0e31f41f1ceccf245b22dcac35ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
