@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "076c7b09_1b466a10",
+        "filename": "src/Vulkan/.libVulkan.cpp.swp",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "What is this?",
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f18966bb_fd194fe9",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "nit: While we\u0027re here, please add a blank line below this one to keep the main header separate from helper headers.",
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff08d0db_f5d107c6",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "nit: Blank line to separate our headers from platform headers.",
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "707bad39_054a3ca4",
+        "filename": "src/Vulkan/VkFramebuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "setAttachment",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 35,
+        "endChar": 19
+      },
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2c8cbdf_62b9d61a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "Please add a comment above this line that clarifies these are Vulkan 1.2 promoted extensions (cf. line 324).",
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e31171a_15894575",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2619,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-27T16:13:52Z",
+      "side": 1,
+      "message": "Looks like mainly a duplicate of vkCmdBeginRenderPass2KHR, which has a core Vulkan 1.2 entry point named vkCmdBeginRenderPass2.\n\nPlease open a bug for creating the latter and implementing vkCmdBeginRenderPass and vkCmdBeginRenderPass2KHR in terms of that one to eliminate the duplication.",
+      "range": {
+        "startLine": 2619,
+        "startChar": 27,
+        "endLine": 2619,
+        "endChar": 47
+      },
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
