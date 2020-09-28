@@ -22,6 +22,74 @@
       "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30114105_e66da164",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-28T20:20:37Z",
+      "side": 1,
+      "message": "This is already inclued on line 17.",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4724ecbf_0a9004c0",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-28T20:20:37Z",
+      "side": 1,
+      "message": "Should this not assert if we attempt to invoke it?",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c514f1c7_f872fad7",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 939,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-28T20:20:37Z",
+      "side": 1,
+      "message": "Would std::vector\u003cuint8_t\u003e have been good enough?",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b97cb3f4_076a5a02",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1712,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-28T20:20:37Z",
+      "side": 1,
+      "message": "Isn\u0027t this adding \u0027child\u0027 as a children of itself?",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
