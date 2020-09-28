@@ -86,9 +86,10 @@ set_target_properties(libGLESv2 PROPERTIES
 )
 
 target_include_directories(libGLESv2
-    PRIVATE
+    PUBLIC
         ".."
         "../.."
+        "../../third_party/marl/include"
 )
 
 target_compile_definitions(libGLESv2
@@ -111,10 +112,11 @@ target_link_options(libGLESv2
 )
 
 target_link_libraries(libGLESv2
-    PRIVATE
+    PUBLIC
         libGLESCommon
         gl_swiftshader_core
         GLCompiler
+        marl
         ${ROOT_PROJECT_LINK_LIBRARIES}
 )
 

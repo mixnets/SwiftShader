@@ -57,7 +57,7 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 #if defined(SWIFTSHADER_DISABLE_TRACE)
 #	define TRACE(message, ...) (void(0))
 #else
-#	define TRACE(message, ...) sw::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#	define TRACE(message, ...) sw::trace("%s:%d TRACE: %s" message "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #endif
 
 #if defined(SWIFTSHADER_DISABLE_TRACE) || defined(NDEBUG)

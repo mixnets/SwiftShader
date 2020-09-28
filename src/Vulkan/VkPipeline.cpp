@@ -141,7 +141,7 @@ namespace vk {
 Pipeline::Pipeline(PipelineLayout *layout, Device *device)
     : layout(layout)
     , device(device)
-    , robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)
+    , robustBufferAccess(device->getEnabledFeatures().robustBufferAccess)  //
 {
 	layout->incRefCount();
 }

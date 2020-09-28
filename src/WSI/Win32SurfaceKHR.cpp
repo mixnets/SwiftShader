@@ -24,7 +24,7 @@ VkExtent2D getWindowSize(HWND hwnd)
 {
 	RECT clientRect = {};
 	BOOL status = GetClientRect(hwnd, &clientRect);
-	ASSERT(status != 0);
+	//ASSERT(status != 0);
 
 	int windowWidth = clientRect.right - clientRect.left;
 	int windowHeight = clientRect.bottom - clientRect.top;
@@ -38,7 +38,7 @@ namespace vk {
 Win32SurfaceKHR::Win32SurfaceKHR(const VkWin32SurfaceCreateInfoKHR *pCreateInfo, void *mem)
     : hwnd(pCreateInfo->hwnd)
 {
-	ASSERT(IsWindow(hwnd) == TRUE);
+	//ASSERT(IsWindow(hwnd) == TRUE);
 	windowContext = GetDC(hwnd);
 	bitmapContext = CreateCompatibleDC(windowContext);
 	lazyCreateFrameBuffer();
