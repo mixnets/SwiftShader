@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1b809bb8_b8d5f7ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-09-28T12:18:08Z",
+      "side": 1,
+      "message": "New patch has an extra useless file, removing +2 until this is addressed.",
+      "revId": "48c1529d4872e8af0c1bfb9369e66b792adfee35",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "076c7b09_1b466a10",
         "filename": "src/Vulkan/.libVulkan.cpp.swp",
         "patchSetId": 9
