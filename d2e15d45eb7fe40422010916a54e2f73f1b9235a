@@ -59,6 +59,30 @@
     },
     {
       "key": {
+        "uuid": "1d9b120b_5ca2644e",
+        "filename": "src/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "3eae5929_ed852624",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 2
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "44644016_3bfdf528",
         "filename": "src/Android.bp",
         "patchSetId": 4
@@ -70,6 +94,24 @@
       "writtenOn": "2020-09-24T20:23:48Z",
       "side": 1,
       "message": "Do we need to do something in the build to make minigbm/libdrm entanglement optional? [\"only for products that enable AHB\"] ?\n\nI\u0027m not sure how this is going to work out on a QCOM device, etc.",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d243f3c7_d50ce5a3",
+        "filename": "src/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "I asked the Android Gfx platform chat about this. We\u0027ll see what comes up.",
+      "parentUuid": "44644016_3bfdf528",
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -123,6 +165,30 @@
     },
     {
       "key": {
+        "uuid": "ca2f601f_987da492",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "79984440_addba7c2",
+      "range": {
+        "startLine": 28,
+        "startChar": 64,
+        "endLine": 28,
+        "endChar": 65
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2bd69c9_42db2bbe",
         "filename": "src/Vulkan/VkDeviceMemory.hpp",
         "patchSetId": 4
@@ -143,6 +209,30 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fb05b0f_3a4292f2",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "c2bd69c9_42db2bbe",
+      "range": {
+        "startLine": 39,
+        "startChar": 17,
+        "endLine": 39,
+        "endChar": 18
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -169,6 +259,30 @@
     },
     {
       "key": {
+        "uuid": "e0064a00_57d0592e",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "It\u0027s not. It\u0027s vestigial from my first attempt at getting a pointer to the device through to AHB. Removing.",
+      "parentUuid": "a9cffb58_025ba4b2",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7aa19fa4_f006a3b5",
         "filename": "src/Vulkan/VkDeviceMemory.hpp",
         "patchSetId": 4
@@ -189,6 +303,30 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17e5a35e_a9f43d08",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done. removed ifdef",
+      "parentUuid": "7aa19fa4_f006a3b5",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -266,6 +404,24 @@
     },
     {
       "key": {
+        "uuid": "6e04a4fc_f952e0a2",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "No.\nThe AHB formats\n- AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM\n- AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM\nboth map to the same VK format\n- AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM\n\nThis function is from vk to ahb, the VK format maps to AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM.\nHaving this additional commented out line is supposed to inform the reader that the additional ahb format exists (but is unused). Since this was not clear in context, I will just remove the commented out portion of the code",
+      "parentUuid": "81b4bd2d_04f61022",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "68ceec3f_a4b6099b",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
         "patchSetId": 4
@@ -306,6 +462,30 @@
     },
     {
       "key": {
+        "uuid": "0b1a17ed_335773ad",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aeae7717_b3f32ac7",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "415f1eba_f07a6142",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 4
@@ -326,6 +506,30 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b5f50e3_454bd7b9",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "uhh, in my defense, this code (and associated comments) were written at 2 in the morning.\n\nThe comments here are wrong.\n\n`GPU_SAMPLED_IMAGE` is sampled image, and\n`GPU_COLOR_OUTPUT` is a framebuffer.\n\nthis properties call just returns that the buffer of interest is either a sampled image or a framebuffer.\n\nI\u0027m spinning up a new issue. This code shouldn\u0027t actually cause functionality bugs. I don\u0027t know at this moment",
+      "parentUuid": "415f1eba_f07a6142",
+      "range": {
+        "startLine": 591,
+        "startChar": 0,
+        "endLine": 595,
+        "endChar": 124
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -352,6 +556,30 @@
     },
     {
       "key": {
+        "uuid": "e7c4f4a0_9e23082f",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "0f4a751b_999d0422",
+      "range": {
+        "startLine": 63,
+        "startChar": 13,
+        "endLine": 63,
+        "endChar": 14
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "63757d70_f5d3180a",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 4
@@ -375,6 +603,30 @@
     },
     {
       "key": {
+        "uuid": "7d937ada_2d9cfeb3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1071,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "63757d70_f5d3180a",
+      "range": {
+        "startLine": 1071,
+        "startChar": 78,
+        "endLine": 1071,
+        "endChar": 79
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f6fe323d_12d7a409",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 4
@@ -395,6 +647,30 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e34dc2d8_8b820459",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2816,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-28T18:26:23Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "f6fe323d_12d7a409",
+      "range": {
+        "startLine": 2814,
+        "startChar": 0,
+        "endLine": 2816,
+        "endChar": 6
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
