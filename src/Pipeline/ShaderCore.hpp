@@ -18,6 +18,7 @@
 #include "Reactor/Print.hpp"
 #include "Reactor/Reactor.hpp"
 #include "System/Debug.hpp"
+#include "System/Types.hpp"
 
 #include <array>
 #include <atomic>   // std::memory_order
@@ -180,6 +181,46 @@ struct Element<UInt>
 {
 	using type = rr::UInt;
 };
+
+// PerLane is a SIMD vector that holds N vectors of width SIMD::Width.
+// PerLane operator[] returns the elements of a single lane (a transpose of the
+// storage arrays).
+template<typename T, int N = 1>
+struct PerLane
+{
+	sw::vec<T, N> operator[](int lane) const
+	{
+		sw::vec<T, N> out;
+		for(int i = 0; i < N; i++)
+		{
+			out[i] = elements[i][lane];
+		}
+		return out;
+	}
+	std::array<sw::vec<T, Width>, N> elements;
+};
+
+template<typename T>
+struct PerLane<T, 1>
+{
+	const T &operator[](int lane) const { return data[lane]; }
+	std::array<T, Width> data;
+};
+
+using uint_t = PerLane<unsigned int>;
+using uint2 = PerLane<unsigned int, 2>;
+using uint3 = PerLane<unsigned int, 3>;
+using uint4 = PerLane<unsigned int, 4>;
+
+using int_t = PerLane<int>;
+using int2 = PerLane<int, 2>;
+using int3 = PerLane<int, 3>;
+using int4 = PerLane<int, 4>;
+
+using float_t = PerLane<float>;
+using vec2 = PerLane<float, 2>;
+using vec3 = PerLane<float, 3>;
+using vec4 = PerLane<float, 4>;
 
 }  // namespace SIMD
 
