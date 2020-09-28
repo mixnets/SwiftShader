@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fed258e_93579fd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T16:28:37Z",
+      "side": 1,
+      "message": "Kokoro failure is swiftshader/macos_reactor_subzero/release/presubmit timing out.\nNot seen on later CLs.",
+      "revId": "7d64e2251add5f56d795473c3bb4399bf60f4618",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
