@@ -16,6 +16,24 @@
       "revId": "3ce7e799fd0cf010b062692ad929fedda32582ae",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da3b5b27_3a81c15f",
+        "filename": "src/Vulkan/Debug/Variable.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T20:58:36Z",
+      "side": 1,
+      "message": "Good idea. Done.",
+      "parentUuid": "3b128810_81c6bcfc",
+      "revId": "3ce7e799fd0cf010b062692ad929fedda32582ae",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
