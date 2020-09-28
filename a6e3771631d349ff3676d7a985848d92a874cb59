@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c56f9da8_cc68dec9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-28T20:55:41Z",
+      "side": 1,
+      "message": "s/lazilly/lazily",
+      "range": {
+        "startLine": 9,
+        "startChar": 11,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "a6e3771631d349ff3676d7a985848d92a874cb59",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
