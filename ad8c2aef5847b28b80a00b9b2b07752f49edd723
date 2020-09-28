@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1d61c6a_506962c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-28T19:10:13Z",
+      "side": 1,
+      "message": "with ?",
+      "range": {
+        "startLine": 13,
+        "startChar": 54,
+        "endLine": 13,
+        "endChar": 62
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77560b34_c2bbcfc5",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-28T19:10:13Z",
+      "side": 1,
+      "message": "nit: In C++20\u0027s \u003cbit\u003e header this is called std::bit_ceil(). So this one could be sw::bit_ceil().",
+      "range": {
+        "startLine": 53,
+        "startChar": 26,
+        "endLine": 53,
+        "endChar": 47
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6646f8f_af212f7e",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-28T19:10:13Z",
+      "side": 1,
+      "message": "Could use a comment that these are aligned like they have 4 elements, to avoid surprises.",
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "990a7797_5357c8a9",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-28T19:10:13Z",
+      "side": 1,
+      "message": "Is this one needed? Note there\u0027s no qword4 below currently, since SIMD vectors larger than 128-bit are not commonplace so we should discourage these.",
+      "range": {
+        "startLine": 195,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 27
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
