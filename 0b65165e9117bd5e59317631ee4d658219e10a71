@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "30947446_2e551d32",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:02:24Z",
+      "side": 1,
+      "message": "Maybe, maybe not.\nThe debugger project is winding down. The amount I\u0027ve had to reimplement here is unfortunate, but was done to support the last few instructions of OpenCL.DebugInfo.100 that DXC now emits. Functionality-wise, this is no different from the more incremental work I had already been doing. The optimization aspect is a happy side effect from the changes.",
+      "parentUuid": "d262009b_197e31f7",
+      "range": {
+        "startLine": 25,
+        "startChar": 5,
+        "endLine": 25,
+        "endChar": 16
+      },
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "30114105_e66da164",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70e4da0e_39f814be",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:02:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30114105_e66da164",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "02877f9d_34045c5c",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:02:24Z",
+      "side": 1,
+      "message": "I don\u0027t think so. There\u0027s nothing stopping a debugger client for asking for this scope\u0027s variables (it isn\u0027t what VSCode does, but anything could connect). Asserting here isn\u0027t really useful to anyone, and returning nothing seems like a reasonable thing to do.",
+      "parentUuid": "4724ecbf_0a9004c0",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c514f1c7_f872fad7",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
@@ -76,6 +136,24 @@
     },
     {
       "key": {
+        "uuid": "87557942_39bf514f",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 939,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:02:24Z",
+      "side": 1,
+      "message": "Could have done, but it\u0027s never resized, nor do I want to encourage resizing.",
+      "parentUuid": "c514f1c7_f872fad7",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b97cb3f4_076a5a02",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
@@ -90,6 +168,24 @@
       "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac72a535_1d275826",
+        "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1712,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:02:24Z",
+      "side": 1,
+      "message": "Doh. Good catch! Chicken and egg of unique pointer invalidation of std::move and wanting node to move on to the next child. Fixed.",
+      "parentUuid": "b97cb3f4_076a5a02",
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
