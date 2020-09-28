@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ec66338_e67c32c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:01:31Z",
+      "side": 1,
+      "message": "No, without. I use the vec3 types to show 3 element vectors *without* showing a garbage 4th element.",
+      "parentUuid": "a1d61c6a_506962c2",
+      "range": {
+        "startLine": 13,
+        "startChar": 54,
+        "endLine": 13,
+        "endChar": 62
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "77560b34_c2bbcfc5",
         "filename": "src/System/Types.hpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "66a83caf_b3dc1792",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:01:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77560b34_c2bbcfc5",
+      "range": {
+        "startLine": 53,
+        "startChar": 26,
+        "endLine": 53,
+        "endChar": 47
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a6646f8f_af212f7e",
         "filename": "src/System/Types.hpp",
         "patchSetId": 1
@@ -62,6 +110,24 @@
       "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0c7fbd2_18f332bf",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:01:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a6646f8f_af212f7e",
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -85,6 +151,30 @@
       "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a95383d5_7bc24625",
+        "filename": "src/System/Types.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-28T21:01:31Z",
+      "side": 1,
+      "message": "Nope. Just kept things consistent. Removed.",
+      "parentUuid": "990a7797_5357c8a9",
+      "range": {
+        "startLine": 195,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 27
+      },
+      "revId": "ad8c2aef5847b28b80a00b9b2b07752f49edd723",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
