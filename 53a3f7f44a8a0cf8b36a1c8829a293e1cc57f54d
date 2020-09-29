@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "146a12c6_c031bf0b",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-29T20:42:28Z",
+      "side": 1,
+      "message": "This is indeed a direct copy from ShaderCore. Going to keep as is.",
+      "parentUuid": "0c75b553_83f9616d",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 56
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84d0661e_a36cc20b",
         "filename": "src/Reactor/OptimalReactor.cpp",
         "patchSetId": 5
@@ -96,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "08f77a8c_56d40b72",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-29T20:42:28Z",
+      "side": 1,
+      "message": "Done. Decided to do as Alexis suggests.",
+      "parentUuid": "ee74f1bd_cdf0fc4a",
+      "range": {
+        "startLine": 56,
+        "startChar": 34,
+        "endLine": 56,
+        "endChar": 83
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "047ded37_1286f60e",
         "filename": "src/Reactor/OptimalReactor.cpp",
         "patchSetId": 5
@@ -119,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "47590797_84a09977",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-29T20:42:28Z",
+      "side": 1,
+      "message": "Copied directly from ShaderCore, so going to keep as is.",
+      "parentUuid": "047ded37_1286f60e",
+      "range": {
+        "startLine": 232,
+        "startChar": 19,
+        "endLine": 232,
+        "endChar": 29
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa603a51_7ce28346",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 5
@@ -139,6 +211,30 @@
       "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aae57018_f97c3246",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2220,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-29T20:42:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa603a51_7ce28346",
+      "range": {
+        "startLine": 2220,
+        "startChar": 114,
+        "endLine": 2220,
+        "endChar": 127
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
