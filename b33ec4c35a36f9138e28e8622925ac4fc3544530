@@ -16,6 +16,24 @@
       "revId": "b33ec4c35a36f9138e28e8622925ac4fc3544530",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "005deaaa_bc212e8f",
+        "filename": "src/Vulkan/Debug/Location.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-29T15:14:05Z",
+      "side": 1,
+      "message": "std::tie requires lvalue refs, so I can\u0027t pass in `file.get()` (nor `o.file.get()`)\n\nCopying them to a local is as lengthy as keeping the file compares as-is, and using std::tie() for line and column. So, I\u0027ve done the latter.",
+      "parentUuid": "d81d43ed_668e0a4e",
+      "revId": "b33ec4c35a36f9138e28e8622925ac4fc3544530",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
