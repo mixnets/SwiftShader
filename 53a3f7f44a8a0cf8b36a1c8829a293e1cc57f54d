@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0c75b553_83f9616d",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-29T16:01:05Z",
+      "side": 1,
+      "message": "Assuming this comes straight from the ShaderCore function, I\u0027d suggest we keep it as-is for now, and do a cleanup in a follow-up change.",
+      "parentUuid": "422c5537_fb70b6b4",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 56
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "84d0661e_a36cc20b",
         "filename": "src/Reactor/OptimalReactor.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2020-09-22T17:45:03Z",
       "side": 1,
       "message": "Nit: same in both branches, can probably be removed from the if/else statements",
+      "range": {
+        "startLine": 56,
+        "startChar": 34,
+        "endLine": 56,
+        "endChar": 83
+      },
+      "revId": "53a3f7f44a8a0cf8b36a1c8829a293e1cc57f54d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee74f1bd_cdf0fc4a",
+        "filename": "src/Reactor/OptimalReactor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-29T16:01:05Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s necessary. The C++ compiler can lift it out if it so desires, and the generated code will look identical either way.\n\nI think we should prioritize readability. It\u0027s somewhat of a coincidence (?) that the denominator is the same for both of these, so it might be a bit confusing to separate it out of the formula.\n\nJust my 2 cents.",
+      "parentUuid": "84d0661e_a36cc20b",
       "range": {
         "startLine": 56,
         "startChar": 34,
