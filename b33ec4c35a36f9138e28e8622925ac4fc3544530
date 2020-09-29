@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d81d43ed_668e0a4e",
+        "filename": "src/Vulkan/Debug/Location.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-09-29T14:12:41Z",
+      "side": 1,
+      "message": "Consider using std::tie to simplify this implementation like this:\n\n    return std::tie(file.get(), line, column) \u003c std::tie(o.file.get(), o.line, o.column);\n\nWe now use this pattern in SwiftShader (see ComputeProgramKey::operator\u003c for e.g.). This technique is also shown as the main example for std::tie on cppreference: https://en.cppreference.com/w/cpp/utility/tuple/tie",
+      "revId": "b33ec4c35a36f9138e28e8622925ac4fc3544530",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
