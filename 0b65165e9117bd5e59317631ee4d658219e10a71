@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "307f697e_14c091da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-09-29T15:02:21Z",
+      "side": 1,
+      "message": "\u003e currently this tracker has 50+ changes associated with it, which makes it very hard to tell apart each of the phases this project has gone through\n\nI\u0027ll be writing a document that collects together the work done, future work, etc. dneto named this the \"document that wraps the debugger project in a bow\".\n\n\u003e A link to the spec for the \u0027Deref\u0027 functionality would have also been useful context.\n\nSure, I\u0027ll add that to the CL description.\n\n\u003e This stuff tends to save a lot of time when we have to come back to this code months or years from now, or when refactorings would affect it.\n\nI agree that project documentation is valuable, but I don\u0027t think creating yet another bug tracker is that beneficial here. This file has evolved a lot over the year as we\u0027ve tried to (a) figure out the spec and its holes, (b) actually produce sensible debug info, (c) figure out how we can consume all this in SwiftShader. All of these stages have involved a lot of back and forth, and spewing out bugs for every experiment seems like scattering of information.\n\nWe\u0027re now extremely close to having a usable debugger for DXC generated debug info, at which point I\u0027ll happily close the bug, and ensure future changes all have separate issue trackers moving forward. A big part of finalizing all of this is to create a suite of amber test cases that ensure that this is all extremely well covered, and will provide a good quality reference for other consumers of the debug info (renderdoc are currently looking at consuming this too).",
+      "parentUuid": "9a16bc32_c17a01e8",
+      "range": {
+        "startLine": 25,
+        "startChar": 5,
+        "endLine": 25,
+        "endChar": 16
+      },
+      "revId": "0b65165e9117bd5e59317631ee4d658219e10a71",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "30114105_e66da164",
         "filename": "src/Pipeline/SpirvShaderDebugger.cpp",
         "patchSetId": 1
