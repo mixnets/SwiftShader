@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28be67da_03eb2372",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-29T13:52:26Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s the case. Vector4* contains Reactor vectors.\n\nJust remove this sentence to avoid confusion.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 59
+      },
+      "revId": "d75689e7c76d4d1e9412ddaa4d2e313ec50b688e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cb51c16_d6186660",
+        "filename": "src/Pipeline/ShaderCore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-29T13:52:26Z",
+      "side": 1,
+      "message": "I\u0027m not sure this is the right file (and namespace) to add this to. It contains Reactor helper functions and types, while this PerLane\u003c\u003e is purely C++ data.\n\nCan probably live in SpirvShaderDebugger.cpp for now?",
+      "range": {
+        "startLine": 189,
+        "startChar": 7,
+        "endLine": 189,
+        "endChar": 14
+      },
+      "revId": "d75689e7c76d4d1e9412ddaa4d2e313ec50b688e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
