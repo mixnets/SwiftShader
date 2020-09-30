@@ -1284,7 +1284,7 @@ Int4 SamplerCore::cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z
 	// V = !yMajor ? -y : (n ^ z)
 	V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
-	M = reciprocal(M) * Float4(0.5f);
+	M = reciprocal(M, false, false, true) * Float4(0.5f);
 	U = U * M + Float4(0.5f);
 	V = V * M + Float4(0.5f);
 
@@ -2327,15 +2327,19 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 				switch(addressingMode)
 				{
 				case ADDRESSING_CLAMP:
-				case ADDRESSING_SEAMLESS:
-					// While cube face coordinates are nominally already in the [0.0, 1.0] range
-					// due to the projection, and numerical imprecision is tolerated due to the
-					// border of pixels for seamless filtering, the projection doesn't cause
-					// range normalization for Inf and NaN values. So we always clamp.
 					{
 						Float4 one = As<Float4>(Int4(oneBits));
 						coord = Min(Max(coord, Float4(0.0f)), one);
 					}
+					break;
+				case ADDRESSING_SEAMLESS:
+					// While cube face coordinates are nominally already in the [0.0, 1.0] range
+					// due to the projection, and numerical imprecision is tolerated due to the
+					// border of pixels for seamless filtering, the projection doesn't cause
+					// range normalization for Inf and NaN values.
+					// Force the coordinate to the [0.0, 1.0) range with a single unsigned integer
+					// Max() operation instead of a 2-operation range clamp.
+					coord = As<Float4>(Min(As<UInt4>(coord), UInt4(oneBits)));
 					break;
 				case ADDRESSING_MIRROR:
 					{
