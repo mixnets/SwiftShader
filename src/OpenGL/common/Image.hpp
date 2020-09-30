@@ -22,7 +22,8 @@
 #include <GLES2/gl2ext.h>
 
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-#include <system/window.h>
+#include <vndk/hardware_buffer.h>
+#include <vndk/window.h>
 #include "../../Common/GrallocAndroid.hpp"
 #endif
 
@@ -242,21 +243,21 @@ inline GLenum GLPixelFormatFromAndroid(int halFormat)
 {
 	switch(halFormat)
 	{
-	case HAL_PIXEL_FORMAT_RGBA_8888: return GL_RGBA8;
+	case AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM: return GL_RGBA8;
 #if ANDROID_PLATFORM_SDK_VERSION > 16
-	case HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED: return GL_RGB8;
+	case AHARDWAREBUFFER_FORMAT_IMPLEMENTATION_DEFINED: return GL_RGB8;
 #endif
-	case HAL_PIXEL_FORMAT_RGBX_8888: return GL_RGB8;
-	case HAL_PIXEL_FORMAT_BGRA_8888: return GL_BGRA8_EXT;
-	case HAL_PIXEL_FORMAT_RGB_565:   return GL_RGB565;
-	case HAL_PIXEL_FORMAT_YV12:      return SW_YV12_BT601;
+	case AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM: return GL_RGB8;
+	case AHARDWAREBUFFER_FORMAT_B8G8R8A8_UNORM: return GL_BGRA8_EXT;
+	case AHARDWAREBUFFER_FORMAT_R5G6B5_UNORM:   return GL_RGB565;
+	case AHARDWAREBUFFER_FORMAT_YV12:      return SW_YV12_BT601;
 #ifdef GRALLOC_MODULE_API_VERSION_0_2
-	case HAL_PIXEL_FORMAT_YCbCr_420_888: return SW_YV12_BT601;
+	case AHARDWAREBUFFER_FORMAT_Y8Cb8Cr8_420: return SW_YV12_BT601;
 #endif
 #if ANDROID_PLATFORM_SDK_VERSION >= 26
-	case HAL_PIXEL_FORMAT_RGBA_FP16: return GL_RGBA16F;
+	case AHARDWAREBUFFER_FORMAT_R16G16B16A16_FLOAT: return GL_RGBA16F;
 #endif
-	case HAL_PIXEL_FORMAT_RGB_888:   // Unsupported.
+	case AHARDWAREBUFFER_FORMAT_R8G8B8_UNORM:   // Unsupported.
 	default:
 		ERR("Unsupported EGL image format %d", halFormat); ASSERT(false);
 		return GL_NONE;

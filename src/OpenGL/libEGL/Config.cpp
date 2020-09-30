@@ -23,7 +23,7 @@
 
 #include <EGL/eglext.h>
 #if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-#include <system/graphics.h>
+#include <vndk/hardware_buffer.h>
 #endif
 
 #include <string.h>
@@ -67,7 +67,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 		mAlphaSize = 8;
 		mBindToTextureRGBA = EGL_TRUE;
 		#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
+			mNativeVisualID = AHARDWAREBUFFER_FORMAT_B8G8R8A8_UNORM;
 		#else
 			mNativeVisualID = 2;   // Arbitrary; prefer over ABGR
 		#endif
@@ -79,7 +79,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 		mAlphaSize = 8;
 		mBindToTextureRGBA = EGL_TRUE;
 		#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-			mNativeVisualID = HAL_PIXEL_FORMAT_RGBA_8888;
+			mNativeVisualID = AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM;
 		#endif
 		break;
 	case sw::FORMAT_R5G6B5:
@@ -88,7 +88,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 		mBlueSize = 5;
 		mAlphaSize = 0;
 		#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-			mNativeVisualID = HAL_PIXEL_FORMAT_RGB_565;
+			mNativeVisualID = AHARDWAREBUFFER_FORMAT_R5G6B5_UNORM;
 		#endif
 		break;
 	case sw::FORMAT_X8R8G8B8:
@@ -110,7 +110,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 		mAlphaSize = 0;
 		mBindToTextureRGB = EGL_TRUE;
 		#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
-			mNativeVisualID = HAL_PIXEL_FORMAT_RGBX_8888;
+			mNativeVisualID = AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM;
 		#endif
 		break;
 	default:

@@ -16,7 +16,9 @@
 
 #ifndef ANDROID_NDK_BUILD
 #include "Common/GrallocAndroid.hpp"
-#include <system/window.h>
+#include <sync/sync.h>
+#include <vndk/hardware_buffer.h>
+#include <vndk/window.h>
 #else
 #include <android/native_window.h>
 #endif
@@ -26,29 +28,22 @@ namespace sw
 #if !defined(ANDROID_NDK_BUILD)
 	inline int dequeueBuffer(ANativeWindow* window, ANativeWindowBuffer** buffer)
 	{
-		#if ANDROID_PLATFORM_SDK_VERSION > 16
-			return native_window_dequeue_buffer_and_wait(window, buffer);
-		#else
-			return window->dequeueBuffer(window, buffer);
-		#endif
+		int fenceFd = -1;
+		int ret = ANativeWindow_dequeueBuffer(window, buffer, &fenceFd);
+		if (ret || fenceFd < 0) return ret;
+		sync_wait(fenceFd, -1 /* forever */);
+		close(fenceFd);
+		return ret;
 	}
 
 	inline int queueBuffer(ANativeWindow* window, ANativeWindowBuffer* buffer, int fenceFd)
 	{
-		#if ANDROID_PLATFORM_SDK_VERSION > 16
-			return window->queueBuffer(window, buffer, fenceFd);
-		#else
-			return window->queueBuffer(window, buffer);
-		#endif
+		return ANativeWindow_queueBuffer(window, buffer, fenceFd);
 	}
 
 	inline int cancelBuffer(ANativeWindow* window, ANativeWindowBuffer* buffer, int fenceFd)
 	{
-		#if ANDROID_PLATFORM_SDK_VERSION > 16
-			return window->cancelBuffer(window, buffer, fenceFd);
-		#else
-			return window->cancelBuffer(window, buffer);
-		#endif
+		return ANativeWindow_cancelBuffer(window, buffer, fenceFd);
 	}
 #endif // !defined(ANDROID_NDK_BUILD)
 
@@ -57,15 +52,15 @@ namespace sw
 			nativeWindow(window), buffer(nullptr)
 	{
 #ifndef ANDROID_NDK_BUILD
-		nativeWindow->common.incRef(&nativeWindow->common);
-		native_window_set_usage(nativeWindow, GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
+		ANativeWindow_acquire(nativeWindow);
+		ANativeWindow_setUsage(nativeWindow, GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
 #endif
 	}
 
 	FrameBufferAndroid::~FrameBufferAndroid()
 	{
 #ifndef ANDROID_NDK_BUILD
-		nativeWindow->common.decRef(&nativeWindow->common);
+		ANativeWindow_release(nativeWindow);
 #endif
 	}
 
@@ -148,14 +143,14 @@ namespace sw
 
 		switch(buffer->format)
 		{
-		case HAL_PIXEL_FORMAT_RGB_565:   format = FORMAT_R5G6B5; break;
-		case HAL_PIXEL_FORMAT_RGBA_8888: format = FORMAT_A8B8G8R8; break;
+		case AHARDWAREBUFFER_FORMAT_R5G6B5_UNORM:   format = FORMAT_R5G6B5; break;
+		case AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM: format = FORMAT_A8B8G8R8; break;
 #if ANDROID_PLATFORM_SDK_VERSION > 16
-		case HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED: format = FORMAT_X8B8G8R8; break;
+		case AHARDWAREBUFFER_FORMAT_IMPLEMENTATION_DEFINED: format = FORMAT_X8B8G8R8; break;
 #endif
-		case HAL_PIXEL_FORMAT_RGBX_8888: format = FORMAT_X8B8G8R8; break;
-		case HAL_PIXEL_FORMAT_BGRA_8888: format = FORMAT_A8R8G8B8; break;
-		case HAL_PIXEL_FORMAT_RGB_888:
+		case AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM: format = FORMAT_X8B8G8R8; break;
+		case AHARDWAREBUFFER_FORMAT_B8G8R8A8_UNORM: format = FORMAT_A8R8G8B8; break;
+		case AHARDWAREBUFFER_FORMAT_R8G8B8_UNORM:
 			// Frame buffers are expected to have 16-bit or 32-bit colors, not 24-bit.
 			TRACE("Unsupported frame buffer format RGB_888"); ASSERT(false);
 			format = FORMAT_R8G8B8;   // Wrong component order.
