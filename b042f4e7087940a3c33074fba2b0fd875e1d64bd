@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09b1c264_79c09219",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-09-30T18:39:42Z",
+      "side": 1,
+      "message": "This broke eglCreateWindowSurface, since it delegates to CreatePlatformWindowSurface but wasn\u0027t taking the address of the window handle. Fix here: https://swiftshader-review.googlesource.com/c/SwiftShader/+/48789",
+      "revId": "b042f4e7087940a3c33074fba2b0fd875e1d64bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
