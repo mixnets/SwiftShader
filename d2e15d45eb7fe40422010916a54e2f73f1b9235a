@@ -347,6 +347,24 @@
     },
     {
       "key": {
+        "uuid": "ed21d786_2ea5b296",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-30T21:53:38Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "6cf527e3_c99b415b",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc82c2ad_a7ca3b1f",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
         "patchSetId": 4
@@ -361,6 +379,24 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed6f2939_8b8826b0",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-30T21:53:38Z",
+      "side": 1,
+      "message": "done.",
+      "parentUuid": "cc82c2ad_a7ca3b1f",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -384,6 +420,30 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "00f069b9_170439aa",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-30T21:53:38Z",
+      "side": 1,
+      "message": "Done.\n\nAll drm and minigbm reliance has been isolated to a couple of small functions.\nThis should make future proofing much much easier",
+      "parentUuid": "1fcbc30c_ba3a18c6",
+      "range": {
+        "startLine": 172,
+        "startChar": 1,
+        "endLine": 180,
+        "endChar": 3
+      },
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -436,6 +496,24 @@
       "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "032a2488_36828313",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-09-30T21:53:38Z",
+      "side": 1,
+      "message": "Done.\n\nI made PhysicalDevice\u0027s getMemoryProperties a static function, then called into that.",
+      "parentUuid": "68ceec3f_a4b6099b",
+      "revId": "d2e15d45eb7fe40422010916a54e2f73f1b9235a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
