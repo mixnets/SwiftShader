@@ -16,7 +16,7 @@
 #define sw_Math_hpp
 
 #include "Debug.hpp"
-#include "Types.hpp"
+//#include "Types.hpp"
 
 #include <cmath>
 #if defined(_MSC_VER)

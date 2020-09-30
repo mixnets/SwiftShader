@@ -14,6 +14,7 @@
 
 #include "SpirvShader.hpp"
 
+#include "Constants.hpp"
 #include "SamplerCore.hpp"  // TODO: Figure out what's needed.
 #include "Device/Config.hpp"
 #include "System/Debug.hpp"
@@ -89,6 +90,22 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	};
 
 	auto routine = cache->getOrCreate(key, createSamplingRoutine);
+
+	if(imageDescriptor->type == VK_IMAGE_VIEW_TYPE_CUBE)
+	{
+		auto sampler = (ImageSampler *)(routine->getEntry());
+
+		const float inf = std::numeric_limits<float>::infinity();
+
+		float uv[16][4] = { { 0.671472967f, 0.670785427f, -0.000402877748f, -0.000402877748f },
+			                { -0.00620325282f, -0.00620149914f, 1.16204524f, 1.16152310f },
+			                { 0.741002917f, 0.741625130f, -inf, -inf } };
+
+		float out[4];
+		Constants constants;
+
+		sampler((void *)&imageDescriptor->texture, uv, out, &constants);
+	}
 
 	return (ImageSampler *)(routine->getEntry());
 }

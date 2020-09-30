@@ -1440,6 +1440,8 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 		indices += sampleOffset;
 	}
 
+	//	indices &= UInt4(0x7FFFFFFF);
+
 	index[0] = Extract(indices, 0);
 	index[1] = Extract(indices, 1);
 	index[2] = Extract(indices, 2);
@@ -1472,6 +1474,9 @@ void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww,
 		// with the border color, so sample them at linear index 0.
 		indices &= As<UInt4>(valid);
 	}
+
+	if(state.addressingModeU != ADDRESSING_SEAMLESS)
+		indices &= UInt4(0x7FFFFFFF);
 
 	for(int i = 0; i < 4; i++)
 	{
