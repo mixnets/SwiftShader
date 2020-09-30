@@ -16,6 +16,24 @@
       "revId": "b042f4e7087940a3c33074fba2b0fd875e1d64bd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da81bbab_fd3b9f6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 86106
+      },
+      "writtenOn": "2020-09-30T20:04:23Z",
+      "side": 1,
+      "message": "Yes, you\u0027re right. I just tested this fix, sorry for having broken eglCreateWindowSurface ...\nNow eglCreatePlatformWindowSurface() and eglCreateWindowSurface() both work!\n\nThanks,\n\nNicolas Caramelli",
+      "parentUuid": "09b1c264_79c09219",
+      "revId": "b042f4e7087940a3c33074fba2b0fd875e1d64bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
