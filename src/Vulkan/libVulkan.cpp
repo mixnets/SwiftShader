@@ -149,6 +149,16 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
+
+#if defined(__GNUC__) || defined(__clang__)
+#	if defined(__i386__)
+			// Enable Alignment Checking on x86
+			__asm__("pushf\norl $0x40000,(%esp)\npopf");
+#	elif defined(__x86_64__)
+			// Enable Alignment Checking on x86_64
+			__asm__("pushf\norl $0x40000,(%rsp)\npopf");
+#	endif
+#endif
 		});
 		sptr = std::make_shared<marl::Scheduler>(cfg);
 		scheduler.weakptr = sptr;
