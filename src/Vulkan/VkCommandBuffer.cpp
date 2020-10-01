@@ -334,9 +334,9 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		executionState.dynamicState.depthBiasConstantFactor = depthBiasConstantFactor;
-		executionState.dynamicState.depthBiasClamp = depthBiasClamp;
-		executionState.dynamicState.depthBiasSlopeFactor = depthBiasSlopeFactor;
+		executionState.dynamicState.depthBiasConstantFactor = 0.0f;
+		executionState.dynamicState.depthBiasClamp = 0.0f;
+		executionState.dynamicState.depthBiasSlopeFactor = 0.0f;
 	}
 
 	std::string description() override { return "vkCmdSetDepthBias()"; }
