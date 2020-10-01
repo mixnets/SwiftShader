@@ -15,15 +15,16 @@
 #ifndef sw_PixelProcessor_hpp
 #define sw_PixelProcessor_hpp
 
-#include "Context.hpp"
 #include "Memset.hpp"
 #include "RoutineCache.hpp"
 #include "Vulkan/VkFormat.hpp"
+#include "Vulkan/VkPipeline.hpp"
 
 #include <memory>
 
 namespace sw {
 
+class Context;
 class PixelShader;
 class Rasterizer;
 struct Texture;
@@ -82,7 +83,7 @@ public:
 		bool occlusionEnabled;
 		bool perspective;
 
-		BlendState blendState[RENDERTARGETS];
+		vk::BlendState blendState[RENDERTARGETS];
 
 		unsigned int colorWriteMask;
 		vk::Format targetFormat[RENDERTARGETS];
@@ -152,9 +153,9 @@ public:
 
 	void setBlendConstant(const float4 &blendConstant);
 
-	const State update(const Context *context) const;
-	RoutineType routine(const State &state, vk::PipelineLayout const *pipelineLayout,
-	                    SpirvShader const *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
+	const State update(const vk::GraphicsState &pipelineState, const sw::SpirvShader *fragmentShader, const sw::SpirvShader *vertexShader, const vk::Attachments &attachments, bool occlusionEnabled) const;
+	RoutineType routine(const State &state, const vk::PipelineLayout *pipelineLayout,
+	                    const SpirvShader *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
 	void setRoutineCacheSize(int routineCacheSize);
 
 	// Other semi-constants
