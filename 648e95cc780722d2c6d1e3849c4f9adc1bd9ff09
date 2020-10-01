@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45c2cdb0_3ff4751a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "I think this can land as v1. Just a few nits:",
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da078ba9_805dc60c",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "Either use \"Device *const device;\" to ensure this will be initialized in each constructor, or nullptr initialize here.",
+      "range": {
+        "startLine": 65,
+        "startChar": 1,
+        "endLine": 65,
+        "endChar": 16
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cf5accc_fc4f038d",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "style nit: I think it\u0027s preferable to put single-statement blocks in parenthesis as well. It helps the non-linear control flow stand out more, and when a refactoring is needed where statements have to be added to the conditional, we would avoid the bug of forgetting to add parenthesis at that time.\n\nSame in several other places.",
+      "range": {
+        "startLine": 64,
+        "startChar": 2,
+        "endLine": 64,
+        "endChar": 17
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e54ac5a_26593713",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "This is identical to code for the import case. Can the duplication be eliminated?",
+      "range": {
+        "startLine": 125,
+        "startChar": 2,
+        "endLine": 157,
+        "endChar": 51
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93c54d0e_d9bb1c58",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "Can we add an ASSERT here for the case when this isn\u0027t VK_SUCCESS?",
+      "range": {
+        "startLine": 169,
+        "startChar": 11,
+        "endLine": 169,
+        "endChar": 18
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc4da495_52ef0d75",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "An explicit \"ret !\u003d 0\" seems useful here, to avoid an implicit cast to boolean and to make it clear we\u0027re currently treating any other return code as an error. It\u0027s conceivable that other return codes might also indicate success.\n\nSame thing a couple times below.",
+      "range": {
+        "startLine": 370,
+        "startChar": 1,
+        "endLine": 370,
+        "endChar": 8
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23266672_f24075cd",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalBase.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "Can this be avoided?",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 46
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e2b1700_3949be98",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-01T03:18:07Z",
+      "side": 1,
+      "message": "I\u0027m not sure if the tooling is picky about it, but go/squeegee suggests a \"TODO(b/169439421)\" syntax.",
+      "range": {
+        "startLine": 601,
+        "startChar": 4,
+        "endLine": 601,
+        "endChar": 20
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
