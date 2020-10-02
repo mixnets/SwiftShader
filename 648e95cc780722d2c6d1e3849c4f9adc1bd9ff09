@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "eaf427b9_f5f1774a",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "setting the device pointer right after construction time is a _LOT_ cleaner than trying to do it _at_ construction time.\n\nso, I\u0027ll init to nullptr here",
+      "parentUuid": "da078ba9_805dc60c",
+      "range": {
+        "startLine": 65,
+        "startChar": 1,
+        "endLine": 65,
+        "endChar": 16
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1cf5accc_fc4f038d",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
         "patchSetId": 8
@@ -62,6 +86,30 @@
       "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b28e506_63f7c085",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "1cf5accc_fc4f038d",
+      "range": {
+        "startLine": 64,
+        "startChar": 2,
+        "endLine": 64,
+        "endChar": 17
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -88,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "c0f3937a_488667c7",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "4e54ac5a_26593713",
+      "range": {
+        "startLine": 125,
+        "startChar": 2,
+        "endLine": 157,
+        "endChar": 51
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "93c54d0e_d9bb1c58",
         "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
         "patchSetId": 8
@@ -108,6 +180,30 @@
       "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dfa1761_3ed8b120",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "93c54d0e_d9bb1c58",
+      "range": {
+        "startLine": 169,
+        "startChar": 11,
+        "endLine": 169,
+        "endChar": 18
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -134,6 +230,30 @@
     },
     {
       "key": {
+        "uuid": "14fdab44_1bd213f5",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "dc4da495_52ef0d75",
+      "range": {
+        "startLine": 370,
+        "startChar": 1,
+        "endLine": 370,
+        "endChar": 8
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23266672_f24075cd",
         "filename": "src/Vulkan/VkDeviceMemoryExternalBase.hpp",
         "patchSetId": 8
@@ -157,6 +277,30 @@
     },
     {
       "key": {
+        "uuid": "ef816aed_61719b4d",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalBase.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Not that I can tell.\n\nThe AHB\u0027s pointer to Device needs to be set during the DeviceMemory\u0027s constructor, see `src/Vulkan/VkDeviceMemory.cpp DeviceMemory::DeviceMemory`. That functions is `reinterpret_cast`ing the `mem` pointer to external memory. We need to explicitly set the Device value then. This is why the `setDevicePtr` exists. If we want to get rid of the empty base function, we\u0027ll need to do either\n\n1. Check to see if mem is an AHardwareBuffer\n2. Set the ExternalBase::setDevicePtr function purely virtual and define it to be empty for classes other than AHB\n\nOR\n3. Keep as it.\n\nDealer\u0027s choice",
+      "parentUuid": "23266672_f24075cd",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 46
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e2b1700_3949be98",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 8
@@ -177,6 +321,30 @@
       "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "773b9957_6d42502b",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 77391
+      },
+      "writtenOn": "2020-10-02T03:50:20Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "1e2b1700_3949be98",
+      "range": {
+        "startLine": 601,
+        "startChar": 4,
+        "endLine": 601,
+        "endChar": 20
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
