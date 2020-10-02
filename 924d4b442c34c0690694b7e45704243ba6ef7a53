@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26faf55e_9310c533",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T20:24:30Z",
+      "side": 1,
+      "message": "dEQP-GLES failures are all due to running out of X11 handles. Unrelated to this change.",
+      "revId": "924d4b442c34c0690694b7e45704243ba6ef7a53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
