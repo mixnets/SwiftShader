@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "04cfaa37_e4e3493c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T01:43:36Z",
+      "side": 1,
+      "message": "Fixes rendering shadows in Unity, which uses 16-bit depth textures. I also tested floating-point depth textures with the hack later in the stack.",
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
