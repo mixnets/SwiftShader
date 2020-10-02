@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b48ea8fd_00815544",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T13:43:11Z",
+      "side": 1,
+      "message": "Same as https://swiftshader-review.googlesource.com/c/SwiftShader/+/48468/18#message-c857a3a043d201f97f43a7e46d38707091f19430, these graphicsfuzz tests now crash consistently for both Subzero and LLVM, but only for the full test run. I suspect it runs out of memory.\n\nNot landing this as the new baseline since partial test runs have no difference in results for these two tests.",
+      "revId": "91eb49dea7e9e4631f920ea724ba25b3c4d45fe3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
