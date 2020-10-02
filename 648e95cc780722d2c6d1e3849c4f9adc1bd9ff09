@@ -301,6 +301,30 @@
     },
     {
       "key": {
+        "uuid": "127e44c0_565c03fe",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalBase.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T04:09:24Z",
+      "side": 1,
+      "message": "OK, let\u0027s keep as-is.",
+      "parentUuid": "ef816aed_61719b4d",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 39,
+        "endChar": 46
+      },
+      "revId": "648e95cc780722d2c6d1e3849c4f9adc1bd9ff09",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e2b1700_3949be98",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 8
