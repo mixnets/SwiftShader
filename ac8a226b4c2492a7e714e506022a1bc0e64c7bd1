@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39409ff9_bb29d25c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T20:21:42Z",
+      "side": 1,
+      "message": "https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2606",
+      "revId": "ac8a226b4c2492a7e714e506022a1bc0e64c7bd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
