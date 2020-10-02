@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c58a7f87_14b97a27",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-02T15:17:24Z",
+      "side": 1,
+      "message": "Please take a look and comment on anything that I could improve upon.\nI know this is large, but everything revolves around:\n1) Untangling the information contained in Context and organizing it logically with Vulkan in mind\n2) Making things accessible/modifiable only when they should be",
+      "revId": "83d40a0672197b8377a74c146021e6e66da9e3e0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
