@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "d5eda0ea_e6ddf140",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T20:56:19Z",
+      "side": 1,
+      "message": "This code is supposed to be unreachable, so I wanted to avoid having it actually produce anything in Release, while also making sure the variable isn\u0027t left completely uninitialized in case we do inadvertently end up here.",
+      "parentUuid": "62e9429d_7a64dcf8",
+      "range": {
+        "startLine": 351,
+        "startChar": 0,
+        "endLine": 352,
+        "endChar": 102
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bc9eec0e_1d8b00a5",
         "filename": "src/Device/Renderer.cpp",
         "patchSetId": 6
@@ -53,6 +77,30 @@
       "writtenOn": "2020-10-02T14:34:34Z",
       "side": 1,
       "message": "Nit: Could we instead give it a differentiating value, like 0? Not a big deal, the fall through just feels a bit odd here.",
+      "range": {
+        "startLine": 356,
+        "startChar": 5,
+        "endLine": 356,
+        "endChar": 23
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3925486_a5594455",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T20:56:19Z",
+      "side": 1,
+      "message": "Same as above.",
+      "parentUuid": "bc9eec0e_1d8b00a5",
       "range": {
         "startLine": 356,
         "startChar": 5,
@@ -85,6 +133,30 @@
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d74aa200_297275ad",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-02T20:56:19Z",
+      "side": 1,
+      "message": "It does. The more explicit calculations would look like:\n\nInt e0 \u003d ((As\u003cInt\u003e(Z0) \u0026 0x7F800000) \u003e\u003e 23) - 127;  // Signed exponent\n...\nInt e \u003d Max(Max(e0, e1), e2);\nr \u003d As\u003cFloat\u003e((e + 127) \u003c\u003c 23);  // 2.0^e\nr *\u003d (1.0f / (1 \u003c\u003c 23));  // Adjust for mantissa precision\n\nSo the bias and shift operations on the exponents cancel out. 8-)",
+      "parentUuid": "d7cd4e65_c20e526c",
+      "range": {
+        "startLine": 462,
+        "startChar": 0,
+        "endLine": 468,
+        "endChar": 43
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
