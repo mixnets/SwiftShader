@@ -16,6 +16,23 @@
       "revId": "5452ca0043bad1e2d3a05abd91b58e582e7837d0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0ac079d_506b9fff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-10-02T09:58:14Z",
+      "side": 1,
+      "message": "Thank you for the fix, George!\nWe typically apply marl changes to the upstream project on GitHub and then roll SwiftShader forward with third_party/update-marl.sh.\n\nI\u0027ve upstreamed your change here: https://github.com/google/marl/pull/181\nOnce this lands, I\u0027ll roll SwiftShader forward and CC you so you can see when it lands.\n\nThanks again!",
+      "revId": "5452ca0043bad1e2d3a05abd91b58e582e7837d0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
