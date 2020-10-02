@@ -16,6 +16,75 @@
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62e9429d_7a64dcf8",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-02T14:34:34Z",
+      "side": 1,
+      "message": "Nit: style-wise, we usually put the default case at the end in other places in the codebase",
+      "range": {
+        "startLine": 351,
+        "startChar": 0,
+        "endLine": 352,
+        "endChar": 102
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc9eec0e_1d8b00a5",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-02T14:34:34Z",
+      "side": 1,
+      "message": "Nit: Could we instead give it a differentiating value, like 0? Not a big deal, the fall through just feels a bit odd here.",
+      "range": {
+        "startLine": 356,
+        "startChar": 5,
+        "endLine": 356,
+        "endChar": 23
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7cd4e65_c20e526c",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-02T14:34:34Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this portion of the math take exponent bias into account somewhere?",
+      "range": {
+        "startLine": 462,
+        "startChar": 0,
+        "endLine": 468,
+        "endChar": 43
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
