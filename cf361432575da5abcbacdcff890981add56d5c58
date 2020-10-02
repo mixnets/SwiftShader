@@ -16,6 +16,24 @@
       "revId": "cf361432575da5abcbacdcff890981add56d5c58",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ea97e27_f1b4dee6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 89377
+      },
+      "writtenOn": "2020-10-02T02:51:17Z",
+      "side": 1,
+      "message": "I\u0027ve tested with local build with both cmake and Android blueprint. It\u0027s also making all cloud Android targets passing build and presubmit tests. Though it\u0027s not affect Vulkan side, I\u0027ve built locally and use pastel on my coral to verify.",
+      "parentUuid": "3da0b966_7e67ca7e",
+      "revId": "cf361432575da5abcbacdcff890981add56d5c58",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
