@@ -25,7 +25,6 @@ dEQP-VK.wsi.xlib.swapchain.create.present_mode
 dEQP-VK.wsi.xlib.swapchain.destroy.null_handle
 dEQP-VK.wsi.xlib.swapchain.get_images.count
 dEQP-VK.wsi.xlib.swapchain.get_images.incomplete
-dEQP-VK.wsi.xlib.swapchain.render.basic
 dEQP-VK.wsi.xlib.swapchain.render.basic2
 dEQP-VK.wsi.xlib.swapchain.render.device_group
 dEQP-VK.wsi.xlib.swapchain.simulate_oom.clipped
