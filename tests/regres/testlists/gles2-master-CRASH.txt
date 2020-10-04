@@ -1,0 +1,4 @@
+dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_src_alpha
+dEQP-GLES2.functional.shaders.keywords.keywords.highp_vertex
+dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec2_vertex
+dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wx_vertex

@@ -896,7 +896,6 @@ dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_dynamic_read
 dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_static_copy
 dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_static_draw
 dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_static_read
-dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_stream_copy
 dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_stream_draw
 dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_stream_read
 dEQP-GLES3.functional.buffer.write.basic_subdata.pixel_pack_dynamic_copy
@@ -14753,7 +14752,6 @@ dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conv
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec2_vec2_vertex
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec3_ivec3_fragment
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec3_ivec3_vertex
-dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec3_vec2_fragment
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec3_vec2_vertex
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec4_ivec4_fragment
 dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec4_ivec4_vertex
@@ -16591,7 +16589,6 @@ dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x3_float_vertex
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x3_mat2x3_fragment
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x3_mat2x3_vertex
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x4_float_fragment
-dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x4_float_vertex
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x4_mat2x4_fragment
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x4_mat2x4_vertex
 dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat3_float_fragment
@@ -16710,7 +16707,6 @@ dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x2_float_fragment
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x2_float_vertex
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x2_mat3x2_fragment
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x2_mat3x2_vertex
-dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x4_float_fragment
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x4_float_vertex
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x4_mat3x4_fragment
 dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x4_mat3x4_vertex
@@ -18989,7 +18985,6 @@ dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec3_
 dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec4_fragment
 dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec4_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_fragment
-dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec2_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec3_vertex
@@ -20410,7 +20405,6 @@ dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec2_ve
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec3_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec4_fragment
-dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec4_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_int_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_int_ivec2_fragment
@@ -24874,7 +24868,6 @@ dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec2_vertex
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec3_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec3_vertex
-dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec4_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec4_vertex
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_vec2_fragment
 dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_vec2_vertex
@@ -25663,7 +25656,6 @@ dEQP-GLES3.functional.shaders.preprocessor.pragmas.pragma_vertex
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.file_fragment
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.file_vertex
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.gl_es_1_fragment
-dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.gl_es_1_vertex
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.gl_es_2_fragment
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.gl_es_2_vertex
 dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.if_gl_es_fragment
@@ -27924,7 +27916,6 @@ dEQP-GLES3.functional.shaders.switch.missing_colon_fragment
 dEQP-GLES3.functional.shaders.switch.missing_colon_vertex
 dEQP-GLES3.functional.shaders.switch.missing_opening_brace_fragment
 dEQP-GLES3.functional.shaders.switch.missing_opening_brace_vertex
-dEQP-GLES3.functional.shaders.switch.no_default_label_dynamic_fragment
 dEQP-GLES3.functional.shaders.switch.no_default_label_dynamic_vertex
 dEQP-GLES3.functional.shaders.switch.no_default_label_static_fragment
 dEQP-GLES3.functional.shaders.switch.no_default_label_static_vertex

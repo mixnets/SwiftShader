@@ -1,0 +1,10 @@
+dEQP-GLES3.functional.buffer.write.basic_subdata.element_array_stream_copy
+dEQP-GLES3.functional.shaders.invalid_implicit_conversions.invalid_implicit_conversions.mul_vec2_ivec3_vec2_fragment
+dEQP-GLES3.functional.shaders.matrix.div.dynamic.lowp_mat2x4_float_vertex
+dEQP-GLES3.functional.shaders.matrix.div.uniform.lowp_mat3x4_float_fragment
+dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec2_fragment
+dEQP-GLES3.functional.shaders.operator.binary_operator.div.mediump_float_vec4_vertex
+dEQP-GLES3.functional.shaders.operator.unary_operator.pre_decrement_effect.highp_ivec4_fragment
+dEQP-GLES3.functional.shaders.preprocessor.predefined_macros.gl_es_1_vertex
+dEQP-GLES3.functional.shaders.switch.no_default_label_dynamic_fragment
+dEQP-GLES3.functional.texture.wrap.astc_8x8.mirror_clamp_nearest_divisible

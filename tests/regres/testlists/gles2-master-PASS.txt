@@ -2188,7 +2188,6 @@ dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_one_minus_
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_one_minus_dst_color
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_one_minus_src_alpha
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_one_minus_src_color
-dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_src_alpha
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_src_alpha_saturate
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_src_color
 dEQP-GLES2.functional.fragment_ops.blend.rgb_func_alpha_func.src.zero_zero
@@ -4707,7 +4706,6 @@ dEQP-GLES2.functional.shaders.keywords.keywords.float_vertex
 dEQP-GLES2.functional.shaders.keywords.keywords.for_fragment
 dEQP-GLES2.functional.shaders.keywords.keywords.for_vertex
 dEQP-GLES2.functional.shaders.keywords.keywords.highp_fragment
-dEQP-GLES2.functional.shaders.keywords.keywords.highp_vertex
 dEQP-GLES2.functional.shaders.keywords.keywords.if_fragment
 dEQP-GLES2.functional.shaders.keywords.keywords.if_vertex
 dEQP-GLES2.functional.shaders.keywords.keywords.in_fragment
@@ -7049,7 +7047,6 @@ dEQP-GLES2.functional.shaders.operator.binary_operator.sub.highp_vec4_fragment
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.highp_vec4_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_fragment
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec2_fragment
-dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec2_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec3_fragment
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec3_vertex
 dEQP-GLES2.functional.shaders.operator.binary_operator.sub.lowp_float_vec4_fragment
@@ -11621,7 +11618,6 @@ dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wwww_vertex
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wwwy_fragment
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wwwy_vertex
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wx_fragment
-dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wx_vertex
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wz_fragment
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wz_vertex
 dEQP-GLES2.functional.shaders.swizzles.vector_swizzles.mediump_vec4_wzy_fragment
