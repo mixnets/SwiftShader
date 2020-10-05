@@ -18,6 +18,7 @@
 #	include "resource.h"
 #	include <windows.h>
 
+//#	define DEBUGGER_WAIT_DIALOG
 #	ifdef DEBUGGER_WAIT_DIALOG
 static INT_PTR CALLBACK DebuggerWaitDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
