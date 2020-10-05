@@ -1179,10 +1179,22 @@ static Value *createArithmetic(Ice::InstArithmetic::OpKind op, Value *lhs, Value
 {
 	ASSERT(lhs->getType() == rhs->getType() || llvm::isa<Ice::Constant>(rhs));
 
+	// lhs must not be constant
 	bool swapOperands = llvm::isa<Ice::Constant>(lhs) && isCommutative(op);
+	if(swapOperands)
+	{
+		std::swap(lhs, rhs);
+	}
+
+	// Both cannot be constant, so if rhs was also constant, make it a stack variable
+	if(swapOperands && llvm::isa<Ice::Constant>(lhs))
+	{
+		auto *cptr = llvm::dyn_cast<Ice::Constant>(lhs);
+		lhs = V(sz::createUnconstCast(::function, ::basicBlock, cptr));
+	}
 
 	Ice::Variable *result = ::function->makeVariable(lhs->getType());
-	Ice::InstArithmetic *arithmetic = Ice::InstArithmetic::create(::function, op, result, swapOperands ? rhs : lhs, swapOperands ? lhs : rhs);
+	Ice::InstArithmetic *arithmetic = Ice::InstArithmetic::create(::function, op, result, lhs, rhs);
 	::basicBlock->appendInst(arithmetic);
 
 	return V(result);
