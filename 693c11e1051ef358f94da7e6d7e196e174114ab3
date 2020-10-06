@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2fb03e1_4f785d26",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-06T13:38:37Z",
+      "side": 1,
+      "message": "This isn\u0027t significantly better than the current unpoison-all-writes approach. We need MSan to instrument all arithmetic operations and branches. That will probably only ever work with LLVM: https://swiftshader-review.googlesource.com/c/SwiftShader/+/41248",
+      "revId": "693c11e1051ef358f94da7e6d7e196e174114ab3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
