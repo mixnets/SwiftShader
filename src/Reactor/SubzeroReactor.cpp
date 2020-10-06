@@ -36,10 +36,6 @@
 
 #include "marl/event.h"
 
-#if __has_feature(memory_sanitizer)
-#	include <sanitizer/msan_interface.h>
-#endif
-
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
 #		define WIN32_LEAN_AND_MEAN
@@ -49,6 +45,8 @@
 #	endif  // !NOMINMAX
 #	include <Windows.h>
 #endif
+
+#include <immintrin.h>
 
 #include <array>
 #include <iostream>
@@ -346,6 +344,12 @@ const bool CPUID::ARM = CPUID::detectARM();
 const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
 const bool emulateIntrinsics = false;
 const bool emulateMismatchedBitCast = CPUID::ARM;
+
+#if __has_feature(memory_sanitizer) && defined(__x86_64__)
+const bool msan = true;
+#else
+const bool msan = true;
+#endif
 
 constexpr bool subzeroDumpEnabled = false;
 constexpr bool subzeroEmitTextAsm = false;
@@ -1354,6 +1358,136 @@ static void validateAtomicAndMemoryOrderArgs(bool atomic, std::memory_order memo
 	ASSERT(memoryOrder != std::memory_order_seq_cst);
 }
 
+#if defined(__i386__) || defined(__x86_64__)
+static int32_t load8(const int8_t *ptr)
+{
+	return static_cast<int32_t>(*ptr);
+}
+
+static int32_t load16(const int16_t *ptr)
+{
+	return static_cast<int32_t>(*ptr);
+}
+
+static int32_t load32(const int32_t *ptr)
+{
+	return *ptr;
+}
+
+static int64_t load64(const int64_t *ptr)
+{
+	return *ptr;
+}
+
+static __m128i load128(const __m128i *ptr)
+{
+	return _mm_loadu_si128(ptr);
+}
+
+static __m128i load32_128(const void *ptr)
+{
+	//	return _mm_loadu_si32(ptr);
+	return _mm_cvtsi32_si128(*reinterpret_cast<const int32_t *>(ptr));
+}
+
+static __m128i load64_128(const void *ptr)
+{
+	return _mm_loadu_si64(ptr);
+}
+
+Ice::Constant *loadFunction(Type *type)
+{
+	intptr_t fptr = 0;
+
+	switch(reinterpret_cast<std::intptr_t>(type))
+	{
+		case Ice::IceType_i1:
+		case Ice::IceType_i8: fptr = reinterpret_cast<intptr_t>(load8); break;
+		case Ice::IceType_i16: fptr = reinterpret_cast<intptr_t>(load16); break;
+		case Ice::IceType_i32: fptr = reinterpret_cast<intptr_t>(load32); break;
+		case Ice::IceType_i64: fptr = reinterpret_cast<intptr_t>(load64); break;
+		case Ice::IceType_f64:
+		case Type_v2i32:
+		case Type_v4i16:
+		case Type_v8i8:
+		case Type_v2f32: fptr = reinterpret_cast<intptr_t>(load64_128); break;
+		case Ice::IceType_f32:
+		case Type_v2i16:
+		case Type_v4i8: fptr = reinterpret_cast<intptr_t>(load32_128); break;
+		default:
+			ASSERT(typeSize(type) == 16);
+			fptr = reinterpret_cast<intptr_t>(load128);
+			break;
+	}
+
+	return ::context->getConstantInt64(fptr);
+}
+
+static void store8(int8_t *ptr, int8_t val)
+{
+	*ptr = val;
+}
+
+static void store16(int16_t *ptr, int16_t val)
+{
+	*ptr = val;
+}
+
+static void store32(int32_t *ptr, int32_t val)
+{
+	*ptr = val;
+}
+
+static void store64(int64_t *ptr, int64_t val)
+{
+	*ptr = val;
+}
+
+static void store128(__m128i *ptr, __m128i val)
+{
+	_mm_storeu_si128(ptr, val);
+}
+
+static void store32_128(void *ptr, __m128i val)
+{
+	// _mm_storeu_si32(ptr, val);
+	_mm_store_ss((float *)ptr, _mm_castsi128_ps(val));
+}
+
+static void store64_128(void *ptr, __m128i val)
+{
+	_mm_storeu_si64(ptr, val);
+}
+
+Ice::Constant *storeFunction(Type *type)
+{
+	intptr_t fptr = 0;
+
+	switch(reinterpret_cast<std::intptr_t>(type))
+	{
+		case Ice::IceType_i1:
+		case Ice::IceType_i8: fptr = reinterpret_cast<intptr_t>(store8); break;
+		case Ice::IceType_i16: fptr = reinterpret_cast<intptr_t>(store16); break;
+		case Ice::IceType_i32: fptr = reinterpret_cast<intptr_t>(store32); break;
+		case Ice::IceType_i64: fptr = reinterpret_cast<intptr_t>(store64); break;
+		case Ice::IceType_f64:
+		case Type_v2i32:
+		case Type_v4i16:
+		case Type_v8i8:
+		case Type_v2f32: fptr = reinterpret_cast<intptr_t>(store64_128); break;
+		case Ice::IceType_f32:
+		case Type_v2i16:
+		case Type_v4i8: fptr = reinterpret_cast<intptr_t>(store32_128); break;
+		default:
+			ASSERT(typeSize(type) == 16);
+			fptr = reinterpret_cast<intptr_t>(store128);
+			break;
+	}
+
+	return ::context->getConstantInt64(fptr);
+}
+#endif
+
 Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align, bool atomic, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
@@ -1398,18 +1532,50 @@ Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int
 		}
 		else
 		{
-			const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F };
-			auto target = ::context->getConstantUndef(Ice::IceType_i32);
-			result = ::function->makeVariable(T(type));
-			auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-			load->addArg(ptr);
-			load->addArg(::context->getConstantInt32(typeSize(type)));
-			::basicBlock->appendInst(load);
+			if(!msan)
+			{
+				const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F };
+				auto target = ::context->getConstantUndef(Ice::IceType_i32);
+				result = ::function->makeVariable(T(type));
+				auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+				load->addArg(ptr);
+				load->addArg(::context->getConstantInt32(typeSize(type)));
+				::basicBlock->appendInst(load);
+			}
+			else
+			{
+				result = ::function->makeVariable(T(type));
+				auto load = Ice::InstCall::create(::function, 1, result, loadFunction(type), false);
+				load->addArg(ptr);
+				::basicBlock->appendInst(load);
+			}
 		}
 	}
 	else
 	{
-		result = sz::createLoad(::function, ::basicBlock, V(ptr), T(type), align);
+		if(!msan)
+		{
+			result = sz::createLoad(::function, ::basicBlock, V(ptr), T(type), align);
+		}
+		else
+		{
+			Ice::Variable *result2 = ::function->makeVariable(typeSize(type) >= 4 ? T(type) : Ice::IceType_i32);
+
+			auto load = Ice::InstCall::create(::function, 1, result2, loadFunction(type), false);
+			load->addArg(ptr);
+			::basicBlock->appendInst(load);
+
+			if(typeSize(type) < 4)
+			{
+				result = ::function->makeVariable(T(type));
+				Ice::InstCast *trunc = Ice::InstCast::create(::function, Ice::InstCast::Trunc, result, result2);
+				::basicBlock->appendInst(trunc);
+			}
+			else
+			{
+				result = result2;
+			}
+		}
 	}
 
 	ASSERT(result);
@@ -1420,17 +1586,6 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	validateAtomicAndMemoryOrderArgs(atomic, memoryOrder);
-
-#if __has_feature(memory_sanitizer)
-	// Mark all (non-stack) memory writes as initialized by calling __msan_unpoison
-	if(align != 0)
-	{
-		auto call = Ice::InstCall::create(::function, 2, nullptr, ::context->getConstantInt64(reinterpret_cast<intptr_t>(__msan_unpoison)), false);
-		call->addArg(ptr);
-		call->addArg(::context->getConstantInt64(typeSize(type)));
-		::basicBlock->appendInst(call);
-	}
-#endif
 
 	int valueType = (int)reinterpret_cast<intptr_t>(type);
 
@@ -1470,21 +1625,47 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 		}
 		else
 		{
-			const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T };
-			auto target = ::context->getConstantUndef(Ice::IceType_i32);
-			auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-			store->addArg(value);
-			store->addArg(ptr);
-			store->addArg(::context->getConstantInt32(typeSize(type)));
-			::basicBlock->appendInst(store);
+			if(!msan)
+			{
+				const Ice::Intrinsics::IntrinsicInfo intrinsic = { Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T };
+				auto target = ::context->getConstantUndef(Ice::IceType_i32);
+				auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
+				store->addArg(value);
+				store->addArg(ptr);
+				store->addArg(::context->getConstantInt32(typeSize(type)));
+				::basicBlock->appendInst(store);
+			}
+			else
+			{
+				auto store = Ice::InstCall::create(::function, 2, nullptr, storeFunction(type), false);
+				store->addArg(ptr);
+				store->addArg(value);
+				::basicBlock->appendInst(store);
+			}
 		}
 	}
 	else
 	{
 		ASSERT(value->getType() == T(type));
 
-		auto store = Ice::InstStore::create(::function, V(value), V(ptr), align);
-		::basicBlock->appendInst(store);
+		if(!msan)
+		{
+			auto store = Ice::InstStore::create(::function, V(value), V(ptr), align);
+			::basicBlock->appendInst(store);
+		}
+		else
+		{
+			if(typeSize(type) < 4)
+			{
+				// Subzero requires the width of arguments to be at least 32 bits.
+				value = createZExt(value, T(Ice::IceType_i32));
+			}
+
+			auto store = Ice::InstCall::create(::function, 2, nullptr, storeFunction(type), false);
+			store->addArg(ptr);
+			store->addArg(value);
+			::basicBlock->appendInst(store);
+		}
 	}
 
 	return value;
