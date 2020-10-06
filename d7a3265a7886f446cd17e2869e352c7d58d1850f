@@ -33,6 +33,24 @@
       "message": "Thanks for doing this!",
       "revId": "d7a3265a7886f446cd17e2869e352c7d58d1850f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99c06991_9177ec54",
+        "filename": "include/vulkan/vulkan.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 89377
+      },
+      "writtenOn": "2020-10-06T17:11:47Z",
+      "side": 1,
+      "message": "Np! I\u0027m not sure if it\u0027s possible, but it would be better if this can be moved into \"src/Vulkan/VulkanPlatform.hpp\" before those inside are upstreamed.",
+      "parentUuid": "9bdc65f2_7f6116ef",
+      "revId": "d7a3265a7886f446cd17e2869e352c7d58d1850f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
