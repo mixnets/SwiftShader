@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bdc65f2_7f6116ef",
+        "filename": "include/vulkan/vulkan.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2020-10-06T12:09:23Z",
+      "side": 1,
+      "message": "Thanks for doing this!",
+      "revId": "d7a3265a7886f446cd17e2869e352c7d58d1850f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
