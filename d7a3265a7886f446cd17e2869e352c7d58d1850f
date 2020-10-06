@@ -1,6 +1,24 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e14473e_ab749620",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-06T17:05:17Z",
+      "side": 1,
+      "message": "Thanks!",
+      "revId": "d7a3265a7886f446cd17e2869e352c7d58d1850f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
       "key": {
         "uuid": "9bdc65f2_7f6116ef",
         "filename": "include/vulkan/vulkan.h",
@@ -14,8 +32,7 @@
       "side": 1,
       "message": "Thanks for doing this!",
       "revId": "d7a3265a7886f446cd17e2869e352c7d58d1850f",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
