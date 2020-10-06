@@ -1,6 +1,30 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff1b2909_c2a7f516",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-06T18:49:45Z",
+      "side": 1,
+      "message": "s/porformed/performed",
+      "range": {
+        "startLine": 21,
+        "startChar": 57,
+        "endLine": 21,
+        "endChar": 66
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
       "key": {
         "uuid": "04cfaa37_e4e3493c",
         "filename": "/PATCHSET_LEVEL",
@@ -14,10 +38,10 @@
       "side": 1,
       "message": "Fixes rendering shadows in Unity, which uses 16-bit depth textures. I also tested floating-point depth textures with the hack later in the stack.",
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": false
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "62e9429d_7a64dcf8",
         "filename": "src/Device/Renderer.cpp",
@@ -37,10 +61,10 @@
         "endChar": 102
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "d5eda0ea_e6ddf140",
         "filename": "src/Device/Renderer.cpp",
@@ -61,10 +85,34 @@
         "endChar": 102
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "28ce1df5_add7d0ed",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-06T18:49:45Z",
+      "side": 1,
+      "message": "If it\u0027s left at the top, you should adda a \"break;\" even if UNSUPPORTED expands to something that the compiler knows cannot fallthrough.",
+      "parentUuid": "d5eda0ea_e6ddf140",
+      "range": {
+        "startLine": 351,
+        "startChar": 0,
+        "endLine": 352,
+        "endChar": 102
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
       "key": {
         "uuid": "bc9eec0e_1d8b00a5",
         "filename": "src/Device/Renderer.cpp",
@@ -84,10 +132,10 @@
         "endChar": 23
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "d3925486_a5594455",
         "filename": "src/Device/Renderer.cpp",
@@ -108,10 +156,33 @@
         "endChar": 23
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "45a7f537_2563f761",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-06T18:49:45Z",
+      "side": 1,
+      "message": "Remove double-quote?",
+      "range": {
+        "startLine": 452,
+        "startChar": 8,
+        "endLine": 452,
+        "endChar": 9
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
       "key": {
         "uuid": "d7cd4e65_c20e526c",
         "filename": "src/Pipeline/SetupRoutine.cpp",
@@ -131,10 +202,10 @@
         "endChar": 43
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "d74aa200_297275ad",
         "filename": "src/Pipeline/SetupRoutine.cpp",
@@ -155,8 +226,30 @@
         "endChar": 43
       },
       "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": false
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a07e2bed_1c63e42a",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-06T18:49:45Z",
+      "side": 1,
+      "message": "Should be \"b/155302798\".\nAlso, do we need this TODO here? This code would not be removed nor modified when b/155302798 is completed, right?",
+      "range": {
+        "startLine": 488,
+        "startChar": 23,
+        "endLine": 488,
+        "endChar": 32
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
