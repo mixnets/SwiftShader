@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1c6094a_eacfee20",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-06T18:39:01Z",
+      "side": 1,
+      "message": "Is it possible to create unit tests for these Nan/Inf cases to make sure we\u0027re clamping?",
+      "revId": "f6122d217a17dba5c2aa1933f189c9e1b1ea0e3a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
