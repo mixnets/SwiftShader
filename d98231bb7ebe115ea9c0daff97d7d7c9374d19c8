@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab7a83d7_24fdbb7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T13:41:26Z",
+      "side": 1,
+      "message": "Two days of just seeing the graphicsfuzz crashes with LLVM, although they clearly also failed with Subzero in Patchset 2.\n\nFiled https://issuetracker.google.com/170296391 to summarize the findings.",
+      "revId": "d98231bb7ebe115ea9c0daff97d7d7c9374d19c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
