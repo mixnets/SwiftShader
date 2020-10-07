@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0821a6be_9b80e086",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T15:24:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff1b2909_c2a7f516",
+      "range": {
+        "startLine": 21,
+        "startChar": 57,
+        "endLine": 21,
+        "endChar": 66
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "04cfaa37_e4e3493c",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -112,6 +136,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "62e05588_3e1be570",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T15:24:00Z",
+      "side": 1,
+      "message": "I\u0027ve changed it around to look more classical. It will actually leave the value at 0 in the \"impossible\" cases, thanks to DrawData being zero-initialized.",
+      "parentUuid": "28ce1df5_add7d0ed",
+      "range": {
+        "startLine": 351,
+        "startChar": 0,
+        "endLine": 352,
+        "endChar": 102
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc9eec0e_1d8b00a5",
@@ -159,6 +207,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "48fe45f3_a5318a94",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T15:24:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3925486_a5594455",
+      "range": {
+        "startLine": 356,
+        "startChar": 5,
+        "endLine": 356,
+        "endChar": 23
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "45a7f537_2563f761",
@@ -172,6 +244,30 @@
       "writtenOn": "2020-10-06T18:49:45Z",
       "side": 1,
       "message": "Remove double-quote?",
+      "range": {
+        "startLine": 452,
+        "startChar": 8,
+        "endLine": 452,
+        "endChar": 9
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81243af8_4b588528",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T15:24:00Z",
+      "side": 1,
+      "message": "This is a quote from the Vulkan spec. To clarify that this isn\u0027t an implementation-specific comment, we tent to use quotation marks. That said, I forgot the closing one. Fixed now.\n\nNote we\u0027ll often add a link to the spec as well, for cases where there\u0027s additional clarification to be found in it. In this case, the quote contains everything and there isn\u0027t a clean link to this specific formula, so I omitted it.",
+      "parentUuid": "45a7f537_2563f761",
       "range": {
         "startLine": 452,
         "startChar": 8,
@@ -242,6 +338,30 @@
       "writtenOn": "2020-10-06T18:49:45Z",
       "side": 1,
       "message": "Should be \"b/155302798\".\nAlso, do we need this TODO here? This code would not be removed nor modified when b/155302798 is completed, right?",
+      "range": {
+        "startLine": 488,
+        "startChar": 23,
+        "endLine": 488,
+        "endChar": 32
+      },
+      "revId": "605c8c934e642d17d9c226018745b5725eb5780e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b00638be_45e3c38e",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-07T15:24:00Z",
+      "side": 1,
+      "message": "Good catch. Thanks.\n\nIndeed the code itself wouldn\u0027t change, but the comment, which indicates an optimization opportunity, would be removed.",
+      "parentUuid": "a07e2bed_1c63e42a",
       "range": {
         "startLine": 488,
         "startChar": 23,
