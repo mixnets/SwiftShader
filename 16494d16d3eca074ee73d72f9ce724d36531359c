@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b491a98e_7351abb3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T15:54:52Z",
+      "side": 1,
+      "message": "I believe the dEQP-VK.dynamic_state.rs_state.depth_bias_clamp regression is a test bug: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2613\n\nThe lastest Patchset passes SwANGLE trybot tests, and shadows still work in Unity as well. PTAL",
+      "revId": "16494d16d3eca074ee73d72f9ce724d36531359c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
