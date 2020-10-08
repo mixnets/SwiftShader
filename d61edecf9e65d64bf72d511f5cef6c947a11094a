@@ -89,6 +89,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "25f6b634_750bfe49",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5545
+      },
+      "writtenOn": "2020-10-08T18:04:51Z",
+      "side": 1,
+      "message": "Not sure what you mean by \"actual use cases for AEMU/FEMU are limited (i.e. no compressed images or cube maps)\"? We need to be able to run games and pass CTS after all, so compressed/cube images are very important.",
+      "parentUuid": "88a38a63_f6970cd4",
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e1ff5939_48bec15d",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
@@ -100,6 +118,30 @@
       "writtenOn": "2020-10-08T17:58:34Z",
       "side": 1,
       "message": "This isn\u0027t guaranteed to be supported by other Vulkan implementations. Does AEMU/FEMU have a fallback path for that?\n\nAre both these features relied on at the moment?",
+      "range": {
+        "startLine": 1099,
+        "startChar": 0,
+        "endLine": 1105,
+        "endChar": 3
+      },
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9a41c2d_63f21a3c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1105,
+      "author": {
+        "id": 5545
+      },
+      "writtenOn": "2020-10-08T18:04:51Z",
+      "side": 1,
+      "message": "AEMU currently passes through the ICD\u0027s format properties (for the most part; etc2/astc compressed is emulated if not supported by the underlying icd).\n\nDepends on application.",
+      "parentUuid": "e1ff5939_48bec15d",
       "range": {
         "startLine": 1099,
         "startChar": 0,
