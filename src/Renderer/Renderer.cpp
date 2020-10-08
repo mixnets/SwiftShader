@@ -15,21 +15,21 @@
 #include "Renderer.hpp"
 
 #include "Clipper.hpp"
-#include "Surface.hpp"
-#include "Primitive.hpp"
-#include "Polygon.hpp"
-#include "Main/FrameBuffer.hpp"
-#include "Main/SwiftConfig.hpp"
-#include "Reactor/Reactor.hpp"
-#include "Shader/Constants.hpp"
-#include "Common/MutexLock.hpp"
 #include "Common/CPUID.hpp"
-#include "Common/Memory.hpp"
-#include "Common/Resource.hpp"
+#include "Common/Debug.hpp"
 #include "Common/Half.hpp"
 #include "Common/Math.hpp"
+#include "Common/Memory.hpp"
+#include "Common/MutexLock.hpp"
+#include "Common/Resource.hpp"
 #include "Common/Timer.hpp"
-#include "Common/Debug.hpp"
+#include "Main/FrameBuffer.hpp"
+#include "Main/SwiftConfig.hpp"
+#include "Polygon.hpp"
+#include "Primitive.hpp"
+#include "Reactor/Reactor.hpp"
+#include "Shader/Constants.hpp"
+#include "Surface.hpp"
 
 #undef max
 
@@ -580,10 +580,10 @@ namespace sw
 				float F = viewport.maxZ;
 				float Z = F - N;
 
-				if(context->isDrawTriangle(false))
+		/*		if(context->isDrawTriangle(false))
 				{
 					N += context->depthBias;
-				}
+				}*/
 
 				if(complementaryDepthBuffer)
 				{
@@ -620,6 +620,7 @@ namespace sw
 				data->halfPixelX = replicate(0.5f / W);
 				data->halfPixelY = replicate(0.5f / H);
 				data->viewportHeight = abs(viewport.height);
+				data->constantDepthBias = context->constantDepthBias;
 				data->slopeDepthBias = context->slopeDepthBias;
 				data->depthRange = Z;
 				data->depthNear = N;
@@ -2130,7 +2131,7 @@ namespace sw
 	}
 
 	void Renderer::initializeThreads()
-	{
+	{threadCount = 1;
 		unitCount = ceilPow2(threadCount);
 		clusterCount = ceilPow2(threadCount);
 
@@ -2632,7 +2633,7 @@ namespace sw
 
 	void Renderer::setDepthBias(float bias)
 	{
-		context->depthBias = bias;
+		context->constantDepthBias = bias;
 	}
 
 	void Renderer::setSlopeDepthBias(float slopeBias)

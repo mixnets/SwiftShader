@@ -211,6 +211,11 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}/${VULKAN_API_LIBRARY_NAME}
 
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> C:/src/deqp/build/external/vulkancts/modules/vulkan/Debug/vulkan-1.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> C:/src/chromium/src/out/Default/vulkan-1.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> "C:/Program Files/Unity/Hub/Editor/2020.2.0b2/Editor/vulkan-1.dll"
+    
+
     # Copy to ${CMAKE_BINARY_DIR}/bin so the library sits next to the PVR samples.
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/bin
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:vk_swiftshader> ${CMAKE_BINARY_DIR}/bin/${VULKAN_API_LIBRARY_NAME}

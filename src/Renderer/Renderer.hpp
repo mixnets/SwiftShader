@@ -15,14 +15,14 @@
 #ifndef sw_Renderer_hpp
 #define sw_Renderer_hpp
 
-#include "VertexProcessor.hpp"
-#include "PixelProcessor.hpp"
-#include "SetupProcessor.hpp"
-#include "Plane.hpp"
 #include "Blitter.hpp"
 #include "Common/MutexLock.hpp"
 #include "Common/Thread.hpp"
 #include "Main/Config.hpp"
+#include "PixelProcessor.hpp"
+#include "Plane.hpp"
+#include "SetupProcessor.hpp"
+#include "VertexProcessor.hpp"
 
 #include <list>
 
@@ -184,6 +184,7 @@ namespace sw
 		float4 halfPixelX;
 		float4 halfPixelY;
 		float viewportHeight;
+		float constantDepthBias;
 		float slopeDepthBias;
 		float depthRange;
 		float depthNear;

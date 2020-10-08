@@ -15,8 +15,8 @@
 #ifndef sw_Primitive_hpp
 #define sw_Primitive_hpp
 
-#include "Vertex.hpp"
 #include "Main/Config.hpp"
+#include "Vertex.hpp"
 
 namespace sw
 {
@@ -43,6 +43,7 @@ namespace sw
 		float4 yQuad;
 
 		PlaneEquation z;
+		float4 bias;
 		PlaneEquation w;
 
 		union

@@ -17,26 +17,26 @@
 
 #include "Context.h"
 
-#include "main.h"
-#include "mathutil.h"
-#include "utilities.h"
-#include "ResourceManager.h"
 #include "Buffer.h"
+#include "Common/Half.hpp"
 #include "Fence.h"
 #include "Framebuffer.h"
+#include "IndexDataManager.h"
 #include "Program.h"
 #include "Query.h"
 #include "Renderbuffer.h"
+#include "ResourceManager.h"
 #include "Sampler.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "TransformFeedback.h"
 #include "VertexArray.h"
 #include "VertexDataManager.h"
-#include "IndexDataManager.h"
-#include "libEGL/Display.h"
 #include "common/Surface.hpp"
-#include "Common/Half.hpp"
+#include "libEGL/Display.h"
+#include "main.h"
+#include "mathutil.h"
+#include "utilities.h"
 
 #include <EGL/eglext.h>
 
@@ -2990,8 +2990,8 @@ void Context::applyState(GLenum drawMode)
 			if(depthbuffer)
 			{
 				device->setSlopeDepthBias(mState.polygonOffsetFactor);
-				float depthBias = ldexp(mState.polygonOffsetUnits, -23);   // We use 32-bit floating-point for all depth formats, with 23 mantissa bits.
-				device->setDepthBias(depthBias);
+			//	float depthBias = ldexp(mState.polygonOffsetUnits, -23);   // We use 32-bit floating-point for all depth formats, with 23 mantissa bits.
+				device->setDepthBias(mState.polygonOffsetUnits);
 			}
 		}
 		else

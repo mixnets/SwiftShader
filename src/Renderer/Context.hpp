@@ -15,12 +15,12 @@
 #ifndef sw_Context_hpp
 #define sw_Context_hpp
 
-#include "Sampler.hpp"
-#include "TextureStage.hpp"
-#include "Stream.hpp"
-#include "Point.hpp"
-#include "Vertex.hpp"
 #include "Common/Types.hpp"
+#include "Point.hpp"
+#include "Sampler.hpp"
+#include "Stream.hpp"
+#include "TextureStage.hpp"
+#include "Vertex.hpp"
 
 namespace sw
 {
@@ -435,7 +435,7 @@ namespace sw
 		bool frontFacingCCW;
 		float alphaReference;
 
-		float depthBias;
+		float constantDepthBias;
 		float slopeDepthBias;
 
 		TextureStage textureStage[8];

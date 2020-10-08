@@ -14,13 +14,13 @@
 
 #include "PixelRoutine.hpp"
 
-#include "SamplerCore.hpp"
-#include "Constants.hpp"
-#include "Renderer/Renderer.hpp"
-#include "Renderer/QuadRasterizer.hpp"
-#include "Renderer/Surface.hpp"
-#include "Renderer/Primitive.hpp"
 #include "Common/Debug.hpp"
+#include "Constants.hpp"
+#include "Renderer/Primitive.hpp"
+#include "Renderer/QuadRasterizer.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Surface.hpp"
+#include "SamplerCore.hpp"
 
 namespace sw
 {
@@ -87,6 +87,10 @@ namespace sw
 				}
 
 				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive,z), false, false, state.depthClamp);
+
+				//z[q] += *Pointer<Float4>(primitive + OFFSET(Primitive,bias), 16);
+
+				z[q] = Min(Max(z[q], Float4(0.0f)), Float4(1.0f));
 			}
 		}
 

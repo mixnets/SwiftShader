@@ -14,12 +14,12 @@
 
 #include "Context.hpp"
 
+#include "Common/Debug.hpp"
+#include "Common/Memory.hpp"
 #include "Primitive.hpp"
-#include "Surface.hpp"
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
-#include "Common/Memory.hpp"
-#include "Common/Debug.hpp"
+#include "Surface.hpp"
 
 #include <string.h>
 
@@ -277,7 +277,7 @@ namespace sw
 		frontFacingCCW = true;
 		alphaReference = 0.0f;
 
-		depthBias = 0.0f;
+		constantDepthBias = 0.0f;
 		slopeDepthBias = 0.0f;
 
 		for(int i = 0; i < RENDERTARGETS; i++)

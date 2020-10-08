@@ -14,13 +14,13 @@
 
 #include "PixelProcessor.hpp"
 
-#include "Surface.hpp"
+#include "Common/Debug.hpp"
 #include "Primitive.hpp"
+#include "Shader/Constants.hpp"
 #include "Shader/PixelPipeline.hpp"
 #include "Shader/PixelProgram.hpp"
 #include "Shader/PixelShader.hpp"
-#include "Shader/Constants.hpp"
-#include "Common/Debug.hpp"
+#include "Surface.hpp"
 
 #include <cstring>
 
@@ -1008,7 +1008,7 @@ namespace sw
 		state.pixelFogMode = context->pixelFogActive();
 		state.wBasedFog = context->wBasedFog && context->pixelFogActive() != FOG_NONE;
 		state.perspective = context->perspectiveActive();
-		state.depthClamp = (context->depthBias != 0.0f) || (context->slopeDepthBias != 0.0f);
+		state.depthClamp = (context->constantDepthBias != 0.0f) || (context->slopeDepthBias != 0.0f);
 
 		if(context->alphaBlendActive())
 		{
