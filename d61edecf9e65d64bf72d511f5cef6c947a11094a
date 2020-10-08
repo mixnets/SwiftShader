@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f836345_0392855a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T17:58:34Z",
+      "side": 1,
+      "message": "This reads a bit weird. \"Enable\"?",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 6
+      },
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3f35e81_7ab8f7d9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T17:58:34Z",
+      "side": 1,
+      "message": "Using \"fuchsia:54153\" instead should create a link.",
+      "range": {
+        "startLine": 17,
+        "startChar": 5,
+        "endLine": 17,
+        "endChar": 18
+      },
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35ce82b3_6802a29f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T17:58:34Z",
+      "side": 1,
+      "message": "Let\u0027s test all of \"dEQP-VK.*linear*\"",
+      "range": {
+        "startLine": 18,
+        "startChar": 6,
+        "endLine": 18,
+        "endChar": 31
+      },
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88a38a63_f6970cd4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T17:58:34Z",
+      "side": 1,
+      "message": "Thanks Yilong for the SwiftShader contribution!\n\nThis matter is a bit trickier than it might appear, so I want to be very cautious about enabling this. Here\u0027s part of the reason why we haven\u0027t enabled these features on linear resources yet: https://groups.google.com/a/google.com/g/swiftshader-team/c/Q5y_TT9W1fE/m/8xd73B7sAwAJ . Basically, the data we sample isn\u0027t necessarily the data stored in the resource. We rely on the application to transfer it from a linear resource to an optimal tiling resource, to support compressed textures and cube maps. We decompress compressed formats before sampling, and for cube maps we add a border to implement \u0027seamless\u0027 sampling.\n\nAssuming you don\u0027t need sampling or blitting support for linear resources with a compressed format, those could be easily excluded in this change. Use of VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT needs a closer look. Linear filtering of the aliased data probably makes no sense, but I don\u0027t think the spec forbids it.\n\nCube maps be could an issue because the format\u0027s features don\u0027t depend on the resource dimensionality. We can support point filtering of linear resources without any issues, and blit is fine too since it doesn\u0027t do seamless filtering across cube faces. Linear filtering requires updating the border data, and without a transfer from linear to optimal tiling it\u0027s not clear when to do that. I suspect there\u0027s a pipeline barrier with the VK_PIPELINE_STAGE_HOST_BIT flag that we could use to trigger the update?\n\nAlternatively, on the assumption that the actual use cases for AEMU/FEMU are limited (i.e. no compressed images or cube maps), we could define an extension for this.\n\nPerhaps we need to move this discussion to an e-mail thread, bug ticket, or a design doc.",
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1ff5939_48bec15d",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-08T17:58:34Z",
+      "side": 1,
+      "message": "This isn\u0027t guaranteed to be supported by other Vulkan implementations. Does AEMU/FEMU have a fallback path for that?\n\nAre both these features relied on at the moment?",
+      "range": {
+        "startLine": 1099,
+        "startChar": 0,
+        "endLine": 1105,
+        "endChar": 3
+      },
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
