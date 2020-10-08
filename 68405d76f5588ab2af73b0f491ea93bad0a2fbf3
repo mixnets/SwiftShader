@@ -16,6 +16,24 @@
       "message": "Overall:\n\nI think what could be useful or at least to address Nicolas\u0027 comments is to make the distinction more explicit through branching on particular formats and setting the bits depending on the format (i.e., cube/compressed go one path and the formats where we can rely on the extra bits set here, go another path).",
       "revId": "68405d76f5588ab2af73b0f491ea93bad0a2fbf3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e9ec8f3_228a8133",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5545
+      },
+      "writtenOn": "2020-10-08T18:19:00Z",
+      "side": 1,
+      "message": "We also sort of ran _alongside_ (not into, yet) this issue when implementing Android AHardwareBuffer support for Swiftshader Vulkan.\n\nKey to using virtgpu map or AHB lock with zero copy is the assumption that Swiftshader\u0027s images are basically linear underneath and can be used for gpu and cpu usages without copying, which isn\u0027t true for compressed formats. But AHB formats don\u0027t include any cube/compressed (they\u0027re just RGB(A) 888(8), 565, 10A2, 16F, and a few others).\n\nThere\u0027s also been talk of making Swiftshader\u0027s formats more nontrivially tiled at some point, which will impact all these use cases.",
+      "parentUuid": "cd80ac57_4c4b7d85",
+      "revId": "68405d76f5588ab2af73b0f491ea93bad0a2fbf3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
