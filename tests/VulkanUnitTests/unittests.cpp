@@ -36,7 +36,12 @@ size_t alignUp(size_t val, size_t alignment)
 class SwiftShaderVulkanTest : public testing::Test
 {
 };
-
+/*
+TEST(MSanTest, Foo) {
+  int uninitialized;
+  EXPECT_GT(uninitialized, 5);
+}
+*/
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
 	Driver driver;
