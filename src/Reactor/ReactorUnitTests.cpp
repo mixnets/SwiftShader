@@ -49,7 +49,7 @@ TEST(ReactorUnitTests, Sample)
 		Int y = function.Arg<1>();
 		Int z = 4;
 
-		For(Int i = 0, i < 10, i++)
+		For(Int i, i < 10, i++)
 		{
 			z += (2 << i) - (i / 3);
 		}
@@ -65,9 +65,10 @@ TEST(ReactorUnitTests, Sample)
 
 	auto routine = function("one");
 
-	int one[2] = { 1, 0 };
+	int one[2];  // = { 1, 0 };
 	int result = routine(&one[1], 2);
-	EXPECT_EQ(result, reference(&one[1], 2));
+	int one2[2] = { 1, 0 };
+	EXPECT_EQ(result, reference(&one2[1], 2));
 }
 
 TEST(ReactorUnitTests, Uninitialized)

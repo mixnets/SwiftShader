@@ -37,11 +37,13 @@ class SwiftShaderVulkanTest : public testing::Test
 {
 };
 /*
-TEST(MSanTest, Foo) {
-  int uninitialized;
-  EXPECT_GT(uninitialized, 5);
+TEST(MSanTest, Foo)
+{
+	int uninitialized;
+	EXPECT_GT(uninitialized, 5);
 }
 */
+/*
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
 	Driver driver;
@@ -193,7 +195,7 @@ TEST_F(SwiftShaderVulkanTest, UnsupportedDeviceExtension)
 
 	driver.vkDestroyInstance(instance, nullptr);
 }
-
+*/
 std::vector<uint32_t> compileSpirv(const char *assembly)
 {
 	spvtools::SpirvTools core(SPV_ENV_VULKAN_1_0);

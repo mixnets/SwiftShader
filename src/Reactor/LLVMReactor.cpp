@@ -402,35 +402,6 @@ void createScatter(llvm::Value *base, llvm::Value *val, llvm::Value *offsets, ll
 	auto align = ::llvm::ConstantInt::get(i32Ty, alignment);
 	auto func = ::llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::masked_scatter, { elVecTy, elPtrVecTy });
 	jit->builder->CreateCall(func, { val, elPtrs, align, i1Mask });
-
-#if __has_feature(memory_sanitizer)
-	// Mark memory writes as initialized by calling __msan_unpoison
-	{
-		// void __msan_unpoison(const volatile void *a, size_t size)
-		auto voidTy = ::llvm::Type::getVoidTy(jit->context);
-		auto voidPtrTy = voidTy->getPointerTo();
-		auto sizetTy = ::llvm::IntegerType::get(jit->context, sizeof(size_t) * 8);
-		auto funcTy = ::llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
-		auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
-		auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-		for(unsigned i = 0; i < numEls; i++)
-		{
-			// Check mask for this element
-			auto idx = ::llvm::ConstantInt::get(i32Ty, i);
-			auto thenBlock = ::llvm::BasicBlock::Create(jit->context, "", jit->function);
-			auto mergeBlock = ::llvm::BasicBlock::Create(jit->context, "", jit->function);
-			jit->builder->CreateCondBr(jit->builder->CreateExtractElement(i1Mask, idx), thenBlock, mergeBlock);
-			jit->builder->SetInsertPoint(thenBlock);
-
-			// Insert __msan_unpoison call in conditional block
-			auto elPtr = jit->builder->CreateExtractElement(elPtrs, idx);
-			jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(elPtr, voidPtrTy),
-			                                 ::llvm::ConstantInt::get(sizetTy, size) });
-			jit->builder->CreateBr(mergeBlock);
-			jit->builder->SetInsertPoint(mergeBlock);
-		}
-	}
-#endif
 }
 }  // namespace
 
@@ -572,10 +543,10 @@ static ::llvm::Function *createFunction(const char *name, ::llvm::Type *retTy, c
 
 Nucleus::Nucleus()
 {
-	ASSERT(jit == nullptr);
+	//ASSERT(jit == nullptr);
 	jit = new JITBuilder(Nucleus::getDefaultConfig());
 
-	ASSERT(Variable::unmaterializedVariables == nullptr);
+	//ASSERT(Variable::unmaterializedVariables == nullptr);
 	Variable::unmaterializedVariables = new std::unordered_set<const Variable *>();
 }
 

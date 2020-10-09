@@ -50,8 +50,12 @@ __pragma(warning(push))
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Instrumentation.h"
+#include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
+
+//#include "msan_interface_internal.h"
 
 #ifdef _MSC_VER
     __pragma(warning(pop))
@@ -67,12 +71,20 @@ extern "C" void _chkstk();
 #endif
 
 #if __has_feature(memory_sanitizer)
-#	include <sanitizer/msan_interface.h>
+#	include "sanitizer/msan_interface.h"
+//#	include "msan/msan_interface_internal.h"
 #endif
 
 #ifdef __ARM_EABI__
-extern "C" signed __aeabi_idivmod();
+extern "C" signed
+__aeabi_idivmod();
 #endif
+
+extern "C" void __msan_init();
+struct __emutls_control;
+extern "C" void *__emutls_get_address(__emutls_control *control);
+extern "C" __thread unsigned long long __msan_retval_tls[];
+extern "C" __thread unsigned long long __msan_param_tls[];
 
 namespace {
 
@@ -508,9 +520,13 @@ void *resolveExternalSymbol(const char *name)
 			functions.emplace("sync_fetch_and_umax_4", reinterpret_cast<void *>(F::sync_fetch_and_umax_4));
 			functions.emplace("sync_fetch_and_umin_4", reinterpret_cast<void *>(F::sync_fetch_and_umin_4));
 #endif
-#if __has_feature(memory_sanitizer)
+			//#if __has_feature(memory_sanitizer)
 			functions.emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
-#endif
+			functions.emplace("msan_init", reinterpret_cast<void *>(__msan_init));
+			functions.emplace("emutls_get_address", reinterpret_cast<void *>(__emutls_get_address));
+			functions.emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
+			functions.emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+			//#endif
 		}
 	};
 
@@ -523,8 +539,15 @@ void *resolveExternalSymbol(const char *name)
 
 	auto it = resolver.functions.find(trimmed);
 	// Missing functions will likely make the module fail in exciting non-obvious ways.
-	ASSERT_MSG(it != resolver.functions.end(), "Missing external function: '%s'", name);
-	return it->second;
+	//	ASSERT_MSG(it != resolver.functions.end(), "Missing external function: '%s'", name);
+	if(it != resolver.functions.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
@@ -561,7 +584,7 @@ public:
 			          return llvm::JITSymbol(
 			              reinterpret_cast<uintptr_t>(func), llvm::JITSymbolFlags::Absolute);
 		          }
-		          return objLayer.findSymbol(name, true);
+		          return objLayer.findSymbol(name, true && false);
 	          },
 	          [](llvm::Error err) {
 		          if(err)
@@ -668,8 +691,14 @@ void JITBuilder::optimize(const rr::Config &cfg)
 	}
 #endif  // ENABLE_RR_DEBUG_INFO
 
-	std::unique_ptr<llvm::legacy::PassManager> passManager(
-	    new llvm::legacy::PassManager());
+	// (arch)(sub)-(vendor)-(sys0-(abi)
+	module->setTargetTriple("x86_64-pc-linux-gnu");
+
+	auto passManager = std::make_unique<llvm::legacy::PassManager>();
+
+	//#if __has_feature(memory_sanitizer)
+	passManager->add(llvm::createMemorySanitizerLegacyPassPass());
+	//#endif
 
 	for(auto pass : cfg.getOptimization().getPasses())
 	{

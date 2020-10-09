@@ -127,8 +127,11 @@ target_compile_options(ReactorLLVM
         ${ROOT_PROJECT_COMPILE_OPTIONS}
 )
 
+#add_subdirectory(${THIRD_PARTY_DIR}/llvm-${SWIFTSHADER_LLVM_VERSION}/compiler-rt)
+
 target_link_libraries(ReactorLLVM
     PRIVATE
         llvm
+ #       compiler-rt
         ${REACTOR_PRIVATE_LINK_LIBRARIES}
 )
