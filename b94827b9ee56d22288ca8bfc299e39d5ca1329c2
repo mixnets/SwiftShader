@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "707637f5_57993a61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-10T18:17:21Z",
+      "side": 1,
+      "message": "As expected, dEQP-VK.dynamic_state.rs_state.depth_bias_clamp fails due to https://swiftshader-review.googlesource.com/c/SwiftShader/+/48629, but it is deemed a test bug: https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/2613\n\nI\u0027m going ahead and landing this. Someone please LGTM at your convenience.",
+      "revId": "b94827b9ee56d22288ca8bfc299e39d5ca1329c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
