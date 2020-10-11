@@ -24,51 +24,44 @@
 #include <tuple>
 
 using namespace rr;
-
-int reference(int *p, int y)
+/*
+static int __attribute__((noinline)) g(void)
 {
-	int x = p[-1];
-	int z = 4;
+	volatile int x;
 
-	for(int i = 0; i < 10; i++)
+	if(x >= 0)
 	{
-		z += (2 << i) - (i / 3);
+		return 1;
 	}
-
-	int sum = x + y + z;
-
-	return sum;
+	else
+	{
+		return -1;
+	}
 }
-
+*/
 TEST(ReactorUnitTests, Sample)
 {
-	FunctionT<int(int *, int)> function;
+	FunctionT<int(void)> function;
 	{
-		Pointer<Int> p = function.Arg<0>();
-		Int x = p[-1];
-		Int y = function.Arg<1>();
-		Int z = 4;
+		Int x;
 
-		For(Int i, i < 10, i++)
+		If(x >= 0)
 		{
-			z += (2 << i) - (i / 3);
+			Return(1);
 		}
-
-		Float4 v;
-		v.z = As<Float>(z);
-		z = As<Int>(Float(Float4(v.xzxx).y));
-
-		Int sum = x + y + z;
-
-		Return(sum);
+		Else
+		{
+			Return(-1);
+		}
 	}
 
 	auto routine = function("one");
 
-	int one[2];  // = { 1, 0 };
-	int result = routine(&one[1], 2);
-	int one2[2] = { 1, 0 };
-	EXPECT_EQ(result, reference(&one2[1], 2));
+	auto f = (int (*)())routine.getEntry();
+
+	int result = f();
+
+	EXPECT_TRUE(result == 1);
 }
 
 TEST(ReactorUnitTests, Uninitialized)

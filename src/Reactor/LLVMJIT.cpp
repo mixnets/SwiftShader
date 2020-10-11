@@ -80,11 +80,19 @@ extern "C" signed
 __aeabi_idivmod();
 #endif
 
-extern "C" void __msan_init();
+extern "C" {
+void __msan_init();
 struct __emutls_control;
-extern "C" void *__emutls_get_address(__emutls_control *control);
-extern "C" __thread unsigned long long __msan_retval_tls[];
-extern "C" __thread unsigned long long __msan_param_tls[];
+void *__emutls_get_address(__emutls_control *control);
+
+void __msan_warning_noreturn();
+}
+
+// These constants must be kept in sync with the ones in msan.h.
+//const int kMsanParamTlsSize = 800;
+//const int kMsanRetvalTlsSize = 800;
+extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
+extern __thread unsigned long long __msan_param_tls[/*kMsanRetvalTlsSize / sizeof(unsigned long long)*/];
 
 namespace {
 
@@ -124,14 +132,9 @@ JITGlobals *JITGlobals::get()
 
 JITGlobals::TargetMachineSPtr JITGlobals::createTargetMachine(rr::Optimization::Level optlevel)
 {
-#ifdef ENABLE_RR_DEBUG_INFO
-	auto llvmOptLevel = toLLVM(rr::Optimization::Level::None);
-#else   // ENABLE_RR_DEBUG_INFO
-	auto llvmOptLevel = toLLVM(optlevel);
-#endif  // ENABLE_RR_DEBUG_INFO
 
 	return TargetMachineSPtr(llvm::EngineBuilder()
-	                             .setOptLevel(llvmOptLevel)
+	                             .setOptLevel(::llvm::CodeGenOpt::Less)
 	                             .setMCPU(mcpu)
 	                             .setMArch(march)
 	                             .setMAttrs(mattrs)
@@ -193,6 +196,8 @@ JITGlobals JITGlobals::create()
 
 	llvm::TargetOptions targetOptions;
 	targetOptions.UnsafeFPMath = false;
+	//targetOptions.EmulatedTLS = false;
+	//targetOptions.ExplicitEmulatedTLS = true;
 
 	auto targetMachine = std::unique_ptr<llvm::TargetMachine>(
 	    llvm::EngineBuilder()
@@ -200,8 +205,12 @@ JITGlobals JITGlobals::create()
 	        .setMCPU(mcpu)
 	        .setMArch(march)
 	        .setMAttrs(mattrs)
+	        //   .setRelocationModel(llvm::Reloc::Model::PIC_)
 	        .setTargetOptions(targetOptions)
-	        .selectTarget());
+
+	        .selectTarget()
+	    //.setEmulatedTLS(false)
+	);
 
 	auto dataLayout = targetMachine->createDataLayout();
 
@@ -525,7 +534,13 @@ void *resolveExternalSymbol(const char *name)
 			functions.emplace("msan_init", reinterpret_cast<void *>(__msan_init));
 			functions.emplace("emutls_get_address", reinterpret_cast<void *>(__emutls_get_address));
 			functions.emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
+			functions.emplace("msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
 			functions.emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+			functions.emplace("msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+
+			//	functions.emplace("tls_get_addr", reinterpret_cast<void *>(__tls_get_addr));
+
+			functions.emplace("msan_warning_noreturn", reinterpret_cast<void *>(__msan_warning_noreturn));
 			//#endif
 		}
 	};
@@ -698,6 +713,7 @@ void JITBuilder::optimize(const rr::Config &cfg)
 
 	//#if __has_feature(memory_sanitizer)
 	passManager->add(llvm::createMemorySanitizerLegacyPassPass());
+	//passManager->add(llvm::createMemorySanitizerPass());
 	//#endif
 
 	for(auto pass : cfg.getOptimization().getPasses())

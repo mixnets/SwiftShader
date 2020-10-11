@@ -539,7 +539,7 @@ private:
   SmallVector<std::string, 4> MAttrs;
   bool VerifyModules;
   bool UseOrcMCJITReplacement;
-  bool EmulatedTLS = true;
+  bool EmulatedTLS = true;//
 
 public:
   /// Default constructor for EngineBuilder.
