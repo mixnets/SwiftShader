@@ -3085,6 +3085,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 
 	VkBaseOutStructure *extensionProperties = reinterpret_cast<VkBaseOutStructure *>(pImageFormatProperties->pNext);
 
+#ifdef __ANDROID__
+	bool hasAHBUsage = false;
+#endif
+
 	while(extensionProperties)
 	{
 		switch(extensionProperties->sType)
@@ -3112,6 +3116,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 			{
 				auto properties = reinterpret_cast<VkAndroidHardwareBufferUsageANDROID *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
+				hasAHBUsage = true;
 			}
 			break;
 #endif
@@ -3123,13 +3128,31 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		extensionProperties = extensionProperties->pNext;
 	}
 
-	return vkGetPhysicalDeviceImageFormatProperties(physicalDevice,
-	                                                pImageFormatInfo->format,
-	                                                pImageFormatInfo->type,
-	                                                pImageFormatInfo->tiling,
-	                                                pImageFormatInfo->usage,
-	                                                pImageFormatInfo->flags,
-	                                                &(pImageFormatProperties->imageFormatProperties));
+	VkResult result = vkGetPhysicalDeviceImageFormatProperties(physicalDevice,
+	                                                           pImageFormatInfo->format,
+	                                                           pImageFormatInfo->type,
+	                                                           pImageFormatInfo->tiling,
+	                                                           pImageFormatInfo->usage,
+	                                                           pImageFormatInfo->flags,
+	                                                           &(pImageFormatProperties->imageFormatProperties));
+	if(result != VK_SUCCESS)
+	{
+		return result;
+	}
+
+#ifdef __ANDROID__
+	if(hasAHBUsage)
+	{
+		if(pImageFormatProperties)
+		{
+			// AHardwareBuffer_lock may only be called with a single layer.
+			pImageFormatProperties->imageFormatProperties.maxArrayLayers = 1;
+			pImageFormatProperties->imageFormatProperties.maxMipLevels = 1;
+		}
+	}
+#endif
+
+	return VK_SUCCESS;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties)
