@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6446432a_c53060ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-13T20:38:43Z",
+      "side": 1,
+      "message": "PTAL, patchset 4 vs patchset 5 fixes a bunch of dEQP-VK.synchronization.*[opaque|semaphore]_fd tests.",
+      "revId": "ad36401f8c7b9aafda63a6e72e89836e53003c32",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
