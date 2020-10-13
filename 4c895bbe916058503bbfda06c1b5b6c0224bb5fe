@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "911040a6_7b9242fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-13T19:24:02Z",
+      "side": 1,
+      "message": "Confirmed offline that the import_multiple_times tests are passing besides the suballocated test from b/169796031.",
+      "parentUuid": "f0a2088c_9ff51c4f",
+      "revId": "4c895bbe916058503bbfda06c1b5b6c0224bb5fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5785f25d_9a9b9873",
@@ -31,6 +49,24 @@
       "writtenOn": "2020-10-13T18:06:05Z",
       "side": 1,
       "message": "suggest qualifying this as `pImageFormatProperties !\u003d nullptr`",
+      "revId": "4c895bbe916058503bbfda06c1b5b6c0224bb5fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce284d83_a72fa22e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3146,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-13T19:24:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5785f25d_9a9b9873",
       "revId": "4c895bbe916058503bbfda06c1b5b6c0224bb5fe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
