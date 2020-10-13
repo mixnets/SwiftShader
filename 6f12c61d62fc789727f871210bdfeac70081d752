@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "1395cf24_aeb36f52",
         "filename": "/COMMIT_MSG",
@@ -20,10 +21,10 @@
         "endChar": 67
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "41ee2b22_4725e9a3",
         "filename": "/COMMIT_MSG",
@@ -44,10 +45,10 @@
         "endChar": 67
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "bb069419_bf113a2e",
         "filename": "/COMMIT_MSG",
@@ -67,10 +68,10 @@
         "endChar": 53
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "12e945f7_fd2ea352",
         "filename": "/COMMIT_MSG",
@@ -91,10 +92,10 @@
         "endChar": 53
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "7f087a88_80f53875",
         "filename": "/COMMIT_MSG",
@@ -114,10 +115,10 @@
         "endChar": 21
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "15095a5f_fd845cee",
         "filename": "/COMMIT_MSG",
@@ -138,8 +139,31 @@
         "endChar": 21
       },
       "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
-      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
-      "unresolved": true
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ed47009_fd348f5b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-13T15:54:52Z",
+      "side": 1,
+      "message": "Just managed to reproduce the leak. This cl does fix the issue, so that\u0027s good, at least. I\u0027ll dig deeper to see which part of the cl fixes it.",
+      "parentUuid": "15095a5f_fd845cee",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "6f12c61d62fc789727f871210bdfeac70081d752",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
