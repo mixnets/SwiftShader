@@ -111,6 +111,30 @@
       },
       "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d0fa12b_261a20f7",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T17:21:23Z",
+      "side": 1,
+      "message": "I removed the clear() call, it should prevent other potential leaks.",
+      "parentUuid": "c7ff8f6a_202f799e",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 24
+      },
+      "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
