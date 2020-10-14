@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da0e5065_223052b7",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2024,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "This should be \"aspect\"",
+      "range": {
+        "startLine": 2024,
+        "startChar": 32,
+        "endLine": 2024,
+        "endChar": 100
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19444e4c_a0e9e274",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2025,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "This should be \"aspect\"",
+      "range": {
+        "startLine": 2025,
+        "startChar": 34,
+        "endLine": 2025,
+        "endChar": 102
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91ff81e7_a2bd877a",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2048,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "You can remove this and declare the variables below",
+      "range": {
+        "startLine": 2048,
+        "startChar": 1,
+        "endLine": 2048,
+        "endChar": 41
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a12906a7_0321caf0",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2071,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "Nit: Unsupported depth/stencil resolve mode",
+      "range": {
+        "startLine": 2071,
+        "startChar": 18,
+        "endLine": 2071,
+        "endChar": 48
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19c8139f_ed83cc8d",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2091,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "you can remove this",
+      "range": {
+        "startLine": 2088,
+        "startChar": 0,
+        "endLine": 2091,
+        "endChar": 10
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "591e3739_31997cd8",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2186,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "Nit, similarly to other functions, store this in:\nVkImageAspectFlagBits srcAspect \u003d static_cast\u003cVkImageAspectFlagBits\u003e(region.srcSubresource.aspectMask);",
+      "range": {
+        "startLine": 2186,
+        "startChar": 32,
+        "endLine": 2186,
+        "endChar": 100
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7310342e_57a193a3",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2233,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "Nit: not necessary",
+      "range": {
+        "startLine": 2229,
+        "startChar": 0,
+        "endLine": 2233,
+        "endChar": 34
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2315ec22_ce8d0c76",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "This, and related changes, should be done in a separate cl, until this part works properly",
+      "range": {
+        "startLine": 595,
+        "startChar": 2,
+        "endLine": 595,
+        "endChar": 29
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78969b1d_21aa4fc2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2213,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T19:52:57Z",
+      "side": 1,
+      "message": "This is part of VK_KHR_create_renderpass2. Was this missing?",
+      "range": {
+        "startLine": 2213,
+        "startChar": 31,
+        "endLine": 2213,
+        "endChar": 50
+      },
+      "revId": "77bc62d4a9a0ba17d343ea8f8cff2be423a4aaf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
