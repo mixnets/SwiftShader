@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5bf9f605_dad1b314",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T03:27:34Z",
+      "side": 0,
+      "message": "The destructor wasn\u0027t called on commandBuffers here, which is most likely what ASAN was detecting.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 47
+      },
+      "revId": "e72c6099f9465df73f888a92071b70c924d74b0d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
