@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdf546f9_b1cdef0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-10-14T16:35:13Z",
+      "side": 1,
+      "message": "+2 because less is always more. One question about prior logic.",
+      "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76eff956_407927d0",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-10-14T16:35:13Z",
+      "side": 1,
+      "message": "Aren\u0027t we missing calls to vk::destroy() here?",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 24
+      },
+      "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
