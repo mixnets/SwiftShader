@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "953d9287_c7aa414e",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-10-14T21:53:23Z",
+      "side": 0,
+      "message": "After the fact: This is the critical thing. This would lose track of the command buffers, whereas only their recordings should have been recycled [which we do above with the reset() calls]",
+      "revId": "b82c2d3bf1e19c85289416e6d3fddecbabb65db9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
