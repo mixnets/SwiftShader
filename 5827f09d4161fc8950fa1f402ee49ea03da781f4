@@ -39,6 +39,30 @@
       },
       "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "609786bc_908bfa09",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-14T16:54:12Z",
+      "side": 1,
+      "message": "I think the correct workflow is to release command buffers using vkFreeCommandBuffers().\nIn that case, the erase() call at line 77 simply fails to remove any object from the std::set object (commandBuffers) if they were removed here, but still releases the command buffer objects.",
+      "parentUuid": "76eff956_407927d0",
+      "range": {
+        "startLine": 96,
+        "startChar": 1,
+        "endLine": 96,
+        "endChar": 24
+      },
+      "revId": "5827f09d4161fc8950fa1f402ee49ea03da781f4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
