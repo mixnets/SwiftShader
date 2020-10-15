@@ -219,9 +219,10 @@ void log_trap(const char *format, ...)
 	// If enabled, log_assert will log all messages, and otherwise ignore them
 	// unless a debugger is attached.
 	static std::atomic<bool> asserted = { false };
-	if(IsUnderDebugger() && !asserted.exchange(true))
+	if(IsUnderDebugger() && !asserted.exchange(true) && static_cast<int>(Level::SWIFTSHADER_LOGGING_LEVEL) <= static_cast<int>(Level::Debug))
 	{
-		// Abort after tracing and printing to stderr
+		// If a developer wants to be extra aware of what's happening,
+		// then we abort after tracing and printing to stderr
 		va_list vararg;
 		va_start(vararg, format);
 		logv(Level::Fatal, format, vararg);
