@@ -104,6 +104,16 @@ public:
         return nil;
     }
 
+    VkExtent2D getDrawableSize() const API_AVAILABLE(macosx(10.11)) {
+        if (layer) {
+            return {
+                static_cast<uint32_t>([layer drawableSize].width),
+                static_cast<uint32_t>([layer drawableSize].height),
+            };
+        }
+        return {0, 0};
+    }
+
 private:
     NSView* view;
     CAMetalLayer* layer API_AVAILABLE(macosx(10.11));
@@ -146,10 +156,10 @@ VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
         auto drawable = metalLayer->getNextDrawable();
         if(drawable)
         {
-            VkExtent2D windowExtent = metalLayer->getExtent();
             const VkExtent3D &extent = image->getImage()->getExtent();
+            VkExtent2D drawableExtent = metalLayer->getDrawableSize();
 
-            if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+            if(drawableExtent.width != extent.width || drawableExtent.height != extent.height)
             {
                 return VK_ERROR_OUT_OF_DATE_KHR;
             }
