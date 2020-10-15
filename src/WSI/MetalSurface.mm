@@ -78,7 +78,7 @@ public:
         }
     }
 
-    VkExtent2D getExtent() const API_AVAILABLE(macosx(10.11))
+    VkExtent2D syncExtent() const API_AVAILABLE(macosx(10.11))
     {
         if(layer)
         {
@@ -86,6 +86,9 @@ public:
             CGFloat scaleFactor = layer.contentsScale;
             drawSize.width = trunc(drawSize.width * scaleFactor);
             drawSize.height = trunc(drawSize.height * scaleFactor);
+
+            [layer setDrawableSize: drawSize];
+
             return { static_cast<uint32_t>(drawSize.width), static_cast<uint32_t>(drawSize.height) };
         }
         else
@@ -102,6 +105,16 @@ public:
         }
 
         return nil;
+    }
+
+    VkExtent2D getDrawableSize() const API_AVAILABLE(macosx(10.11)) {
+        if (layer) {
+            return {
+                static_cast<uint32_t>([layer drawableSize].width),
+                static_cast<uint32_t>([layer drawableSize].height),
+            };
+        }
+        return {0, 0};
     }
 
 private:
@@ -133,7 +146,7 @@ void MetalSurface::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapa
 {
     SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
 
-    VkExtent2D extent = metalLayer->getExtent();
+    VkExtent2D extent = metalLayer->syncExtent();
     pSurfaceCapabilities->currentExtent = extent;
     pSurfaceCapabilities->minImageExtent = extent;
     pSurfaceCapabilities->maxImageExtent = extent;
@@ -146,10 +159,10 @@ VkResult MetalSurface::present(PresentImage* image) API_AVAILABLE(macosx(10.11))
         auto drawable = metalLayer->getNextDrawable();
         if(drawable)
         {
-            VkExtent2D windowExtent = metalLayer->getExtent();
             const VkExtent3D &extent = image->getImage()->getExtent();
+            VkExtent2D drawableExtent = metalLayer->getDrawableSize();
 
-            if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+            if(drawableExtent.width != extent.width || drawableExtent.height != extent.height)
             {
                 return VK_ERROR_OUT_OF_DATE_KHR;
             }
