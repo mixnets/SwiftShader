@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63e56f6c_cd2d71ed",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-15T18:46:05Z",
+      "side": 1,
+      "message": "Nit: even if Level::Debug is a constant, this would be a bit easier to read if the condition was written like line 156 above:\nstatic_cast\u003cint\u003e(Level::Debug) \u003e\u003d static_cast\u003cint\u003e(Level::SWIFTSHADER_LOGGING_LEVEL)",
+      "range": {
+        "startLine": 222,
+        "startChar": 53,
+        "endLine": 222,
+        "endChar": 137
+      },
+      "revId": "f896a61f7daf392809d248d00a1f3c2db22bfda1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24dfee5b_d74a0327",
+        "filename": "src/System/Debug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-15T18:46:05Z",
+      "side": 1,
+      "message": "Nit: the word \"extra\" isn\u0027t necessary. I think the original comment is still accurate, but your call.",
+      "range": {
+        "startLine": 224,
+        "startChar": 32,
+        "endLine": 224,
+        "endChar": 38
+      },
+      "revId": "f896a61f7daf392809d248d00a1f3c2db22bfda1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
