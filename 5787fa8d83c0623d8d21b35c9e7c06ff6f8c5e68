@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b358424_ca067136",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-16T17:36:19Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "c3d2b829_0a473763",
+      "range": {
+        "startLine": 190,
+        "startChar": 82,
+        "endLine": 190,
+        "endChar": 99
+      },
+      "revId": "5787fa8d83c0623d8d21b35c9e7c06ff6f8c5e68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dab9e4b2_467255ff",
@@ -37,6 +61,30 @@
       "writtenOn": "2020-10-15T21:12:45Z",
       "side": 1,
       "message": "this is unnecessary, pImageFormatProperties has to be valid and is already used unconditionally above (see line 3086 or 3137)",
+      "range": {
+        "startLine": 3146,
+        "startChar": 2,
+        "endLine": 3146,
+        "endChar": 39
+      },
+      "revId": "5787fa8d83c0623d8d21b35c9e7c06ff6f8c5e68",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d716de06_4ac25cdb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3146,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-16T17:36:19Z",
+      "side": 1,
+      "message": "Removed the condition.",
+      "parentUuid": "dab9e4b2_467255ff",
       "range": {
         "startLine": 3146,
         "startChar": 2,
