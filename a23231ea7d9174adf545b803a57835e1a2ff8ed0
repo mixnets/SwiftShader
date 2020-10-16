@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8788328b_cf5492c5",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 3
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2020-10-16T17:04:26Z",
+      "side": 1,
+      "message": "Is this actually correct? Is it no longer possible to present images of the old size?",
+      "revId": "a23231ea7d9174adf545b803a57835e1a2ff8ed0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
