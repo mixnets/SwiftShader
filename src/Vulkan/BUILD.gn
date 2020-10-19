@@ -95,6 +95,7 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
     "VkSpecializationInfo.hpp",
     "VkStringify.hpp",
     "VulkanPlatform.hpp",
+    "vulkan_header.hpp",
   ]
   if (is_linux || is_chromeos || is_android) {
     sources += [

@@ -93,6 +93,7 @@ set(VULKAN_SRC_FILES
     VkStringify.cpp
     VkStringify.hpp
     VulkanPlatform.hpp
+    vulkan_header.hpp
 )
 
 if(WIN32)
