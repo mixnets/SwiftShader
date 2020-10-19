@@ -135,6 +135,8 @@ if(FUCHSIA)
     # the constants are upstreamed to the official Vulkan headers.
     list(APPEND VULKAN_COMPILE_OPTIONS "-Wno-switch")
 endif()
+list(APPEND VULKAN_COMPILE_OPTIONS "-DVULKAN_HPP_NO_EXCEPTIONS")
+list(APPEND VULKAN_COMPILE_OPTIONS "-DVULKAN_HPP_NAMESPACE=vkh")
 
 set(VULKAN_LINKER_FLAGS "")
 if(FUCHSIA)
