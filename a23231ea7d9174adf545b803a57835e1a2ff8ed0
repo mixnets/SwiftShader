@@ -16,6 +16,24 @@
       "message": "Is this actually correct? Is it no longer possible to present images of the old size?",
       "revId": "a23231ea7d9174adf545b803a57835e1a2ff8ed0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87af6182_3e9c8e5f",
+        "filename": "src/WSI/MetalSurface.mm",
+        "patchSetId": 3
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2020-10-19T07:08:33Z",
+      "side": 1,
+      "message": "By old size do you mean the previous drawable size prior to syncExtent? That\u0027s correct, the texture size is exactly drawableSize, and presenting to it would either draw to a smaller area of the screen (new window size is bigger), or crash (if the new window size is smaller). I actually found this because the call to replaceRegion below was crashing, and the Metal debug device raised a validation error that the replaceRegion was bigger than the texture.\n\nOne thing this CL could have done better is also detect the sub-optimal case if layer.bounds.size * layer.contentScale !\u003d drawableSize.",
+      "parentUuid": "8788328b_cf5492c5",
+      "revId": "a23231ea7d9174adf545b803a57835e1a2ff8ed0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
