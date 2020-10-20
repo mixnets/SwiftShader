@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89c17149_c39f5766",
+        "filename": "src/Vulkan/vulkan.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-20T21:21:54Z",
+      "side": 1,
+      "message": "Nit: you\u0027re asking for trouble creating a file called \"Vulkan/vulkan.hpp\" which includes \"vulkan/vulkan.hpp\" :) Include directories + case insensitive platforms might confuse the 2 files. A distinctive name would avoid future issues.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 28
+      },
+      "revId": "0f378123b85d67826258d66ad57110912afdcb6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
