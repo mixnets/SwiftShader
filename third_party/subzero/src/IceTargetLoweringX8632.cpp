@@ -414,27 +414,27 @@ void TargetX8632::emitSandboxedReturn() {
 
 void TargetX8632::emitStackProbe(size_t StackSizeBytes) {
 #if defined(SUBZERO_USE_MICROSOFT_ABI)
-  if (StackSizeBytes >= 4096) {
-    // _chkstk on Win32 is actually __alloca_probe, which adjusts ESP by the
-    // stack amount specified in EAX, so we save ESP in ECX, and restore them
-    // both after the call.
+  //if (StackSizeBytes >= 4096) {
+  //  // _chkstk on Win32 is actually __alloca_probe, which adjusts ESP by the
+  //  // stack amount specified in EAX, so we save ESP in ECX, and restore them
+  //  // both after the call.
 
-    Variable *EAX = makeReg(IceType_i32, Traits::RegisterSet::Reg_eax);
-    Variable *ESP = makeReg(IceType_i32, Traits::RegisterSet::Reg_esp);
-    Variable *ECX = makeReg(IceType_i32, Traits::RegisterSet::Reg_ecx);
+  //  Variable *EAX = makeReg(IceType_i32, Traits::RegisterSet::Reg_eax);
+  //  Variable *ESP = makeReg(IceType_i32, Traits::RegisterSet::Reg_esp);
+  //  Variable *ECX = makeReg(IceType_i32, Traits::RegisterSet::Reg_ecx);
 
-    _push_reg(ECX->getRegNum());
-    _mov(ECX, ESP);
+  //  _push_reg(ECX->getRegNum());
+  //  _mov(ECX, ESP);
 
-    _mov(EAX, Ctx->getConstantInt32(StackSizeBytes));
+  //  _mov(EAX, Ctx->getConstantInt32(StackSizeBytes));
 
-    auto *CallTarget =
-        Ctx->getConstantInt32(reinterpret_cast<int32_t>(&_chkstk));
-    emitCallToTarget(CallTarget, nullptr);
+  //  auto *CallTarget =
+  //      Ctx->getConstantInt32(reinterpret_cast<int32_t>(&_chkstk));
+  //  emitCallToTarget(CallTarget, nullptr);
 
-    _mov(ESP, ECX);
-    _pop_reg(ECX->getRegNum());
-  }
+  //  _mov(ESP, ECX);
+  //  _pop_reg(ECX->getRegNum());
+  //}
 #endif
 }
 
