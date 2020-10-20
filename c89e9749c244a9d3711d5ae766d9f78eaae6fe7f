@@ -130,6 +130,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ffd8f436_d3ac7672",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-20T18:55:14Z",
+      "side": 1,
+      "message": "It does indeed have its own try_emplace for StringMap. See `.\\third_party\\llvm-10.0\\llvm\\include\\llvm\\ADT\\StringMap.h`.",
+      "parentUuid": "ef452114_64c7f474",
+      "range": {
+        "startLine": 329,
+        "startChar": 13,
+        "endLine": 329,
+        "endChar": 24
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5d906436_4b56f211",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 5
@@ -153,6 +177,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "304a0653_2c9e9872",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-20T18:55:14Z",
+      "side": 1,
+      "message": "`symbol` will be of type `std::pair\u003cSymbolStringPtr, SymbolLookupFlags\u003e`, and name of type `SymbolStringPtr`. The first could be `const auto\u0026` to avoid the pair copy, but I suspect it\u0027s not too expensive to copy here.",
+      "parentUuid": "5d906436_4b56f211",
+      "range": {
+        "startLine": 429,
+        "startChar": 0,
+        "endLine": 431,
+        "endChar": 28
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "916bd1fe_14ceb65a",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 5
@@ -164,6 +212,30 @@
       "writtenOn": "2020-10-20T18:33:26Z",
       "side": 1,
       "message": "b/165000222 ?",
+      "range": {
+        "startLine": 500,
+        "startChar": 10,
+        "endLine": 500,
+        "endChar": 21
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf081fab_5cb0396a",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-20T18:55:14Z",
+      "side": 1,
+      "message": "Right, I think Ben wanted to call out the new issue I created, but this makes sense to me.",
+      "parentUuid": "916bd1fe_14ceb65a",
       "range": {
         "startLine": 500,
         "startChar": 10,

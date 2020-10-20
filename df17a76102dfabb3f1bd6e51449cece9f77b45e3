@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e0cedad4_5ad00fa5",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-20T18:55:14Z",
+      "side": 0,
+      "message": "In the new code, llvm::InitializeNativeTarget() is called, and looking at this function, it checks the LLVM_NATIVE_TARGET macro has been defined. This gets set from `.\\third_party\\llvm-10.0\\configs\\android\\include\\llvm\\Config\\llvm-config.h` like this:\n\n\n    #if defined(__aarch64__)\n    #define LLVM_NATIVE_TARGET LLVMInitializeAArch64Target\n    #elif defined(__arm__)\n    #define LLVM_NATIVE_TARGET LLVMInitializeARMTarget\n    #elif defined(__i386__) || defined(__x86_64__)\n    #define LLVM_NATIVE_TARGET LLVMInitializeX86Target\n    #elif defined(__mips__)\n    #define LLVM_NATIVE_TARGET LLVMInitializeMipsTarget\n    #elif defined(__powerpc64__)\n    #define LLVM_NATIVE_TARGET LLVMInitializePowerPCTarget\n    #else\n    #error \"unknown architecture\"\n    #endif\n\nSo ostensibly this would produce a compile-time error for targets that are not defined.",
+      "parentUuid": "817be4b3_d2b91a40",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 6
+      },
+      "revId": "df17a76102dfabb3f1bd6e51449cece9f77b45e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "00a1c964_c2036963",
         "filename": "src/Reactor/LLVMJIT.cpp",
         "patchSetId": 5
@@ -37,6 +61,30 @@
       "writtenOn": "2020-10-20T18:33:26Z",
       "side": 0,
       "message": "Is this false by default in LLJIT?",
+      "range": {
+        "startLine": 182,
+        "startChar": 1,
+        "endLine": 183,
+        "endChar": 36
+      },
+      "revId": "df17a76102dfabb3f1bd6e51449cece9f77b45e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0aa481c7_35311126",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-10-20T18:55:14Z",
+      "side": 0,
+      "message": "From `third_party\\llvm-10.0\\llvm\\include\\llvm\\Target\\TargetOptions.h`, yes this is default:\n\n  class TargetOptions {\n  public:\n    TargetOptions()\n        : PrintMachineCode(false), UnsafeFPMath(false), NoInfsFPMath(false),\n          NoNaNsFPMath(false), NoTrappingFPMath(true),\n          ...",
+      "parentUuid": "00a1c964_c2036963",
       "range": {
         "startLine": 182,
         "startChar": 1,
