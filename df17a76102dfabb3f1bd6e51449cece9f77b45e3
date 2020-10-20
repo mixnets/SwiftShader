@@ -48,6 +48,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6037af7f_73bda973",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T19:08:09Z",
+      "side": 0,
+      "message": "Good to know. We customize setting that config macro, but since that\u0027s taken care of we can rely on it and it\u0027s nice to only have to deal with this in one place.",
+      "parentUuid": "e0cedad4_5ad00fa5",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 6
+      },
+      "revId": "df17a76102dfabb3f1bd6e51449cece9f77b45e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "00a1c964_c2036963",
@@ -85,6 +109,30 @@
       "side": 0,
       "message": "From `third_party\\llvm-10.0\\llvm\\include\\llvm\\Target\\TargetOptions.h`, yes this is default:\n\n  class TargetOptions {\n  public:\n    TargetOptions()\n        : PrintMachineCode(false), UnsafeFPMath(false), NoInfsFPMath(false),\n          NoNaNsFPMath(false), NoTrappingFPMath(true),\n          ...",
       "parentUuid": "00a1c964_c2036963",
+      "range": {
+        "startLine": 182,
+        "startChar": 1,
+        "endLine": 183,
+        "endChar": 36
+      },
+      "revId": "df17a76102dfabb3f1bd6e51449cece9f77b45e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0628e9ea_237f5f24",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T19:08:09Z",
+      "side": 0,
+      "message": "Thanks for checking",
+      "parentUuid": "0aa481c7_35311126",
       "range": {
         "startLine": 182,
         "startChar": 1,
