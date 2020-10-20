@@ -39,6 +39,30 @@
       },
       "revId": "be8001f1b359b7d72b9a07108e442858a90269f1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2069aa02_a9e56496",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3150,
+      "author": {
+        "id": 30812
+      },
+      "writtenOn": "2020-10-20T16:07:37Z",
+      "side": 1,
+      "message": "Moved all of the code from vkGetPhysicalDeviceImageFormatProperties() into vkGetPhysicalDeviceImageFormatProperties2() so that setting the format properties is centralized in \"2\".",
+      "parentUuid": "c5a5e099_6840a6ff",
+      "range": {
+        "startLine": 3143,
+        "startChar": 0,
+        "endLine": 3150,
+        "endChar": 6
+      },
+      "revId": "be8001f1b359b7d72b9a07108e442858a90269f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
