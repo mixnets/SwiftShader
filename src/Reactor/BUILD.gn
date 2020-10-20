@@ -72,13 +72,14 @@ if (use_swiftshader_with_subzero) {
       defines += [ "SUBZERO_USE_MICROSOFT_ABI" ]
     }
 
+    # if (current_cpu == "x64") {
+    #   defines += [
+    #     "SZTARGET=X8664",
+    #     "SUBZERO_TARGET=X8664",
+    #   ]
+    # } else if (current_cpu == "x86") {
     if (current_cpu == "x64") {
-      defines += [
-        "SZTARGET=X8664",
-        "SUBZERO_TARGET=X8664",
-      ]
-    } else if (current_cpu == "x86") {
-      defines += [
+        defines += [
         "SZTARGET=X8632",
         "SUBZERO_TARGET=X8632",
       ]
@@ -270,12 +271,13 @@ if (use_swiftshader_with_subzero) {
       "$subzero_llvm_dir/lib/Support/regstrlcpy.c",
     ]
 
+    # if (current_cpu == "x64") {
+    #   sources += [
+    #     "$subzero_dir/src/IceInstX8664.cpp",
+    #     "$subzero_dir/src/IceTargetLoweringX8664.cpp",
+    #   ]
+    # } else if (current_cpu == "x86") {
     if (current_cpu == "x64") {
-      sources += [
-        "$subzero_dir/src/IceInstX8664.cpp",
-        "$subzero_dir/src/IceTargetLoweringX8664.cpp",
-      ]
-    } else if (current_cpu == "x86") {
       sources += [
         "$subzero_dir/src/IceInstX8632.cpp",
         "$subzero_dir/src/IceTargetLoweringX8632.cpp",
