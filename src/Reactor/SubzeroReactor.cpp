@@ -55,6 +55,17 @@
 #include <limits>
 #include <mutex>
 
+// Compile-time strcmp
+// From https://stackoverflow.com/a/23763798
+constexpr int c_strcmp(char const *lhs, char const *rhs)
+{
+	return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0
+	                                              : (lhs[0] != rhs[0]) ? (lhs[0] - rhs[0])
+	                                                                   : c_strcmp(lhs + 1, rhs + 1);
+}
+#define SZ_POINTER_SIZE2(target) (c_strcmp(#target, "X8664") == 0 ? 8 : 4)
+#define SZ_POINTER_SIZE() SZ_POINTER_SIZE2(SZTARGET)
+
 // Subzero utility functions
 // These functions only accept and return Subzero (Ice) types, and do not access any globals.
 namespace {
@@ -81,7 +92,7 @@ Ice::Cfg *createFunction(Ice::GlobalContext *context, Ice::Type returnType, cons
 
 Ice::Type getPointerType(Ice::Type elementType)
 {
-	if(sizeof(void *) == 8)
+	if(SZ_POINTER_SIZE() == 8)
 	{
 		return Ice::IceType_i64;
 	}
@@ -106,7 +117,7 @@ Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arr
 
 Ice::Constant *getConstantPointer(Ice::GlobalContext *context, void const *ptr)
 {
-	if(sizeof(void *) == 8)
+	if(SZ_POINTER_SIZE() == 8)
 	{
 		return context->getConstantInt64(reinterpret_cast<intptr_t>(ptr));
 	}
@@ -476,8 +487,8 @@ static void finalizeFunction()
 	::entryBlock->appendInst(br);
 }
 
-using ElfHeader = std::conditional<sizeof(void *) == 8, Elf64_Ehdr, Elf32_Ehdr>::type;
-using SectionHeader = std::conditional<sizeof(void *) == 8, Elf64_Shdr, Elf32_Shdr>::type;
+using ElfHeader = std::conditional<SZ_POINTER_SIZE() == 8, Elf64_Ehdr, Elf32_Ehdr>::type;
+using SectionHeader = std::conditional<SZ_POINTER_SIZE() == 8, Elf64_Shdr, Elf32_Shdr>::type;
 
 inline const SectionHeader *sectionHeader(const ElfHeader *elfHeader)
 {
@@ -655,17 +666,17 @@ std::vector<EntryPoint> loadImage(uint8_t *const elfImage, const std::vector<con
 	}
 
 	// Expect ELF bitness to match platform
-	ASSERT(sizeof(void *) == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
+	ASSERT(SZ_POINTER_SIZE() == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
 #if defined(__i386__)
-	ASSERT(sizeof(void *) == 4 && elfHeader->e_machine == EM_386);
+	ASSERT(SZ_POINTER_SIZE() == 4 && elfHeader->e_machine == EM_386);
 #elif defined(__x86_64__)
-	ASSERT(sizeof(void *) == 8 && elfHeader->e_machine == EM_X86_64);
+	//ASSERT(SZ_POINTER_SIZE() == 8 && elfHeader->e_machine == EM_X86_64);
 #elif defined(__arm__)
-	ASSERT(sizeof(void *) == 4 && elfHeader->e_machine == EM_ARM);
+	ASSERT(SZ_POINTER_SIZE() == 4 && elfHeader->e_machine == EM_ARM);
 #elif defined(__aarch64__)
-	ASSERT(sizeof(void *) == 8 && elfHeader->e_machine == EM_AARCH64);
+	ASSERT(SZ_POINTER_SIZE() == 8 && elfHeader->e_machine == EM_AARCH64);
 #elif defined(__mips__)
-	ASSERT(sizeof(void *) == 4 && elfHeader->e_machine == EM_MIPS);
+	ASSERT(SZ_POINTER_SIZE() == 4 && elfHeader->e_machine == EM_MIPS);
 #else
 #	error "Unsupported platform"
 #endif
@@ -701,7 +712,7 @@ std::vector<EntryPoint> loadImage(uint8_t *const elfImage, const std::vector<con
 		}
 		else if(sectionHeader[i].sh_type == SHT_REL)
 		{
-			ASSERT(sizeof(void *) == 4 && "UNIMPLEMENTED");  // Only expected/implemented for 32-bit code
+			ASSERT(SZ_POINTER_SIZE() == 4 && "UNIMPLEMENTED");  // Only expected/implemented for 32-bit code
 
 			for(Elf32_Word index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
 			{
@@ -711,7 +722,7 @@ std::vector<EntryPoint> loadImage(uint8_t *const elfImage, const std::vector<con
 		}
 		else if(sectionHeader[i].sh_type == SHT_RELA)
 		{
-			ASSERT(sizeof(void *) == 8 && "UNIMPLEMENTED");  // Only expected/implemented for 64-bit code
+			ASSERT(SZ_POINTER_SIZE() == 8 && "UNIMPLEMENTED");  // Only expected/implemented for 64-bit code
 
 			for(Elf32_Word index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
 			{
@@ -868,7 +879,7 @@ Nucleus::Nucleus()
 	Flags.setTargetArch(Ice::Target_MIPS32);
 	Flags.setTargetInstructionSet(Ice::BaseInstructionSet);
 #else  // x86
-	Flags.setTargetArch(sizeof(void *) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+	Flags.setTargetArch(SZ_POINTER_SIZE() == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
 	Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
 #endif
 	Flags.setOutFileType(Ice::FT_Elf);
@@ -1512,7 +1523,7 @@ Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedInd
 		index = createMul(index, createConstantInt((int)typeSize(type)));
 	}
 
-	if(sizeof(void *) == 8)
+	if(SZ_POINTER_SIZE() == 8)
 	{
 		if(unsignedIndex)
 		{
@@ -2058,7 +2069,7 @@ Value *Nucleus::createConstantFloat(float x)
 Value *Nucleus::createNullPointer(Type *Ty)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return createNullValue(T(sizeof(void *) == 8 ? Ice::IceType_i64 : Ice::IceType_i32));
+	return createNullValue(T(SZ_POINTER_SIZE() == 8 ? Ice::IceType_i64 : Ice::IceType_i32));
 }
 
 static Ice::Constant *IceConstantData(void const *data, size_t size, size_t alignment = 1)
