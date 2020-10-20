@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "10048d87_2c87f8bf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T16:55:27Z",
+      "side": 1,
+      "message": "Is this being tracked anywhere? A note in a commit message for a mostly unrelated change might not be the best place.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 40
+      },
+      "revId": "60685bdb171a6fb7cff39a46219c20b4c1a6c225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "25ec50bd_7487cb4d",
@@ -14,6 +37,23 @@
       "writtenOn": "2020-10-20T16:07:37Z",
       "side": 1,
       "message": "PTAL",
+      "revId": "60685bdb171a6fb7cff39a46219c20b4c1a6c225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7429e457_5a175092",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T16:55:27Z",
+      "side": 1,
+      "message": "LGTM as far as I can tell. Trevor, can you give us the thumbs up for the AHB-specific changes?",
       "revId": "60685bdb171a6fb7cff39a46219c20b4c1a6c225",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }

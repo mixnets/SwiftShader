@@ -63,6 +63,30 @@
       },
       "revId": "be8001f1b359b7d72b9a07108e442858a90269f1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb9cbcfe_09618eae",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T16:55:27Z",
+      "side": 1,
+      "message": "Thanks, that works for me! I think ideally libVulkan.cpp is just a thin layer of entry functions which passes things to the implementation of the various objects. Anyway, I see the old vkGetPhysicalDeviceImageFormatProperties() already had lots of implementation-specific logic so I won\u0027t burden you with that refactor.",
+      "parentUuid": "2069aa02_a9e56496",
+      "range": {
+        "startLine": 3143,
+        "startChar": 0,
+        "endLine": 3150,
+        "endChar": 6
+      },
+      "revId": "be8001f1b359b7d72b9a07108e442858a90269f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
