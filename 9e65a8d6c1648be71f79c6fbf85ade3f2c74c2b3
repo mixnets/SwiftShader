@@ -47,6 +47,54 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "46196550_9a90e67b",
+        "filename": "src/Vulkan/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-20T20:49:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2906fd08_985e3554",
+      "range": {
+        "startLine": 139,
+        "startChar": 59,
+        "endLine": 139,
+        "endChar": 62
+      },
+      "revId": "9e65a8d6c1648be71f79c6fbf85ade3f2c74c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fcc0408_47afba1d",
+        "filename": "src/Vulkan/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-20T20:49:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1449c774_553a2461",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 139,
+        "endChar": 64
+      },
+      "revId": "9e65a8d6c1648be71f79c6fbf85ade3f2c74c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "598e1880_2b035ec0",
@@ -60,6 +108,30 @@
       "writtenOn": "2020-10-20T19:15:03Z",
       "side": 1,
       "message": "Doesn\u0027t this change break Stringify() for these 2 extensions?",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 49
+      },
+      "revId": "9e65a8d6c1648be71f79c6fbf85ade3f2c74c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2da80981_038104f2",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-20T20:49:29Z",
+      "side": 1,
+      "message": "Yes, it does. I\u0027ll add special cases for them.",
+      "parentUuid": "598e1880_2b035ec0",
       "range": {
         "startLine": 19,
         "startChar": 0,
