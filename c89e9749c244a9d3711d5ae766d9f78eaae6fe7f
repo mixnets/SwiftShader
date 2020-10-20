@@ -86,6 +86,92 @@
       "parentUuid": "291b1192_bcba0abf",
       "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "389359e4_79d9bc69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T18:33:26Z",
+      "side": 1,
+      "message": "Great to see the amount of boilerplate is reduced when using the new API! Ideally we can test this on Android / ARM, but if it becomes pressing to land this sooner I think we can risk it, so +2 for that event.",
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef452114_64c7f474",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T18:33:26Z",
+      "side": 1,
+      "message": "STL doesn\u0027t support try_emplace until C++17, and SwiftShader still needs to support C++14. I assume llvm::StringMap has its own implementation of this that doesn\u0027t rely on 17?",
+      "range": {
+        "startLine": 329,
+        "startChar": 13,
+        "endLine": 329,
+        "endChar": 24
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d906436_4b56f211",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T18:33:26Z",
+      "side": 1,
+      "message": "Does either of this create deep copies? How big is this symbol set (is it just the set we create above, or more)?",
+      "range": {
+        "startLine": 429,
+        "startChar": 0,
+        "endLine": 431,
+        "endChar": 28
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "916bd1fe_14ceb65a",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T18:33:26Z",
+      "side": 1,
+      "message": "b/165000222 ?",
+      "range": {
+        "startLine": 500,
+        "startChar": 10,
+        "endLine": 500,
+        "endChar": 21
+      },
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
