@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2be88305_9c853593",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2020-10-20T11:56:10Z",
+      "side": 1,
+      "message": "Kokoro is now happy, but Regres is claiming a performance hit since PS3. Which makes no sense as the only thing that\u0027s changed since PS3 is debug related.\nAttempting a rebase.",
+      "revId": "c89e9749c244a9d3711d5ae766d9f78eaae6fe7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
