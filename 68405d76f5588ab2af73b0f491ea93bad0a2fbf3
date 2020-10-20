@@ -34,6 +34,23 @@
       "parentUuid": "cd80ac57_4c4b7d85",
       "revId": "68405d76f5588ab2af73b0f491ea93bad0a2fbf3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "386ae9e7_51f9e36a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T16:58:56Z",
+      "side": 1,
+      "message": "Thanks all for the comments and the offline discussion. I think the conclusion is we shouldn\u0027t go ahead with this change as-is. Instead we can implement what\u0027s suggested in b/171299814, or Fuchsia can have a fallback path that uses a transfer from linear to optimal tiled images.",
+      "revId": "68405d76f5588ab2af73b0f491ea93bad0a2fbf3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
