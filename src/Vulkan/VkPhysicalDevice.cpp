@@ -856,6 +856,7 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFor
 
 	switch(format)
 	{
+		// Vulkan 1.2 mandatory storage image formats supporting atomic operations
 		case VK_FORMAT_R32_UINT:
 		case VK_FORMAT_R32_SINT:
 			pFormatProperties->optimalTilingFeatures |=
@@ -863,6 +864,7 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFor
 			pFormatProperties->bufferFeatures |=
 			    VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT;
 			// [[fallthrough]]
+		// Vulkan 1.2 mandatory storage image formats
 		case VK_FORMAT_R8G8B8A8_UNORM:
 		case VK_FORMAT_R8G8B8A8_SNORM:
 		case VK_FORMAT_R8G8B8A8_UINT:
@@ -905,6 +907,9 @@ void PhysicalDevice::GetFormatProperties(Format format, VkFormatProperties *pFor
 		case VK_FORMAT_R8G8_UINT:
 		case VK_FORMAT_R16_UINT:
 		case VK_FORMAT_R8_UINT:
+		// Additional formats
+		case VK_FORMAT_B8G8R8A8_UNORM:
+		case VK_FORMAT_B8G8R8A8_SRGB:
 			pFormatProperties->optimalTilingFeatures |=
 			    VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
 			// [[fallthrough]]
