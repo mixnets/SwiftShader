@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2906fd08_985e3554",
+        "filename": "src/Vulkan/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-20T19:18:25Z",
+      "side": 1,
+      "message": "nit: How about \"vkhpp\" ?",
+      "range": {
+        "startLine": 139,
+        "startChar": 59,
+        "endLine": 139,
+        "endChar": 62
+      },
+      "revId": "9e65a8d6c1648be71f79c6fbf85ade3f2c74c2b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "598e1880_2b035ec0",
         "filename": "src/Vulkan/VkStringify.cpp",
         "patchSetId": 2
