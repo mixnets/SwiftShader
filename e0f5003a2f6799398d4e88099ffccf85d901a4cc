@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f87f5149_04134841",
+        "filename": "src/Vulkan/vulkan_header.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T13:55:02Z",
+      "side": 1,
+      "message": "I\u0027m not sure it\u0027s worth putting this into a separate file. We should practically never need vulkan.hpp, since we implement a C interface defined by vulkan.h. It just happens to be useful for these enum strings.\n\nAlso note vulkan.hpp is huge and pulls in other headers as well. Having a vulkan_header.hpp obscures what really gets imported. I think we can simply use these three lines where we need vulkan.hpp instead.\n\nWe can always go for this solution later if we need vulkan.hpp in more places and the extra lines become unwieldy. Just my 2 cents.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 28
+      },
+      "revId": "e0f5003a2f6799398d4e88099ffccf85d901a4cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
