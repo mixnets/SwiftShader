@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "97e327df_ae3e4b70",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T17:39:56Z",
+      "side": 1,
+      "message": "Is that guaranteed to remain true?",
+      "range": {
+        "startLine": 11,
+        "startChar": 1,
+        "endLine": 11,
+        "endChar": 51
+      },
+      "revId": "1ece7b25f05c8735cf1e5061f790b9097d7e8850",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "5b167872_45389687",
@@ -14,6 +37,23 @@
       "writtenOn": "2020-10-21T17:38:30Z",
       "side": 1,
       "message": "Once Kokoro passes, of course",
+      "revId": "1ece7b25f05c8735cf1e5061f790b9097d7e8850",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c536a961_deeadd1b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T17:39:56Z",
+      "side": 1,
+      "message": "LGTM, with potential future caveat:",
       "revId": "1ece7b25f05c8735cf1e5061f790b9097d7e8850",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
