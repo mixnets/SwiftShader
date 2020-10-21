@@ -63,6 +63,54 @@
       },
       "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7fc41b6_b50da4d5",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-21T20:20:48Z",
+      "side": 1,
+      "message": "I added a string compare against \"invalid\". I think it\u0027s unlikely for vulkan.hpp to move away from returning \"invalid\"",
+      "parentUuid": "b89d04e8_576d7363",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 67
+      },
+      "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ebde7bc_b46c09a9",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-21T20:20:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b89d04e8_576d7363",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 67
+      },
+      "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
