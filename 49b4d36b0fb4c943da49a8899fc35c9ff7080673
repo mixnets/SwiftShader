@@ -16,6 +16,29 @@
       "message": "Kokoro failure is a known flake.",
       "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d13d766d_3b18cbaf",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-21T18:47:02Z",
+      "side": 1,
+      "message": "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT?\n\nPlease double check that none of the cases which used to be handled are missing from vkhpp::to_string()",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 67
+      },
+      "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
