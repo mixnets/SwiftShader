@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf66dba2_e68ef677",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-21T17:19:09Z",
+      "side": 1,
+      "message": "I\u0027m ok with landing this, but doesn\u0027t this add more work if we want to support more types?\nFor example, does this extension interact with any of the other promoted extensions in Vulkan 1.2 which are associated to specific types, like:\nVK_KHR_8bit_storage\nVK_KHR_shader_atomic_int64\nVK_KHR_shader_float16_int8\n?",
+      "revId": "4e33c405e3c1393c77e8304ac67be68588d9d717",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
