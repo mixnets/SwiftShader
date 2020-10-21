@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72b3325c_3bae03c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T15:13:46Z",
+      "side": 1,
+      "message": "The Regres test time difference is due to an LLVM change we\u0027ve been working on, and the Kokoro failure looks like a flake to me. Still LGTM, approved.",
+      "revId": "ac009c08d09e0d123ceded04bbea011b9dd7634e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
