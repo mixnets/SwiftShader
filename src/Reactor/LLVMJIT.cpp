@@ -466,6 +466,18 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 	}
 };
 
+// As we must support different LLVM versions, add a generic Unwrap for functions that return Expected<T> or the actual T.
+template<typename T>
+auto &Unwrap(llvm::Expected<T> &&v)
+{
+	return v.get();
+}
+template<typename T>
+auto &Unwrap(T &&v)
+{
+	return v;
+}
+
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
 // settings and no Reactor routine directly links against another.
@@ -492,7 +504,7 @@ public:
 	    , compileLayer(session, objectLayer, std::make_unique<llvm::orc::ConcurrentIRCompiler>(JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel())))
 	    , mangle(session, JITGlobals::get()->getDataLayout())
 	    , ctx(std::make_unique<llvm::LLVMContext>())
-	    , dylib(session.createJITDylib("<routine>"))
+	    , dylib(Unwrap(session.createJITDylib("<routine>")))
 	    , addresses(count)
 	{
 
