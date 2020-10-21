@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6170c56_1d173da7",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T19:08:14Z",
+      "side": 0,
+      "message": "This needs to be retained. These strings are relatively large and take up valuable binary space, while they\u0027re of no use in Release builds.",
+      "range": {
+        "startLine": 468,
+        "startChar": 0,
+        "endLine": 470,
+        "endChar": 6
+      },
+      "revId": "df17a76102dfabb3f1bd6e51449cece9f77b45e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

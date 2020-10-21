@@ -39,6 +39,30 @@
       },
       "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b89d04e8_576d7363",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-21T19:08:14Z",
+      "side": 1,
+      "message": "Thanks for pointing out to_string() wouldn\u0027t handle all cases. It led me to check what it returns for an unknown enum: https://cs.opensource.google/swiftshader/SwiftShader/+/master:include/vulkan/vulkan.hpp;drc\u003da3b213595b3600a2acb4f02b5363485fbef25f71;l\u003d4080\n\nThat\u0027s not great. It would have been fine to just get the numeric enum value so we can still reference that when it pops up in our logs (i.e. having a string is a convenience, not a necessity). Just getting \"invalid\" is less useful than what we had before. I wonder if we can file a bug at https://github.com/KhronosGroup/Vulkan-Hpp to add the numeric value to the string.",
+      "parentUuid": "d13d766d_3b18cbaf",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 67
+      },
+      "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
