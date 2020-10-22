@@ -252,7 +252,7 @@ static uint32_t sync_fetch_and_op(uint32_t volatile *ptr, uint32_t val, F f)
 }
 #endif
 
-class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
+class ExternalSymbolGenerator : public llvm::orc::DefinitionGenerator
 {
 	struct Atomic
 	{
@@ -413,7 +413,8 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 		}
 	};
 
-	llvm::Error tryToGenerate(llvm::orc::LookupKind kind,
+	llvm::Error tryToGenerate(llvm::orc::LookupState &state,
+                            llvm::orc::LookupKind kind,
 	                          llvm::orc::JITDylib &dylib,
 	                          llvm::orc::JITDylibLookupFlags flags,
 	                          const llvm::orc::SymbolLookupSet &set) override
@@ -564,12 +565,13 @@ public:
 		}
 	}
 
-	~JITRoutine()
+  ~JITRoutine()
 	{
-		// TODO(b/165000222): Unconditional after LLVM 11 upgrade
 #if LLVM_VERSION_MAJOR >= 11
-		// Avoid assert in ~RTDyldObjectLinkingLayer()
-		dylib.getDefaultResourceTracker()->remove();
+  if (auto err = session.endSession())
+	{
+		session.reportError(std::move(err));
+	}
 #endif
 	}
 
