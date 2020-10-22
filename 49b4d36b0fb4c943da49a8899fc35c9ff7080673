@@ -135,6 +135,30 @@
       },
       "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a3fc9a3_88459818",
+        "filename": "src/Vulkan/VkStringify.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2020-10-22T18:46:44Z",
+      "side": 1,
+      "message": "That\u0027s a good point. I\u0027ve changed it so it appends the enum\u0027s value to every string we return. That way, we always get back \"\u003csomething\u003e (\u003cinteger\u003e)\". And if vulkan.hpp updates in the future, then we\u0027re not losing any information.",
+      "parentUuid": "f5ad88e2_e60d247e",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 67
+      },
+      "revId": "49b4d36b0fb4c943da49a8899fc35c9ff7080673",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
