@@ -18,6 +18,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cfaed5a_b69cef2c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-22T21:11:49Z",
+      "side": 1,
+      "message": "Right. The leading spaces were also just copied to the output. The new Patchset makes it come out nicer. FYI: https://stackoverflow.com/questions/50447052/cmake-multiline-message-with-fatal-error",
+      "parentUuid": "8e78da79_0b47f34b",
+      "revId": "3e95a53b9af67196e1892162f5aad97d33b2a992",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bca37671_6599e8eb",
@@ -31,6 +49,30 @@
       "writtenOn": "2020-10-22T20:52:35Z",
       "side": 1,
       "message": "What about the section just below on instrumenting gtest: https://github.com/google/sanitizers/wiki/MemorySanitizerLibcxxHowTo#instrumented-gtest\n\nIs this not required for our unit tests to run?",
+      "range": {
+        "startLine": 518,
+        "startChar": 12,
+        "endLine": 518,
+        "endChar": 98
+      },
+      "revId": "3e95a53b9af67196e1892162f5aad97d33b2a992",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37fdfdf6_de16a37c",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-22T21:11:49Z",
+      "side": 1,
+      "message": "gtest gets instrumented and statically linked in, just like everything else.",
+      "parentUuid": "bca37671_6599e8eb",
       "range": {
         "startLine": 518,
         "startChar": 12,
