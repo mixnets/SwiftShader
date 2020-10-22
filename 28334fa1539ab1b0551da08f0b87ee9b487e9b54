@@ -34,6 +34,24 @@
       "parentUuid": "937b8ab2_45d43749",
       "revId": "28334fa1539ab1b0551da08f0b87ee9b487e9b54",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f5662cd_90e06d92",
+        "filename": "src/Reactor/LLVMJIT.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-22T18:05:49Z",
+      "side": 1,
+      "message": "Actually, this might only affect 12-dev? No big deal either way, we\u0027ll see when we do the 11 upgrade.",
+      "parentUuid": "bf84e890_44a14e4e",
+      "revId": "28334fa1539ab1b0551da08f0b87ee9b487e9b54",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
