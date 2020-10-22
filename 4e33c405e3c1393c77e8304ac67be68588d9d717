@@ -34,6 +34,24 @@
       "parentUuid": "cf66dba2_e68ef677",
       "revId": "4e33c405e3c1393c77e8304ac67be68588d9d717",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65fc7024_092e8498",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-22T20:50:43Z",
+      "side": 1,
+      "message": "The spec states that shaderSubgroupExtendedTypes must be true, \"if Vulkan 1.2 or the VK_KHR_shader_subgroup_extended_types extension is supported.\" So yes, this forces us to also implement the subgroup operations if we decide to implement 8-, 16-, or 64-bit shader types. So we don\u0027t have a choice, but it\u0027s an incremental amount of extra work so it\u0027s reasonable.",
+      "parentUuid": "9d0a7a4e_f08ddebc",
+      "revId": "4e33c405e3c1393c77e8304ac67be68588d9d717",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
