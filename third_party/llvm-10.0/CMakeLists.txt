@@ -13,6 +13,7 @@
 # limitations under the License.
 
 set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/llvm)
+set(COMPILER_RT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/compiler-rt)
 set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/configs)
 
 set(LLVM_LIST
@@ -688,6 +689,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOInstrumentation.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOMemOPSizeOpt.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/ValueProfileCollector.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/ArgumentPromotion.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/Attributor.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
@@ -814,6 +816,9 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanPredicator.cpp
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanTransforms.cpp
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanVerifier.cpp
+
+    ${COMPILER_RT_DIR}/lib/builtins/emutls.c
+    ${COMPILER_RT_DIR}/lib/msan/msan.cpp
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
@@ -1156,6 +1161,9 @@ list(APPEND LLVM_INCLUDE_DIR
     ${LLVM_CONFIG_DIR}/common/lib/Target/PowerPC
     ${LLVM_CONFIG_DIR}/common/lib/Target/X86
     ${LLVM_CONFIG_DIR}/common/lib/Transforms/InstCombine
+
+    ${COMPILER_RT_DIR}/include
+    ${COMPILER_RT_DIR}/lib
 )
 
 # Suppress known LLVM warnings

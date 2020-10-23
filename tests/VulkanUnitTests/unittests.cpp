@@ -36,7 +36,18 @@ size_t alignUp(size_t val, size_t alignment)
 class SwiftShaderVulkanTest : public testing::Test
 {
 };
+<<<<<<< HEAD
 
+=======
+/*
+TEST(MSanTest, Foo)
+{
+	int uninitialized;
+	EXPECT_GT(uninitialized, 5);
+}
+*/
+/*
+>>>>>>> 0a794423f (WIP-msan-local-compiler-rt)
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
 	Driver driver;
@@ -188,7 +199,7 @@ TEST_F(SwiftShaderVulkanTest, UnsupportedDeviceExtension)
 
 	driver.vkDestroyInstance(instance, nullptr);
 }
-
+*/
 std::vector<uint32_t> compileSpirv(const char *assembly)
 {
 	spvtools::SpirvTools core(SPV_ENV_VULKAN_1_0);
