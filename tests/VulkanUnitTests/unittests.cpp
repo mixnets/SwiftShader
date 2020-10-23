@@ -36,9 +36,6 @@ size_t alignUp(size_t val, size_t alignment)
 class SwiftShaderVulkanTest : public testing::Test
 {
 };
-<<<<<<< HEAD
-
-=======
 /*
 TEST(MSanTest, Foo)
 {
@@ -47,7 +44,6 @@ TEST(MSanTest, Foo)
 }
 */
 /*
->>>>>>> 0a794423f (WIP-msan-local-compiler-rt)
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
 	Driver driver;
@@ -285,6 +281,8 @@ void SwiftShaderVulkanBufferToBufferComputeTest::test(
 
 	Driver driver;
 	ASSERT_TRUE(driver.loadSwiftShader());
+
+	abort();
 
 	const VkInstanceCreateInfo createInfo = {
 		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,  // sType

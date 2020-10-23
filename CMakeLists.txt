@@ -527,6 +527,10 @@ else()
         set_cpp_flag("-I$ENV{SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH}/include")
         set_cpp_flag("-I$ENV{SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH}/include/c++/v1")
         set_linker_flag("-Wl,-rpath,$ENV{SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH}/lib")
+
+        set_cpp_flag("-ftls-model=local-dynamic")
+        set_linker_flag("-ftls-model=local-dynamicc")
+
     elseif(SWIFTSHADER_ASAN)
         set_cpp_flag("-fsanitize=address")
         set_linker_flag("-fsanitize=address")

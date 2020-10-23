@@ -12,14 +12,14 @@
 
 #include "ubsan_platform.h"
 #if CAN_SANITIZE_UB
-#include "ubsan_flags.h"
 #include "sanitizer_common/sanitizer_common.h"
-#include "sanitizer_common/sanitizer_flags.h"
 #include "sanitizer_common/sanitizer_flag_parser.h"
+#include "sanitizer_common/sanitizer_flags.h"
+#include "ubsan_flags.h"
 
 #include <stdlib.h>
 
-namespace __ubsan {
+namespace __ubsan { 
 
 static const char *GetFlag(const char *flag) {
   // We cannot call getenv() from inside a preinit array initializer

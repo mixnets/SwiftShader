@@ -819,6 +819,13 @@ set(LLVM_LIST
 
     ${COMPILER_RT_DIR}/lib/builtins/emutls.c
     ${COMPILER_RT_DIR}/lib/msan/msan.cpp
+
+    ${COMPILER_RT_DIR}/lib/ubsan/ubsan_flags.cpp
+
+    ${COMPILER_RT_DIR}/lib/msan/msan_linux.cpp
+    ${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_flag_parser.cpp
+    ${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_flags.cpp
+    ${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_common.cpp
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")

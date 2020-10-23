@@ -14,6 +14,8 @@
 
 #include "Driver.hpp"
 
+#include <stdio.h>
+
 #if defined(_WIN32)
 #	include "Windows.h"
 #	define OS_WINDOWS 1
@@ -85,10 +87,13 @@ bool Driver::loadSwiftShader()
 	       load("swiftshader/libvk_swiftshader.dylib") ||
 	       load("libvk_swiftshader.dylib");
 #elif OS_LINUX
-	return load("./build/Linux/libvk_swiftshader.so") ||
-	       load("swiftshader/libvk_swiftshader.so") ||
-	       load("./libvk_swiftshader.so") ||
-	       load("libvk_swiftshader.so");
+	bool success = load("/home/nicolascapens/Development/SwiftShader-msan/build/Linux/libvk_swiftshader.so") /* ||
+	               load("swiftshader/libvk_swiftshader.so") ||
+	               load("./libvk_swiftshader.so") ||
+	               load("libvk_swiftshader.so")*/
+	    ;
+
+	return success;
 #elif OS_ANDROID || OS_FUCHSIA
 	return load("libvk_swiftshader.so");
 #else
@@ -110,12 +115,15 @@ bool Driver::load(const char *path)
 #if OS_WINDOWS
 	dll = LoadLibraryA(path);
 #elif(OS_MAC || OS_LINUX || OS_ANDROID || OS_FUCHSIA)
-	dll = dlopen(path, RTLD_LAZY | RTLD_LOCAL);
+	dll = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
 #else
 	return false;
 #endif
 	if(dll == nullptr)
 	{
+		const char *err = dlerror();
+		fprintf(stderr, "%s", err);
+
 		return false;
 	}
 
