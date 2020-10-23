@@ -230,6 +230,9 @@ global:
 	# Android HAL module info object
 	HMI;
 
+		#_ZTS*;
+	#_ZTI*;
+
 local:
 	*;
 };

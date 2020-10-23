@@ -31,8 +31,12 @@ __pragma(warning(push))
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Instrumentation.h"
+#include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
+
+//#include "msan_interface_internal.h"
 
 #ifdef _MSC_VER
     __pragma(warning(pop))
@@ -45,12 +49,28 @@ extern "C" void _chkstk();
 #endif
 
 #if __has_feature(memory_sanitizer)
-#	include <sanitizer/msan_interface.h>
+#	include "sanitizer/msan_interface.h"
+//#	include "msan/msan_interface_internal.h"
 #endif
 
 #ifdef __ARM_EABI__
-extern "C" signed __aeabi_idivmod();
+extern "C" signed
+__aeabi_idivmod();
 #endif
+
+extern "C" {
+void __msan_init();
+struct __emutls_control;
+void *__emutls_get_address(__emutls_control *control);
+
+void __msan_warning_noreturn();
+}
+
+// These constants must be kept in sync with the ones in msan.h.
+//const int kMsanParamTlsSize = 800;
+//const int kMsanRetvalTlsSize = 800;
+extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
+extern __thread unsigned long long __msan_param_tls[/*kMsanRetvalTlsSize / sizeof(unsigned long long)*/];
 
 namespace {
 
@@ -94,13 +114,89 @@ llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::Optim
 	llvm::orc::JITTargetMachineBuilder out = jtmb;
 	out.setCodeGenOptLevel(toLLVM(optLevel));
 	return out;
+
+	/*return TargetMachineSPtr(llvm::EngineBuilder()
+	                             .setOptLevel(::llvm::CodeGenOpt::Less)
+	                             .setMCPU(mcpu)
+	                             .setMArch(march)
+	                             .setMAttrs(mattrs)
+	                             .setTargetOptions(targetOptions)
+	                             .selectTarget());*/
 }
 
 const llvm::DataLayout &JITGlobals::getDataLayout() const
 {
 	return dataLayout;
 }
+/*
+	struct LLVMInitializer
+	{
+		LLVMInitializer()
+		{
+			llvm::InitializeNativeTarget();
+			llvm::InitializeNativeTargetAsmPrinter();
+			llvm::InitializeNativeTargetAsmParser();
+		}
+	};
+	static LLVMInitializer initializeLLVM;
 
+	auto mcpu = llvm::sys::getHostCPUName();
+
+	llvm::StringMap<bool> features;
+	bool ok = llvm::sys::getHostCPUFeatures(features);
+
+#	if defined(__i386__) || defined(__x86_64__) || \
+	    (defined(__linux__) && (defined(__arm__) || defined(__aarch64__)))
+	ASSERT_MSG(ok, "llvm::sys::getHostCPUFeatures returned false");
+#	else
+	(void)ok;  // getHostCPUFeatures always returns false on other platforms
+#	endif
+
+	std::vector<std::string> mattrs;
+	for(auto &feature : features)
+	{
+		if(feature.second) { mattrs.push_back(feature.first().str()); }
+	}
+
+	const char *march = nullptr;
+#	if defined(__x86_64__)
+	march = "x86-64";
+#	elif defined(__i386__)
+	march = "x86";
+#	elif defined(__aarch64__)
+	march = "arm64";
+#	elif defined(__arm__)
+	march = "arm";
+#	elif defined(__mips__)
+#		if defined(__mips64)
+	march = "mips64el";
+#		else
+	march = "mipsel";
+#		endif
+#	elif defined(__powerpc64__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+	march = "ppc64le";
+#	else
+#		error "unknown architecture"
+#	endif
+
+	llvm::TargetOptions targetOptions;
+	targetOptions.UnsafeFPMath = false;
+	//targetOptions.EmulatedTLS = false;
+	//targetOptions.ExplicitEmulatedTLS = true;
+
+	auto targetMachine = std::unique_ptr<llvm::TargetMachine>(
+	    llvm::EngineBuilder()
+	        .setOptLevel(llvm::CodeGenOpt::None)
+	        .setMCPU(mcpu)
+	        .setMArch(march)
+	        .setMAttrs(mattrs)
+	        //   .setRelocationModel(llvm::Reloc::Model::PIC_)
+	        .setTargetOptions(targetOptions)
+
+	        .selectTarget()
+	    //.setEmulatedTLS(false)
+	);
+*/
 const llvm::Triple JITGlobals::getTargetTriple() const
 {
 	return jtmb.getTargetTriple();
@@ -379,6 +475,12 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("coroutine_alloc_frame", reinterpret_cast<void *>(coroutine_alloc_frame));
 			functions.try_emplace("coroutine_free_frame", reinterpret_cast<void *>(coroutine_free_frame));
 
+			//functions.try_emplace("coroutine_await", reinterpret_cast<void *>(coroutine_await));
+			//functions.try_emplace("coroutine_begin", reinterpret_cast<void *>(coroutine_begin));
+			//functions.try_emplace("coroutine_destroy", reinterpret_cast<void *>(coroutine_destroy));
+
+			functions.try_emplace("memset", reinterpret_cast<void *>(memset));
+
 #ifdef __APPLE__
 			functions.try_emplace("sincosf_stret", reinterpret_cast<void *>(__sincosf_stret));
 #elif defined(__linux__)
@@ -407,9 +509,19 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("sync_fetch_and_umax_4", reinterpret_cast<void *>(sync_fetch_and_umax_4));
 			functions.try_emplace("sync_fetch_and_umin_4", reinterpret_cast<void *>(sync_fetch_and_umin_4));
 #endif
-#if __has_feature(memory_sanitizer)
-			functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
-#endif
+			//#if __has_feature(memory_sanitizer)
+			//functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
+			functions.try_emplace("msan_init", reinterpret_cast<void *>(__msan_init));
+			functions.try_emplace("emutls_get_address", reinterpret_cast<void *>(__emutls_get_address));
+			functions.try_emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
+			functions.try_emplace("msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
+			functions.try_emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+			functions.try_emplace("msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+
+			//	functions.emplace("tls_get_addr", reinterpret_cast<void *>(__tls_get_addr));
+
+			functions.try_emplace("msan_warning_noreturn", reinterpret_cast<void *>(__msan_warning_noreturn));
+			//#endif
 		}
 	};
 
@@ -478,6 +590,21 @@ auto &Unwrap(T &&v)
 {
 	return v;
 }
+
+/*
+	auto it = resolver.functions.find(trimmed);
+	// Missing functions will likely make the module fail in exciting non-obvious ways.
+	//	ASSERT_MSG(it != resolver.functions.end(), "Missing external function: '%s'", name);
+	if(it != resolver.functions.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+*/
 
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
@@ -601,6 +728,15 @@ void JITBuilder::optimize(const rr::Config &cfg)
 #endif  // ENABLE_RR_DEBUG_INFO
 
 	llvm::legacy::PassManager passManager;
+	// (arch)(sub)-(vendor)-(sys0-(abi)
+	module->setTargetTriple("x86_64-pc-linux-gnu");
+
+	//auto passManager = std::make_unique<llvm::legacy::PassManager>();
+
+	//#if __has_feature(memory_sanitizer)
+	passManager.add(llvm::createMemorySanitizerLegacyPassPass());
+	//passManager->add(llvm::createMemorySanitizerPass());
+	//#endif
 
 	for(auto pass : cfg.getOptimization().getPasses())
 	{

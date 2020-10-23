@@ -1938,8 +1938,12 @@ Constant *ConstantExpr::get(unsigned Opcode, Constant *C1, Constant *C2,
   // Check the operands for consistency first.
   assert(Instruction::isBinaryOp(Opcode) &&
          "Invalid opcode in binary constant expression");
-  assert(C1->getType() == C2->getType() &&
-         "Operand types in binary constant expression should match");
+
+  if(C1->getType() != C2->getType())
+  {
+    assert(C1->getType() != C2->getType() &&
+           "Operand types in binary constant expression should match");
+  }
 
 #ifndef NDEBUG
   switch (Opcode) {

@@ -11,10 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 set(LLVM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/llvm)
+set(COMPILER_RT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/compiler-rt)
 set(LLVM_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/configs)
-
 set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/AliasAnalysis.cpp
     ${LLVM_DIR}/lib/Analysis/AliasAnalysisSummary.cpp
@@ -688,6 +687,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOInstrumentation.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOMemOPSizeOpt.cpp
     ${LLVM_DIR}/lib/Transforms/Instrumentation/ValueProfileCollector.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/ArgumentPromotion.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/Attributor.cpp
     ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
@@ -814,8 +814,17 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanPredicator.cpp
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanTransforms.cpp
     ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanVerifier.cpp
-)
 
+    #${COMPILER_RT_DIR}/lib/builtins/emutls.c
+    #${COMPILER_RT_DIR}/lib/msan/msan.cpp
+
+    #${COMPILER_RT_DIR}/lib/ubsan/ubsan_flags.cpp
+
+    #${COMPILER_RT_DIR}/lib/msan/msan_linux.cpp
+    #${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_flag_parser.cpp
+    #${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_flags.cpp
+    #${COMPILER_RT_DIR}/lib/sanitizer_common/sanitizer_common.cpp
+)
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
     list(APPEND LLVM_LIST
         ${LLVM_DIR}/lib/Target/X86/AsmParser/X86AsmParser.cpp
@@ -1117,15 +1126,12 @@ elseif(ARCH STREQUAL "ppc64le")
         ${LLVM_DIR}/lib/Target/PowerPC/TargetInfo/PowerPCTargetInfo.cpp
     )
 endif()
-
 if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND LLVM_LIST
         ${LLVM_DIR}/lib/Demangle/ItaniumDemangle.cpp
     )
 endif()
-
 set(LLVM_INCLUDE_DIR "")
-
 if(WIN32)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
 elseif(LINUX)
@@ -1140,7 +1146,6 @@ elseif(ANDROID)
 elseif(FUCHSIA)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/fuchsia/include)
 endif()
-
 list(APPEND LLVM_INCLUDE_DIR
     ${LLVM_DIR}/include
     ${LLVM_DIR}/lib/Target/AArch64
@@ -1156,8 +1161,10 @@ list(APPEND LLVM_INCLUDE_DIR
     ${LLVM_CONFIG_DIR}/common/lib/Target/PowerPC
     ${LLVM_CONFIG_DIR}/common/lib/Target/X86
     ${LLVM_CONFIG_DIR}/common/lib/Transforms/InstCombine
+    
+    ${COMPILER_RT_DIR}/include
+    ${COMPILER_RT_DIR}/lib
 )
-
 # Suppress known LLVM warnings
 set(LLVM_COMPILE_OPTIONS)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -1194,34 +1201,27 @@ elseif(FUCHSIA)
          "-Wno-error"   # The Fuchsia builds triggers several minor explicit #warning lines.
     )
 endif()
-
 add_library(llvm STATIC EXCLUDE_FROM_ALL ${LLVM_LIST})
-
 set_target_properties(llvm PROPERTIES
     POSITION_INDEPENDENT_CODE 1
 )
-
 target_include_directories(llvm
     PUBLIC
         "${LLVM_INCLUDE_DIR}"
 )
-
 target_compile_options(llvm
     PUBLIC
         "${LLVM_COMPILE_OPTIONS}"
 )
-
 target_compile_definitions(llvm
     PUBLIC
         "__STDC_CONSTANT_MACROS"
         "__STDC_LIMIT_MACROS"
 )
-
 # Add required libraries for LLVM
 if(LINUX OR APPLE)
     target_link_libraries(llvm dl z)
 endif()
-
 if(SWIFTSHADER_EMIT_COVERAGE)
     # llvm-with-cov is an llvm target with additional coverage library
     # functionality. This is used to build 'turbo-cov', a custom and faster
@@ -1237,18 +1237,15 @@ if(SWIFTSHADER_EMIT_COVERAGE)
         POSITION_INDEPENDENT_CODE 1
         FOLDER "LLVM"
     )
-
     target_include_directories(llvm-with-cov
         PUBLIC
             ${LLVM_INCLUDE_DIR}
     )
-
     target_compile_definitions(llvm-with-cov
         PUBLIC
             "__STDC_CONSTANT_MACROS"
             "__STDC_LIMIT_MACROS"
     )
-
     if(LINUX OR APPLE)
         target_link_libraries(llvm-with-cov llvm pthread)
     endif()

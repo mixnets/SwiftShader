@@ -36,11 +36,20 @@ size_t alignUp(size_t val, size_t alignment)
 class SwiftShaderVulkanTest : public testing::Test
 {
 };
-
+/*
+TEST(MSanTest, Foo)
+{
+	int uninitialized;
+	EXPECT_GT(uninitialized, 5);
+}
+*/
+/*
 TEST_F(SwiftShaderVulkanTest, ICD_Check)
 {
 	Driver driver;
 	ASSERT_TRUE(driver.loadSwiftShader());
+
+	abort();
 
 	auto createInstance = driver.vk_icdGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
 	EXPECT_NE(createInstance, nullptr);

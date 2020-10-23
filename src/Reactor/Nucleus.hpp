@@ -79,6 +79,8 @@ public:
 			this->level = Level::REACTOR_DEFAULT_OPT_LEVEL;
 		}
 #endif
+
+		this->level = Level::None;
 	}
 
 	Level getLevel() const { return level; }
