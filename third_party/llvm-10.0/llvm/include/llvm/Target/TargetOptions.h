@@ -116,7 +116,7 @@ namespace llvm {
           FunctionSections(false), DataSections(false),
           UniqueSectionNames(true), TrapUnreachable(false),
           NoTrapAfterNoreturn(false), TLSSize(0), EmulatedTLS(false),
-          ExplicitEmulatedTLS(false), EnableIPRA(false),
+          ExplicitEmulatedTLS(true && false), EnableIPRA(false),
           EmitStackSizeSection(false), EnableMachineOutliner(false),
           SupportsDefaultOutlining(false), EmitAddrsig(false),
           EnableDebugEntryValues(false), ForceDwarfFrameSection(false) {}

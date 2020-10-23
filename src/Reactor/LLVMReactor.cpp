@@ -68,8 +68,8 @@ rr::Config &defaultConfig()
 	// This uses a static in a function to avoid the cost of a global static
 	// initializer. See http://neugierig.org/software/chromium/notes/2011/08/static-initializers.html
 	static rr::Config config = rr::Config::Edit()
-	                               .add(rr::Optimization::Pass::ScalarReplAggregates)
-	                               .add(rr::Optimization::Pass::InstructionCombining)
+	                               //        .add(rr::Optimization::Pass::ScalarReplAggregates)
+	                               //      .add(rr::Optimization::Pass::InstructionCombining)
 	                               .apply({});
 	return config;
 }
@@ -490,6 +490,7 @@ static ::llvm::Function *createFunction(const char *name, ::llvm::Type *retTy, c
 	auto func = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, name, jit->module.get());
 	func->setDoesNotThrow();
 	func->setCallingConv(llvm::CallingConv::C);
+	func->addFnAttr(llvm::Attribute::SanitizeMemory);
 	return func;
 }
 
@@ -622,7 +623,7 @@ Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
 
 	if(arraySize)
 	{
-		declaration = new llvm::AllocaInst(T(type), 0, V(Nucleus::createConstantInt(arraySize)), align);
+		declaration = new llvm::AllocaInst(T(type), 0, V(Nucleus::createConstantLong(arraySize)), align);
 	}
 	else
 	{
@@ -966,22 +967,6 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 			auto elTy = T(type);
 			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
-			if(__has_feature(memory_sanitizer))
-			{
-				// Mark all memory writes as initialized by calling __msan_unpoison
-				// void __msan_unpoison(const volatile void *a, size_t size)
-				auto voidTy = ::llvm::Type::getVoidTy(jit->context);
-				auto i8Ty = ::llvm::Type::getInt8Ty(jit->context);
-				auto voidPtrTy = i8Ty->getPointerTo();
-				auto sizetTy = ::llvm::IntegerType::get(jit->context, sizeof(size_t) * 8);
-				auto funcTy = ::llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
-				auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-
-				jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(V(ptr), voidPtrTy),
-				                                 ::llvm::ConstantInt::get(sizetTy, size) });
-			}
-
 			if(!atomic)
 			{
 				jit->builder->CreateAlignedStore(V(value), V(ptr), alignment, isVolatile);
@@ -1101,7 +1086,7 @@ void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned in
 			jit->builder->SetInsertPoint(mergeBlock);
 		}
 	}
-}  // namespace rr
+}
 
 static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Value *offsets, llvm::Value *mask, unsigned int alignment, bool zeroMaskedLanes)
 {

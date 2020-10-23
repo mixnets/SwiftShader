@@ -202,6 +202,7 @@ bool TargetMachine::shouldAssumeDSOLocal(const Module &M,
 bool TargetMachine::useEmulatedTLS() const {
   // Returns Options.EmulatedTLS if the -emulated-tls or -no-emulated-tls
   // was specified explicitly; otherwise uses target triple to decide default.
+  //return false;
   if (Options.ExplicitEmulatedTLS)
     return Options.EmulatedTLS;
   return getTargetTriple().hasDefaultEmulatedTLS();
@@ -212,7 +213,7 @@ TLSModel::Model TargetMachine::getTLSModel(const GlobalValue *GV) const {
   Reloc::Model RM = getRelocationModel();
   bool IsSharedLibrary = RM == Reloc::PIC_ && !IsPIE;
   bool IsLocal = shouldAssumeDSOLocal(*GV->getParent(), GV);
-
+//return TLSModel::GeneralDynamic;
   TLSModel::Model Model;
   if (IsSharedLibrary) {
     if (IsLocal)
