@@ -122,7 +122,9 @@ target_compile_definitions(subzero
         "ALLOW_WASM=0"
         "ICE_THREAD_LOCAL_HACK=0"
     PRIVATE
-        $<$<BOOL:${WIN32}>:"SUBZERO_USE_MICROSOFT_ABI">
+        #$<$<BOOL:${WIN32}>:"SUBZERO_USE_MICROSOFT_ABI">
+        # Force Microsoft ABI when cross-generating x86 on Linux
+        "SUBZERO_USE_MICROSOFT_ABI"
 )
 
 target_link_libraries(subzero

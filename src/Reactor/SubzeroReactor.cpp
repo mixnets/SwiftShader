@@ -1433,14 +1433,18 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 	validateAtomicAndMemoryOrderArgs(atomic, memoryOrder);
 
 #if __has_feature(memory_sanitizer)
+	// WIP! amaiorano: temporarily disable this for x64 host cross compile to x86 because we fail to generate for InstCall due to the 64-bit func pointer.
+	// We're looking for MSAN failures during code gen anyway, so it's okay. Executing the generated code always crashes because we can't run x86 code in
+	// an x64 process.
+	//
 	// Mark all (non-stack) memory writes as initialized by calling __msan_unpoison
-	if(align != 0)
-	{
-		auto call = Ice::InstCall::create(::function, 2, nullptr, ::context->getConstantInt64(reinterpret_cast<intptr_t>(__msan_unpoison)), false);
-		call->addArg(ptr);
-		call->addArg(::context->getConstantInt64(typeSize(type)));
-		::basicBlock->appendInst(call);
-	}
+	// if(align != 0)
+	// {
+	// 	auto call = Ice::InstCall::create(::function, 2, nullptr, ::context->getConstantInt64(reinterpret_cast<intptr_t>(__msan_unpoison)), false);
+	// 	call->addArg(ptr);
+	// 	call->addArg(::context->getConstantInt64(typeSize(type)));
+	// 	::basicBlock->appendInst(call);
+	// }
 #endif
 
 	int valueType = (int)reinterpret_cast<intptr_t>(type);
