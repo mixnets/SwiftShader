@@ -91,7 +91,12 @@ Scheduler* Scheduler::get() {
 }
 
 void Scheduler::bind() {
+#if !__has_feature(memory_sanitizer)
+  // thread_local variables in shared libraries are initialized at load-time,
+  // but this is not observed by MemorySanitizer if the loader itself was not
+  // instrumented, leading to false-positive unitialized variable errors.
   MARL_ASSERT(bound == nullptr, "Scheduler already bound");
+#endif
   bound = this;
   {
     marl::lock lock(singleThreadedWorkers.mutex);
