@@ -16,6 +16,24 @@
       "message": "cl/338793571 to get us back in sync.",
       "revId": "bb66fa41a1637488f77041c93797f84ecd2fc0d1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a04b5e2_b9b3e018",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-24T04:42:56Z",
+      "side": 1,
+      "message": "Or not. Additional google3 changes were made: https://swiftshader-review.googlesource.com/c/SwiftShader/+/49588",
+      "parentUuid": "2ca86f09_0598de2d",
+      "revId": "bb66fa41a1637488f77041c93797f84ecd2fc0d1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
