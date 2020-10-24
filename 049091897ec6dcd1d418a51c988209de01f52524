@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f41cd875_6b18a4f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-24T04:25:21Z",
+      "side": 1,
+      "message": "I\u0027m going to land this because cl/338560059 includes it and was submitted, which causes cl/338699407 not to build because it reverts LLVMJIT.cpp back to the upstream version.",
+      "revId": "049091897ec6dcd1d418a51c988209de01f52524",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
