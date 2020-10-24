@@ -91,7 +91,7 @@ Scheduler* Scheduler::get() {
 }
 
 void Scheduler::bind() {
-  MARL_ASSERT(bound == nullptr, "Scheduler already bound");
+  // MARL_ASSERT(bound == nullptr, "Scheduler already bound");
   bound = this;
   {
     marl::lock lock(singleThreadedWorkers.mutex);

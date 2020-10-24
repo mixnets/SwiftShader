@@ -572,10 +572,10 @@ static ::llvm::Function *createFunction(const char *name, ::llvm::Type *retTy, c
 
 Nucleus::Nucleus()
 {
-	ASSERT(jit == nullptr);
+	//ASSERT(jit == nullptr);
 	jit = new JITBuilder(Nucleus::getDefaultConfig());
 
-	ASSERT(Variable::unmaterializedVariables == nullptr);
+	//ASSERT(Variable::unmaterializedVariables == nullptr);
 	Variable::unmaterializedVariables = new std::unordered_set<const Variable *>();
 }
 
