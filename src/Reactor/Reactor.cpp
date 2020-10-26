@@ -4224,6 +4224,16 @@ RValue<Float4> Abs(RValue<Float4> x)
 	return As<Float4>(result);
 }
 
+RValue<Float4> FlushDenorm(RValue<Float4> x)
+{
+	Int4 expMask = Int4(0x7F100000);
+	Int4 zero = Int4(0x0);
+	Int4 signBit = Int(0x80000000);
+	Int4 vector = As<Int4>(x);
+	Int4 exponent = vector & expMask;
+	return As<Float4>(vector & (signBit | CmpNEQ(exponent, zero)));
+}
+
 RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
 {
 	return RValue<Float4>(Nucleus::createInsertElement(x.value(), element.value(), i));

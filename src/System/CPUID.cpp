@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "CPUID.hpp"
+#include "Debug.hpp"
 
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
@@ -25,6 +26,10 @@
 #	include <unistd.h>
 #	include <sched.h>
 #	include <sys/types.h>
+#endif
+
+#if defined(__x86__) || defined(__x86_64__)
+#	include <xmmintrin.h>
 #endif
 
 namespace sw {
@@ -291,8 +296,17 @@ void CPUID::setFlushToZero(bool enable)
 {
 #if defined(_MSC_VER)
 	_controlfp(enable ? _DN_FLUSH : _DN_SAVE, _MCW_DN);
+#elif defined(__x86__) || defined(__x86_64__)
+	if(enable)
+	{
+		_mm_setcsr(_mm_getcsr() | 0x8040);
+	}
+	else
+	{
+		_mm_setcsr(_mm_getcsr() & ~0x8040);
+	}
 #else
-	                           // Unimplemented
+	UNIMPLEMENTED();
 #endif
 }
 

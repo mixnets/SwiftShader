@@ -239,8 +239,11 @@ Float4 Log2(RValue<Float4> x)
 
 	x1 += (x0 - Float4(1.0f)) * x2;
 
+	Int4 exponent = As<Int4>(x) & Int4(0x7F800000);
+	// Force denormals and zero to result in -inf.
+	Int4 is_dnorm_or_zero = CmpEQ(As<Int4>(exponent), Int4(0x0));
 	Int4 pos_inf_x = CmpEQ(As<Int4>(x), Int4(0x7F800000));
-	return As<Float4>((pos_inf_x & As<Int4>(x)) | (~pos_inf_x & As<Int4>(x1)));
+	return As<Float4>((is_dnorm_or_zero & Int4(0xFF800000)) | (~is_dnorm_or_zero & ((pos_inf_x & As<Int4>(x)) | (~pos_inf_x & As<Int4>(x1)))));
 }
 
 Float4 Exp(RValue<Float4> x)

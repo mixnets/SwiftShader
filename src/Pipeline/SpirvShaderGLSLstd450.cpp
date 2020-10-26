@@ -38,7 +38,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto src = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Abs(src.Float(i)));
+				dst.move(i, Abs(FlushDenorm(src.Float(i))));
 			}
 			break;
 		}
@@ -209,7 +209,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto a = Operand(this, state, insn.word(7));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, a.Float(i) * (y.Float(i) - x.Float(i)) + x.Float(i));
+				dst.move(i, FlushDenorm(a.Float(i) * (y.Float(i) - x.Float(i)) + x.Float(i)));
 			}
 			break;
 		}
@@ -277,7 +277,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, I.Float(i) - SIMD::Float(2.0f) * d * N.Float(i));
+				dst.move(i, FlushDenorm(I.Float(i) - SIMD::Float(2.0f) * d * N.Float(i)));
 			}
 			break;
 		}
@@ -294,7 +294,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, pos & As<SIMD::Int>(eta.Float(0) * I.Float(i) - t * N.Float(i)));
+				dst.move(i, pos & As<SIMD::Int>(FlushDenorm(eta.Float(0) * I.Float(i) - t * N.Float(i))));
 			}
 			break;
 		}
@@ -330,7 +330,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, invLength * x.Float(i));
+				dst.move(i, FlushDenorm(invLength * x.Float(i)));
 			}
 			break;
 		}
@@ -555,7 +555,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto degrees = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, degrees.Float(i) * SIMD::Float(PI / 180.0f));
+				dst.move(i, FlushDenorm(degrees.Float(i)) * SIMD::Float(PI / 180.0f));
 			}
 			break;
 		}
@@ -564,7 +564,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto radians = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, radians.Float(i) * SIMD::Float(180.0f / PI));
+				dst.move(i, FlushDenorm(radians.Float(i)) * SIMD::Float(180.0f / PI));
 			}
 			break;
 		}
@@ -573,7 +573,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto radians = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Sin(radians.Float(i)));
+				dst.move(i, FlushDenorm(Sin(radians.Float(i))));
 			}
 			break;
 		}
@@ -591,7 +591,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto radians = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Tan(radians.Float(i)));
+				dst.move(i, FlushDenorm(Tan(radians.Float(i))));
 			}
 			break;
 		}
@@ -602,7 +602,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			ApplyDecorationsForId(&d, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Asin(val.Float(i), d.RelaxedPrecision ? Precision::Relaxed : Precision::Full));
+				dst.move(i, FlushDenorm(Asin(val.Float(i), d.RelaxedPrecision ? Precision::Relaxed : Precision::Full)));
 			}
 			break;
 		}
@@ -622,7 +622,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Atan(val.Float(i)));
+				dst.move(i, FlushDenorm(Atan(val.Float(i))));
 			}
 			break;
 		}
@@ -649,7 +649,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto val = Operand(this, state, insn.word(5));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Tanh(val.Float(i)));
+				dst.move(i, Tanh(FlushDenorm(val.Float(i))));
 			}
 			break;
 		}
@@ -686,7 +686,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto y = Operand(this, state, insn.word(6));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Atan2(x.Float(i), y.Float(i)));
+				dst.move(i, FlushDenorm(Atan2(x.Float(i), y.Float(i))));
 			}
 			break;
 		}
@@ -696,7 +696,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto y = Operand(this, state, insn.word(6));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, Pow(x.Float(i), y.Float(i)));
+				dst.move(i, FlushDenorm(Pow(x.Float(i), y.Float(i))));
 			}
 			break;
 		}
@@ -808,7 +808,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 					    mat.Float(2), mat.Float(3));
 					for(uint32_t i = 0; i < inv.size(); i++)
 					{
-						dst.move(i, inv[i]);
+						dst.move(i, FlushDenorm(inv[i]));
 					}
 					break;
 				}
@@ -820,7 +820,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 					    mat.Float(6), mat.Float(7), mat.Float(8));
 					for(uint32_t i = 0; i < inv.size(); i++)
 					{
-						dst.move(i, inv[i]);
+						dst.move(i, FlushDenorm(inv[i]));
 					}
 					break;
 				}
@@ -833,7 +833,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 					    mat.Float(12), mat.Float(13), mat.Float(14), mat.Float(15));
 					for(uint32_t i = 0; i < inv.size(); i++)
 					{
-						dst.move(i, inv[i]);
+						dst.move(i, FlushDenorm(inv[i]));
 					}
 					break;
 				}
@@ -907,7 +907,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto y = Operand(this, state, insn.word(6));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, NMin(x.Float(i), y.Float(i)));
+				dst.move(i, FlushDenorm(NMin(x.Float(i), y.Float(i))));
 			}
 			break;
 		}
@@ -917,7 +917,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto y = Operand(this, state, insn.word(6));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				dst.move(i, NMax(x.Float(i), y.Float(i)));
+				dst.move(i, FlushDenorm(NMax(x.Float(i), y.Float(i))));
 			}
 			break;
 		}
@@ -928,7 +928,7 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 			auto maxVal = Operand(this, state, insn.word(7));
 			for(auto i = 0u; i < type.componentCount; i++)
 			{
-				auto clamp = NMin(NMax(x.Float(i), minVal.Float(i)), maxVal.Float(i));
+				auto clamp = FlushDenorm(NMin(NMax(x.Float(i), minVal.Float(i)), maxVal.Float(i)));
 				dst.move(i, clamp);
 			}
 			break;

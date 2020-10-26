@@ -384,6 +384,12 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 					case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 					case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
+					// Float control capabilities are enabled by the extension:
+					// VK_KHR_shader_float_controls. SwiftShader only supports round-to-even (RTE),
+					// denorm flush-to-zero, and signed zero, Inf, Nan preserve modes.
+					case spv::CapabilityRoundingModeRTE: capabilities.RoundingModeRTE = true; break;
+					case spv::CapabilityDenormFlushToZero: capabilities.DenormFlushToZero = true; break;
+					case spv::CapabilitySignedZeroInfNanPreserve: capabilities.SignedZeroInfNanPreserve = true; break;
 					default:
 						UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
@@ -717,6 +723,7 @@ SpirvShader::SpirvShader(
 				if(!strcmp(ext, "SPV_KHR_device_group")) break;
 				if(!strcmp(ext, "SPV_KHR_multiview")) break;
 				if(!strcmp(ext, "SPV_EXT_shader_stencil_export")) break;
+				if(!strcmp(ext, "SPV_KHR_float_controls")) break;
 				UNSUPPORTED("SPIR-V Extension: %s", ext);
 				break;
 			}
@@ -907,6 +914,15 @@ void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 			break;
 		case spv::ExecutionModeOriginUpperLeft:
 			// This is always the case for a Vulkan shader. Do nothing.
+			break;
+		case spv::ExecutionModeDenormFlushToZero:
+		case spv::ExecutionModeRoundingModeRTE:
+		case spv::ExecutionModeSignedZeroInfNanPreserve:
+			// These float control modes are the default processor behavior.
+			// Nothing needs to be adjusted.
+			// What about RoundingModeRTZ and other execution modes? Per the Vulkan spec:
+			//		If shaderRoundingModeRTEFloat32 is VK_FALSE, then RoundingModeRTE for 32-bit floating point type must not be used.
+			// This applies to every mode and floating point precision.
 			break;
 		default:
 			UNREACHABLE("Execution mode: %d", int(mode));
@@ -1632,7 +1648,7 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 #if SPIRV_SHADER_ENABLE_DBG
 	{
 		auto text = spvtools::spvInstructionBinaryToText(
-		    SPV_ENV_VULKAN_1_1,
+		    vk::SPIRV_VERSION,
 		    insn.wordPointer(0),
 		    insn.wordCount(),
 		    insns.data(),
