@@ -593,23 +593,28 @@ void transpose4xN(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3, int N)
 
 SIMD::UInt halfToFloatBits(SIMD::UInt halfBits)
 {
-	auto magic = SIMD::UInt(126 << 23);
-
 	auto sign16 = halfBits & SIMD::UInt(0x8000);
 	auto man16 = halfBits & SIMD::UInt(0x03FF);
 	auto exp16 = halfBits & SIMD::UInt(0x7C00);
 
+	// Note that CmpEq returns 0xFFFFFFFF if the condition is true, or 0x00000000 if not
 	auto isDnormOrZero = CmpEQ(exp16, SIMD::UInt(0));
 	auto isInfOrNaN = CmpEQ(exp16, SIMD::UInt(0x7C00));
 
 	auto sign32 = sign16 << 16;
 	auto man32 = man16 << 13;
+	// Subtract 15 from the biased float16 exponent, then add 127 to it so that it's a biased float32 exponent,
+	// then shift it into the float32 exponent position.
+	// This is simplified to adding 112 to the biased float16 exponent and then shifting it into place.
 	auto exp32 = (exp16 + SIMD::UInt(0x1C000)) << 13;
+
+	// Combine the adjusted mantissa and exponent. If the float16 was NaN or Inf, ensure that
+	// it remains so.
 	auto norm32 = (man32 | exp32) | (isInfOrNaN & SIMD::UInt(0x7F800000));
 
-	auto denorm32 = As<SIMD::UInt>(As<SIMD::Float>(magic + man16) - As<SIMD::Float>(magic));
-
-	return sign32 | (norm32 & ~isDnormOrZero) | (denorm32 & isDnormOrZero);
+	// Since we flush denorms, there is no need to correct the exponent and mantissa
+	// in the case that the float16 was a subnormal. We can just act as if it were zero.
+	return sign32 | (norm32 & ~isDnormOrZero);
 }
 
 SIMD::UInt floatToHalfBits(SIMD::UInt floatBits, bool storeInUpperBits)
