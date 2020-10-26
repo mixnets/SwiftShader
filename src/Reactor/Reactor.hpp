@@ -2305,6 +2305,8 @@ RValue<Float4> UnpackHigh(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, uint16_t select);
 RValue<Int> SignMask(RValue<Float4> x);
 
+RValue<Float4> FlushDenorm(RValue<Float4> x);
+
 // Ordered comparison functions
 RValue<Int4> CmpEQ(RValue<Float4> x, RValue<Float4> y);
 RValue<Int4> CmpLT(RValue<Float4> x, RValue<Float4> y);

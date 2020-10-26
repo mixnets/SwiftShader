@@ -592,6 +592,9 @@ public:
 		bool DeviceGroup : 1;
 		bool MultiView : 1;
 		bool StencilExportEXT : 1;
+		bool DenormFlushToZero : 1;
+		bool RoundingModeRTE : 1;
+		bool SignedZeroInfNanPreserve : 1;
 	};
 
 	Capabilities const &getUsedCapabilities() const

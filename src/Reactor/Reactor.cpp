@@ -4183,6 +4183,44 @@ RValue<Float4> Abs(RValue<Float4> x)
 	return As<Float4>(result);
 }
 
+RValue<Float4> FlushDenorm(RValue<Float4> x)
+{
+	int64_t exponentMask[4] = { 0x7F100000, 0x7F100000, 0x7F100000, 0x7F100000 };
+	int64_t signMask[4] = { 0x80000000, 0x80000000, 0x80000000, 0x80000000 };
+	int64_t zero[4] = { 0x0, 0x0, 0x0, 0x0 };
+	// int floatBits = *(int *)&x;
+	Value *vector = Nucleus::createBitCast(x.value(), Int4::type());
+	// int exponent = floatBits & 0x7F100000;
+	Value *expBits = Nucleus::createAnd(vector, Nucleus::createConstantVector(exponentMask, Int4::type()));
+	// int isSubnormal = sign_extend(exponent != 0);
+	Value *isSubnormal = Nucleus::createSExt(Nucleus::createICmpNE(expBits, Nucleus::createConstantVector(zero, Int4::type())), Int4::type());
+	// isSubnormal |= 0x80000000
+	isSubnormal = Nucleus::createOr(isSubnormal, Nucleus::createConstantVector(signMask, Int4::type()));
+	// int result = floatBits & isSubnormal;
+	Value *result = Nucleus::createAnd(vector, isSubnormal);
+	// return *(float *)&result;
+	return As<Float4>(result);
+}
+
+RValue<Float> FlushDenorm(RValue<Float> x)
+{
+	int64_t exponentMask = 0x7F100000;
+	int64_t signMask = 0x80000000;
+	int64_t zero = 0x0;
+	// int floatBits = *(int *)&x;
+	Value *floatBits = Nucleus::createBitCast(x.value(), Int::type());
+	// int exponent = floatBits & 0x7F100000;
+	Value *expBits = Nucleus::createAnd(floatBits, Nucleus::createConstantVector(&exponentMask, Int::type()));
+	// int isSubnormal = sign_extend(exponent != 0);
+	Value *isSubnormal = Nucleus::createSExt(Nucleus::createICmpNE(expBits, Nucleus::createConstantVector(&zero, Int::type())), Int::type());
+	// isSubnormal |= 0x80000000
+	isSubnormal = Nucleus::createOr(isSubnormal, Nucleus::createConstantVector(&signMask, Int::type()));
+	// int result = floatBits & isSubnormal;
+	Value *result = Nucleus::createAnd(floatBits, isSubnormal);
+	// return *(float *)&result;
+	return As<Float>(result);
+}
+
 RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
 {
 	return RValue<Float4>(Nucleus::createInsertElement(x.value(), element.value(), i));

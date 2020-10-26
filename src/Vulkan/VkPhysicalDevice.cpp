@@ -701,6 +701,29 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceProvokingVertexPropertiesEXT 
 	properties->provokingVertexModePerPipeline = VK_TRUE;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceFloatControlsProperties *properties) const
+{
+	properties->denormBehaviorIndependence = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE;
+	properties->roundingModeIndependence = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE;
+	properties->shaderSignedZeroInfNanPreserveFloat16 = VK_TRUE;
+	properties->shaderSignedZeroInfNanPreserveFloat32 = VK_TRUE;
+	properties->shaderSignedZeroInfNanPreserveFloat64 = VK_TRUE;
+	properties->shaderDenormPreserveFloat16 = VK_FALSE;
+	properties->shaderDenormPreserveFloat32 = VK_FALSE;
+	properties->shaderDenormPreserveFloat64 = VK_FALSE;
+	// SwiftShader always flushes denormalized values to zero
+	properties->shaderDenormFlushToZeroFloat16 = VK_TRUE;
+	properties->shaderDenormFlushToZeroFloat32 = VK_TRUE;
+	properties->shaderDenormFlushToZeroFloat64 = VK_TRUE;
+	properties->shaderRoundingModeRTZFloat16 = VK_FALSE;
+	properties->shaderRoundingModeRTZFloat32 = VK_FALSE;
+	properties->shaderRoundingModeRTZFloat64 = VK_FALSE;
+	// The default IEEE rounding mode
+	properties->shaderRoundingModeRTEFloat16 = VK_TRUE;
+	properties->shaderRoundingModeRTEFloat32 = VK_TRUE;
+	properties->shaderRoundingModeRTEFloat64 = VK_TRUE;
+}
+
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const
 {
 	const VkPhysicalDeviceFeatures &supportedFeatures = getFeatures();
