@@ -27,6 +27,10 @@
 #	include <sys/types.h>
 #endif
 
+#if defined(__x86__) || defined(__x86_64__)
+#	include <xmmintrin.h>
+#endif
+
 namespace sw {
 
 bool CPUID::MMX = detectMMX();
@@ -291,8 +295,19 @@ void CPUID::setFlushToZero(bool enable)
 {
 #if defined(_MSC_VER)
 	_controlfp(enable ? _DN_FLUSH : _DN_SAVE, _MCW_DN);
+#elif defined(__x86__) || defined(__x86_64__)
+	if(enable)
+	{
+		_mm_setcsr(_mm_getcsr() | 0x8040);
+	}
+	else
+	{
+		_mm_setcsr(_mm_getcsr() & ~0x8040);
+	}
+
+	// Unimplemented
 #else
-	                           // Unimplemented
+
 #endif
 }
 
