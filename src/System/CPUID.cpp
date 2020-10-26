@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "CPUID.hpp"
+#include "Debug.hpp"
 
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
