@@ -3297,7 +3297,8 @@ RValue<Float4> Tanh(RValue<Float4> v)
 RValue<Float4> Asinh(RValue<Float4> v)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return TransformFloat4PerElement(v, "asinhf");
+	RValue<Float4> vFlush = FlushDenorm(v);
+	return TransformFloat4PerElement(vFlush, "asinhf");
 }
 
 RValue<Float4> Acosh(RValue<Float4> v)
@@ -3309,7 +3310,8 @@ RValue<Float4> Acosh(RValue<Float4> v)
 RValue<Float4> Atanh(RValue<Float4> v)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return TransformFloat4PerElement(v, "atanhf");
+	RValue<Float4> vFlush = FlushDenorm(v);
+	return TransformFloat4PerElement(vFlush, "atanhf");
 }
 
 RValue<Float4> Atan2(RValue<Float4> x, RValue<Float4> y)
@@ -3347,8 +3349,9 @@ RValue<Float4> Exp(RValue<Float4> v)
 RValue<Float4> Log(RValue<Float4> v)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+	RValue<Float4> vFlush = FlushDenorm(v);
 	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::log, { T(Float4::type()) });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+	return RValue<Float4>(V(jit->builder->CreateCall(func, V(vFlush.value()))));
 }
 
 RValue<Float4> Exp2(RValue<Float4> v)
@@ -3361,8 +3364,9 @@ RValue<Float4> Exp2(RValue<Float4> v)
 RValue<Float4> Log2(RValue<Float4> v)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
+	RValue<Float4> vFlush = FlushDenorm(v);
 	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::log2, { T(Float4::type()) });
-	return RValue<Float4>(V(jit->builder->CreateCall(func, V(v.value()))));
+	return RValue<Float4>(V(jit->builder->CreateCall(func, V(vFlush.value()))));
 }
 
 RValue<UInt> Ctlz(RValue<UInt> v, bool isZeroUndef)

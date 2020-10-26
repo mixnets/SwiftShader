@@ -30,7 +30,7 @@ SpirvShader::EmitResult SpirvShader::EmitVectorTimesScalar(InsnIterator insn, Em
 
 	for(auto i = 0u; i < type.componentCount; i++)
 	{
-		dst.move(i, lhs.Float(i) * rhs.Float(0));
+		dst.move(i, FlushDenorm(lhs.Float(i) * rhs.Float(0)));
 	}
 
 	return EmitResult::Continue;
@@ -50,7 +50,7 @@ SpirvShader::EmitResult SpirvShader::EmitMatrixTimesVector(InsnIterator insn, Em
 		{
 			v += lhs.Float(i + type.componentCount * j) * rhs.Float(j);
 		}
-		dst.move(i, v);
+		dst.move(i, FlushDenorm(v));
 	}
 
 	return EmitResult::Continue;
@@ -70,7 +70,7 @@ SpirvShader::EmitResult SpirvShader::EmitVectorTimesMatrix(InsnIterator insn, Em
 		{
 			v += lhs.Float(j) * rhs.Float(i * lhs.componentCount + j);
 		}
-		dst.move(i, v);
+		dst.move(i, FlushDenorm(v));
 	}
 
 	return EmitResult::Continue;
@@ -96,7 +96,7 @@ SpirvShader::EmitResult SpirvShader::EmitMatrixTimesMatrix(InsnIterator insn, Em
 			{
 				v += lhs.Float(i * numRows + row) * rhs.Float(col * numAdds + i);
 			}
-			dst.move(numRows * col + row, v);
+			dst.move(numRows * col + row, FlushDenorm(v));
 		}
 	}
 
@@ -117,7 +117,7 @@ SpirvShader::EmitResult SpirvShader::EmitOuterProduct(InsnIterator insn, EmitSta
 	{
 		for(auto row = 0u; row < numRows; row++)
 		{
-			dst.move(col * numRows + row, lhs.Float(row) * rhs.Float(col));
+			dst.move(col * numRows + row, FlushDenorm(lhs.Float(row) * rhs.Float(col)));
 		}
 	}
 
@@ -208,7 +208,7 @@ SpirvShader::EmitResult SpirvShader::EmitUnaryOp(InsnIterator insn, EmitState *s
 				dst.move(i, -src.Int(i));
 				break;
 			case spv::OpFNegate:
-				dst.move(i, -src.Float(i));
+				dst.move(i, FlushDenorm(-src.Float(i)));
 				break;
 			case spv::OpConvertFToU:
 				dst.move(i, SIMD::UInt(src.Float(i)));
@@ -408,23 +408,23 @@ SpirvShader::EmitResult SpirvShader::EmitBinaryOp(InsnIterator insn, EmitState *
 				dst.move(i, CmpLE(lhs.Int(i), rhs.Int(i)));
 				break;
 			case spv::OpFAdd:
-				dst.move(i, lhs.Float(i) + rhs.Float(i));
+				dst.move(i, FlushDenorm(lhs.Float(i) + rhs.Float(i)));
 				break;
 			case spv::OpFSub:
 				dst.move(i, lhs.Float(i) - rhs.Float(i));
 				break;
 			case spv::OpFMul:
-				dst.move(i, lhs.Float(i) * rhs.Float(i));
+				dst.move(i, FlushDenorm(lhs.Float(i) * rhs.Float(i)));
 				break;
 			case spv::OpFDiv:
-				dst.move(i, lhs.Float(i) / rhs.Float(i));
+				dst.move(i, FlushDenorm(lhs.Float(i) / rhs.Float(i)));
 				break;
 			case spv::OpFMod:
 				// TODO(b/126873455): inaccurate for values greater than 2^24
-				dst.move(i, lhs.Float(i) - rhs.Float(i) * Floor(lhs.Float(i) / rhs.Float(i)));
+				dst.move(i, FlushDenorm(lhs.Float(i) - rhs.Float(i) * Floor(lhs.Float(i) / rhs.Float(i))));
 				break;
 			case spv::OpFRem:
-				dst.move(i, lhs.Float(i) % rhs.Float(i));
+				dst.move(i, FlushDenorm(lhs.Float(i) % rhs.Float(i)));
 				break;
 			case spv::OpFOrdEqual:
 				dst.move(i, CmpEQ(lhs.Float(i), rhs.Float(i)));
@@ -522,7 +522,7 @@ SpirvShader::EmitResult SpirvShader::EmitDot(InsnIterator insn, EmitState *state
 	auto lhs = Operand(this, state, insn.word(3));
 	auto rhs = Operand(this, state, insn.word(4));
 
-	dst.move(0, Dot(lhsType.componentCount, lhs, rhs));
+	dst.move(0, FlushDenorm(Dot(lhsType.componentCount, lhs, rhs)));
 
 	SPIRV_SHADER_DBG("{0}: {1}", insn.resultId(), dst);
 	SPIRV_SHADER_DBG("{0}: {1}", insn.word(3), lhs);
