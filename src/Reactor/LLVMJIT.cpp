@@ -58,19 +58,49 @@ extern "C" signed
 __aeabi_idivmod();
 #endif
 
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef unsigned long long u64;
+
 extern "C" {
 void __msan_init();
 struct __emutls_control;
 void *__emutls_get_address(__emutls_control *control);
 
 void __msan_warning_noreturn();
+
+void __msan_maybe_warning_1(u8, u32);
+void __msan_maybe_warning_2(u16, u32);
+void __msan_maybe_warning_4(u32, u32);
+void __msan_maybe_warning_8(u64, u32);
 }
 
 // These constants must be kept in sync with the ones in msan.h.
 //const int kMsanParamTlsSize = 800;
 //const int kMsanRetvalTlsSize = 800;
-extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
 extern __thread unsigned long long __msan_param_tls[/*kMsanRetvalTlsSize / sizeof(unsigned long long)*/];
+extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
+
+enum mymyalkjsfljkasfd
+{
+	my__msan_param_tls = 1,
+	my__msan_retval_tls
+};
+
+static void *my__emutls_get_address(__emutls_control *control)
+{
+	//	return reinterpret_cast<void *>(control);
+
+	switch(static_cast<mymyalkjsfljkasfd>(reinterpret_cast<uintptr_t>(control)))
+	{
+
+		case my__msan_param_tls: return reinterpret_cast<void *>(__msan_param_tls);
+		case my__msan_retval_tls: return reinterpret_cast<void *>(__msan_retval_tls);
+		default:
+			assert(false);
+	}
+}
 
 namespace {
 
@@ -512,15 +542,20 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			//#if __has_feature(memory_sanitizer)
 			//functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
 			functions.try_emplace("msan_init", reinterpret_cast<void *>(__msan_init));
-			functions.try_emplace("emutls_get_address", reinterpret_cast<void *>(__emutls_get_address));
-			functions.try_emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
-			functions.try_emplace("msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
-			functions.try_emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
-			functions.try_emplace("msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
+			functions.try_emplace("emutls_get_address", reinterpret_cast<void *>(my__emutls_get_address));
+			functions.try_emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_retval_tls)));
+			//	functions.try_emplace("msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
+			functions.try_emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_param_tls)));
+			//	functions.try_emplace("msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
 
 			//	functions.emplace("tls_get_addr", reinterpret_cast<void *>(__tls_get_addr));
 
 			functions.try_emplace("msan_warning_noreturn", reinterpret_cast<void *>(__msan_warning_noreturn));
+
+			functions.try_emplace("msan_maybe_warning_1", reinterpret_cast<void *>(__msan_maybe_warning_1));
+			functions.try_emplace("msan_maybe_warning_2", reinterpret_cast<void *>(__msan_maybe_warning_2));
+			functions.try_emplace("msan_maybe_warning_4", reinterpret_cast<void *>(__msan_maybe_warning_4));
+			functions.try_emplace("msan_maybe_warning_8", reinterpret_cast<void *>(__msan_maybe_warning_8));
 			//#endif
 		}
 	};

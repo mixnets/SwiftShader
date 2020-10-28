@@ -64,6 +64,7 @@ target_include_directories(VulkanBenchmarks
 target_compile_options(VulkanBenchmarks
     PRIVATE
         ${ROOT_PROJECT_COMPILE_OPTIONS}
+        "-fexceptions"
 )
 
 target_link_options(VulkanBenchmarks

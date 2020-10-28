@@ -39,11 +39,38 @@ static int __attribute__((noinline)) g(void)
 	}
 }
 */
+/*
+static int __attribute__((noinline)) a()
+{
+	volatile int a = 1;
+	return a;
+}
+
+static int __attribute__((noinline)) b()
+{
+	volatile int b = -1;
+	return b;
+}
+
+static int __attribute__((noinline)) g(volatile int *p)
+{
+	int x = *p;
+
+	if(x >= 0)
+	{
+		return a();
+	}
+	else
+	{
+		return b();
+	}
+}
+*/
 TEST(ReactorUnitTests, Sample)
 {
-	FunctionT<int(void)> function;
+	FunctionT<int(int *)> function;
 	{
-		Int x;
+		Int x = *Pointer<Int>(function.Arg<0>());
 
 		If(x >= 0)
 		{
@@ -57,10 +84,15 @@ TEST(ReactorUnitTests, Sample)
 
 	auto routine = function("one");
 
-	auto f = (int (*)())routine.getEntry();
+	auto f = (int (*)(volatile int *))routine.getEntry();
 
-	int result = f();
+	volatile int x = 0;
 
+	//int reference = g(&x);
+
+	int result = f(&x);
+
+	//EXPECT_TRUE(reference == 1);
 	EXPECT_TRUE(result == 1);
 }
 
@@ -138,10 +170,10 @@ TEST(ReactorUnitTests, SubVectorLoadStore)
 		Pointer<Byte> out = function.Arg<1>();
 
 		*Pointer<Int4>(out + 16 * 0) = *Pointer<Int4>(in + 16 * 0);
-		*Pointer<Short4>(out + 16 * 1) = *Pointer<Short4>(in + 16 * 1);
-		*Pointer<Byte8>(out + 16 * 2) = *Pointer<Byte8>(in + 16 * 2);
-		*Pointer<Byte4>(out + 16 * 3) = *Pointer<Byte4>(in + 16 * 3);
-		*Pointer<Short2>(out + 16 * 4) = *Pointer<Short2>(in + 16 * 4);
+		//	*Pointer<Short4>(out + 16 * 1) = *Pointer<Short4>(in + 16 * 1);
+		//	*Pointer<Byte8>(out + 16 * 2) = *Pointer<Byte8>(in + 16 * 2);
+		//	*Pointer<Byte4>(out + 16 * 3) = *Pointer<Byte4>(in + 16 * 3);
+		//	*Pointer<Short2>(out + 16 * 4) = *Pointer<Short2>(in + 16 * 4);
 
 		Return(0);
 	}
@@ -160,9 +192,13 @@ TEST(ReactorUnitTests, SubVectorLoadStore)
 		                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 		                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-	routine(in, out);
+	//routine(in, out);
 
-	for(int row = 0; row < 5; row++)
+	auto f = (int (*)(void *, void *))routine.getEntry();
+
+	f(in, out);
+
+	for(int row = 0; row < 1; row++)
 	{
 		for(int col = 0; col < 16; col++)
 		{
