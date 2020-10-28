@@ -292,7 +292,7 @@ static cl::opt<int> ClInstrumentationWithCallThreshold(
         "If the function being instrumented requires more than "
         "this number of checks and origin stores, use callbacks instead of "
         "inline checks (-1 means never use callbacks)."),
-    cl::Hidden, cl::init(3500));
+    cl::Hidden, cl::init(0));
 
 static cl::opt<bool>
     ClEnableKmsan("msan-kernel",

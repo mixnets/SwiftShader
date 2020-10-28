@@ -14,7 +14,7 @@
 
 #include "benchmark/benchmark.h"
 
-#define VK_USE_PLATFORM_WIN32_KHR
+//#define VK_USE_PLATFORM_XCB_KHR
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 #include <vulkan/vulkan.hpp>
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
@@ -23,8 +23,8 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #include "StandAlone/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+//#define WIN32_LEAN_AND_MEAN
+//#include <Windows.h>
 
 #include <cassert>
 #include <vector>
@@ -35,7 +35,8 @@ public:
 	VulkanBenchmark()
 	{
 		// TODO(b/158231104): Other platforms
-		dl = std::make_unique<vk::DynamicLoader>("./vk_swiftshader.dll");
+		//dl = std::make_unique<vk::DynamicLoader>("./vk_swiftshader.dll");
+		dl = std::make_unique<vk::DynamicLoader>("libvk_swiftshader.so");
 		assert(dl->success());
 
 		PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl->getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
@@ -73,7 +74,7 @@ public:
 protected:
 	uint32_t getMemoryTypeIndex(uint32_t typeBits, vk::MemoryPropertyFlags properties)
 	{
-		vk::PhysicalDeviceMemoryProperties deviceMemoryProperties = vk::PhysicalDevice::GetMemoryProperties();
+		vk::PhysicalDeviceMemoryProperties deviceMemoryProperties = physicalDevice.getMemoryProperties();
 		for(uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
 		{
 			if((typeBits & 1) == 1)
@@ -113,7 +114,7 @@ public:
 		imageInfo.initialLayout = vk::ImageLayout::eGeneral;
 		imageInfo.usage = vk::ImageUsageFlagBits::eTransferDst;
 		imageInfo.samples = vk::SampleCountFlagBits::e4;
-		imageInfo.extent = { 1024, 1024, 1 };
+		imageInfo.extent = vk::Extent3D{ 1024, 1024, 1 };
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
 
@@ -223,7 +224,7 @@ class Window
 public:
 	Window(vk::Instance instance, vk::Extent2D windowSize)
 	{
-		moduleInstance = GetModuleHandle(NULL);
+		/*	moduleInstance = GetModuleHandle(NULL);
 
 		windowClass.cbSize = sizeof(WNDCLASSEX);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -268,15 +269,15 @@ public:
 		surfaceCreateInfo.hinstance = moduleInstance;
 		surfaceCreateInfo.hwnd = window;
 		surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
-		assert(surface);
+		assert(surface);*/
 	}
 
 	~Window()
 	{
-		instance.destroySurfaceKHR(surface);
+		/*	instance.destroySurfaceKHR(surface);
 
 		DestroyWindow(window);
-		UnregisterClass("Window", moduleInstance);
+		UnregisterClass("Window", moduleInstance);*/
 	}
 
 	vk::SurfaceKHR getSurface()
@@ -286,13 +287,13 @@ public:
 
 	void show()
 	{
-		ShowWindow(window, SW_SHOW);
+		//	ShowWindow(window, SW_SHOW);
 	}
 
 private:
-	HWND window;
-	HINSTANCE moduleInstance;
-	WNDCLASSEX windowClass;
+	//	HWND window;
+	//	HINSTANCE moduleInstance;
+	//	WNDCLASSEX windowClass;
 
 	const vk::Instance instance;
 	vk::SurfaceKHR surface;
@@ -419,7 +420,7 @@ public:
 			imageInfo.initialLayout = vk::ImageLayout::eGeneral;
 			imageInfo.usage = vk::ImageUsageFlagBits::eColorAttachment;
 			imageInfo.samples = vk::SampleCountFlagBits::e4;
-			imageInfo.extent = { width, height, 1 };
+			imageInfo.extent = vk::Extent3D{ width, height, 1 };
 			imageInfo.mipLevels = 1;
 			imageInfo.arrayLayers = 1;
 
@@ -970,5 +971,5 @@ static void Triangle(benchmark::State &state, bool multisample)
 		benchmark.renderFrame();
 	}
 }
-BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(Triangle, Hello, false)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(Triangle, Multisample, true)->Unit(benchmark::kMillisecond);
