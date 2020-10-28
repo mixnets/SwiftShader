@@ -306,6 +306,21 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 	return (supportedHandleTypes & handle_type_bit) != 0;
 }
 
+bool DeviceMemory::hasExternalImageProperties() const
+{
+	return external && external->hasExternalImageProperties();
+}
+
+
+int DeviceMemory::externalImageRowPitchBytes() const
+{
+	if(external)
+	{
+		return external->externalImageRowPitchBytes();
+	}
+	return 0;
+}
+
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
 VkResult DeviceMemory::exportFd(int *pFd) const
 {
