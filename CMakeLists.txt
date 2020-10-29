@@ -37,15 +37,154 @@ else()
     message(FATAL_ERROR "Platform is not supported")
 endif()
 
+<<<<<<< HEAD   (d0dfd2 Update SPIR-V Tools to)
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "aarch64")
+=======
+if (${SPIRV_TIMER_ENABLED})
+  add_definitions(-DSPIRV_TIMER_ENABLED)
+endif()
+
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  message(STATUS "No build type selected, default to Debug")
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+option(SKIP_SPIRV_TOOLS_INSTALL "Skip installation" ${SKIP_SPIRV_TOOLS_INSTALL})
+if(NOT ${SKIP_SPIRV_TOOLS_INSTALL})
+  set(ENABLE_SPIRV_TOOLS_INSTALL ON)
+endif()
+
+option(SPIRV_BUILD_COMPRESSION "Build SPIR-V compressing codec" OFF)
+if(SPIRV_BUILD_COMPRESSION)
+  message(FATAL_ERROR "SPIR-V compression codec has been removed from SPIR-V tools. "
+          "Please remove SPIRV_BUILD_COMPRESSION from your build options.")
+endif(SPIRV_BUILD_COMPRESSION)
+
+option(SPIRV_BUILD_FUZZER "Build spirv-fuzz" OFF)
+
+option(SPIRV_WERROR "Enable error on warning" ON)
+if(("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR (("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") AND (NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC")))
+  set(COMPILER_IS_LIKE_GNU TRUE)
+endif()
+if(${COMPILER_IS_LIKE_GNU})
+  set(SPIRV_WARNINGS -Wall -Wextra -Wnon-virtual-dtor -Wno-missing-field-initializers)
+
+  if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} -Wno-self-assign)
+  endif()
+
+  option(SPIRV_WARN_EVERYTHING "Enable -Weverything" ${SPIRV_WARN_EVERYTHING})
+  if(${SPIRV_WARN_EVERYTHING})
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      set(SPIRV_WARNINGS ${SPIRV_WARNINGS}
+        -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded)
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+      set(SPIRV_WARNINGS ${SPIRV_WARNINGS} -Wpedantic -pedantic-errors)
+>>>>>>> BRANCH (d50b54 Squashed 'third_party/SPIRV-Tools/' changes from 8a5500656..)
     else()
         set(ARCH "arm")
     endif()
+<<<<<<< HEAD   (d0dfd2 Update SPIR-V Tools to)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "mips*")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(ARCH "mips64el")
+=======
+  endif()
+
+  if(${SPIRV_WERROR})
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} -Werror)
+  endif()
+elseif(MSVC)
+  set(SPIRV_WARNINGS -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS /wd4800)
+
+  if(${SPIRV_WERROR})
+    set(SPIRV_WARNINGS ${SPIRV_WARNINGS} /WX)
+  endif()
+endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+
+option(SPIRV_COLOR_TERMINAL "Enable color terminal output" ON)
+if(${SPIRV_COLOR_TERMINAL})
+  add_definitions(-DSPIRV_COLOR_TERMINAL)
+endif()
+
+option(SPIRV_LOG_DEBUG "Enable excessive debug output" OFF)
+if(${SPIRV_LOG_DEBUG})
+  add_definitions(-DSPIRV_LOG_DEBUG)
+endif()
+
+if (DEFINED SPIRV_TOOLS_EXTRA_DEFINITIONS)
+  add_definitions(${SPIRV_TOOLS_EXTRA_DEFINITIONS})
+endif()
+
+# Library build setting definitions:
+#
+# * SPIRV_TOOLS_BUILD_STATIC - ON or OFF - Defaults to ON.
+#   If enabled the following targets will be created:
+#     ${SPIRV_TOOLS}-static - STATIC library.
+#                             Has full public symbol visibility.
+#     ${SPIRV_TOOLS}-shared - SHARED library.
+#                             Has default-hidden symbol visibility.
+#     ${SPIRV_TOOLS}        - will alias to one of above, based on BUILD_SHARED_LIBS.
+#   If disabled the following targets will be created:
+#     ${SPIRV_TOOLS}        - either STATIC or SHARED based on SPIRV_TOOLS_LIBRARY_TYPE.
+#                             Has full public symbol visibility.
+#     ${SPIRV_TOOLS}-shared - SHARED library.
+#                             Has default-hidden symbol visibility.
+#
+# * SPIRV_TOOLS_LIBRARY_TYPE - SHARED or STATIC.
+#   Specifies the library type used for building SPIRV-Tools libraries.
+#   Defaults to SHARED when BUILD_SHARED_LIBS=1, otherwise STATIC.
+#
+# * SPIRV_TOOLS_FULL_VISIBILITY - "${SPIRV_TOOLS}-static" or "${SPIRV_TOOLS}"
+#   Evaluates to the SPIRV_TOOLS target library name that has no hidden symbols.
+#   This is used by internal targets for accessing symbols that are non-public.
+#   Note this target provides no API stability guarantees.
+#
+# Ideally, all of these will go away - see https://github.com/KhronosGroup/SPIRV-Tools/issues/3909.
+option(SPIRV_TOOLS_BUILD_STATIC "Build ${SPIRV_TOOLS}-static target. ${SPIRV_TOOLS} will alias to ${SPIRV_TOOLS}-static or ${SPIRV_TOOLS}-shared based on BUILD_SHARED_LIBS" ON)
+if(SPIRV_TOOLS_BUILD_STATIC)
+  set(SPIRV_TOOLS_FULL_VISIBILITY ${SPIRV_TOOLS}-static)
+  set(SPIRV_TOOLS_LIBRARY_TYPE "STATIC")
+else(SPIRV_TOOLS_BUILD_STATIC)
+  set(SPIRV_TOOLS_FULL_VISIBILITY ${SPIRV_TOOLS})
+  if (NOT DEFINED SPIRV_TOOLS_LIBRARY_TYPE)
+      if(BUILD_SHARED_LIBS)
+        set(SPIRV_TOOLS_LIBRARY_TYPE "SHARED")
+      else()
+        set(SPIRV_TOOLS_LIBRARY_TYPE "STATIC")
+      endif()
+  endif()
+endif(SPIRV_TOOLS_BUILD_STATIC)
+
+function(spvtools_default_compile_options TARGET)
+  target_compile_options(${TARGET} PRIVATE ${SPIRV_WARNINGS})
+
+  if (${COMPILER_IS_LIKE_GNU})
+    target_compile_options(${TARGET} PRIVATE
+      -std=c++11 -fno-exceptions -fno-rtti)
+    target_compile_options(${TARGET} PRIVATE
+      -Wall -Wextra -Wno-long-long -Wshadow -Wundef -Wconversion
+      -Wno-sign-conversion)
+    # For good call stacks in profiles, keep the frame pointers.
+    if(NOT "${SPIRV_PERF}" STREQUAL "")
+      target_compile_options(${TARGET} PRIVATE -fno-omit-frame-pointer)
+    endif()
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      set(SPIRV_USE_SANITIZER "" CACHE STRING
+        "Use the clang sanitizer [address|memory|thread|...]")
+      if(NOT "${SPIRV_USE_SANITIZER}" STREQUAL "")
+        target_compile_options(${TARGET} PRIVATE
+          -fsanitize=${SPIRV_USE_SANITIZER})
+        set_target_properties(${TARGET} PROPERTIES
+          LINK_FLAGS -fsanitize=${SPIRV_USE_SANITIZER})
+      endif()
+      target_compile_options(${TARGET} PRIVATE
+         -ftemplate-depth=1024)
+>>>>>>> BRANCH (d50b54 Squashed 'third_party/SPIRV-Tools/' changes from 8a5500656..)
     else()
         set(ARCH "mipsel")
     endif()
