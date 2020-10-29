@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4244b8e6_0e25969f",
+        "filename": "src/Pipeline/SpirvShaderArithmetic.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-29T17:51:58Z",
+      "side": 1,
+      "message": "Just curious: what happens if you just call FlushDenorm once, on the result of the % operation?",
+      "range": {
+        "startLine": 427,
+        "startChar": 16,
+        "endLine": 427,
+        "endChar": 69
+      },
+      "revId": "d37506f4ba6a2ddd34864f1b1029216f129b1777",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea2ae31b_8a017c1b",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4202,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-29T17:51:58Z",
+      "side": 1,
+      "message": "This seems very verbose. Isn\u0027t this the same as (or close to):\n\nint32_t exponentMask \u003d 0x7F100000;\nint32_t signMask \u003d 0x80000000;\nInt4 vector \u003d As\u003cInt4\u003e(x);\nreturn As\u003cFloat4\u003e(vector \u0026 (CmpNE(vector \u0026 Int4(exponentMask), Int4(0)) | Int4(signMask)));\n\nNotes:\n- In your code, the constants are stored in 64 bit integers, but are used in 32 bit integer vectors, which means this requires a conversion. Not a big deal, though, but it can be avoided.\n- I think sign_extend does nothing here, as the result of the comparison is either 0 or 0xFFFFFFFF",
+      "range": {
+        "startLine": 4188,
+        "startChar": 0,
+        "endLine": 4202,
+        "endChar": 27
+      },
+      "revId": "d37506f4ba6a2ddd34864f1b1029216f129b1777",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e378caad_9803ef5c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 710,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-29T17:51:58Z",
+      "side": 1,
+      "message": "Is all of this being true necessary? It looks like the cl only performs float controls on Float32, no?",
+      "range": {
+        "startLine": 708,
+        "startChar": 0,
+        "endLine": 710,
+        "endChar": 61
+      },
+      "revId": "d37506f4ba6a2ddd34864f1b1029216f129b1777",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1de3b348_e14d04fe",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 717,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-10-29T17:51:58Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 715,
+        "startChar": 0,
+        "endLine": 717,
+        "endChar": 54
+      },
+      "revId": "d37506f4ba6a2ddd34864f1b1029216f129b1777",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
