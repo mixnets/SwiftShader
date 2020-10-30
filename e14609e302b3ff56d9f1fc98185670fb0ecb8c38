@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aa7b1a0_d8336009",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-10-30T13:36:44Z",
+      "side": 1,
+      "message": "Rubberstamp, assuming the Kokoro issues are due to SPIR-V Tools being out of sync.",
+      "revId": "e14609e302b3ff56d9f1fc98185670fb0ecb8c38",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
