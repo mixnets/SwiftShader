@@ -255,7 +255,7 @@ void Renderer::operator delete(void *mem)
 
 void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
 {
-	if(0)
+	if(1)
 	{
 		FunctionT<int(void)> function;
 		{
@@ -275,7 +275,7 @@ void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int co
 
 		auto f = (int (*)())routine.getEntry();
 
-		int result = f();
+		/*int result = */ f();
 
 		assert(result == 1);
 	}

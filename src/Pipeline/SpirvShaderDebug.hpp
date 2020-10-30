@@ -18,7 +18,7 @@
 // Enable this to print verbose debug messages as each SPIR-V instructon is
 // executed. Very handy for performing text diffs when the thread count is
 // reduced to 1 and execution is deterministic.
-#define SPIRV_SHADER_ENABLE_DBG 0
+#define SPIRV_SHADER_ENABLE_DBG 1
 
 // Enable this to write a GraphViz dot file containing a graph of the shader's
 // control flow to the given file path. Helpful for diagnosing control-flow

@@ -414,7 +414,7 @@ else()
         endif()
     endif()
 
-    # Disable pedanitc warnings
+    # Disable pedantic warnings
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         list(APPEND SWIFTSHADER_COMPILE_OPTIONS
             "-Wno-ignored-attributes"   # ignoring attributes on template argument 'X'
@@ -441,10 +441,12 @@ else()
             # versions of Clang. This demands checking that warnings added above
             # are spelled correctly and work as intended!
             "-Wno-unknown-warning-option"
+
+            "-Wno-missing-field-initializers"
         )
     endif()
 
-    # Remove xor, and, or and friends from the list of keywords, they are used
+    # Remove 'xor', 'and', 'or' and friends from the list of keywords, they are used
     # by Reactor
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS
         "-fno-operator-names"

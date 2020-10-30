@@ -81,11 +81,15 @@ void __msan_maybe_warning_8(u64, u32);
 //const int kMsanRetvalTlsSize = 800;
 extern __thread unsigned long long __msan_param_tls[/*kMsanRetvalTlsSize / sizeof(unsigned long long)*/];
 extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
+extern __thread unsigned long long __msan_va_arg_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
+extern __thread unsigned long long __msan_va_arg_overflow_size_tls;
 
 enum mymyalkjsfljkasfd
 {
 	my__msan_param_tls = 1,
-	my__msan_retval_tls
+	my__msan_retval_tls,
+	my__msan_va_arg_tls,
+	my__msan_va_arg_overflow_size_tls
 };
 
 static void *my__emutls_get_address(__emutls_control *control)
@@ -97,6 +101,9 @@ static void *my__emutls_get_address(__emutls_control *control)
 
 		case my__msan_param_tls: return reinterpret_cast<void *>(__msan_param_tls);
 		case my__msan_retval_tls: return reinterpret_cast<void *>(__msan_retval_tls);
+
+		case my__msan_va_arg_tls: return reinterpret_cast<void *>(__msan_va_arg_tls);
+		case my__msan_va_arg_overflow_size_tls: return reinterpret_cast<void *>(&__msan_va_arg_overflow_size_tls);
 		default:
 			assert(false);
 	}
@@ -560,6 +567,9 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("msan_maybe_warning_2", reinterpret_cast<void *>(__msan_maybe_warning_2));
 			functions.try_emplace("msan_maybe_warning_4", reinterpret_cast<void *>(__msan_maybe_warning_4));
 			functions.try_emplace("msan_maybe_warning_8", reinterpret_cast<void *>(__msan_maybe_warning_8));
+
+			functions.try_emplace("emutls_v.__msan_va_arg_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_va_arg_tls)));
+			functions.try_emplace("emutls_v.__msan_va_arg_overflow_size_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_va_arg_overflow_size_tls)));
 			//#endif
 		}
 	};

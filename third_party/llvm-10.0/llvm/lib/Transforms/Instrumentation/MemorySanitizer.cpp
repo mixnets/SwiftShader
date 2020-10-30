@@ -2540,6 +2540,9 @@ struct MemorySanitizerVisitor : public InstVisitor<MemorySanitizerVisitor> {
   /// We special-case intrinsics where this approach fails. See llvm.bswap
   /// handling as an example of that.
   bool handleUnknownIntrinsic(IntrinsicInst &I) {
+Intrinsic::ID id = I.getIntrinsicID() ;
+
+
     unsigned NumArgOperands = I.getNumArgOperands();
     if (NumArgOperands == 0)
       return false;

@@ -441,10 +441,13 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 			break;
 	}
 
+	rr::Print("Store1\n");
+
 	if(!atomic && order == std::memory_order_relaxed)
 	{
 		if(hasStaticEqualOffsets())
 		{
+			rr::Print("StoreStaticEqualOffsets\n");
 			If(AnyTrue(mask))
 			{
 				// All equal. One of these writes will win -- elect the winning lane.
@@ -460,6 +463,7 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		}
 		else if(hasStaticSequentialOffsets(sizeof(float)))
 		{
+			rr::Print("StoreStaticSequentialOffsets\n");
 			if(isStaticallyInBounds(sizeof(float), robustness))
 			{
 				// Pointer has no elements OOB, and the store is not atomic.
@@ -475,7 +479,25 @@ inline void SIMD::Pointer::Store(T val, OutOfBoundsBehavior robustness, Int mask
 		}
 		else
 		{
+			rr::Print("StoreScatter\n");
 			rr::Scatter(rr::Pointer<EL>(base), val, offs, mask, alignment);
+
+			for(int i = 0; i < SIMD::Width; i++)
+			{
+				rr::Print("a\n");
+				If(Extract(mask, i) != 0)
+				{
+					rr::Print("b\n");
+					auto offset = Extract(offs, i);
+					rr::Print("c\n");
+					auto v = Extract(val, i);
+					rr::Print("d\n");
+					auto o = rr::Pointer<EL>(&base[offset]);
+					rr::Print("e\n");
+					rr::Store(v, o, alignment, atomic, order);
+					rr::Print("f\n");
+				}
+			}
 		}
 	}
 	else

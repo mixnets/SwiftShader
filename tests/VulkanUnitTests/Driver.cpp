@@ -119,8 +119,8 @@ bool Driver::load(const char *path)
 	if(dll == nullptr)
 	{
 
-		const char *err = dlerror();
-		fprintf(stderr, "%s", err);
+		//	const char *err = dlerror();
+		//	fprintf(stderr, "%s", err);
 
 		return false;
 	}
