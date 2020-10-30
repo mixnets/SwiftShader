@@ -169,7 +169,20 @@ config("swiftshader_config") {
 
 source_set("vertex_routine_fuzzer") {
   sources = [
+<<<<<<< HEAD   (e6c949 Fix LLVM pointer element type)
     "tests/fuzzers/VertexRoutineFuzzer.cpp"
+=======
+    "include/spirv/1.2/GLSL.std.450.h",
+    "include/spirv/1.2/OpenCL.std.h",
+    "include/spirv/1.2/spirv.h",
+    "include/spirv/1.2/spirv.hpp",
+    "include/spirv/unified1/GLSL.std.450.h",
+    "include/spirv/unified1/NonSemanticClspvReflection.h",
+    "include/spirv/unified1/NonSemanticDebugPrintf.h",
+    "include/spirv/unified1/OpenCL.std.h",
+    "include/spirv/unified1/spirv.h",
+    "include/spirv/unified1/spirv.hpp",
+>>>>>>> BRANCH (e7b7d5 Squashed 'third_party/SPIRV-Headers/' changes from 979924c8b)
   ]
   if (is_win) {
     cflags = [
