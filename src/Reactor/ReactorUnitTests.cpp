@@ -93,8 +93,7 @@ TEST(ReactorUnitTests, Uninitialized)
 
 	auto routine = function("one");
 
-	int result = routine();
-	EXPECT_EQ(result, result);  // Anything is fine, just don't crash
+	EXPECT_DEATH(routine(), "MemorySanitizer: use-of-uninitialized-value");
 }
 
 TEST(ReactorUnitTests, Unreachable)
