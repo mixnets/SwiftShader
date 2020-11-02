@@ -36,6 +36,8 @@ __pragma(warning(push))
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 
+#include <dlfcn.h>
+
 //#include "msan_interface_internal.h"
 
 #ifdef _MSC_VER
@@ -69,6 +71,7 @@ struct __emutls_control;
 void *__emutls_get_address(__emutls_control *control);
 
 void __msan_warning_noreturn();
+//void __msan_warning_with_origin_noreturn(u32 origin);
 
 void __msan_maybe_warning_1(u8, u32);
 void __msan_maybe_warning_2(u16, u32);
@@ -555,6 +558,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			//	functions.emplace("tls_get_addr", reinterpret_cast<void *>(__tls_get_addr));
 
 			functions.try_emplace("msan_warning_noreturn", reinterpret_cast<void *>(__msan_warning_noreturn));
+			//functions.try_emplace("msan_warning_with_origin_noreturn", reinterpret_cast<void *>(__msan_warning_with_origin_noreturn));
 
 			functions.try_emplace("msan_maybe_warning_1", reinterpret_cast<void *>(__msan_maybe_warning_1));
 			functions.try_emplace("msan_maybe_warning_2", reinterpret_cast<void *>(__msan_maybe_warning_2));
@@ -584,6 +588,17 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 		for(auto symbol : set)
 		{
 			auto name = symbol.first;
+
+			void *res = dlsym(RTLD_DEFAULT, (*name).data());
+
+			if(res)
+			{
+				symbols[name] = llvm::JITEvaluatedSymbol(
+				    static_cast<llvm::JITTargetAddress>(reinterpret_cast<uintptr_t>(res)),
+				    llvm::JITSymbolFlags::Exported);
+
+				continue;
+			}
 
 			// Trim off any underscores from the start of the symbol. LLVM likes
 			// to append these on macOS.

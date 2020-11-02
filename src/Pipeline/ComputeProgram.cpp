@@ -219,6 +219,33 @@ void ComputeProgram::run(
 	auto invocationsPerWorkgroup = modes.WorkgroupSizeX * modes.WorkgroupSizeY * modes.WorkgroupSizeZ;
 	auto subgroupsPerWorkgroup = (invocationsPerWorkgroup + invocationsPerSubgroup - 1) / invocationsPerSubgroup;
 
+	if(0)
+	{
+		FunctionT<int()> function;
+		{
+			Int a;
+			Int z = 4;
+			Int q;
+			Int c;
+			Int p;
+			Bool b;
+
+			q += q;
+
+			If(b)
+			{
+				c = p;
+			}
+
+			Return(a + z + q + c);
+		}
+
+		auto routine = function("one");
+
+		volatile int result = routine();
+		if(result != 0) fprintf(stderr, "%d", result);
+		//EXPECT_EQ(result, result);  // Anything is fine, just don't crash
+	}
 	Data data;
 	data.descriptorSets = descriptorSets;
 	data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -304,6 +331,6 @@ void ComputeProgram::run(
 	{
 		vk::DescriptorSet::ContentsChanged(descriptorSetObjects, pipelineLayout, device);
 	}
-}
+}  // namespace sw
 
 }  // namespace sw
