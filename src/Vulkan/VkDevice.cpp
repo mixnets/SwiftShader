@@ -18,6 +18,7 @@
 #include "VkDescriptorSetLayout.hpp"
 #include "VkFence.hpp"
 #include "VkQueue.hpp"
+#include "VkStringify.hpp"
 #include "Debug/Context.hpp"
 #include "Debug/Server.hpp"
 #include "Device/Blitter.hpp"
@@ -25,6 +26,7 @@
 
 #include <chrono>
 #include <climits>
+#include <iostream>
 #include <new>  // Must #include this to use "placement new"
 
 namespace {
@@ -122,6 +124,31 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 	for(uint32_t i = 0; i < enabledExtensionCount; i++)
 	{
 		strncpy(extensions[i], pCreateInfo->ppEnabledExtensionNames[i], VK_MAX_EXTENSION_NAME_SIZE);
+	}
+
+	const VkBaseInStructure *curExt = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+	while(curExt != nullptr)
+	{
+		switch(curExt->sType)
+		{
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES:
+			{
+				auto vulkan12Features = reinterpret_cast<const VkPhysicalDeviceVulkan12Features *>(curExt);
+				uniformBufferStandardLayout = vulkan12Features->uniformBufferStandardLayout == VK_TRUE;
+			}
+			break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES:
+			{
+				auto ubslFeatures = reinterpret_cast<const VkPhysicalDeviceUniformBufferStandardLayoutFeatures *>(curExt);
+				uniformBufferStandardLayout = ubslFeatures->uniformBufferStandardLayout == VK_TRUE;
+			}
+			break;
+			default:
+				// libVulkan already logs unsupported extensions,
+				// so don't log other extensions here.
+				break;
+		}
+		curExt = curExt->pNext;
 	}
 
 	if(pCreateInfo->enabledLayerCount)
