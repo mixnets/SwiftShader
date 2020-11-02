@@ -22,7 +22,7 @@ namespace vk {
 
 std::atomic<uint32_t> ShaderModule::serialCounter(1);  // Start at 1, 0 is invalid shader.
 
-ShaderModule::ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *mem)
+ShaderModule::ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *mem, bool hasUniformBufferStandardLayout)
     : serialID(nextSerialID())
     , code(reinterpret_cast<uint32_t *>(mem))
 {
@@ -31,7 +31,10 @@ ShaderModule::ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *me
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 	spvtools::SpirvTools spirvTools(SPIRV_VERSION);
-	ASSERT(spirvTools.Validate(getCode()));  // The SPIR-V code passed to vkCreateShaderModule must be valid (b/158228522)
+	spvtools::ValidatorOptions validatorOptions;
+	validatorOptions.SetUniformBufferStandardLayout(hasUniformBufferStandardLayout);
+	std::vector<uint32_t> code = getCode();
+	ASSERT(spirvTools.Validate(code.data(), code.size(), validatorOptions));  // The SPIR-V code passed to vkCreateShaderModule must be valid (b/158228522)
 #endif
 }
 

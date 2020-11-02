@@ -29,7 +29,7 @@ namespace vk {
 class ShaderModule : public Object<ShaderModule, VkShaderModule>
 {
 public:
-	ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *mem);
+	ShaderModule(const VkShaderModuleCreateInfo *pCreateInfo, void *mem, bool hasUniformBufferStandardLayout);
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo *pCreateInfo);

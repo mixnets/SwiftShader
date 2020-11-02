@@ -67,6 +67,7 @@ public:
 	void getRequirements(VkMemoryDedicatedRequirements *requirements) const;
 	const VkPhysicalDeviceFeatures &getEnabledFeatures() const { return enabledFeatures; }
 	sw::Blitter *getBlitter() const { return blitter.get(); }
+	bool hasUniformBufferStandardLayout() const { return uniformBufferStandardLayout; }
 
 	void registerImageView(ImageView *imageView);
 	void unregisterImageView(ImageView *imageView);
@@ -182,6 +183,7 @@ private:
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
 	ExtensionName *extensions = nullptr;
 	const VkPhysicalDeviceFeatures enabledFeatures = {};
+	bool uniformBufferStandardLayout = false;
 
 	std::shared_ptr<marl::Scheduler> scheduler;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
