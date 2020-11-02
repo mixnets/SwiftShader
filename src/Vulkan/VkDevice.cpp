@@ -124,6 +124,31 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 		strncpy(extensions[i], pCreateInfo->ppEnabledExtensionNames[i], VK_MAX_EXTENSION_NAME_SIZE);
 	}
 
+	const VkBaseInStructure *curExt = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+	while(curExt != nullptr)
+	{
+		switch(curExt->sType)
+		{
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES:
+			{
+				auto vulkan12Features = reinterpret_cast<const VkPhysicalDeviceVulkan12Features *>(curExt);
+				uniformBufferStandardLayout = vulkan12Features->uniformBufferStandardLayout == VK_TRUE;
+			}
+			break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES:
+			{
+				auto ubslFeatures = reinterpret_cast<const VkPhysicalDeviceUniformBufferStandardLayoutFeatures *>(curExt);
+				uniformBufferStandardLayout = ubslFeatures->uniformBufferStandardLayout == VK_TRUE;
+			}
+			break;
+			default:
+				// libVulkan already logs unsupported extensions,
+				// so don't log other extensions here.
+				break;
+		}
+		curExt = curExt->pNext;
+	}
+
 	if(pCreateInfo->enabledLayerCount)
 	{
 		// "The ppEnabledLayerNames and enabledLayerCount members of VkDeviceCreateInfo are deprecated and their values must be ignored by implementations."
