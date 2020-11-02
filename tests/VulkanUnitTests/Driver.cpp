@@ -33,6 +33,8 @@
 #	error Unimplemented platform
 #endif
 
+#include <stdio.h>
+
 Driver::Driver()
     : vk_icdGetInstanceProcAddr(nullptr)
     , dll(nullptr){
@@ -116,6 +118,10 @@ bool Driver::load(const char *path)
 #endif
 	if(dll == nullptr)
 	{
+
+		const char *err = dlerror();
+		fprintf(stderr, "%s", err);
+
 		return false;
 	}
 

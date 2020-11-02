@@ -36,6 +36,8 @@ __pragma(warning(push))
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 
+#include <dlfcn.h>
+
 //#include "msan_interface_internal.h"
 
 #ifdef _MSC_VER
@@ -48,37 +50,15 @@ __pragma(warning(push))
 extern "C" void _chkstk();
 #endif
 
-#if __has_feature(memory_sanitizer)
-#	include "sanitizer/msan_interface.h"
-//#	include "msan/msan_interface_internal.h"
-#endif
-
 #ifdef __ARM_EABI__
 extern "C" signed
 __aeabi_idivmod();
 #endif
 
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long long u64;
+#if __has_feature(memory_sanitizer)
+//#	include "sanitizer/msan_interface.h"
 
-extern "C" {
-void __msan_init();
 struct __emutls_control;
-void *__emutls_get_address(__emutls_control *control);
-
-void __msan_warning_noreturn();
-
-void __msan_maybe_warning_1(u8, u32);
-void __msan_maybe_warning_2(u16, u32);
-void __msan_maybe_warning_4(u32, u32);
-void __msan_maybe_warning_8(u64, u32);
-}
-
-// These constants must be kept in sync with the ones in msan.h.
-//const int kMsanParamTlsSize = 800;
-//const int kMsanRetvalTlsSize = 800;
 extern __thread unsigned long long __msan_param_tls[/*kMsanRetvalTlsSize / sizeof(unsigned long long)*/];
 extern __thread unsigned long long __msan_retval_tls[/*kMsanParamTlsSize / sizeof(unsigned long long)*/];
 
@@ -101,6 +81,7 @@ static void *my__emutls_get_address(__emutls_control *control)
 			assert(false);
 	}
 }
+#endif
 
 namespace {
 
@@ -544,22 +525,9 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("sync_fetch_and_umin_4", reinterpret_cast<void *>(sync_fetch_and_umin_4));
 #endif
 			//#if __has_feature(memory_sanitizer)
-			//functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
-			functions.try_emplace("msan_init", reinterpret_cast<void *>(__msan_init));
 			functions.try_emplace("emutls_get_address", reinterpret_cast<void *>(my__emutls_get_address));
 			functions.try_emplace("emutls_v.__msan_retval_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_retval_tls)));
-			//	functions.try_emplace("msan_retval_tls", reinterpret_cast<void *>(__msan_retval_tls));
 			functions.try_emplace("emutls_v.__msan_param_tls", reinterpret_cast<void *>(static_cast<uintptr_t>(my__msan_param_tls)));
-			//	functions.try_emplace("msan_param_tls", reinterpret_cast<void *>(__msan_param_tls));
-
-			//	functions.emplace("tls_get_addr", reinterpret_cast<void *>(__tls_get_addr));
-
-			functions.try_emplace("msan_warning_noreturn", reinterpret_cast<void *>(__msan_warning_noreturn));
-
-			functions.try_emplace("msan_maybe_warning_1", reinterpret_cast<void *>(__msan_maybe_warning_1));
-			functions.try_emplace("msan_maybe_warning_2", reinterpret_cast<void *>(__msan_maybe_warning_2));
-			functions.try_emplace("msan_maybe_warning_4", reinterpret_cast<void *>(__msan_maybe_warning_4));
-			functions.try_emplace("msan_maybe_warning_8", reinterpret_cast<void *>(__msan_maybe_warning_8));
 			//#endif
 		}
 	};
@@ -595,22 +563,41 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 				symbols[name] = llvm::JITEvaluatedSymbol(
 				    static_cast<llvm::JITTargetAddress>(reinterpret_cast<uintptr_t>(it->second)),
 				    llvm::JITSymbolFlags::Exported);
+
+				continue;
 			}
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-			else
+
+#if __has_feature(memory_sanitizer)
+			// MemorySanitizer uses a dynamically linked runtime. Instrumented routines reference
+			// some symbols from this library. Look them up dynamically in the default namespace.
+			// Note this approach should not be used for other symbols, since they might not be
+			// visible (e.g. due to static linking), we may wish to provide an alternate
+			// implementation, and/or it would be a security vulnerability.
+
+			void *address = dlsym(RTLD_DEFAULT, (*symbol.first).data());
+
+			if(address)
 			{
-				missing += (missing.empty() ? "'" : ", '") + (*name).str() + "'";
+				symbols[name] = llvm::JITEvaluatedSymbol(
+				    static_cast<llvm::JITTargetAddress>(reinterpret_cast<uintptr_t>(address)),
+				    llvm::JITSymbolFlags::Exported);
+
+				continue;
 			}
-#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+#endif
+
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+			missing += (missing.empty() ? "'" : ", '") + (*name).str() + "'";
+#endif
 		}
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-		// Missing functions will likely make the module fail in exciting non-obvious ways.
+		// Missing functions will likely make the module fail in non-obvious ways.
 		if(!missing.empty())
 		{
 			WARN("Missing external functions: %s", missing.c_str());
 		}
-#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+#endif
 
 		if(symbols.empty())
 		{
