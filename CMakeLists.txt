@@ -510,8 +510,9 @@ else()
     set_cpp_flag("-fomit-frame-pointer" RELEASE)
 
     if(SWIFTSHADER_MSAN)
-        if(NOT DEFINED ENV{SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH})
+        list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DREACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION")
 
+        if(NOT DEFINED ENV{SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH})
             message(FATAL_ERROR " \n"
                     " MemorySanitizer usage requires an instrumented build of libc++.\n"
                     " Set the SWIFTSHADER_MSAN_INSTRUMENTED_LIBCXX_PATH environment variable to the\n"
