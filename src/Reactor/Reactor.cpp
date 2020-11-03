@@ -64,17 +64,49 @@ void rr::Config::Edit::apply(const std::vector<std::pair<ListEdit, T>> &edits, s
 	}
 }
 
-// Set of variables that do not have a stack location yet.
-thread_local std::unordered_set<const Variable *> *Variable::unmaterializedVariables = nullptr;
+thread_local Variable::UnmaterializedVariables *Variable::unmaterializedVariables = nullptr;
+
+void Variable::UnmaterializedVariables::add(const Variable *v)
+{
+	auto iter = std::find(variables.begin(), variables.end(), v);
+	if(iter == variables.end())
+	{
+		variables.push_back(v);
+	}
+}
+
+void Variable::UnmaterializedVariables::remove(const Variable *v)
+{
+	auto iter = std::find(variables.begin(), variables.end(), v);
+	if(iter != variables.end())
+	{
+		variables.erase(iter);
+	}
+}
+
+void Variable::UnmaterializedVariables::clear()
+{
+	variables.clear();
+}
+
+void Variable::UnmaterializedVariables::materializeAll()
+{
+	for(auto &v : variables)
+	{
+		v->materialize();
+	}
+
+	variables.clear();
+}
 
 Variable::Variable()
 {
-	unmaterializedVariables->emplace(this);
+	unmaterializedVariables->add(this);
 }
 
 Variable::~Variable()
 {
-	unmaterializedVariables->erase(this);
+	unmaterializedVariables->remove(this);
 }
 
 void Variable::materialize() const
@@ -139,12 +171,7 @@ Value *Variable::allocate() const
 
 void Variable::materializeAll()
 {
-	for(auto *var : *unmaterializedVariables)
-	{
-		var->materialize();
-	}
-
-	unmaterializedVariables->clear();
+	unmaterializedVariables->materializeAll();
 }
 
 void Variable::killUnmaterialized()
