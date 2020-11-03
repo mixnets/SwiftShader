@@ -972,22 +972,6 @@ Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatil
 			auto elTy = T(type);
 			ASSERT(V(ptr)->getType()->getContainedType(0) == elTy);
 
-			if(__has_feature(memory_sanitizer))
-			{
-				// Mark all memory writes as initialized by calling __msan_unpoison
-				// void __msan_unpoison(const volatile void *a, size_t size)
-				auto voidTy = llvm::Type::getVoidTy(jit->context);
-				auto i8Ty = llvm::Type::getInt8Ty(jit->context);
-				auto voidPtrTy = i8Ty->getPointerTo();
-				auto sizetTy = llvm::IntegerType::get(jit->context, sizeof(size_t) * 8);
-				auto funcTy = llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
-				auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
-				auto size = jit->module->getDataLayout().getTypeStoreSize(elTy);
-
-				jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(V(ptr), voidPtrTy),
-				                                 llvm::ConstantInt::get(sizetTy, size) });
-			}
-
 			if(!atomic)
 			{
 				jit->builder->CreateAlignedStore(V(value), V(ptr), alignment, isVolatile);
@@ -1077,36 +1061,6 @@ void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned in
 	auto align = llvm::ConstantInt::get(i32Ty, alignment);
 	auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::masked_store, { elVecTy, elVecPtrTy });
 	jit->builder->CreateCall(func, { V(val), V(ptr), align, i1Mask });
-
-	if(__has_feature(memory_sanitizer))
-	{
-		// Mark memory writes as initialized by calling __msan_unpoison
-		// void __msan_unpoison(const volatile void *a, size_t size)
-		auto voidTy = llvm::Type::getVoidTy(jit->context);
-		auto voidPtrTy = voidTy->getPointerTo();
-		auto sizetTy = llvm::IntegerType::get(jit->context, sizeof(size_t) * 8);
-		auto funcTy = llvm::FunctionType::get(voidTy, { voidPtrTy, sizetTy }, false);
-		auto func = jit->module->getOrInsertFunction("__msan_unpoison", funcTy);
-		auto size = jit->module->getDataLayout().getTypeStoreSize(llvm::cast<llvm::VectorType>(elVecTy)->getElementType());
-
-		for(unsigned i = 0; i < numEls; i++)
-		{
-			// Check mask for this element
-			auto idx = llvm::ConstantInt::get(i32Ty, i);
-			auto thenBlock = llvm::BasicBlock::Create(jit->context, "", jit->function);
-			auto mergeBlock = llvm::BasicBlock::Create(jit->context, "", jit->function);
-			jit->builder->CreateCondBr(jit->builder->CreateExtractElement(i1Mask, idx), thenBlock, mergeBlock);
-			jit->builder->SetInsertPoint(thenBlock);
-
-			// Insert __msan_unpoison call in conditional block
-			auto elPtr = jit->builder->CreateGEP(V(ptr), idx);
-			jit->builder->CreateCall(func, { jit->builder->CreatePointerCast(elPtr, voidPtrTy),
-			                                 llvm::ConstantInt::get(sizetTy, size) });
-
-			jit->builder->CreateBr(mergeBlock);
-			jit->builder->SetInsertPoint(mergeBlock);
-		}
-	}
 }
 
 static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Value *offsets, llvm::Value *mask, unsigned int alignment, bool zeroMaskedLanes)
