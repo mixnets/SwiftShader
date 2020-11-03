@@ -27,6 +27,12 @@ set(REACTOR_UNIT_TESTS_SRC_FILES
     ../../src/Reactor/ReactorUnitTests.cpp
 )
 
+# Enable instrumentation of Reactor routines for MemorySanitizer builds (LLVM backend).
+# TODO(b/155148722): Remove when unconditionally instrumenting for all build systems.
+if(REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION)
+    list(APPEND REACTOR_UNITTESTS_PRIVATE_COMPILE_DEFINITIONS "REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION")
+endif()
+
 add_executable(ReactorUnitTests
     ${REACTOR_UNIT_TESTS_SRC_FILES}
 )
@@ -34,6 +40,11 @@ add_executable(ReactorUnitTests
 set_target_properties(ReactorUnitTests PROPERTIES
     FOLDER "Tests"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+target_compile_definitions(ReactorUnitTests
+    PRIVATE
+        ${REACTOR_UNITTESTS_PRIVATE_COMPILE_DEFINITIONS}
 )
 
 target_compile_options(ReactorUnitTests
