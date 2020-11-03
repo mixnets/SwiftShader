@@ -490,6 +490,10 @@ static llvm::Function *createFunction(const char *name, llvm::Type *retTy, const
 	auto func = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, name, jit->module.get());
 	func->setDoesNotThrow();
 	func->setCallingConv(llvm::CallingConv::C);
+#if __has_feature(memory_sanitizer)
+	func->addFnAttr(llvm::Attribute::SanitizeMemory);
+#endif
+
 	return func;
 }
 
@@ -622,7 +626,8 @@ Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
 
 	if(arraySize)
 	{
-		declaration = new llvm::AllocaInst(T(type), 0, V(Nucleus::createConstantInt(arraySize)), align);
+		Value *size = (sizeof(size_t) == 8) ? Nucleus::createConstantLong(arraySize) : Nucleus::createConstantInt(arraySize);
+		declaration = new llvm::AllocaInst(T(type), 0, V(size), align);
 	}
 	else
 	{
@@ -1101,7 +1106,7 @@ void Nucleus::createMaskedStore(Value *ptr, Value *val, Value *mask, unsigned in
 			jit->builder->SetInsertPoint(mergeBlock);
 		}
 	}
-}  // namespace rr
+}
 
 static llvm::Value *createGather(llvm::Value *base, llvm::Type *elTy, llvm::Value *offsets, llvm::Value *mask, unsigned int alignment, bool zeroMaskedLanes)
 {
