@@ -19,6 +19,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <random>  // std::default_random_engine
 
 #if defined(_WIN32)
 #	ifndef WIN32_LEAN_AND_MEAN
@@ -89,8 +91,24 @@ void Variable::UnmaterializedVariables::clear()
 	variables.clear();
 }
 
+unsigned int MaterialiationSeed = []() {
+#if 0
+	// Output and return a random seed
+	//unsigned int r = std::chrono::system_clock::now().time_since_epoch().count();
+	//std::cout << "MaterialiationSeed: " << r << std::endl;
+	//return r;
+#else
+	// Return a known seed that crashes
+	//return 1910237574;
+	return 1922891932;
+#endif
+}();
+
 void Variable::UnmaterializedVariables::materializeAll()
 {
+	extern unsigned int MaterialiationSeed;
+	::std::shuffle(variables.begin(), variables.end(), std::default_random_engine(MaterialiationSeed));
+
 	for(auto &v : variables)
 	{
 		v->materialize();
