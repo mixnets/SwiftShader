@@ -186,7 +186,7 @@ TEST_F(SwiftShaderVulkanTest, UnsupportedDeviceExtension_DISABLED)
 		driver.vkDestroyDevice(device, nullptr);
 	}
 
-	driver.vkDestroyInstance(instance, nullptr); 
+	driver.vkDestroyInstance(instance, nullptr);
 }
 */
 std::vector<uint32_t> compileSpirv(const char *assembly)
@@ -1619,6 +1619,70 @@ TEST_P(SwiftShaderVulkanBufferToBufferComputeTest, LoopDivergentMergePhi)
               "OpReturn\n"
               "OpFunctionEnd\n";
 	// clang-format on
+
+	test(
+	    src.str(), [](uint32_t i) { return i; }, [](uint32_t i) { return i; });
+}
+
+TEST_P(SwiftShaderVulkanBufferToBufferComputeTest, LLVMCrash)
+{
+	std::stringstream src;
+	// clang-format off
+    src <<
+               "OpCapability Shader\n"
+               "OpExtension \"SPV_KHR_storage_buffer_storage_class\"\n"
+			"%1 = OpExtInstImport \"GLSL.std.450\"\n"
+               "OpMemoryModel Logical GLSL450\n"
+               "OpEntryPoint GLCompute %27 \"main\" %gl_GlobalInvocationID\n"
+               "OpDecorate %_runtimearr_uint ArrayStride 4\n"
+               "OpMemberDecorate %_struct_3 0 Offset 0\n"
+               "OpDecorate %_struct_3 Block\n"
+               "OpDecorate %gl_GlobalInvocationID BuiltIn GlobalInvocationId\n"
+               "OpDecorate %gl_WorkGroupSize BuiltIn WorkgroupSize\n"
+               "OpDecorate %19 DescriptorSet 0\n"
+               "OpDecorate %19 Binding 0\n"
+               "OpDecorate %20 DescriptorSet 0\n"
+               "OpDecorate %20 Binding 1\n"
+       "%uint = OpTypeInt 32 0\n"
+"%_runtimearr_uint = OpTypeRuntimeArray %uint\n"
+  "%_struct_3 = OpTypeStruct %_runtimearr_uint\n"
+"%_ptr_StorageBuffer__struct_3 = OpTypePointer StorageBuffer %_struct_3\n"
+     "%v3uint = OpTypeVector %uint 3\n"
+"%_ptr_Private_v3uint = OpTypePointer Private %v3uint\n"
+"%_ptr_Input_v3uint = OpTypePointer Input %v3uint\n"
+     "%uint_0 = OpConstant %uint 0\n"
+     "%uint_1 = OpConstant %uint 1\n"
+     "%uint_2 = OpConstant %uint 2\n"
+    "%uint_72 = OpConstant %uint 72\n"
+"%gl_WorkGroupSize = OpConstantComposite %v3uint %uint_1 %uint_1 %uint_1\n"
+"%_arr_uint_21 = OpTypeArray %uint %uint_1\n"
+"%_ptr_Workgroup__arr_uint_21 = OpTypePointer Workgroup %_arr_uint_21\n"
+       "%void = OpTypeVoid\n"
+         "%26 = OpTypeFunction %void\n"
+"%_ptr_Input_uint = OpTypePointer Input %uint\n"
+"%_ptr_Private_uint = OpTypePointer Private %uint\n"
+"%_ptr_StorageBuffer_uint = OpTypePointer StorageBuffer %uint\n"
+"%_ptr_Workgroup_uint = OpTypePointer Workgroup %uint\n"
+"%gl_GlobalInvocationID = OpVariable %_ptr_Input_v3uint Input\n"
+         "%18 = OpVariable %_ptr_Private_v3uint Private %gl_WorkGroupSize\n"
+         "%19 = OpVariable %_ptr_StorageBuffer__struct_3 StorageBuffer\n"
+         "%20 = OpVariable %_ptr_StorageBuffer__struct_3 StorageBuffer\n"
+         "%24 = OpVariable %_ptr_Workgroup__arr_uint_21 Workgroup\n"
+         "%27 = OpFunction %void None %26\n"
+         "%28 = OpLabel\n"
+         "%31 = OpAccessChain %_ptr_Input_uint %gl_GlobalInvocationID %uint_0\n"
+         "%32 = OpLoad %uint %31\n"
+         "%38 = OpAccessChain %_ptr_StorageBuffer_uint %19 %uint_0 %32\n"
+         "%39 = OpLoad %uint %38\n"
+         "%41 = OpAccessChain %_ptr_Workgroup_uint %24 %32\n"
+               "OpStore %41 %39\n"
+               "OpControlBarrier %uint_2 %uint_2 %uint_72\n"
+         "%44 = OpLoad %uint %41\n"
+         "%45 = OpAccessChain %_ptr_StorageBuffer_uint %20 %uint_0 %32\n"
+               "OpStore %45 %44\n"
+               "OpReturn\n"
+               "OpFunctionEnd\n"
+			;  // clang-format on
 
 	test(
 	    src.str(), [](uint32_t i) { return i; }, [](uint32_t i) { return i; });
