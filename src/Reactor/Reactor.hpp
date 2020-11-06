@@ -120,6 +120,8 @@ public:
 
 	virtual Type *getType() const = 0;
 
+	static void materializeAll();
+
 protected:
 	Variable();
 	Variable(const Variable &) = default;
@@ -127,7 +129,6 @@ protected:
 	virtual ~Variable();
 
 private:
-	static void materializeAll();
 	static void killUnmaterialized();
 
 	virtual Value *allocate() const;
