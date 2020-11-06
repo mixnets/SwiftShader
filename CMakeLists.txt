@@ -563,7 +563,8 @@ if(REACTOR_EMIT_DEBUG_INFO)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_DEBUG_INFO")
 endif()
 
-if(REACTOR_ENABLE_PRINT)
+# Enable Reactor Print() functionality in Debug/RelWithDebInfo builds or when explicitly enabled.
+if((CMAKE_BUILD_TYPE MATCHES "Deb") OR REACTOR_ENABLE_PRINT)
     list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-DENABLE_RR_PRINT")
 endif()
 
