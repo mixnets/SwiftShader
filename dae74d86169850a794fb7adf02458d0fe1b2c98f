@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ee655ac_d9159ed3",
+        "filename": "src/Reactor/ReactorUnitTests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3194,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-11-06T16:59:49Z",
+      "side": 1,
+      "message": "That won\u0027t continue to work after changes like this: https://swiftshader-review.googlesource.com/c/SwiftShader/+/29488\n\nI\u0027m fine with just calling materializeAll(). Kind of like a pragma which doesn\u0027t change program semantics. :)",
+      "range": {
+        "startLine": 3192,
+        "startChar": 3,
+        "endLine": 3194,
+        "endChar": 18
+      },
+      "revId": "dae74d86169850a794fb7adf02458d0fe1b2c98f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
