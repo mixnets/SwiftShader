@@ -169,6 +169,10 @@ public:
 	VkResult setDebugUtilsObjectName(const VkDebugUtilsObjectNameInfoEXT *pNameInfo);
 	VkResult setDebugUtilsObjectTag(const VkDebugUtilsObjectTagInfoEXT *pTagInfo);
 
+	// VK_EXT_device_memory_report
+	bool needToEmitDeviceMemoryReport();
+	void emitDeviceMemoryReport(const VkDeviceMemoryReportCallbackDataEXT *pCallbackData);
+
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
 	Queue *const queues = nullptr;
@@ -193,6 +197,9 @@ private:
 		std::shared_ptr<vk::dbg::Server> server;
 	} debugger;
 #endif  // ENABLE_VK_DEBUGGER
+
+	// VK_EXT_device_memory_report
+	std::vector<std::pair<PFN_vkDeviceMemoryReportCallbackEXT, void *>> deviceMemoryReportCallbacks;
 };
 
 using DispatchableDevice = DispatchableObject<Device, VkDevice>;
