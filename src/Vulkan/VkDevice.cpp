@@ -146,6 +146,22 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 		debugger.server = vk::dbg::Server::create(debugger.context, atoi(port));
 	}
 #endif  // ENABLE_VK_DEBUGGER
+
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	const VkBaseInStructure *extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+	while(extensionCreateInfo)
+	{
+		if(extensionCreateInfo->sType == VK_STRUCTURE_TYPE_DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT)
+		{
+			auto deviceMemoryReportCreateInfo = reinterpret_cast<const VkDeviceDeviceMemoryReportCreateInfoEXT *>(pCreateInfo->pNext);
+			if(deviceMemoryReportCreateInfo->pfnUserCallback != nullptr)
+			{
+				deviceMemoryReportCallbacks.emplace_back(deviceMemoryReportCreateInfo->pfnUserCallback, deviceMemoryReportCreateInfo->pUserData);
+			}
+		}
+		extensionCreateInfo = extensionCreateInfo->pNext;
+	}
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 }
 
 void Device::destroy(const VkAllocationCallbacks *pAllocator)
@@ -374,5 +390,20 @@ void Device::contentsChanged(ImageView *imageView)
 		}
 	}
 }
+
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+bool Device::needToEmitDeviceMemoryReport()
+{
+	return !deviceMemoryReportCallbacks.empty();
+}
+
+void Device::emitDeviceMemoryReport(const VkDeviceMemoryReportCallbackDataEXT *pCallbackData)
+{
+	for(const auto &callback : deviceMemoryReportCallbacks)
+	{
+		callback.first(pCallbackData, callback.second);
+	}
+}
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 }  // namespace vk

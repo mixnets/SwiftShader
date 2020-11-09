@@ -169,6 +169,11 @@ public:
 	VkResult setDebugUtilsObjectName(const VkDebugUtilsObjectNameInfoEXT *pNameInfo);
 	VkResult setDebugUtilsObjectTag(const VkDebugUtilsObjectTagInfoEXT *pTagInfo);
 
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	bool needToEmitDeviceMemoryReport();
+	void emitDeviceMemoryReport(const VkDeviceMemoryReportCallbackDataEXT *pCallbackData);
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
+
 private:
 	PhysicalDevice *const physicalDevice = nullptr;
 	Queue *const queues = nullptr;
@@ -193,6 +198,10 @@ private:
 		std::shared_ptr<vk::dbg::Server> server;
 	} debugger;
 #endif  // ENABLE_VK_DEBUGGER
+
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	std::vector<std::pair<PFN_vkDeviceMemoryReportCallbackEXT, void *>> deviceMemoryReportCallbacks;
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 };
 
 using DispatchableDevice = DispatchableObject<Device, VkDevice>;
