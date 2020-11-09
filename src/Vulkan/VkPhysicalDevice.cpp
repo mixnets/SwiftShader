@@ -218,6 +218,12 @@ static void getPhysicalDeviceShaderSubgroupExtendedTypesFeatures(T *features)
 }
 
 template<typename T>
+static void getPhysicalDeviceDeviceMemoryReportFeaturesEXT(T *features)
+{
+	features->deviceMemoryReport = VK_TRUE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_FALSE;
@@ -319,6 +325,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 				break;
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR:
 				getPhysicalDeviceShaderSubgroupExtendedTypesFeatures(reinterpret_cast<VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures *>(curExtension));
+				break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT:
+				getPhysicalDeviceDeviceMemoryReportFeaturesEXT(reinterpret_cast<VkPhysicalDeviceDeviceMemoryReportFeaturesEXT *>(curExtension));
 				break;
 			default:
 				LOG_TRAP("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());

@@ -389,6 +389,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 	{ VK_EXT_PROVOKING_VERTEX_EXTENSION_NAME, VK_EXT_PROVOKING_VERTEX_SPEC_VERSION },
 	{ VK_GOOGLE_SAMPLER_FILTERING_PRECISION_EXTENSION_NAME, VK_GOOGLE_SAMPLER_FILTERING_PRECISION_SPEC_VERSION },
 	{ VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME, VK_EXT_DEPTH_RANGE_UNRESTRICTED_SPEC_VERSION },
+	{ VK_EXT_DEVICE_MEMORY_REPORT_EXTENSION_NAME, VK_EXT_DEVICE_MEMORY_REPORT_SPEC_VERSION },
 	// Vulkan 1.2 promoted extensions
 	{ VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME, VK_KHR_IMAGE_FORMAT_LIST_SPEC_VERSION },
 	{ VK_KHR_IMAGELESS_FRAMEBUFFER_EXTENSION_NAME, VK_KHR_IMAGELESS_FRAMEBUFFER_SPEC_VERSION },
@@ -762,6 +763,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				const VkPhysicalDeviceImagelessFramebufferFeaturesKHR *imagelessFramebufferFeatures = reinterpret_cast<const VkPhysicalDeviceImagelessFramebufferFeaturesKHR *>(extensionCreateInfo);
 				// Always provide Imageless Framebuffers
 				(void)imagelessFramebufferFeatures->imagelessFramebuffer;
+			}
+			break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT:
+			{
+				const VkPhysicalDeviceDeviceMemoryReportFeaturesEXT *deviceMemoryReportFeatures = reinterpret_cast<const VkPhysicalDeviceDeviceMemoryReportFeaturesEXT *>(extensionCreateInfo);
+				(void)deviceMemoryReportFeatures->deviceMemoryReport;
 			}
 			break;
 			default:
