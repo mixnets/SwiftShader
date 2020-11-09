@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+#include "VkDeviceMemoryExternalAndroid.hpp"
 
-#	include "VkDeviceMemoryExternalAndroid.hpp"
+#include "VkDestroy.hpp"
+#include "VkFormat.hpp"
+#include "VkObject.hpp"
+#include "VkPhysicalDevice.hpp"
+#include "VkStringify.hpp"
+#include "System/Debug.hpp"
 
-#	include "System/Debug.hpp"
-#	include "VkDestroy.hpp"
-#	include "VkFormat.hpp"
-#	include "VkObject.hpp"
-#	include "VkPhysicalDevice.hpp"
-#	include "VkStringify.hpp"
-
-#	include <android/hardware_buffer.h>
-#	include <vndk/hardware_buffer.h>
+#include <android/hardware_buffer.h>
+#include <ui/GraphicBuffer.h>
+#include <vndk/hardware_buffer.h>
 
 namespace {
 
@@ -496,4 +495,9 @@ int AHardwareBufferExternalMemory::externalImageRowPitchBytes() const
 	return GetBytesFromAHBFormat(ahbDesc.format) * ahbDesc.stride;
 }
 
-#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+uint64_t AHardwareBufferExternalMemory::getMemoryObjectId() const
+{
+	return android::GraphicBuffer::fromAHardwareBuffer(ahb)->getId();
+}
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT

@@ -15,15 +15,13 @@
 #ifndef VK_DEVICE_MEMORY_EXTERNAL_ANDROID_HPP_
 #define VK_DEVICE_MEMORY_EXTERNAL_ANDROID_HPP_
 
-#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+#include "VkBuffer.hpp"
+#include "VkDevice.hpp"
+#include "VkDeviceMemory.hpp"
+#include "VkDeviceMemoryExternalBase.hpp"
+#include "VkImage.hpp"
 
-#	include "VkBuffer.hpp"
-#	include "VkDevice.hpp"
-#	include "VkDeviceMemory.hpp"
-#	include "VkDeviceMemoryExternalBase.hpp"
-#	include "VkImage.hpp"
-
-#	include <android/hardware_buffer.h>
+#include <android/hardware_buffer.h>
 
 class AHardwareBufferExternalMemory : public vk::DeviceMemory::ExternalBase
 {
@@ -72,6 +70,14 @@ public:
 	bool hasExternalImageProperties() const override final { return true; }
 	int externalImageRowPitchBytes() const override final;
 
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	bool isImport() const override
+	{
+		return allocateInfo.importAhb;
+	}
+	uint64_t getMemoryObjectId() const override;
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
+
 private:
 	VkResult importAndroidHardwareBuffer(struct AHardwareBuffer *buffer, void **pBuffer);
 	VkResult allocateAndroidHardwareBuffer(void **pBuffer);
@@ -84,5 +90,4 @@ private:
 	AllocateInfo allocateInfo;
 };
 
-#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
 #endif  // VK_DEVICE_MEMORY_EXTERNAL_ANDROID_HPP_

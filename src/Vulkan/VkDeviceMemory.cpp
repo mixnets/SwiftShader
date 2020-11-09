@@ -235,6 +235,9 @@ DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem,
 
 void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
 {
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	device->emitDeviceMemoryReport(external->isImport() ? VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_UNIMPORT_EXT : VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_FREE_EXT, 0 /* memoryObjectId */, 0 /* size */, VK_OBJECT_TYPE_DEVICE_MEMORY, (uint64_t)(void *)VkDeviceMemory(*this));
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 	if(buffer)
 	{
 		external->deallocate(buffer, size);
@@ -253,16 +256,25 @@ size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo *p
 
 VkResult DeviceMemory::allocate()
 {
+	VkResult result = VK_SUCCESS;
 	if(size > MAX_MEMORY_ALLOCATION_SIZE)
 	{
-		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+		result = VK_ERROR_OUT_OF_DEVICE_MEMORY;
 	}
-
-	VkResult result = VK_SUCCESS;
-	if(!buffer)
+	else if(!buffer)
 	{
 		result = external->allocate(size, &buffer);
 	}
+#if SWIFTSHADER_DEVICE_MEMORY_REPORT
+	if(result == VK_SUCCESS)
+	{
+		device->emitDeviceMemoryReport(external->isImport() ? VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_IMPORT_EXT : VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_ALLOCATE_EXT, external->getMemoryObjectId(), size, VK_OBJECT_TYPE_DEVICE_MEMORY, (uint64_t)(void *)VkDeviceMemory(*this));
+	}
+	else
+	{
+		device->emitDeviceMemoryReport(VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_ALLOCATION_FAILED_EXT, 0 /* memoryObjectId */, size, VK_OBJECT_TYPE_DEVICE_MEMORY, 0 /* objectHandle */);
+	}
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 	return result;
 }
 

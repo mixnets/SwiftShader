@@ -596,6 +596,7 @@ cc_defaults {
                 "libcutils",
                 "libsync",
                 "liblog",
+                "libui",
                 "libutils",
             ],
             static_libs: [
