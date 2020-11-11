@@ -69,11 +69,7 @@ public:
 }  // namespace vk
 
 #if SWIFTSHADER_EXTERNAL_SEMAPHORE_OPAQUE_FD
-#	if defined(__linux__) || defined(__ANDROID__)
-#		include "VkSemaphoreExternalLinux.hpp"
-#	else
-#		error "Missing VK_KHR_external_semaphore_fd implementation for this platform!"
-#	endif
+#	include "VkSemaphoreExternalLinux.hpp"
 #elif VK_USE_PLATFORM_FUCHSIA
 #	include "VkSemaphoreExternalFuchsia.hpp"
 #endif
