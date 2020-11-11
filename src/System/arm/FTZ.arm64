@@ -1,0 +1,26 @@
+# ARM64/aarch64 has 32 general purpose 64-bit registers. The caller
+# must save any registers in the x9-x15 range, so we shouldn't have
+# to interact with the stack in this file.
+
+disableFTZ:
+    # Load FPCR register into w9 (x9 is 64 bits, w9 is the lower 32 bits of that)
+    mrs w9,FPCR
+    # Clear bit 24
+    bic w9,w9,#0x01000000
+    # Write w9 to FPCR
+    msr FPCR,w9
+    # Return
+    mov pc,lr
+    
+
+enableFTZ:
+    # Push w9 and link register on the stack
+    stmfd sp!,{w9,lr}
+    # Load FPCR register into w9
+    mrs w9,FPCR
+    # Set bit 24
+    orr w9,w9,#0x01000000
+    # Write w9 to FPCR
+    msr FPCR,w9
+    # Return
+    mov pc,lr

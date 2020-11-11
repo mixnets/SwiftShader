@@ -1,0 +1,26 @@
+# ARM32/aarch32 has 16 general purpose 32-bit registers, none of them are
+# scratch regs. So this file has to interact with the stack 
+
+disableFTZ:
+    # Push r4 and link register on the stack
+    stmfd sp!,{r4,lr}
+    # Load FPSCR register into r4
+    mrs r4,FPSCR
+    # Clear bit 24
+    bic r4,r4,#0x01000000
+    # Write r4 to FPCR
+    msr FPSCR,r4
+    # Pop r4 and lr, but put lr into pc reg. This is effectively a return 
+    ldmfd sp!,{r4,pc}
+
+enableFTZ:
+    # Push r4 and link register on the stack
+    stmfd sp!,{r4,lr}
+    # Load FPSCR register into r4
+    mrs r4,FPSCR
+    # Set bit 24
+    orr r4,r4,#0x01000000
+    # Write r4 to FPSCR
+    msr FPSCR,r4
+    # Load r4 and lr, but put lr into pc reg. This is effectively a return 
+    ldmfd sp!,{r4,pc}
