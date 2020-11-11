@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ce2795f_e8f22c6c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-11-11T19:03:47Z",
+      "side": 1,
+      "message": "Thanks, merged into into my change",
+      "revId": "5ae768c867fe7cfefa4c64b3bcede237d2469d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46f2b5ff_6bdc39f6",
+        "filename": "src/Reactor/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-11-11T19:03:47Z",
+      "side": 1,
+      "message": "So these are also set for any dependents of ReactorLLVM?",
+      "range": {
+        "startLine": 128,
+        "startChar": 3,
+        "endLine": 129,
+        "endChar": 45
+      },
+      "revId": "5ae768c867fe7cfefa4c64b3bcede237d2469d8b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
