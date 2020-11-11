@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SOURCE_FUZZ_TRANSFORMATION_ADD_RELAXED_DECORATION_H_
-#define SOURCE_FUZZ_TRANSFORMATION_ADD_RELAXED_DECORATION_H_
+#ifndef SPIRV_TOOLS_TRANSFORMATION_ADD_RELAXED_DECORATION_H
+#define SPIRV_TOOLS_TRANSFORMATION_ADD_RELAXED_DECORATION_H
 
 #include "source/fuzz/protobufs/spirvfuzz_protobufs.h"
 #include "source/fuzz/transformation.h"
@@ -45,8 +45,6 @@ class TransformationAddRelaxedDecoration : public Transformation {
   void Apply(opt::IRContext* ir_context,
              TransformationContext* transformation_context) const override;
 
-  std::unordered_set<uint32_t> GetFreshIds() const override;
-
   protobufs::Transformation ToMessage() const override;
 
   // Returns true if and only if |opcode| is the opcode of an instruction
@@ -61,4 +59,4 @@ class TransformationAddRelaxedDecoration : public Transformation {
 }  // namespace fuzz
 }  // namespace spvtools
 
-#endif  // SOURCE_FUZZ_TRANSFORMATION_ADD_RELAXED_DECORATION_H_
+#endif  // SPIRV_TOOLS_TRANSFORMATION_ADD_RELAXED_DECORATION_H

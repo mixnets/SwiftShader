@@ -45,7 +45,7 @@ std::string spvInstructionBinaryToText(const spv_target_env env,
 #	define SPIRV_SHADER_DBG(...)
 #endif  // SPIRV_SHADER_ENABLE_DBG
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 namespace rr {
 template<>
 struct PrintValue::Ty<sw::SpirvShader::Object::ID>

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SOURCE_FUZZ_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H_
-#define SOURCE_FUZZ_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H_
+#ifndef SPIRV_TOOLS_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H
+#define SPIRV_TOOLS_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H
 
 #include "source/fuzz/protobufs/spirvfuzz_protobufs.h"
 #include "source/fuzz/transformation.h"
@@ -51,8 +51,6 @@ class TransformationReplaceCopyObjectWithStoreLoad : public Transformation {
   void Apply(opt::IRContext* ir_context,
              TransformationContext* transformation_context) const override;
 
-  std::unordered_set<uint32_t> GetFreshIds() const override;
-
   protobufs::Transformation ToMessage() const override;
 
  private:
@@ -62,4 +60,4 @@ class TransformationReplaceCopyObjectWithStoreLoad : public Transformation {
 }  // namespace fuzz
 }  // namespace spvtools
 
-#endif  // SOURCE_FUZZ_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H_
+#endif  // SPIRV_TOOLS_TRANSFORMATION_REPLACE_COPY_OBJECT_WITH_STORE_LOAD_H

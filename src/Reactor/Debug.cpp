@@ -111,19 +111,19 @@ void logv_android(Level level, const char *msg)
 	switch(level)
 	{
 		case Level::Debug:
-			__android_log_write(ANDROID_LOG_DEBUG, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "xSwiftShader", msg);
 			break;
 		case Level::Info:
-			__android_log_write(ANDROID_LOG_INFO, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "xSwiftShader", msg);
 			break;
 		case Level::Warn:
-			__android_log_write(ANDROID_LOG_WARN, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "xSwiftShader", msg);
 			break;
 		case Level::Error:
-			__android_log_write(ANDROID_LOG_ERROR, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "xSwiftShader", msg);
 			break;
 		case Level::Fatal:
-			__android_log_write(ANDROID_LOG_FATAL, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "xSwiftShader", msg);
 			break;
 	}
 }
@@ -147,10 +147,10 @@ void logv_std(Level level, const char *msg)
 
 void logv(Level level, const char *format, va_list args)
 {
-	if(static_cast<int>(level) < static_cast<int>(Level::REACTOR_LOGGING_LEVEL))
-	{
-		return;
-	}
+	//	if(static_cast<int>(level) < static_cast<int>(Level::REACTOR_LOGGING_LEVEL))
+	//	{
+	//		return;
+	//	}
 
 #ifndef SWIFTSHADER_DISABLE_TRACE
 	char buffer[2048];

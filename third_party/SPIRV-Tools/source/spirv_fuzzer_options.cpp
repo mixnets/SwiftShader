@@ -25,8 +25,7 @@ spv_fuzzer_options_t::spv_fuzzer_options_t()
       replay_range(0),
       replay_validation_enabled(false),
       shrinker_step_limit(kDefaultStepLimit),
-      fuzzer_pass_validation_enabled(false),
-      all_passes_enabled(false) {}
+      fuzzer_pass_validation_enabled(false) {}
 
 SPIRV_TOOLS_EXPORT spv_fuzzer_options spvFuzzerOptionsCreate() {
   return new spv_fuzzer_options_t();
@@ -60,9 +59,4 @@ SPIRV_TOOLS_EXPORT void spvFuzzerOptionsSetShrinkerStepLimit(
 SPIRV_TOOLS_EXPORT void spvFuzzerOptionsEnableFuzzerPassValidation(
     spv_fuzzer_options options) {
   options->fuzzer_pass_validation_enabled = true;
-}
-
-SPIRV_TOOLS_EXPORT void spvFuzzerOptionsEnableAllPasses(
-    spv_fuzzer_options options) {
-  options->all_passes_enabled = true;
 }

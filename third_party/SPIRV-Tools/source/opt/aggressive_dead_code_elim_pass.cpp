@@ -22,7 +22,6 @@
 
 #include "source/cfa.h"
 #include "source/latest_version_glsl_std_450_header.h"
-#include "source/opt/eliminate_dead_functions_util.h"
 #include "source/opt/iterator.h"
 #include "source/opt/reflect.h"
 #include "source/spirv_constant.h"
@@ -533,17 +532,6 @@ bool AggressiveDCEPass::AggressiveDCE(Function* func) {
       AddToWorklist(dec);
     }
 
-    // Add DebugScope and DebugInlinedAt for |liveInst| to the work list.
-    if (liveInst->GetDebugScope().GetLexicalScope() != kNoDebugScope) {
-      auto* scope = get_def_use_mgr()->GetDef(
-          liveInst->GetDebugScope().GetLexicalScope());
-      AddToWorklist(scope);
-    }
-    if (liveInst->GetDebugInlinedAt() != kNoInlinedAt) {
-      auto* inlined_at =
-          get_def_use_mgr()->GetDef(liveInst->GetDebugInlinedAt());
-      AddToWorklist(inlined_at);
-    }
     worklist_.pop();
   }
 
@@ -708,8 +696,8 @@ Pass::Status AggressiveDCEPass::ProcessImpl() {
   // been marked, it is safe to remove dead global values.
   modified |= ProcessGlobalValues();
 
-  assert((to_kill_.empty() || modified) &&
-         "A dead instruction was identified, but no change recorded.");
+  // Sanity check.
+  assert(to_kill_.size() == 0 || modified);
 
   // Kill all dead instructions.
   for (auto inst : to_kill_) {
@@ -739,14 +727,20 @@ bool AggressiveDCEPass::EliminateDeadFunctions() {
        funcIter != get_module()->end();) {
     if (live_function_set.count(&*funcIter) == 0) {
       modified = true;
-      funcIter =
-          eliminatedeadfunctionsutil::EliminateFunction(context(), &funcIter);
+      EliminateFunction(&*funcIter);
+      funcIter = funcIter.Erase();
     } else {
       ++funcIter;
     }
   }
 
   return modified;
+}
+
+void AggressiveDCEPass::EliminateFunction(Function* func) {
+  // Remove all of the instruction in the function body
+  func->ForEachInst([this](Instruction* inst) { context()->KillInst(inst); },
+                    true);
 }
 
 bool AggressiveDCEPass::ProcessGlobalValues() {
@@ -956,7 +950,6 @@ void AggressiveDCEPass::InitExtensions() {
       "SPV_AMD_gpu_shader_half_float",
       "SPV_KHR_shader_draw_parameters",
       "SPV_KHR_subgroup_vote",
-      "SPV_KHR_8bit_storage",
       "SPV_KHR_16bit_storage",
       "SPV_KHR_device_group",
       "SPV_KHR_multiview",

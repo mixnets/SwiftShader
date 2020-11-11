@@ -13,9 +13,6 @@
 // limitations under the License.
 
 #include "source/fuzz/transformation_replace_copy_memory_with_load_store.h"
-
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -68,11 +65,11 @@ TEST(TransformationReplaceCopyMemoryWithLoadStoreTest, BasicScenarios) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto instruction_descriptor_invalid_1 =
       MakeInstructionDescriptor(5, SpvOpStore, 0);
@@ -97,19 +94,15 @@ TEST(TransformationReplaceCopyMemoryWithLoadStoreTest, BasicScenarios) {
       20, instruction_descriptor_valid_1);
   ASSERT_TRUE(transformation_valid_1.IsApplicable(context.get(),
                                                   transformation_context));
-  ApplyAndCheckFreshIds(transformation_valid_1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation_valid_1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation_valid_2 = TransformationReplaceCopyMemoryWithLoadStore(
       21, instruction_descriptor_valid_2);
   ASSERT_TRUE(transformation_valid_2.IsApplicable(context.get(),
                                                   transformation_context));
-  ApplyAndCheckFreshIds(transformation_valid_2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation_valid_2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_transformation = R"(
                OpCapability Shader

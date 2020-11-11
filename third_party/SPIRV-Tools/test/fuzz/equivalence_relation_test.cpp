@@ -14,10 +14,9 @@
 
 #include <set>
 
-#include "source/fuzz/equivalence_relation.h"
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "source/fuzz/equivalence_relation.h"
 
 namespace spvtools {
 namespace fuzz {

@@ -38,7 +38,7 @@ std::vector<uint32_t> preprocessSpirv(
     VkSpecializationInfo const *specializationInfo,
     bool optimize)
 {
-	spvtools::Optimizer opt{ vk::SPIRV_VERSION };
+	spvtools::Optimizer opt{ SPV_ENV_VULKAN_1_1 };
 
 	opt.SetMessageConsumer([](spv_message_level_t level, const char *source, const spv_position_t &position, const char *message) {
 		switch(level)
@@ -79,7 +79,7 @@ std::vector<uint32_t> preprocessSpirv(
 
 	if(false)
 	{
-		spvtools::SpirvTools core(vk::SPIRV_VERSION);
+		spvtools::SpirvTools core(SPV_ENV_VULKAN_1_1);
 		std::string preOpt;
 		core.Disassemble(code, &preOpt, SPV_BINARY_TO_TEXT_OPTION_NONE);
 		std::string postOpt;

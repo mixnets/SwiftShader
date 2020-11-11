@@ -847,7 +847,7 @@ private:
 	std::vector<std::unique_ptr<uint8_t[]>> constantData;
 };
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 void VPrintf(const std::vector<Value *> &vals)
 {
 	sz::Call(::function, ::basicBlock, Ice::IceType_i32, reinterpret_cast<const void *>(rr::DebugPrintf), V(vals), true);
@@ -903,13 +903,10 @@ Nucleus::Nucleus()
 		::routine = elfMemory;
 	}
 
-#if !__has_feature(memory_sanitizer)
-	// thread_local variables in shared libraries are initialized at load-time,
-	// but this is not observed by MemorySanitizer if the loader itself was not
-	// instrumented, leading to false-positive unitialized variable errors.
+#if defined(_WIN32)  // TODO(b/157525646): Initialization of thread_local variables in shared libraries may not be supported on all platforms.
 	ASSERT(Variable::unmaterializedVariables == nullptr);
 #endif
-	Variable::unmaterializedVariables = new Variable::UnmaterializedVariables{};
+	Variable::unmaterializedVariables = new std::unordered_set<const Variable *>();
 }
 
 Nucleus::~Nucleus()

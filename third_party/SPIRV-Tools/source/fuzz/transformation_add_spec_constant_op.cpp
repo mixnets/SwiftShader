@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "source/fuzz/transformation_add_spec_constant_op.h"
-
 #include <utility>
 
 #include "source/fuzz/fuzzer_util.h"
+#include "source/fuzz/transformation_add_spec_constant_op.h"
 
 namespace spvtools {
 namespace fuzz {
@@ -46,8 +45,7 @@ bool TransformationAddSpecConstantOp::IsApplicable(
   auto clone = fuzzerutil::CloneIRContext(ir_context);
   ApplyImpl(clone.get());
   return fuzzerutil::IsValid(clone.get(),
-                             transformation_context.GetValidatorOptions(),
-                             fuzzerutil::kSilentMessageConsumer);
+                             transformation_context.GetValidatorOptions());
 }
 
 void TransformationAddSpecConstantOp::Apply(
@@ -80,11 +78,6 @@ protobufs::Transformation TransformationAddSpecConstantOp::ToMessage() const {
   protobufs::Transformation result;
   *result.mutable_add_spec_constant_op() = message_;
   return result;
-}
-
-std::unordered_set<uint32_t> TransformationAddSpecConstantOp::GetFreshIds()
-    const {
-  return {message_.fresh_id()};
 }
 
 }  // namespace fuzz

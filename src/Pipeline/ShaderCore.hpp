@@ -526,7 +526,7 @@ inline rr::RValue<T> OrAll(rr::RValue<T> const &mask)
 
 }  // namespace sw
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 namespace rr {
 template<>
 struct PrintValue::Ty<sw::Vector4f>

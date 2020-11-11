@@ -43,7 +43,6 @@ set(SPIRV_TOOLS_OPT_SOURCES
   eliminate_dead_functions_pass.h
   eliminate_dead_functions_util.h
   eliminate_dead_members_pass.h
-  empty_pass.h
   feature_manager.h
   fix_storage_class.h
   flatten_decoration_pass.h
@@ -90,6 +89,7 @@ set(SPIRV_TOOLS_OPT_SOURCES
   pass.h
   pass_manager.h
   private_to_local_pass.h
+  process_lines_pass.h
   propagator.h
   reduce_load_size.h
   redundancy_elimination.h
@@ -196,6 +196,7 @@ set(SPIRV_TOOLS_OPT_SOURCES
   pass.cpp
   pass_manager.cpp
   private_to_local_pass.cpp
+  process_lines_pass.cpp
   propagator.cpp
   reduce_load_size.cpp
   redundancy_elimination.cpp
@@ -225,14 +226,14 @@ set(SPIRV_TOOLS_OPT_SOURCES
   wrap_opkill.cpp
 )
 
-if(MSVC AND (NOT ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")))
+if(MSVC)
   # Enable parallel builds across four cores for this lib
   add_definitions(/MP4)
 endif()
 
 spvtools_pch(SPIRV_TOOLS_OPT_SOURCES pch_source_opt)
 
-add_library(SPIRV-Tools-opt ${SPIRV_TOOLS_LIBRARY_TYPE} ${SPIRV_TOOLS_OPT_SOURCES})
+add_library(SPIRV-Tools-opt ${SPIRV_TOOLS_OPT_SOURCES})
 
 spvtools_default_compile_options(SPIRV-Tools-opt)
 target_include_directories(SPIRV-Tools-opt
@@ -244,7 +245,7 @@ target_include_directories(SPIRV-Tools-opt
 )
 # We need the assembling and disassembling functionalities in the main library.
 target_link_libraries(SPIRV-Tools-opt
-  PUBLIC ${SPIRV_TOOLS_FULL_VISIBILITY})
+  PUBLIC ${SPIRV_TOOLS})
 
 set_property(TARGET SPIRV-Tools-opt PROPERTY FOLDER "SPIRV-Tools libraries")
 spvtools_check_symbol_exports(SPIRV-Tools-opt)

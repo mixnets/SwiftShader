@@ -14,7 +14,6 @@
 
 #include "source/fuzz/transformation_replace_boolean_constant_with_constant_binary.h"
 
-#include "gtest/gtest.h"
 #include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/id_use_descriptor.h"
 #include "source/fuzz/instruction_descriptor.h"
@@ -161,11 +160,13 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   std::vector<protobufs::IdUseDescriptor> uses_of_true = {
       MakeIdUseDescriptor(41, MakeInstructionDescriptor(44, SpvOpStore, 12), 1),
       MakeIdUseDescriptor(41, MakeInstructionDescriptor(46, SpvOpLogicalOr, 0),
@@ -291,28 +292,24 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
 
   ASSERT_TRUE(replace_true_with_double_comparison.IsApplicable(
       context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replace_true_with_double_comparison, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replace_true_with_double_comparison.Apply(context.get(),
+                                            &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(replace_true_with_uint32_comparison.IsApplicable(
       context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replace_true_with_uint32_comparison, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replace_true_with_uint32_comparison.Apply(context.get(),
+                                            &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(replace_false_with_float_comparison.IsApplicable(
       context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replace_false_with_float_comparison, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replace_false_with_float_comparison.Apply(context.get(),
+                                            &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(replace_false_with_sint64_comparison.IsApplicable(
       context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replace_false_with_sint64_comparison, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replace_false_with_sint64_comparison.Apply(context.get(),
+                                             &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after = R"(
                OpCapability Shader
@@ -425,8 +422,7 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
     context->module()->AddGlobalValue(MakeUnique<opt::Instruction>(
         context.get(), SpvOpConstant, 6, 200, operands));
     fuzzerutil::UpdateModuleIdBound(context.get(), 200);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    ASSERT_TRUE(IsValid(env, context.get()));
     // The transformation is not applicable because %200 is NaN.
     ASSERT_FALSE(TransformationReplaceBooleanConstantWithConstantBinary(
                      uses_of_true[0], 11, 200, SpvOpFOrdLessThan, 300)
@@ -442,8 +438,7 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
     context->module()->AddGlobalValue(MakeUnique<opt::Instruction>(
         context.get(), SpvOpConstant, 6, 201, operands));
     fuzzerutil::UpdateModuleIdBound(context.get(), 201);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    ASSERT_TRUE(IsValid(env, context.get()));
     // Even though the double constant %11 is less than the infinity %201, the
     // transformation is restricted to only apply to finite values.
     ASSERT_FALSE(TransformationReplaceBooleanConstantWithConstantBinary(
@@ -467,8 +462,7 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
     context->module()->AddGlobalValue(MakeUnique<opt::Instruction>(
         context.get(), SpvOpConstant, 12, 203, operands));
     fuzzerutil::UpdateModuleIdBound(context.get(), 203);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    ASSERT_TRUE(IsValid(env, context.get()));
     // Even though the negative infinity at %203 is less than the positive
     // infinity %202, the transformation is restricted to only apply to finite
     // values.
@@ -541,11 +535,13 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto use_of_true_in_if = MakeIdUseDescriptor(
       13, MakeInstructionDescriptor(10, SpvOpBranchConditional, 0), 0);
   auto use_of_false_in_while = MakeIdUseDescriptor(
@@ -558,15 +554,13 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
 
   ASSERT_TRUE(
       replacement_1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replacement_1, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replacement_1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   ASSERT_TRUE(
       replacement_2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(replacement_2, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  replacement_2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after = R"(
                OpCapability Shader
@@ -657,18 +651,20 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest, OpPhi) {
   const auto consumer = nullptr;
   const auto context =
       BuildModule(env, consumer, reference_shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto instruction_descriptor = MakeInstructionDescriptor(14, SpvOpPhi, 0);
   auto id_use_descriptor = MakeIdUseDescriptor(8, instruction_descriptor, 0);
   auto transformation = TransformationReplaceBooleanConstantWithConstantBinary(
       id_use_descriptor, 6, 7, SpvOpULessThan, 15);
   ASSERT_TRUE(
       transformation.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation, context.get(), &transformation_context);
+  transformation.Apply(context.get(), &transformation_context);
 
   std::string variant_shader = R"(
                OpCapability Shader
@@ -702,8 +698,7 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest, OpPhi) {
                OpFunctionEnd
   )";
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(IsEqual(env, variant_shader, context.get()));
 }
 
@@ -735,11 +730,13 @@ TEST(TransformationReplaceBooleanConstantWithConstantBinaryTest,
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   ASSERT_FALSE(TransformationReplaceBooleanConstantWithConstantBinary(
                    MakeIdUseDescriptor(
                        9, MakeInstructionDescriptor(50, SpvOpVariable, 0), 1),

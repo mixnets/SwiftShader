@@ -13,11 +13,8 @@
 // limitations under the License.
 
 #include "source/fuzz/fuzzer.h"
-#include "source/fuzz/replayer.h"
-
-#include "gtest/gtest.h"
 #include "source/fuzz/fuzzer_util.h"
-#include "source/fuzz/pseudo_random_generator.h"
+#include "source/fuzz/replayer.h"
 #include "source/fuzz/uniform_buffer_element_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -1590,7 +1587,7 @@ const std::string kTestShader6 = R"(
           %2 = OpFunction %132 None %133
         %164 = OpLabel
         %184 = OpLoad %15 %40
-        %213 = OpLoad %38 %41
+	%213 = OpLoad %38 %41
         %216 = OpSampledImage %45 %184 %213
         %217 = OpImageSampleImplicitLod %76 %216 %112 Bias %55
                OpReturn
@@ -1642,53 +1639,43 @@ void RunFuzzerAndReplayer(const std::string& shader,
     });
   }
 
-  std::vector<Fuzzer::RepeatedPassStrategy> strategies{
-      Fuzzer::RepeatedPassStrategy::kSimple,
-      Fuzzer::RepeatedPassStrategy::kLoopedWithRecommendations,
-      Fuzzer::RepeatedPassStrategy::kRandomWithRecommendations};
-  uint32_t strategy_index = 0;
   for (uint32_t seed = initial_seed; seed < initial_seed + num_runs; seed++) {
+    std::vector<uint32_t> fuzzer_binary_out;
+    protobufs::TransformationSequence fuzzer_transformation_sequence_out;
+
     spvtools::ValidatorOptions validator_options;
-    // Every 4th time we run the fuzzer, enable all fuzzer passes.
-    bool enable_all_passes = (seed % 4) == 0;
-    auto fuzzer_result =
-        Fuzzer(env, kConsoleMessageConsumer, binary_in, initial_facts,
-               donor_suppliers, MakeUnique<PseudoRandomGenerator>(seed),
-               enable_all_passes, strategies[strategy_index], true,
-               validator_options)
-            .Run();
+    Fuzzer fuzzer(env, seed, true, validator_options);
+    fuzzer.SetMessageConsumer(kConsoleMessageConsumer);
+    auto fuzzer_result_status =
+        fuzzer.Run(binary_in, initial_facts, donor_suppliers,
+                   &fuzzer_binary_out, &fuzzer_transformation_sequence_out);
+    ASSERT_EQ(Fuzzer::FuzzerResultStatus::kComplete, fuzzer_result_status);
+    ASSERT_TRUE(t.Validate(fuzzer_binary_out));
 
-    // Cycle the repeated pass strategy so that we try a different one next time
-    // we run the fuzzer.
-    strategy_index =
-        (strategy_index + 1) % static_cast<uint32_t>(strategies.size());
+    std::vector<uint32_t> replayer_binary_out;
+    protobufs::TransformationSequence replayer_transformation_sequence_out;
 
-    ASSERT_EQ(Fuzzer::FuzzerResultStatus::kComplete, fuzzer_result.status);
-    ASSERT_TRUE(t.Validate(fuzzer_result.transformed_binary));
-
-    auto replayer_result =
-        Replayer(
-            env, kConsoleMessageConsumer, binary_in, initial_facts,
-            fuzzer_result.applied_transformations,
-            static_cast<uint32_t>(
-                fuzzer_result.applied_transformations.transformation_size()),
-            false, validator_options)
-            .Run();
+    Replayer replayer(env, false, validator_options);
+    replayer.SetMessageConsumer(kConsoleMessageConsumer);
+    auto replayer_result_status = replayer.Run(
+        binary_in, initial_facts, fuzzer_transformation_sequence_out,
+        static_cast<uint32_t>(
+            fuzzer_transformation_sequence_out.transformation_size()),
+        &replayer_binary_out, &replayer_transformation_sequence_out);
     ASSERT_EQ(Replayer::ReplayerResultStatus::kComplete,
-              replayer_result.status);
+              replayer_result_status);
 
     // After replaying the transformations applied by the fuzzer, exactly those
     // transformations should have been applied, and the binary resulting from
     // replay should be identical to that which resulted from fuzzing.
     std::string fuzzer_transformations_string;
     std::string replayer_transformations_string;
-    fuzzer_result.applied_transformations.SerializeToString(
+    fuzzer_transformation_sequence_out.SerializeToString(
         &fuzzer_transformations_string);
-    replayer_result.applied_transformations.SerializeToString(
+    replayer_transformation_sequence_out.SerializeToString(
         &replayer_transformations_string);
     ASSERT_EQ(fuzzer_transformations_string, replayer_transformations_string);
-    ASSERT_TRUE(IsEqual(env, fuzzer_result.transformed_binary,
-                        replayer_result.transformed_module.get()));
+    ASSERT_EQ(fuzzer_binary_out, replayer_binary_out);
   }
 }
 

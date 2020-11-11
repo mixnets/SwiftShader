@@ -42,8 +42,8 @@ bool TransformationSetLoopControl::IsApplicable(
     return false;
   }
 
-  // We assert that the transformation does not try to set any meaningless bits
-  // of the loop control mask.
+  // We sanity-check that the transformation does not try to set any meaningless
+  // bits of the loop control mask.
   uint32_t all_loop_control_mask_bits_set =
       SpvLoopControlUnrollMask | SpvLoopControlDontUnrollMask |
       SpvLoopControlDependencyInfiniteMask |
@@ -211,10 +211,6 @@ bool TransformationSetLoopControl::PeelCountIsSupported(
     default:
       return true;
   }
-}
-
-std::unordered_set<uint32_t> TransformationSetLoopControl::GetFreshIds() const {
-  return std::unordered_set<uint32_t>();
 }
 
 }  // namespace fuzz

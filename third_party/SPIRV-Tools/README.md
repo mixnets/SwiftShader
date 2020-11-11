@@ -349,7 +349,10 @@ option, like so:
 
 ```sh
 # In <spirv-dir> (the SPIRV-Tools repo root):
-git clone --depth=1 --branch v3.13.0 https://github.com/protocolbuffers/protobuf external/protobuf
+git clone https://github.com/protocolbuffers/protobuf external/protobuf
+pushd external/protobuf
+git checkout v3.7.1
+popd
 
 # In your build directory:
 cmake [-G <platform-generator>] <spirv-dir> -DSPIRV_BUILD_FUZZER=ON

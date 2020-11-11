@@ -14,7 +14,7 @@
 
 #include "source/fuzz/force_render_red.h"
 
-#include "source/fuzz/fact_manager/fact_manager.h"
+#include "source/fuzz/fact_manager.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "source/fuzz/protobufs/spirvfuzz_protobufs.h"
 #include "source/fuzz/transformation_context.h"
@@ -25,6 +25,9 @@
 #include "source/opt/types.h"
 #include "source/util/make_unique.h"
 #include "tools/util/cli_consumer.h"
+
+#include <algorithm>
+#include <utility>
 
 namespace spvtools {
 namespace fuzz {
@@ -150,7 +153,7 @@ MakeConstantUniformReplacement(opt::IRContext* ir_context,
                           MakeInstructionDescriptor(greater_than_instruction,
                                                     SpvOpFOrdGreaterThan, 0),
                           in_operand_index),
-      fact_manager.GetUniformDescriptorsForConstant(constant_id)[0],
+      fact_manager.GetUniformDescriptorsForConstant(ir_context, constant_id)[0],
       ir_context->TakeNextId(), ir_context->TakeNextId());
 }
 
@@ -182,11 +185,12 @@ bool ForceRenderRed(
   assert(ir_context);
 
   // Set up a fact manager with any given initial facts.
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(ir_context.get()), validator_options);
+  FactManager fact_manager;
   for (auto& fact : initial_facts.fact()) {
-    transformation_context.GetFactManager()->MaybeAddFact(fact);
+    fact_manager.AddFact(fact, ir_context.get());
   }
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
 
   auto entry_point_function =
       FindFragmentShaderEntryPoint(ir_context.get(), message_consumer);
@@ -212,7 +216,6 @@ bool ForceRenderRed(
     auto new_exit_block = MakeUnique<opt::BasicBlock>(std::move(label));
     new_exit_block->AddInstruction(MakeUnique<opt::Instruction>(
         ir_context.get(), SpvOpReturn, 0, 0, opt::Instruction::OperandList()));
-    new_exit_block->SetParent(entry_point_function);
     entry_point_function->AddBasicBlock(std::move(new_exit_block));
   }
 
@@ -264,8 +267,7 @@ bool ForceRenderRed(
 
     auto float_type_id = ir_context->get_type_mgr()->GetId(float_type);
     auto types_for_which_uniforms_are_known =
-        transformation_context.GetFactManager()
-            ->GetTypesForWhichUniformValuesAreKnown();
+        fact_manager.GetTypesForWhichUniformValuesAreKnown();
 
     // Check whether we have any float uniforms.
     if (std::find(types_for_which_uniforms_are_known.begin(),
@@ -274,8 +276,8 @@ bool ForceRenderRed(
       // We have at least one float uniform; let's see whether we have at least
       // two.
       auto available_constants =
-          transformation_context.GetFactManager()
-              ->GetConstantsAvailableFromUniformsForType(float_type_id);
+          fact_manager.GetConstantsAvailableFromUniformsForType(
+              ir_context.get(), float_type_id);
       if (available_constants.size() > 1) {
         // Grab the float constants associated with the first two known float
         // uniforms.
@@ -321,13 +323,13 @@ bool ForceRenderRed(
               id_guaranteed_to_be_false, greater_than_operands));
 
           first_greater_then_operand_replacement =
-              MakeConstantUniformReplacement(
-                  ir_context.get(), *transformation_context.GetFactManager(),
-                  smaller_constant, id_guaranteed_to_be_false, 0);
+              MakeConstantUniformReplacement(ir_context.get(), fact_manager,
+                                             smaller_constant,
+                                             id_guaranteed_to_be_false, 0);
           second_greater_then_operand_replacement =
-              MakeConstantUniformReplacement(
-                  ir_context.get(), *transformation_context.GetFactManager(),
-                  larger_constant, id_guaranteed_to_be_false, 1);
+              MakeConstantUniformReplacement(ir_context.get(), fact_manager,
+                                             larger_constant,
+                                             id_guaranteed_to_be_false, 1);
         }
       }
     }

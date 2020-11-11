@@ -407,14 +407,5 @@ bool TransformationAccessChain::ValidIndexToComposite(
   return true;
 }
 
-std::unordered_set<uint32_t> TransformationAccessChain::GetFreshIds() const {
-  std::unordered_set<uint32_t> result = {message_.fresh_id()};
-  for (auto& fresh_ids_for_clamping : message_.fresh_ids_for_clamping()) {
-    result.insert(fresh_ids_for_clamping.first());
-    result.insert(fresh_ids_for_clamping.second());
-  }
-  return result;
-}
-
 }  // namespace fuzz
 }  // namespace spvtools

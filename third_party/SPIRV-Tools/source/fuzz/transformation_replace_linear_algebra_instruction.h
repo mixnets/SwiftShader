@@ -43,8 +43,6 @@ class TransformationReplaceLinearAlgebraInstruction : public Transformation {
   void Apply(opt::IRContext* ir_context,
              TransformationContext* transformation_context) const override;
 
-  std::unordered_set<uint32_t> GetFreshIds() const override;
-
   protobufs::Transformation ToMessage() const override;
 
   // Returns the number of ids needed to apply the transformation.
@@ -53,10 +51,6 @@ class TransformationReplaceLinearAlgebraInstruction : public Transformation {
 
  private:
   protobufs::TransformationReplaceLinearAlgebraInstruction message_;
-
-  // Replaces an OpTranspose instruction.
-  void ReplaceOpTranspose(opt::IRContext* ir_context,
-                          opt::Instruction* instruction) const;
 
   // Replaces an OpVectorTimesScalar instruction.
   void ReplaceOpVectorTimesScalar(opt::IRContext* ir_context,
@@ -77,10 +71,6 @@ class TransformationReplaceLinearAlgebraInstruction : public Transformation {
   // Replaces an OpMatrixTimesMatrix instruction.
   void ReplaceOpMatrixTimesMatrix(opt::IRContext* ir_context,
                                   opt::Instruction* instruction) const;
-
-  // Replaces an OpOuterProduct instruction.
-  void ReplaceOpOuterProduct(opt::IRContext* ir_context,
-                             opt::Instruction* instruction) const;
 
   // Replaces an OpDot instruction.
   void ReplaceOpDot(opt::IRContext* ir_context,

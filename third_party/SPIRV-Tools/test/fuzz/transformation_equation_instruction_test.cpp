@@ -14,8 +14,6 @@
 
 #include "source/fuzz/transformation_equation_instruction.h"
 
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -48,11 +46,13 @@ TEST(TransformationEquationInstructionTest, SignedNegate) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -102,19 +102,15 @@ TEST(TransformationEquationInstructionTest, SignedNegate) {
       14, SpvOpSNegate, {7}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       15, SpvOpSNegate, {14}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(15, {}), MakeDataDescriptor(7, {})));
@@ -168,11 +164,13 @@ TEST(TransformationEquationInstructionTest, LogicalNot) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -195,19 +193,15 @@ TEST(TransformationEquationInstructionTest, LogicalNot) {
       14, SpvOpLogicalNot, {7}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       15, SpvOpLogicalNot, {14}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(15, {}), MakeDataDescriptor(7, {})));
@@ -262,11 +256,13 @@ TEST(TransformationEquationInstructionTest, AddSubNegate1) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -295,19 +291,15 @@ TEST(TransformationEquationInstructionTest, AddSubNegate1) {
       14, SpvOpIAdd, {15, 16}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       19, SpvOpISub, {14, 16}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(15, {}), MakeDataDescriptor(19, {})));
 
@@ -315,10 +307,8 @@ TEST(TransformationEquationInstructionTest, AddSubNegate1) {
       20, SpvOpISub, {14, 15}, return_instruction);
   ASSERT_TRUE(
       transformation3.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation3, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation3.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(20, {}), MakeDataDescriptor(16, {})));
 
@@ -326,19 +316,15 @@ TEST(TransformationEquationInstructionTest, AddSubNegate1) {
       22, SpvOpISub, {16, 14}, return_instruction);
   ASSERT_TRUE(
       transformation4.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation4, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation4.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation5 = TransformationEquationInstruction(
       24, SpvOpSNegate, {22}, return_instruction);
   ASSERT_TRUE(
       transformation5.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation5, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation5.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(24, {}), MakeDataDescriptor(15, {})));
 
@@ -394,11 +380,13 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -406,19 +394,15 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
       14, SpvOpISub, {15, 16}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       17, SpvOpIAdd, {14, 16}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(17, {}), MakeDataDescriptor(15, {})));
 
@@ -426,10 +410,8 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
       18, SpvOpIAdd, {16, 14}, return_instruction);
   ASSERT_TRUE(
       transformation3.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation3, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation3.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(17, {}), MakeDataDescriptor(18, {})));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
@@ -439,19 +421,15 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
       19, SpvOpISub, {14, 15}, return_instruction);
   ASSERT_TRUE(
       transformation4.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation4, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation4.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation5 = TransformationEquationInstruction(
       20, SpvOpSNegate, {19}, return_instruction);
   ASSERT_TRUE(
       transformation5.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation5, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation5.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(20, {}), MakeDataDescriptor(16, {})));
 
@@ -459,10 +437,8 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
       21, SpvOpISub, {14, 19}, return_instruction);
   ASSERT_TRUE(
       transformation6.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation6, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation6.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(21, {}), MakeDataDescriptor(15, {})));
 
@@ -470,19 +446,15 @@ TEST(TransformationEquationInstructionTest, AddSubNegate2) {
       22, SpvOpISub, {14, 18}, return_instruction);
   ASSERT_TRUE(
       transformation7.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation7, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation7.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation8 = TransformationEquationInstruction(
       23, SpvOpSNegate, {22}, return_instruction);
   ASSERT_TRUE(
       transformation8.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation8, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation8.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
   ASSERT_TRUE(transformation_context.GetFactManager()->IsSynonymous(
       MakeDataDescriptor(23, {}), MakeDataDescriptor(16, {})));
 
@@ -550,11 +522,13 @@ TEST(TransformationEquationInstructionTest, Bitcast) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   // Too many operands.
@@ -602,8 +576,7 @@ TEST(TransformationEquationInstructionTest, Bitcast) {
         fresh_id, SpvOpBitcast, {operand_id}, insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
   std::string expected_shader = R"(
@@ -674,11 +647,13 @@ TEST(TransformationEquationInstructionTest,
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   // Scalar floating-point type does not exist.
@@ -721,11 +696,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist1) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   // Scalar integral type does not exist.
@@ -764,11 +741,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist2) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -776,16 +755,14 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist2) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(51, SpvOpBitcast, {20},
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
   std::string expected_shader = R"(
@@ -839,11 +816,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist3) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -851,16 +830,14 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist3) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(51, SpvOpBitcast, {20},
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
   std::string expected_shader = R"(
@@ -913,11 +890,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist4) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -925,16 +904,14 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist4) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
   ASSERT_FALSE(
       TransformationEquationInstruction(51, SpvOpBitcast, {20}, insert_before)
           .IsApplicable(context.get(), transformation_context));
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string expected_shader = R"(
                OpCapability Shader
@@ -984,11 +961,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist5) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -996,16 +975,14 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist5) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
   ASSERT_FALSE(
       TransformationEquationInstruction(51, SpvOpBitcast, {20}, insert_before)
           .IsApplicable(context.get(), transformation_context));
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string expected_shader = R"(
                OpCapability Shader
@@ -1057,11 +1034,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist6) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -1069,20 +1048,17 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist6) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(51, SpvOpBitcast, {20},
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string expected_shader = R"(
                OpCapability Shader
@@ -1137,11 +1113,13 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist7) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto insert_before = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   {
@@ -1149,20 +1127,17 @@ TEST(TransformationEquationInstructionTest, BitcastResultTypeIntDoesNotExist7) {
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(51, SpvOpBitcast, {20},
                                                      insert_before);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string expected_shader = R"(
                OpCapability Shader
@@ -1212,11 +1187,13 @@ TEST(TransformationEquationInstructionTest, Miscellaneous1) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -1224,19 +1201,15 @@ TEST(TransformationEquationInstructionTest, Miscellaneous1) {
       522, SpvOpISub, {113, 113}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       570, SpvOpIAdd, {522, 113}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_transformation = R"(
                OpCapability Shader
@@ -1284,11 +1257,13 @@ TEST(TransformationEquationInstructionTest, Miscellaneous2) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -1296,19 +1271,15 @@ TEST(TransformationEquationInstructionTest, Miscellaneous2) {
       522, SpvOpISub, {113, 113}, return_instruction);
   ASSERT_TRUE(
       transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   auto transformation2 = TransformationEquationInstruction(
       570, SpvOpIAdd, {522, 113}, return_instruction);
   ASSERT_TRUE(
       transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  transformation2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_transformation = R"(
                OpCapability Shader
@@ -1370,11 +1341,13 @@ TEST(TransformationEquationInstructionTest, ConversionInstructions) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -1413,68 +1386,59 @@ TEST(TransformationEquationInstructionTest, ConversionInstructions) {
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(51, SpvOpConvertSToF, {10},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(52, SpvOpConvertUToF, {16},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(53, SpvOpConvertUToF, {11},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(58, SpvOpConvertSToF, {18},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(59, SpvOpConvertUToF, {19},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(60, SpvOpConvertSToF, {20},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
   {
     TransformationEquationInstruction transformation(61, SpvOpConvertUToF, {21},
                                                      return_instruction);
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
+    transformation.Apply(context.get(), &transformation_context);
   }
 
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_transformations = R"(
                OpCapability Shader
@@ -1545,11 +1509,13 @@ TEST(TransformationEquationInstructionTest, FloatResultTypeDoesNotExist) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   protobufs::InstructionDescriptor return_instruction =
       MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
@@ -1596,11 +1562,13 @@ TEST(TransformationEquationInstructionTest, HandlesIrrelevantIds) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto return_instruction = MakeInstructionDescriptor(13, SpvOpReturn, 0);
 
   // Applicable.
@@ -1610,69 +1578,12 @@ TEST(TransformationEquationInstructionTest, HandlesIrrelevantIds) {
       transformation.IsApplicable(context.get(), transformation_context));
 
   // Handles irrelevant ids.
-  transformation_context.GetFactManager()->AddFactIdIsIrrelevant(16);
+  fact_manager.AddFactIdIsIrrelevant(16);
   ASSERT_FALSE(
       transformation.IsApplicable(context.get(), transformation_context));
-  transformation_context.GetFactManager()->AddFactIdIsIrrelevant(15);
+  fact_manager.AddFactIdIsIrrelevant(15);
   ASSERT_FALSE(
       transformation.IsApplicable(context.get(), transformation_context));
-}
-
-TEST(TransformationEquationInstructionTest, HandlesDeadBlock) {
-  std::string shader = R"(
-               OpCapability Shader
-          %1 = OpExtInstImport "GLSL.std.450"
-               OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %12 "main"
-               OpExecutionMode %12 OriginUpperLeft
-               OpSource ESSL 310
-          %2 = OpTypeVoid
-          %3 = OpTypeFunction %2
-          %6 = OpTypeInt 32 1
-         %30 = OpTypeVector %6 3
-         %15 = OpConstant %6 24
-         %16 = OpConstant %6 37
-         %31 = OpConstantComposite %30 %15 %16 %15
-         %33 = OpTypeBool
-         %32 = OpConstantTrue %33
-         %12 = OpFunction %2 None %3
-         %13 = OpLabel
-               OpSelectionMerge %40 None
-               OpBranchConditional %32 %40 %41
-         %41 = OpLabel
-               OpBranch %40
-         %40 = OpLabel
-               OpReturn
-               OpFunctionEnd
-  )";
-
-  const auto env = SPV_ENV_UNIVERSAL_1_3;
-  const auto consumer = nullptr;
-  const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
-  spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
-
-  transformation_context.GetFactManager()->AddFactBlockIsDead(41);
-
-  TransformationEquationInstruction transformation1(
-      14, SpvOpIAdd, {15, 16},
-      MakeInstructionDescriptor(13, SpvOpSelectionMerge, 0));
-  // No synonym is created since block is dead.
-  TransformationEquationInstruction transformation2(
-      100, SpvOpISub, {14, 16}, MakeInstructionDescriptor(41, SpvOpBranch, 0));
-  ASSERT_TRUE(
-      transformation1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation1, context.get(),
-                        &transformation_context);
-  ASSERT_TRUE(
-      transformation2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(transformation2, context.get(),
-                        &transformation_context);
-  ASSERT_FALSE(transformation_context.GetFactManager()->IsSynonymous(
-      MakeDataDescriptor(100, {}), MakeDataDescriptor(15, {})));
 }
 
 }  // namespace

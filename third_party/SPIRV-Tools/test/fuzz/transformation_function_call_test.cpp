@@ -13,9 +13,6 @@
 // limitations under the License.
 
 #include "source/fuzz/transformation_function_call.h"
-
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -134,11 +131,13 @@ TEST(TransformationFunctionCallTest, BasicTest) {
   const auto env = SPV_ENV_UNIVERSAL_1_4;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   transformation_context.GetFactManager()->AddFactBlockIsDead(59);
   transformation_context.GetFactManager()->AddFactBlockIsDead(11);
   transformation_context.GetFactManager()->AddFactBlockIsDead(18);
@@ -258,10 +257,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         100, 21, {71, 72}, MakeInstructionDescriptor(59, SpvOpBranch, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
   {
     // Livesafe called from original live block: fine
@@ -269,10 +266,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         101, 21, {71, 72}, MakeInstructionDescriptor(98, SpvOpAccessChain, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
   {
     // Livesafe called from livesafe function: fine
@@ -280,10 +275,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         102, 200, {19, 20}, MakeInstructionDescriptor(36, SpvOpLoad, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
   {
     // Dead called from dead block in injected function: fine
@@ -291,10 +284,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         103, 10, {23}, MakeInstructionDescriptor(45, SpvOpLoad, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
   {
     // Non-livesafe called from dead block in livesafe function: OK
@@ -302,10 +293,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         104, 10, {201}, MakeInstructionDescriptor(205, SpvOpBranch, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
   {
     // Livesafe called from dead block with non-arbitrary parameter
@@ -313,10 +302,8 @@ TEST(TransformationFunctionCallTest, BasicTest) {
         105, 21, {62, 65}, MakeInstructionDescriptor(59, SpvOpBranch, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   std::string after_transformation = R"(
@@ -457,11 +444,13 @@ TEST(TransformationFunctionCallTest, DoNotInvokeEntryPoint) {
   const auto env = SPV_ENV_UNIVERSAL_1_4;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   transformation_context.GetFactManager()->AddFactBlockIsDead(11);
 
   // 4 is an entry point, so it is not legal for it to be the target of a call.

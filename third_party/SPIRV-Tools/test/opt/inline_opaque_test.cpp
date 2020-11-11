@@ -90,8 +90,7 @@ OpFunctionEnd
 )";
 
   const std::string after =
-      R"(%34 = OpUndef %void
-%main = OpFunction %void None %12
+      R"(%main = OpFunction %void None %12
 %28 = OpLabel
 %s0 = OpVariable %_ptr_Function_S_t Function
 %param = OpVariable %_ptr_Function_S_t Function
@@ -290,8 +289,7 @@ OpFunctionEnd
 )";
 
   const std::string after =
-      R"(%35 = OpUndef %void
-%main2 = OpFunction %void None %13
+      R"(%main2 = OpFunction %void None %13
 %29 = OpLabel
 %s0 = OpVariable %_ptr_Function_S_t Function
 %param = OpVariable %_ptr_Function_S_t Function

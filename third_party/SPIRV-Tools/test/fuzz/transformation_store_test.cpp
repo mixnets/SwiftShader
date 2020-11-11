@@ -13,9 +13,6 @@
 // limitations under the License.
 
 #include "source/fuzz/transformation_store.h"
-
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -94,11 +91,13 @@ TEST(TransformationStoreTest, BasicTest) {
   const auto env = SPV_ENV_UNIVERSAL_1_4;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   transformation_context.GetFactManager()->AddFactValueOfPointeeIsIrrelevant(
       27);
   transformation_context.GetFactManager()->AddFactValueOfPointeeIsIrrelevant(
@@ -234,10 +233,8 @@ TEST(TransformationStoreTest, BasicTest) {
         27, 80, MakeInstructionDescriptor(38, SpvOpAccessChain, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   {
@@ -246,10 +243,8 @@ TEST(TransformationStoreTest, BasicTest) {
         11, 95, MakeInstructionDescriptor(95, SpvOpReturnValue, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   {
@@ -258,10 +253,8 @@ TEST(TransformationStoreTest, BasicTest) {
         46, 80, MakeInstructionDescriptor(95, SpvOpReturnValue, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   {
@@ -270,10 +263,8 @@ TEST(TransformationStoreTest, BasicTest) {
         16, 21, MakeInstructionDescriptor(95, SpvOpReturnValue, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   {
@@ -282,10 +273,8 @@ TEST(TransformationStoreTest, BasicTest) {
         53, 21, MakeInstructionDescriptor(38, SpvOpAccessChain, 0));
     ASSERT_TRUE(
         transformation.IsApplicable(context.get(), transformation_context));
-    ApplyAndCheckFreshIds(transformation, context.get(),
-                          &transformation_context);
-    ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(
-        context.get(), validator_options, kConsoleMessageConsumer));
+    transformation.Apply(context.get(), &transformation_context);
+    ASSERT_TRUE(IsValid(env, context.get()));
   }
 
   std::string after_transformation = R"(
@@ -406,12 +395,14 @@ TEST(TransformationStoreTest, DoNotAllowStoresToReadOnlyMemory) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
+  ASSERT_TRUE(IsValid(env, context.get()));
+
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
-  transformation_context.GetFactManager()->AddFactBlockIsDead(5);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
+  fact_manager.AddFactBlockIsDead(5);
 
   ASSERT_FALSE(
       TransformationStore(15, 13, MakeInstructionDescriptor(27, SpvOpReturn, 0))

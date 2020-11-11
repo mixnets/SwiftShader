@@ -51,9 +51,10 @@ struct SamplerState : sw::Memset<SamplerState>
 	const VkBool32 unnormalizedCoordinates = VK_FALSE;
 
 	VkSamplerYcbcrModelConversion ycbcrModel = VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY;
-	const VkSamplerFilteringPrecisionModeGOOGLE filteringPrecision = VK_SAMPLER_FILTERING_PRECISION_MODE_LOW_GOOGLE;
 	bool studioSwing = false;    // Narrow range
 	bool swappedChroma = false;  // Cb/Cr components in reverse order
+
+	const VkSamplerFilteringPrecisionModeGOOGLE filteringPrecision = VK_SAMPLER_FILTERING_PRECISION_MODE_LOW_GOOGLE;
 };
 
 class Sampler : public Object<Sampler, VkSampler>, public SamplerState

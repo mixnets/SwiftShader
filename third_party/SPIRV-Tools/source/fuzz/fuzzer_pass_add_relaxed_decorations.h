@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SOURCE_FUZZ_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H_
-#define SOURCE_FUZZ_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H_
+#ifndef SPIRV_TOOLS_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H
+#define SPIRV_TOOLS_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H
 
 #include "source/fuzz/fuzzer_pass.h"
 
@@ -36,4 +36,4 @@ class FuzzerPassAddRelaxedDecorations : public FuzzerPass {
 }  // namespace fuzz
 }  // namespace spvtools
 
-#endif  // SOURCE_FUZZ_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H_
+#endif  // SPIRV_TOOLS_FUZZER_PASS_ADD_RELAXED_DECORATIONS_H

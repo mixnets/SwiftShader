@@ -77,15 +77,6 @@ void LocalAccessChainConvertPass::AppendConstantOperands(
 bool LocalAccessChainConvertPass::ReplaceAccessChainLoad(
     const Instruction* address_inst, Instruction* original_load) {
   // Build and append load of variable in ptrInst
-  if (address_inst->NumInOperands() == 1) {
-    // An access chain with no indices is essentially a copy.  All that is
-    // needed is to propagate the address.
-    context()->ReplaceAllUsesWith(
-        address_inst->result_id(),
-        address_inst->GetSingleWordInOperand(kAccessChainPtrIdInIdx));
-    return true;
-  }
-
   std::vector<std::unique_ptr<Instruction>> new_inst;
   uint32_t varId;
   uint32_t varPteTypeId;
@@ -95,12 +86,9 @@ bool LocalAccessChainConvertPass::ReplaceAccessChainLoad(
     return false;
   }
 
-  new_inst[0]->UpdateDebugInfoFrom(original_load);
   context()->get_decoration_mgr()->CloneDecorations(
       original_load->result_id(), ldResultId, {SpvDecorationRelaxedPrecision});
   original_load->InsertBefore(std::move(new_inst));
-  context()->get_debug_info_mgr()->AnalyzeDebugInst(
-      original_load->PreviousNode());
 
   // Rewrite |original_load| into an extract.
   Instruction::OperandList new_operands;
@@ -121,18 +109,6 @@ bool LocalAccessChainConvertPass::ReplaceAccessChainLoad(
 bool LocalAccessChainConvertPass::GenAccessChainStoreReplacement(
     const Instruction* ptrInst, uint32_t valId,
     std::vector<std::unique_ptr<Instruction>>* newInsts) {
-  if (ptrInst->NumInOperands() == 1) {
-    // An access chain with no indices is essentially a copy.  However, we still
-    // have to create a new store because the old ones will be deleted.
-    BuildAndAppendInst(
-        SpvOpStore, 0, 0,
-        {{spv_operand_type_t::SPV_OPERAND_TYPE_ID,
-          {ptrInst->GetSingleWordInOperand(kAccessChainPtrIdInIdx)}},
-         {spv_operand_type_t::SPV_OPERAND_TYPE_ID, {valId}}},
-        newInsts);
-    return true;
-  }
-
   // Build and append load of variable in ptrInst
   uint32_t varId;
   uint32_t varPteTypeId;
@@ -184,10 +160,6 @@ bool LocalAccessChainConvertPass::IsConstantIndexAccessChain(
 bool LocalAccessChainConvertPass::HasOnlySupportedRefs(uint32_t ptrId) {
   if (supported_ref_ptrs_.find(ptrId) != supported_ref_ptrs_.end()) return true;
   if (get_def_use_mgr()->WhileEachUser(ptrId, [this](Instruction* user) {
-        if (user->GetOpenCL100DebugOpcode() == OpenCLDebugInfo100DebugValue ||
-            user->GetOpenCL100DebugOpcode() == OpenCLDebugInfo100DebugDeclare) {
-          return true;
-        }
         SpvOp op = user->opcode();
         if (IsNonPtrAccessChain(op) || op == SpvOpCopyObject) {
           if (!HasOnlySupportedRefs(user->result_id())) {
@@ -258,6 +230,7 @@ Pass::Status LocalAccessChainConvertPass::ConvertLocalAccessChains(
           Instruction* ptrInst = GetPtr(&*ii, &varId);
           if (!IsNonPtrAccessChain(ptrInst->opcode())) break;
           if (!IsTargetVar(varId)) break;
+          std::vector<std::unique_ptr<Instruction>> newInsts;
           if (!ReplaceAccessChainLoad(ptrInst, &*ii)) {
             return Status::Failure;
           }
@@ -265,26 +238,19 @@ Pass::Status LocalAccessChainConvertPass::ConvertLocalAccessChains(
         } break;
         case SpvOpStore: {
           uint32_t varId;
-          Instruction* store = &*ii;
-          Instruction* ptrInst = GetPtr(store, &varId);
+          Instruction* ptrInst = GetPtr(&*ii, &varId);
           if (!IsNonPtrAccessChain(ptrInst->opcode())) break;
           if (!IsTargetVar(varId)) break;
           std::vector<std::unique_ptr<Instruction>> newInsts;
-          uint32_t valId = store->GetSingleWordInOperand(kStoreValIdInIdx);
+          uint32_t valId = ii->GetSingleWordInOperand(kStoreValIdInIdx);
           if (!GenAccessChainStoreReplacement(ptrInst, valId, &newInsts)) {
             return Status::Failure;
           }
-          size_t num_of_instructions_to_skip = newInsts.size() - 1;
-          dead_instructions.push_back(store);
+          dead_instructions.push_back(&*ii);
           ++ii;
           ii = ii.InsertBefore(std::move(newInsts));
-          for (size_t i = 0; i < num_of_instructions_to_skip; ++i) {
-            ii->UpdateDebugInfoFrom(store);
-            context()->get_debug_info_mgr()->AnalyzeDebugInst(&*ii);
-            ++ii;
-          }
-          ii->UpdateDebugInfoFrom(store);
-          context()->get_debug_info_mgr()->AnalyzeDebugInst(&*ii);
+          ++ii;
+          ++ii;
           modified = true;
         } break;
         default:
@@ -380,7 +346,6 @@ void LocalAccessChainConvertPass::InitExtensions() {
       "SPV_AMD_gpu_shader_half_float",
       "SPV_KHR_shader_draw_parameters",
       "SPV_KHR_subgroup_vote",
-      "SPV_KHR_8bit_storage",
       "SPV_KHR_16bit_storage",
       "SPV_KHR_device_group",
       "SPV_KHR_multiview",

@@ -44,15 +44,15 @@ __pragma(warning(push))
 extern "C" void _chkstk();
 #endif
 
+#if __has_feature(memory_sanitizer)
+#	include <sanitizer/msan_interface.h>
+#endif
+
 #ifdef __ARM_EABI__
 extern "C" signed __aeabi_idivmod();
 #endif
 
-#if __has_feature(memory_sanitizer)
-#	include "sanitizer/msan_interface.h"  // TODO(b/155148722): Remove when we no longer unpoison all writes.
-
-#	include <dlfcn.h>  // dlsym()
-#endif
+#include <log/log.h>
 
 namespace {
 
@@ -94,7 +94,9 @@ JITGlobals *JITGlobals::get()
 llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::Optimization::Level optLevel) const
 {
 	llvm::orc::JITTargetMachineBuilder out = jtmb;
-	out.setCodeGenOptLevel(toLLVM(optLevel));
+
+	out.setCodeGenOptLevel(llvm::CodeGenOpt::Default);
+
 	return out;
 }
 
@@ -118,26 +120,28 @@ llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::Optimization::Level level)
 {
 	switch(level)
 	{
-		case rr::Optimization::Level::None: return llvm::CodeGenOpt::None;
-		case rr::Optimization::Level::Less: return llvm::CodeGenOpt::Less;
-		case rr::Optimization::Level::Default: return llvm::CodeGenOpt::Default;
-		case rr::Optimization::Level::Aggressive: return llvm::CodeGenOpt::Aggressive;
+		case rr::Optimization::Level::None: return ::llvm::CodeGenOpt::None;
+		case rr::Optimization::Level::Less: return ::llvm::CodeGenOpt::Less;
+		case rr::Optimization::Level::Default: return ::llvm::CodeGenOpt::Default;
+		case rr::Optimization::Level::Aggressive: return ::llvm::CodeGenOpt::Aggressive;
 		default: UNREACHABLE("Unknown Optimization Level %d", int(level));
 	}
-	return llvm::CodeGenOpt::Default;
+	return ::llvm::CodeGenOpt::Default;
 }
 
 class MemoryMapper final : public llvm::SectionMemoryManager::MemoryMapper
 {
 public:
-	MemoryMapper() {}
-	~MemoryMapper() final {}
+	MemoryMapper() { ALOGE("MemoryMapper"); }
+	~MemoryMapper() final { ALOGE("~MemoryMapper"); }
 
 	llvm::sys::MemoryBlock allocateMappedMemory(
 	    llvm::SectionMemoryManager::AllocationPurpose purpose,
 	    size_t numBytes, const llvm::sys::MemoryBlock *const nearBlock,
 	    unsigned flags, std::error_code &errorCode) final
 	{
+		ALOGE("allocateMappedMemory");
+
 		errorCode = std::error_code();
 
 		// Round up numBytes to page size.
@@ -156,6 +160,8 @@ public:
 	std::error_code protectMappedMemory(const llvm::sys::MemoryBlock &block,
 	                                    unsigned flags)
 	{
+		ALOGE("protectMappedMemory 0x%X", flags);
+
 		// Round down base address to align with a page boundary. This matches
 		// DefaultMMapper behavior.
 		void *addr = block.base();
@@ -172,15 +178,18 @@ public:
 
 	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block)
 	{
-		size_t size = block.allocatedSize();
+		ALOGE("releaseMappedMemory");
 
-		rr::deallocateMemoryPages(block.base(), size);
+		//	size_t size = block.allocatedSize();
+
+		//	rr::deallocateMemoryPages(block.base(), size);
 		return std::error_code();
 	}
 
 private:
 	int flagsToPermissions(unsigned flags)
 	{
+		return rr::PERMISSION_READ | rr::PERMISSION_WRITE | rr::PERMISSION_EXECUTE;
 		int result = 0;
 		if(flags & llvm::sys::Memory::MF_READ)
 		{
@@ -206,6 +215,10 @@ T alignUp(T val, T alignment)
 
 void *alignedAlloc(size_t size, size_t alignment)
 {
+	ALOGE("alignedAlloc");
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// Same as rr::allocate()?
+	//////////////////////////////////////////////////////////////////////////////////////////////
 	ASSERT(alignment < 256);
 	auto allocation = new uint8_t[size + sizeof(uint8_t) + alignment];
 	auto aligned = allocation;
@@ -218,6 +231,8 @@ void *alignedAlloc(size_t size, size_t alignment)
 
 void alignedFree(void *ptr)
 {
+	ALOGE("alignedFree");
+
 	auto aligned = reinterpret_cast<uint8_t *>(ptr);
 	auto offset = aligned[-1];
 	auto allocation = aligned - offset;
@@ -289,7 +304,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 	};
 
 	static void nop() {}
-	static void neverCalled() { UNREACHABLE("Should never be called"); }
+	static void neverCalled() { ALOGE("Should never be called"); }
 
 	static void *coroutine_alloc_frame(size_t size) { return alignedAlloc(size, 16); }
 	static void coroutine_free_frame(void *ptr) { alignedFree(ptr); }
@@ -322,7 +337,6 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 		return sync_fetch_and_op(ptr, val, [](uint32_t a, uint32_t b) { return std::min(a, b); });
 	}
 #endif
-
 	class Resolver
 	{
 	public:
@@ -332,7 +346,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 
 		Resolver()
 		{
-#ifdef ENABLE_RR_PRINT
+#if 1
 			functions.try_emplace("rr::DebugPrintf", reinterpret_cast<void *>(rr::DebugPrintf));
 #endif
 			functions.try_emplace("nop", reinterpret_cast<void *>(nop));
@@ -386,6 +400,8 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("coroutine_alloc_frame", reinterpret_cast<void *>(coroutine_alloc_frame));
 			functions.try_emplace("coroutine_free_frame", reinterpret_cast<void *>(coroutine_free_frame));
 
+			functions.try_emplace("", reinterpret_cast<void *>(neverCalled));
+
 #ifdef __APPLE__
 			functions.try_emplace("sincosf_stret", reinterpret_cast<void *>(__sincosf_stret));
 #elif defined(__linux__)
@@ -415,7 +431,7 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 			functions.try_emplace("sync_fetch_and_umin_4", reinterpret_cast<void *>(sync_fetch_and_umin_4));
 #endif
 #if __has_feature(memory_sanitizer)
-			functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));  // TODO(b/155148722): Remove when we no longer unpoison all writes.
+			functions.try_emplace("msan_unpoison", reinterpret_cast<void *>(__msan_unpoison));
 #endif
 		}
 	};
@@ -429,13 +445,15 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 	    llvm::orc::JITDylibLookupFlags flags,
 	    const llvm::orc::SymbolLookupSet &set) override
 	{
+		ALOGE("tryToGenerate");
+
 		static Resolver resolver;
 
 		llvm::orc::SymbolMap symbols;
 
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		//#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 		std::string missing;
-#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		//#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 
 		for(auto symbol : set)
 		{
@@ -451,41 +469,25 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 				symbols[name] = llvm::JITEvaluatedSymbol(
 				    static_cast<llvm::JITTargetAddress>(reinterpret_cast<uintptr_t>(it->second)),
 				    llvm::JITSymbolFlags::Exported);
-
-				continue;
 			}
-
-#if __has_feature(memory_sanitizer)
-			// MemorySanitizer uses a dynamically linked runtime. Instrumented routines reference
-			// some symbols from this library. Look them up dynamically in the default namespace.
-			// Note this approach should not be used for other symbols, since they might not be
-			// visible (e.g. due to static linking), we may wish to provide an alternate
-			// implementation, and/or it would be a security vulnerability.
-
-			void *address = dlsym(RTLD_DEFAULT, (*symbol.first).data());
-
-			if(address)
+			//#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+			else
 			{
-				symbols[name] = llvm::JITEvaluatedSymbol(
-				    static_cast<llvm::JITTargetAddress>(reinterpret_cast<uintptr_t>(address)),
-				    llvm::JITSymbolFlags::Exported);
+				ALOGE("Missing external function: %s", (*name).str().c_str());
 
-				continue;
+				missing += (missing.empty() ? "'" : ", '") + (*name).str() + "'";
 			}
-#endif
-
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-			missing += (missing.empty() ? "'" : ", '") + (*name).str() + "'";
-#endif
+			//#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 		}
 
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-		// Missing functions will likely make the module fail in non-obvious ways.
+		//#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+		// Missing functions will likely make the module fail in exciting non-obvious ways.
 		if(!missing.empty())
 		{
+			ALOGE("Missing external functions: %s", missing.c_str());
 			WARN("Missing external functions: %s", missing.c_str());
 		}
-#endif
+		//#endif  // !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 
 		if(symbols.empty())
 		{
@@ -512,7 +514,7 @@ auto &Unwrap(T &&v)
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
 // settings and no Reactor routine directly links against another.
-class JITRoutine : public rr::Routine
+class JITRoutine2 : public rr::Routine
 {
 	llvm::orc::ExecutionSession session;
 	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
@@ -523,7 +525,7 @@ class JITRoutine : public rr::Routine
 	std::vector<const void *> addresses;
 
 public:
-	JITRoutine(
+	JITRoutine2(
 	    std::unique_ptr<llvm::Module> module,
 	    llvm::Function **funcs,
 	    size_t count,
@@ -538,29 +540,7 @@ public:
 	    , dylib(Unwrap(session.createJITDylib("<routine>")))
 	    , addresses(count)
 	{
-
-#ifdef ENABLE_RR_DEBUG_INFO
-		// TODO(b/165000222): Update this on next LLVM roll.
-		// https://github.com/llvm/llvm-project/commit/98f2bb4461072347dcca7d2b1b9571b3a6525801
-		// introduces RTDyldObjectLinkingLayer::registerJITEventListener().
-		// The current API does not appear to have any way to bind the
-		// rr::DebugInfo::NotifyFreeingObject event.
-		objectLayer.setNotifyLoaded([](llvm::orc::VModuleKey,
-		                               const llvm::object::ObjectFile &obj,
-		                               const llvm::RuntimeDyld::LoadedObjectInfo &l) {
-			static std::atomic<uint64_t> unique_key{ 0 };
-			rr::DebugInfo::NotifyObjectEmitted(unique_key++, obj, l);
-		});
-#endif  // ENABLE_RR_DEBUG_INFO
-
-		if(JITGlobals::get()->getTargetTriple().isOSBinFormatCOFF())
-		{
-			// Hack to support symbol visibility in COFF.
-			// Matches hack in llvm::orc::LLJIT::createObjectLinkingLayer().
-			// See documentation on these functions for more detail.
-			objectLayer.setOverrideObjectFlagsWithResponsibilityFlags(true);
-			objectLayer.setAutoClaimResponsibilityForObjectSymbols(true);
-		}
+		ALOGE("JITRoutine");
 
 		dylib.addGenerator(std::make_unique<ExternalSymbolGenerator>());
 
@@ -594,8 +574,10 @@ public:
 		}
 	}
 
-	~JITRoutine()
+	~JITRoutine2()
 	{
+		ALOGE("~JITRoutine2");
+
 #if LLVM_VERSION_MAJOR >= 11 /* TODO(b/165000222): Unconditional after LLVM 11 upgrade */
 		if(auto err = session.endSession())
 		{
@@ -610,6 +592,27 @@ public:
 	}
 };
 
+class JITRoutine : public rr::Routine
+{
+public:
+	JITRoutine(std::unique_ptr<llvm::Module> module,
+	           llvm::Function **funcs,
+	           size_t count,
+	           const rr::Config &config)
+	{
+
+		jitRoutine = new JITRoutine2(std::move(module), funcs, count, config);
+	}
+
+	~JITRoutine() { jitRoutine = nullptr; }
+	JITRoutine2 *jitRoutine;
+
+	const void *getEntry(int index) const override
+	{
+		return jitRoutine->getEntry(index);
+	}
+};
+
 }  // anonymous namespace
 
 namespace rr {
@@ -619,18 +622,18 @@ JITBuilder::JITBuilder(const rr::Config &config)
     , module(new llvm::Module("", context))
     , builder(new llvm::IRBuilder<>(context))
 {
-	module->setTargetTriple(LLVM_DEFAULT_TARGET_TRIPLE);
+	ALOGE("JITBuilder");
 	module->setDataLayout(JITGlobals::get()->getDataLayout());
+}
+
+JITBuilder::~JITBuilder()
+{
+	ALOGE("~JITBuilder");
 }
 
 void JITBuilder::optimize(const rr::Config &cfg)
 {
-#ifdef ENABLE_RR_DEBUG_INFO
-	if(debugInfo != nullptr)
-	{
-		return;  // Don't optimize if we're generating debug info.
-	}
-#endif  // ENABLE_RR_DEBUG_INFO
+	ALOGE("optimize");
 
 	llvm::legacy::PassManager passManager;
 
@@ -659,6 +662,8 @@ void JITBuilder::optimize(const rr::Config &cfg)
 
 std::shared_ptr<rr::Routine> JITBuilder::acquireRoutine(llvm::Function **funcs, size_t count, const rr::Config &cfg)
 {
+	ALOGE("acquireRoutine");
+
 	ASSERT(module);
 	return std::make_shared<JITRoutine>(std::move(module), funcs, count, cfg);
 }

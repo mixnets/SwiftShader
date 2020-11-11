@@ -347,7 +347,8 @@ void FuzzerPassObfuscateConstants::ObfuscateScalarConstant(
   auto uniform_descriptors =
       GetTransformationContext()
           ->GetFactManager()
-          ->GetUniformDescriptorsForConstant(constant_use.id_of_interest());
+          ->GetUniformDescriptorsForConstant(GetIRContext(),
+                                             constant_use.id_of_interest());
   if (uniform_descriptors.empty()) {
     // No relevant uniforms, so do not obfuscate.
     return;

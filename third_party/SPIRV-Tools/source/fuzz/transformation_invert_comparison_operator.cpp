@@ -174,10 +174,5 @@ protobufs::Transformation TransformationInvertComparisonOperator::ToMessage()
   return result;
 }
 
-std::unordered_set<uint32_t>
-TransformationInvertComparisonOperator::GetFreshIds() const {
-  return {message_.fresh_id()};
-}
-
 }  // namespace fuzz
 }  // namespace spvtools

@@ -132,10 +132,6 @@ void TransformationAddCopyMemory::Apply(
 
   fuzzerutil::UpdateModuleIdBound(ir_context, message_.fresh_id());
 
-  // Make sure our changes are analyzed
-  ir_context->InvalidateAnalysesExceptFor(
-      opt::IRContext::Analysis::kAnalysisNone);
-
   // Even though the copy memory instruction will - at least temporarily - lead
   // to the destination and source pointers referring to identical values, this
   // fact is not guaranteed to hold throughout execution of the SPIR-V code
@@ -144,6 +140,10 @@ void TransformationAddCopyMemory::Apply(
   // pointer can be used freely by other fuzzer passes.
   transformation_context->GetFactManager()->AddFactValueOfPointeeIsIrrelevant(
       message_.fresh_id());
+
+  // Make sure our changes are analyzed
+  ir_context->InvalidateAnalysesExceptFor(
+      opt::IRContext::Analysis::kAnalysisNone);
 }
 
 protobufs::Transformation TransformationAddCopyMemory::ToMessage() const {
@@ -162,21 +162,8 @@ bool TransformationAddCopyMemory::IsInstructionSupported(
   const auto* type = ir_context->get_type_mgr()->GetType(inst->type_id());
   assert(type && "Instruction must have a valid type");
 
-  if (!type->AsPointer()) {
-    return false;
-  }
-
-  // We do not support copying memory from a pointer to a block-/buffer
-  // block-decorated struct.
-  auto pointee_type_inst = ir_context->get_def_use_mgr()
-                               ->GetDef(inst->type_id())
-                               ->GetSingleWordInOperand(1);
-  if (fuzzerutil::HasBlockOrBufferBlockDecoration(ir_context,
-                                                  pointee_type_inst)) {
-    return false;
-  }
-
-  return CanUsePointeeWithCopyMemory(*type->AsPointer()->pointee_type());
+  return type->AsPointer() &&
+         CanUsePointeeWithCopyMemory(*type->AsPointer()->pointee_type());
 }
 
 bool TransformationAddCopyMemory::CanUsePointeeWithCopyMemory(
@@ -200,10 +187,6 @@ bool TransformationAddCopyMemory::CanUsePointeeWithCopyMemory(
     default:
       return false;
   }
-}
-
-std::unordered_set<uint32_t> TransformationAddCopyMemory::GetFreshIds() const {
-  return {message_.fresh_id()};
 }
 
 }  // namespace fuzz

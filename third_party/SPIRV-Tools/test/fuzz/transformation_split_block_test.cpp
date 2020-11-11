@@ -13,9 +13,6 @@
 // limitations under the License.
 
 #include "source/fuzz/transformation_split_block.h"
-
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "test/fuzz/fuzz_test_util.h"
 
@@ -91,9 +88,11 @@ TEST(TransformationSplitBlockTest, NotApplicable) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   // No split before OpVariable
   ASSERT_FALSE(TransformationSplitBlock(
                    MakeInstructionDescriptor(8, SpvOpVariable, 0), 100)
@@ -202,15 +201,16 @@ TEST(TransformationSplitBlockTest, SplitBlockSeveralTimes) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto split_1 = TransformationSplitBlock(
       MakeInstructionDescriptor(5, SpvOpStore, 0), 100);
   ASSERT_TRUE(split_1.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split_1, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split_1.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split_1 = R"(
                OpCapability Shader
@@ -257,9 +257,8 @@ TEST(TransformationSplitBlockTest, SplitBlockSeveralTimes) {
   auto split_2 = TransformationSplitBlock(
       MakeInstructionDescriptor(11, SpvOpStore, 0), 101);
   ASSERT_TRUE(split_2.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split_2, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split_2.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split_2 = R"(
                OpCapability Shader
@@ -308,9 +307,8 @@ TEST(TransformationSplitBlockTest, SplitBlockSeveralTimes) {
   auto split_3 = TransformationSplitBlock(
       MakeInstructionDescriptor(14, SpvOpLoad, 0), 102);
   ASSERT_TRUE(split_3.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split_3, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split_3.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split_3 = R"(
                OpCapability Shader
@@ -419,9 +417,11 @@ TEST(TransformationSplitBlockTest, SplitBlockBeforeSelectBranch) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   // Illegal to split between the merge and the conditional branch.
   ASSERT_FALSE(
       TransformationSplitBlock(
@@ -435,9 +435,8 @@ TEST(TransformationSplitBlockTest, SplitBlockBeforeSelectBranch) {
   auto split = TransformationSplitBlock(
       MakeInstructionDescriptor(14, SpvOpSelectionMerge, 0), 100);
   ASSERT_TRUE(split.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split = R"(
                OpCapability Shader
@@ -550,9 +549,11 @@ TEST(TransformationSplitBlockTest, SplitBlockBeforeSwitchBranch) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   // Illegal to split between the merge and the conditional branch.
   ASSERT_FALSE(TransformationSplitBlock(
                    MakeInstructionDescriptor(9, SpvOpSwitch, 0), 100)
@@ -564,9 +565,8 @@ TEST(TransformationSplitBlockTest, SplitBlockBeforeSwitchBranch) {
   auto split = TransformationSplitBlock(
       MakeInstructionDescriptor(9, SpvOpSelectionMerge, 0), 100);
   ASSERT_TRUE(split.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split = R"(
                OpCapability Shader
@@ -685,9 +685,11 @@ TEST(TransformationSplitBlockTest, NoSplitDuringOpPhis) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   // We cannot split before OpPhi instructions, since the number of incoming
   // blocks may not appropriately match after splitting.
   ASSERT_FALSE(
@@ -738,9 +740,11 @@ TEST(TransformationSplitBlockTest, SplitOpPhiWithSinglePredecessor) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   ASSERT_TRUE(
       TransformationSplitBlock(MakeInstructionDescriptor(21, SpvOpPhi, 0), 100)
           .IsApplicable(context.get(), transformation_context));
@@ -749,9 +753,8 @@ TEST(TransformationSplitBlockTest, SplitOpPhiWithSinglePredecessor) {
   auto split =
       TransformationSplitBlock(MakeInstructionDescriptor(20, SpvOpPhi, 0), 100);
   ASSERT_TRUE(split.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   std::string after_split = R"(
                OpCapability Shader
@@ -819,18 +822,19 @@ TEST(TransformationSplitBlockTest, DeadBlockShouldSplitToTwoDeadBlocks) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   // Record the fact that block 8 is dead.
   transformation_context.GetFactManager()->AddFactBlockIsDead(8);
 
   auto split = TransformationSplitBlock(
       MakeInstructionDescriptor(8, SpvOpBranch, 0), 100);
   ASSERT_TRUE(split.IsApplicable(context.get(), transformation_context));
-  ApplyAndCheckFreshIds(split, context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  split.Apply(context.get(), &transformation_context);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   ASSERT_TRUE(transformation_context.GetFactManager()->BlockIsDead(8));
   ASSERT_TRUE(transformation_context.GetFactManager()->BlockIsDead(100));
@@ -908,9 +912,11 @@ TEST(TransformationSplitBlockTest, DoNotSplitUseOfOpSampledImage) {
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
 
+  FactManager fact_manager;
   spvtools::ValidatorOptions validator_options;
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
   auto split = TransformationSplitBlock(
       MakeInstructionDescriptor(217, SpvOpImageSampleImplicitLod, 0), 500);
   ASSERT_FALSE(split.IsApplicable(context.get(), transformation_context));

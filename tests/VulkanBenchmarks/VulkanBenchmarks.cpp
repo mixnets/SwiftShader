@@ -66,14 +66,14 @@ public:
 	virtual ~VulkanBenchmark()
 	{
 		device.waitIdle();
-		device.destroy(nullptr);
-		instance.destroy(nullptr);
+		device.destroy();
+		instance.destroy();
 	}
 
 protected:
 	uint32_t getMemoryTypeIndex(uint32_t typeBits, vk::MemoryPropertyFlags properties)
 	{
-		vk::PhysicalDeviceMemoryProperties deviceMemoryProperties = physicalDevice.getMemoryProperties();
+		vk::PhysicalDeviceMemoryProperties deviceMemoryProperties = vk::PhysicalDevice::GetMemoryProperties();
 		for(uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
 		{
 			if((typeBits & 1) == 1)
@@ -113,7 +113,7 @@ public:
 		imageInfo.initialLayout = vk::ImageLayout::eGeneral;
 		imageInfo.usage = vk::ImageUsageFlagBits::eTransferDst;
 		imageInfo.samples = vk::SampleCountFlagBits::e4;
-		imageInfo.extent = vk::Extent3D(1024, 1024, 1);
+		imageInfo.extent = { 1024, 1024, 1 };
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
 
@@ -179,9 +179,9 @@ public:
 	~ClearImageBenchmark()
 	{
 		device.freeCommandBuffers(commandPool, { commandBuffer });
-		device.destroyCommandPool(commandPool, nullptr);
-		device.freeMemory(memory, nullptr);
-		device.destroyImage(image, nullptr);
+		device.destroyCommandPool(commandPool);
+		device.freeMemory(memory);
+		device.destroyImage(image);
 	}
 
 	void clear()
@@ -273,7 +273,7 @@ public:
 
 	~Window()
 	{
-		instance.destroySurfaceKHR(surface, nullptr);
+		instance.destroySurfaceKHR(surface);
 
 		DestroyWindow(window);
 		UnregisterClass("Window", moduleInstance);
@@ -349,10 +349,10 @@ public:
 	{
 		for(auto &imageView : imageViews)
 		{
-			device.destroyImageView(imageView, nullptr);
+			device.destroyImageView(imageView);
 		}
 
-		device.destroySwapchainKHR(swapchain, nullptr);
+		device.destroySwapchainKHR(swapchain);
 	}
 
 	void acquireNextImage(VkSemaphore presentCompleteSemaphore, uint32_t &imageIndex)
@@ -419,7 +419,7 @@ public:
 			imageInfo.initialLayout = vk::ImageLayout::eGeneral;
 			imageInfo.usage = vk::ImageUsageFlagBits::eColorAttachment;
 			imageInfo.samples = vk::SampleCountFlagBits::e4;
-			imageInfo.extent = vk::Extent3D(width, height, 1);
+			imageInfo.extent = { width, height, 1 };
 			imageInfo.mipLevels = 1;
 			imageInfo.arrayLayers = 1;
 
@@ -470,11 +470,11 @@ public:
 
 	~Framebuffer()
 	{
-		device.destroyFramebuffer(framebuffer, nullptr);
+		device.destroyFramebuffer(framebuffer);
 
-		device.destroyImage(multisampleImage.image, nullptr);
-		device.destroyImageView(multisampleImage.imageView, nullptr);
-		device.freeMemory(multisampleImage.imageMemory, nullptr);
+		device.destroyImage(multisampleImage.image);
+		device.destroyImageView(multisampleImage.imageView);
+		device.freeMemory(multisampleImage.imageMemory);
 	}
 
 	vk::Framebuffer getFramebuffer()
@@ -550,18 +550,18 @@ public:
 
 	~TriangleBenchmark()
 	{
-		device.destroyPipelineLayout(pipelineLayout, nullptr);
-		device.destroyPipelineCache(pipelineCache, nullptr);
+		device.destroyPipelineLayout(pipelineLayout);
+		device.destroyPipelineCache(pipelineCache);
 
-		device.destroyBuffer(vertices.buffer, nullptr);
-		device.freeMemory(vertices.memory, nullptr);
+		device.destroyBuffer(vertices.buffer);
+		device.freeMemory(vertices.memory);
 
-		device.destroySemaphore(presentCompleteSemaphore, nullptr);
-		device.destroySemaphore(renderCompleteSemaphore, nullptr);
+		device.destroySemaphore(presentCompleteSemaphore);
+		device.destroySemaphore(renderCompleteSemaphore);
 
 		for(auto &fence : waitFences)
 		{
-			device.destroyFence(fence, nullptr);
+			device.destroyFence(fence);
 		}
 
 		for(auto *framebuffer : framebuffers)
@@ -569,10 +569,10 @@ public:
 			delete framebuffer;
 		}
 
-		device.destroyRenderPass(renderPass, nullptr);
+		device.destroyRenderPass(renderPass);
 
 		device.freeCommandBuffers(commandPool, commandBuffers);
-		device.destroyCommandPool(commandPool, nullptr);
+		device.destroyCommandPool(commandPool);
 
 		delete swapchain;
 		delete window;
@@ -920,7 +920,7 @@ protected:
 		pipelineCreateInfo.renderPass = renderPass;
 		pipelineCreateInfo.pDynamicState = &dynamicState;
 
-		return device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo).value;
+		return device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo);
 	}
 
 	const vk::Extent2D windowSize = { 1280, 720 };

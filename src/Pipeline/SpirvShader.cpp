@@ -1632,7 +1632,7 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 #if SPIRV_SHADER_ENABLE_DBG
 	{
 		auto text = spvtools::spvInstructionBinaryToText(
-		    vk::SPIRV_VERSION,
+		    SPV_ENV_VULKAN_1_1,
 		    insn.wordPointer(0),
 		    insn.wordCount(),
 		    insns.data(),

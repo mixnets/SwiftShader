@@ -141,7 +141,7 @@ private:
 
 	rr::Value **const scalar;
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 	friend struct rr::PrintValue::Ty<sw::Intermediate>;
 	TypeHint typeHint = TypeHint::Float;
 #endif  // ENABLE_RR_PRINT

@@ -50,8 +50,7 @@ bool TransformationAddConstantComposite::IsApplicable(
     return false;
   }
   // Gather up the operands for the composite constant, in the process checking
-  // whether the given type really defines a composite and - in the case of a
-  // struct - whether its decorations are OK.
+  // whether the given type really defines a composite.
   std::vector<uint32_t> constituent_type_ids;
   switch (composite_type_instruction->opcode()) {
     case SpvOpTypeArray:
@@ -73,14 +72,6 @@ bool TransformationAddConstantComposite::IsApplicable(
       }
       break;
     case SpvOpTypeStruct:
-      // We do not create constants of structs decorated with Block nor
-      // BufferBlock.  The SPIR-V spec does not explicitly disallow this, but it
-      // seems like a strange thing to do, so we disallow it to avoid triggering
-      // low priorty edge case issues related to it.
-      if (fuzzerutil::HasBlockOrBufferBlockDecoration(
-              ir_context, composite_type_instruction->result_id())) {
-        return false;
-      }
       composite_type_instruction->ForEachInOperand(
           [&constituent_type_ids](const uint32_t* member_type_id) {
             constituent_type_ids.push_back(*member_type_id);
@@ -140,11 +131,6 @@ protobufs::Transformation TransformationAddConstantComposite::ToMessage()
   protobufs::Transformation result;
   *result.mutable_add_constant_composite() = message_;
   return result;
-}
-
-std::unordered_set<uint32_t> TransformationAddConstantComposite::GetFreshIds()
-    const {
-  return {message_.fresh_id()};
 }
 
 }  // namespace fuzz

@@ -56,10 +56,5 @@ protobufs::Transformation TransformationSetSelectionControl::ToMessage() const {
   return result;
 }
 
-std::unordered_set<uint32_t> TransformationSetSelectionControl::GetFreshIds()
-    const {
-  return std::unordered_set<uint32_t>();
-}
-
 }  // namespace fuzz
 }  // namespace spvtools

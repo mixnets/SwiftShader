@@ -15,7 +15,7 @@
 #ifndef rr_Print_hpp
 #define rr_Print_hpp
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 
 #	include "Reactor.hpp"
 

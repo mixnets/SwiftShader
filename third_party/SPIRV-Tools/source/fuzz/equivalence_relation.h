@@ -15,8 +15,6 @@
 #ifndef SOURCE_FUZZ_EQUIVALENCE_RELATION_H_
 #define SOURCE_FUZZ_EQUIVALENCE_RELATION_H_
 
-#include <algorithm>
-#include <cassert>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>

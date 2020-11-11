@@ -115,7 +115,7 @@ private:
 
 }  // namespace sw
 
-#ifdef ENABLE_RR_PRINT
+#if 1
 namespace rr {
 
 template<>

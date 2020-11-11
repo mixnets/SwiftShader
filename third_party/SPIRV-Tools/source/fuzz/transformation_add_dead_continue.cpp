@@ -122,8 +122,7 @@ bool TransformationAddDeadContinue::IsApplicable(
   auto cloned_context = fuzzerutil::CloneIRContext(ir_context);
   ApplyImpl(cloned_context.get(), transformation_context);
   return fuzzerutil::IsValid(cloned_context.get(),
-                             transformation_context.GetValidatorOptions(),
-                             fuzzerutil::kSilentMessageConsumer);
+                             transformation_context.GetValidatorOptions());
 }
 
 void TransformationAddDeadContinue::Apply(
@@ -157,11 +156,6 @@ void TransformationAddDeadContinue::ApplyImpl(
                                        message_.continue_condition_value(),
                                        false),
       message_.phi_id());
-}
-
-std::unordered_set<uint32_t> TransformationAddDeadContinue::GetFreshIds()
-    const {
-  return std::unordered_set<uint32_t>();
 }
 
 }  // namespace fuzz

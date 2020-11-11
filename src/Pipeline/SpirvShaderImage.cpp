@@ -321,20 +321,41 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		auto sampleValue = Operand(this, state, sampleId);
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
-
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
-
-	If(!cacheHit)
+	/*
+	11-10 21:19:22.607   597   622 E swiftshader: id: 7018793
+11-10 21:19:22.607   597   622 E swiftshader: type: 1
+11-10 21:19:22.607   597   622 E swiftshader: format: 37
+11-10 21:19:22.607   597   622 E swiftshader: swizzle: 3 4 5 6
+11-10 21:19:22.607   597   622 E swiftshader: magFilter: 0
+11-10 21:19:22.607   597   622 E swiftshader: minFilter: 0
+11-10 21:19:22.607   597   622 E swiftshader: addressModeU: 0
+11-10 21:19:22.607   597   622 E swiftshader: addressModeV: 0
+11-10 21:19:22.607   597   622 E swiftshader: addressModeW: 0
+11-10 21:19:22.607   597   622 E swiftshader: unnormalizedCoordinates: 0
+*/
+	If(*Pointer<Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, format)) == 37)
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
-	}
+		auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+		//	If(!cacheHit)
+		{
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	}
+	Else
+	{
+		out[0] = Float4(0, 0, 0, 0);
+		out[1] = Float4(0, 0, 0, 0);
+		out[2] = Float4(0, 0, 1, 1);
+		out[3] = Float4(0, 0, 0, 1);
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const

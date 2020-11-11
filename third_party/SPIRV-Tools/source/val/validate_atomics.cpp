@@ -1,6 +1,4 @@
 // Copyright (c) 2017 Google Inc.
-// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights
-// reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -153,9 +151,7 @@ spv_result_t AtomicsPass(ValidationState_t& _, const Instruction* inst) {
         }
 
         if (spvIsVulkanEnv(_.context()->target_env) &&
-            (_.GetBitWidth(result_type) != 32 &&
-             (_.GetBitWidth(result_type) != 64 ||
-              !_.HasCapability(SpvCapabilityInt64ImageEXT)))) {
+            _.GetBitWidth(result_type) != 32) {
           switch (opcode) {
             case SpvOpAtomicSMin:
             case SpvOpAtomicUMin:

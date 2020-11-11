@@ -28,6 +28,9 @@
 #include <climits>
 #include <mutex>
 
+#include <log/log.h>
+#include <cstdlib>
+
 namespace sw {
 
 SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler)
@@ -36,7 +39,19 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	const auto samplerId = sampler ? sampler->id : 0;
 	ASSERT(imageDescriptor->imageViewId != 0 && (samplerId != 0 || instruction.samplerMethod == Fetch));
 	ASSERT(imageDescriptor->device);
-
+	/*
+	ALOGE("inst: %d", inst);
+	ALOGE("id: %d", imageDescriptor->imageViewId);
+	ALOGE("type: %d", imageDescriptor->type);
+	ALOGE("format: %d", imageDescriptor->format);
+	ALOGE("swizzle: %d %d %d %d", imageDescriptor->swizzle.r, imageDescriptor->swizzle.g, imageDescriptor->swizzle.b, imageDescriptor->swizzle.a);
+	ALOGE("magFilter: %d", sampler->magFilter);
+	ALOGE("minFilter: %d", sampler->minFilter);
+	ALOGE("addressModeU: %d", sampler->addressModeU);
+	ALOGE("addressModeV: %d", sampler->addressModeV);
+	ALOGE("addressModeW: %d", sampler->addressModeW);
+	ALOGE("unnormalizedCoordinates: %d", sampler->unnormalizedCoordinates);
+*/
 	vk::Device::SamplingRoutineCache::Key key = { inst, imageDescriptor->imageViewId, samplerId };
 
 	vk::Device::SamplingRoutineCache *cache = imageDescriptor->device->getSamplingRoutineCache();
@@ -90,7 +105,19 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 	auto routine = cache->getOrCreate(key, createSamplingRoutine);
 
-	return (ImageSampler *)(routine->getEntry());
+	auto *entry = (ImageSampler *)(routine->getEntry());
+
+	if(!entry)
+	{
+		ALOGE("ORCv2 FATAL");
+		ALOGE("format: %d", imageDescriptor->format);
+
+		std::abort();
+	}
+
+	ALOGE("sampler entry: %p %02Xhh %02Xhh %02Xhh %02Xhh %02Xhh %02Xhh %02Xhh %02Xhh", entry, ((char *)entry)[0], ((char *)entry)[1], ((char *)entry)[2], ((char *)entry)[3], ((char *)entry)[4], ((char *)entry)[5], ((char *)entry)[6], ((char *)entry)[7]);
+
+	return entry;
 }
 
 std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)

@@ -38,6 +38,8 @@
 #include "marl/defer.h"
 #include "marl/trace.h"
 
+#include <log/log.h>
+
 #undef max
 
 #ifndef NDEBUG
@@ -410,6 +412,8 @@ void Renderer::draw(const sw::Context *context, VkIndexType indexType, unsigned 
 	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, device);
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
+
+	synchronize();
 }
 
 void DrawCall::setup()
@@ -567,7 +571,13 @@ void DrawCall::processPixels(const marl::Loan<DrawCall> &draw, const marl::Loan<
 			auto &draw = data->draw;
 			auto &batch = data->batch;
 			MARL_SCOPED_EVENT("PIXEL draw %d, batch %d, cluster %d", draw->id, batch->id, cluster);
+
+			ALOGE("draw");
+
 			draw->pixelRoutine(&batch->primitives.front(), batch->numVisible, cluster, MaxClusterCount, draw->data);
+
+			ALOGE("~draw");
+
 			batch->clusterTickets[cluster].done();
 		});
 	}

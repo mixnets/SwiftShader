@@ -356,7 +356,7 @@ func lex(source string) ([]*Token, []Diagnostic, error) {
 
 	lastPos := Position{}
 	for l.e == nil {
-		// Integrity check that the parser is making progress
+		// Sanity check the parser is making progress
 		if l.pos == lastPos {
 			log.Panicf("Parsing stuck at %v", l.pos)
 		}

@@ -13,9 +13,6 @@
 // limitations under the License.
 
 #include "source/fuzz/data_descriptor.h"
-
-#include "gtest/gtest.h"
-#include "source/fuzz/fuzzer_util.h"
 #include "source/fuzz/id_use_descriptor.h"
 #include "source/fuzz/instruction_descriptor.h"
 #include "source/fuzz/transformation_composite_extract.h"
@@ -31,14 +28,14 @@ namespace {
 // number of transformations that relate to data synonyms.
 
 protobufs::Fact MakeSynonymFact(uint32_t first_id,
-                                const std::vector<uint32_t>& first_indices,
+                                std::vector<uint32_t>&& first_indices,
                                 uint32_t second_id,
-                                const std::vector<uint32_t>& second_indices) {
+                                std::vector<uint32_t>&& second_indices) {
   protobufs::FactDataSynonym data_synonym_fact;
   *data_synonym_fact.mutable_data1() =
-      MakeDataDescriptor(first_id, first_indices);
+      MakeDataDescriptor(first_id, std::move(first_indices));
   *data_synonym_fact.mutable_data2() =
-      MakeDataDescriptor(second_id, second_indices);
+      MakeDataDescriptor(second_id, std::move(second_indices));
   protobufs::Fact result;
   *result.mutable_data_synonym_fact() = data_synonym_fact;
   return result;
@@ -123,26 +120,27 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
-  spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(12, {}, 100, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(13, {}, 100, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(22, {}, 100, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(28, {}, 101, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(23, {}, 101, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(32, {}, 101, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(23, {}, 101, {3}));
+  FactManager fact_manager;
+  spvtools::ValidatorOptions validator_options;
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(12, {}, 100, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(13, {}, 100, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(22, {}, 100, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(28, {}, 101, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(23, {}, 101, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(32, {}, 101, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(23, {}, 101, {3}), context.get());
 
   // Replace %12 with %100[0] in '%25 = OpAccessChain %24 %20 %12'
   auto instruction_descriptor_1 =
@@ -162,8 +160,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_1.IsApplicable(context.get(), transformation_context));
   replacement_1.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %13 with %100[1] in 'OpStore %15 %13'
   auto instruction_descriptor_2 = MakeInstructionDescriptor(100, SpvOpStore, 0);
@@ -178,8 +175,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_2.IsApplicable(context.get(), transformation_context));
   replacement_2.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %22 with %100[2] in '%23 = OpConvertSToF %16 %22'
   auto instruction_descriptor_3 =
@@ -199,8 +195,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_FALSE(
       bad_replacement_3.IsApplicable(context.get(), transformation_context));
   replacement_3.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %28 with %101[0] in 'OpStore %33 %28'
   auto instruction_descriptor_4 = MakeInstructionDescriptor(33, SpvOpStore, 0);
@@ -219,8 +214,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_4.IsApplicable(context.get(), transformation_context));
   replacement_4.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %23 with %101[1] in '%50 = OpCopyObject %16 %23'
   auto instruction_descriptor_5 =
@@ -240,8 +234,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_FALSE(
       bad_replacement_5.IsApplicable(context.get(), transformation_context));
   replacement_5.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %32 with %101[2] in 'OpStore %33 %32'
   auto instruction_descriptor_6 = MakeInstructionDescriptor(33, SpvOpStore, 1);
@@ -260,8 +253,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_6.IsApplicable(context.get(), transformation_context));
   replacement_6.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %23 with %101[3] in '%51 = OpCopyObject %16 %23'
   auto instruction_descriptor_7 =
@@ -281,8 +273,7 @@ TEST(DataSynonymTransformationTest, ArrayCompositeSynonyms) {
   ASSERT_FALSE(
       bad_replacement_7.IsApplicable(context.get(), transformation_context));
   replacement_7.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   const std::string after_transformation = R"(
                OpCapability Shader
@@ -417,18 +408,19 @@ TEST(DataSynonymTransformationTest, MatrixCompositeSynonyms) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
-  spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(23, {}, 100, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(25, {}, 100, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(50, {}, 100, {2}));
+  FactManager fact_manager;
+  spvtools::ValidatorOptions validator_options;
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(23, {}, 100, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(25, {}, 100, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(50, {}, 100, {2}), context.get());
 
   // Replace %23 with %100[0] in '%26 = OpFAdd %7 %23 %25'
   auto instruction_descriptor_1 = MakeInstructionDescriptor(26, SpvOpFAdd, 0);
@@ -441,8 +433,7 @@ TEST(DataSynonymTransformationTest, MatrixCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_1.IsApplicable(context.get(), transformation_context));
   replacement_1.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %25 with %100[1] in '%26 = OpFAdd %7 %23 %25'
   auto instruction_descriptor_2 = MakeInstructionDescriptor(26, SpvOpFAdd, 0);
@@ -455,8 +446,7 @@ TEST(DataSynonymTransformationTest, MatrixCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_2.IsApplicable(context.get(), transformation_context));
   replacement_2.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   const std::string after_transformation = R"(
                OpCapability Shader
@@ -588,26 +578,27 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
-  spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(16, {}, 100, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(45, {}, 100, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(27, {}, 101, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(36, {}, 101, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(27, {}, 101, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(22, {}, 102, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(15, {}, 102, {1}));
+  FactManager fact_manager;
+  spvtools::ValidatorOptions validator_options;
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(16, {}, 100, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(45, {}, 100, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(27, {}, 101, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(36, {}, 101, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(27, {}, 101, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(22, {}, 102, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(15, {}, 102, {1}), context.get());
 
   // Replace %45 with %100[1] in '%46 = OpCompositeConstruct %32 %35 %45'
   auto instruction_descriptor_1 =
@@ -621,8 +612,7 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_1.IsApplicable(context.get(), transformation_context));
   replacement_1.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace second occurrence of %27 with %101[0] in '%28 =
   // OpCompositeConstruct %8 %27 %27'
@@ -637,8 +627,7 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_2.IsApplicable(context.get(), transformation_context));
   replacement_2.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %36 with %101[1] in '%45 = OpCompositeConstruct %31 %36 %41 %44'
   auto instruction_descriptor_3 =
@@ -652,8 +641,7 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_3.IsApplicable(context.get(), transformation_context));
   replacement_3.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace first occurrence of %27 with %101[2] in '%28 = OpCompositeConstruct
   // %8 %27 %27'
@@ -668,8 +656,7 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_4.IsApplicable(context.get(), transformation_context));
   replacement_4.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %22 with %102[0] in 'OpStore %23 %22'
   auto instruction_descriptor_5 = MakeInstructionDescriptor(23, SpvOpStore, 0);
@@ -682,8 +669,7 @@ TEST(DataSynonymTransformationTest, StructCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_5.IsApplicable(context.get(), transformation_context));
   replacement_5.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   const std::string after_transformation = R"(
                OpCapability Shader
@@ -882,52 +868,53 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   const auto env = SPV_ENV_UNIVERSAL_1_3;
   const auto consumer = nullptr;
   const auto context = BuildModule(env, consumer, shader, kFuzzAssembleOption);
-  spvtools::ValidatorOptions validator_options;
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
-  TransformationContext transformation_context(
-      MakeUnique<FactManager>(context.get()), validator_options);
+  ASSERT_TRUE(IsValid(env, context.get()));
 
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(20, {0}, 100, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(20, {1}, 100, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(20, {2}, 100, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(54, {}, 100, {3}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(15, {0}, 101, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(15, {1}, 101, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(19, {0}, 101, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(19, {1}, 101, {3}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(27, {}, 102, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(15, {0}, 102, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(15, {1}, 102, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(33, {}, 103, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(47, {0}, 103, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(47, {1}, 103, {2}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(47, {2}, 103, {3}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(42, {}, 104, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(45, {}, 104, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(38, {0}, 105, {0}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(38, {1}, 105, {1}));
-  transformation_context.GetFactManager()->MaybeAddFact(
-      MakeSynonymFact(46, {}, 105, {2}));
+  FactManager fact_manager;
+  spvtools::ValidatorOptions validator_options;
+  TransformationContext transformation_context(&fact_manager,
+                                               validator_options);
+
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(20, {0}, 100, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(20, {1}, 100, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(20, {2}, 100, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(54, {}, 100, {3}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(15, {0}, 101, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(15, {1}, 101, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(19, {0}, 101, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(19, {1}, 101, {3}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(27, {}, 102, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(15, {0}, 102, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(15, {1}, 102, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(33, {}, 103, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(47, {0}, 103, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(47, {1}, 103, {2}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(47, {2}, 103, {3}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(42, {}, 104, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(45, {}, 104, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(38, {0}, 105, {0}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(38, {1}, 105, {1}), context.get());
+  transformation_context.GetFactManager()->AddFact(
+      MakeSynonymFact(46, {}, 105, {2}), context.get());
 
   // Replace %20 with %100[0:2] in '%80 = OpCopyObject %16 %20'
   auto instruction_descriptor_1 =
@@ -936,15 +923,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                100, 100, {0, 1, 2});
   ASSERT_TRUE(shuffle_1.IsApplicable(context.get(), transformation_context));
   shuffle_1.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_1 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(20, instruction_descriptor_1, 0), 200);
   ASSERT_TRUE(
       replacement_1.IsApplicable(context.get(), transformation_context));
   replacement_1.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %54 with %100[3] in '%56 = OpFOrdNotEqual %30 %54 %55'
   auto instruction_descriptor_2 =
@@ -959,8 +945,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_2.IsApplicable(context.get(), transformation_context));
   replacement_2.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %15 with %101[0:1] in 'OpStore %12 %15'
   auto instruction_descriptor_3 = MakeInstructionDescriptor(64, SpvOpStore, 0);
@@ -968,15 +953,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                101, 101, {0, 1});
   ASSERT_TRUE(shuffle_3.IsApplicable(context.get(), transformation_context));
   shuffle_3.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_3 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(15, instruction_descriptor_3, 1), 202);
   ASSERT_TRUE(
       replacement_3.IsApplicable(context.get(), transformation_context));
   replacement_3.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %19 with %101[2:3] in '%81 = OpVectorShuffle %16 %19 %19 0 0 1'
   auto instruction_descriptor_4 =
@@ -985,15 +969,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                101, 101, {2, 3});
   ASSERT_TRUE(shuffle_4.IsApplicable(context.get(), transformation_context));
   shuffle_4.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_4 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(19, instruction_descriptor_4, 0), 203);
   ASSERT_TRUE(
       replacement_4.IsApplicable(context.get(), transformation_context));
   replacement_4.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %27 with %102[0] in '%82 = OpCompositeConstruct %21 %26 %27 %28
   // %25'
@@ -1009,8 +992,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_5.IsApplicable(context.get(), transformation_context));
   replacement_5.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %15 with %102[1:2] in '%83 = OpCopyObject %10 %15'
   auto instruction_descriptor_6 =
@@ -1019,15 +1001,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                102, 102, {1, 2});
   ASSERT_TRUE(shuffle_6.IsApplicable(context.get(), transformation_context));
   shuffle_6.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_6 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(15, instruction_descriptor_6, 0), 205);
   ASSERT_TRUE(
       replacement_6.IsApplicable(context.get(), transformation_context));
   replacement_6.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %33 with %103[0] in '%86 = OpCopyObject %30 %33'
   auto instruction_descriptor_7 =
@@ -1041,8 +1022,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_7.IsApplicable(context.get(), transformation_context));
   replacement_7.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %47 with %103[1:3] in '%84 = OpCopyObject %39 %47'
   auto instruction_descriptor_8 =
@@ -1051,15 +1031,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                103, 103, {1, 2, 3});
   ASSERT_TRUE(shuffle_8.IsApplicable(context.get(), transformation_context));
   shuffle_8.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_8 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(47, instruction_descriptor_8, 0), 207);
   ASSERT_TRUE(
       replacement_8.IsApplicable(context.get(), transformation_context));
   replacement_8.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %42 with %104[0] in '%85 = OpCopyObject %30 %42'
   auto instruction_descriptor_9 =
@@ -1073,8 +1052,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_9.IsApplicable(context.get(), transformation_context));
   replacement_9.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %45 with %104[1] in '%63 = OpLogicalOr %30 %45 %46'
   auto instruction_descriptor_10 =
@@ -1088,8 +1066,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_10.IsApplicable(context.get(), transformation_context));
   replacement_10.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %38 with %105[0:1] in 'OpStore %36 %38'
   auto instruction_descriptor_11 = MakeInstructionDescriptor(85, SpvOpStore, 0);
@@ -1097,15 +1074,14 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
                                                 105, 105, {0, 1});
   ASSERT_TRUE(shuffle_11.IsApplicable(context.get(), transformation_context));
   shuffle_11.Apply(context.get(), &transformation_context);
-  transformation_context.GetFactManager()->ComputeClosureOfFacts(100);
+  fact_manager.ComputeClosureOfFacts(context.get(), 100);
 
   auto replacement_11 = TransformationReplaceIdWithSynonym(
       MakeIdUseDescriptor(38, instruction_descriptor_11, 1), 210);
   ASSERT_TRUE(
       replacement_11.IsApplicable(context.get(), transformation_context));
   replacement_11.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   // Replace %46 with %105[2] in '%62 = OpLogicalAnd %30 %45 %46'
   auto instruction_descriptor_12 =
@@ -1119,8 +1095,7 @@ TEST(DataSynonymTransformationTest, VectorCompositeSynonyms) {
   ASSERT_TRUE(
       replacement_12.IsApplicable(context.get(), transformation_context));
   replacement_12.Apply(context.get(), &transformation_context);
-  ASSERT_TRUE(fuzzerutil::IsValidAndWellFormed(context.get(), validator_options,
-                                               kConsoleMessageConsumer));
+  ASSERT_TRUE(IsValid(env, context.get()));
 
   const std::string after_transformation = R"(
                OpCapability Shader
