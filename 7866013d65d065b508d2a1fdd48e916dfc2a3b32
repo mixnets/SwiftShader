@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80f651a0_4bbeabbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-11-11T17:49:00Z",
+      "side": 1,
+      "message": "LGTM if it passes\nlinux-swangle-try-tot-swiftshader-x64\nlinux-swangle-try-tot-swiftshader-x86\nwin-swangle-try-tot-swiftshader-x64\nwin-swangle-try-tot-swiftshader-x86",
+      "revId": "7866013d65d065b508d2a1fdd48e916dfc2a3b32",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
