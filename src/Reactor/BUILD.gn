@@ -329,6 +329,10 @@ if (supports_llvm) {
 
     configs = [ ":swiftshader_reactor_private_config" ]
 
+    # Enable instrumentation of Reactor routines for MemorySanitizer builds (LLVM backend).
+    # TODO(b/155148722): Remove when unconditionally instrumenting for all build systems.
+    defines = [ "REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION=1" ]
+
     include_dirs = [
       "$llvm_dir/llvm/include/",
       "$llvm_dir/configs/common/include/",
