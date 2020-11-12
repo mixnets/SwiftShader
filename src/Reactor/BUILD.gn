@@ -335,6 +335,10 @@ if (supports_llvm) {
 
     configs = [ ":swiftshader_reactor_private_config" ]
 
+    public_defines = [
+      "REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION=1",
+    ]
+
     include_dirs = [
       "$llvm_dir/llvm/include/",
       "$llvm_dir/configs/common/include/",
