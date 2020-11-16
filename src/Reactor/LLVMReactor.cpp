@@ -2865,6 +2865,35 @@ RValue<Float> RcpSqrt_pp(RValue<Float> x)
 #endif
 }
 
+bool HasRcpApprox()
+{
+#if defined(__i386__) || defined(__x86_64__)
+	return true;
+#else
+	return false;
+#endif
+}
+
+RValue<Float4> RcpApprox(RValue<Float4> val, bool exactAtPow2)
+{
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::rsqrtps(val);
+#else
+	UNIMPLEMENTED_NO_BUG("RValue<Float4> RcpApprox() not available on this platform");
+	return { 0.0f };
+#endif
+}
+
+RValue<Float> RcpApprox(RValue<Float> val, bool exactAtPow2)
+{
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::rsqrtss(val);
+#else
+	UNIMPLEMENTED_NO_BUG("RValue<Float4> RcpApprox() not available on this platform");
+	return { 0.0f };
+#endif
+}
+
 RValue<Float> Sqrt(RValue<Float> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
