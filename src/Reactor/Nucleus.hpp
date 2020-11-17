@@ -79,6 +79,14 @@ public:
 			this->level = Level::REACTOR_DEFAULT_OPT_LEVEL;
 		}
 #endif
+
+		// TODO(b/173257647): MemorySanitizer instrumentation produces IR which takes
+		// a lot longer to process by the machine code optimization passes. Disabling
+		// them has a negligible effect on code quality but compiles much faster.
+		if(__has_feature(memory_sanitizer))
+		{
+			this->level = Level::None;
+		}
 	}
 
 	Level getLevel() const { return level; }
