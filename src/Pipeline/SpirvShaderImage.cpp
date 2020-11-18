@@ -622,6 +622,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 			sampleId = insn.word(operand++);
 			imageOperands &= ~spv::ImageOperandsSampleMask;
 		}
+		if(imageOperands & spv::ImageOperandsZeroExtendMask)
+		{
+			imageOperands &= ~spv::ImageOperandsZeroExtendMask;
+		}
+		else if(imageOperands & spv::ImageOperandsSignExtendMask)
+		{
+			imageOperands &= ~spv::ImageOperandsSignExtendMask;
+		}
 
 		// Should be no remaining image operands.
 		if(imageOperands != 0)
@@ -1014,6 +1022,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		{
 			sampleId = insn.word(operand++);
 			imageOperands &= ~spv::ImageOperandsSampleMask;
+		}
+		if(imageOperands & spv::ImageOperandsZeroExtendMask)
+		{
+			imageOperands &= ~spv::ImageOperandsZeroExtendMask;
+		}
+		else if(imageOperands & spv::ImageOperandsSignExtendMask)
+		{
+			imageOperands &= ~spv::ImageOperandsSignExtendMask;
 		}
 
 		// Should be no remaining image operands.
