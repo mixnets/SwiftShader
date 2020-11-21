@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "804a95e2_10847927",
+        "filename": "src/Pipeline/SpirvShaderGroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-11-21T03:49:26Z",
+      "side": 1,
+      "message": "Ideally it should be checked whether it\u0027s a constant, and in that case use the faster implementation from the left-hand side.",
+      "range": {
+        "startLine": 142,
+        "startChar": 8,
+        "endLine": 142,
+        "endChar": 12
+      },
+      "revId": "9b41839b9103ba45c78a166d40316622b6873ff6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
