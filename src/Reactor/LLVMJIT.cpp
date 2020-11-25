@@ -24,17 +24,27 @@ __pragma(warning(push))
     __pragma(warning(disable : 4146))  // unary minus operator applied to unsigned type, result still unsigned
 #endif
 
+#include "llvm/CodeGen/MachineFunctionPass.h"
+#include "llvm/CodeGen/Passes.h"
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 #include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
+
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+#include <regex>
+#include <sstream>
+#include <string>
 
 #ifdef _MSC_VER
     __pragma(warning(pop))
@@ -684,6 +694,46 @@ public:
 			names[i] = mangle(func->getName());
 		}
 
+		// TODO: find a better way to do this
+		{
+			static bool firstTime = true;
+			if(firstTime)
+			{
+				const char *argv[] = { "Reactor", "-x86-asm-syntax", "intel" };
+				llvm::cl::ParseCommandLineOptions(sizeof(argv) / sizeof(argv[0]), argv);
+				firstTime = false;
+			}
+		}
+
+		const std::string filename_base = [] {
+			static size_t counter = 0;
+			std::stringstream f;
+			f << "llvm_jit_" << std::setfill('0') << std::setw(2) << counter++;
+			return f.str();
+			// auto t = std::time(nullptr);
+			// auto tm = *std::localtime(&t);
+			// std::stringstream f;
+			// f << "llvm_jit_" << std::put_time(&tm, "%d-%m-%Y_%H-%M-%S") << "_" << counter++;
+			// return f.str();
+		}();
+
+		const std::string filename = filename_base + "_a.lst";
+		const std::string filename2 = filename_base + "_b.lst";
+
+		auto builder = JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel());
+		if(auto targetMachine = builder.createTargetMachine())
+		{
+			auto fileType = llvm::CGFT_AssemblyFile;
+			std::error_code EC;
+			llvm::raw_fd_ostream dest(filename, EC, llvm::sys::fs::OF_None);
+			llvm::legacy::PassManager pm;
+			auto &options = targetMachine.get()->Options.MCOptions;
+			options.ShowMCEncoding = true;
+			options.AsmVerbose = true;
+			targetMachine.get()->addPassesToEmitFile(pm, dest, nullptr, fileType);
+			pm.run(*module);
+		}
+
 		// Once the module is passed to the compileLayer, the
 		// llvm::Functions are freed. Make sure funcs are not referenced
 		// after this point.
@@ -698,6 +748,106 @@ public:
 			ASSERT_MSG(symbol, "Failed to lookup address of routine function %d: %s",
 			           (int)i, llvm::toString(symbol.takeError()).c_str());
 			addresses[i] = reinterpret_cast<void *>(static_cast<intptr_t>(symbol->getAddress()));
+		}
+
+		{
+			std::ifstream fin(filename);
+			std::ofstream fout(filename2);
+
+			fout << "\nFunction Addresses:\n";
+			for(size_t i = 0; i < count; i++)
+			{
+				fout << "f" << i << ": " << addresses[i] << "\n";
+			}
+			fout << "\n";
+
+			auto getNextLine = [](auto& fin, std::string& line) {
+				// Combine multiline comments into a single line to simplify parsing
+				if (!std::getline(fin, line)) return false;
+
+				std::string nextLine;
+				while (true)
+				{
+					auto pos = fin.tellg();
+					if (!std::getline(fin, nextLine))
+					{
+						fin.seekg(pos);
+						return true;
+					}
+
+					static std::regex reComment(R"([ \t]+#.*)");
+					if (std::regex_match(nextLine, reComment))
+					{
+						line += nextLine;
+					}
+					else
+					{
+						fin.seekg(pos);
+						return true;
+					}
+				}
+			};
+
+			std::string line;
+			size_t functionIndex = ~0;
+			size_t instructionAddress = 0;
+			while(getNextLine(fin, line))
+			{
+				size_t pos{};
+
+				if(line.find("# -- Begin function") != std::string::npos)
+				{
+					++functionIndex;
+
+					if(functionIndex < count)
+					{
+						instructionAddress = (size_t)addresses[functionIndex];
+					}
+					else
+					{
+						// For coroutines, more functions are compiled than the top-level three.
+						// For now, just output 0-based instructions.
+						instructionAddress = 0;
+					}
+				}
+
+				// Handle alignment directives by aligning the instruction address. When lowered, these actually
+				// map to a nops to pad to the next aligned address.
+				pos = line.find(".p2align");
+				if(pos != std::string::npos)
+				{
+					// This assumes GNU asm format (https://sourceware.org/binutils/docs/as/P2align.html#P2align)
+					// Extract and apply alignment to our offset
+					static std::regex reAlign(R"(.*\.p2align.*([0-9]+).*)");
+					std::smatch matches;
+					auto found = std::regex_search(line, matches, reAlign);
+					ASSERT(found);
+					auto alignPow2 = std::stoi(matches[1]);
+					auto align = 1 << alignPow2;
+					instructionAddress = (instructionAddress + align - 1) & ~(align - 1);
+				}
+
+				// Detect instruction lines and prepend the location (address)
+				pos = line.find("encoding: [");
+				if(pos != std::string::npos)
+				{
+					// Determine offset of next instruction (size of this instruction in bytes)
+					// e.g. # encoding: [0x48,0x89,0x4c,0x24,0x40]
+					// Count number of commas in the array + 1
+					auto iter = line.begin();
+					std::advance(iter, pos);
+					auto instructionSize = 1 + std::count_if(iter, line.end(), [](char c) { return c == ','; });
+
+					// Prepend current location to instruction line
+					std::stringstream location;
+					location << "[0x" << std::uppercase << std::hex << instructionAddress << "] ";
+					line = location.str() + line;
+
+					instructionAddress += instructionSize;
+				}
+
+				fout << line + "\n";
+			}
 		}
 	}
 
