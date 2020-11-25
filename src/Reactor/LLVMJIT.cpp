@@ -24,6 +24,8 @@ __pragma(warning(push))
     __pragma(warning(disable : 4146))  // unary minus operator applied to unsigned type, result still unsigned
 #endif
 
+#include "llvm/CodeGen/MachineFunctionPass.h"
+#include "llvm/CodeGen/Passes.h"
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 #include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
@@ -682,6 +684,26 @@ public:
 				func->setName("f" + llvm::Twine(i).str());
 			}
 			names[i] = mangle(func->getName());
+		}
+
+		auto &builder = JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel());
+		if(auto targetMachine = builder.createTargetMachine())
+		{
+			auto filename = "output.asm";
+			auto fileType = llvm::CGFT_AssemblyFile;
+			std::error_code EC;
+			llvm::raw_fd_ostream dest(filename, EC, llvm::sys::fs::OF_None);
+			llvm::legacy::PassManager pm;
+			//targetMachine.get()->Options.PrintMachineCode
+			auto &options = targetMachine.get()->Options.MCOptions;
+			//options.ShowMCEncoding = true;
+			//options.ShowMCInst = true;
+			//options.PreserveAsmComments = true;
+			//options.AsmVerbose = true;
+			//options.
+			targetMachine.get()->addPassesToEmitFile(pm, dest, nullptr, fileType);
+			pm.add(llvm::createMachineFunctionPrinterPass(dest, "Banner"));
+			pm.run(*module);
 		}
 
 		// Once the module is passed to the compileLayer, the
