@@ -272,13 +272,13 @@ void ComputeProgram::run(
 					// together.
 					for(int subgroupIndex = 0; subgroupIndex < subgroupsPerWorkgroup; subgroupIndex++)
 					{
-						auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
+						auto coroutine = (*this)(Name{ "ComputeProgram" }, &data, groupX, groupY, groupZ, workgroupMemory.data(), subgroupIndex, 1);
 						coroutines.push(std::move(coroutine));
 					}
 				}
 				else
 				{
-					auto coroutine = (*this)(&data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
+					auto coroutine = (*this)(Name{ "ComputeProgram" }, &data, groupX, groupY, groupZ, workgroupMemory.data(), 0, subgroupsPerWorkgroup);
 					coroutines.push(std::move(coroutine));
 				}
 
