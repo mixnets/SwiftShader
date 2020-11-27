@@ -1908,7 +1908,7 @@ TEST(ReactorUnitTests, Coroutines_Fibonacci)
 		}
 	}
 
-	auto coroutine = function();
+	auto coroutine = function(Name{ testName() });
 
 	for(size_t i = 0; i < fibonacci.size(); i++)
 	{
@@ -1938,7 +1938,7 @@ TEST(ReactorUnitTests, Coroutines_Parameters)
 	}
 
 	uint8_t data[] = { 10, 20, 30 };
-	auto coroutine = function(&data[0], 3);
+	auto coroutine = function(Name{ testName() }, &data[0], 3);
 
 	uint8_t out = 0;
 	EXPECT_EQ(coroutine->await(out), true);
@@ -1977,7 +1977,7 @@ TEST(ReactorUnitTests, Coroutines_Vectors)
 		Yield(rr::Extract(c, 1));
 	}
 
-	auto coroutine = function();
+	auto coroutine = function(Name{ testName() });
 
 	int out;
 	coroutine->await(out);
@@ -2009,7 +2009,7 @@ TEST(ReactorUnitTests, Coroutines_NoYield)
 			a = 4;
 		}
 
-		auto coroutine = function();
+		auto coroutine = function(Name{ testName() });
 		int out;
 		EXPECT_EQ(coroutine->await(out), false);
 	}
@@ -2041,7 +2041,7 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 	}
 
 	// Must call on same thread that creates the coroutine
-	function.finalize();
+	function.finalize(Name{ testName() });
 
 	std::vector<std::thread> threads;
 	const size_t numThreads = 100;
@@ -2049,7 +2049,7 @@ TEST(ReactorUnitTests, Coroutines_Parallel)
 	for(size_t t = 0; t < numThreads; ++t)
 	{
 		threads.emplace_back([&] {
-			auto coroutine = function();
+			auto coroutine = function(Name{ testName() });
 
 			for(size_t i = 0; i < fibonacci.size(); i++)
 			{
@@ -2848,7 +2848,7 @@ TEST(ReactorUnitTests, Multithreaded_Coroutine)
 					Yield(b);
 				}
 
-				auto coroutine = function(t, l);
+				auto coroutine = function(Name{ testName() }, t, l);
 
 				auto &result = results[t * numLoops + l];
 				result = {};

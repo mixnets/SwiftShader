@@ -21,6 +21,33 @@
 
 namespace rr {
 
+// A (Co)routine name, strongly typed to be distinct from variable
+// arguments passed to Routine generation functions.
+// TODO: consider using this for Function as well for consistency.
+class Name
+{
+public:
+	explicit Name(std::string name)
+	    : name(std::move(name))
+	{
+	}
+
+	explicit Name(const char *format, ...)
+	{
+		char fullName[1024 + 1];
+		va_list vararg;
+		va_start(vararg, name);
+		vsnprintf(fullName, 1024, format, vararg);
+		va_end(vararg);
+		name = fullName;
+	}
+
+	const std::string &get() const { return name; }
+
+private:
+	std::string name;
+};
+
 // Base class for the template Stream<T>
 class StreamBase
 {
@@ -139,11 +166,12 @@ public:
 	// finalize() *must* be called explicitly on the same thread that
 	// instantiates the Coroutine instance if operator() is to be invoked on
 	// different threads.
-	inline void finalize(const Config::Edit &cfg = Config::Edit::None);
+	inline void finalize(Name name = Name{ "coroutine" }, const Config::Edit &cfg = Config::Edit::None);
 
 	// Starts execution of the coroutine and returns a unique_ptr to a
 	// Stream<> that exposes the await() function for obtaining yielded
 	// values.
+	std::unique_ptr<Stream<Return>> operator()(Name, Arguments...);
 	std::unique_ptr<Stream<Return>> operator()(Arguments...);
 
 protected:
@@ -170,20 +198,20 @@ Coroutine<Return(Arguments...)>::Coroutine()
 }
 
 template<typename Return, typename... Arguments>
-void Coroutine<Return(Arguments...)>::finalize(const Config::Edit &cfg /* = Config::Edit::None */)
+void Coroutine<Return(Arguments...)>::finalize(Name name /*= { "coroutine" }*/, const Config::Edit &cfg /* = Config::Edit::None */)
 {
 	if(core != nullptr)
 	{
-		routine = core->acquireCoroutine("coroutine", cfg);
+		routine = core->acquireCoroutine(name.get().c_str(), cfg);
 		core.reset(nullptr);
 	}
 }
 
 template<typename Return, typename... Arguments>
 std::unique_ptr<Stream<Return>>
-Coroutine<Return(Arguments...)>::operator()(Arguments... args)
+Coroutine<Return(Arguments...)>::operator()(Name name, Arguments... args)
 {
-	finalize();
+	finalize(std::move(name));
 
 	// TODO(b/148400732): Go back to just calling the CoroutineEntryBegin function directly.
 	std::function<Nucleus::CoroutineHandle()> coroutineBegin = [=] {
@@ -196,6 +224,13 @@ Coroutine<Return(Arguments...)>::operator()(Arguments... args)
 	auto handle = Nucleus::invokeCoroutineBegin(*routine, coroutineBegin);
 
 	return std::make_unique<Stream<Return>>(routine, handle);
+}
+
+template<typename Return, typename... Arguments>
+std::unique_ptr<Stream<Return>>
+Coroutine<Return(Arguments...)>::operator()(Arguments... args)
+{
+	return (*this)(Name{ "coroutine" }, std::forward<Arguments>(args)...);
 }
 
 #	ifdef Yield  // Defined in WinBase.h
