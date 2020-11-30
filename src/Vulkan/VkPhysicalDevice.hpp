@@ -72,6 +72,9 @@ public:
 	                              VkQueueFamilyProperties2 *pQueueFamilyProperties) const;
 	static const VkPhysicalDeviceMemoryProperties &GetMemoryProperties();
 
+	bool canCreateImage(Format format, VkImageType type, VkImageTiling tiling,
+	                    VkImageUsageFlags usage, VkImageCreateFlags flags) const;
+
 private:
 	const VkPhysicalDeviceLimits &getLimits() const;
 	VkSampleCountFlags getSampleCounts() const;
