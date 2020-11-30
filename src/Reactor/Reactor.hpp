@@ -2661,9 +2661,6 @@ namespace rr {
 template<class T>
 LValue<T>::LValue()
 {
-#ifdef ENABLE_RR_DEBUG_INFO
-	materialize();
-#endif  // ENABLE_RR_DEBUG_INFO
 }
 
 template<class T>
