@@ -131,6 +131,7 @@ public:
 	Value *getElementPointer(Value *index, bool unsignedIndex) const;
 
 	virtual Type *getType() const = 0;
+	virtual int getArraySize() const { return 0; }
 
 	// This function is only public for testing purposes, as it affects performance.
 	// It is not considered part of Reactor's public API.
@@ -143,9 +144,9 @@ protected:
 	virtual ~Variable();
 
 private:
-	static void killUnmaterialized();
+	void materialize(int arraySize) const;
 
-	virtual Value *allocate() const;
+	static void killUnmaterialized();
 
 	// Set of variables that do not have a stack location yet.
 	class UnmaterializedVariables
@@ -173,7 +174,7 @@ template<class T>
 class LValue : public Variable
 {
 public:
-	LValue();
+	LValue(int arraySize = 0);
 
 	RValue<Pointer<T>> operator&();
 
@@ -2549,9 +2550,9 @@ public:
 	// This function exists because operator&() is overloaded by LValue<T>.
 	inline Array *self() { return this; }
 
-private:
-	Value *allocate() const override;
+	int getArraySize() const override { return arraySize; }
 
+private:
 	const int arraySize;
 };
 
@@ -2659,10 +2660,13 @@ RValue<Long> Ticks();
 namespace rr {
 
 template<class T>
-LValue<T>::LValue()
+LValue<T>::LValue(int arraySize)
 {
 #ifdef ENABLE_RR_DEBUG_INFO
-	materialize();
+	// We can't call materialize(void) here because it will call the virtual
+	// getArraySize() method, which for Array<> variables calls Variable::getArraySize()
+	// instead of Array<>::getArraySize() while we're in this constructor.
+	materialize(arraySize);
 #endif  // ENABLE_RR_DEBUG_INFO
 }
 
@@ -3060,12 +3064,6 @@ template<class T, int S>
 Array<T, S>::Array(int size)
     : arraySize(size)
 {
-}
-
-template<class T, int S>
-Value *Array<T, S>::allocate() const
-{
-	return Nucleus::allocateStackVariable(T::type(), arraySize);
 }
 
 template<class T, int S>

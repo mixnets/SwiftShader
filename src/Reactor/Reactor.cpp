@@ -116,9 +116,14 @@ Variable::~Variable()
 
 void Variable::materialize() const
 {
+	materialize(getArraySize());
+}
+
+void Variable::materialize(int arraySize) const
+{
 	if(!address)
 	{
-		address = allocate();
+		address = Nucleus::allocateStackVariable(getType(), arraySize);
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
 		if(rvalue)
@@ -167,11 +172,6 @@ Value *Variable::getBaseAddress() const
 Value *Variable::getElementPointer(Value *index, bool unsignedIndex) const
 {
 	return Nucleus::createGEP(getBaseAddress(), getType(), index, unsignedIndex);
-}
-
-Value *Variable::allocate() const
-{
-	return Nucleus::allocateStackVariable(getType());
 }
 
 void Variable::materializeAll()
