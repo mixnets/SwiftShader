@@ -23,7 +23,11 @@ namespace sw {
 
 struct Constants
 {
-	Constants();
+	static const Constants &Get()
+	{
+		static Constants constants;
+		return constants;
+	}
 
 	unsigned int transposeBit0[16];
 	unsigned int transposeBit1[16];
@@ -138,9 +142,10 @@ struct Constants
 	float4 unscaleFixed;
 
 	float half2float[65536];
-};
 
-extern Constants constants;
+private:
+	Constants();
+};
 
 }  // namespace sw
 
