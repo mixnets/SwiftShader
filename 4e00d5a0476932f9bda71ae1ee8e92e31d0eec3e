@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83fb0366_3607cf2b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "nit: For Buganizer issues use b/171299814 to more easily discern them from Monorail bugs.",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 14
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "613f896f_bb7ffd8f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "Let\u0027s use dEQP-VK.* here to see whether there are any other tests that exercise this. If there are none, we should make a request at https://gitlab.khronos.org/Tracker/vk-gl-cts/issues, especially since AEMU/FEMU depends on this functionality.",
+      "range": {
+        "startLine": 24,
+        "startChar": 6,
+        "endLine": 24,
+        "endChar": 31
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c0d8ec5_fc8896ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "Thanks! Just a few nits and minor comments:",
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d077752a_42871e98",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1345,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "We have Format::isCompressed() for this: https://cs.opensource.google/swiftshader/SwiftShader/+/master:src/Vulkan/VkFormat.cpp;drc\u003d9e46bb61c5d7fd6f839e53a51572fe2a64e32489;l\u003d468",
+      "range": {
+        "startLine": 1345,
+        "startChar": 1,
+        "endLine": 1345,
+        "endChar": 15
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8205ac11_dde412ea",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "\u0027format\u0027 is already a vk::Format here. Two other cases as well.",
+      "range": {
+        "startLine": 1446,
+        "startChar": 5,
+        "endLine": 1446,
+        "endChar": 23
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f42de4a7_a9c5170a",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "nit: Since this is used for determining whether or not to return VK_ERROR_FORMAT_NOT_SUPPORTED, \"isFormatSupported\" might be a better name? Also note that image creation may still fail because of other reasons.",
+      "range": {
+        "startLine": 75,
+        "startChar": 6,
+        "endLine": 75,
+        "endChar": 20
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e0d9abb_b5d4d7ec",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3076,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-02T14:18:40Z",
+      "side": 1,
+      "message": "Thanks for moving this into a helper function! Could you split this into a pure refactoring change?",
+      "range": {
+        "startLine": 3076,
+        "startChar": 31,
+        "endLine": 3076,
+        "endChar": 45
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
