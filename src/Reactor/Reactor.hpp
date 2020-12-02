@@ -115,11 +115,11 @@ public:
 	Value *getBaseAddress() const;
 	Value *getElementPointer(Value *index, bool unsignedIndex) const;
 
-	virtual Type *getType() const = 0;
+	Type *getType() const { return type; }
 	int getArraySize() const { return arraySize; }
 
 protected:
-	Variable(int arraySize);
+	Variable(int arraySize, Type *type);
 	Variable(const Variable &) = default;
 
 	virtual ~Variable();
@@ -133,6 +133,7 @@ private:
 	static thread_local std::unordered_set<const Variable *> *unmaterializedVariables;
 
 	const int arraySize;
+	Type *const type;
 	mutable Value *rvalue = nullptr;
 	mutable Value *address = nullptr;
 };
@@ -155,11 +156,6 @@ public:
 		Variable::storeValue(rvalue.value());
 
 		return rvalue;
-	}
-
-	Type *getType() const override
-	{
-		return T::type();
 	}
 
 	// self() returns the this pointer to this LValue<T> object.
@@ -2618,7 +2614,7 @@ namespace rr {
 
 template<class T>
 LValue<T>::LValue(int arraySize)
-    : Variable(arraySize)
+    : Variable(arraySize, T::type())
 {
 #ifdef ENABLE_RR_DEBUG_INFO
 	materialize();
