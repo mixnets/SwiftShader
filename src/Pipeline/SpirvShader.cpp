@@ -139,6 +139,23 @@ SpirvShader::SpirvShader(
 				break;
 			}
 
+			case spv::OpDecorateId:
+			{
+				auto decoration = static_cast<spv::Decoration>(insn.word(2));
+
+				// Currently OpDecorateId only supports UniformId, which provides information for
+				// potential optimizations that we don't perform. So it's safe to ignore this operation.
+				ASSERT(decoration == spv::DecorationUniformId || decoration == spv::DecorationCounterBuffer);
+				break;
+			}
+
+			case spv::OpDecorateString:
+			case spv::OpMemberDecorateString:
+			{
+				// We assume these are for HLSL semantics, ignore them.
+				break;
+			}
+
 			case spv::OpDecorationGroup:
 				// Nothing to do here. We don't need to record the definition of the group; we'll just have
 				// the bundle of decorations float around. If we were to ever walk the decorations directly,
@@ -1684,6 +1701,9 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		case spv::OpGroupDecorate:
 		case spv::OpGroupMemberDecorate:
 		case spv::OpDecorationGroup:
+		case spv::OpDecorateId:
+		case spv::OpDecorateString:
+		case spv::OpMemberDecorateString:
 		case spv::OpName:
 		case spv::OpMemberName:
 		case spv::OpSource:
