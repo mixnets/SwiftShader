@@ -93,6 +93,8 @@ SpirvShader::SpirvShader(
 				break;
 
 			case spv::OpDecorate:
+			case spv::OpDecorateId:
+			case spv::OpDecorateString:
 			{
 				TypeOrObjectID targetId = insn.word(1);
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
@@ -122,6 +124,7 @@ SpirvShader::SpirvShader(
 			}
 
 			case spv::OpMemberDecorate:
+			case spv::OpMemberDecorateString:
 			{
 				Type::ID targetId = insn.word(1);
 				auto memberIndex = insn.word(2);
@@ -1684,6 +1687,9 @@ SpirvShader::EmitResult SpirvShader::EmitInstruction(InsnIterator insn, EmitStat
 		case spv::OpGroupDecorate:
 		case spv::OpGroupMemberDecorate:
 		case spv::OpDecorationGroup:
+		case spv::OpDecorateId:
+		case spv::OpDecorateString:
+		case spv::OpMemberDecorateString:
 		case spv::OpName:
 		case spv::OpMemberName:
 		case spv::OpSource:
