@@ -21,8 +21,6 @@
 
 namespace sw {
 
-Constants constants;
-
 Constants::Constants()
 {
 	static const unsigned int transposeBit0[16] = {

@@ -54,20 +54,21 @@ struct LibXcbExports
 class LibXcb
 {
 public:
-	operator bool()
+	static LibXcb &Get()
 	{
-		return loadExports();
+		static LibXcb libXcb;
+		return libXcb;
 	}
 
-	LibXcbExports *operator->()
+	LibXcbExports *operator->() const
 	{
-		return loadExports();
+		return exports.get();
 	}
 
 private:
-	LibXcbExports *loadExports()
+	LibXcb()
 	{
-		static auto exports = [] {
+		exports = [] {
 			if(getProcAddress(RTLD_DEFAULT, "xcb_create_gc"))
 			{
 				return std::make_unique<LibXcbExports>(RTLD_DEFAULT);
@@ -80,18 +81,16 @@ private:
 
 			return std::unique_ptr<LibXcbExports>();
 		}();
-
-		return exports.get();
 	}
-};
 
-LibXcb libXcb;
+	std::unique_ptr<LibXcbExports> exports;
+};
 
 VkExtent2D getWindowSize(xcb_connection_t *connection, xcb_window_t window)
 {
 	VkExtent2D windowExtent = { 0, 0 };
 	xcb_generic_error_t *error = nullptr;
-	auto geom = libXcb->xcb_get_geometry_reply(connection, libXcb->xcb_get_geometry(connection, window), &error);
+	auto geom = LibXcb::Get()->xcb_get_geometry_reply(connection, LibXcb::Get()->xcb_get_geometry(connection, window), &error);
 	if(error)
 	{
 		free(error);
@@ -137,10 +136,10 @@ void XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCap
 
 void XcbSurfaceKHR::attachImage(PresentImage *image)
 {
-	auto gc = libXcb->xcb_generate_id(connection);
+	auto gc = LibXcb::Get()->xcb_generate_id(connection);
 
 	uint32_t values[2] = { 0, 0xffffffff };
-	libXcb->xcb_create_gc(connection, gc, window, XCB_GC_FOREGROUND | XCB_GC_BACKGROUND, values);
+	LibXcb::Get()->xcb_create_gc(connection, gc, window, XCB_GC_FOREGROUND | XCB_GC_BACKGROUND, values);
 
 	graphicsContexts[image] = gc;
 }
@@ -150,7 +149,7 @@ void XcbSurfaceKHR::detachImage(PresentImage *image)
 	auto it = graphicsContexts.find(image);
 	if(it != graphicsContexts.end())
 	{
-		libXcb->xcb_free_gc(connection, it->second);
+		LibXcb::Get()->xcb_free_gc(connection, it->second);
 		graphicsContexts.erase(it);
 	}
 }
@@ -174,7 +173,7 @@ VkResult XcbSurfaceKHR::present(PresentImage *image)
 		size_t bufferSize = extent.height * stride;
 		constexpr int depth = 24;  // TODO: Actually use window display depth.
 
-		libXcb->xcb_put_image(
+		LibXcb::Get()->xcb_put_image(
 		    connection,
 		    XCB_IMAGE_FORMAT_Z_PIXMAP,
 		    window,
@@ -188,7 +187,7 @@ VkResult XcbSurfaceKHR::present(PresentImage *image)
 		    buffer       // data
 		);
 
-		libXcb->xcb_flush(connection);
+		LibXcb::Get()->xcb_flush(connection);
 	}
 
 	return VK_SUCCESS;
