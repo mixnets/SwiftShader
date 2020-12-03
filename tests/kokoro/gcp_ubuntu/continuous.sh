@@ -50,17 +50,28 @@ build/vk-unittests
 cd build
 cmake .. "-DREACTOR_ENABLE_PRINT=1"
 cmake --build . --target ReactorUnitTests -- -j $(nproc)
+cmake .. "-DREACTOR_ENABLE_PRINT=0"
 cd ..
 build/ReactorUnitTests --gtest_filter=ReactorUnitTests.Print*
+
+# Incrementally build with REACTOR_EMIT_ASM_FILE and run unit test
+# cd build
+# cmake .. "-DREACTOR_EMIT_ASM_FILE=1"
+# cmake --build . --target ReactorUnitTests -- -j $(nproc)
+# cmake .. "-DREACTOR_EMIT_ASM_FILE=0"
+# cd ..
+# build/ReactorUnitTests --gtest_filter=ReactorUnitTests.EmitAsm
 
 # Incrementally build with REACTOR_EMIT_DEBUG_INFO to ensure it builds
 cd build
 cmake .. "-DREACTOR_EMIT_DEBUG_INFO=1"
 cmake --build . --target ReactorUnitTests -- -j $(nproc)
+cmake .. "-DREACTOR_EMIT_DEBUG_INFO=0"
 cd ..
 
 # Incrementally build with REACTOR_EMIT_PRINT_LOCATION to ensure it builds
 cd build
 cmake .. "-DREACTOR_EMIT_PRINT_LOCATION=1"
 cmake --build . --target ReactorUnitTests -- -j $(nproc)
+cmake .. "-DREACTOR_EMIT_PRINT_LOCATION=0"
 cd ..
