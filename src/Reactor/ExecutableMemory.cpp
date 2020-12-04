@@ -20,7 +20,7 @@
 #	ifndef WIN32_LEAN_AND_MEAN
 #		define WIN32_LEAN_AND_MEAN
 #	endif
-#	include <windows.h>
+#	include <Windows.h>
 #	include <intrin.h>
 #elif defined(__Fuchsia__)
 #	include <unistd.h>
@@ -43,7 +43,6 @@
 #endif
 
 namespace rr {
-namespace {
 
 struct Allocation
 {
@@ -51,11 +50,11 @@ struct Allocation
 	unsigned char *block;
 };
 
-void *allocateRaw(size_t bytes, size_t alignment)
+static void *allocateRaw(size_t bytes, size_t alignment)
 {
 	ASSERT((alignment & (alignment - 1)) == 0);  // Power of 2 alignment.
 
-#if defined(LINUX_ENABLE_NAMED_MMAP)
+#if defined(REACTOR_ANONYMOUS_MMAP_NAME)
 	if(alignment < sizeof(void *))
 	{
 		return malloc(bytes);
@@ -89,7 +88,7 @@ void *allocateRaw(size_t bytes, size_t alignment)
 }
 
 #if defined(_WIN32)
-DWORD permissionsToProtectMode(int permissions)
+static DWORD permissionsToProtectMode(int permissions)
 {
 	switch(permissions)
 	{
@@ -109,7 +108,7 @@ DWORD permissionsToProtectMode(int permissions)
 #endif
 
 #if !defined(_WIN32) && !defined(__Fuchsia__)
-int permissionsToMmapProt(int permissions)
+static int permissionsToMmapProt(int permissions)
 {
 	int result = 0;
 	if(permissions & PERMISSION_READ)
@@ -128,11 +127,11 @@ int permissionsToMmapProt(int permissions)
 }
 #endif  // !defined(_WIN32) && !defined(__Fuchsia__)
 
-#if defined(LINUX_ENABLE_NAMED_MMAP)
+#if defined(REACTOR_ANONYMOUS_MMAP_NAME)
 // Create a file descriptor for anonymous memory with the given
 // name. Returns -1 on failure.
 // TODO: remove once libc wrapper exists.
-int memfd_create(const char *name, unsigned int flags)
+static int memfd_create(const char *name, unsigned int flags)
 {
 #	if __aarch64__
 #		define __NR_memfd_create 279
@@ -157,14 +156,14 @@ int memfd_create(const char *name, unsigned int flags)
 // Returns a file descriptor for use with an anonymous mmap, if
 // memfd_create fails, -1 is returned. Note, the mappings should be
 // MAP_PRIVATE so that underlying pages aren't shared.
-int anonymousFd()
+static int anonymousFd()
 {
-	static int fd = memfd_create("SwiftShader JIT", 0);
+	static int fd = memfd_create(#REACTOR_ANONYMOUS_MMAP_NAME, 0);
 	return fd;
 }
 
 // Ensure there is enough space in the "anonymous" fd for length.
-void ensureAnonFileSize(int anonFd, size_t length)
+static void ensureAnonFileSize(int anonFd, size_t length)
 {
 	static size_t fileSize = 0;
 	if(length > fileSize)
@@ -173,10 +172,10 @@ void ensureAnonFileSize(int anonFd, size_t length)
 		fileSize = length;
 	}
 }
-#endif  // defined(LINUX_ENABLE_NAMED_MMAP)
+#endif  // defined(REACTOR_ANONYMOUS_MMAP_NAME)
 
 #if defined(__Fuchsia__)
-zx_vm_option_t permissionsToZxVmOptions(int permissions)
+static zx_vm_option_t permissionsToZxVmOptions(int permissions)
 {
 	zx_vm_option_t result = 0;
 	if(permissions & PERMISSION_READ)
@@ -194,8 +193,6 @@ zx_vm_option_t permissionsToZxVmOptions(int permissions)
 	return result;
 }
 #endif  // defined(__Fuchsia__)
-
-}  // anonymous namespace
 
 size_t memoryPageSize()
 {
@@ -226,7 +223,7 @@ void *allocate(size_t bytes, size_t alignment)
 
 void deallocate(void *memory)
 {
-#if defined(LINUX_ENABLE_NAMED_MMAP)
+#if defined(REACTOR_ANONYMOUS_MMAP_NAME)
 	free(memory);
 #else
 	if(memory)
@@ -252,7 +249,7 @@ void *allocateMemoryPages(size_t bytes, int permissions, bool need_exec)
 	size_t length = roundUp(bytes, pageSize);
 	void *mapping = nullptr;
 
-#if defined(LINUX_ENABLE_NAMED_MMAP)
+#if defined(REACTOR_ANONYMOUS_MMAP_NAME)
 	int flags = MAP_PRIVATE;
 
 	// Try to name the memory region for the executable code,
@@ -329,7 +326,10 @@ void *allocateMemoryPages(size_t bytes, int permissions, bool need_exec)
 void protectMemoryPages(void *memory, size_t bytes, int permissions)
 {
 	if(bytes == 0)
+	{
 		return;
+	}
+
 	bytes = roundUp(bytes, memoryPageSize());
 
 #if defined(_WIN32)
@@ -358,7 +358,7 @@ void deallocateMemoryPages(void *memory, size_t bytes)
 	    VirtualProtect(memory, bytes, PAGE_READWRITE, &oldProtection);
 	ASSERT(result);
 	deallocate(memory);
-#elif defined(LINUX_ENABLE_NAMED_MMAP) || defined(__APPLE__)
+#elif defined(__APPLE__) || defined(REACTOR_ANONYMOUS_MMAP_NAME)
 	size_t pageSize = memoryPageSize();
 	size_t length = (bytes + pageSize - 1) & ~(pageSize - 1);
 	int result = munmap(memory, length);
