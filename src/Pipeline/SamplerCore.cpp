@@ -1655,6 +1655,10 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				c.z = Pointer<Short4>(buffer)[index[2]];
 				c.w = Pointer<Short4>(buffer)[index[3]];
 				transpose4x4(c.x, c.y, c.z, c.w);
+				if(!hasUnsignedTextureComponent(0)) { c.x = Max(c.x, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(1)) { c.y = Max(c.y, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(2)) { c.z = Max(c.z, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(3)) { c.w = Max(c.w, Short4(-32767)); }
 				break;
 			case 3:
 				c.x = Pointer<Short4>(buffer)[index[0]];
@@ -1662,6 +1666,9 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				c.z = Pointer<Short4>(buffer)[index[2]];
 				c.w = Pointer<Short4>(buffer)[index[3]];
 				transpose4x3(c.x, c.y, c.z, c.w);
+				if(!hasUnsignedTextureComponent(0)) { c.x = Max(c.x, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(1)) { c.y = Max(c.y, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(2)) { c.z = Max(c.z, Short4(-32767)); }
 				break;
 			case 2:
 				c.x = *Pointer<Short4>(buffer + 4 * index[0]);
@@ -1671,12 +1678,15 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				c.y = c.x;
 				c.x = UnpackLow(As<Int2>(c.x), As<Int2>(c.z));
 				c.y = UnpackHigh(As<Int2>(c.y), As<Int2>(c.z));
+				if(!hasUnsignedTextureComponent(0)) { c.x = Max(c.x, Short4(-32767)); }
+				if(!hasUnsignedTextureComponent(1)) { c.y = Max(c.y, Short4(-32767)); }
 				break;
 			case 1:
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[0]], 0);
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[1]], 1);
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[2]], 2);
 				c.x = Insert(c.x, Pointer<Short>(buffer)[index[3]], 3);
+				if(!hasUnsignedTextureComponent(0)) { c.x = Max(c.x, Short4(-32767)); }
 				break;
 			default:
 				ASSERT(false);
