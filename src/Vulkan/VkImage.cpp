@@ -17,6 +17,7 @@
 #include "VkBuffer.hpp"
 #include "VkDevice.hpp"
 #include "VkDeviceMemory.hpp"
+#include "VkStringify.hpp"
 #include "Device/ASTC_Decoder.hpp"
 #include "Device/BC_Decoder.hpp"
 #include "Device/Blitter.hpp"
@@ -24,6 +25,7 @@
 
 #ifdef __ANDROID__
 #	include "System/GrallocAndroid.hpp"
+#	include "VkDeviceMemoryExternalAndroid.hpp"
 #endif
 
 #include <cstring>
@@ -121,6 +123,34 @@ bool GetNoAlphaOrUnsigned(const vk::Format &format)
 	}
 }
 
+VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
+{
+	auto nextInfo = reinterpret_cast<VkBaseInStructure const *>(pCreateInfo->pNext);
+	while(nextInfo)
+	{
+		switch(nextInfo->sType)
+		{
+#ifdef __ANDROID__
+			case VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID:
+			{
+				const VkExternalFormatANDROID *externalFormatAndroid = reinterpret_cast<const VkExternalFormatANDROID *>(nextInfo);
+				const VkFormat correspondingVkFormat = AHardwareBufferExternalMemory::GetVkFormatFromAHBFormat(externalFormatAndroid->externalFormat);
+				ASSERT(pCreateInfo->format == VK_FORMAT_UNDEFINED || pCreateInfo->format == correspondingVkFormat);
+				return correspondingVkFormat;
+			}
+			break;
+#endif
+			default:
+				LOG_TRAP("pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				break;
+		}
+
+		nextInfo = nextInfo->pNext;
+	}
+
+	return pCreateInfo->format;
+}
+
 }  // anonymous namespace
 
 namespace vk {
@@ -129,7 +159,7 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
     : device(device)
     , flags(pCreateInfo->flags)
     , imageType(pCreateInfo->imageType)
-    , format(pCreateInfo->format)
+    , format(GetImageFormat(pCreateInfo))
     , extent(pCreateInfo->extent)
     , mipLevels(pCreateInfo->mipLevels)
     , arrayLayers(pCreateInfo->arrayLayers)
