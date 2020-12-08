@@ -127,8 +127,6 @@ struct Constants
 	dword minZ[16];
 	dword fini[16];
 
-	dword4 maxPos;
-
 	float4 unscaleByte;
 	float4 unscaleSByte;
 	float4 unscaleShort;
@@ -140,7 +138,7 @@ struct Constants
 	float half2float[65536];
 };
 
-extern Constants constants;
+extern const Constants constants;
 
 }  // namespace sw
 
