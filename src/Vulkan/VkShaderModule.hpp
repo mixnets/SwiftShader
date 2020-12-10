@@ -34,7 +34,7 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo *pCreateInfo);
 	// TODO: reconsider boundary of ShaderModule class; try to avoid 'expose the
-	// guts' operations, and this copy.
+	// guts' operations, and this  copy.
 	std::vector<uint32_t> getCode() const { return std::vector<uint32_t>{ code, code + wordCount }; }
 
 	uint32_t getSerialID() const { return serialID; }
