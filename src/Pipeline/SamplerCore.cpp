@@ -1660,16 +1660,6 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 				if(!hasUnsignedTextureComponent(2)) { c.z = Max(c.z, Short4(-32767)); }
 				if(!hasUnsignedTextureComponent(3)) { c.w = Max(c.w, Short4(-32767)); }
 				break;
-			case 3:
-				c.x = Pointer<Short4>(buffer)[index[0]];
-				c.y = Pointer<Short4>(buffer)[index[1]];
-				c.z = Pointer<Short4>(buffer)[index[2]];
-				c.w = Pointer<Short4>(buffer)[index[3]];
-				transpose4x3(c.x, c.y, c.z, c.w);
-				if(!hasUnsignedTextureComponent(0)) { c.x = Max(c.x, Short4(-32767)); }
-				if(!hasUnsignedTextureComponent(1)) { c.y = Max(c.y, Short4(-32767)); }
-				if(!hasUnsignedTextureComponent(2)) { c.z = Max(c.z, Short4(-32767)); }
-				break;
 			case 2:
 				c.x = *Pointer<Short4>(buffer + 4 * index[0]);
 				c.x = As<Short4>(UnpackLow(c.x, *Pointer<Short4>(buffer + 4 * index[1])));
@@ -1988,15 +1978,6 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 				c.y = c.x;
 				c.x = Float4(c.x.xz, c.z.xz);
 				c.y = Float4(c.y.yw, c.z.yw);
-				break;
-			case VK_FORMAT_R32G32B32_SFLOAT:
-			case VK_FORMAT_R32G32B32_SINT:
-			case VK_FORMAT_R32G32B32_UINT:
-				c.x = *Pointer<Float4>(buffer + index[0] * 16, 16);
-				c.y = *Pointer<Float4>(buffer + index[1] * 16, 16);
-				c.z = *Pointer<Float4>(buffer + index[2] * 16, 16);
-				c.w = *Pointer<Float4>(buffer + index[3] * 16, 16);
-				transpose4x3(c.x, c.y, c.z, c.w);
 				break;
 			case VK_FORMAT_R32G32B32A32_SFLOAT:
 			case VK_FORMAT_R32G32B32A32_SINT:
