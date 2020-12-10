@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5b6aa40_3a340b38",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2020-12-10T16:23:35Z",
+      "side": 1,
+      "message": "This is awesome! I had some nits, but it\u0027s not worth delaying having this CL landed.",
+      "revId": "cdca83afc7314a704abb820c43d40614bab9d7e6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
