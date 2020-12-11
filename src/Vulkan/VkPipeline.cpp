@@ -78,6 +78,10 @@ std::vector<uint32_t> preprocessSpirv(
 	spvtools::OptimizerOptions options;
 #if defined(NDEBUG)
 	options.set_run_validator(false);
+#else
+	spvtools::ValidatorOptions validatorOptions;
+	validatorOptions.SetUniformBufferStandardLayout(true);
+	options.set_validator_options(validatorOptions);
 #endif
 
 	opt.Run(code.data(), code.size(), &optimized, options);
@@ -100,14 +104,15 @@ std::shared_ptr<sw::SpirvShader> createShader(
     const vk::PipelineCache::SpirvShaderKey &key,
     const vk::ShaderModule *module,
     bool robustBufferAccess,
-    const std::shared_ptr<vk::dbg::Context> &dbgctx)
+    const std::shared_ptr<vk::dbg::Context> &dbgctx,
+    bool uniformBufferStandardLayout)
 {
 	// Do not optimize the shader if we have a debugger context.
 	// Optimization passes are likely to damage debug information, and reorder
 	// instructions.
 	const bool optimize = !dbgctx;
 
-	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo(), optimize);
+	auto code = preprocessSpirv(key.getInsns(), key.getSpecializationInfo(), optimize, uniformBufferStandardLayout);
 	ASSERT(code.size() > 0);
 
 	// If the pipeline has specialization constants, assume they're unique and
@@ -232,13 +237,13 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks *pAllocator, c
 		if(pPipelineCache)
 		{
 			auto shader = pPipelineCache->getOrCreateShader(key, [&] {
-				return createShader(key, module, robustBufferAccess, device->getDebuggerContext());
+				return createShader(key, module, robustBufferAccess, device->getDebuggerContext(), device->hasUniformBufferStandardLayout());
 			});
 			setShader(pipelineStage, shader);
 		}
 		else
 		{
-			auto shader = createShader(key, module, robustBufferAccess, device->getDebuggerContext());
+			auto shader = createShader(key, module, robustBufferAccess, device->getDebuggerContext(), device->hasUniformBufferStandardLayout());
 			setShader(pipelineStage, shader);
 		}
 	}
@@ -273,7 +278,7 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	if(pPipelineCache)
 	{
 		shader = pPipelineCache->getOrCreateShader(shaderKey, [&] {
-			return createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext());
+			return createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext(), device->hasUniformBufferStandardLayout());
 		});
 
 		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
@@ -283,7 +288,7 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks *pAllocator, co
 	}
 	else
 	{
-		shader = createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext());
+		shader = createShader(shaderKey, module, robustBufferAccess, device->getDebuggerContext(), device->hasUniformBufferStandardLayout());
 		const PipelineCache::ComputeProgramKey programKey(shader.get(), layout);
 		program = createProgram(device, programKey);
 	}

@@ -182,6 +182,7 @@ private:
 	typedef char ExtensionName[VK_MAX_EXTENSION_NAME_SIZE];
 	ExtensionName *extensions = nullptr;
 	const VkPhysicalDeviceFeatures enabledFeatures = {};
+	bool uniformBufferStandardLayout = false;
 
 	std::shared_ptr<marl::Scheduler> scheduler;
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
