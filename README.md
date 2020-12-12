@@ -12,7 +12,7 @@ SwiftShader is a high-performance CPU-based implementation of the Vulkan graphic
 Building
 --------
 
-SwiftShader libraries can be built for Windows, Linux, and Mac OS X.\
+SwiftShader libraries can be built for Windows, Linux, and macOS X.\
 Android and Chrome (OS) build environments are also supported.
 
 * **CMake**
