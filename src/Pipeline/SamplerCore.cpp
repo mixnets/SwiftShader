@@ -26,6 +26,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state)
     , state(state)
 {
 }
+
 Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function)
 {
 	Vector4f c;
@@ -2065,25 +2066,22 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 
 	if(state.compareEnable)
 	{
-		Float4 ref = dRef;
-
 		if(!hasFloatTexture())
 		{
-			// D16_UNORM: clamp reference, normalize texel value
-			ref = Min(Max(ref, Float4(0.0f)), Float4(1.0f));
-			c.x = c.x * Float4(1.0f / 0xFFFF);
+			ASSERT(state.textureFormat == VK_FORMAT_D16_UNORM);
+			c.x = c.x * Float4(1.0f / 0xFFFF);  // D16_UNORM: normalize texel value
 		}
 
 		Int4 boolean;
 
 		switch(state.compareOp)
 		{
-			case VK_COMPARE_OP_LESS_OR_EQUAL: boolean = CmpLE(ref, c.x); break;
-			case VK_COMPARE_OP_GREATER_OR_EQUAL: boolean = CmpNLT(ref, c.x); break;
-			case VK_COMPARE_OP_LESS: boolean = CmpLT(ref, c.x); break;
-			case VK_COMPARE_OP_GREATER: boolean = CmpNLE(ref, c.x); break;
-			case VK_COMPARE_OP_EQUAL: boolean = CmpEQ(ref, c.x); break;
-			case VK_COMPARE_OP_NOT_EQUAL: boolean = CmpNEQ(ref, c.x); break;
+			case VK_COMPARE_OP_LESS_OR_EQUAL: boolean = CmpLE(dRef, c.x); break;
+			case VK_COMPARE_OP_GREATER_OR_EQUAL: boolean = CmpNLT(dRef, c.x); break;
+			case VK_COMPARE_OP_LESS: boolean = CmpLT(dRef, c.x); break;
+			case VK_COMPARE_OP_GREATER: boolean = CmpNLE(dRef, c.x); break;
+			case VK_COMPARE_OP_EQUAL: boolean = CmpEQ(dRef, c.x); break;
+			case VK_COMPARE_OP_NOT_EQUAL: boolean = CmpNEQ(dRef, c.x); break;
 			case VK_COMPARE_OP_ALWAYS: boolean = Int4(-1); break;
 			case VK_COMPARE_OP_NEVER: boolean = Int4(0); break;
 			default: ASSERT(false);
