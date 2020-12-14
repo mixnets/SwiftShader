@@ -3932,6 +3932,23 @@ RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 	return Rcp_pp(Sqrt(x));
 }
 
+bool HasRcpApprox()
+{
+	return false;
+}
+
+RValue<Float4> RcpApprox(RValue<Float4> val, bool exactAtPow2)
+{
+	UNIMPLEMENTED_NO_BUG("RValue<Float4> RcpApprox()");  // todo: put a bug number!
+	return { 0.0f };
+}
+
+RValue<Float> RcpApprox(RValue<Float> val, bool exactAtPow2)
+{
+	UNIMPLEMENTED_NO_BUG("RValue<Float> RcpApprox()");  // todo: put a bug number!
+	return { 0.0f };
+}
+
 RValue<Float4> Sqrt(RValue<Float4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
