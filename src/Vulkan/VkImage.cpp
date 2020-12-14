@@ -702,6 +702,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 	VkExtent2D adjustedExtent = extent;
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
 	Format usedFormat = getFormat(aspect);
+
 	if(region.bufferRowLength != 0)
 	{
 		adjustedExtent.width = region.bufferRowLength;
@@ -709,10 +710,10 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockWidth = usedFormat.blockWidth();
-			ASSERT((adjustedExtent.width % blockWidth) == 0);
-			adjustedExtent.width /= blockWidth;
+			adjustedExtent.width = (region.bufferRowLength + blockWidth - 1) / blockWidth;
 		}
 	}
+
 	if(region.bufferImageHeight != 0)
 	{
 		adjustedExtent.height = region.bufferImageHeight;
@@ -720,10 +721,10 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockHeight = usedFormat.blockHeight();
-			ASSERT((adjustedExtent.height % blockHeight) == 0);
-			adjustedExtent.height /= blockHeight;
+			adjustedExtent.height = (region.bufferImageHeight + blockHeight - 1) / blockHeight;
 		}
 	}
+
 	return adjustedExtent;
 }
 
