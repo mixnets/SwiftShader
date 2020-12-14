@@ -16,13 +16,25 @@
 
 #include "VkConfig.hpp"
 #include "VkStringify.hpp"
+#include "VkTimelineSemaphore.hpp"
 
 #include "marl/blockingcall.h"
 #include "marl/conditionvariable.h"
 
+#include <chrono>
+#include <climits>
 #include <functional>
 #include <memory>
 #include <utility>
+
+namespace {
+
+std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now()
+{
+	return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
+}
+
+}  // anonymous namespace
 
 namespace vk {
 
@@ -97,6 +109,9 @@ struct SemaphoreCreateInfo
 	bool exportSemaphore = false;
 	VkExternalSemaphoreHandleTypeFlags exportHandleTypes = 0;
 
+	VkSemaphoreType semaphoreType = VK_SEMAPHORE_TYPE_BINARY;
+	uint64_t initialPayload = 0;
+
 	// Create a new instance. The external instance will be allocated only
 	// the pCreateInfo->pNext chain indicates it needs to be exported.
 	SemaphoreCreateInfo(const VkSemaphoreCreateInfo *pCreateInfo)
@@ -119,8 +134,16 @@ struct SemaphoreCreateInfo
 					}
 				}
 				break;
+				case VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO:
+				{
+					const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
+					semaphoreType = tlsInfo->semaphoreType;
+					initialPayload = tlsInfo->initialValue;
+				}
+				break;
 				default:
 					WARN("nextInfo->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+					break;
 			}
 		}
 	}
@@ -130,6 +153,7 @@ struct SemaphoreCreateInfo
 
 void Semaphore::wait()
 {
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_BINARY);
 	marl::lock lock(mutex);
 	External *ext = tempExternal ? tempExternal : external;
 	if(ext)
@@ -164,6 +188,7 @@ void Semaphore::wait()
 
 void Semaphore::signal()
 {
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_BINARY);
 	marl::lock lock(mutex);
 	External *ext = tempExternal ? tempExternal : external;
 	if(ext)
@@ -183,6 +208,12 @@ Semaphore::Semaphore(const VkSemaphoreCreateInfo *pCreateInfo, void *mem, const 
 {
 	SemaphoreCreateInfo info(pCreateInfo);
 	exportableHandleTypes = info.exportHandleTypes;
+	semaphoreType = info.semaphoreType;
+
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		timeline = new(mem) TimelineSemaphore(info.initialPayload);
+	}
 }
 
 void Semaphore::destroy(const VkAllocationCallbacks *pAllocator)
@@ -199,12 +230,41 @@ void Semaphore::destroy(const VkAllocationCallbacks *pAllocator)
 		deallocateExternal(external);
 		external = nullptr;
 	}
+
+	if(timeline != nullptr)
+	{
+		vk::deallocate(timeline, pAllocator);
+	}
 }
 
 size_t Semaphore::ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo *pCreateInfo)
 {
-	// Semaphore::External instance is created and destroyed on demand so return 0 here.
-	return 0;
+	size_t requiredMem = 0;
+
+	for(const auto *nextInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
+	    nextInfo != nullptr; nextInfo = nextInfo->pNext)
+	{
+		switch(nextInfo->sType)
+		{
+			case VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO:
+				// Semaphore::External instance is created and destroyed on demand, so don't
+				// request memory for it.
+				break;
+			case VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO:
+			{
+				const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
+				if(tlsInfo->semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+				{
+					requiredMem += sizeof(TimelineSemaphore);
+				}
+			}
+			break;
+			default:
+				WARN("nextInfo->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				break;
+		}
+	}
+	return requiredMem;
 }
 
 template<class EXTERNAL>
@@ -227,6 +287,10 @@ VkResult Semaphore::importPayload(bool temporaryImport,
                                   ALLOC_FUNC alloc_func,
                                   IMPORT_FUNC import_func)
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->importPayload()");
+	}
 	marl::lock lock(mutex);
 
 	// Create new External instance if needed.
@@ -260,6 +324,10 @@ VkResult Semaphore::importPayload(bool temporaryImport,
 template<typename ALLOC_FUNC, typename EXPORT_FUNC>
 VkResult Semaphore::exportPayload(ALLOC_FUNC alloc_func, EXPORT_FUNC export_func)
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->exportPayload()");
+	}
 	marl::lock lock(mutex);
 	// Sanity check, do not try to export a semaphore that has a temporary import.
 	if(tempExternal != nullptr)
@@ -343,5 +411,116 @@ VkResult Semaphore::exportHandle(zx_handle_t *pHandle)
 	                     });
 }
 #endif  // VK_USE_PLATFORM_FUCHSIA
+
+void Semaphore::timelineSignal(uint64_t value)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	marl::lock lock(mutex);
+
+	timeline->signal(value);
+}
+
+void Semaphore::timelineWait(uint64_t value)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	timeline->wait(value);
+}
+
+template<typename CLOCK, typename DURATION>
+VkResult Semaphore::timelineWait(uint64_t value, const std::chrono::time_point<CLOCK, DURATION> end_ns)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	if(!timeline->waitUntil(value, end_ns))
+	{
+		return VK_TIMEOUT;
+	}
+
+	return VK_SUCCESS;
+}
+
+uint64_t Semaphore::getPayloadValue()
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	return timeline->getPayloadValue();
+}
+
+void Semaphore::addSharedDep(TimelineSemaphore other)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	timeline->addSharedDep(other);
+}
+
+VkSemaphoreType Semaphore::getType()
+{
+	return semaphoreType;
+}
+
+int Semaphore::getTimelineId()
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	return timeline->getId();
+}
+
+VkResult WaitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout)
+{
+	// Wait a number of nanoseconds equal to timeout for each timeline semaphore to reach the specified condition
+	using time_point = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
+	const time_point start = now();
+	const uint64_t max_timeout = (LLONG_MAX - start.time_since_epoch().count());
+	bool infiniteTimeout = (timeout > max_timeout);
+	const time_point end_ns = start + std::chrono::nanoseconds(std::min(max_timeout, timeout));
+
+	if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+	{
+		TimelineSemaphore any = TimelineSemaphore();
+
+		for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
+		{
+			Semaphore *semaphore = Cast(pWaitInfo->pSemaphores[i]);
+			uint64_t waitValue = pWaitInfo->pValues[i];
+
+			if(semaphore->getPayloadValue() == waitValue)
+			{
+				return VK_SUCCESS;
+			}
+
+			semaphore->addSharedDep(any);
+			any.addToWaitMap(semaphore->getTimelineId(), waitValue);
+		}
+
+		if(infiniteTimeout)
+		{
+			any.wait(1ull);
+			return VK_SUCCESS;
+		}
+		else
+		{
+			uint64_t tempValue = 1;
+			if(any.waitUntil(tempValue, end_ns))
+			{
+				return VK_SUCCESS;
+			}
+		}
+
+		return VK_TIMEOUT;
+	}
+	else
+	{
+		for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
+		{
+			Semaphore *semaphore = Cast(pWaitInfo->pSemaphores[i]);
+			uint64_t value = pWaitInfo->pValues[i];
+			if(infiniteTimeout)
+			{
+				semaphore->timelineWait(value);
+			}
+			else if(semaphore->timelineWait(pWaitInfo->pValues[i], end_ns) != VK_SUCCESS)
+			{
+				return VK_TIMEOUT;
+			}
+		}
+		return VK_SUCCESS;
+	}
+}
 
 }  // namespace vk

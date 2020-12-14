@@ -22,11 +22,15 @@
 #include "marl/mutex.h"
 #include "marl/tsa.h"
 
+#include "System/Synchronization.hpp"
+
 #if VK_USE_PLATFORM_FUCHSIA
 #	include <zircon/types.h>
 #endif
 
 namespace vk {
+
+class TimelineSemaphore;
 
 class Semaphore : public Object<Semaphore, VkSemaphore>
 {
@@ -58,11 +62,26 @@ public:
 
 	class External;
 
+	// VK_KHR_timeline_semaphore
+	uint64_t getPayloadValue();
+	// Indefinite wait
+	void timelineWait(uint64_t value);
+	// Wait until a certain amount of time has passed
+	template<class CLOCK, class DURATION>
+	VkResult timelineWait(uint64_t value, const std::chrono::time_point<CLOCK, DURATION> end_ns);
+
+	// Set the payload to the specified value and signal all waiting threads.
+	void timelineSignal(uint64_t value);
+	void addSharedDep(TimelineSemaphore other);
+	VkSemaphoreType getType();
+	int getTimelineId();
+
 private:
 	// Small technical note on how semaphores are imported/exported with Vulkan:
 	//
 	// - A Vulkan Semaphore objects has a "payload", corresponding to a
-	//   simple atomic boolean flag.
+	//   simple atomic boolean flag or a monotonically increasing 64-bit
+	//   unsigned integer.
 	//
 	// - A Vulkan Semaphore object can be "exported": this creates a
 	//   platform-specific handle / descriptor (which can be passed to other
@@ -152,12 +171,18 @@ private:
 	marl::mutex mutex;
 	External *external GUARDED_BY(mutex) = nullptr;
 	External *tempExternal GUARDED_BY(mutex) = nullptr;
+
+	// VK_KHR_timeline_semaphore
+	VkSemaphoreType semaphoreType;
+	TimelineSemaphore *timeline = nullptr;
 };
 
 static inline Semaphore *Cast(VkSemaphore object)
 {
 	return Semaphore::Cast(object);
 }
+
+VkResult WaitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout);
 
 }  // namespace vk
 

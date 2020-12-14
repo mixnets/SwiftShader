@@ -415,6 +415,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 	{ VK_KHR_SHADER_SUBGROUP_EXTENDED_TYPES_EXTENSION_NAME, VK_KHR_SHADER_SUBGROUP_EXTENDED_TYPES_SPEC_VERSION },
 	{ VK_KHR_SPIRV_1_4_EXTENSION_NAME, VK_KHR_SPIRV_1_4_SPEC_VERSION },
 	{ VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION },
+	{ VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION },
 };
 
 static bool hasExtension(const char *extensionName, const VkExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -1451,6 +1452,29 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreZirconHandleFUCHSIA(
 	return vk::Cast(pGetZirconHandleInfo->semaphore)->exportHandle(pZirconHandle);
 }
 #endif  // VK_USE_PLATFORM_FUCHSIA
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreCounterValue(VkDevice device, VkSemaphore semaphore, uint64_t *pValue)
+{
+	TRACE("(VkDevice device = %p, VkSemaphore semaphore = %p, uint64_t* pValue = %p)",
+	      device, static_cast<void *>(semaphore), pValue);
+	*pValue = vk::Cast(semaphore)->getPayloadValue();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkSignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo)
+{
+	TRACE("(VkDevice device = %p, const VkSemaphoreSignalInfo *pSignalInfo = %p)",
+	      device, pSignalInfo);
+	vk::Cast(pSignalInfo->semaphore)->timelineSignal(pSignalInfo->value);
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkWaitSemaphores(VkDevice device, const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout)
+{
+	TRACE("(VkDevice device = %p, const VkSemaphoreWaitInfo *pWaitInfo = %p, uint64_t timeout = %" PRIu64 ")",
+	      device, pWaitInfo, timeout);
+	return vk::WaitForSemaphores(pWaitInfo, timeout);
+}
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateEvent(VkDevice device, const VkEventCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkEvent *pEvent)
 {
@@ -2998,7 +3022,6 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 				auto properties = reinterpret_cast<VkPhysicalDeviceFloatControlsProperties *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
-			break;
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES:
 			{
 				auto properties = reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxProperties *>(extensionProperties);
