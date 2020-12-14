@@ -73,6 +73,8 @@ public:
 	void prepareForSampling(ImageView *imageView);
 	void contentsChanged(ImageView *imageView);
 
+	VkResult waitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout);
+
 	class SamplingRoutineCache
 	{
 	public:

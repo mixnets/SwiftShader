@@ -22,16 +22,73 @@
 #include "marl/mutex.h"
 #include "marl/tsa.h"
 
+#include "System/Synchronization.hpp"
+
+#include <variant>
+
 #if VK_USE_PLATFORM_FUCHSIA
 #	include <zircon/types.h>
 #endif
 
 namespace vk {
 
-class Semaphore : public Object<Semaphore, VkSemaphore>
+class BinarySemaphore;
+class TimelineSemaphore;
+
+class Semaphore
 {
 public:
-	Semaphore(const VkSemaphoreCreateInfo *pCreateInfo, void *mem, const VkAllocationCallbacks *pAllocator);
+	Semaphore(VkSemaphoreType type);
+
+	template<typename T>
+	T *as()
+	{
+		static_assert(std::is_same_v<T, BinarySemaphore> || std::is_same_v<T, TimelineSemaphore>);
+		if constexpr(std::is_same_v<T, BinarySemaphore>)
+		{
+			if(type != VK_SEMAPHORE_TYPE_BINARY)
+			{
+				return nullptr;
+			}
+			else
+			{
+				return static_cast<T *>(this);
+			}
+		}
+		else
+		{
+			if(type != VK_SEMAPHORE_TYPE_TIMELINE)
+			{
+				return nullptr;
+			}
+			else
+			{
+				return static_cast<T *>(this);
+			}
+		}
+	}
+
+	static inline Semaphore *Cast(VkSemaphore semaphore)
+	{
+		return static_cast<Semaphore *>(static_cast<void *>(semaphore));
+	}
+
+	void destroy(const VkAllocationCallbacks *pAllocator)
+	{
+	}
+
+	VkSemaphoreType getSemaphoreType() const;
+	//static size_t ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo *pCreateInfo);
+
+protected:
+	VkSemaphoreType type;
+	marl::mutex mutex;
+};
+
+class BinarySemaphore : public Semaphore, public Object<BinarySemaphore, VkSemaphore>
+{
+public:
+	BinarySemaphore(const VkSemaphoreCreateInfo *pCreateInfo, void *mem, const VkAllocationCallbacks *pAllocator);
 	void destroy(const VkAllocationCallbacks *pAllocator);
 
 	static size_t ComputeRequiredAllocationSize(const VkSemaphoreCreateInfo *pCreateInfo);
@@ -149,7 +206,6 @@ private:
 	const VkAllocationCallbacks *allocator = nullptr;
 	VkExternalSemaphoreHandleTypeFlags exportableHandleTypes = (VkExternalSemaphoreHandleTypeFlags)0;
 	marl::Event internal;
-	marl::mutex mutex;
 	External *external GUARDED_BY(mutex) = nullptr;
 	External *tempExternal GUARDED_BY(mutex) = nullptr;
 };
@@ -158,6 +214,19 @@ static inline Semaphore *Cast(VkSemaphore object)
 {
 	return Semaphore::Cast(object);
 }
+
+struct SemaphoreCreateInfo
+{
+	bool exportSemaphore = false;
+	VkExternalSemaphoreHandleTypeFlags exportHandleTypes = 0;
+
+	VkSemaphoreType semaphoreType = VK_SEMAPHORE_TYPE_BINARY;
+	uint64_t initialPayload = 0;
+
+	// Create a new instance. The external instance will be allocated only
+	// the pCreateInfo->pNext chain indicates it needs to be exported.
+	SemaphoreCreateInfo(const VkSemaphoreCreateInfo *pCreateInfo);
+};
 
 }  // namespace vk
 
