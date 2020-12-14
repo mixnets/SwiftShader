@@ -3951,6 +3951,23 @@ RValue<Float> RcpApprox(RValue<Float> x, bool exactAtPow2)
 	UNREACHABLE("RValue<Float> RcpApprox()");
 	return { 0.0f };
 }
+
+bool HasRcpSqrtApprox()
+{
+	return false;
+}
+
+RValue<Float4> RcpSqrtApprox(RValue<Float4> x)
+{
+	// TODO(b/175612820): Update once we implement x86 SSE rcp_ss and rsqrt_ss intrinsics in Subzero
+	UNREACHABLE("RValue<Float4> RcpSqrtApprox()");
+	return { 0.0f };
+}
+
+RValue<Float> RcpSqrtApprox(RValue<Float> x)
+{
+	// TODO(b/175612820): Update once we implement x86 SSE rcp_ss and rsqrt_ss intrinsics in Subzero
+	UNREACHABLE("RValue<Float> RcpSqrtApprox()");
 	return { 0.0f };
 }
 
