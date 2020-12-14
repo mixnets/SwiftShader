@@ -18,6 +18,8 @@
 #include "VkDescriptorSetLayout.hpp"
 #include "VkFence.hpp"
 #include "VkQueue.hpp"
+#include "VkSemaphore.hpp"
+#include "VkTimelineSemaphore.hpp"
 #include "Debug/Context.hpp"
 #include "Debug/Server.hpp"
 #include "Device/Blitter.hpp"
@@ -388,6 +390,67 @@ void Device::contentsChanged(ImageView *imageView)
 		{
 			imageView->contentsChanged();
 		}
+	}
+}
+
+VkResult Device::waitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout)
+{
+	// Wait a number of nanoseconds equal to timeout for each timeline semaphore to reach the specified condition
+	using time_point = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
+	const time_point start = now();
+	const uint64_t max_timeout = (LLONG_MAX - start.time_since_epoch().count());
+	bool infiniteTimeout = (timeout > max_timeout);
+	const time_point end_ns = start + std::chrono::nanoseconds(std::min(max_timeout, timeout));
+
+	if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+	{
+		TimelineSemaphore any = TimelineSemaphore();
+
+		for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
+		{
+			TimelineSemaphore *semaphore = DynamicCast<TimelineSemaphore>(pWaitInfo->pSemaphores[i]);
+			uint64_t waitValue = pWaitInfo->pValues[i];
+
+			if(semaphore->getCounterValue() == waitValue)
+			{
+				return VK_SUCCESS;
+			}
+
+			semaphore->addSharedDep(any);
+			any.addToWaitMap(semaphore->getTimelineId(), waitValue);
+		}
+
+		if(infiniteTimeout)
+		{
+			any.wait(1ull);
+			return VK_SUCCESS;
+		}
+		else
+		{
+			if(any.wait(1, end_ns) == VK_SUCCESS)
+			{
+				return VK_SUCCESS;
+			}
+		}
+
+		return VK_TIMEOUT;
+	}
+	else
+	{
+		for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
+		{
+			TimelineSemaphore *semaphore = DynamicCast<TimelineSemaphore>(pWaitInfo->pSemaphores[i]);
+			uint64_t value = pWaitInfo->pValues[i];
+			if(infiniteTimeout)
+			{
+				semaphore->wait(value);
+			}
+			else if(semaphore->wait(pWaitInfo->pValues[i], end_ns) != VK_SUCCESS)
+			{
+				return VK_TIMEOUT;
+			}
+		}
+		return VK_SUCCESS;
 	}
 }
 
