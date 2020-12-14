@@ -4708,4 +4708,86 @@ RValue<Float> Rcp(RValue<Float> x, Precision p, bool finite, bool exactAtPow2)
 	return DoRcp(x, p, finite, exactAtPow2);
 }
 
+// Functions implemented by backends
+bool HasRcpSqrtApprox();
+RValue<Float4> RcpSqrtApprox(RValue<Float4> x);
+RValue<Float> RcpSqrtApprox(RValue<Float> x);
+
+template<typename T>
+struct CastToIntType;
+
+template<>
+struct CastToIntType<Float4>
+{
+	using type = Int4;
+};
+
+template<>
+struct CastToIntType<Float>
+{
+	using type = Int;
+};
+
+// TODO: move to Reactor.hpp?
+RValue<Int> CmpNEQ(RValue<Int> x, RValue<Int> y)
+{
+	return IfThenElse(x != y, Int(~0), Int(0));
+}
+
+template<typename T>
+static RValue<T> DoRcpSqrt(RValue<T> x, Precision p)
+{
+
+	///// Not sure what to do here. Currently, our Vulkan implementation makes use of
+	///// RcpSqrt_pp directly in a couple places, even though it's technically meant to
+	///// be used as part of a Newton-Rhapson computation. Below, I have 2 implementations:
+	///// one that does the full NR, as per ShaderCore's reciprocalSquareRoot()
+	///// implementation, while the other just does the RcpSqrtApprox (rsqrtps).
+	///// Also note that formerly, we had no NR implementation of RcpSqrt for Float (scalar),
+	///// but now we do.
+
+#define DO_NEWTON_RHAPSON 1
+
+#if !DO_NEWTON_RHAPSON
+	// Currently, approximate reciprocal square root is precise enough even for full precision, so we ignore this parameter.
+	(void)p;
+
+	if(HasRcpSqrtApprox())
+	{
+		return RcpSqrtApprox(x);
+	}
+	else
+	{
+		return T(1.0f) / Sqrt(x);
+	}
+
+#else  // DO_NEWTON_RHAPSON
+
+	if(HasRcpApprox() && p != Precision::Full)
+	{
+		using IntType = CastToIntType<T>::type;
+
+		T rsq = RcpSqrtApprox(x);
+		rsq = rsq * (T(3.0f) - rsq * rsq * x) * T(0.5f);
+		rsq = As<T>(CmpNEQ(As<IntType>(x), IntType(0x7F800000)) & As<IntType>(rsq));
+		return rsq;
+	}
+	else
+	{
+		return T(1.0f) / Sqrt(x);
+	}
+
+#endif
+}
+
+RValue<Float4> RcpSqrt(RValue<Float4> x, Precision p)
+{
+	return DoRcpSqrt(x, p);
+}
+
+RValue<Float> RcpSqrt(RValue<Float> x, Precision p)
+{
+	return DoRcpSqrt(x, p);
+}
+
 }  // namespace rr
