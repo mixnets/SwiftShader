@@ -66,6 +66,13 @@ int DebugPrintf(const char *format, ...);
 
 namespace rr {
 
+enum class Precision
+{
+	Full,
+	Relaxed,
+	//Half,
+};
+
 std::string BackendName();
 
 struct Capabilities
@@ -2155,8 +2162,9 @@ RValue<Bool> operator==(RValue<Float> lhs, RValue<Float> rhs);
 RValue<Float> Abs(RValue<Float> x);
 RValue<Float> Max(RValue<Float> x, RValue<Float> y);
 RValue<Float> Min(RValue<Float> x, RValue<Float> y);
-RValue<Float> Rcp_pp(RValue<Float> val, bool exactAtPow2 = false);
+RValue<Float> Rcp_pp(RValue<Float> val, bool exactAtPow2 = false);  // Deprecated: use Rcp
 RValue<Float> RcpSqrt_pp(RValue<Float> val);
+RValue<Float> Rcp(RValue<Float> x, Precision p, bool finite = false, bool exactAtPow2 = false);
 RValue<Float> Sqrt(RValue<Float> x);
 
 //	RValue<Int4> IsInf(RValue<Float> x);
@@ -2319,8 +2327,10 @@ RValue<Float4> operator-(RValue<Float4> val);
 RValue<Float4> Abs(RValue<Float4> x);
 RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y);
 RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y);
-RValue<Float4> Rcp_pp(RValue<Float4> val, bool exactAtPow2 = false);
+
+RValue<Float4> Rcp_pp(RValue<Float4> val, bool exactAtPow2 = false);  // Deprecated: use Rcp
 RValue<Float4> RcpSqrt_pp(RValue<Float4> val);
+RValue<Float4> Rcp(RValue<Float4> x, Precision p = Precision::Full, bool finite = false, bool exactAtPow2 = false);
 RValue<Float4> Sqrt(RValue<Float4> x);
 RValue<Float4> Insert(RValue<Float4> val, RValue<Float> element, int i);
 RValue<Float> Extract(RValue<Float4> x, int i);
@@ -2371,13 +2381,6 @@ RValue<Float4> Trunc(RValue<Float4> x);
 RValue<Float4> Frac(RValue<Float4> x);
 RValue<Float4> Floor(RValue<Float4> x);
 RValue<Float4> Ceil(RValue<Float4> x);
-
-enum class Precision
-{
-	Full,
-	Relaxed,
-	//Half,
-};
 
 // Trigonometric functions
 // TODO: Currently unimplemented for Subzero.
