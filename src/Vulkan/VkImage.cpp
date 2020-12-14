@@ -672,6 +672,7 @@ VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFla
 		// When using a compressed format, we use the block as the base unit, instead of the texel
 		int blockWidth = usedFormat.blockWidth();
 		int blockHeight = usedFormat.blockHeight();
+		ASSERT(adjustedExtent.height % blockHeight == 0 || (imageType == VK_IMAGE_TYPE_1D && adjustedExtent.height == 1));
 
 		// Mip level allocations will round up to the next block for compressed texture
 		adjustedExtent.width = ((adjustedExtent.width + blockWidth - 1) / blockWidth);
@@ -703,6 +704,7 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 	VkExtent2D adjustedExtent = extent;
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
 	Format usedFormat = getFormat(aspect);
+
 	if(region.bufferRowLength != 0)
 	{
 		adjustedExtent.width = region.bufferRowLength;
@@ -710,10 +712,10 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockWidth = usedFormat.blockWidth();
-			ASSERT((adjustedExtent.width % blockWidth) == 0);
-			adjustedExtent.width /= blockWidth;
+			adjustedExtent.width = (region.bufferRowLength + blockWidth - 1) / blockWidth;
 		}
 	}
+
 	if(region.bufferImageHeight != 0)
 	{
 		adjustedExtent.height = region.bufferImageHeight;
@@ -721,10 +723,10 @@ VkExtent2D Image::bufferExtentInBlocks(const VkExtent2D &extent, const VkBufferI
 		if(usedFormat.isCompressed())
 		{
 			int blockHeight = usedFormat.blockHeight();
-			ASSERT((adjustedExtent.height % blockHeight) == 0);
-			adjustedExtent.height /= blockHeight;
+			adjustedExtent.height = (region.bufferImageHeight + blockHeight - 1) / blockHeight;
 		}
 	}
+
 	return adjustedExtent;
 }
 
