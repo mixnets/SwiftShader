@@ -20,9 +20,20 @@
 #include "marl/blockingcall.h"
 #include "marl/conditionvariable.h"
 
+#include <chrono>
+#include <climits>
 #include <functional>
 #include <memory>
 #include <utility>
+
+namespace {
+
+std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> now()
+{
+	return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
+}
+
+}  // anonymous namespace
 
 namespace vk {
 
@@ -97,6 +108,9 @@ struct SemaphoreCreateInfo
 	bool exportSemaphore = false;
 	VkExternalSemaphoreHandleTypeFlags exportHandleTypes = 0;
 
+	VkSemaphoreType semaphoreType = VK_SEMAPHORE_TYPE_BINARY;
+	uint64_t payload = 0;
+
 	// Create a new instance. The external instance will be allocated only
 	// the pCreateInfo->pNext chain indicates it needs to be exported.
 	SemaphoreCreateInfo(const VkSemaphoreCreateInfo *pCreateInfo)
@@ -119,6 +133,13 @@ struct SemaphoreCreateInfo
 					}
 				}
 				break;
+				case VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO:
+				{
+					const auto *tlsInfo = reinterpret_cast<const VkSemaphoreTypeCreateInfo *>(nextInfo);
+					semaphoreType = tlsInfo->semaphoreType;
+					payload = tlsInfo->initialValue;
+				}
+				break;
 				default:
 					WARN("nextInfo->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 			}
@@ -130,6 +151,10 @@ struct SemaphoreCreateInfo
 
 void Semaphore::wait()
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->wait()");
+	}
 	marl::lock lock(mutex);
 	External *ext = tempExternal ? tempExternal : external;
 	if(ext)
@@ -164,6 +189,10 @@ void Semaphore::wait()
 
 void Semaphore::signal()
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->signal()");
+	}
 	marl::lock lock(mutex);
 	External *ext = tempExternal ? tempExternal : external;
 	if(ext)
@@ -183,6 +212,12 @@ Semaphore::Semaphore(const VkSemaphoreCreateInfo *pCreateInfo, void *mem, const 
 {
 	SemaphoreCreateInfo info(pCreateInfo);
 	exportableHandleTypes = info.exportHandleTypes;
+	semaphoreType = info.semaphoreType;
+
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		tlsPayload = info.payload;
+	}
 }
 
 void Semaphore::destroy(const VkAllocationCallbacks *pAllocator)
@@ -227,6 +262,10 @@ VkResult Semaphore::importPayload(bool temporaryImport,
                                   ALLOC_FUNC alloc_func,
                                   IMPORT_FUNC import_func)
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->importPayload()");
+	}
 	marl::lock lock(mutex);
 
 	// Create new External instance if needed.
@@ -260,6 +299,10 @@ VkResult Semaphore::importPayload(bool temporaryImport,
 template<typename ALLOC_FUNC, typename EXPORT_FUNC>
 VkResult Semaphore::exportPayload(ALLOC_FUNC alloc_func, EXPORT_FUNC export_func)
 {
+	if(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE)
+	{
+		UNSUPPORTED("timelineSemaphore->exportPayload()");
+	}
 	marl::lock lock(mutex);
 	// Sanity check, do not try to export a semaphore that has a temporary import.
 	if(tempExternal != nullptr)
@@ -343,5 +386,128 @@ VkResult Semaphore::exportHandle(zx_handle_t *pHandle)
 	                     });
 }
 #endif  // VK_USE_PLATFORM_FUCHSIA
+
+void Semaphore::timelineSignal(uint64_t value)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	marl::lock lock(mutex);
+
+	tlsPayload = value;
+	internal.signal();
+}
+
+void Semaphore::timelineWait(uint64_t value)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	uint64_t curPayload = tlsPayload;
+	while(curPayload != value)
+	{
+		internal.wait();
+		// Before waking another thread up, store the current payload
+		curPayload = tlsPayload;
+		// Since internal is an automatically managed marl::Event, only one thread
+		// unblocks at a time from a signal. So let's signal another thread and let
+		// it determine if it should unblock.
+		internal.signal();
+	}
+}
+
+template<class CLOCK, class DURATION>
+VkResult Semaphore::timelineWait(uint64_t value, const std::chrono::time_point<CLOCK, DURATION> end_ns)
+{
+	ASSERT(semaphoreType == VK_SEMAPHORE_TYPE_TIMELINE);
+	uint64_t curPayload = tlsPayload;
+	while(curPayload != value)
+	{
+		if(!internal.wait_until(end_ns))
+		{
+			internal.signal();
+			return VK_TIMEOUT;
+		}
+		// Before waking another thread up, store the current payload
+		curPayload = tlsPayload;
+		internal.signal();
+	}
+
+	return VK_SUCCESS;
+}
+
+VkResult WaitForSemaphores(const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout)
+{
+	// Wait a number of nanoseconds equal to timeout for each timeline semaphore to reach the specified condition
+	using time_point = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
+	const time_point start = now();
+	const uint64_t max_timeout = (LLONG_MAX - start.time_since_epoch().count());
+	bool infiniteTimeout = (timeout > max_timeout);
+	const time_point end_ns = start + std::chrono::nanoseconds(std::min(max_timeout, timeout));
+	VkResult result = VK_SUCCESS;
+	for(uint32_t i = 0; i < pWaitInfo->semaphoreCount; i++)
+	{
+		Semaphore *semaphore = Cast(pWaitInfo->pSemaphores[i]);
+		uint64_t value = pWaitInfo->pValues[i];
+		if(timeout == 0)
+		{
+			// From vkWaitSemaphores: If timeout is zero, then vkWaitSemaphores does not wait, but simply returns
+			// information about the current state of the semaphore. VK_TIMEOUT will be returned in this case if
+			// the condition is not satisfied, even though no actual wait was performed.
+			if(semaphore->getPayloadValue() != value)
+			{
+				if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+				{
+					result = VK_TIMEOUT;
+					continue;
+				}
+				else
+				{
+					return VK_TIMEOUT;
+				}
+			}
+			else
+			{
+
+				if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+				{
+					return VK_SUCCESS;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		else if(infiniteTimeout)
+		{
+			semaphore->timelineWait(value);
+		}
+		else
+		{
+			if(semaphore->timelineWait(value, end_ns) != VK_SUCCESS)
+			{
+				if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+				{
+					result = VK_TIMEOUT;
+					continue;
+				}
+				else
+				{
+					return VK_TIMEOUT;
+				}
+			}
+			else
+			{
+
+				if(pWaitInfo->flags & VK_SEMAPHORE_WAIT_ANY_BIT)
+				{
+					return VK_SUCCESS;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+	}
+	return result;
+}
 
 }  // namespace vk

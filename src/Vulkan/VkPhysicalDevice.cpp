@@ -276,6 +276,12 @@ static void getPhysicalDeviceVulkanMemoryModelFeatures(T *features)
 }
 
 template<typename T>
+static void getPhysicalDeviceTimelineSemaphoreFeatures(T *features)
+{
+	features->timelineSemaphore = VK_TRUE;
+}
+
+template<typename T>
 static void getPhysicalDeviceVulkan12Features(T *features)
 {
 	features->samplerMirrorClampToEdge = VK_FALSE;
@@ -294,7 +300,7 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	getPhysicalDeviceShaderSubgroupExtendedTypesFeatures(features);
 	getPhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR(features);
 	getPhysicalDeviceHostQueryResetFeatures(features);
-	features->timelineSemaphore = VK_FALSE;
+	getPhysicalDeviceTimelineSemaphoreFeatures(features);
 	features->bufferDeviceAddress = VK_FALSE;
 	features->bufferDeviceAddressCaptureReplay = VK_FALSE;
 	features->bufferDeviceAddressMultiDevice = VK_FALSE;
@@ -374,6 +380,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 				break;
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES:
 				getPhysicalDeviceVulkanMemoryModelFeatures(reinterpret_cast<VkPhysicalDeviceVulkanMemoryModelFeatures *>(curExtension));
+				break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES:
+				getPhysicalDeviceTimelineSemaphoreFeatures(reinterpret_cast<VkPhysicalDeviceTimelineSemaphoreFeatures *>(curExtension));
 				break;
 			default:
 				LOG_TRAP("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
@@ -862,6 +871,8 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceSamplerFilterMinmaxProperties
 template<typename T>
 static void getTimelineSemaphoreProperties(T *properties)
 {
+	// 2^31-1 is the minimum limit all implementations of the Vulkan spec must support per
+	// Table 52 of the Vulkan 1.2 spec: Required Limits
 	properties->maxTimelineSemaphoreValueDifference = 0x7FFFFFFFull;
 }
 
