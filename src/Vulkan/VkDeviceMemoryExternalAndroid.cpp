@@ -194,16 +194,16 @@ AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const VkMemoryAllocate
 			break;
 			case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
 			{
-				// AHB requires dedicated allocation -- for images, the gralloc gets to decide the image layout,
-				// not us.
 				const auto *dedicatedAllocateInfo = reinterpret_cast<const VkMemoryDedicatedAllocateInfo *>(createInfo);
 				imageHandle = vk::Cast(dedicatedAllocateInfo->image);
 				bufferHandle = vk::Cast(dedicatedAllocateInfo->buffer);
 			}
 			break;
-
 			default:
-				WARN("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+			{
+				LOG_TRAP("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+			}
+			break;
 		}
 		createInfo = createInfo->pNext;
 	}
@@ -221,7 +221,7 @@ AHardwareBufferExternalMemory::~AHardwareBufferExternalMemory()
 }
 
 // VkAllocateMemory
-VkResult AHardwareBufferExternalMemory::allocate(size_t /*size*/, void **pBuffer)
+VkResult AHardwareBufferExternalMemory::allocate(size_t size, void **pBuffer)
 {
 	if(allocateInfo.importAhb)
 	{
@@ -230,7 +230,7 @@ VkResult AHardwareBufferExternalMemory::allocate(size_t /*size*/, void **pBuffer
 	else
 	{
 		ASSERT(allocateInfo.exportAhb);
-		return allocateAndroidHardwareBuffer(pBuffer);
+		return allocateAndroidHardwareBuffer(size, pBuffer);
 	}
 }
 
@@ -255,12 +255,11 @@ VkResult AHardwareBufferExternalMemory::importAndroidHardwareBuffer(AHardwareBuf
 	return lockAndroidHardwareBuffer(pBuffer);
 }
 
-VkResult AHardwareBufferExternalMemory::allocateAndroidHardwareBuffer(void **pBuffer)
+VkResult AHardwareBufferExternalMemory::allocateAndroidHardwareBuffer(size_t size, void **pBuffer)
 {
 	if(allocateInfo.imageHandle)
 	{
 		vk::Image *image = allocateInfo.imageHandle;
-		ASSERT(image != nullptr);
 		ASSERT(image->getArrayLayers() == 1);
 
 		VkExtent3D extent = image->getExtent();
@@ -271,16 +270,23 @@ VkResult AHardwareBufferExternalMemory::allocateAndroidHardwareBuffer(void **pBu
 		ahbDesc.format = GetAHBFormatFromVkFormat(image->getFormat());
 		ahbDesc.usage = GetAHBUsageFromVkImageFlags(image->getFlags(), image->getUsage());
 	}
-	else
+	else if(allocateInfo.bufferHandle)
 	{
 		vk::Buffer *buffer = allocateInfo.bufferHandle;
-		ASSERT(buffer != nullptr);
 
 		ahbDesc.width = static_cast<uint32_t>(buffer->getSize());
 		ahbDesc.height = 1;
 		ahbDesc.layers = 1;
 		ahbDesc.format = AHARDWAREBUFFER_FORMAT_BLOB;
 		ahbDesc.usage = GetAHBUsageFromVkBufferFlags(buffer->getFlags(), buffer->getUsage());
+	}
+	else
+	{
+		ahbDesc.width = static_cast<uint32_t>(size);
+		ahbDesc.height = 1;
+		ahbDesc.layers = 1;
+		ahbDesc.format = AHARDWAREBUFFER_FORMAT_BLOB;
+		ahbDesc.usage = AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN | AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN;
 	}
 
 	int ret = AHardwareBuffer_allocate(&ahbDesc, &ahb);
@@ -301,9 +307,13 @@ VkResult AHardwareBufferExternalMemory::lockAndroidHardwareBuffer(void **pBuffer
 	{
 		usage = GetAHBLockUsageFromVkImageUsageFlags(allocateInfo.imageHandle->getUsage());
 	}
-	else
+	else if(allocateInfo.bufferHandle)
 	{
 		usage = GetAHBLockUsageFromVkBufferUsageFlags(allocateInfo.bufferHandle->getUsage());
+	}
+	else
+	{
+		usage = AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN | AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN;
 	}
 
 	// Empty fence, lock immedietly.

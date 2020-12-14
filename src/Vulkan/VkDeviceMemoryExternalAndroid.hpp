@@ -48,7 +48,7 @@ public:
 	static bool SupportsAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
 	{
 		AllocateInfo info(pAllocateInfo);
-		return (info.importAhb || info.exportAhb) && (info.bufferHandle || info.imageHandle);
+		return info.importAhb || info.exportAhb;
 	}
 
 	explicit AHardwareBufferExternalMemory(const VkMemoryAllocateInfo *pAllocateInfo);
@@ -81,7 +81,7 @@ public:
 
 private:
 	VkResult importAndroidHardwareBuffer(AHardwareBuffer *buffer, void **pBuffer);
-	VkResult allocateAndroidHardwareBuffer(void **pBuffer);
+	VkResult allocateAndroidHardwareBuffer(size_t size, void **pBuffer);
 	VkResult lockAndroidHardwareBuffer(void **pBuffer);
 	VkResult unlockAndroidHardwareBuffer();
 
