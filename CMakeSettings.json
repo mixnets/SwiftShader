@@ -10,7 +10,33 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-      "variables": []
+      "variables": [
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "Subzero",
+          "type": "STRING"
+        },
+        {
+          "name": "REACTOR_EMIT_DEBUG_INFO",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_EMIT_ASM_FILE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_EMIT_PRINT_LOCATION",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_ENABLE_PRINT",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x86-Debug",
@@ -22,7 +48,13 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x86" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "Subzero",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x86-Release",

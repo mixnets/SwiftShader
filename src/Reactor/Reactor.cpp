@@ -4659,4 +4659,53 @@ int DebugPrintf(const char *format, ...)
 
 #endif  // ENABLE_RR_PRINT
 
+// Functions implemented by backends
+bool HasRcpApprox();
+RValue<Float4> RcpApprox(RValue<Float4> x, bool exactAtPow2 = false);
+RValue<Float> RcpApprox(RValue<Float> x, bool exactAtPow2 = false);
+
+template<typename T>
+static RValue<T> DoRcp(RValue<T> x, Precision p, bool finite = false, bool exactAtPow2 = false)
+{
+#if defined(__i386__) || defined(__x86_64__)  // On Intel, 1/x is fast enough, except for lower precision
+	bool approx = rr::HasRcpApprox() && (p != Precision::Full);
+#else
+	bool approx = rr::HasRcpApprox();
+#endif
+
+	if(approx)
+	{
+		T rcp = RcpApprox(x, exactAtPow2);
+
+		if(p == Precision::Full)
+		{
+			rcp = (rcp + rcp) - (x * rcp * rcp);
+		}
+
+		if(finite)
+		{
+			int big = 0x7F7FFFFF;
+			rcp = Min(rcp, T((float &)big));
+		}
+
+		return rcp;
+	}
+	else
+	{
+		return T(1.0f) / x;
+	}
+}
+
+RValue<Float> Rcp(RValue<Float> x, Precision p, bool finite, bool exactAtPow2)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return DoRcp(x, p, finite, exactAtPow2);
+}
+
+RValue<Float4> Rcp(RValue<Float4> x, Precision p, bool finite, bool exactAtPow2)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return DoRcp(x, p, finite, exactAtPow2);
+}
+
 }  // namespace rr
