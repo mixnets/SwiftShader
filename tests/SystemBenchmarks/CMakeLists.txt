@@ -50,6 +50,8 @@ target_link_libraries(system-benchmarks
     PRIVATE
         benchmark::benchmark
         vk_system
+        vk_pipeline
+        ${Reactor}
         gtest
         gmock
         ${ROOT_PROJECT_LINK_LIBRARIES}

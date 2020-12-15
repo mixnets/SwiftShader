@@ -208,3 +208,66 @@ BENCHMARK_DEFINE_F(LRUCacheBenchmark, GetComplexKeyCacheMiss)
 	}
 }
 BENCHMARK_REGISTER_F(LRUCacheBenchmark, GetComplexKeyCacheMiss)->RangeMultiplier(8)->Range(1, 0x100000)->ArgName("cache-size");
+
+#include "Reactor.hpp"
+#include "ShaderCore.hpp"
+using namespace rr;
+// Macro that creates a lambda wrapper around the input overloaded function,
+// creating a non-overload based on the args. This is useful for passing
+// overloaded functions as template arguments.
+// See https://stackoverflow.com/questions/25871381/c-overloaded-function-as-template-argument
+#define LIFT(fname)                                          \
+	[](auto &&... args) -> decltype(auto) {                  \
+		return fname(std::forward<decltype(args)>(args)...); \
+	}
+
+template<typename Func, class... Args>
+static void Transcedental1(benchmark::State &state, Func func, Args &&... args)
+{
+	FunctionT<float(float)> function;
+	{
+		Float a = function.Arg<0>();
+		Float4 v{ a };
+		Float4 r = func(v, args...);
+		Return(Float(r.x));
+	}
+
+	auto routine = function("one");
+
+	for(auto _ : state)
+	{
+		routine(123.f);
+	}
+}
+
+template<typename Func, class... Args>
+static void Transcedental2(benchmark::State &state, Func func, Args &&... args)
+{
+	FunctionT<float(float, float)> function;
+	{
+		Float a = function.Arg<0>();
+		Float b = function.Arg<1>();
+		Float4 v1{ a };
+		Float4 v2{ b };
+		Float4 r = func(v1, v2, args...);
+		Return(Float(r.x));
+	}
+
+	auto routine = function("one");
+
+	for(auto _ : state)
+	{
+		//routine(1.f, 1.f);
+		routine(0.456f, 0.789f);
+	}
+}
+
+BENCHMARK_CAPTURE(Transcedental1, rr_sw_reciprocal_pp_false, LIFT(sw::reciprocal), false, false, false);
+BENCHMARK_CAPTURE(Transcedental1, rr_Rcp_pp_false, LIFT(rr::Rcp), Precision::Full, false, false);
+BENCHMARK_CAPTURE(Transcedental1, rr_sw_reciprocal_pp_true, LIFT(sw::reciprocal), true, false, false);
+BENCHMARK_CAPTURE(Transcedental1, rr_Rcp_pp_true, LIFT(rr::Rcp), Precision::Relaxed, false, false);
+
+BENCHMARK_CAPTURE(Transcedental1, rr_sw_reciprocalSquareRoot_pp_false, LIFT(sw::reciprocalSquareRoot), false, false);
+BENCHMARK_CAPTURE(Transcedental1, rr_RcpSqrt_pp_false, LIFT(rr::RcpSqrt), Precision::Full);
+BENCHMARK_CAPTURE(Transcedental1, rr_sw_reciprocalSquareRoot_pp_false, LIFT(sw::reciprocalSquareRoot), false, true);
+BENCHMARK_CAPTURE(Transcedental1, rr_RcpSqrt_pp_false, LIFT(rr::RcpSqrt), Precision::Relaxed);
