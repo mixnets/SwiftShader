@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6668ff10_dd5fd505",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2888,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:17Z",
+      "side": 1,
+      "message": "Use UNREACHABLE macro instead",
+      "range": {
+        "startLine": 2888,
+        "startChar": 1,
+        "endLine": 2888,
+        "endChar": 21
+      },
+      "revId": "fde143482932a70dd8e80645c0b6e1197e316dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48d2d74c_4aa84514",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 4685,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:17Z",
+      "side": 1,
+      "message": "Do this also in the \u0027else\u0027 branch",
+      "revId": "fde143482932a70dd8e80645c0b6e1197e316dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "434c8082_bca5ccba",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:17Z",
+      "side": 1,
+      "message": "Add \"// Exact\" commented out, and add comments explaining each.\n\nExact --\u003e Like Math.h, 0 ULP and correct rounding\nFull --\u003e 3 ULP or less (double-check Vulkan spec)\nRelaxed --\u003e state mantissa bits ? ULP or less, but greater than 3",
+      "revId": "fde143482932a70dd8e80645c0b6e1197e316dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9a90778_c57f0c0a",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2165,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:17Z",
+      "side": 1,
+      "message": "Add TODO(b/147516027) -\u003e remove when GLES frontend is removed",
+      "range": {
+        "startLine": 2165,
+        "startChar": 68,
+        "endLine": 2165,
+        "endChar": 90
+      },
+      "revId": "fde143482932a70dd8e80645c0b6e1197e316dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddc2c495_4890bb44",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3954,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:17Z",
+      "side": 1,
+      "message": "Remove this bad merge",
+      "revId": "fde143482932a70dd8e80645c0b6e1197e316dff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
