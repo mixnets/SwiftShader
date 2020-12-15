@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d401618_6fce5c6c",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4766,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:34Z",
+      "side": 1,
+      "message": "Do like Rcp:\n\n#if defined(__i386__) || defined(__x86_64__)  // On Intel, 1/x is fast enough, except for lower precision\n\tbool approx \u003d HasRcpApprox() \u0026\u0026 (p !\u003d Precision::Full);\n#else\n\tbool approx \u003d HasRcpApprox();\n#endif",
+      "range": {
+        "startLine": 4766,
+        "startChar": 19,
+        "endLine": 4766,
+        "endChar": 42
+      },
+      "revId": "a63618874fe2e790a46ac3af3b4f660603b4cbe0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d83483b_5193a0f3",
+        "filename": "src/Reactor/Reactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4771,
+      "author": {
+        "id": 9669
+      },
+      "writtenOn": "2020-12-15T21:58:34Z",
+      "side": 1,
+      "message": "Only do this error correction if precision \u003d\u003d Full. For Relaxed, just return the result of RcpSqrtApprox(x)",
+      "revId": "a63618874fe2e790a46ac3af3b4f660603b4cbe0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
