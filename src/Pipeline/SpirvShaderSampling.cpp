@@ -54,11 +54,11 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 		samplerState.mipmapFilter = convertMipmapMode(sampler);
 		samplerState.swizzle = imageDescriptor->swizzle;
-		samplerState.gatherComponent = instruction.gatherComponent;
+		samplerState.gatherSwizzle = getGatherSwizzle(imageDescriptor->swizzle, instruction.gatherComponent);
 
 		if(sampler)
 		{
-			samplerState.textureFilter = convertFilterMode(sampler, type, instruction);
+			samplerState.textureFilter = convertFilterMode(sampler, type, instruction.samplerMethod);
 			samplerState.border = sampler->borderColor;
 
 			samplerState.mipmapFilter = convertMipmapMode(sampler);
@@ -85,7 +85,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 			samplerState.border = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 		}
 
-		return emitSamplerRoutine(instruction, samplerState);
+		return emitSamplerRoutine(instruction.getSamplerFunction(), samplerState);
 	};
 
 	auto routine = cache->getOrCreate(key, createSamplingRoutine);
@@ -93,7 +93,7 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	return (ImageSampler *)(routine->getEntry());
 }
 
-std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState)
+std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(const SamplerFunction &samplerFunction, const Sampler &samplerState)
 {
 	// TODO(b/129523279): Hold a separate mutex lock for the sampler being built.
 	rr::Function<Void(Pointer<Byte>, Pointer<SIMD::Float>, Pointer<SIMD::Float>, Pointer<Byte>)> function;
@@ -104,59 +104,31 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		Pointer<Byte> constants = function.Arg<3>();
 
 		SIMD::Float uvwa[4] = { 0, 0, 0, 0 };
-		SIMD::Float dRef = 0;
-		SIMD::Float lodOrBias = 0;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
+		Vector4i offset = { 0, 0, 0, 0 };
+
+		for(uint32_t i = 0; i < 4; ++i)
+		{
+			uvwa[i] = in[INPUT_COORDINATES + i];
+		}
+
 		Vector4f dsx = { 0, 0, 0, 0 };
 		Vector4f dsy = { 0, 0, 0, 0 };
-		Vector4i offset = { 0, 0, 0, 0 };
-		SIMD::Int sampleId = 0;
-		SamplerFunction samplerFunction = instruction.getSamplerFunction();
-
-		uint32_t i = 0;
-		for(; i < instruction.coordinates; i++)
+		for(uint32_t i = 0; i < 3; ++i)
 		{
-			uvwa[i] = in[i];
+			dsx[i] = in[INPUT_GRAD_X + i];
+			dsy[i] = in[INPUT_GRAD_Y + i];
+			offset[i] = As<SIMD::Int>(in[INPUT_OFFSET + i]);
 		}
 
-		if(instruction.isDref())
-		{
-			dRef = in[i];
-			i++;
-		}
-
-		if(instruction.samplerMethod == Lod || instruction.samplerMethod == Bias || instruction.samplerMethod == Fetch)
-		{
-			lodOrBias = in[i];
-			i++;
-		}
-		else if(instruction.samplerMethod == Grad)
-		{
-			for(uint32_t j = 0; j < instruction.grad; j++, i++)
-			{
-				dsx[j] = in[i];
-			}
-
-			for(uint32_t j = 0; j < instruction.grad; j++, i++)
-			{
-				dsy[j] = in[i];
-			}
-		}
-
-		for(uint32_t j = 0; j < instruction.offset; j++, i++)
-		{
-			offset[j] = As<SIMD::Int>(in[i]);
-		}
-
-		if(instruction.sample)
-		{
-			sampleId = As<SIMD::Int>(in[i]);
-		}
+		SIMD::Float dRef = in[INPUT_DREF];
+		SIMD::Float lodOrBias = in[INPUT_LOD_OR_BIAS];  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
+		SIMD::Int sampleId = As<SIMD::Int>(in[INPUT_SAMPLE_ID]);
 
 		SamplerCore s(constants, samplerState);
 
 		// For explicit-lod instructions the LOD can be different per SIMD lane. SamplerCore currently assumes
 		// a single LOD per four elements, so we sample the image again for each LOD separately.
-		if(samplerFunction.method == Lod || samplerFunction.method == Grad)  // TODO(b/133868964): Also handle divergent Bias and Fetch with Lod.
+		if(samplerFunction == Lod || samplerFunction == Grad)  // TODO(b/133868964): Also handle divergent Bias and Fetch with Lod.
 		{
 			auto lod = Pointer<Float>(&lodOrBias);
 
@@ -197,14 +169,14 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 	return function("sampler");
 }
 
-sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, ImageInstruction instruction)
+sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, uint32_t samplerMethod)
 {
-	if(instruction.samplerMethod == Gather)
+	if(samplerMethod == Gather)
 	{
 		return FILTER_GATHER;
 	}
 
-	if(instruction.samplerMethod == Fetch)
+	if(samplerMethod == Fetch)
 	{
 		return FILTER_POINT;
 	}
@@ -213,7 +185,7 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler, VkImag
 	{
 		if(imageViewType == VK_IMAGE_VIEW_TYPE_2D || imageViewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY)
 		{
-			if(instruction.samplerMethod != Lod)  // TODO(b/162926129): Support anisotropic filtering with explicit LOD.
+			if(samplerMethod != Lod)  // TODO(b/162926129): Support anisotropic filtering with explicit LOD.
 			{
 				return FILTER_ANISOTROPIC;
 			}
@@ -248,6 +220,20 @@ sw::FilterType SpirvShader::convertFilterMode(const vk::Sampler *sampler, VkImag
 
 	UNSUPPORTED("magFilter %d", sampler->magFilter);
 	return FILTER_POINT;
+}
+
+VkComponentSwizzle SpirvShader::getGatherSwizzle(const VkComponentMapping &swizzle, uint32_t gatherComponent)
+{
+	switch(gatherComponent)
+	{
+		case 0: return swizzle.r;
+		case 1: return swizzle.g;
+		case 2: return swizzle.b;
+		case 3: return swizzle.a;
+		default:
+			UNREACHABLE("Invalid component: %d", gatherComponent);
+			return VK_COMPONENT_SWIZZLE_R;
+	}
 }
 
 sw::MipmapType SpirvShader::convertMipmapMode(const vk::Sampler *sampler)
