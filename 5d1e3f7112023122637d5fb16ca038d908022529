@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dae9bf0b_418c9e33",
+        "filename": "src/Vulkan/VkQueryPool.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-12-16T22:32:00Z",
+      "side": 1,
+      "message": "I think this change might also depend on other flags. From the spec:\n\"If VK_QUERY_RESULT_PARTIAL_BIT is set, VK_QUERY_RESULT_WAIT_BIT is not set, and the query’s status is unavailable, an intermediate result value between zero and the final result value is written to pData for that query.\"\n\nSo I think the state being Query::UNAVAILABLE only matters if VK_QUERY_RESULT_WAIT_BIT is not set.",
+      "range": {
+        "startLine": 156,
+        "startChar": 5,
+        "endLine": 156,
+        "endChar": 74
+      },
+      "revId": "5d1e3f7112023122637d5fb16ca038d908022529",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a48bbd8_917054ed",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 795,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2020-12-16T22:32:00Z",
+      "side": 1,
+      "message": "Nit: other cases above have code like this:\nconst VkPhysicalDevice... * ...Features \u003d reinterpret_cast\u003cconst ...\u003e(extensionCreateInfo);\n(void)...Features-\u003e\u003cINSERT SOME RELEVANT FEATURE BOOL HERE\u003e\n\nIt would be nice to have the same thing here.",
+      "range": {
+        "startLine": 795,
+        "startChar": 4,
+        "endLine": 795,
+        "endChar": 41
+      },
+      "revId": "5d1e3f7112023122637d5fb16ca038d908022529",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
