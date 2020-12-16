@@ -35,10 +35,65 @@
 
 using namespace rr;
 
-std::string testName()
+static std::string testName()
 {
 	auto info = ::testing::UnitTest::GetInstance()->current_test_info();
 	return std::string{ info->test_suite_name() } + "_" + info->name();
+}
+
+//
+TEST(ReactorUnitTests, Trampoline)
+{
+		using P = int(int,int,int*);
+
+	static auto sec = [](int upDown) {
+		static Function<Int(Int, Int, Pointer<Int>)> secondary;
+		{
+			Int x = secondary.Arg<0>();
+			Int y = secondary.Arg<1>();
+			Pointer<Int> r = secondary.Arg<2>();
+
+			if (upDown > 0)
+			{
+				*r = x + y;
+			}
+			else if(upDown < 0)
+			{
+				*r = x - y;
+			}
+			else
+			{
+				*r = 0;
+			}
+		}
+
+		static auto routine = secondary("secondary");
+		return (P*)routine->getEntry();
+	};
+
+	using Ptr = P* (*)(int);
+	Ptr lambda = (Ptr)sec;
+
+	RoutineT<int(int,int,int)> routine;
+	{
+		FunctionT<int(int, int, int)> primary;
+		{
+			Int x = primary.Arg<0>();
+			Int y = primary.Arg<1>();
+			Int z = primary.Arg<2>();
+
+			Pointer<Byte> lll = Call(lambda, z);
+			Int r;
+			Call<P>(lll, x, y, &r);
+
+			Return(r);
+		}
+
+		routine = primary("primary");
+	}
+
+	int result = routine(100, 20, -3);
+	EXPECT_EQ(result, 80);
 }
 
 int reference(int *p, int y)
