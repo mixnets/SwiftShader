@@ -26,7 +26,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state)
     , state(state)
 {
 }
-Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function)
+Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, const SamplerFunction &function)
 {
 	Vector4f c;
 
@@ -280,16 +280,14 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	}
 	else  // Gather
 	{
-		VkComponentSwizzle swizzle = gatherSwizzle();
-
 		// R/G/B/A swizzles affect the component collected from each texel earlier.
 		// Handle the ZERO and ONE cases here because we don't need to know the format.
 
-		if(swizzle == VK_COMPONENT_SWIZZLE_ZERO)
+		if(state.gatherSwizzle == VK_COMPONENT_SWIZZLE_ZERO)
 		{
 			c.x = c.y = c.z = c.w = Float4(0);
 		}
-		else if(swizzle == VK_COMPONENT_SWIZZLE_ONE)
+		else if(state.gatherSwizzle == VK_COMPONENT_SWIZZLE_ONE)
 		{
 			bool integer = hasUnnormalizedIntegerTexture();
 			c.x = c.y = c.z = c.w = integer ? As<Float4>(Int4(1)) : RValue<Float4>(Float4(1.0f));
@@ -359,7 +357,7 @@ Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOff
 	return uvw;
 }
 
-Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function)
+Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, const SamplerFunction &function)
 {
 	Vector4s c = sampleAniso(texture, u, v, w, a, offset, sample, lod, anisotropy, uDelta, vDelta, false, function);
 
@@ -428,7 +426,7 @@ Vector4s SamplerCore::sampleFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	return c;
 }
 
-Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function)
+Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4s c;
 
@@ -512,7 +510,7 @@ Vector4s SamplerCore::sampleAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 	return c;
 }
 
-Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	if(state.textureType != VK_IMAGE_VIEW_TYPE_3D)
 	{
@@ -524,7 +522,7 @@ Vector4s SamplerCore::sampleQuad(Pointer<Byte> &texture, Float4 &u, Float4 &v, F
 	}
 }
 
-Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4s c;
 
@@ -707,18 +705,17 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 		}
 		else  // Gather
 		{
-			VkComponentSwizzle swizzle = gatherSwizzle();
-			switch(swizzle)
+			switch(state.gatherSwizzle)
 			{
 				case VK_COMPONENT_SWIZZLE_ZERO:
 				case VK_COMPONENT_SWIZZLE_ONE:
 					// Handled at the final component swizzle.
 					break;
 				default:
-					c.x = c01[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.y = c11[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.z = c10[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.w = c00[swizzle - VK_COMPONENT_SWIZZLE_R];
+					c.x = c01[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.y = c11[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.z = c10[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.w = c00[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
 					break;
 			}
 		}
@@ -727,7 +724,7 @@ Vector4s SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Float4 &u, Float4 &v,
 	return c;
 }
 
-Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, Float4 &w_, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, Float4 &w_, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4s c_;
 
@@ -876,7 +873,7 @@ Vector4s SamplerCore::sample3D(Pointer<Byte> &texture, Float4 &u_, Float4 &v_, F
 	return c_;
 }
 
-Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, SamplerFunction function)
+Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, const SamplerFunction &function)
 {
 	Vector4f c = sampleFloatAniso(texture, u, v, w, a, dRef, offset, sample, lod, anisotropy, uDelta, vDelta, false, function);
 
@@ -900,7 +897,7 @@ Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, SamplerFunction function)
+Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4f c;
 
@@ -958,7 +955,7 @@ Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	if(state.textureType != VK_IMAGE_VIEW_TYPE_3D)
 	{
@@ -970,7 +967,7 @@ Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, 
 	}
 }
 
-Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4f c;
 
@@ -1044,18 +1041,17 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		}
 		else  // Gather
 		{
-			VkComponentSwizzle swizzle = gatherSwizzle();
-			switch(swizzle)
+			switch(state.gatherSwizzle)
 			{
 				case VK_COMPONENT_SWIZZLE_ZERO:
 				case VK_COMPONENT_SWIZZLE_ONE:
 					// Handled at the final component swizzle.
 					break;
 				default:
-					c.x = c01[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.y = c11[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.z = c10[swizzle - VK_COMPONENT_SWIZZLE_R];
-					c.w = c00[swizzle - VK_COMPONENT_SWIZZLE_R];
+					c.x = c01[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.y = c11[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.z = c10[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
+					c.w = c00[state.gatherSwizzle - VK_COMPONENT_SWIZZLE_R];
 					break;
 			}
 		}
@@ -1064,7 +1060,7 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	return c;
 }
 
-Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function)
+Vector4f SamplerCore::sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, const SamplerFunction &function)
 {
 	Vector4f c;
 
@@ -1165,11 +1161,11 @@ static Float log2(Float lod)
 	return lod;
 }
 
-void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 dudxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		dudxy = uuuu.yz - uuuu.xx;
 	}
@@ -1189,11 +1185,11 @@ void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu,
 	lod = log2sqrt(lod);
 }
 
-void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 duvdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		duvdxy = Float4(uuuu.yz, vvvv.yz) - Float4(uuuu.xx, vvvv.xx);
 	}
@@ -1235,11 +1231,11 @@ void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisot
 	lod = log2sqrt(lod);  // log2(sqrt(lod))
 }
 
-void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerFunction function)
+void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerMethod method)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		Float4 U = u * M;
 		Float4 V = v * M;
@@ -1276,11 +1272,11 @@ void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, 
 	lod = log2(lod);
 }
 
-void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		dudxy = uuuu - uuuu.xxxx;
 		dvdxy = vvvv - vvvv.xxxx;
@@ -1393,7 +1389,7 @@ Short4 SamplerCore::applyOffset(Short4 &uvw, Int4 &offset, const Int4 &whd, Addr
 	return As<Short4>(UShort4(tmp));
 }
 
-void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Short4 &layerIndex, Vector4i &offset, const Int4 &sample, const Pointer<Byte> &mipmap, SamplerFunction function)
+void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Short4 &layerIndex, Vector4i &offset, const Int4 &sample, const Pointer<Byte> &mipmap, const SamplerFunction &function)
 {
 	uuuu = MulHigh(As<UShort4>(uuuu), UShort4(*Pointer<Int4>(mipmap + OFFSET(Mipmap, width))));
 
@@ -1460,7 +1456,7 @@ void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4
 	index[3] = Extract(indices, 3);
 }
 
-void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, SamplerFunction function)
+void SamplerCore::computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Int4 &sample, Int4 valid, const Pointer<Byte> &mipmap, const SamplerFunction &function)
 {
 	UInt4 indices = uuuu;
 
@@ -1757,7 +1753,7 @@ Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer)
 	return c;
 }
 
-Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, const Short4 &layerIndex, Vector4i &offset, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
+Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, const Short4 &layerIndex, Vector4i &offset, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, const SamplerFunction &function)
 {
 	Vector4s c;
 
@@ -1906,7 +1902,7 @@ Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, cons
 	return c;
 }
 
-Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, SamplerFunction function)
+Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dRef, const Int4 &sample, Pointer<Byte> &mipmap, Pointer<Byte> buffer, const SamplerFunction &function)
 {
 	Int4 valid;
 
@@ -2258,7 +2254,7 @@ static Int4 mod(Int4 n, Int4 d)
 	return (positive & x) | (~positive & (x + d));
 }
 
-void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function)
+void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode, const SamplerFunction &function)
 {
 	if(addressingMode == ADDRESSING_UNUSED)
 	{
@@ -2473,7 +2469,7 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 	}
 }
 
-Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, SamplerFunction function)
+Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, SamplerMethod method)
 {
 	if(!state.isArrayed())
 	{
@@ -2483,7 +2479,7 @@ Int4 SamplerCore::computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, Samp
 	Int4 layers = *Pointer<Int4>(mipmap + OFFSET(Mipmap, depth), 16);
 	Int4 maxLayer = layers - Int4(1);
 
-	if(function == Fetch)  // Unnormalized coordinates
+	if(method == Fetch)  // Unnormalized coordinates
 	{
 		Int4 xyz = As<Int4>(a);
 		Int4 xyz0 = Min(Max(xyz, Int4(0)), maxLayer);
@@ -2580,20 +2576,6 @@ bool SamplerCore::borderModeActive() const
 	return state.addressingModeU == ADDRESSING_BORDER ||
 	       state.addressingModeV == ADDRESSING_BORDER ||
 	       state.addressingModeW == ADDRESSING_BORDER;
-}
-
-VkComponentSwizzle SamplerCore::gatherSwizzle() const
-{
-	switch(state.gatherComponent)
-	{
-		case 0: return state.swizzle.r;
-		case 1: return state.swizzle.g;
-		case 2: return state.swizzle.b;
-		case 3: return state.swizzle.a;
-		default:
-			UNREACHABLE("Invalid component");
-			return VK_COMPONENT_SWIZZLE_R;
-	}
 }
 
 }  // namespace sw

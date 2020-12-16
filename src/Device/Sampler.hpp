@@ -98,7 +98,7 @@ struct Sampler
 	AddressingMode addressingModeW;
 	MipmapType mipmapFilter;
 	VkComponentMapping swizzle;
-	int gatherComponent;
+	VkComponentSwizzle gatherSwizzle;
 	bool highPrecisionFiltering;
 	bool compareEnable;
 	VkCompareOp compareOp;
