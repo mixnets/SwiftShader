@@ -475,13 +475,6 @@ public:
 	// trampoline function for retrieving/generating the corresponding sampling routine.
 	struct ImageInstruction
 	{
-		ImageInstruction(Variant variant, SamplerMethod samplerMethod)
-		    : parameters(0)
-		{
-			this->variant = variant;
-			this->samplerMethod = samplerMethod;
-		}
-
 		// Unmarshal from raw 32-bit data
 		ImageInstruction(uint32_t parameters)
 		    : parameters(parameters)
@@ -492,31 +485,14 @@ public:
 			return { static_cast<SamplerMethod>(samplerMethod), offset != 0, sample != 0 };
 		}
 
-		bool isDref() const
-		{
-			return (variant == Dref) || (variant == ProjDref);
-		}
-
-		bool isProj() const
-		{
-			return (variant == Proj) || (variant == ProjDref);
-		}
-
 		union
 		{
 			struct
 			{
-				uint32_t variant : BITS(VARIANT_LAST);
 				uint32_t samplerMethod : BITS(SAMPLER_METHOD_LAST);
 				uint32_t gatherComponent : 2;
-
-				// Parameters are passed to the sampling routine in this order:
-				uint32_t coordinates : 3;       // 1-4 (does not contain projection component)
-				/*	uint32_t dref : 1; */       // Indicated by Variant::ProjDref|Dref
-				/*	uint32_t lodOrBias : 1; */  // Indicated by SamplerMethod::Lod|Bias|Fetch
-				uint32_t grad : 2;              // 0-3 components (for each of dx / dy)
-				uint32_t offset : 2;            // 0-3 components
-				uint32_t sample : 1;            // 0-1 scalar integer
+				uint32_t offset : 1;
+				uint32_t sample : 1;
 			};
 
 			uint32_t parameters;
@@ -1197,7 +1173,7 @@ private:
 	EmitResult EmitImageSampleExplicitLod(Variant variant, InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageGather(Variant variant, InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageFetch(InsnIterator insn, EmitState *state) const;
-	EmitResult EmitImageSample(ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	EmitResult EmitImageSample(SamplerMethod samplerMethod, Variant variant, InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQuerySize(InsnIterator insn, EmitState *state) const;
 	EmitResult EmitImageQueryLod(InsnIterator insn, EmitState *state) const;
@@ -1217,7 +1193,7 @@ private:
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
-	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, SamplerMethod samplerMethod, Variant variant, InsnIterator insn, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
@@ -1273,10 +1249,24 @@ private:
 	std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
 	static ImageSampler *getImageSampler(uint32_t instruction, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler);
-	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
+	static std::shared_ptr<rr::Routine> emitSamplerRoutine(const SamplerFunction &samplerFunction, const Sampler &samplerState);
+
+	enum SamplerRoutineInputIndices
+	{
+		INPUT_COORDINATES = 0,
+		INPUT_DREF = 4,
+		INPUT_LOD_OR_BIAS = 5,
+		INPUT_DSX = 6,
+		INPUT_DSY = 10,
+		INPUT_OFFSET = 14,
+		INPUT_SAMPLE_ID = 18,
+		INPUT_COUNT = 19,
+	};
+
+	static VkComponentSwizzle getGatherSwizzle(const VkComponentMapping &swizzle, uint32_t gatherComponent);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
-	static sw::FilterType convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, ImageInstruction instruction);
+	static sw::FilterType convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, uint32_t samplerMethod);
 	static sw::MipmapType convertMipmapMode(const vk::Sampler *sampler);
 	static sw::AddressingMode convertAddressingMode(int coordinateIndex, const vk::Sampler *sampler, VkImageViewType imageViewType);
 
