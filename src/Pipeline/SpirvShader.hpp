@@ -512,6 +512,23 @@ public:
 
 	static_assert(sizeof(ImageInstruction) == sizeof(uint32_t), "ImageInstruction must be 32-bit");
 
+	// Utility structure containing an ImageInstruction along with the IDs of each relevant input parameter
+	struct ImageInstructionWithIds
+	{
+		ImageInstructionWithIds()
+		    : imageInstruction(0)
+		{}
+
+		ImageInstruction imageInstruction;
+		bool lodOrBias = false;
+		bool grad = false;
+		uint32_t lodOrBiasId = 0;
+		uint32_t gradDxId = 0;
+		uint32_t gradDyId = 0;
+		uint32_t offsetId = 0;
+		uint32_t sampleId = 0;
+	};
+
 	// This method is for retrieving an ID that uniquely identifies the
 	// shader entry point represented by this object.
 	uint64_t getSerialID() const
@@ -1200,6 +1217,7 @@ private:
 
 	Variant GetVariant(InsnIterator insn) const;
 	SamplerMethod GetSamplerMethod(InsnIterator insn, Variant variant) const;
+	ImageInstructionWithIds GetImageInstructionWithIds(InsnIterator insn) const;
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
 	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIterator insn, EmitState *state) const;

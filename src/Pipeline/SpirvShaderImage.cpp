@@ -158,6 +158,78 @@ SamplerMethod SpirvShader::GetSamplerMethod(InsnIterator insn, Variant variant) 
 	return Implicit;
 }
 
+SpirvShader::ImageInstructionWithIds SpirvShader::GetImageInstructionWithIds(InsnIterator insn) const
+{
+	ImageInstructionWithIds instruction;
+	instruction.imageInstruction.variant = GetVariant(insn);
+	instruction.imageInstruction.samplerMethod = GetSamplerMethod(insn, static_cast<Variant>(instruction.imageInstruction.variant));
+
+	auto isDref = instruction.imageInstruction.isDref();
+	uint32_t operand = (isDref || instruction.imageInstruction.samplerMethod == Gather) ? 6 : 5;
+	if(instruction.imageInstruction.samplerMethod == Gather)
+	{
+		instruction.imageInstruction.gatherComponent = !isDref ? getObject(insn.word(5)).constantValue[0] : 0;
+	}
+
+	if(insn.wordCount() > operand)
+	{
+		uint32_t imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(operand++));
+
+		if(imageOperands & spv::ImageOperandsBiasMask)
+		{
+			instruction.lodOrBias = true;
+			instruction.lodOrBiasId = insn.word(operand);
+			operand++;
+			imageOperands &= ~spv::ImageOperandsBiasMask;
+
+			ASSERT(instruction.imageInstruction.samplerMethod == Implicit);
+			instruction.imageInstruction.samplerMethod = Bias;
+		}
+
+		if(imageOperands & spv::ImageOperandsLodMask)
+		{
+			instruction.lodOrBias = true;
+			instruction.lodOrBiasId = insn.word(operand);
+			operand++;
+			imageOperands &= ~spv::ImageOperandsLodMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsGradMask)
+		{
+			ASSERT(!instruction.lodOrBias);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits." Bias is for ImplicitLod, Grad for ExplicitLod.
+			instruction.grad = true;
+			instruction.gradDxId = insn.word(operand + 0);
+			instruction.gradDyId = insn.word(operand + 1);
+			operand += 2;
+			imageOperands &= ~spv::ImageOperandsGradMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsConstOffsetMask)
+		{
+			instruction.imageInstruction.offset = true;
+			instruction.offsetId = insn.word(operand);
+			operand++;
+			imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsSampleMask)
+		{
+			instruction.imageInstruction.sample = true;
+			instruction.sampleId = insn.word(operand);
+			imageOperands &= ~spv::ImageOperandsSampleMask;
+
+			ASSERT(instruction.imageInstruction.samplerMethod == Fetch);
+		}
+
+		if(imageOperands != 0)
+		{
+			UNSUPPORTED("Image operands 0x%08X", imageOperands);
+		}
+	}
+
+	return instruction;
+}
+
 SpirvShader::EmitResult SpirvShader::EmitImageSample(InsnIterator insn, EmitState *state) const
 {
 	auto &resultType = getType(insn.resultTypeId());
@@ -201,85 +273,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		sampler = Pointer<Byte>(nullptr);
 	}
 
-	uint32_t imageOperands = spv::ImageOperandsMaskNone;
-	bool lodOrBias = false;
-	Object::ID lodOrBiasId = 0;
-	bool grad = false;
-	Object::ID gradDxId = 0;
-	Object::ID gradDyId = 0;
-	bool constOffset = false;
-	Object::ID offsetId = 0;
-	bool sample = false;
-	Object::ID sampleId = 0;
-
-	Variant variant = GetVariant(insn);
-	ImageInstruction instruction(0);
-	instruction.samplerMethod = GetSamplerMethod(insn, variant);
-	instruction.variant = variant;
-
-	auto isDref = instruction.isDref();
-	uint32_t operand = (isDref || instruction.samplerMethod == Gather) ? 6 : 5;
-	if(instruction.samplerMethod == Gather)
-	{
-		instruction.gatherComponent = !isDref ? getObject(insn.word(5)).constantValue[0] : 0;
-	}
-
-	if(insn.wordCount() > operand)
-	{
-		imageOperands = static_cast<spv::ImageOperandsMask>(insn.word(operand++));
-
-		if(imageOperands & spv::ImageOperandsBiasMask)
-		{
-			lodOrBias = true;
-			lodOrBiasId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsBiasMask;
-
-			ASSERT(instruction.samplerMethod == Implicit);
-			instruction.samplerMethod = Bias;
-		}
-
-		if(imageOperands & spv::ImageOperandsLodMask)
-		{
-			lodOrBias = true;
-			lodOrBiasId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsLodMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsGradMask)
-		{
-			ASSERT(!lodOrBias);  // SPIR-V 1.3: "It is invalid to set both the Lod and Grad bits." Bias is for ImplicitLod, Grad for ExplicitLod.
-			grad = true;
-			gradDxId = insn.word(operand + 0);
-			gradDyId = insn.word(operand + 1);
-			operand += 2;
-			imageOperands &= ~spv::ImageOperandsGradMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsConstOffsetMask)
-		{
-			constOffset = true;
-			offsetId = insn.word(operand);
-			operand++;
-			imageOperands &= ~spv::ImageOperandsConstOffsetMask;
-		}
-
-		if(imageOperands & spv::ImageOperandsSampleMask)
-		{
-			sample = true;
-			sampleId = insn.word(operand);
-			imageOperands &= ~spv::ImageOperandsSampleMask;
-
-			ASSERT(instruction.samplerMethod == Fetch);
-			instruction.sample = true;
-		}
-
-		if(imageOperands != 0)
-		{
-			UNSUPPORTED("Image operands 0x%08X", imageOperands);
-		}
-	}
+	ImageInstructionWithIds instruction = GetImageInstructionWithIds(insn);
 
 	Array<SIMD::Float> in(INPUT_COUNT);
 	for(uint32_t i = 0; i < INPUT_COUNT; i++)
@@ -287,7 +281,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		in[i] = SIMD::Float(0.0f);
 	}
 
-	auto isProj = instruction.isProj();
+	auto isProj = instruction.imageInstruction.isProj();
 	uint32_t coordinates = coordinate.componentCount - isProj;
 
 	for(uint32_t i = 0; i < coordinates; i++)
@@ -302,7 +296,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		}
 	}
 
-	if((variant == Dref) || (variant == ProjDref))
+	if(instruction.imageInstruction.isDref())
 	{
 		auto drefValue = Operand(this, state, insn.word(5));
 
@@ -316,15 +310,15 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		}
 	}
 
-	if(lodOrBias)
+	if(instruction.lodOrBias)
 	{
-		auto lodValue = Operand(this, state, lodOrBiasId);
+		auto lodValue = Operand(this, state, instruction.lodOrBiasId);
 		in[INPUT_LOD_OR_BIAS] = lodValue.Float(0);
 	}
-	else if(grad)
+	else if(instruction.grad)
 	{
-		auto dxValue = Operand(this, state, gradDxId);
-		auto dyValue = Operand(this, state, gradDyId);
+		auto dxValue = Operand(this, state, instruction.gradDxId);
+		auto dyValue = Operand(this, state, instruction.gradDyId);
 		ASSERT(dxValue.componentCount == dyValue.componentCount);
 
 		for(uint32_t i = 0; i < dxValue.componentCount; i++)
@@ -337,7 +331,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 			in[INPUT_GRAD_Y + i] = dyValue.Float(i);
 		}
 	}
-	else if(instruction.samplerMethod == Fetch)
+	else if(instruction.imageInstruction.samplerMethod == Fetch)
 	{
 		// The instruction didn't provide a lod operand, but the sampler's Fetch
 		// function requires one to be present. If no lod is supplied, the default
@@ -345,10 +339,9 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		in[INPUT_LOD_OR_BIAS] = As<SIMD::Float>(SIMD::Int(0));
 	}
 
-	if(constOffset)
+	if(instruction.imageInstruction.offset)
 	{
-		auto offsetValue = Operand(this, state, offsetId);
-		instruction.offset = (offsetValue.componentCount != 0);
+		auto offsetValue = Operand(this, state, instruction.offsetId);
 
 		for(uint32_t i = 0; i < offsetValue.componentCount; i++)
 		{
@@ -356,9 +349,9 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 		}
 	}
 
-	if(sample)
+	if(instruction.imageInstruction.sample)
 	{
-		auto sampleValue = Operand(this, state, sampleId);
+		auto sampleValue = Operand(this, state, instruction.sampleId);
 		in[INPUT_SAMPLE_ID] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
@@ -369,7 +362,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, InsnIter
 
 	If(!cacheHit)
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+		cache.function = Call(getImageSampler, instruction.imageInstruction.parameters, imageDescriptor, sampler);
 		cache.imageDescriptor = imageDescriptor;
 		cache.sampler = sampler;
 	}
