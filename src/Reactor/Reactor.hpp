@@ -3376,7 +3376,7 @@ inline void Call(void (Class::*fptr)(CArgs...), C &&object, RArgs &&... args)
 //{
 //	CallHelper<void(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 //}
-
+//
 template<typename F>
 class FunctionReturnType
 {};
@@ -3385,15 +3385,61 @@ template<typename Return, typename... Arguments>
 class FunctionReturnType<Return(Arguments...)>
 {
 public:
-	using RReturn = Return;
+	using Type = Return;
+};
+
+template<typename... Arguments>
+class FunctionReturnType<void(Arguments...)>
+{
+public:
+	//	using Type = Return;
 };
 
 // Calls the static function pointer fptr with the given arguments args.
 template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline CToReactorT<typename FunctionReturnType<FUNCTION_SIGNATURE>::RReturn> Call(Pointer<Byte> fptr, RArgs &&... args)
+inline CToReactorT<typename FunctionReturnType<FUNCTION_SIGNATURE>::Type> Call(Pointer<Byte> fptr, RArgs &&... args)
 {
 	return CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
+
+template<typename F>
+class VoidFunction
+{};
+
+template<typename... Arguments>
+class VoidFunction<void(Arguments...)>
+{
+public:
+	static inline void Call(Pointer<Byte> fptr, CToReactorT<Arguments>... args)
+	{
+		rr::Call(fptr,
+		         Void::type(),
+		         { ValueOf(args)... },
+		         { CToReactorT<Arguments>::type()... });
+	}
+};
+
+// Calls the static function pointer fptr with the given arguments args.
+template<typename FUNCTION_SIGNATURE, typename... RArgs>
+inline void Call(Pointer<Byte> fptr, RArgs &&... args)
+{
+	VoidFunction<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
+}
+
+//
+//// Calls the static function pointer fptr with the given arguments args.
+//template<typename Return, typename... CArgs, typename... RArgs>
+//inline CToReactorT<Return> Call(Pointer<Byte> fptr, RArgs &&... args)
+//{
+//	return CallHelper<Return(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
+//}
+//
+//// Calls the static function pointer fptr with the given arguments args.
+//template<typename... CArgs, typename... RArgs>
+//inline void Call(Pointer<Byte> fptr, RArgs &&... args)
+//{
+//	CallHelper<void(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
+//}
 
 // Breakpoint emits an instruction that will cause the application to trap.
 // This can be used to stop an attached debugger at the given call.
