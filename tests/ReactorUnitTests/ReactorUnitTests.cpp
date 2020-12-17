@@ -95,7 +95,7 @@ TEST(ReactorUnitTests, Trampoline)
 	using SecondaryFunc = int(int, int);
 
 	static auto generateSecondary = [](int upDown) {
-		Function<Int(Int, Int)> secondary;
+		FunctionT<SecondaryFunc> secondary;
 		{
 			Int x = secondary.Arg<0>();
 			Int y = secondary.Arg<1>();
@@ -117,16 +117,17 @@ TEST(ReactorUnitTests, Trampoline)
 			Return(r);
 		}
 
-		static auto routine = secondary("secondary");
-		return (SecondaryFunc *)routine->getEntry();
+		static auto routine = secondary((testName() + "_secondary").c_str());
+		return routine.getEntry();
 	};
 
 	using SecondaryGeneratorFunc = SecondaryFunc *(*)(int);
 	SecondaryGeneratorFunc secondaryGenerator = (SecondaryGeneratorFunc)generateSecondary;
 
-	RoutineT<int(int, int, int)> routine;
+	using PrimaryFunc = int(int, int, int);
+	RoutineT<PrimaryFunc> routine;
 	{
-		FunctionT<int(int, int, int)> primary;
+		FunctionT<PrimaryFunc> primary;
 		{
 			Int x = primary.Arg<0>();
 			Int y = primary.Arg<1>();
@@ -138,7 +139,7 @@ TEST(ReactorUnitTests, Trampoline)
 			Return(r);
 		}
 
-		routine = primary("primary");
+		routine = primary((testName() + "_primary").c_str());
 	}
 
 	int result = routine(100, 20, -3);

@@ -36,6 +36,8 @@ template<typename Return, typename... Arguments>
 class RoutineT<Return(Arguments...)>
 {
 public:
+	using CallableType = Return (*)(Arguments...);
+
 	RoutineT() = default;
 
 	explicit RoutineT(const std::shared_ptr<Routine> &routine)
@@ -58,14 +60,13 @@ public:
 		return callable(std::forward<Args>(args)...);
 	}
 
-	const void *getEntry() const
+	const CallableType getEntry() const
 	{
-		return reinterpret_cast<void *>(callable);
+		return callable;
 	}
 
 private:
 	std::shared_ptr<Routine> routine;
-	using CallableType = Return (*)(Arguments...);
 	CallableType callable = nullptr;
 };
 

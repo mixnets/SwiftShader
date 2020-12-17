@@ -3388,6 +3388,9 @@ struct NonVoidFunction<void(Arguments...)>
 };
 
 template<typename F>
+using NonVoidFunctionReturnType = typename NonVoidFunction<F>::ReturnType;
+
+template<typename F>
 struct VoidFunction
 {};
 
@@ -3397,10 +3400,13 @@ struct VoidFunction<void(Arguments...)>
 	using ReturnType = void;
 };
 
+template<typename F>
+using VoidFunctionReturnType = typename VoidFunction<F>::ReturnType;
+
 // Calls the Reactor function pointer fptr with the signature FUNCTION_SIGNATURE and arguments.
 // Overload for calling functions with non-void return type.
 template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline CToReactorT<typename NonVoidFunction<FUNCTION_SIGNATURE>::ReturnType> Call(Pointer<Byte> fptr, RArgs &&... args)
+inline CToReactorT<NonVoidFunctionReturnType<FUNCTION_SIGNATURE>> Call(Pointer<Byte> fptr, RArgs &&... args)
 {
 	return CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
@@ -3408,7 +3414,7 @@ inline CToReactorT<typename NonVoidFunction<FUNCTION_SIGNATURE>::ReturnType> Cal
 // Calls the Reactor function pointer fptr with the signature FUNCTION_SIGNATURE and arguments.
 // Overload for calling functions with void return type.
 template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline typename VoidFunction<FUNCTION_SIGNATURE>::ReturnType Call(Pointer<Byte> fptr, RArgs &&... args)
+inline VoidFunctionReturnType<FUNCTION_SIGNATURE> Call(Pointer<Byte> fptr, RArgs &&... args)
 {
 	CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
