@@ -44,27 +44,29 @@ static std::string testName()
 //
 TEST(ReactorUnitTests, Trampoline)
 {
-	using SecondaryFunc = void(int, int, int *);
+	using SecondaryFunc = int(int, int);
 
 	static auto generateSecondary = [](int upDown) {
-		Function<Void(Int, Int, Pointer<Int>)> secondary;
+		Function<Int(Int, Int)> secondary;
 		{
 			Int x = secondary.Arg<0>();
 			Int y = secondary.Arg<1>();
-			Pointer<Int> r = secondary.Arg<2>();
+			Int r;
 
 			if(upDown > 0)
 			{
-				*r = x + y;
+				r = x + y;
 			}
 			else if(upDown < 0)
 			{
-				*r = x - y;
+				r = x - y;
 			}
 			else
 			{
-				*r = 0;
+				r = 0;
 			}
+
+			Return(r);
 		}
 
 		static auto routine = secondary("secondary");
@@ -83,8 +85,7 @@ TEST(ReactorUnitTests, Trampoline)
 			Int z = primary.Arg<2>();
 
 			Pointer<Byte> secondary = Call(secondaryGenerator, z);
-			Int r;
-			Call<SecondaryFunc>(secondary, x, y, &r);
+			Int r = Call<SecondaryFunc>(secondary, x, y);
 
 			Return(r);
 		}

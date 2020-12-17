@@ -3371,10 +3371,28 @@ inline void Call(void (Class::*fptr)(CArgs...), C &&object, RArgs &&... args)
 
 // Calls the Reactor function pointer fptr with the signature
 // FUNCTION_SIGNATURE and arguments.
-template<typename FUNCTION_SIGNATURE, typename... RArgs>
-inline void Call(Pointer<Byte> fptr, RArgs &&... args)
+//template<typename... CArgs, typename... RArgs>
+//inline void Call(Pointer<Byte> fptr, RArgs &&... args)
+//{
+//	CallHelper<void(CArgs...)>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
+//}
+
+template<typename F>
+class FunctionReturnType
+{};
+
+template<typename Return, typename... Arguments>
+class FunctionReturnType<Return(Arguments...)>
 {
-	CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
+public:
+	using RReturn = Return;
+};
+
+// Calls the static function pointer fptr with the given arguments args.
+template<typename FUNCTION_SIGNATURE, typename... RArgs>
+inline CToReactorT<typename FunctionReturnType<FUNCTION_SIGNATURE>::RReturn> Call(Pointer<Byte> fptr, RArgs &&... args)
+{
+	return CallHelper<FUNCTION_SIGNATURE>::Call(fptr, CastToReactor(std::forward<RArgs>(args))...);
 }
 
 // Breakpoint emits an instruction that will cause the application to trap.
