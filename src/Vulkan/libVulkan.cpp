@@ -397,6 +397,7 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 #endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 	// Vulkan 1.2 promoted extensions
 	{ VK_EXT_SCALAR_BLOCK_LAYOUT_EXTENSION_NAME, VK_EXT_SCALAR_BLOCK_LAYOUT_SPEC_VERSION },
+	{ VK_EXT_SEPARATE_STENCIL_USAGE_EXTENSION_NAME, VK_EXT_SEPARATE_STENCIL_USAGE_SPEC_VERSION },
 	{ VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME, VK_KHR_IMAGE_FORMAT_LIST_SPEC_VERSION },
 	{ VK_KHR_IMAGELESS_FRAMEBUFFER_EXTENSION_NAME, VK_KHR_IMAGELESS_FRAMEBUFFER_SPEC_VERSION },
 	{ VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME, VK_KHR_SHADER_FLOAT_CONTROLS_SPEC_VERSION },
@@ -1628,6 +1629,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 				// Do nothing. This extension tells the driver which image formats will be used
 				// by the application. Swiftshader is not impacted from lacking this information,
 				// so we don't need to track the format list.
+				break;
+			case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
+				// Maybe nothing needs to be done?
 				break;
 			default:
 				// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
@@ -3013,10 +3017,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 				ASSERT(!hasDeviceExtension(VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME));
 			}
 			break;
-			case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO_EXT:
+			case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
 			{
-				// Explicitly ignored, since VK_EXT_separate_stencil_usage is not supported
-				ASSERT(!hasDeviceExtension(VK_EXT_SEPARATE_STENCIL_USAGE_EXTENSION_NAME));
+				// Accept StencilUsage. There's nothing else to do with any stencil usage information
+				// being passed to this function.
+				const VkImageStencilUsageCreateInfo *stencilUsageInfo = reinterpret_cast<const VkImageStencilUsageCreateInfo *>(extensionFormatInfo);
+				(void) stencilUsageInfo->stencilUsage;
 			}
 			break;
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO:
@@ -3045,6 +3051,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 	bool hasAHBUsage = false;
 #endif
 
+	VkImageUsageFlags *stencilUsage = nullptr;
 	while(extensionProperties)
 	{
 		switch(extensionProperties->sType)
@@ -3065,6 +3072,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 			{
 				// Explicitly ignored, since VK_AMD_texture_gather_bias_lod is not supported
 				ASSERT(!hasDeviceExtension(VK_AMD_TEXTURE_GATHER_BIAS_LOD_EXTENSION_NAME));
+			}
+			break;
+			case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
+			{
+				VkImageStencilUsageCreateInfo *stencilUsageInfo = reinterpret_cast<VkImageStencilUsageCreateInfo *>(extensionProperties);
+				stencilUsage = &(stencilUsageInfo->stencilUsage);
 			}
 			break;
 #ifdef __ANDROID__
@@ -3150,14 +3163,48 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		return VK_ERROR_FORMAT_NOT_SUPPORTED;
 	}
 
+	if (stencilUsage != nullptr)
+	{
+		*stencilUsage = 0;
+		if (features & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_SAMPLED_BIT;
+		}
+		if (features & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_STORAGE_BIT;
+		}
+		// Don't allow stencil buffers to be used as color attachments
+		// if (features & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)
+		// {
+		// 	*stencilUsage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		// }
+		if (features & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		}
+		if (features & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+		}
+		if (features & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+		}
+		if (features & VK_FORMAT_FEATURE_TRANSFER_DST_BIT)
+		{
+			*stencilUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+		}
+	}
+
 	auto allRecognizedUsageBits = VK_IMAGE_USAGE_SAMPLED_BIT |
-	                              VK_IMAGE_USAGE_STORAGE_BIT |
-	                              VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
-	                              VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
-	                              VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT |
-	                              VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
-	                              VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-	                              VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
+								VK_IMAGE_USAGE_STORAGE_BIT |
+								VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+								VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
+								VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT |
+								VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+								VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+								VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 	ASSERT(!(usage & ~(allRecognizedUsageBits)));
 
 	// "Images created with tiling equal to VK_IMAGE_TILING_LINEAR have further restrictions on their limits and capabilities
