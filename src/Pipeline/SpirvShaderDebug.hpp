@@ -15,6 +15,10 @@
 #ifndef sw_SpirvShaderDebug_hpp
 #define sw_SpirvShaderDebug_hpp
 
+#include "SpirvShader.hpp"
+
+#include "spirv-tools/libspirv.h"
+
 // Enable this to print verbose debug messages as each SPIR-V instructon is
 // executed. Very handy for performing text diffs when the thread count is
 // reduced to 1 and execution is deterministic.
@@ -29,7 +33,6 @@
 
 #if SPIRV_SHADER_ENABLE_DBG
 #	define SPIRV_SHADER_DBG(fmt, ...) rr::Print(fmt "\n", ##__VA_ARGS__)
-#	include "spirv-tools/libspirv.h"
 namespace spvtools {
 // Function implemented in third_party/SPIRV-Tools/source/disassemble.cpp
 // but with no public header.
@@ -44,6 +47,15 @@ std::string spvInstructionBinaryToText(const spv_target_env env,
 #else
 #	define SPIRV_SHADER_DBG(...)
 #endif  // SPIRV_SHADER_ENABLE_DBG
+
+namespace sw {
+
+inline const char *SpirvShader::OpcodeName(spv::Op op)
+{
+	return spvOpcodeString(op);
+}
+
+}  // namespace sw
 
 #ifdef ENABLE_RR_PRINT
 namespace rr {
