@@ -263,6 +263,8 @@ void ValidateRenderPassPNextChain(VkDevice device, const T *pCreateInfo)
 
 }  // namespace
 
+using namespace vk;
+
 extern "C" {
 VK_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char *pName)
 {
@@ -433,6 +435,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCre
 	TRACE("(const VkInstanceCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkInstance* pInstance = %p)",
 	      pCreateInfo, pAllocator, pInstance);
 
+		  return VK::ERROR_EXTENSION_NOT_PRESENT();
+
 	initializeLibrary();
 
 	if(pCreateInfo->flags != 0)
@@ -450,7 +454,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCre
 	{
 		if(!hasInstanceExtension(pCreateInfo->ppEnabledExtensionNames[i]))
 		{
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
+			return VK::ERROR_EXTENSION_NOT_PRESENT();
 		}
 	}
 
@@ -624,7 +628,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	{
 		if(!hasDeviceExtension(pCreateInfo->ppEnabledExtensionNames[i]))
 		{
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
+			return VK::ERROR_EXTENSION_NOT_PRESENT();
 		}
 	}
 

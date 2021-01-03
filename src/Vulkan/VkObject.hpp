@@ -170,4 +170,20 @@ public:
 
 }  // namespace vk
 
+inline namespace VK {
+
+struct ERROR_EXTENSION_NOT_PRESENT
+{
+	operator VkResult()
+	{
+		return ::VK_ERROR_EXTENSION_NOT_PRESENT;
+	}
+};
+
+using VK_ERROR_EXTENSION_NOT_PRESENT = ERROR_EXTENSION_NOT_PRESENT;
+
+}  // namespace VK
+
+//using namespace VK;
+
 #endif  // VK_OBJECT_HPP_
