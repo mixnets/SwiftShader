@@ -16,6 +16,8 @@
 
 #include "ShaderCore.hpp"
 
+#include "Device/Primitive.hpp"
+#include "Pipeline/Constants.hpp"
 #include <spirv/unified1/GLSL.std.450.h>
 #include <spirv/unified1/spirv.hpp>
 
@@ -24,6 +26,20 @@ constexpr float PI = 3.141592653589793f;
 }
 
 namespace sw {
+
+bool SpirvShader::ContainsGLSLstd450Interpolation(InsnIterator insn) const
+{
+	auto extInstIndex = static_cast<GLSLstd450>(insn.word(4));
+	switch(extInstIndex)
+	{
+		case GLSLstd450InterpolateAtCentroid:
+		case GLSLstd450InterpolateAtSample:
+		case GLSLstd450InterpolateAtOffset:
+			return true;
+		default:
+			return false;
+	}
+}
 
 SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const
 {
@@ -879,17 +895,35 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		}
 		case GLSLstd450InterpolateAtCentroid:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, 0, i, state, SpirvShader::Centroid));
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtSample:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtSample));
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtOffset:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, state, SpirvShader::AtOffset));
+			}
 			break;
 		}
 		case GLSLstd450NMin:
@@ -930,6 +964,108 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 	}
 
 	return EmitResult::Continue;
+}
+
+SIMD::Float SpirvShader::Interpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId, uint32_t component, EmitState *state, InterpolationType type) const
+{
+	uint32_t interpolant = (location << 2) | component;
+	if((location < 0) || (interpolant >= inputs.size()))
+	{
+		return SIMD::Float(0.0f);
+	}
+
+	const auto &routine = *(state->routine);
+
+	SIMD::Float x(0.0f);
+	SIMD::Float y(0.0f);
+	SIMD::Float rhw(0.0f);
+
+	switch(type)
+	{
+		case Centroid:
+			x = routine.xCentroid;
+			y = routine.yCentroid;
+			rhw = routine.rhwCentroid;
+			break;
+		case AtSample:
+			if(routine.multiSampleCount > 1)
+			{
+				static constexpr int NUM_SAMPLES = 4;
+				ASSERT(routine.multiSampleCount == NUM_SAMPLES);
+
+				Array<Float> sampleX(NUM_SAMPLES);
+				Array<Float> sampleY(NUM_SAMPLES);
+				for(int i = 0; i < NUM_SAMPLES; ++i)
+				{
+					sampleX[i] = Constants::SampleLocationsX[i];
+					sampleY[i] = Constants::SampleLocationsY[i];
+				}
+
+				auto sampleOperand = Operand(this, state, paramId);
+				ASSERT(sampleOperand.componentCount == 1);
+
+				// If sample does not exist, the position used to interpolate the
+				// input variable is undefined, so we just clamp to avoid OOB accesses.
+				SIMD::Int samples = Max(Min(sampleOperand.Int(0), SIMD::Int(NUM_SAMPLES - 1)), SIMD::Int(0));
+
+				for(int i = 0; i < SIMD::Width; ++i)
+				{
+					Int sample = Extract(samples, i);
+					x = Insert(x, sampleX[sample], i);
+					y = Insert(y, sampleY[sample], i);
+				}
+			}
+
+			x += routine.x;
+			y += routine.y;
+			rhw = routine.rhw;
+			break;
+		case AtOffset:
+		{
+			//  An offset of (0, 0) identifies the center of the pixel.
+			auto offset = Operand(this, state, paramId);
+			ASSERT(offset.componentCount == 2);
+
+			x = routine.x + offset.Float(0);
+			y = routine.y + offset.Float(1);
+			rhw = routine.rhw;
+		}
+		break;
+		default:
+			UNREACHABLE("Unknown interpolation type: %d", (int)type);
+			return SIMD::Float(0.0f);
+	}
+
+	// The following code assumes that the offsets are constants and are valid
+	Pointer<Byte> planeEquation = routine.primitive + OFFSET(Primitive, V[interpolant]);
+	if(ptr.hasDynamicOffsets)
+	{
+		planeEquation += ((Extract(ptr.dynamicOffsets, 0) + ptr.staticOffsets[0]) >> 2) * sizeof(PlaneEquation);
+	}
+	else if(ptr.staticOffsets[0] != 0)
+	{
+		planeEquation += (ptr.staticOffsets[0] >> 2) * sizeof(PlaneEquation);
+	}
+
+	return SpirvRoutine::interpolateXY(x, y, rhw, planeEquation, false, true);
+}
+
+SIMD::Float SpirvRoutine::interpolateXY(const SIMD::Float &x, const SIMD::Float &y, const SIMD::Float &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+{
+	SIMD::Float interpolant = *Pointer<SIMD::Float>(planeEquation + OFFSET(PlaneEquation, C), 16);
+
+	if(!flat)
+	{
+		interpolant += x * *Pointer<SIMD::Float>(planeEquation + OFFSET(PlaneEquation, A), 16) +
+		               y * *Pointer<SIMD::Float>(planeEquation + OFFSET(PlaneEquation, B), 16);
+
+		if(perspective)
+		{
+			interpolant *= rhw;
+		}
+	}
+
+	return interpolant;
 }
 
 }  // namespace sw
