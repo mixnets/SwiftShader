@@ -572,6 +572,7 @@ public:
 		bool ClipDistance : 1;
 		bool CullDistance : 1;
 		bool ImageCubeArray : 1;
+		bool SampleRateShading : 1;
 		bool InputAttachment : 1;
 		bool Sampled1D : 1;
 		bool Image1D : 1;
@@ -582,6 +583,7 @@ public:
 		bool StorageImageExtendedFormats : 1;
 		bool ImageQuery : 1;
 		bool DerivativeControl : 1;
+		bool InterpolationFunction : 1;
 		bool GroupNonUniform : 1;
 		bool GroupNonUniformVote : 1;
 		bool GroupNonUniformBallot : 1;
