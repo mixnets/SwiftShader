@@ -879,17 +879,43 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		}
 		case GLSLstd450InterpolateAtCentroid:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			// TODO: perform actual interpolation
+			auto ptr = state->getPointer(insn.word(5));
+			auto ptrOffsets = ptr.offsets();
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				auto offset = Extract(ptrOffsets, i);
+				SIMD::Float value = *Pointer<Float>(&ptr.base[offset]);
+				dst.move(i, value);
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtSample:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			// TODO: perform actual interpolation
+			auto ptr = state->getPointer(insn.word(5));
+			// auto sample = Operand(this, state, insn.word(6));
+			auto ptrOffsets = ptr.offsets();
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				auto offset = Extract(ptrOffsets, i);
+				SIMD::Float value = *Pointer<Float>(&ptr.base[offset]);
+				dst.move(i, value);
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtOffset:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			// TODO: perform actual interpolation
+			auto ptr = state->getPointer(insn.word(5));
+			// auto offset = Operand(this, state, insn.word(6));
+			auto ptrOffsets = ptr.offsets();
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				auto offset = Extract(ptrOffsets, i);
+				SIMD::Float value = *Pointer<Float>(&ptr.base[offset]);
+				dst.move(i, value);
+			}
 			break;
 		}
 		case GLSLstd450NMin:
