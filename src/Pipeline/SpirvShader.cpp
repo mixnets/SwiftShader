@@ -111,6 +111,9 @@ SpirvShader::SpirvShader(
 					case spv::DecorationInputAttachmentIndex:
 						descriptorDecorations[targetId].InputAttachmentIndex = value;
 						break;
+					case spv::DecorationSample:
+						modes.ContainsSampleQualifier = true;
+						break;
 					default:
 						// Only handling descriptor decorations here.
 						break;
@@ -384,6 +387,7 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityClipDistance: capabilities.ClipDistance = true; break;
 					case spv::CapabilityCullDistance: capabilities.CullDistance = true; break;
 					case spv::CapabilityImageCubeArray: capabilities.ImageCubeArray = true; break;
+					case spv::CapabilitySampleRateShading: capabilities.SampleRateShading = true; break;
 					case spv::CapabilityInputAttachment: capabilities.InputAttachment = true; break;
 					case spv::CapabilitySampled1D: capabilities.Sampled1D = true; break;
 					case spv::CapabilityImage1D: capabilities.Image1D = true; break;
@@ -394,6 +398,7 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityStorageImageExtendedFormats: capabilities.StorageImageExtendedFormats = true; break;
 					case spv::CapabilityImageQuery: capabilities.ImageQuery = true; break;
 					case spv::CapabilityDerivativeControl: capabilities.DerivativeControl = true; break;
+					case spv::CapabilityInterpolationFunction: capabilities.InterpolationFunction = true; break;
 					case spv::CapabilityGroupNonUniform: capabilities.GroupNonUniform = true; break;
 					case spv::CapabilityGroupNonUniformVote: capabilities.GroupNonUniformVote = true; break;
 					case spv::CapabilityGroupNonUniformArithmetic: capabilities.GroupNonUniformArithmetic = true; break;
@@ -703,6 +708,7 @@ SpirvShader::SpirvShader(
 				{
 					case Extension::GLSLstd450:
 						DefineResult(insn);
+						modes.ContainsInterpolation |= ContainsGLSLstd450Interpolation(insn);
 						break;
 					case Extension::OpenCLDebugInfo100:
 						DefineOpenCLDebugInfo100(insn);
@@ -1406,6 +1412,10 @@ void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 		case spv::DecorationColMajor:
 			HasRowMajor = true;
 			RowMajor = false;
+			break;
+		case spv::DecorationSample:
+			HasSample = true;
+			break;
 		default:
 			// Intentionally partial, there are many decorations we just don't care about.
 			break;
@@ -2442,7 +2452,7 @@ uint32_t SpirvShader::GetConstScalarInt(Object::ID id) const
 	return scopeObj.constantValue[0];
 }
 
-void SpirvShader::emitEpilog(SpirvRoutine *routine) const
+void SpirvShader::emitEpilog(SpirvRoutine *routine, bool clearPhis) const
 {
 	for(auto insn : *this)
 	{
@@ -2473,7 +2483,10 @@ void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 	// (1) The phi rr::Variables are destructed, preventing pointless
 	//     materialization.
 	// (2) Frees memory that will never be used again.
-	routine->phis.clear();
+	if(clearPhis)
+	{
+		routine->phis.clear();
+	}
 }
 
 VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel model)
