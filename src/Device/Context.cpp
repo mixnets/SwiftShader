@@ -313,7 +313,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 
 	if(rasterizationState->depthClampEnable != VK_FALSE)
 	{
-		UNSUPPORTED("VkPhysicalDeviceFeatures::depthClamp");
+	//	UNSUPPORTED("VkPhysicalDeviceFeatures::depthClamp");
 	}
 
 	rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable != VK_FALSE);
