@@ -573,6 +573,7 @@ public:
 		bool ClipDistance : 1;
 		bool CullDistance : 1;
 		bool ImageCubeArray : 1;
+		bool SampleRateShading : 1;
 		bool InputAttachment : 1;
 		bool Sampled1D : 1;
 		bool Image1D : 1;
@@ -583,6 +584,7 @@ public:
 		bool StorageImageExtendedFormats : 1;
 		bool ImageQuery : 1;
 		bool DerivativeControl : 1;
+		bool InterpolationFunction : 1;
 		bool GroupNonUniform : 1;
 		bool GroupNonUniformVote : 1;
 		bool GroupNonUniformBallot : 1;
@@ -782,7 +784,7 @@ public:
 
 	void emitProlog(SpirvRoutine *routine) const;
 	void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, RValue<SIMD::Int> const &storesAndAtomicsMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
-	void emitEpilog(SpirvRoutine *routine) const;
+	void emitEpilog(SpirvRoutine *routine, bool clearPhis = true) const;
 
 	bool containsImageWrite() const { return imageWriteEmitted; }
 
