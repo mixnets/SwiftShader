@@ -683,8 +683,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 			{
 				const VkPhysicalDeviceVariablePointerFeatures *variablePointerFeatures = reinterpret_cast<const VkPhysicalDeviceVariablePointerFeatures *>(extensionCreateInfo);
 
-				if(variablePointerFeatures->variablePointersStorageBuffer != VK_FALSE ||
-				   variablePointerFeatures->variablePointers != VK_FALSE)
+				if(variablePointerFeatures->variablePointers != VK_FALSE)
 				{
 					return VK_ERROR_FEATURE_NOT_PRESENT;
 				}
