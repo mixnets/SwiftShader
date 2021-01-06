@@ -65,6 +65,10 @@
 #	include "WSI/DirectFBSurfaceEXT.hpp"
 #endif
 
+#ifdef VK_USE_PLATFORM_DISPLAY_KHR
+#	include "WSI/DisplaySurfaceKHR.hpp"
+#endif
+
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 #	include "WSI/Win32SurfaceKHR.hpp"
 #endif
@@ -318,6 +322,9 @@ static const VkExtensionProperties instanceExtensionProperties[] = {
 #endif
 #ifdef VK_USE_PLATFORM_DIRECTFB_EXT
 	{ VK_EXT_DIRECTFB_SURFACE_EXTENSION_NAME, VK_EXT_DIRECTFB_SURFACE_SPEC_VERSION },
+#endif
+#ifdef VK_USE_PLATFORM_DISPLAY_KHR
+	{ VK_KHR_DISPLAY_EXTENSION_NAME, VK_KHR_DISPLAY_SPEC_VERSION },
 #endif
 #ifdef VK_USE_PLATFORM_MACOS_MVK
 	{ VK_MVK_MACOS_SURFACE_EXTENSION_NAME, VK_MVK_MACOS_SURFACE_SPEC_VERSION },
@@ -3592,6 +3599,153 @@ VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceDirectFBPresentationSupportEXT
 	      physicalDevice, int(queueFamilyIndex), dfb);
 
 	return VK_TRUE;
+}
+#endif
+
+#ifdef VK_USE_PLATFORM_DISPLAY_KHR
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateDisplayModeKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, const VkDisplayModeCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDisplayModeKHR *pMode)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, VkDisplayKHR display = %p, VkDisplayModeCreateInfoKHR* pCreateInfo = %p, VkAllocationCallbacks* pAllocator = %p, VkDisplayModeKHR* pModei = %p)",
+	      physicalDevice, static_cast<void *>(display), pCreateInfo, pAllocator, pMode);
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateDisplayPlaneSurfaceKHR(VkInstance instance, const VkDisplaySurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface)
+{
+	TRACE("(VkInstance instance = %p, VkDisplaySurfaceCreateInfoKHR* pCreateInfo = %p, VkAllocationCallbacks* pAllocator = %p, VkSurface* pSurface = %p)",
+	      instance, pCreateInfo, pAllocator, pSurface);
+
+	return vk::DisplaySurfaceKHR::Create(pAllocator, pCreateInfo, pSurface);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayModePropertiesKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModePropertiesKHR *pProperties)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, VkDisplayKHR display = %p, uint32_t* pPropertyCount = %p, VkDisplayModePropertiesKHR* pProperties = %p)",
+	      physicalDevice, static_cast<void *>(display), pPropertyCount, pProperties);
+
+	*pPropertyCount = 1;
+
+	if(pProperties)
+	{
+		int fd = open("/dev/dri/card0", O_RDWR);
+		drmModeRes *res = drmModeGetResources(fd);
+		drmModeConnector *connector = drmModeGetConnector(fd, res->connectors[0]);
+		pProperties->displayMode = (uintptr_t)connector->modes[0].name;
+		pProperties->parameters.visibleRegion.width = connector->modes[0].hdisplay;
+		pProperties->parameters.visibleRegion.height = connector->modes[0].vdisplay;
+		pProperties->parameters.refreshRate = connector->modes[0].vrefresh * 1000;
+		drmModeFreeConnector(connector);
+		drmModeFreeResources(res);
+		close(fd);
+	}
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayPlaneCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkDisplayModeKHR mode, uint32_t planeIndex, VkDisplayPlaneCapabilitiesKHR *pCapabilities)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, VkDisplayModeKHR mode = %p, uint32_t planeIndex = %d, VkDisplayPlaneCapabilitiesKHR* pCapabilities = %p)",
+	      physicalDevice, static_cast<void *>(mode), planeIndex, pCapabilities);
+
+	int fd = open("/dev/dri/card0", O_RDWR);
+	drmModeRes *res = drmModeGetResources(fd);
+	drmModeConnector *connector = drmModeGetConnector(fd, res->connectors[0]);
+	pCapabilities->supportedAlpha = VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR;
+	pCapabilities->minSrcPosition.x = 0;
+	pCapabilities->minSrcPosition.y = 0;
+	pCapabilities->maxSrcPosition.x = 0;
+	pCapabilities->maxSrcPosition.y = 0;
+	pCapabilities->minSrcExtent.width = connector->modes[0].hdisplay;
+	pCapabilities->minSrcExtent.height = connector->modes[0].vdisplay;
+	pCapabilities->maxSrcExtent.width = connector->modes[0].hdisplay;
+	pCapabilities->maxSrcExtent.height = connector->modes[0].vdisplay;
+	pCapabilities->minDstPosition.x = 0;
+	pCapabilities->minDstPosition.y = 0;
+	pCapabilities->maxDstPosition.x = 0;
+	pCapabilities->maxDstPosition.y = 0;
+	pCapabilities->minDstExtent.width = connector->modes[0].hdisplay;
+	pCapabilities->minDstExtent.height = connector->modes[0].vdisplay;
+	pCapabilities->maxDstExtent.width = connector->modes[0].hdisplay;
+	pCapabilities->maxDstExtent.height = connector->modes[0].vdisplay;
+	drmModeFreeConnector(connector);
+	drmModeFreeResources(res);
+	close(fd);
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayPlaneSupportedDisplaysKHR(VkPhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t *pDisplayCount, VkDisplayKHR *pDisplays)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t planeIndex = %d, uint32_t* pDisplayCount = %p, VkDisplayKHR* pDisplays = %p)",
+	      physicalDevice, planeIndex, pDisplayCount, pDisplays);
+
+	*pDisplayCount = 1;
+
+	if(pDisplays)
+	{
+		int fd = open("/dev/dri/card0", O_RDWR);
+		drmModeRes *res = drmModeGetResources(fd);
+		*pDisplays = res->connectors[0];
+		drmModeFreeResources(res);
+		close(fd);
+	}
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayPlanePropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlanePropertiesKHR *pProperties)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t* pPropertyCount = %p, VkDisplayPlanePropertiesKHR* pProperties = %p)",
+	      physicalDevice, pPropertyCount, pProperties);
+
+	*pPropertyCount = 1;
+
+	if(pProperties)
+	{
+		int fd = open("/dev/dri/card0", O_RDWR);
+		drmModeRes *res = drmModeGetResources(fd);
+		pProperties->currentDisplay = res->connectors[0];
+		pProperties->currentStackIndex = 0;
+		drmModeFreeResources(res);
+		close(fd);
+	}
+
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPropertiesKHR *pProperties)
+{
+	TRACE("(VkPhysicalDevice physicalDevice = %p, uint32_t* pPropertyCount = %p, VkDisplayPropertiesKHR* pProperties = %p)",
+	      physicalDevice, pPropertyCount, pProperties);
+
+	*pPropertyCount = 1;
+
+	if(pProperties)
+	{
+		int fd = open("/dev/dri/card0", O_RDWR);
+		drmModeRes *res = drmModeGetResources(fd);
+		drmModeConnector *connector = drmModeGetConnector(fd, res->connectors[0]);
+		pProperties->display = res->connectors[0];
+		pProperties->displayName = "monitor";
+		pProperties->physicalDimensions.width = connector->mmWidth;
+		pProperties->physicalDimensions.height = connector->mmHeight;
+		if(pProperties->physicalDimensions.width <= 0 || pProperties->physicalDimensions.height <= 0)
+		{
+			pProperties->physicalDimensions.width = connector->modes[0].hdisplay * 25.4 / 96;
+			pProperties->physicalDimensions.height = connector->modes[0].vdisplay * 25.4 / 96;
+		}
+		pProperties->physicalResolution.width = connector->modes[0].hdisplay;
+		pProperties->physicalResolution.height = connector->modes[0].vdisplay;
+		pProperties->supportedTransforms = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+		pProperties->planeReorderPossible = VK_FALSE;
+		pProperties->persistentContent = VK_FALSE;
+		drmModeFreeConnector(connector);
+		drmModeFreeResources(res);
+		close(fd);
+	}
+
+	return VK_SUCCESS;
 }
 #endif
 
