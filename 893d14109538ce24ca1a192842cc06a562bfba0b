@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7446d3d_59897869",
+        "filename": "third_party/subzero/src/IceUtils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-01-07T19:47:58Z",
+      "side": 1,
+      "message": "This makes it 64-bit even on 32-bit builds. Does using just the \"u\" suffix suffice?",
+      "range": {
+        "startLine": 137,
+        "startChar": 19,
+        "endLine": 137,
+        "endChar": 21
+      },
+      "revId": "893d14109538ce24ca1a192842cc06a562bfba0b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
