@@ -128,7 +128,7 @@ template<typename T>
 static void getPhysicalDeviceVariablePointersFeatures(T *features)
 {
 	features->variablePointersStorageBuffer = VK_TRUE;
-	features->variablePointers = VK_FALSE;
+	features->variablePointers = VK_TRUE;
 }
 
 template<typename T>

@@ -592,6 +592,7 @@ public:
 		bool DeviceGroup : 1;
 		bool MultiView : 1;
 		bool VariablePointersStorageBuffer : 1;
+		bool VariablePointers : 1;
 		bool StencilExportEXT : 1;
 	};
 

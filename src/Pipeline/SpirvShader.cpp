@@ -403,6 +403,7 @@ SpirvShader::SpirvShader(
 					case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 					case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 					case spv::CapabilityVariablePointersStorageBuffer: capabilities.VariablePointersStorageBuffer = true; break;
+					case spv::CapabilityVariablePointers: capabilities.VariablePointers = true; break;
 					case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
 					default:
 						UNSUPPORTED("Unsupported capability %u", insn.word(1));
