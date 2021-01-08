@@ -14,7 +14,10 @@
 
 #include "benchmark/benchmark.h"
 
+#if 0
 #define VK_USE_PLATFORM_WIN32_KHR
+#endif
+//#define VULKAN_HPP_NO_EXCEPTIONS
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 #include <vulkan/vulkan.hpp>
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
@@ -23,11 +26,15 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #include "StandAlone/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
 
+#if 0
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
 
 #include <cassert>
 #include <vector>
+
+#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
 
 namespace {
 uint32_t getMemoryTypeIndex(vk::PhysicalDevice physicalDevice, uint32_t typeBits, vk::MemoryPropertyFlags properties)
@@ -118,7 +125,7 @@ void transitionImageLayout(vk::Device device, vk::CommandPool commandPool, vk::Q
 	}
 	else
 	{
-		throw std::invalid_argument("unsupported layout transition!");
+		assert(!"unsupported layout transition!");
 	}
 
 	commandBuffer.pipelineBarrier(sourceStage, destinationStage, vk::DependencyFlags{}, 0, nullptr, 0, nullptr, 1, &barrier);
@@ -154,7 +161,8 @@ public:
 	VulkanBenchmark()
 	{
 		// TODO(b/158231104): Other platforms
-		dl = std::make_unique<vk::DynamicLoader>("./vk_swiftshader.dll");
+		// dl = std::make_unique<vk::DynamicLoader>("./vk_swiftshader.dll");
+		dl = std::make_unique<vk::DynamicLoader>("./libvk_swiftshader.so");
 		assert(dl->success());
 
 		PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl->getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
@@ -278,7 +286,7 @@ public:
 
 	~ClearImageBenchmark()
 	{
-		device.freeCommandBuffers(commandPool, { commandBuffer });
+		device.freeCommandBuffers(commandPool, 1, &commandBuffer);
 		device.destroyCommandPool(commandPool, nullptr);
 		device.freeMemory(memory, nullptr);
 		device.destroyImage(image, nullptr);
@@ -320,6 +328,10 @@ class Window
 public:
 	Window(vk::Instance instance, vk::Extent2D windowSize)
 	{
+		vk::HeadlessSurfaceCreateInfoEXT surfaceCreateInfo;
+		surface = instance.createHeadlessSurfaceEXT(surfaceCreateInfo);
+		assert(surface);
+#if 0
 		moduleInstance = GetModuleHandle(NULL);
 
 		windowClass.cbSize = sizeof(WNDCLASSEX);
@@ -366,14 +378,17 @@ public:
 		surfaceCreateInfo.hwnd = window;
 		surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
 		assert(surface);
+#endif
 	}
 
 	~Window()
 	{
 		instance.destroySurfaceKHR(surface, nullptr);
 
+#if 0
 		DestroyWindow(window);
 		UnregisterClass("Window", moduleInstance);
+#endif
 	}
 
 	vk::SurfaceKHR getSurface()
@@ -383,14 +398,17 @@ public:
 
 	void show()
 	{
+#if 0
 		ShowWindow(window, SW_SHOW);
+#endif
 	}
 
 private:
+#if 0
 	HWND window;
 	HINSTANCE moduleInstance;
 	WNDCLASSEX windowClass;
-
+#endif
 	const vk::Instance instance;
 	vk::SurfaceKHR surface;
 };
@@ -809,15 +827,15 @@ protected:
 		texture = new Image(device, 16, 16, vk::Format::eR8G8B8A8Unorm);
 
 		// Fill texture with white
-		vk::DeviceSize bufferSize = 16 * 16 * 4;
-		Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
-		void *data = buffer.mapMemory();
-		memset(data, 255, bufferSize);
-		buffer.unmapMemory();
+		// vk::DeviceSize bufferSize = 16 * 16 * 4;
+		// Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
+		// void *data = buffer.mapMemory();
+		// memset(data, 255, bufferSize);
+		// buffer.unmapMemory();
 
-		transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
-		copyBufferToImage(device, commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
-		transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+		// transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+		// copyBufferToImage(device, commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
+		// transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
 		vk::SamplerCreateInfo samplerInfo;
 		samplerInfo.magFilter = vk::Filter::eLinear;
@@ -890,7 +908,7 @@ protected:
 			renderPassBeginInfo.renderArea.offset.x = 0;
 			renderPassBeginInfo.renderArea.offset.y = 0;
 			renderPassBeginInfo.renderArea.extent = windowSize;
-			renderPassBeginInfo.clearValueCount = 2;
+			renderPassBeginInfo.clearValueCount = ARRAY_SIZE(clearValues);
 			renderPassBeginInfo.pClearValues = clearValues;
 			commandBuffers[i].beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
@@ -905,7 +923,8 @@ protected:
 
 			// Draw a triangle
 			commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
-			commandBuffers[i].bindVertexBuffers(0, { vertices.buffer }, { 0 });
+			VULKAN_HPP_NAMESPACE::DeviceSize offset = 0;
+			commandBuffers[i].bindVertexBuffers(0, 1, &vertices.buffer, &offset);
 			commandBuffers[i].draw(3, 1, 0, 0);
 
 			commandBuffers[i].endRenderPass();
