@@ -29,7 +29,9 @@ __pragma(warning(push))
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 #include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
+#include "llvm/IR/DiagnosticInfo.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
@@ -106,6 +108,23 @@ static void *getTLSAddress(void *control)
 
 namespace {
 
+bool initAsmOutputOptionsOnce()
+{
+	// Use a static immediately invoked lambda to make this thread safe
+	static auto initialized = []() {
+		const char *argv[] = {
+			"Reactor",
+			"-x86-asm-syntax", "intel",  // Use Intel syntax rather than the default AT&T
+			"-warn-stack-size", "65536"
+		};
+		// TODO(b/174587935): Eliminate command-line parsing.
+		llvm::cl::ParseCommandLineOptions(sizeof(argv) / sizeof(argv[0]), argv);
+		return true;
+	}();
+
+	return initialized;
+}
+
 // JITGlobals is a singleton that holds all the immutable machine specific
 // information for the host device.
 class JITGlobals
@@ -129,6 +148,8 @@ private:
 JITGlobals *JITGlobals::get()
 {
 	static JITGlobals instance = [] {
+		initAsmOutputOptionsOnce();
+
 		llvm::InitializeNativeTarget();
 		llvm::InitializeNativeTargetAsmPrinter();
 		llvm::InitializeNativeTargetAsmParser();
@@ -264,6 +285,7 @@ public:
 
 	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block)
 	{
+		return std::error_code();
 		size_t size = block.allocatedSize();
 
 		rr::deallocateMemoryPages(block.base(), size);
@@ -617,6 +639,31 @@ auto &Unwrap(T &&v)
 	return v;
 }
 
+struct MyDiagnosticHandler : public llvm::DiagnosticHandler
+{
+	bool handleDiagnostics(const llvm::DiagnosticInfo &DI) override
+	{
+		switch(DI.getSeverity())
+		{
+			case llvm::DS_Error:
+				break;
+			case llvm::DS_Warning:
+				break;
+			case llvm::DS_Remark:
+				break;
+			case llvm::DS_Note:
+				break;
+		}
+
+		if(DI.getSeverity() == llvm::DS_Error)
+		{
+			exit(1);
+		}
+
+		return true;
+	}
+};
+
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
 // settings and no Reactor routine directly links against another.
@@ -631,12 +678,46 @@ public:
 	    size_t count,
 	    const rr::Config &config)
 	    : name(name)
-	    , objectLayer(session, []() {
-		    static MemoryMapper memoryMapper;
-		    return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
-	    })
 	    , addresses(count)
 	{
+		llvm::orc::ExecutionSession session;
+		llvm::orc::RTDyldObjectLinkingLayer objectLayer(session, []() {
+			static MemoryMapper memoryMapper;
+			return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
+		});
+
+		//context->setDiagnosticHandler(std::make_unique<MyDiagnosticHandler>(), true);
+
+		bool fail = false;
+
+		auto diagnosticCallBack = [](const llvm::DiagnosticInfo &info,
+		                             void *p) {
+			bool *fail = reinterpret_cast<bool *>(p);
+
+			switch(info.getSeverity())
+			{
+				case llvm::DS_Error:
+					break;
+				case llvm::DS_Warning:
+					if(info.getKind() == llvm::DK_StackSize)
+					{
+						*fail = true;
+					}
+					break;
+				case llvm::DS_Remark:
+					break;
+				case llvm::DS_Note:
+					break;
+			}
+
+			if(info.getSeverity() == llvm::DS_Error)
+			{
+				exit(1);
+			}
+		};
+
+		context->setDiagnosticHandlerCallBack(diagnosticCallBack, &fail);
+
 #ifdef ENABLE_RR_DEBUG_INFO
 		// TODO(b/165000222): Update this on next LLVM roll.
 		// https://github.com/llvm/llvm-project/commit/98f2bb4461072347dcca7d2b1b9571b3a6525801
@@ -721,8 +802,6 @@ public:
 
 private:
 	std::string name;
-	llvm::orc::ExecutionSession session;
-	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
 	std::vector<const void *> addresses;
 };
 
