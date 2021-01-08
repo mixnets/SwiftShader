@@ -287,7 +287,6 @@ public:
 
 	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block)
 	{
-		return std::error_code();
 		size_t size = block.allocatedSize();
 
 		rr::deallocateMemoryPages(block.base(), size);
@@ -697,12 +696,6 @@ public:
 	    : name(name)
 	    , addresses(count)
 	{
-		llvm::orc::ExecutionSession session;
-		llvm::orc::RTDyldObjectLinkingLayer objectLayer(session, []() {
-			static MemoryMapper memoryMapper;
-			return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
-		});
-
 		auto *diagnostics = new Diagnostics();
 		context->setDiagnosticHandler(std::unique_ptr<Diagnostics>(diagnostics), true);
 
@@ -801,6 +794,8 @@ public:
 
 private:
 	std::string name;
+	llvm::orc::ExecutionSession session;
+	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
 	std::vector<const void *> addresses;
 };
 
