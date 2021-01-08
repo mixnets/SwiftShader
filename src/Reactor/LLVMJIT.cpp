@@ -287,6 +287,7 @@ public:
 
 	std::error_code releaseMappedMemory(llvm::sys::MemoryBlock &block)
 	{
+		return std::error_code();
 		size_t size = block.allocatedSize();
 
 		rr::deallocateMemoryPages(block.base(), size);
@@ -688,12 +689,14 @@ public:
 	    size_t count,
 	    const rr::Config &config)
 	    : name(name)
-	    , objectLayer(session, []() {
-		    static MemoryMapper memoryMapper;
-		    return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
-	    })
 	    , addresses(count)
 	{
+		llvm::orc::ExecutionSession session;
+		llvm::orc::RTDyldObjectLinkingLayer objectLayer(session, []() {
+			static MemoryMapper memoryMapper;
+			return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
+		});
+
 		bool fatalCompileIssue = false;
 		context->setDiagnosticHandler(std::make_unique<FatalDiagnosticsHandler>(&fatalCompileIssue), true);
 
@@ -792,8 +795,6 @@ public:
 
 private:
 	std::string name;
-	llvm::orc::ExecutionSession session;
-	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
 	std::vector<const void *> addresses;
 };
 
