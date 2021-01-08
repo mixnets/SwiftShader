@@ -29,7 +29,9 @@ __pragma(warning(push))
 #include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
 #include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
+#include "llvm/IR/DiagnosticInfo.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
@@ -106,6 +108,23 @@ static void *getTLSAddress(void *control)
 
 namespace {
 
+bool initAsmOutputOptionsOnce()
+{
+	// Use a static immediately invoked lambda to make this thread safe
+	static auto initialized = []() {
+		const char *argv[] = {
+			"Reactor",
+			"-x86-asm-syntax", "intel",  // Use Intel syntax rather than the default AT&T
+			"-warn-stack-size", "65536"
+		};
+		// TODO(b/174587935): Eliminate command-line parsing.
+		llvm::cl::ParseCommandLineOptions(sizeof(argv) / sizeof(argv[0]), argv);
+		return true;
+	}();
+
+	return initialized;
+}
+
 // JITGlobals is a singleton that holds all the immutable machine specific
 // information for the host device.
 class JITGlobals
@@ -129,6 +148,8 @@ private:
 JITGlobals *JITGlobals::get()
 {
 	static JITGlobals instance = [] {
+		initAsmOutputOptionsOnce();
+
 		llvm::InitializeNativeTarget();
 		llvm::InitializeNativeTargetAsmPrinter();
 		llvm::InitializeNativeTargetAsmParser();
@@ -617,6 +638,31 @@ auto &Unwrap(T &&v)
 	return v;
 }
 
+struct MyDiagnosticHandler : public llvm::DiagnosticHandler
+{
+	bool handleDiagnostics(const llvm::DiagnosticInfo &DI) override
+	{
+		switch(DI.getSeverity())
+		{
+			case llvm::DS_Error:
+				break;
+			case llvm::DS_Warning:
+				break;
+			case llvm::DS_Remark:
+				break;
+			case llvm::DS_Note:
+				break;
+		}
+
+		if(DI.getSeverity() == llvm::DS_Error)
+		{
+			exit(1);
+		}
+
+		return true;
+	}
+};
+
 // JITRoutine is a rr::Routine that holds a LLVM JIT session, compiler and
 // object layer as each routine may require different target machine
 // settings and no Reactor routine directly links against another.
@@ -626,14 +672,16 @@ class JITRoutine : public rr::Routine
 	llvm::orc::ExecutionSession session;
 	llvm::orc::RTDyldObjectLinkingLayer objectLayer;
 	llvm::orc::IRCompileLayer compileLayer;
-	llvm::orc::MangleAndInterner mangle;
-	llvm::orc::ThreadSafeContext ctx;
+
+	//llvm::orc::ThreadSafeContext ctx;
 	llvm::orc::JITDylib &dylib;
 	std::vector<const void *> addresses;
 
 public:
 	JITRoutine(
 	    std::unique_ptr<llvm::Module> module,
+	    //const llvm::LLVMContext &context,
+	    std::unique_ptr<llvm::LLVMContext> context,
 	    const char *name,
 	    llvm::Function **funcs,
 	    size_t count,
@@ -644,11 +692,41 @@ public:
 		    return std::make_unique<llvm::SectionMemoryManager>(&memoryMapper);
 	    })
 	    , compileLayer(session, objectLayer, std::make_unique<llvm::orc::ConcurrentIRCompiler>(JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel())))
-	    , mangle(session, JITGlobals::get()->getDataLayout())
-	    , ctx(std::make_unique<llvm::LLVMContext>())
+	    // , ctx(std::make_unique<llvm::LLVMContext>())
 	    , dylib(Unwrap(session.createJITDylib("<routine>")))
 	    , addresses(count)
 	{
+		//context->setDiagnosticHandler(std::make_unique<MyDiagnosticHandler>(), true);
+
+		bool fail = false;
+
+		auto diagnosticCallBack = [](const llvm::DiagnosticInfo &info,
+		                             void *p) {
+			bool *fail = reinterpret_cast<bool *>(p);
+
+			switch(info.getSeverity())
+			{
+				case llvm::DS_Error:
+					break;
+				case llvm::DS_Warning:
+					if(info.getKind() == llvm::DK_StackSize)
+					{
+						*fail = true;
+					}
+					break;
+				case llvm::DS_Remark:
+					break;
+				case llvm::DS_Note:
+					break;
+			}
+
+			if(info.getSeverity() == llvm::DS_Error)
+			{
+				exit(1);
+			}
+		};
+
+		context->setDiagnosticHandlerCallBack(diagnosticCallBack, &fail);
 
 #ifdef ENABLE_RR_DEBUG_INFO
 		// TODO(b/165000222): Update this on next LLVM roll.
@@ -676,16 +754,20 @@ public:
 		dylib.addGenerator(std::make_unique<ExternalSymbolGenerator>());
 
 		llvm::SmallVector<llvm::orc::SymbolStringPtr, 8> names(count);
-		for(size_t i = 0; i < count; i++)
 		{
-			auto func = funcs[i];
-			func->setLinkage(llvm::GlobalValue::ExternalLinkage);
-			func->setDoesNotThrow();
-			if(!func->hasName())
+			llvm::orc::MangleAndInterner mangle(session, JITGlobals::get()->getDataLayout());
+
+			for(size_t i = 0; i < count; i++)
 			{
-				func->setName("f" + llvm::Twine(i).str());
+				auto func = funcs[i];
+				func->setLinkage(llvm::GlobalValue::ExternalLinkage);
+				func->setDoesNotThrow();
+				if(!func->hasName())
+				{
+					func->setName("f" + llvm::Twine(i).str());
+				}
+				names[i] = mangle(func->getName());
 			}
-			names[i] = mangle(func->getName());
 		}
 
 #ifdef ENABLE_RR_EMIT_ASM_FILE
@@ -698,7 +780,7 @@ public:
 		// after this point.
 		funcs = nullptr;
 
-		llvm::cantFail(compileLayer.add(dylib, llvm::orc::ThreadSafeModule(std::move(module), ctx)));
+		llvm::cantFail(compileLayer.add(dylib, llvm::orc::ThreadSafeModule(std::move(module), std::move(context))));
 
 		// Resolve the function addresses.
 		for(size_t i = 0; i < count; i++)
@@ -736,8 +818,9 @@ namespace rr {
 
 JITBuilder::JITBuilder(const rr::Config &config)
     : config(config)
-    , module(new llvm::Module("", context))
-    , builder(new llvm::IRBuilder<>(context))
+    , context(new llvm::LLVMContext())
+    , module(new llvm::Module("", *context))
+    , builder(new llvm::IRBuilder<>(*context))
 {
 	module->setTargetTriple(LLVM_DEFAULT_TARGET_TRIPLE);
 	module->setDataLayout(JITGlobals::get()->getDataLayout());
@@ -787,7 +870,7 @@ void JITBuilder::optimize(const rr::Config &cfg)
 std::shared_ptr<rr::Routine> JITBuilder::acquireRoutine(const char *name, llvm::Function **funcs, size_t count, const rr::Config &cfg)
 {
 	ASSERT(module);
-	return std::make_shared<JITRoutine>(std::move(module), name, funcs, count, cfg);
+	return std::make_shared<JITRoutine>(std::move(module), std::move(context), name, funcs, count, cfg);
 }
 
 }  // namespace rr
