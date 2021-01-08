@@ -118,7 +118,7 @@ void transitionImageLayout(vk::Device device, vk::CommandPool commandPool, vk::Q
 	}
 	else
 	{
-		throw std::invalid_argument("unsupported layout transition!");
+		assert(!"unsupported layout transition!");
 	}
 
 	commandBuffer.pipelineBarrier(sourceStage, destinationStage, vk::DependencyFlags{}, 0, nullptr, 0, nullptr, 1, &barrier);
@@ -320,6 +320,10 @@ class Window
 public:
 	Window(vk::Instance instance, vk::Extent2D windowSize)
 	{
+		vk::HeadlessSurfaceCreateInfoEXT surfaceCreateInfo;
+		surface = instance.createHeadlessSurfaceEXT(surfaceCreateInfo);
+		assert(surface);
+#if 0
 		moduleInstance = GetModuleHandle(NULL);
 
 		windowClass.cbSize = sizeof(WNDCLASSEX);
@@ -366,14 +370,17 @@ public:
 		surfaceCreateInfo.hwnd = window;
 		surface = instance.createWin32SurfaceKHR(surfaceCreateInfo);
 		assert(surface);
+#endif
 	}
 
 	~Window()
 	{
 		instance.destroySurfaceKHR(surface, nullptr);
 
+#if 0
 		DestroyWindow(window);
 		UnregisterClass("Window", moduleInstance);
+#endif
 	}
 
 	vk::SurfaceKHR getSurface()
@@ -383,7 +390,9 @@ public:
 
 	void show()
 	{
+#if 0
 		ShowWindow(window, SW_SHOW);
+#endif
 	}
 
 private:
