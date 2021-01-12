@@ -66,31 +66,72 @@ void SetupRoutine::generate()
 		Y[1] = *Pointer<Int>(v1 + OFFSET(Vertex, projected.y));
 		Y[2] = *Pointer<Int>(v2 + OFFSET(Vertex, projected.y));
 
+		if(false)
+		{
+			Float x0 = *Pointer<Float>(v0 + OFFSET(Vertex, x));
+			Float y0 = *Pointer<Float>(v0 + OFFSET(Vertex, y));
+			Float z0 = *Pointer<Float>(v0 + OFFSET(Vertex, z));
+			Float w0 = *Pointer<Float>(v0 + OFFSET(Vertex, w));
+
+			Float x1 = *Pointer<Float>(v1 + OFFSET(Vertex, x));
+			Float y1 = *Pointer<Float>(v1 + OFFSET(Vertex, y));
+			Float z1 = *Pointer<Float>(v1 + OFFSET(Vertex, z));
+			Float w1 = *Pointer<Float>(v1 + OFFSET(Vertex, w));
+
+			Float x2 = *Pointer<Float>(v2 + OFFSET(Vertex, x));
+			Float y2 = *Pointer<Float>(v2 + OFFSET(Vertex, y));
+			Float z2 = *Pointer<Float>(v2 + OFFSET(Vertex, z));
+			Float w2 = *Pointer<Float>(v2 + OFFSET(Vertex, w));
+
+			rr::Print("triangle:\n\t(%f, %f, %f, %f)\n\t(%f, %f, %f, %f)\n\t(%f, %f, %f, %f)\n", x0, y0, z0, w0, x1, y1, z1, w1, x2, y2, z2, w2);
+
+			rr::Print("projected:\n\t(%d, %d)\n\t(%d, %d)\n\t(%d, %d)\n", X[0], Y[0], X[1], Y[1], X[2], Y[2]);
+		}
+
 		Int d = 1;  // Winding direction
 
 		// Culling
 		if(triangle)
 		{
-			Float x0 = Float(X[0]);
-			Float x1 = Float(X[1]);
-			Float x2 = Float(X[2]);
+			//	Float x0 = Float(X[0]);
+			//	Float x1 = Float(X[1]);
+			//	Float x2 = Float(X[2]);
 
-			Float y0 = Float(Y[0]);
-			Float y1 = Float(Y[1]);
-			Float y2 = Float(Y[2]);
+			//	Float y0 = Float(Y[0]);
+			//	Float y1 = Float(Y[1]);
+			//	Float y2 = Float(Y[2]);
 
-			Float A = (y0 - y2) * x1 + (y2 - y1) * x0 + (y1 - y0) * x2;  // Area
+			//	Float A = (y0 - y2) * x1 + (y2 - y1) * x0 + (y1 - y0) * x2;  // Area
 
-			If(A == 0.0f)
-			{
-				Return(0);
-			}
+			Float v0_x = *Pointer<Float>(v0 + OFFSET(Vertex, x));
+			Float v0_y = *Pointer<Float>(v0 + OFFSET(Vertex, y));
+			Float v0_z = *Pointer<Float>(v0 + OFFSET(Vertex, z));
+			Float v0_w = *Pointer<Float>(v0 + OFFSET(Vertex, w));
 
-			Int w0w1w2 = *Pointer<Int>(v0 + OFFSET(Vertex, w)) ^
-			             *Pointer<Int>(v1 + OFFSET(Vertex, w)) ^
-			             *Pointer<Int>(v2 + OFFSET(Vertex, w));
+			Float v1_x = *Pointer<Float>(v1 + OFFSET(Vertex, x));
+			Float v1_y = *Pointer<Float>(v1 + OFFSET(Vertex, y));
+			Float v1_z = *Pointer<Float>(v1 + OFFSET(Vertex, z));
+			Float v1_w = *Pointer<Float>(v1 + OFFSET(Vertex, w));
 
-			A = IfThenElse(w0w1w2 < 0, -A, A);
+			Float v2_x = *Pointer<Float>(v2 + OFFSET(Vertex, x));
+			Float v2_y = *Pointer<Float>(v2 + OFFSET(Vertex, y));
+			Float v2_z = *Pointer<Float>(v2 + OFFSET(Vertex, z));
+			Float v2_w = *Pointer<Float>(v2 + OFFSET(Vertex, w));
+
+			Float A = (v0_y * v1_x - v0_x * v1_y) * v2_w +
+			          (v0_x * v2_y - v0_y * v2_x) * v1_w +
+			          (v2_x * v1_y - v1_x * v2_y) * v0_w;
+
+			//	If(A == 0.0f)
+			//	{
+			//		Return(0);
+			//	}
+
+			//	Int w0w1w2 = *Pointer<Int>(v0 + OFFSET(Vertex, w)) ^
+			//	             *Pointer<Int>(v1 + OFFSET(Vertex, w)) ^
+			//	             *Pointer<Int>(v2 + OFFSET(Vertex, w));
+
+			//	A = IfThenElse(w0w1w2 < 0, -A, A);
 
 			Bool frontFacing = (state.frontFace == VK_FRONT_FACE_COUNTER_CLOCKWISE) ? A > 0.0f : A < 0.0f;
 
