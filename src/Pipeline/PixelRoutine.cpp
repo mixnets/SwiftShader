@@ -67,6 +67,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 	bool shaderContainsSampleQualifier = spirvShader && spirvShader->getModes().ContainsSampleQualifier;
 	bool perSampleRendering = (state.sampleShadingEnabled && (state.minSampleShading > 0.0f)) ||
 	                          shaderContainsInterpolation || shaderContainsSampleQualifier;
+	if(!perSampleRendering && spirvShader)
+	{
+		// SampleId and SamplePosition built-ins require the sampleRateShading feature,
+		// so turn on per sample rendering if either of them is present in the shader.
+		perSampleRendering |= spirvShader->hasBuiltinInput(spv::BuiltInSampleId);
+		perSampleRendering |= spirvShader->hasBuiltinInput(spv::BuiltInSamplePosition);
+	}
 	unsigned int numSampleRenders = perSampleRendering ? state.multiSampleCount : 1;
 
 	for(unsigned int i = 0; i < numSampleRenders; ++i)
