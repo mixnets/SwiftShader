@@ -550,6 +550,7 @@ public:
 		bool ContainsKill : 1;
 		bool ContainsControlBarriers : 1;
 		bool NeedsCentroid : 1;
+		bool ContainsInterpolation : 1;
 
 		// Compute workgroup dimensions
 		int WorkgroupSizeX = 1;
@@ -1222,6 +1223,8 @@ private:
 	void EvalSpecConstantOp(InsnIterator insn);
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
 	void EvalSpecConstantBinaryOp(InsnIterator insn);
+
+	void ProcessGLSLstd450Extension(InsnIterator insn);
 
 	// Helper for implementing OpStore, which doesn't take an InsnIterator so it
 	// can also store independent operands.

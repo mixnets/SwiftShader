@@ -703,6 +703,7 @@ SpirvShader::SpirvShader(
 				{
 					case Extension::GLSLstd450:
 						DefineResult(insn);
+						ProcessGLSLstd450Extension(insn);
 						break;
 					case Extension::OpenCLDebugInfo100:
 						DefineOpenCLDebugInfo100(insn);
