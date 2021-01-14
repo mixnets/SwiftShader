@@ -2437,7 +2437,7 @@ uint32_t SpirvShader::GetConstScalarInt(Object::ID id) const
 	return scopeObj.constantValue[0];
 }
 
-void SpirvShader::emitEpilog(SpirvRoutine *routine) const
+void SpirvShader::emitEpilog(SpirvRoutine *routine, bool clearPhis) const
 {
 	for(auto insn : *this)
 	{
@@ -2468,7 +2468,10 @@ void SpirvShader::emitEpilog(SpirvRoutine *routine) const
 	// (1) The phi rr::Variables are destructed, preventing pointless
 	//     materialization.
 	// (2) Frees memory that will never be used again.
-	routine->phis.clear();
+	if(clearPhis)
+	{
+		routine->phis.clear();
+	}
 }
 
 VkShaderStageFlagBits SpirvShader::executionModelToStage(spv::ExecutionModel model)
