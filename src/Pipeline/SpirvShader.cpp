@@ -899,6 +899,32 @@ void SpirvShader::ProcessInterfaceVariable(Object &object)
 	}
 }
 
+uint32_t SpirvShader::GetNumInputComponents(int32_t location) const
+{
+	if(location < 0)
+	{
+		return 0;
+	}
+
+	// Verify how many component(s) per input
+	// 1 to 4, for float, vec2, vec3, vec4.
+	// Note that matrices are divided in multiple inputs
+	uint32_t num_components_per_input = 0;
+	for(int i = 0; i < 4; ++i)
+	{
+		if(inputs[(location << 2) | i].Type != ATTRIBTYPE_UNUSED)
+		{
+			++num_components_per_input;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return num_components_per_input;
+}
+
 void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 {
 	Function::ID function = insn.word(1);
