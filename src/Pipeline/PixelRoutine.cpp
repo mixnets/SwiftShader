@@ -63,8 +63,10 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 	Int zMask[4];  // Depth mask
 	Int sMask[4];  // Stencil mask
 
+	bool shaderContainsInterpolation = spirvShader && spirvShader->getModes().ContainsInterpolation;
+	bool shaderContainsSampleQualifier = spirvShader && spirvShader->getModes().ContainsSampleQualifier;
 	bool perSampleRendering = (state.sampleShadingEnabled && (state.minSampleShading > 0.0f)) ||
-	                          (spirvShader && spirvShader->getModes().ContainsSampleQualifier);
+	                          shaderContainsInterpolation || shaderContainsSampleQualifier;
 	unsigned int numSampleRenders = perSampleRendering ? state.multiSampleCount : 1;
 
 	for(unsigned int i = 0; i < numSampleRenders; ++i)
@@ -132,7 +134,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			Float4 XXXX = Float4(0.0f);
 			Float4 YYYY = Float4(0.0f);
 
-			if(state.centroid)
+			if(state.centroid || shaderContainsInterpolation)
 			{
 				Float4 WWWW(1.0e-9f);
 
@@ -156,7 +158,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive, w), false, false);
 				rhw = reciprocal(w, false, false, true);
 
-				if(state.centroid)
+				if(state.centroid || shaderContainsInterpolation)
 				{
 					rhwCentroid = reciprocal(SpirvRoutine::interpolateXY(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, w), false, false));
 				}
@@ -164,6 +166,20 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 			if(spirvShader)
 			{
+				if(shaderContainsInterpolation)
+				{
+					routine.interpolationData.multiSampleCount = state.multiSampleCount;
+					routine.interpolationData.primitive = primitive;
+
+					routine.interpolationData.x = xxxx;
+					routine.interpolationData.y = yyyy;
+					routine.interpolationData.rhw = rhw;
+
+					routine.interpolationData.xCentroid = XXXX;
+					routine.interpolationData.yCentroid = YYYY;
+					routine.interpolationData.rhwCentroid = rhwCentroid;
+				}
+
 				if(perSampleRendering && (state.multiSampleCount > 1))
 				{
 					xxxx += Float4(Constants::SampleLocationsX[sampleId]);

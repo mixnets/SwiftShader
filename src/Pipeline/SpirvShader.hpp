@@ -1351,12 +1351,25 @@ public:
 		Pointer<Byte> function;
 	};
 
+	struct InterpolationData
+	{
+		unsigned int multiSampleCount = 0;
+		Pointer<Byte> primitive;
+		SIMD::Float x;
+		SIMD::Float y;
+		SIMD::Float rhw;
+		SIMD::Float xCentroid;
+		SIMD::Float yCentroid;
+		SIMD::Float rhwCentroid;
+	};
+
 	vk::PipelineLayout const *const pipelineLayout;
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> variables;
 	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;
 	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };
 	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };
+	InterpolationData interpolationData;
 
 	Pointer<Byte> workgroupMemory;
 	Pointer<Pointer<Byte>> descriptorSets;
