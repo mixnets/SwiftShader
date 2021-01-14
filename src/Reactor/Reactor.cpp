@@ -36,11 +36,11 @@
 
 namespace rr {
 
-const Config::Edit Config::Edit::None = {};
+//const Config::Edit Config::Edit::None = {};
 
 Config Config::Edit::apply(const Config &cfg) const
 {
-	if(this == &None) { return cfg; }
+	if(this == &None()) { return cfg; }
 
 	auto level = optLevelChanged ? optLevel : cfg.optimization.getLevel();
 	auto passes = cfg.optimization.getPasses();

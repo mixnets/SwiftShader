@@ -143,3 +143,42 @@ target_link_libraries(ReactorLLVM
         llvm
         ${REACTOR_PRIVATE_LINK_LIBRARIES}
 )
+
+
+
+
+add_library(ReactorLLVM-shared SHARED EXCLUDE_FROM_ALL
+    ${REACTOR_SRC_FILES}
+    ${LLVM_SRC_FILES}
+)
+set_target_properties(ReactorLLVM-shared PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
+
+set_target_properties(ReactorLLVM-shared PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    FOLDER "Reactor"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+target_include_directories(ReactorLLVM-shared
+    PUBLIC
+        .
+)
+
+target_compile_definitions(ReactorLLVM-shared
+    PUBLIC
+        ${REACTOR_PUBLIC_COMPILE_DEFINITIONS}
+    PRIVATE
+        ${REACTOR_PRIVATE_COMPILE_DEFINITIONS}
+)
+
+target_compile_options(ReactorLLVM-shared
+    PRIVATE
+        ${ROOT_PROJECT_COMPILE_OPTIONS}
+)
+
+target_link_libraries(ReactorLLVM-shared
+    PRIVATE
+        llvm
+        ${REACTOR_PRIVATE_LINK_LIBRARIES}
+)
