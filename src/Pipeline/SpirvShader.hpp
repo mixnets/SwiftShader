@@ -551,6 +551,7 @@ public:
 		bool ContainsControlBarriers : 1;
 		bool NeedsCentroid : 1;
 		bool ContainsInterpolation : 1;
+		bool ContainsSampleQualifier : 1;
 
 		// Compute workgroup dimensions
 		int WorkgroupSizeX = 1;
