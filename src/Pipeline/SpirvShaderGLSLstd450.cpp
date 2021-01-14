@@ -25,6 +25,21 @@ constexpr float PI = 3.141592653589793f;
 
 namespace sw {
 
+void SpirvShader::ProcessGLSLstd450Extension(InsnIterator insn)
+{
+	auto extInstIndex = static_cast<GLSLstd450>(insn.word(4));
+	switch(extInstIndex)
+	{
+		case GLSLstd450InterpolateAtCentroid:
+		case GLSLstd450InterpolateAtSample:
+		case GLSLstd450InterpolateAtOffset:
+			modes.ContainsInterpolation = true;
+			break;
+		default:
+			break;
+	}
+}
+
 SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitState *state) const
 {
 	auto &type = getType(insn.resultTypeId());
