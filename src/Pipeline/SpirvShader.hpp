@@ -1226,6 +1226,7 @@ private:
 	void EvalSpecConstantBinaryOp(InsnIterator insn);
 
 	void ProcessGLSLstd450Extension(InsnIterator insn);
+	uint32_t GetNumInputComponents(int32_t location) const;
 
 	// Helper for implementing OpStore, which doesn't take an InsnIterator so it
 	// can also store independent operands.
