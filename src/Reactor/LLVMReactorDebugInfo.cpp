@@ -51,12 +51,16 @@ __pragma(warning(push))
 #		define LOG(msg, ...)
 #	endif
 
-        namespace
+namespace
 {
 
 	std::pair<llvm::StringRef, llvm::StringRef> splitPath(const char *path)
 	{
+#ifdef _WIN32
+		auto dirAndFile = llvm::StringRef(path).rsplit('\\');
+#else
 		auto dirAndFile = llvm::StringRef(path).rsplit('/');
+#endif
 		if(dirAndFile.second == "")
 		{
 			dirAndFile.second = "<unknown>";
