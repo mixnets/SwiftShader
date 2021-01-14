@@ -16,6 +16,7 @@
 
 #include "ShaderCore.hpp"
 #include "Device/Primitive.hpp"
+#include "Pipeline/Constants.hpp"
 
 #include <spirv/unified1/GLSL.std.450.h>
 #include <spirv/unified1/spirv.hpp>
@@ -40,6 +41,16 @@ sw::SIMD::Float Interpolate(const sw::SIMD::Float &x, const sw::SIMD::Float &y, 
 	}
 
 	return interpolant;
+}
+
+uint32_t ComputeInterpolantOffset(uint32_t offset, uint32_t components_per_row, bool useArrayOffset)
+{
+	if(useArrayOffset)
+	{
+		uint32_t interpolant_offset = offset / components_per_row;
+		offset = (interpolant_offset << 2) + (offset - interpolant_offset * components_per_row);
+	}
+	return offset;
 }
 
 }  // namespace
@@ -915,17 +926,35 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 		}
 		case GLSLstd450InterpolateAtCentroid:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, 0, i, type.componentCount, state, SpirvShader::Centroid));
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtSample:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, type.componentCount, state, SpirvShader::AtSample));
+			}
 			break;
 		}
 		case GLSLstd450InterpolateAtOffset:
 		{
-			UNSUPPORTED("SPIR-V SampleRateShading Capability (GLSLstd450InterpolateAtCentroid)");
+			Decorations d;
+			ApplyDecorationsForId(&d, insn.word(5));
+			auto ptr = state->getPointer(insn.word(5));
+			for(auto i = 0u; i < type.componentCount; i++)
+			{
+				dst.move(i, Interpolate(ptr, d.Location, insn.word(6), i, type.componentCount, state, SpirvShader::AtOffset));
+			}
 			break;
 		}
 		case GLSLstd450NMin:
@@ -966,6 +995,134 @@ SpirvShader::EmitResult SpirvShader::EmitExtGLSLstd450(InsnIterator insn, EmitSt
 	}
 
 	return EmitResult::Continue;
+}
+
+SIMD::Float SpirvShader::Interpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId, uint32_t component,
+                                     uint32_t component_count, EmitState *state, InterpolationType type) const
+{
+	uint32_t interpolant = (location << 2);
+	uint32_t components_per_row = GetNumInputComponents(location);
+	if((location < 0) || (interpolant >= inputs.size()) || (components_per_row == 0))
+	{
+		return SIMD::Float(0.0f);
+	}
+
+	// Distinguish between the operator[] being used on a vector of on an array
+	// If the number of components of the interpolant is 1, then the operator[] automatically means this is an array.
+	// Otherwise, if the component_count is 1, than the operator[] can be the result of this operator being called
+	// from a vec2, vec3 or vec4, so a component_count greater than 1 means any offset is for an array
+	bool useArrayOffset = (components_per_row == 1) || (component_count > 1);
+
+	const auto &interpolationData = state->routine->interpolationData;
+
+	SIMD::Float x(0.0f);
+	SIMD::Float y(0.0f);
+	SIMD::Float rhw(0.0f);
+
+	switch(type)
+	{
+		case Centroid:
+			x = interpolationData.xCentroid;
+			y = interpolationData.yCentroid;
+			rhw = interpolationData.rhwCentroid;
+			break;
+		case AtSample:
+			if(interpolationData.multiSampleCount > 1)
+			{
+				static constexpr int NUM_SAMPLES = 4;
+				ASSERT(interpolationData.multiSampleCount == NUM_SAMPLES);
+
+				Array<Float> sampleX(NUM_SAMPLES);
+				Array<Float> sampleY(NUM_SAMPLES);
+				for(int i = 0; i < NUM_SAMPLES; ++i)
+				{
+					sampleX[i] = Constants::SampleLocationsX[i];
+					sampleY[i] = Constants::SampleLocationsY[i];
+				}
+
+				auto sampleOperand = Operand(this, state, paramId);
+				ASSERT(sampleOperand.componentCount == 1);
+
+				// If sample does not exist, the position used to interpolate the
+				// input variable is undefined, so we just clamp to avoid OOB accesses.
+				SIMD::Int samples = Max(Min(sampleOperand.Int(0), SIMD::Int(NUM_SAMPLES - 1)), SIMD::Int(0));
+
+				for(int i = 0; i < SIMD::Width; ++i)
+				{
+					Int sample = Extract(samples, i);
+					x = Insert(x, sampleX[sample], i);
+					y = Insert(y, sampleY[sample], i);
+				}
+			}
+
+			x += interpolationData.x;
+			y += interpolationData.y;
+			rhw = interpolationData.rhw;
+			break;
+		case AtOffset:
+		{
+			//  An offset of (0, 0) identifies the center of the pixel.
+			auto offset = Operand(this, state, paramId);
+			ASSERT(offset.componentCount == 2);
+
+			x = interpolationData.x + offset.Float(0);
+			y = interpolationData.y + offset.Float(1);
+			rhw = interpolationData.rhw;
+		}
+		break;
+		default:
+			UNREACHABLE("Unknown interpolation type: %d", (int)type);
+			return SIMD::Float(0.0f);
+	}
+
+	// The following code assumes that the offsets are valid
+	Pointer<Byte> planeEquation = interpolationData.primitive + OFFSET(Primitive, V[interpolant]);
+	if(ptr.hasDynamicOffsets || !ptr.hasStaticEqualOffsets())
+	{
+		// Combine plane equations into one
+		SIMD::Float A;
+		SIMD::Float B;
+		SIMD::Float C;
+		for(int i = 0; i < SIMD::Width; ++i)
+		{
+			Pointer<Byte> planeEquationI = planeEquation;
+			if(ptr.hasDynamicOffsets)
+			{
+				Int offset = ((Extract(ptr.dynamicOffsets, i) + ptr.staticOffsets[i]) >> 2) + component;
+				if(useArrayOffset)
+				{
+					Int interpolant_offset = offset / components_per_row;
+					offset = (interpolant_offset << 2) + (offset - interpolant_offset * components_per_row);
+					offset = Min(offset, Int(inputs.size() - interpolant - 1));
+				}
+				planeEquationI += (offset * sizeof(PlaneEquation));
+			}
+			else
+			{
+				uint32_t offset = ComputeInterpolantOffset((ptr.staticOffsets[0] >> 2) + component, components_per_row, useArrayOffset);
+				if((interpolant + offset) >= inputs.size())
+				{
+					return SIMD::Float(0.0f);
+				}
+				planeEquationI += (offset * sizeof(PlaneEquation));
+			}
+			A = Insert(A, Extract(*Pointer<SIMD::Float>(planeEquationI + OFFSET(PlaneEquation, A), 16), i), i);
+			B = Insert(B, Extract(*Pointer<SIMD::Float>(planeEquationI + OFFSET(PlaneEquation, B), 16), i), i);
+			C = Insert(C, Extract(*Pointer<SIMD::Float>(planeEquationI + OFFSET(PlaneEquation, C), 16), i), i);
+		}
+		return ::Interpolate(x, y, rhw, A, B, C, false, true);
+	}
+	else
+	{
+		uint32_t offset = ComputeInterpolantOffset((ptr.staticOffsets[0] >> 2) + component, components_per_row, useArrayOffset);
+		if((interpolant + offset) >= inputs.size())
+		{
+			return SIMD::Float(0.0f);
+		}
+		planeEquation += offset * sizeof(PlaneEquation);
+	}
+
+	return SpirvRoutine::interpolateXY(x, y, rhw, planeEquation, false, true);
 }
 
 SIMD::Float SpirvRoutine::interpolateXY(const SIMD::Float &x, const SIMD::Float &y, const SIMD::Float &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
