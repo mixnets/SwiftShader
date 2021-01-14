@@ -781,7 +781,7 @@ public:
 
 	void emitProlog(SpirvRoutine *routine) const;
 	void emit(SpirvRoutine *routine, RValue<SIMD::Int> const &activeLaneMask, RValue<SIMD::Int> const &storesAndAtomicsMask, const vk::DescriptorSet::Bindings &descriptorSets) const;
-	void emitEpilog(SpirvRoutine *routine) const;
+	void emitEpilog(SpirvRoutine *routine, bool clearPhis = true) const;
 
 	bool containsImageWrite() const { return imageWriteEmitted; }
 
