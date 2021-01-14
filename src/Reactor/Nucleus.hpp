@@ -99,7 +99,13 @@ public:
 	class Edit
 	{
 	public:
-		static const Edit None;
+		Edit() {}
+		//static const inline Edit None;
+		static const Edit &None()
+		{
+			static const Edit none;
+			return none;
+		}
 
 		Edit &set(Optimization::Level level)
 		{
@@ -166,7 +172,7 @@ public:
 	static void adjustDefaultConfig(const Config::Edit &cfgEdit);
 	static Config getDefaultConfig();
 
-	std::shared_ptr<Routine> acquireRoutine(const char *name, const Config::Edit &cfgEdit = Config::Edit::None);
+	std::shared_ptr<Routine> acquireRoutine(const char *name, const Config::Edit &cfgEdit = Config::Edit::None());
 
 	static Value *allocateStackVariable(Type *type, int arraySize = 0);
 	static BasicBlock *createBasicBlock();
@@ -203,7 +209,7 @@ public:
 	static void yield(Value *val);
 	// Called to finalize coroutine creation. After this call, Routine::getEntry can be called to retrieve the entry point to any
 	// of the three coroutine functions. Called by Coroutine::finalize.
-	std::shared_ptr<Routine> acquireCoroutine(const char *name, const Config::Edit &cfg = Config::Edit::None);
+	std::shared_ptr<Routine> acquireCoroutine(const char *name, const Config::Edit &cfg = Config::Edit::None());
 	// Called by Coroutine::operator() to execute CoroutineEntryBegin wrapped up in func. This is needed in case
 	// the call must be run on a separate thread of execution (e.g. on a fiber).
 	static CoroutineHandle invokeCoroutineBegin(Routine &routine, std::function<CoroutineHandle()> func);

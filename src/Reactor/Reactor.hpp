@@ -3206,7 +3206,7 @@ std::shared_ptr<Routine> Function<Return(Arguments...)>::operator()(const char *
 	vsnprintf(fullName, 1024, name, vararg);
 	va_end(vararg);
 
-	return core->acquireRoutine(fullName, Config::Edit::None);
+	return core->acquireRoutine(fullName, Config::Edit::None());
 }
 
 template<typename Return, typename... Arguments>
