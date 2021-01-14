@@ -1225,8 +1225,17 @@ private:
 	void EvalSpecConstantUnaryOp(InsnIterator insn);
 	void EvalSpecConstantBinaryOp(InsnIterator insn);
 
+	// Fragment input interpolation functions
 	void ProcessGLSLstd450Extension(InsnIterator insn);
 	uint32_t GetNumInputComponents(int32_t location) const;
+	enum InterpolationType
+	{
+		Centroid,
+		AtSample,
+		AtOffset,
+	};
+	SIMD::Float Interpolate(SIMD::Pointer const &ptr, int32_t location, Object::ID paramId, uint32_t component,
+	                        uint32_t component_count, EmitState *state, InterpolationType type) const;
 
 	// Helper for implementing OpStore, which doesn't take an InsnIterator so it
 	// can also store independent operands.
