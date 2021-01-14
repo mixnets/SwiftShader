@@ -912,15 +912,6 @@ void SpirvShader::ProcessExecutionMode(InsnIterator insn)
 		case spv::ExecutionModeDepthReplacing:
 			modes.DepthReplacing = true;
 			break;
-		case spv::ExecutionModeDepthGreater:
-			modes.DepthGreater = true;
-			break;
-		case spv::ExecutionModeDepthLess:
-			modes.DepthLess = true;
-			break;
-		case spv::ExecutionModeDepthUnchanged:
-			modes.DepthUnchanged = true;
-			break;
 		case spv::ExecutionModeLocalSize:
 			modes.WorkgroupSizeX = insn.word(3);
 			modes.WorkgroupSizeY = insn.word(4);

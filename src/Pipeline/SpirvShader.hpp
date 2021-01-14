@@ -547,9 +547,6 @@ public:
 	{
 		bool EarlyFragmentTests : 1;
 		bool DepthReplacing : 1;
-		bool DepthGreater : 1;
-		bool DepthLess : 1;
-		bool DepthUnchanged : 1;
 		bool ContainsKill : 1;
 		bool ContainsControlBarriers : 1;
 		bool NeedsCentroid : 1;
