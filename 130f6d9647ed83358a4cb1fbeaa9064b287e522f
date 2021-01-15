@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0483e908_c78e26b1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-01-15T02:22:14Z",
+      "side": 1,
+      "message": "This is the latest case of b/177235551. In https://swiftshader-review.googlesource.com/c/SwiftShader/+/51208 it failed for several days, but note that the revision that we landed did not have this regression. So it is somewhat flaky.",
+      "revId": "130f6d9647ed83358a4cb1fbeaa9064b287e522f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
