@@ -28,6 +28,7 @@
 #	define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#define VULKAN_HPP_NO_NODISCARD_WARNINGS
 #include <vulkan/vulkan.hpp>
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
@@ -182,10 +183,10 @@ public:
 		PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl->getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
 		VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-		instance = vk::createInstance({}, nullptr);
-		VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+		instance = vk::createInstanceUnique({}, nullptr);
+		VULKAN_HPP_DEFAULT_DISPATCHER.init(*instance);
 
-		std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
+		std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
 		assert(!physicalDevices.empty());
 		physicalDevice = physicalDevices[0];
 
@@ -199,28 +200,26 @@ public:
 		deviceCreateInfo.queueCreateInfoCount = 1;
 		deviceCreateInfo.pQueueCreateInfos = &queueCreatInfo;
 
-		device = physicalDevice.createDevice(deviceCreateInfo, nullptr);
+		device = physicalDevice.createDeviceUnique(deviceCreateInfo, nullptr);
 
-		queue = device.getQueue(queueFamilyIndex, 0);
+		queue = device->getQueue(queueFamilyIndex, 0);
 	}
 
 	virtual ~VulkanBenchmark()
 	{
-		device.waitIdle();
-		device.destroy(nullptr);
-		instance.destroy(nullptr);
+		device->waitIdle();
 	}
+
+private:
+	std::unique_ptr<vk::DynamicLoader> dl;
 
 protected:
 	const uint32_t queueFamilyIndex = 0;
 
-	vk::Instance instance;
+	vk::UniqueInstance instance;
 	vk::PhysicalDevice physicalDevice;
-	vk::Device device;
+	vk::UniqueDevice device;
 	vk::Queue queue;
-
-private:
-	std::unique_ptr<vk::DynamicLoader> dl;
 };
 
 class ClearImageBenchmark : public VulkanBenchmark
@@ -239,33 +238,33 @@ public:
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
 
-		image = device.createImage(imageInfo);
+		image = device->createImageUnique(imageInfo);
 
-		vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements(image);
+		vk::MemoryRequirements memoryRequirements = device->getImageMemoryRequirements(*image);
 
 		vk::MemoryAllocateInfo allocateInfo;
 		allocateInfo.allocationSize = memoryRequirements.size;
 		allocateInfo.memoryTypeIndex = 0;
 
-		memory = device.allocateMemory(allocateInfo);
+		memory = device->allocateMemoryUnique(allocateInfo);
 
-		device.bindImageMemory(image, memory, 0);
+		device->bindImageMemory(*image, *memory, 0);
 
 		vk::CommandPoolCreateInfo commandPoolCreateInfo;
 		commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 
-		commandPool = device.createCommandPool(commandPoolCreateInfo);
+		commandPool = device->createCommandPoolUnique(commandPoolCreateInfo);
 
 		vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
-		commandBufferAllocateInfo.commandPool = commandPool;
+		commandBufferAllocateInfo.commandPool = *commandPool;
 		commandBufferAllocateInfo.commandBufferCount = 1;
 
-		commandBuffer = device.allocateCommandBuffers(commandBufferAllocateInfo)[0];
+		commandBuffer = std::move(device->allocateCommandBuffersUnique(commandBufferAllocateInfo)[0]);
 
 		vk::CommandBufferBeginInfo commandBufferBeginInfo;
 		commandBufferBeginInfo.flags = {};
 
-		commandBuffer.begin(commandBufferBeginInfo);
+		commandBuffer->begin(commandBufferBeginInfo);
 
 		vk::ImageSubresourceRange range;
 		range.aspectMask = clearAspect;
@@ -282,7 +281,7 @@ public:
 			clearColorValue.float32[2] = 0.0f;
 			clearColorValue.float32[3] = 1.0f;
 
-			commandBuffer.clearColorImage(image, vk::ImageLayout::eGeneral, &clearColorValue, 1, &range);
+			commandBuffer->clearColorImage(*image, vk::ImageLayout::eGeneral, &clearColorValue, 1, &range);
 		}
 		else if(clearAspect == vk::ImageAspectFlagBits::eDepth)
 		{
@@ -290,38 +289,29 @@ public:
 			clearDepthStencilValue.depth = 1.0f;
 			clearDepthStencilValue.stencil = 0xFF;
 
-			commandBuffer.clearDepthStencilImage(image, vk::ImageLayout::eGeneral, &clearDepthStencilValue, 1, &range);
+			commandBuffer->clearDepthStencilImage(*image, vk::ImageLayout::eGeneral, &clearDepthStencilValue, 1, &range);
 		}
 		else
 			assert(false);
 
-		commandBuffer.end();
-	}
-
-	~ClearImageBenchmark()
-	{
-		device.freeCommandBuffers(commandPool, 1, &commandBuffer);
-		device.destroyCommandPool(commandPool, nullptr);
-		device.freeMemory(memory, nullptr);
-		device.destroyImage(image, nullptr);
+		commandBuffer->end();
 	}
 
 	void clear()
 	{
 		vk::SubmitInfo submitInfo;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffer;
+		submitInfo.pCommandBuffers = &*commandBuffer;
 
 		queue.submit(1, &submitInfo, nullptr);
 		queue.waitIdle();
 	}
 
 private:
-	vk::CommandPool commandPool;
-	vk::CommandBuffer commandBuffer;
-
-	vk::Image image;
-	vk::DeviceMemory memory;
+	vk::UniqueImage image;
+	vk::UniqueDeviceMemory memory;
+	vk::UniqueCommandPool commandPool;
+	vk::UniqueCommandBuffer commandBuffer;
 };
 
 static void ClearImage(benchmark::State &state, vk::Format clearFormat, vk::ImageAspectFlagBits clearAspect)
@@ -449,10 +439,10 @@ private:
 class Swapchain
 {
 public:
-	Swapchain(vk::PhysicalDevice physicalDevice, vk::Device device, Window *window)
+	Swapchain(vk::PhysicalDevice physicalDevice, vk::Device device, Window &window)
 	    : device(device)
 	{
-		vk::SurfaceKHR surface = window->getSurface();
+		vk::SurfaceKHR surface = window.getSurface();
 
 		// Create the swapchain
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
@@ -472,10 +462,10 @@ public:
 		swapchainCreateInfo.clipped = VK_TRUE;
 		swapchainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 
-		swapchain = device.createSwapchainKHR(swapchainCreateInfo);
+		swapchain = device.createSwapchainKHRUnique(swapchainCreateInfo);
 
 		// Obtain the images and create views for them
-		images = device.getSwapchainImagesKHR(swapchain);
+		images = device.getSwapchainImagesKHR(*swapchain);
 
 		imageViews.resize(images.size());
 		for(size_t i = 0; i < imageViews.size(); i++)
@@ -490,23 +480,13 @@ public:
 			colorAttachmentView.subresourceRange.baseArrayLayer = 0;
 			colorAttachmentView.subresourceRange.layerCount = 1;
 
-			imageViews[i] = device.createImageView(colorAttachmentView);
+			imageViews[i] = device.createImageViewUnique(colorAttachmentView);
 		}
-	}
-
-	~Swapchain()
-	{
-		for(auto &imageView : imageViews)
-		{
-			device.destroyImageView(imageView, nullptr);
-		}
-
-		device.destroySwapchainKHR(swapchain, nullptr);
 	}
 
 	void acquireNextImage(VkSemaphore presentCompleteSemaphore, uint32_t &imageIndex)
 	{
-		auto result = device.acquireNextImageKHR(swapchain, UINT64_MAX, presentCompleteSemaphore, vk::Fence());
+		auto result = device.acquireNextImageKHR(*swapchain, UINT64_MAX, presentCompleteSemaphore, vk::Fence());
 		imageIndex = result.value;
 	}
 
@@ -516,7 +496,7 @@ public:
 		presentInfo.pWaitSemaphores = &waitSemaphore;
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapchain;
+		presentInfo.pSwapchains = &*swapchain;
 		presentInfo.pImageIndices = &imageIndex;
 
 		queue.presentKHR(presentInfo);
@@ -529,7 +509,7 @@ public:
 
 	vk::ImageView getImageView(size_t i) const
 	{
-		return imageViews[i];
+		return *imageViews[i];
 	}
 
 	vk::Extent2D getExtent() const
@@ -542,11 +522,11 @@ public:
 private:
 	const vk::Device device;
 
-	vk::SwapchainKHR swapchain;
+	vk::UniqueSwapchainKHR swapchain;
 	vk::Extent2D extent;
 
 	std::vector<vk::Image> images;  // Weak pointers. Presentable images owned by swapchain object.
-	std::vector<vk::ImageView> imageViews;
+	std::vector<vk::UniqueImageView> imageViews;
 };
 
 class Buffer
@@ -561,51 +541,44 @@ public:
 		bufferInfo.usage = usage;
 		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
 
-		buffer = device.createBuffer(bufferInfo);
+		buffer = device.createBufferUnique(bufferInfo);
 
-		auto memRequirements = device.getBufferMemoryRequirements(buffer);
+		auto memRequirements = device.getBufferMemoryRequirements(*buffer);
 
 		vk::MemoryAllocateInfo allocInfo{};
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = 0;  //TODO: getMemoryTypeIndex(memRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-		bufferMemory = device.allocateMemory(allocInfo);
-		device.bindBufferMemory(buffer, bufferMemory, 0);
-	}
-
-	~Buffer()
-	{
-		device.freeMemory(bufferMemory);
-		device.destroyBuffer(buffer);
+		bufferMemory = device.allocateMemoryUnique(allocInfo);
+		device.bindBufferMemory(*buffer, *bufferMemory, 0);
 	}
 
 	vk::Buffer getBuffer()
 	{
-		return buffer;
+		return *buffer;
 	}
 
 	void *mapMemory()
 	{
-		return device.mapMemory(bufferMemory, 0, size);
+		return device.mapMemory(*bufferMemory, 0, size);
 	}
 
 	void unmapMemory()
 	{
-		device.unmapMemory(bufferMemory);
+		device.unmapMemory(*bufferMemory);
 	}
 
 private:
 	const vk::Device device;
 	vk::DeviceSize size;
-	vk::Buffer buffer;
-	vk::DeviceMemory bufferMemory;
+	vk::UniqueBuffer buffer;
+	vk::UniqueDeviceMemory bufferMemory;
 };
 
 class Image
 {
 public:
 	Image(vk::Device device, uint32_t width, uint32_t height, vk::Format format, vk::SampleCountFlagBits sampleCount = vk::SampleCountFlagBits::e1)
-	    : device(device)
 	{
 		vk::ImageCreateInfo imageInfo;
 		imageInfo.imageType = vk::ImageType::e2D;
@@ -618,20 +591,20 @@ public:
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
 
-		image = device.createImage(imageInfo);
+		image = device.createImageUnique(imageInfo);
 
-		vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements(image);
+		vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements(*image);
 
 		vk::MemoryAllocateInfo allocateInfo;
 		allocateInfo.allocationSize = memoryRequirements.size;
 		allocateInfo.memoryTypeIndex = 0;  //getMemoryTypeIndex(memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		imageMemory = device.allocateMemory(allocateInfo);
+		imageMemory = device.allocateMemoryUnique(allocateInfo);
 
-		device.bindImageMemory(image, imageMemory, 0);
+		device.bindImageMemory(*image, *imageMemory, 0);
 
 		vk::ImageViewCreateInfo imageViewInfo;
-		imageViewInfo.image = image;
+		imageViewInfo.image = *image;
 		imageViewInfo.viewType = vk::ImageViewType::e2D;
 		imageViewInfo.format = format;
 		imageViewInfo.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
@@ -640,45 +613,35 @@ public:
 		imageViewInfo.subresourceRange.baseArrayLayer = 0;
 		imageViewInfo.subresourceRange.layerCount = 1;
 
-		imageView = device.createImageView(imageViewInfo);
-	}
-
-	~Image()
-	{
-		device.destroyImage(image);
-		device.destroyImageView(imageView);
-		device.freeMemory(imageMemory);
+		imageView = device.createImageViewUnique(imageViewInfo);
 	}
 
 	vk::Image getImage()
 	{
-		return image;
+		return *image;
 	}
 
 	vk::ImageView getImageView()
 	{
-		return imageView;
+		return *imageView;
 	}
 
 private:
-	const vk::Device device;
-
-	vk::Image image;
-	vk::DeviceMemory imageMemory;
-	vk::ImageView imageView;
+	vk::UniqueImage image;
+	vk::UniqueDeviceMemory imageMemory;
+	vk::UniqueImageView imageView;
 };
 
 class Framebuffer
 {
 public:
 	Framebuffer(vk::Device device, vk::ImageView attachment, vk::Format colorFormat, vk::RenderPass renderPass, vk::Extent2D extent, bool multisample)
-	    : device(device)
 	{
 		std::vector<vk::ImageView> attachments(multisample ? 2 : 1);
 
 		if(multisample)
 		{
-			multisampleImage = new Image(device, extent.width, extent.height, colorFormat, vk::SampleCountFlagBits::e4);
+			multisampleImage.reset(new Image(device, extent.width, extent.height, colorFormat, vk::SampleCountFlagBits::e4));
 
 			// We'll be rendering to attachment location 0
 			attachments[0] = multisampleImage->getImageView();
@@ -698,27 +661,17 @@ public:
 		framebufferCreateInfo.height = extent.height;
 		framebufferCreateInfo.layers = 1;
 
-		framebuffer = device.createFramebuffer(framebufferCreateInfo);
-	}
-
-	~Framebuffer()
-	{
-		device.destroyFramebuffer(framebuffer);
-
-		delete multisampleImage;
+		framebuffer = device.createFramebufferUnique(framebufferCreateInfo);
 	}
 
 	vk::Framebuffer getFramebuffer()
 	{
-		return framebuffer;
+		return *framebuffer;
 	}
 
 private:
-	const vk::Device device;
-
-	vk::Framebuffer framebuffer;
-
-	Image *multisampleImage = nullptr;
+	vk::UniqueFramebuffer framebuffer;
+	std::unique_ptr<Image> multisampleImage;
 };
 
 static std::vector<uint32_t> compileGLSLtoSPIRV(const char *glslSource, EShLanguage glslLanguage)
@@ -764,79 +717,42 @@ public:
 	TriangleBenchmark(bool multisample)
 	    : multisample(multisample)
 	{
-		window = new Window(instance, windowSize);
-		swapchain = new Swapchain(physicalDevice, device, window);
+		window.reset(new Window(*instance, windowSize));
+		swapchain.reset(new Swapchain(physicalDevice, *device, *window));
 
 		renderPass = createRenderPass(swapchain->colorFormat);
-		createFramebuffers(renderPass);
+		createFramebuffers(*renderPass);
 
 		prepareVertices();
 
-		pipeline = createGraphicsPipeline(renderPass);
+		pipeline = createGraphicsPipeline(*renderPass);
 
 		createSynchronizationPrimitives();
 
-		createCommandBuffers(renderPass);
-	}
-
-	~TriangleBenchmark()
-	{
-		delete texture;
-
-		device.destroyDescriptorSetLayout(descriptorSetLayout);
-		device.destroyDescriptorPool(descriptorPool);
-
-		device.destroySampler(sampler, nullptr);
-
-		device.destroyPipelineLayout(pipelineLayout, nullptr);
-		device.destroyPipelineCache(pipelineCache, nullptr);
-
-		device.destroyBuffer(vertices.buffer, nullptr);
-		device.freeMemory(vertices.memory, nullptr);
-
-		device.destroySemaphore(presentCompleteSemaphore, nullptr);
-		device.destroySemaphore(renderCompleteSemaphore, nullptr);
-
-		for(auto &fence : waitFences)
-		{
-			device.destroyFence(fence, nullptr);
-		}
-
-		for(auto *framebuffer : framebuffers)
-		{
-			delete framebuffer;
-		}
-
-		device.destroyRenderPass(renderPass, nullptr);
-
-		device.freeCommandBuffers(commandPool, commandBuffers);
-		device.destroyCommandPool(commandPool, nullptr);
-
-		delete swapchain;
-		delete window;
+		createCommandBuffers(*renderPass);
 	}
 
 	void renderFrame()
 	{
-		swapchain->acquireNextImage(presentCompleteSemaphore, currentFrameBuffer);
+		swapchain->acquireNextImage(*presentCompleteSemaphore, currentFrameBuffer);
 
-		device.waitForFences(1, &waitFences[currentFrameBuffer], VK_TRUE, UINT64_MAX);
-		device.resetFences(1, &waitFences[currentFrameBuffer]);
+		device->waitForFences(1, &*waitFences[currentFrameBuffer], VK_TRUE, UINT64_MAX);
+		device->resetFences(1, &*waitFences[currentFrameBuffer]);
 
 		vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 
 		vk::SubmitInfo submitInfo;
 		submitInfo.pWaitDstStageMask = &waitStageMask;
-		submitInfo.pWaitSemaphores = &presentCompleteSemaphore;
+		submitInfo.pWaitSemaphores = &*presentCompleteSemaphore;
 		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = &renderCompleteSemaphore;
+		submitInfo.pSignalSemaphores = &*renderCompleteSemaphore;
 		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers[currentFrameBuffer];
+		submitInfo.pCommandBuffers = &*commandBuffers[currentFrameBuffer];
 		submitInfo.commandBufferCount = 1;
 
-		queue.submit(1, &submitInfo, waitFences[currentFrameBuffer]);
+		queue.submit(1, &submitInfo, *waitFences[currentFrameBuffer]);
 
-		swapchain->queuePresent(queue, currentFrameBuffer, renderCompleteSemaphore);
+		swapchain->queuePresent(queue, currentFrameBuffer, *renderCompleteSemaphore);
 	}
 
 	void show()
@@ -848,15 +764,15 @@ protected:
 	void createSynchronizationPrimitives()
 	{
 		vk::SemaphoreCreateInfo semaphoreCreateInfo;
-		presentCompleteSemaphore = device.createSemaphore(semaphoreCreateInfo);
-		renderCompleteSemaphore = device.createSemaphore(semaphoreCreateInfo);
+		presentCompleteSemaphore = device->createSemaphoreUnique(semaphoreCreateInfo);
+		renderCompleteSemaphore = device->createSemaphoreUnique(semaphoreCreateInfo);
 
 		vk::FenceCreateInfo fenceCreateInfo;
 		fenceCreateInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 		waitFences.resize(swapchain->imageCount());
 		for(auto &fence : waitFences)
 		{
-			fence = device.createFence(fenceCreateInfo);
+			fence = device->createFenceUnique(fenceCreateInfo);
 		}
 	}
 
@@ -865,20 +781,20 @@ protected:
 		vk::CommandPoolCreateInfo commandPoolCreateInfo;
 		commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 		commandPoolCreateInfo.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
-		commandPool = device.createCommandPool(commandPoolCreateInfo);
+		commandPool = device->createCommandPoolUnique(commandPoolCreateInfo);
 
-		texture = new Image(device, 16, 16, vk::Format::eR8G8B8A8Unorm);
+		texture.reset(new Image(*device, 16, 16, vk::Format::eR8G8B8A8Unorm));
 
 		// Fill texture with white
 		vk::DeviceSize bufferSize = 16 * 16 * 4;
-		Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
+		Buffer buffer(*device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
 		void *data = buffer.mapMemory();
 		memset(data, 255, bufferSize);
 		buffer.unmapMemory();
 
-		transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
-		copyBufferToImage(device, commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
-		transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+		transitionImageLayout(*device, *commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+		copyBufferToImage(*device, *commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
+		transitionImageLayout(*device, *commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
 		vk::SamplerCreateInfo samplerInfo;
 		samplerInfo.magFilter = vk::Filter::eLinear;
@@ -893,7 +809,7 @@ protected:
 		samplerInfo.minLod = 0.0f;
 		samplerInfo.maxLod = 0.0f;
 
-		sampler = device.createSampler(samplerInfo);
+		sampler = device->createSamplerUnique(samplerInfo);
 
 		std::array<vk::DescriptorPoolSize, 1> poolSizes = {};
 		poolSizes[0].type = vk::DescriptorType::eCombinedImageSampler;
@@ -904,20 +820,20 @@ protected:
 		poolInfo.pPoolSizes = poolSizes.data();
 		poolInfo.maxSets = 1;
 
-		descriptorPool = device.createDescriptorPool(poolInfo);
+		descriptorPool = device->createDescriptorPoolUnique(poolInfo);
 
-		std::vector<vk::DescriptorSetLayout> layouts(1, descriptorSetLayout);
+		std::vector<vk::DescriptorSetLayout> layouts(1, *descriptorSetLayout);
 		vk::DescriptorSetAllocateInfo allocInfo;
-		allocInfo.descriptorPool = descriptorPool;
+		allocInfo.descriptorPool = *descriptorPool;
 		allocInfo.descriptorSetCount = 1;
 		allocInfo.pSetLayouts = layouts.data();
 
-		std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets(allocInfo);
+		std::vector<vk::DescriptorSet> descriptorSets = device->allocateDescriptorSets(allocInfo);
 
 		vk::DescriptorImageInfo imageInfo;
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		imageInfo.imageView = texture->getImageView();
-		imageInfo.sampler = sampler;
+		imageInfo.sampler = *sampler;
 
 		std::array<vk::WriteDescriptorSet, 1> descriptorWrites = {};
 
@@ -928,19 +844,19 @@ protected:
 		descriptorWrites[0].descriptorCount = 1;
 		descriptorWrites[0].pImageInfo = &imageInfo;
 
-		device.updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		device->updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 
 		vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
-		commandBufferAllocateInfo.commandPool = commandPool;
+		commandBufferAllocateInfo.commandPool = *commandPool;
 		commandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(swapchain->imageCount());
 		commandBufferAllocateInfo.level = vk::CommandBufferLevel::ePrimary;
 
-		commandBuffers = device.allocateCommandBuffers(commandBufferAllocateInfo);
+		commandBuffers = device->allocateCommandBuffersUnique(commandBufferAllocateInfo);
 
 		for(size_t i = 0; i < commandBuffers.size(); i++)
 		{
 			vk::CommandBufferBeginInfo commandBufferBeginInfo;
-			commandBuffers[i].begin(commandBufferBeginInfo);
+			commandBuffers[i]->begin(commandBufferBeginInfo);
 
 			vk::ClearValue clearValues[1];
 			clearValues[0].color = vk::ClearColorValue(std::array<float, 4>{ 0.5f, 0.5f, 0.5f, 1.0f });
@@ -953,25 +869,25 @@ protected:
 			renderPassBeginInfo.renderArea.extent = windowSize;
 			renderPassBeginInfo.clearValueCount = ARRAY_SIZE(clearValues);
 			renderPassBeginInfo.pClearValues = clearValues;
-			commandBuffers[i].beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+			commandBuffers[i]->beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
 
 			// Set dynamic state
 			vk::Viewport viewport(0.0f, 0.0f, static_cast<float>(windowSize.width), static_cast<float>(windowSize.height), 0.0f, 1.0f);
-			commandBuffers[i].setViewport(0, 1, &viewport);
+			commandBuffers[i]->setViewport(0, 1, &viewport);
 
 			vk::Rect2D scissor(vk::Offset2D(0, 0), windowSize);
-			commandBuffers[i].setScissor(0, 1, &scissor);
+			commandBuffers[i]->setScissor(0, 1, &scissor);
 
-			commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
+			commandBuffers[i]->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
 
 			// Draw a triangle
-			commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
+			commandBuffers[i]->bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
 			VULKAN_HPP_NAMESPACE::DeviceSize offset = 0;
-			commandBuffers[i].bindVertexBuffers(0, 1, &vertices.buffer, &offset);
-			commandBuffers[i].draw(3, 1, 0, 0);
+			commandBuffers[i]->bindVertexBuffers(0, 1, &*vertices.buffer, &offset);
+			commandBuffers[i]->draw(3, 1, 0, 0);
 
-			commandBuffers[i].endRenderPass();
-			commandBuffers[i].end();
+			commandBuffers[i]->endRenderPass();
+			commandBuffers[i]->end();
 		}
 	}
 
@@ -993,18 +909,18 @@ protected:
 		vk::BufferCreateInfo vertexBufferInfo;
 		vertexBufferInfo.size = sizeof(vertexBufferData);
 		vertexBufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
-		vertices.buffer = device.createBuffer(vertexBufferInfo);
+		vertices.buffer = device->createBufferUnique(vertexBufferInfo);
 
 		vk::MemoryAllocateInfo memoryAllocateInfo;
-		vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements(vertices.buffer);
+		vk::MemoryRequirements memoryRequirements = device->getBufferMemoryRequirements(*vertices.buffer);
 		memoryAllocateInfo.allocationSize = memoryRequirements.size;
 		memoryAllocateInfo.memoryTypeIndex = getMemoryTypeIndex(physicalDevice, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-		vertices.memory = device.allocateMemory(memoryAllocateInfo);
+		vertices.memory = device->allocateMemoryUnique(memoryAllocateInfo);
 
-		void *data = device.mapMemory(vertices.memory, 0, VK_WHOLE_SIZE);
+		void *data = device->mapMemory(*vertices.memory, 0, VK_WHOLE_SIZE);
 		memcpy(data, vertexBufferData, sizeof(vertexBufferData));
-		device.unmapMemory(vertices.memory);
-		device.bindBufferMemory(vertices.buffer, vertices.memory, 0);
+		device->unmapMemory(*vertices.memory);
+		device->bindBufferMemory(*vertices.buffer, *vertices.memory, 0);
 
 		vertices.inputBinding.binding = 0;
 		vertices.inputBinding.stride = sizeof(Vertex);
@@ -1026,11 +942,11 @@ protected:
 
 		for(size_t i = 0; i < framebuffers.size(); i++)
 		{
-			framebuffers[i] = new Framebuffer(device, swapchain->getImageView(i), swapchain->colorFormat, renderPass, swapchain->getExtent(), multisample);
+			framebuffers[i].reset(new Framebuffer(*device, swapchain->getImageView(i), swapchain->colorFormat, renderPass, swapchain->getExtent(), multisample));
 		}
 	}
 
-	vk::RenderPass createRenderPass(vk::Format colorFormat)
+	vk::UniqueRenderPass createRenderPass(vk::Format colorFormat)
 	{
 		std::vector<vk::AttachmentDescription> attachments(multisample ? 2 : 1);
 
@@ -1108,7 +1024,7 @@ protected:
 		renderPassInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
 		renderPassInfo.pDependencies = dependencies.data();
 
-		return device.createRenderPass(renderPassInfo);
+		return device->createRenderPassUnique(renderPassInfo);
 	}
 
 	vk::UniqueShaderModule createShaderModule(const char *glslSource, EShLanguage glslLanguage)
@@ -1119,7 +1035,7 @@ protected:
 		moduleCreateInfo.codeSize = spirv.size() * sizeof(uint32_t);
 		moduleCreateInfo.pCode = (uint32_t *)spirv.data();
 
-		return device.createShaderModuleUnique(moduleCreateInfo);
+		return device->createShaderModuleUnique(moduleCreateInfo);
 	}
 
 	vk::UniquePipeline createGraphicsPipeline(vk::RenderPass renderPass)
@@ -1136,17 +1052,17 @@ protected:
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 		layoutInfo.pBindings = bindings.data();
 
-		descriptorSetLayout = device.createDescriptorSetLayout(layoutInfo);
+		descriptorSetLayout = device->createDescriptorSetLayoutUnique(layoutInfo);
 
-		std::vector<vk::DescriptorSetLayout> setLayouts(1, descriptorSetLayout);
+		std::vector<vk::DescriptorSetLayout> setLayouts(1, *descriptorSetLayout);
 
 		vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
 		pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
 		pipelineLayoutCreateInfo.pSetLayouts = setLayouts.data();
-		pipelineLayout = device.createPipelineLayout(pipelineLayoutCreateInfo);
+		pipelineLayout = device->createPipelineLayoutUnique(pipelineLayoutCreateInfo);
 
 		vk::GraphicsPipelineCreateInfo pipelineCreateInfo;
-		pipelineCreateInfo.layout = pipelineLayout;
+		pipelineCreateInfo.layout = *pipelineLayout;
 		pipelineCreateInfo.renderPass = renderPass;
 
 		vk::PipelineInputAssemblyStateCreateInfo inputAssemblyState;
@@ -1250,46 +1166,42 @@ protected:
 		pipelineCreateInfo.renderPass = renderPass;
 		pipelineCreateInfo.pDynamicState = &dynamicState;
 
-		return device.createGraphicsPipelineUnique(nullptr, pipelineCreateInfo).value;
+		return device->createGraphicsPipelineUnique(nullptr, pipelineCreateInfo).value;
 	}
 
 	const vk::Extent2D windowSize = { 1280, 720 };
 	const bool multisample;
-	Window *window = nullptr;
 
-	Swapchain *swapchain = nullptr;
+	std::unique_ptr<Window> window;
+	std::unique_ptr<Swapchain> swapchain;
 
-	vk::RenderPass renderPass;
-	std::vector<Framebuffer *> framebuffers;
+	vk::UniqueRenderPass renderPass;
+	std::vector<std::unique_ptr<Framebuffer>> framebuffers;
 	uint32_t currentFrameBuffer = 0;
 
 	struct VertexBuffer
 	{
-		vk::Buffer buffer;
-		vk::DeviceMemory memory;
+		vk::UniqueBuffer buffer;
+		vk::UniqueDeviceMemory memory;
 
-		vk::PipelineVertexInputStateCreateInfo inputState;
 		vk::VertexInputBindingDescription inputBinding;
 		std::vector<vk::VertexInputAttributeDescription> inputAttributes;
+		vk::PipelineVertexInputStateCreateInfo inputState;
 	} vertices;
 
-	vk::DescriptorPool descriptorPool;
-	vk::DescriptorSetLayout descriptorSetLayout;
-	vk::PipelineLayout pipelineLayout;
-	vk::PipelineCache pipelineCache;
+	vk::UniqueDescriptorSetLayout descriptorSetLayout;
+	vk::UniquePipelineLayout pipelineLayout;
 	vk::UniquePipeline pipeline;
 
-	vk::Sampler sampler;
+	vk::UniqueSemaphore presentCompleteSemaphore;
+	vk::UniqueSemaphore renderCompleteSemaphore;
+	std::vector<vk::UniqueFence> waitFences;
 
-	vk::CommandPool commandPool;
-	std::vector<vk::CommandBuffer> commandBuffers;
-
-	vk::Semaphore presentCompleteSemaphore;
-	vk::Semaphore renderCompleteSemaphore;
-
-	std::vector<vk::Fence> waitFences;
-
-	Image *texture = nullptr;
+	vk::UniqueCommandPool commandPool;
+	std::unique_ptr<Image> texture;
+	vk::UniqueSampler sampler;
+	vk::UniqueDescriptorPool descriptorPool;
+	std::vector<vk::UniqueCommandBuffer> commandBuffers;
 };
 
 static void Triangle(benchmark::State &state, bool multisample)
