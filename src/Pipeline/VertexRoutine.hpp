@@ -73,6 +73,8 @@ private:
 	Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> &batch,
 	                    bool robustBufferAccess, UInt &robustnessSize, Int baseVertex);
 	void readInput(Pointer<UInt> &batch);
+
+	Vector4f getPosition();
 	void computeClipFlags();
 	void computeCullMask();
 	void writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCache, Pointer<UInt> &batch);
