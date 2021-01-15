@@ -111,23 +111,33 @@ void VertexRoutine::readInput(Pointer<UInt> &batch)
 	}
 }
 
+Vector4f VertexRoutine::getPosition()
+{
+	Vector4f pos(0.0f, 0.0f, 0.0f, 0.0f);
+	auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
+	if(it != spirvShader->outputBuiltins.end())
+	{
+		assert(it->second.SizeInComponents == 4);
+		auto& position = routine.getVariable(it->second.Id);
+
+		pos.x = position[it->second.FirstComponent + 0];
+		pos.y = position[it->second.FirstComponent + 1];
+		pos.z = position[it->second.FirstComponent + 2];
+		pos.w = position[it->second.FirstComponent + 3];
+	}
+	return pos;
+}
+
 void VertexRoutine::computeClipFlags()
 {
-	auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
-	assert(it != spirvShader->outputBuiltins.end());
-	assert(it->second.SizeInComponents == 4);
-	auto &pos = routine.getVariable(it->second.Id);
-	auto posX = pos[it->second.FirstComponent + 0];
-	auto posY = pos[it->second.FirstComponent + 1];
-	auto posZ = pos[it->second.FirstComponent + 2];
-	auto posW = pos[it->second.FirstComponent + 3];
+	Vector4f pos = getPosition();
 
-	Int4 maxX = CmpLT(posW, posX);
-	Int4 maxY = CmpLT(posW, posY);
-	Int4 maxZ = CmpLT(posW, posZ);
-	Int4 minX = CmpNLE(-posW, posX);
-	Int4 minY = CmpNLE(-posW, posY);
-	Int4 minZ = CmpNLE(Float4(0.0f), posZ);
+	Int4 maxX = CmpLT(pos.w, pos.x);
+	Int4 maxY = CmpLT(pos.w, pos.y);
+	Int4 maxZ = CmpLT(pos.w, pos.z);
+	Int4 minX = CmpNLE(-pos.w, pos.x);
+	Int4 minY = CmpNLE(-pos.w, pos.y);
+	Int4 minZ = CmpNLE(Float4(0.0f), pos.z);
 
 	clipFlags = Pointer<Int>(constants + OFFSET(Constants, maxX))[SignMask(maxX)];
 	clipFlags |= Pointer<Int>(constants + OFFSET(Constants, maxY))[SignMask(maxY)];
@@ -137,9 +147,9 @@ void VertexRoutine::computeClipFlags()
 	clipFlags |= Pointer<Int>(constants + OFFSET(Constants, minZ))[SignMask(minZ)];
 
 	Float4 maxPos = As<Float4>(Int4(0x7F7FFFFF));
-	Int4 finiteX = CmpLE(Abs(posX), maxPos);
-	Int4 finiteY = CmpLE(Abs(posY), maxPos);
-	Int4 finiteZ = CmpLE(Abs(posZ), maxPos);
+	Int4 finiteX = CmpLE(Abs(pos.x), maxPos);
+	Int4 finiteY = CmpLE(Abs(pos.y), maxPos);
+	Int4 finiteZ = CmpLE(Abs(pos.z), maxPos);
 
 	Int4 finiteXYZ = finiteX & finiteY & finiteZ;
 	clipFlags |= Pointer<Int>(constants + OFFSET(Constants, fini))[SignMask(finiteXYZ)];
@@ -530,16 +540,7 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 	tagCache[cacheIndex1] = index1;
 	tagCache[cacheIndex0] = index0;
 
-	auto it = spirvShader->outputBuiltins.find(spv::BuiltInPosition);
-	assert(it != spirvShader->outputBuiltins.end());
-	assert(it->second.SizeInComponents == 4);
-	auto &position = routine.getVariable(it->second.Id);
-
-	Vector4f pos;
-	pos.x = position[it->second.FirstComponent + 0];
-	pos.y = position[it->second.FirstComponent + 1];
-	pos.z = position[it->second.FirstComponent + 2];
-	pos.w = position[it->second.FirstComponent + 3];
+	Vector4f pos = getPosition();
 
 	// Projection and viewport transform.
 	Float4 w = As<Float4>(As<Int4>(pos.w) | (As<Int4>(CmpEQ(pos.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
@@ -558,7 +559,7 @@ void VertexRoutine::writeCache(Pointer<Byte> &vertexCache, Pointer<UInt> &tagCac
 	*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex1 + OFFSET(Vertex, position), 16) = pos.y;
 	*Pointer<Float4>(vertexCache + sizeof(Vertex) * cacheIndex0 + OFFSET(Vertex, position), 16) = pos.x;
 
-	it = spirvShader->outputBuiltins.find(spv::BuiltInPointSize);
+	auto it = spirvShader->outputBuiltins.find(spv::BuiltInPointSize);
 	if(it != spirvShader->outputBuiltins.end())
 	{
 		ASSERT(it->second.SizeInComponents == 1);
