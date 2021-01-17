@@ -24,10 +24,6 @@
 #include <cctype>
 #include <string>
 
-#if !defined(TRACE_OUTPUT_FILE)
-#	define TRACE_OUTPUT_FILE "debug.txt"
-#endif
-
 #if defined(__GNUC__) || defined(__clang__)
 #	define CHECK_PRINTF_ARGS __attribute__((format(printf, 1, 2)))
 #else
@@ -53,13 +49,13 @@ void trace_assert(const char *format, ...) CHECK_PRINTF_ARGS;
 }  // namespace rr
 
 // A macro to output a trace of a function call and its arguments to the
-// debugging log. Disabled if RR_DISABLE_TRACE is defined.
-#if defined(RR_DISABLE_TRACE)
-#	define TRACE(message, ...) (void(0))
-#	define TRACE_ASSERT(message, ...) (void(0))
-#else
+// debugging log. Enabled if REACTOR_ENABLE_TRACE is defined.
+#if defined(REACTOR_ENABLE_TRACE)
 #	define TRACE(message, ...) rr::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #	define TRACE_ASSERT(message, ...) rr::trace_assert("%s:%d %s TRACE_ASSERT: " message "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+#else
+#	define TRACE(message, ...) (void(0))
+#	define TRACE_ASSERT(message, ...) (void(0))
 #endif
 
 // A macro to print a warning message to the debugging log and stderr to denote

@@ -50,8 +50,11 @@ config("swiftshader_config") {
       "NO_SANITIZE_FUNCTION=",
     ]
 
-    if (!is_debug) {
-      defines += [ "ANGLE_DISABLE_TRACE" ]
+    if (is_debug) {
+      defines += [
+        "SWIFTSHADER_ENABLE_TRACE",
+        "REACTOR_ENABLE_TRACE",
+      ]
     }
 
     # Diable some MSVC warnings.
@@ -92,6 +95,11 @@ config("swiftshader_config") {
         "-g",
         "-g3",
       ]
+
+      defines += [
+        "SWIFTSHADER_ENABLE_TRACE",
+        "REACTOR_ENABLE_TRACE",
+      ]
     } else {  # Release
       # All Release builds use function/data sections to make the shared libraries smaller
       cflags += [
@@ -102,7 +110,6 @@ config("swiftshader_config") {
       ]
 
       defines += [
-        "ANGLE_DISABLE_TRACE",
         "NDEBUG",
       ]
     }
