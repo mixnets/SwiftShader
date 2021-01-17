@@ -34,12 +34,14 @@
 #	include <unistd.h>
 #endif
 
-#ifdef ERROR
-#	undef ERROR  // b/127920555
-#endif
+#undef ERROR  // b/127920555
 
 #ifndef REACTOR_LOGGING_LEVEL
 #	define REACTOR_LOGGING_LEVEL Info
+#endif
+
+#if !defined(DEBUG_OUTPUT_FILE)
+#	define DEBUG_OUTPUT_FILE "debug.txt"
 #endif
 
 namespace {
@@ -106,29 +108,29 @@ enum class Level
 };
 
 #ifdef __ANDROID__
-void logv_android(Level level, const char *msg)
+void log_android(Level level, const char *msg)
 {
 	switch(level)
 	{
 		case Level::Debug:
-			__android_log_write(ANDROID_LOG_DEBUG, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_DEBUG, "Reactor", msg);
 			break;
 		case Level::Info:
-			__android_log_write(ANDROID_LOG_INFO, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_INFO, "Reactor", msg);
 			break;
 		case Level::Warn:
-			__android_log_write(ANDROID_LOG_WARN, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_WARN, "Reactor", msg);
 			break;
 		case Level::Error:
-			__android_log_write(ANDROID_LOG_ERROR, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_ERROR, "Reactor", msg);
 			break;
 		case Level::Fatal:
-			__android_log_write(ANDROID_LOG_FATAL, "SwiftShader", msg);
+			__android_log_write(ANDROID_LOG_FATAL, "Reactor", msg);
 			break;
 	}
 }
 #else
-void logv_std(Level level, const char *msg)
+void log_std(Level level, const char *msg)
 {
 	switch(level)
 	{
@@ -145,30 +147,30 @@ void logv_std(Level level, const char *msg)
 }
 #endif
 
-void logv(Level level, const char *format, va_list args)
+void vlog(Level level, const char *format, va_list args)
 {
+#if defined(REACTOR_ENABLE_TRACE)
 	if(static_cast<int>(level) < static_cast<int>(Level::REACTOR_LOGGING_LEVEL))
 	{
 		return;
 	}
 
-#ifndef SWIFTSHADER_DISABLE_TRACE
 	char buffer[2048];
 	vsnprintf(buffer, sizeof(buffer), format, args);
 
 #	if defined(__ANDROID__)
-	logv_android(level, buffer);
+	log_android(level, buffer);
 #	elif defined(_WIN32)
-	logv_std(level, buffer);
+	log_std(level, buffer);
 	::OutputDebugString(buffer);
 #	else
-	logv_std(level, buffer);
+	log_std(level, buffer);
 #	endif
 
-	const bool traceToFile = false;
-	if(traceToFile)
+	const bool logToFile = false;
+	if(logToFile)
 	{
-		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
+		FILE *file = fopen(DEBUG_OUTPUT_FILE, "a");
 
 		if(file)
 		{
@@ -176,7 +178,7 @@ void logv(Level level, const char *format, va_list args)
 			fclose(file);
 		}
 	}
-#endif  // SWIFTSHADER_DISABLE_TRACE
+#endif  // REACTOR_ENABLE_TRACE
 }
 
 }  // anonymous namespace
@@ -187,7 +189,7 @@ void trace(const char *format, ...)
 {
 	va_list vararg;
 	va_start(vararg, format);
-	logv(Level::Debug, format, vararg);
+	vlog(Level::Debug, format, vararg);
 	va_end(vararg);
 }
 
@@ -195,7 +197,7 @@ void warn(const char *format, ...)
 {
 	va_list vararg;
 	va_start(vararg, format);
-	logv(Level::Warn, format, vararg);
+	vlog(Level::Warn, format, vararg);
 	va_end(vararg);
 }
 
@@ -204,7 +206,7 @@ void abort(const char *format, ...)
 	va_list vararg;
 
 	va_start(vararg, format);
-	logv(Level::Fatal, format, vararg);
+	vlog(Level::Fatal, format, vararg);
 	va_end(vararg);
 
 	::abort();
@@ -218,7 +220,7 @@ void trace_assert(const char *format, ...)
 		// Abort after tracing and printing to stderr
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Fatal, format, vararg);
+		vlog(Level::Fatal, format, vararg);
 		va_end(vararg);
 
 		::abort();
@@ -227,7 +229,7 @@ void trace_assert(const char *format, ...)
 	{
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Fatal, format, vararg);
+		vlog(Level::Fatal, format, vararg);
 		va_end(vararg);
 	}
 }
