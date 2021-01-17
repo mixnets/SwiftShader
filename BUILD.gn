@@ -24,11 +24,13 @@ config("swiftshader_config") {
   }
 
   if (is_debug) {
+    defines += [
+      "SWIFTSHADER_ENABLE_TRACE",
+      "REACTOR_ENABLE_TRACE",
+    ]
     if (swiftshader_startup_dialog) {
       defines += [ "DEBUGGER_WAIT_DIALOG" ]
     }
-  } else {
-    defines += [ "ANGLE_DISABLE_TRACE" ]
   }
 
   if (!is_win || is_clang) {

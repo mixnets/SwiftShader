@@ -530,6 +530,10 @@ else()
 
     set_cpp_flag("-DNDEBUG" RELEASE)
     set_cpp_flag("-DNDEBUG" RELWITHDEBINFO)
+    set_cpp_flag("-DSWIFTSHADER_ENABLE_TRACE" DEBUG)
+    set_cpp_flag("-DREACTOR_ENABLE_TRACE" DEBUG)
+    set_cpp_flag("-DSWIFTSHADER_ENABLE_TRACE" MINSIZEREL)
+    set_cpp_flag("-DREACTOR_ENABLE_TRACE" MINSIZEREL)
 
     # Put each variable and function in its own section so that when linking
     # with -gc-sections unused functions and variables are removed.
