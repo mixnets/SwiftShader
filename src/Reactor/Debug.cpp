@@ -34,9 +34,7 @@
 #	include <unistd.h>
 #endif
 
-#ifdef ERROR
-#	undef ERROR  // b/127920555
-#endif
+#undef ERROR  // b/127920555
 
 #ifndef REACTOR_LOGGING_LEVEL
 #	define REACTOR_LOGGING_LEVEL Info
@@ -152,7 +150,7 @@ void logv(Level level, const char *format, va_list args)
 		return;
 	}
 
-#ifndef SWIFTSHADER_DISABLE_TRACE
+#if defined(SWIFTSHADER_ENABLE_TRACE)
 	char buffer[2048];
 	vsnprintf(buffer, sizeof(buffer), format, args);
 
@@ -176,7 +174,7 @@ void logv(Level level, const char *format, va_list args)
 			fclose(file);
 		}
 	}
-#endif  // SWIFTSHADER_DISABLE_TRACE
+#endif  // SWIFTSHADER_ENABLE_TRACE
 }
 
 }  // anonymous namespace
