@@ -34,12 +34,14 @@
 #include <cstdio>
 #include <string>
 
-#ifdef ERROR
-#	undef ERROR  // b/127920555
-#endif
+#undef ERROR  // b/127920555
 
 #ifndef SWIFTSHADER_LOGGING_LEVEL
 #	define SWIFTSHADER_LOGGING_LEVEL Info
+#endif
+
+#if !defined(DEBUG_OUTPUT_FILE)
+#	define DEBUG_OUTPUT_FILE "debug.txt"
 #endif
 
 namespace {
@@ -108,7 +110,7 @@ enum class Level
 };
 
 #ifdef __ANDROID__
-void logv_android(Level level, const char *msg)
+void log_android(Level level, const char *msg)
 {
 	switch(level)
 	{
@@ -132,7 +134,7 @@ void logv_android(Level level, const char *msg)
 	}
 }
 #else
-void logv_std(Level level, const char *msg)
+[[maybe_unused]] void log_std(Level level, const char *msg)
 {
 	switch(level)
 	{
@@ -151,28 +153,28 @@ void logv_std(Level level, const char *msg)
 }
 #endif
 
-void logv(Level level, const char *format, va_list args)
+void vlog(Level level, const char *format, va_list args)
 {
+#if defined(SWIFTSHADER_ENABLE_TRACE)
 	if(static_cast<int>(level) >= static_cast<int>(Level::SWIFTSHADER_LOGGING_LEVEL))
 	{
-#ifndef SWIFTSHADER_DISABLE_TRACE
 		char buffer[2048];
 		vsnprintf(buffer, sizeof(buffer), format, args);
 
 #	if defined(__ANDROID__)
-		logv_android(level, buffer);
+		log_android(level, buffer);
 #	elif defined(_WIN32)
-		logv_std(level, buffer);
+		log_std(level, buffer);
 		::OutputDebugString(buffer);
 #	else
-		logv_std(level, buffer);
+		log_std(level, buffer);
 #	endif
 	}
 
-	const Level traceToFileLevel = Level::Disabled;
-	if(static_cast<int>(level) >= static_cast<int>(traceToFileLevel))
+	const Level logToFileLevel = Level::Disabled;
+	if(static_cast<int>(level) >= static_cast<int>(logToFileLevel))
 	{
-		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
+		FILE *file = fopen(DEBUG_OUTPUT_FILE, "a");
 
 		if(file)
 		{
@@ -180,7 +182,7 @@ void logv(Level level, const char *format, va_list args)
 			fclose(file);
 		}
 	}
-#endif  // SWIFTSHADER_DISABLE_TRACE
+#endif  // SWIFTSHADER_ENABLE_TRACE
 }
 
 }  // anonymous namespace
@@ -191,7 +193,7 @@ void trace(const char *format, ...)
 {
 	va_list vararg;
 	va_start(vararg, format);
-	logv(Level::Debug, format, vararg);
+	vlog(Level::Debug, format, vararg);
 	va_end(vararg);
 }
 
@@ -199,7 +201,7 @@ void warn(const char *format, ...)
 {
 	va_list vararg;
 	va_start(vararg, format);
-	logv(Level::Warn, format, vararg);
+	vlog(Level::Warn, format, vararg);
 	va_end(vararg);
 }
 
@@ -208,7 +210,7 @@ void abort(const char *format, ...)
 	va_list vararg;
 
 	va_start(vararg, format);
-	logv(Level::Fatal, format, vararg);
+	vlog(Level::Fatal, format, vararg);
 	va_end(vararg);
 
 	::abort();
@@ -225,7 +227,7 @@ void log_trap(const char *format, ...)
 		// then we abort after tracing and printing to stderr
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Fatal, format, vararg);
+		vlog(Level::Fatal, format, vararg);
 		va_end(vararg);
 
 		::abort();
@@ -234,7 +236,7 @@ void log_trap(const char *format, ...)
 	{
 		va_list vararg;
 		va_start(vararg, format);
-		logv(Level::Verbose, format, vararg);
+		vlog(Level::Verbose, format, vararg);
 		va_end(vararg);
 	}
 }
