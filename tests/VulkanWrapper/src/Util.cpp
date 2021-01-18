@@ -16,6 +16,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include "StandAlone/ResourceLimits.h"
 
+namespace vkw {
 namespace Util {
 
 uint32_t getMemoryTypeIndex(vk::PhysicalDevice physicalDevice, uint32_t typeBits, vk::MemoryPropertyFlags properties)
@@ -172,3 +173,4 @@ std::vector<uint32_t> compileGLSLtoSPIRV(const char *glslSource, EShLanguage gls
 }
 
 }  // namespace Util
+}  // namespace vkw

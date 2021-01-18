@@ -22,6 +22,8 @@
 #	include <Windows.h>
 #endif
 
+namespace vkw {
+
 #if USE_HEADLESS_SURFACE
 class Window
 {
@@ -57,5 +59,7 @@ private:
 #else
 #	error Window class unimplemented for this platform
 #endif
+
+}  // namespace vkw
 
 #endif  // BENCHMARKS_WINDOW_HPP_

@@ -14,6 +14,8 @@
 
 #include "Buffer.hpp"
 
+namespace vkw {
+
 Buffer::Buffer(vk::Device device, vk::DeviceSize size, vk::BufferUsageFlags usage)
     : device(device)
     , size(size)
@@ -40,3 +42,5 @@ Buffer::~Buffer()
 	device.freeMemory(bufferMemory);
 	device.destroyBuffer(buffer);
 }
+
+}  // namespace vkw

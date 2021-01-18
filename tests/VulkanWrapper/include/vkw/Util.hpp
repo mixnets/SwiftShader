@@ -20,6 +20,7 @@
 
 #include <vector>
 
+namespace vkw {
 namespace Util {
 
 uint32_t getMemoryTypeIndex(vk::PhysicalDevice physicalDevice, uint32_t typeBits, vk::MemoryPropertyFlags properties);
@@ -35,5 +36,6 @@ void copyBufferToImage(vk::Device device, vk::CommandPool commandPool, vk::Queue
 std::vector<uint32_t> compileGLSLtoSPIRV(const char *glslSource, EShLanguage glslLanguage);
 
 }  // namespace Util
+}  // namespace vkw
 
 #endif  // BENCHMARKS_UTIL_HPP_

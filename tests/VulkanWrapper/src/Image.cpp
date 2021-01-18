@@ -14,6 +14,8 @@
 
 #include "Image.hpp"
 
+namespace vkw {
+
 Image::Image(vk::Device device, uint32_t width, uint32_t height, vk::Format format, vk::SampleCountFlagBits sampleCount /*= vk::SampleCountFlagBits::e1*/)
     : device(device)
 {
@@ -59,3 +61,5 @@ Image::~Image()
 	device.freeMemory(imageMemory);
 	device.destroyImage(image);
 }
+
+}  // namespace vkw

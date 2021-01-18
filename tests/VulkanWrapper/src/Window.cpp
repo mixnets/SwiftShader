@@ -14,6 +14,8 @@
 
 #include "Window.hpp"
 
+namespace vkw {
+
 #if USE_HEADLESS_SURFACE
 
 Window::Window(vk::Instance instance, vk::Extent2D windowSize)
@@ -107,3 +109,5 @@ void Window::show()
 #else
 #	error Window class unimplemented for this platform
 #endif
+
+}  // namespace vkw

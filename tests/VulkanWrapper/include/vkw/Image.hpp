@@ -17,6 +17,8 @@
 
 #include "VulkanHeaders.hpp"
 
+namespace vkw {
+
 class Image
 {
 public:
@@ -40,5 +42,7 @@ private:
 	vk::DeviceMemory imageMemory;  // Owning handle
 	vk::ImageView imageView;       // Owning handle
 };
+
+}  // namespace vkw
 
 #endif  // BENCHMARKS_IMAGE_HPP_

@@ -14,13 +14,13 @@
 
 #include "benchmark/benchmark.h"
 
-#include "Buffer.hpp"
-#include "Framebuffer.hpp"
-#include "Image.hpp"
-#include "Swapchain.hpp"
-#include "Util.hpp"
-#include "VulkanHeaders.hpp"
-#include "Window.hpp"
+#include "vkw/Buffer.hpp"
+#include "vkw/Framebuffer.hpp"
+#include "vkw/Image.hpp"
+#include "vkw/Swapchain.hpp"
+#include "vkw/Util.hpp"
+#include "vkw/VulkanHeaders.hpp"
+#include "vkw/Window.hpp"
 
 #include <cassert>
 #include <vector>
@@ -205,8 +205,8 @@ public:
 	TriangleBenchmark(bool multisample)
 	    : multisample(multisample)
 	{
-		window.reset(new Window(instance, windowSize));
-		swapchain.reset(new Swapchain(physicalDevice, device, *window));
+		window.reset(new vkw::Window(instance, windowSize));
+		swapchain.reset(new vkw::Swapchain(physicalDevice, device, *window));
 
 		renderPass = createRenderPass(swapchain->colorFormat);
 		createFramebuffers(renderPass);
@@ -306,18 +306,18 @@ protected:
 		commandPoolCreateInfo.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
 		commandPool = device.createCommandPool(commandPoolCreateInfo);
 
-		texture.reset(new Image(device, 16, 16, vk::Format::eR8G8B8A8Unorm));
+		texture.reset(new vkw::Image(device, 16, 16, vk::Format::eR8G8B8A8Unorm));
 
 		// Fill texture with white
 		vk::DeviceSize bufferSize = 16 * 16 * 4;
-		Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
+		vkw::Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
 		void *data = buffer.mapMemory();
 		memset(data, 255, bufferSize);
 		buffer.unmapMemory();
 
-		Util::transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
-		Util::copyBufferToImage(device, commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
-		Util::transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+		vkw::Util::transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+		vkw::Util::copyBufferToImage(device, commandPool, queue, buffer.getBuffer(), texture->getImage(), 16, 16);
+		vkw::Util::transitionImageLayout(device, commandPool, queue, texture->getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
 		vk::SamplerCreateInfo samplerInfo;
 		samplerInfo.magFilter = vk::Filter::eLinear;
@@ -437,7 +437,7 @@ protected:
 		vk::MemoryAllocateInfo memoryAllocateInfo;
 		vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements(vertices.buffer);
 		memoryAllocateInfo.allocationSize = memoryRequirements.size;
-		memoryAllocateInfo.memoryTypeIndex = Util::getMemoryTypeIndex(physicalDevice, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+		memoryAllocateInfo.memoryTypeIndex = vkw::Util::getMemoryTypeIndex(physicalDevice, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 		vertices.memory = device.allocateMemory(memoryAllocateInfo);
 
 		void *data = device.mapMemory(vertices.memory, 0, VK_WHOLE_SIZE);
@@ -465,7 +465,7 @@ protected:
 
 		for(size_t i = 0; i < framebuffers.size(); i++)
 		{
-			framebuffers[i].reset(new Framebuffer(device, swapchain->getImageView(i), swapchain->colorFormat, renderPass, swapchain->getExtent(), multisample));
+			framebuffers[i].reset(new vkw::Framebuffer(device, swapchain->getImageView(i), swapchain->colorFormat, renderPass, swapchain->getExtent(), multisample));
 		}
 	}
 
@@ -552,7 +552,7 @@ protected:
 
 	vk::ShaderModule createShaderModule(const char *glslSource, EShLanguage glslLanguage)
 	{
-		auto spirv = Util::compileGLSLtoSPIRV(glslSource, glslLanguage);
+		auto spirv = vkw::Util::compileGLSLtoSPIRV(glslSource, glslLanguage);
 
 		vk::ShaderModuleCreateInfo moduleCreateInfo;
 		moduleCreateInfo.codeSize = spirv.size() * sizeof(uint32_t);
@@ -700,11 +700,11 @@ protected:
 	const vk::Extent2D windowSize = { 1280, 720 };
 	const bool multisample;
 
-	std::unique_ptr<Window> window;
-	std::unique_ptr<Swapchain> swapchain;
+	std::unique_ptr<vkw::Window> window;
+	std::unique_ptr<vkw::Swapchain> swapchain;
 
 	vk::RenderPass renderPass;  // Owning handle
-	std::vector<std::unique_ptr<Framebuffer>> framebuffers;
+	std::vector<std::unique_ptr<vkw::Framebuffer>> framebuffers;
 	uint32_t currentFrameBuffer = 0;
 
 	struct VertexBuffer
@@ -726,7 +726,7 @@ protected:
 	std::vector<vk::Fence> waitFences;       // Owning handles
 
 	vk::CommandPool commandPool;  // Owning handle
-	std::unique_ptr<Image> texture;
+	std::unique_ptr<vkw::Image> texture;
 	vk::Sampler sampler;                            // Owning handle
 	vk::DescriptorPool descriptorPool;              // Owning handle
 	std::vector<vk::CommandBuffer> commandBuffers;  // Owning handles

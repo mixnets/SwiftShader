@@ -15,6 +15,8 @@
 #include "Swapchain.hpp"
 #include "Window.hpp"
 
+namespace vkw {
+
 Swapchain::Swapchain(vk::PhysicalDevice physicalDevice, vk::Device device, Window &window)
     : device(device)
 {
@@ -87,3 +89,5 @@ void Swapchain::queuePresent(vk::Queue queue, uint32_t imageIndex, vk::Semaphore
 
 	queue.presentKHR(presentInfo);
 }
+
+}  // namespace vkw

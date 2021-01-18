@@ -14,6 +14,8 @@
 
 #include "Framebuffer.hpp"
 
+namespace vkw {
+
 Framebuffer::Framebuffer(vk::Device device, vk::ImageView attachment, vk::Format colorFormat, vk::RenderPass renderPass, vk::Extent2D extent, bool multisample)
     : device(device)
 {
@@ -49,3 +51,5 @@ Framebuffer::~Framebuffer()
 	multisampleImage.reset();
 	device.destroyFramebuffer(framebuffer);
 }
+
+}  // namespace vkw

@@ -12,37 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BENCHMARKS_BUFFER_HPP_
-#define BENCHMARKS_BUFFER_HPP_
+#ifndef BENCHMARKS_FRAMEBUFFER_HPP_
+#define BENCHMARKS_FRAMEBUFFER_HPP_
 
+#include "Image.hpp"
 #include "VulkanHeaders.hpp"
 
-class Buffer
+namespace vkw {
+
+class Framebuffer
 {
 public:
-	Buffer(vk::Device device, vk::DeviceSize size, vk::BufferUsageFlags usage);
-	~Buffer();
+	Framebuffer(vk::Device device, vk::ImageView attachment, vk::Format colorFormat, vk::RenderPass renderPass, vk::Extent2D extent, bool multisample);
+	~Framebuffer();
 
-	vk::Buffer getBuffer()
+	vk::Framebuffer getFramebuffer()
 	{
-		return buffer;
-	}
-
-	void *mapMemory()
-	{
-		return device.mapMemory(bufferMemory, 0, size);
-	}
-
-	void unmapMemory()
-	{
-		device.unmapMemory(bufferMemory);
+		return framebuffer;
 	}
 
 private:
 	const vk::Device device;
-	vk::DeviceSize size;
-	vk::Buffer buffer;              // Owning handle
-	vk::DeviceMemory bufferMemory;  // Owning handle
+	vk::Framebuffer framebuffer;  // Owning handle
+	std::unique_ptr<Image> multisampleImage;
 };
 
-#endif  // BENCHMARKS_BUFFER_HPP_
+}  // namespace vkw
+
+#endif  // BENCHMARKS_FRAMEBUFFER_HPP_

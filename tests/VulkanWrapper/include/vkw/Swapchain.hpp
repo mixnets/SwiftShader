@@ -18,6 +18,8 @@
 #include "VulkanHeaders.hpp"
 #include <vector>
 
+namespace vkw {
+
 class Window;
 
 class Swapchain
@@ -55,5 +57,7 @@ private:
 	std::vector<vk::Image> images;          // Weak pointers. Presentable images owned by swapchain object.
 	std::vector<vk::ImageView> imageViews;  // Owning handles
 };
+
+}  // namespace vkw
 
 #endif  // BENCHMARKS_SWAPCHAIN_HPP_
