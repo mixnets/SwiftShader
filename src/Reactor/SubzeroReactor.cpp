@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Reactor.hpp"
+
 #include "Debug.hpp"
 #include "EmulatedIntrinsics.hpp"
-#include "OptimalIntrinsics.hpp"
-#include "Print.hpp"
-#include "Reactor.hpp"
-#include "ReactorDebugInfo.hpp"
-
 #include "ExecutableMemory.hpp"
+#include "OptimalIntrinsics.hpp"
 #include "Optimizer.hpp"
+#include "Print.hpp"
+#include "ReactorDebugInfo.hpp"
 
 #include "src/IceCfg.h"
 #include "src/IceCfgNode.h"
@@ -914,6 +914,21 @@ Nucleus::Nucleus()
 
 Nucleus::~Nucleus()
 {
+	// Subzero is not thread safe, and ::routine, ::allocator, ::function,
+	// ::context, ::elfFile, and ::out are globals protected by ::codegenMutex.
+	// We must call finalize() for cases where the function hasn't been
+	// completed, but we can't call it unconditionally because if finalize() was
+	// already called and a new function has been started on another thread we
+	// must not delete the globals. Variable::unmaterializedVariables is thread-
+	// local and tells us whether finalize() has been called before.
+	if(Variable::unmaterializedVariables != nullptr)
+	{
+		finalize();
+	}
+}
+
+void Nucleus::finalize()
+{
 	delete Variable::unmaterializedVariables;
 	Variable::unmaterializedVariables = nullptr;
 
@@ -1055,7 +1070,10 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
 	finalizeFunction();
-	return rr::acquireRoutine({ ::function }, { name }, cfgEdit);
+	auto routine = rr::acquireRoutine({ ::function }, { name }, cfgEdit);
+	finalize();
+
+	return routine;
 }
 
 Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
@@ -4952,6 +4970,8 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 		                                  { name, "await", "destroy" },
 		                                  cfgEdit);
 
+		finalize();
+
 		return routine;
 	}
 	else
@@ -4969,6 +4989,9 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 		auto routineImpl = std::static_pointer_cast<ELFMemoryStreamer>(routine);
 		routineImpl->setEntry(Nucleus::CoroutineEntryAwait, reinterpret_cast<const void *>(&coroutineEntryAwaitStub));
 		routineImpl->setEntry(Nucleus::CoroutineEntryDestroy, reinterpret_cast<const void *>(&coroutineEntryDestroyStub));
+
+		finalize();
+
 		return routine;
 	}
 }

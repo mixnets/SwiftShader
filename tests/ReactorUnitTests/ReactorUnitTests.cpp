@@ -117,22 +117,20 @@ TEST(ReactorUnitTests, Trampoline)
 	SecondaryGeneratorFunc secondaryGenerator = (SecondaryGeneratorFunc)generateSecondary;
 
 	using PrimaryFunc = int(int, int, int);
-	RoutineT<PrimaryFunc> routine;
+
+	FunctionT<PrimaryFunc> primary;
 	{
-		FunctionT<PrimaryFunc> primary;
-		{
-			Int x = primary.Arg<0>();
-			Int y = primary.Arg<1>();
-			Int z = primary.Arg<2>();
+		Int x = primary.Arg<0>();
+		Int y = primary.Arg<1>();
+		Int z = primary.Arg<2>();
 
-			Pointer<Byte> secondary = Call(secondaryGenerator, z);
-			Int r = Call<SecondaryFunc>(secondary, x, y);
+		Pointer<Byte> secondary = Call(secondaryGenerator, z);
+		Int r = Call<SecondaryFunc>(secondary, x, y);
 
-			Return(r);
-		}
-
-		routine = primary((testName() + "_primary").c_str());
+		Return(r);
 	}
+
+	auto routine = primary((testName() + "_primary").c_str());
 
 	int result = routine(100, 20, -3);
 	EXPECT_EQ(result, 80);
@@ -200,6 +198,74 @@ TEST(ReactorUnitTests, Unreachable)
 
 	int result = routine(16);
 	EXPECT_EQ(result, 20);
+}
+
+// Variables declared outside of the "scope" of a `Function<>` is supported,
+// but before declaring the function object and after obtaining the routine,
+// variables can only be constructed/destructed.
+TEST(ReactorUnitTests, OutOfScopeVariables)
+{
+	// Int unused1;
+	// Int peekaboo;
+
+	{
+		// Int unused2;
+
+		FunctionT<int(int)> function;
+		{
+			Int a = function.Arg<0>();
+			Int z = 4;
+
+			// peekaboo = a << z;
+
+			Return(a * z);
+		}
+
+		{
+			Int unused3;
+		}
+		Int unused4;
+
+		auto routine = function(testName().c_str());
+
+		//	Int unused5;
+
+		int result = routine(16);
+		EXPECT_EQ(result, 64);
+
+		//	Int unused6;
+	}
+}
+
+// Stopping in the middle of a `Function<>` is supported and should not affect
+// subsequent complete ones.
+TEST(ReactorUnitTests, UnfinishedFunction)
+{
+	do
+	{
+		FunctionT<int(int)> function;
+		{
+			Int a = function.Arg<0>();
+			Int z = 4;
+
+			break;  // Terminate do-while early.
+
+			Return(a + z);
+		}
+	} while(true);
+
+	FunctionT<int(int)> function;
+	{
+		Int a = function.Arg<0>();
+		Int z = 4;
+
+		Return(a - z);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine(16);
+	EXPECT_EQ(result, 12);
 }
 
 TEST(ReactorUnitTests, VariableAddress)
