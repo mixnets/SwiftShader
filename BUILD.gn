@@ -62,7 +62,7 @@ config("swiftshader_config") {
     }
   } else {
     cflags = [
-      "-std=c++14",
+      "-std=c++17",
       "-fno-exceptions",
       "-fno-operator-names",
     ]

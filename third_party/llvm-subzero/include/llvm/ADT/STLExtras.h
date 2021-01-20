@@ -45,34 +45,6 @@ using IterOfRange = decltype(std::begin(std::declval<RangeT &>()));
 
 } // End detail namespace
 
-//===----------------------------------------------------------------------===//
-//     Extra additions to <functional>
-//===----------------------------------------------------------------------===//
-
-template<class Ty>
-struct identity : public std::unary_function<Ty, Ty> {
-  Ty &operator()(Ty &self) const {
-    return self;
-  }
-  const Ty &operator()(const Ty &self) const {
-    return self;
-  }
-};
-
-template<class Ty>
-struct less_ptr : public std::binary_function<Ty, Ty, bool> {
-  bool operator()(const Ty* left, const Ty* right) const {
-    return *left < *right;
-  }
-};
-
-template<class Ty>
-struct greater_ptr : public std::binary_function<Ty, Ty, bool> {
-  bool operator()(const Ty* left, const Ty* right) const {
-    return *right < *left;
-  }
-};
-
 /// An efficient, type-erasing, non-owning reference to a callable. This is
 /// intended for use as the type of a function parameter that is not used
 /// after the function in question returns.
