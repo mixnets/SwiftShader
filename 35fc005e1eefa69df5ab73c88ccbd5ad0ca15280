@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c745ae4_75147947",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-01-20T15:51:06Z",
+      "side": 1,
+      "message": "Extracted from Antonio\u0027s change: https://swiftshader-review.googlesource.com/c/SwiftShader/+/51329",
+      "revId": "35fc005e1eefa69df5ab73c88ccbd5ad0ca15280",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
