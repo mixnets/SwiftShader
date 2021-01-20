@@ -125,22 +125,20 @@ TEST(ReactorUnitTests, Trampoline)
 	SecondaryGeneratorFunc secondaryGenerator = (SecondaryGeneratorFunc)generateSecondary;
 
 	using PrimaryFunc = int(int, int, int);
-	RoutineT<PrimaryFunc> routine;
+
+	FunctionT<PrimaryFunc> primary;
 	{
-		FunctionT<PrimaryFunc> primary;
-		{
-			Int x = primary.Arg<0>();
-			Int y = primary.Arg<1>();
-			Int z = primary.Arg<2>();
+		Int x = primary.Arg<0>();
+		Int y = primary.Arg<1>();
+		Int z = primary.Arg<2>();
 
-			Pointer<Byte> secondary = Call(secondaryGenerator, z);
-			Int r = Call<SecondaryFunc>(secondary, x, y);
+		Pointer<Byte> secondary = Call(secondaryGenerator, z);
+		Int r = Call<SecondaryFunc>(secondary, x, y);
 
-			Return(r);
-		}
-
-		routine = primary((testName() + "_primary").c_str());
+		Return(r);
 	}
+
+	auto routine = primary((testName() + "_primary").c_str());
 
 	int result = routine(100, 20, -3);
 	EXPECT_EQ(result, 80);

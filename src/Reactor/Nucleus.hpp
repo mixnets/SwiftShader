@@ -334,6 +334,9 @@ public:
 	static Type *getContainedType(Type *vectorType);
 	static Type *getPointerType(Type *elementType);
 	static Type *getPrintfStorageType(Type *valueType);
+
+private:
+	void finalize();
 };
 
 }  // namespace rr
