@@ -1983,7 +1983,9 @@ bool Blitter::fastResolve(const vk::Image *src, vk::Image *dst, VkImageResolve r
 	uint8_t *source2 = source1 + slice;
 	uint8_t *source3 = source2 + slice;
 
+#if defined(__i386__) || defined(__x86_64__)
 	const bool SSE2 = CPUID::supportsSSE2();
+#endif
 
 	if(format == VK_FORMAT_R8G8B8A8_UNORM || format == VK_FORMAT_B8G8R8A8_UNORM || format == VK_FORMAT_A8B8G8R8_UNORM_PACK32)
 	{
