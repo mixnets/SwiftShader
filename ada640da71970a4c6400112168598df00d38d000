@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2ca1b8d_d0c689e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-01-21T15:17:45Z",
+      "side": 1,
+      "message": "Regressions are caused by https://swiftshader-review.googlesource.com/c/SwiftShader/+/48808 and are expected, due to what is strictly speaking a dEQP bug: b/170965788 b/171415086",
+      "revId": "ada640da71970a4c6400112168598df00d38d000",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
