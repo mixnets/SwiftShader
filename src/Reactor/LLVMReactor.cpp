@@ -517,6 +517,11 @@ Nucleus::Nucleus()
 
 Nucleus::~Nucleus()
 {
+	finalize();
+}
+
+void Nucleus::finalize()
+{
 	delete Variable::unmaterializedVariables;
 	Variable::unmaterializedVariables = nullptr;
 
@@ -611,6 +616,8 @@ std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config:
 #else
 	acquire(jit);
 #endif
+
+	finalize();
 
 	return routine;
 }
@@ -4317,8 +4324,7 @@ std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Confi
 
 	auto routine = jit->acquireRoutine(name, funcs, Nucleus::CoroutineEntryCount, cfg);
 
-	delete jit;
-	jit = nullptr;
+	finalize();
 
 	return routine;
 }
