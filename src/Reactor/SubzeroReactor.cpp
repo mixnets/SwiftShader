@@ -32,6 +32,7 @@
 
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/FileSystem.h"
+#include "llvm/Support/ManagedStatic.h"
 #include "llvm/Support/raw_os_ostream.h"
 
 #include "marl/event.h"
@@ -4989,3 +4990,8 @@ Nucleus::CoroutineHandle Nucleus::invokeCoroutineBegin(Routine &routine, std::fu
 }
 
 }  // namespace rr
+
+
+
+// Used to automatically invoke llvm_shutdown() when driver is unloaded
+// llvm::llvm_shutdown_obj llvmShutdownObj;
