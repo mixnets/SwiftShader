@@ -21,6 +21,8 @@ static const ManagedStaticBase *StaticList = nullptr;
 static std::recursive_mutex *ManagedStaticMutex = nullptr;
 LLVM_DEFINE_ONCE_FLAG(mutex_init_flag);
 
+#if 0
+
 static void initializeMutex() {
   ManagedStaticMutex = new std::recursive_mutex();
 }
@@ -32,6 +34,15 @@ static std::recursive_mutex* getManagedStaticMutex() {
   llvm::call_once(mutex_init_flag, initializeMutex);
   return ManagedStaticMutex;
 }
+
+#else
+
+static std::recursive_mutex *getManagedStaticMutex() {
+    static std::recursive_mutex m;
+    return &m;
+}
+
+#endif
 
 void ManagedStaticBase::RegisterManagedStatic(void *(*Creator)(),
                                               void (*Deleter)(void*)) const {
