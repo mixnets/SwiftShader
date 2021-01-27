@@ -99,6 +99,12 @@ size_t DescriptorSetLayout::ComputeRequiredAllocationSize(const VkDescriptorSetL
 	uint32_t immutableSamplerCount = 0;
 	for(uint32_t i = 0; i < pCreateInfo->bindingCount; i++)
 	{
+		// Early detection of UINT32_MAX to prevent overflow
+		if(pCreateInfo->pBindings[i].binding == UINT32_MAX)
+		{
+			return SIZE_MAX;
+		}
+
 		bindingsArraySize = std::max(bindingsArraySize, pCreateInfo->pBindings[i].binding + 1);
 
 		if(UsesImmutableSamplers(pCreateInfo->pBindings[i]))

@@ -49,6 +49,11 @@ static VkResult Create(const VkAllocationCallbacks *pAllocator, const CreateInfo
 	*outObject = VK_NULL_HANDLE;
 
 	size_t size = T::ComputeRequiredAllocationSize(pCreateInfo);
+	if(size == SIZE_MAX)
+	{
+		return VK_ERROR_OUT_OF_HOST_MEMORY;
+	}
+
 	void *memory = nullptr;
 	if(size)
 	{
