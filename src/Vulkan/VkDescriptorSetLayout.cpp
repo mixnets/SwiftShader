@@ -60,6 +60,17 @@ DescriptorSetLayout::DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo *
 	for(uint32_t i = 0; i < pCreateInfo->bindingCount; i++)
 	{
 		const auto &srcBinding = pCreateInfo->pBindings[i];
+
+		// The Vulkan spec mention that "all binding numbers between 0 and the maximum
+		// binding number in the VkDescriptorSetLayoutCreateInfo::pBindings array may consume
+		// memory in the descriptor set layout even if not all descriptor bindings are used,
+		// though it should not consume additional memory from the descriptor pool."
+		// This implies that binding numbers outside of that range should be ignored.
+		if(srcBinding.binding >= bindingsArraySize)
+		{
+			continue;
+		}
+
 		auto &dstBinding = bindings[srcBinding.binding];
 
 		dstBinding.descriptorType = srcBinding.descriptorType;
