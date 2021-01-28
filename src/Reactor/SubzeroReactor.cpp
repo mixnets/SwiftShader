@@ -829,22 +829,51 @@ public:
 
 	const void *addConstantData(const void *data, size_t size, size_t alignment = 1)
 	{
+		// Check if we already have a suitable constant.
+		for(const auto &c : constants)
+		{
+			void *constant = c->data;
+			size_t space = c->space;
+
+			void *alignedPtr = std::align(alignment, size, constant, space);
+
+			if(space < size)
+			{
+				continue;
+			}
+
+			if(memcmp(data, constant, size) == 0)
+			{
+				return alignedPtr;
+			}
+		}
+
 		// TODO(b/148086935): Replace with a buffer allocator.
 		size_t space = size + alignment;
-		auto buf = std::unique_ptr<uint8_t[]>(new uint8_t[space]);
-		void *ptr = buf.get();
+		void *ptr = new uint8_t[space];
 		void *alignedPtr = std::align(alignment, size, ptr, space);
-		ASSERT(alignedPtr);
 		memcpy(alignedPtr, data, size);
-		constantData.emplace_back(std::move(buf));
+		constants.push_back(std::make_unique<Constant>(ptr, space));
+
 		return alignedPtr;
 	}
 
 private:
+	struct Constant
+	{
+		Constant(void *data, size_t space)
+		    : data(data)
+		    , space(space)
+		{}
+
+		void *data;
+		size_t space;
+	};
+
 	std::array<const void *, Nucleus::CoroutineEntryCount> funcs = {};
 	std::vector<uint8_t, ExecutableAllocator<uint8_t>> buffer;
 	std::size_t position;
-	std::vector<std::unique_ptr<uint8_t[]>> constantData;
+	std::vector<std::unique_ptr<Constant>> constants;
 };
 
 #ifdef ENABLE_RR_PRINT
