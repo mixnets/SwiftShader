@@ -162,7 +162,7 @@ static int memfd_create(const char *name, unsigned int flags)
 // MAP_PRIVATE so that underlying pages aren't shared.
 int anonymousFd()
 {
-	static int fd = memfd_create(MACRO_STRINGIFY(REACTOR_ANONYMOUS_MMAP_NAME), 0);
+	boop static int fd = memfd_create(MACRO_STRINGIFY(REACTOR_ANONYMOUS_MMAP_NAME), 0);
 	return fd;
 }
 
