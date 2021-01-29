@@ -15,7 +15,7 @@
 import("//testing/test.gni")
 import("../../src/Reactor/reactor.gni")
 
-if (supports_llvm) {
+if (supports_llvm && !use_swiftshader_with_subzero) {
   test("swiftshader_reactor_llvm_unittests") {
     deps = [
       "//base",
@@ -30,13 +30,11 @@ if (supports_llvm) {
       "ReactorUnitTests.cpp",
     ]
 
-    include_dirs = [
-      "../../src/Reactor"
-    ]
+    include_dirs = [ "../../src/Reactor" ]
   }
 }
 
-if (supports_subzero) {
+if (supports_subzero && use_swiftshader_with_subzero) {
   test("swiftshader_reactor_subzero_unittests") {
     deps = [
       "//base",
@@ -51,8 +49,6 @@ if (supports_subzero) {
       "ReactorUnitTests.cpp",
     ]
 
-    include_dirs = [
-      "../../src/Reactor"
-    ]
+    include_dirs = [ "../../src/Reactor" ]
   }
 }
