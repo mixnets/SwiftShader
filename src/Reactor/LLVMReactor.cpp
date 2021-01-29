@@ -174,7 +174,7 @@ llvm::Value *lowerRCP(llvm::Value *x)
 	if(llvm::VectorType *vectorTy = llvm::dyn_cast<llvm::VectorType>(ty))
 	{
 		one = llvm::ConstantVector::getSplat(
-		    vectorTy->getNumElements(),
+		    vectorTy->getElementCount(),
 		    llvm::ConstantFP::get(vectorTy->getElementType(), 1));
 	}
 	else
@@ -193,7 +193,7 @@ llvm::Value *lowerVectorShl(llvm::Value *x, uint64_t scalarY)
 {
 	llvm::VectorType *ty = llvm::cast<llvm::VectorType>(x->getType());
 	llvm::Value *y = llvm::ConstantVector::getSplat(
-	    ty->getNumElements(),
+	    ty->getElementCount(),
 	    llvm::ConstantInt::get(ty->getElementType(), scalarY));
 	return jit->builder->CreateShl(x, y);
 }
@@ -202,7 +202,7 @@ llvm::Value *lowerVectorAShr(llvm::Value *x, uint64_t scalarY)
 {
 	llvm::VectorType *ty = llvm::cast<llvm::VectorType>(x->getType());
 	llvm::Value *y = llvm::ConstantVector::getSplat(
-	    ty->getNumElements(),
+	    ty->getElementCount(),
 	    llvm::ConstantInt::get(ty->getElementType(), scalarY));
 	return jit->builder->CreateAShr(x, y);
 }
@@ -211,7 +211,7 @@ llvm::Value *lowerVectorLShr(llvm::Value *x, uint64_t scalarY)
 {
 	llvm::VectorType *ty = llvm::cast<llvm::VectorType>(x->getType());
 	llvm::Value *y = llvm::ConstantVector::getSplat(
-	    ty->getNumElements(),
+	    ty->getElementCount(),
 	    llvm::ConstantInt::get(ty->getElementType(), scalarY));
 	return jit->builder->CreateLShr(x, y);
 }
