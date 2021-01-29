@@ -18,8 +18,10 @@ declare_args() {
   # Subzero produces smaller binaries, but doesn't support ARM64, MIPS64, and
   # PPC64.
   use_swiftshader_with_subzero =
-      current_cpu != "arm64" && current_cpu != "mips64el" && current_cpu != "ppc64"
-  supports_llvm = is_linux || is_chromeos || is_fuchsia || is_win || is_android || is_mac
+      current_cpu != "arm64" && current_cpu != "mips64el" &&
+      current_cpu != "ppc64"
+  supports_llvm =
+      is_linux || is_chromeos || is_fuchsia || is_win || is_android || is_mac
 }
 
 config("swiftshader_reactor_private_config") {
@@ -301,9 +303,9 @@ if (use_swiftshader_with_subzero) {
   }
   swiftshader_source_set("swiftshader_subzero_reactor") {
     deps = [
-      "../../third_party/marl:Marl",
       ":swiftshader_reactor_base",
       ":swiftshader_subzero",
+      "../../third_party/marl:Marl",
     ]
 
     sources = [
@@ -318,7 +320,7 @@ if (use_swiftshader_with_subzero) {
   }
 }
 
-if (supports_llvm) {
+if (supports_llvm && !use_swiftshader_with_subzero) {
   swiftshader_source_set("swiftshader_llvm_reactor") {
     llvm_dir = "../../third_party/llvm-10.0"
 
@@ -358,12 +360,8 @@ if (supports_llvm) {
 
 swiftshader_source_set("swiftshader_reactor") {
   if (use_swiftshader_with_subzero) {
-    deps = [
-      ":swiftshader_subzero_reactor",
-    ]
+    deps = [ ":swiftshader_subzero_reactor" ]
   } else {
-    deps = [
-      ":swiftshader_llvm_reactor",
-    ]
+    deps = [ ":swiftshader_llvm_reactor" ]
   }
 }
