@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de71c940_98514d7a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2021-01-29T14:22:26Z",
+      "side": 1,
+      "message": "Ah, nvm, I found that I can just set supports_llvm \u003d false in Dawn\u0027s .gn",
+      "revId": "368833c5ac10c91cf71f669cad7104f58e1b073c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
