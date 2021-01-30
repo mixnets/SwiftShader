@@ -44,6 +44,7 @@
 #include "VkStringify.hpp"
 
 #include "System/Debug.hpp"
+#include "vulkan/vulkan_core.h"
 
 #if defined(VK_USE_PLATFORM_METAL_EXT) || defined(VK_USE_PLATFORM_MACOS_MVK)
 #	include "WSI/MetalSurface.hpp"
@@ -3242,6 +3243,25 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 	                              VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	                              VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 	ASSERT(!(usage & ~(allRecognizedUsageBits)));
+
+	if(usage & VK_IMAGE_USAGE_SAMPLED_BIT)
+	{
+		if(tiling == VK_IMAGE_TILING_LINEAR)
+		{
+			// TODO(b/171299814): Compressed formats and cube maps are not supported for sampling using VK_IMAGE_TILING_LINEAR; otherwise, sampling
+			// in linear tiling is always supported as long as it can be sampled when using VK_IMAGE_TILING_OPTIMAL.
+			if(!(properties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) ||
+			   vk::Format(format).isCompressed() ||
+			   (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT))
+			{
+				return VK_ERROR_FORMAT_NOT_SUPPORTED;
+			}
+		}
+		else if(!(features & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT))
+		{
+			return VK_ERROR_FORMAT_NOT_SUPPORTED;
+		}
+	}
 
 	// "Images created with tiling equal to VK_IMAGE_TILING_LINEAR have further restrictions on their limits and capabilities
 	//  compared to images created with tiling equal to VK_IMAGE_TILING_OPTIMAL."
