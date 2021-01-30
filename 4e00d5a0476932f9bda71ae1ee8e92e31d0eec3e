@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fa6ed55_6c545ba8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83fb0366_3607cf2b",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 14
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "613f896f_bb7ffd8f",
@@ -37,6 +61,30 @@
       "writtenOn": "2020-12-02T14:18:40Z",
       "side": 1,
       "message": "Let\u0027s use dEQP-VK.* here to see whether there are any other tests that exercise this. If there are none, we should make a request at https://gitlab.khronos.org/Tracker/vk-gl-cts/issues, especially since AEMU/FEMU depends on this functionality.",
+      "range": {
+        "startLine": 24,
+        "startChar": 6,
+        "endLine": 24,
+        "endChar": 31
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5409599b_3d59ca7a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Done. Re: tests in Vulkan CTS, currently we have tests dEQP-VK.api.info.image_format_properties.2d.linear.* testing linear image format properties, but only TRANSFER_DST and TRANSFER_SRC usages are tested. \n\nSince Vulkan specs don\u0027t require drivers to have support for sampling images with linear tiling (specs only say TRANSFER_DST and TRANSFER_SRC should be supported), I am not sure if this device-specific behavior (though still very common among devices) should be tested in CTS which is designed to be applied to all drivers... What do you think?",
+      "parentUuid": "613f896f_bb7ffd8f",
       "range": {
         "startLine": 24,
         "startChar": 6,
@@ -64,6 +112,23 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0498dcf3_ba3a09b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Just updated the change. Sorry for the late response...",
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d077752a_42871e98",
@@ -77,6 +142,30 @@
       "writtenOn": "2020-12-02T14:18:40Z",
       "side": 1,
       "message": "We have Format::isCompressed() for this: https://cs.opensource.google/swiftshader/SwiftShader/+/master:src/Vulkan/VkFormat.cpp;drc\u003d9e46bb61c5d7fd6f839e53a51572fe2a64e32489;l\u003d468",
+      "range": {
+        "startLine": 1345,
+        "startChar": 1,
+        "endLine": 1345,
+        "endChar": 15
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80ea46df_016aca56",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1345,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d077752a_42871e98",
       "range": {
         "startLine": 1345,
         "startChar": 1,
@@ -110,6 +199,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c42b9469_e7cabba2",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1446,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8205ac11_dde412ea",
+      "range": {
+        "startLine": 1446,
+        "startChar": 5,
+        "endLine": 1446,
+        "endChar": 23
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f42de4a7_a9c5170a",
@@ -133,6 +246,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3f0f868_3d787641",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Sounds good. Will do this in separated change.",
+      "parentUuid": "f42de4a7_a9c5170a",
+      "range": {
+        "startLine": 75,
+        "startChar": 6,
+        "endLine": 75,
+        "endChar": 20
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e0d9abb_b5d4d7ec",
@@ -146,6 +283,30 @@
       "writtenOn": "2020-12-02T14:18:40Z",
       "side": 1,
       "message": "Thanks for moving this into a helper function! Could you split this into a pure refactoring change?",
+      "range": {
+        "startLine": 3076,
+        "startChar": 31,
+        "endLine": 3076,
+        "endChar": 45
+      },
+      "revId": "4e00d5a0476932f9bda71ae1ee8e92e31d0eec3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "019d3b60_00e77f99",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3076,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "Sounds good. Let\u0027s do this in a separated change.",
+      "parentUuid": "4e0d9abb_b5d4d7ec",
       "range": {
         "startLine": 3076,
         "startChar": 31,

@@ -105,6 +105,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cceb6096_d1ebed9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-01-30T10:04:30Z",
+      "side": 1,
+      "message": "re: lfy@\n\n\u003e Not sure what you mean by \"actual use cases for AEMU/FEMU are limited (i.e. no compressed images or cube maps)\"? \n\nI think what Nicolas meant that AEMU is not using images with linear tilings on compressed or cube-map formats, and this might be the case for games and CTS (games shouldn\u0027t use linear tilings in those cases either)",
+      "parentUuid": "25f6b634_750bfe49",
+      "revId": "d61edecf9e65d64bf72d511f5cef6c947a11094a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e1ff5939_48bec15d",
