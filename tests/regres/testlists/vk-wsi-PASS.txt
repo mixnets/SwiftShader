@@ -9,7 +9,6 @@ dEQP-VK.wsi.xlib.surface.query_capabilities
 dEQP-VK.wsi.xlib.surface.query_devgroup_present_capabilities
 dEQP-VK.wsi.xlib.surface.query_devgroup_present_modes
 dEQP-VK.wsi.xlib.surface.query_formats
-dEQP-VK.wsi.xlib.surface.query_present_modes
 dEQP-VK.wsi.xlib.surface.query_support
 dEQP-VK.wsi.xlib.surface.resize
 dEQP-VK.wsi.xlib.swapchain.create.clipped
