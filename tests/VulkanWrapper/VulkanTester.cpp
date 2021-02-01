@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VulkanBenchmark.hpp"
+#include "VulkanTester.hpp"
 
-VulkanBenchmark::~VulkanBenchmark()
+VulkanTester::~VulkanTester()
 {
 	device.waitIdle();
 	device.destroy(nullptr);
 	instance.destroy(nullptr);
 }
 
-void VulkanBenchmark::initialize()
+void VulkanTester::initialize()
 {
 	// TODO(b/158231104): Other platforms
 #if defined(_WIN32)
@@ -44,14 +44,14 @@ void VulkanBenchmark::initialize()
 	physicalDevice = physicalDevices[0];
 
 	const float defaultQueuePriority = 0.0f;
-	vk::DeviceQueueCreateInfo queueCreatInfo;
-	queueCreatInfo.queueFamilyIndex = queueFamilyIndex;
-	queueCreatInfo.queueCount = 1;
-	queueCreatInfo.pQueuePriorities = &defaultQueuePriority;
+	vk::DeviceQueueCreateInfo queueCreateInfo;
+	queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+	queueCreateInfo.queueCount = 1;
+	queueCreateInfo.pQueuePriorities = &defaultQueuePriority;
 
 	vk::DeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.queueCreateInfoCount = 1;
-	deviceCreateInfo.pQueueCreateInfos = &queueCreatInfo;
+	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
 
 	device = physicalDevice.createDevice(deviceCreateInfo, nullptr);
 

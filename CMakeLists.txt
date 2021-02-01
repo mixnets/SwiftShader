@@ -976,6 +976,13 @@ if(HAVE_PVR_SUBMODULE AND SWIFTSHADER_BUILD_PVR)
     endif()
 endif()
 
+if(SWIFTSHADER_BUILD_TESTS OR SWIFTSHADER_BUILD_BENCHMARKS)
+    if (NOT TARGET glslang)
+        add_subdirectory(${THIRD_PARTY_DIR}/glslang)
+    endif()
+    add_subdirectory(${TESTS_DIR}/VulkanWrapper) # Add VulkanWrapper target
+endif()
+
 if(SWIFTSHADER_BUILD_TESTS)
     add_subdirectory(${TESTS_DIR}/ReactorUnitTests) # Add ReactorUnitTests target
     add_subdirectory(${TESTS_DIR}/GLESUnitTests) # Add gles-unittests target
@@ -984,11 +991,6 @@ if(SWIFTSHADER_BUILD_TESTS)
 endif()
 
 if(SWIFTSHADER_BUILD_BENCHMARKS)
-    if (NOT TARGET glslang)
-        add_subdirectory(${THIRD_PARTY_DIR}/glslang)
-    endif()
-    add_subdirectory(${TESTS_DIR}/VulkanWrapper) # Add VulkanWrapper target
-
     if (NOT TARGET benchmark::benchmark)
         set(BENCHMARK_ENABLE_TESTING FALSE CACHE BOOL FALSE FORCE)
         add_subdirectory(${THIRD_PARTY_DIR}/benchmark)
