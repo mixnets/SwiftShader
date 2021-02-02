@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c209dea1_bc2d5843",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-02-02T16:09:09Z",
+      "side": 1,
+      "message": "nit: I don\u0027t think of these classes as simply wrapping the Vulkan API any more (that\u0027s what vulkan.hpp does). Perhaps \u0027VulkanBuilder\u0027 would work better, as in, a toolbox to build Vulkan tests/benchmarks/samples?\n\nJust a thought, I can live with it as-is.",
+      "range": {
+        "startLine": 7,
+        "startChar": 28,
+        "endLine": 7,
+        "endChar": 35
+      },
+      "revId": "4fd62b9f1f3c3bacd03b2fdfcbb3cdbeacc5f741",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
