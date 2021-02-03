@@ -105,7 +105,8 @@ class IRContext {
         id_to_name_(nullptr),
         max_id_bound_(kDefaultMaxIdBound),
         preserve_bindings_(false),
-        preserve_spec_constants_(false) {
+        preserve_spec_constants_(false),
+        force_inline_(false) {
     SetContextMessageConsumer(syntax_context_, consumer_);
     module_->SetContext(this);
   }
@@ -123,7 +124,8 @@ class IRContext {
         id_to_name_(nullptr),
         max_id_bound_(kDefaultMaxIdBound),
         preserve_bindings_(false),
-        preserve_spec_constants_(false) {
+        preserve_spec_constants_(false),
+        force_inline_(false) {
     SetContextMessageConsumer(syntax_context_, consumer_);
     module_->SetContext(this);
     InitializeCombinators();
@@ -558,6 +560,9 @@ class IRContext {
     preserve_spec_constants_ = should_preserve_spec_constants;
   }
 
+  bool force_inline() const { return force_inline_; }
+  void set_force_inline(bool force_inline) { force_inline_ = force_inline; }
+
   // Return id of input variable only decorated with |builtin|, if in module.
   // Create variable and return its id otherwise. If builtin not currently
   // supported, return 0.
@@ -844,6 +849,10 @@ class IRContext {
   // Whether all specialization constants within |module_|
   // should be preserved.
   bool preserve_spec_constants_;
+
+  // Whether to try inlining all functions, even ones using the DontInline
+  // function control bit.
+  bool force_inline_;
 };
 
 inline IRContext::Analysis operator|(IRContext::Analysis lhs,
