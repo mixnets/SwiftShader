@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "source/spirv_optimizer_options.h"
+
 #include <cassert>
 #include <cstring>
-
-#include "source/spirv_optimizer_options.h"
 
 SPIRV_TOOLS_EXPORT spv_optimizer_options spvOptimizerOptionsCreate(void) {
   return new spv_optimizer_options_t();
@@ -48,4 +48,9 @@ SPIRV_TOOLS_EXPORT void spvOptimizerOptionsSetPreserveBindings(
 SPIRV_TOOLS_EXPORT void spvOptimizerOptionsSetPreserveSpecConstants(
     spv_optimizer_options options, bool val) {
   options->preserve_spec_constants_ = val;
+}
+
+SPIRV_TOOLS_EXPORT void spvOptimizerOptionsSetForceInline(
+    spv_optimizer_options options, bool val) {
+  options->force_inline_ = val;
 }
