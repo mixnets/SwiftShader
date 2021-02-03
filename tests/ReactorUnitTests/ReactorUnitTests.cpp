@@ -33,6 +33,91 @@ static std::string testName()
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
 
+TEST(ReactorUnitTests, Foo)
+{
+	FunctionT<int(void)> function;
+	{
+		Int a = 1;
+
+		Pointer<Int> p = &a;
+
+		// Forcibly materialize all variables so that Ice::Variable instances are created for each
+		// local; otherwise, Reactor r-value optimizations kick in, and the locals are elided.
+		Variable::materializeAll();
+
+		Pointer<Pointer<Int>> pp = &p;
+
+		// Forcibly materialize all variables so that Ice::Variable instances are created for each
+		// local; otherwise, Reactor r-value optimizations kick in, and the locals are elided.
+		Variable::materializeAll();
+
+		Pointer<Int> q = *pp;
+		*q = 3;
+
+		Return(a);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
+TEST(ReactorUnitTests, ReactorArray)
+{
+	FunctionT<int(void)> function;
+	{ /*
+		Array<Int, 2> a;
+
+		a[0] = 1;
+		a[1] = 2;
+
+		Int x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);*/
+
+		Int x;
+
+		x = 3;
+
+		Int y = Int((Float)x);
+
+		Return(y + x);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
+TEST(ReactorUnitTests, CArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Int a[2];
+
+		a[0] = 1;
+		a[1] = 2;
+
+		auto x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
 int reference(int *p, int y)
 {
 	int x = p[-1];
