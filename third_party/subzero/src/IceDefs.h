@@ -124,7 +124,7 @@ static std::unique_ptr<T> makeUnique(Args &&... TheArgs) {
 
 #define ENABLE_MAKE_UNIQUE friend struct ::Ice::Internal::MakeUniqueEnabler
 
-using InstList = llvm::ilist<Inst>;
+using InstList = llvm::ilist<Inst, llvm::ilist_sentinel_tracking<true>>;
 // Ideally PhiList would be llvm::ilist<InstPhi>, and similar for AssignList,
 // but this runs into issues with SFINAE.
 using PhiList = InstList;
