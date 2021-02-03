@@ -33,6 +33,52 @@ static std::string testName()
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
 
+TEST(ReactorUnitTests, ReactorArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Array<Int, 2> a;
+
+		a[0] = 1;
+		a[1] = 2;
+
+		Int x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
+TEST(ReactorUnitTests, CArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Int a[2];
+
+		a[0] = 1;
+		a[1] = 2;
+
+		auto x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
 int reference(int *p, int y)
 {
 	int x = p[-1];

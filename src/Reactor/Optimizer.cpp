@@ -28,6 +28,8 @@ public:
 
 private:
 	void analyzeUses(Ice::Cfg *function);
+
+	void sroa();
 	void eliminateDeadCode();
 	void eliminateUnitializedLoads();
 	void eliminateLoadsFollowingSingleStore();
@@ -89,6 +91,8 @@ private:
 	bool hasLoadStoreInsts(Ice::CfgNode *node) const;
 
 	std::vector<Ice::Operand *> operandsWithUses;
+
+	bool isCool(Ice::Operand *allocaAddress);
 };
 
 void Optimizer::run(Ice::Cfg *function)
@@ -97,6 +101,8 @@ void Optimizer::run(Ice::Cfg *function)
 	this->context = function->getContext();
 
 	analyzeUses(function);
+
+	sroa();
 
 	eliminateDeadCode();
 	eliminateUnitializedLoads();
@@ -110,6 +116,156 @@ void Optimizer::run(Ice::Cfg *function)
 		setUses(operand, nullptr);
 	}
 	operandsWithUses.clear();
+}
+
+bool Optimizer::isCool(Ice::Operand *allocaAddress)
+{
+
+	auto &uses = *getUses(allocaAddress);
+
+	//for(size_t i = 0; i < uses.size(); i++)
+	for(auto *use : uses)
+	{
+		//auto *use = uses[i];
+		///auto kind = use->getKind();
+
+		if(isLoad(*use) || isStore(*use))
+		{
+			continue;
+		}
+
+		auto *arithmetic = llvm::dyn_cast<Ice::InstArithmetic>(use);
+
+		if(arithmetic && arithmetic->getOp() == Ice::InstArithmetic::Add)
+		{
+			auto *rhs = arithmetic->getSrc(1);
+
+			if(llvm::isa<Ice::Constant>(rhs))
+			{
+				continue;
+			}
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
+Ice::Type pointerType()
+{
+	if(sizeof(void *) == 8)
+	{
+		return Ice::IceType_i64;
+	}
+	else
+	{
+		return Ice::IceType_i32;
+	}
+}
+
+void Optimizer::sroa()
+{
+	std::vector<Ice::InstAlloca *> toAdd;
+
+	Ice::CfgNode *entryBlock = function->getEntryNode();
+	Ice::InstList &instList = entryBlock->getInsts();
+
+	for(Ice::Inst &inst : instList)
+	{
+		if(inst.isDeleted())
+		{
+			continue;
+		}
+
+		auto *alloca = llvm::dyn_cast<Ice::InstAlloca>(&inst);
+
+		if(!alloca)
+		{
+			break;  // Allocas are all at the top
+		}
+
+		uint32_t sizeInBytes = llvm::cast<Ice::ConstantInteger32>(alloca->getSizeInBytes())->getValue();
+		uint32_t alignInBytes = alloca->getAlignInBytes();
+
+		//
+		if(sizeInBytes <= alignInBytes)
+		{
+			continue;
+		}
+
+		assert(sizeInBytes % alignInBytes == 0);
+		uint32_t elementCount = sizeInBytes / alignInBytes;
+
+		Ice::Operand *address = alloca->getDest();
+
+		if(isCool(address))
+		{
+			alloca->setDeleted();
+
+			auto *bytes = Ice::ConstantInteger32::create(context, Ice::IceType_i32, alignInBytes);
+
+			std::vector<Ice::Variable *> newAddress(elementCount);
+
+			for(uint32_t i = 0; i < elementCount; i++)
+			{
+				newAddress[i] = function->makeVariable(pointerType());
+				auto *alloca = Ice::InstAlloca::create(function, newAddress[i], bytes, alignInBytes);
+
+				toAdd.push_back(alloca);
+			}
+
+			//auto &uses = *getUses(address);
+			Uses uses = *getUses(address);
+
+			//for(size_t i = 0; i < uses.size(); i++)
+			for(auto *use : uses)
+			{
+				assert(!use->isDeleted());
+
+				//auto *use = uses[i];
+				///auto kind = use->getKind();
+
+				if(isLoad(*use))
+				{
+					use->replaceSource(0, newAddress[0]);
+					getUses(newAddress[0])->insert(newAddress[0], use);
+				}
+				else if(isStore(*use))
+				{
+					use->replaceSource(1, newAddress[0]);
+					getUses(newAddress[0])->insert(newAddress[0], use);
+				}
+				else
+				{
+					auto *arithmetic = llvm::cast<Ice::InstArithmetic>(use);
+
+					if(arithmetic->getOp() == Ice::InstArithmetic::Add)
+					{
+						auto *rhs = arithmetic->getSrc(1);
+						int32_t offset = llvm::cast<Ice::ConstantInteger32>(rhs)->getValue();
+
+						assert(offset % alignInBytes == 0);
+						int32_t index = offset / alignInBytes;
+
+						//arithmetic->setDeleted();
+
+						replace(arithmetic, newAddress[index]);
+					}
+					else
+						assert(false);
+				}
+			}
+		}
+	}
+
+	//
+	for(size_t i = toAdd.size(); i-- != 0;)
+	{
+		instList.push_front(toAdd[i]);
+	}
+
+	//function->dump();
 }
 
 void Optimizer::eliminateDeadCode()
@@ -853,9 +1009,12 @@ namespace rr {
 
 void optimize(Ice::Cfg *function)
 {
-	Optimizer optimizer;
+	//function->dump();
 
+	Optimizer optimizer;
 	optimizer.run(function);
+
+	//function->dump();
 }
 
 }  // namespace rr
