@@ -37,7 +37,8 @@ namespace Ice {
 /// Base instruction class for ICE. Inst has two subclasses: InstHighLevel and
 /// InstTarget. High-level ICE instructions inherit from InstHighLevel, and
 /// low-level (target-specific) ICE instructions inherit from InstTarget.
-class Inst : public llvm::ilist_node<Inst> {
+class Inst
+    : public llvm::ilist_node<Inst, llvm::ilist_sentinel_tracking<true>> {
   Inst() = delete;
   Inst(const Inst &) = delete;
   Inst &operator=(const Inst &) = delete;
