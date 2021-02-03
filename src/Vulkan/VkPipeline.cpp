@@ -39,7 +39,7 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	const VkSpecializationInfo *specializationInfo = key.getSpecializationInfo();
 	bool optimize = key.getOptimization();
 
-	spvtools::Optimizer opt{ vk::SPIRV_VERSION };
+	spvtools::Optimizer opt(vk::SPIRV_VERSION);
 
 	opt.SetMessageConsumer([](spv_message_level_t level, const char *source, const spv_position_t &position, const char *message) {
 		switch(level)
@@ -79,6 +79,7 @@ sw::SpirvBinary optimizeSpirv(const vk::PipelineCache::SpirvBinaryKey &key)
 	}
 
 	spvtools::OptimizerOptions optimizerOptions = {};
+	optimizerOptions.set_force_inline(true);  // TODO(b/141246700): Support non-inlined function calls.
 #if defined(NDEBUG)
 	optimizerOptions.set_run_validator(false);
 #else
