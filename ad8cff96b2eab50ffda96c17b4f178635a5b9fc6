@@ -1,0 +1,274 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dea58244_7670910a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Drive-by review. Not an in-depth review, just some questions and suggested adjustments to help guide your implementation.",
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5d24dec_d67a5ee7",
+        "filename": "src/Vulkan/VkPromotedExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: Please add empty line between these lines here",
+      "range": {
+        "startLine": 228,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 1
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2dffd606_4123fa2e",
+        "filename": "src/Vulkan/VkSemaphore.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Move to Device (see waitForFences, for example)",
+      "range": {
+        "startLine": 464,
+        "startChar": 0,
+        "endLine": 524,
+        "endChar": 1
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96d78902_6b5a15fe",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: Payload -\u003e Counter?",
+      "range": {
+        "startLine": 66,
+        "startChar": 13,
+        "endLine": 66,
+        "endChar": 20
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52c749a0_ba4fe651",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: timelineWait -\u003e wait?",
+      "range": {
+        "startLine": 68,
+        "startChar": 6,
+        "endLine": 68,
+        "endChar": 18
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "feb01477_fa438cc2",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: timelineWait -\u003e wait?",
+      "range": {
+        "startLine": 71,
+        "startChar": 10,
+        "endLine": 71,
+        "endChar": 22
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "854e7f21_1fe1daf7",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: timelineSignal -\u003e signal?",
+      "range": {
+        "startLine": 74,
+        "startChar": 6,
+        "endLine": 74,
+        "endChar": 20
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8a4e273_3e8a796f",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Question: Does it make sense to add all this timeline semaphore specific stuff to the base semaphore class? Is there a lot of shared code between the 2 types of semaphores? If so, maybe they could share a base class OR the semaphore class could be a base class for timeline semaphores (whichever makes more sense to you)?",
+      "range": {
+        "startLine": 175,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 39
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "334b44e1_6442abcd",
+        "filename": "src/Vulkan/VkSemaphore.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Should be a Device member function",
+      "range": {
+        "startLine": 185,
+        "startChar": 9,
+        "endLine": 185,
+        "endChar": 26
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a66e43b9_a5a8642e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1460,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: It\u0027s easier to read if you keep the same nomenclature as the UI, so getCounterValue() would be nice here.",
+      "range": {
+        "startLine": 1460,
+        "startChar": 35,
+        "endLine": 1460,
+        "endChar": 42
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c6e139d_8ef70335",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1468,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "Nit: can you use \"signal\" instead of \"timelineSignal\"?",
+      "range": {
+        "startLine": 1468,
+        "startChar": 35,
+        "endLine": 1468,
+        "endChar": 49
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5796fa49_84bf1c9c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1476,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-02-04T22:24:36Z",
+      "side": 1,
+      "message": "These are typically Device functions, so it could look like:\nvk::Cast(device)-\u003ewaitForSemaphores(pWaitInfo, timeout);",
+      "range": {
+        "startLine": 1476,
+        "startChar": 8,
+        "endLine": 1476,
+        "endChar": 50
+      },
+      "revId": "ad8cff96b2eab50ffda96c17b4f178635a5b9fc6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
