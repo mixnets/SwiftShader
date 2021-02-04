@@ -28,6 +28,8 @@ public:
 
 private:
 	void analyzeUses(Ice::Cfg *function);
+
+	void canonicalizeAlloca();
 	void eliminateDeadCode();
 	void eliminateUnitializedLoads();
 	void eliminateLoadsFollowingSingleStore();
@@ -95,6 +97,8 @@ void Optimizer::run(Ice::Cfg *function)
 
 	analyzeUses(function);
 
+	canonicalizeAlloca();
+
 	eliminateDeadCode();
 	eliminateUnitializedLoads();
 	eliminateLoadsFollowingSingleStore();
@@ -107,6 +111,70 @@ void Optimizer::run(Ice::Cfg *function)
 		setUses(operand, nullptr);
 	}
 	operandsWithUses.clear();
+}
+
+void Optimizer::canonicalizeAlloca()
+{
+	Ice::CfgNode *entryBlock = function->getEntryNode();
+	Ice::InstList &instList = entryBlock->getInsts();
+
+	int xxx = 0;
+
+	for(Ice::Inst &inst : instList)
+	{
+		if(inst.isDeleted())
+		{
+			continue;
+		}
+
+		auto *alloca = llvm::dyn_cast<Ice::InstAlloca>(&inst);
+
+		if(!alloca)
+		{
+			break;  // Allocas are all at the top
+		}
+
+		Ice::Operand *address = alloca->getDest();
+		Uses uses = *getUses(address);  // Hard copy
+
+		for(auto *use : uses)
+		{
+			if(isStore(*use))
+			{
+				//
+				if(use->getData() == address /* && xxx <= 0*/)
+				{
+					//xxx++;
+					Ice::Operand *dest = use->getStoreAddress();
+					Ice::Variable *destVar = llvm::dyn_cast<Ice::Variable>(dest);
+					Ice::Inst *def = destVar ? getDefinition(destVar) : nullptr;
+
+					if(def && def->getKind() == Ice::Inst::Alloca)
+					{
+
+						Uses destUses = *getUses(dest);  // Hard copy
+
+						if(destUses.stores.size() == 1)
+						{
+							if(destUses.loads.size() == destUses.size() - 1)
+							{
+								for(auto *use : destUses)
+								{
+									if(isLoad(*use))
+									{
+										replace(use, address);
+									}
+								}
+
+								assert(getUses(dest)->size() == 1);
+								deleteInstruction(use);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void Optimizer::eliminateDeadCode()

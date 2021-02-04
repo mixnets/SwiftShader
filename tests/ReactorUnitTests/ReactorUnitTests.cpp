@@ -33,6 +33,28 @@ static std::string testName()
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
 
+TEST(ReactorUnitTests, ArrayOfPointersToLocals)
+{
+	FunctionT<int(int)> function;
+	{
+		Int i = function.Arg<0>();
+
+		Int a = 123;
+		Int b = 321;
+
+		Array<Pointer<Int>, 2> p;
+		p[0] = &a;
+		p[1] = &b;
+
+		Return(Int(*Pointer<Int>(p[i])));  // TODO(): Support *p[i]
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine(1);
+	EXPECT_EQ(result, 321);
+}
+
 int reference(int *p, int y)
 {
 	int x = p[-1];
