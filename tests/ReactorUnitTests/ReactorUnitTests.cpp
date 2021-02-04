@@ -284,6 +284,51 @@ TEST(ReactorUnitTests, VariableAddress)
 	EXPECT_EQ(result, 20);
 }
 
+TEST(ReactorUnitTests, PointerToPointer)
+{
+	FunctionT<int()> function;
+	{
+		Int a = 444;
+		Int b = 555;
+		Int c = 666;
+
+		Pointer<Int> p = &a;
+		Pointer<Pointer<Int>> pp = &p;
+		p = &b;
+
+		Return(Int(*Pointer<Int>(*pp)));  // TODO(b/179694472): Support **pp
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 555);
+}
+
+TEST(ReactorUnitTests, ArrayOfPointersToLocals)
+{
+	FunctionT<int(int)> function;
+	{
+		Int i = function.Arg<0>();
+
+		Int a = 111;
+		Int b = 222;
+		Int c = 333;
+
+		Array<Pointer<Int>, 3> p;
+		p[0] = &a;
+		p[1] = &b;
+		p[2] = &c;
+
+		Return(Int(*Pointer<Int>(p[i])));  // TODO(b/179694472): Support *p[i]
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine(1);
+	EXPECT_EQ(result, 222);
+}
+
 TEST(ReactorUnitTests, SubVectorLoadStore)
 {
 	FunctionT<int(void *, void *)> function;
