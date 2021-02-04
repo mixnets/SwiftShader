@@ -28,6 +28,8 @@ public:
 
 private:
 	void analyzeUses(Ice::Cfg *function);
+
+	void canonicalizeAlloca();
 	void eliminateDeadCode();
 	void eliminateUnitializedLoads();
 	void eliminateLoadsFollowingSingleStore();
@@ -98,6 +100,8 @@ void Optimizer::run(Ice::Cfg *function)
 
 	analyzeUses(function);
 
+	canonicalizeAlloca();
+
 	eliminateDeadCode();
 	eliminateUnitializedLoads();
 	eliminateLoadsFollowingSingleStore();
@@ -110,6 +114,61 @@ void Optimizer::run(Ice::Cfg *function)
 		setUses(operand, nullptr);
 	}
 	operandsWithUses.clear();
+}
+
+void Optimizer::canonicalizeAlloca()
+{
+	Ice::CfgNode *entryBlock = function->getEntryNode();
+	Ice::InstList &instList = entryBlock->getInsts();
+
+	for(Ice::Inst &inst : instList)
+	{
+		if(inst.isDeleted())
+		{
+			continue;
+		}
+
+		auto *alloca = llvm::dyn_cast<Ice::InstAlloca>(&inst);
+
+		if(!alloca)
+		{
+			break;  // Allocas are all at the top
+		}
+
+		Ice::Operand *address = alloca->getDest();
+		Uses uses = *getUses(address);  // Hard copy
+
+		for(auto *use : uses)
+		{
+			if(isStore(*use))
+			{
+				//
+				if(storeData(use) == address)
+				{
+					Ice::Operand *dest = use->getSrc(1);
+
+					auto &destUses = *getUses(dest);
+
+					if(destUses.areOnlyLoadStore())
+					{
+						Uses hardUses = destUses;
+
+						for(auto *use : hardUses)
+						{
+							if(isLoad(*use))
+							{
+								replace(use, address);
+							}
+							else  // store
+							{
+								deleteInstruction(use);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void Optimizer::eliminateDeadCode()
