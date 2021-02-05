@@ -113,6 +113,11 @@ public:
     assert(!isDeleted());
     Srcs[Index] = Replacement;
   }
+  // Instructions which load data take their address in Src[0], while
+  // store instructions use Src[1] for the address and Src[0] for the data.
+  Operand *getLoadAddress() const { return getSrc(0); }
+  Operand *getStoreAddress() const { return getSrc(1); }
+  Operand *getData() const { return getSrc(0); }
 
   bool isLastUse(const Operand *Src) const;
   void spliceLivenessInfo(Inst *OrigInst, Inst *SpliceAssn);
@@ -655,7 +660,6 @@ public:
     (void)Align;
     return new (Func->allocate<InstLoad>()) InstLoad(Func, Dest, SourceAddr);
   }
-  Operand *getLoadAddress() const { return getSrc(0); }
   bool isMemoryWrite() const override { return false; }
   void dump(const Cfg *Func) const override;
   static bool classof(const Inst *Instr) { return Instr->getKind() == Load; }
@@ -761,8 +765,6 @@ public:
     (void)Align;
     return new (Func->allocate<InstStore>()) InstStore(Func, Data, Addr);
   }
-  Operand *getStoreAddress() const { return getSrc(1); }
-  Operand *getData() const { return getSrc(0); }
   Variable *getRmwBeacon() const;
   void setRmwBeacon(Variable *Beacon);
   bool isMemoryWrite() const override { return true; }
