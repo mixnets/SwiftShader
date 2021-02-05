@@ -841,11 +841,15 @@ template <typename TraitsType> void TargetX86Base<TraitsType>::doLoadOpt() {
       // Determine whether the current instruction is a Load instruction or
       // equivalent.
       if (auto *Load = llvm::dyn_cast<InstLoad>(CurInst)) {
-        // An InstLoad always qualifies.
-        LoadDest = Load->getDest();
-        constexpr bool DoLegalize = false;
-        LoadSrc = formMemoryOperand(Load->getLoadAddress(), LoadDest->getType(),
-                                    DoLegalize);
+        // An InstLoad qualifies unless it uses a 64-bit absolute address,
+        // which requires legalization to insert a copy to register.
+        // TODO(b/148272103): Fold these after legalization.
+        if (!Traits::Is64Bit || !llvm::isa<Constant>(Load->getLoadAddress())) {
+          LoadDest = Load->getDest();
+          constexpr bool DoLegalize = false;
+          LoadSrc = formMemoryOperand(Load->getLoadAddress(),
+                                      LoadDest->getType(), DoLegalize);
+        }
       } else if (auto *Intrin = llvm::dyn_cast<InstIntrinsic>(CurInst)) {
         // An AtomicLoad intrinsic qualifies as long as it has a valid memory
         // ordering, and can be implemented in a single instruction (i.e., not
@@ -8168,11 +8172,26 @@ TargetX86Base<TraitsType>::formMemoryOperand(Operand *Opnd, Type Ty,
       if (!llvm::isa<ConstantRelocatable>(Offset)) {
         BoolFlagSaver B(RandomizationPoolingPaused, true);
 
-        Offset = llvm::cast<Constant>(legalize(Offset));
-      }
+        // Memory operands cannot have 64-bit immediates, so they must be
+        // legalized into a register only.
+        LegalMask Legal = llvm::isa<ConstantInteger64>(Offset)
+                              ? Legal_Reg
+                              : Legal_Reg | Legal_Imm;
 
-      assert(llvm::isa<ConstantInteger32>(Offset) ||
-             llvm::isa<ConstantRelocatable>(Offset));
+        Operand *ImmOrReg = legalize(Offset, Legal);
+
+        if (llvm::isa<Constant>(ImmOrReg)) {
+          assert(llvm::isa<ConstantInteger32>(ImmOrReg) ||
+                 llvm::isa<ConstantRelocatable>(ImmOrReg));
+
+          Offset = llvm::cast<Constant>(ImmOrReg);
+        } else {
+          // 64-bit absolute addresses are legalized by storing the value into a
+          // GPR, which then has to be used as the base register.
+          Base = llvm::cast<Variable>(ImmOrReg);
+          Offset = nullptr;
+        }
+      }
     }
     // Not completely sure whether it's OK to leave IsRebased unset when
     // creating the mem operand.  If DoLegalize is true, it will definitely be
