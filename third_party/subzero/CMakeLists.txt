@@ -112,7 +112,7 @@ target_compile_options(subzero
 target_compile_definitions(subzero
     PUBLIC
         "SZTARGET=${SUBZERO_TARGET_CPU}"
-        "ALLOW_DUMP=0"
+        "ALLOW_DUMP=1"
         "ALLOW_TIMERS=0"
         "ALLOW_LLVM_CL=0"
         "ALLOW_LLVM_IR=0"
