@@ -635,7 +635,7 @@ Ice::Operand *Optimizer::storeAddress(const Ice::Inst *instruction)
 
 	if(auto *storeSubVector = asStoreSubVector(instruction))
 	{
-		return storeSubVector->getSrc(2);
+		return storeSubVector->getSrc(1);
 	}
 
 	return nullptr;
@@ -652,7 +652,7 @@ Ice::Operand *Optimizer::loadAddress(const Ice::Inst *instruction)
 
 	if(auto *loadSubVector = asLoadSubVector(instruction))
 	{
-		return loadSubVector->getSrc(1);
+		return loadSubVector->getSrc(0);
 	}
 
 	return nullptr;
@@ -669,7 +669,7 @@ Ice::Operand *Optimizer::storeData(const Ice::Inst *instruction)
 
 	if(auto *storeSubVector = asStoreSubVector(instruction))
 	{
-		return storeSubVector->getSrc(1);
+		return storeSubVector->getSrc(0);
 	}
 
 	return nullptr;
