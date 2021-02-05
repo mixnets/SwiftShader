@@ -180,8 +180,8 @@ else()
     set_if_not_defined(SWIFTSHADER_BUILD_CPPDAP FALSE)
 endif()
 
-set(DEFAULT_REACTOR_BACKEND "LLVM")
-set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
+set(DEFAULT_REACTOR_BACKEND "Subzero")
+set(REACTOR_BACKEND "Subzero" CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
 
 set(DEFAULT_SWIFTSHADER_LLVM_VERSION "10.0")
