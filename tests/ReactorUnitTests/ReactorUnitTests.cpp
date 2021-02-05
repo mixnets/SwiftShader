@@ -498,6 +498,87 @@ TEST(ReactorUnitTests, ArrayOfPointersToLocals)
 	EXPECT_EQ(result, 222);
 }
 
+TEST(ReactorUnitTests, ModifyLocalThroughPointer)
+{
+	FunctionT<int(void)> function;
+	{
+		Int a = 1;
+
+		Pointer<Int> p = &a;
+		Pointer<Pointer<Int>> pp = &p;
+
+		Pointer<Int> q = *pp;
+		*q = 3;
+
+		Return(a);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 3);
+}
+
+TEST(ReactorUnitTests, ScalarReplicationOfArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Array<Int, 2> a;
+		a[0] = 1;
+		a[1] = 2;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 3);
+}
+
+TEST(ReactorUnitTests, CArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Int a[2];
+		a[0] = 1;
+		a[1] = 2;
+
+		auto x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 3);
+}
+
+// TODO(b/180665600): Check the SRoA optimization took place.
+TEST(ReactorUnitTests, ReactorArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Array<Int, 2> a;
+		a[0] = 1;
+		a[1] = 2;
+
+		Int x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine();
+	EXPECT_EQ(result, 3);
+}
+
 TEST(ReactorUnitTests, SubVectorLoadStore)
 {
 	FunctionT<int(void *, void *)> function;
