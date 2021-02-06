@@ -596,6 +596,41 @@ TEST(ReactorUnitTests, ReactorArray)
 	EXPECT_EQ(result, 3);
 }
 
+// Excercises the optimizeSingleBasicBlockLoadsStores optimization pass.
+TEST(ReactorUnitTests, StoresInMultipleBlocks)
+{
+	FunctionT<int(int)> function;
+	{
+		Int b = function.Arg<0>();
+
+		Int a = 13;
+
+		If(b != 0)  // TODO(b/179922668): Support If(b)
+		{
+			a = 4;
+			a = a + 3;
+		}
+		Else
+		{
+			a = 6;
+			a = a + 5;
+		}
+
+		Return(a);  // TODO(b/179694472): Support Return(*p)
+	}
+
+	Nucleus::setOptimizerCallback([](const Nucleus::OptimizerReport *report) {
+		EXPECT_EQ(report->allocas, 1);
+		EXPECT_EQ(report->loads, 1);
+		EXPECT_EQ(report->stores, 5);
+	});
+
+	auto routine = function(testName().c_str());
+
+	int result = routine(true);
+	EXPECT_EQ(result, 7);
+}
+
 TEST(ReactorUnitTests, SubVectorLoadStore)
 {
 	FunctionT<int(void *, void *)> function;
