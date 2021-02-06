@@ -33,6 +33,29 @@ static std::string testName()
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
 
+TEST(ReactorUnitTests, ReactorArray)
+{
+	FunctionT<int(void)> function;
+	{
+		Array<Int, 2> a;
+
+		a[0] = 1;
+		a[1] = 2;
+
+		Int x = a[0];
+		a[0] = a[1];
+		a[1] = x;
+
+		Return(a[0] + a[1]);
+	}
+
+	auto routine = function(testName().c_str());
+	int (*r)(void) = routine.getEntry();
+
+	int result = r();
+	EXPECT_EQ(result, 3);
+}
+
 TEST(ReactorUnitTests, ArrayOfPointersToLocals)
 {
 	FunctionT<int(int)> function;
@@ -77,37 +100,6 @@ TEST(ReactorUnitTests, Foo)
 		*q = 3;
 
 		Return(a);
-	}
-
-	auto routine = function(testName().c_str());
-	int (*r)(void) = routine.getEntry();
-
-	int result = r();
-	EXPECT_EQ(result, 3);
-}
-
-TEST(ReactorUnitTests, ReactorArray)
-{
-	FunctionT<int(void)> function;
-	{ 
-		Array<Int, 2> a;
-
-		a[0] = 1;
-		a[1] = 2;
-
-		Int x = a[0];
-		a[0] = a[1];
-		a[1] = x;
-
-		Return(a[0] + a[1]);
-/*
-		Int x;
-
-		x = 3;
-
-		Int y = Int((Float)x);
-
-		Return(y + x);*/
 	}
 
 	auto routine = function(testName().c_str());
