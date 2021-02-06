@@ -17,6 +17,7 @@
 #include "src/IceCfg.h"
 #include "src/IceCfgNode.h"
 
+#include <unordered_map>
 #include <vector>
 
 namespace {
@@ -35,6 +36,9 @@ private:
 	void eliminateUnitializedLoads();
 	void eliminateLoadsFollowingSingleStore();
 	void optimizeStoresInSingleBasicBlock();
+
+	Ice::InstAlloca *allocaOf(Ice::Operand *address);
+	void optimize();
 
 	void replace(Ice::Inst *instruction, Ice::Operand *newValue);
 	void deleteInstruction(Ice::Inst *instruction);
@@ -103,6 +107,9 @@ void Optimizer::run(Ice::Cfg *function)
 	canonicalizeAlloca();
 
 	sroa();
+
+	optimize();
+
 	for(int i = 0; i < 2; i++)
 	{
 		eliminateDeadCode();
@@ -165,12 +172,9 @@ void Optimizer::canonicalizeAlloca()
 						{
 							if(destUses.loads.size() == destUses.size() - 1)
 							{
-								for(auto *use : destUses)
+								for(auto *load : destUses.loads)
 								{
-									if(isLoad(*use))
-									{
-										replace(use, address);
-									}
+									replace(load, address);
 								}
 
 								assert(getUses(dest)->size() == 1);
@@ -298,6 +302,7 @@ void Optimizer::sroa()
 			{
 				newAddress[i] = function->makeVariable(pointerType());
 				auto *alloca = Ice::InstAlloca::create(function, newAddress[i], bytes, alignInBytes);
+				setDefinition(newAddress[i], alloca);
 
 				toAdd.push_back(alloca);
 			}
@@ -688,6 +693,57 @@ void Optimizer::optimizeStoresInSingleBasicBlock()
 	for(auto loadStoreInstVector : allocatedVectors)
 	{
 		delete loadStoreInstVector;
+	}
+}
+
+Ice::InstAlloca *Optimizer::allocaOf(Ice::Operand *address)
+{
+	Ice::Variable *addressVar = llvm::dyn_cast<Ice::Variable>(address);
+	Ice::Inst *def = addressVar ? getDefinition(addressVar) : nullptr;
+	Ice::InstAlloca *alloca = def ? llvm::dyn_cast<Ice::InstAlloca>(def) : nullptr;
+
+	return alloca;
+}
+
+void Optimizer::optimize()
+{
+	return;
+
+	for(Ice::CfgNode *block : function->getNodes())
+	{
+		std::unordered_map<Ice::InstAlloca *, Ice::Operand *> rvalue;
+
+		for(Ice::Inst &inst : block->getInsts())
+		{
+			if(inst.isDeleted())
+			{
+				continue;
+			}
+
+			if(isStore(inst))
+			{
+				if(Ice::InstAlloca *alloca = allocaOf(inst.getStoreAddress()))
+				{
+					Ice::Operand *data = inst.getData();
+
+					rvalue[alloca] = data;
+				}
+			}
+			else if(isLoad(inst))
+			{
+				if(Ice::InstAlloca *alloca = allocaOf(inst.getLoadAddress()))
+				{
+					auto value = rvalue.find(alloca);
+
+					////////// TODO: Check if load type size <= store value size
+
+					if(value != rvalue.end())
+					{
+						replace(&inst, value->second);
+					}
+				}
+			}
+		}
 	}
 }
 
