@@ -707,11 +707,9 @@ Ice::InstAlloca *Optimizer::allocaOf(Ice::Operand *address)
 
 void Optimizer::optimize()
 {
-	return;
-
 	for(Ice::CfgNode *block : function->getNodes())
 	{
-		std::unordered_map<Ice::InstAlloca *, Ice::Operand *> rvalue;
+		std::unordered_map<const Ice::InstAlloca *, const Ice::Inst *> rvalue;
 
 		for(Ice::Inst &inst : block->getInsts())
 		{
@@ -726,25 +724,28 @@ void Optimizer::optimize()
 				{
 					Ice::Operand *data = inst.getData();
 
-					rvalue[alloca] = data;
+					rvalue[alloca] = &inst;
 				}
 			}
 			else if(isLoad(inst))
 			{
 				if(Ice::InstAlloca *alloca = allocaOf(inst.getLoadAddress()))
 				{
-					auto value = rvalue.find(alloca);
-
-					////////// TODO: Check if load type size <= store value size
-
-					if(value != rvalue.end())
+					auto entry = rvalue.find(alloca);
+					if(entry != rvalue.end())
 					{
-						replace(&inst, value->second);
+						const Ice::Inst *store = entry->second;
+						if(loadTypeMatchesStore(&inst, store))
+						{
+							replace(&inst, store->getData());
+						}
 					}
 				}
 			}
 		}
 	}
+
+	eliminateDeadCode();
 }
 
 void Optimizer::analyzeUses(Ice::Cfg *function)
@@ -955,26 +956,22 @@ bool Optimizer::loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *sto
 	assert(isLoad(*load) && isStore(*store));
 	assert(load->getLoadAddress() == store->getStoreAddress());
 
-	if(auto *instStore = llvm::dyn_cast<Ice::InstStore>(store))
+	if(store->getData()->getType() != load->getDest()->getType())
 	{
-		if(auto *instLoad = llvm::dyn_cast<Ice::InstLoad>(load))
-		{
-			return instStore->getData()->getType() == instLoad->getDest()->getType();
-		}
+		return false;
 	}
 
 	if(auto *storeSubVector = asStoreSubVector(store))
 	{
 		if(auto *loadSubVector = asLoadSubVector(load))
 		{
-			// Check for matching type and sub-vector width.
-			return storeSubVector->getSrc(1)->getType() == loadSubVector->getDest()->getType() &&
-			       llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(3))->getValue() ==
-			           llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(2))->getValue();
+			// Check for matching sub-vector width.
+			return llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(2))->getValue() ==
+			       llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(1))->getValue();
 		}
 	}
 
-	return false;
+	return true;
 }
 
 Optimizer::Uses *Optimizer::getUses(Ice::Operand *operand)
