@@ -57,7 +57,18 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "SWIFTSHADER_BUILD_BENCHMARKS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "REACTOR_BACKEND",
+          "value": "Subzero",
+          "type": "STRING"
+        }
+      ]
     }
   ]
 }

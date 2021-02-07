@@ -50,6 +50,7 @@ private:
 	static bool isStore(const Ice::Inst &instruction);
 	static std::size_t storeSize(const Ice::Inst *instruction);
 	static bool loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store);
+	static bool storeTypeMatchesStore(const Ice::Inst *store1, const Ice::Inst *store2);
 
 	Ice::Cfg *function;
 	Ice::GlobalContext *context;
@@ -103,6 +104,8 @@ void Optimizer::run(Ice::Cfg *function)
 	this->context = function->getContext();
 
 	analyzeUses(function);
+
+	eliminateDeadCode();
 
 	canonicalizeAlloca();
 
@@ -356,8 +359,13 @@ void Optimizer::sroa()
 	//
 	for(size_t i = toAdd.size(); i-- != 0;)
 	{
-		instList.push_front(toAdd[i]);
+		if(!isDead(toAdd[i]))
+		{
+			instList.push_front(toAdd[i]);
+		}
 	}
+
+//	eliminateDeadCode();
 
 	//function->dump();
 }
@@ -709,7 +717,7 @@ void Optimizer::optimize()
 {
 	for(Ice::CfgNode *block : function->getNodes())
 	{
-		std::unordered_map<const Ice::InstAlloca *, const Ice::Inst *> rvalue;
+		std::unordered_map<const Ice::InstAlloca *, Ice::Inst *> rvalue;
 
 		for(Ice::Inst &inst : block->getInsts())
 		{
@@ -724,11 +732,23 @@ void Optimizer::optimize()
 				{
 					Ice::Operand *data = inst.getData();
 
+					/*auto entry = rvalue.find(alloca);
+					if(entry != rvalue.end())
+					{
+						Ice::Inst *previousStore = entry->second;
+
+						if(storeTypeMatchesStore(&inst, previousStore))
+						{
+							deleteInstruction(previousStore);
+						}
+					}*/
+
 					rvalue[alloca] = &inst;
 				}
 			}
 			else if(isLoad(inst))
 			{
+				bool replaced = false;
 				if(Ice::InstAlloca *alloca = allocaOf(inst.getLoadAddress()))
 				{
 					auto entry = rvalue.find(alloca);
@@ -738,9 +758,11 @@ void Optimizer::optimize()
 						if(loadTypeMatchesStore(&inst, store))
 						{
 							replace(&inst, store->getData());
+							replaced = true;
 						}
 					}
 				}
+				//if(!replaced)
 			}
 		}
 	}
@@ -968,6 +990,29 @@ bool Optimizer::loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *sto
 			// Check for matching sub-vector width.
 			return llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(2))->getValue() ==
 			       llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(1))->getValue();
+		}
+	}
+
+	return true;
+}
+
+bool Optimizer::storeTypeMatchesStore(const Ice::Inst *store1, const Ice::Inst *store2)
+{
+	assert(isStore(*store1) && isStore(*store2));
+	assert(store1->getStoreAddress() == store2->getStoreAddress());
+
+	if(store1->getData()->getType() != store2->getData()->getType())
+	{
+		return false;
+	}
+
+	if(auto *storeSubVector1 = asStoreSubVector(store1))
+	{
+		if(auto *storeSubVector2 = asStoreSubVector(store2))
+		{
+			// Check for matching sub-vector width.
+			return llvm::cast<Ice::ConstantInteger32>(storeSubVector1->getSrc(2))->getValue() ==
+			       llvm::cast<Ice::ConstantInteger32>(storeSubVector1->getSrc(2))->getValue();
 		}
 	}
 
