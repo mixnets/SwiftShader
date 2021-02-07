@@ -2535,15 +2535,18 @@ SpirvShader::Operand::Operand(const SpirvShader *shader, const EmitState *state,
 {}
 
 SpirvShader::Operand::Operand(const EmitState *state, const Object &object)
-    : constant(object.kind == SpirvShader::Object::Kind::Constant ? object.constantValue.data() : nullptr)
+    : f(this)
+    , constant(object.kind == SpirvShader::Object::Kind::Constant ? object.constantValue.data() : nullptr)
     , intermediate(object.kind == SpirvShader::Object::Kind::Intermediate ? &state->getIntermediate(object.id()) : nullptr)
     , componentCount(intermediate ? intermediate->componentCount : object.constantValue.size())
+
 {
 	ASSERT(intermediate || constant);
 }
 
 SpirvShader::Operand::Operand(const Intermediate &value)
-    : constant(nullptr)
+    : f(this)
+    , constant(nullptr)
     , intermediate(&value)
     , componentCount(value.componentCount)
 {
@@ -2570,16 +2573,18 @@ bool SpirvShader::Operand::isConstantZero() const
 SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout)
     : pipelineLayout(pipelineLayout)
 {
+	//inputs.resize(MAX_INTERFACE_COMPONENTS);
+	//outputs.resize(MAX_INTERFACE_COMPONENTS);
 }
 
 void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 {
-	setInputBuiltin(shader, spv::BuiltInSubgroupLocalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupLocalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(0, 1, 2, 3));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInSubgroupEqMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupEqMask, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 4);
 		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(1, 2, 4, 8));
 		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
@@ -2587,7 +2592,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 		value[builtin.FirstComponent + 3] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInSubgroupGeMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupGeMask, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 4);
 		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(15, 14, 12, 8));
 		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
@@ -2595,7 +2600,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 		value[builtin.FirstComponent + 3] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInSubgroupGtMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupGtMask, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 4);
 		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(14, 12, 8, 0));
 		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
@@ -2603,7 +2608,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 		value[builtin.FirstComponent + 3] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInSubgroupLeMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupLeMask, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 4);
 		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(1, 3, 7, 15));
 		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
@@ -2611,7 +2616,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 		value[builtin.FirstComponent + 3] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInSubgroupLtMask, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInSubgroupLtMask, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 4);
 		value[builtin.FirstComponent + 0] = As<SIMD::Float>(SIMD::Int(0, 1, 3, 7));
 		value[builtin.FirstComponent + 1] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
@@ -2619,7 +2624,7 @@ void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 		value[builtin.FirstComponent + 3] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));
 	});
 
-	setInputBuiltin(shader, spv::BuiltInDeviceIndex, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+	setInputBuiltin(shader, spv::BuiltInDeviceIndex, [&](const SpirvShader::BuiltinMapping &builtin, Variable &value) {
 		ASSERT(builtin.SizeInComponents == 1);
 		// Only a single physical device is supported.
 		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(0, 0, 0, 0));

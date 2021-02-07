@@ -39,9 +39,9 @@ PixelRoutine::PixelRoutine(
 
 		// Clearing inputs to 0 is not demanded by the spec,
 		// but it makes the undefined behavior deterministic.
-		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
+		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)  ///
 		{
-			routine.inputs[i] = Float4(0.0f);
+		//	routine.inputs[i] = Float4(0.0f);
 		}
 	}
 

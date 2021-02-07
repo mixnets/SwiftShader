@@ -1029,6 +1029,22 @@ private:
 		Terminator,  // Reached a termination instruction.
 	};
 
+	class Operand;
+
+	class OperandRef
+	{
+	public:
+		OperandRef(const Operand *o)
+		    : o(o)
+		{
+		}
+
+		RValue<SIMD::Float> operator[](uint32_t i);
+
+	private:
+		const Operand *o;
+	};
+
 	// Generic wrapper over either per-lane intermediate value, or a constant.
 	// Constants are transparently widened to per-lane values in operator[].
 	// This is appropriate in most cases -- if we're not going to do something
@@ -1073,6 +1089,8 @@ private:
 		}
 
 		bool isConstantZero() const;
+
+		OperandRef f;
 
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
@@ -1221,6 +1239,10 @@ private:
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
 	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+static void emitSamplerCode(ImageInstruction instruction, const Sampler &samplerState, Pointer<Byte> texture,
+	                               Pointer<SIMD::Float> in,
+	                               Pointer<SIMD::Float> out,
+	                               Pointer<Byte> constants);
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
@@ -1346,7 +1368,7 @@ class SpirvRoutine
 public:
 	SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
 
-	using Variable = Array<SIMD::Float>;
+	using Variable = Array<SIMD::Float>;  //std::vector<SIMD::Float>;
 
 	struct SamplerCache
 	{
@@ -1370,8 +1392,8 @@ public:
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> variables;
 	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;
-	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };
-	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };
+	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };   ///
+	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };  ///
 	InterpolationData interpolationData;
 
 	Pointer<Byte> workgroupMemory;

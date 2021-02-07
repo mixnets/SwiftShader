@@ -95,11 +95,20 @@ void Optimizer::run(Ice::Cfg *function)
 
 	analyzeUses(function);
 
-	eliminateDeadCode();
-	eliminateUnitializedLoads();
-	eliminateLoadsFollowingSingleStore();
-	optimizeStoresInSingleBasicBlock();
-	eliminateDeadCode();
+	//canonicalizeAlloca();
+
+	//sroa();
+
+	//optimize();
+
+	for(int i = 0; i < 2; i++)
+	{
+		eliminateDeadCode();
+		eliminateUnitializedLoads();
+		eliminateLoadsFollowingSingleStore();
+		optimizeStoresInSingleBasicBlock();
+		eliminateDeadCode();
+	}
 
 	for(auto operand : operandsWithUses)
 	{
@@ -231,6 +240,8 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 		{
 			Ice::Inst *store = addressUses.stores[0];
 			Ice::Operand *storeValue = store->getData();
+
+			//auto it = ;
 
 			for(Ice::Inst *load = &*++store->getIterator(), *next = nullptr; load != next; next = load, load = &*++store->getIterator())
 			{
