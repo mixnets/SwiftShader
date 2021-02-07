@@ -60,6 +60,17 @@ class Context;
 
 namespace sw {
 
+struct XX
+{
+	Float4 coord[4];
+	Float4 dref;
+	Float4 lodOrBias;
+	Float4 gradDx[3];
+	Float4 gradDy[3];
+	Int4 offset[3];
+	Int4 sample;
+};
+
 // Forward declarations.
 class SpirvRoutine;
 
@@ -1029,6 +1040,22 @@ private:
 		Terminator,  // Reached a termination instruction.
 	};
 
+	class Operand;
+
+	class OperandRef
+	{
+	public:
+		OperandRef(const Operand *o)
+		    : o(o)
+		{
+		}
+
+		RValue<SIMD::Float> operator[](uint32_t i);
+
+	private:
+		const Operand *o;
+	};
+
 	// Generic wrapper over either per-lane intermediate value, or a constant.
 	// Constants are transparently widened to per-lane values in operator[].
 	// This is appropriate in most cases -- if we're not going to do something
@@ -1073,6 +1100,8 @@ private:
 		}
 
 		bool isConstantZero() const;
+
+		OperandRef f;
 
 	private:
 		RR_PRINT_ONLY(friend struct rr::PrintValue::Ty<Operand>;)
@@ -1220,7 +1249,7 @@ private:
 	EmitResult EmitArrayLength(InsnIterator insn, EmitState *state) const;
 
 	// Emits code to sample an image, regardless of whether any SIMD lanes are active.
-	void EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
+	void EmitImageSampleUnconditional(SIMD::Float (&out)[4], ImageInstruction instruction, InsnIterator insn, EmitState *state) const;
 
 	void GetImageDimensions(EmitState const *state, Type const &resultTy, Object::ID imageId, Object::ID lodId, Intermediate &dst) const;
 	SIMD::Pointer GetTexelAddress(EmitState const *state, Pointer<Byte> imageBase, Int imageSizeInBytes, Operand const &coordinate, Type const &imageType, Pointer<Byte> descriptor, int texelSize, Object::ID sampleId, bool useStencilAspect, OutOfBoundsBehavior outOfBoundsBehavior) const;
@@ -1278,6 +1307,10 @@ private:
 
 	static ImageSampler *getImageSampler(uint32_t instruction, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler);
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
+	static void emitSamplerCode(ImageInstruction instruction, const Sampler &samplerState, Pointer<Byte> texture,
+	                            const XX &in,
+	                            SIMD::Float (&out)[4],
+	                            Pointer<Byte> constants);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
 	static sw::FilterType convertFilterMode(const vk::Sampler *sampler, VkImageViewType imageViewType, ImageInstruction instruction);
@@ -1346,7 +1379,7 @@ class SpirvRoutine
 public:
 	SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
 
-	using Variable = Array<SIMD::Float>;
+	using Variable = Array<SIMD::Float>;  //std::vector<SIMD::Float>;
 
 	struct SamplerCache
 	{
@@ -1370,8 +1403,8 @@ public:
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> variables;
 	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;
-	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };
-	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };
+	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };   ///
+	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };  ///
 	InterpolationData interpolationData;
 
 	Pointer<Byte> workgroupMemory;

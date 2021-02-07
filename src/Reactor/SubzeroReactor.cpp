@@ -351,7 +351,7 @@ const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
 const bool emulateIntrinsics = false;
 const bool emulateMismatchedBitCast = CPUID::ARM;
 
-constexpr bool subzeroDumpEnabled = false;
+constexpr bool subzeroDumpEnabled = true;
 constexpr bool subzeroEmitTextAsm = false;
 
 #if !ALLOW_DUMP

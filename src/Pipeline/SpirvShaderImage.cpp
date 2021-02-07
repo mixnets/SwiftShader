@@ -129,12 +129,12 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 {
 	auto &resultType = getType(insn.resultTypeId());
 	auto &result = state->createIntermediate(insn.resultId(), resultType.componentCount);
-	Array<SIMD::Float> out(4);
+	SIMD::Float out[4];
 
 	// TODO(b/153380916): When we're in a code path that is always executed,
 	// i.e. post-dominators of the entry block, we don't have to dynamically
 	// check whether any lanes are active, and can elide the jump.
-	If(AnyTrue(state->activeLaneMask()))
+	//	If(AnyTrue(state->activeLaneMask()))
 	{
 		EmitImageSampleUnconditional(out, instruction, insn, state);
 	}
@@ -144,7 +144,17 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	return EmitResult::Continue;
 }
 
-void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
+static void halt()
+{
+	volatile int x = 0;
+}
+
+RValue<SIMD::Float> SpirvShader::OperandRef::operator[](uint32_t i)
+{
+	return o->Float(i);
+}
+
+void SpirvShader::EmitImageSampleUnconditional(SIMD::Float (&out)[4], ImageInstruction instruction, InsnIterator insn, EmitState *state) const
 {
 	Object::ID sampledImageId = insn.word(3);  // For OpImageFetch this is just an Image, not a SampledImage.
 	Object::ID coordinateId = insn.word(4);
@@ -238,21 +248,21 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		}
 	}
 
-	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+	XX x;
 
 	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
 	instruction.coordinates = coordinates;
 
-	uint32_t i = 0;
-	for(; i < coordinates; i++)
+	//uint32_t i = 0;
+	for(uint32_t i = 0; i < coordinates; i++)
 	{
 		if(instruction.isProj())
 		{
-			in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			x.coord[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
 		}
 		else
 		{
-			in[i] = coordinate.Float(i);
+			x.coord[i] = coordinate.f[i];
 		}
 	}
 
@@ -262,21 +272,21 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		if(instruction.isProj())
 		{
-			in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			x.dref = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
 		}
 		else
 		{
-			in[i] = drefValue.Float(0);
+			x.dref = drefValue.Float(0);
 		}
 
-		i++;
+		//	i++;
 	}
 
 	if(lodOrBias)
 	{
 		auto lodValue = Operand(this, state, lodOrBiasId);
-		in[i] = lodValue.Float(0);
-		i++;
+		x.lodOrBias = lodValue.Float(0);
+		//	i++;
 	}
 	else if(grad)
 	{
@@ -286,14 +296,14 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		instruction.grad = dxValue.componentCount;
 
-		for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+		for(uint32_t i = 0; i < dxValue.componentCount; i++)
 		{
-			in[i] = dxValue.Float(j);
+			x.gradDx[i] = dxValue.Float(i);
 		}
 
-		for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
+		for(uint32_t i = 0; i < dyValue.componentCount; i++)
 		{
-			in[i] = dyValue.Float(j);
+			x.gradDy[i] = dyValue.Float(i);
 		}
 	}
 	else if(instruction.samplerMethod == Fetch)
@@ -301,8 +311,8 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		// The instruction didn't provide a lod operand, but the sampler's Fetch
 		// function requires one to be present. If no lod is supplied, the default
 		// is zero.
-		in[i] = As<SIMD::Float>(SIMD::Int(0));
-		i++;
+		x.lodOrBias = As<SIMD::Float>(SIMD::Int(0));
+		//i++;
 	}
 
 	if(constOffset)
@@ -310,31 +320,107 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		auto offsetValue = Operand(this, state, offsetId);
 		instruction.offset = offsetValue.componentCount;
 
-		for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
+		for(uint32_t i = 0; i < offsetValue.componentCount; i++)
 		{
-			in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+			x.offset[i] = offsetValue.Int(i);
 		}
 	}
 
 	if(sample)
 	{
 		auto sampleValue = Operand(this, state, sampleId);
-		in[i] = As<SIMD::Float>(sampleValue.Int(0));
+		x.sample = sampleValue.Int(0);
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
+	//Call(halt);
 
-	If(!cacheHit)
+	if(true)  // inline
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
-	}
+		Sampler samplerState = {};
+		samplerState.textureType = VK_IMAGE_VIEW_TYPE_2D;
+		samplerState.textureFormat = VK_FORMAT_R8G8B8A8_UNORM;
+		samplerState.textureFilter = FILTER_POINT;
+		samplerState.addressingModeU = ADDRESSING_WRAP;
+		samplerState.addressingModeV = ADDRESSING_WRAP;
+		samplerState.addressingModeW = ADDRESSING_UNUSED;
+		samplerState.mipmapFilter = MIPMAP_NONE;
+		samplerState.swizzle.r = VK_COMPONENT_SWIZZLE_R;
+		samplerState.swizzle.g = VK_COMPONENT_SWIZZLE_G;
+		samplerState.swizzle.b = VK_COMPONENT_SWIZZLE_B;
+		samplerState.swizzle.a = VK_COMPONENT_SWIZZLE_A;
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+		emitSamplerCode(instruction, samplerState, texture, x, out, state->routine->constants);
+	}
+	else  // trampoline
+	{
+		Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+
+		uint32_t i = 0;
+		for(; i < instruction.coordinates; i++)
+		{
+			in[i] = x.coord[i];
+		}
+
+		if(instruction.isDref())
+		{
+			in[i] = x.dref;
+
+			i++;
+		}
+
+		if(lodOrBias)
+		{
+			in[i] = x.lodOrBias;
+			i++;
+		}
+		else if(grad)
+		{
+			for(uint32_t i = 0; i < instruction.grad; i++)
+			{
+				in[i] = x.gradDx[i];
+			}
+
+			for(uint32_t i = 0; i < instruction.grad; i++)
+			{
+				in[i] = x.gradDy[i];
+			}
+		}
+		else if(instruction.samplerMethod == Fetch)
+		{
+			// The instruction didn't provide a lod operand, but the sampler's Fetch
+			// function requires one to be present. If no lod is supplied, the default
+			// is zero.
+			in[i] = As<SIMD::Float>(SIMD::Int(0));
+			i++;
+		}
+
+		if(instruction.offset)
+		{
+			for(uint32_t j = 0; j < instruction.offset; i++)
+			{
+				in[i] = As<SIMD::Float>(x.offset[i]);
+			}
+		}
+
+		if(instruction.sample)
+		{
+			in[i] = As<SIMD::Float>(x.sample);
+		}
+
+		auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
+
+		If(!cacheHit)
+		{
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const

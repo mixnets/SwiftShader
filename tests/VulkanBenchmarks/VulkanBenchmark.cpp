@@ -14,6 +14,9 @@
 
 #include "VulkanBenchmark.hpp"
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 VulkanBenchmark::~VulkanBenchmark()
 {
 	device.waitIdle();
@@ -23,6 +26,8 @@ VulkanBenchmark::~VulkanBenchmark()
 
 void VulkanBenchmark::initialize()
 {
+	BOOL result = SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+
 	// TODO(b/158231104): Other platforms
 #if defined(_WIN32)
 	dl = std::make_unique<vk::DynamicLoader>("./vk_swiftshader.dll");

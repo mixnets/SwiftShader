@@ -152,20 +152,18 @@ protected:
 		struct Vertex
 		{
 			float position[3];
-			float color[3];
 			float texCoord[2];
 		};
 
 		Vertex vertexBufferData[] = {
-			{ { 1.0f, 1.0f, 0.5f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
-			{ { -1.0f, 1.0f, 0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f } },
-			{ { 0.0f, -1.0f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } }
+			{ { 1.0f, 1.0f, 0.5f }, { 1.0f, 0.0f } },
+			{ { -1.0f, 1.0f, 0.5f }, { 0.0f, 1.0f } },
+			{ { 0.0f, -1.0f, 0.5f }, { 0.0f, 0.0f } }
 		};
 
 		std::vector<vk::VertexInputAttributeDescription> inputAttributes;
 		inputAttributes.push_back(vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, position)));
-		inputAttributes.push_back(vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, color)));
-		inputAttributes.push_back(vk::VertexInputAttributeDescription(2, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, texCoord)));
+		inputAttributes.push_back(vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, texCoord)));
 
 		addVertexBuffer(vertexBufferData, sizeof(vertexBufferData), std::move(inputAttributes));
 	}
@@ -174,16 +172,13 @@ protected:
 	{
 		const char *vertexShader = R"(#version 310 es
 			layout(location = 0) in vec3 inPos;
-			layout(location = 1) in vec3 inColor;
-
-			layout(location = 0) out vec3 outColor;
-			layout(location = 1) out vec2 fragTexCoord;
+			layout(location = 1) in vec2 inTexCoord;
+			layout(location = 0) out vec2 outTexCoord;
 
 			void main()
 			{
-				outColor = inColor;
 				gl_Position = vec4(inPos.xyz, 1.0);
-				fragTexCoord = inPos.xy;
+				outTexCoord = inTexCoord;
 			})";
 
 		return createShaderModule(vertexShader, EShLanguage::EShLangVertex);
@@ -194,16 +189,14 @@ protected:
 		const char *fragmentShader = R"(#version 310 es
 			precision highp float;
 
-			layout(location = 0) in vec3 inColor;
-			layout(location = 1) in vec2 fragTexCoord;
-
+			layout(location = 0) in vec2 inTexCoord;
 			layout(location = 0) out vec4 outColor;
-
 			layout(binding = 0) uniform sampler2D texSampler;
 
 			void main()
 			{
-				outColor = texture(texSampler, fragTexCoord) * vec4(inColor, 1.0);
+				//outColor = vec4(1.0, 0.0, 1.0, 1.0);
+				outColor = texture(texSampler, inTexCoord);
 			})";
 
 		return createShaderModule(fragmentShader, EShLanguage::EShLangFragment);
@@ -225,11 +218,26 @@ protected:
 	{
 		auto &texture = addImage(device, 16, 16, vk::Format::eR8G8B8A8Unorm).obj;
 
-		// Fill texture with white
+		// Fill texture with colorful checkerboard
 		vk::DeviceSize bufferSize = 16 * 16 * 4;
 		Buffer buffer(device, bufferSize, vk::BufferUsageFlagBits::eTransferSrc);
-		void *data = buffer.mapMemory();
-		memset(data, 255, bufferSize);
+		uint32_t *data = static_cast<uint32_t *>(buffer.mapMemory());
+
+		for(int i = 0; i < 16; i++)
+		{
+			for(int j = 0; j < 16; j++)
+			{
+				if(((i ^ j) & 1) == 0)
+				{
+					data[i + 16 * j] = 0xFFFFFFFF;
+				}
+				else
+				{
+					data[i + 16 * j] = 0;
+				}
+			}
+		}
+
 		buffer.unmapMemory();
 
 		Util::transitionImageLayout(device, commandPool, queue, texture.getImage(), vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
@@ -303,9 +311,18 @@ static void TriangleSampleTexture(benchmark::State &state, Multisample multisamp
 	RunBenchmark(state, benchmark);
 }
 
-BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor, Multisample::False)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
-BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor, Multisample::False)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond);
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+//BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
