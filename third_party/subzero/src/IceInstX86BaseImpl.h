@@ -2453,8 +2453,8 @@ void InstImpl<TraitsType>::InstX86Movq::emit(const Cfg *Func) const {
     return;
   Ostream &Str = Func->getContext()->getStrEmit();
   assert(this->getSrcSize() == 1);
-  assert(this->getDest()->getType() == IceType_i64 ||
-         this->getDest()->getType() == IceType_f64);
+  // assert(this->getDest()->getType() == IceType_i64 ||
+  //      this->getDest()->getType() == IceType_f64);
   Str << "\t"
          "movq"
          "\t";

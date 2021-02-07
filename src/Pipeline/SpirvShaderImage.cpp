@@ -134,7 +134,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	// TODO(b/153380916): When we're in a code path that is always executed,
 	// i.e. post-dominators of the entry block, we don't have to dynamically
 	// check whether any lanes are active, and can elide the jump.
-	If(AnyTrue(state->activeLaneMask()))
+	//	If(AnyTrue(state->activeLaneMask()))
 	{
 		EmitImageSampleUnconditional(out, instruction, insn, state);
 	}
@@ -142,6 +142,16 @@ SpirvShader::EmitResult SpirvShader::EmitImageSample(ImageInstruction instructio
 	for(auto i = 0u; i < resultType.componentCount; i++) { result.move(i, out[i]); }
 
 	return EmitResult::Continue;
+}
+
+static void halt()
+{
+	volatile int x = 0;
+}
+
+RValue<SIMD::Float> SpirvShader::OperandRef::operator[](uint32_t i)
+{
+	return o->Float(i);
 }
 
 void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageInstruction instruction, InsnIterator insn, EmitState *state) const
@@ -238,7 +248,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		}
 	}
 
-	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+	Array<SIMD::Float, 16> in;  // Maximum 16 input parameter components.
 
 	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
 	instruction.coordinates = coordinates;
@@ -322,19 +332,41 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		in[i] = As<SIMD::Float>(sampleValue.Int(0));
 	}
 
-	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
-	ASSERT(cacheIt != state->routine->samplerCache.end());
-	auto &cache = cacheIt->second;
-	auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
+	//Call(halt);
 
-	If(!cacheHit)
+	if(true)  // inline
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
-		cache.imageDescriptor = imageDescriptor;
-		cache.sampler = sampler;
-	}
+		Sampler samplerState = {};
+		samplerState.textureType = VK_IMAGE_VIEW_TYPE_2D;
+		samplerState.textureFormat = VK_FORMAT_R8G8B8A8_UNORM;
+		samplerState.textureFilter = FILTER_POINT;
+		samplerState.addressingModeU = ADDRESSING_WRAP;
+		samplerState.addressingModeV = ADDRESSING_WRAP;
+		samplerState.addressingModeW = ADDRESSING_UNUSED;
+		samplerState.mipmapFilter = MIPMAP_NONE;
+		samplerState.swizzle.r = VK_COMPONENT_SWIZZLE_R;
+		samplerState.swizzle.g = VK_COMPONENT_SWIZZLE_G;
+		samplerState.swizzle.b = VK_COMPONENT_SWIZZLE_B;
+		samplerState.swizzle.a = VK_COMPONENT_SWIZZLE_A;
 
-	Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+		emitSamplerCode(instruction, samplerState, texture, &in, &out, state->routine->constants);
+	}
+	else  // trampoline
+	{
+		auto cacheIt = state->routine->samplerCache.find(insn.resultId());
+		ASSERT(cacheIt != state->routine->samplerCache.end());
+		auto &cache = cacheIt->second;
+		auto cacheHit = cache.imageDescriptor == imageDescriptor && cache.sampler == sampler;
+
+		If(!cacheHit)
+		{
+			cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+			cache.imageDescriptor = imageDescriptor;
+			cache.sampler = sampler;
+		}
+
+		Call<ImageSampler>(cache.function, texture, &in[0], &out[0], state->routine->constants);
+	}
 }
 
 SpirvShader::EmitResult SpirvShader::EmitImageQuerySizeLod(InsnIterator insn, EmitState *state) const

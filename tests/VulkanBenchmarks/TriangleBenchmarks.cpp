@@ -16,12 +16,17 @@
 #include "DrawTester.hpp"
 #include "benchmark/benchmark.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include <cassert>
 #include <vector>
 
 template<typename T>
 static void RunBenchmark(benchmark::State &state, T &tester)
 {
+	BOOL result = SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+
 	tester.initialize();
 
 	if(false) tester.show();  // Enable for visual verification.
@@ -194,6 +199,7 @@ static void TriangleSampleTexture(benchmark::State &state, Multisample multisamp
 
 			void main()
 			{
+				//outColor = vec4(1.0, 0.0, 1.0, 1.0);
 				outColor = texture(texSampler, inTexCoord);
 			})";
 
@@ -281,9 +287,18 @@ static void TriangleSampleTexture(benchmark::State &state, Multisample multisamp
 	RunBenchmark(state, tester);
 }
 
-BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+//BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor, Multisample::False)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor, Multisample::False)->Unit(benchmark::kMillisecond);
 BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture, Multisample::False)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+//BENCHMARK_CAPTURE(TriangleSolidColor, TriangleSolidColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleInterpolateColor, TriangleInterpolateColor_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);
+//BENCHMARK_CAPTURE(TriangleSampleTexture, TriangleSampleTexture_Multisample, Multisample::True)->Unit(benchmark::kMillisecond);

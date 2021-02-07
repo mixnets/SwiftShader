@@ -52,23 +52,16 @@ TEST(ReactorUnitTests, Sample)
 {
 	FunctionT<int(int *, int)> function;
 	{
-		Pointer<Int> p = function.Arg<0>();
-		Int x = p[-1];
-		Int y = function.Arg<1>();
-		Int z = 4;
+		Array<Float4> a(16);
 
-		For(Int i = 0, i < 10, i++)
-		{
-			z += (2 << i) - (i / 3);
-		}
+		a[0] = Float4(0);
+		a[1] = Float4(1);
+		Pointer<Float4> p = &a[0];
+		Float4 x = p[0];
 
-		Float4 v;
-		v.z = As<Float>(z);
-		z = As<Int>(Float(Float4(v.xzxx).y));
+		Int y = As<Int>(Extract(x, 0));
 
-		Int sum = x + y + z;
-
-		Return(sum);
+		Return(y);
 	}
 
 	auto routine = function(testName().c_str());
