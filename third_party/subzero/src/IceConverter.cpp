@@ -568,8 +568,8 @@ private:
                            LLVMObjectAsString(Instr));
       }
       if (Info)
-        NewInst = Ice::InstIntrinsicCall::create(Func.get(), NumArgs, Dest,
-                                                 CallTarget, Info->Info);
+        NewInst = Ice::InstIntrinsic::create(Func.get(), NumArgs, Dest,
+                                             CallTarget, Info->Info);
     }
 
     // Not an intrinsic call.

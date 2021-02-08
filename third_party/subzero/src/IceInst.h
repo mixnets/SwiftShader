@@ -610,17 +610,18 @@ private:
                     Operand *Source2, Operand *Source3);
 };
 
-/// Call to an intrinsic function.
-class InstIntrinsicCall : public InstHighLevel {
-  InstIntrinsicCall() = delete;
-  InstIntrinsicCall(const InstIntrinsicCall &) = delete;
-  InstIntrinsicCall &operator=(const InstIntrinsicCall &) = delete;
+/// An intrinsic operation, representing either a sequence of instructions,
+/// or a single instruction. Availability of intrinsics is target-specific.
+class InstIntrinsic : public InstHighLevel {
+  InstIntrinsic() = delete;
+  InstIntrinsic(const InstIntrinsic &) = delete;
+  InstIntrinsic &operator=(const InstIntrinsic &) = delete;
 
 public:
-  static InstIntrinsicCall *create(Cfg *Func, SizeT NumArgs, Variable *Dest,
-                                   const Intrinsics::IntrinsicInfo &Info) {
-    return new (Func->allocate<InstIntrinsicCall>())
-        InstIntrinsicCall(Func, NumArgs, Dest, Info);
+  static InstIntrinsic *create(Cfg *Func, SizeT NumArgs, Variable *Dest,
+                               const Intrinsics::IntrinsicInfo &Info) {
+    return new (Func->allocate<InstIntrinsic>())
+        InstIntrinsic(Func, NumArgs, Dest, Info);
   }
   void addArg(Operand *Arg) { addSource(Arg); }
   Operand *getArg(SizeT I) const { return getSrc(I); }
@@ -635,8 +636,8 @@ public:
   }
 
 private:
-  InstIntrinsicCall(Cfg *Func, SizeT NumArgs, Variable *Dest,
-                    const Intrinsics::IntrinsicInfo &Info)
+  InstIntrinsic(Cfg *Func, SizeT NumArgs, Variable *Dest,
+                const Intrinsics::IntrinsicInfo &Info)
       : InstHighLevel(Func, Inst::IntrinsicCall, NumArgs, Dest), Info(Info) {}
 
   const Intrinsics::IntrinsicInfo Info;

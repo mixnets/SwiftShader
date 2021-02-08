@@ -581,7 +581,7 @@ void TargetMIPS32::genTargetHelperCallFor(Inst *Instr) {
     llvm::report_fatal_error("Control flow should never have reached here.");
   }
   case Inst::IntrinsicCall: {
-    auto *IntrinsicCall = llvm::cast<InstIntrinsicCall>(Instr);
+    auto *IntrinsicCall = llvm::cast<InstIntrinsic>(Instr);
     Intrinsics::IntrinsicID ID = IntrinsicCall->getIntrinsicInfo().ID;
     if (isVectorType(DestTy) && ID == Intrinsics::Fabs) {
       Operand *Src0 = IntrinsicCall->getArg(0);
@@ -605,8 +605,7 @@ void TargetMIPS32::genTargetHelperCallFor(Inst *Instr) {
         Context.insert<InstExtractElement>(Op, Src0, Index);
         auto *Res = Func->makeVariable(IceType_f32);
         Variable *DestT = Func->makeVariable(IceType_v4f32);
-        auto *Call =
-            Context.insert<InstIntrinsicCall>(1, Res, CallTarget, Info);
+        auto *Call = Context.insert<InstIntrinsic>(1, Res, CallTarget, Info);
         Call->addArg(Op);
         Context.insert<InstInsertElement>(DestT, T, Res, Index);
         T = DestT;
@@ -4563,7 +4562,7 @@ void TargetMIPS32::createArithInst(Intrinsics::AtomicRMWOperation Operation,
   }
 }
 
-void TargetMIPS32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
+void TargetMIPS32::lowerIntrinsicCall(const InstIntrinsic *Instr) {
   Variable *Dest = Instr->getDest();
   Type DestTy = (Dest == nullptr) ? IceType_void : Dest->getType();
 

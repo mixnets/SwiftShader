@@ -88,7 +88,7 @@ void Instrumentation::instrumentInst(LoweringContext &Context) {
     instrumentInsertElement(Context, llvm::cast<InstInsertElement>(Instr));
     break;
   case Inst::IntrinsicCall:
-    instrumentIntrinsicCall(Context, llvm::cast<InstIntrinsicCall>(Instr));
+    instrumentIntrinsicCall(Context, llvm::cast<InstIntrinsic>(Instr));
     break;
   case Inst::Load:
     instrumentLoad(Context, llvm::cast<InstLoad>(Instr));

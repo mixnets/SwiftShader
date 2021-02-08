@@ -722,7 +722,7 @@ void TargetARM32::genTargetHelperCallFor(Inst *Instr) {
   }
   case Inst::IntrinsicCall: {
     Variable *Dest = Instr->getDest();
-    auto *IntrinsicCall = llvm::cast<InstIntrinsicCall>(Instr);
+    auto *IntrinsicCall = llvm::cast<InstIntrinsic>(Instr);
     Intrinsics::IntrinsicID ID = IntrinsicCall->getIntrinsicInfo().ID;
     switch (ID) {
     default:
@@ -5013,7 +5013,7 @@ void TargetARM32::postambleCtpop64(const InstCall *Instr) {
   _mov(DestHi, T);
 }
 
-void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
+void TargetARM32::lowerIntrinsicCall(const InstIntrinsic *Instr) {
   Variable *Dest = Instr->getDest();
   Type DestTy = (Dest != nullptr) ? Dest->getType() : IceType_void;
   Intrinsics::IntrinsicID ID = Instr->getIntrinsicInfo().ID;
