@@ -56,32 +56,40 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 
 	if(function == Implicit || function == Bias || function == Grad || function == Query)
 	{
-		if(state.is1D())
+		if((function != Query) && (state.minLod == state.maxLod))
 		{
-			computeLod1D(texture, lod, u, dsx, dsy, function);
-		}
-		else if(state.is2D())
-		{
-			computeLod2D(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy, function);
-		}
-		else if(state.isCube())
-		{
-			computeLodCube(texture, lod, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M, function);
+			// Skip costly LOD computation if there's only 1 possible outcome
+			lod = state.minLod;
 		}
 		else
 		{
-			computeLod3D(texture, lod, u, v, w, dsx, dsy, function);
+			if(state.is1D())
+			{
+				computeLod1D(texture, lod, u, dsx, dsy, function);
+			}
+			else if(state.is2D())
+			{
+				computeLod2D(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy, function);
+			}
+			else if(state.isCube())
+			{
+				computeLodCube(texture, lod, uvwa[0], uvwa[1], uvwa[2], dsx, dsy, M, function);
+			}
+			else
+			{
+				computeLod3D(texture, lod, u, v, w, dsx, dsy, function);
+			}
+
+			Float bias = state.mipLodBias;
+
+			if(function == Bias)
+			{
+				// Add SPIR-V Bias operand to the sampler provided bias and clamp to maxSamplerLodBias limit.
+				bias = Min(Max(bias + lodOrBias, -vk::MAX_SAMPLER_LOD_BIAS), vk::MAX_SAMPLER_LOD_BIAS);
+			}
+
+			lod += bias;
 		}
-
-		Float bias = state.mipLodBias;
-
-		if(function == Bias)
-		{
-			// Add SPIR-V Bias operand to the sampler provided bias and clamp to maxSamplerLodBias limit.
-			bias = Min(Max(bias + lodOrBias, -vk::MAX_SAMPLER_LOD_BIAS), vk::MAX_SAMPLER_LOD_BIAS);
-		}
-
-		lod += bias;
 	}
 	else if(function == Lod)
 	{
