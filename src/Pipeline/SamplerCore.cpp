@@ -54,7 +54,15 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		w = As<Float4>(face);
 	}
 
-	if(function == Implicit || function == Bias || function == Grad || function == Query)
+	bool lodClamp = (function != Base && function != Fetch && function != Gather);
+
+	// We can't skip the LOD computation for LOD query, where we have to return the proper value
+	if(lodClamp && (function != Query) && (state.minLod == state.maxLod))
+	{
+		// Skip costly LOD computation if there's only 1 possible outcome
+		lod = state.minLod;
+	}
+	else if(function == Implicit || function == Bias || function == Grad || function == Query)
 	{
 		if(state.is1D())
 		{
@@ -101,7 +109,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	else
 		UNREACHABLE("Sampler function %d", int(function));
 
-	if(function != Base && function != Fetch && function != Gather)
+	if(lodClamp)
 	{
 		if(function == Query)
 		{
