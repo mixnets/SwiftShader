@@ -54,7 +54,13 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		w = As<Float4>(face);
 	}
 
-	if(function == Implicit || function == Bias || function == Grad || function == Query)
+	bool applyLodClamp = (function != Base && function != Fetch && function != Gather);
+
+	if(applyLodClamp && (state.minLod == state.maxLod))
+	{
+		lod = state.minLod;
+	}
+	else if(function == Implicit || function == Bias || function == Grad || function == Query)
 	{
 		if(state.is1D())
 		{
@@ -101,7 +107,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	else
 		UNREACHABLE("Sampler function %d", int(function));
 
-	if(function != Base && function != Fetch && function != Gather)
+	if(applyLodClamp)
 	{
 		if(function == Query)
 		{

@@ -74,8 +74,11 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 
 			samplerState.mipLodBias = sampler->mipLodBias;
 			samplerState.maxAnisotropy = sampler->maxAnisotropy;
-			samplerState.minLod = sampler->minLod;
-			samplerState.maxLod = sampler->maxLod;
+			if(imageDescriptor->mipLevels > 1)
+			{
+				samplerState.minLod = sampler->minLod;
+				samplerState.maxLod = sampler->maxLod;
+			}
 		}
 		else
 		{
