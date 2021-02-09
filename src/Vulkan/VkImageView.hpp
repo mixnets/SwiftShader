@@ -53,6 +53,7 @@ union Identifier
 		VkImageViewType imageViewType;
 		VkFormat format;
 		VkComponentMapping mapping;
+		bool multipleMipLevels;
 	};
 	Data getData() const;
 
@@ -67,6 +68,7 @@ private:
 		uint32_t g : 3;
 		uint32_t b : 3;
 		uint32_t a : 3;
+		uint32_t multipleMipLevels : 1;
 	};
 
 	uint32_t id = 0;
