@@ -78,7 +78,7 @@ VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange ran
 	};
 }
 
-Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, VkComponentMapping mapping)
+Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, VkComponentMapping mapping, bool hasMultipleMipLevels)
 {
 	imageViewType = type;
 	format = Format::mapTo8bit(fmt);
@@ -86,6 +86,7 @@ Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, V
 	g = mapping.g;
 	b = mapping.b;
 	a = mapping.a;
+	multipleMipLevels = hasMultipleMipLevels;
 }
 
 Identifier::Identifier(VkFormat fmt)
@@ -102,7 +103,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , components(ResolveComponentMapping(pCreateInfo->components, format))
     , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
     , ycbcrConversion(ycbcrConversion)
-    , id(image, viewType, format.getAspectFormat(subresourceRange.aspectMask), components)
+    , id(image, viewType, format.getAspectFormat(subresourceRange.aspectMask), components, pCreateInfo->subresourceRange.levelCount > 1u)
 {
 }
 

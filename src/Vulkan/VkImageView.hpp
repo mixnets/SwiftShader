@@ -32,7 +32,7 @@ class SamplerYcbcrConversion;
 union Identifier
 {
 	// Image view identifier
-	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping);
+	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping, bool hasMultipleMipLevels);
 
 	// Buffer view identifier
 	Identifier(VkFormat format);
@@ -53,6 +53,7 @@ union Identifier
 		uint32_t g : 3;
 		uint32_t b : 3;
 		uint32_t a : 3;
+		uint32_t multipleMipLevels : 1;
 	};
 };
 
