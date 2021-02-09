@@ -33,6 +33,10 @@
 #	include <unistd.h>
 #endif
 
+#if defined(__ANDROID__)
+#	include <sys/prctl.h>
+#endif
+
 #include <memory.h>
 
 #undef allocate
@@ -132,6 +136,8 @@ int permissionsToMmapProt(int permissions)
 #endif  // !defined(_WIN32) && !defined(__Fuchsia__)
 
 #if defined(__linux__) && defined(REACTOR_ANONYMOUS_MMAP_NAME)
+
+#if !defined(__ANDROID__)
 // Create a file descriptor for anonymous memory with the given
 // name. Returns -1 on failure.
 // TODO: remove once libc wrapper exists.
@@ -165,6 +171,12 @@ int anonymousFd()
 	static int fd = memfd_create(MACRO_STRINGIFY(REACTOR_ANONYMOUS_MMAP_NAME), 0);
 	return fd;
 }
+#else // defined(__ANDROID__)
+int anonymousFd()
+{
+	return -1;
+}
+#endif // defined(__ANDROID__)
 
 // Ensure there is enough space in the "anonymous" fd for length.
 void ensureAnonFileSize(int anonFd, size_t length)
@@ -177,6 +189,7 @@ void ensureAnonFileSize(int anonFd, size_t length)
 		fileSize = length;
 	}
 }
+
 #endif  // defined(__linux__) && defined(REACTOR_ANONYMOUS_MMAP_NAME)
 
 #if defined(__Fuchsia__)
@@ -278,6 +291,17 @@ void *allocateMemoryPages(size_t bytes, int permissions, bool need_exec)
 	{
 		mapping = nullptr;
 	}
+#if defined(__ANDROID__)
+	else
+	{
+		// On Android, prefer to use a non-standard prctl called
+		// PR_SET_VMA_ANON_NAME to set the name of a private anonymous
+		// mapping, as Android restricts EXECUTE permission on
+		// CoW/shared anonymous mappings with sepolicy neverallows.
+		prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, mapping, length,
+		      MACRO_STRINGIFY(REACTOR_ANONYMOUS_MMAP_NAME));
+	}
+#endif // __ANDROID__
 #elif defined(__Fuchsia__)
 	zx_handle_t vmo;
 	if(zx_vmo_create(length, 0, &vmo) != ZX_OK)
