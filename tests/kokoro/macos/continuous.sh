@@ -32,7 +32,9 @@ cmake .. \
     "-DSWIFTSHADER_LLVM_VERSION=${LLVM_VERSION}" \
     "-DREACTOR_VERIFY_LLVM_IR=1" \
     "-DSWIFTSHADER_LESS_DEBUG_INFO=${SWIFTSHADER_LESS_DEBUG_INFO}"
+cat CMakeCache.txt
 cmake --build . -- -j$(sysctl -n hw.logicalcpu)
+
 
 # Run unit tests
 
