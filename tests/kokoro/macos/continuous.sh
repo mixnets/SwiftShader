@@ -25,6 +25,9 @@ if [[ "${BUILD_TYPE}" == "Debug" ]]; then
   ASAN="OFF"
 fi
 
+# Set minimum version of target macOS platform, required for C++17 filesystem
+MACOSX_DEPLOYMENT_TARGET=10.15
+
 cmake .. \
     "-DSWIFTSHADER_ASAN=${ASAN}" \
     "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
