@@ -444,11 +444,11 @@ void TargetLowering::lower() {
     case Inst::InsertElement:
       lowerInsertElement(llvm::cast<InstInsertElement>(Instr));
       break;
-    case Inst::IntrinsicCall: {
-      auto *Call = llvm::cast<InstIntrinsic>(Instr);
-      if (Call->getIntrinsicInfo().ReturnsTwice)
+    case Inst::Intrinsic: {
+      auto *Intrinsic = llvm::cast<InstIntrinsic>(Instr);
+      if (Intrinsic->getIntrinsicInfo().ReturnsTwice)
         setCallsReturnsTwice(true);
-      lowerIntrinsicCall(Call);
+      lowerIntrinsic(Intrinsic);
       break;
     }
     case Inst::Load:

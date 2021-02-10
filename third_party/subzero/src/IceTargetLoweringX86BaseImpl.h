@@ -4125,7 +4125,7 @@ void TargetX86Base<TraitsType>::lowerInsertElement(
 }
 
 template <typename TraitsType>
-void TargetX86Base<TraitsType>::lowerIntrinsicCall(const InstIntrinsic *Instr) {
+void TargetX86Base<TraitsType>::lowerIntrinsic(const InstIntrinsic *Instr) {
   switch (Intrinsics::IntrinsicID ID = Instr->getIntrinsicInfo().ID) {
   case Intrinsics::AtomicCmpxchg: {
     if (!Intrinsics::isMemoryOrderValid(
