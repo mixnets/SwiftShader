@@ -231,9 +231,11 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 		{
 			Ice::Inst *store = addressUses.stores[0];
 			Ice::Operand *storeValue = store->getData();
-
+			bool hit = false;
 			for(Ice::Inst *load = &*++store->getIterator(), *next = nullptr; load != next; next = load, load = &*++store->getIterator())
 			{
+				assert(!hit);
+				hit = true;
 				if(load->isDeleted() || !isLoad(*load))
 				{
 					continue;
