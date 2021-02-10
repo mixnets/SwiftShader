@@ -25,6 +25,10 @@ if [[ "${BUILD_TYPE}" == "Debug" ]]; then
   ASAN="OFF"
 fi
 
+# Set minimum version of target macOS platform, required for C++17 filesystem
+SDKROOT="macosx10.15"
+MACOSX_DEPLOYMENT_TARGET="10.15"
+
 cmake .. \
     "-DSWIFTSHADER_ASAN=${ASAN}" \
     "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
@@ -33,6 +37,8 @@ cmake .. \
     "-DREACTOR_VERIFY_LLVM_IR=1" \
     "-DSWIFTSHADER_LESS_DEBUG_INFO=${SWIFTSHADER_LESS_DEBUG_INFO}"
 cmake --build . -- -j$(sysctl -n hw.logicalcpu)
+
+cat CMakeCache.txt|grep SDK
 
 # Run unit tests
 
