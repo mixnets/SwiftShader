@@ -67,6 +67,7 @@ target_include_directories(VulkanWrapper
 target_compile_definitions(VulkanWrapper
     PUBLIC
         "STANDALONE"
+        $<$<BOOL:${APPLE}>:"LOAD_SWIFTSHADER_DIRECTLY"> # No loader on default MacOS
 )
 
 target_compile_options(VulkanWrapper
