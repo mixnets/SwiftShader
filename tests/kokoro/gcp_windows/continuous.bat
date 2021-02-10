@@ -33,6 +33,8 @@ REM Run the unit tests. Some must be run from project root
 cd %SRC% || goto :error
 SET SWIFTSHADER_DISABLE_DEBUGGER_WAIT_DIALOG=1
 
+SET VK_LOADER_DEBUG=all
+
 build\Debug\ReactorUnitTests.exe || goto :error
 build\Debug\gles-unittests.exe || goto :error
 build\Debug\system-unittests.exe || goto :error
