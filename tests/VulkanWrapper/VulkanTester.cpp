@@ -13,7 +13,19 @@
 // limitations under the License.
 
 #include "VulkanTester.hpp"
+#include <cstdlib>
 #include <fstream>
+#include <iostream>
+
+// By default, load SwiftShader (via ICD)
+#ifndef LOAD_NATIVE_DRIVER
+#	define LOAD_NATIVE_DRIVER 0
+#endif
+
+// By default, enable validation layers in DEBUG builds
+#if !defined(ENABLE_VALIDATION_LAYERS) && !defined(NDEBUG)
+#	define ENABLE_VALIDATION_LAYERS 1
+#endif
 
 #if defined(_WIN32)
 #	define OS_WINDOWS 1
@@ -34,6 +46,38 @@
 #endif
 
 namespace {
+
+class ScopedSetEnvVar
+{
+public:
+	ScopedSetEnvVar() = default;
+
+	ScopedSetEnvVar(std::string name, std::string value)
+	{
+		set(name, value);
+	}
+
+	void set(std::string name, std::string value)
+	{
+		assert(this->name.empty());
+		this->name = name;
+		if(auto ov = ::getenv(name.data()))
+			oldValue = ::getenv(name.data());
+		[[maybe_unused]] auto r = ::_putenv((name + std::string("=") + value).c_str());
+		assert(r == 0);
+	}
+
+	~ScopedSetEnvVar()
+	{
+		if(!oldValue.empty())
+			::_putenv((name + std::string("=") + oldValue).c_str());
+	}
+
+private:
+	std::string name;
+	std::string oldValue;
+};
+
 std::vector<const char *> getDriverPaths()
 {
 #if OS_WINDOWS
@@ -91,29 +135,53 @@ bool fileExists(const char *path)
 	return f.good();
 }
 
-std::unique_ptr<vk::DynamicLoader> loadDriver()
+std::string findDriverPath()
 {
-	for(auto &p : getDriverPaths())
+	for(auto &path : getDriverPaths())
 	{
-		if(!fileExists(p))
-			continue;
-		return std::make_unique<vk::DynamicLoader>(p);
+		if(fileExists(path))
+			return path;
 	}
 
 #if(OS_MAC || OS_LINUX || OS_ANDROID || OS_FUCHSIA)
 	// On Linux-based OSes, the lib path may be resolved by dlopen
-	for(auto &p : getDriverPaths())
+	for(auto &path : getDriverPaths())
 	{
-		auto lib = dlopen(p, RTLD_LAZY | RTLD_LOCAL);
+		auto lib = dlopen(path, RTLD_LAZY | RTLD_LOCAL);
 		if(lib)
 		{
+			char libPath[2048] = { '\0' };
+			dlinfo(lib, RTLD_DI_ORIGIN, libPath);
 			dlclose(lib);
-			return std::make_unique<vk::DynamicLoader>(p);
+			return libPath;
 		}
 	}
 #endif
 
 	return {};
+}
+
+std::unique_ptr<vk::DynamicLoader> loadSwiftShaderDriver()
+{
+	auto driverPath = findDriverPath();
+	if(driverPath.empty())
+		return {};
+
+	// Create a temp icd.json file that points to the driver path
+	const char *icdFileName = "vk_swiftshader_generated_icd.json";
+	std::ofstream fout(icdFileName);
+	fout << R"raw({ "file_format_version": "1.0.0", "ICD": { "library_path": ")raw" << driverPath << R"raw(", "api_version": "1.0.5" } } )raw";
+	fout.close();
+
+	// Set VK_ICD_FILENAMES env var so it gets picked up by the loading of the ICD driver
+	ScopedSetEnvVar setSetEnvVar("VK_ICD_FILENAMES", icdFileName);
+
+	return std::make_unique<vk::DynamicLoader>();  // No path, loads default via ICD
+}
+
+std::unique_ptr<vk::DynamicLoader> loadNativeDriver()
+{
+	return std::make_unique<vk::DynamicLoader>();  // No path, loads default via ICD
 }
 
 }  // namespace
@@ -122,19 +190,87 @@ VulkanTester::~VulkanTester()
 {
 	device.waitIdle();
 	device.destroy(nullptr);
+	if(debugReport) instance.destroy(debugReport);
 	instance.destroy(nullptr);
 }
 
 void VulkanTester::initialize()
 {
-	dl = loadDriver();
+#if LOAD_NATIVE_DRIVER
+	dl = loadNativeDriver();
+#else
+	dl = loadSwiftShaderDriver();
+#endif
 	assert(dl && dl->success());
 
 	PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl->getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
 	VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-	instance = vk::createInstance({}, nullptr);
+	vk::InstanceCreateInfo instanceCreateInfo;
+	std::vector<const char *> extensionNames
+	{
+		VK_KHR_SURFACE_EXTENSION_NAME,
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		    VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+#endif
+	};
+#if ENABLE_VALIDATION_LAYERS
+	extensionNames.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+#endif
+
+	auto addLayerIfAvailable = [](std::vector<const char *> &layers, const char *layer) {
+		static auto layerProperties = vk::enumerateInstanceLayerProperties();
+		if(std::find_if(layerProperties.begin(), layerProperties.end(), [layer](auto &lp) {
+			   return strcmp(layer, lp.layerName) == 0;
+		   }) != layerProperties.end())
+		{
+			std::cout << "Enabled layer: " << layer << std::endl;
+			layers.push_back(layer);
+		}
+	};
+
+	std::vector<const char *> layerNames;
+#if ENABLE_VALIDATION_LAYERS
+	addLayerIfAvailable(layerNames, "VK_LAYER_KHRONOS_validation");
+	addLayerIfAvailable(layerNames, "VK_LAYER_LUNARG_standard_validation");
+#endif
+
+	instanceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
+	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
+	instanceCreateInfo.ppEnabledLayerNames = layerNames.data();
+	instanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(layerNames.size());
+
+	instance = vk::createInstance(instanceCreateInfo, nullptr);
 	VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+
+#if ENABLE_VALIDATION_LAYERS
+	if(instance.getProcAddr("vkCreateDebugUtilsMessengerEXT"))
+	{
+		vk::DebugUtilsMessengerCreateInfoEXT debugInfo;
+		debugInfo.messageSeverity =
+		    vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
+		    vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
+		    vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning;
+
+		debugInfo.messageType = vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+		                        vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
+		                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance;
+
+		PFN_vkDebugUtilsMessengerCallbackEXT debugInfoCallback =
+		    [](
+		        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		        VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+		        const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+		        void *pUserData) -> VkBool32 {
+			//assert(false);
+			std::cerr << "[DebugInfoCallback] " << pCallbackData->pMessage << std::endl;
+			return VK_FALSE;
+		};
+
+		debugInfo.pfnUserCallback = debugInfoCallback;
+		debugReport = instance.createDebugUtilsMessengerEXT(debugInfo);
+	}
+#endif
 
 	std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 	assert(!physicalDevices.empty());
@@ -146,9 +282,15 @@ void VulkanTester::initialize()
 	queueCreateInfo.queueCount = 1;
 	queueCreateInfo.pQueuePriorities = &defaultQueuePriority;
 
+	std::vector<const char *> deviceExtensions = {
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+	};
+
 	vk::DeviceCreateInfo deviceCreateInfo;
 	deviceCreateInfo.queueCreateInfoCount = 1;
 	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
+	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 
 	device = physicalDevice.createDevice(deviceCreateInfo, nullptr);
 

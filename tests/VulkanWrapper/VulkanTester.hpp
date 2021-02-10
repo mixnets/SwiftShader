@@ -27,12 +27,14 @@ public:
 	void initialize();
 
 	const vk::DynamicLoader &dynamicLoader() const { return *dl; }
-	vk::Device &getDevice() { return this->device; }
-	vk::Queue &getQueue() { return this->queue; }
+	vk::PhysicalDevice &getPhysicalDevice() { return physicalDevice; }
+	vk::Device &getDevice() { return device; }
+	vk::Queue &getQueue() { return queue; }
 	uint32_t getQueueFamilyIndex() const { return queueFamilyIndex; }
 
 private:
 	std::unique_ptr<vk::DynamicLoader> dl;
+	vk::DebugUtilsMessengerEXT debugReport;
 
 protected:
 	const uint32_t queueFamilyIndex = 0;
