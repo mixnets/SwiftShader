@@ -965,11 +965,6 @@ void TargetMIPS32::translateO2() {
   // to reduce the amount of work needed for searching for opportunities.
   Func->doBranchOpt();
   Func->dump("After branch optimization");
-
-  // Nop insertion
-  if (getFlags().getShouldDoNopInsertion()) {
-    Func->doNopInsertion();
-  }
 }
 
 void TargetMIPS32::translateOm1() {
@@ -1019,11 +1014,6 @@ void TargetMIPS32::translateOm1() {
   if (Func->hasError())
     return;
   Func->dump("After postLowerLegalization");
-
-  // Nop insertion
-  if (getFlags().getShouldDoNopInsertion()) {
-    Func->doNopInsertion();
-  }
 }
 
 bool TargetMIPS32::doBranchOpt(Inst *Instr, const CfgNode *NextNode) {
@@ -5443,14 +5433,6 @@ void TargetMIPS32::doAddressOptLoad() {
           formAddressingMode(Dest->getType(), Func, Instr, Addr)) {
     Instr->setDeleted();
     Context.insert<InstLoad>(Dest, Mem);
-  }
-}
-
-void TargetMIPS32::randomlyInsertNop(float Probability,
-                                     RandomNumberGenerator &RNG) {
-  RandomNumberGeneratorWrapper RNGW(RNG);
-  if (RNGW.getTrueWithProbability(Probability)) {
-    _nop();
   }
 }
 
