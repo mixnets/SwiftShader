@@ -115,6 +115,7 @@ void Optimizer::run(Ice::Cfg *function)
 	// Start by eliminating any dead code, to avoid redundant work for the
 	// subsequent optimization passes.
 	eliminateDeadCode();
+	eliminateUnitializedLoads();
 
 	// Eliminate allocas which store the address of other allocas.
 	propagateAlloca();
@@ -125,8 +126,9 @@ void Optimizer::run(Ice::Cfg *function)
 	// Iterate through basic blocks to propagate loads following stores.
 	optimizeSingleBasicBlockLoadsStores();
 
-	eliminateUnitializedLoads();
 	eliminateLoadsFollowingSingleStore();
+
+	eliminateUnitializedLoads();
 	optimizeStoresInSingleBasicBlock();
 	eliminateDeadCode();
 
@@ -452,7 +454,7 @@ void Optimizer::eliminateLoadsFollowingSingleStore()
 				{
 					continue;
 				}
-
+				assert(false && "still kicking");
 				replace(load, storeValue);
 
 				for(size_t i = 0; i < addressUses.loads.size(); i++)
