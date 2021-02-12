@@ -209,8 +209,7 @@ public:
 	static CoroutineHandle invokeCoroutineBegin(Routine &routine, std::function<CoroutineHandle()> func);
 
 	// Terminators
-	static void createRetVoid();
-	static void createRet(Value *V);
+	static void createRet(Value *returnValue);
 	static void createBr(BasicBlock *dest);
 	static void createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
 

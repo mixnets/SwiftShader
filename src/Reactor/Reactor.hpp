@@ -148,6 +148,8 @@ public:
 	// It is not considered part of Reactor's public API.
 	static void materializeAll();
 
+	static void killUnmaterialized();
+
 protected:
 	Variable(Type *type, int arraySize);
 	Variable(const Variable &) = default;
@@ -155,8 +157,6 @@ protected:
 	virtual ~Variable();
 
 private:
-	static void killUnmaterialized();
-
 	// Set of variables that do not have a stack location yet.
 	class UnmaterializedVariables
 	{
@@ -2590,6 +2590,11 @@ void Return();
 template<class T>
 void Return(const T &ret)
 {
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
 	static_assert(CanBeUsedAsReturn<ReactorTypeT<T>>::value, "Unsupported type for Return()");
 	Nucleus::createRet(ValueOf<T>(ret));
 	// Place any unreachable instructions in an unreferenced block.

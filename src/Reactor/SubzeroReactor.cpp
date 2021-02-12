@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Reactor.hpp"
+
 #include "Debug.hpp"
 #include "EmulatedIntrinsics.hpp"
-#include "OptimalIntrinsics.hpp"
-#include "Print.hpp"
-#include "Reactor.hpp"
-#include "ReactorDebugInfo.hpp"
-
 #include "ExecutableMemory.hpp"
+#include "OptimalIntrinsics.hpp"
 #include "Optimizer.hpp"
+#include "Print.hpp"
+#include "ReactorDebugInfo.hpp"
 
 #include "src/IceCfg.h"
 #include "src/IceCfgNode.h"
@@ -212,6 +212,7 @@ Ice::Variable *createLoad(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Ope
 }  // namespace
 
 namespace rr {
+
 class ELFMemoryStreamer;
 class CoroutineGenerator;
 }  // namespace rr
@@ -232,6 +233,7 @@ rr::Config &defaultConfig()
 	return config;
 }
 
+// TODO(b/178220490): Combine into a single global
 Ice::GlobalContext *context = nullptr;
 Ice::Cfg *function = nullptr;
 Ice::CfgNode *entryBlock = nullptr;
@@ -248,6 +250,7 @@ Ice::Fdstream *out = nullptr;
 // Coroutine globals
 rr::Type *coroYieldType = nullptr;
 std::shared_ptr<rr::CoroutineGenerator> coroGen;
+
 marl::Scheduler &getOrCreateScheduler()
 {
 	static auto scheduler = [] {
@@ -258,6 +261,7 @@ marl::Scheduler &getOrCreateScheduler()
 
 	return *scheduler;
 }
+
 }  // Anonymous namespace
 
 namespace {
@@ -471,10 +475,15 @@ static size_t typeSize(Type *type)
 
 static void finalizeFunction()
 {
-	// Create a return if none was added
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
+	// Create a return if none was explicitly added
 	if(::basicBlock->getInsts().empty() || ::basicBlock->getInsts().back().getKind() != Ice::Inst::Ret)
 	{
-		Nucleus::createRetVoid();
+		Nucleus::createRet(nullptr);
 	}
 
 	// Connect the entry block to the top of the initial basic block
@@ -1126,7 +1135,12 @@ BasicBlock *Nucleus::getInsertBlock()
 
 void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 {
-	//	ASSERT(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
+	// ASSERT(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
+
+	if(::basicBlock == basicBlock)
+	{
+		return;
+	}
 
 	Variable::materializeAll();
 
@@ -1159,29 +1173,11 @@ Value *Nucleus::getArgument(unsigned int index)
 	return V(::function->getArgs()[index]);
 }
 
-void Nucleus::createRetVoid()
+void Nucleus::createRet(Value *returnValue)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
-	// Code generated after this point is unreachable, so any variables
-	// being read can safely return an undefined value. We have to avoid
-	// materializing variables after the terminator ret instruction.
-	Variable::killUnmaterialized();
-
-	Ice::InstRet *ret = Ice::InstRet::create(::function);
-	::basicBlock->appendInst(ret);
-}
-
-void Nucleus::createRet(Value *v)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-
-	// Code generated after this point is unreachable, so any variables
-	// being read can safely return an undefined value. We have to avoid
-	// materializing variables after the terminator ret instruction.
-	Variable::killUnmaterialized();
-
-	Ice::InstRet *ret = Ice::InstRet::create(::function, v);
+	Ice::InstRet *ret = Ice::InstRet::create(::function, returnValue);
 	::basicBlock->appendInst(ret);
 }
 
@@ -4741,7 +4737,7 @@ public:
 
 		//            return false; // coroutine has been stopped by the caller.
 		::basicBlock = doneBlock;
-		Nucleus::createRetVoid();  // coroutine return value is ignored.
+		Nucleus::createRet(nullptr);  // coroutine return value is ignored.
 
 		//        ... <REACTOR CODE> ...
 		::basicBlock = resumeBlock;
@@ -4939,6 +4935,11 @@ static void coroutineEntryDestroyStub(Nucleus::CoroutineHandle handle)
 
 std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
 	if(::coroGen)
 	{
 		// Finish generating coroutine functions

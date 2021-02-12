@@ -96,10 +96,11 @@ void Variable::UnmaterializedVariables::materializeAll()
 {
 	// Flatten map of Variable* to monotonically increasing counter to a vector,
 	// then sort it by the counter, so that we materialize in variable usage order.
-	std::vector<std::pair<const Variable *, int>> sorted;
-	sorted.resize(variables.size());
+	std::vector<std::pair<const Variable *, int>> sorted(variables.size());
+
 	std::copy(variables.begin(), variables.end(), sorted.begin());
-	std::sort(sorted.begin(), sorted.end(), [&](auto &lhs, auto &rhs) {
+
+	std::sort(sorted.begin(), sorted.end(), [](auto &lhs, auto &rhs) {
 		return lhs.second < rhs.second;
 	});
 
@@ -108,7 +109,7 @@ void Variable::UnmaterializedVariables::materializeAll()
 		v.first->materialize();
 	}
 
-	variables.clear();
+	//variables.clear();
 }
 
 Variable::Variable(Type *type, int arraySize)
@@ -139,13 +140,14 @@ void Variable::materialize() const
 	{
 		address = Nucleus::allocateStackVariable(getType(), arraySize);
 		RR_DEBUG_INFO_EMIT_VAR(address);
-
-		if(rvalue)
-		{
-			storeValue(rvalue);
-			rvalue = nullptr;
-		}
 	}
+
+	if(rvalue)
+	{
+		Nucleus::createStore(rvalue, address, getType(), false, 0);
+	}
+
+	rvalue = nullptr;
 }
 
 Value *Variable::loadValue() const
@@ -161,14 +163,16 @@ Value *Variable::loadValue() const
 		materialize();
 	}
 
-	return Nucleus::createLoad(address, getType(), false, 0);
+	rvalue = Nucleus::createLoad(address, getType(), false, 0);
+
+	return rvalue;
 }
 
 Value *Variable::storeValue(Value *value) const
 {
-	if(address)
+	if(address)  // && !rvalue)
 	{
-		return Nucleus::createStore(value, address, getType(), false, 0);
+		//	Nucleus::createStore(value, address, getType(), false, 0);
 	}
 
 	rvalue = value;
@@ -4363,7 +4367,12 @@ RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 
 void Return()
 {
-	Nucleus::createRetVoid();
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
+	Nucleus::createRet(nullptr);
 	// Place any unreachable instructions in an unreferenced block.
 	Nucleus::setInsertBlock(Nucleus::createBasicBlock());
 }

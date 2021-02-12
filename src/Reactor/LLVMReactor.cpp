@@ -555,13 +555,19 @@ Config Nucleus::getDefaultConfig()
 
 std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
+	// Create a return if none was explicitly added
 	if(jit->builder->GetInsertBlock()->empty() || !jit->builder->GetInsertBlock()->back().isTerminator())
 	{
 		llvm::Type *type = jit->function->getReturnType();
 
 		if(type->isVoidTy())
 		{
-			createRetVoid();
+			createRet(nullptr);
 		}
 		else
 		{
@@ -665,7 +671,12 @@ BasicBlock *Nucleus::getInsertBlock()
 
 void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 {
-	//	assert(jit->builder->GetInsertBlock()->back().isTerminator());
+	// assert(jit->builder->GetInsertBlock()->back().isTerminator());
+
+	if(jit->builder->GetInsertBlock() == B(basicBlock))
+	{
+		return;
+	}
 
 	Variable::materializeAll();
 
@@ -696,32 +707,22 @@ Value *Nucleus::getArgument(unsigned int index)
 	return V(&*args);
 }
 
-void Nucleus::createRetVoid()
+void Nucleus::createRet(Value *returnValue)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 
-	ASSERT_MSG(jit->function->getReturnType() == T(Void::type()), "Return type mismatch");
+	if(!returnValue)
+	{
+		ASSERT_MSG(jit->function->getReturnType() == T(Void::type()), "Return type mismatch");
 
-	// Code generated after this point is unreachable, so any variables
-	// being read can safely return an undefined value. We have to avoid
-	// materializing variables after the terminator ret instruction.
-	Variable::killUnmaterialized();
+		jit->builder->CreateRetVoid();
+	}
+	else
+	{
+		ASSERT_MSG(jit->function->getReturnType() == V(returnValue)->getType(), "Return type mismatch");
 
-	jit->builder->CreateRetVoid();
-}
-
-void Nucleus::createRet(Value *v)
-{
-	RR_DEBUG_INFO_UPDATE_LOC();
-
-	ASSERT_MSG(jit->function->getReturnType() == V(v)->getType(), "Return type mismatch");
-
-	// Code generated after this point is unreachable, so any variables
-	// being read can safely return an undefined value. We have to avoid
-	// materializing variables after the terminator ret instruction.
-	Variable::killUnmaterialized();
-
-	jit->builder->CreateRet(V(v));
+		jit->builder->CreateRet(V(returnValue));
+	}
 }
 
 void Nucleus::createBr(BasicBlock *dest)
@@ -4255,6 +4256,11 @@ void Nucleus::yield(Value *val)
 
 std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
 {
+	// Code generated after this point is unreachable, so any variables
+	// being read can safely return an undefined value. We have to avoid
+	// storing variables after the terminator ret instruction.
+	Variable::killUnmaterialized();
+
 	bool isCoroutine = jit->coroutine.id != nullptr;
 	if(isCoroutine)
 	{
