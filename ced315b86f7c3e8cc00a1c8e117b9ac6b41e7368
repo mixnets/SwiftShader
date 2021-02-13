@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f17840a_a72644a0",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-02-13T10:16:16Z",
+      "side": 1,
+      "message": "Not valid to have more Reactor code after acquire. Update comment.",
+      "range": {
+        "startLine": 558,
+        "startChar": 1,
+        "endLine": 559,
+        "endChar": 52
+      },
+      "revId": "ced315b86f7c3e8cc00a1c8e117b9ac6b41e7368",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6cc52360_c807705e",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-02-13T10:16:16Z",
+      "side": 1,
+      "message": "Is this kill even necessary? Does anything get materialized after this, due to a branch, or other reason? The variables list gets deleted somewhere around here.",
+      "range": {
+        "startLine": 560,
+        "startChar": 4,
+        "endLine": 560,
+        "endChar": 58
+      },
+      "revId": "ced315b86f7c3e8cc00a1c8e117b9ac6b41e7368",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
