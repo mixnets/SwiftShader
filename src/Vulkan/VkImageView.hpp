@@ -32,10 +32,19 @@ class SamplerYcbcrConversion;
 union Identifier
 {
 	// Image view identifier
-	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping);
+	Identifier(const VkImageViewCreateInfo *pCreateInfo);
 
 	// Buffer view identifier
 	Identifier(VkFormat format);
+
+	// Copy constructor from existing ID
+	Identifier(uint32_t fromId)
+	    : id(fromId)
+	{}
+
+	VkImageViewType getImageViewType() const;
+	VkFormat getFormat() const;
+	VkComponentMapping getSwizzle() const;
 
 	operator uint32_t() const
 	{

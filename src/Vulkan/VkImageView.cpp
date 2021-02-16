@@ -78,21 +78,49 @@ VkImageSubresourceRange ResolveRemainingLevelsLayers(VkImageSubresourceRange ran
 	};
 }
 
-Identifier::Identifier(const Image *image, VkImageViewType type, VkFormat fmt, VkComponentMapping mapping)
+Identifier::Identifier(const VkImageViewCreateInfo *pCreateInfo)
 {
-	imageViewType = type;
-	format = Format::mapTo8bit(fmt);
+	imageViewType = pCreateInfo->viewType;
+	Image *image = vk::Cast(pCreateInfo->image);
+	VkImageSubresourceRange subresource = ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image);
+	VkFormat vkFormat = static_cast<VkFormat>(GetImageViewFormat(pCreateInfo).getAspectFormat(subresource.aspectMask));
+	format = static_cast<uint32_t>(vkFormat);
+	VkComponentMapping mapping = ResolveComponentMapping(pCreateInfo->components, vkFormat);
 	r = mapping.r;
 	g = mapping.g;
 	b = mapping.b;
 	a = mapping.a;
 }
 
-Identifier::Identifier(VkFormat fmt)
+Identifier::Identifier(VkFormat bufferFormat)
 {
 	static_assert(vk::VK_IMAGE_VIEW_TYPE_END_RANGE == 6, "VkImageViewType does not allow using 7 to indicate buffer view");
-	imageViewType = 7;  // Still fits in 3-bit field
-	format = Format::mapTo8bit(fmt);
+	imageViewType = VK_IMAGE_VIEW_TYPE_1D;
+	format = Format::mapTo8bit(bufferFormat);
+	constexpr VkComponentMapping identityMapping = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
+	VkComponentMapping mapping = ResolveComponentMapping(identityMapping, bufferFormat);
+	r = static_cast<uint32_t>(mapping.r);
+	g = static_cast<uint32_t>(mapping.g);
+	b = static_cast<uint32_t>(mapping.b);
+	a = static_cast<uint32_t>(mapping.a);
+}
+
+VkImageViewType Identifier::getImageViewType() const
+{
+	return static_cast<VkImageViewType>(imageViewType);
+}
+
+VkFormat Identifier::getFormat() const
+{
+	return Format::mapFrom8bit(static_cast<uint8_t>(format));
+}
+
+VkComponentMapping Identifier::getSwizzle() const
+{
+	return { static_cast<VkComponentSwizzle>(r),
+		     static_cast<VkComponentSwizzle>(g),
+		     static_cast<VkComponentSwizzle>(b),
+		     static_cast<VkComponentSwizzle>(a) };
 }
 
 ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const vk::SamplerYcbcrConversion *ycbcrConversion)
@@ -102,7 +130,7 @@ ImageView::ImageView(const VkImageViewCreateInfo *pCreateInfo, void *mem, const 
     , components(ResolveComponentMapping(pCreateInfo->components, format))
     , subresourceRange(ResolveRemainingLevelsLayers(pCreateInfo->subresourceRange, image))
     , ycbcrConversion(ycbcrConversion)
-    , id(image, viewType, format.getAspectFormat(subresourceRange.aspectMask), components)
+    , id(pCreateInfo)
 {
 }
 
