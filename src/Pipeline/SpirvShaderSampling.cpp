@@ -42,18 +42,20 @@ SpirvShader::ImageSampler *SpirvShader::getImageSampler(uint32_t inst, vk::Sampl
 	vk::Device::SamplingRoutineCache *cache = imageDescriptor->device->getSamplingRoutineCache();
 
 	auto createSamplingRoutine = [&](const vk::Device::SamplingRoutineCache::Key &key) {
-		auto type = imageDescriptor->type;
+		const vk::Identifier::Data imageViewData = vk::Identifier(imageDescriptor->imageViewId).getData();
+
+		auto type = imageViewData.imageViewType;
 
 		Sampler samplerState = {};
 		samplerState.textureType = type;
-		samplerState.textureFormat = imageDescriptor->format;
+		samplerState.textureFormat = imageViewData.format;
 
 		samplerState.addressingModeU = convertAddressingMode(0, sampler, type);
 		samplerState.addressingModeV = convertAddressingMode(1, sampler, type);
 		samplerState.addressingModeW = convertAddressingMode(2, sampler, type);
 
 		samplerState.mipmapFilter = convertMipmapMode(sampler);
-		samplerState.swizzle = imageDescriptor->swizzle;
+		samplerState.swizzle = imageViewData.mapping;
 		samplerState.gatherComponent = instruction.gatherComponent;
 
 		if(sampler)

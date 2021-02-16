@@ -32,10 +32,15 @@ class SamplerYcbcrConversion;
 union Identifier
 {
 	// Image view identifier
-	Identifier(const Image *image, VkImageViewType type, VkFormat format, VkComponentMapping mapping);
+	Identifier(const VkImageViewCreateInfo *pCreateInfo);
 
 	// Buffer view identifier
 	Identifier(VkFormat format);
+
+	// Copy constructor from existing ID
+	Identifier(uint32_t fromId)
+	    : id(fromId)
+	{}
 
 	operator uint32_t() const
 	{
@@ -43,7 +48,16 @@ union Identifier
 		return id;
 	}
 
-	uint32_t id = 0;
+	struct Data
+	{
+		VkImageViewType imageViewType;
+		VkFormat format;
+		VkComponentMapping mapping;
+	};
+	Data getData() const;
+
+private:
+	void pack(const Data &data);
 
 	struct
 	{
@@ -54,6 +68,8 @@ union Identifier
 		uint32_t b : 3;
 		uint32_t a : 3;
 	};
+
+	uint32_t id = 0;
 };
 
 class ImageView : public Object<ImageView, VkImageView>
