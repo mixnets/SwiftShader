@@ -22,6 +22,11 @@
 namespace {
 VkExtent2D getWindowSize(HWND hwnd)
 {
+	if(!IsWindow(hwnd))
+	{
+		return { 0, 0 };
+	}
+
 	RECT clientRect = {};
 	BOOL status = GetClientRect(hwnd, &clientRect);
 	ASSERT(status != 0);
