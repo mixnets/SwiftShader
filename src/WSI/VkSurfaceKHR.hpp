@@ -77,7 +77,7 @@ public:
 
 	virtual void destroySurface(const VkAllocationCallbacks *pAllocator) = 0;
 
-	virtual void getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const;
+	virtual VkResult getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const;
 
 	uint32_t getSurfaceFormatsCount() const;
 	VkResult getSurfaceFormats(uint32_t *pSurfaceFormatCount, VkSurfaceFormatKHR *pSurfaceFormats) const;

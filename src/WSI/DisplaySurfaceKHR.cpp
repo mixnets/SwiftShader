@@ -200,15 +200,16 @@ size_t DisplaySurfaceKHR::ComputeRequiredAllocationSize(const VkDisplaySurfaceCr
 	return 0;
 }
 
-void DisplaySurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult DisplaySurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
-	SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
+	if(auto result = SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities); result != VK_SUCCESS) return result;
 
 	VkExtent2D extent = { width, height };
 
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
 	pSurfaceCapabilities->maxImageExtent = extent;
+	return VK_SUCCESS;
 }
 
 void DisplaySurfaceKHR::attachImage(PresentImage *image)

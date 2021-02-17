@@ -109,7 +109,7 @@ VkImage PresentImage::asVkImage() const
 	return image ? static_cast<VkImage>(*image) : VkImage({ VK_NULL_HANDLE });
 }
 
-void SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
 	pSurfaceCapabilities->minImageCount = 1;
 	pSurfaceCapabilities->maxImageCount = 0;
@@ -124,6 +124,8 @@ void SurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabi
 	    VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
 	    VK_IMAGE_USAGE_TRANSFER_DST_BIT |
 	    VK_IMAGE_USAGE_SAMPLED_BIT;
+
+	return VK_SUCCESS;
 }
 
 uint32_t SurfaceKHR::getSurfaceFormatsCount() const

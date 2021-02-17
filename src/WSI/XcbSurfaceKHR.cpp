@@ -124,15 +124,16 @@ size_t XcbSurfaceKHR::ComputeRequiredAllocationSize(const VkXcbSurfaceCreateInfo
 	return 0;
 }
 
-void XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
-	SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
+	if(auto result = SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities); result != VK_SUCCESS) return result;
 
 	VkExtent2D extent = getWindowSize(connection, window);
 
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
 	pSurfaceCapabilities->maxImageExtent = extent;
+	return VK_SUCCESS;
 }
 
 void XcbSurfaceKHR::attachImage(PresentImage *image)

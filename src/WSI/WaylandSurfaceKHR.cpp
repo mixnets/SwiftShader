@@ -56,13 +56,14 @@ size_t WaylandSurfaceKHR::ComputeRequiredAllocationSize(const VkWaylandSurfaceCr
 	return 0;
 }
 
-void WaylandSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
+VkResult WaylandSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const
 {
-	SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities);
+	if(auto result = SurfaceKHR::getSurfaceCapabilities(pSurfaceCapabilities); result != VK_SUCCESS) return result;
 
 	pSurfaceCapabilities->currentExtent = { 0xFFFFFFFF, 0xFFFFFFFF };
 	pSurfaceCapabilities->minImageExtent = { 1, 1 };
 	pSurfaceCapabilities->maxImageExtent = { 0xFFFFFFFF, 0xFFFFFFFF };
+	return VK_SUCCESS;
 }
 
 void WaylandSurfaceKHR::attachImage(PresentImage *image)
