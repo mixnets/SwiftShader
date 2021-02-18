@@ -3519,6 +3519,8 @@ public:
 		falseBB = nullptr;
 		endBB = Nucleus::createBasicBlock();
 
+		Variable::materializeAll();
+
 		Nucleus::setInsertBlock(trueBB);
 	}
 
