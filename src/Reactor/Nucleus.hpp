@@ -333,6 +333,17 @@ public:
 	static Type *getContainedType(Type *vectorType);
 	static Type *getPointerType(Type *elementType);
 	static Type *getPrintfStorageType(Type *valueType);
+
+	// Diagnostic utilities
+	struct OptimizerReport
+	{
+		int allocas = 0;
+		int loads = 0;
+		int stores = 0;
+	};
+
+	using OptimizerCallback = void(const OptimizerReport *report);
+	static void setOptimizerCallback(OptimizerCallback *callback);
 };
 
 }  // namespace rr
