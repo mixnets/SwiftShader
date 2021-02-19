@@ -54,7 +54,7 @@ namespace {
 
 struct Allocation
 {
-	//	size_t bytes;
+	// size_t bytes;
 	unsigned char *block;
 };
 
@@ -87,7 +87,7 @@ void *allocateRaw(size_t bytes, size_t alignment)
 		aligned = (unsigned char *)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
-		//	allocation->bytes = bytes;
+		// allocation->bytes = bytes;
 		allocation->block = block;
 	}
 
@@ -231,7 +231,10 @@ void *allocate(size_t bytes, size_t alignment)
 {
 	void *memory = allocateRaw(bytes, alignment);
 
-	if(memory)
+	// Zero-initialize the memory, for security reasons.
+	// MemorySanitizer builds skip this so that we can detect when we
+	// inadvertently rely on this, which would indicate a bug.
+	if(memory && !__has_feature(memory_sanitizer))
 	{
 		memset(memory, 0, bytes);
 	}
