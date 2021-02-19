@@ -54,31 +54,14 @@ namespace {
 
 struct Allocation
 {
-	//	size_t bytes;
+	// size_t bytes;
 	unsigned char *block;
 };
 
-void *allocateRaw(size_t bytes, size_t alignment)
+[[maybe_unused]] void *allocate(size_t bytes, size_t alignment)
 {
 	ASSERT((alignment & (alignment - 1)) == 0);  // Power of 2 alignment.
 
-#if defined(__linux__) && defined(REACTOR_ANONYMOUS_MMAP_NAME)
-	if(alignment < sizeof(void *))
-	{
-		return malloc(bytes);
-	}
-	else
-	{
-		void *allocation;
-		int result = posix_memalign(&allocation, alignment, bytes);
-		if(result != 0)
-		{
-			errno = result;
-			allocation = nullptr;
-		}
-		return allocation;
-	}
-#else
 	unsigned char *block = new unsigned char[bytes + sizeof(Allocation) + alignment];
 	unsigned char *aligned = nullptr;
 
@@ -87,12 +70,22 @@ void *allocateRaw(size_t bytes, size_t alignment)
 		aligned = (unsigned char *)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
 		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
 
-		//	allocation->bytes = bytes;
+		// allocation->bytes = bytes;
 		allocation->block = block;
 	}
 
 	return aligned;
-#endif
+}
+
+[[maybe_unused]] void deallocate(void *memory)
+{
+	if(memory)
+	{
+		unsigned char *aligned = (unsigned char *)memory;
+		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
+
+		delete[] allocation->block;
+	}
 }
 
 #if defined(_WIN32)
@@ -225,33 +218,6 @@ size_t memoryPageSize()
 	}();
 
 	return pageSize;
-}
-
-void *allocate(size_t bytes, size_t alignment)
-{
-	void *memory = allocateRaw(bytes, alignment);
-
-	if(memory)
-	{
-		memset(memory, 0, bytes);
-	}
-
-	return memory;
-}
-
-void deallocate(void *memory)
-{
-#if defined(__linux__) && defined(REACTOR_ANONYMOUS_MMAP_NAME)
-	free(memory);
-#else
-	if(memory)
-	{
-		unsigned char *aligned = (unsigned char *)memory;
-		Allocation *allocation = (Allocation *)(aligned - sizeof(Allocation));
-
-		delete[] allocation->block;
-	}
-#endif
 }
 
 // Rounds |x| up to a multiple of |m|, where |m| is a power of 2.
