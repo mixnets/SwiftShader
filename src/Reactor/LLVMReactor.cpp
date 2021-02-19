@@ -1781,6 +1781,13 @@ Value *Nucleus::createConstantString(const char *v)
 	return V(ptr);
 }
 
+#ifndef NDEBUG
+void Nucleus::setOptimizerCallback(OptimizerCallback callback)
+{
+	// LLVMReactor does not produce optimizer reports.
+}
+#endif
+
 Type *Void::type()
 {
 	return T(llvm::Type::getVoidTy(*jit->context));

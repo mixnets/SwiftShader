@@ -378,7 +378,6 @@ TEST(ReactorUnitTests, LoopAfterReturn)
 
 // This test excercises the Optimizer::eliminateLoadsFollowingSingleStore() optimization pass.
 // The three load operations for `y` should get eliminated.
-// TODO(b/180665600): Check that the optimization took place.
 TEST(ReactorUnitTests, EliminateLoadsFollowingSingleStore)
 {
 	FunctionT<int(int)> function;
@@ -398,6 +397,12 @@ TEST(ReactorUnitTests, EliminateLoadsFollowingSingleStore)
 		Return(z);
 	}
 
+	Nucleus::setOptimizerCallback([](const Nucleus::OptimizerReport *report) {
+		EXPECT_EQ(report->allocas, 2);
+		EXPECT_EQ(report->loads, 2);
+		EXPECT_EQ(report->stores, 2);
+	});
+
 	auto routine = function(testName().c_str());
 
 	int result = routine(11);
@@ -406,7 +411,6 @@ TEST(ReactorUnitTests, EliminateLoadsFollowingSingleStore)
 
 // This test excercises the Optimizer::propagateAlloca() optimization pass.
 // The pointer variable should not get stored to / loaded from memory.
-// TODO(b/180665600): Check that the optimization took place.
 TEST(ReactorUnitTests, PropagateAlloca)
 {
 	FunctionT<int(int)> function;
@@ -425,6 +429,12 @@ TEST(ReactorUnitTests, PropagateAlloca)
 
 		Return(Int(*p));  // TODO(b/179694472): Support Return(*p)
 	}
+
+	Nucleus::setOptimizerCallback([](const Nucleus::OptimizerReport *report) {
+		EXPECT_EQ(report->allocas, 1);
+		EXPECT_EQ(report->loads, 1);
+		EXPECT_EQ(report->stores, 1);
+	});
 
 	auto routine = function(testName().c_str());
 

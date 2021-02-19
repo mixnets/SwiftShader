@@ -258,6 +258,11 @@ marl::Scheduler &getOrCreateScheduler()
 
 	return *scheduler;
 }
+
+#ifndef NDEBUG
+rr::Nucleus::OptimizerCallback optimizerCallback = nullptr;
+#endif
+
 }  // Anonymous namespace
 
 namespace {
@@ -1025,7 +1030,16 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 
 		currFunc->setFunctionName(Ice::GlobalString::createWithString(::context, names[i]));
 
-		rr::optimize(currFunc);
+		if(::optimizerCallback)
+		{
+			Nucleus::OptimizerReport report;
+			rr::optimize(currFunc, ::optimizerCallback ? &report : nullptr);
+			::optimizerCallback(&report);
+		}
+		else
+		{
+			rr::optimize(currFunc);
+		}
 
 		currFunc->computeInOutEdges();
 		ASSERT_MSG(!currFunc->hasError(), "%s", currFunc->getError().c_str());
@@ -2202,6 +2216,13 @@ Value *Nucleus::createConstantString(const char *v)
 	// NOTE: Do not call RR_DEBUG_INFO_UPDATE_LOC() here to avoid recursion when called from rr::Printv
 	return V(IceConstantData(v, strlen(v) + 1));
 }
+
+#ifndef NDEBUG
+void Nucleus::setOptimizerCallback(OptimizerCallback callback)
+{
+	::optimizerCallback = callback;
+}
+#endif
 
 Type *Void::type()
 {
