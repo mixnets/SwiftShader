@@ -242,7 +242,8 @@ void Inputs::advanceInstanceAttributes()
 
 GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreateInfo *pCreateInfo,
                              const PipelineLayout *layout, bool robustBufferAccess)
-    : pipelineLayout(layout)
+    : sw::Memset<GraphicsState>(this, 0)
+    , pipelineLayout(layout)
     , robustBufferAccess(robustBufferAccess)
 {
 	if((pCreateInfo->flags &

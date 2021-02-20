@@ -83,6 +83,19 @@ void *allocate(size_t bytes, size_t alignment)
 		allocation->block = block;
 	}
 
+	//static int xxx = 0;
+	//xxx++;
+	//const int ugh = 28;
+
+	//if(xxx < ugh)
+	//{
+	//	memset(aligned, 0, bytes);
+	//}
+	//else if(xxx == ugh)
+	//{
+	//	xxx = xxx;
+	//}
+
 	return aligned;
 }
 
