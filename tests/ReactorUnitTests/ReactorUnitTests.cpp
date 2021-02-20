@@ -32,7 +32,7 @@ static std::string testName()
 	auto info = ::testing::UnitTest::GetInstance()->current_test_info();
 	return std::string{ info->test_suite_name() } + "_" + info->name();
 }
-
+/*
 int reference(int *p, int y)
 {
 	int x = p[-1];
@@ -616,7 +616,7 @@ TEST(ReactorUnitTests, StoresInMultipleBlocks)
 			a = a + 5;
 		}
 
-		Return(a);  // TODO(b/179694472): Support Return(*p)
+		Return(a);
 	}
 
 	Nucleus::setOptimizerCallback([](const Nucleus::OptimizerReport *report) {
@@ -629,6 +629,36 @@ TEST(ReactorUnitTests, StoresInMultipleBlocks)
 
 	int result = routine(true);
 	EXPECT_EQ(result, 7);
+}
+*/
+TEST(ReactorUnitTests, StoresStoresStores)
+{
+	FunctionT<int(int)> function;
+	{
+		//Int b = function.Arg<0>();
+
+		Int b;
+		Pointer<Int> p = &b;
+		Int a = 13;
+
+		For(Int i = 0, i < 2, i++)
+		{
+			a = 10;
+
+			*p = 4;
+
+			b = a;
+
+			p = &a;
+		}
+
+		Return(b);
+	}
+
+	auto routine = function(testName().c_str());
+
+	int result = routine(true);
+	EXPECT_EQ(result, 4);
 }
 
 TEST(ReactorUnitTests, SubVectorLoadStore)

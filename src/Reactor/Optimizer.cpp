@@ -657,7 +657,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 
 				if(Ice::InstAlloca *alloca = allocaOf(address))
 				{
-					if(getUses(address)->areOnlyLoadStore())
+					//	if(getUses(address)->areOnlyLoadStore())
 					{
 						Ice::Operand *data = inst.getData();
 
