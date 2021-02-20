@@ -131,7 +131,7 @@ struct DynamicState
 	uint32_t reference[2] = { 0 };
 };
 
-struct GraphicsState
+struct GraphicsState : sw::Memset<GraphicsState>
 {
 	GraphicsState(const Device *device, const VkGraphicsPipelineCreateInfo *pCreateInfo, const PipelineLayout *layout, bool robustBufferAccess);
 
@@ -205,7 +205,7 @@ private:
 	bool colorWriteActive(const Attachments &attachments) const;
 
 	const PipelineLayout *pipelineLayout;
-	const bool robustBufferAccess = true;
+	const bool robustBufferAccess;
 	uint32_t dynamicStateFlags = 0;
 	VkPrimitiveTopology topology;
 
