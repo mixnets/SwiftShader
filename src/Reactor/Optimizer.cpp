@@ -125,6 +125,7 @@ void Optimizer::run(Ice::Cfg *function)
 
 	// Iterate through basic blocks to propagate loads following stores.
 	optimizeSingleBasicBlockLoadsStores();
+	optimizeSingleBasicBlockLoadsStores();
 
 	eliminateLoadsFollowingSingleStore();
 
