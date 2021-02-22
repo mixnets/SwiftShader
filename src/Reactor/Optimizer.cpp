@@ -51,9 +51,8 @@ private:
 	static const Ice::InstIntrinsic *asStoreSubVector(const Ice::Inst *instruction);
 	static bool isLoad(const Ice::Inst &instruction);
 	static bool isStore(const Ice::Inst &instruction);
+	static std::size_t loadSize(const Ice::Inst *instruction);
 	static std::size_t storeSize(const Ice::Inst *instruction);
-	static bool loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store);
-	static bool storeTypeMatchesStore(const Ice::Inst *store1, const Ice::Inst *store2);
 
 	void collectDiagnostics();
 
@@ -428,9 +427,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 						{
 							Ice::Inst *previousStore = entry->second.store;
 
-							// TODO(b/179668593): Also eliminate it if the next store is larger in size.
-							if(storeTypeMatchesStore(&inst, previousStore) &&
-							   entry->second.allLoadsReplaced)
+							if(entry->second.allLoadsReplaced && (storeSize(&inst) >= storeSize(previousStore)))
 							{
 								deleteInstruction(previousStore);
 							}
@@ -449,9 +446,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 					{
 						const Ice::Inst *store = entry->second.store;
 
-						// Conservatively check that the types match.
-						// TODO(b/179668593): Also valid to propagate if the load is smaller or equal in size to the store.
-						if(loadTypeMatchesStore(&inst, store))
+						if(loadSize(&inst) <= storeSize(store))
 						{
 							replace(&inst, store->getData());
 						}
@@ -466,7 +461,6 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 	}
 
 	// This can leave some dead instructions. Specifically stores.
-	// TODO((b/179668593): Eliminate stores superseded by subsequent stores?
 	eliminateDeadCode();
 }
 
@@ -706,6 +700,23 @@ bool Optimizer::isStore(const Ice::Inst &instruction)
 	return asStoreSubVector(&instruction) != nullptr;
 }
 
+std::size_t Optimizer::loadSize(const Ice::Inst *load)
+{
+	assert(isLoad(*load));
+
+	if(auto *instLoad = llvm::dyn_cast<Ice::InstLoad>(load))
+	{
+		return Ice::typeWidthInBytes(instLoad->getDest()->getType());
+	}
+
+	if(auto *loadSubVector = asLoadSubVector(load))
+	{
+		return llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(2))->getValue();
+	}
+
+	return 0;
+}
+
 std::size_t Optimizer::storeSize(const Ice::Inst *store)
 {
 	assert(isStore(*store));
@@ -721,57 +732,6 @@ std::size_t Optimizer::storeSize(const Ice::Inst *store)
 	}
 
 	return 0;
-}
-
-bool Optimizer::loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store)
-{
-	if(!load || !store)
-	{
-		return false;
-	}
-
-	assert(isLoad(*load) && isStore(*store));
-	assert(load->getLoadAddress() == store->getStoreAddress());
-
-	if(store->getData()->getType() != load->getDest()->getType())
-	{
-		return false;
-	}
-
-	if(auto *storeSubVector = asStoreSubVector(store))
-	{
-		if(auto *loadSubVector = asLoadSubVector(load))
-		{
-			// Check for matching sub-vector width.
-			return llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(2))->getValue() ==
-			       llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(1))->getValue();
-		}
-	}
-
-	return true;
-}
-
-bool Optimizer::storeTypeMatchesStore(const Ice::Inst *store1, const Ice::Inst *store2)
-{
-	assert(isStore(*store1) && isStore(*store2));
-	assert(store1->getStoreAddress() == store2->getStoreAddress());
-
-	if(store1->getData()->getType() != store2->getData()->getType())
-	{
-		return false;
-	}
-
-	if(auto *storeSubVector1 = asStoreSubVector(store1))
-	{
-		if(auto *storeSubVector2 = asStoreSubVector(store2))
-		{
-			// Check for matching sub-vector width.
-			return llvm::cast<Ice::ConstantInteger32>(storeSubVector1->getSrc(2))->getValue() ==
-			       llvm::cast<Ice::ConstantInteger32>(storeSubVector2->getSrc(2))->getValue();
-		}
-	}
-
-	return true;
 }
 
 void Optimizer::collectDiagnostics()
