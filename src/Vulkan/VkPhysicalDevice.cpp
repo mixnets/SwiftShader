@@ -710,13 +710,38 @@ void PhysicalDevice::getProperties(VkPhysicalDevicePresentationPropertiesANDROID
 	properties->sharedImage = VK_FALSE;
 }
 
-void PhysicalDevice::getProperties(VkAndroidHardwareBufferUsageANDROID *properties) const
+void PhysicalDevice::getProperties(VkImageUsageFlags vkUsage, VkAndroidHardwareBufferUsageANDROID *ahbProperties) const
 {
-	// TODO(b/169439421)
-	//   This AHB could be either a framebuffer, OR a sampled image
-	//     Here we just say it's both
-	//   Need to pass down info on the type of image in question
-	properties->androidHardwareBufferUsage |= AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE | AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT;
+	// Maps VkImageUsageFlags to AHB usage flags using this table from the Vulkan spec
+	// https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#memory-external-android-hardware-buffer-usage
+	uint64_t ahbUsage = 0;
+
+	// "It must include at least one GPU usage flag (AHARDWAREBUFFER_USAGE_GPU_*), even if none of the corresponding Vulkan usages or flags are requested."
+	ahbUsage = AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE;
+
+	// Already covered by the default GPU usage flag above.
+	//
+	// if ((vkUsage & VK_IMAGE_USAGE_SAMPLED_BIT) || (vkUsage & VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT))
+	// {
+	// 	 ahbUsage |= AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE;
+	// }
+
+	if((vkUsage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) || (vkUsage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))
+	{
+		ahbUsage |= AHARDWAREBUFFER_USAGE_GPU_FRAMEBUFFER;
+	}
+
+	if(vkUsage & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT)
+	{
+		ahbUsage |= AHARDWAREBUFFER_USAGE_GPU_CUBE_MAP;
+	}
+
+	if(vkUsage & VK_IMAGE_CREATE_PROTECTED_BIT)
+	{
+		ahbUsage |= AHARDWAREBUFFER_USAGE_PROTECTED_CONTENT;
+	}
+
+	ahbProperties->androidHardwareBufferUsage = ahbUsage;
 }
 #endif
 
