@@ -109,6 +109,11 @@ VkExtent2D getWindowSize(xcb_connection_t *connection, xcb_window_t window)
 
 namespace vk {
 
+bool XcbSurfaceKHR::hasLibXCB()
+{
+	return libXcb;
+}
+
 XcbSurfaceKHR::XcbSurfaceKHR(const VkXcbSurfaceCreateInfoKHR *pCreateInfo, void *mem)
     : connection(pCreateInfo->connection)
     , window(pCreateInfo->window)
@@ -128,7 +133,11 @@ VkResult XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfac
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 
-	VkExtent2D extent = getWindowSize(connection, window);
+	VkExtent2D extent = { 0, 0 };
+	if(libXcb)
+	{
+		extent = getWindowSize(connection, window);
+	}
 
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
@@ -138,58 +147,67 @@ VkResult XcbSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfac
 
 void XcbSurfaceKHR::attachImage(PresentImage *image)
 {
-	auto gc = libXcb->xcb_generate_id(connection);
+	if(libXcb)
+	{
+		auto gc = libXcb->xcb_generate_id(connection);
 
-	uint32_t values[2] = { 0, 0xffffffff };
-	libXcb->xcb_create_gc(connection, gc, window, XCB_GC_FOREGROUND | XCB_GC_BACKGROUND, values);
+		uint32_t values[2] = { 0, 0xffffffff };
+		libXcb->xcb_create_gc(connection, gc, window, XCB_GC_FOREGROUND | XCB_GC_BACKGROUND, values);
 
-	graphicsContexts[image] = gc;
+		graphicsContexts[image] = gc;
+	}
 }
 
 void XcbSurfaceKHR::detachImage(PresentImage *image)
 {
-	auto it = graphicsContexts.find(image);
-	if(it != graphicsContexts.end())
+	if(libXcb)
 	{
-		libXcb->xcb_free_gc(connection, it->second);
-		graphicsContexts.erase(it);
+		auto it = graphicsContexts.find(image);
+		if(it != graphicsContexts.end())
+		{
+			libXcb->xcb_free_gc(connection, it->second);
+			graphicsContexts.erase(it);
+		}
 	}
 }
 
 VkResult XcbSurfaceKHR::present(PresentImage *image)
 {
-	auto it = graphicsContexts.find(image);
-	if(it != graphicsContexts.end())
+	if(libXcb)
 	{
-		VkExtent2D windowExtent = getWindowSize(connection, window);
-		const VkExtent3D &extent = image->getImage()->getExtent();
-
-		if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+		auto it = graphicsContexts.find(image);
+		if(it != graphicsContexts.end())
 		{
-			return VK_ERROR_OUT_OF_DATE_KHR;
+			VkExtent2D windowExtent = getWindowSize(connection, window);
+			const VkExtent3D &extent = image->getImage()->getExtent();
+
+			if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+			{
+				return VK_ERROR_OUT_OF_DATE_KHR;
+			}
+
+			// TODO: Convert image if not RGB888.
+			int stride = image->getImage()->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+			auto buffer = reinterpret_cast<uint8_t *>(image->getImageMemory()->getOffsetPointer(0));
+			size_t bufferSize = extent.height * stride;
+			constexpr int depth = 24;  // TODO: Actually use window display depth.
+
+			libXcb->xcb_put_image(
+			    connection,
+			    XCB_IMAGE_FORMAT_Z_PIXMAP,
+			    window,
+			    it->second,
+			    extent.width,
+			    extent.height,
+			    0, 0,  // dst x, y
+			    0,     // left_pad
+			    depth,
+			    bufferSize,  // data_len
+			    buffer       // data
+			);
+
+			libXcb->xcb_flush(connection);
 		}
-
-		// TODO: Convert image if not RGB888.
-		int stride = image->getImage()->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-		auto buffer = reinterpret_cast<uint8_t *>(image->getImageMemory()->getOffsetPointer(0));
-		size_t bufferSize = extent.height * stride;
-		constexpr int depth = 24;  // TODO: Actually use window display depth.
-
-		libXcb->xcb_put_image(
-		    connection,
-		    XCB_IMAGE_FORMAT_Z_PIXMAP,
-		    window,
-		    it->second,
-		    extent.width,
-		    extent.height,
-		    0, 0,  // dst x, y
-		    0,     // left_pad
-		    depth,
-		    bufferSize,  // data_len
-		    buffer       // data
-		);
-
-		libXcb->xcb_flush(connection);
 	}
 
 	return VK_SUCCESS;
