@@ -23,13 +23,16 @@ XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, vo
     : pDisplay(pCreateInfo->dpy)
     , window(pCreateInfo->window)
 {
-	int screen = DefaultScreen(pDisplay);
-	gc = libX11->XDefaultGC(pDisplay, screen);
+	if(libX11 && pDisplay)
+	{
+		int screen = DefaultScreen(pDisplay);
+		gc = libX11->XDefaultGC(pDisplay, screen);
 
-	XVisualInfo xVisual;
-	Status status = libX11->XMatchVisualInfo(pDisplay, screen, 32, TrueColor, &xVisual);
-	bool match = (status != 0 && xVisual.blue_mask == 0xFF);
-	visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
+		XVisualInfo xVisual;
+		Status status = libX11->XMatchVisualInfo(pDisplay, screen, 32, TrueColor, &xVisual);
+		bool match = (status != 0 && xVisual.blue_mask == 0xFF);
+		visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
+	}
 }
 
 void XlibSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
@@ -45,9 +48,13 @@ VkResult XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfa
 {
 	setCommonSurfaceCapabilities(pSurfaceCapabilities);
 
-	XWindowAttributes attr;
-	libX11->XGetWindowAttributes(pDisplay, window, &attr);
-	VkExtent2D extent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
+	VkExtent2D extent = { 0, 0 };
+	if(libX11 && pDisplay)
+	{
+		XWindowAttributes attr;
+		libX11->XGetWindowAttributes(pDisplay, window, &attr);
+		extent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
+	}
 
 	pSurfaceCapabilities->currentExtent = extent;
 	pSurfaceCapabilities->minImageExtent = extent;
@@ -57,51 +64,60 @@ VkResult XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfa
 
 void XlibSurfaceKHR::attachImage(PresentImage *image)
 {
-	XWindowAttributes attr;
-	libX11->XGetWindowAttributes(pDisplay, window, &attr);
+	if(libX11 && pDisplay)
+	{
+		XWindowAttributes attr;
+		libX11->XGetWindowAttributes(pDisplay, window, &attr);
 
-	const VkExtent3D &extent = image->getImage()->getExtent();
+		const VkExtent3D &extent = image->getImage()->getExtent();
 
-	int bytes_per_line = image->getImage()->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	char *buffer = static_cast<char *>(image->getImageMemory()->getOffsetPointer(0));
+		int bytes_per_line = image->getImage()->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+		char *buffer = static_cast<char *>(image->getImageMemory()->getOffsetPointer(0));
 
-	XImage *xImage = libX11->XCreateImage(pDisplay, visual, attr.depth, ZPixmap, 0, buffer, extent.width, extent.height, 32, bytes_per_line);
+		XImage *xImage = libX11->XCreateImage(pDisplay, visual, attr.depth, ZPixmap, 0, buffer, extent.width, extent.height, 32, bytes_per_line);
 
-	imageMap[image] = xImage;
+		imageMap[image] = xImage;
+	}
 }
 
 void XlibSurfaceKHR::detachImage(PresentImage *image)
 {
-	auto it = imageMap.find(image);
-	if(it != imageMap.end())
+	if(libX11 && pDisplay)
 	{
-		XImage *xImage = it->second;
-		xImage->data = nullptr;  // the XImage does not actually own the buffer
-		XDestroyImage(xImage);
-		imageMap.erase(it);
+		auto it = imageMap.find(image);
+		if(it != imageMap.end())
+		{
+			XImage *xImage = it->second;
+			xImage->data = nullptr;  // the XImage does not actually own the buffer
+			XDestroyImage(xImage);
+			imageMap.erase(it);
+		}
 	}
 }
 
 VkResult XlibSurfaceKHR::present(PresentImage *image)
 {
-	auto it = imageMap.find(image);
-	if(it != imageMap.end())
+	if(libX11 && pDisplay)
 	{
-		XImage *xImage = it->second;
-
-		if(xImage->data)
+		auto it = imageMap.find(image);
+		if(it != imageMap.end())
 		{
-			XWindowAttributes attr;
-			libX11->XGetWindowAttributes(pDisplay, window, &attr);
-			VkExtent2D windowExtent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
-			const VkExtent3D &extent = image->getImage()->getExtent();
+			XImage *xImage = it->second;
 
-			if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+			if(xImage->data)
 			{
-				return VK_ERROR_OUT_OF_DATE_KHR;
-			}
+				XWindowAttributes attr;
+				libX11->XGetWindowAttributes(pDisplay, window, &attr);
+				VkExtent2D windowExtent = { static_cast<uint32_t>(attr.width), static_cast<uint32_t>(attr.height) };
+				const VkExtent3D &extent = image->getImage()->getExtent();
 
-			libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, extent.width, extent.height);
+				if(windowExtent.width != extent.width || windowExtent.height != extent.height)
+				{
+					return VK_ERROR_OUT_OF_DATE_KHR;
+				}
+
+				libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, extent.width, extent.height);
+			}
 		}
 	}
 
