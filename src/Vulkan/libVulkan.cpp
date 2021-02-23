@@ -303,7 +303,12 @@ VK_EXPORT VKAPI_ATTR VkResult VKAPI_CALL vk_icdInitializeConnectToServiceCallbac
 
 #endif  // VK_USE_PLATFORM_FUCHSIA
 
-static const VkExtensionProperties instanceExtensionProperties[] = {
+struct ExtensionProperties : public VkExtensionProperties
+{
+	bool isSupported = true;
+};
+
+static const ExtensionProperties instanceExtensionProperties[] = {
 	{ VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME, VK_KHR_DEVICE_GROUP_CREATION_SPEC_VERSION },
 	{ VK_KHR_EXTERNAL_FENCE_CAPABILITIES_EXTENSION_NAME, VK_KHR_EXTERNAL_FENCE_CAPABILITIES_SPEC_VERSION },
 	{ VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME, VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_SPEC_VERSION },
@@ -340,7 +345,7 @@ static const VkExtensionProperties instanceExtensionProperties[] = {
 #endif
 };
 
-static const VkExtensionProperties deviceExtensionProperties[] = {
+static const ExtensionProperties deviceExtensionProperties[] = {
 	{ VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION },
 	// Vulkan 1.1 promoted extensions
 	{ VK_KHR_BIND_MEMORY_2_EXTENSION_NAME, VK_KHR_BIND_MEMORY_2_SPEC_VERSION },
@@ -418,13 +423,38 @@ static const VkExtensionProperties deviceExtensionProperties[] = {
 	{ VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION },
 };
 
-static bool hasExtension(const char *extensionName, const VkExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
+static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
+{
+	uint32_t count = 0;
+
+	for(uint32_t i = 0; i < extensionPropertiesCount; i++)
+	{
+		if(extensionProperties[i].isSupported)
+		{
+			count++;
+		}
+	}
+
+	return count;
+}
+
+static uint32_t numInstanceSupportedExtensions()
+{
+	return numSupportedExtensions(instanceExtensionProperties, sizeof(instanceExtensionProperties) / sizeof(instanceExtensionProperties[0]));
+}
+
+static uint32_t numDeviceSupportedExtensions()
+{
+	return numSupportedExtensions(deviceExtensionProperties, sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]));
+}
+
+static bool hasExtension(const char *extensionName, const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
 {
 	for(uint32_t i = 0; i < extensionPropertiesCount; i++)
 	{
 		if(strcmp(extensionName, extensionProperties[i].extensionName) == 0)
 		{
-			return true;
+			return extensionProperties[i].isSupported;
 		}
 	}
 
@@ -439,6 +469,31 @@ static bool hasInstanceExtension(const char *extensionName)
 static bool hasDeviceExtension(const char *extensionName)
 {
 	return hasExtension(extensionName, deviceExtensionProperties, sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]));
+}
+
+static void copyExtensions(VkExtensionProperties *pProperties, uint32_t toCopy, const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
+{
+	for(uint32_t i = 0, j = 0; i < toCopy; i++, j++)
+	{
+		while((j < extensionPropertiesCount) && !extensionProperties[j].isSupported)
+		{
+			j++;
+		}
+		if(j < extensionPropertiesCount)
+		{
+			pProperties[i] = extensionProperties[j];
+		}
+	}
+}
+
+static void copyInstanceExtensions(VkExtensionProperties *pProperties, uint32_t toCopy)
+{
+	copyExtensions(pProperties, toCopy, instanceExtensionProperties, sizeof(instanceExtensionProperties) / sizeof(instanceExtensionProperties[0]));
+}
+
+static void copyDeviceExtensions(VkExtensionProperties *pProperties, uint32_t toCopy)
+{
+	copyExtensions(pProperties, toCopy, deviceExtensionProperties, sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]));
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateInstance(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkInstance *pInstance)
@@ -867,7 +922,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceExtensionProperties(const char
 	TRACE("(const char* pLayerName = %p, uint32_t* pPropertyCount = %p, VkExtensionProperties* pProperties = %p)",
 	      pLayerName, pPropertyCount, pProperties);
 
-	uint32_t extensionPropertiesCount = sizeof(instanceExtensionProperties) / sizeof(instanceExtensionProperties[0]);
+	uint32_t extensionPropertiesCount = numInstanceSupportedExtensions();
 
 	if(!pProperties)
 	{
@@ -876,10 +931,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceExtensionProperties(const char
 	}
 
 	auto toCopy = std::min(*pPropertyCount, extensionPropertiesCount);
-	for(uint32_t i = 0; i < toCopy; i++)
-	{
-		pProperties[i] = instanceExtensionProperties[i];
-	}
+	copyInstanceExtensions(pProperties, toCopy);
 
 	*pPropertyCount = toCopy;
 	return (toCopy < extensionPropertiesCount) ? VK_INCOMPLETE : VK_SUCCESS;
@@ -889,7 +941,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateDeviceExtensionProperties(VkPhysicalDe
 {
 	TRACE("(VkPhysicalDevice physicalDevice = %p, const char* pLayerName, uint32_t* pPropertyCount = %p, VkExtensionProperties* pProperties = %p)", physicalDevice, pPropertyCount, pProperties);
 
-	uint32_t extensionPropertiesCount = sizeof(deviceExtensionProperties) / sizeof(deviceExtensionProperties[0]);
+	uint32_t extensionPropertiesCount = numDeviceSupportedExtensions();
 
 	if(!pProperties)
 	{
@@ -898,10 +950,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateDeviceExtensionProperties(VkPhysicalDe
 	}
 
 	auto toCopy = std::min(*pPropertyCount, extensionPropertiesCount);
-	for(uint32_t i = 0; i < toCopy; i++)
-	{
-		pProperties[i] = deviceExtensionProperties[i];
-	}
+	copyDeviceExtensions(pProperties, toCopy);
 
 	*pPropertyCount = toCopy;
 	return (toCopy < extensionPropertiesCount) ? VK_INCOMPLETE : VK_SUCCESS;
