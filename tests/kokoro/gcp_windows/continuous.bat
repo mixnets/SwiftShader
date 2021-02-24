@@ -12,6 +12,13 @@ SET LESS_DEBUG_INFO=1
 
 cd %SRC%\build || goto :error
 
+REM For now, override CMAKE_GENERATOR_TYPE to force using Ninja
+set CMAKE_GENERATOR_TYPE=Ninja Multi-Config
+
+REM Load environment required for Ninja generator
+@REM "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+
 REM The currently used OS image comes with CMake 3.17.3. If a newer version is
 REM required one can update the image (go/radial/kokoro_windows_image), or
 REM uncomment the line below.
@@ -20,7 +27,6 @@ cmake --version
 
 cmake .. ^
     -G "%CMAKE_GENERATOR_TYPE%" ^
-    -Thost=x64 ^
     "-DREACTOR_BACKEND=%REACTOR_BACKEND%" ^
     "-DSWIFTSHADER_LLVM_VERSION=%LLVM_VERSION%" ^
     "-DREACTOR_VERIFY_LLVM_IR=1" ^
