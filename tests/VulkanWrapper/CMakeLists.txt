@@ -13,8 +13,12 @@
 # limitations under the License.
 
 set(ROOT_PROJECT_COMPILE_OPTIONS
+    ${SWIFTSHADER_COMPILE_OPTIONS}
     ${WARNINGS_AS_ERRORS}
 )
+
+# Need exceptions enabled for vulkan.hpp
+set_exceptions_enabled(True ROOT_PROJECT_COMPILE_OPTIONS)
 
 set(VULKAN_WRAPPER_SRC_FILES
     Buffer.cpp
@@ -70,12 +74,12 @@ target_compile_definitions(VulkanWrapper
 )
 
 target_compile_options(VulkanWrapper
-    PRIVATE
+    PUBLIC
         ${ROOT_PROJECT_COMPILE_OPTIONS}
 )
 
 target_link_options(VulkanWrapper
-    PRIVATE
+    PUBLIC
         ${SWIFTSHADER_LINK_FLAGS}
 )
 

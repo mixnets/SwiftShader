@@ -367,7 +367,7 @@ void DrawTester::createCommandBuffers(vk::RenderPass renderPass)
 		commandBuffers[i].begin(commandBufferBeginInfo);
 
 		vk::ClearValue clearValues[1];
-		clearValues[0].color = vk::ClearColorValue(std::array<float, 4>{ 0.5f, 0.5f, 0.5f, 1.0f });
+		clearValues[0].color = vk::ClearColorValue(std::array<float, 4>{ { 0.5f, 0.5f, 0.5f, 1.0f } });
 
 		vk::RenderPassBeginInfo renderPassBeginInfo;
 		renderPassBeginInfo.framebuffer = framebuffers[i]->getFramebuffer();
