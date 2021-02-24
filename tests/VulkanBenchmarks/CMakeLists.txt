@@ -16,6 +16,9 @@ set(ROOT_PROJECT_COMPILE_OPTIONS
     ${WARNINGS_AS_ERRORS}
 )
 
+# Need exceptions enabled for benchmark
+set_exceptions_enabled(True ROOT_PROJECT_COMPILE_OPTIONS)
+
 set(ROOT_PROJECT_LINK_LIBRARIES
     ${OS_LIBS}
     ${SWIFTSHADER_LIBS}

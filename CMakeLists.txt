@@ -391,6 +391,7 @@ if(MSVC)
 
     set_linker_flag("/DEBUG:FASTLINK" DEBUG)
     set_linker_flag("/DEBUG:FASTLINK" RELWITHDEBINFO)
+    set_linker_flag("/MANIFEST:NO") # Fixes mt.exe races with Ninja parallel builds
 
     # Disable specific warnings
     # TODO: Not all of these should be disabled, but for now, we want a warning-free msvc build. Remove these one by one
@@ -633,16 +634,45 @@ if(WIN32)
     set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "" "lib")
 endif()
 
+###########################################################
+# Exceptions
+###########################################################
+
+# Never enable STL exceptions
+add_definitions(-D_HAS_EXCEPTIONS=0)
+
+# Modifies 'compile_options' variable reference to enable or disable exceptions
+# E.g. set_exceptions_enabled(True SWIFTSHADER_COMPILE_OPTIONS)
+function(set_exceptions_enabled enabled compile_options)
+    set(local_compile_options ${${compile_options}})
+    if (MSVC)
+        list(REMOVE_ITEM local_compile_options "/EHsc" "/EHs-c-") # "-D_HAS_EXCEPTIONS=1" "-D_HAS_EXCEPTIONS=0")
+        if (${enabled})
+            list(APPEND local_compile_options "/EHsc") # "-D_HAS_EXCEPTIONS=1")
+            # list(REMOVE_ITEM ${compile_definitions} "-D_HAS_EXCEPTIONS=0")
+            # list(APPEND ${compile_definitions} "-D_HAS_EXCEPTIONS=1")
+            # add_definitions(-D_HAS_EXCEPTIONS=1) # for STL
+        else()
+            list(APPEND local_compile_options "/EHs-c-") # "-D_HAS_EXCEPTIONS=0")
+            # list(REMOVE_ITEM ${compile_definitions} "-D_HAS_EXCEPTIONS=1")
+            # list(APPEND ${compile_definitions} "-D_HAS_EXCEPTIONS=0")
+            # add_definitions(-D_HAS_EXCEPTIONS=0) # for STL
+        endif()
+    else()
+        list(REMOVE_ITEM local_compile_options "-fexceptions" "-fno-exceptions")
+        if (${enabled})
+            list(APPEND local_compile_options "-fexceptions")
+        else()
+            list(APPEND local_compile_options "-fno-exceptions")
+        endif()
+    endif()
+    set(${compile_options} ${local_compile_options} PARENT_SCOPE)
+endfunction()
+
 set(USE_EXCEPTIONS
     ${REACTOR_EMIT_DEBUG_INFO} # boost::stacktrace uses exceptions
 )
-if(NOT MSVC)
-    if (${USE_EXCEPTIONS})
-        list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fexceptions")
-    else()
-        list(APPEND SWIFTSHADER_COMPILE_OPTIONS "-fno-exceptions")
-    endif()
-endif()
+set_exceptions_enabled(${USE_EXCEPTIONS} SWIFTSHADER_COMPILE_OPTIONS)
 unset(USE_EXCEPTIONS)
 
 ###########################################################
