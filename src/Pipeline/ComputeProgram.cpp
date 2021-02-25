@@ -53,7 +53,7 @@ void ComputeProgram::generate()
 {
 	MARL_SCOPED_EVENT("ComputeProgram::generate");
 
-	SpirvRoutine routine(pipelineLayout);
+	SpirvRoutine routine(device, pipelineLayout);
 	shader->emitProlog(&routine);
 	emit(&routine);
 	shader->emitEpilog(&routine);
