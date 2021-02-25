@@ -154,7 +154,7 @@ public:
 	void setBlendConstant(const float4 &blendConstant);
 
 	const State update(const vk::GraphicsState &pipelineState, const sw::SpirvShader *fragmentShader, const sw::SpirvShader *vertexShader, const vk::Attachments &attachments, bool occlusionEnabled) const;
-	RoutineType routine(const State &state, const vk::PipelineLayout *pipelineLayout,
+	RoutineType routine(vk::Device *device, const State &state, const vk::PipelineLayout *pipelineLayout,
 	                    const SpirvShader *pixelShader, const vk::DescriptorSet::Bindings &descriptorSets);
 	void setRoutineCacheSize(int routineCacheSize);
 

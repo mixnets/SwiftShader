@@ -24,12 +24,12 @@
 
 namespace sw {
 
-VertexProgram::VertexProgram(
-    const VertexProcessor::State &state,
-    vk::PipelineLayout const *pipelineLayout,
-    SpirvShader const *spirvShader,
-    const vk::DescriptorSet::Bindings &descriptorSets)
-    : VertexRoutine(state, pipelineLayout, spirvShader)
+VertexProgram::VertexProgram(vk::Device *device,
+                             const VertexProcessor::State &state,
+                             const vk::PipelineLayout *pipelineLayout,
+                             const SpirvShader *spirvShader,
+                             const vk::DescriptorSet::Bindings &descriptorSets)
+    : VertexRoutine(device, state, pipelineLayout, spirvShader)
     , descriptorSets(descriptorSets)
 {
 	routine.setImmutableInputBuiltins(spirvShader);

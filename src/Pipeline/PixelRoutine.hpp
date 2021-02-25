@@ -17,6 +17,10 @@
 
 #include "Device/QuadRasterizer.hpp"
 
+namespace vk {
+class Device;
+}
+
 namespace sw {
 
 class PixelShader;
@@ -25,7 +29,7 @@ class SamplerCore;
 class PixelRoutine : public sw::QuadRasterizer
 {
 public:
-	PixelRoutine(const PixelProcessor::State &state,
+	PixelRoutine(const vk::Device *device, const PixelProcessor::State &state,
 	             vk::PipelineLayout const *pipelineLayout,
 	             SpirvShader const *spirvShader,
 	             const vk::DescriptorSet::Bindings &descriptorSets);

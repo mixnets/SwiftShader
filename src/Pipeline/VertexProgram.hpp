@@ -25,11 +25,11 @@ struct Stream;
 class VertexProgram : public VertexRoutine
 {
 public:
-	VertexProgram(
-	    const VertexProcessor::State &state,
-	    vk::PipelineLayout const *pipelineLayout,
-	    SpirvShader const *spirvShader,
-	    const vk::DescriptorSet::Bindings &descriptorSets);
+	VertexProgram(vk::Device *device,
+	              const VertexProcessor::State &state,
+	              vk::PipelineLayout const *pipelineLayout,
+	              SpirvShader const *spirvShader,
+	              const vk::DescriptorSet::Bindings &descriptorSets);
 
 	virtual ~VertexProgram();
 

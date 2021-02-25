@@ -20,8 +20,12 @@
 
 namespace vk {
 
+class Device;
+
 class DescriptorPool : public Object<DescriptorPool, VkDescriptorPool>
 {
+	friend Device;
+
 public:
 	DescriptorPool(const VkDescriptorPoolCreateInfo *pCreateInfo, void *mem);
 	void destroy(const VkAllocationCallbacks *pAllocator);
