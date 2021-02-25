@@ -2126,13 +2126,19 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorPool(VkDevice device, const VkD
 		extInfo = extInfo->pNext;
 	}
 
-	return vk::DescriptorPool::Create(pAllocator, pCreateInfo, pDescriptorPool);
+	VkResult result = vk::DescriptorPool::Create(pAllocator, pCreateInfo, pDescriptorPool);
+
+	vk::Cast(device)->registerDescriptorPool(vk::Cast(*pDescriptorPool));
+
+	return result;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks *pAllocator)
 {
 	TRACE("(VkDevice device = %p, VkDescriptorPool descriptorPool = %p, const VkAllocationCallbacks* pAllocator = %p)",
 	      device, static_cast<void *>(descriptorPool), pAllocator);
+
+	vk::Cast(device)->unregisterDescriptorPool(vk::Cast(descriptorPool));
 
 	vk::destroy(descriptorPool, pAllocator);
 }

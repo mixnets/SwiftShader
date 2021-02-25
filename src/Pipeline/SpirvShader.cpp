@@ -2568,13 +2568,16 @@ bool SpirvShader::Operand::isConstantZero() const
 	return true;
 }
 
-SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout)
+SpirvRoutine::SpirvRoutine(const vk::Device *device, const vk::PipelineLayout *pipelineLayout)
     : pipelineLayout(pipelineLayout)
+    , vkDevice(device)
 {
 }
 
 void SpirvRoutine::setImmutableInputBuiltins(SpirvShader const *shader)
 {
+	device = rr::ConstantPointer(vkDevice);
+
 	setInputBuiltin(shader, spv::BuiltInSubgroupLocalInvocationId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		ASSERT(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(0, 1, 2, 3));

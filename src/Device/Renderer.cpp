@@ -214,9 +214,9 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		setupState = setupProcessor.update(pipelineState, fragmentShader, vertexShader, attachments);
 		pixelState = pixelProcessor.update(pipelineState, fragmentShader, vertexShader, attachments, hasOcclusionQuery());
 
-		vertexRoutine = vertexProcessor.routine(vertexState, pipelineState.getPipelineLayout(), vertexShader, inputs.getDescriptorSets());
+		vertexRoutine = vertexProcessor.routine(device, vertexState, pipelineState.getPipelineLayout(), vertexShader, inputs.getDescriptorSets());
 		setupRoutine = setupProcessor.routine(setupState);
-		pixelRoutine = pixelProcessor.routine(pixelState, pipelineState.getPipelineLayout(), fragmentShader, inputs.getDescriptorSets());
+		pixelRoutine = pixelProcessor.routine(device, pixelState, pipelineState.getPipelineLayout(), fragmentShader, inputs.getDescriptorSets());
 	}
 
 	draw->containsImageWrite = pipeline->containsImageWrite();

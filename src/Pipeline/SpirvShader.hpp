@@ -1291,7 +1291,7 @@ private:
 	// Returns the pair <significand, exponent>
 	std::pair<SIMD::Float, SIMD::Int> Frexp(RValue<SIMD::Float> val) const;
 
-	static ImageSampler *getImageSampler(uint32_t instruction, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler);
+	static ImageSampler *getImageSampler(vk::Device *device, uint32_t instruction, vk::SampledImageDescriptor const *imageDescriptor, const vk::Sampler *sampler);
 	static std::shared_ptr<rr::Routine> emitSamplerRoutine(ImageInstruction instruction, const Sampler &samplerState);
 
 	// TODO(b/129523279): Eliminate conversion and use vk::Sampler members directly.
@@ -1359,7 +1359,7 @@ private:
 class SpirvRoutine
 {
 public:
-	SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
+	SpirvRoutine(const vk::Device *device, const vk::PipelineLayout *pipelineLayout);
 
 	using Variable = Array<SIMD::Float>;
 
@@ -1384,7 +1384,7 @@ public:
 	vk::PipelineLayout const *const pipelineLayout;
 
 	std::unordered_map<SpirvShader::Object::ID, Variable> variables;
-	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;
+	std::unordered_map<SpirvShader::Object::ID, SamplerCache> samplerCache;  ///inline
 	Variable inputs = Variable{ MAX_INTERFACE_COMPONENTS };
 	Variable outputs = Variable{ MAX_INTERFACE_COMPONENTS };
 	InterpolationData interpolationData;
@@ -1418,6 +1418,7 @@ public:
 	std::array<SIMD::Int, 3> localInvocationID;
 	std::array<SIMD::Int, 3> globalInvocationID;
 
+	Pointer<Byte> device;
 	Pointer<Byte> dbgState;  // Pointer to a debugger state.
 
 	void createVariable(SpirvShader::Object::ID id, uint32_t componentCount)
@@ -1435,7 +1436,7 @@ public:
 
 	// setImmutableInputBuiltins() sets all the immutable input builtins,
 	// common for all shader types.
-	void setImmutableInputBuiltins(SpirvShader const *shader);
+	void setImmutableInputBuiltins(const SpirvShader *shader);
 
 	static SIMD::Float interpolateAtXY(const SIMD::Float &x, const SIMD::Float &y, const SIMD::Float &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
 
@@ -1455,6 +1456,8 @@ public:
 	}
 
 private:
+	const vk::Device *const vkDevice;
+
 	// The phis are only accessible to SpirvShader as they are only used and
 	// exist between calls to SpirvShader::emitProlog() and
 	// SpirvShader::emitEpilog().
