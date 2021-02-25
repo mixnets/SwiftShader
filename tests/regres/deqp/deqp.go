@@ -42,7 +42,7 @@ const dataVersion = 1
 
 var (
 	// Regular expression to parse the output of a dEQP test.
-	deqpRE = regexp.MustCompile(`(Fail|Pass|NotSupported|CompatibilityWarning|QualityWarning) \(([^\)]*)\)`)
+	deqpRE = regexp.MustCompile(`(Fail|Pass|NotSupported|CompatibilityWarning|QualityWarning|InternalError) \(([^\)]*)\)`)
 	// Regular expression to parse a test that failed due to UNIMPLEMENTED()
 	unimplementedRE = regexp.MustCompile(`[^\n]*UNIMPLEMENTED:[^\n]*`)
 	// Regular expression to parse a test that failed due to UNSUPPORTED()
@@ -316,7 +316,17 @@ nextTest:
 		// log.Printf("Running test '%s'\n", name)
 
 		start := time.Now()
+		// Check validation layer environment variable
+		// If set, enable --deqp-valdation. Else, disable.
+		validation := "disable"
+		layerEnvValue := os.Getenv("VK_LAYER_PATH")
+		libEnvValue := os.Getenv("LD_LIBRARY_PATH")
+		if len(layerEnvValue) != 0 && len(libEnvValue) != 0 {
+			validation = "enable"
+		}
+
 		outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), env,
+			"--deqp-validation="+validation,
 			"--deqp-surface-type=pbuffer",
 			"--deqp-shadercache=disable",
 			"--deqp-log-images=disable",
@@ -411,6 +421,12 @@ nextTest:
 					err = toks[2]
 				}
 				results <- TestResult{Test: name, Status: testlist.Fail, Err: err, TimeTaken: duration, Coverage: coverage}
+			case "InternalError":
+				var err string
+				if toks[2] != "InternalError" {
+					err = toks[2]
+				}
+				results <- TestResult{Test: name, Status: testlist.InternalError, Err: err, TimeTaken: duration, Coverage: coverage}
 			default:
 				err := fmt.Sprintf("Couldn't parse test output:\n%s", out)
 				log.Println("Warning: ", err)
