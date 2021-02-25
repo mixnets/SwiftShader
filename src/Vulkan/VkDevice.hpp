@@ -15,8 +15,7 @@
 #ifndef VK_DEVICE_HPP_
 #define VK_DEVICE_HPP_
 
-#include "VkImageView.hpp"
-#include "VkSampler.hpp"
+#include "VkObject.hpp"
 #include "Reactor/Routine.hpp"
 #include "System/LRUCache.hpp"
 
@@ -39,6 +38,10 @@ namespace vk {
 
 class PhysicalDevice;
 class Queue;
+class Sampler;
+struct SamplerState;
+class ImageView;
+class DescriptorPool;
 
 namespace dbg {
 class Context;
@@ -72,6 +75,10 @@ public:
 	void unregisterImageView(ImageView *imageView);
 	void prepareForSampling(ImageView *imageView);
 	void contentsChanged(ImageView *imageView);
+
+	void registerDescriptorPool(DescriptorPool *pool);
+	void unregisterDescriptorPool(DescriptorPool *pool);
+	bool validateDescriptor(const void *descriptor) const;
 
 	class SamplingRoutineCache
 	{
@@ -187,8 +194,9 @@ private:
 	std::unique_ptr<SamplingRoutineCache> samplingRoutineCache;
 	std::unique_ptr<SamplerIndexer> samplerIndexer;
 
-	marl::mutex imageViewSetMutex;
+	marl::mutex imageViewSetMutex;  //////////////////////////////////////////////////// rename
 	std::unordered_set<ImageView *> imageViewSet GUARDED_BY(imageViewSetMutex);
+	std::unordered_set<DescriptorPool *> descriptorPoolSet GUARDED_BY(imageViewSetMutex);
 
 #ifdef ENABLE_VK_DEBUGGER
 	struct

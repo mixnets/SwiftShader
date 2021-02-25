@@ -15,6 +15,7 @@
 #include "VkDevice.hpp"
 
 #include "VkConfig.hpp"
+#include "VkDescriptorPool.hpp"
 #include "VkDescriptorSetLayout.hpp"
 #include "VkFence.hpp"
 #include "VkQueue.hpp"
@@ -389,6 +390,41 @@ void Device::contentsChanged(ImageView *imageView)
 			imageView->contentsChanged();
 		}
 	}
+}
+
+void Device::registerDescriptorPool(DescriptorPool *pool)
+{
+	if(pool != nullptr)
+	{
+		marl::lock lock(imageViewSetMutex);
+		descriptorPoolSet.insert(pool);
+	}
+}
+
+void Device::unregisterDescriptorPool(DescriptorPool *pool)
+{
+	if(pool != nullptr)
+	{
+		marl::lock lock(imageViewSetMutex);
+
+		descriptorPoolSet.erase(pool);
+	}
+}
+
+bool Device::validateDescriptor(const void *descriptor) const
+{
+	auto address = reinterpret_cast<uintptr_t>(descriptor);
+
+	for(auto *pool : descriptorPoolSet)
+	{
+		if(address >= reinterpret_cast<uintptr_t>(pool->pool) &&
+		   address < reinterpret_cast<uintptr_t>(pool->pool + pool->poolSize))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 #ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT

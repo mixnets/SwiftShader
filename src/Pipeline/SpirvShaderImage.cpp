@@ -329,7 +329,9 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 	If(!cacheHit)
 	{
-		cache.function = Call(getImageSampler, instruction.parameters, imageDescriptor, sampler);
+		//state->
+
+		cache.function = Call(getImageSampler, state->routine->device, instruction.parameters, imageDescriptor, sampler);
 		cache.imageDescriptor = imageDescriptor;
 		cache.sampler = sampler;
 	}

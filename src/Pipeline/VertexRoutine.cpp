@@ -23,11 +23,10 @@
 
 namespace sw {
 
-VertexRoutine::VertexRoutine(
-    const VertexProcessor::State &state,
-    vk::PipelineLayout const *pipelineLayout,
-    SpirvShader const *spirvShader)
-    : routine(pipelineLayout)
+VertexRoutine::VertexRoutine(const vk::Device *device, const VertexProcessor::State &state,
+                             vk::PipelineLayout const *pipelineLayout,
+                             SpirvShader const *spirvShader)
+    : routine(device, pipelineLayout)
     , state(state)
     , spirvShader(spirvShader)
 {

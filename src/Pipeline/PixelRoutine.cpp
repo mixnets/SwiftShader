@@ -24,13 +24,12 @@
 
 namespace sw {
 
-PixelRoutine::PixelRoutine(
-    const PixelProcessor::State &state,
-    vk::PipelineLayout const *pipelineLayout,
-    SpirvShader const *spirvShader,
-    const vk::DescriptorSet::Bindings &descriptorSets)
+PixelRoutine::PixelRoutine(const vk::Device *device, const PixelProcessor::State &state,
+                           vk::PipelineLayout const *pipelineLayout,
+                           SpirvShader const *spirvShader,
+                           const vk::DescriptorSet::Bindings &descriptorSets)
     : QuadRasterizer(state, spirvShader)
-    , routine(pipelineLayout)
+    , routine(device, pipelineLayout)
     , descriptorSets(descriptorSets)
 {
 	if(spirvShader)

@@ -87,7 +87,7 @@ const VertexProcessor::State VertexProcessor::update(const vk::GraphicsState &pi
 	return state;
 }
 
-VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
+VertexProcessor::RoutineType VertexProcessor::routine(const vk::Device *device, const State &state,
                                                       vk::PipelineLayout const *pipelineLayout,
                                                       SpirvShader const *vertexShader,
                                                       const vk::DescriptorSet::Bindings &descriptorSets)
@@ -96,7 +96,7 @@ VertexProcessor::RoutineType VertexProcessor::routine(const State &state,
 
 	if(!routine)  // Create one
 	{
-		VertexRoutine *generator = new VertexProgram(state, pipelineLayout, vertexShader, descriptorSets);
+		VertexRoutine *generator = new VertexProgram(device, state, pipelineLayout, vertexShader, descriptorSets);
 		generator->generate();
 		routine = (*generator)("VertexRoutine_%0.8X", state.shaderID);
 		delete generator;

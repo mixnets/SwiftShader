@@ -46,10 +46,9 @@ protected:
 class VertexRoutine : public VertexRoutinePrototype
 {
 public:
-	VertexRoutine(
-	    const VertexProcessor::State &state,
-	    vk::PipelineLayout const *pipelineLayout,
-	    SpirvShader const *spirvShader);
+	VertexRoutine(const vk::Device *device, const VertexProcessor::State &state,
+	              vk::PipelineLayout const *pipelineLayout,
+	              SpirvShader const *spirvShader);
 	virtual ~VertexRoutine();
 
 	void generate();
