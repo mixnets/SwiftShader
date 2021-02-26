@@ -1297,70 +1297,93 @@ Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedInd
 Value *Nucleus::createAtomicAdd(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Add, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Add, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicSub(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Sub, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Sub, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicAnd(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::And, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::And, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicOr(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Or, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Or, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicXor(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Xor, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Xor, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicMin(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Min, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Min, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicMax(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Max, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Max, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicUMin(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::UMin, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::UMin, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicUMax(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::UMax, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::UMax, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicExchange(Value *ptr, Value *value, std::memory_order memoryOrder)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-	return V(jit->builder->CreateAtomicRMW(llvm::AtomicRMWInst::Xchg, V(ptr), V(value), atomicOrdering(true, memoryOrder)));
+        return V(jit->builder->CreateAtomicRMW(
+            llvm::AtomicRMWInst::Xchg, V(ptr), V(value), llvm::MaybeAlign(),
+            atomicOrdering(true, memoryOrder)));
 }
 
 Value *Nucleus::createAtomicCompareExchange(Value *ptr, Value *value, Value *compare, std::memory_order memoryOrderEqual, std::memory_order memoryOrderUnequal)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
 	// Note: AtomicCmpXchgInstruction returns a 2-member struct containing {result, success-flag}, not the result directly.
-	return V(jit->builder->CreateExtractValue(
-	    jit->builder->CreateAtomicCmpXchg(V(ptr), V(compare), V(value), atomicOrdering(true, memoryOrderEqual), atomicOrdering(true, memoryOrderUnequal)),
-	    llvm::ArrayRef<unsigned>(0u)));
+        return V(jit->builder->CreateExtractValue(
+            jit->builder->CreateAtomicCmpXchg(
+                V(ptr), V(compare), V(value), llvm::MaybeAlign(),
+                atomicOrdering(true, memoryOrderEqual),
+                atomicOrdering(true, memoryOrderUnequal)),
+            llvm::ArrayRef<unsigned>(0u)));
 }
 
 Value *Nucleus::createTrunc(Value *v, Type *destType)
