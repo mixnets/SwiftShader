@@ -18989,7 +18989,6 @@ dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec3_
 dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec4_fragment
 dEQP-GLES3.functional.shaders.operator.angle_and_trigonometry.tanh.mediump_vec4_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_fragment
-dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec2_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec2_vertex
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec3_fragment
 dEQP-GLES3.functional.shaders.operator.binary_operator.add.highp_float_vec3_vertex
