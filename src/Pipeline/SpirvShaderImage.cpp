@@ -174,7 +174,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 	bool grad = false;
 	Object::ID gradDxId = 0;
 	Object::ID gradDyId = 0;
-	bool constOffset = false;
+	bool offset = false;
 	Object::ID offsetId = 0;
 	bool sample = false;
 	Object::ID sampleId = 0;
@@ -214,12 +214,13 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 			imageOperands &= ~spv::ImageOperandsGradMask;
 		}
 
-		if(imageOperands & spv::ImageOperandsConstOffsetMask)
+		if((imageOperands & spv::ImageOperandsOffsetMask) ||
+		   (imageOperands & spv::ImageOperandsConstOffsetMask))
 		{
-			constOffset = true;
+			offset = true;
 			offsetId = insn.word(operand);
 			operand++;
-			imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+			imageOperands &= ~(spv::ImageOperandsOffsetMask | spv::ImageOperandsConstOffsetMask);
 		}
 
 		if(imageOperands & spv::ImageOperandsSampleMask)
@@ -305,7 +306,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		i++;
 	}
 
-	if(constOffset)
+	if(offset)
 	{
 		auto offsetValue = Operand(this, state, offsetId);
 		instruction.offset = offsetValue.componentCount;
