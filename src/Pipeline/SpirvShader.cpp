@@ -410,6 +410,7 @@ SpirvShader::SpirvShader(
 				{
 				case spv::CapabilityMatrix: capabilities.Matrix = true; break;
 				case spv::CapabilityShader: capabilities.Shader = true; break;
+				case spv::CapabilityImageGatherExtended: capabilities.ImageGatherExtended = true; break;
 				case spv::CapabilityStorageImageMultisample: capabilities.StorageImageMultisample = true; break;
 				case spv::CapabilityClipDistance: capabilities.ClipDistance = true; break;
 				case spv::CapabilityCullDistance: capabilities.CullDistance = true; break;

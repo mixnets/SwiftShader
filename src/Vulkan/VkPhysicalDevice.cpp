@@ -67,7 +67,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_TRUE,   // vertexPipelineStoresAndAtomics
 		VK_TRUE,   // fragmentStoresAndAtomics
 		VK_FALSE,  // shaderTessellationAndGeometryPointSize
-		VK_FALSE,  // shaderImageGatherExtended
+		VK_TRUE,   // shaderImageGatherExtended
 		VK_TRUE,   // shaderStorageImageExtendedFormats
 		VK_TRUE,   // shaderStorageImageMultisample
 		VK_FALSE,  // shaderStorageImageReadWithoutFormat

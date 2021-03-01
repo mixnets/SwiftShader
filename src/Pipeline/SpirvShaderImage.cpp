@@ -194,11 +194,12 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 		grad = spirv.getObjectType(gradDxId).componentCount;
 	}
 
-	if(imageOperands & spv::ImageOperandsConstOffsetMask)
+	if((imageOperands & spv::ImageOperandsOffsetMask) ||
+	   (imageOperands & spv::ImageOperandsConstOffsetMask))
 	{
 		offsetId = insn.word(operandsIndex);
 		operandsIndex += 1;
-		imageOperands &= ~spv::ImageOperandsConstOffsetMask;
+		imageOperands &= ~(spv::ImageOperandsOffsetMask | spv::ImageOperandsConstOffsetMask);
 
 		offset = spirv.getObjectType(offsetId).componentCount;
 	}
