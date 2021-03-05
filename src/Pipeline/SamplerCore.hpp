@@ -88,7 +88,7 @@ private:
 	void selectMipmap(const Pointer<Byte> &texture, Pointer<Byte> &mipmap, Pointer<Byte> &buffer, const Float &lod, bool secondLOD);
 	Short4 address(const Float4 &uvw, AddressingMode addressingMode, Pointer<Byte> &mipmap);
 	Short4 computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap);
-	void address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
+	void address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
 	Int4 computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap, SamplerFunction function);
 	Int4 computeFilterOffset(Float &lod);
 

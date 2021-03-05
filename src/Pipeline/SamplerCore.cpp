@@ -994,11 +994,26 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	Pointer<Byte> buffer;
 	selectMipmap(texture, mipmap, buffer, lod, secondLOD);
 
-	Int4 x0, x1, y0, y1;
+	Int4 x0, x1, x2, x3;
+	Int4 y0, y1, y2, y3;
+	Int4 xx;
+	Int4 yy;
 	Float4 fu, fv;
 	Int4 filter = computeFilterOffset(lod);
-	address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU, function);
-	address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
+	address(u, x0, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU, function);
+	address(u, x1, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU, function);
+	address(u, x2, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU, function);
+	address(u, x3, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU, function);
+
+	address(v, y0, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV, function);
+	address(v, y1, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV, function);
+	address(v, y2, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV, function);
+	address(v, y3, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV, function);
+
+	//x2 = x0;
+	//x3 = x1;
+	//y1 = y0;
+	//y3 = y2;
 
 	Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 	y0 *= pitchP;
@@ -1034,9 +1049,9 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 		y1 *= pitchP;
 
 		Vector4f c00 = sampleTexel(x0, y0, z, dRef, sample, mipmap, buffer, function);
-		Vector4f c10 = sampleTexel(x1, y0, z, dRef, sample, mipmap, buffer, function);
-		Vector4f c01 = sampleTexel(x0, y1, z, dRef, sample, mipmap, buffer, function);
-		Vector4f c11 = sampleTexel(x1, y1, z, dRef, sample, mipmap, buffer, function);
+		Vector4f c10 = sampleTexel(x1, y1, z, dRef, sample, mipmap, buffer, function);
+		Vector4f c01 = sampleTexel(x2, y2, z, dRef, sample, mipmap, buffer, function);
+		Vector4f c11 = sampleTexel(x3, y3, z, dRef, sample, mipmap, buffer, function);
 
 		if(!gather)  // Blend
 		{
@@ -2297,7 +2312,7 @@ static Int4 mod(Int4 n, Int4 d)
 	return (positive & x) | (~positive & (x + d));
 }
 
-void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function)
+void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 offset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function)
 {
 	if(addressingMode == ADDRESSING_UNUSED)
 	{
@@ -2361,7 +2376,7 @@ void SamplerCore::address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, 
 			Float4 floor = Floor(coord);
 			xyz0 = Int4(floor);
 
-			if(function.offset)
+			if(function.offset)  ///////////////
 			{
 				xyz0 += offset;
 			}
