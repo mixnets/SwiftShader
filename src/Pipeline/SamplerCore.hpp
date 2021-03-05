@@ -91,7 +91,7 @@ private:
 	Pointer<Byte> selectMipmap(const Pointer<Byte> &texture, const Float &lod, bool secondLOD);
 	Short4 address(const Float4 &uvw, AddressingMode addressingMode, Pointer<Byte> &mipmap);
 	Short4 computeLayerIndex16(const Float4 &a, Pointer<Byte> &mipmap);
-	void address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 &offset, Int4 &filter, int whd, AddressingMode addressingMode);
+	void address(const Float4 &uvw, Int4 &xyz0, Int4 &xyz1, Float4 &f, Pointer<Byte> &mipmap, Int4 offset, Int4 &filter, int whd, AddressingMode addressingMode);
 	Int4 computeLayerIndex(const Float4 &a, Pointer<Byte> &mipmap);
 	Int4 computeFilterOffset(Float &lod);
 	void sRGBtoLinearFF00(Short4 &c);

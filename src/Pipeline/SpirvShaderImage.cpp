@@ -195,11 +195,12 @@ SpirvShader::ImageInstruction::ImageInstruction(InsnIterator insn, const SpirvSh
 	}
 
 	if((imageOperands & spv::ImageOperandsOffsetMask) ||
-	   (imageOperands & spv::ImageOperandsConstOffsetMask))
+	   (imageOperands & spv::ImageOperandsConstOffsetMask) ||
+	   (imageOperands & spv::ImageOperandsConstOffsetsMask))
 	{
 		offsetId = insn.word(operandsIndex);
 		operandsIndex += 1;
-		imageOperands &= ~(spv::ImageOperandsOffsetMask | spv::ImageOperandsConstOffsetMask);
+		imageOperands &= ~(spv::ImageOperandsOffsetMask | spv::ImageOperandsConstOffsetMask | spv::ImageOperandsConstOffsetsMask);
 
 		offset = spirv.getObjectType(offsetId).componentCount;
 	}
@@ -458,9 +459,24 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 	{
 		auto offsetValue = Operand(this, state, instruction.offsetId);
 
-		for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
+		//for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
 		{
-			in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+			SIMD::Float x;
+			SIMD::Float y;
+			x.x = As<Float>(Int(SIMD::Int(offsetValue.Int(0)).x));  // Integer values, but transferred as float.
+			x.y = As<Float>(Int(SIMD::Int(offsetValue.Int(2)).x));
+			x.z = As<Float>(Int(SIMD::Int(offsetValue.Int(4)).x));
+			x.w = As<Float>(Int(SIMD::Int(offsetValue.Int(6)).x));
+
+			y.x = As<Float>(Int(SIMD::Int(offsetValue.Int(1)).x));
+			y.y = As<Float>(Int(SIMD::Int(offsetValue.Int(3)).x));
+			y.z = As<Float>(Int(SIMD::Int(offsetValue.Int(5)).x));
+			y.w = As<Float>(Int(SIMD::Int(offsetValue.Int(7)).x));
+
+			in[i] = Float4(0);
+			i++;
+			in[i] = Float4(0);
+			i++;
 		}
 	}
 
