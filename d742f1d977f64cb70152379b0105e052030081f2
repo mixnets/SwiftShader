@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9d8c325_2441c1f2",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 188808,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-03-09T15:54:05Z",
+      "side": 1,
+      "message": "b/177235551",
+      "range": {
+        "startLine": 188808,
+        "startChar": 0,
+        "endLine": 188808,
+        "endChar": 46
+      },
+      "revId": "d742f1d977f64cb70152379b0105e052030081f2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
