@@ -54,8 +54,11 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 					totalSize += tlsSubmitInfo->signalSemaphoreValueCount * sizeof(uint64_t);
 				}
 				break;
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// dEQP tests that this value is ignored.
+				break;
 			default:
-				WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 				break;
 			}
 		}
@@ -119,8 +122,11 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 					submits[i].pNext = tlsSubmitInfoCopy;
 				}
 				break;
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// dEQP tests that this value is ignored.
+				break;
 			default:
-				WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 				break;
 			}
 		}
@@ -188,8 +194,11 @@ void Queue::submitQueue(const Task &task)
 			case VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO:
 				timelineInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(submitInfo.pNext);
 				break;
+			case VK_STRUCTURE_TYPE_MAX_ENUM:
+				// dEQP tests that this value is ignored.
+				break;
 			default:
-				WARN("submitInfo.pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				UNSUPPORTED("submitInfo.pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
 			}
 		}
