@@ -292,7 +292,7 @@ VkResult DeviceMemory::ParseAllocationInfo(const VkMemoryAllocateInfo *pAllocate
 			break;
 #endif  // VK_USE_PLATFORM_FUCHSIA
 		default:
-			LOG_TRAP("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
+			UNSUPPORTED("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
 			break;
 		}
 

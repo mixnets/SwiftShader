@@ -380,7 +380,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			}
 			break;
 		default:
-			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+			UNSUPPORTED("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 			break;
 		}
 

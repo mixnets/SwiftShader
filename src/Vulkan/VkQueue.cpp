@@ -55,7 +55,7 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 				}
 				break;
 			default:
-				WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 				break;
 			}
 		}
@@ -120,7 +120,7 @@ VkSubmitInfo *DeepCopySubmitInfo(uint32_t submitCount, const VkSubmitInfo *pSubm
 				}
 				break;
 			default:
-				WARN("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
+				UNSUPPORTED("submitInfo[%d]->pNext sType: %s", i, vk::Stringify(extension->sType).c_str());
 				break;
 			}
 		}
@@ -189,7 +189,7 @@ void Queue::submitQueue(const Task &task)
 				timelineInfo = reinterpret_cast<const VkTimelineSemaphoreSubmitInfo *>(submitInfo.pNext);
 				break;
 			default:
-				WARN("submitInfo.pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				UNSUPPORTED("submitInfo.pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
 			}
 		}
