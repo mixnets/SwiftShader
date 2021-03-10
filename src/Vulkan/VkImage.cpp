@@ -149,7 +149,7 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 			break;
 #endif
 			default:
-				LOG_TRAP("pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
+				UNSUPPORTED_EXTENSION(nextInfo->sType, "pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
 		}
 
