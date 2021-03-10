@@ -240,3 +240,15 @@ EXPORTS
 	vkResetQueryPool
 	; VK_EXT_headless_surface
 	vkCreateHeadlessSurfaceEXT
+	
+	; VK_KHR_surface
+	vkAcquireNextImageKHR
+	vkCreateSwapchainKHR
+	vkDestroySwapchainKHR
+	vkGetSwapchainImagesKHR
+	vkQueuePresentKHR
+	; 1.1
+	vkAcquireNextImage2KHR
+	vkGetDeviceGroupPresentCapabilitiesKHR
+	vkGetDeviceGroupSurfacePresentModesKHR
+	vkGetPhysicalDevicePresentRectanglesKHR

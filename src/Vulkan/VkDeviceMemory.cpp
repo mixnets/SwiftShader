@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "VkDeviceMemory.hpp"
+
 #include "VkBuffer.hpp"
+#include "VkConfig.hpp"
 #include "VkDevice.hpp"
 #include "VkDeviceMemoryExternalBase.hpp"
 #include "VkImage.hpp"
 #include "VkStringify.hpp"
-
-#include "VkConfig.hpp"
 
 namespace vk {
 
@@ -48,8 +48,7 @@ static bool parseCreateInfo(const VkMemoryAllocateInfo *pAllocateInfo,
 	{
 		pTraits->typeFlagBit = T::typeFlagBit;
 		pTraits->instanceSize = sizeof(T);
-		pTraits->instanceInit = [](void *external,
-		                           const VkMemoryAllocateInfo *pAllocateInfo) {
+		pTraits->instanceInit = [](void *external, const VkMemoryAllocateInfo *pAllocateInfo) {
 			new(external) T(pAllocateInfo);
 		};
 		return true;
@@ -338,7 +337,7 @@ VkResult DeviceMemory::allocate()
 	VkResult result = VK_SUCCESS;
 	if(!buffer)
 	{
-		result = external->allocate(size, &buffer);
+		result = external->allocate(size, &buffer);  //wut
 	}
 #ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	if(result == VK_SUCCESS)

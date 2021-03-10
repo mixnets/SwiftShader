@@ -49,7 +49,7 @@ std::vector<uint32_t> preprocessSpirv(
 			case SPV_MSG_WARNING: sw::warn("SPIR-V WARNING: %d:%d %s\n", int(position.line), int(position.column), message);
 			case SPV_MSG_INFO: sw::trace("SPIR-V INFO: %d:%d %s\n", int(position.line), int(position.column), message);
 			case SPV_MSG_DEBUG: sw::trace("SPIR-V DEBUG: %d:%d %s\n", int(position.line), int(position.column), message);
-			default: sw::trace("SPIR-V MESSAGE: %d:%d %s\n", int(position.line), int(position.column), message);
+			default: sw::trace("SPIR-V MESSAGE(%d): %d:%d %s\n", int(level), int(position.line), int(position.column), message);
 		}
 	});
 
@@ -75,15 +75,15 @@ std::vector<uint32_t> preprocessSpirv(
 	}
 
 	spvtools::OptimizerOptions optimizerOptions = {};
-#if defined(NDEBUG)
+	//#if defined(NDEBUG)
 	optimizerOptions.set_run_validator(false);
-#else
-	optimizerOptions.set_run_validator(true);
-	spvtools::ValidatorOptions validatorOptions = {};
-	validatorOptions.SetScalarBlockLayout(true);            // VK_EXT_scalar_block_layout
-	validatorOptions.SetUniformBufferStandardLayout(true);  // VK_KHR_uniform_buffer_standard_layout
-	optimizerOptions.set_validator_options(validatorOptions);
-#endif
+	//#else
+	//	optimizerOptions.set_run_validator(true);
+	//	spvtools::ValidatorOptions validatorOptions = {};
+	//	validatorOptions.SetScalarBlockLayout(true);            // VK_EXT_scalar_block_layout
+	//	validatorOptions.SetUniformBufferStandardLayout(true);  // VK_KHR_uniform_buffer_standard_layout
+	//	optimizerOptions.set_validator_options(validatorOptions);
+	//#endif
 
 	std::vector<uint32_t> optimized;
 	opt.Run(code.data(), code.size(), &optimized, optimizerOptions);

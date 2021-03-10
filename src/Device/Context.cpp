@@ -459,7 +459,7 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 
 			if(depthStencilState->depthBoundsTestEnable != VK_FALSE)
 			{
-				UNSUPPORTED("VkPhysicalDeviceFeatures::depthBounds");
+				//		UNSUPPORTED("VkPhysicalDeviceFeatures::depthBounds");
 			}
 
 			depthBoundsTestEnable = (depthStencilState->depthBoundsTestEnable != VK_FALSE);

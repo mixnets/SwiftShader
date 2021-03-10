@@ -348,6 +348,19 @@ void VulkanTester::initialize()
 	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 
+	VkPhysicalDeviceFeatures2 features2;
+	memset(&features2, 0, sizeof(features2));
+	features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	///device_create_info.pNext = &features2;
+
+	VkPhysicalDeviceTimelineSemaphoreFeatures semaphore_features = {};
+	semaphore_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES;
+	semaphore_features.pNext = features2.pNext;
+	features2.pNext = &semaphore_features;
+	semaphore_features.timelineSemaphore = VK_TRUE;
+
+	deviceCreateInfo.pNext = &features2;
+
 	device = physicalDevice.createDevice(deviceCreateInfo, nullptr);
 
 	queue = device.getQueue(queueFamilyIndex, 0);
