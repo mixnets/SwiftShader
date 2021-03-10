@@ -38,11 +38,22 @@
 #	undef ERROR  // b/127920555
 #endif
 
-#ifndef SWIFTSHADER_LOGGING_LEVEL
-#	define SWIFTSHADER_LOGGING_LEVEL Info
-#endif
+//#ifndef SWIFTSHADER_LOGGING_LEVEL
+#define SWIFTSHADER_LOGGING_LEVEL Verbose
+//#endif
 
 namespace {
+
+enum class Level
+{
+	Verbose,
+	Debug,
+	Info,
+	Warn,
+	Error,
+	Fatal,
+	Disabled,
+};
 
 bool IsUnderDebugger()
 {
@@ -95,17 +106,6 @@ bool IsUnderDebugger()
 	return false;
 #endif
 }
-
-enum class Level
-{
-	Verbose,
-	Debug,
-	Info,
-	Warn,
-	Error,
-	Fatal,
-	Disabled,
-};
 
 #ifdef __ANDROID__
 void logv_android(Level level, const char *msg)
@@ -169,7 +169,7 @@ void logv(Level level, const char *format, va_list args)
 #	endif
 	}
 
-	const Level traceToFileLevel = Level::Disabled;
+	const Level traceToFileLevel = Level::Verbose;
 	if(static_cast<int>(level) >= static_cast<int>(traceToFileLevel))
 	{
 		FILE *file = fopen(TRACE_OUTPUT_FILE, "a");
@@ -191,7 +191,7 @@ void trace(const char *format, ...)
 {
 	va_list vararg;
 	va_start(vararg, format);
-	logv(Level::Debug, format, vararg);
+	//logv(Level::Debug, format, vararg);
 	va_end(vararg);
 }
 

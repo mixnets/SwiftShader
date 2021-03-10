@@ -46,7 +46,7 @@ static INT_PTR CALLBACK DebuggerWaitDialogProc(HWND hwnd, UINT uMsg, WPARAM wPar
 	return FALSE;
 }
 
-static void WaitForDebugger(HINSTANCE instance)
+void WaitForDebugger(HINSTANCE instance)
 {
 	if(!IsDebuggerPresent())
 	{

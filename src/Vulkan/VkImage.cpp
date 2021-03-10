@@ -197,6 +197,11 @@ void Image::destroy(const VkAllocationCallbacks *pAllocator)
 {
 	if(decompressedImage)
 	{
+		if(decompressedImage->deviceMemory)
+		{
+			decompressedImage->deviceMemory->destroy(nullptr);
+			//delete decompressedImage->deviceMemory;
+		}
 		vk::deallocate(decompressedImage, pAllocator);
 	}
 }
@@ -211,8 +216,9 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	VkMemoryRequirements memoryRequirements;
 	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = getStorageSize(format.getAspects()) +
-	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
+	memoryRequirements.size = getStorageSize(format.getAspects()) /* +
+	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0)*/
+	    ;
 	return memoryRequirements;
 }
 
@@ -261,11 +267,6 @@ void Image::bind(DeviceMemory *pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
 	deviceMemory = pDeviceMemory;
 	memoryOffset = pMemoryOffset;
-	if(decompressedImage)
-	{
-		decompressedImage->deviceMemory = deviceMemory;
-		decompressedImage->memoryOffset = memoryOffset + getStorageSize(format.getAspects());
-	}
 }
 
 #ifdef __ANDROID__
@@ -975,6 +976,21 @@ const Image *Image::getSampledImage(const vk::Format &imageViewFormat) const
 	// it may be sampled properly by texture sampling functions, which don't support compressed
 	// textures. If the ImageView's format is NOT compressed, then we reinterpret cast the
 	// compressed image into the ImageView's format, so we must return the compressed image as is.
+
+	if(decompressedImage && !decompressedImage->deviceMemory)
+	{
+		VkMemoryAllocateInfo info = {};
+		info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		info.allocationSize = decompressedImage->getStorageSize(decompressedImage->format.getAspects());
+		//auto *mem = new uint8_t[info.allocationSize];
+		//ASSERT(mem);
+		VkDeviceMemory mem;
+		vk::DeviceMemory::Create(nullptr, &info, &mem, const_cast<Device *>(device));
+		decompressedImage->deviceMemory = vk::Cast(mem);
+		decompressedImage->deviceMemory->allocate();
+		decompressedImage->memoryOffset = 0;  // memoryOffset + getStorageSize(format.getAspects());
+	}
+
 	return (decompressedImage && isImageViewCompressed) ? decompressedImage : this;
 }
 
@@ -1226,6 +1242,20 @@ void Image::decompress(const VkImageSubresource &subresource)
 {
 	if(decompressedImage)
 	{
+		if(!decompressedImage->deviceMemory)
+		{
+			VkMemoryAllocateInfo info = {};
+			info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			info.allocationSize = decompressedImage->getStorageSize(decompressedImage->format.getAspects());
+			//auto *mem = new uint8_t[info.allocationSize];
+			//ASSERT(mem);
+			VkDeviceMemory mem;
+			vk::DeviceMemory::Create(nullptr, &info, &mem, const_cast<Device *>(device));
+			decompressedImage->deviceMemory = vk::Cast(mem);
+			decompressedImage->deviceMemory->allocate();
+			decompressedImage->memoryOffset = 0;  // memoryOffset + getStorageSize(format.getAspects());
+		}
+
 		switch(format)
 		{
 			case VK_FORMAT_EAC_R11_UNORM_BLOCK:

@@ -55,9 +55,9 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 // A macro to output a trace of a function call and its arguments to the
 // debugging log. Disabled if SWIFTSHADER_DISABLE_TRACE is defined.
 #if defined(SWIFTSHADER_DISABLE_TRACE)
-#	define TRACE(message, ...) (void(0))
+#	define TRACE(arguments, ...) (void(0))
 #else
-#	define TRACE(message, ...) sw::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#	define TRACE(arguments, ...) sw::trace("%s:%d TRACE: %s(" arguments ")\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #endif
 
 #if defined(SWIFTSHADER_DISABLE_TRACE) || defined(NDEBUG)

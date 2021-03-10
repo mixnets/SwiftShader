@@ -61,7 +61,7 @@ public:
 	int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const;
 	VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const;
 
-private:
+	//private:
 	void *buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t memoryTypeIndex = 0;

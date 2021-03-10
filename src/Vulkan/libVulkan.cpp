@@ -46,6 +46,8 @@
 
 #include "System/Debug.hpp"
 
+void WaitForDebugger(HINSTANCE instance);
+
 #if defined(VK_USE_PLATFORM_METAL_EXT) || defined(VK_USE_PLATFORM_MACOS_MVK)
 #	include "WSI/MetalSurface.hpp"
 #endif
@@ -423,6 +425,54 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_SPIRV_1_4_EXTENSION_NAME, VK_KHR_SPIRV_1_4_SPEC_VERSION } },
 	{ { VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION } },
+
+	//{ { "VK_EXT_buffer_device_address", 2 } },
+	//{ { "VK_EXT_calibrated_timestamps", 1 } },
+	//{ { "VK_EXT_conditional_rendering", 1 } },
+	//{ { "VK_EXT_debug_marker", 4 } },
+	//{ { "VK_EXT_depth_clip_enable", 1 } },
+	//{ { "VK_EXT_descriptor_indexing", 2 } },
+	//{ { "VK_EXT_discard_rectangles", 1 } },
+	//{ { "VK_EXT_full_screen_exclusive", 3 } },
+	//{ { "VK_EXT_hdr_metadata", 1 } },
+	//{ { "VK_EXT_index_type_uint8", 1 } },
+	//{ { "VK_EXT_inline_uniform_block", 1 } },
+	//{ { "VK_EXT_memory_budget", 1 } },
+	//{ { "VK_EXT_memory_priority", 1 } },
+	//{ { "VK_EXT_pci_bus_info", 2 } },
+	//{ { "VK_EXT_pipeline_creation_feedback", 1 } },
+	//{ { "VK_EXT_shader_demote_to_helper_invocation", 1 } },
+	//{ { "VK_EXT_shader_subgroup_ballot", 1 } },
+	//{ { "VK_EXT_shader_subgroup_vote", 1 } },
+	//{ { "VK_EXT_subgroup_size_control", 2 } },
+	//{ { "VK_EXT_texel_buffer_alignment", 1 } },
+	//{ { "VK_EXT_tooling_info", 1 } },
+	//{ { "VK_EXT_transform_feedback", 1 } },
+	//{ { "VK_EXT_vertex_attribute_divisor", 3 } },
+	//{ { "VK_EXT_ycbcr_image_arrays", 1 } },
+	//{ { "VK_KHR_16bit_storage", 1 } },
+	//{ { "VK_KHR_8bit_storage", 1 } },
+	//{ { "VK_KHR_depth_stencil_resolve", 1 } },
+	//{ { "VK_KHR_draw_indirect_count", 1 } },
+	//{ { "VK_KHR_external_fence_win32", 1 } },
+	//{ { "VK_KHR_external_memory", 1 } },
+	//{ { "VK_KHR_external_memory_win32", 1 } },
+	//{ { "VK_KHR_external_semaphore_win32", 1 } },
+	//{ { "VK_KHR_pipeline_executable_properties", 1 } },
+	//{ { "VK_KHR_push_descriptor", 2 } },
+	//{ { "VK_KHR_sampler_mirror_clamp_to_edge", 1 } },
+	//{ { "VK_KHR_shader_atomic_int64", 1 } },
+	//{ { "VK_KHR_shader_draw_parameters", 1 } },
+	//{ { "VK_KHR_shader_float16_int8", 1 } },
+	//{ { "VK_KHR_swapchain_mutable_format", 1 } },
+	//{ { "VK_KHR_variable_pointers", 1 } },
+	//{ { "VK_KHR_vulkan_memory_model", 3 } },
+	//{ { "VK_KHR_win32_keyed_mutex", 1 } },
+	//{ { "VK_NV_dedicated_allocation", 1 } },
+	//{ { "VK_NV_external_memory", 1 } },
+	//{ { "VK_NV_external_memory_win32", 1 } },
+	//{ { "VK_NV_shader_subgroup_partitioned", 1 } },
+	//{ { "VK_NV_win32_keyed_mutex", 1 } },
 };
 
 static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -678,6 +728,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 	TRACE("(VkPhysicalDevice physicalDevice = %p, const VkDeviceCreateInfo* pCreateInfo = %p, const VkAllocationCallbacks* pAllocator = %p, VkDevice* pDevice = %p)",
 	      physicalDevice, pCreateInfo, pAllocator, pDevice);
 
+	//WaitForDebugger(GetModuleHandle(NULL));
+
 	if(pCreateInfo->flags != 0)
 	{
 		// Vulkan 1.2: "flags is reserved for future use." "flags must be 0"
@@ -868,9 +920,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				(void)hostQueryResetFeatures->hostQueryReset;
 				break;
 			}
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES:
+				break;
 			default:
 				// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
-				LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+				//	LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 				break;
 		}
 
