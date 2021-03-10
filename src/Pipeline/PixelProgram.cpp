@@ -201,7 +201,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sam
 
 	for(int i = 0; i < RENDERTARGETS; i++)
 	{
-		c[i].x = routine.outputs[i * 4];
+		c[i].x = routine.outputs[i * 4 + 0];
 		c[i].y = routine.outputs[i * 4 + 1];
 		c[i].z = routine.outputs[i * 4 + 2];
 		c[i].w = routine.outputs[i * 4 + 3];

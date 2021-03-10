@@ -78,7 +78,7 @@ public:
 			unsigned int attribType : BITS(SpirvShader::ATTRIBTYPE_LAST);
 		};
 
-		Input input[MAX_INTERFACE_COMPONENTS / 4];
+		Input input[MAX_INTERFACE_COMPONENTS / 4];///
 		bool robustBufferAccess : 1;
 		bool isPoint : 1;
 	};

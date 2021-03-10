@@ -509,7 +509,7 @@ PFN_vkVoidFunction GetInstanceProcAddr(Instance *instance, const char *pName)
 		}
 	}
 
-	return nullptr;
+	return nullptr;  //
 }
 
 PFN_vkVoidFunction GetDeviceProcAddr(Device *device, const char *pName)
@@ -532,7 +532,7 @@ PFN_vkVoidFunction GetDeviceProcAddr(Device *device, const char *pName)
 		}
 	}
 
-	return nullptr;
+	return nullptr;  //
 }
 
 }  // namespace vk

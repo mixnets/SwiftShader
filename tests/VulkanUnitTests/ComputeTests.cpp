@@ -22,7 +22,7 @@
 
 #include <cstring>
 #include <sstream>
-
+/*
 namespace {
 size_t alignUp(size_t val, size_t alignment)
 {
@@ -1479,3 +1479,4 @@ TEST_P(SwiftShaderVulkanBufferToBufferComputeTest, LoopDivergentMergePhi)
 	test(
 	    src.str(), [](uint32_t i) { return i; }, [](uint32_t i) { return i; });
 }
+*/
