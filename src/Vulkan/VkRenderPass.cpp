@@ -193,8 +193,8 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo2KHR *pCreateInfo, void *mem)
 				}
 				break;
 				default:
-					LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
-					         i, vk::Stringify(extension->sType).c_str());
+					UNSUPPORTED("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
+					            i, vk::Stringify(extension->sType).c_str());
 					break;
 			}
 
@@ -405,8 +405,8 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo2KH
 				}
 				break;
 				default:
-					LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
-					         i, vk::Stringify(extension->sType).c_str());
+					UNSUPPORTED("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
+					            i, vk::Stringify(extension->sType).c_str());
 					break;
 			}
 

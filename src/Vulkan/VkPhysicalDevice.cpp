@@ -416,7 +416,7 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 				getPhysicalDeviceDescriptorIndexingFeatures(reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeatures *>(curExtension));
 				break;
 			default:
-				LOG_TRAP("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
+				UNSUPPORTED("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
 				break;
 		}
 		curExtension = reinterpret_cast<VkBaseOutStructure *>(curExtension->pNext);
