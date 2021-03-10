@@ -72,6 +72,7 @@ public:
 	                              VkImageUsageFlags usage, VkImageCreateFlags flags,
 	                              VkImageFormatProperties *pImageFormatProperties) const;
 	uint32_t getQueueFamilyPropertyCount() const;
+	void getQueueFamilyProperties(VkQueueFamilyProperties &properties) const;
 	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
 	                              VkQueueFamilyProperties *pQueueFamilyProperties) const;
 	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
