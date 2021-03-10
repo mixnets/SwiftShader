@@ -201,7 +201,7 @@ AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const VkMemoryAllocate
 			break;
 		default:
 			{
-				LOG_TRAP("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+				UNSUPPORTED_EXTENSION(createInfo->sType, "VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
 			}
 			break;
 		}

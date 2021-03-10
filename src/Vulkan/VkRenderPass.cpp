@@ -192,10 +192,10 @@ RenderPass::RenderPass(const VkRenderPassCreateInfo2KHR *pCreateInfo, void *mem)
 					}
 				}
 				break;
-			default:
-				LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
-				         i, vk::Stringify(extension->sType).c_str());
-				break;
+				default:
+					UNSUPPORTED_EXTENSION(extension->sType, "VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
+					                      i, vk::Stringify(extension->sType).c_str());
+					break;
 			}
 
 			extension = extension->pNext;
@@ -259,9 +259,9 @@ void RenderPass::init(const T *pCreateInfo, void **mem)
 				}
 			}
 			break;
-		default:
-			WARN("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
+			default:
+				UNSUPPORTED_EXTENSION(extensionCreateInfo->sType, "pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+				break;
 		}
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
@@ -403,10 +403,10 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo2KH
 					}
 				}
 				break;
-			default:
-				LOG_TRAP("VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
-				         i, vk::Stringify(extension->sType).c_str());
-				break;
+				default:
+					UNSUPPORTED_EXTENSION(extension->sType, "VkRenderPassCreateInfo2KHR->subpass[%d]->pNext sType: %s",
+					                      i, vk::Stringify(extension->sType).c_str());
+					break;
 			}
 
 			extension = extension->pNext;

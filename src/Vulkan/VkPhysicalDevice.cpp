@@ -414,9 +414,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
 			getPhysicalDeviceDepthClipEnableFeaturesExt(reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(curExtension));
 			break;
-		default:
-			LOG_TRAP("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
-			break;
+			default:
+				UNSUPPORTED_EXTENSION(curExtension->sType, "curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
+				break;
 		}
 		curExtension = reinterpret_cast<VkBaseOutStructure *>(curExtension->pNext);
 	}

@@ -366,9 +366,9 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				depthClipEnable = depthClipInfo->depthClipEnable != VK_FALSE;
 			}
 			break;
-		default:
-			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
-			break;
+			default:
+				UNSUPPORTED_EXTENSION(extensionCreateInfo->sType, "pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+				break;
 		}
 
 		extensionCreateInfo = extensionCreateInfo->pNext;

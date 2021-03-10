@@ -60,12 +60,6 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 #	define TRACE(message, ...) sw::trace("%s:%d TRACE: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
-#if defined(SWIFTSHADER_DISABLE_TRACE) || defined(NDEBUG)
-#	define LOG_TRAP(message, ...) (void(0))
-#else
-#	define LOG_TRAP(message, ...) sw::log_trap("%s:%d %s LOG TRAP: " message "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
-#endif
-
 // A macro to print a warning message to the debugging log and stderr to denote
 // an issue that needs fixing.
 #define FIXME(message, ...) sw::warn("%s:%d FIXME: " message "\n", __FILE__, __LINE__, ##__VA_ARGS__)
@@ -143,6 +137,21 @@ void log_trap(const char *format, ...) CHECK_PRINTF_ARGS;
 // application should be respecting the advertised features / limits.
 #undef UNSUPPORTED
 #define UNSUPPORTED(format, ...) DABORT("UNSUPPORTED: " format, ##__VA_ARGS__)
+
+// A macro to indicate unsupported extensions.
+// This should be called by switch statements going through pNext lists when
+// an sType is not among the supported extensions. This ignores
+// VK_STRUCTURE_TYPE_MAX_ENUM as it's legal for applications to provide
+// sTypes that are not extension structures, and the driver must ignore them.
+#undef UNSUPPORTED_EXTENSION
+#define UNSUPPORTED_EXTENSION(sType, format, ...) \
+	do                                            \
+	{                                             \
+		if(sType != VK_STRUCTURE_TYPE_MAX_ENUM)   \
+		{                                         \
+			UNSUPPORTED(format, ##__VA_ARGS__);   \
+		}                                         \
+	} while(false)
 
 // A macro for code which should never be reached, even with misbehaving
 // applications.
