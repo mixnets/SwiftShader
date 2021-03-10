@@ -23,6 +23,8 @@ if(MSVC)
     string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
 endif()
 
+add_definitions(-D_ITERATOR_DEBUG_LEVEL=0) 
+
 ###########################################################
 # Detect system
 ###########################################################

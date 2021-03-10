@@ -46,10 +46,10 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_FALSE,  // logicOp
 		VK_TRUE,   // multiDrawIndirect
 		VK_TRUE,   // drawIndirectFirstInstance
-		VK_FALSE,  // depthClamp
+		VK_TRUE,   // depthClamp
 		VK_TRUE,   // depthBiasClamp
 		VK_TRUE,   // fillModeNonSolid
-		VK_FALSE,  // depthBounds
+		VK_TRUE,   // depthBounds
 		VK_FALSE,  // wideLines
 		VK_TRUE,   // largePoints
 		VK_FALSE,  // alphaToOne
@@ -67,7 +67,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_TRUE,   // vertexPipelineStoresAndAtomics
 		VK_TRUE,   // fragmentStoresAndAtomics
 		VK_FALSE,  // shaderTessellationAndGeometryPointSize
-		VK_FALSE,  // shaderImageGatherExtended
+		VK_TRUE,   // shaderImageGatherExtended
 		VK_TRUE,   // shaderStorageImageExtendedFormats
 		VK_TRUE,   // shaderStorageImageMultisample
 		VK_FALSE,  // shaderStorageImageReadWithoutFormat
@@ -437,20 +437,20 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		131072,                                           // bufferImageGranularity
 		0,                                                // sparseAddressSpaceSize (unsupported)
 		MAX_BOUND_DESCRIPTOR_SETS,                        // maxBoundDescriptorSets
-		16,                                               // maxPerStageDescriptorSamplers
-		14,                                               // maxPerStageDescriptorUniformBuffers
-		16,                                               // maxPerStageDescriptorStorageBuffers
-		16,                                               // maxPerStageDescriptorSampledImages
-		4,                                                // maxPerStageDescriptorStorageImages
-		4,                                                // maxPerStageDescriptorInputAttachments
-		128,                                              // maxPerStageResources
-		96,                                               // maxDescriptorSetSamplers
-		72,                                               // maxDescriptorSetUniformBuffers
+		1048580,                                          // maxPerStageDescriptorSamplers
+		15,                                               // maxPerStageDescriptorUniformBuffers
+		1048580,                                          // maxPerStageDescriptorStorageBuffers
+		1048580,                                          // maxPerStageDescriptorSampledImages
+		1048580,                                          // maxPerStageDescriptorStorageImages
+		1048580,                                          // maxPerStageDescriptorInputAttachments
+		0xFFFFFFFFu,                                      // maxPerStageResources
+		1048580,                                          // maxDescriptorSetSamplers
+		180,                                              // maxDescriptorSetUniformBuffers
 		MAX_DESCRIPTOR_SET_UNIFORM_BUFFERS_DYNAMIC,       // maxDescriptorSetUniformBuffersDynamic
 		24,                                               // maxDescriptorSetStorageBuffers
 		MAX_DESCRIPTOR_SET_STORAGE_BUFFERS_DYNAMIC,       // maxDescriptorSetStorageBuffersDynamic
-		96,                                               // maxDescriptorSetSampledImages
-		24,                                               // maxDescriptorSetStorageImages
+		1048580,                                          // maxDescriptorSetSampledImages
+		1048580,                                          // maxDescriptorSetStorageImages
 		4,                                                // maxDescriptorSetInputAttachments
 		16,                                               // maxVertexInputAttributes
 		vk::MAX_VERTEX_INPUT_BINDINGS,                    // maxVertexInputBindings
@@ -521,9 +521,9 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		sw::MAX_CLIP_DISTANCES + sw::MAX_CULL_DISTANCES,  // maxCombinedClipAndCullDistances
 		2,                                                // discreteQueuePriorities
 		{ 1.0, vk::MAX_POINT_SIZE },                      // pointSizeRange[2]
-		{ 1.0, 1.0 },                                     // lineWidthRange[2] (unsupported)
-		0.0,                                              // pointSizeGranularity (unsupported)
-		0.0,                                              // lineWidthGranularity (unsupported)
+		{ 1.0, 64.0 },                                    // lineWidthRange[2] (unsupported)
+		0.0625,                                           // pointSizeGranularity (unsupported)
+		0.0625,                                           // lineWidthGranularity (unsupported)
 		VK_TRUE,                                          // strictLines
 		VK_TRUE,                                          // standardSampleLocations
 		64,                                               // optimalBufferCopyOffsetAlignment
@@ -542,16 +542,16 @@ const VkPhysicalDeviceProperties &PhysicalDevice::getProperties() const
 			DRIVER_VERSION,
 			VENDOR_ID,
 			DEVICE_ID,
-			VK_PHYSICAL_DEVICE_TYPE_CPU,  // deviceType
-			"",                           // deviceName
-			SWIFTSHADER_UUID,             // pipelineCacheUUID
-			getLimits(),                  // limits
-			{}                            // sparseProperties
+			VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU,  // deviceType
+			"GeForce GT 730M",                     // deviceName
+			SWIFTSHADER_UUID,                      // pipelineCacheUUID
+			getLimits(),                           // limits
+			{}                                     // sparseProperties
 		};
 
 		// Append Reactor JIT backend name and version
-		snprintf(properties.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,
-		         "%s (%s)", SWIFTSHADER_DEVICE_NAME, rr::BackendName().c_str());
+		//snprintf(properties.deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE,
+		//         "%s (%s)", SWIFTSHADER_DEVICE_NAME, rr::BackendName().c_str());
 
 		return properties;
 	};
@@ -1561,7 +1561,7 @@ const VkPhysicalDeviceMemoryProperties &PhysicalDevice::GetMemoryProperties()
 		1,  // memoryHeapCount
 		{
 		    {
-		        1ull << 31,                      // size, FIXME(sugoi): This should be configurable based on available RAM
+		        4ull * 1024 * 1024 * 1024,       // size, FIXME(sugoi): This should be configurable based on available RAM
 		        VK_MEMORY_HEAP_DEVICE_LOCAL_BIT  // flags
 		    },
 		}

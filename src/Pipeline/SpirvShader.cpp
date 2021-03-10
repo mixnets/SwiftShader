@@ -120,7 +120,9 @@ SpirvShader::SpirvShader(
 				}
 
 				if(decoration == spv::DecorationCentroid)
+				{
 					modes.NeedsCentroid = true;
+				}
 				break;
 			}
 
@@ -138,7 +140,9 @@ SpirvShader::SpirvShader(
 				d[memberIndex].Apply(decoration, value);
 
 				if(decoration == spv::DecorationCentroid)
+				{
 					modes.NeedsCentroid = true;
+				}
 				break;
 			}
 
@@ -192,7 +196,9 @@ SpirvShader::SpirvShader(
 					auto &d = memberDecorations[insn.word(i)];
 					auto memberIndex = insn.word(i + 1);
 					if(memberIndex >= d.size())
+					{
 						d.resize(memberIndex + 1);  // on demand resize, see above...
+					}
 					d[memberIndex].Apply(srcDecorations);
 				}
 				break;
