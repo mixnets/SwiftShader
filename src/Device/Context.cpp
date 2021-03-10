@@ -379,8 +379,11 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				depthClipEnable = depthClipInfo->depthClipEnable != VK_FALSE;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_MAX_ENUM:
+			// dEQP tests that this value is ignored.
+			break;
 		default:
-			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+			UNSUPPORTED("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 			break;
 		}
 
