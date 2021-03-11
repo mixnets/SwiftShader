@@ -877,6 +877,22 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				(void)tsFeatures->timelineSemaphore;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES:
+			{
+				const auto *subgroupExtendedTypesFeatures = reinterpret_cast<const VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures *>(extensionCreateInfo);
+
+				// VK_KHR_shader_subgroup_extended_types is always enabled
+				(void)subgroupExtendedTypesFeatures->shaderSubgroupExtendedTypes;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES:
+			{
+				const auto *ubslFeatures = reinterpret_cast<const VkPhysicalDeviceUniformBufferStandardLayoutFeatures *>(extensionCreateInfo);
+
+				// VK_KHR_uniform_buffer_standard_layout is always enabled
+				(void)ubslFeatures->uniformBufferStandardLayout;
+			}
+			break;
 			default:
 				// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 				UNSUPPORTED_EXTENSION(extensionCreateInfo->sType, "pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
