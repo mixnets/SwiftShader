@@ -148,6 +148,14 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 			}
 			break;
 #endif
+			case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
+			{
+				// External memory info is not relevant for retrieving the format.
+				const auto *externalMemoryImageCreateInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo *>(nextInfo);
+
+				(void)externalMemoryImageCreateInfo->handleTypes;
+				break;
+			}
 			default:
 				UNSUPPORTED("pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
