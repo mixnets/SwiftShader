@@ -148,6 +148,34 @@ VkFormat GetImageFormat(const VkImageCreateInfo *pCreateInfo)
 			}
 			break;
 #endif
+			case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
+			{
+				const auto *externalMemoryImageCreateInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo *>(nextInfo);
+
+				(void)externalMemoryImageCreateInfo->handleTypes;
+				break;
+			}
+			case VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR:
+			{
+				const auto *imageSwapchainCreateInfo = reinterpret_cast<const VkImageSwapchainCreateInfoKHR *>(nextInfo);
+
+				(void)imageSwapchainCreateInfo->swapchain;
+				break;
+			}
+			case VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO:
+			{
+				const auto *imageFormatListCreateInfo = reinterpret_cast<const VkImageFormatListCreateInfo *>(nextInfo);
+
+				(void)imageFormatListCreateInfo->pViewFormats;
+				break;
+			}
+			case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
+			{
+				const VkImageStencilUsageCreateInfo *stencilUsageInfo = reinterpret_cast<const VkImageStencilUsageCreateInfo *>(nextInfo);
+
+				(void)stencilUsageInfo->stencilUsage;
+				break;
+			}
 			default:
 				UNSUPPORTED_EXTENSION(nextInfo->sType, "pCreateInfo->pNext->sType = %s", vk::Stringify(nextInfo->sType).c_str());
 				break;
