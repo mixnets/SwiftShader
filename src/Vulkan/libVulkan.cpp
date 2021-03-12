@@ -4151,7 +4151,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAcquireImageANDROID(VkDevice device, VkImage im
 
 	if(semaphore != VK_NULL_HANDLE)
 	{
-		vk::Cast(semaphore)->signal();
+		if(auto *sem = vk::DynamicCast<vk::BinarySemaphore>(semaphore))
+		{
+			sem->signal();
+		}
+		else
+		{
+			ASSERT(false);
+		}
 	}
 
 	return VK_SUCCESS;
