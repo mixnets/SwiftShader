@@ -11,3 +11,4 @@ dEQP-VK.multiview.renderpass2.queries.15
 dEQP-VK.multiview.renderpass2.queries.15_15_15_15
 dEQP-VK.multiview.renderpass2.queries.5_10_5_10
 dEQP-VK.synchronization.basic.timeline_semaphore.chain
+dEQP-VK.ubo.random.all_shared_buffer.48
