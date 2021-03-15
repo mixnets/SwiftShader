@@ -1059,16 +1059,24 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		queryPool->begin(query, flags);
+		// "If queries are used while executing a render pass instance that has multiview enabled, the query uses
+		//  N consecutive query indices in the query pool (starting at `query`)"
+		for(uint32_t i = 0; i < executionState.viewCount(); i++)
+		{
+			queryPool->begin(query + i, flags);
+		}
+
+		// The renderer accumulates the result into a single query.
+		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
 		executionState.renderer->addQuery(queryPool->getQuery(query));
 	}
 
 	std::string description() override { return "vkCmdBeginQuery()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
-	VkQueryControlFlags flags;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
+	const VkQueryControlFlags flags;
 };
 
 class CmdEndQuery : public vk::CommandBuffer::Command
@@ -1082,15 +1090,26 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
+		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
 		executionState.renderer->removeQuery(queryPool->getQuery(query));
-		queryPool->end(query);
+
+		// "implementations may write the total result to the first query and write zero to the other queries."
+		for(uint32_t i = 1; i < executionState.viewCount(); i++)
+		{
+			queryPool->getQuery(query + i)->set(0);
+		}
+
+		for(uint32_t i = 0; i < executionState.viewCount(); i++)
+		{
+			queryPool->end(query + i);
+		}
 	}
 
 	std::string description() override { return "vkCmdEndQuery()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
 };
 
 class CmdResetQueryPool : public vk::CommandBuffer::Command
@@ -1139,15 +1158,20 @@ public:
 			executionState.renderer->synchronize();
 		}
 
-		queryPool->writeTimestamp(query);
+		// "the timestamp uses N consecutive query indices in the query pool (starting at `query`) where
+		//  N is the number of bits set in the view mask of the subpass the command is executed in."
+		for(uint32_t i = 0; i < executionState.viewCount(); i++)
+		{
+			queryPool->writeTimestamp(query + i);
+		}
 	}
 
 	std::string description() override { return "vkCmdWriteTimeStamp()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
-	VkPipelineStageFlagBits stage;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
+	const VkPipelineStageFlagBits stage;
 };
 
 class CmdCopyQueryPoolResults : public vk::CommandBuffer::Command
@@ -1755,6 +1779,31 @@ void CommandBuffer::ExecutionState::bindAttachments(Attachments *attachments)
 			attachments->stencilBuffer = attachment;
 		}
 	}
+}
+
+// The number of bits set in the view mask, or 1 if multiview is disabled.
+uint32_t CommandBuffer::ExecutionState::viewCount() const
+{
+	uint32_t viewMask = 1;
+
+	if(renderPass)
+	{
+		viewMask = renderPass->getViewMask(subpassIndex);
+	}
+
+	// TODO: With C++20 we can use std::popcount()
+	uint32_t count = 0;
+	while(viewMask != 0)
+	{
+		if(viewMask & 1)
+		{
+			count++;
+		}
+
+		viewMask >>= 1;
+	}
+
+	return count;
 }
 
 }  // namespace vk
