@@ -1059,16 +1059,29 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
-		queryPool->begin(query, flags);
+		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
 		executionState.renderer->addQuery(queryPool->getQuery(query));
+
+		uint32_t viewMask = executionState.renderPass->getViewMask(executionState.subpassIndex);
+		uint32_t i = 0;
+		while(viewMask != 0)
+		{
+			if(viewMask & 1)
+			{
+				queryPool->begin(query + i, flags);
+				i++;
+			}
+
+			viewMask >>= 1;
+		}
 	}
 
 	std::string description() override { return "vkCmdBeginQuery()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
-	VkQueryControlFlags flags;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
+	const VkQueryControlFlags flags;
 };
 
 class CmdEndQuery : public vk::CommandBuffer::Command
@@ -1082,15 +1095,33 @@ public:
 
 	void play(vk::CommandBuffer::ExecutionState &executionState) override
 	{
+		ASSERT(queryPool->getType() == VK_QUERY_TYPE_OCCLUSION);
 		executionState.renderer->removeQuery(queryPool->getQuery(query));
-		queryPool->end(query);
+
+		uint32_t viewMask = executionState.renderPass->getViewMask(executionState.subpassIndex);
+		uint32_t i = 0;
+		while(viewMask != 0)
+		{
+			if(viewMask & 1)
+			{
+				if(i != 0)
+				{
+					queryPool->getQuery(query + i)->set(0);
+				}
+
+				queryPool->end(query + i);
+				i++;
+			}
+
+			viewMask >>= 1;
+		}
 	}
 
 	std::string description() override { return "vkCmdEndQuery()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
 };
 
 class CmdResetQueryPool : public vk::CommandBuffer::Command
@@ -1139,15 +1170,26 @@ public:
 			executionState.renderer->synchronize();
 		}
 
-		queryPool->writeTimestamp(query);
+		uint32_t viewMask = executionState.renderPass->getViewMask(executionState.subpassIndex);
+		uint32_t i = 0;
+		while(viewMask != 0)
+		{
+			if(viewMask & 1)
+			{
+				queryPool->writeTimestamp(query + i);
+				i++;
+			}
+
+			viewMask >>= 1;
+		}
 	}
 
 	std::string description() override { return "vkCmdWriteTimeStamp()"; }
 
 private:
-	vk::QueryPool *queryPool;
-	uint32_t query;
-	VkPipelineStageFlagBits stage;
+	vk::QueryPool *const queryPool;
+	const uint32_t query;
+	const VkPipelineStageFlagBits stage;
 };
 
 class CmdCopyQueryPoolResults : public vk::CommandBuffer::Command
