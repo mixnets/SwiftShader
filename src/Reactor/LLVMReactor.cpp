@@ -666,6 +666,14 @@ Value *Nucleus::allocateStackVariable(Type *type, int arraySize)
 
 	entryBlock.getInstList().push_front(declaration);
 
+	// Zero-initialize local variables.
+	if(true)
+	{
+		Value *value = V(llvm::UndefValue::get(T(type)));
+		value = Nucleus::createXor(value, value);
+		Nucleus::createStore(value, V(declaration), type);
+	}
+
 	return V(declaration);
 }
 
