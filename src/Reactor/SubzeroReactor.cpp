@@ -98,10 +98,22 @@ Ice::Variable *allocateStackVariable(Ice::Cfg *function, Ice::Type type, int arr
 	int typeSize = Ice::typeWidthInBytes(type);
 	int totalSize = typeSize * (arraySize ? arraySize : 1);
 
-	auto bytes = Ice::ConstantInteger32::create(function->getContext(), Ice::IceType_i32, totalSize);
-	auto address = function->makeVariable(getPointerType(type));
-	auto alloca = Ice::InstAlloca::create(function, address, bytes, typeSize);  // SRoA depends on the alignment to match the type size.
-	function->getEntryNode()->getInsts().push_front(alloca);
+	auto *bytes = Ice::ConstantInteger32::create(function->getContext(), Ice::IceType_i32, totalSize);
+	auto *address = function->makeVariable(getPointerType(type));
+	auto *alloca = Ice::InstAlloca::create(function, address, bytes, typeSize);  // SRoA depends on the alignment to match the type size.
+	auto &insts = function->getEntryNode()->getInsts();
+	insts.push_front(alloca);
+
+	// Zero-initialize local variables.
+	if(true)
+	{
+		Ice::Variable *value = function->makeVariable(type);
+		Ice::InstArithmetic *xor = Ice::InstArithmetic::create(function, Ice::InstArithmetic::Xor, value, value, value);
+		insts.push_front(xor);
+
+		auto *store = Ice::InstStore::create(function, value, address, typeSize);
+		insts.push_front(store);
+	}
 
 	return address;
 }
