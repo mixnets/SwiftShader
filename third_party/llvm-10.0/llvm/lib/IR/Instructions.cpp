@@ -2738,7 +2738,8 @@ unsigned CastInst::isEliminableCastPair(
 
 CastInst *CastInst::Create(Instruction::CastOps op, Value *S, Type *Ty,
   const Twine &Name, Instruction *InsertBefore) {
-  assert(castIsValid(op, S, Ty) && "Invalid cast!");
+    bool x = castIsValid(op, S, Ty);
+  assert(x && "Invalid cast!");
   // Construct and return the appropriate CastInst subclass
   switch (op) {
   case Trunc:         return new TruncInst         (S, Ty, Name, InsertBefore);

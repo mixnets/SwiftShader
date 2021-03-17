@@ -1462,14 +1462,18 @@ Value *Nucleus::createBitCast(Value *v, Type *destType)
 	// Bitcasts must be between types of the same logical size. But with emulated narrow vectors we need
 	// support for casting between scalars and wide vectors. Emulate them by writing to the stack and
 	// reading back as the destination type.
-	if(!V(v)->getType()->isVectorTy() && T(destType)->isVectorTy())
+if(!V(v)->getType()->isVectorTy() && T(destType)->isVectorTy())
+	//if((!V(v)->getType()->isVectorTy() && T(destType)->isVectorTy()) ||
+	//   V(v)->getType() == T(Half4::type()))
 	{
 		Value *readAddress = allocateStackVariable(destType);
 		Value *writeAddress = createBitCast(readAddress, T(llvm::PointerType::get(V(v)->getType(), 0)));
 		createStore(v, writeAddress, T(V(v)->getType()));
 		return createLoad(readAddress, destType);
 	}
-	else if(V(v)->getType()->isVectorTy() && !T(destType)->isVectorTy())
+else if(V(v)->getType()->isVectorTy() && !T(destType)->isVectorTy())
+	//else if((V(v)->getType()->isVectorTy() && !T(destType)->isVectorTy()) ||
+	//        T(destType) == T(Half4::type()))
 	{
 		Value *writeAddress = allocateStackVariable(T(V(v)->getType()));
 		createStore(v, writeAddress, T(V(v)->getType()));
@@ -2905,9 +2909,190 @@ Type *UInt4::type()
 	return T(llvm::VectorType::get(T(UInt::type()), 4, false));
 }
 
+Half::Half(RValue<Float> cast)
+{
+	//UInt fp32i = As<UInt>(cast);
+	//UInt abs = fp32i & 0x7FFFFFFF;
+	//UShort fp16i((fp32i & 0x80000000) >> 16);  // sign
+
+	//If(abs > 0x47FFEFFF)  // Infinity
+	//{
+	//	fp16i |= UShort(0x7FFF);
+	//}
+	//Else
+	//{
+	//	If(abs < 0x38800000)  // Denormal
+	//	{
+	//		Int mantissa = (abs & 0x007FFFFF) | 0x00800000;
+	//		Int e = 113 - (abs >> 23);
+	//		abs = IfThenElse(e < 24, (mantissa >> e), Int(0));
+	//		fp16i |= UShort((abs + 0x00000FFF + ((abs >> 13) & 1)) >> 13);
+	//	}
+	//	Else
+	//	{
+	//		fp16i |= UShort((abs + 0xC8000000 + 0x00000FFF + ((abs >> 13) & 1)) >> 13);
+	//	}
+	//}
+
+	//storeValue(fp16i.loadValue());
+
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::convert_to_fp16, { T(Float::type()) });
+	//storeValue(As<Half>(V(jit->builder->CreateCall(func, V(cast.value())))).value());
+
+	storeValue(V(jit->builder->CreateFPTrunc(V(cast.value()), T(Half::getType()))));
+}
+
+Half4::Half4(RValue<Float4> cast)
+{
+	//UInt fp32i = As<UInt>(cast);
+	//UInt abs = fp32i & 0x7FFFFFFF;
+	//UShort fp16i((fp32i & 0x80000000) >> 16);  // sign
+
+	//If(abs > 0x47FFEFFF)  // Infinity
+	//{
+	//	fp16i |= UShort(0x7FFF);
+	//}
+	//Else
+	//{
+	//	If(abs < 0x38800000)  // Denormal
+	//	{
+	//		Int mantissa = (abs & 0x007FFFFF) | 0x00800000;
+	//		Int e = 113 - (abs >> 23);
+	//		abs = IfThenElse(e < 24, (mantissa >> e), Int(0));
+	//		fp16i |= UShort((abs + 0x00000FFF + ((abs >> 13) & 1)) >> 13);
+	//	}
+	//	Else
+	//	{
+	//		fp16i |= UShort((abs + 0xC8000000 + 0x00000FFF + ((abs >> 13) & 1)) >> 13);
+	//	}
+	//}
+
+	//storeValue(fp16i.loadValue());
+
+	///auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::convert_to_fp16, { T(Float4::type()) });
+	///storeValue(As<Half4>(V(jit->builder->CreateCall(func, V(cast.value())))).value());
+
+	/*int swizzle[8] = { 0, 0, 1, 1, 2, 2, 3, 3 };
+	Value *c = Nucleus::createShuffleVector(V(half4), V(half), swizzle);
+	*this = As<Int4>(c) >> 16;*/
+
+	llvm::Value *half4 = jit->builder->CreateFPTrunc(V(cast.value()), T(Half4::getType()));
+	storeValue(V(half4));
+}
+
 Type *Half::type()
 {
-	return T(llvm::Type::getInt16Ty(*jit->context));
+	return T(llvm::Type::getHalfTy(*jit->context));
+	;  //Short::type();  //T(llvm::Type::getHalfTy(*jit->context));  //Short::type();
+}
+
+Type *Half4::type()
+{
+	return T(llvm::VectorType::get(T(Half::type()), 4, false));
+	;  //Short4::type();  //T(llvm::VectorType::get(T(Half::type()), 4, false));  //Short4::type();
+}
+
+Float::Float(RValue<Half> cast)
+{
+	RValue<UShort> fp16i(As<UShort>(cast));
+	/*
+	Int s = (fp16i >> 15) & 0x00000001;
+	Int e = (fp16i >> 10) & 0x0000001F;
+	Int m = fp16i & 0x000003FF;
+
+	UInt fp32i(s << 31);
+	If(e == 0)
+	{
+		If(m != 0)
+		{
+			While((m & 0x00000400) == 0)
+			{
+				m <<= 1;
+				e -= 1;
+			}
+
+			fp32i |= As<UInt>(((e + (127 - 15) + 1) << 23) | ((m & ~0x00000400) << 13));
+		}
+	}
+	Else
+	{
+		fp32i |= As<UInt>(((e + (127 - 15)) << 23) | (m << 13));
+	}
+
+	storeValue(As<Float>(fp32i).value());*/
+
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::convert_from_fp16, { T(Float::type()) });
+	//storeValue(V(jit->builder->CreateCall(func, V(fp16i.value()))));
+
+	//llvm::Value *half = jit->builder->CreateBitCast(V(cast.value()), llvm::Type::getHalfTy(*jit->context));
+
+	storeValue(V(jit->builder->CreateFPExt(V(cast.value()), T(Float::getType()))));
+}
+
+// Differs from IRBuilder<>::CreateUnaryIntrinsic() in that it only accepts native instruction intrinsics which have
+// implicit types, such as 'x86_sse_rcp_ps' operating on v4f32, while 'sqrt' requires explicitly specifying the operand type.
+static Value *createInstruction(llvm::Intrinsic::ID id, Value *x)
+{
+	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
+
+	return V(jit->builder->CreateCall(intrinsic, V(x)));
+}
+
+// Differs from IRBuilder<>::CreateBinaryIntrinsic() in that it only accepts native instruction intrinsics which have
+// implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
+static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
+{
+	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
+
+	return V(jit->builder->CreateCall(intrinsic, { V(x), V(y) }));
+}
+
+RValue<UShort4> F2H4(RValue<Float4> x)
+{
+	return RValue<UShort4>(createInstruction(llvm::Intrinsic::x86_vcvtps2ph_128, x.value(), Nucleus::createConstantInt(0)));
+}
+
+RValue<Float4> H2F4(RValue<UShort4> x)
+{
+	return RValue<Float4>(createInstruction(llvm::Intrinsic::x86_vcvtph2ps_128, x.value()));
+}
+
+Float4::Float4(RValue<Half4> cast)
+    : XYZW(this)
+{
+	RValue<UShort4> fp16i(As<UShort4>(cast));
+	/*
+	Int s = (fp16i >> 15) & 0x00000001;
+	Int e = (fp16i >> 10) & 0x0000001F;
+	Int m = fp16i & 0x000003FF;
+
+	UInt fp32i(s << 31);
+	If(e == 0)
+	{
+		If(m != 0)
+		{
+			While((m & 0x00000400) == 0)
+			{
+				m <<= 1;
+				e -= 1;
+			}
+
+			fp32i |= As<UInt>(((e + (127 - 15) + 1) << 23) | ((m & ~0x00000400) << 13));
+		}
+	}
+	Else
+	{
+		fp32i |= As<UInt>(((e + (127 - 15)) << 23) | (m << 13));
+	}
+
+	storeValue(As<Float>(fp32i).value());*/
+
+	//auto func = llvm::Intrinsic::getDeclaration(jit->module.get(), llvm::Intrinsic::convert_from_fp16, { T(Float4::type()) });
+	//storeValue(V(jit->builder->CreateCall(func, V(fp16i.value()))));
+
+	//llvm::Value *half4 = jit->builder->CreateBitCast(V(cast.value()), llvm::VectorType::get(T(Half::type()), 4, false));
+
+	storeValue(V(jit->builder->CreateFPExt(V(cast.value()), T(Float4::getType()))));
 }
 
 RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
@@ -3622,24 +3807,6 @@ namespace rr {
 
 #if defined(__i386__) || defined(__x86_64__)
 namespace x86 {
-
-// Differs from IRBuilder<>::CreateUnaryIntrinsic() in that it only accepts native instruction intrinsics which have
-// implicit types, such as 'x86_sse_rcp_ps' operating on v4f32, while 'sqrt' requires explicitly specifying the operand type.
-static Value *createInstruction(llvm::Intrinsic::ID id, Value *x)
-{
-	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
-
-	return V(jit->builder->CreateCall(intrinsic, V(x)));
-}
-
-// Differs from IRBuilder<>::CreateBinaryIntrinsic() in that it only accepts native instruction intrinsics which have
-// implicit types, such as 'x86_sse_max_ps' operating on v4f32, while 'sadd_sat' requires explicitly specifying the operand types.
-static Value *createInstruction(llvm::Intrinsic::ID id, Value *x, Value *y)
-{
-	llvm::Function *intrinsic = llvm::Intrinsic::getDeclaration(jit->module.get(), id);
-
-	return V(jit->builder->CreateCall(intrinsic, { V(x), V(y) }));
-}
 
 RValue<Int> cvtss2si(RValue<Float> val)
 {

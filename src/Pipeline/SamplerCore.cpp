@@ -1931,6 +1931,7 @@ Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &dR
 		switch(state.textureFormat)
 		{
 			case VK_FORMAT_R16_SFLOAT:
+				/////////////////// aaaggghhh
 				t0 = Int4(*Pointer<UShort4>(buffer + index[0] * 2));
 				t1 = Int4(*Pointer<UShort4>(buffer + index[1] * 2));
 				t2 = Int4(*Pointer<UShort4>(buffer + index[2] * 2));

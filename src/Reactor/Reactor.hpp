@@ -109,6 +109,7 @@ class Int4;
 class UInt4;
 class Long;
 class Half;
+class Half4;
 class Float;
 class Float2;
 class Float4;
@@ -2122,6 +2123,14 @@ public:
 	static Type *type();
 };
 
+class Half4 : public LValue<Half4>
+{
+public:
+	explicit Half4(RValue<Float4> cast);
+
+	static Type *type();
+};
+
 class Float : public LValue<Float>
 {
 public:
@@ -2278,6 +2287,7 @@ public:
 	explicit Float4(RValue<UShort4> cast);
 	explicit Float4(RValue<Int4> cast);
 	explicit Float4(RValue<UInt4> cast);
+	explicit Float4(RValue<Half4> cast);
 
 	Float4();
 	Float4(float xyzw);
@@ -2440,6 +2450,9 @@ RValue<UInt4> Ctlz(RValue<UInt4> x, bool isZeroUndef);
 // Returns an undefined value when: isZeroUndef && x == 0.
 RValue<UInt> Cttz(RValue<UInt> x, bool isZeroUndef);
 RValue<UInt4> Cttz(RValue<UInt4> x, bool isZeroUndef);
+
+RValue<UShort4> F2H4(RValue<Float4> x);
+RValue<Float4> H2F4(RValue<UShort4> x);
 
 template<class T>
 class Pointer : public LValue<Pointer<T>>
@@ -2751,9 +2764,10 @@ RValue<T>::RValue(const RValue<T> &rvalue)
 
 template<class T>
 RValue<T>::RValue(Value *value)
-    : val(value)
+ : val(value)
+    //: val(Nucleus::createBitCast(value, T::type()))
 {
-	assert(Nucleus::createBitCast(value, T::type()) == value);  // Run-time type should match T, so bitcast is no-op.
+	//assert(Nucleus::createBitCast(value, T::type()) == value);  // Run-time type should match T, so bitcast is no-op.
 	RR_DEBUG_INFO_EMIT_VAR(val);
 }
 

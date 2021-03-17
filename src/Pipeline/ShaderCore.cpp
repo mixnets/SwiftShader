@@ -560,7 +560,7 @@ void transpose4xN(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3, int N)
 
 SIMD::UInt halfToFloatBits(SIMD::UInt halfBits)
 {
-	auto magic = SIMD::UInt(126 << 23);
+	/*auto magic = SIMD::UInt(126 << 23);
 
 	auto sign16 = halfBits & SIMD::UInt(0x8000);
 	auto man16 = halfBits & SIMD::UInt(0x03FF);
@@ -576,32 +576,42 @@ SIMD::UInt halfToFloatBits(SIMD::UInt halfBits)
 
 	auto denorm32 = As<SIMD::UInt>(As<SIMD::Float>(magic + man16) - As<SIMD::Float>(magic));
 
-	return sign32 | (norm32 & ~isDnormOrZero) | (denorm32 & isDnormOrZero);
+	return sign32 | (norm32 & ~isDnormOrZero) | (denorm32 & isDnormOrZero);*/
+
+	//return As<UInt>(Float4(As<Half4>(UShort4(As<Int4>(halfBits)))));
+
+	return As<UInt>(H2F4(As<UShort4>(Short4(As<Int4>(halfBits)))));
 }
 
 SIMD::UInt floatToHalfBits(SIMD::UInt floatBits, bool storeInUpperBits)
 {
-	SIMD::UInt sign = floatBits & SIMD::UInt(0x80000000);
-	SIMD::UInt abs = floatBits & SIMD::UInt(0x7FFFFFFF);
+	//SIMD::UInt sign = floatBits & SIMD::UInt(0x80000000);
+	//SIMD::UInt abs = floatBits & SIMD::UInt(0x7FFFFFFF);
 
-	SIMD::UInt normal = CmpNLE(abs, SIMD::UInt(0x38800000));
+	//SIMD::UInt normal = CmpNLE(abs, SIMD::UInt(0x38800000));
 
-	SIMD::UInt mantissa = (abs & SIMD::UInt(0x007FFFFF)) | SIMD::UInt(0x00800000);
-	SIMD::UInt e = SIMD::UInt(113) - (abs >> 23);
-	SIMD::UInt denormal = CmpLT(e, SIMD::UInt(24)) & (mantissa >> e);
+	//SIMD::UInt mantissa = (abs & SIMD::UInt(0x007FFFFF)) | SIMD::UInt(0x00800000);
+	//SIMD::UInt e = SIMD::UInt(113) - (abs >> 23);
+	//SIMD::UInt denormal = CmpLT(e, SIMD::UInt(24)) & (mantissa >> e);
 
-	SIMD::UInt base = (normal & abs) | (~normal & denormal);  // TODO: IfThenElse()
+	//SIMD::UInt base = (normal & abs) | (~normal & denormal);  // TODO: IfThenElse()
 
-	// float exponent bias is 127, half bias is 15, so adjust by -112
-	SIMD::UInt bias = normal & SIMD::UInt(0xC8000000);
+	//// float exponent bias is 127, half bias is 15, so adjust by -112
+	//SIMD::UInt bias = normal & SIMD::UInt(0xC8000000);
 
-	SIMD::UInt rounded = base + bias + SIMD::UInt(0x00000FFF) + ((base >> 13) & SIMD::UInt(1));
-	SIMD::UInt fp16u = rounded >> 13;
+	//SIMD::UInt rounded = base + bias + SIMD::UInt(0x00000FFF) + ((base >> 13) & SIMD::UInt(1));
+	//SIMD::UInt fp16u = rounded >> 13;
 
-	// Infinity
-	fp16u |= CmpNLE(abs, SIMD::UInt(0x47FFEFFF)) & SIMD::UInt(0x7FFF);
+	//// Infinity
+	//fp16u |= CmpNLE(abs, SIMD::UInt(0x47FFEFFF)) & SIMD::UInt(0x7FFF);
 
-	return storeInUpperBits ? (sign | (fp16u << 16)) : ((sign >> 16) | fp16u);
+	//return storeInUpperBits ? (sign | (fp16u << 16)) : ((sign >> 16) | fp16u);
+
+	//auto x = Int4(As<UShort4>(Half4(As<Float4>(floatBits))));
+
+	auto x = Int4(As<Short4>(F2H4(As<Float4>(floatBits))));
+
+	return storeInUpperBits ? (x << 16) : x;
 }
 
 Float4 r11g11b10Unpack(UInt r11g11b10bits)
