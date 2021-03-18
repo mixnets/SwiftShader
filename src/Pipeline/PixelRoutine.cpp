@@ -30,21 +30,9 @@ PixelRoutine::PixelRoutine(
     SpirvShader const *spirvShader,
     const vk::DescriptorSet::Bindings &descriptorSets)
     : QuadRasterizer(state, spirvShader)
-    , routine(pipelineLayout)
     , descriptorSets(descriptorSets)
+    , pipelineLayout(pipelineLayout)
 {
-	if(spirvShader)
-	{
-		spirvShader->emitProlog(&routine);
-
-		// Clearing inputs to 0 is not demanded by the spec,
-		// but it makes the undefined behavior deterministic.
-		for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
-		{
-			routine.inputs[i] = Float4(0.0f);
-		}
-	}
-
 	for(int i = 0; i < RENDERTARGETS; i++)
 	{
 		outputMasks[i] = 0xF;
@@ -144,6 +132,8 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			}
 		}
 
+		SpirvRoutine routine(pipelineLayout);
+
 		If(depthPass || Bool(!earlyDepthTest))
 		{
 			Float4 yyyy = Float4(Float(y)) + *Pointer<Float4>(primitive + OFFSET(Primitive, yQuad), 16);
@@ -169,6 +159,20 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 				XXXX += xxxx;
 				YYYY += yyyy;
+			}
+
+			//	SpirvRoutine routine(pipelineLayout);
+
+			if(spirvShader)
+			{
+				spirvShader->emitProlog(&routine);
+
+				// Clearing inputs to 0 is not demanded by the spec,
+				// but it makes the undefined behavior deterministic.
+				for(int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
+				{
+					routine.inputs[i] = Float4(0.0f);
+				}
 			}
 
 			if(interpolateW())
@@ -232,7 +236,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					}
 				}
 
-				setBuiltins(x, y, z, w, cMask, sampleId);
+				setBuiltins(routine, x, y, z, w, cMask, sampleId);
 
 				for(uint32_t i = 0; i < state.numClipDistances; i++)
 				{
@@ -286,7 +290,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			if(spirvShader)
 			{
 				bool earlyFragTests = (spirvShader && spirvShader->getModes().EarlyFragmentTests);
-				applyShader(cMask, earlyFragTests ? sMask : cMask, earlyDepthTest ? zMask : cMask, sampleId);
+				applyShader(routine, cMask, earlyFragTests ? sMask : cMask, earlyDepthTest ? zMask : cMask, sampleId);
 			}
 
 			alphaPass = alphaTest(cMask, sampleId);
@@ -334,7 +338,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 		{
 			if(state.multiSampleMask & (1 << q))
 			{
-				writeStencil(sBuffer, q, x, sMask[q], zMask[q], cMask[q]);
+				writeStencil(routine, sBuffer, q, x, sMask[q], zMask[q], cMask[q]);
 			}
 		}
 	}
@@ -706,7 +710,7 @@ void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, int q, const Int &x, const
 	}
 }
 
-void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask)
+void PixelRoutine::writeStencil(SpirvRoutine &routine, Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask)
 {
 	if(!state.stencilActive)
 	{
@@ -737,7 +741,7 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, con
 	Byte8 bufferValue = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
 	bufferValue = bufferValue | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
 	Byte8 newValue;
-	stencilOperation(newValue, bufferValue, state.frontStencil, false, zMask, sMask);
+	stencilOperation(routine, newValue, bufferValue, state.frontStencil, false, zMask, sMask);
 
 	if((state.frontStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
 	{
@@ -749,7 +753,7 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, con
 
 	Byte8 newValueBack;
 
-	stencilOperation(newValueBack, bufferValue, state.backStencil, true, zMask, sMask);
+	stencilOperation(routine, newValueBack, bufferValue, state.backStencil, true, zMask, sMask);
 
 	if((state.backStencil.writeMask & 0xFF) != 0xFF)  // Assume 8-bit stencil buffer
 	{
@@ -771,22 +775,22 @@ void PixelRoutine::writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, con
 	*Pointer<Short>(buffer + pitch) = Extract(As<Short4>(newValue), 1);
 }
 
-void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
+void PixelRoutine::stencilOperation(SpirvRoutine &routine, Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask)
 {
 	Byte8 &pass = newValue;
 	Byte8 fail;
 	Byte8 zFail;
 
-	stencilOperation(pass, bufferValue, ops.passOp, isBack);
+	stencilOperation(routine, pass, bufferValue, ops.passOp, isBack);
 
 	if(ops.depthFailOp != ops.passOp)
 	{
-		stencilOperation(zFail, bufferValue, ops.depthFailOp, isBack);
+		stencilOperation(routine, zFail, bufferValue, ops.depthFailOp, isBack);
 	}
 
 	if(ops.failOp != ops.passOp || ops.failOp != ops.depthFailOp)
 	{
-		stencilOperation(fail, bufferValue, ops.failOp, isBack);
+		stencilOperation(routine, fail, bufferValue, ops.failOp, isBack);
 	}
 
 	if(ops.failOp != ops.passOp || ops.failOp != ops.depthFailOp)
@@ -804,7 +808,7 @@ void PixelRoutine::stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, c
 	}
 }
 
-Byte8 PixelRoutine::stencilReplaceRef(bool isBack)
+Byte8 PixelRoutine::stencilReplaceRef(SpirvRoutine &routine, bool isBack)
 {
 	if(spirvShader)
 	{
@@ -827,7 +831,7 @@ Byte8 PixelRoutine::stencilReplaceRef(bool isBack)
 	return *Pointer<Byte8>(data + OFFSET(DrawData, stencil[isBack].referenceQ));
 }
 
-void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack)
+void PixelRoutine::stencilOperation(SpirvRoutine &routine, Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack)
 {
 	switch(operation)
 	{
@@ -838,7 +842,7 @@ void PixelRoutine::stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkS
 			output = Byte8(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
 			break;
 		case VK_STENCIL_OP_REPLACE:
-			output = stencilReplaceRef(isBack);
+			output = stencilReplaceRef(routine, isBack);
 			break;
 		case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
 			output = AddSat(bufferValue, Byte8(1, 1, 1, 1, 1, 1, 1, 1));

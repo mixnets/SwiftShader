@@ -69,7 +69,7 @@ Int4 PixelProgram::maskAny(Int cMask, Int sMask, Int zMask) const
 	return mask;
 }
 
-void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], int sampleId)
+void PixelProgram::setBuiltins(SpirvRoutine &routine, Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], int sampleId)
 {
 	routine.setImmutableInputBuiltins(spirvShader);
 
@@ -133,7 +133,7 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 	});
 }
 
-void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sampleId)
+void PixelProgram::applyShader(SpirvRoutine &routine, Int cMask[4], Int sMask[4], Int zMask[4], int sampleId)
 {
 	unsigned int sampleLoopInit = (sampleId >= 0) ? sampleId : 0;
 	unsigned int sampleLoopEnd = (sampleId >= 0) ? sampleId + 1 : state.multiSampleCount;

@@ -26,8 +26,8 @@ class PixelRoutine : public sw::QuadRasterizer
 {
 public:
 	PixelRoutine(const PixelProcessor::State &state,
-	             vk::PipelineLayout const *pipelineLayout,
-	             SpirvShader const *spirvShader,
+	             const vk::PipelineLayout *pipelineLayout,
+	             const SpirvShader *spirvShader,
 	             const vk::DescriptorSet::Bindings &descriptorSets);
 
 	virtual ~PixelRoutine();
@@ -39,14 +39,13 @@ protected:
 
 	uint32_t outputMasks[RENDERTARGETS];  // TODO(b/162348737): Determine whether unwritten output should be left untouched
 
-	SpirvRoutine routine;
 	const vk::DescriptorSet::Bindings &descriptorSets;
 
 	// Depth output
 	Float4 oDepth;
 
-	virtual void setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], int sampleId) = 0;
-	virtual void applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sampleId) = 0;
+	virtual void setBuiltins(SpirvRoutine &routine, Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], int sampleId) = 0;
+	virtual void applyShader(SpirvRoutine &routine, Int cMask[4], Int sMask[4], Int zMask[4], int sampleId) = 0;
 	virtual Bool alphaTest(Int cMask[4], int sampleId) = 0;
 	virtual void rasterOperation(Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4], int sampleId) = 0;
 
@@ -66,11 +65,11 @@ protected:
 	void linearToSRGB12_16(Vector4s &c);
 
 private:
-	Byte8 stencilReplaceRef(bool isBack);
+	Byte8 stencilReplaceRef(SpirvRoutine &routine, bool isBack);
 	void stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x, Int &sMask, const Int &cMask);
 	void stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, bool isBack);
-	void stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
-	void stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack);
+	void stencilOperation(SpirvRoutine &routine, Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
+	void stencilOperation(SpirvRoutine &routine, Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack);
 	Bool depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask);
 
 	// Raster operations
@@ -79,7 +78,7 @@ private:
 	void readPixel(int index, const Pointer<Byte> &cBuffer, const Int &x, Vector4s &pixel);
 	void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive);
 	void blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive);
-	void writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask);
+	void writeStencil(SpirvRoutine &routine, Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask);
 	void writeDepth(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
 
 	void sRGBtoLinear16_12_16(Vector4s &c);
@@ -91,6 +90,8 @@ private:
 
 	void writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
 	void writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
+
+	const vk::PipelineLayout *const pipelineLayout;
 };
 
 }  // namespace sw
