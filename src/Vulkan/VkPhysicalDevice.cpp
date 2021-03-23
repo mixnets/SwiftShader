@@ -471,7 +471,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		0,                                                // maxGeometryOutputVertices (unsupported)
 		0,                                                // maxGeometryTotalOutputComponents (unsupported)
 		sw::MAX_INTERFACE_COMPONENTS,                     // maxFragmentInputComponents
-		4,                                                // maxFragmentOutputAttachments
+		8,                                                // maxFragmentOutputAttachments
 		1,                                                // maxFragmentDualSrcAttachments
 		4,                                                // maxFragmentCombinedOutputResources
 		16384,                                            // maxComputeSharedMemorySize
@@ -507,7 +507,7 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits() const
 		sampleCounts,                                     // framebufferDepthSampleCounts
 		sampleCounts,                                     // framebufferStencilSampleCounts
 		sampleCounts,                                     // framebufferNoAttachmentsSampleCounts
-		4,                                                // maxColorAttachments
+		8,                                                // maxColorAttachments
 		sampleCounts,                                     // sampledImageColorSampleCounts
 		sampleCounts,                                     // sampledImageIntegerSampleCounts
 		sampleCounts,                                     // sampledImageDepthSampleCounts
