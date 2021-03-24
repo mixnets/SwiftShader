@@ -36414,7 +36414,6 @@ dEQP-GLES3.functional.ubo.random.nested_structs.20
 dEQP-GLES3.functional.ubo.random.nested_structs.21
 dEQP-GLES3.functional.ubo.random.nested_structs.22
 dEQP-GLES3.functional.ubo.random.nested_structs.23
-dEQP-GLES3.functional.ubo.random.nested_structs.24
 dEQP-GLES3.functional.ubo.random.nested_structs.3
 dEQP-GLES3.functional.ubo.random.nested_structs.4
 dEQP-GLES3.functional.ubo.random.nested_structs.5
