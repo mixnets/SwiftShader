@@ -104,7 +104,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			stencilTest(sBuffer, q, x, sMask[q], cMask[q]);
 		}
 
-		Float4 f;
+		Float4 clampedZ[4];
 		Float4 rhwCentroid;
 
 		Float4 xxxx = Float4(Float(x)) + *Pointer<Float4>(primitive + OFFSET(Primitive, xQuad), 16);
@@ -129,7 +129,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 				if(state.depthClamp)
 				{
-					z[q] = Min(Max(z[q], Float4(0.0f)), Float4(1.0f));
+					clampedZ[q] = Min(Max(z[q], Float4(0.0f)), Float4(1.0f));
 				}
 			}
 		}
@@ -140,7 +140,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 		{
 			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 			{
-				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+				depthPass = depthPass || depthTest(zBuffer, q, x, clampedZ[q], sMask[q], zMask[q], cMask[q]);
 			}
 		}
 
@@ -306,7 +306,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				{
 					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 					{
-						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+						depthPass = depthPass || depthTest(zBuffer, q, x, clampedZ[q], sMask[q], zMask[q], cMask[q]);
 					}
 				}
 
@@ -316,7 +316,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					{
 						if(state.multiSampleMask & (1 << q))
 						{
-							writeDepth(zBuffer, q, x, z[q], zMask[q]);
+							writeDepth(zBuffer, q, x, clampedZ[q], zMask[q]);
 
 							if(state.occlusionEnabled)
 							{
