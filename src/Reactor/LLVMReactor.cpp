@@ -2143,6 +2143,26 @@ RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y)
 #endif
 }
 
+RValue<Short4> CmpLE(RValue<Short4> x, RValue<Short4> y)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::pcmpgtw(y, x) | x86::pcmpeqw(x, y);
+#else
+	return As<Short4>(V(lowerPCMP(llvm::ICmpInst::ICMP_SLE, V(x.value()), V(y.value()), T(Short4::type()))));
+#endif
+}
+
+RValue<Short4> CmpGE(RValue<Short4> x, RValue<Short4> y)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+#if defined(__i386__) || defined(__x86_64__)
+	return x86::pcmpgtw(x, y) | x86::pcmpeqw(x, y);
+#else
+	return As<Short4>(V(lowerPCMP(llvm::ICmpInst::ICMP_SGE, V(x.value()), V(y.value()), T(Short4::type()))));
+#endif
+}
+
 RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();

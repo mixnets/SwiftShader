@@ -113,6 +113,7 @@ const PixelProcessor::State PixelProcessor::update(const vk::GraphicsState &pipe
 	if(pipelineState.depthBufferActive(attachments))
 	{
 		state.depthTestActive = true;
+		state.depthBoundsTestActive = pipelineState.depthBoundsTestActive(attachments);
 		state.depthCompareMode = pipelineState.getDepthCompareMode();
 		state.depthFormat = attachments.depthBuffer->getFormat();
 
@@ -121,6 +122,9 @@ const PixelProcessor::State PixelProcessor::update(const vk::GraphicsState &pipe
 		// "For fixed-point depth buffers, fragment depth values are always limited to the range [0,1] by clamping after depth bias addition is performed.
 		//  Unless the VK_EXT_depth_range_unrestricted extension is enabled, fragment depth values are clamped even when the depth buffer uses a floating-point representation."
 		state.depthClamp = !state.depthFormat.isFloatFormat() || !pipelineState.hasDepthRangeUnrestricted();
+
+		state.minDepthBounds = pipelineState.getMinDepthBounds();
+		state.maxDepthBounds = pipelineState.getMaxDepthBounds();
 	}
 
 	state.occlusionEnabled = occlusionEnabled;

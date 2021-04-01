@@ -72,6 +72,7 @@ private:
 	void stencilOperation(Byte8 &newValue, const Byte8 &bufferValue, const PixelProcessor::States::StencilOpState &ops, bool isBack, const Int &zMask, const Int &sMask);
 	void stencilOperation(Byte8 &output, const Byte8 &bufferValue, VkStencilOp operation, bool isBack);
 	Bool depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask);
+	void depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask);
 
 	// Raster operations
 	void blendFactor(Vector4s &blendFactor, const Vector4s &current, const Vector4s &pixel, VkBlendFactor blendFactorActive);
@@ -91,6 +92,9 @@ private:
 
 	void writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
 	void writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
+
+	void depthBoundsTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask);
+	void depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask);
 };
 
 }  // namespace sw
