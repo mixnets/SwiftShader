@@ -141,6 +141,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 			{
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 			}
 		}
 
@@ -307,6 +308,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 					{
 						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 					}
 				}
 
@@ -453,7 +455,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 	}
 
 	Int4 zTest;
-
 	switch(state.depthCompareMode)
 	{
 		case VK_COMPARE_OP_ALWAYS:
@@ -601,6 +602,72 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 	else
 	{
 		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
+	}
+}
+
+void PixelRoutine::depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask)
+{
+	Pointer<Byte> buffer = zBuffer + 2 * x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
+
+	if(q > 0)
+	{
+		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+	}
+
+	Short4 zRead;
+	Float4 minDepthBound = Float4(state.minDepthBounds);
+	Float4 maxDepthBound = Float4(state.maxDepthBounds);
+
+	zRead = As<Short4>(Insert(As<Int2>(zRead), *Pointer<Int>(buffer), 0));
+	zRead = As<Short4>(Insert(As<Int2>(zRead), *Pointer<Int>(buffer + pitch), 1));
+
+	Float4 zValue = convertFloat32(zRead);
+	Int4 zTest = Int4(CmpLE(minDepthBound, zValue) & CmpLE(zValue, maxDepthBound));
+	if(!state.depthTestActive)
+	{
+		cMask &= SignMask(zTest);
+	}
+	else
+	{
+		zMask &= cMask & SignMask(zTest);
+	}
+}
+
+void PixelRoutine::depthBoundsTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask)
+{
+	Pointer<Byte> buffer = zBuffer + 4 * x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
+
+	if(q > 0)
+	{
+		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+	}
+
+	Float4 zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
+	Int4 zTest = Int4(CmpLE(Float4(state.minDepthBounds), zValue) & CmpLE(zValue, Float4(state.maxDepthBounds)));
+	if(!state.depthTestActive)
+	{
+		cMask &= zMask & SignMask(zTest);
+	}
+	else
+	{
+		zMask &= cMask & SignMask(zTest);
+	}
+}
+
+void PixelRoutine::depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, Int &cMask)
+{
+	if(state.depthBoundsTestActive)
+	{
+		if(state.depthFormat == VK_FORMAT_D16_UNORM)
+		{
+			depthBoundsTest16(zBuffer, q, x, zMask, cMask);
+		}
+		else
+		{
+			depthBoundsTest32F(zBuffer, q, x, zMask, cMask);
+		}
 	}
 }
 
@@ -2786,6 +2853,11 @@ void PixelRoutine::writeColor(int index, const Pointer<Byte> &cBuffer, const Int
 UShort4 PixelRoutine::convertFixed16(const Float4 &cf, bool saturate)
 {
 	return UShort4(cf * Float4(0xFFFF), saturate);
+}
+
+Float4 PixelRoutine::convertFloat32(const Short4 &cf)
+{
+	return Float4(cf) / Float4(65536.0f);
 }
 
 void PixelRoutine::sRGBtoLinear16_12_16(Vector4s &c)
