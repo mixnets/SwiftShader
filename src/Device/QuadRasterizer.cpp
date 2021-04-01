@@ -83,7 +83,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 		}
 	}
 
-	if(state.depthTestActive)
+	if(state.depthTestActive || state.depthBoundsTestActive)
 	{
 		zBuffer = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, depthBuffer)) + yMin * *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 	}
@@ -216,7 +216,7 @@ void QuadRasterizer::rasterize(Int &yMin, Int &yMax)
 			}
 		}
 
-		if(state.depthTestActive)
+		if(state.depthTestActive || state.depthBoundsTestActive)
 		{
 			zBuffer += *Pointer<Int>(data + OFFSET(DrawData, depthPitchB)) << (1 + clusterCountLog2);  // FIXME: Precompute
 		}
@@ -250,7 +250,7 @@ Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<By
 
 bool QuadRasterizer::interpolateZ() const
 {
-	return state.depthTestActive || (spirvShader && spirvShader->hasBuiltinInput(spv::BuiltInFragCoord));
+	return state.depthTestActive || state.depthBoundsTestActive || (spirvShader && spirvShader->hasBuiltinInput(spv::BuiltInFragCoord));
 }
 
 bool QuadRasterizer::interpolateW() const
