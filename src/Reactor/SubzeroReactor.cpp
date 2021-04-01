@@ -2795,6 +2795,18 @@ RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y)
 	return RValue<Short4>(createIntCompare(Ice::InstIcmp::Sgt, x.value(), y.value()));
 }
 
+RValue<Short4> CmpGE(RValue<Short4> x, RValue<Short4> y)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return RValue<Short4>(createIntCompare(Ice::InstIcmp::Sge, x.value(), y.value()));
+}
+
+RValue<Short4> CmpLE(RValue<Short4> x, RValue<Short4> y)
+{
+	RR_DEBUG_INFO_UPDATE_LOC();
+	return RValue<Short4>(createIntCompare(Ice::InstIcmp::Sge, x.value(), y.value()));
+}
+
 RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();

@@ -141,6 +141,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 			{
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 			}
 		}
 
@@ -307,6 +308,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 					{
 						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 					}
 				}
 
@@ -453,7 +455,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 	}
 
 	Int4 zTest;
-
 	switch(state.depthCompareMode)
 	{
 		case VK_COMPARE_OP_ALWAYS:
@@ -488,11 +489,19 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 	{
 		case VK_COMPARE_OP_ALWAYS:
 			zMask = cMask;
+			// if (state.depthBoundsTestActive)
+			// {
+			// 	zMask &= SignMask(CmpLE(Float4(state.minDepthBounds), zValue) & CmpLE(zValue, Float4(state.maxDepthBounds)));
+			// }
 			break;
 		case VK_COMPARE_OP_NEVER:
 			zMask = 0x0;
 			break;
 		default:
+			// if (state.depthBoundsTestActive)
+			// {
+			// 	zTest &= CmpLE(Float4(state.minDepthBounds), zValue) & CmpLE(zValue, Float4(state.maxDepthBounds));
+			// }
 			zMask = SignMask(zTest) & cMask;
 			break;
 	}
@@ -575,6 +584,16 @@ Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x
 			zMask = 0x0;
 			break;
 		default:
+			// if (state.depthBoundsTestActive)
+			// {
+			// 	Short4 minDepthBound = convertFixed16(Float4(state.minDepthBounds, true));
+			// 	Short4 maxDepthBound = convertFixed16(Float4(state.maxDepthBounds, true));
+			// 	// Bias values to make unsigned compares out of Reactor's (due SSE's) signed compares only
+			// 	minDepthBound = minDepthBound - Short4(0x8000u);
+			// 	maxDepthBound = maxDepthBound - Short4(0x8000u);
+
+			// 	zTest &= Int4(CmpLE(minDepthBound, zValue) & CmpLE(zValue, maxDepthBound));
+			// }
 			zMask = SignMask(zTest) & cMask;
 			break;
 	}
@@ -601,6 +620,62 @@ Bool PixelRoutine::depthTest(const Pointer<Byte> &zBuffer, int q, const Int &x, 
 	else
 	{
 		return depthTest32F(zBuffer, q, x, z, sMask, zMask, cMask);
+	}
+}
+
+void PixelRoutine::depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask)
+{
+	Pointer<Byte> buffer = zBuffer + 2 * x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
+
+	if(q > 0)
+	{
+		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+	}
+
+	Short4 zValue;
+	Short4 minDepthBound = convertFixed16(Float4(state.minDepthBounds, true));
+	Short4 maxDepthBound = convertFixed16(Float4(state.maxDepthBounds, true));
+
+	zValue = As<Short4>(Insert(As<Int2>(zValue), *Pointer<Int>(buffer), 0));
+	zValue = As<Short4>(Insert(As<Int2>(zValue), *Pointer<Int>(buffer + pitch), 1));
+
+	// Bias values to make unsigned compares out of Reactor's (due SSE's) signed compares only
+	zValue = zValue - Short4(0x8000u);
+	minDepthBound = minDepthBound - Short4(0x8000u);
+	maxDepthBound = maxDepthBound - Short4(0x8000u);
+
+	Int4 zTest = Int4(CmpLE(minDepthBound, zValue) & CmpLE(zValue, maxDepthBound));
+	zMask &= cMask & SignMask(zTest);
+}
+
+void PixelRoutine::depthBoundsTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask)
+{
+	Pointer<Byte> buffer = zBuffer + 4 * x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
+
+	if(q > 0)
+	{
+		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, depthSliceB));
+	}
+
+	Float4 zValue = Float4(*Pointer<Float2>(buffer), *Pointer<Float2>(buffer + pitch));
+	Int4 zTest = Int4(CmpLE(Float4(state.minDepthBounds), zValue) & CmpLE(zValue, Float4(state.maxDepthBounds)));
+	zMask &= cMask & SignMask(zTest);
+}
+
+void PixelRoutine::depthBoundsTest(const Pointer<Byte> &zBuffer, int q, const Int &x, Int &zMask, const Int &cMask)
+{
+	if(state.depthBoundsTestActive)
+	{
+		if(state.depthFormat == VK_FORMAT_D16_UNORM)
+		{
+			depthBoundsTest16(zBuffer, q, x, zMask, cMask);
+		}
+		else
+		{
+			depthBoundsTest32F(zBuffer, q, x, zMask, cMask);
+		}
 	}
 }
 
