@@ -949,6 +949,7 @@ RValue<Short4> Swizzle(RValue<Short4> x, uint16_t select);
 RValue<Short4> Insert(RValue<Short4> val, RValue<Short> element, int i);
 RValue<Short> Extract(RValue<Short4> val, int i);
 RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y);
+RValue<Short4> CmpLE(RValue<Short4> x, RValue<Short4> y);
 RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y);
 
 class UShort4 : public LValue<UShort4>
