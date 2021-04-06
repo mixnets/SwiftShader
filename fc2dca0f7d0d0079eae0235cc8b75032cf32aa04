@@ -43,6 +43,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b5a66136_40ba59e7",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-04-06T16:22:30Z",
+      "side": 1,
+      "message": "I think this is incorrect. You probably want \"true\" to be an argument of convertFixed16, but it\u0027s an argument of Float4 right now. This is using the Float4(float x, float yzw) constructor, setting it to {x, 1, 1, 1}.",
+      "range": {
+        "startLine": 637,
+        "startChar": 66,
+        "endLine": 637,
+        "endChar": 72
+      },
+      "revId": "fc2dca0f7d0d0079eae0235cc8b75032cf32aa04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8cae15ee_9e69f5e7",
         "filename": "src/Reactor/LLVMReactor.cpp",
         "patchSetId": 2
