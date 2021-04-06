@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cce5ab3_fd98ef09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-04-06T15:55:38Z",
+      "side": 1,
+      "message": "Nit: General note, please remove commented out code before uploading CLs to gerrit.",
+      "revId": "fc2dca0f7d0d0079eae0235cc8b75032cf32aa04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7da381e4_316969f2",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-04-06T15:55:38Z",
+      "side": 1,
+      "message": "The rest of this function appears to only set values when a related feature is enabled. Is there a reason these aren\u0027t set within an \"if(depthBoundsTestEnable)\" statement? If so, why if the depthBoundsTestEnable checked for below at line 627?\n\ndepthBoundsTestEnable should be consistently checked or not checked the same way in both locations.",
+      "range": {
+        "startLine": 461,
+        "startChar": 0,
+        "endLine": 462,
+        "endChar": 54
+      },
+      "revId": "fc2dca0f7d0d0079eae0235cc8b75032cf32aa04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cae15ee_9e69f5e7",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2165,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-04-06T15:55:38Z",
+      "side": 1,
+      "message": "All these changes are not required. CmpGE is unused and CmpLE is CmpGT with arguments in the reverse order.",
+      "range": {
+        "startLine": 2146,
+        "startChar": 0,
+        "endLine": 2165,
+        "endChar": 0
+      },
+      "revId": "fc2dca0f7d0d0079eae0235cc8b75032cf32aa04",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
