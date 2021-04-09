@@ -98,6 +98,9 @@ public:
 		vk::Format depthFormat;
 		bool depthBias;
 		bool depthClamp;
+
+		float minDepth;
+		float maxDepth;
 	};
 
 	struct State : States
