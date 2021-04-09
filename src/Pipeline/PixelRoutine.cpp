@@ -129,7 +129,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 				if(state.depthClamp)
 				{
-					z[q] = Min(Max(z[q], Float4(0.0f)), Float4(1.0f));
+					z[q] = Min(Max(z[q], Float4(state.minDepth)), Float4(state.maxDepth));
 				}
 			}
 		}
@@ -282,6 +282,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				}
 			}
 
+			if(state.depthClamp)
+			{
+				for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+				{
+					z[q] = Min(Max(z[q], Float4(state.minDepth)), Float4(state.maxDepth));
+				}
+			}
 			Bool alphaPass = true;
 
 			if(spirvShader)
@@ -318,6 +325,13 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					{
 						if(state.multiSampleMask & (1 << q))
 						{
+							if(state.depthClamp)
+							{
+								for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+								{
+									z[q] = Min(Max(z[q], Float4(state.minDepth)), Float4(state.maxDepth));
+								}
+							}
 							writeDepth(zBuffer, q, x, z[q], zMask[q]);
 
 							if(state.occlusionEnabled)
