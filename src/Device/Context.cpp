@@ -311,11 +311,6 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 		UNSUPPORTED("pCreateInfo->pRasterizationState->flags %d", int(pCreateInfo->pRasterizationState->flags));
 	}
 
-	if(rasterizationState->depthClampEnable != VK_FALSE)
-	{
-		UNSUPPORTED("VkPhysicalDeviceFeatures::depthClamp");
-	}
-
 	rasterizerDiscard = (rasterizationState->rasterizerDiscardEnable != VK_FALSE);
 	cullMode = rasterizationState->cullMode;
 	frontFace = rasterizationState->frontFace;
@@ -474,7 +469,6 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 			depthBoundsTestEnable = (depthStencilState->depthBoundsTestEnable != VK_FALSE);
 			minDepthBounds = depthStencilState->minDepthBounds;
 			maxDepthBounds = depthStencilState->maxDepthBounds;
-
 			depthBufferEnable = (depthStencilState->depthTestEnable != VK_FALSE);
 			depthWriteEnable = (depthStencilState->depthWriteEnable != VK_FALSE);
 			depthCompareMode = depthStencilState->depthCompareOp;
