@@ -156,6 +156,7 @@ struct GraphicsState
 	inline float getSlopeDepthBias() const { return slopeDepthBias; }
 	inline float getDepthBiasClamp() const { return depthBiasClamp; }
 	inline bool hasDepthRangeUnrestricted() const { return depthRangeUnrestricted; }
+	inline bool getDepthClampEnable() const { return depthClampEnable; }
 
 	// Pixel processor states
 	inline bool hasRasterizerDiscard() const { return rasterizerDiscard; }
@@ -227,6 +228,8 @@ private:
 	bool depthBufferEnable;
 	VkCompareOp depthCompareMode;
 	bool depthWriteEnable;
+	bool depthClampEnable;
+	bool depthClipEnable;
 
 	float lineWidth;
 
