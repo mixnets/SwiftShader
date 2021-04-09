@@ -46,7 +46,7 @@ const VkPhysicalDeviceFeatures &PhysicalDevice::getFeatures() const
 		VK_FALSE,  // logicOp
 		VK_TRUE,   // multiDrawIndirect
 		VK_TRUE,   // drawIndirectFirstInstance
-		VK_FALSE,  // depthClamp
+		VK_TRUE,   // depthClamp
 		VK_TRUE,   // depthBiasClamp
 		VK_TRUE,   // fillModeNonSolid
 		VK_TRUE,   // depthBounds
@@ -319,6 +319,12 @@ static void getPhysicalDeviceVulkan12Features(T *features)
 	features->subgroupBroadcastDynamicId = VK_TRUE;
 }
 
+template<typename T>
+static void getPhysicalDeviceDepthClipEnableFeaturesExt(T *features)
+{
+	features->depthClipEnable = VK_TRUE;
+}
+
 void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 {
 	features->features = getFeatures();
@@ -404,6 +410,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 				break;
 			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES:
 				getPhysicalDeviceDescriptorIndexingFeatures(reinterpret_cast<VkPhysicalDeviceDescriptorIndexingFeatures *>(curExtension));
+				break;
+			case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
+				getPhysicalDeviceDepthClipEnableFeaturesExt(reinterpret_cast<VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(curExtension));
 				break;
 			default:
 				LOG_TRAP("curExtension->pNext->sType = %s", vk::Stringify(curExtension->sType).c_str());
