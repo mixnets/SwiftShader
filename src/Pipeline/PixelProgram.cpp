@@ -133,7 +133,7 @@ void PixelProgram::setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cM
 	});
 }
 
-void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sampleId)
+void PixelProgram::executeShader(Fragment &frag, Int cMask[4], Int sMask[4], Int zMask[4], int sampleId)
 {
 	unsigned int sampleLoopInit = (sampleId >= 0) ? sampleId : 0;
 	unsigned int sampleLoopEnd = (sampleId >= 0) ? sampleId + 1 : state.multiSampleCount;
@@ -235,7 +235,7 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sam
 	it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
 	if(it != spirvShader->outputBuiltins.end())
 	{
-		oDepth = Min(Max(routine.getVariable(it->second.Id)[it->second.FirstComponent], Float4(0.0f)), Float4(1.0f));
+		frag.oDepth = Min(Max(routine.getVariable(it->second.Id)[it->second.FirstComponent], Float4(0.0f)), Float4(1.0f));
 	}
 }
 
