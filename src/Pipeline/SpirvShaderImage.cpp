@@ -463,19 +463,19 @@ void SpirvShader::callSamplerFunction(Pointer<Byte> samplerFunction, Array<SIMD:
 		{
 			SIMD::Float x;
 			SIMD::Float y;
-			x.x = As<Float>(Int(SIMD::Int(offsetValue.Int(0)).x));  // Integer values, but transferred as float.
-			x.y = As<Float>(Int(SIMD::Int(offsetValue.Int(2)).x));
-			x.z = As<Float>(Int(SIMD::Int(offsetValue.Int(4)).x));
-			x.w = As<Float>(Int(SIMD::Int(offsetValue.Int(6)).x));
+			x.x = As<Float>(Int(SIMD::Int(offsetValue.Int(6)).x));  // Integer values, but transferred as float.
+			x.y = As<Float>(Int(SIMD::Int(offsetValue.Int(4)).x));
+			x.z = As<Float>(Int(SIMD::Int(offsetValue.Int(0)).x));
+			x.w = As<Float>(Int(SIMD::Int(offsetValue.Int(2)).x));
 
-			y.x = As<Float>(Int(SIMD::Int(offsetValue.Int(1)).x));
-			y.y = As<Float>(Int(SIMD::Int(offsetValue.Int(3)).x));
-			y.z = As<Float>(Int(SIMD::Int(offsetValue.Int(5)).x));
-			y.w = As<Float>(Int(SIMD::Int(offsetValue.Int(7)).x));
+			y.x = As<Float>(Int(SIMD::Int(offsetValue.Int(7)).x));
+			y.y = As<Float>(Int(SIMD::Int(offsetValue.Int(5)).x));
+			y.z = As<Float>(Int(SIMD::Int(offsetValue.Int(1)).x));
+			y.w = As<Float>(Int(SIMD::Int(offsetValue.Int(3)).x));
 
-			in[i] = Float4(0);
+			in[i] = x;
 			i++;
-			in[i] = Float4(0);
+			in[i] = y;
 			i++;
 		}
 	}

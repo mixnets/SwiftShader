@@ -899,30 +899,41 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 
 	Pointer<Byte> mipmap = selectMipmap(texture, lod, secondLOD);
 	Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(mipmap + OFFSET(Mipmap, buffer));
+	Int4 filter = computeFilterOffset(lod);
 
 	Int4 x0, x1, x2, x3;
 	Int4 y0, y1, y2, y3;
-	Int4 xx;
-	Int4 yy;
 	Float4 fu, fv;
-	Int4 filter = computeFilterOffset(lod);
-	address(u, x0, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU);
-	address(u, x1, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU);
-	address(u, x2, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU);
-	address(u, x3, xx, fu, mipmap, Int4(0), filter, OFFSET(Mipmap, width), state.addressingModeU);
 
-	address(v, y0, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV);
-	address(v, y1, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV);
-	address(v, y2, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV);
-	address(v, y3, yy, fv, mipmap, Int4(0), filter, OFFSET(Mipmap, height), state.addressingModeV);
+	if(!gather)
+	{
+		address(u, x0, x1, fu, mipmap, Int4(Int(offset.x.x)), filter, OFFSET(Mipmap, width), state.addressingModeU);
+		address(v, y0, y2, fv, mipmap, Int4(Int(offset.y.x)), filter, OFFSET(Mipmap, height), state.addressingModeV);
 
-	//x2 = x0;
-	//x3 = x1;
-	//y1 = y0;
-	//y3 = y2;
+		x2 = x0;
+		x3 = x1;
+		y1 = y0;
+		y3 = y2;
+	}
+	else
+	{
+		Int4 _;
+		address(u, x0, _, fu, mipmap, Int4(Int(offset.x.x)), filter, OFFSET(Mipmap, width), state.addressingModeU);
+		address(u, x1, _, fu, mipmap, Int4(Int(offset.x.y)), filter, OFFSET(Mipmap, width), state.addressingModeU);
+		address(u, x2, _, fu, mipmap, Int4(Int(offset.x.z)), filter, OFFSET(Mipmap, width), state.addressingModeU);
+		address(u, x3, _, fu, mipmap, Int4(Int(offset.x.w)), filter, OFFSET(Mipmap, width), state.addressingModeU);
+
+		address(v, y0, _, fv, mipmap, Int4(Int(offset.y.x)), filter, OFFSET(Mipmap, height), state.addressingModeV);
+		address(v, y1, _, fv, mipmap, Int4(Int(offset.y.y)), filter, OFFSET(Mipmap, height), state.addressingModeV);
+		address(v, y2, _, fv, mipmap, Int4(Int(offset.y.z)), filter, OFFSET(Mipmap, height), state.addressingModeV);
+		address(v, y3, _, fv, mipmap, Int4(Int(offset.y.w)), filter, OFFSET(Mipmap, height), state.addressingModeV);
+	}
 
 	Int4 pitchP = As<Int4>(*Pointer<UInt4>(mipmap + OFFSET(Mipmap, pitchP), 16));
 	y0 *= pitchP;
+	y1 *= pitchP;
+	y2 *= pitchP;
+	y3 *= pitchP;
 
 	Int4 z;
 	if(state.isCube() || state.isArrayed())
@@ -952,7 +963,7 @@ Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v
 	}
 	else
 	{
-		y1 *= pitchP;
+		//y1 *= pitchP;
 
 		Vector4f c00 = sampleTexel(x0, y0, z, dRef, sample, mipmap, buffer);
 		Vector4f c10 = sampleTexel(x1, y1, z, dRef, sample, mipmap, buffer);
