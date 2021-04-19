@@ -324,6 +324,12 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 	slopeDepthBias = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasSlopeFactor : 0.0f;
 	depthBiasClamp = (rasterizationState->depthBiasEnable != VK_FALSE) ? rasterizationState->depthBiasClamp : 0.0f;
 	depthRangeUnrestricted = device->hasExtension(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME);
+	depthClampEnable = rasterizationState->depthClampEnable != VK_FALSE;
+	depthClipEnable = true;
+	if(depthClampEnable)
+	{
+		depthClipEnable = false;
+	}
 
 	// From the Vulkan spec for vkCmdSetDepthBias:
 	//    The bias value O for a polygon is:
@@ -361,9 +367,17 @@ GraphicsState::GraphicsState(const Device *device, const VkGraphicsPipelineCreat
 				provokingVertexMode = provokingVertexModeCreateInfo->provokingVertexMode;
 			}
 			break;
-		default:
-			WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+			case VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT:
+			{
+				const auto *depthClipInfo = reinterpret_cast<const VkPipelineRasterizationDepthClipStateCreateInfoEXT *>(extensionCreateInfo);
+				// Reserved for future use.
+				ASSERT(depthClipInfo->flags == 0);
+				depthClipEnable = depthClipInfo->depthClipEnable != VK_FALSE;
+			}
 			break;
+			default:
+				WARN("pCreateInfo->pRasterizationState->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
+				break;
 		}
 
 		extensionCreateInfo = extensionCreateInfo->pNext;
