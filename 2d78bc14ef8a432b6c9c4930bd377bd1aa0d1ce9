@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50501bb2_f4b976ed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-04-19T19:38:18Z",
+      "side": 1,
+      "message": "Let\u0027s replace this by VK_EXT_depth_clip_enable to make it clear that it\u0027s an extension?",
+      "range": {
+        "startLine": 7,
+        "startChar": 10,
+        "endLine": 7,
+        "endChar": 28
+      },
+      "revId": "2d78bc14ef8a432b6c9c4930bd377bd1aa0d1ce9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f32fe63d_f19cfd78",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-04-19T19:38:18Z",
+      "side": 1,
+      "message": "Since you need the functionality to disable it for implementing depthClamp, would it make sense to make this change come first in the chain?",
+      "range": {
+        "startLine": 10,
+        "startChar": 30,
+        "endLine": 11,
+        "endChar": 16
+      },
+      "revId": "2d78bc14ef8a432b6c9c4930bd377bd1aa0d1ce9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1072860_87c002f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-04-19T19:38:18Z",
+      "side": 1,
+      "message": "Can you open a new bug and make the depthClamp one depend on it?",
+      "range": {
+        "startLine": 14,
+        "startChar": 7,
+        "endLine": 14,
+        "endChar": 16
+      },
+      "revId": "2d78bc14ef8a432b6c9c4930bd377bd1aa0d1ce9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43538d58_d6194c5f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-04-19T19:38:18Z",
+      "side": 1,
+      "message": "Great to also support this! A few early remarks:",
+      "revId": "2d78bc14ef8a432b6c9c4930bd377bd1aa0d1ce9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
