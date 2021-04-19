@@ -158,6 +158,9 @@ struct GraphicsState
 	inline float getMinDepthBounds() const { return minDepthBounds; }
 	inline float getMaxDepthBounds() const { return maxDepthBounds; }
 	inline bool hasDepthRangeUnrestricted() const { return depthRangeUnrestricted; }
+	// inline bool depthBoundsTestActive() const { return depthBoundsTestEnable; }
+	inline bool getDepthClampEnable() const { return depthClampEnable; }
+	inline bool getDepthClipEnable() const { return depthClipEnable; }
 
 	// Pixel processor states
 	inline bool hasRasterizerDiscard() const { return rasterizerDiscard; }
@@ -232,6 +235,8 @@ private:
 	bool depthBufferEnable;
 	VkCompareOp depthCompareMode;
 	bool depthWriteEnable;
+	bool depthClampEnable;
+	bool depthClipEnable;
 
 	float lineWidth;
 

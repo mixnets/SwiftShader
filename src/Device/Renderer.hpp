@@ -93,6 +93,7 @@ struct DrawData
 	float constantDepthBias;
 	float slopeDepthBias;
 	float depthBiasClamp;
+	bool depthClipEnable;
 
 	unsigned int *colorBuffer[RENDERTARGETS];
 	int colorPitchB[RENDERTARGETS];

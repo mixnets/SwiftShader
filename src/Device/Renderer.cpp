@@ -355,6 +355,7 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 		data->constantDepthBias = pipelineState.getConstantDepthBias();
 		data->slopeDepthBias = pipelineState.getSlopeDepthBias();
 		data->depthBiasClamp = pipelineState.getDepthBiasClamp();
+		data->depthClipEnable = pipelineState.getDepthClipEnable();
 
 		const vk::Attachments attachments = pipeline->getAttachments();
 		if(attachments.depthBuffer)
@@ -901,19 +902,19 @@ bool DrawCall::setupLine(Primitive &primitive, Triangle &triangle, const DrawCal
 
 		P[0].x += -dy0w;
 		P[0].y += +dx0h;
-		C[0] = Clipper::ComputeClipFlags(P[0]);
+		C[0] = Clipper::ComputeClipFlags(P[0], data.depthClipEnable);
 
 		P[1].x += -dy1w;
 		P[1].y += +dx1h;
-		C[1] = Clipper::ComputeClipFlags(P[1]);
+		C[1] = Clipper::ComputeClipFlags(P[1], data.depthClipEnable);
 
 		P[2].x += +dy1w;
 		P[2].y += -dx1h;
-		C[2] = Clipper::ComputeClipFlags(P[2]);
+		C[2] = Clipper::ComputeClipFlags(P[2], data.depthClipEnable);
 
 		P[3].x += +dy0w;
 		P[3].y += -dx0h;
-		C[3] = Clipper::ComputeClipFlags(P[3]);
+		C[3] = Clipper::ComputeClipFlags(P[3], data.depthClipEnable);
 
 		if((C[0] & C[1] & C[2] & C[3]) == Clipper::CLIP_FINITE)
 		{
@@ -958,28 +959,28 @@ bool DrawCall::setupLine(Primitive &primitive, Triangle &triangle, const DrawCal
 		float dy1 = lineWidth * 0.5f * P1.w / H;
 
 		P[0].x += -dx0;
-		C[0] = Clipper::ComputeClipFlags(P[0]);
+		C[0] = Clipper::ComputeClipFlags(P[0], data.depthClipEnable);
 
 		P[1].y += +dy0;
-		C[1] = Clipper::ComputeClipFlags(P[1]);
+		C[1] = Clipper::ComputeClipFlags(P[1], data.depthClipEnable);
 
 		P[2].x += +dx0;
-		C[2] = Clipper::ComputeClipFlags(P[2]);
+		C[2] = Clipper::ComputeClipFlags(P[2], data.depthClipEnable);
 
 		P[3].y += -dy0;
-		C[3] = Clipper::ComputeClipFlags(P[3]);
+		C[3] = Clipper::ComputeClipFlags(P[3], data.depthClipEnable);
 
 		P[4].x += -dx1;
-		C[4] = Clipper::ComputeClipFlags(P[4]);
+		C[4] = Clipper::ComputeClipFlags(P[4], data.depthClipEnable);
 
 		P[5].y += +dy1;
-		C[5] = Clipper::ComputeClipFlags(P[5]);
+		C[5] = Clipper::ComputeClipFlags(P[5], data.depthClipEnable);
 
 		P[6].x += +dx1;
-		C[6] = Clipper::ComputeClipFlags(P[6]);
+		C[6] = Clipper::ComputeClipFlags(P[6], data.depthClipEnable);
 
 		P[7].y += -dy1;
-		C[7] = Clipper::ComputeClipFlags(P[7]);
+		C[7] = Clipper::ComputeClipFlags(P[7], data.depthClipEnable);
 
 		if((C[0] & C[1] & C[2] & C[3] & C[4] & C[5] & C[6] & C[7]) == Clipper::CLIP_FINITE)
 		{
@@ -1112,10 +1113,10 @@ bool DrawCall::setupLine(Primitive &primitive, Triangle &triangle, const DrawCal
 			}
 		}
 
-		int C0 = Clipper::ComputeClipFlags(L[0]);
-		int C1 = Clipper::ComputeClipFlags(L[1]);
-		int C2 = Clipper::ComputeClipFlags(L[2]);
-		int C3 = Clipper::ComputeClipFlags(L[3]);
+		int C0 = Clipper::ComputeClipFlags(L[0], data.depthClipEnable);
+		int C1 = Clipper::ComputeClipFlags(L[1], data.depthClipEnable);
+		int C2 = Clipper::ComputeClipFlags(L[2], data.depthClipEnable);
+		int C3 = Clipper::ComputeClipFlags(L[3], data.depthClipEnable);
 
 		if((C0 & C1 & C2 & C3) == Clipper::CLIP_FINITE)
 		{
@@ -1166,19 +1167,19 @@ bool DrawCall::setupPoint(Primitive &primitive, Triangle &triangle, const DrawCa
 
 	P[0].x -= X;
 	P[0].y += Y;
-	C[0] = Clipper::ComputeClipFlags(P[0]);
+	C[0] = Clipper::ComputeClipFlags(P[0], data.depthClipEnable);
 
 	P[1].x += X;
 	P[1].y += Y;
-	C[1] = Clipper::ComputeClipFlags(P[1]);
+	C[1] = Clipper::ComputeClipFlags(P[1], data.depthClipEnable);
 
 	P[2].x += X;
 	P[2].y -= Y;
-	C[2] = Clipper::ComputeClipFlags(P[2]);
+	C[2] = Clipper::ComputeClipFlags(P[2], data.depthClipEnable);
 
 	P[3].x -= X;
 	P[3].y -= Y;
-	C[3] = Clipper::ComputeClipFlags(P[3]);
+	C[3] = Clipper::ComputeClipFlags(P[3], data.depthClipEnable);
 
 	Polygon polygon(P, 4);
 
