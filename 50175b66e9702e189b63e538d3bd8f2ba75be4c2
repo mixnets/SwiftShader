@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61b023c6_a8a0407b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-05T20:00:38Z",
+      "side": 1,
+      "message": "Looks good but I believe Kokoro makes use of this script, and if we happen to land a change that violates the formatting we won\u0027t get notified about that again in other changes (unless you touch lines in the vicinity). Maybe that\u0027s a good thing though, and I believe a lot of repositories work this way (LLVM, for example).\n\nI don\u0027t think it would cause us to stray far from the all-formatted result, and this also makes it easier to make changes to .clang-format and let that organically affect only the files we touch next. So I\u0027m okay with this. We can always add the --all for Kokoro later if it proves useful.\n\nAlexis, any thoughts?",
+      "revId": "50175b66e9702e189b63e538d3bd8f2ba75be4c2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
