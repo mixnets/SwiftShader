@@ -1232,14 +1232,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	{
 		for(auto i = 0; i < texelSize / 4; i++)
 		{
-			texelPtr.Store(packed[i], robustness, state->activeLaneMask());
+			texelPtr.Store(packed[i], robustness, state->activeStoresAndAtomicsMask());
 			texelPtr += sizeof(float);
 		}
 	}
 	else if(texelSize == 2)
 	{
 		SIMD::Int offsets = texelPtr.offsets();
-		SIMD::Int mask = state->activeLaneMask() & texelPtr.isInBounds(2, robustness);
+		SIMD::Int mask = state->activeStoresAndAtomicsMask() & texelPtr.isInBounds(2, robustness);
 
 		for(int i = 0; i < SIMD::Width; i++)
 		{
@@ -1252,7 +1252,7 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 	else if(texelSize == 1)
 	{
 		SIMD::Int offsets = texelPtr.offsets();
-		SIMD::Int mask = state->activeLaneMask() & texelPtr.isInBounds(1, robustness);
+		SIMD::Int mask = state->activeStoresAndAtomicsMask() & texelPtr.isInBounds(1, robustness);
 
 		for(int i = 0; i < SIMD::Width; i++)
 		{
