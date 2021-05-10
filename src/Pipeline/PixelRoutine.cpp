@@ -61,6 +61,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 	Int zMask[4];  // Depth mask
 	Int sMask[4];  // Stencil mask
+	Float4 unclampedZ[4];
 
 	bool sampleShadingEnabled = state.sampleShadingEnabled;
 	float minSampleShading = state.minSampleShading;
@@ -120,7 +121,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					x -= *Pointer<Float4>(constants + OFFSET(Constants, X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive, z), false, false);
+				z[q] = unclampedZ[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive, z), false, false);
 
 				if(state.depthBias)
 				{
@@ -233,7 +234,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					}
 				}
 
-				setBuiltins(x, y, z, w, cMask, sampleId);
+				setBuiltins(x, y, unclampedZ, w, cMask, sampleId);
 
 				for(uint32_t i = 0; i < state.numClipDistances; i++)
 				{
