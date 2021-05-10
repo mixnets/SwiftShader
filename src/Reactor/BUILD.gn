@@ -29,6 +29,9 @@ config("swiftshader_llvm_reactor_private_config") {
     defines = [
       "__STDC_CONSTANT_MACROS",
       "__STDC_LIMIT_MACROS",
+      # Enable instrumentation of Reactor routines for MemorySanitizer builds (LLVM backend).
+      # TODO(b/155148722): Remove when unconditionally instrumenting for all build systems.
+      "REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION=1",
     ]
 
     if (current_cpu == "x86" || current_cpu == "x64") {
