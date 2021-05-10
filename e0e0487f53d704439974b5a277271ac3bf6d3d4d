@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "62551501_2f2d8195",
+        "filename": "src/Pipeline/SpirvShaderControlFlow.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 720,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-10T19:05:42Z",
+      "side": 1,
+      "message": "Hmm, Clang 13 introduces SpacesInLineCommentPrefix which by default apparently requires at least one space. That seems useful for readability when text follows (like this case), but for code that is commented out it might be clearer that it\u0027s not part of a clarification, without the space.\n\nUnfortunately we can\u0027t explicitly set the SpacesInLineCommentPrefix minimum to 0 as that will cause an error with older clang-format. Looks like we have no choice but to accept all these format changes.",
+      "range": {
+        "startLine": 720,
+        "startChar": 13,
+        "endLine": 720,
+        "endChar": 14
+      },
+      "revId": "e0e0487f53d704439974b5a277271ac3bf6d3d4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc644d96_bb1caf3d",
+        "filename": "tests/VulkanUnitTests/BasicTests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-10T19:05:42Z",
+      "side": 1,
+      "message": "This is strange. clang-format should not be removing tabs from comments. Probably a bug. Anyway, if this doesn\u0027t cause any issues with the version used by Kokoro, I can live with it.\n\nAlso I\u0027m not sure why this test both got _DISABLED *and* commented out.",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 4
+      },
+      "revId": "e0e0487f53d704439974b5a277271ac3bf6d3d4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
