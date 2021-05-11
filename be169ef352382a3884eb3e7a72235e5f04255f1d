@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "55ea2af9_a6056491",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-11T13:24:57Z",
+      "side": 1,
+      "message": "@srisser: The remaining ASSERT failures you were curious about existed before the depth related work: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54068/3/tests/regres/testlists/vk-master-ASSERT.txt",
+      "revId": "be169ef352382a3884eb3e7a72235e5f04255f1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
