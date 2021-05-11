@@ -1772,7 +1772,10 @@ UShort2::UShort2(RValue<UShort4> cast)
 
 Short4::Short4(RValue<Int> cast)
 {
-	Value *vector = loadValue();
+	int64_t constantVector[4] = { 0, 0, 0, 0 };
+	Value *zero = Nucleus::createConstantVector(constantVector, Short4::type());
+
+	Value *vector = zero;  //loadValue();
 	Value *element = Nucleus::createTrunc(cast.value(), Short::type());
 	Value *insert = Nucleus::createInsertElement(vector, element, 0);
 	Value *swizzle = Swizzle(RValue<Short4>(insert), 0x0000).value();

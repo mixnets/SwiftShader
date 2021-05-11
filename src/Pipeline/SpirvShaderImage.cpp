@@ -21,6 +21,13 @@
 
 #include <spirv/unified1/spirv.hpp>
 
+[[maybe_unused]] static int rrr(int x, int y)
+{
+	printf("rrr\n");
+
+	return x + y;
+}
+
 namespace {
 
 VkFormat SpirvFormatToVulkanFormat(spv::ImageFormat format)
@@ -329,6 +336,8 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 	If(!cacheHit)
 	{
+		//	Int z = Call(rrr, 111, 222);
+
 		rr::Int imageViewId = *Pointer<rr::Int>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, imageViewId));
 		Pointer<Byte> device = *Pointer<Pointer<Byte>>(imageDescriptor + OFFSET(vk::SampledImageDescriptor, device));
 		cache.function = Call(getImageSampler, device, instruction.parameters, samplerId, imageViewId);

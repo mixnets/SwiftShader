@@ -234,7 +234,8 @@ Scheduler::Fiber::Fiber(Allocator::unique_ptr<OSFiber>&& impl, uint32_t id)
   MARL_ASSERT(worker != nullptr, "No Scheduler::Worker bound");
 }
 
-Scheduler::Fiber* Scheduler::Fiber::current() {
+__attribute__((no_sanitize_memory)) Scheduler::Fiber*
+Scheduler::Fiber::current() {
   auto worker = Worker::getCurrent();
   return worker != nullptr ? worker->getCurrentFiber() : nullptr;
 }

@@ -156,7 +156,7 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 	if(!sptr)
 	{
 		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 1));
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
@@ -365,7 +365,7 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_RELAXED_BLOCK_LAYOUT_EXTENSION_NAME, VK_KHR_RELAXED_BLOCK_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME, VK_KHR_SAMPLER_YCBCR_CONVERSION_SPEC_VERSION } },
 	{ { VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_EXTENSION_NAME, VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_SPEC_VERSION } },
-	{ { VK_EXT_DEPTH_CLIP_ENABLE_EXTENSION_NAME, VK_EXT_DEPTH_CLIP_ENABLE_SPEC_VERSION} },
+	{ { VK_EXT_DEPTH_CLIP_ENABLE_EXTENSION_NAME, VK_EXT_DEPTH_CLIP_ENABLE_SPEC_VERSION } },
 	// Only 1.1 core version of this is supported. The extension has additional requirements
 	//{{ VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME, VK_KHR_SHADER_DRAW_PARAMETERS_SPEC_VERSION }},
 	{ { VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME, VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_SPEC_VERSION } },

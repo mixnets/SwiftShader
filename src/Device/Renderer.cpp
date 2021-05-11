@@ -587,7 +587,8 @@ void DrawCall::processPixels(const marl::Loan<DrawCall> &draw, const marl::Loan<
 			auto &draw = data->draw;
 			auto &batch = data->batch;
 			MARL_SCOPED_EVENT("PIXEL draw %d, batch %d, cluster %d", draw->id, batch->id, cluster);
-			draw->pixelRoutine(&batch->primitives.front(), batch->numVisible, cluster, MaxClusterCount, draw->data);
+			auto f = draw->pixelRoutine.getEntry();
+			f(&batch->primitives.front(), batch->numVisible, cluster, MaxClusterCount, draw->data);
 			batch->clusterTickets[cluster].done();
 		});
 	}

@@ -93,6 +93,8 @@ enum class MSanTLS
 
 static void *getTLSAddress(void *control)
 {
+	//	printf("tls %d\n", (int)reinterpret_cast<intptr_t>(control));
+
 	auto tlsIndex = static_cast<MSanTLS>(reinterpret_cast<uintptr_t>(control));
 	switch(tlsIndex)
 	{
@@ -580,6 +582,8 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 		{
 			auto name = symbol.first;
 
+			//	printf("name: %s\n", std::string(*name).c_str());
+
 			// Trim off any underscores from the start of the symbol. LLVM likes
 			// to append these on macOS.
 			auto trimmed = (*name).drop_while([](char c) { return c == '_'; });
@@ -612,6 +616,8 @@ class ExternalSymbolGenerator : public llvm::orc::JITDylib::DefinitionGenerator
 				continue;
 			}
 #endif
+
+			printf("missing: %s\n", std::string(*name).c_str());
 
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 			missing += (missing.empty() ? "'" : ", '") + (*name).str() + "'";

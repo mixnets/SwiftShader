@@ -99,9 +99,12 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			sMask[q] = cMask[q];
 		}
 
-		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+		if(state.stencilActive)
 		{
-			stencilTest(sBuffer, q, x, sMask[q], cMask[q]);
+			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+			{
+				sMask[q] = stencilTest(sBuffer, q, x) & cMask[q];
+			}
 		}
 
 		Float4 f;
@@ -342,25 +345,43 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 	}
 }
 
-void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x, Int &sMask, const Int &cMask)
+static int ooo()
 {
-	if(!state.stencilActive)
-	{
-		return;
-	}
+	setbuf(stdout, NULL);
+	printf("ooo\n");
+	return 1;
+}
 
+static int aaa()
+{
+	printf("aaa\n");
+	return 2;
+}
+
+static int bbb()
+{
+	printf("bbb\n");
+	return 3;
+}
+
+Int PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x)
+{
+	Call(ooo);
 	// (StencilRef & StencilMask) CompFunc (StencilBufferValue & StencilMask)
-
+	/*
 	Pointer<Byte> buffer = sBuffer + x;
+	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
 
 	if(q > 0)
 	{
-		buffer += q * *Pointer<Int>(data + OFFSET(DrawData, stencilSliceB));
+		buffer += q * pitch;
 	}
 
-	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
-	Byte8 value = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
-	value = value | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
+	
+
+	//Byte8 value = As<Byte8>(Short4(Int(0)));
+	Byte8 value = As<Byte8>(Short4(Int(*Pointer<Short>(buffer))));
+	value = As<Byte8>(Insert(As<Short4>(value), *Pointer<Short>(buffer + pitch), 1));
 	Byte8 valueBack = value;
 
 	if(state.frontStencil.compareMask != 0xff)
@@ -381,7 +402,17 @@ void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, int q, const Int &x
 	valueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
 	value |= valueBack;
 
-	sMask = SignMask(value) & cMask;
+	return SignMask(value);
+*/
+	auto qqq = As<Byte8>(Short4(Int(0)));
+
+	Call(aaa);
+
+	auto xxx = SignMask(qqq);
+
+	Call(bbb);
+
+	return xxx;
 }
 
 void PixelRoutine::stencilTest(Byte8 &value, VkCompareOp stencilCompareMode, bool isBack)
