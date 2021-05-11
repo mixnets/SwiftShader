@@ -16,6 +16,29 @@
       "message": "@srisser: The remaining ASSERT failures you were curious about existed before the depth related work: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54068/3/tests/regres/testlists/vk-master-ASSERT.txt",
       "revId": "be169ef352382a3884eb3e7a72235e5f04255f1d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff8e2118_8a58333b",
+        "filename": "tests/regres/testlists/vk-master-ASSERT.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-11T13:25:21Z",
+      "side": 1,
+      "message": "b/176161380",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 75
+      },
+      "revId": "be169ef352382a3884eb3e7a72235e5f04255f1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
