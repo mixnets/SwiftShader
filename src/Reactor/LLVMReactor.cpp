@@ -137,6 +137,25 @@ llvm::Value *lowerPABS(llvm::Value *v)
 }
 #endif  // defined(__i386__) || defined(__x86_64__)
 
+#if(!defined(__i386__) && !defined(__x86_64__)) || __has_feature(memory_sanitizer)
+llvm::Value *lowerSignMask(llvm::Value *x, llvm::Type *retTy)
+{
+	llvm::FixedVectorType *ty = llvm::cast<llvm::FixedVectorType>(x->getType());
+	llvm::Constant *zero = llvm::ConstantInt::get(ty, 0);
+	llvm::Value *cmp = jit->builder->CreateICmpSLT(x, zero);
+
+	llvm::Value *ret = jit->builder->CreateZExt(
+	    jit->builder->CreateExtractElement(cmp, static_cast<uint64_t>(0)), retTy);
+	for(uint64_t i = 1, n = ty->getNumElements(); i < n; ++i)
+	{
+		llvm::Value *elem = jit->builder->CreateZExt(
+		    jit->builder->CreateExtractElement(cmp, i), retTy);
+		ret = jit->builder->CreateOr(ret, jit->builder->CreateShl(elem, i));
+	}
+	return ret;
+}
+#endif
+
 #if !defined(__i386__) && !defined(__x86_64__)
 llvm::Value *lowerPFMINMAX(llvm::Value *x, llvm::Value *y,
                            llvm::FCmpInst::Predicate pred)
@@ -284,23 +303,6 @@ llvm::Value *lowerPack(llvm::Value *x, llvm::Value *y, bool isSigned)
 	std::iota(index.begin(), index.end(), 0);
 
 	return jit->builder->CreateShuffleVector(x, y, index);
-}
-
-llvm::Value *lowerSignMask(llvm::Value *x, llvm::Type *retTy)
-{
-	llvm::FixedVectorType *ty = llvm::cast<llvm::FixedVectorType>(x->getType());
-	llvm::Constant *zero = llvm::ConstantInt::get(ty, 0);
-	llvm::Value *cmp = jit->builder->CreateICmpSLT(x, zero);
-
-	llvm::Value *ret = jit->builder->CreateZExt(
-	    jit->builder->CreateExtractElement(cmp, static_cast<uint64_t>(0)), retTy);
-	for(uint64_t i = 1, n = ty->getNumElements(); i < n; ++i)
-	{
-		llvm::Value *elem = jit->builder->CreateZExt(
-		    jit->builder->CreateExtractElement(cmp, i), retTy);
-		ret = jit->builder->CreateOr(ret, jit->builder->CreateShl(elem, i));
-	}
-	return ret;
 }
 
 llvm::Value *lowerFPSignMask(llvm::Value *x, llvm::Type *retTy)
@@ -1893,7 +1895,9 @@ RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 RValue<Int> SignMask(RValue<Byte8> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+
+	// TODO(b/172238865): MemorySanitizer does not support movmsk instructions.
+#if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	return x86::pmovmskb(x);
 #else
 	return As<Int>(V(lowerSignMask(V(x.value()), T(Int::type()))));
@@ -1947,7 +1951,9 @@ RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 RValue<Int> SignMask(RValue<SByte8> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+
+	// TODO(b/172238865): MemorySanitizer does not support movmsk instructions.
+#if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	return x86::pmovmskb(As<Byte8>(x));
 #else
 	return As<Int>(V(lowerSignMask(V(x.value()), T(Int::type()))));
@@ -2779,7 +2785,9 @@ RValue<UShort8> PackUnsigned(RValue<Int4> x, RValue<Int4> y)
 RValue<Int> SignMask(RValue<Int4> x)
 {
 	RR_DEBUG_INFO_UPDATE_LOC();
-#if defined(__i386__) || defined(__x86_64__)
+
+	// TODO(b/172238865): MemorySanitizer does not support movmsk instructions.
+#if(defined(__i386__) || defined(__x86_64__)) && !__has_feature(memory_sanitizer)
 	return x86::movmskps(As<Float4>(x));
 #else
 	return As<Int>(V(lowerSignMask(V(x.value()), T(Int::type()))));
