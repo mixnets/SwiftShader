@@ -2,7 +2,7 @@
 #define VULKAN_H_ 1
 
 /*
-** Copyright (c) 2015-2020 The Khronos Group Inc.
+** Copyright 2015-2021 The Khronos Group Inc.
 **
 ** SPDX-License-Identifier: Apache-2.0
 */
@@ -17,7 +17,6 @@
 #ifdef VK_USE_PLATFORM_FUCHSIA
 #include <zircon/types.h>
 #include "vulkan_fuchsia.h"
-#include "vulkan_fuchsia_extras.h"
 #endif
 
 #ifdef VK_USE_PLATFORM_IOS_MVK
@@ -78,6 +77,12 @@
 #ifdef VK_USE_PLATFORM_GGP
 #include <ggp_c/vulkan_types.h>
 #include "vulkan_ggp.h"
+#endif
+
+
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+#include <screen/screen.h>
+#include "vulkan_screen.h"
 #endif
 
 
