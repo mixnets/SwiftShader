@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67ced4bc_553dd24d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-20T03:01:08Z",
+      "side": 1,
+      "message": "I\u0027m a bit skeptical about this test-driven development. Is there any spec text to support this behavior? Does the test that checks for clamping at 0 leave VK_EXT_depth_range_unrestricted disabled, while that one that doesn\u0027t expect clamping at 1, enable this extension?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 59
+      },
+      "revId": "b38dd1a26293fd5cf1ee09720a59c7753176b4a7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
