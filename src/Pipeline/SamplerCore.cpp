@@ -2135,6 +2135,10 @@ Vector4f SamplerCore::replaceBorderTexel(const Vector4f &c, Int4 valid)
 		borderRGB = Int4(1);
 		borderA = Int4(1);
 		break;
+	case VK_BORDER_COLOR_FLOAT_CUSTOM_EXT:
+		break;
+	case VK_BORDER_COLOR_INT_CUSTOM_EXT:
+		break;
 	default:
 		UNSUPPORTED("sint/uint/sfloat border: %u", state.border);
 	}
