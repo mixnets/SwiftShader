@@ -16,6 +16,24 @@
       "message": "Did my CL break a test? How can I follow up on this? I\u0027d like to take a look.",
       "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0546e488_0d209c96",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-20T02:30:39Z",
+      "side": 1,
+      "message": "Yes, some dEQP-GLES tests have regressed. Here\u0027s the code involved: https://github.com/KhronosGroup/VK-GL-CTS/blob/master/modules/gles2/functional/es2fShaderConstExprTests.cpp. The template shader is here: https://github.com/KhronosGroup/VK-GL-CTS/blob/master/data/gles2/shaders/constant_expressions.test#L128",
+      "parentUuid": "6f60be9c_a13316ae",
+      "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
