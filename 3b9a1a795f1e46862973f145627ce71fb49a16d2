@@ -52,6 +52,24 @@
       "parentUuid": "0546e488_0d209c96",
       "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "803e61e1_30834953",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-20T02:45:01Z",
+      "side": 1,
+      "message": "I suggest making a revert of https://swiftshader-review.googlesource.com/c/SwiftShader/+/52532 part of your next CL, to get presubmit testing of dEQP-GLES on our \u0027Regres\u0027 bot.\n\nHere are some notes on setting up dEQP for SwiftShader locally: https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/master/docs/dEQP.md (sorry if it\u0027s a bit outdated).",
+      "parentUuid": "eda42677_1b2f9a79",
+      "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
