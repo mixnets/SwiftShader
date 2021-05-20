@@ -34,6 +34,24 @@
       "parentUuid": "6f60be9c_a13316ae",
       "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eda42677_1b2f9a79",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 100966
+      },
+      "writtenOn": "2021-05-20T02:37:05Z",
+      "side": 1,
+      "message": "Reverted my change. I will learn how to test SwiftShader properly before attempting to reland.",
+      "parentUuid": "0546e488_0d209c96",
+      "revId": "3b9a1a795f1e46862973f145627ce71fb49a16d2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
