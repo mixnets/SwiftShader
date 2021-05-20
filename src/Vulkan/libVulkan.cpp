@@ -347,7 +347,6 @@ static const ExtensionProperties instanceExtensionProperties[] = {
 };
 
 static const ExtensionProperties deviceExtensionProperties[] = {
-	{ { VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION } },
 	// Vulkan 1.1 promoted extensions
 	{ { VK_KHR_BIND_MEMORY_2_EXTENSION_NAME, VK_KHR_BIND_MEMORY_2_SPEC_VERSION } },
 	{ { VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME, VK_KHR_CREATE_RENDERPASS_2_SPEC_VERSION } },
@@ -364,14 +363,14 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_MULTIVIEW_EXTENSION_NAME, VK_KHR_MULTIVIEW_SPEC_VERSION } },
 	{ { VK_KHR_RELAXED_BLOCK_LAYOUT_EXTENSION_NAME, VK_KHR_RELAXED_BLOCK_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME, VK_KHR_SAMPLER_YCBCR_CONVERSION_SPEC_VERSION } },
-	{ { VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_EXTENSION_NAME, VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_SPEC_VERSION } },
-	{ { VK_EXT_DEPTH_CLIP_ENABLE_EXTENSION_NAME, VK_EXT_DEPTH_CLIP_ENABLE_SPEC_VERSION } },
+
 	// Only 1.1 core version of this is supported. The extension has additional requirements
 	//{{ VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME, VK_KHR_SHADER_DRAW_PARAMETERS_SPEC_VERSION }},
 	{ { VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME, VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_SPEC_VERSION } },
 	// Only 1.1 core version of this is supported. The extension has additional requirements
 	//{{ VK_KHR_VARIABLE_POINTERS_EXTENSION_NAME, VK_KHR_VARIABLE_POINTERS_SPEC_VERSION }},
 	{ { VK_EXT_QUEUE_FAMILY_FOREIGN_EXTENSION_NAME, VK_EXT_QUEUE_FAMILY_FOREIGN_SPEC_VERSION } },
+
 	// The following extension is only used to add support for Bresenham lines
 	{ { VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME, VK_EXT_LINE_RASTERIZATION_SPEC_VERSION } },
 	// The following extension is used by ANGLE to emulate blitting the stencil buffer
@@ -412,7 +411,10 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 #ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	{ { VK_EXT_DEVICE_MEMORY_REPORT_EXTENSION_NAME, VK_EXT_DEVICE_MEMORY_REPORT_SPEC_VERSION } },
 #endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
+
 	// Vulkan 1.2 promoted extensions
+	{ { VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION } },
+	{ { VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_EXTENSION_NAME, VK_KHR_SEPARATE_DEPTH_STENCIL_LAYOUTS_SPEC_VERSION } },
 	{ { VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME, VK_EXT_HOST_QUERY_RESET_SPEC_VERSION } },
 	{ { VK_EXT_SCALAR_BLOCK_LAYOUT_EXTENSION_NAME, VK_EXT_SCALAR_BLOCK_LAYOUT_SPEC_VERSION } },
 	{ { VK_EXT_SEPARATE_STENCIL_USAGE_EXTENSION_NAME, VK_EXT_SEPARATE_STENCIL_USAGE_SPEC_VERSION } },
@@ -424,6 +426,10 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	{ { VK_KHR_SPIRV_1_4_EXTENSION_NAME, VK_KHR_SPIRV_1_4_SPEC_VERSION } },
 	{ { VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_EXTENSION_NAME, VK_KHR_UNIFORM_BUFFER_STANDARD_LAYOUT_SPEC_VERSION } },
 	{ { VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME, VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION } },
+
+	{ { VK_EXT_DEPTH_CLIP_ENABLE_EXTENSION_NAME, VK_EXT_DEPTH_CLIP_ENABLE_SPEC_VERSION } },
+
+	{ { VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME, VK_EXT_CUSTOM_BORDER_COLOR_SPEC_VERSION } },
 };
 
 static uint32_t numSupportedExtensions(const ExtensionProperties *extensionProperties, uint32_t extensionPropertiesCount)
@@ -875,6 +881,15 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 
 				// VK_KHR_timeline_semaphores is always enabled
 				(void)tsFeatures->timelineSemaphore;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT:
+			{
+				const auto *customBorderColorFeatures = reinterpret_cast<const VkPhysicalDeviceCustomBorderColorFeaturesEXT *>(extensionCreateInfo);
+
+				// VK_EXT_custom_border_color is always enabled
+				(void)customBorderColorFeatures->customBorderColors;
+				(void)customBorderColorFeatures->customBorderColorWithoutFormat;
 			}
 			break;
 		default:
@@ -2119,6 +2134,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 	const VkBaseInStructure *extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
 	const vk::SamplerYcbcrConversion *ycbcrConversion = nullptr;
 	VkSamplerFilteringPrecisionModeGOOGLE filteringPrecision = VK_SAMPLER_FILTERING_PRECISION_MODE_LOW_GOOGLE;
+	VkClearColorValue borderColor = {};
 
 	while(extensionCreateInfo)
 	{
@@ -2126,7 +2142,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 		{
 		case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO:
 			{
-				const VkSamplerYcbcrConversionInfo *samplerYcbcrConversionInfo = reinterpret_cast<const VkSamplerYcbcrConversionInfo *>(extensionCreateInfo);
+				const VkSamplerYcbcrConversionInfo *samplerYcbcrConversionInfo =
+				    reinterpret_cast<const VkSamplerYcbcrConversionInfo *>(extensionCreateInfo);
 				ycbcrConversion = vk::Cast(samplerYcbcrConversionInfo->conversion);
 			}
 			break;
@@ -2139,6 +2156,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 			}
 			break;
 #endif
+		case VK_STRUCTURE_TYPE_SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT:
+			{
+				const VkSamplerCustomBorderColorCreateInfoEXT *borderColorInfo =
+				    reinterpret_cast<const VkSamplerCustomBorderColorCreateInfoEXT *>(extensionCreateInfo);
+
+				borderColor = borderColorInfo->customBorderColor;
+			}
+			break;
 		default:
 			LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
 			break;
@@ -2147,7 +2172,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
 
-	vk::SamplerState samplerState(pCreateInfo, ycbcrConversion, filteringPrecision);
+	vk::SamplerState samplerState(pCreateInfo, ycbcrConversion, filteringPrecision, borderColor);
 	uint32_t samplerID = vk::Cast(device)->indexSampler(samplerState);
 
 	VkResult result = vk::Sampler::Create(pAllocator, pCreateInfo, pSampler, samplerState, samplerID);
@@ -3189,6 +3214,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES:
 			{
 				auto properties = reinterpret_cast<VkPhysicalDeviceDepthStencilResolveProperties *>(extensionProperties);
+				vk::Cast(physicalDevice)->getProperties(properties);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT:
+			{
+				auto properties = reinterpret_cast<VkPhysicalDeviceCustomBorderColorPropertiesEXT *>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(properties);
 			}
 			break;
