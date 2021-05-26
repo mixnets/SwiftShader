@@ -5,5 +5,5 @@
     { "name": "gles3-master", "api": "gles3", "tests": "testlists/gles3-master.txt" },
 
     { "name": "vulkan-wsi", "api": "vulkan", "tests": "testlists/vk-wsi.txt" },
-    { "name": "vulkan-master", "api": "vulkan", "tests": "testlists/vk-master.txt" }
+    { "name": "vulkan-master", "api": "vulkan", "tests": "testlists/vk-default.txt" }
 ]
