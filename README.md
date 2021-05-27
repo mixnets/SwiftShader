@@ -56,11 +56,10 @@ https://swiftshader-review.googlesource.com
 Authenticate your account here:
 https://swiftshader-review.googlesource.com/new-password
 
-All changes require a [Change-ID](https://gerrit-review.googlesource.com/Documentation/user-changeid.html) tag in the commit message. A commit hook may be used to add this tag automatically, and can be found at:
-https://gerrit-review.googlesource.com/tools/hooks/commit-msg. To clone the repository and install the commit hook in one go:
+All changes require a [Change-ID](https://gerrit-review.googlesource.com/Documentation/user-changeid.html) tag in the commit message. A commit hook may be used to add this tag automatically. SwiftShader also uses a pre-commit hook to make sure that changes are properly formatted before being uploaded to Gerrit.
 
-    git clone https://swiftshader.googlesource.com/SwiftShader && (cd SwiftShader && curl -Lo `git rev-parse --git-dir`/hooks/commit-msg https://gerrit-review.googlesource.com/tools/hooks/commit-msg ; chmod +x `git rev-parse --git-dir`/hooks/commit-msg)
-
+    git clone https://swiftshader.googlesource.com/SwiftShader && (cd SwiftShader && git submodule update --init --recursive third_party/git-hooks && ./third_party/git-hooks/install_hooks.sh)
+    
 Changes are uploaded to Gerrit by executing:
 
     git push origin HEAD:refs/for/master
