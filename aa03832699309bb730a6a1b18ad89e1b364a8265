@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b472b372_10705ba1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-05-27T04:15:24Z",
+      "side": 1,
+      "message": "This is caused by applying https://swiftshader-review.googlesource.com/c/SwiftShader/+/54589 locally to the Regres bot. Interestingly more dEQP-VK.wsi.xcb.* tests pass, but all GLES tests crash.",
+      "revId": "aa03832699309bb730a6a1b18ad89e1b364a8265",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
