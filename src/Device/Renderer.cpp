@@ -189,6 +189,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	auto id = nextDrawID++;
 	MARL_SCOPED_EVENT("draw %d", id);
 
+	printf("draw: instance %d, count %d, base %d\n", instanceID, count, baseVertex);
+
 	marl::Pool<sw::DrawCall>::Loan draw;
 	{
 		MARL_SCOPED_EVENT("drawCallPool.borrow()");
@@ -430,6 +432,8 @@ void Renderer::draw(const vk::GraphicsPipeline *pipeline, const vk::DynamicState
 	vk::DescriptorSet::PrepareForSampling(draw->descriptorSetObjects, draw->pipelineLayout, device);
 
 	DrawCall::run(draw, &drawTickets, clusterQueues);
+
+	synchronize();
 }
 
 void DrawCall::setup()

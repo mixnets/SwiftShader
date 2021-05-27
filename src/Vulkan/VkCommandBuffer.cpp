@@ -470,6 +470,8 @@ public:
 	void draw(vk::CommandBuffer::ExecutionState &executionState, bool indexed,
 	          uint32_t count, uint32_t instanceCount, uint32_t first, int32_t vertexOffset, uint32_t firstInstance)
 	{
+		printf("%s instanceCount %d\n", description().c_str(), instanceCount);
+
 		auto const &pipelineState = executionState.pipelineState[VK_PIPELINE_BIND_POINT_GRAPHICS];
 
 		auto *pipeline = static_cast<vk::GraphicsPipeline *>(pipelineState.pipeline);

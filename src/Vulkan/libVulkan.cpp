@@ -171,6 +171,10 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 // initialization of the swiftshader driver.
 void initializeLibrary()
 {
+	printf("biip3\n");
+	fprintf(stderr, "beep3\n");
+	fprintf(stdout, "boop3\n");
+
 	static bool doOnce = [] {
 #if defined(__ANDROID__) && defined(ENABLE_BUILD_VERSION_OUTPUT)
 		logBuildVersionInformation();

@@ -1406,6 +1406,7 @@ public:
 	std::array<SIMD::Int, 2> windowSpacePosition;
 	Int viewID;  // slice offset into input attachments for multiview, even if the shader doesn't use ViewIndex
 	Int instanceID;
+	SIMD::Int vertexID;
 	SIMD::Int vertexIndex;
 	std::array<SIMD::Float, 4> fragCoord;
 	std::array<SIMD::Float, 4> pointCoord;

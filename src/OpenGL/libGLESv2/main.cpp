@@ -17,11 +17,11 @@
 #include "main.h"
 
 #if !defined(_MSC_VER)
-#define CONSTRUCTOR __attribute__((constructor))
-#define DESTRUCTOR __attribute__((destructor))
+#	define CONSTRUCTOR __attribute__((constructor))
+#	define DESTRUCTOR __attribute__((destructor))
 #else
-#define CONSTRUCTOR
-#define DESTRUCTOR
+#	define CONSTRUCTOR
+#	define DESTRUCTOR
 #endif
 
 static void glAttachThread()
@@ -39,6 +39,10 @@ CONSTRUCTOR static void glAttachProcess()
 	TRACE("()");
 
 	glAttachThread();
+
+	printf("biip2\n");
+	fprintf(stderr, "beep2\n");
+	fprintf(stdout, "boop2\n");
 }
 
 DESTRUCTOR static void glDetachProcess()
@@ -73,8 +77,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 }
 #endif
 
-namespace es2
-{
+namespace es2 {
 Context *getContextLocked()
 {
 	egl::Context *context = libEGL->clientGetCurrentContext();
@@ -82,7 +85,7 @@ Context *getContextLocked()
 	if(context && (context->getClientVersion() == 2 ||
 	               context->getClientVersion() == 3))
 	{
-		return static_cast<es2::Context*>(context);
+		return static_cast<es2::Context *>(context);
 	}
 
 	return nullptr;
@@ -90,7 +93,7 @@ Context *getContextLocked()
 
 ContextPtr getContext()
 {
-	return ContextPtr{getContextLocked()};
+	return ContextPtr{ getContextLocked() };
 }
 
 Device *getDevice()
@@ -134,14 +137,13 @@ void error(GLenum errorCode)
 		}
 	}
 }
-}
+}  // namespace es2
 
-namespace egl
-{
+namespace egl {
 GLint getClientVersion()
 {
 	Context *context = libEGL->clientGetCurrentContext();
 
 	return context ? context->getClientVersion() : 0;
 }
-}
+}  // namespace egl

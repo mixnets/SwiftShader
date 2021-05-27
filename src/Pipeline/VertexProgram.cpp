@@ -24,6 +24,11 @@
 
 namespace sw {
 
+static void printID(int count, int x, int y, int z, int w)
+{
+	printf("[%d] %d, %d, %d, %d\n", count, x, y, z, w);
+}
+
 VertexProgram::VertexProgram(
     const VertexProcessor::State &state,
     vk::PipelineLayout const *pipelineLayout,
@@ -38,6 +43,7 @@ VertexProgram::VertexProgram(
 	// they are ever going to be read.
 	routine.viewID = *Pointer<Int>(data + OFFSET(DrawData, viewID));
 	routine.instanceID = *Pointer<Int>(data + OFFSET(DrawData, instanceID));
+	routine.vertexID = *Pointer<Int>(data + OFFSET(DrawData, vertexID));
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInViewIndex, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
 		assert(builtin.SizeInComponents == 1);
@@ -48,6 +54,11 @@ VertexProgram::VertexProgram(
 		// TODO: we could do better here; we know InstanceIndex is uniform across all lanes
 		assert(builtin.SizeInComponents == 1);
 		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(routine.instanceID));
+	});
+
+	routine.setInputBuiltin(spirvShader, spv::BuiltInVertexId, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
+		assert(builtin.SizeInComponents == 1);
+		value[builtin.FirstComponent] = As<SIMD::Float>(SIMD::Int(routine.vertexID));
 	});
 
 	routine.setInputBuiltin(spirvShader, spv::BuiltInSubgroupSize, [&](const SpirvShader::BuiltinMapping &builtin, Array<SIMD::Float> &value) {
@@ -70,12 +81,30 @@ void VertexProgram::program(Pointer<UInt> &batch, UInt &vertexCount)
 	routine.vertexIndex = *Pointer<SIMD::Int>(As<Pointer<SIMD::Int>>(batch)) +
 	                      SIMD::Int(*Pointer<Int>(data + OFFSET(DrawData, baseVertex)));
 
+	Call(printID, vertexCount, Int(routine.vertexIndex.x),
+	     Int(routine.vertexIndex.y),
+	     Int(routine.vertexIndex.z),
+	     Int(routine.vertexIndex.w));
+
+	routine.vertexID = *Pointer<SIMD::Int>(As<Pointer<SIMD::Int>>(batch)) +
+	                   SIMD::Int(*Pointer<Int>(data + OFFSET(DrawData, baseVertex)));
+
 	auto it = spirvShader->inputBuiltins.find(spv::BuiltInVertexIndex);
 	if(it != spirvShader->inputBuiltins.end())
 	{
 		assert(it->second.SizeInComponents == 1);
 		routine.getVariable(it->second.Id)[it->second.FirstComponent] =
 		    As<SIMD::Float>(routine.vertexIndex);
+	}
+
+	{
+		auto it = spirvShader->inputBuiltins.find(spv::BuiltInVertexId);
+		if(it != spirvShader->inputBuiltins.end())
+		{
+			assert(it->second.SizeInComponents == 1);
+			routine.getVariable(it->second.Id)[it->second.FirstComponent] =
+			    As<SIMD::Float>(routine.vertexID);
+		}
 	}
 
 	auto activeLaneMask = SIMD::Int(0xFFFFFFFF);

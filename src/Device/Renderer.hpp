@@ -72,6 +72,7 @@ struct DrawData
 	const void *indices;
 
 	int instanceID;
+	int vertexID;
 	int baseVertex;
 	float lineWidth;
 	int viewID;

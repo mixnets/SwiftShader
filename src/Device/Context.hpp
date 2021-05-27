@@ -75,6 +75,8 @@ struct Inputs
 	void setVertexInputBinding(const VertexInputBinding vertexInputBindings[]);
 	void advanceInstanceAttributes();
 
+	uint32_t vertexID = 0;
+
 private:
 	VertexInputBinding vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS] = {};
 	DescriptorSet::Array descriptorSetObjects = {};
