@@ -355,7 +355,6 @@ bool Scheduler::WaitingFibers::Timeout::operator<(const Timeout& o) const {
 ////////////////////////////////////////////////////////////////////////////////
 // Scheduler::Worker
 ////////////////////////////////////////////////////////////////////////////////
-thread_local Scheduler::Worker* Scheduler::Worker::current = nullptr;
 
 Scheduler::Worker::Worker(Scheduler* scheduler, Mode mode, uint32_t id)
     : id(id),
@@ -378,7 +377,7 @@ void Scheduler::Worker::start() {
         }
 
         Scheduler::bound = scheduler;
-        Worker::current = this;
+        Worker::current() = this;
         mainFiber = Fiber::createFromCurrentThread(scheduler->cfg.allocator, 0);
         currentFiber = mainFiber.get();
         {
@@ -386,12 +385,12 @@ void Scheduler::Worker::start() {
           run();
         }
         mainFiber.reset();
-        Worker::current = nullptr;
+        Worker::current() = nullptr;
       });
       break;
     }
     case Mode::SingleThreaded: {
-      Worker::current = this;
+      Worker::current() = this;
       mainFiber = Fiber::createFromCurrentThread(scheduler->cfg.allocator, 0);
       currentFiber = mainFiber.get();
       break;
@@ -412,7 +411,7 @@ void Scheduler::Worker::stop() {
       marl::lock lock(work.mutex);
       shutdown = true;
       runUntilShutdown();
-      Worker::current = nullptr;
+      Worker::current() = nullptr;
       break;
     }
     default:
@@ -566,6 +565,13 @@ bool Scheduler::Worker::steal(Task& out) {
   out = containers::take(work.tasks);
   work.mutex.unlock();
   return true;
+}
+
+Scheduler::Worker*& Scheduler::Worker::current() {
+  // The current worker bound to the current thread.
+  thread_local Scheduler::Worker* current = nullptr;
+
+  return current;
 }
 
 void Scheduler::Worker::run() {

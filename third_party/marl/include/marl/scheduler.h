@@ -424,6 +424,8 @@ class Scheduler {
     // waiting.
     void enqueueFiberTimeouts() REQUIRES(work.mutex);
 
+    static Worker*& current();
+
     inline void changeFiberState(Fiber* fiber,
                                  Fiber::State from,
                                  Fiber::State to) const REQUIRES(work.mutex);
@@ -461,9 +463,6 @@ class Scheduler {
      private:
       uint64_t x = std::chrono::system_clock::now().time_since_epoch().count();
     };
-
-    // The current worker bound to the current thread.
-    static thread_local Worker* current;
 
     Mode const mode;
     Scheduler* const scheduler;
@@ -570,7 +569,7 @@ bool Scheduler::Fiber::wait(
 }
 
 Scheduler::Worker* Scheduler::Worker::getCurrent() {
-  return Worker::current;
+  return Worker::current();
 }
 
 Scheduler::Fiber* Scheduler::Worker::getCurrentFiber() const {
