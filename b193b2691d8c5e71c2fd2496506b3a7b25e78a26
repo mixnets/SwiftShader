@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e889706_a1eb5a17",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-02T19:46:54Z",
+      "side": 1,
+      "message": "I tried this on macOS but it didn\u0027t prevent me from uploading a change with formatting issues: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54748. Note that it does have a Change-Id added to the commit message.\n\ngit commit produces the following warning:\n\nwarning: Cannot run /usr/lib/git-core/google_hook. If this is unexpected, please file a go/git-bug\nmktemp: mkstemp failed on --tmpdir\u003d/var/folders/2x/w2jwrph97l3c8zd0bs70x_0h006t67/T/gcp-2021-06-02-15-42-40-XXXXXXXXXX.9toHEU7p: No such file or directory",
+      "range": {
+        "startLine": 61,
+        "startChar": 4,
+        "endLine": 61,
+        "endChar": 191
+      },
+      "revId": "b193b2691d8c5e71c2fd2496506b3a7b25e78a26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
