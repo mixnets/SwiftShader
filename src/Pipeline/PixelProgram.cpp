@@ -22,11 +22,11 @@
 namespace sw {
 
 // Union all cMask and return it as 4 booleans
-Int4 PixelProgram::maskAny(Int cMask[4]) const
+Int4 PixelProgram::maskAny (Int cMask[4]) const
 {
 	// See if at least 1 sample is used
 	Int maskUnion = cMask[0];
-	for(auto i = 1u; i < state.multiSampleCount; i++)
+	for (auto i = 1u; i < state.multiSampleCount; i++)
 	{
 		maskUnion |= cMask[i];
 	}
