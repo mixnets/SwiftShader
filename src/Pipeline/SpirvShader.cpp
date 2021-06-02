@@ -1111,7 +1111,8 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 	ApplyDecorationsForId(d, baseObject.typeId());
 	auto typeId = getType(baseObject).element;
 
-	for(auto i = 0u; i < numIndexes; i++)
+	uint32_t i = 0u;
+	do
 	{
 		ApplyDecorationsForId(d, typeId);
 		auto &type = getType(typeId);
@@ -1119,14 +1120,14 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 		{
 		case spv::OpTypeStruct:
 			{
-				int memberIndex = GetConstScalarInt(indexIds[i]);
+				int memberIndex = (numIndexes == 0) ? 0 : GetConstScalarInt(indexIds[i]);
 				ApplyDecorationsForIdMember(d, typeId, memberIndex);
 				typeId = type.definition.word(2u + memberIndex);
 			}
 			break;
 		case spv::OpTypeArray:
 		case spv::OpTypeRuntimeArray:
-			if(dd->InputAttachmentIndex >= 0)
+			if(dd->InputAttachmentIndex >= 0 && numIndexes != 0)
 			{
 				dd->InputAttachmentIndex += GetConstScalarInt(indexIds[i]);
 			}
@@ -1142,7 +1143,8 @@ void SpirvShader::ApplyDecorationsForAccessChain(Decorations *d, DescriptorDecor
 		default:
 			UNREACHABLE("%s", OpcodeName(type.definition.opcode()));
 		}
-	}
+		i++;
+	} while (i < numIndexes);
 }
 
 SIMD::Pointer SpirvShader::WalkExplicitLayoutAccessChain(Object::ID baseId, uint32_t numIndexes, uint32_t const *indexIds, EmitState const *state) const
