@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "29ea305c_4996de80",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 726,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-06-08T00:32:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "611cd0ef_5bea7baa",
+      "range": {
+        "startLine": 726,
+        "startChar": 5,
+        "endLine": 726,
+        "endChar": 17
+      },
+      "revId": "688c17c9285ba20fb37b770c793bb9268a00a46e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c3254aa_95636e31",
@@ -47,6 +71,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd1de194_57b2cb3a",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 962,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-06-08T00:32:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c3254aa_95636e31",
+      "range": {
+        "startLine": 962,
+        "startChar": 2,
+        "endLine": 962,
+        "endChar": 32
+      },
+      "revId": "688c17c9285ba20fb37b770c793bb9268a00a46e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "402a25d2_89dcca99",
@@ -60,6 +108,30 @@
       "writtenOn": "2021-06-07T21:24:05Z",
       "side": 1,
       "message": "You might be able to keep the original loop and do:\n\nfor(auto desc : blockDescs[mode])\n{\n  if(desc.type \u003d\u003d End)\n    break;\n    \n  ...\n  \nMaybe this would require a std::array, not sure.",
+      "range": {
+        "startLine": 982,
+        "startChar": 2,
+        "endLine": 985,
+        "endChar": 3
+      },
+      "revId": "688c17c9285ba20fb37b770c793bb9268a00a46e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7045ffba_d6413dee",
+        "filename": "src/Device/BC_Decoder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 985,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-06-08T00:32:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "402a25d2_89dcca99",
       "range": {
         "startLine": 982,
         "startChar": 2,
