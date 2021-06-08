@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c042c57_19caaa12",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-08T07:01:55Z",
+      "side": 1,
+      "message": "The failures could be due to 0xFFFF * (1.0f / 0xFFFF) !\u003d 1.0f.\n\ncf. https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/1853",
+      "revId": "f3723d519ffed81c883cdd715aa0183029a605cf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
