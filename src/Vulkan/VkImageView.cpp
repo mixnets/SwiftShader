@@ -14,6 +14,7 @@
 
 #include "VkImageView.hpp"
 
+#include "VkDebugImage.hpp"
 #include "VkImage.hpp"
 #include "System/Math.hpp"
 
@@ -378,6 +379,11 @@ void *ImageView::getOffsetPointer(const VkOffset3D &offset, VkImageAspectFlagBit
 	};
 
 	return getImage(usage)->getTexelPointer(offset, imageSubresource);
+}
+
+void ImageView::debugImage(const char *filePath)
+{
+	writeImageToFile(image, filePath);
 }
 
 }  // namespace vk

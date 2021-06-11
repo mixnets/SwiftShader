@@ -31,6 +31,8 @@ set(VULKAN_SRC_FILES
     VkCommandPool.cpp
     VkCommandPool.hpp
     VkConfig.hpp
+    VkDebugImage.cpp
+    VkDebugImage.hpp
     VkDebugUtilsMessenger.cpp
     VkDebugUtilsMessenger.hpp
     VkDescriptorPool.cpp

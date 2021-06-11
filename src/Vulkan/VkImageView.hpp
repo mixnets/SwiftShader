@@ -135,6 +135,8 @@ public:
 	const VkImageSubresourceRange &getSubresourceRange() const { return subresourceRange; }
 	size_t getSizeInBytes() const { return image->getSizeInBytes(subresourceRange); }
 
+	void debugImage(const char *filePath);
+
 private:
 	bool imageTypesMatch(VkImageType imageType) const;
 	const Image *getImage(Usage usage) const;

@@ -172,6 +172,7 @@ option_if_not_defined(REACTOR_ENABLE_MEMORY_SANITIZER_INSTRUMENTATION "Include J
 option_if_not_defined(SWIFTSHADER_LESS_DEBUG_INFO "Generate less debug info to reduce file size" FALSE)
 option_if_not_defined(SWIFTSHADER_ENABLE_VULKAN_DEBUGGER "Enable Vulkan debugger support" FALSE)
 option_if_not_defined(SWIFTSHADER_ENABLE_ASTC "Enable ASTC compressed textures support" TRUE)  # TODO(b/150130101)
+option_if_not_defined(SWIFTSHADER_DEBUG_IMAGES "Enable SwiftShader to use libraries that aid in debugging images" FALSE)
 
 set(BUILD_MARL ${SWIFTSHADER_BUILD_VULKAN})
 
@@ -709,6 +710,14 @@ if(SWIFTSHADER_BUILD_TESTS)
     set_target_properties(gmock_main PROPERTIES FOLDER "third_party")
     set_target_properties(gtest PROPERTIES FOLDER "third_party")
     set_target_properties(gtest_main PROPERTIES FOLDER "third_party")
+endif()
+
+###########################################################
+# Debug images
+###########################################################
+if(SWIFTSHADER_DEBUG_IMAGES)
+    include_directories(SYSTEM "${THIRD_PARTY_DIR}/stb/")
+    add_compile_definitions(DEBUG_IMAGES)
 endif()
 
 ###########################################################
