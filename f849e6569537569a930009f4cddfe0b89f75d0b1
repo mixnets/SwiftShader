@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0587dafa_e44fe172",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-15T15:59:10Z",
+      "side": 1,
+      "message": "Not valid for pointer types.",
+      "range": {
+        "startLine": 655,
+        "startChar": 1,
+        "endLine": 655,
+        "endChar": 35
+      },
+      "revId": "f849e6569537569a930009f4cddfe0b89f75d0b1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
