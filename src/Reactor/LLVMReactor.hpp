@@ -88,13 +88,13 @@ class Config;
 class JITBuilder
 {
 public:
-	JITBuilder(const rr::Config &config);
+	JITBuilder();
 
 	void optimize(const rr::Config &cfg);
 
-	std::shared_ptr<rr::Routine> acquireRoutine(const char *name, llvm::Function **funcs, size_t count, const rr::Config &cfg);
+	std::shared_ptr<rr::Routine> acquireRoutine(const char *name, llvm::Function **funcs, size_t count);
 
-	const Config config;
+	//const Config config;
 	std::unique_ptr<llvm::LLVMContext> context;
 	std::unique_ptr<llvm::Module> module;
 	std::unique_ptr<llvm::IRBuilder<>> builder;
@@ -120,6 +120,7 @@ public:
 #endif
 
 	bool msanInstrumentation = false;
+	PragmaOptimizationLevel optimizationLevel = OptimizationDefault;
 };
 
 inline std::memory_order atomicOrdering(llvm::AtomicOrdering memoryOrder)

@@ -20,6 +20,7 @@
 namespace rr {
 
 static thread_local bool memorySanitizerInstrumentation = false;
+static thread_local PragmaOptimizationLevel optimizationLevel = OptimizationDefault;
 
 void Pragma(PragmaBooleanOption option, bool enable)
 {
@@ -33,6 +34,11 @@ void Pragma(PragmaBooleanOption option, bool enable)
 	}
 }
 
+void Pragma(PragmaOptimizationLevel level)
+{
+	optimizationLevel = level;
+}
+
 bool getPragmaState(PragmaBooleanOption option)
 {
 	switch(option)
@@ -43,6 +49,11 @@ bool getPragmaState(PragmaBooleanOption option)
 		UNSUPPORTED("Unknown pragma %d", int(option));
 		return false;
 	}
+}
+
+PragmaOptimizationLevel getPragmaOptimizationLevel()
+{
+	return optimizationLevel;
 }
 
 }  // namespace rr

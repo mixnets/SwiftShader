@@ -152,20 +152,4 @@ void trace_assert(const char *format, ...) CHECK_PRINTF_ARGS;
 #undef UNREACHABLE
 #define UNREACHABLE(format, ...) DABORT("UNREACHABLE: " format, ##__VA_ARGS__)
 
-// A macro asserting a condition and returning if false.
-// Note this macro always evaluates the expression and also returns in Release builds.
-#undef ASSERT_OR_RETURN
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
-#	define ASSERT_OR_RETURN(expression) ASSERT(expression)
-#else
-#	define ASSERT_OR_RETURN(expression) \
-		do                               \
-		{                                \
-			if(!(expression))            \
-			{                            \
-				return;                  \
-			}                            \
-		} while(0)
-#endif
-
 #endif  // rr_DEBUG_H_

@@ -22,7 +22,16 @@ enum PragmaBooleanOption
 	MemorySanitizerInstrumentation,
 };
 
+enum PragmaOptimizationLevel
+{
+	OptimizationNone,
+	OptimizationLess,
+	OptimizationDefault,
+	OptimizationAggressive,
+};
+
 void Pragma(PragmaBooleanOption option, bool enable);
+void Pragma(PragmaOptimizationLevel level);
 
 }  // namespace rr
 

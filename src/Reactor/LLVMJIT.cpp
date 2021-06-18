@@ -129,14 +129,14 @@ class JITGlobals
 public:
 	static JITGlobals *get();
 
-	llvm::orc::JITTargetMachineBuilder getTargetMachineBuilder(rr::Optimization::Level optLevel) const;
+	llvm::orc::JITTargetMachineBuilder getTargetMachineBuilder(rr::PragmaOptimizationLevel optLevel) const;
 	const llvm::DataLayout &getDataLayout() const;
 	const llvm::Triple &getTargetTriple() const;
 
 private:
 	JITGlobals(llvm::orc::JITTargetMachineBuilder &&jitTargetMachineBuilder, llvm::DataLayout &&dataLayout);
 
-	static llvm::CodeGenOpt::Level toLLVM(rr::Optimization::Level level);
+	static llvm::CodeGenOpt::Level toLLVM(rr::PragmaOptimizationLevel level);
 
 	const llvm::orc::JITTargetMachineBuilder jitTargetMachineBuilder;
 	const llvm::DataLayout dataLayout;
@@ -199,7 +199,7 @@ JITGlobals *JITGlobals::get()
 	return &instance;
 }
 
-llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::Optimization::Level optLevel) const
+llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::PragmaOptimizationLevel optLevel) const
 {
 	llvm::orc::JITTargetMachineBuilder out = jitTargetMachineBuilder;
 	out.setCodeGenOptLevel(toLLVM(optLevel));
@@ -223,7 +223,7 @@ JITGlobals::JITGlobals(llvm::orc::JITTargetMachineBuilder &&jitTargetMachineBuil
 {
 }
 
-llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::Optimization::Level level)
+llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::PragmaOptimizationLevel level)
 {
 	// TODO(b/173257647): MemorySanitizer instrumentation produces IR which takes
 	// a lot longer to process by the machine code optimization passes. Disabling
@@ -235,10 +235,10 @@ llvm::CodeGenOpt::Level JITGlobals::toLLVM(rr::Optimization::Level level)
 
 	switch(level)
 	{
-	case rr::Optimization::Level::None: return llvm::CodeGenOpt::None;
-	case rr::Optimization::Level::Less: return llvm::CodeGenOpt::Less;
-	case rr::Optimization::Level::Default: return llvm::CodeGenOpt::Default;
-	case rr::Optimization::Level::Aggressive: return llvm::CodeGenOpt::Aggressive;
+	case rr::OptimizationNone: return llvm::CodeGenOpt::None;
+	case rr::OptimizationLess: return llvm::CodeGenOpt::Less;
+	case rr::OptimizationDefault: return llvm::CodeGenOpt::Default;
+	case rr::OptimizationAggressive: return llvm::CodeGenOpt::Aggressive;
 	default: UNREACHABLE("Unknown Optimization Level %d", int(level));
 	}
 
@@ -690,8 +690,7 @@ public:
 	    std::unique_ptr<llvm::LLVMContext> context,
 	    const char *name,
 	    llvm::Function **funcs,
-	    size_t count,
-	    const rr::Config &config)
+	    size_t count)
 	    : name(name)
 	    , objectLayer(session, []() {
 		    static MemoryMapper memoryMapper;
@@ -740,16 +739,19 @@ public:
 			functionNames[i] = mangle(func->getName());
 		}
 
-#ifdef ENABLE_RR_EMIT_ASM_FILE
-		const auto asmFilename = rr::AsmFile::generateFilename(name);
-		rr::AsmFile::emitAsmFile(asmFilename, JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel()), *module);
-#endif
-
 		// Once the module is passed to the compileLayer, the llvm::Functions are freed.
 		// Make sure funcs are not referenced after this point.
 		funcs = nullptr;
 
-		llvm::orc::IRCompileLayer compileLayer(session, objectLayer, std::make_unique<llvm::orc::ConcurrentIRCompiler>(JITGlobals::get()->getTargetMachineBuilder(config.getOptimization().getLevel())));
+		auto optimizationLevel = rr::getPragmaOptimizationLevel();
+
+#ifdef ENABLE_RR_EMIT_ASM_FILE
+		const auto asmFilename = rr::AsmFile::generateFilename(name);
+		rr::AsmFile::emitAsmFile(asmFilename, JITGlobals::get()->getTargetMachineBuilder(optimizationLevel), *module);
+#endif
+
+		llvm::orc::IRCompileLayer compileLayer(session, objectLayer, std::make_unique<llvm::orc::ConcurrentIRCompiler>(JITGlobals::get()->getTargetMachineBuilder(optimizationLevel)));
+
 		llvm::orc::JITDylib &dylib(Unwrap(session.createJITDylib("<routine>")));
 		dylib.addGenerator(std::make_unique<ExternalSymbolGenerator>());
 
@@ -807,9 +809,8 @@ private:
 
 namespace rr {
 
-JITBuilder::JITBuilder(const rr::Config &config)
-    : config(config)
-    , context(new llvm::LLVMContext())
+JITBuilder::JITBuilder()
+    : context(new llvm::LLVMContext())
     , module(new llvm::Module("", *context))
     , builder(new llvm::IRBuilder<>(*context))
 {
@@ -821,6 +822,11 @@ JITBuilder::JITBuilder(const rr::Config &config)
 	{
 		msanInstrumentation = true;
 	}
+
+#if defined(REACTOR_DEFAULT_OPT_LEVEL)
+#	define DefaultOptimizationLevel OptimizationLevel##REACTOR_DEFAULT_OPT_LEVEL
+	optimizationLevel = DefaultOptimizationLevel;
+#endif
 }
 
 void JITBuilder::optimize(const rr::Config &cfg)
@@ -862,10 +868,10 @@ void JITBuilder::optimize(const rr::Config &cfg)
 	passManager.run(*module);
 }
 
-std::shared_ptr<rr::Routine> JITBuilder::acquireRoutine(const char *name, llvm::Function **funcs, size_t count, const rr::Config &cfg)
+std::shared_ptr<rr::Routine> JITBuilder::acquireRoutine(const char *name, llvm::Function **funcs, size_t count)
 {
 	ASSERT(module);
-	return std::make_shared<JITRoutine>(std::move(module), std::move(context), name, funcs, count, cfg);
+	return std::make_shared<JITRoutine>(std::move(module), std::move(context), name, funcs, count);
 }
 
 }  // namespace rr

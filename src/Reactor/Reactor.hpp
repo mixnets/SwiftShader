@@ -214,6 +214,7 @@ public:
 	using reference_underlying_type = T;
 
 	explicit Reference(Value *pointer, int alignment = 1);
+	Reference(const Reference<T> &ref) = default;
 
 	RValue<T> operator=(RValue<T> rhs) const;
 	RValue<T> operator=(const Reference<T> &ref) const;
@@ -2664,12 +2665,6 @@ public:
 	{
 		return RoutineType(BaseType::operator()(name, std::forward<VarArgs>(varArgs)...));
 	}
-
-	template<typename... VarArgs>
-	RoutineType operator()(const Config::Edit &cfg, const char *name, VarArgs... varArgs)
-	{
-		return RoutineType(BaseType::operator()(cfg, name, std::forward<VarArgs>(varArgs)...));
-	}
 };
 
 RValue<Long> Ticks();
@@ -3204,23 +3199,7 @@ std::shared_ptr<Routine> Function<Return(Arguments...)>::operator()(const char *
 	vsnprintf(fullName, 1024, name, vararg);
 	va_end(vararg);
 
-	auto routine = core->acquireRoutine(fullName, Config::Edit::None);
-	core.reset(nullptr);
-
-	return routine;
-}
-
-template<typename Return, typename... Arguments>
-std::shared_ptr<Routine> Function<Return(Arguments...)>::operator()(const Config::Edit &cfg, const char *name, ...)
-{
-	char fullName[1024 + 1];
-
-	va_list vararg;
-	va_start(vararg, name);
-	vsnprintf(fullName, 1024, name, vararg);
-	va_end(vararg);
-
-	auto routine = core->acquireRoutine(fullName, cfg);
+	auto routine = core->acquireRoutine(fullName);
 	core.reset(nullptr);
 
 	return routine;

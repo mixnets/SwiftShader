@@ -1090,10 +1090,10 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 	return std::shared_ptr<Routine>(handoffRoutine);
 }
 
-std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+std::shared_ptr<Routine> Nucleus::acquireRoutine(const char *name)
 {
 	finalizeFunction();
-	return rr::acquireRoutine({ ::function }, { name }, cfgEdit);
+	return rr::acquireRoutine({ ::function }, { name });
 }
 
 Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
@@ -4930,7 +4930,7 @@ static void coroutineEntryDestroyStub(Nucleus::CoroutineHandle handle)
 {
 }
 
-std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name, const Config::Edit &cfgEdit /* = Config::Edit::None */)
+std::shared_ptr<Routine> Nucleus::acquireCoroutine(const char *name)
 {
 	if(::coroGen)
 	{

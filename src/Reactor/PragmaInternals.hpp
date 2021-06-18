@@ -21,6 +21,8 @@ namespace rr {
 
 bool getPragmaState(PragmaBooleanOption option);
 
+PragmaOptimizationLevel getPragmaOptimizationLevel();
+
 }  // namespace rr
 
 #endif  // rr_Pragma_hpp

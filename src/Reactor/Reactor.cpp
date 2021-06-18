@@ -42,10 +42,9 @@ Config Config::Edit::apply(const Config &cfg) const
 {
 	if(this == &None) { return cfg; }
 
-	auto level = optLevelChanged ? optLevel : cfg.optimization.getLevel();
 	auto passes = cfg.optimization.getPasses();
 	apply(optPassEdits, passes);
-	return Config{ Optimization{ level, passes } };
+	return Config{ Optimization{ passes } };
 }
 
 template<typename T>
