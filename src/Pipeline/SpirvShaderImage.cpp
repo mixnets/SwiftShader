@@ -1092,12 +1092,18 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		             << 24);
 		break;
 	case spv::ImageFormatRgba8i:
-	case spv::ImageFormatRgba8ui:
 		texelSize = 4;
 		packed[0] = (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xff))) |
 		            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xff)) << 8) |
 		            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xff)) << 16) |
 		            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xff)) << 24);
+		break;
+	case spv::ImageFormatRgba8ui:
+		texelSize = 4;
+		packed[0] = (Min(texel.UInt(0), SIMD::UInt(0xff))) |
+		            (Min(texel.UInt(1), SIMD::UInt(0xff)) << 8) |
+		            (Min(texel.UInt(2), SIMD::UInt(0xff)) << 16) |
+		            (Min(texel.UInt(3), SIMD::UInt(0xff)) << 24);
 		break;
 	case spv::ImageFormatRgba16f:
 		texelSize = 8;
@@ -1105,10 +1111,14 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		packed[1] = floatToHalfBits(texel.UInt(2), false) | floatToHalfBits(texel.UInt(3), true);
 		break;
 	case spv::ImageFormatRgba16i:
-	case spv::ImageFormatRgba16ui:
 		texelSize = 8;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
 		packed[1] = SIMD::UInt(texel.UInt(2) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0xFFFF)) << 16);
+		break;
+	case spv::ImageFormatRgba16ui:
+		texelSize = 8;
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0xFFFF)) | (Min(texel.UInt(1), SIMD::UInt(0xFFFF)) << 16);
+		packed[1] = Min(texel.UInt(2), SIMD::UInt(0xFFFF)) | (Min(texel.UInt(3), SIMD::UInt(0xFFFF)) << 16);
 		break;
 	case spv::ImageFormatRg32f:
 	case spv::ImageFormatRg32i:
@@ -1122,9 +1132,12 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		packed[0] = floatToHalfBits(texel.UInt(0), false) | floatToHalfBits(texel.UInt(1), true);
 		break;
 	case spv::ImageFormatRg16i:
-	case spv::ImageFormatRg16ui:
 		texelSize = 4;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFFFF)) << 16);
+		break;
+	case spv::ImageFormatRg16ui:
+		texelSize = 4;
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0xFFFF)) | (Min(texel.UInt(1), SIMD::UInt(0xFFFF)) << 16);
 		break;
 	case spv::ImageFormatR11fG11fB10f:
 		texelSize = 4;
@@ -1195,26 +1208,35 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		packed[0] = SIMD::Int(Round(Min(Max(texel.Float(0), SIMD::Float(-1.0f)), SIMD::Float(1.0f)) * SIMD::Float(0x7F)));
 		break;
 	case spv::ImageFormatRg8i:
-	case spv::ImageFormatRg8ui:
 		texelSize = 2;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF)) | (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0xFF)) << 8);
 		break;
+	case spv::ImageFormatRg8ui:
+		texelSize = 2;
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0xFF)) | (Min(texel.UInt(1), SIMD::UInt(0xFF)) << 8);
+		break;
 	case spv::ImageFormatR16i:
-	case spv::ImageFormatR16ui:
 		texelSize = 2;
 		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFFFF));
 		break;
+	case spv::ImageFormatR16ui:
+		texelSize = 2;
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0xFFFF));
+		break;
 	case spv::ImageFormatR8i:
+		texelSize = 1;
+		packed[0] = SIMD::UInt(texel.UInt(0)) & SIMD::UInt(0xFF);
+		break;
 	case spv::ImageFormatR8ui:
 		texelSize = 1;
-		packed[0] = SIMD::UInt(texel.UInt(0) & SIMD::UInt(0xFF));
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0xFF));
 		break;
 	case spv::ImageFormatRgb10a2ui:
 		texelSize = 4;
-		packed[0] = (SIMD::UInt(texel.UInt(0) & SIMD::UInt(0x3FF))) |
-		            (SIMD::UInt(texel.UInt(1) & SIMD::UInt(0x3FF)) << 10) |
-		            (SIMD::UInt(texel.UInt(2) & SIMD::UInt(0x3FF)) << 20) |
-		            (SIMD::UInt(texel.UInt(3) & SIMD::UInt(0x3)) << 30);
+		packed[0] = Min(texel.UInt(0), SIMD::UInt(0x3FF)) |
+		            (Min(texel.UInt(1), SIMD::UInt(0x3FF)) << 10) |
+		            (Min(texel.UInt(2), SIMD::UInt(0x3FF)) << 20) |
+		            (Min(texel.UInt(3), SIMD::UInt(0x3)) << 30);
 		break;
 	default:
 		UNSUPPORTED("spv::ImageFormat %d", int(format));
