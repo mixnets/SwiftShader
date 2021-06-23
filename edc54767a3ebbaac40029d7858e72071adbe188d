@@ -22,6 +22,30 @@
       },
       "revId": "edc54767a3ebbaac40029d7858e72071adbe188d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1395ab62_00fd5dc3",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 502,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-23T18:39:55Z",
+      "side": 1,
+      "message": "Thanks for noticing that. I didn\u0027t mean to touch this at all, but apparently we have a clang-format mismatch. I\u0027m not sure who\u0027s is out of date, but I\u0027ll revert this bit either way.",
+      "parentUuid": "d98f2ec9_d104d1f0",
+      "range": {
+        "startLine": 497,
+        "startChar": 0,
+        "endLine": 502,
+        "endChar": 0
+      },
+      "revId": "edc54767a3ebbaac40029d7858e72071adbe188d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
