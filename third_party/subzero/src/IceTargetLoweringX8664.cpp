@@ -110,27 +110,6 @@ const size_t TargetX8664Traits::TableTypeX8664AttributesSize =
 const uint32_t TargetX8664Traits::X86_STACK_ALIGNMENT_BYTES = 16;
 const char *TargetX8664Traits::TargetName = "X8664";
 
-template <>
-std::array<SmallBitVector, RCX86_NUM>
-    TargetX86Base<X8664::Traits>::TypeToRegisterSet = {{}};
-
-template <>
-std::array<SmallBitVector, RCX86_NUM>
-    TargetX86Base<X8664::Traits>::TypeToRegisterSetUnfiltered = {{}};
-
-template <>
-std::array<SmallBitVector,
-           TargetX86Base<X8664::Traits>::Traits::RegisterSet::Reg_NUM>
-    TargetX86Base<X8664::Traits>::RegisterAliases = {{}};
-
-template <>
-FixupKind TargetX86Base<X8664::Traits>::PcRelFixup =
-    TargetX86Base<X8664::Traits>::Traits::FK_PcRel;
-
-template <>
-FixupKind TargetX86Base<X8664::Traits>::AbsFixup =
-    TargetX86Base<X8664::Traits>::Traits::FK_Abs;
-
 //------------------------------------------------------------------------------
 //     __      ______  __     __  ______  ______  __  __   __  ______
 //    /\ \    /\  __ \/\ \  _ \ \/\  ___\/\  == \/\ \/\ "-.\ \/\  ___\

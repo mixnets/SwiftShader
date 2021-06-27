@@ -123,27 +123,6 @@ const uint32_t TargetX8632Traits::X86_STACK_ALIGNMENT_BYTES = 16;
 #endif
 const char *TargetX8632Traits::TargetName = "X8632";
 
-template <>
-std::array<SmallBitVector, RCX86_NUM>
-    TargetX86Base<X8632::Traits>::TypeToRegisterSet = {{}};
-
-template <>
-std::array<SmallBitVector, RCX86_NUM>
-    TargetX86Base<X8632::Traits>::TypeToRegisterSetUnfiltered = {{}};
-
-template <>
-std::array<SmallBitVector,
-           TargetX86Base<X8632::Traits>::Traits::RegisterSet::Reg_NUM>
-    TargetX86Base<X8632::Traits>::RegisterAliases = {{}};
-
-template <>
-FixupKind TargetX86Base<X8632::Traits>::PcRelFixup =
-    TargetX86Base<X8632::Traits>::Traits::FK_PcRel;
-
-template <>
-FixupKind TargetX86Base<X8632::Traits>::AbsFixup =
-    TargetX86Base<X8632::Traits>::Traits::FK_Abs;
-
 //------------------------------------------------------------------------------
 //     __      ______  __     __  ______  ______  __  __   __  ______
 //    /\ \    /\  __ \/\ \  _ \ \/\  ___\/\  == \/\ \/\ "-.\ \/\  ___\

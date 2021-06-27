@@ -85,6 +85,27 @@ private:
   }
 };
 
+template <>
+std::array<SmallBitVector, RCX86_NUM>
+    TargetX86Base<X8664::Traits>::TypeToRegisterSet = {{}};
+
+template <>
+std::array<SmallBitVector, RCX86_NUM>
+    TargetX86Base<X8664::Traits>::TypeToRegisterSetUnfiltered = {{}};
+
+template <>
+std::array<SmallBitVector,
+           TargetX86Base<X8664::Traits>::Traits::RegisterSet::Reg_NUM>
+    TargetX86Base<X8664::Traits>::RegisterAliases = {{}};
+
+template <>
+FixupKind TargetX86Base<X8664::Traits>::PcRelFixup =
+    TargetX86Base<X8664::Traits>::Traits::FK_PcRel;
+
+template <>
+FixupKind TargetX86Base<X8664::Traits>::AbsFixup =
+    TargetX86Base<X8664::Traits>::Traits::FK_Abs;
+
 } // end of namespace X8664
 } // end of namespace Ice
 
