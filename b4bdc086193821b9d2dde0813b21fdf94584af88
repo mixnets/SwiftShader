@@ -16,6 +16,23 @@
       "message": "It looks like these Regres failures are due to running out of memory. We limit each instantiation of deqp-vk to 4 GB. Running a single test manually causes a segfault with ulimit -S -v 3000000. With ulimit -S -v 4000000 it passes but there might be a difference in memory pressure when running tests in parallel, or it\u0027s a virtual/physical memory consumption thing.\n\nOur test system has ~7 GB per core so perhaps we can just increase it to get these tests to pass.\n\nI should look into whether it makes sense for these tests to consume so much memory through. Also we currently don\u0027t support more than 2 GiB per buffer/image due to signed 32-bit indexing limitations...",
       "revId": "b4bdc086193821b9d2dde0813b21fdf94584af88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "998c5ebe_d1583cef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-29T20:46:24Z",
+      "side": 1,
+      "message": "I\u0027ve locally increased the limit to 6 GiB, so let\u0027s see what happens...",
+      "revId": "b4bdc086193821b9d2dde0813b21fdf94584af88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
