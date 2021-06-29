@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "15f7ec89_496cb7f8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-29T04:23:26Z",
+      "side": 1,
+      "message": "Only flakes and backend specific failure.",
+      "revId": "3898267d197d10024254749f0cd807487290acbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1b4ce78_58c2a6ef",
+        "filename": "tests/regres/testlists/vk-master-UNIMPLEMENTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-06-29T04:23:26Z",
+      "side": 1,
+      "message": "b/192310780",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 60
+      },
+      "revId": "3898267d197d10024254749f0cd807487290acbb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
