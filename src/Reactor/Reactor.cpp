@@ -133,6 +133,13 @@ void Variable::materialize() const
 {
 	if(!address)
 	{
+		// Before allocating the stack space, which materializes this variable and makes it considered not uninitialized,
+		// check whether we have an initialized immediate which first has to be instantiated as rvalue.
+		if(!isUninitialized())
+		{
+			rvalue = loadValue();
+		}
+
 		address = Nucleus::allocateStackVariable(getType(), arraySize);
 		RR_DEBUG_INFO_EMIT_VAR(address);
 
@@ -264,6 +271,12 @@ static Value *createMask4(Value *lhs, Value *rhs, uint16_t select)
 	};
 
 	return Nucleus::createShuffleVector(lhs, rhs, swizzle);
+}
+
+template<>
+Value *Immediate<int>::createValue() const
+{
+	return Nucleus::createConstantInt(value);
 }
 
 Bool::Bool(Argument<Bool> argument)
@@ -2329,12 +2342,19 @@ Int::Int(RValue<Float> cast)
 
 Int::Int(int x)
 {
-	storeValue(Nucleus::createConstantInt(x));
+	imm = x;
 }
 
 Int::Int(RValue<Int> rhs)
 {
-	store(rhs);
+	if(rhs.isImmediate())
+	{
+		imm = rhs.immediate();
+	}
+	else
+	{
+		store(rhs);
+	}
 }
 
 Int::Int(RValue<UInt> rhs)
@@ -2344,7 +2364,14 @@ Int::Int(RValue<UInt> rhs)
 
 Int::Int(const Int &rhs)
 {
-	store(rhs.load());
+	if(rhs.isImmediate())
+	{
+		imm = rhs.imm;
+	}
+	else
+	{
+		store(rhs.load());
+	}
 }
 
 Int::Int(const Reference<Int> &rhs)
@@ -2401,6 +2428,11 @@ RValue<Int> Int::operator=(const Reference<UInt> &rhs)
 
 RValue<Int> operator+(RValue<Int> lhs, RValue<Int> rhs)
 {
+	if(lhs.isImmediate() && rhs.isImmediate())
+	{
+		return lhs.immediate() + rhs.immediate();
+	}
+
 	return RValue<Int>(Nucleus::createAdd(lhs.value(), rhs.value()));
 }
 
@@ -2411,6 +2443,11 @@ RValue<Int> operator-(RValue<Int> lhs, RValue<Int> rhs)
 
 RValue<Int> operator*(RValue<Int> lhs, RValue<Int> rhs)
 {
+	if(lhs.isImmediate() && rhs.isImmediate())
+	{
+		return lhs.immediate() * rhs.immediate();
+	}
+
 	return RValue<Int>(Nucleus::createMul(lhs.value(), rhs.value()));
 }
 
