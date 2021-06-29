@@ -3718,23 +3718,46 @@ private:
 	bool loopOnce = true;
 };
 
+enum
+{
+	IF_BLOCK__,
+	ELSE_CLAUSE__,
+	ELSE_BLOCK__,
+	IFELSE_END__,
+};
+
 class IfElseData
 {
 public:
 	IfElseData(RValue<Bool> cmp)
 	{
-		trueBB = Nucleus::createBasicBlock();
-		falseBB = Nucleus::createBasicBlock();
-		endBB = falseBB;  // Until we encounter an Else statement, these are the same.
+		if(cmp.isImmediate())
+		{
+			if(cmp.immediate() == false)
+			{
+				iteration = ELSE_BLOCK__;
+			}
+		}
+		else
+		{
+			condition = cmp.value();
 
-		Nucleus::createCondBr(cmp.value(), trueBB, falseBB);
-		Nucleus::setInsertBlock(trueBB);
+			trueBB = Nucleus::createBasicBlock();
+			falseBB = Nucleus::createBasicBlock();
+			endBB = falseBB;  // Until we encounter an Else statement, these are the same.
+
+			Nucleus::createCondBr(cmp.value(), trueBB, falseBB);
+			Nucleus::setInsertBlock(trueBB);
+		}
 	}
 
 	~IfElseData()
 	{
-		Nucleus::createBr(endBB);
-		Nucleus::setInsertBlock(endBB);
+		if(condition)  // Not folded
+		{
+			Nucleus::createBr(endBB);
+			Nucleus::setInsertBlock(endBB);
+		}
 	}
 
 	operator int()
@@ -3744,20 +3767,31 @@ public:
 
 	IfElseData &operator++()
 	{
-		++iteration;
+		if(condition)  // Not folded
+		{
+			++iteration;
+		}
+		else
+		{
+			iteration = IFELSE_END__;
+		}
 
 		return *this;
 	}
 
 	void elseClause()
 	{
-		endBB = Nucleus::createBasicBlock();
-		Nucleus::createBr(endBB);
+		if(condition)  // Not folded
+		{
+			endBB = Nucleus::createBasicBlock();
+			Nucleus::createBr(endBB);
 
-		Nucleus::setInsertBlock(falseBB);
+			Nucleus::setInsertBlock(falseBB);
+		}
 	}
 
 private:
+	Value *condition = nullptr;
 	BasicBlock *trueBB = nullptr;
 	BasicBlock *falseBB = nullptr;
 	BasicBlock *endBB = nullptr;
@@ -3785,16 +3819,8 @@ private:
 	{                                                     \
 	} while(false)  // Require a semi-colon at the end of the Until()
 
-enum
-{
-	IF_BLOCK__,
-	ELSE_CLAUSE__,
-	ELSE_BLOCK__,
-	IFELSE_NUM__
-};
-
-#define If(cond)                                                          \
-	for(IfElseData ifElse__{ cond }; ifElse__ < IFELSE_NUM__; ++ifElse__) \
+#define If(cond)                                                        \
+	for(IfElseData ifElse__(cond); ifElse__ < IFELSE_END__; ++ifElse__) \
 		if(ifElse__ == IF_BLOCK__)
 
 #define Else                           \
