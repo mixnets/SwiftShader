@@ -275,6 +275,14 @@ struct TypedVariable<Int> : public FoldableVariable<Int, int>
 	{}
 };
 
+template<>
+struct TypedVariable<Bool> : public FoldableVariable<Bool, bool>
+{
+	TypedVariable(int arraySize = 0)
+	    : FoldableVariable<Bool, bool>(arraySize)
+	{}
+};
+
 template<typename T>
 class LValue : public TypedVariable<T>
 {
@@ -450,6 +458,17 @@ public:
 	RValue(int i) : FoldableRValue(i) {}
 	RValue(const Reference<Int> &rhs) : FoldableRValue(rhs) {}
 };
+
+template<>
+class RValue<Bool> : public FoldableRValue<Bool, bool>
+{
+public:
+	explicit RValue(Value *rvalue) : FoldableRValue(rvalue) {}
+	RValue(const RValue<Bool> &rvalue) : FoldableRValue(rvalue) {}
+	RValue(const Bool &lvalue) : FoldableRValue(lvalue) {}
+	RValue(bool b) : FoldableRValue(b) {}
+	RValue(const Reference<Bool> &rhs) : FoldableRValue(rhs) {}
+};
 // clang-format on
 
 template<typename T>
@@ -476,7 +495,7 @@ public:
 	Bool(const Bool &rhs);
 	Bool(const Reference<Bool> &rhs);
 
-	//	RValue<Bool> operator=(bool rhs);   // FIXME: Implement
+	//	RValue<Bool> operator=(bool rhs);   // TODO: Implement
 	RValue<Bool> operator=(RValue<Bool> rhs);
 	RValue<Bool> operator=(const Bool &rhs);
 	RValue<Bool> operator=(const Reference<Bool> &rhs);
