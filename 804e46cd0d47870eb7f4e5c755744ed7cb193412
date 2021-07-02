@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d63172fb_f6ce1a38",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-02T19:09:39Z",
+      "side": 1,
+      "message": "Thanks for the contribution, James! I\u0027ve added \"Bug: b/192284721\" to the commit message to fix the Kokoro failure.\n\n@sugoi can you do 2nd Googler review?",
+      "revId": "804e46cd0d47870eb7f4e5c755744ed7cb193412",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
