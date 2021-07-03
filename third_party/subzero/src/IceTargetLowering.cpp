@@ -330,20 +330,14 @@ TargetLowering::TargetLowering(Cfg *Func)
 
 TargetLowering::AutoBundle::AutoBundle(TargetLowering *Target,
                                        InstBundleLock::Option Option)
-    : Target(Target), NeedSandboxing(getFlags().getUseSandboxing()) {
+    : Target(Target) {
   assert(!Target->AutoBundling);
   Target->AutoBundling = true;
-  if (NeedSandboxing) {
-    Target->_bundle_lock(Option);
-  }
 }
 
 TargetLowering::AutoBundle::~AutoBundle() {
   assert(Target->AutoBundling);
   Target->AutoBundling = false;
-  if (NeedSandboxing) {
-    Target->_bundle_unlock();
-  }
 }
 
 void TargetLowering::genTargetHelperCalls() {

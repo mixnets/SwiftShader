@@ -304,8 +304,7 @@ const char *getRegClassName(RegClass C) {
 } // end of anonymous namespace
 
 TargetARM32::TargetARM32(Cfg *Func)
-    : TargetLowering(Func), NeedSandboxing(SandboxingType == ST_NaCl),
-      CPUFeatures(getFlags()) {}
+    : TargetLowering(Func), CPUFeatures(getFlags()) {}
 
 void TargetARM32::staticInit(GlobalContext *Ctx) {
   RegNumT::setLimit(RegARM32::Reg_NUM);
