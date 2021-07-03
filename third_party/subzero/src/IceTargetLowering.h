@@ -94,7 +94,7 @@ public:
   InstList::iterator getNext() const { return Next; }
   InstList::iterator getEnd() const { return End; }
   void insert(Inst *Instr);
-  template <typename Inst, typename... Args> Inst *insert(Args &&... A) {
+  template <typename Inst, typename... Args> Inst *insert(Args &&...A) {
     auto *New = Inst::create(Node->getCfg(), std::forward<Args>(A)...);
     insert(New);
     return New;
@@ -380,7 +380,6 @@ protected:
 
   private:
     TargetLowering *const Target;
-    const bool NeedSandboxing;
   };
 
   explicit TargetLowering(Cfg *Func);
@@ -501,7 +500,7 @@ protected:
   template <typename... Operands,
             typename F = std::function<Inst *(Variable *, Operands *...)>>
   void scalarizeInstruction(Variable *Dest, F insertScalarInstruction,
-                            Operands *... Srcs) {
+                            Operands *...Srcs) {
     assert(GeneratingTargetHelpers &&
            "scalarizeInstruction called during incorrect phase");
     const Type DestTy = Dest->getType();

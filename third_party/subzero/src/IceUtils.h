@@ -153,8 +153,7 @@ inline void reserveAndResize(Container &V, uint32_t Size,
 /// An RAII class to ensure that a boolean flag is restored to its previous
 /// value upon function exit.
 ///
-/// Used in places like RandomizationPoolingPause and generating target helper
-/// calls.
+/// Used in places like generating target helper calls.
 class BoolFlagSaver {
   BoolFlagSaver() = delete;
   BoolFlagSaver(const BoolFlagSaver &) = delete;
