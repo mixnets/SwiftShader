@@ -109,7 +109,7 @@ constexpr char GlobalOffsetTable[] = "_GLOBAL_OFFSET_TABLE_";
 namespace Internal {
 struct MakeUniqueEnabler {
   template <class T, class... Args>
-  static std::unique_ptr<T> create(Args &&... TheArgs) {
+  static std::unique_ptr<T> create(Args &&...TheArgs) {
     std::unique_ptr<T> Unique(new T(std::forward<Args>(TheArgs)...));
     return Unique;
   }
@@ -117,7 +117,7 @@ struct MakeUniqueEnabler {
 } // end of namespace Internal
 
 template <class T, class... Args>
-static std::unique_ptr<T> makeUnique(Args &&... TheArgs) {
+static std::unique_ptr<T> makeUnique(Args &&...TheArgs) {
   return ::Ice::Internal::MakeUniqueEnabler::create<T>(
       std::forward<Args>(TheArgs)...);
 }
@@ -372,7 +372,7 @@ enum FileType {
 };
 
 enum ABI {
-  ABI_PNaCl,   /// x32 for unsandboxed 64-bit x86
+  ABI_PNaCl,   /// x32 for unsandboxed 64-bit x86///
   ABI_Platform /// Native executable ABI
 };
 
