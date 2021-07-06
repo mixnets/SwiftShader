@@ -294,15 +294,6 @@ public:
   void mov(Type Ty, const Address &dst, GPRRegister src);
   void mov(Type Ty, const Address &dst, const Immediate &imm);
 
-  template <typename T = Traits>
-  typename std::enable_if<T::Is64Bit, void>::type movabs(const GPRRegister Dst,
-                                                         uint64_t Imm64);
-  template <typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, void>::type movabs(const GPRRegister,
-                                                          uint64_t) {
-    llvm::report_fatal_error("movabs is only supported in 64-bit x86 targets.");
-  }
-
   void movzx(Type Ty, GPRRegister dst, GPRRegister src);
   void movzx(Type Ty, GPRRegister dst, const Address &src);
   void movsx(Type Ty, GPRRegister dst, GPRRegister src);
@@ -565,12 +556,6 @@ public:
   void cbw();
   void cwd();
   void cdq();
-  template <typename T = Traits>
-  typename std::enable_if<T::Is64Bit, void>::type cqo();
-  template <typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, void>::type cqo() {
-    llvm::report_fatal_error("CQO is only available in 64-bit x86 backends.");
-  }
 
   void div(Type Ty, GPRRegister reg);
   void div(Type Ty, const Address &address);
@@ -592,13 +577,9 @@ public:
   void mul(Type Ty, GPRRegister reg);
   void mul(Type Ty, const Address &address);
 
-  template <class T = Traits,
-            typename = typename std::enable_if<!T::Is64Bit>::type>
   void incl(GPRRegister reg);
   void incl(const Address &address);
 
-  template <class T = Traits,
-            typename = typename std::enable_if<!T::Is64Bit>::type>
   void decl(GPRRegister reg);
   void decl(const Address &address);
 
@@ -737,107 +718,10 @@ private:
   template <uint32_t Tag>
   void arith_int(Type Ty, const Address &address, const Immediate &imm);
 
-  // gprEncoding returns Reg encoding for operand emission. For x86-64 we mask
-  // out the 4th bit as it is encoded in the REX.[RXB] bits. No other bits are
-  // touched because we don't want to mask errors.
+  // gprEncoding returns Reg encoding for operand emission.
   template <typename RegType, typename T = Traits>
-  typename std::enable_if<T::Is64Bit, typename T::GPRRegister>::type
-  gprEncoding(const RegType Reg) {
-    return static_cast<GPRRegister>(static_cast<uint8_t>(Reg) & ~0x08);
-  }
-
-  template <typename RegType, typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, typename T::GPRRegister>::type
-  gprEncoding(const RegType Reg) {
+  typename T::GPRRegister gprEncoding(const RegType Reg) {
     return static_cast<typename T::GPRRegister>(Reg);
-  }
-
-  template <typename RegType>
-  bool is8BitRegisterRequiringRex(const Type Ty, const RegType Reg) {
-    static constexpr bool IsGPR =
-        std::is_same<typename std::decay<RegType>::type, ByteRegister>::value ||
-        std::is_same<typename std::decay<RegType>::type, GPRRegister>::value;
-
-    // At this point in the assembler, we have encoded regs, so it is not
-    // possible to distinguish between the "new" low byte registers introduced
-    // in x86-64 and the legacy [abcd]h registers. Because x86, we may still
-    // see ah (div) in the assembler, so we allow it here.
-    //
-    // The "local" uint32_t Encoded_Reg_ah is needed because RegType is an
-    // enum that is not necessarily the same type of
-    // Traits::RegisterSet::Encoded_Reg_ah.
-    constexpr uint32_t Encoded_Reg_ah = Traits::RegisterSet::Encoded_Reg_ah;
-    return IsGPR && (Reg & 0x04) != 0 && (Reg & 0x08) == 0 &&
-           isByteSizedType(Ty) && (Reg != Encoded_Reg_ah);
-  }
-
-  // assembleAndEmitRex is used for determining which (if any) rex prefix
-  // should be emitted for the current instruction. It allows different types
-  // for Reg and Rm because they could be of different types (e.g., in
-  // mov[sz]x instructions.) If Addr is not nullptr, then Rm is ignored, and
-  // Rex.B is determined by Addr instead. TyRm is still used to determine
-  // Addr's size.
-  template <typename RegType, typename RmType, typename T = Traits>
-  typename std::enable_if<T::Is64Bit, void>::type
-  assembleAndEmitRex(const Type TyReg, const RegType Reg, const Type TyRm,
-                     const RmType Rm,
-                     const typename T::Address *Addr = nullptr) {
-    const uint8_t W = (TyReg == IceType_i64 || TyRm == IceType_i64)
-                          ? T::Operand::RexW
-                          : T::Operand::RexNone;
-    const uint8_t R = (Reg & 0x08) ? T::Operand::RexR : T::Operand::RexNone;
-    const uint8_t X = (Addr != nullptr)
-                          ? (typename T::Operand::RexBits)Addr->rexX()
-                          : T::Operand::RexNone;
-    const uint8_t B = (Addr != nullptr)
-                          ? (typename T::Operand::RexBits)Addr->rexB()
-                      : (Rm & 0x08) ? T::Operand::RexB
-                                    : T::Operand::RexNone;
-    const uint8_t Prefix = W | R | X | B;
-    if (Prefix != T::Operand::RexNone) {
-      emitUint8(Prefix);
-    } else if (is8BitRegisterRequiringRex(TyReg, Reg) ||
-               (Addr == nullptr && is8BitRegisterRequiringRex(TyRm, Rm))) {
-      emitUint8(T::Operand::RexBase);
-    }
-  }
-
-  template <typename RegType, typename RmType, typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, void>::type
-  assembleAndEmitRex(const Type, const RegType, const Type, const RmType,
-                     const typename T::Address * = nullptr) {}
-
-  // emitRexRB is used for emitting a Rex prefix instructions with two
-  // explicit register operands in its mod-rm byte.
-  template <typename RegType, typename RmType>
-  void emitRexRB(const Type Ty, const RegType Reg, const RmType Rm) {
-    assembleAndEmitRex(Ty, Reg, Ty, Rm);
-  }
-
-  template <typename RegType, typename RmType>
-  void emitRexRB(const Type TyReg, const RegType Reg, const Type TyRm,
-                 const RmType Rm) {
-    assembleAndEmitRex(TyReg, Reg, TyRm, Rm);
-  }
-
-  // emitRexB is used for emitting a Rex prefix if one is needed on encoding
-  // the Reg field in an x86 instruction. It is invoked by the template when
-  // Reg is the single register operand in the instruction (e.g., push Reg.)
-  template <typename RmType> void emitRexB(const Type Ty, const RmType Rm) {
-    emitRexRB(Ty, RexRegIrrelevant, Ty, Rm);
-  }
-
-  // emitRex is used for emitting a Rex prefix for an address and a GPR. The
-  // address may contain zero, one, or two registers.
-  template <typename RegType>
-  void emitRex(const Type Ty, const Address &Addr, const RegType Reg) {
-    assembleAndEmitRex(Ty, Reg, Ty, RexRegIrrelevant, &Addr);
-  }
-
-  template <typename RegType>
-  void emitRex(const Type AddrTy, const Address &Addr, const Type TyReg,
-               const RegType Reg) {
-    assembleAndEmitRex(TyReg, Reg, AddrTy, RexRegIrrelevant, &Addr);
   }
 };
 

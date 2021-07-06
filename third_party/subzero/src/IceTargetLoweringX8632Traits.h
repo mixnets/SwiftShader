@@ -48,7 +48,6 @@ struct TargetX8632Traits {
   //      \/_/\/_/\/_____/\/_/  \/_/
   //
   //----------------------------------------------------------------------------
-  static constexpr bool Is64Bit = false;
   static constexpr bool HasPopa = true;
   static constexpr bool HasPusha = true;
   static constexpr ::Ice::RegX8632::GPRRegister Last8BitGPR =

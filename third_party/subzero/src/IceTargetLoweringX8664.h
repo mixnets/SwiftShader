@@ -17,14 +17,12 @@
 #define SUBZERO_SRC_ICETARGETLOWERINGX8664_H
 
 #include "IceAssemblerX8664.h"
-#include "IceCfg.h"
 #include "IceDefs.h"
 #include "IceGlobalContext.h"
 #include "IceInst.h"
 #include "IceInstX8664.h"
 #include "IceSwitchLowering.h"
 #include "IceTargetLowering.h"
-#include "IceTargetLoweringX8664.h"
 #include "IceTargetLoweringX8664Traits.h"
 #include "IceTargetLoweringX86RegClass.h"
 #include "IceUtils.h"
@@ -142,7 +140,7 @@ public:
 
   static void staticInit(GlobalContext *Ctx);
   static bool shouldBePooled(const Constant *C);
-  static ::Ice::Type getPointerType();
+  static Type getPointerType();
 
   static FixupKind getPcRelFixup() { return PcRelFixup; }
   static FixupKind getAbsFixup() { return AbsFixup; }
@@ -250,9 +248,7 @@ public:
     MaxOutArgsSizeBytes = std::max(MaxOutArgsSizeBytes, Size);
   }
 
-  bool shouldSplitToVariable64On32(Type Ty) const override {
-    return Traits::Is64Bit ? false : Ty == IceType_i64;
-  }
+  bool shouldSplitToVariable64On32(Type Ty) const override { return false; }
 
   SizeT getMinJumpTableSize() const override { return 4; }
 
@@ -266,24 +262,6 @@ public:
   void emit(const ConstantRelocatable *C) const final;
 
   void initNodeForLowering(CfgNode *Node) override;
-
-  template <typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, Operand>::type *
-  loOperand(Operand *Operand);
-  template <typename T = Traits>
-  typename std::enable_if<T::Is64Bit, Operand>::type *loOperand(Operand *) {
-    llvm::report_fatal_error(
-        "Hey, yo! This is x86-64. Watcha doin'? (loOperand)");
-  }
-
-  template <typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, Operand>::type *
-  hiOperand(Operand *Operand);
-  template <typename T = Traits>
-  typename std::enable_if<T::Is64Bit, Operand>::type *hiOperand(Operand *) {
-    llvm::report_fatal_error(
-        "Hey, yo! This is x86-64. Watcha doin'? (hiOperand)");
-  }
 
   void addProlog(CfgNode *Node) override;
   void finishArgumentLowering(Variable *Arg, Variable *FramePtr,
@@ -957,19 +935,6 @@ private:
 
   /// Optimizations for idiom recognition.
   bool lowerOptimizeFcmpSelect(const InstFcmp *Fcmp, const InstSelect *Select);
-
-  /// Complains loudly if invoked because the cpu can handle 64-bit types
-  /// natively.
-  template <typename T = Traits>
-  typename std::enable_if<T::Is64Bit, void>::type lowerIcmp64(const InstIcmp *,
-                                                              const Inst *) {
-    llvm::report_fatal_error(
-        "Hey, yo! This is x86-64. Watcha doin'? (lowerIcmp64)");
-  }
-  /// x86lowerIcmp64 handles 64-bit icmp lowering.
-  template <typename T = Traits>
-  typename std::enable_if<!T::Is64Bit, void>::type
-  lowerIcmp64(const InstIcmp *Icmp, const Inst *Consumer);
 
   BoolFolding FoldingInfo;
 

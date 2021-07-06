@@ -50,7 +50,6 @@ struct TargetX8664Traits {
   //
   //----------------------------------------------------------------------------
 
-  static constexpr bool Is64Bit = true;
   static constexpr bool HasPopa = false;
   static constexpr bool HasPusha = false;
   static constexpr ::Ice::RegX8664::GPRRegister Last8BitGPR =

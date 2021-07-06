@@ -460,15 +460,15 @@ void InstImpl::InstX86Jmp::emit(const Cfg *Func) const {
   Ostream &Str = Func->getContext()->getStrEmit();
   assert(this->getSrcSize() == 1);
   const Operand *Src = this->getSrc(0);
-  if (Traits::Is64Bit) {
-    if (const auto *CR = llvm::dyn_cast<ConstantRelocatable>(Src)) {
-      Str << "\t"
-             "jmp"
-             "\t"
-          << CR->getName();
-      return;
-    }
+
+  if (const auto *CR = llvm::dyn_cast<ConstantRelocatable>(Src)) {
+    Str << "\t"
+           "jmp"
+           "\t"
+        << CR->getName();
+    return;
   }
+
   Str << "\t"
          "jmp"
          "\t*";
@@ -638,7 +638,6 @@ void InstImpl::emitIASRegOpTyGPR(const Cfg *Func, bool IsLea, Type Ty,
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger32>(Src)) {
     (Asm->*(Emitter.GPRImm))(Ty, VarReg, AssemblerImmediate(Imm->getValue()));
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger64>(Src)) {
-    assert(Traits::Is64Bit);
     assert(Utils::IsInt(32, Imm->getValue()));
     (Asm->*(Emitter.GPRImm))(Ty, VarReg, AssemblerImmediate(Imm->getValue()));
   } else if (const auto *Reloc = llvm::dyn_cast<ConstantRelocatable>(Src)) {
@@ -667,7 +666,6 @@ void InstImpl::emitIASAddrOpTyGPR(const Cfg *Func, Type Ty, const Address &Addr,
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger32>(Src)) {
     (Asm->*(Emitter.AddrImm))(Ty, Addr, AssemblerImmediate(Imm->getValue()));
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger64>(Src)) {
-    assert(Traits::Is64Bit);
     assert(Utils::IsInt(32, Imm->getValue()));
     (Asm->*(Emitter.AddrImm))(Ty, Addr, AssemblerImmediate(Imm->getValue()));
   } else if (const auto *Reloc = llvm::dyn_cast<ConstantRelocatable>(Src)) {
@@ -719,7 +717,6 @@ void InstImpl::emitIASGPRShift(const Cfg *Func, Type Ty, const Variable *Var,
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger32>(Src)) {
     (Asm->*(Emitter.GPRImm))(Ty, VarReg, AssemblerImmediate(Imm->getValue()));
   } else if (const auto *Imm = llvm::dyn_cast<ConstantInteger64>(Src)) {
-    assert(Traits::Is64Bit);
     assert(Utils::IsInt(32, Imm->getValue()));
     (Asm->*(Emitter.GPRImm))(Ty, VarReg, AssemblerImmediate(Imm->getValue()));
   } else {
@@ -932,11 +929,7 @@ void InstImpl::InstX86Movmsk::emitIAS(const Cfg *Func) const {
   const Type SrcTy = Src->getType();
   assert(isVectorType(SrcTy));
   assert(isScalarIntegerType(DestTy));
-  if (Traits::Is64Bit) {
-    assert(DestTy == IceType_i32 || DestTy == IceType_i64);
-  } else {
-    assert(typeWidthInBytes(DestTy) <= 4);
-  }
+  assert(DestTy == IceType_i32 || DestTy == IceType_i64);
   XmmRegister SrcReg = Traits::getEncodedXmm(Src->getRegNum());
   GPRRegister DestReg = Traits::getEncodedGPR(Dest->getRegNum());
   Asm->movmsk(SrcTy, DestReg, SrcReg);
@@ -1170,7 +1163,6 @@ void InstImpl::InstX86Cbwdq::emit(const Cfg *Func) const {
            "cltd";
     break;
   case IceType_i64:
-    assert(Traits::Is64Bit);
     assert(SrcReg == Traits::getRaxOrDie());
     assert(DestReg == Traits::getRdxOrDie());
     Str << "\t"
@@ -1207,7 +1199,6 @@ void InstImpl::InstX86Cbwdq::emitIAS(const Cfg *Func) const {
     Asm->cdq();
     break;
   case IceType_i64:
-    assert(Traits::Is64Bit);
     assert(SrcReg == Traits::getRaxOrDie());
     assert(DestReg == Traits::getRdxOrDie());
     Asm->cqo();
@@ -1348,7 +1339,6 @@ void InstImpl::InstX86Cmov::emitIAS(const Cfg *Func) const {
   assert(this->getSrcSize() == 2);
   Operand *Src = this->getSrc(1);
   Type SrcTy = Src->getType();
-  assert(SrcTy == IceType_i16 || SrcTy == IceType_i32 || (Traits::Is64Bit));
   Assembler *Asm = Func->getAssembler<Assembler>();
   auto *Target = InstX86Base::getTarget(Func);
   if (const auto *SrcVar = llvm::dyn_cast<Variable>(Src)) {
@@ -1533,11 +1523,7 @@ void InstImpl::InstX86Cvt::emitIAS(const Cfg *Func) const {
   switch (Variant) {
   case Si2ss: {
     assert(isScalarIntegerType(SrcTy));
-    if (!Traits::Is64Bit) {
-      assert(typeWidthInBytes(SrcTy) <= 4);
-    } else {
-      assert(SrcTy == IceType_i32 || SrcTy == IceType_i64);
-    }
+    assert(SrcTy == IceType_i32 || SrcTy == IceType_i64);
     assert(isScalarFloatingType(DestTy));
     static const CastEmitterRegOp<XmmRegister, GPRRegister> Emitter = {
         &Assembler::cvtsi2ss, &Assembler::cvtsi2ss};
@@ -1549,11 +1535,7 @@ void InstImpl::InstX86Cvt::emitIAS(const Cfg *Func) const {
   case Tss2si: {
     assert(isScalarFloatingType(SrcTy));
     assert(isScalarIntegerType(DestTy));
-    if (Traits::Is64Bit) {
-      assert(DestTy == IceType_i32 || DestTy == IceType_i64);
-    } else {
-      assert(typeWidthInBytes(DestTy) <= 4);
-    }
+    assert(DestTy == IceType_i32 || DestTy == IceType_i64);
     static const CastEmitterRegOp<GPRRegister, XmmRegister> Emitter = {
         &Assembler::cvttss2si, &Assembler::cvttss2si};
     emitIASCastRegOp<GPRRegister, XmmRegister, Traits::getEncodedGPR,
@@ -1564,11 +1546,7 @@ void InstImpl::InstX86Cvt::emitIAS(const Cfg *Func) const {
   case Ss2si: {
     assert(isScalarFloatingType(SrcTy));
     assert(isScalarIntegerType(DestTy));
-    if (Traits::Is64Bit) {
-      assert(DestTy == IceType_i32 || DestTy == IceType_i64);
-    } else {
-      assert(typeWidthInBytes(DestTy) <= 4);
-    }
+    assert(DestTy == IceType_i32 || DestTy == IceType_i64);
     static const CastEmitterRegOp<GPRRegister, XmmRegister> Emitter = {
         &Assembler::cvtss2si, &Assembler::cvtss2si};
     emitIASCastRegOp<GPRRegister, XmmRegister, Traits::getEncodedGPR,
@@ -2028,8 +2006,7 @@ void InstImpl::InstX86Mov::emit(const Cfg *Func) const {
   Operand *Src = this->getSrc(0);
   Type SrcTy = Src->getType();
   Type DestTy = this->getDest()->getType();
-  if (Traits::Is64Bit && DestTy == IceType_i64 &&
-      llvm::isa<ConstantInteger64>(Src) &&
+  if (DestTy == IceType_i64 && llvm::isa<ConstantInteger64>(Src) &&
       !Utils::IsInt(32, llvm::cast<ConstantInteger64>(Src)->getValue())) {
     Str << "\t"
            "movabs"
@@ -2096,7 +2073,7 @@ void InstImpl::InstX86Mov::emitIAS(const Cfg *Func) const {
       assert(isScalarIntegerType(DestTy));
       // Widen DestTy for truncation (see above note). We should only do this
       // when both Src and Dest are integer types.
-      if (Traits::Is64Bit && DestTy == IceType_i64) {
+      if (DestTy == IceType_i64) {
         if (const auto *C64 = llvm::dyn_cast<ConstantInteger64>(Src)) {
           Func->getAssembler<Assembler>()->movabs(
               Traits::getEncodedGPR(Dest->getRegNum()), C64->getValue());
@@ -2168,8 +2145,7 @@ void InstImpl::InstX86Movd::emitIAS(const Cfg *Func) const {
   // For insert/extract element (one of Src/Dest is an Xmm vector and the other
   // is an int type).
   if (const auto *SrcVar = llvm::dyn_cast<Variable>(this->getSrc(0))) {
-    if (SrcVar->getType() == IceType_i32 ||
-        (Traits::Is64Bit && SrcVar->getType() == IceType_i64)) {
+    if (SrcVar->getType() == IceType_i32 || SrcVar->getType() == IceType_i64) {
       assert(isVectorType(Dest->getType()) ||
              (isScalarFloatingType(Dest->getType()) &&
               typeWidthInBytes(SrcVar->getType()) ==
@@ -2189,8 +2165,7 @@ void InstImpl::InstX86Movd::emitIAS(const Cfg *Func) const {
               typeWidthInBytes(SrcVar->getType()) ==
                   typeWidthInBytes(Dest->getType())));
       assert(SrcVar->hasReg());
-      assert(Dest->getType() == IceType_i32 ||
-             (Traits::Is64Bit && Dest->getType() == IceType_i64));
+      assert(Dest->getType() == IceType_i32 || Dest->getType() == IceType_i64);
       XmmRegister SrcReg = Traits::getEncodedXmm(SrcVar->getRegNum());
       if (Dest->hasReg()) {
         Asm->movd(Dest->getType(), Traits::getEncodedGPR(Dest->getRegNum()),
@@ -2289,7 +2264,6 @@ void InstImpl::InstX86Movsx::emitIAS(const Cfg *Func) const {
 
 bool InstImpl::InstX86Movzx::mayBeElided(const Variable *Dest,
                                          const Operand *SrcOpnd) const {
-  assert(Traits::Is64Bit);
   const auto *Src = llvm::dyn_cast<Variable>(SrcOpnd);
 
   // Src is not a Variable, so it does not have a register. Movzx can't be
@@ -2313,31 +2287,28 @@ bool InstImpl::InstX86Movzx::mayBeElided(const Variable *Dest,
 void InstImpl::InstX86Movzx::emit(const Cfg *Func) const {
   if (!BuildDefs::dump())
     return;
-  if (Traits::Is64Bit) {
-    // There's no movzx %eXX, %rXX. To zero extend 32- to 64-bits, we emit a
-    // mov %eXX, %eXX. The processor will still do a movzx[bw]q.
-    assert(this->getSrcSize() == 1);
-    const Operand *Src = this->getSrc(0);
-    const Variable *Dest = this->Dest;
-    if (Src->getType() == IceType_i32 && Dest->getType() == IceType_i64) {
-      Ostream &Str = Func->getContext()->getStrEmit();
-      if (mayBeElided(Dest, Src)) {
-        Str << "\t/* elided movzx */";
-      } else {
-        Str << "\t"
-               "mov"
-               "\t";
-        Src->emit(Func);
-        Str << ", ";
-        Dest->asType(Func, IceType_i32,
-                     Traits::getGprForType(IceType_i32, Dest->getRegNum()))
-            ->emit(Func);
-        Str << " /* movzx */";
-      }
-      return;
+  // There's no movzx %eXX, %rXX. To zero extend 32- to 64-bits, we emit a
+  // mov %eXX, %eXX. The processor will still do a movzx[bw]q.
+  assert(this->getSrcSize() == 1);
+  const Operand *Src = this->getSrc(0);
+  const Variable *Dest = this->Dest;
+  if (Src->getType() == IceType_i32 && Dest->getType() == IceType_i64) {
+    Ostream &Str = Func->getContext()->getStrEmit();
+    if (mayBeElided(Dest, Src)) {
+      Str << "\t/* elided movzx */";
+    } else {
+      Str << "\t"
+             "mov"
+             "\t";
+      Src->emit(Func);
+      Str << ", ";
+      Dest->asType(Func, IceType_i32,
+                   Traits::getGprForType(IceType_i32, Dest->getRegNum()))
+          ->emit(Func);
+      Str << " /* movzx */";
     }
+    return;
   }
-  InstX86BaseUnaryopGPR<InstX86Base::Movzx>::emit(Func);
 }
 
 void InstImpl::InstX86Movzx::emitIAS(const Cfg *Func) const {
@@ -2347,11 +2318,9 @@ void InstImpl::InstX86Movzx::emitIAS(const Cfg *Func) const {
   Type SrcTy = Src->getType();
   assert(typeWidthInBytes(Dest->getType()) > 1);
   assert(typeWidthInBytes(Dest->getType()) > typeWidthInBytes(SrcTy));
-  if (Traits::Is64Bit) {
-    if (Src->getType() == IceType_i32 && Dest->getType() == IceType_i64 &&
-        mayBeElided(Dest, Src)) {
-      return;
-    }
+  if (Src->getType() == IceType_i32 && Dest->getType() == IceType_i64 &&
+      mayBeElided(Dest, Src)) {
+    return;
   }
   constexpr bool NotLea = false;
   emitIASRegOpTyGPR<false, true>(Func, NotLea, SrcTy, Dest, Src, this->Emitter);
