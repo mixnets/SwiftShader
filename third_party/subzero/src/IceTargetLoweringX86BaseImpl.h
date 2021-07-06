@@ -93,7 +93,7 @@ namespace X86NAMESPACE {
 // "shadow store" (aka "home space") so that the callee may copy the 4
 // register args to it.
 template <typename Traits> SizeT getShadowStoreSize() {
-#if defined(SUBZERO_USE_MICROSOFT_ABI)
+#if defined(_WIN64)
   static const SizeT ShadowStoreSize =
       Traits::Is64Bit ? 4 * typeWidthInBytes(Traits::WordType) : 0;
   return ShadowStoreSize;
