@@ -402,8 +402,7 @@ void TargetX86Base<TraitsType>::initNodeForLowering(CfgNode *Node) {
 }
 
 template <typename TraitsType>
-TargetX86Base<TraitsType>::TargetX86Base(Cfg *Func)
-    : TargetLowering(Func), NeedSandboxing(SandboxingType == ST_NaCl) {
+TargetX86Base<TraitsType>::TargetX86Base(Cfg *Func) : TargetLowering(Func) {
   static_assert(
       (Traits::InstructionSet::End - Traits::InstructionSet::Begin) ==
           (TargetInstructionSet::X86InstructionSet_End -
@@ -427,8 +426,6 @@ void TargetX86Base<TraitsType>::staticInit(GlobalContext *Ctx) {
   filterTypeToRegisterSet(Ctx, Traits::RegisterSet::Reg_NUM,
                           TypeToRegisterSet.data(), TypeToRegisterSet.size(),
                           Traits::getRegName, getRegClassName);
-  PcRelFixup = Traits::FK_PcRel;
-  AbsFixup = getFlags().getUseNonsfi() ? Traits::FK_Gotoff : Traits::FK_Abs;
 }
 
 template <typename TraitsType>
@@ -449,10 +446,6 @@ template <typename TraitsType>
 
 template <typename TraitsType> void TargetX86Base<TraitsType>::translateO2() {
   TimerMarker T(TimerStack::TT_O2, Func);
-
-  if (SandboxingType != ST_None) {
-    initRebasePtr();
-  }
 
   genTargetHelperCalls();
   Func->dump("After target helper call insertion");
@@ -534,9 +527,6 @@ template <typename TraitsType> void TargetX86Base<TraitsType>::translateO2() {
   Func->genCode();
   if (Func->hasError())
     return;
-  if (SandboxingType != ST_None) {
-    initSandbox();
-  }
   Func->dump("After x86 codegen");
   splitBlockLocalVariables(Func);
 
@@ -581,19 +571,10 @@ template <typename TraitsType> void TargetX86Base<TraitsType>::translateO2() {
   // to reduce the amount of work needed for searching for opportunities.
   Func->doBranchOpt();
   Func->dump("After branch optimization");
-
-  // Mark nodes that require sandbox alignment
-  if (NeedSandboxing) {
-    Func->markNodesForSandboxing();
-  }
 }
 
 template <typename TraitsType> void TargetX86Base<TraitsType>::translateOm1() {
   TimerMarker T(TimerStack::TT_Om1, Func);
-
-  if (SandboxingType != ST_None) {
-    initRebasePtr();
-  }
 
   genTargetHelperCalls();
 
@@ -619,9 +600,6 @@ template <typename TraitsType> void TargetX86Base<TraitsType>::translateOm1() {
   Func->genCode();
   if (Func->hasError())
     return;
-  if (SandboxingType != ST_None) {
-    initSandbox();
-  }
   Func->dump("After initial x86 codegen");
 
   regAlloc(RAK_InfOnly);
@@ -633,10 +611,6 @@ template <typename TraitsType> void TargetX86Base<TraitsType>::translateOm1() {
   if (Func->hasError())
     return;
   Func->dump("After stack frame mapping");
-
-  // Mark nodes that require sandbox alignment
-  if (NeedSandboxing)
-    Func->markNodesForSandboxing();
 }
 
 inline bool canRMW(const InstArithmetic *Arith) {
@@ -945,11 +919,7 @@ void TargetX86Base<TraitsType>::emitVariable(const Variable *Var) const {
     return;
   Ostream &Str = Ctx->getStrEmit();
   if (Var->hasReg()) {
-    const bool Is64BitSandboxing = Traits::Is64Bit && NeedSandboxing;
-    const Type VarType = (Var->isRematerializable() && Is64BitSandboxing)
-                             ? IceType_i64
-                             : Var->getType();
-    Str << "%" << getRegName(Var->getRegNum(), VarType);
+    Str << "%" << getRegName(Var->getRegNum(), Var->getType());
     return;
   }
   if (Var->mustHaveReg()) {
@@ -1224,8 +1194,6 @@ void TargetX86Base<TraitsType>::addProlog(CfgNode *Node) {
   if (!IsEbpBasedFrame)
     BasicFrameOffset += SpillAreaSizeBytes;
 
-  emitGetIP(Node);
-
   const VarList &Args = Func->getArgs();
   size_t InArgsSizeBytes = 0;
   unsigned NumXmmArgs = 0;
@@ -1407,16 +1375,6 @@ void TargetX86Base<TraitsType>::addEpilog(CfgNode *Node) {
     assert(RegNum == Traits::getBaseReg(RegNum));
     _pop_reg(RegNum);
   }
-
-  if (!NeedSandboxing) {
-    return;
-  }
-  emitSandboxedReturn();
-  if (RI->getSrcSize()) {
-    auto *RetValue = llvm::cast<Variable>(RI->getSrc(0));
-    Context.insert<InstFakeUse>(RetValue);
-  }
-  RI->setDeleted();
 }
 
 template <typename TraitsType> Type TargetX86Base<TraitsType>::stackSlotType() {
@@ -1553,8 +1511,7 @@ void TargetX86Base<TraitsType>::lowerAlloca(const InstAlloca *Instr) {
     // Non-constant sizes need to be adjusted to the next highest multiple of
     // the required alignment at runtime.
     Variable *T = nullptr;
-    if (Traits::Is64Bit && TotalSize->getType() != IceType_i64 &&
-        !NeedSandboxing) {
+    if (Traits::Is64Bit && TotalSize->getType() != IceType_i64) {
       T = makeReg(IceType_i64);
       _movzx(T, TotalSize);
     } else {
@@ -2287,7 +2244,7 @@ void TargetX86Base<TraitsType>::lowerArithmetic(const InstArithmetic *Instr) {
       auto *Var = legalizeToReg(Src0);
       auto *Mem = Traits::X86OperandMem::create(Func, IceType_void, Var, Const);
       T = makeReg(Ty);
-      _lea(T, _sandbox_mem_reference(Mem));
+      _lea(T, Mem);
       _mov(Dest, T);
       break;
     }
@@ -4413,21 +4370,6 @@ void TargetX86Base<TraitsType>::lowerIntrinsic(const InstIntrinsic *Instr) {
     lowerMemset(Instr->getArg(0), Instr->getArg(1), Instr->getArg(2));
     return;
   }
-  case Intrinsics::NaClReadTP: {
-    if (NeedSandboxing) {
-      Operand *Src =
-          dispatchToConcrete(&ConcreteTarget::createNaClReadTPSrcOperand);
-      Variable *Dest = Instr->getDest();
-      Variable *T = nullptr;
-      _mov(T, Src);
-      _mov(Dest, T);
-    } else {
-      InstCall *Call =
-          makeHelperCall(RuntimeHelper::H_call_read_tp, Instr->getDest(), 0);
-      lowerCall(Call);
-    }
-    return;
-  }
   case Intrinsics::Setjmp: {
     InstCall *Call =
         makeHelperCall(RuntimeHelper::H_call_setjmp, Instr->getDest(), 1);
@@ -4448,18 +4390,10 @@ void TargetX86Base<TraitsType>::lowerIntrinsic(const InstIntrinsic *Instr) {
     return;
   }
   case Intrinsics::Stacksave: {
-    if (!Traits::Is64Bit || !NeedSandboxing) {
-      Variable *esp = Func->getTarget()->getPhysicalRegister(getStackReg(),
-                                                             Traits::WordType);
-      Variable *Dest = Instr->getDest();
-      _mov(Dest, esp);
-      return;
-    }
-    Variable *esp = Func->getTarget()->getPhysicalRegister(
-        Traits::RegisterSet::Reg_esp, IceType_i32);
+    Variable *esp =
+        Func->getTarget()->getPhysicalRegister(getStackReg(), Traits::WordType);
     Variable *Dest = Instr->getDest();
     _mov(Dest, esp);
-
     return;
   }
   case Intrinsics::Stackrestore: {
@@ -5847,19 +5781,6 @@ TargetX86Base<TypeTraits>::computeAddressOpt(const Inst *Instr, Type MemType,
   OptAddr NewAddrCheckpoint;
   Reason = Instr;
   do {
-    if (SandboxingType != ST_None) {
-      // When sandboxing, we defer the sandboxing of NewAddr to the Concrete
-      // Target. If our optimization was overly aggressive, then we simply undo
-      // what the previous iteration did, and set the previous pattern's skip
-      // bit to true.
-      if (!legalizeOptAddrForSandbox(&NewAddr)) {
-        *SkipLastFolding = true;
-        SkipLastFolding = nullptr;
-        NewAddr = NewAddrCheckpoint;
-        Reason = nullptr;
-      }
-    }
-
     if (Reason) {
       AddrOpt.dumpAddressOpt(NewAddr.Relocatable, NewAddr.Offset, NewAddr.Base,
                              NewAddr.Index, NewAddr.Shift, Reason);
@@ -5946,17 +5867,6 @@ TargetX86Base<TypeTraits>::computeAddressOpt(const Inst *Instr, Type MemType,
 
   if (!AddressWasOptimized) {
     return nullptr;
-  }
-
-  // Undo any addition of RebasePtr.  It will be added back when the mem
-  // operand is sandboxed.
-  if (NewAddr.Base == RebasePtr) {
-    NewAddr.Base = nullptr;
-  }
-
-  if (NewAddr.Index == RebasePtr) {
-    NewAddr.Index = nullptr;
-    NewAddr.Shift = 0;
   }
 
   Constant *OffsetOp = nullptr;
@@ -7044,10 +6954,6 @@ void TargetX86Base<TraitsType>::lowerCaseCluster(const CaseCluster &Case,
     constexpr auto Segment = X86OperandMem::SegmentRegisters::DefaultSegment;
 
     Variable *Target = nullptr;
-    if (Traits::Is64Bit && NeedSandboxing) {
-      assert(Index != nullptr && Index->getType() == IceType_i32);
-    }
-
     if (PointerType == IceType_i32) {
       _mov(Target, X86OperandMem::create(Func, PointerType, NoBase, Offset,
                                          Index, Shift, Segment));
@@ -7355,28 +7261,6 @@ void TargetX86Base<TraitsType>::lowerOther(const Inst *Instr) {
 /// since loOperand() and hiOperand() don't expect Undef input.  Also, in
 /// Non-SFI mode, add a FakeUse(RebasePtr) for every pooled constant operand.
 template <typename TraitsType> void TargetX86Base<TraitsType>::prelowerPhis() {
-  if (getFlags().getUseNonsfi()) {
-    assert(RebasePtr);
-    CfgNode *Node = Context.getNode();
-    uint32_t RebasePtrUseCount = 0;
-    for (Inst &I : Node->getPhis()) {
-      auto *Phi = llvm::dyn_cast<InstPhi>(&I);
-      if (Phi->isDeleted())
-        continue;
-      for (SizeT I = 0; I < Phi->getSrcSize(); ++I) {
-        Operand *Src = Phi->getSrc(I);
-        // TODO(stichnot): This over-counts for +0.0, and under-counts for other
-        // kinds of pooling.
-        if (llvm::isa<ConstantRelocatable>(Src) ||
-            llvm::isa<ConstantFloat>(Src) || llvm::isa<ConstantDouble>(Src)) {
-          ++RebasePtrUseCount;
-        }
-      }
-    }
-    if (RebasePtrUseCount) {
-      Node->getInsts().push_front(InstFakeUse::create(Func, RebasePtr));
-    }
-  }
   if (Traits::Is64Bit) {
     // On x86-64 we don't need to prelower phis -- the architecture can handle
     // 64-bit integer natively.
@@ -7605,9 +7489,6 @@ void TargetX86Base<TraitsType>::genTargetHelperCallFor(Inst *Instr) {
     case Intrinsics::Memset:
       ArgTypes = {IceType_i32, IceType_i32, IceType_i32};
       ReturnType = IceType_void;
-      break;
-    case Intrinsics::NaClReadTP:
-      ReturnType = IceType_i32;
       break;
     case Intrinsics::Setjmp:
       ArgTypes = {IceType_i32};
@@ -7895,7 +7776,6 @@ Variable *TargetX86Base<TraitsType>::copyToReg(Operand *Src, RegNumT RegNum) {
 template <typename TraitsType>
 Operand *TargetX86Base<TraitsType>::legalize(Operand *From, LegalMask Allowed,
                                              RegNumT RegNum) {
-  const bool UseNonsfi = getFlags().getUseNonsfi();
   const Type Ty = From->getType();
   // Assert that a physical register is allowed. To date, all calls to
   // legalize() allow a physical register. If a physical register needs to be
@@ -7981,34 +7861,24 @@ Operand *TargetX86Base<TraitsType>::legalize(Operand *From, LegalMask Allowed,
       }
     }
 
-    if (auto *CR = llvm::dyn_cast<ConstantRelocatable>(Const)) {
-      // If the operand is a ConstantRelocatable, and Legal_AddrAbs is not
-      // specified, and UseNonsfi is indicated, we need to add RebasePtr.
-      if (UseNonsfi && !(Allowed & Legal_AddrAbs)) {
-        assert(Ty == IceType_i32);
-        Variable *NewVar = makeReg(Ty, RegNum);
-        auto *Mem = Traits::X86OperandMem::create(Func, Ty, nullptr, CR);
-        // LEAs are not automatically sandboxed, thus we explicitly invoke
-        // _sandbox_mem_reference.
-        _lea(NewVar, _sandbox_mem_reference(Mem));
-        From = NewVar;
-      }
-    } else if (isScalarFloatingType(Ty)) {
-      // Convert a scalar floating point constant into an explicit memory
-      // operand.
-      if (auto *ConstFloat = llvm::dyn_cast<ConstantFloat>(Const)) {
-        if (Utils::isPositiveZero(ConstFloat->getValue()))
-          return makeZeroedRegister(Ty, RegNum);
-      } else if (auto *ConstDouble = llvm::dyn_cast<ConstantDouble>(Const)) {
-        if (Utils::isPositiveZero(ConstDouble->getValue()))
-          return makeZeroedRegister(Ty, RegNum);
-      }
+    if (!llvm::dyn_cast<ConstantRelocatable>(Const)) {
+      if (isScalarFloatingType(Ty)) {
+        // Convert a scalar floating point constant into an explicit memory
+        // operand.
+        if (auto *ConstFloat = llvm::dyn_cast<ConstantFloat>(Const)) {
+          if (Utils::isPositiveZero(ConstFloat->getValue()))
+            return makeZeroedRegister(Ty, RegNum);
+        } else if (auto *ConstDouble = llvm::dyn_cast<ConstantDouble>(Const)) {
+          if (Utils::isPositiveZero(ConstDouble->getValue()))
+            return makeZeroedRegister(Ty, RegNum);
+        }
 
-      auto *CFrom = llvm::cast<Constant>(From);
-      assert(CFrom->getShouldBePooled());
-      Constant *Offset = Ctx->getConstantSym(0, CFrom->getLabelName());
-      auto *Mem = X86OperandMem::create(Func, Ty, nullptr, Offset);
-      From = Mem;
+        auto *CFrom = llvm::cast<Constant>(From);
+        assert(CFrom->getShouldBePooled());
+        Constant *Offset = Ctx->getConstantSym(0, CFrom->getLabelName());
+        auto *Mem = X86OperandMem::create(Func, Ty, nullptr, Offset);
+        From = Mem;
+      }
     }
 
     bool NeedsReg = false;
@@ -8227,8 +8097,6 @@ template <class Machine>
 void TargetX86Base<Machine>::emit(const ConstantRelocatable *C) const {
   if (!BuildDefs::dump())
     return;
-  assert(!getFlags().getUseNonsfi() ||
-         C->getName().toString() == GlobalOffsetTable);
   Ostream &Str = Ctx->getStrEmit();
   Str << "$";
   emitWithoutPrefix(C);
@@ -8240,9 +8108,7 @@ void TargetX86Base<TraitsType>::emitJumpTable(
   if (!BuildDefs::dump())
     return;
   Ostream &Str = Ctx->getStrEmit();
-  const bool UseNonsfi = getFlags().getUseNonsfi();
-  const char *Prefix = UseNonsfi ? ".data.rel.ro." : ".rodata.";
-  Str << "\t.section\t" << Prefix << JumpTable->getSectionName()
+  Str << "\t.section\t.rodata." << JumpTable->getSectionName()
       << ",\"a\",@progbits\n"
          "\t.align\t"
       << typeWidthInBytes(getPointerType()) << "\n"
@@ -8319,7 +8185,7 @@ void TargetDataX86<TraitsType>::lowerConstants() {
 
 template <typename TraitsType>
 void TargetDataX86<TraitsType>::lowerJumpTables() {
-  const bool IsPIC = getFlags().getUseNonsfi();
+  const bool IsPIC = false;
   switch (getFlags().getOutFileType()) {
   case FT_Elf: {
     ELFObjectWriter *Writer = Ctx->getObjectWriter();
@@ -8355,7 +8221,7 @@ void TargetDataX86<TraitsType>::lowerJumpTables() {
 template <typename TraitsType>
 void TargetDataX86<TraitsType>::lowerGlobals(
     const VariableDeclarationList &Vars, const std::string &SectionSuffix) {
-  const bool IsPIC = getFlags().getUseNonsfi();
+  const bool IsPIC = false;
   switch (getFlags().getOutFileType()) {
   case FT_Elf: {
     ELFObjectWriter *Writer = Ctx->getObjectWriter();
