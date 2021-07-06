@@ -33,9 +33,9 @@ namespace Ice {
 namespace X8632 {
 using namespace ::Ice::X86;
 
-template <class Machine> struct Insts;
-template <class Machine> class TargetX86Base;
-template <class Machine> class AssemblerX86Base;
+struct Insts;
+class TargetX8632;
+class AssemblerX8632;
 
 class TargetX8632;
 
@@ -48,13 +48,9 @@ struct TargetX8632Traits {
   //      \/_/\/_/\/_____/\/_/  \/_/
   //
   //----------------------------------------------------------------------------
-  static constexpr ::Ice::Assembler::AssemblerKind AsmKind =
-      ::Ice::Assembler::Asm_X8632;
-
   static constexpr bool Is64Bit = false;
   static constexpr bool HasPopa = true;
   static constexpr bool HasPusha = true;
-  static constexpr bool UsesX87 = true;
   static constexpr ::Ice::RegX8632::GPRRegister Last8BitGPR =
       ::Ice::RegX8632::GPRRegister::Encoded_Reg_ebx;
 
@@ -176,7 +172,7 @@ struct TargetX8632Traits {
              && ((encoding_[0] & 0x07) == reg); // Register codes match.
     }
 
-    friend class AssemblerX86Base<TargetX8632Traits>;
+    friend class AssemblerX8632;
   };
 
   class Address : public Operand {
@@ -740,11 +736,10 @@ public:
   //
   //----------------------------------------------------------------------------
   using Traits = TargetX8632Traits;
-  using Insts = ::Ice::X8632::Insts<Traits>;
+  using Insts = ::Ice::X8632::Insts;
 
-  using TargetLowering = ::Ice::X8632::TargetX86Base<Traits>;
-  using ConcreteTarget = ::Ice::X8632::TargetX8632;
-  using Assembler = ::Ice::X8632::AssemblerX86Base<Traits>;
+  using TargetLowering = ::Ice::X8632::TargetX8632;
+  using Assembler = ::Ice::X8632::AssemblerX8632;
 
   /// X86Operand extends the Operand hierarchy. Its subclasses are X86OperandMem
   /// and VariableSplit.
