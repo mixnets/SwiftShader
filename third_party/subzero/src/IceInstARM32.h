@@ -108,8 +108,7 @@ public:
     return new (Func->allocate<OperandARM32Mem>())
         OperandARM32Mem(Func, Ty, Base, ImmOffset, Mode);
   }
-  /// (2) Reg +/- Reg with an optional shift of some kind and amount. Note that
-  /// this mode is disallowed in the NaCl sandbox.
+  /// (2) Reg +/- Reg with an optional shift of some kind and amount.
   static OperandARM32Mem *create(Cfg *Func, Type Ty, Variable *Base,
                                  Variable *Index, ShiftKind ShiftOp = kNoShift,
                                  uint16_t ShiftAmt = 0,
@@ -584,7 +583,7 @@ private:
     addSource(Src);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x := op(y), for vector/FP.
@@ -626,7 +625,7 @@ protected:
   }
 
   FPSign Sign = FS_None;
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 template <InstARM32::InstKindARM32 K>
@@ -691,7 +690,7 @@ private:
     addSource(Src);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Base class for load instructions.
@@ -728,7 +727,7 @@ private:
     addSource(Source);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x := y op z. May have the side-effect of setting
@@ -776,7 +775,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
   bool SetFlags;
 };
 
@@ -825,7 +824,7 @@ protected:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 
 private:
   static constexpr bool isVectorCompare() {
@@ -907,7 +906,7 @@ private:
     addSource(Src2);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x := x op1 (y op2 z). E.g., multiply accumulate.
@@ -956,7 +955,7 @@ private:
   }
 
   FPSign Sign = FS_None;
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x cmpop y (setting flags).
@@ -997,7 +996,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 using InstARM32Adc = InstARM32ThreeAddrGPR<InstARM32::Adc>;
@@ -1705,6 +1704,76 @@ template <> void InstARM32Movw::emit(const Cfg *Func) const;
 template <> void InstARM32Movt::emit(const Cfg *Func) const;
 template <> void InstARM32Vldr1d::emit(const Cfg *Func) const;
 template <> void InstARM32Vldr1q::emit(const Cfg *Func) const;
+
+// Two-addr ops
+template <> const char *const InstARM32Movt::Opcode;
+// Unary ops
+template <> const char *const InstARM32Movw::Opcode;
+template <> const char *const InstARM32Clz::Opcode;
+template <> const char *const InstARM32Mvn::Opcode;
+template <> const char *const InstARM32Rbit::Opcode;
+template <> const char *const InstARM32Rev::Opcode;
+template <> const char *const InstARM32Sxt::Opcode;
+template <> const char *const InstARM32Uxt::Opcode;
+// FP
+template <> const char *const InstARM32Vsqrt::Opcode;
+// Mov-like ops
+template <> const char *const InstARM32Ldr::Opcode;
+template <> const char *const InstARM32Ldrex::Opcode;
+template <> const char *const InstARM32Vldr1d::Opcode;
+template <> const char *const InstARM32Vldr1q::Opcode;
+// Three-addr ops
+template <> const char *const InstARM32Adc::Opcode;
+template <> const char *const InstARM32Add::Opcode;
+template <> const char *const InstARM32And::Opcode;
+template <> const char *const InstARM32Asr::Opcode;
+template <> const char *const InstARM32Bic::Opcode;
+template <> const char *const InstARM32Eor::Opcode;
+template <> const char *const InstARM32Lsl::Opcode;
+template <> const char *const InstARM32Lsr::Opcode;
+template <> const char *const InstARM32Mul::Opcode;
+template <> const char *const InstARM32Orr::Opcode;
+template <> const char *const InstARM32Rsb::Opcode;
+template <> const char *const InstARM32Rsc::Opcode;
+template <> const char *const InstARM32Sbc::Opcode;
+template <> const char *const InstARM32Sdiv::Opcode;
+template <> const char *const InstARM32Sub::Opcode;
+template <> const char *const InstARM32Udiv::Opcode;
+// FP
+template <> const char *const InstARM32Vadd::Opcode;
+template <> const char *const InstARM32Vand::Opcode;
+template <> const char *const InstARM32Vbsl::Opcode;
+template <> const char *const InstARM32Vceq::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vcge>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vcgt>::Opcode;
+template <> const char *const InstARM32Vdiv::Opcode;
+template <> const char *const InstARM32Veor::Opcode;
+template <> const char *const InstARM32Vmla::Opcode;
+template <> const char *const InstARM32Vmls::Opcode;
+template <> const char *const InstARM32Vmul::Opcode;
+template <> const char *const InstARM32Vmvn::Opcode;
+template <> const char *const InstARM32Vmovl::Opcode;
+template <> const char *const InstARM32Vmovh::Opcode;
+template <> const char *const InstARM32Vmovhl::Opcode;
+template <> const char *const InstARM32Vmovlh::Opcode;
+template <> const char *const InstARM32Vorr::Opcode;
+template <> const char *const InstARM32UnaryopFP<InstARM32::Vneg>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vshl>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vshr>::Opcode;
+template <> const char *const InstARM32Vsub::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vqadd>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vqsub>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vqmovn2>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vmulh>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vmlap>::Opcode;
+template <> const char *const InstARM32ThreeAddrFP<InstARM32::Vzip>::Opcode;
+// Four-addr ops
+template <> const char *const InstARM32Mla::Opcode;
+template <> const char *const InstARM32Mls::Opcode;
+// Cmp-like ops
+template <> const char *const InstARM32Cmn::Opcode;
+template <> const char *const InstARM32Cmp::Opcode;
+template <> const char *const InstARM32Tst::Opcode;
 
 } // end of namespace ARM32
 } // end of namespace Ice

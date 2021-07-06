@@ -393,7 +393,7 @@ protected:
   }
 
 private:
-  static const char *Opcode;
+  static const char *const Opcode;
   const RelocOp Reloc;
 };
 
@@ -438,7 +438,7 @@ private:
     addSource(Src0);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form opcode reg, reg.
@@ -482,7 +482,7 @@ private:
     addSource(Src0);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x := y op z. May have the side-effect of setting
@@ -531,7 +531,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 /// Instructions of the form x := y op z. May have the side-effect of setting
@@ -580,7 +580,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 // InstMIPS32Load represents instructions which loads data from memory
@@ -668,7 +668,7 @@ private:
       : InstMIPS32(Func, K, 2, Value), Reloc(Reloc) {
     addSource(Mem);
   }
-  static const char *Opcode;
+  static const char *const Opcode;
   const RelocOp Reloc;
 };
 
@@ -759,7 +759,7 @@ private:
     addSource(Value);
     addSource(Mem);
   }
-  static const char *Opcode;
+  static const char *const Opcode;
   const RelocOp Reloc;
 };
 
@@ -940,7 +940,7 @@ private:
     addSource(Src1);
   };
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 class InstMIPS32Sync : public InstMIPS32 {
@@ -974,7 +974,7 @@ public:
 
 private:
   InstMIPS32Sync(Cfg *Func) : InstMIPS32(Func, InstMIPS32::Sync, 0, nullptr) {}
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 // Trap
@@ -1028,7 +1028,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
   const uint32_t TrapCode;
 };
 
@@ -1133,7 +1133,7 @@ private:
     addSource(Src1);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
   const RelocOp Reloc;
   const uint32_t Imm;
 };
@@ -1191,7 +1191,7 @@ private:
     addSource(FCC);
   }
 
-  static const char *Opcode;
+  static const char *const Opcode;
 };
 
 using InstMIPS32Abs_d = InstMIPS32TwoAddrFPR<InstMIPS32::Abs_d>;
@@ -1460,6 +1460,99 @@ template <> void InstMIPS32Trunc_w_d::emitIAS(const Cfg *Func) const;
 template <> void InstMIPS32Trunc_w_s::emitIAS(const Cfg *Func) const;
 template <> void InstMIPS32Xor::emitIAS(const Cfg *Func) const;
 template <> void InstMIPS32Xori::emitIAS(const Cfg *Func) const;
+
+template <> const char *const InstMIPS32Abs_d::Opcode;
+template <> const char *const InstMIPS32Abs_s::Opcode;
+template <> const char *const InstMIPS32Addi::Opcode;
+template <> const char *const InstMIPS32Add::Opcode;
+template <> const char *const InstMIPS32Add_d::Opcode;
+template <> const char *const InstMIPS32Add_s::Opcode;
+template <> const char *const InstMIPS32Addiu::Opcode;
+template <> const char *const InstMIPS32Addu::Opcode;
+template <> const char *const InstMIPS32And::Opcode;
+template <> const char *const InstMIPS32Andi::Opcode;
+template <> const char *const InstMIPS32C_eq_d::Opcode;
+template <> const char *const InstMIPS32C_eq_s::Opcode;
+template <> const char *const InstMIPS32C_ole_d::Opcode;
+template <> const char *const InstMIPS32C_ole_s::Opcode;
+template <> const char *const InstMIPS32C_olt_d::Opcode;
+template <> const char *const InstMIPS32C_olt_s::Opcode;
+template <> const char *const InstMIPS32C_ueq_d::Opcode;
+template <> const char *const InstMIPS32C_ueq_s::Opcode;
+template <> const char *const InstMIPS32C_ule_d::Opcode;
+template <> const char *const InstMIPS32C_ule_s::Opcode;
+template <> const char *const InstMIPS32C_ult_d::Opcode;
+template <> const char *const InstMIPS32C_ult_s::Opcode;
+template <> const char *const InstMIPS32C_un_d::Opcode;
+template <> const char *const InstMIPS32C_un_s::Opcode;
+template <> const char *const InstMIPS32Clz::Opcode;
+template <> const char *const InstMIPS32Cvt_d_l::Opcode;
+template <> const char *const InstMIPS32Cvt_d_s::Opcode;
+template <> const char *const InstMIPS32Cvt_d_w::Opcode;
+template <> const char *const InstMIPS32Cvt_s_d::Opcode;
+template <> const char *const InstMIPS32Cvt_s_l::Opcode;
+template <> const char *const InstMIPS32Cvt_s_w::Opcode;
+template <> const char *const InstMIPS32Div::Opcode;
+template <> const char *const InstMIPS32Div_d::Opcode;
+template <> const char *const InstMIPS32Div_s::Opcode;
+template <> const char *const InstMIPS32Divu::Opcode;
+template <> const char *const InstMIPS32La::Opcode;
+template <> const char *const InstMIPS32Ldc1::Opcode;
+template <> const char *const InstMIPS32Ll::Opcode;
+template <> const char *const InstMIPS32Lui::Opcode;
+template <> const char *const InstMIPS32Lw::Opcode;
+template <> const char *const InstMIPS32Lwc1::Opcode;
+template <> const char *const InstMIPS32Mfc1::Opcode;
+template <> const char *const InstMIPS32Mfhi::Opcode;
+template <> const char *const InstMIPS32Mflo::Opcode;
+template <> const char *const InstMIPS32Mov_d::Opcode;
+template <> const char *const InstMIPS32Mov_s::Opcode;
+template <> const char *const InstMIPS32Movf::Opcode;
+template <> const char *const InstMIPS32Movn::Opcode;
+template <> const char *const InstMIPS32Movn_d::Opcode;
+template <> const char *const InstMIPS32Movn_s::Opcode;
+template <> const char *const InstMIPS32Movt::Opcode;
+template <> const char *const InstMIPS32Movz::Opcode;
+template <> const char *const InstMIPS32Movz_d::Opcode;
+template <> const char *const InstMIPS32Movz_s::Opcode;
+template <> const char *const InstMIPS32Mtc1::Opcode;
+template <> const char *const InstMIPS32Mthi::Opcode;
+template <> const char *const InstMIPS32Mtlo::Opcode;
+template <> const char *const InstMIPS32Mul::Opcode;
+template <> const char *const InstMIPS32Mul_d::Opcode;
+template <> const char *const InstMIPS32Mul_s::Opcode;
+template <> const char *const InstMIPS32Mult::Opcode;
+template <> const char *const InstMIPS32Multu::Opcode;
+template <> const char *const InstMIPS32Nor::Opcode;
+template <> const char *const InstMIPS32Or::Opcode;
+template <> const char *const InstMIPS32Ori::Opcode;
+template <> const char *const InstMIPS32Sc::Opcode;
+template <> const char *const InstMIPS32Sdc1::Opcode;
+template <> const char *const InstMIPS32Sll::Opcode;
+template <> const char *const InstMIPS32Sllv::Opcode;
+template <> const char *const InstMIPS32Slt::Opcode;
+template <> const char *const InstMIPS32Slti::Opcode;
+template <> const char *const InstMIPS32Sltiu::Opcode;
+template <> const char *const InstMIPS32Sltu::Opcode;
+template <> const char *const InstMIPS32Sqrt_d::Opcode;
+template <> const char *const InstMIPS32Sqrt_s::Opcode;
+template <> const char *const InstMIPS32Sra::Opcode;
+template <> const char *const InstMIPS32Srav::Opcode;
+template <> const char *const InstMIPS32Srl::Opcode;
+template <> const char *const InstMIPS32Srlv::Opcode;
+template <> const char *const InstMIPS32Sub::Opcode;
+template <> const char *const InstMIPS32Sub_d::Opcode;
+template <> const char *const InstMIPS32Sub_s::Opcode;
+template <> const char *const InstMIPS32Subu::Opcode;
+template <> const char *const InstMIPS32Sw::Opcode;
+template <> const char *const InstMIPS32Swc1::Opcode;
+template <> const char *const InstMIPS32Teq::Opcode;
+template <> const char *const InstMIPS32Trunc_l_d::Opcode;
+template <> const char *const InstMIPS32Trunc_l_s::Opcode;
+template <> const char *const InstMIPS32Trunc_w_d::Opcode;
+template <> const char *const InstMIPS32Trunc_w_s::Opcode;
+template <> const char *const InstMIPS32Xor::Opcode;
+template <> const char *const InstMIPS32Xori::Opcode;
 
 } // end of namespace MIPS32
 } // end of namespace Ice
