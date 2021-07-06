@@ -1193,12 +1193,6 @@ void InstX86Cbwdq::emitIAS(const Cfg *Func) const {
     assert(DestReg == RegisterSet::Reg_edx);
     Asm->cdq();
     break;
-  case IceType_i64:
-    assert(Traits::Is64Bit);
-    assert(SrcReg == Traits::getRaxOrDie());
-    assert(DestReg == Traits::getRdxOrDie());
-    Asm->cqo();
-    break;
   }
 }
 

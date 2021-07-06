@@ -25,9 +25,9 @@
 #include "IceDefs.h"
 #include "IceInst.h"
 #include "IceOperand.h"
+#include "IceTargetLoweringX86.h"
 
 namespace Ice {
-
 namespace X8664 {
 
 using Traits = TargetX8664Traits;
@@ -1853,11 +1853,8 @@ public:
   static InstX86Pmull *create(Cfg *Func, Variable *Dest, Operand *Source) {
     bool TypesAreValid =
         Dest->getType() == IceType_v4i32 || Dest->getType() == IceType_v8i16;
-    /**  FIXME(capn) auto *Target = InstX86Base::getTarget(Func);**/
     bool InstructionSetIsValid =
-        Dest->getType() == IceType_v8i16 /**  FIXME(capn)  ||
-         Target->getInstructionSet() >= Traits::SSE4_1**/
-        ;
+        Dest->getType() == IceType_v8i16 || getInstructionSet(Func) >= SSE4_1;
     (void)TypesAreValid;
     (void)InstructionSetIsValid;
     assert(TypesAreValid);
@@ -2065,9 +2062,8 @@ public:
                         ? Dest->getType()
                         : ArithmeticTypeOverride;
     (void)Ty;
-    /**  FIXME(capn) assert((Ty != IceType_f64 && Ty != IceType_i64) ||
-           InstX86Base::getTarget(Func)->getInstructionSet() >=
-               Traits::SSE4_1);**/
+    assert((Ty != IceType_f64 && Ty != IceType_i64) ||
+           getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Pcmpeq>())
         InstX86Pcmpeq(Func, Dest, Source, ArithmeticTypeOverride);
   }
@@ -2085,9 +2081,8 @@ class InstX86Pcmpgt
                                  InstX86Base::SseSuffix::Integral> {
 public:
   static InstX86Pcmpgt *create(Cfg *Func, Variable *Dest, Operand *Source) {
-    /**  FIXME(capn) assert(Dest->getType() != IceType_f64 ||
-           InstX86Base::getTarget(Func)->getInstructionSet() >=
-               Traits::SSE4_1);**/
+    assert(Dest->getType() != IceType_f64 ||
+           getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Pcmpgt>())
         InstX86Pcmpgt(Func, Dest, Source);
   }
@@ -2175,10 +2170,9 @@ public:
   static InstX86Pinsr *create(Cfg *Func, Variable *Dest, Operand *Source1,
                               Operand *Source2) {
     // pinsrb and pinsrd are SSE4.1 instructions.
-    /**  FIXME(capn)  assert(
-         Dest->getType() == IceType_v8i16 || Dest->getType() == IceType_v8i1
-       || InstX86Base::getTarget(Func)->getInstructionSet() >=
-       Traits::SSE4_1);**/
+    assert(Dest->getType() == IceType_v8i16 ||
+           Dest->getType() == IceType_v8i1 ||
+           getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Pinsr>())
         InstX86Pinsr(Func, Dest, Source1, Source2);
   }
@@ -2210,8 +2204,7 @@ class InstX86Blendvps : public InstX86BaseTernop<InstX86Base::Blendvps> {
 public:
   static InstX86Blendvps *create(Cfg *Func, Variable *Dest, Operand *Source1,
                                  Operand *Source2) {
-    /**  FIXME(capn) assert(InstX86Base::getTarget(Func)->getInstructionSet()
-       >= Traits::SSE4_1);**/
+    assert(getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Blendvps>())
         InstX86Blendvps(Func, Dest, Source1, Source2);
   }
@@ -2229,8 +2222,7 @@ class InstX86Pblendvb : public InstX86BaseTernop<InstX86Base::Pblendvb> {
 public:
   static InstX86Pblendvb *create(Cfg *Func, Variable *Dest, Operand *Source1,
                                  Operand *Source2) {
-    /**  FIXME(capn) assert(InstX86Base::getTarget(Func)->getInstructionSet()
-       >= Traits::SSE4_1);**/
+    assert(getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Pblendvb>())
         InstX86Pblendvb(Func, Dest, Source1, Source2);
   }
@@ -2248,10 +2240,9 @@ class InstX86Pextr : public InstX86BaseThreeAddressop<InstX86Base::Pextr> {
 public:
   static InstX86Pextr *create(Cfg *Func, Variable *Dest, Operand *Source0,
                               Operand *Source1) {
-    /**  FIXME(capn)  assert(Source0->getType() == IceType_v8i16 ||
-            Source0->getType() == IceType_v8i1 ||
-            InstX86Base::getTarget(Func)->getInstructionSet() >=
-                Traits::SSE4_1);**/
+    assert(Source0->getType() == IceType_v8i16 ||
+           Source0->getType() == IceType_v8i1 ||
+           getInstructionSet(Func) >= SSE4_1);
     return new (Func->allocate<InstX86Pextr>())
         InstX86Pextr(Func, Dest, Source0, Source1);
   }

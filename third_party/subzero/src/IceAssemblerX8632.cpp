@@ -2289,12 +2289,6 @@ void AssemblerX8632::cdq() {
   emitUint8(0x99);
 }
 
-template <typename T>
-typename std::enable_if<T::Is64Bit, void>::type AssemblerX8632::cqo() {
-  AssemblerBuffer::EnsureCapacity ensured(&Buffer);
-  emitUint8(0x99);
-}
-
 void AssemblerX8632::div(Type Ty, GPRRegister reg) {
   AssemblerBuffer::EnsureCapacity ensured(&Buffer);
   if (Ty == IceType_i16)
@@ -2457,7 +2451,7 @@ void AssemblerX8632::mul(Type Ty, const Address &address) {
   emitOperand(4, address);
 }
 
-template <typename, typename> void AssemblerX8632::incl(GPRRegister reg) {
+void AssemblerX8632::incl(GPRRegister reg) {
   AssemblerBuffer::EnsureCapacity ensured(&Buffer);
   emitUint8(0x40 + reg);
 }
@@ -2468,7 +2462,7 @@ void AssemblerX8632::incl(const Address &address) {
   emitOperand(0, address);
 }
 
-template <typename, typename> void AssemblerX8632::decl(GPRRegister reg) {
+void AssemblerX8632::decl(GPRRegister reg) {
   AssemblerBuffer::EnsureCapacity ensured(&Buffer);
   emitUint8(0x48 + reg);
 }
