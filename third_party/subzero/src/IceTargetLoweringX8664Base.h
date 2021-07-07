@@ -1,4 +1,5 @@
-//===- subzero/src/IceTargetLoweringX86Base.h - x86 lowering ----*- C++ -*-===//
+//===- subzero/src/IceTargetLoweringX8664Base.h - x86 lowering ----*- C++
+//-*-===//
 //
 //                        The Subzero Code Generator
 //
@@ -13,8 +14,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef SUBZERO_SRC_ICETARGETLOWERINGX86BASE_H
-#define SUBZERO_SRC_ICETARGETLOWERINGX86BASE_H
+#ifndef SUBZERO_SRC_ICETARGETLOWERINGX8664BASE_H
+#define SUBZERO_SRC_ICETARGETLOWERINGX8664BASE_H
 
 #include "IceDefs.h"
 #include "IceInst.h"
@@ -27,12 +28,8 @@
 #include <type_traits>
 #include <utility>
 
-#ifndef X86NAMESPACE
-#error "You must define the X86 Target namespace."
-#endif
-
 namespace Ice {
-namespace X86NAMESPACE {
+namespace X8664 {
 
 using namespace ::Ice::X86;
 
@@ -1113,14 +1110,14 @@ private:
   /// Method **exactly** (i.e., no argument promotion is performed.)
   template <typename Ret, typename... Args>
   typename std::enable_if<!std::is_void<Ret>::value, Ret>::type
-  dispatchToConcrete(Ret (ConcreteTarget::*Method)(Args...), Args &&... args) {
+  dispatchToConcrete(Ret (ConcreteTarget::*Method)(Args...), Args &&...args) {
     return (static_cast<ConcreteTarget *>(this)->*Method)(
         std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   void dispatchToConcrete(void (ConcreteTarget::*Method)(Args...),
-                          Args &&... args) {
+                          Args &&...args) {
     (static_cast<ConcreteTarget *>(this)->*Method)(std::forward<Args>(args)...);
   }
 
@@ -1252,9 +1249,9 @@ private:
   explicit TargetHeaderX86(GlobalContext *Ctx) : TargetHeaderLowering(Ctx) {}
 };
 
-} // end of namespace X86NAMESPACE
+} // end of namespace X8664
 } // end of namespace Ice
 
-#include "IceTargetLoweringX86BaseImpl.h"
+#include "IceTargetLoweringX8664BaseImpl.h"
 
-#endif // SUBZERO_SRC_ICETARGETLOWERINGX86BASE_H
+#endif // SUBZERO_SRC_ICETARGETLOWERINGX8664BASE_H
