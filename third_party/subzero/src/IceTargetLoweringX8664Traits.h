@@ -34,7 +34,7 @@ namespace Ice {
 namespace X8664 {
 using namespace ::Ice::X86;
 
-template <class TraitsType> class AssemblerX86Base;
+class AssemblerX8664;
 template <class TraitsType> struct Insts;
 template <class TraitsType> class TargetX86Base;
 
@@ -53,8 +53,6 @@ struct TargetX8664Traits {
       ::Ice::Assembler::Asm_X8664;
 
   static constexpr bool Is64Bit = true;
-  static constexpr bool HasPopa = false;
-  static constexpr bool HasPusha = false;
   static constexpr bool UsesX87 = false;
   static constexpr ::Ice::RegX8664::GPRRegister Last8BitGPR =
       ::Ice::RegX8664::GPRRegister::Encoded_Reg_r15d;
@@ -183,7 +181,7 @@ struct TargetX8664Traits {
              && (rm() == reg); // Register codes match.
     }
 
-    friend class AssemblerX86Base<TargetX8664Traits>;
+    friend class AssemblerX8664;
   };
 
   class Address : public Operand {
@@ -830,7 +828,7 @@ public:
 
   using TargetLowering = ::Ice::X8664::TargetX86Base<Traits>;
   using ConcreteTarget = ::Ice::X8664::TargetX8664;
-  using Assembler = ::Ice::X8664::AssemblerX86Base<Traits>;
+  using Assembler = ::Ice::X8664::AssemblerX8664;
 
   /// X86Operand extends the Operand hierarchy. Its subclasses are X86OperandMem
   /// and VariableSplit.
