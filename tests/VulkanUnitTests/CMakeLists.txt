@@ -75,4 +75,5 @@ target_link_libraries(vk-unittests
         SPIRV-Tools
         VulkanWrapper
         ${ROOT_PROJECT_LINK_LIBRARIES}
+        stdc++fs
 )
