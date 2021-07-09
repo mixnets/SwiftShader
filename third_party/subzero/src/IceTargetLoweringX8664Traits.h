@@ -35,8 +35,8 @@ namespace X8664 {
 using namespace ::Ice::X86;
 
 class AssemblerX8664;
-template <class TraitsType> struct Insts;
-template <class TraitsType> class TargetX86Base;
+struct Insts;
+class TargetX8664;
 
 class TargetX8664;
 
@@ -49,8 +49,6 @@ struct TargetX8664Traits {
   //      \/_/\/_/\/_____/\/_/  \/_/
   //
   //----------------------------------------------------------------------------
-  static constexpr ::Ice::Assembler::AssemblerKind AsmKind =
-      ::Ice::Assembler::Asm_X8664;
 
   static constexpr bool Is64Bit = true;
   static constexpr ::Ice::RegX8664::GPRRegister Last8BitGPR =
@@ -706,6 +704,8 @@ public:
   }
 #endif
 
+  /// Whether scalar floating point arguments are passed in XMM registers
+  static constexpr bool X86_PASS_SCALAR_FP_IN_XMM = true;
   /// Get the register for a given argument slot in the XMM registers.
   static RegNumT getRegisterForXmmArgNum(uint32_t ArgNum) {
     // TODO(sehr): Change to use the CCArg technique used in ARM32.
@@ -821,10 +821,9 @@ public:
   //
   //----------------------------------------------------------------------------
   using Traits = TargetX8664Traits;
-  using Insts = ::Ice::X8664::Insts<Traits>;
+  using Insts = ::Ice::X8664::Insts;
 
-  using TargetLowering = ::Ice::X8664::TargetX86Base<Traits>;
-  using ConcreteTarget = ::Ice::X8664::TargetX8664;
+  using TargetLowering = ::Ice::X8664::TargetX8664;
   using Assembler = ::Ice::X8664::AssemblerX8664;
 
   /// X86Operand extends the Operand hierarchy. Its subclasses are X86OperandMem
