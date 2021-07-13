@@ -2270,7 +2270,7 @@ private:
                                                        Source1) {}
 };
 
-/// Base class for a lockable x86-32 instruction (emits a locked prefix).
+/// Base class for a lockable x86-64 instruction (emits a locked prefix).
 class InstX86BaseLockable : public InstX86Base {
   InstX86BaseLockable() = delete;
   InstX86BaseLockable(const InstX86BaseLockable &) = delete;
