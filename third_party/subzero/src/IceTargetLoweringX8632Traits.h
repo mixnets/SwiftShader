@@ -105,14 +105,6 @@ struct TargetX8632Traits {
       return static_cast<int8_t>(encoding_[length_ - 1]);
     }
 
-    int32_t disp32() const {
-      assert(length_ >= 5);
-      // TODO(stichnot): This method is not currently used.  Delete it along
-      // with other unused methods, or use a safe version of bitCopy().
-      llvm::report_fatal_error("Unexpected call to disp32()");
-      // return Utils::bitCopy<int32_t>(encoding_[length_ - 4]);
-    }
-
     AssemblerFixup *fixup() const { return fixup_; }
 
   protected:
@@ -239,6 +231,8 @@ struct TargetX8632Traits {
       if (Fixup)
         SetFixup(Fixup);
     }
+
+    AsmAddress(const Variable *Var, const TargetX8632 *Target);
 
     static AsmAddress ofConstPool(Assembler *Asm, const Constant *Imm) {
       AssemblerFixup *Fixup = Asm->createFixup(llvm::ELF::R_386_32, Imm);

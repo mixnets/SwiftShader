@@ -527,7 +527,7 @@ void InstX86Call::emitIAS(const Cfg *Func) const {
     if (Var->hasReg()) {
       Asm->call(Traits::getEncodedGPR(Var->getRegNum()));
     } else {
-      Asm->call(Target->stackVarToAsmAddress(Var, Target));
+      Asm->call(AsmAddress(Var, Target));
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(CallTarget)) {
     assert(Mem->getSegmentRegister() == X86OperandMem::DefaultSegment);
@@ -584,7 +584,7 @@ void emitIASOpTyGPR(const Cfg *Func, Type Ty, const Operand *Op,
       GPRRegister VarReg = Traits::getEncodedGPR(Var->getRegNum());
       (Asm->*(Emitter.Reg))(Ty, VarReg);
     } else {
-      AsmAddress StackAddr(Target->stackVarToAsmAddress(Var, Target));
+      AsmAddress StackAddr(AsmAddress(Var, Target));
       (Asm->*(Emitter.Addr))(Ty, StackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Op)) {
@@ -612,7 +612,7 @@ void emitIASRegOpTyGPR(const Cfg *Func, bool IsLea, Type Ty,
                                : Traits::getEncodedGPR(SrcVar->getRegNum());
       (Asm->*(Emitter.GPRGPR))(Ty, VarReg, SrcReg);
     } else {
-      AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+      AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
       (Asm->*(Emitter.GPRAddr))(Ty, VarReg, SrcStackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -662,7 +662,7 @@ void emitIASAsAddrOpTyGPR(const Cfg *Func, Type Ty, const Operand *Op0,
   auto *Target = InstX86Base::getTarget(Func);
   if (const auto *Op0Var = llvm::dyn_cast<Variable>(Op0)) {
     assert(!Op0Var->hasReg());
-    AsmAddress StackAddr(Target->stackVarToAsmAddress(Op0Var, Target));
+    AsmAddress StackAddr(AsmAddress(Op0Var, Target));
     emitIASAddrOpTyGPR(Func, Ty, StackAddr, Op1, Emitter);
   } else if (const auto *Op0Mem = llvm::dyn_cast<X86OperandMem>(Op0)) {
     Assembler *Asm = Func->getAssembler<Assembler>();
@@ -730,7 +730,7 @@ void emitIASXmmShift(const Cfg *Func, Type Ty, const Variable *Var,
       XmmRegister SrcReg = Traits::getEncodedXmm(SrcVar->getRegNum());
       (Asm->*(Emitter.XmmXmm))(Ty, VarReg, SrcReg);
     } else {
-      AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+      AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
       (Asm->*(Emitter.XmmAddr))(Ty, VarReg, SrcStackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -754,7 +754,7 @@ void emitIASRegOpTyXMM(const Cfg *Func, Type Ty, const Variable *Var,
       XmmRegister SrcReg = Traits::getEncodedXmm(SrcVar->getRegNum());
       (Asm->*(Emitter.XmmXmm))(Ty, VarReg, SrcReg);
     } else {
-      AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+      AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
       (Asm->*(Emitter.XmmAddr))(Ty, VarReg, SrcStackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -781,7 +781,7 @@ void emitIASCastRegOp(const Cfg *Func, Type DestTy, const Variable *Dest,
       SReg_t SrcReg = srcEnc(SrcVar->getRegNum());
       (Asm->*(Emitter.RegReg))(DestTy, DestReg, SrcTy, SrcReg);
     } else {
-      AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+      AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
       (Asm->*(Emitter.RegAddr))(DestTy, DestReg, SrcTy, SrcStackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -810,7 +810,7 @@ void emitIASThreeOpImmOps(const Cfg *Func, Type DispatchTy,
       SReg_t SrcReg = srcEnc(SrcVar->getRegNum());
       (Asm->*(Emitter.RegRegImm))(DispatchTy, DestReg, SrcReg, Imm);
     } else {
-      AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+      AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
       (Asm->*(Emitter.RegAddrImm))(DispatchTy, DestReg, SrcStackAddr, Imm);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src0)) {
@@ -833,7 +833,7 @@ void emitIASMovlikeXMM(const Cfg *Func, const Variable *Dest,
         (Asm->*(Emitter.XmmXmm))(DestReg,
                                  Traits::getEncodedXmm(SrcVar->getRegNum()));
       } else {
-        AsmAddress StackAddr(Target->stackVarToAsmAddress(SrcVar, Target));
+        AsmAddress StackAddr(AsmAddress(SrcVar, Target));
         (Asm->*(Emitter.XmmAddr))(DestReg, StackAddr);
       }
     } else if (const auto *SrcMem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -844,7 +844,7 @@ void emitIASMovlikeXMM(const Cfg *Func, const Variable *Dest,
       llvm_unreachable("Unexpected operand type");
     }
   } else {
-    AsmAddress StackAddr(Target->stackVarToAsmAddress(Dest, Target));
+    AsmAddress StackAddr(AsmAddress(Dest, Target));
     // Src must be a register in this case.
     const auto *SrcVar = llvm::cast<Variable>(Src);
     assert(SrcVar->hasReg());
@@ -1309,7 +1309,7 @@ void InstX86Cmov::emitIAS(const Cfg *Func) const {
     } else {
       Asm->cmov(SrcTy, Condition,
                 Traits::getEncodedGPR(this->getDest()->getRegNum()),
-                Target->stackVarToAsmAddress(SrcVar, Target));
+                AsmAddress(SrcVar, Target));
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
     assert(Mem->getSegmentRegister() == X86OperandMem::DefaultSegment);
@@ -1362,7 +1362,7 @@ void InstX86Cmpps::emitIAS(const Cfg *Func) const {
                Traits::getEncodedXmm(this->getDest()->getRegNum()),
                Traits::getEncodedXmm(SrcVar->getRegNum()), Condition);
   } else {
-    AsmAddress SrcStackAddr = Target->stackVarToAsmAddress(SrcVar, Target);
+    AsmAddress SrcStackAddr = AsmAddress(SrcVar, Target);
     Asm->cmpps(this->getDest()->getType(),
                Traits::getEncodedXmm(this->getDest()->getRegNum()),
                SrcStackAddr, Condition);
@@ -1795,7 +1795,7 @@ void InstX86Store::emitIAS(const Cfg *Func) const {
     auto *Target = InstX86Base::getTarget(Func);
     if (const auto *DestVar = llvm::dyn_cast<Variable>(Dest)) {
       assert(!DestVar->hasReg());
-      AsmAddress StackAddr(Target->stackVarToAsmAddress(DestVar, Target));
+      AsmAddress StackAddr(AsmAddress(DestVar, Target));
       Asm->movss(DestTy, StackAddr, SrcReg);
     } else {
       const auto DestMem = llvm::cast<X86OperandMem>(Dest);
@@ -2068,7 +2068,7 @@ void InstX86Mov::emitIAS(const Cfg *Func) const {
   } else {
     // Dest must be Stack and Src *could* be a register. Use Src's type to
     // decide on the emitters.
-    AsmAddress StackAddr(Target->stackVarToAsmAddress(Dest, Target));
+    AsmAddress StackAddr(AsmAddress(Dest, Target));
     if (isScalarFloatingType(SrcTy)) {
       // Src must be a register.
       const auto *SrcVar = llvm::cast<Variable>(Src);
@@ -2134,7 +2134,7 @@ void InstX86Movd::emitIAS(const Cfg *Func) const {
         Asm->movd(SrcVar->getType(), DestReg,
                   Traits::getEncodedGPR(SrcVar->getRegNum()));
       } else {
-        AsmAddress StackAddr(Target->stackVarToAsmAddress(SrcVar, Target));
+        AsmAddress StackAddr(AsmAddress(SrcVar, Target));
         Asm->movd(SrcVar->getType(), DestReg, StackAddr);
       }
     } else {
@@ -2149,7 +2149,7 @@ void InstX86Movd::emitIAS(const Cfg *Func) const {
         Asm->movd(Dest->getType(), Traits::getEncodedGPR(Dest->getRegNum()),
                   SrcReg);
       } else {
-        AsmAddress StackAddr(Target->stackVarToAsmAddress(Dest, Target));
+        AsmAddress StackAddr(AsmAddress(Dest, Target));
         Asm->movd(Dest->getType(), StackAddr, SrcReg);
       }
     }
@@ -2325,7 +2325,7 @@ void InstX86Fld::emitIAS(const Cfg *Func) const {
       Asm->movss(Ty, StackSlot, Traits::getEncodedXmm(Var->getRegNum()));
       Asm->fld(Ty, StackSlot);
     } else {
-      AsmAddress StackAddr(Target->stackVarToAsmAddress(Var, Target));
+      AsmAddress StackAddr(AsmAddress(Var, Target));
       Asm->fld(Ty, StackAddr);
     }
   } else if (const auto *Mem = llvm::dyn_cast<X86OperandMem>(Src)) {
@@ -2398,7 +2398,7 @@ void InstX86Fstp::emitIAS(const Cfg *Func) const {
   auto *Target = InstX86Base::getTarget(Func);
   Type Ty = Dest->getType();
   if (!Dest->hasReg()) {
-    AsmAddress StackAddr(Target->stackVarToAsmAddress(Dest, Target));
+    AsmAddress StackAddr(AsmAddress(Dest, Target));
     Asm->fstp(Ty, StackAddr);
   } else {
     // Dest is a physical (xmm) register, so st(0) needs to go through memory.
@@ -2553,7 +2553,7 @@ void InstX86Pop::emitIAS(const Cfg *Func) const {
     Asm->popl(Traits::getEncodedGPR(this->getDest()->getRegNum()));
   } else {
     auto *Target = InstX86Base::getTarget(Func);
-    Asm->popl(Target->stackVarToAsmAddress(this->getDest(), Target));
+    Asm->popl(AsmAddress(this->getDest(), Target));
   }
 }
 
@@ -2645,8 +2645,7 @@ void InstX86Setcc::emitIAS(const Cfg *Func) const {
     Asm->setcc(Condition,
                Traits::getEncodedByteReg(this->getDest()->getRegNum()));
   else
-    Asm->setcc(Condition,
-               Target->stackVarToAsmAddress(this->getDest(), Target));
+    Asm->setcc(Condition, AsmAddress(this->getDest(), Target));
   return;
 }
 
