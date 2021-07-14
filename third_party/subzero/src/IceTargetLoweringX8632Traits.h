@@ -370,14 +370,6 @@ public:
     return Registers;
   }
 
-  static RegNumT getRaxOrDie() {
-    llvm::report_fatal_error("no rax in non-64-bit mode.");
-  }
-
-  static RegNumT getRdxOrDie() {
-    llvm::report_fatal_error("no rdx in non-64-bit mode.");
-  }
-
   // x86-32 calling convention:
   //
   // * The first four arguments of vector type, regardless of their position
@@ -449,9 +441,6 @@ public:
     assert(static_cast<size_t>(Ty) < TableTypeX8632AttributesSize);
     return TableTypeX8632Attributes[Ty].InVectorElementType;
   }
-
-  // Note: The following data structures are defined in
-  // IceTargetLoweringX8632.cpp.
 
   /// The following table summarizes the logic for lowering the fcmp
   /// instruction. There is one table entry for each of the 16 conditions.

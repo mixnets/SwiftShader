@@ -2201,10 +2201,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for udiv");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -2264,10 +2260,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for sdiv");
-    case IceType_i64:
-      T_edx = makeReg(Ty, Traits::getRdxOrDie());
-      _mov(T, Src0, Traits::getRaxOrDie());
-      break;
     case IceType_i32:
       T_edx = makeReg(Ty, Traits::RegisterSet::Reg_edx);
       _mov(T, Src0, Traits::RegisterSet::Reg_eax);
@@ -2293,10 +2285,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for urem");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -2371,10 +2359,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for srem");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -4432,9 +4416,6 @@ void TargetX8632::lowerAtomicCmpxchg(Variable *DestPrev, Operand *Ptr,
   switch (Ty) {
   default:
     llvm::report_fatal_error("Bad type for cmpxchg");
-  case IceType_i64:
-    Eax = Traits::getRaxOrDie();
-    break;
   case IceType_i32:
     Eax = Traits::RegisterSet::Reg_eax;
     break;
@@ -4695,9 +4676,6 @@ void TargetX8632::expandAtomicRMWAsCmpxchg(LowerBinOp Op_Lo, LowerBinOp Op_Hi,
   switch (Ty) {
   default:
     llvm::report_fatal_error("Bad type for atomicRMW");
-  case IceType_i64:
-    Eax = Traits::getRaxOrDie();
-    break;
   case IceType_i32:
     Eax = Traits::RegisterSet::Reg_eax;
     break;
