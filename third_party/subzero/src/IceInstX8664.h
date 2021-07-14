@@ -264,6 +264,7 @@ public:
   static const char *getWidthString(Type Ty);
   static const char *getFldString(Type Ty);
   static const char *getSseSuffixString(Type DestTy, SseSuffix Suffix);
+  static Type getInVectorElementType(Type Ty);
   static BrCond getOppositeCondition(BrCond Cond);
   void dump(const Cfg *Func) const override;
 
@@ -1078,8 +1079,9 @@ public:
         //                    is handled by Inst86Zext.
         const auto SrcReg = SrcVar->getRegNum();
         const auto DestReg = this->Dest->getRegNum();
-        return (Traits::getEncoding(SrcReg) == Traits::getEncoding(DestReg)) &&
-               (Traits::getBaseReg(SrcReg) == Traits::getBaseReg(DestReg));
+        return (RegX8664::getEncoding(SrcReg) ==
+                RegX8664::getEncoding(DestReg)) &&
+               (RegX8664::getBaseReg(SrcReg) == RegX8664::getBaseReg(DestReg));
       }
     }
     return checkForRedundantAssign(this->getDest(), this->getSrc(0));

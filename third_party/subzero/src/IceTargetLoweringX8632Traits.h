@@ -370,14 +370,6 @@ public:
     return Registers;
   }
 
-  static RegNumT getRaxOrDie() {
-    llvm::report_fatal_error("no rax in non-64-bit mode.");
-  }
-
-  static RegNumT getRdxOrDie() {
-    llvm::report_fatal_error("no rdx in non-64-bit mode.");
-  }
-
   // x86-32 calling convention:
   //
   // * The first four arguments of vector type, regardless of their position
@@ -450,9 +442,6 @@ public:
     return TableTypeX8632Attributes[Ty].InVectorElementType;
   }
 
-  // Note: The following data structures are defined in
-  // IceTargetLoweringX8632.cpp.
-
   /// The following table summarizes the logic for lowering the fcmp
   /// instruction. There is one table entry for each of the 16 conditions.
   ///
@@ -489,17 +478,6 @@ public:
     CondX86::BrCond Mapping;
   } TableIcmp32[];
   static const size_t TableIcmp32Size;
-  /// @}
-
-  /// The following table summarizes the logic for lowering the icmp instruction
-  /// for the i64 type. For Eq and Ne, two separate 32-bit comparisons and
-  /// conditional branches are needed. For the other conditions, three separate
-  /// conditional branches are needed.
-  /// {@
-  static const struct TableIcmp64Type {
-    CondX86::BrCond C1, C2, C3;
-  } TableIcmp64[];
-  static const size_t TableIcmp64Size;
   /// @}
 
   static CondX86::BrCond getIcmp32Mapping(InstIcmp::ICond Cond) {

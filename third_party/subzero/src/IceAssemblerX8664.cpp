@@ -50,7 +50,7 @@ AsmAddress::AsmAddress(const Variable *Var, const TargetX8664 *Target) {
       BaseRegNum = Target->getFrameOrStackReg();
     }
   }
-  SetBase(Traits::getEncodedGPR(BaseRegNum), Offset, AssemblerFixup::NoFixup);
+  SetBase(RegX8664::getEncodedGPR(BaseRegNum), Offset, AssemblerFixup::NoFixup);
 }
 
 AsmAddress::AsmAddress(const X86OperandMem *Mem, Ice::Assembler *Asm,
@@ -85,13 +85,13 @@ AsmAddress::AsmAddress(const X86OperandMem *Mem, Ice::Assembler *Asm,
 
   // Now convert to the various possible forms.
   if (Mem->getBase() && Mem->getIndex()) {
-    SetBaseIndex(Traits::getEncodedGPR(Mem->getBase()->getRegNum()),
-                 Traits::getEncodedGPR(Mem->getIndex()->getRegNum()),
+    SetBaseIndex(RegX8664::getEncodedGPR(Mem->getBase()->getRegNum()),
+                 RegX8664::getEncodedGPR(Mem->getIndex()->getRegNum()),
                  ScaleFactor(Mem->getShift()), Disp, Fixup);
   } else if (Mem->getBase()) {
-    SetBase(Traits::getEncodedGPR(Mem->getBase()->getRegNum()), Disp, Fixup);
+    SetBase(RegX8664::getEncodedGPR(Mem->getBase()->getRegNum()), Disp, Fixup);
   } else if (Mem->getIndex()) {
-    SetIndex(Traits::getEncodedGPR(Mem->getIndex()->getRegNum()),
+    SetIndex(RegX8664::getEncodedGPR(Mem->getIndex()->getRegNum()),
              ScaleFactor(Mem->getShift()), Disp, Fixup);
   } else if (Fixup == nullptr) {
     SetAbsolute(Disp);

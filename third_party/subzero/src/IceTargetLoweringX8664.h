@@ -37,6 +37,8 @@ namespace X8664 {
 
 using namespace ::Ice::X86;
 
+constexpr Type WordType = IceType_i64;
+
 class BoolFoldingEntry {
   BoolFoldingEntry(const BoolFoldingEntry &) = delete;
 
@@ -104,21 +106,12 @@ private:
   CfgUnorderedMap<SizeT, BoolFoldingEntry> Producers;
 };
 
-/// TargetX8664 is a template for all X86 Targets, and it relies on the CRT
-/// pattern for generating code, delegating to actual backends target-specific
-/// lowerings (e.g., call, ret, and intrinsics.)
-///
-/// Note: Ideally, we should be able to
-///
-///  static_assert(std::is_base_of<TargetX8664<TraitsType>,
-///  Machine>::value);
-///
-/// but that does not work: the compiler does not know that Machine inherits
-/// from TargetX8664 at this point in translation.
 class TargetX8664 : public TargetX86 {
   TargetX8664() = delete;
   TargetX8664(const TargetX8664 &) = delete;
   TargetX8664 &operator=(const TargetX8664 &) = delete;
+
+  friend class BoolFolding;
 
 public:
   using BrCond = CondX86::BrCond;
@@ -211,16 +204,16 @@ public:
   }
   size_t typeWidthInBytesOnStack(Type Ty) const override {
     // Round up to the next multiple of WordType bytes.
-    const uint32_t WordSizeInBytes = typeWidthInBytes(Traits::WordType);
+    const uint32_t WordSizeInBytes = typeWidthInBytes(WordType);
     return Utils::applyAlignment(typeWidthInBytes(Ty), WordSizeInBytes);
   }
   uint32_t getStackAlignment() const override {
-    return Traits::X86_STACK_ALIGNMENT_BYTES;
+    return X86_STACK_ALIGNMENT_BYTES;
   }
   bool needsStackPointerAlignment() const override {
-    // If the ABI's stack alignment is smaller than the vector size (16 bytes),
+    // If the ABI's stack alignment is smaller than the vector size,
     // use the (realigned) stack pointer for addressing any stack variables.
-    return Traits::X86_STACK_ALIGNMENT_BYTES < 16;
+    return X86_STACK_ALIGNMENT_BYTES < RequiredStackAlignment;
   }
   void reserveFixedAllocaArea(size_t Size, size_t Align) override {
     FixedAllocaSizeBytes = Size;
@@ -377,7 +370,7 @@ protected:
   /// function. Otherwise some esp adjustments get dead-code eliminated.
   void keepEspLiveAtExit() {
     Variable *esp =
-        Func->getTarget()->getPhysicalRegister(getStackReg(), Traits::WordType);
+        Func->getTarget()->getPhysicalRegister(getStackReg(), WordType);
     Context.insert<InstFakeUse>(esp);
   }
 
@@ -857,8 +850,14 @@ protected:
   bool optimizeScalarMul(Variable *Dest, Operand *Src0, int32_t Src1);
   void findRMW();
 
+  static uint32_t applyStackAlignment(uint32_t Value);
+
   bool IsEbpBasedFrame = false;
-  static constexpr uint32_t RequiredStackAlignment = 16;
+
+  /// Stack alignment guaranteed by the ABI.
+  static constexpr uint32_t X86_STACK_ALIGNMENT_BYTES = 16;
+  /// Stack alignment required by the currently lowered function.
+  const uint32_t RequiredStackAlignment = X86_STACK_ALIGNMENT_BYTES;
   size_t SpillAreaSizeBytes = 0;
   size_t FixedAllocaSizeBytes = 0;
   size_t FixedAllocaAlignBytes = 0;
@@ -938,6 +937,60 @@ private:
                                       int8_t Idx11, int8_t Idx12, int8_t Idx13,
                                       int8_t Idx14, int8_t Idx15);
   /// @}
+
+  /// The following table summarizes the logic for lowering the fcmp
+  /// instruction. There is one table entry for each of the 16 conditions.
+  ///
+  /// The first four columns describe the case when the operands are floating
+  /// point scalar values. A comment in lowerFcmp() describes the lowering
+  /// template. In the most general case, there is a compare followed by two
+  /// conditional branches, because some fcmp conditions don't map to a single
+  /// x86 conditional branch. However, in many cases it is possible to swap the
+  /// operands in the comparison and have a single conditional branch. Since
+  /// it's quite tedious to validate the table by hand, good execution tests are
+  /// helpful.
+  ///
+  /// The last two columns describe the case when the operands are vectors of
+  /// floating point values. For most fcmp conditions, there is a clear mapping
+  /// to a single x86 cmpps instruction variant. Some fcmp conditions require
+  /// special code to handle and these are marked in the table with a
+  /// Cmpps_Invalid predicate.
+  /// {@
+  static const struct TableFcmpType {
+    uint32_t Default;
+    bool SwapScalarOperands;
+    CondX86::BrCond C1, C2;
+    bool SwapVectorOperands;
+    CondX86::CmppsCond Predicate;
+  } TableFcmp[];
+  static const size_t TableFcmpSize;
+  /// @}
+
+  /// The following table summarizes the logic for lowering the icmp instruction
+  /// for i32 and narrower types. Each icmp condition has a clear mapping to an
+  /// x86 conditional branch instruction.
+  /// {@
+  static const struct TableIcmp32Type {
+    CondX86::BrCond Mapping;
+  } TableIcmp32[];
+  static const size_t TableIcmp32Size;
+  /// @}
+
+  /// The following table summarizes the logic for lowering the icmp instruction
+  /// for the i64 type. For Eq and Ne, two separate 32-bit comparisons and
+  /// conditional branches are needed. For the other conditions, three separate
+  /// conditional branches are needed.
+  /// {@
+  static const struct TableIcmp64Type {
+    CondX86::BrCond C1, C2, C3;
+  } TableIcmp64[];
+  static const size_t TableIcmp64Size;
+  /// @}
+
+  static CondX86::BrCond getIcmp32Mapping(InstIcmp::ICond Cond) {
+    assert(Cond < TableIcmp32Size);
+    return TableIcmp32[Cond].Mapping;
+  }
 
 public:
   static std::unique_ptr<::Ice::TargetLowering> create(Cfg *Func) {

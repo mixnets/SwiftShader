@@ -69,76 +69,6 @@ bool shouldBePooled(const class ::Ice::Constant *C) {
 namespace Ice {
 namespace X8632 {
 
-template <typename T> struct PoolTypeConverter {};
-
-template <> struct PoolTypeConverter<float> {
-  using PrimitiveIntType = uint32_t;
-  using IceType = ConstantFloat;
-  static const Type Ty = IceType_f32;
-  static const char *TypeName;
-  static const char *AsmTag;
-  static const char *PrintfString;
-};
-
-template <> struct PoolTypeConverter<double> {
-  using PrimitiveIntType = uint64_t;
-  using IceType = ConstantDouble;
-  static const Type Ty = IceType_f64;
-  static const char *TypeName;
-  static const char *AsmTag;
-  static const char *PrintfString;
-};
-
-// Add converter for int type constant pooling
-template <> struct PoolTypeConverter<uint32_t> {
-  using PrimitiveIntType = uint32_t;
-  using IceType = ConstantInteger32;
-  static const Type Ty = IceType_i32;
-  static const char *TypeName;
-  static const char *AsmTag;
-  static const char *PrintfString;
-};
-
-// Add converter for int type constant pooling
-template <> struct PoolTypeConverter<uint16_t> {
-  using PrimitiveIntType = uint32_t;
-  using IceType = ConstantInteger32;
-  static const Type Ty = IceType_i16;
-  static const char *TypeName;
-  static const char *AsmTag;
-  static const char *PrintfString;
-};
-
-// Add converter for int type constant pooling
-template <> struct PoolTypeConverter<uint8_t> {
-  using PrimitiveIntType = uint32_t;
-  using IceType = ConstantInteger32;
-  static const Type Ty = IceType_i8;
-  static const char *TypeName;
-  static const char *AsmTag;
-  static const char *PrintfString;
-};
-
-const char *PoolTypeConverter<float>::TypeName = "float";
-const char *PoolTypeConverter<float>::AsmTag = ".long";
-const char *PoolTypeConverter<float>::PrintfString = "0x%x";
-
-const char *PoolTypeConverter<double>::TypeName = "double";
-const char *PoolTypeConverter<double>::AsmTag = ".quad";
-const char *PoolTypeConverter<double>::PrintfString = "0x%llx";
-
-const char *PoolTypeConverter<uint32_t>::TypeName = "i32";
-const char *PoolTypeConverter<uint32_t>::AsmTag = ".long";
-const char *PoolTypeConverter<uint32_t>::PrintfString = "0x%x";
-
-const char *PoolTypeConverter<uint16_t>::TypeName = "i16";
-const char *PoolTypeConverter<uint16_t>::AsmTag = ".short";
-const char *PoolTypeConverter<uint16_t>::PrintfString = "0x%x";
-
-const char *PoolTypeConverter<uint8_t>::TypeName = "i8";
-const char *PoolTypeConverter<uint8_t>::AsmTag = ".byte";
-const char *PoolTypeConverter<uint8_t>::PrintfString = "0x%x";
-
 BoolFoldingEntry::BoolFoldingEntry(Inst *I)
     : Instr(I), IsComplex(BoolFolding::hasComplexLowering(I)) {}
 
@@ -2201,10 +2131,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for udiv");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -2264,10 +2190,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for sdiv");
-    case IceType_i64:
-      T_edx = makeReg(Ty, Traits::getRdxOrDie());
-      _mov(T, Src0, Traits::getRaxOrDie());
-      break;
     case IceType_i32:
       T_edx = makeReg(Ty, Traits::RegisterSet::Reg_edx);
       _mov(T, Src0, Traits::RegisterSet::Reg_eax);
@@ -2293,10 +2215,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for urem");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -2371,10 +2289,6 @@ void TargetX8632::lowerArithmetic(const InstArithmetic *Instr) {
     switch (Ty) {
     default:
       llvm::report_fatal_error("Bad type for srem");
-    case IceType_i64:
-      Eax = Traits::getRaxOrDie();
-      Edx = Traits::getRdxOrDie();
-      break;
     case IceType_i32:
       Eax = Traits::RegisterSet::Reg_eax;
       Edx = Traits::RegisterSet::Reg_edx;
@@ -4432,9 +4346,6 @@ void TargetX8632::lowerAtomicCmpxchg(Variable *DestPrev, Operand *Ptr,
   switch (Ty) {
   default:
     llvm::report_fatal_error("Bad type for cmpxchg");
-  case IceType_i64:
-    Eax = Traits::getRaxOrDie();
-    break;
   case IceType_i32:
     Eax = Traits::RegisterSet::Reg_eax;
     break;
@@ -4695,9 +4606,6 @@ void TargetX8632::expandAtomicRMWAsCmpxchg(LowerBinOp Op_Lo, LowerBinOp Op_Hi,
   switch (Ty) {
   default:
     llvm::report_fatal_error("Bad type for atomicRMW");
-  case IceType_i64:
-    Eax = Traits::getRaxOrDie();
-    break;
   case IceType_i32:
     Eax = Traits::RegisterSet::Reg_eax;
     break;

@@ -103,17 +103,6 @@ private:
   CfgUnorderedMap<SizeT, BoolFoldingEntry> Producers;
 };
 
-/// TargetX8632 is a template for all X86 Targets, and it relies on the CRT
-/// pattern for generating code, delegating to actual backends target-specific
-/// lowerings (e.g., call, ret, and intrinsics.)
-///
-/// Note: Ideally, we should be able to
-///
-///  static_assert(std::is_base_of<TargetX8632<TraitsType>,
-///  Machine>::value);
-///
-/// but that does not work: the compiler does not know that Machine inherits
-/// from TargetX8632 at this point in translation.
 class TargetX8632 : public TargetX86 {
   TargetX8632() = delete;
   TargetX8632(const TargetX8632 &) = delete;
