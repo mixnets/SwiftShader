@@ -359,7 +359,7 @@ void BoolFolding::invalidateProducersOnStore(const Inst *Instr) {
     bool HasMemOperand = false;
     const SizeT SrcSize = PInst->getSrcSize();
     for (SizeT I = 0; I < SrcSize; ++I) {
-      if (llvm::isa<typename Traits::X86OperandMem>(PInst->getSrc(I))) {
+      if (llvm::isa<X86OperandMem>(PInst->getSrc(I))) {
         HasMemOperand = true;
         break;
       }
@@ -600,8 +600,8 @@ inline bool canRMW(const InstArithmetic *Arith) {
 bool isSameMemAddressOperand(const Operand *A, const Operand *B) {
   if (A == B)
     return true;
-  if (auto *MemA = llvm::dyn_cast<typename TargetX8664::X86OperandMem>(A)) {
-    if (auto *MemB = llvm::dyn_cast<typename TargetX8664::X86OperandMem>(B)) {
+  if (auto *MemA = llvm::dyn_cast<X86OperandMem>(A)) {
+    if (auto *MemB = llvm::dyn_cast<X86OperandMem>(B)) {
       return MemA->getBase() == MemB->getBase() &&
              MemA->getOffset() == MemB->getOffset() &&
              MemA->getIndex() == MemB->getIndex() &&
@@ -1913,7 +1913,7 @@ void TargetX8664::lowerArithmetic(const InstArithmetic *Instr) {
                              llvm::isa<ConstantRelocatable>(Const));
     if (getFlags().getAggressiveLea() && ValidType && ValidKind) {
       auto *Var = legalizeToReg(Src0);
-      auto *Mem = Traits::X86OperandMem::create(Func, IceType_void, Var, Const);
+      auto *Mem = X86OperandMem::create(Func, IceType_void, Var, Const);
       T = makeReg(Ty);
       _lea(T, Mem);
       _mov(Dest, T);
@@ -2340,7 +2340,7 @@ void TargetX8664::lowerCall(const InstCall *Instr) {
       Variable *esp = getPhysicalRegister(getStackReg(), Traits::WordType);
       Constant *Loc = Ctx->getConstantInt32(ParameterAreaSizeBytes);
       StackArgLocations.push_back(
-          Traits::X86OperandMem::create(Func, Ty, esp, Loc));
+          X86OperandMem::create(Func, Ty, esp, Loc));
       ParameterAreaSizeBytes += typeWidthInBytesOnStack(Arg->getType());
     }
   }
@@ -4871,7 +4871,7 @@ const Inst *AddressOptimizer::matchOffsetIndexOrBase(
   return nullptr;
 }
 
-typename TargetX8664::X86OperandMem *
+X86OperandMem *
 TargetX8664::computeAddressOpt(const Inst *Instr, Type MemType, Operand *Addr) {
   Func->resetCurrentNode();
   if (Func->isVerbose(IceV_AddrOpt)) {
@@ -6586,7 +6586,7 @@ Variable *TargetX8664::makeVectorOfFabsMask(Type Ty, RegNumT RegNum) {
   return Reg;
 }
 
-typename TargetX8664::X86OperandMem *
+X86OperandMem *
 TargetX8664::getMemoryOperandForStackSlot(Type Ty, Variable *Slot,
                                           uint32_t Offset) {
   // Ensure that Loc is a stack slot.
@@ -6873,7 +6873,7 @@ Operand *TargetX8664::legalizeSrc0ForCmp(Operand *Src0, Operand *Src1) {
   return legalize(Src0, IsSrc1ImmOrReg ? (Legal_Reg | Legal_Mem) : Legal_Reg);
 }
 
-typename TargetX8664::X86OperandMem *
+X86OperandMem *
 TargetX8664::formMemoryOperand(Operand *Opnd, Type Ty, bool DoLegalize) {
   auto *Mem = llvm::dyn_cast<X86OperandMem>(Opnd);
   // It may be the case that address mode optimization already creates an
@@ -7225,7 +7225,7 @@ void TargetX8664::_push_reg(RegNumT RegNum) {
     Variable *rsp =
         getPhysicalRegister(Traits::RegisterSet::Reg_rsp, Traits::WordType);
     auto *address =
-        Traits::X86OperandMem::create(Func, reg->getType(), rsp, nullptr);
+        X86OperandMem::create(Func, reg->getType(), rsp, nullptr);
     _sub_sp(
         Ctx->getConstantInt32(16)); // TODO(capn): accumulate all the offsets
                                     // and adjust the stack pointer once.
@@ -7241,7 +7241,7 @@ void TargetX8664::_pop_reg(RegNumT RegNum) {
     Variable *rsp =
         getPhysicalRegister(Traits::RegisterSet::Reg_rsp, Traits::WordType);
     auto *address =
-        Traits::X86OperandMem::create(Func, reg->getType(), rsp, nullptr);
+        X86OperandMem::create(Func, reg->getType(), rsp, nullptr);
     _movp(reg, address);
     _add_sp(
         Ctx->getConstantInt32(16)); // TODO(capn): accumulate all the offsets
