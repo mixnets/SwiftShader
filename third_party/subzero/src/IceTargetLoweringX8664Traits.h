@@ -51,170 +51,6 @@ struct TargetX8664Traits {
   //      \/_____/\/_____/\/_/   \/_/\/_____/\/_/ /_/\/_/\/_/ \/_/\/_____/
   //
   //----------------------------------------------------------------------------
-  static const char *TargetName;
-  static constexpr Type WordType = IceType_i64;
-
-  static const char *getRegName(RegNumT RegNum) {
-    static const char *const RegNames[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  name,
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    return RegNames[RegNum];
-  }
-
-  static GPRRegister getEncodedGPR(RegNumT RegNum) {
-    static const GPRRegister GPRRegs[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  GPRRegister(isGPR ? encode : GPRRegister::Encoded_Not_GPR),
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    assert(GPRRegs[RegNum] != GPRRegister::Encoded_Not_GPR);
-    return GPRRegs[RegNum];
-  }
-
-  static ByteRegister getEncodedByteReg(RegNumT RegNum) {
-    static const ByteRegister ByteRegs[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  ByteRegister(is8 ? encode : ByteRegister::Encoded_Not_ByteReg),
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    assert(ByteRegs[RegNum] != ByteRegister::Encoded_Not_ByteReg);
-    return ByteRegs[RegNum];
-  }
-
-  static bool isXmm(RegNumT RegNum) {
-    static const bool IsXmm[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  isXmm,
-        REGX8664_TABLE
-#undef X
-    };
-    return IsXmm[RegNum];
-  }
-
-  static XmmRegister getEncodedXmm(RegNumT RegNum) {
-    static const XmmRegister XmmRegs[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  XmmRegister(isXmm ? encode : XmmRegister::Encoded_Not_Xmm),
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    assert(XmmRegs[RegNum] != XmmRegister::Encoded_Not_Xmm);
-    return XmmRegs[RegNum];
-  }
-
-  static uint32_t getEncoding(RegNumT RegNum) {
-    static const uint32_t Encoding[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  encode,
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    return Encoding[RegNum];
-  }
-
-  static inline RegNumT getBaseReg(RegNumT RegNum) {
-    static const RegNumT BaseRegs[RegisterSet::Reg_NUM] = {
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  RegisterSet::base,
-        REGX8664_TABLE
-#undef X
-    };
-    RegNum.assertIsValid();
-    return BaseRegs[RegNum];
-  }
-
-private:
-  static RegNumT getFirstGprForType(Type Ty) {
-    switch (Ty) {
-    default:
-      llvm_unreachable("Invalid type for GPR.");
-    case IceType_i1:
-    case IceType_i8:
-      return RegisterSet::Reg_al;
-    case IceType_i16:
-      return RegisterSet::Reg_ax;
-    case IceType_i32:
-      return RegisterSet::Reg_eax;
-    case IceType_i64:
-      return RegisterSet::Reg_rax;
-    }
-  }
-
-public:
-  static RegNumT getGprForType(Type Ty, RegNumT RegNum) {
-    assert(RegNum.hasValue());
-
-    if (!isScalarIntegerType(Ty)) {
-      return RegNum;
-    }
-
-    assert(Ty == IceType_i1 || Ty == IceType_i8 || Ty == IceType_i16 ||
-           Ty == IceType_i32 || Ty == IceType_i64);
-
-    if (RegNum == RegisterSet::Reg_ah) {
-      assert(Ty == IceType_i8);
-      return RegNum;
-    }
-
-    assert(RegNum != RegisterSet::Reg_bh);
-    assert(RegNum != RegisterSet::Reg_ch);
-    assert(RegNum != RegisterSet::Reg_dh);
-
-    const RegNumT FirstGprForType = getFirstGprForType(Ty);
-
-    switch (RegNum) {
-    default:
-      llvm::report_fatal_error("Unknown register.");
-#define X(val, encode, name, base, scratch, preserved, stackptr, frameptr,     \
-          sboxres, isGPR, is64, is32, is16, is8, isXmm, is64To8, is32To8,      \
-          is16To8, isTrunc8Rcvr, isAhRcvr, aliases)                            \
-  case RegisterSet::val: {                                                     \
-    if (!isGPR)                                                                \
-      return RegisterSet::val;                                                 \
-    assert((is64) || (is32) || (is16) || (is8) ||                              \
-           getBaseReg(RegisterSet::val) == RegisterSet::Reg_rsp);              \
-    constexpr RegisterSet::AllRegisters FirstGprWithRegNumSize =               \
-        ((is64) || RegisterSet::val == RegisterSet::Reg_rsp)                   \
-            ? RegisterSet::Reg_rax                                             \
-            : (((is32) || RegisterSet::val == RegisterSet::Reg_esp)            \
-                   ? RegisterSet::Reg_eax                                      \
-                   : (((is16) || RegisterSet::val == RegisterSet::Reg_sp)      \
-                          ? RegisterSet::Reg_ax                                \
-                          : RegisterSet::Reg_al));                             \
-    const auto NewRegNum =                                                     \
-        RegNumT::fixme(RegNum - FirstGprWithRegNumSize + FirstGprForType);     \
-    assert(getBaseReg(RegNum) == getBaseReg(NewRegNum) &&                      \
-           "Error involving " #val);                                           \
-    return NewRegNum;                                                          \
-  }
-      REGX8664_TABLE
-#undef X
-    }
-  }
 
 private:
   /// SizeOf is used to obtain the size of an initializer list as a constexpr
@@ -414,7 +250,7 @@ public:
     static_assert(llvm::array_lengthof(GprForArgNum) == X86_MAX_GPR_ARGS,
                   "Mismatch between MAX_GPR_ARGS and GprForArgNum.");
     assert(Ty == IceType_i64 || Ty == IceType_i32);
-    return getGprForType(Ty, GprForArgNum[ArgNum]);
+    return RegX8664::getGprForType(Ty, GprForArgNum[ArgNum]);
   }
   // Given the absolute argument position and argument position by type, return
   // the register index to assign it to.
@@ -510,9 +346,6 @@ public:
     assert(Ty < TableTypeX8664AttributesSize);
     return TableTypeX8664Attributes[Ty].InVectorElementType;
   }
-
-  // Note: The following data structures are defined in
-  // IceTargetLoweringX8664.cpp.
 
   /// The following table summarizes the logic for lowering the fcmp
   /// instruction. There is one table entry for each of the 16 conditions.

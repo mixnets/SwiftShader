@@ -37,6 +37,8 @@ namespace X8664 {
 
 using namespace ::Ice::X86;
 
+constexpr Type WordType = IceType_i64;
+
 class BoolFoldingEntry {
   BoolFoldingEntry(const BoolFoldingEntry &) = delete;
 
@@ -211,7 +213,7 @@ public:
   }
   size_t typeWidthInBytesOnStack(Type Ty) const override {
     // Round up to the next multiple of WordType bytes.
-    const uint32_t WordSizeInBytes = typeWidthInBytes(Traits::WordType);
+    const uint32_t WordSizeInBytes = typeWidthInBytes(WordType);
     return Utils::applyAlignment(typeWidthInBytes(Ty), WordSizeInBytes);
   }
   uint32_t getStackAlignment() const override {
@@ -377,7 +379,7 @@ protected:
   /// function. Otherwise some esp adjustments get dead-code eliminated.
   void keepEspLiveAtExit() {
     Variable *esp =
-        Func->getTarget()->getPhysicalRegister(getStackReg(), Traits::WordType);
+        Func->getTarget()->getPhysicalRegister(getStackReg(), WordType);
     Context.insert<InstFakeUse>(esp);
   }
 
