@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f57a185b_50e25eb9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-15T21:09:13Z",
+      "side": 1,
+      "message": "Note that while this duplicates a fair amount of code, it doesn\u0027t affect binary size in any way because we only compile the native backend. Also, we gain back back a lot thanks to specializations in the next patches, as well as a significant reduction in C++ constructs from eliminating templates.\n\nIn the end it\u0027s only 6k new lines of code: https://swiftshader-review.googlesource.com/c/SwiftShader/+/55888. For comparison, each X86 backend is about 19k lines of code, after specializations, so the combined templatized backend was massive and unwieldy.",
+      "revId": "505359cbcf3d63a2a4a9a6b52dbae1a5ca646c02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
