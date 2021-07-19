@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8871a7e8_74a1534c",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1395,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-19T17:35:24Z",
+      "side": 1,
+      "message": "So, IIUC, this case should never be reached? Maybe it could be removed, to confirm that this is indeed unreachable in non 32FP code paths.",
+      "range": {
+        "startLine": 1395,
+        "startChar": 6,
+        "endLine": 1395,
+        "endChar": 39
+      },
+      "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e87ee89b_13cf116a",
         "filename": "src/Pipeline/SamplerCore.cpp",
         "patchSetId": 6
@@ -32,6 +55,24 @@
       "side": 1,
       "message": "Thanks for taking a look. borderModeActive() currently causes us to use the 32-bit filtering path: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54469/6/src/Pipeline/SamplerCore.cpp#140\n\nSo I think this is correct as-is?",
       "parentUuid": "e87ee89b_13cf116a",
+      "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f6498d4_ddf2ee85",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1916,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-19T17:35:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9fec5189_42beb4db",
       "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
