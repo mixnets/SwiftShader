@@ -173,7 +173,8 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 
 		// For explicit-lod instructions the LOD can be different per SIMD lane. SamplerCore currently assumes
 		// a single LOD per four elements, so we sample the image again for each LOD separately.
-		if(samplerFunction.method == Lod || samplerFunction.method == Grad)  // TODO(b/133868964): Also handle divergent Bias and Fetch with Lod.
+		// TODO(b/133868964) Pass down 4 component lodOrBias to sampleTexture
+		if(samplerFunction.method == Lod || samplerFunction.method == Grad)
 		{
 			auto lod = Pointer<Float>(&lodOrBias);
 
@@ -181,7 +182,6 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 			{
 				SIMD::Float dPdx;
 				SIMD::Float dPdy;
-
 				dPdx.x = Pointer<Float>(&dsx.x)[i];
 				dPdx.y = Pointer<Float>(&dsx.y)[i];
 				dPdx.z = Pointer<Float>(&dsx.z)[i];
@@ -197,6 +197,50 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 				rgba[1 * SIMD::Width + i] = Pointer<Float>(&sample.y)[i];
 				rgba[2 * SIMD::Width + i] = Pointer<Float>(&sample.z)[i];
 				rgba[3 * SIMD::Width + i] = Pointer<Float>(&sample.w)[i];
+			}
+		}
+		else if(samplerFunction.method == Bias || samplerFunction.method == Fetch)
+		{
+			SIMD::Float dPdx;
+			SIMD::Float dPdy;
+
+			dPdx.x = Pointer<Float>(&dsx.x)[0];
+			dPdx.y = Pointer<Float>(&dsx.y)[0];
+			dPdx.z = Pointer<Float>(&dsx.z)[0];
+
+			dPdy.x = Pointer<Float>(&dsy.x)[0];
+			dPdy.y = Pointer<Float>(&dsy.y)[0];
+			dPdy.z = Pointer<Float>(&dsy.z)[0];
+			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, dPdx, dPdy, offset, sampleId, samplerFunction);
+			Pointer<SIMD::Float> rgba = out;
+			rgba[0] = sample.x;
+			rgba[1] = sample.y;
+			rgba[2] = sample.z;
+			rgba[3] = sample.w;
+
+			// Only sample other LoDs if they differ from the first.
+			If(lodOrBias.x != lodOrBias.y || lodOrBias.x != lodOrBias.z || lodOrBias.x != lodOrBias.w)
+			{
+				auto lod = Pointer<Float>(&lodOrBias);
+
+				For(Int i = 1, i < SIMD::Width, i++)
+				{
+					dPdx.x = Pointer<Float>(&dsx.x)[i];
+					dPdx.y = Pointer<Float>(&dsx.y)[i];
+					dPdx.z = Pointer<Float>(&dsx.z)[i];
+
+					dPdy.x = Pointer<Float>(&dsy.x)[i];
+					dPdy.y = Pointer<Float>(&dsy.y)[i];
+					dPdy.z = Pointer<Float>(&dsy.z)[i];
+
+					Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lod[i], dPdx, dPdy, offset, sampleId, samplerFunction);
+
+					Pointer<Float> rgba = out;
+					rgba[0 * SIMD::Width + i] = Pointer<Float>(&sample.x)[i];
+					rgba[1 * SIMD::Width + i] = Pointer<Float>(&sample.y)[i];
+					rgba[2 * SIMD::Width + i] = Pointer<Float>(&sample.z)[i];
+					rgba[3 * SIMD::Width + i] = Pointer<Float>(&sample.w)[i];
+				}
 			}
 		}
 		else
