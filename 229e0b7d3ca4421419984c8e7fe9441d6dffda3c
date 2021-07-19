@@ -16,6 +16,24 @@
       "message": "Missing this here (with Vector4s instead of Vector4i)?\n\n \tif(borderModeActive())\n\t{\n\t\tc \u003d replaceBorderTexel(c, valid);\n\t}",
       "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fec5189_42beb4db",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1916,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-19T14:15:34Z",
+      "side": 1,
+      "message": "Thanks for taking a look. borderModeActive() currently causes us to use the 32-bit filtering path: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54469/6/src/Pipeline/SamplerCore.cpp#140\n\nSo I think this is correct as-is?",
+      "parentUuid": "e87ee89b_13cf116a",
+      "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
