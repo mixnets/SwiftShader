@@ -16,6 +16,24 @@
       "message": "reinterpret_cast doesn\u0027t do any type checking. This line just checks if display is non-nullptr. Is that what you wanted? You can omit the reinterpret_cast, it has no effect here.",
       "revId": "aba65a8e1ce1123268e346230e5307c97e174c19",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "697d9929_bff3c91c",
+        "filename": "src/Main/FrameBufferFactoryOzone.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 100916
+      },
+      "writtenOn": "2021-07-19T05:57:58Z",
+      "side": 1,
+      "message": "It\u0027s indeed required to check type of the display.",
+      "parentUuid": "98695f19_9b8955f9",
+      "revId": "aba65a8e1ce1123268e346230e5307c97e174c19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
