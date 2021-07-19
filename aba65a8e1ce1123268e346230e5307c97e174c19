@@ -52,6 +52,24 @@
       "parentUuid": "697d9929_bff3c91c",
       "revId": "aba65a8e1ce1123268e346230e5307c97e174c19",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fba4973_1ed6feea",
+        "filename": "src/Main/FrameBufferFactoryOzone.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-19T15:14:31Z",
+      "side": 1,
+      "message": "Note that this code is part of the legacy SwiftShader OpenGL ES implementation, which will soon be deleted. It is superseded by ANGLE + SwiftShader Vulkan (\"SwANGLE\"), so it might be worth checking that ANGLE doesn\u0027t have this issue, instead.",
+      "parentUuid": "3142c3c7_ca336b13",
+      "revId": "aba65a8e1ce1123268e346230e5307c97e174c19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
