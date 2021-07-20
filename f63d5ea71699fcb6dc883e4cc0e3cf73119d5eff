@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "33b92923_7b7e3ed4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8414e9c_0aaf8cb0",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 33
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "329d454e_e663fbf3",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-07-20T14:07:55Z",
       "side": 1,
       "message": "Should each be on a separate line",
+      "range": {
+        "startLine": 13,
+        "startChar": 17,
+        "endLine": 13,
+        "endChar": 29
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e249e16b_ea38aabe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "329d454e_e663fbf3",
       "range": {
         "startLine": 13,
         "startChar": 17,
@@ -84,6 +132,30 @@
       "side": 1,
       "message": "Actually a dynamic loop is preferred when unrolling would produce a lot of code, like in this case. Note this just copies the logic from line 180 on the left side.",
       "parentUuid": "e7d5497d_dc5d4f21",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 123,
+        "endChar": 37
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7b59a5c_040deaa1",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0b0868d5_c3303454",
       "range": {
         "startLine": 123,
         "startChar": 1,
@@ -164,6 +236,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dccac375_47218ccc",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7e3dd35_38ea7a81",
+      "range": {
+        "startLine": 209,
+        "startChar": 74,
+        "endLine": 209,
+        "endChar": 78
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cfd425be_ee48884f",
@@ -187,6 +283,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "88c3cce8_b84dcf02",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfd425be_ee48884f",
+      "range": {
+        "startLine": 210,
+        "startChar": 2,
+        "endLine": 212,
+        "endChar": 3
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8db68df_bd421b13",
@@ -200,6 +320,30 @@
       "writtenOn": "2021-07-20T14:07:55Z",
       "side": 1,
       "message": "This adds a dynamic branch to every sampling operation, including ones that can\u0027t have divergent LOD. Let\u0027s limit this to Fetch and Bias, perhaps by adding them to the Lod and Grad code path above?\n\nThere are probably also ways to detect that the LOD is constant, from the SPIR-V code, but that\u0027s an optimization for another time.",
+      "range": {
+        "startLine": 215,
+        "startChar": 3,
+        "endLine": 215,
+        "endChar": 5
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fd928dd_6d64634a",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T16:31:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8db68df_bd421b13",
       "range": {
         "startLine": 215,
         "startChar": 3,
