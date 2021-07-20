@@ -22,6 +22,30 @@
       },
       "revId": "0dd6f6bc7eb05fdd5f304506a22ded7420d8b75d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "add1fcbb_c31e3300",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-20T18:20:50Z",
+      "side": 1,
+      "message": "Yeah, it also returns true if none of them are equal. I now just directly compare lod.x to y, z, and w.",
+      "parentUuid": "be3d154e_be063365",
+      "range": {
+        "startLine": 115,
+        "startChar": 1,
+        "endLine": 116,
+        "endChar": 69
+      },
+      "revId": "0dd6f6bc7eb05fdd5f304506a22ded7420d8b75d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
