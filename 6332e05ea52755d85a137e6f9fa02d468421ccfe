@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fb8c74a_23e52078",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T16:25:07Z",
+      "side": 1,
+      "message": "Comment removed by: Nicolas Capens; Reason: premature",
+      "revId": "6332e05ea52755d85a137e6f9fa02d468421ccfe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

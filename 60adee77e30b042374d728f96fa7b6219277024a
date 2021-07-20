@@ -46,6 +46,30 @@
       },
       "revId": "60adee77e30b042374d728f96fa7b6219277024a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51646ea1_e4d1b865",
+        "filename": "third_party/angle/angle",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T16:25:07Z",
+      "side": 1,
+      "message": "Look like it\u0027s still the same?",
+      "parentUuid": "2f8964a9_bb4df85e",
+      "range": {
+        "startLine": 1,
+        "startChar": 18,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "60adee77e30b042374d728f96fa7b6219277024a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
