@@ -22,6 +22,30 @@
       },
       "revId": "60adee77e30b042374d728f96fa7b6219277024a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f8964a9_bb4df85e",
+        "filename": "third_party/angle/angle",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 101051
+      },
+      "writtenOn": "2021-07-20T15:55:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "781f5957_43ba5eda",
+      "range": {
+        "startLine": 1,
+        "startChar": 18,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "60adee77e30b042374d728f96fa7b6219277024a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
