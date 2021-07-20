@@ -16,6 +16,47 @@
       "message": "Thanks Elias. This looks fine to me, but a bit of context about where this was encountered and what the error was would be welcome (we haven\u0027t seen this on any of the platforms we build on).\n\nNote the Kokoro failure is just because there\u0027s no \"Bug:\" line in the commit message. It\u0027s not essential, but it can be fixed by referencing a bug from g.co/swiftshaderbugs using the \"Bug: b/###\" syntax, or describing the issue on that line without using numbers.",
       "revId": "992d704c3f330ff487ad152d094dce26724ee43c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a86ab4f4_acfa125f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:26:39Z",
+      "side": 1,
+      "message": "\u003e we haven\u0027t seen this on any of the platforms we build on\n\nOops, that\u0027s a lie, we do compile this file in the Android build.",
+      "parentUuid": "fa846011_91b7b453",
+      "revId": "992d704c3f330ff487ad152d094dce26724ee43c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d298b989_25450c16",
+        "filename": "third_party/llvm-10.0/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:26:39Z",
+      "side": 1,
+      "message": "nit: Move down to keep alphabetic order",
+      "range": {
+        "startLine": 755,
+        "startChar": 4,
+        "endLine": 755,
+        "endChar": 53
+      },
+      "revId": "992d704c3f330ff487ad152d094dce26724ee43c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
