@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be3d154e_be063365",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T16:59:29Z",
+      "side": 1,
+      "message": "Does this work as intended? I think it returns true if all values are equal.",
+      "range": {
+        "startLine": 115,
+        "startChar": 1,
+        "endLine": 116,
+        "endChar": 69
+      },
+      "revId": "0dd6f6bc7eb05fdd5f304506a22ded7420d8b75d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
