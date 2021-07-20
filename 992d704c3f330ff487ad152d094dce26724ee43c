@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa846011_91b7b453",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:23:05Z",
+      "side": 1,
+      "message": "Thanks Elias. This looks fine to me, but a bit of context about where this was encountered and what the error was would be welcome (we haven\u0027t seen this on any of the platforms we build on).\n\nNote the Kokoro failure is just because there\u0027s no \"Bug:\" line in the commit message. It\u0027s not essential, but it can be fixed by referencing a bug from g.co/swiftshaderbugs using the \"Bug: b/###\" syntax, or describing the issue on that line without using numbers.",
+      "revId": "992d704c3f330ff487ad152d094dce26724ee43c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
