@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7d5497d_dc5d4f21",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-20T13:47:27Z",
+      "side": 1,
+      "message": "Note: You\u0027re using a costly dynamic loop and dynamic indexing below when a static loop + static indexing would do:\n    for(int i \u003d 0, i \u003c SIMD::Width, i++)",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 123,
+        "endChar": 37
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05d79666_47fda4ea",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-20T13:47:27Z",
+      "side": 1,
+      "message": "A texture sampling operation is a very large operation, and this would basically end up drastically increasing the size of every program we compile. Could you look if it would be possible to pass down the full 4 component LOD to sampleTexture() instead, and propagate it as low as possible so that it has minimal impact on code size?",
+      "range": {
+        "startLine": 136,
+        "startChar": 2,
+        "endLine": 136,
+        "endChar": 105
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
