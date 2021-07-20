@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d8414e9c_0aaf8cb0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "Please mention that this is specific to texelFetch",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 33
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "329d454e_e663fbf3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "Should each be on a separate line",
+      "range": {
+        "startLine": 13,
+        "startChar": 17,
+        "endLine": 13,
+        "endChar": 29
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e7d5497d_dc5d4f21",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 1
@@ -14,6 +60,30 @@
       "writtenOn": "2021-07-20T13:47:27Z",
       "side": 1,
       "message": "Note: You\u0027re using a costly dynamic loop and dynamic indexing below when a static loop + static indexing would do:\n    for(int i \u003d 0, i \u003c SIMD::Width, i++)",
+      "range": {
+        "startLine": 123,
+        "startChar": 1,
+        "endLine": 123,
+        "endChar": 37
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b0868d5_c3303454",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "Actually a dynamic loop is preferred when unrolling would produce a lot of code, like in this case. Note this just copies the logic from line 180 on the left side.",
+      "parentUuid": "e7d5497d_dc5d4f21",
       "range": {
         "startLine": 123,
         "startChar": 1,
@@ -42,6 +112,99 @@
         "startChar": 2,
         "endLine": 136,
         "endChar": 105
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "517e67c7_bd6b40e6",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "That\u0027s quite a large task, with a few alternatives worth exploring: b/133868964#comment3\n\nFor now let\u0027s just get dEQP-VK.texture.subgroup_lod.texelfetch to pass, using the same approach as other divergent LOD cases.",
+      "parentUuid": "05d79666_47fda4ea",
+      "range": {
+        "startLine": 136,
+        "startChar": 2,
+        "endLine": 136,
+        "endChar": 105
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7e3dd35_38ea7a81",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "Update comment.",
+      "range": {
+        "startLine": 209,
+        "startChar": 74,
+        "endLine": 209,
+        "endChar": 78
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfd425be_ee48884f",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "Would be great to optimize this case with lodDiverges().",
+      "range": {
+        "startLine": 210,
+        "startChar": 2,
+        "endLine": 212,
+        "endChar": 3
+      },
+      "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8db68df_bd421b13",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T14:07:55Z",
+      "side": 1,
+      "message": "This adds a dynamic branch to every sampling operation, including ones that can\u0027t have divergent LOD. Let\u0027s limit this to Fetch and Bias, perhaps by adding them to the Lod and Grad code path above?\n\nThere are probably also ways to detect that the LOD is constant, from the SPIR-V code, but that\u0027s an optimization for another time.",
+      "range": {
+        "startLine": 215,
+        "startChar": 3,
+        "endLine": 215,
+        "endChar": 5
       },
       "revId": "f63d5ea71699fcb6dc883e4cc0e3cf73119d5eff",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
