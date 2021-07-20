@@ -94,6 +94,30 @@
       },
       "revId": "60adee77e30b042374d728f96fa7b6219277024a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "875e6c94_3f5c0943",
+        "filename": "third_party/angle/angle",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-20T17:12:27Z",
+      "side": 1,
+      "message": "No worries, thanks for working it out!\n\nYou should now be able to click Verified+1, and then submit. Thanks again for your contribution!",
+      "parentUuid": "2250e0c0_2c419399",
+      "range": {
+        "startLine": 1,
+        "startChar": 18,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "60adee77e30b042374d728f96fa7b6219277024a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
