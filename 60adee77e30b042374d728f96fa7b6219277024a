@@ -70,6 +70,30 @@
       },
       "revId": "60adee77e30b042374d728f96fa7b6219277024a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2250e0c0_2c419399",
+        "filename": "third_party/angle/angle",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 101051
+      },
+      "writtenOn": "2021-07-20T17:04:40Z",
+      "side": 1,
+      "message": "Done. Sorry for the churn; I have little experience with git submodules.",
+      "parentUuid": "51646ea1_e4d1b865",
+      "range": {
+        "startLine": 1,
+        "startChar": 18,
+        "endLine": 1,
+        "endChar": 58
+      },
+      "revId": "60adee77e30b042374d728f96fa7b6219277024a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
