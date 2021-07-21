@@ -116,7 +116,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 			c.y = Float4(lod);  // Unclamped LOD.
 		}
 
-		if (!singleMipLevel)
+		if(!singleMipLevel)
 		{
 			lod = Max(lod, state.minLod);
 			lod = Min(lod, state.maxLod);
@@ -1392,7 +1392,6 @@ Short4 SamplerCore::applyOffset(Short4 &uvw, Int4 &offset, const Int4 &whd, Addr
 	case AddressingMode::ADDRESSING_CLAMP:
 	case AddressingMode::ADDRESSING_MIRROR:
 	case AddressingMode::ADDRESSING_MIRRORONCE:
-	case AddressingMode::ADDRESSING_BORDER:  // FIXME: Implement and test ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE, ADDRESSING_BORDER
 		tmp = Min(Max(tmp, Int4(0)), whd - Int4(1));
 		break;
 	case AddressingMode::ADDRESSING_SEAMLESS:
@@ -2157,10 +2156,10 @@ Vector4f SamplerCore::replaceBorderTexel(const Vector4f &c, Int4 valid)
 		border.w = Int4(1);
 		break;
 	case VK_BORDER_COLOR_FLOAT_CUSTOM_EXT:
-		border.x = As<Int4>(Float4(scale * state.customBorder.float32[0]));
-		border.y = As<Int4>(Float4(scale * state.customBorder.float32[1]));
-		border.z = As<Int4>(Float4(scale * state.customBorder.float32[2]));
-		border.w = As<Int4>(Float4(scale * state.customBorder.float32[3]));
+		border.x = Int4(bit_cast<int>(scale * state.customBorder.float32[0]));
+		border.y = Int4(bit_cast<int>(scale * state.customBorder.float32[1]));
+		border.z = Int4(bit_cast<int>(scale * state.customBorder.float32[2]));
+		border.w = Int4(bit_cast<int>(scale * state.customBorder.float32[3]));
 		break;
 	case VK_BORDER_COLOR_INT_CUSTOM_EXT:
 		border.x = Int4(state.customBorder.int32[0]);
