@@ -24,6 +24,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "59e57fbd_95ab1d61",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1395,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-21T16:20:33Z",
+      "side": 1,
+      "message": "Yes, it\u0027s currently unreachable, as proven by https://swiftshader-review.googlesource.com/c/SwiftShader/+/55948\n\nThere are more cases like this, so I suggest we leave it as-is for now, until we refactor this code more thoroughly.",
+      "parentUuid": "8871a7e8_74a1534c",
+      "range": {
+        "startLine": 1395,
+        "startChar": 6,
+        "endLine": 1395,
+        "endChar": 39
+      },
+      "revId": "229e0b7d3ca4421419984c8e7fe9441d6dffda3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e87ee89b_13cf116a",

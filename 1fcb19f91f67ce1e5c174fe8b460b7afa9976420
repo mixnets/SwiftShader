@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "120e59f2_03cea51b",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2163,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-21T16:20:33Z",
+      "side": 1,
+      "message": "Might require supporting infinity, which currently causes asserts in the dEQP-GLES31 tests due to b/140302841. https://swiftshader-review.googlesource.com/c/SwiftShader/+/55948 provides the workaround that would have to be merged into this change.\n\nCould use some consensus on https://gitlab.khronos.org/Tracker/vk-gl-cts/-/issues/3012 though to ensure this is valid usage of the extension.",
+      "range": {
+        "startLine": 2160,
+        "startChar": 2,
+        "endLine": 2163,
+        "endChar": 69
+      },
+      "revId": "1fcb19f91f67ce1e5c174fe8b460b7afa9976420",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
