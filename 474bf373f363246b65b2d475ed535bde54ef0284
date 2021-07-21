@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aa89c67_4bb3c646",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-21T20:26:43Z",
+      "side": 1,
+      "message": "Just curious: I think this isn\u0027t equivalent to line 205. \"dsx\" and \"dsy\" are Vector4f variables, and \"(dsx.x), (dsy.x)\", at line 205, is equivalent to \"(dsx[0]), (dsy[0])\". \"dPdx\" and \"dPdy\" are not equivalent to dsx[i], dsy[i], so I guess this isn\u0027t mathematically correct.\n\nAs a side note: why isn\u0027t this CL simply adding\n    || samplerFunction.method \u003d\u003d Bias || samplerFunction.method \u003d\u003d Fetch\n\nto line 177? We already unconditionally loop for Lod and Grad, so I\u0027m not sure why we would need to conditionally loop for Bias and Fetch. It would make the code much simpler.",
+      "range": {
+        "startLine": 221,
+        "startChar": 0,
+        "endLine": 228,
+        "endChar": 0
+      },
+      "revId": "474bf373f363246b65b2d475ed535bde54ef0284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
