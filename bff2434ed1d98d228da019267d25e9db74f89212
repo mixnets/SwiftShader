@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6830d99_b358c004",
+        "filename": "src/Pipeline/SamplerCore.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2159,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-21T16:22:52Z",
+      "side": 1,
+      "message": "Add comment that this works around b/140302841",
+      "range": {
+        "startLine": 2159,
+        "startChar": 18,
+        "endLine": 2159,
+        "endChar": 26
+      },
+      "revId": "bff2434ed1d98d228da019267d25e9db74f89212",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
