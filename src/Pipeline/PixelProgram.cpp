@@ -13,13 +13,36 @@
 // limitations under the License.
 
 #include "PixelProgram.hpp"
-#include "Constants.hpp"
 
+#include "Constants.hpp"
 #include "SamplerCore.hpp"
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
 
 namespace sw {
+
+PixelProgram::PixelProgram(
+    const PixelProcessor::State &state,
+    const vk::PipelineLayout *pipelineLayout,
+    const SpirvShader *spirvShader,
+    const vk::DescriptorSet::Bindings &descriptorSets)
+    : PixelRoutine(state, pipelineLayout, spirvShader, descriptorSets)
+
+{
+}
+
+bool PixelRoutine::implicitSampleRateShading(SpirvShader const *spirvShader)
+{
+	// SampleId and SamplePosition built-ins require the sampleRateShading feature, so the Vulkan spec
+	// requires turning on per sample shading if either of them is present in the shader.
+
+	// "If a fragment shader entry point's interface includes an input variable decorated with SampleId,
+	//  Sample Shading is considered enabled with a minSampleShading value of 1.0."
+
+	// "If a fragment shader entry point's interface includes an input variable decorated with SamplePosition,
+	//  Sample Shading is considered enabled with a minSampleShading value of 1.0."
+	return spirvShader && (spirvShader->hasBuiltinInput(spv::BuiltInSampleId) || spirvShader->hasBuiltinInput(spv::BuiltInSamplePosition));
+}
 
 // Union all cMask and return it as 4 booleans
 Int4 PixelProgram::maskAny(Int cMask[4]) const
@@ -235,10 +258,14 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sam
 	it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
 	if(it != spirvShader->outputBuiltins.end())
 	{
-		oDepth = routine.getVariable(it->second.Id)[it->second.FirstComponent];
-		if(state.depthClamp)
+		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 		{
-			oDepth = Min(Max(oDepth, Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+			z[q] = routine.getVariable(it->second.Id)[it->second.FirstComponent];
+
+			if(state.depthClamp)
+			{
+				z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+			}
 		}
 	}
 }

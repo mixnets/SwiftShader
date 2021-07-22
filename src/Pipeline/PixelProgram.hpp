@@ -24,12 +24,9 @@ class PixelProgram : public PixelRoutine
 public:
 	PixelProgram(
 	    const PixelProcessor::State &state,
-	    vk::PipelineLayout const *pipelineLayout,
-	    SpirvShader const *spirvShader,
-	    const vk::DescriptorSet::Bindings &descriptorSets)
-	    : PixelRoutine(state, pipelineLayout, spirvShader, descriptorSets)
-	{
-	}
+	    const vk::PipelineLayout *pipelineLayout,
+	    const SpirvShader *spirvShader,
+	    const vk::DescriptorSet::Bindings &descriptorSets);
 
 	virtual ~PixelProgram() {}
 
