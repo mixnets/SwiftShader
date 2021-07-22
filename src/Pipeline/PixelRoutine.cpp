@@ -32,6 +32,13 @@ PixelRoutine::PixelRoutine(
     : QuadRasterizer(state, spirvShader)
     , routine(pipelineLayout)
     , descriptorSets(descriptorSets)
+    , sampleShadingEnabled(implicitSampleRateShading(spirvShader) || state.sampleShadingEnabled)
+    , minSampleShading(implicitSampleRateShading(spirvShader) ? 1.0f : state.minSampleShading)
+    , shaderContainsInterpolation(spirvShader && spirvShader->getUsedCapabilities().InterpolationFunction)
+    , shaderContainsSampleQualifier(spirvShader && spirvShader->getModes().ContainsSampleQualifier)
+    , perSampleShading((sampleShadingEnabled && (minSampleShading > 0.0f)) ||
+                       shaderContainsInterpolation || shaderContainsSampleQualifier)
+    , numSampleRenders(perSampleShading ? state.multiSampleCount : 1)
 {
 	if(spirvShader)
 	{
@@ -63,44 +70,19 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 	Int sMask[4];  // Stencil mask
 	Float4 unclampedZ[4];
 
-	bool sampleShadingEnabled = state.sampleShadingEnabled;
-	float minSampleShading = state.minSampleShading;
-	if(spirvShader)
+	for(unsigned int i = 0; i < numSampleRenders; i++)
 	{
-		// SampleId and SamplePosition built-ins require the sampleRateShading feature, so the Vulkan spec
-		// requires turning on per sample shading if either of them is present in the shader.
+		sampleId = perSampleShading ? i : -1;
+		sampleBegin = perSampleShading ? sampleId : 0;
+		sampleEnd = perSampleShading ? sampleId + 1 : state.multiSampleCount;
 
-		// "If a fragment shader entry point's interface includes an input variable decorated with SampleId,
-		//  Sample Shading is considered enabled with a minSampleShading value of 1.0."
-
-		// "If a fragment shader entry point's interface includes an input variable decorated with SamplePosition,
-		//  Sample Shading is considered enabled with a minSampleShading value of 1.0."
-		if(spirvShader->hasBuiltinInput(spv::BuiltInSampleId) || spirvShader->hasBuiltinInput(spv::BuiltInSamplePosition))
-		{
-			sampleShadingEnabled = true;
-			minSampleShading = 1.0f;
-		}
-	}
-
-	bool shaderContainsInterpolation = spirvShader && spirvShader->getUsedCapabilities().InterpolationFunction;
-	bool shaderContainsSampleQualifier = spirvShader && spirvShader->getModes().ContainsSampleQualifier;
-	bool perSampleShading = (sampleShadingEnabled && (minSampleShading > 0.0f)) ||
-	                        shaderContainsInterpolation || shaderContainsSampleQualifier;
-	unsigned int numSampleRenders = perSampleShading ? state.multiSampleCount : 1;
-
-	for(unsigned int i = 0; i < numSampleRenders; ++i)
-	{
-		int sampleId = perSampleShading ? i : -1;
-		unsigned int sampleLoopInit = perSampleShading ? sampleId : 0;
-		unsigned int sampleLoopEnd = perSampleShading ? sampleId + 1 : state.multiSampleCount;
-
-		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+		for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 		{
 			zMask[q] = cMask[q];
 			sMask[q] = cMask[q];
 		}
 
-		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+		for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 		{
 			stencilTest(sBuffer, q, x, sMask[q], cMask[q]);
 		}
@@ -112,7 +94,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 		if(interpolateZ())
 		{
-			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+			for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 			{
 				Float4 x = xxxx;
 
@@ -140,10 +122,17 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 		if(earlyDepthTest)
 		{
-			for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+			for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 			{
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
+			}
+
+			If(depthPass)
+			{
+				writeDepth(zBuffer, x, zMask, sMask);
+
+				rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
 			}
 		}
 
@@ -159,7 +148,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			{
 				Float4 WWWW(1.0e-9f);
 
-				for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+				for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 				{
 					XXXX += *Pointer<Float4>(constants + OFFSET(Constants, sampleX[q]) + 16 * cMask[q]);
 					YYYY += *Pointer<Float4>(constants + OFFSET(Constants, sampleY[q]) + 16 * cMask[q]);
@@ -244,7 +233,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 					                            false, true);
 
 					auto clipMask = SignMask(CmpGE(distance, SIMD::Float(0)));
-					for(auto ms = sampleLoopInit; ms < sampleLoopEnd; ms++)
+					for(auto ms = sampleBegin; ms < sampleEnd; ms++)
 					{
 						// FIXME(b/148105887): Fragments discarded by clipping do not exist at
 						// all -- they should not be counted in queries or have their Z/S effects
@@ -296,7 +285,7 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 			if((spirvShader && spirvShader->getModes().ContainsKill) || state.alphaToCoverage)
 			{
-				for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+				for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 				{
 					zMask[q] &= cMask[q];
 					sMask[q] &= cMask[q];
@@ -307,34 +296,23 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			{
 				if(!earlyDepthTest)
 				{
-					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+					for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 					{
 						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 					}
-				}
 
-				If(depthPass || Bool(earlyDepthTest))
-				{
-					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+					If(depthPass)
 					{
-						if(state.multiSampleMask & (1 << q))
-						{
-							writeDepth(zBuffer, q, x, z[q], zMask[q]);
+						writeDepth(zBuffer, x, zMask, sMask);
 
-							if(state.occlusionEnabled)
-							{
-								occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
-							}
-						}
+						rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
 					}
-
-					rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
 				}
 			}
 		}
 
-		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+		for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 		{
 			if(state.multiSampleMask & (1 << q))
 			{
@@ -436,11 +414,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 {
 	Float4 Z = z;
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
-
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -512,11 +485,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	Short4 Z = convertFixed16(z, true);
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = convertFixed16(oDepth, true);
-	}
 
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
@@ -669,10 +637,10 @@ void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha, int sample
 		OFFSET(DrawData, a2c3),
 	};
 
-	unsigned int sampleLoopInit = (sampleId >= 0) ? sampleId : 0;
-	unsigned int sampleLoopEnd = (sampleId >= 0) ? sampleId + 1 : state.multiSampleCount;
+	unsigned int sampleBegin = (sampleId >= 0) ? sampleId : 0;
+	unsigned int sampleEnd = (sampleId >= 0) ? sampleId + 1 : state.multiSampleCount;
 
-	for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+	for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 	{
 		Int4 coverage = CmpNLT(alpha, *Pointer<Float4>(data + a2c[q]));
 		Int aMask = SignMask(coverage);
@@ -683,11 +651,6 @@ void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha, int sample
 void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask)
 {
 	Float4 Z = z;
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
 
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
@@ -716,11 +679,6 @@ void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, con
 {
 	Short4 Z = As<Short4>(convertFixed16(z, true));
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = As<Short4>(convertFixed16(oDepth, true));
-	}
-
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -745,20 +703,34 @@ void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, con
 	*Pointer<Int>(buffer + pitch) = Extract(As<Int2>(Z), 1);
 }
 
-void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask)
+void PixelRoutine::writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zMask[4], const Int sMask[4])
 {
 	if(!state.depthWriteEnable)
 	{
 		return;
 	}
 
-	if(state.depthFormat == VK_FORMAT_D16_UNORM)
+	for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 	{
-		writeDepth16(zBuffer, q, x, z, zMask);
-	}
-	else
-	{
-		writeDepth32F(zBuffer, q, x, z, zMask);
+		if(state.multiSampleMask & (1 << q))
+		{
+			if(state.depthFormat == VK_FORMAT_D16_UNORM)
+			{
+				writeDepth16(zBuffer, q, x, z[q], zMask[q]);
+			}
+			else if(state.depthFormat == VK_FORMAT_D32_SFLOAT)
+			{
+				writeDepth32F(zBuffer, q, x, z[q], zMask[q]);
+			}
+			else
+				UNSUPPORTED("Depth format: %d", int(state.depthFormat));
+
+			// TODO: move to rasterOperation?
+			if(state.occlusionEnabled)
+			{
+				occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+			}
+		}
 	}
 }
 

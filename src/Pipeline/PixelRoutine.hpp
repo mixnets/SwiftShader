@@ -42,9 +42,6 @@ protected:
 	SpirvRoutine routine;
 	const vk::DescriptorSet::Bindings &descriptorSets;
 
-	// Depth output
-	Float4 oDepth;
-
 	virtual void setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], int sampleId) = 0;
 	virtual void applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sampleId) = 0;
 	virtual Bool alphaTest(Int cMask[4], int sampleId) = 0;
@@ -82,7 +79,7 @@ private:
 	void blendFactor(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorActive);
 	void blendFactorAlpha(Vector4f &blendFactor, const Vector4f &oC, const Vector4f &pixel, VkBlendFactor blendFactorAlphaActive);
 	void writeStencil(Pointer<Byte> &sBuffer, int q, const Int &x, const Int &sMask, const Int &zMask, const Int &cMask);
-	void writeDepth(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask);
+	void writeDepth(Pointer<Byte> &zBuffer, const Int &x, const Int zMask[4], const Int sMask[4]);
 
 	void sRGBtoLinear16_12_16(Vector4s &c);
 	void linearToSRGB16_12_16(Vector4s &c);
@@ -96,6 +93,20 @@ private:
 
 	Int4 depthBoundsTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x);
 	Int4 depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x);
+
+	// Derived state parameters
+	const bool sampleShadingEnabled;
+	const float minSampleShading;
+	const bool shaderContainsInterpolation;
+	const bool shaderContainsSampleQualifier;
+	const bool perSampleShading;
+	const unsigned int numSampleRenders;
+
+	int sampleId = -1;
+	unsigned int sampleBegin = 0;
+	unsigned int sampleEnd = 1;
+
+	static bool implicitSampleRateShading(SpirvShader const *spirvShader);
 };
 
 }  // namespace sw
