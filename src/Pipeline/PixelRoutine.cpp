@@ -145,6 +145,24 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 			}
+
+			If(depthPass)
+			{
+				for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+				{
+					if(state.multiSampleMask & (1 << q))
+					{
+						writeDepth(zBuffer, q, x, z[q], zMask[q]);
+
+						if(state.occlusionEnabled)
+						{
+							occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+						}
+					}
+				}
+
+				rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
+			}
 		}
 
 		If(depthPass || Bool(!earlyDepthTest))
@@ -312,24 +330,24 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
 						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
 					}
-				}
 
-				If(depthPass || Bool(earlyDepthTest))
-				{
-					for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
+					If(depthPass)
 					{
-						if(state.multiSampleMask & (1 << q))
+						for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 						{
-							writeDepth(zBuffer, q, x, z[q], zMask[q]);
-
-							if(state.occlusionEnabled)
+							if(state.multiSampleMask & (1 << q))
 							{
-								occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+								writeDepth(zBuffer, q, x, z[q], zMask[q]);
+
+								if(state.occlusionEnabled)
+								{
+									occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+								}
 							}
 						}
-					}
 
-					rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
+						rasterOperation(cBuffer, x, sMask, zMask, cMask, sampleId);
+					}
 				}
 			}
 		}
@@ -436,11 +454,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 {
 	Float4 Z = z;
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
-
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -512,11 +525,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	Short4 Z = convertFixed16(z, true);
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = convertFixed16(oDepth, true);
-	}
 
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
@@ -684,11 +692,6 @@ void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, co
 {
 	Float4 Z = z;
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
-
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -715,11 +718,6 @@ void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, co
 void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask)
 {
 	Short4 Z = As<Short4>(convertFixed16(z, true));
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = As<Short4>(convertFixed16(oDepth, true));
-	}
 
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));

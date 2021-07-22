@@ -235,10 +235,14 @@ void PixelProgram::applyShader(Int cMask[4], Int sMask[4], Int zMask[4], int sam
 	it = spirvShader->outputBuiltins.find(spv::BuiltInFragDepth);
 	if(it != spirvShader->outputBuiltins.end())
 	{
-		oDepth = routine.getVariable(it->second.Id)[it->second.FirstComponent];
-		if(state.depthClamp)
+		for(unsigned int q = sampleLoopInit; q < sampleLoopEnd; q++)
 		{
-			oDepth = Min(Max(oDepth, Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+			z[q] = routine.getVariable(it->second.Id)[it->second.FirstComponent];
+
+			if(state.depthClamp)
+			{
+				z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+			}
 		}
 	}
 }
