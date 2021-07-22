@@ -436,11 +436,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 {
 	Float4 Z = z;
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
-
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -512,11 +507,6 @@ Bool PixelRoutine::depthTest32F(const Pointer<Byte> &zBuffer, int q, const Int &
 Bool PixelRoutine::depthTest16(const Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &sMask, Int &zMask, const Int &cMask)
 {
 	Short4 Z = convertFixed16(z, true);
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = convertFixed16(oDepth, true);
-	}
 
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
@@ -684,11 +674,6 @@ void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, co
 {
 	Float4 Z = z;
 
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = oDepth;
-	}
-
 	Pointer<Byte> buffer = zBuffer + 4 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
 
@@ -715,11 +700,6 @@ void PixelRoutine::writeDepth32F(Pointer<Byte> &zBuffer, int q, const Int &x, co
 void PixelRoutine::writeDepth16(Pointer<Byte> &zBuffer, int q, const Int &x, const Float4 &z, const Int &zMask)
 {
 	Short4 Z = As<Short4>(convertFixed16(z, true));
-
-	if(spirvShader && spirvShader->getModes().DepthReplacing)
-	{
-		Z = As<Short4>(convertFixed16(oDepth, true));
-	}
 
 	Pointer<Byte> buffer = zBuffer + 2 * x;
 	Int pitch = *Pointer<Int>(data + OFFSET(DrawData, depthPitchB));
