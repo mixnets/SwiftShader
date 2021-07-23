@@ -57,7 +57,8 @@ PixelRoutine::~PixelRoutine()
 
 void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 {
-	const bool earlyDepthTest = !spirvShader || spirvShader->getModes().EarlyFragmentTests;
+	const bool earlyDepthTest = !spirvShader || spirvShader->getModes().EarlyFragmentTests ||
+	                            !spirvShader->getModes().DepthReplacing;
 
 	Int zMask[4];  // Depth mask
 	Int sMask[4];  // Stencil mask
