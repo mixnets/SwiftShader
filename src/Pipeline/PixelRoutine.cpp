@@ -78,8 +78,11 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 		for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 		{
-			zMask[q] = cMask[q];
-			sMask[q] = cMask[q];
+			if(state.multiSampleMask & (1 << q))
+			{
+				zMask[q] = cMask[q];
+				sMask[q] = cMask[q];
+			}
 		}
 
 		stencilTest(sBuffer, x, sMask);
@@ -93,24 +96,27 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 		{
 			for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 			{
-				Float4 x = xxxx;
-
-				if(state.enableMultiSampling)
+				if(state.multiSampleMask & (1 << q))
 				{
-					x -= *Pointer<Float4>(constants + OFFSET(Constants, X) + q * sizeof(float4));
-				}
+					Float4 x = xxxx;
 
-				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive, z), false, false);
+					if(state.enableMultiSampling)
+					{
+						x -= *Pointer<Float4>(constants + OFFSET(Constants, X) + q * sizeof(float4));
+					}
 
-				if(state.depthBias)
-				{
-					z[q] += *Pointer<Float4>(primitive + OFFSET(Primitive, zBias), 16);
-				}
+					z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive, z), false, false);
 
-				unclampedZ[q] = z[q];
-				if(state.depthClamp)
-				{
-					z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+					if(state.depthBias)
+					{
+						z[q] += *Pointer<Float4>(primitive + OFFSET(Primitive, zBias), 16);
+					}
+
+					unclampedZ[q] = z[q];
+					if(state.depthClamp)
+					{
+						z[q] = Min(Max(z[q], Float4(state.minDepthClamp)), Float4(state.maxDepthClamp));
+					}
 				}
 			}
 		}
@@ -121,8 +127,11 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 		{
 			for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 			{
-				depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
-				depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
+				if(state.multiSampleMask & (1 << q))
+				{
+					depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+					depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
+				}
 			}
 
 			If(depthPass)
@@ -145,9 +154,12 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 
 				for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 				{
-					XXXX += *Pointer<Float4>(constants + OFFSET(Constants, sampleX[q]) + 16 * cMask[q]);
-					YYYY += *Pointer<Float4>(constants + OFFSET(Constants, sampleY[q]) + 16 * cMask[q]);
-					WWWW += *Pointer<Float4>(constants + OFFSET(Constants, weight) + 16 * cMask[q]);
+					if(state.multiSampleMask & (1 << q))
+					{
+						XXXX += *Pointer<Float4>(constants + OFFSET(Constants, sampleX[q]) + 16 * cMask[q]);
+						YYYY += *Pointer<Float4>(constants + OFFSET(Constants, sampleY[q]) + 16 * cMask[q]);
+						WWWW += *Pointer<Float4>(constants + OFFSET(Constants, weight) + 16 * cMask[q]);
+					}
 				}
 
 				WWWW = Rcp(WWWW, Precision::Relaxed);
@@ -282,8 +294,11 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 			{
 				for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 				{
-					zMask[q] &= cMask[q];
-					sMask[q] &= cMask[q];
+					if(state.multiSampleMask & (1 << q))
+					{
+						zMask[q] &= cMask[q];
+						sMask[q] &= cMask[q];
+					}
 				}
 			}
 
@@ -293,8 +308,11 @@ void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBu
 				{
 					for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 					{
-						depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
-						depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
+						if(state.multiSampleMask & (1 << q))
+						{
+							depthPass = depthPass || depthTest(zBuffer, q, x, z[q], sMask[q], zMask[q], cMask[q]);
+							depthBoundsTest(zBuffer, q, x, zMask[q], cMask[q]);
+						}
 					}
 
 					If(depthPass)
@@ -322,39 +340,42 @@ void PixelRoutine::stencilTest(const Pointer<Byte> &sBuffer, const Int &x, Int s
 
 	for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 	{
-		// (StencilRef & StencilMask) CompFunc (StencilBufferValue & StencilMask)
-
-		Pointer<Byte> buffer = sBuffer + x;
-
-		if(q > 0)
+		if(state.multiSampleMask & (1 << q))
 		{
-			buffer += q * *Pointer<Int>(data + OFFSET(DrawData, stencilSliceB));
+			// (StencilRef & StencilMask) CompFunc (StencilBufferValue & StencilMask)
+
+			Pointer<Byte> buffer = sBuffer + x;
+
+			if(q > 0)
+			{
+				buffer += q * *Pointer<Int>(data + OFFSET(DrawData, stencilSliceB));
+			}
+
+			Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
+			Byte8 value = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
+			value = value | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
+			Byte8 valueBack = value;
+
+			if(state.frontStencil.compareMask != 0xff)
+			{
+				value &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].testMaskQ));
+			}
+
+			stencilTest(value, state.frontStencil.compareOp, false);
+
+			if(state.backStencil.compareMask != 0xff)
+			{
+				valueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].testMaskQ));
+			}
+
+			stencilTest(valueBack, state.backStencil.compareOp, true);
+
+			value &= *Pointer<Byte8>(primitive + OFFSET(Primitive, clockwiseMask));
+			valueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
+			value |= valueBack;
+
+			sMask[q] &= SignMask(value);
 		}
-
-		Int pitch = *Pointer<Int>(data + OFFSET(DrawData, stencilPitchB));
-		Byte8 value = *Pointer<Byte8>(buffer) & Byte8(-1, -1, 0, 0, 0, 0, 0, 0);
-		value = value | (*Pointer<Byte8>(buffer + pitch - 2) & Byte8(0, 0, -1, -1, 0, 0, 0, 0));
-		Byte8 valueBack = value;
-
-		if(state.frontStencil.compareMask != 0xff)
-		{
-			value &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[0].testMaskQ));
-		}
-
-		stencilTest(value, state.frontStencil.compareOp, false);
-
-		if(state.backStencil.compareMask != 0xff)
-		{
-			valueBack &= *Pointer<Byte8>(data + OFFSET(DrawData, stencil[1].testMaskQ));
-		}
-
-		stencilTest(valueBack, state.backStencil.compareOp, true);
-
-		value &= *Pointer<Byte8>(primitive + OFFSET(Primitive, clockwiseMask));
-		valueBack &= *Pointer<Byte8>(primitive + OFFSET(Primitive, invClockwiseMask));
-		value |= valueBack;
-
-		sMask[q] &= SignMask(value);
 	}
 }
 
@@ -636,9 +657,12 @@ void PixelRoutine::alphaToCoverage(Int cMask[4], const Float4 &alpha, int sample
 
 	for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 	{
-		Int4 coverage = CmpNLT(alpha, *Pointer<Float4>(data + a2c[q]));
-		Int aMask = SignMask(coverage);
-		cMask[q] &= aMask;
+		if(state.multiSampleMask & (1 << q))
+		{
+			Int4 coverage = CmpNLT(alpha, *Pointer<Float4>(data + a2c[q]));
+			Int aMask = SignMask(coverage);
+			cMask[q] &= aMask;
+		}
 	}
 }
 
@@ -732,7 +756,10 @@ void PixelRoutine::occlusionSampleCount(const Int zMask[4], const Int sMask[4])
 
 	for(unsigned int q = sampleBegin; q < sampleEnd; q++)
 	{
-		occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+		if(state.multiSampleMask & (1 << q))
+		{
+			occlusion += *Pointer<UInt>(constants + OFFSET(Constants, occlusionCount) + 4 * (zMask[q] & sMask[q]));
+		}
 	}
 }
 
