@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "530650a0_289f2497",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-23T18:29:39Z",
+      "side": 1,
+      "message": "uber-nit: I think this is always written LOD instead of using a lower case o: https://en.wikipedia.org/wiki/Mipmap",
+      "range": {
+        "startLine": 7,
+        "startChar": 21,
+        "endLine": 7,
+        "endChar": 25
+      },
+      "revId": "f20ce09bdec2c31be5f762ba7a56046c3b00a584",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c1c0bbe_c26efe3f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-23T18:29:39Z",
+      "side": 1,
+      "message": "maintains ?",
+      "range": {
+        "startLine": 10,
+        "startChar": 20,
+        "endLine": 10,
+        "endChar": 37
+      },
+      "revId": "f20ce09bdec2c31be5f762ba7a56046c3b00a584",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4a0dc5c_9710b70c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-23T18:29:39Z",
+      "side": 1,
+      "message": "Thanks for the optimization! Can we still split this off into a separate change, just for the unlikely event that an issue is discovered later? It would also make it clearer what the actual fix for dEQP-VK.texture.subgroup_lod.texelfetch is (also for the event we need to look at that again).",
+      "revId": "f20ce09bdec2c31be5f762ba7a56046c3b00a584",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5cc3261_c4509a76",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-23T18:29:39Z",
+      "side": 1,
+      "message": "nit: Perhaps wrap to the next line here. While we don\u0027t have a hard limit, my general guideline is that if there\u0027s nothing \"interesting\" following (e.g. lengthy list of parameters that are obvious from the context and have no real room for error), the line can be long, but in this case it affects flow control and it\u0027s good to see all the cases for which this path is taken, without having to scroll to the right.",
+      "range": {
+        "startLine": 176,
+        "startChar": 68,
+        "endLine": 176,
+        "endChar": 69
+      },
+      "revId": "f20ce09bdec2c31be5f762ba7a56046c3b00a584",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
