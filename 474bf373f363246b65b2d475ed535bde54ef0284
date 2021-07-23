@@ -22,6 +22,30 @@
       },
       "revId": "474bf373f363246b65b2d475ed535bde54ef0284",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "899e5a71_1a1143fa",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-23T17:32:04Z",
+      "side": 1,
+      "message": "Oh I see, I missed copying the dPdx/dPdy logic for the optimized case. I initially separated out the Bias/Fetch case from the Lod/Grad case because I thought the optimization just didn\u0027t work for Lod/Grad.\n\nThey\u0027re now under the same if.",
+      "parentUuid": "9aa89c67_4bb3c646",
+      "range": {
+        "startLine": 221,
+        "startChar": 0,
+        "endLine": 228,
+        "endChar": 0
+      },
+      "revId": "474bf373f363246b65b2d475ed535bde54ef0284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
