@@ -64,6 +64,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "dff784fc_b9a2e877",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-24T04:07:27Z",
+      "side": 1,
+      "message": "Patchset 6: Wouldn\u0027t it make more sense to do them in reverse order? I think we can first do the optimization for the Lod and Grad case (i.e. not handle divergent LOD for the Fetch and Bias case yet and avoiding the ). That way the second patch simply becomes adding Fetch and Bias to the conditional. It would also make it clearer that the first patch is just an optimization of the original code, instead of something entirely new, and we can compare old and new side-by-side?\n\nThe alternative would be to first add Fetch and Bias to the conditional, but then we\u0027d regress their performance more versus doing it the other way around.\n\nSorry for being picky about this. It probably doesn\u0027t matter too much for a small chain of changes, but for a bigger one it often makes sense to first do some refactorings that make the code more \"receptive\" of the actual fix, which can then be smaller and trivial to review.",
+      "parentUuid": "c4a0dc5c_9710b70c",
+      "revId": "f20ce09bdec2c31be5f762ba7a56046c3b00a584",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "f5cc3261_c4509a76",
