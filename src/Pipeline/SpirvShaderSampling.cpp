@@ -174,7 +174,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		// For explicit-lod instructions the LOD can be different per SIMD lane. SamplerCore currently assumes
 		// a single LOD per four elements, so we sample the image again for each LOD separately.
 		// TODO(b/133868964) Pass down 4 component lodOrBias to sampleTexture
-		if(samplerFunction.method == Lod || samplerFunction.method == Grad)
+		if(samplerFunction.method == Lod || samplerFunction.method == Grad || samplerFunction.method == Bias || samplerFunction.method == Fetch)
 		{
 			SIMD::Float dPdx;
 			SIMD::Float dPdy;
