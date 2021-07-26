@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56120461_9a660635",
+        "filename": "src/Device/QuadRasterizer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-26T18:21:09Z",
+      "side": 0,
+      "message": "We used to need this, but this change ensures we skip over any non-covered samples.",
+      "range": {
+        "startLine": 201,
+        "startChar": 5,
+        "endLine": 204,
+        "endChar": 6
+      },
+      "revId": "915947134128e98746890355761ba1d67f9a1d70",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
