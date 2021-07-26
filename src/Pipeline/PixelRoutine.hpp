@@ -35,6 +35,8 @@ public:
 	virtual ~PixelRoutine();
 
 protected:
+	using SampleSet = std::vector<int>;
+
 	Float4 z[4];  // Multisampled z
 	Float4 w;     // Used as is
 	Float4 rhw;   // Reciprocal w
@@ -46,9 +48,6 @@ protected:
 
 	// Depth output
 	Float4 oDepth;
-
-	using SampleSet = std::vector<int>;
-	SampleSet getSampleSet(bool perSampleShading, int iteration) const;
 
 	virtual void setBuiltins(Int &x, Int &y, Float4 (&z)[4], Float4 &w, Int cMask[4], const SampleSet &samples) = 0;
 	virtual void executeShader(Int cMask[4], Int sMask[4], Int zMask[4], const SampleSet &samples) = 0;
@@ -101,6 +100,14 @@ private:
 
 	Int4 depthBoundsTest32F(const Pointer<Byte> &zBuffer, int q, const Int &x);
 	Int4 depthBoundsTest16(const Pointer<Byte> &zBuffer, int q, const Int &x);
+
+	// Derived state parameters
+	const bool shaderContainsInterpolation;  // TODO(b/194714095)
+	const bool shaderContainsSampleQualifier;
+	const bool perSampleShading;
+	const int invocationCount;
+
+	SampleSet getSampleSet(int invocation) const;
 };
 
 }  // namespace sw
