@@ -16,6 +16,23 @@
       "message": "PTAL Nicolas",
       "revId": "6aab55bb28197fef7b05377b365e1b535f6fd958",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a326a77e_674594f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-26T15:40:12Z",
+      "side": 1,
+      "message": "Thanks Peter! Does this allow us to remove all uses of -Wno-unused-but-set-variable: https://cs.opensource.google/search?q\u003dWno-unused-but-set-variable\u0026sq\u003d\u0026ss\u003dswiftshader%2FSwiftShader Perhaps that can be done in the same change?",
+      "revId": "6aab55bb28197fef7b05377b365e1b535f6fd958",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
