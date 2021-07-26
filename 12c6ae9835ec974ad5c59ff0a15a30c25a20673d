@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b80a3eee_2de9202a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-26T19:10:26Z",
+      "side": 1,
+      "message": "This sentence is a bit confusing. I would replace this part with \"divergent LOD\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 33,
+        "endLine": 7,
+        "endChar": 41
+      },
+      "revId": "12c6ae9835ec974ad5c59ff0a15a30c25a20673d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69009c47_76d27969",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-26T19:10:26Z",
+      "side": 1,
+      "message": "nit: https://swiftshader-review.googlesource.com/c/SwiftShader/+/55908/5..7/src/Pipeline/SpirvShaderSampling.cpp#b176",
+      "range": {
+        "startLine": 177,
+        "startChar": 71,
+        "endLine": 177,
+        "endChar": 72
+      },
+      "revId": "12c6ae9835ec974ad5c59ff0a15a30c25a20673d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
