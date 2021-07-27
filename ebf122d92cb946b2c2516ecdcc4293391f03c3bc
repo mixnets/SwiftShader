@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "2014e24e_73bde791",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-07-27T20:19:50Z",
+      "side": 1,
+      "message": "Hmm, it seems that Grad has to invoke sampleTexture for each dsx, dsy lane.",
+      "parentUuid": "f215f411_84ee5e53",
+      "revId": "ebf122d92cb946b2c2516ecdcc4293391f03c3bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "e24d0860_d94be352",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 7
