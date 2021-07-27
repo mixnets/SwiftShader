@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f857c524_288a1531",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-27T21:39:01Z",
+      "side": 1,
+      "message": "Is dEQP-VK.glsl.builtin_var.fragcoord_msaa_input.4_bit a flake?\nIt seems to be fixed in the next CL in the chain, but I think the change is mostly a noop refactor.",
+      "revId": "dea66de81a591057da3732f2aad87fe66e7f36ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
