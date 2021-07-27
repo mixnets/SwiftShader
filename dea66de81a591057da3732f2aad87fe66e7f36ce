@@ -16,6 +16,24 @@
       "message": "Is dEQP-VK.glsl.builtin_var.fragcoord_msaa_input.4_bit a flake?\nIt seems to be fixed in the next CL in the chain, but I think the change is mostly a noop refactor.",
       "revId": "dea66de81a591057da3732f2aad87fe66e7f36ce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37cfcd07_3bf67bc8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-27T23:03:07Z",
+      "side": 1,
+      "message": "Not a flake. The conditional I changed depends on sample shading to be enabled implicitly when SamplId is present, which I forgot isn\u0027t the case until my second patch. I\u0027ll try swapping them.",
+      "parentUuid": "f857c524_288a1531",
+      "revId": "dea66de81a591057da3732f2aad87fe66e7f36ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
