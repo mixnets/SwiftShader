@@ -46,6 +46,30 @@
       },
       "revId": "2c6af3a75a3511e98070f12361f2fb6d73b21153",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8755183_688b819c",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-27T13:48:37Z",
+      "side": 1,
+      "message": "I think you can have multiSampleCount \u003e 1 while only having 1 bit set in multiSampleMask.",
+      "parentUuid": "2ada7c6b_c21f4533",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 23
+      },
+      "revId": "2c6af3a75a3511e98070f12361f2fb6d73b21153",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
