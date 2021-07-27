@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5e93bbe_07d60195",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-27T14:38:05Z",
+      "side": 1,
+      "message": "Note: Commenting on this CL that cMask is no longer required here because sMask is already set to cMask at line 102 above.",
+      "range": {
+        "startLine": 369,
+        "startChar": 11,
+        "endLine": 369,
+        "endChar": 30
+      },
+      "revId": "56b3a256dc36387f221234febd6275825166dfc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
