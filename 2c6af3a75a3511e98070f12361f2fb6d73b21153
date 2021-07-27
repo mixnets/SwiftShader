@@ -22,6 +22,30 @@
       },
       "revId": "2c6af3a75a3511e98070f12361f2fb6d73b21153",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ada7c6b_c21f4533",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-27T13:27:18Z",
+      "side": 1,
+      "message": "The extra condition of \u0026\u0026 state.multiSampleCount \u003e 1 takes care of that, no?",
+      "parentUuid": "1e676045_66139fd7",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 23
+      },
+      "revId": "2c6af3a75a3511e98070f12361f2fb6d73b21153",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
