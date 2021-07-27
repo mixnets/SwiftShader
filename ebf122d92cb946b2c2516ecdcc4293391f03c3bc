@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f215f411_84ee5e53",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-27T14:28:15Z",
+      "side": 1,
+      "message": "Just making sure the dEQP-VK.texture.subgroup_lod.texturegrad failure is noticed.",
+      "revId": "ebf122d92cb946b2c2516ecdcc4293391f03c3bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e24d0860_d94be352",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-27T14:28:15Z",
+      "side": 1,
+      "message": "Just FYI, this function emits a fair amount of code, so what we have here is one sequence of code for sampling an image, followed by a loop which contains essentially that same code. I\u0027m not sure if we can easily do better (certainly not as part of this CL). Perhaps a Do {} Until() loop could be used, with a sliding write window. That way we could perhaps also reuse the same result for all of the samples that share the same LOD.\n\nAnyway, just brainstorming for b/133868964. This CL is fine if it passes dEQP.",
+      "range": {
+        "startLine": 211,
+        "startChar": 25,
+        "endLine": 211,
+        "endChar": 38
+      },
+      "revId": "ebf122d92cb946b2c2516ecdcc4293391f03c3bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
