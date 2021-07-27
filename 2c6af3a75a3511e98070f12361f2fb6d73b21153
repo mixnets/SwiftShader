@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e676045_66139fd7",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-27T12:46:05Z",
+      "side": 1,
+      "message": "The original \"(sampleId \u003e\u003d 0)\" meant that this is using perSampleShading.\nWe can hit \"samples.size() \u003d\u003d 1\" with multiSampleMask having only 1 bit set, without having perSampleShading, in which case we don\u0027t want to take this path.",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 23
+      },
+      "revId": "2c6af3a75a3511e98070f12361f2fb6d73b21153",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
