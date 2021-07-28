@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "44331d7e_6a438849",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-28T04:01:20Z",
+      "side": 1,
+      "message": "Right, it doesn\u0027t use lodOrBias, but the dsx/dsy gradient vectors to determine LOD. So instead of checking whether the lodOrBias components are different, we\u0027d have to check the components of the latter if we wanted to optimize this in the same fashion.\n\nAnyway, since this wasn\u0027t optimized before, and it doesn\u0027t affect the next patch, this CL is fine.",
+      "parentUuid": "2014e24e_73bde791",
+      "revId": "ebf122d92cb946b2c2516ecdcc4293391f03c3bc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "e24d0860_d94be352",
         "filename": "src/Pipeline/SpirvShaderSampling.cpp",
         "patchSetId": 7
