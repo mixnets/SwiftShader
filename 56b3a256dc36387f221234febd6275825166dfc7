@@ -22,6 +22,30 @@
       },
       "revId": "56b3a256dc36387f221234febd6275825166dfc7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5eb4da19_162bb384",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-07-28T01:24:32Z",
+      "side": 1,
+      "message": "Thanks for pointing out that this wasn\u0027t obvious. I\u0027ve added clarification to the commit message.",
+      "parentUuid": "c5e93bbe_07d60195",
+      "range": {
+        "startLine": 369,
+        "startChar": 11,
+        "endLine": 369,
+        "endChar": 30
+      },
+      "revId": "56b3a256dc36387f221234febd6275825166dfc7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
