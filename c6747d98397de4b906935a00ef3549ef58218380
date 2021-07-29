@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "936a3932_9b8f8b7a",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-29T21:16:22Z",
+      "side": 0,
+      "message": "This could be done much more efficiently, but here\u0027s the basic idea:\n\n  If(samplerFunction.method !\u003d Grad \u0026\u0026 lodOrBias.x \u003d\u003d lodOrBias.y \u0026\u0026 lodOrBias.x \u003d\u003d lodOrBias.z \u0026\u0026 lodOrBias.x \u003d\u003d lodOrBias.w)\n  {\n    rgba[0] \u003d sample.x;\n    rgba[1] \u003d sample.y;\n    rgba[2] \u003d sample.z;\n    rgba[3] \u003d sample.w;\n    i \u003d SIMD::Width; // Break out of the loop in some way\n  }\n  Else\n  {\n    rgba[0 * SIMD::Width + i] \u003d Pointer\u003cFloat\u003e(\u0026sample.x)[i];\n    rgba[1 * SIMD::Width + i] \u003d Pointer\u003cFloat\u003e(\u0026sample.y)[i];\n    rgba[2 * SIMD::Width + i] \u003d Pointer\u003cFloat\u003e(\u0026sample.z)[i];\n    rgba[3 * SIMD::Width + i] \u003d Pointer\u003cFloat\u003e(\u0026sample.w)[i];\n  }\n  \nThat way, the optimization would be restricted to writing the output and wouldn\u0027t end up duplicating code.",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 61
+      },
+      "revId": "c6747d98397de4b906935a00ef3549ef58218380",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}

@@ -16,6 +16,29 @@
       "message": "LGTM. Alexis, can you have a final look?",
       "revId": "59f06e5bc13c286d9cc6b50f214b29beddd3d2a0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46cc6140_577cb9de",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-29T21:16:22Z",
+      "side": 1,
+      "message": "I\u0027m worried that this optimization will result in the sampleTexture function, called here and at line 189 above, will end up appearing twice in the final shader code. I would feel better if the final code didn\u0027t duplicate that function call. See suggestion on the original file.",
+      "range": {
+        "startLine": 211,
+        "startChar": 25,
+        "endLine": 211,
+        "endChar": 38
+      },
+      "revId": "59f06e5bc13c286d9cc6b50f214b29beddd3d2a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
