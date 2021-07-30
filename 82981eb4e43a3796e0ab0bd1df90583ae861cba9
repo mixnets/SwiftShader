@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a792087_c582ee48",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-07-30T19:03:33Z",
+      "side": 1,
+      "message": "Cool, this looks a lot better to me. If the bots are good with it, I\u0027m good with the change.",
+      "revId": "82981eb4e43a3796e0ab0bd1df90583ae861cba9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
