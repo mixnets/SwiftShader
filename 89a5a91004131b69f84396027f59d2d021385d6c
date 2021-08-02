@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8d912b2_06e73009",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-08-02T18:10:49Z",
+      "side": 1,
+      "message": "Nit: For clarity, I think the dereference should have parentheses around it so it isn\u0027t adjacent to a multiply.",
+      "revId": "89a5a91004131b69f84396027f59d2d021385d6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17fb4fb1_b7c3ca4f",
+        "filename": "src/Pipeline/PixelProgram.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 9035
+      },
+      "writtenOn": "2021-08-02T18:10:49Z",
+      "side": 1,
+      "message": "Same nit from 299",
+      "revId": "89a5a91004131b69f84396027f59d2d021385d6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
