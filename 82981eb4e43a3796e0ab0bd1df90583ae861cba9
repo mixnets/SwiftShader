@@ -16,6 +16,29 @@
       "message": "Cool, this looks a lot better to me. If the bots are good with it, I\u0027m good with the change.",
       "revId": "82981eb4e43a3796e0ab0bd1df90583ae861cba9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd994d23_a4eef1d5",
+        "filename": "src/Pipeline/SpirvShaderSampling.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-02T15:02:18Z",
+      "side": 1,
+      "message": "uber-nit: Multisampling has a distinct meaning related to rasterization, not image sampling. So while this certainly sounds technically accurate, I would replace it with something like \"perLaneSampling\" to avoid confusion.",
+      "range": {
+        "startLine": 180,
+        "startChar": 8,
+        "endLine": 180,
+        "endChar": 19
+      },
+      "revId": "82981eb4e43a3796e0ab0bd1df90583ae861cba9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
