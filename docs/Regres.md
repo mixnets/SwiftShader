@@ -20,6 +20,8 @@ Regres provides:
 
 The Regres source root directory is at [`<swiftshader>/tests/regres/`](https://cs.opensource.google/swiftshader/SwiftShader/+/master:tests/regres/).
 
+In order to run Regres, firejail is necessary. Please install it with `sudo apt install firejail`.
+
 ## Presubmit testing
 
 Regres monitors changes that have been [put up for review with Gerrit](https://swiftshader-review.googlesource.com/q/status:open).
@@ -137,6 +139,11 @@ process is restricted to a fraction of the system's memory using [linux resource
 
 Tests may also deadlock, so each test process has a time limit before they are
 automatically killed.
+
+Furthermore, Regres uses firejail to limit the scope of what resources dEQP
+tests have access to. This prevents malicious or malformed code from
+interacting with other system files, accessing improper data streams, and
+other security concerns.
 
 ## Implementation details
 
