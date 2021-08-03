@@ -54,10 +54,12 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		w = As<Float4>(face);
 	}
 
-	bool singleMipLevel = (state.minLod == state.maxLod) && (function != Query) && (function != Fetch);
+	bool singleMipLevel = (state.minLod == state.maxLod);
+	bool requiresLodComputation = (function == Query) || (function == Fetch) || (state.textureFilter == FILTER_ANISOTROPIC);
 
-	// We can't skip the LOD computation for LOD query, where we have to return the proper value
-	if(singleMipLevel)
+	// We can't skip the LOD computation for LOD query, where we have to return the proper value.
+	// Anisotropic filtering requires computing the anisotropy factor even for a single mipmap level.
+	if(singleMipLevel && !requiresLodComputation)
 	{
 		// Skip costly LOD computation if there's only 1 possible outcome
 		lod = state.minLod;
@@ -116,7 +118,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 			c.y = Float4(lod);  // Unclamped LOD.
 		}
 
-		if (!singleMipLevel)
+		if(!singleMipLevel)
 		{
 			lod = Max(lod, state.minLod);
 			lod = Min(lod, state.maxLod);
@@ -1240,6 +1242,8 @@ void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisot
 		anisotropy = lod * Rcp(det, Precision::Relaxed);
 		anisotropy = Min(anisotropy, state.maxAnisotropy);
 
+		// TODO(b/151263485): While we always need `lod` above, when there's only
+		// a single mipmap level the following calculations could be skipped.
 		lod *= Rcp(anisotropy * anisotropy, Precision::Relaxed);
 	}
 
