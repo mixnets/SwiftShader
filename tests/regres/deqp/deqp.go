@@ -148,6 +148,13 @@ func (c *Config) Run() (*Results, error) {
 		c.TempDir = dir
 	}
 
+    // Check that firejail is present and setup firejail profile
+	firejailExe, err := exec.LookPath("firejail")
+    if err != nil {
+        return nil, cause.Wrap(err, "Unable to locate firejail, please run `apt install firejail`")
+    }
+
+
 	// Wait group that completes once all the tests have finished.
 	wg := sync.WaitGroup{}
 	results := make(chan TestResult, 256)
@@ -177,6 +184,11 @@ func (c *Config) Run() (*Results, error) {
 			return nil, fmt.Errorf("Couldn't find dEQP executable at '%s'", exe)
 		}
 
+        firejailProfile, err := CreateFirejailProfile(filepath.Dir(exe))
+        if err != nil {
+            return nil, cause.Wrap(err, "Unable to create firejail profile, failed to run dEQP tests")
+        }
+
 		// Build a chan for the test names to be run.
 		tests := make(chan string, len(list.Tests))
 
@@ -196,7 +208,7 @@ func (c *Config) Run() (*Results, error) {
 		wg.Add(numParallelTests)
 		for i := 0; i < numParallelTests; i++ {
 			go func(index int) {
-				c.TestRoutine(exe, tests, results, index, supportsCoverage)
+				c.TestRoutine(exe, tests, results, index, supportsCoverage, firejailExe, firejailProfile)
 				wg.Done()
 			}(goroutineIndex)
 			goroutineIndex++
@@ -265,12 +277,37 @@ func (c *Config) Run() (*Results, error) {
 	return &out, nil
 }
 
+func CreateFirejailProfile(baseDir string) (profilePath string, err error) {
+	profilePath = baseDir + "/deqp.profile"
+	if _, err := os.Stat(profilePath); err == nil {
+		return profilePath, err
+	}
+
+	f, err := os.Create(profilePath)
+	if err != nil {
+		return "", err
+	}
+
+	defer f.Close()
+
+	content := fmt.Sprintf("include PROFILE.local\ninclude globals.local\nread-write %s\n", baseDir)
+
+	_, err = f.WriteString(content)
+	if err != nil {
+		return "", err
+	}
+	f.Sync()
+
+	return profilePath, nil
+}
+
 // TestRoutine repeatedly runs the dEQP test executable exe with the tests
 // taken from tests. The output of the dEQP test is parsed, and the test result
 // is written to results.
 // TestRoutine only returns once the tests chan has been closed.
 // TestRoutine does not close the results chan.
-func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- TestResult, goroutineIndex int, supportsCoverage bool) {
+// firejailExe and firejailProfile are used to sandbox the dEQP subprocess
+func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- TestResult, goroutineIndex int, supportsCoverage bool, firejailExe string, firejailProfile string) {
 	// Context for the GCOV_PREFIX environment variable:
 	// If you compile SwiftShader with gcc and the --coverage flag, the build will contain coverage instrumentation.
 	// We can use this to get the code coverage of SwiftShader from running dEQP.
@@ -312,6 +349,7 @@ func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- Tes
 		logPath = filepath.Join(c.TempDir, fmt.Sprintf("%v.log", goroutineIndex))
 	}
 
+
 nextTest:
 	for name := range tests {
 		// log.Printf("Running test '%s'\n", name)
@@ -323,17 +361,19 @@ nextTest:
 			validation = "enable"
 		}
 
-		outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), env,
-			"--deqp-validation="+validation,
-			"--deqp-surface-type=pbuffer",
-			"--deqp-shadercache=disable",
-			"--deqp-log-images=disable",
-			"--deqp-log-shader-sources=disable",
-			"--deqp-log-decompiled-spirv=disable",
-			"--deqp-log-empty-loginfo=disable",
-			"--deqp-log-flush=disable",
-			"--deqp-log-filename="+logPath,
-			"-n="+name)
+        outRaw, err := shell.Exec(c.TestTimeout, firejailExe, filepath.Dir(exe), env,
+            "--profile="+firejailProfile,
+            exe,
+            "--deqp-validation="+validation,
+            "--deqp-surface-type=pbuffer",
+            "--deqp-shadercache=disable",
+            "--deqp-log-images=disable",
+            "--deqp-log-shader-sources=disable",
+            "--deqp-log-decompiled-spirv=disable",
+            "--deqp-log-empty-loginfo=disable",
+            "--deqp-log-flush=disable",
+            "--deqp-log-filename="+logPath,
+            "-n="+name)
 		duration := time.Since(start)
 		out := string(outRaw)
 		out = strings.ReplaceAll(out, exe, "<dEQP>")
