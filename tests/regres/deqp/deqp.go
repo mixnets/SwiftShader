@@ -265,6 +265,30 @@ func (c *Config) Run() (*Results, error) {
 	return &out, nil
 }
 
+func CreateFirejailProfile(baseDir string) (profilePath string, err error) {
+	profilePath = baseDir + "/deqp.profile"
+	if _, err := os.Stat(profilePath); err == nil {
+		return profilePath, err
+	}
+
+	f, err := os.Create(profilePath)
+	if err != nil {
+		return "", err
+	}
+
+	defer f.Close()
+
+	content := fmt.Sprintf("include PROFILE.local\ninclude globals.local\nread-write %s\n", baseDir)
+
+	_, err = f.WriteString(content)
+	if err != nil {
+		return "", err
+	}
+	f.Sync()
+
+	return profilePath, nil
+}
+
 // TestRoutine repeatedly runs the dEQP test executable exe with the tests
 // taken from tests. The output of the dEQP test is parsed, and the test result
 // is written to results.
@@ -312,6 +336,7 @@ func (c *Config) TestRoutine(exe string, tests <-chan string, results chan<- Tes
 		logPath = filepath.Join(c.TempDir, fmt.Sprintf("%v.log", goroutineIndex))
 	}
 
+
 nextTest:
 	for name := range tests {
 		// log.Printf("Running test '%s'\n", name)
@@ -323,17 +348,17 @@ nextTest:
 			validation = "enable"
 		}
 
-		outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), env,
-			"--deqp-validation="+validation,
-			"--deqp-surface-type=pbuffer",
-			"--deqp-shadercache=disable",
-			"--deqp-log-images=disable",
-			"--deqp-log-shader-sources=disable",
-			"--deqp-log-decompiled-spirv=disable",
-			"--deqp-log-empty-loginfo=disable",
-			"--deqp-log-flush=disable",
-			"--deqp-log-filename="+logPath,
-			"-n="+name)
+        outRaw, err := shell.Exec(c.TestTimeout, exe, filepath.Dir(exe), env,
+            "--deqp-validation="+validation,
+            "--deqp-surface-type=pbuffer",
+            "--deqp-shadercache=disable",
+            "--deqp-log-images=disable",
+            "--deqp-log-shader-sources=disable",
+            "--deqp-log-decompiled-spirv=disable",
+            "--deqp-log-empty-loginfo=disable",
+            "--deqp-log-flush=disable",
+            "--deqp-log-filename="+logPath,
+            "-n="+name)
 		duration := time.Since(start)
 		out := string(outRaw)
 		out = strings.ReplaceAll(out, exe, "<dEQP>")
