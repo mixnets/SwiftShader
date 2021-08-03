@@ -16,6 +16,24 @@
       "message": "Note that only Administrators used to have CR+2 privilege originally:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/44828/6/project.config\n\nPlease double-check that you indeed want the people in https://chrome-infra-auth.appspot.com/auth/groups/project-swiftshader-committers to have it.",
       "revId": "cc8c3b07f37ca72ae383fcd62c3a28d25541cebd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82d483a1_945e0cc8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-03T23:34:49Z",
+      "side": 1,
+      "message": "Administrators used to own branches, but now everything is done on \u0027master\u0027. It\u0027s fine to give them CR+2 for now, but I\u0027ll triage a bit and transfer some project-swiftshader-owners to project-swiftshader-committers\n\nThanks!",
+      "parentUuid": "03a702f3_e087be09",
+      "revId": "cc8c3b07f37ca72ae383fcd62c3a28d25541cebd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
