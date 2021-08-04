@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05d4dfcb_d78e700f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-04T14:56:57Z",
+      "side": 1,
+      "message": "This is great. No change in test results for Subzero, and the dEQP-VK.graphicsfuzz.cov-vector-illegal-index-never-executed test will pass for Subzero too when https://swiftshader-review.googlesource.com/c/SwiftShader/+/56110 lands.\n\nNot submitting this since each CI result would indicate a \"new\" Subzero failure.",
+      "revId": "92df611cf9f433c30640d76b7d27bbee0995a809",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
