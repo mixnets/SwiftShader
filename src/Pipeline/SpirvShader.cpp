@@ -388,6 +388,8 @@ SpirvShader::SpirvShader(
 
 		case spv::OpCapability:
 			{
+				capabilities.ClipDistance = true;
+
 				auto capability = static_cast<spv::Capability>(insn.word(1));
 				switch(capability)
 				{
