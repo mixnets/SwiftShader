@@ -1407,6 +1407,10 @@ void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 	case spv::DecorationBuiltIn:
 		HasBuiltIn = true;
 		BuiltIn = static_cast<spv::BuiltIn>(arg);
+		if(BuiltIn == spv::BuiltInFragCoord)
+		{
+			ASSERT(!Centroid);
+		}
 		break;
 	case spv::DecorationFlat:
 		Flat = true;
@@ -1416,6 +1420,10 @@ void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 		break;
 	case spv::DecorationCentroid:
 		Centroid = true;
+		if(HasBuiltIn && BuiltIn == spv::BuiltInFragCoord)
+		{
+			ASSERT(!Centroid);
+		}
 		break;
 	case spv::DecorationBlock:
 		Block = true;
