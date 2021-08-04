@@ -16,6 +16,23 @@
       "message": "We\u0027re quickly approaching dEQP 1.2.6.2 conformance, so I just want to test if this workaround still fixes the dEQP-VK.texture.explicit_lod.2d.* failures. If so, we could consider landing this if a better fix isn\u0027t straightforward. Just voting -1 for now to indicate this is still a hack we should avoid if we reasonably can.",
       "revId": "477321713935d81242794f6b1fddaee9c3e3c181",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "15a0ed60_941f28f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-04T14:31:56Z",
+      "side": 1,
+      "message": "Regres doesn\u0027t test changes with a negative score, I\u0027m so dropping the -1 for a bit...",
+      "revId": "477321713935d81242794f6b1fddaee9c3e3c181",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
