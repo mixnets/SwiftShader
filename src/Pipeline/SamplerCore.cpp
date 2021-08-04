@@ -26,6 +26,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state)
     , state(state)
 {
 }
+
 Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function)
 {
 	Vector4f c;
@@ -54,17 +55,17 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		w = As<Float4>(face);
 	}
 
-	// Determine if we can skip the LOD computation. This is the case when the mipmap has only one level, except for LOD query,
-	// where we have to return the computed value. Anisotropic filtering requires computing the anisotropy factor even for a single mipmap level.
+	// Determine if we can skip the LOD computation. This is the case when the mipmap has only one level.
+	// Anisotropic filtering requires computing the anisotropy factor even for a single mipmap level.
 	bool singleMipLevel = (state.minLod == state.maxLod);
-	bool requiresLodComputation = (function == Query) || (function == Fetch) || (state.textureFilter == FILTER_ANISOTROPIC);
+	bool requiresLodComputation = (function == Fetch) || (state.textureFilter == FILTER_ANISOTROPIC);
 	bool skipLodComputation = singleMipLevel && !requiresLodComputation;
 
 	if(skipLodComputation)
 	{
 		lod = state.minLod;
 	}
-	else if(function == Implicit || function == Bias || function == Grad || function == Query)
+	else if(function == Implicit || function == Bias || function == Grad)
 	{
 		if(state.is1D())
 		{
@@ -113,28 +114,10 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 
 	if(function != Base && function != Fetch && function != Gather)
 	{
-		if(function == Query)
-		{
-			c.y = Float4(lod);  // Unclamped LOD.
-		}
-
 		if(!skipLodComputation)
 		{
 			lod = Max(lod, state.minLod);
 			lod = Min(lod, state.maxLod);
-		}
-
-		if(function == Query)
-		{
-			if(state.mipmapFilter == MIPMAP_POINT)
-			{
-				lod = Round(lod);  // TODO: Preferred formula is ceil(lod + 0.5) - 1
-			}
-
-			c.x = lod;
-			//	c.y contains unclamped LOD.
-
-			return c;
 		}
 	}
 
@@ -308,6 +291,56 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 			c.x = c.y = c.z = c.w = integer ? As<Float4>(Int4(1)) : RValue<Float4>(Float4(1.0f));
 		}
 	}
+
+	return c;
+}
+
+Vector4f SamplerCore::queryLod(Pointer<Byte> &texture, Float4 uvw[3])
+{
+	Vector4f c;
+
+	Float4 u = uvw[0];
+	Float4 v = uvw[1];
+	Float4 w = uvw[2];
+
+	Float lod;
+
+	if(state.is1D())
+	{
+		Float4 dsx, dsy;
+		computeLod1D(texture, lod, u, dsx, dsy, Query);
+	}
+	else if(state.is2D())
+	{
+		Float anisotropy;
+		Float4 uDelta, vDelta, dsx, dsy;
+		computeLod2D(texture, lod, anisotropy, uDelta, vDelta, u, v, dsx, dsy, Query);
+	}
+	else if(state.isCube())
+	{
+		Float4 dsx, dsy, M;
+		computeLodCube(texture, lod, u, v, w, dsx, dsy, M, Query);
+	}
+	else
+	{
+		Float4 dsx, dsy;
+		computeLod3D(texture, lod, u, v, w, dsx, dsy, Query);
+	}
+
+	lod += state.mipLodBias;
+
+	c.y = Float4(lod);  // Unclamped LOD.
+
+	lod = Max(lod, state.minLod);
+	lod = Min(lod, state.maxLod);
+
+	if(state.mipmapFilter == MIPMAP_POINT)
+	{
+		lod = Round(lod);  // TODO: Preferred formula is ceil(lod + 0.5) - 1
+	}
+
+	c.x = lod;
+	// c.y contains unclamped LOD.
 
 	return c;
 }
@@ -1178,11 +1211,11 @@ static Float log2(Float lod)
 	return lod;
 }
 
-void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 dudxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		dudxy = uuuu.yz - uuuu.xx;
 	}
@@ -1202,11 +1235,11 @@ void SamplerCore::computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu,
 	lod = log2sqrt(lod);
 }
 
-void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 duvdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		duvdxy = Float4(uuuu.yz, vvvv.yz) - Float4(uuuu.xx, vvvv.xx);
 	}
@@ -1250,11 +1283,11 @@ void SamplerCore::computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisot
 	lod = log2sqrt(lod);  // log2(sqrt(lod))
 }
 
-void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerFunction function)
+void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerMethod method)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		Float4 U = u * M;
 		Float4 V = v * M;
@@ -1291,11 +1324,11 @@ void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, 
 	lod = log2(lod);
 }
 
-void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, Float4 &dsx, Float4 &dsy, SamplerFunction function)
+void SamplerCore::computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &uuuu, Float4 &vvvv, Float4 &wwww, Float4 &dsx, Float4 &dsy, SamplerMethod method)
 {
 	Float4 dudxy, dvdxy, dsdxy;
 
-	if(function != Grad)  // Implicit
+	if(method != Grad)  // Implicit
 	{
 		dudxy = uuuu - uuuu.xxxx;
 		dvdxy = vvvv - vvvv.xxxx;

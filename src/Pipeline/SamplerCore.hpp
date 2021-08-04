@@ -58,7 +58,8 @@ class SamplerCore
 public:
 	SamplerCore(Pointer<Byte> &constants, const Sampler &state);
 
-	Vector4f sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &q, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function);
+	Vector4f sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function);
+	Vector4f queryLod(Pointer<Byte> &texture, Float4 uvw[3]);
 
 private:
 	Float4 applySwizzle(const Vector4f &c, VkComponentSwizzle swizzle, bool integer);
@@ -73,10 +74,10 @@ private:
 	Vector4f sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
 	Vector4f sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, const Float4 &a, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
 	Vector4f sampleFloat3D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &dRef, Vector4i &offset, const Int4 &sample, Float &lod, bool secondLOD, SamplerFunction function);
-	void computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &dsx, Float4 &dsy, SamplerFunction function);
-	void computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, Float4 &dsx, Float4 &dsy, SamplerFunction function);
-	void computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerFunction function);
-	void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, SamplerFunction function);
+	void computeLod1D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &dsx, Float4 &dsy, SamplerMethod method);
+	void computeLod2D(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, Float4 &dsx, Float4 &dsy, SamplerMethod method);
+	void computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, Float4 &M, SamplerMethod method);
+	void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, Float4 &dsx, Float4 &dsy, SamplerMethod method);
 	Int4 cubeFace(Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M);
 	Short4 applyOffset(Short4 &uvw, Int4 &offset, const Int4 &whd, AddressingMode mode);
 	void computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Short4 &cubeArrayLayer, Vector4i &offset, const Int4 &sample, const Pointer<Byte> &mipmap, SamplerFunction function);
