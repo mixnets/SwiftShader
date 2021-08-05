@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46ca3881_a5ed6e20",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 69812,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-05T11:34:37Z",
+      "side": 1,
+      "message": "https://issuetracker.google.com/192310780",
+      "range": {
+        "startLine": 69812,
+        "startChar": 0,
+        "endLine": 69812,
+        "endChar": 60
+      },
+      "revId": "a28b51e37490025050750fed1e892b2b5c057b7e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
