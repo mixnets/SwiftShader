@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4ad37fd_aa7ef528",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-06T03:56:18Z",
+      "side": 1,
+      "message": "LLVM and Subzero results match, and these new passing tests are from implementing VK_EXT_custom_border_color: https://swiftshader-review.googlesource.com/c/SwiftShader/+/54469.",
+      "revId": "31cc74a45f40fd93ae1d49a6d72919b02427981e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
