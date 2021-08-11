@@ -143,4 +143,46 @@ static_assert(offsetof(marl_fiber_context, LR) == MARL_REG_LR,
               "Bad register offset");
 #endif  // __cplusplus
 
-#endif  // MARL_BUILD_ASM
+#else  // #ifndef MARL_BUILD_ASM
+
+#if defined(__ARM_FEATURE_PAC_DEFAULT) && __ARM_FEATURE_PAC_DEFAULT
+// ENABLE_PAUTH must be defined to 1 since this value will be used in
+// bitwise-shift later!
+#define ENABLE_PAUTH 1
+
+#if ((__ARM_FEATURE_PAC_DEFAULT & ((1 << 0) | (1 << 1))) == 0)
+#error Pointer authentication defines no valid key!
+#endif
+#else
+#define ENABLE_PAUTH 0
+#endif
+
+#if defined(__ARM_FEATURE_BTI_DEFAULT) && (__ARM_FEATURE_BTI_DEFAULT == 1)
+// ENABLE_BTI must be defined to 1 since this value will be used in
+// bitwise-shift later!
+#define ENABLE_BTI 1
+#else
+#define ENABLE_BTI 0
+#endif
+
+// Although Pointer Authentication and Branch Target Instructions are
+// technically seperate features they work together, i.e. the paciasp and
+// pacibsp instructions serve as BTI landing pads. Therefore PA-instructions are
+// enabled when PA _or_ BTI is enabled!
+#if ENABLE_PAUTH || ENABLE_BTI
+// See section "Pointer Authentication" of
+// https://developer.arm.com/documentation/101028/0012/5--Feature-test-macros
+// for details how to interpret __ARM_FEATURE_PAC_DEFAULT
+#if (__ARM_FEATURE_PAC_DEFAULT & (1 << 0))
+#define PAUTH_SIGN_SP paciasp
+#define PAUTH_AUTH_SP autiasp
+#else
+#define PAUTH_SIGN_SP pacibsp
+#define PAUTH_AUTH_SP autibsp
+#endif
+#else
+#define PAUTH_SIGN_SP
+#define PAUTH_AUTH_SP
+#endif
+
+#endif  // #ifndef MARL_BUILD_ASM

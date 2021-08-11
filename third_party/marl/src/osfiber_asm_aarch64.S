@@ -28,6 +28,8 @@ MARL_ASM_SYMBOL(marl_fiber_swap):
     // Save context 'from'
     // TODO: pairs of str can be combined with stp.
 
+    PAUTH_SIGN_SP
+
     // Store special purpose registers
     str x16, [x0, #MARL_REG_r16]
     str x17, [x0, #MARL_REG_r17]
@@ -99,6 +101,24 @@ MARL_ASM_SYMBOL(marl_fiber_swap):
     ldr x2,  [x7, #MARL_REG_SP]
     mov sp, x2
 
+    PAUTH_AUTH_SP
+
     ret
+
+#if ENABLE_PAUTH || ENABLE_BTI
+// see
+// https://github.com/ARM-software/abi-aa/blob/main/aaelf64/aaelf64.rst#program-property
+.pushsection .note.gnu.property, "a";
+    .balign 8
+    .long 4
+    .long 0x10
+    .long 0x5
+    .asciz "GNU"
+    .long 0xc0000000 /* GNU_PROPERTY_AARCH64_FEATURE_1_AND */
+    .long 4
+    .long ((ENABLE_PAUTH)<<1) | ((ENABLE_BTI)<<0) /* PAuth and BTI */
+    .long 0
+.popsection
+#endif
 
 #endif // defined(__aarch64__)
