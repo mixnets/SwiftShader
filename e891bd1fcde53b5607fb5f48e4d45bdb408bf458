@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40b641ee_4dc1def4",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-11T21:00:11Z",
+      "side": 1,
+      "message": "b/195422130 - Good workaround in spirv-opt passes.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 64
+      },
+      "revId": "e891bd1fcde53b5607fb5f48e4d45bdb408bf458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd395b25_f523c288",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-11T21:00:11Z",
+      "side": 1,
+      "message": "b/151214291 - Pass when increasing subTexelPrecisionBits to 8.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 80
+      },
+      "revId": "e891bd1fcde53b5607fb5f48e4d45bdb408bf458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56d9b667_656dbdc6",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-11T21:00:11Z",
+      "side": 1,
+      "message": "dEQP-VK bug. Fixed by https://gerrit.khronos.org/c/vk-gl-cts/+/7357",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 69
+      },
+      "revId": "e891bd1fcde53b5607fb5f48e4d45bdb408bf458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d10ce7f_f55e0d2e",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-11T21:00:11Z",
+      "side": 1,
+      "message": "Caused by calls to vkCmdSetLineStippleEXT despite us properly reporting no support for line stipple. It appears to be valid to call this function regardless. The test passes when commenting out the UNSUPPORTED(). Note it is already ignored in Release builds without DCHECK_ALWAYS_ON. We want to keep it to alert us when apps actually try to depend on this.",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 78
+      },
+      "revId": "e891bd1fcde53b5607fb5f48e4d45bdb408bf458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e345344_1f7605c1",
+        "filename": "tests/regres/testlists/vk-master-UNSUPPORTED.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-11T21:00:11Z",
+      "side": 1,
+      "message": "b/172212963 - Can be worked around by force inlining / removing DontInline.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 83
+      },
+      "revId": "e891bd1fcde53b5607fb5f48e4d45bdb408bf458",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
