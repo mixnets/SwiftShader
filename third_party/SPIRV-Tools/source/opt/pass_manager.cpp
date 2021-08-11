@@ -32,14 +32,14 @@ Pass::Status PassManager::Run(IRContext* context) {
   // If print_all_stream_ is not null, prints the disassembly of the module
   // to that stream, with the given preamble and optionally the pass name.
   auto print_disassembly = [&context, this](const char* preamble, Pass* pass) {
-    if (print_all_stream_) {
+    if (true) {
       std::vector<uint32_t> binary;
       context->module()->ToBinary(&binary, false);
       SpirvTools t(SPV_ENV_UNIVERSAL_1_2);
       std::string disassembly;
       t.Disassemble(binary, &disassembly, 0);
-      *print_all_stream_ << preamble << (pass ? pass->name() : "") << "\n"
-                         << disassembly << std::endl;
+      std::cout << preamble << (pass ? pass->name() : "") << "\n"
+                << disassembly << std::endl;
     }
   };
 
