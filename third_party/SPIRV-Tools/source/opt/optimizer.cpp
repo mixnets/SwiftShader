@@ -177,6 +177,7 @@ Optimizer& Optimizer::RegisterPerformancePasses() {
       .RegisterPass(CreateAggressiveDCEPass())
       .RegisterPass(CreateLocalMultiStoreElimPass())
       .RegisterPass(CreateAggressiveDCEPass())
+      .RegisterPass(CreateBlockMergePass())  // TODO(b/195422130): Temporary workaround for CPP bug.
       .RegisterPass(CreateCCPPass())
       .RegisterPass(CreateAggressiveDCEPass())
       .RegisterPass(CreateLoopUnrollPass(true))
