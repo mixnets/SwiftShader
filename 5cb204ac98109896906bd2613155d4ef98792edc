@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0994e1c1_214ecf72",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-12T13:58:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8b7879b8_c0569bb0",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 12
+      },
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c80e5a6d_81261edb",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -37,6 +61,41 @@
       "writtenOn": "2021-08-12T13:32:56Z",
       "side": 1,
       "message": "Thanks André!\n\nBen, can you have a look to see if this will be suitable for Marl upstream? I\u0027ll take case of the cherry-picking.",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0d9bd0a_7d879f4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-12T13:58:52Z",
+      "side": 1,
+      "message": "Hej Nicolas \u0026 Ben,\n\nplease see my answer to Nicolas\u0027 comment. \n\nI\u0027ll add the requested changes.\n\nCheers + Best Regards,\nAndré ",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0364b75e_a33a6884",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-12T13:58:52Z",
+      "side": 1,
+      "message": "Hi Nicolas \u0026 Ben,\n\nThanks for taking a look at the patch and giving feedback.\n\nFirst let me apologize, I wasn\u0027t aware of the upstream when I submitted this patch.\n\nIn order for PA/BTI to work for AArch64, each object file must contain a specific .note section. That\u0027s why I divided the sources-section of BUILD.gn into sets specific for each architecture.\n\nI had a look at the Bazel-file used by the upstream. It doesn\u0027t provide a mechanism to enable platform specific setting. Can you give me a hint how this could be implemented?\n\nNicolas, I\u0027ve read through your comments. Yes, the changes to the header file can be moved to the .S-file. I\u0027ll do that and change the comment.\n\nBest Regards,\nAndré",
+      "parentUuid": "c80e5a6d_81261edb",
       "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
@@ -54,6 +113,24 @@
       "writtenOn": "2021-08-12T13:32:56Z",
       "side": 1,
       "message": "Can this be moved to the .S file or does it have to be in a header?",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df1cf1f9_56d737bb",
+        "filename": "third_party/marl/src/osfiber_asm_aarch64.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-12T13:58:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "04aca4e7_e127098e",
       "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
