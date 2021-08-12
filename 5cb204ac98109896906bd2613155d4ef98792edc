@@ -118,6 +118,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8036737_990d901d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-12T16:02:18Z",
+      "side": 1,
+      "message": "Hi Ben,\n\nI just amended the patch to contain the requested changes.\n\nThat platform-specific settings would be for the branch-protection flag and to split the set of source files into dedicated platform specific sets. Otherwise I\u0027d have to insert this PAC/BTI section into each and every assembler file (even the ones not for aarch64). So these both changes go hand in hand.\n\nBest Regards,\nAndré",
+      "parentUuid": "0449e2a8_e670dd7f",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "04aca4e7_e127098e",
