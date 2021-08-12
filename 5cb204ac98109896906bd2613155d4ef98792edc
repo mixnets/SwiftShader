@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b7879b8_c0569bb0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-12T13:32:56Z",
+      "side": 1,
+      "message": "Use \"chromium:1145581\" have it recognized as a Chromium bug.",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 12
+      },
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c80e5a6d_81261edb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-12T13:32:56Z",
+      "side": 1,
+      "message": "Thanks André!\n\nBen, can you have a look to see if this will be suitable for Marl upstream? I\u0027ll take case of the cherry-picking.",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04aca4e7_e127098e",
+        "filename": "third_party/marl/src/osfiber_asm_aarch64.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-12T13:32:56Z",
+      "side": 1,
+      "message": "Can this be moved to the .S file or does it have to be in a header?",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
