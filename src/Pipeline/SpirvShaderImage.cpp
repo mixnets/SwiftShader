@@ -634,6 +634,21 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 			imageOperands &= ~spv::ImageOperandsSignExtendMask;
 		}
 
+		if(imageOperands & spv::ImageOperandsMakeTexelVisibleMask)
+		{
+			imageOperands &= ~spv::ImageOperandsMakeTexelVisibleMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsNonPrivateTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsNonPrivateTexelMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsVolatileTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsVolatileTexelMask;
+		}
+
 		// Should be no remaining image operands.
 		if(imageOperands != 0)
 		{
@@ -1034,6 +1049,21 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 		else if(imageOperands & spv::ImageOperandsSignExtendMask)
 		{
 			imageOperands &= ~spv::ImageOperandsSignExtendMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsMakeTexelAvailableMask)
+		{
+			imageOperands &= ~spv::ImageOperandsMakeTexelAvailableMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsNonPrivateTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsNonPrivateTexelMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsVolatileTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsVolatileTexelMask;
 		}
 
 		// Should be no remaining image operands.
