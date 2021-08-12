@@ -629,8 +629,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 
 	if(insn.wordCount() > 5)
 	{
-		int operand = 6;
-		uint32_t imageOperands = insn.word(5);
+		int operand = 5;
+		uint32_t imageOperands = insn.word(operand++);
 		if(imageOperands & spv::ImageOperandsSampleMask)
 		{
 			sampleId = insn.word(operand++);
@@ -646,10 +646,33 @@ SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState 
 			imageOperands &= ~spv::ImageOperandsSignExtendMask;
 		}
 
-		// Should be no remaining image operands.
+		spv::Scope scope = spv::ScopeCrossDevice;  // "Whilst the CrossDevice scope is defined in SPIR-V, it is disallowed in Vulkan."
+		if(imageOperands & spv::ImageOperandsMakeTexelVisibleMask)
+		{
+			scope = static_cast<spv::Scope>(insn.word(operand++));
+			imageOperands &= ~spv::ImageOperandsMakeTexelVisibleMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsNonPrivateTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsNonPrivateTexelMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsVolatileTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsVolatileTexelMask;
+		}
+
+		// There should be no remaining image operands.
 		if(imageOperands != 0)
 		{
 			UNSUPPORTED("Image operands 0x%08X", imageOperands);
+		}
+
+		// There should be no remaining operands.
+		if(operand != insn.wordCount())
+		{
+			UNSUPPORTED("Image operands 0x%08X", (int)imageOperands);
 		}
 	}
 
@@ -1073,8 +1096,8 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 
 	if(insn.wordCount() > 4)
 	{
-		int operand = 5;
-		uint32_t imageOperands = insn.word(4);
+		int operand = 4;
+		uint32_t imageOperands = insn.word(operand++);
 		if(imageOperands & spv::ImageOperandsSampleMask)
 		{
 			sampleId = insn.word(operand++);
@@ -1090,8 +1113,31 @@ SpirvShader::EmitResult SpirvShader::EmitImageWrite(InsnIterator insn, EmitState
 			imageOperands &= ~spv::ImageOperandsSignExtendMask;
 		}
 
-		// Should be no remaining image operands.
+		spv::Scope scope = spv::ScopeCrossDevice;  // "Whilst the CrossDevice scope is defined in SPIR-V, it is disallowed in Vulkan."
+		if(imageOperands & spv::ImageOperandsMakeTexelAvailableMask)
+		{
+			scope = static_cast<spv::Scope>(insn.word(operand++));
+			imageOperands &= ~spv::ImageOperandsMakeTexelAvailableMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsNonPrivateTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsNonPrivateTexelMask;
+		}
+
+		if(imageOperands & spv::ImageOperandsVolatileTexelMask)
+		{
+			imageOperands &= ~spv::ImageOperandsVolatileTexelMask;
+		}
+
+		// There should be no remaining image operands.
 		if(imageOperands != 0)
+		{
+			UNSUPPORTED("Image operands 0x%08X", (int)imageOperands);
+		}
+
+		// There should be no remaining operands.
+		if(operand != insn.wordCount())
 		{
 			UNSUPPORTED("Image operands 0x%08X", (int)imageOperands);
 		}
