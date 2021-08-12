@@ -418,6 +418,8 @@ SpirvShader::SpirvShader(
 				case spv::CapabilityDeviceGroup: capabilities.DeviceGroup = true; break;
 				case spv::CapabilityMultiView: capabilities.MultiView = true; break;
 				case spv::CapabilityStencilExportEXT: capabilities.StencilExportEXT = true; break;
+				case spv::CapabilityVulkanMemoryModel: capabilities.VulkanMemoryModel = true; break;
+				case spv::CapabilityVulkanMemoryModelDeviceScope: capabilities.VulkanMemoryModelDeviceScope = true; break;
 				default:
 					UNSUPPORTED("Unsupported capability %u", insn.word(1));
 				}
