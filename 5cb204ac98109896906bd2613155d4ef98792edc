@@ -100,6 +100,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0449e2a8_e670dd7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2021-08-12T15:06:34Z",
+      "side": 1,
+      "message": "Thank you for your contributions, André!\n\nI\u0027d be more than happy for this to be upstreamed to Marl.\n\nI agree that it would be nice for the #else block in osfiber_asm_aarch64.h to be moved into the .S, if possible.\n\n\u003e I had a look at the Bazel-file used by the upstream. It doesn\u0027t provide a mechanism to enable platform specific setting. Can you give me a hint how this could be implemented?\n\nIs this just to add the \"-mbranch-protection\" flag? If this works as it did before without the addition of the flag, I\u0027m happy for this to be omitted from the Bazel build rules for now (I do not believe the Bazel build is heavily used)",
+      "parentUuid": "0364b75e_a33a6884",
+      "revId": "5cb204ac98109896906bd2613155d4ef98792edc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "04aca4e7_e127098e",
