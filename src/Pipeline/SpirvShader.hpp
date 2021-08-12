@@ -680,6 +680,8 @@ public:
 		bool DeviceGroup : 1;
 		bool MultiView : 1;
 		bool StencilExportEXT : 1;
+		bool VulkanMemoryModel : 1;
+		bool VulkanMemoryModelDeviceScope : 1;
 	};
 
 	const Capabilities &getUsedCapabilities() const
