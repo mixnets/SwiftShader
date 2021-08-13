@@ -188,13 +188,22 @@ Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const St
 	UInt4 zero(0);
 	if(robustBufferAccess)
 	{
+		// The spec states that "vertex input attributes are considered out of bounds if the offset of
+		// the attribute in the bound vertex buffer range plus the size of the attribute is greater
+		// than ...", but this addition can cause integer overflow and we fail to detect out of bounds
+		// accesses. Note there aren't x86 SIMD instructions for 32-bit arithmetic with saturation.
+		// So we don't perform this addition, and instead ensure the buffer has sufficient padding to
+		// ensure any access with the offset within buffer bounds also has the entire attribute within
+		// the memory bound to the buffer.
+		// TODO(b/195684837): While this is robust in the sense that it prevents out of bounds accesses,
+		// it doesn't appear to satisfy the spec requirements for the returned value.
+
 		// TODO(b/141124876): Optimize for wide-vector gather operations.
-		UInt4 limits = offsets + UInt4(format.bytes());
 		Pointer<Byte> zeroSource = As<Pointer<Byte>>(&zero);
-		source0 = IfThenElse(limits.x <= robustnessSize, source0, zeroSource);
-		source1 = IfThenElse(limits.y <= robustnessSize, source1, zeroSource);
-		source2 = IfThenElse(limits.z <= robustnessSize, source2, zeroSource);
-		source3 = IfThenElse(limits.w <= robustnessSize, source3, zeroSource);
+		source0 = IfThenElse(offsets.x <= robustnessSize, source0, zeroSource);
+		source1 = IfThenElse(offsets.y <= robustnessSize, source1, zeroSource);
+		source2 = IfThenElse(offsets.z <= robustnessSize, source2, zeroSource);
+		source3 = IfThenElse(offsets.w <= robustnessSize, source3, zeroSource);
 	}
 
 	int componentCount = format.componentCount();

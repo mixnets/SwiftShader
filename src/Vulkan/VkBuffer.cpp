@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkBuffer.hpp"
+
 #include "VkConfig.hpp"
 #include "VkDeviceMemory.hpp"
 
@@ -57,6 +58,12 @@ size_t Buffer::ComputeRequiredAllocationSize(const VkBufferCreateInfo *pCreateIn
 const VkMemoryRequirements Buffer::getMemoryRequirements() const
 {
 	VkMemoryRequirements memoryRequirements = {};
+
+	// TODO(b/195684837): Adds 15 bytes of padding so that any attribute with a starting address within the buffer bounds
+	// can be read robustly. This may not produce spec-compliant results.
+	// TODO(b/141124876): Also reserve space for a header containing the size of the buffer (for robust buffer access)
+	memoryRequirements.size = this->size + 15;
+
 	if(usage & (VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT))
 	{
 		memoryRequirements.alignment = vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT;
@@ -73,9 +80,9 @@ const VkMemoryRequirements Buffer::getMemoryRequirements() const
 	{
 		memoryRequirements.alignment = REQUIRED_MEMORY_ALIGNMENT;
 	}
+
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
-	memoryRequirements.size = size;  // TODO: also reserve space for a header containing
-	                                 // the size of the buffer (for robust buffer access)
+
 	return memoryRequirements;
 }
 
