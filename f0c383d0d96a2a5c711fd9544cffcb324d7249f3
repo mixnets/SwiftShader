@@ -73,6 +73,24 @@
       "message": "Looks great to me, but please can I ask you to make this change to the upstream project at https://github.com/google/marl ?\n\nI\u0027m uncertain what our policies are with Google engineers cherry-picking code between projects that\u0027s been authored by external developers, and having the code land directly in the upstream project would certainly avoid any grumpy lawyers.\n\nSorry for the hassle here!",
       "revId": "f0c383d0d96a2a5c711fd9544cffcb324d7249f3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "852a2db1_e2b9b5fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-13T12:58:52Z",
+      "side": 1,
+      "message": "Hi Ben \u0026 Nicolas,\n\nThe patch now consists only of adjustment to the BUILD.gn-files, the assembly-file goes via upstream. I also have adjusted the Bug-Id.\n\nWe are preparing the commit to upstream. Unfortunately it will take some time, I think it will be ready in 2 or 3 days, that is 17 or 18th of Aug.\n\nBest Regards,\nAndré",
+      "parentUuid": "287609c9_7e036746",
+      "revId": "f0c383d0d96a2a5c711fd9544cffcb324d7249f3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b20041d_eddd280d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101091
+      },
+      "writtenOn": "2021-08-13T12:58:52Z",
+      "side": 1,
+      "message": "Hi Ben \u0026 Nicolas,\n\nI have split the commit into one part that goes via SwiftShader and another one via upstream.\n\nIn case further changes are required, just let me know. ;-)\n\nBest Regards,\nAndré\n  ",
+      "revId": "dc811adf81f9d0b2929739bd4b77b418000da38a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
