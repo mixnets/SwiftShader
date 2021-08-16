@@ -152,7 +152,7 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 		UNSUPPORTED("enabledLayerCount");
 	}
 
-	// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+	// FIXME(b/119409619): use an allocator here so we can control all memory allocations
 	blitter.reset(new sw::Blitter());
 	samplingRoutineCache.reset(new SamplingRoutineCache());
 	samplerIndexer.reset(new SamplerIndexer());
@@ -169,10 +169,10 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 	}
 #endif  // ENABLE_VK_DEBUGGER
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	const VkBaseInStructure *extensionCreateInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
 	while(extensionCreateInfo)
 	{
+		// VK_EXT_device_memory_report
 		if(extensionCreateInfo->sType == VK_STRUCTURE_TYPE_DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT)
 		{
 			auto deviceMemoryReportCreateInfo = reinterpret_cast<const VkDeviceDeviceMemoryReportCreateInfoEXT *>(pCreateInfo->pNext);
@@ -181,9 +181,9 @@ Device::Device(const VkDeviceCreateInfo *pCreateInfo, void *mem, PhysicalDevice 
 				deviceMemoryReportCallbacks.emplace_back(deviceMemoryReportCreateInfo->pfnUserCallback, deviceMemoryReportCreateInfo->pUserData);
 			}
 		}
+
 		extensionCreateInfo = extensionCreateInfo->pNext;
 	}
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 }
 
 void Device::destroy(const VkAllocationCallbacks *pAllocator)
@@ -472,7 +472,6 @@ void Device::contentsChanged(ImageView *imageView)
 	}
 }
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 void Device::emitDeviceMemoryReport(VkDeviceMemoryReportEventTypeEXT type, uint64_t memoryObjectId, VkDeviceSize size, VkObjectType objectType, uint64_t objectHandle, uint32_t heapIndex)
 {
 	if(deviceMemoryReportCallbacks.empty()) return;
@@ -493,6 +492,5 @@ void Device::emitDeviceMemoryReport(VkDeviceMemoryReportEventTypeEXT type, uint6
 		callback.first(&callbackData, callback.second);
 	}
 }
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 }  // namespace vk

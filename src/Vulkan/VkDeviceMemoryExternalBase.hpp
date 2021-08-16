@@ -51,7 +51,6 @@ public:
 	virtual int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const { return 0; }
 	virtual VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const { return 0; }
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	virtual bool isImport() const
 	{
 		return false;
@@ -61,7 +60,6 @@ public:
 	{
 		return 0;
 	}
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 protected:
 	ExternalBase() = default;
