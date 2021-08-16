@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7776d894_3bb28996",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-16T13:50:11Z",
+      "side": 1,
+      "message": "Ideally this upstream pull request gets accepted: https://github.com/KhronosGroup/SPIRV-Tools/pull/4471\n\nThe downstream version of that (https://swiftshader-review.googlesource.com/c/SwiftShader/+/56268) fails to pass Chromium tryjobs because we use their version of SPIRV-Tools, not our own copy. This could be addressed as part of b/158002593. Note that this change suffers from the same issue, but since it only affects dEQP-VK tests there are no tryjob failures. I\u0027m setting Verified-1 to indicate this does not work entirely as intended.",
+      "revId": "d2589d2771cbe1a06595da143ed001367f7364eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
