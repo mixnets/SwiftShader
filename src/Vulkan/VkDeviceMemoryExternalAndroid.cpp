@@ -533,7 +533,6 @@ VkDeviceSize AHardwareBufferExternalMemory::externalImageMemoryOffset(VkImageAsp
 	return 0;
 }
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 uint64_t AHardwareBufferExternalMemory::getMemoryObjectId() const
 {
 	uint64_t id = 0;
@@ -541,4 +540,3 @@ uint64_t AHardwareBufferExternalMemory::getMemoryObjectId() const
 	ASSERT(ret == 0);
 	return id;
 }
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT

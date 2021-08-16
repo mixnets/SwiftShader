@@ -71,13 +71,11 @@ public:
 	int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const override final;
 	VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const override final;
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 	bool isImport() const override
 	{
 		return allocateInfo.importAhb;
 	}
 	uint64_t getMemoryObjectId() const override;
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 private:
 	VkResult importAndroidHardwareBuffer(AHardwareBuffer *buffer, void **pBuffer);

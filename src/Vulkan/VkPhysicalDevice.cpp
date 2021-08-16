@@ -219,13 +219,11 @@ static void getPhysicalDeviceScalarBlockLayoutFeatures(T *features)
 	features->scalarBlockLayout = VK_TRUE;
 }
 
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 template<typename T>
 static void getPhysicalDeviceDeviceMemoryReportFeaturesEXT(T *features)
 {
 	features->deviceMemoryReport = VK_TRUE;
 }
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 template<typename T>
 static void getPhysicalDeviceUniformBufferStandardLayoutFeatures(T *features)
@@ -391,11 +389,9 @@ void PhysicalDevice::getFeatures2(VkPhysicalDeviceFeatures2 *features) const
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES:
 			getPhysicalDeviceScalarBlockLayoutFeatures(reinterpret_cast<VkPhysicalDeviceScalarBlockLayoutFeatures *>(curExtension));
 			break;
-#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT:
 			getPhysicalDeviceDeviceMemoryReportFeaturesEXT(reinterpret_cast<VkPhysicalDeviceDeviceMemoryReportFeaturesEXT *>(curExtension));
 			break;
-#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES:
 			getPhysicalDeviceUniformBufferStandardLayoutFeatures(reinterpret_cast<VkPhysicalDeviceUniformBufferStandardLayoutFeatures *>(curExtension));
 			break;
@@ -441,73 +437,73 @@ const VkPhysicalDeviceLimits &PhysicalDevice::getLimits()
 	VkSampleCountFlags sampleCounts = getSampleCounts();
 
 	static const VkPhysicalDeviceLimits limits = {
-		1 << (vk::MAX_IMAGE_LEVELS_1D - 1),               // maxImageDimension1D
-		1 << (vk::MAX_IMAGE_LEVELS_2D - 1),               // maxImageDimension2D
-		1 << (vk::MAX_IMAGE_LEVELS_3D - 1),               // maxImageDimension3D
-		1 << (vk::MAX_IMAGE_LEVELS_CUBE - 1),             // maxImageDimensionCube
-		vk::MAX_IMAGE_ARRAY_LAYERS,                       // maxImageArrayLayers
-		65536,                                            // maxTexelBufferElements
-		16384,                                            // maxUniformBufferRange
-		(1ul << 27),                                      // maxStorageBufferRange
-		vk::MAX_PUSH_CONSTANT_SIZE,                       // maxPushConstantsSize
-		4096,                                             // maxMemoryAllocationCount
-		vk::MAX_SAMPLER_ALLOCATION_COUNT,                 // maxSamplerAllocationCount
-		131072,                                           // bufferImageGranularity
-		0,                                                // sparseAddressSpaceSize (unsupported)
-		MAX_BOUND_DESCRIPTOR_SETS,                        // maxBoundDescriptorSets
-		16,                                               // maxPerStageDescriptorSamplers
-		14,                                               // maxPerStageDescriptorUniformBuffers
-		16,                                               // maxPerStageDescriptorStorageBuffers
-		16,                                               // maxPerStageDescriptorSampledImages
-		4,                                                // maxPerStageDescriptorStorageImages
-		sw::RENDERTARGETS,                                // maxPerStageDescriptorInputAttachments
-		128,                                              // maxPerStageResources
-		96,                                               // maxDescriptorSetSamplers
-		72,                                               // maxDescriptorSetUniformBuffers
-		MAX_DESCRIPTOR_SET_UNIFORM_BUFFERS_DYNAMIC,       // maxDescriptorSetUniformBuffersDynamic
-		24,                                               // maxDescriptorSetStorageBuffers
-		MAX_DESCRIPTOR_SET_STORAGE_BUFFERS_DYNAMIC,       // maxDescriptorSetStorageBuffersDynamic
-		96,                                               // maxDescriptorSetSampledImages
-		24,                                               // maxDescriptorSetStorageImages
-		sw::RENDERTARGETS,                                // maxDescriptorSetInputAttachments
-		16,                                               // maxVertexInputAttributes
-		vk::MAX_VERTEX_INPUT_BINDINGS,                    // maxVertexInputBindings
-		2047,                                             // maxVertexInputAttributeOffset
-		2048,                                             // maxVertexInputBindingStride
-		sw::MAX_INTERFACE_COMPONENTS,                     // maxVertexOutputComponents
-		0,                                                // maxTessellationGenerationLevel (unsupported)
-		0,                                                // maxTessellationPatchSize (unsupported)
-		0,                                                // maxTessellationControlPerVertexInputComponents (unsupported)
-		0,                                                // maxTessellationControlPerVertexOutputComponents (unsupported)
-		0,                                                // maxTessellationControlPerPatchOutputComponents (unsupported)
-		0,                                                // maxTessellationControlTotalOutputComponents (unsupported)
-		0,                                                // maxTessellationEvaluationInputComponents (unsupported)
-		0,                                                // maxTessellationEvaluationOutputComponents (unsupported)
-		0,                                                // maxGeometryShaderInvocations (unsupported)
-		0,                                                // maxGeometryInputComponents (unsupported)
-		0,                                                // maxGeometryOutputComponents (unsupported)
-		0,                                                // maxGeometryOutputVertices (unsupported)
-		0,                                                // maxGeometryTotalOutputComponents (unsupported)
-		sw::MAX_INTERFACE_COMPONENTS,                     // maxFragmentInputComponents
-		sw::RENDERTARGETS,                                // maxFragmentOutputAttachments
-		1,                                                // maxFragmentDualSrcAttachments
-		28,                                               // maxFragmentCombinedOutputResources
-		16384,                                            // maxComputeSharedMemorySize
-		{ 65535, 65535, 65535 },                          // maxComputeWorkGroupCount[3]
-		256,                                              // maxComputeWorkGroupInvocations
-		{ 256, 256, 64 },                                 // maxComputeWorkGroupSize[3]
-		vk::SUBPIXEL_PRECISION_BITS,                      // subPixelPrecisionBits
-		4,                                                // subTexelPrecisionBits
-		4,                                                // mipmapPrecisionBits
-		UINT32_MAX,                                       // maxDrawIndexedIndexValue
-		UINT32_MAX,                                       // maxDrawIndirectCount
-		vk::MAX_SAMPLER_LOD_BIAS,                         // maxSamplerLodBias
-		16,                                               // maxSamplerAnisotropy
-		16,                                               // maxViewports
+		1 << (vk::MAX_IMAGE_LEVELS_1D - 1),          // maxImageDimension1D
+		1 << (vk::MAX_IMAGE_LEVELS_2D - 1),          // maxImageDimension2D
+		1 << (vk::MAX_IMAGE_LEVELS_3D - 1),          // maxImageDimension3D
+		1 << (vk::MAX_IMAGE_LEVELS_CUBE - 1),        // maxImageDimensionCube
+		vk::MAX_IMAGE_ARRAY_LAYERS,                  // maxImageArrayLayers
+		65536,                                       // maxTexelBufferElements
+		16384,                                       // maxUniformBufferRange
+		(1ul << 27),                                 // maxStorageBufferRange
+		vk::MAX_PUSH_CONSTANT_SIZE,                  // maxPushConstantsSize
+		4096,                                        // maxMemoryAllocationCount
+		vk::MAX_SAMPLER_ALLOCATION_COUNT,            // maxSamplerAllocationCount
+		131072,                                      // bufferImageGranularity
+		0,                                           // sparseAddressSpaceSize (unsupported)
+		MAX_BOUND_DESCRIPTOR_SETS,                   // maxBoundDescriptorSets
+		16,                                          // maxPerStageDescriptorSamplers
+		14,                                          // maxPerStageDescriptorUniformBuffers
+		16,                                          // maxPerStageDescriptorStorageBuffers
+		16,                                          // maxPerStageDescriptorSampledImages
+		4,                                           // maxPerStageDescriptorStorageImages
+		sw::RENDERTARGETS,                           // maxPerStageDescriptorInputAttachments
+		128,                                         // maxPerStageResources
+		96,                                          // maxDescriptorSetSamplers
+		72,                                          // maxDescriptorSetUniformBuffers
+		MAX_DESCRIPTOR_SET_UNIFORM_BUFFERS_DYNAMIC,  // maxDescriptorSetUniformBuffersDynamic
+		24,                                          // maxDescriptorSetStorageBuffers
+		MAX_DESCRIPTOR_SET_STORAGE_BUFFERS_DYNAMIC,  // maxDescriptorSetStorageBuffersDynamic
+		96,                                          // maxDescriptorSetSampledImages
+		24,                                          // maxDescriptorSetStorageImages
+		sw::RENDERTARGETS,                           // maxDescriptorSetInputAttachments
+		16,                                          // maxVertexInputAttributes
+		vk::MAX_VERTEX_INPUT_BINDINGS,               // maxVertexInputBindings
+		2047,                                        // maxVertexInputAttributeOffset
+		2048,                                        // maxVertexInputBindingStride
+		sw::MAX_INTERFACE_COMPONENTS,                // maxVertexOutputComponents
+		0,                                           // maxTessellationGenerationLevel (unsupported)
+		0,                                           // maxTessellationPatchSize (unsupported)
+		0,                                           // maxTessellationControlPerVertexInputComponents (unsupported)
+		0,                                           // maxTessellationControlPerVertexOutputComponents (unsupported)
+		0,                                           // maxTessellationControlPerPatchOutputComponents (unsupported)
+		0,                                           // maxTessellationControlTotalOutputComponents (unsupported)
+		0,                                           // maxTessellationEvaluationInputComponents (unsupported)
+		0,                                           // maxTessellationEvaluationOutputComponents (unsupported)
+		0,                                           // maxGeometryShaderInvocations (unsupported)
+		0,                                           // maxGeometryInputComponents (unsupported)
+		0,                                           // maxGeometryOutputComponents (unsupported)
+		0,                                           // maxGeometryOutputVertices (unsupported)
+		0,                                           // maxGeometryTotalOutputComponents (unsupported)
+		sw::MAX_INTERFACE_COMPONENTS,                // maxFragmentInputComponents
+		sw::RENDERTARGETS,                           // maxFragmentOutputAttachments
+		1,                                           // maxFragmentDualSrcAttachments
+		28,                                          // maxFragmentCombinedOutputResources
+		16384,                                       // maxComputeSharedMemorySize
+		{ 65535, 65535, 65535 },                     // maxComputeWorkGroupCount[3]
+		256,                                         // maxComputeWorkGroupInvocations
+		{ 256, 256, 64 },                            // maxComputeWorkGroupSize[3]
+		vk::SUBPIXEL_PRECISION_BITS,                 // subPixelPrecisionBits
+		4,                                           // subTexelPrecisionBits
+		4,                                           // mipmapPrecisionBits
+		UINT32_MAX,                                  // maxDrawIndexedIndexValue
+		UINT32_MAX,                                  // maxDrawIndirectCount
+		vk::MAX_SAMPLER_LOD_BIAS,                    // maxSamplerLodBias
+		16,                                          // maxSamplerAnisotropy
+		16,                                          // maxViewports
 		{ sw::MAX_VIEWPORT_DIM,
-		  sw::MAX_VIEWPORT_DIM },                         // maxViewportDimensions[2]
+		  sw::MAX_VIEWPORT_DIM },  // maxViewportDimensions[2]
 		{ -2 * sw::MAX_VIEWPORT_DIM,
-		   2 * sw::MAX_VIEWPORT_DIM - 1 },                // viewportBoundsRange[2]
+		  2 * sw::MAX_VIEWPORT_DIM - 1 },                 // viewportBoundsRange[2]
 		0,                                                // viewportSubPixelBits
 		64,                                               // minMemoryMapAlignment
 		vk::MIN_TEXEL_BUFFER_OFFSET_ALIGNMENT,            // minTexelBufferOffsetAlignment
