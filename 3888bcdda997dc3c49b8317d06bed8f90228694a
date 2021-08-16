@@ -16,6 +16,23 @@
       "message": "Ideally this get accepted upstream: https://github.com/KhronosGroup/SPIRV-Tools/pull/4471.\n\nIf that doesn\u0027t happen, we can still land this in our copy to pass Vulkan 1.2, and either implement function calls properly or force-inline them internally.",
       "revId": "3888bcdda997dc3c49b8317d06bed8f90228694a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf68d94c_f22f994e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-16T13:50:53Z",
+      "side": 1,
+      "message": "The SwANGLE tryjob failures are due to b/158002593.",
+      "revId": "3888bcdda997dc3c49b8317d06bed8f90228694a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
