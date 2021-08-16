@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34a3c9e8_10e12035",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-16T17:39:08Z",
+      "side": 1,
+      "message": "nit: It\u0027s a little confusing that for `error` we only free it after testing for non-null, while we always free `geom`.\n\nPerhaps this could be rewritten using `if(geom \u0026\u0026 !error)` and free `error` without an extra non-essential conditional.",
+      "range": {
+        "startLine": 95,
+        "startChar": 1,
+        "endLine": 97,
+        "endChar": 14
+      },
+      "revId": "77794f28f26034425f96213e30d0341431884b36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
