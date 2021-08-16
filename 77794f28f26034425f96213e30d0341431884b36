@@ -22,6 +22,30 @@
       },
       "revId": "77794f28f26034425f96213e30d0341431884b36",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79a35e5e_fbd2b7ed",
+        "filename": "src/WSI/XcbSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-16T17:50:55Z",
+      "side": 1,
+      "message": "Hmmm... I think it\u0027s more straightforward and readable to me the way it is written now, so I\u0027d rather keep it that way, if that\u0027s ok with you.",
+      "parentUuid": "34a3c9e8_10e12035",
+      "range": {
+        "startLine": 95,
+        "startChar": 1,
+        "endLine": 97,
+        "endChar": 14
+      },
+      "revId": "77794f28f26034425f96213e30d0341431884b36",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
