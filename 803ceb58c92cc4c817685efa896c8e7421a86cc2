@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fc68b39_19f199fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5316
+      },
+      "writtenOn": "2021-08-16T18:36:35Z",
+      "side": 1,
+      "message": "Note that this will start returning a zero-sized window in this case - did you figure out how the connection gets broken? It\u0027s a bit problematic because I had to comment out this internal size check in SwiftShader to get my tests working. It seems ANGLE can continue using the connection just fine but SwS cannot.",
+      "revId": "803ceb58c92cc4c817685efa896c8e7421a86cc2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
