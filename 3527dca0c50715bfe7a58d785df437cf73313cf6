@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9ef4ed9_60dc39e5",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-17T15:11:48Z",
+      "side": 1,
+      "message": "Uber nit: Since this is in a double nested loop, you might want to add:\n    auto \u0026analysis \u003d shader-\u003egetAnalysis();\n    \nat line 218 and use \"analysis\" here.",
+      "range": {
+        "startLine": 269,
+        "startChar": 7,
+        "endLine": 269,
+        "endChar": 28
+      },
+      "revId": "3527dca0c50715bfe7a58d785df437cf73313cf6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
