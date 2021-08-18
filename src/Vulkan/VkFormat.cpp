@@ -17,6 +17,11 @@
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 
+#if defined(__APPLE__)
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <IOSurface/IOSurface.h>
+#endif
+
 namespace vk {
 
 bool Format::isUnsignedNormalized() const
@@ -1775,7 +1780,13 @@ int Format::pitchB(int width, int border, bool external) const
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
 		return sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
 	default:
+#if defined(__APPLE__)
+		// TODO(b/194190269): Potentially optimize this by only applying when 'external' is true.
+		//                    The current logic doesn't allow this. See b/194190269#comment2 for details.
+		return IOSurfaceAlignProperty(kIOSurfacePlaneBytesPerRow, bytes() * width);
+#else
 		return bytes() * width;
+#endif
 	}
 }
 
@@ -1853,7 +1864,15 @@ int Format::sliceBUnpadded(int width, int height, int border, bool external) con
 
 int Format::sliceB(int width, int height, int border, bool external) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+	int sliceInBytes = sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+
+#if defined(__APPLE__)
+	// TODO(b/194190269): Potentially optimize this by only applying when 'external' is true.
+	//                    The current logic doesn't allow this. See b/194190269#comment2 for details.
+	sliceInBytes = IOSurfaceAlignProperty(kIOSurfacePlaneSize, sliceInBytes);
+#endif
+
+	return sliceInBytes;
 }
 
 sw::float4 Format::getScale() const
