@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88298b84_e97dd4e6",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-18T18:06:02Z",
+      "side": 1,
+      "message": "This is the only change in this file, the rest is the result of running:\n    git cl format",
+      "range": {
+        "startLine": 107,
+        "startChar": 4,
+        "endLine": 110,
+        "endChar": 5
+      },
+      "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
