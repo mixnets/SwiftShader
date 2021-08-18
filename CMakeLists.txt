@@ -181,8 +181,149 @@ option_if_not_defined(SWIFTSHADER_ENABLE_ASTC "Enable ASTC compressed textures s
 
 set(BUILD_MARL ${SWIFTSHADER_BUILD_VULKAN})
 
+<<<<<<< HEAD   (803ceb Xcb: Check if geom is valid before using it)
 if(${SWIFTSHADER_BUILD_VULKAN} AND ${SWIFTSHADER_ENABLE_VULKAN_DEBUGGER})
     set_if_not_defined(SWIFTSHADER_BUILD_CPPDAP TRUE)
+=======
+# Check whether ucontext is supported.
+set(SAVE_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+set(CMAKE_REQUIRED_FLAGS "-Werror")
+check_cxx_source_compiles(
+    "#include <ucontext.h>
+    int main() {
+      ucontext_t ctx;
+      getcontext(&ctx);
+      makecontext(&ctx, nullptr, 2, 1, 2);
+      swapcontext(&ctx, &ctx);
+      return 0;
+    }"
+    MARL_UCONTEXT_SUPPORTED)
+set(CMAKE_REQUIRED_FLAGS ${SAVE_CMAKE_REQUIRED_FLAGS})
+if (MARL_FIBERS_USE_UCONTEXT AND NOT MARL_UCONTEXT_SUPPORTED)
+    # Disable MARL_FIBERS_USE_UCONTEXT and warn if MARL_UCONTEXT_SUPPORTED is 0.
+    message(WARNING "MARL_FIBERS_USE_UCONTEXT is enabled, but ucontext is not supported by the target. Disabling")
+    set(MARL_FIBERS_USE_UCONTEXT 0)
+endif()
+
+if(MARL_IS_SUBPROJECT)
+    # Export supported flags as this may be useful to parent projects
+    set(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED PARENT_SCOPE ${MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED})
+    set(MARL_UCONTEXT_SUPPORTED               PARENT_SCOPE ${MARL_UCONTEXT_SUPPORTED})
+endif()
+
+###########################################################
+# File lists
+###########################################################
+set(MARL_LIST
+    ${MARL_SRC_DIR}/debug.cpp
+    ${MARL_SRC_DIR}/memory.cpp
+    ${MARL_SRC_DIR}/scheduler.cpp
+    ${MARL_SRC_DIR}/thread.cpp
+    ${MARL_SRC_DIR}/trace.cpp
+)
+if(NOT MSVC)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_aarch64.c
+        ${MARL_SRC_DIR}/osfiber_arm.c
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        ${MARL_SRC_DIR}/osfiber_mips64.c
+        ${MARL_SRC_DIR}/osfiber_ppc64.c
+        ${MARL_SRC_DIR}/osfiber_x64.c
+        ${MARL_SRC_DIR}/osfiber_x86.c
+    )
+    # CMAKE_OSX_ARCHITECTURES settings aren't propagated to assembly files when
+    # building for Apple platforms (https://gitlab.kitware.com/cmake/cmake/-/issues/20771),
+    # we treat assembly files as C files to work around this bug.
+    set_source_files_properties(
+        ${MARL_SRC_DIR}/osfiber_asm_aarch64.S
+        ${MARL_SRC_DIR}/osfiber_asm_arm.S
+        ${MARL_SRC_DIR}/osfiber_asm_mips64.S
+        ${MARL_SRC_DIR}/osfiber_asm_ppc64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x64.S
+        ${MARL_SRC_DIR}/osfiber_asm_x86.S
+        PROPERTIES LANGUAGE C
+    )
+endif(NOT MSVC)
+
+###########################################################
+# OS libraries
+###########################################################
+find_package(Threads REQUIRED)
+
+###########################################################
+# Functions
+###########################################################
+function(marl_set_target_options target)
+    if(MARL_THREAD_SAFETY_ANALYSIS_SUPPORTED)
+        target_compile_options(${target} PRIVATE "-Wthread-safety")
+    endif()
+
+    # Enable all warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE "-W4")
+    else()
+        target_compile_options(${target} PRIVATE "-Wall")
+    endif()
+
+    # Disable specific, pedantic warnings
+    if(MSVC)
+        target_compile_options(${target} PRIVATE
+            "-D_CRT_SECURE_NO_WARNINGS"
+            "/wd4127" # conditional expression is constant
+            "/wd4324" # structure was padded due to alignment specifier
+        )
+    endif()
+
+    # Treat all warnings as errors
+    if(MARL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE "/WX")
+        else()
+            target_compile_options(${target} PRIVATE "-Werror")
+        endif()
+    endif(MARL_WARNINGS_AS_ERRORS)
+
+    if(MARL_ASAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=address")
+        target_link_libraries(${target} PUBLIC "-fsanitize=address")
+    elseif(MARL_MSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=memory")
+        target_link_libraries(${target} PUBLIC "-fsanitize=memory")
+    elseif(MARL_TSAN)
+        target_compile_options(${target} PUBLIC "-fsanitize=thread")
+        target_link_libraries(${target} PUBLIC "-fsanitize=thread")
+    endif()
+
+    if(MARL_FIBERS_USE_UCONTEXT)
+        target_compile_definitions(${target} PRIVATE "MARL_FIBERS_USE_UCONTEXT=1")
+    endif()
+
+    if(MARL_DEBUG_ENABLED)
+        target_compile_definitions(${target} PRIVATE "MARL_DEBUG_ENABLED=1")
+    endif()
+
+    target_include_directories(${target} PUBLIC $<BUILD_INTERFACE:${MARL_INCLUDE_DIR}>)
+endfunction(marl_set_target_options)
+
+###########################################################
+# Targets
+###########################################################
+
+# marl
+if(MARL_BUILD_SHARED OR BUILD_SHARED_LIBS)
+    add_library(marl SHARED ${MARL_LIST})
+    if(MSVC)
+        target_compile_definitions(marl
+            PRIVATE "MARL_BUILDING_DLL=1"
+            PUBLIC  "MARL_DLL=1"
+        )
+    endif()
+>>>>>>> BRANCH (d5d18a Squashed 'third_party/marl/' changes from 3285a2dfb..4960243)
 else()
     set_if_not_defined(SWIFTSHADER_BUILD_CPPDAP FALSE)
 endif()

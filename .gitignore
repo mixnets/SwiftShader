@@ -1,9 +1,17 @@
+<<<<<<< HEAD   (803ceb Xcb: Check if geom is valid before using it)
 # Ignored folders #
 /cache/
 /lib/
 /obj/
 /bin/
+=======
+/.vs/
+/.vscode/
+/build/
+/cmake-build-*/
+>>>>>>> BRANCH (d5d18a Squashed 'third_party/marl/' changes from 3285a2dfb..4960243)
 /out/
+<<<<<<< HEAD   (803ceb Xcb: Check if geom is valid before using it)
 .vs
 .vscode/ipch
 CMakeFiles/
@@ -43,3 +51,8 @@ cmake-build-debug/
 *.db
 *~
 CMakeCache.txt
+=======
+bazel-*
+CMakeSettings.json
+/.idea/
+>>>>>>> BRANCH (d5d18a Squashed 'third_party/marl/' changes from 3285a2dfb..4960243)
