@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2a26eb2_0afadaad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T19:21:15Z",
+      "side": 1,
+      "message": "This change seems useful as a way to discern between issues caused by alignment, and issues caused by our quad padding needs, but I don\u0027t think it should land as-is. The real solution should happen at a higher level, probably similar to how AHB surfaces are used on Android.",
+      "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "88298b84_e97dd4e6",
@@ -19,6 +36,76 @@
         "startChar": 4,
         "endLine": 110,
         "endChar": 5
+      },
+      "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "644711c2_d66650ef",
+        "filename": "src/Vulkan/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T19:21:15Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "88298b84_e97dd4e6",
+      "range": {
+        "startLine": 107,
+        "startChar": 4,
+        "endLine": 110,
+        "endChar": 5
+      },
+      "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4303afcc_55d05455",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1803,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T19:21:15Z",
+      "side": 1,
+      "message": "I think this should always be `bytes() * width`, not the pitch that we calculate for SwiftShader\u0027s internal alignment needs.\n\nThis CL probably works OK in practice though due to the align at line 1718 being a smaller alignment requirement than the one applied here, but we can\u0027t be 100% certain of that.",
+      "range": {
+        "startLine": 1803,
+        "startChar": 67,
+        "endLine": 1803,
+        "endChar": 79
+      },
+      "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7af33f3a_fe4d9d86",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1803,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T19:21:15Z",
+      "side": 1,
+      "message": "This applies IOSurface requirements to all of our images, while in practice only a minority will be backed by IOSurface. This isn\u0027t a huge problem as long as we use linear tiling, but could significantly limit us in the future.\n\nIf there\u0027s a way to limit this to IOSurfaces it might be more acceptable, except as noted in the commit message this doesn\u0027t address the padding issue. So this feels like a step in the wrong direction.",
+      "range": {
+        "startLine": 1803,
+        "startChar": 16,
+        "endLine": 1803,
+        "endChar": 38
       },
       "revId": "1d6174ac384e0fde78dc5645c6c236692b9130b2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
