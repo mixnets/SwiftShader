@@ -16,6 +16,23 @@
       "message": "Yiwei, the implementation of this extension is currently failing 3 dEQP-VK tests (see the above Regres report). Could you have a look? Should we re-open b/158094132, or does it pass on Android and we should open new bug?",
       "revId": "d629597c71ba4d5589dfd1de6ffd81e8fdd5a840",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c858bab_e8eb4d8c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 89377
+      },
+      "writtenOn": "2021-08-18T16:32:48Z",
+      "side": 1,
+      "message": "iirc, it only works with Android AHB extension if nobody adds support for other external memory handle type yet. The cts will fail accordingly if building for other platforms.",
+      "revId": "d629597c71ba4d5589dfd1de6ffd81e8fdd5a840",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
