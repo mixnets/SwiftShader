@@ -17,6 +17,11 @@
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 
+#if defined(__APPLE__)
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <IOSurface/IOSurface.h>
+#endif
+
 namespace vk {
 
 bool Format::isUnsignedNormalized() const
@@ -1708,6 +1713,14 @@ int Format::pitchB(int width, int border, bool external) const
 	// Render targets require 2x2 quads
 	width = sw::align<2>(width + 2 * border);
 
+#if defined(__APPLE__)
+	if(external)
+	{
+		// On macOS if the image is backed by external memory, we assume it to be an IOSurface
+		return IOSurfaceAlignProperty(kIOSurfacePlaneBytesPerRow, bytes() * width);
+	}
+#endif
+
 	switch(format)
 	{
 	case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
@@ -1853,7 +1866,17 @@ int Format::sliceBUnpadded(int width, int height, int border, bool external) con
 
 int Format::sliceB(int width, int height, int border, bool external) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+	int sliceInBytes = sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+
+#if defined(__APPLE__)
+	if (external)
+	{
+		// On macOS if the image is backed by external memory, we assume it to be an IOSurface
+		sliceInBytes = IOSurfaceAlignProperty(kIOSurfacePlaneSize, sliceInBytes);
+	}
+#endif
+
+	return sliceInBytes;
 }
 
 sw::float4 Format::getScale() const
