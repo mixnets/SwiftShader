@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f782046_78a7f26d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T15:58:39Z",
+      "side": 1,
+      "message": "Yiwei, the implementation of this extension is currently failing 3 dEQP-VK tests (see the above Regres report). Could you have a look? Should we re-open b/158094132, or does it pass on Android and we should open new bug?",
+      "revId": "d629597c71ba4d5589dfd1de6ffd81e8fdd5a840",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
