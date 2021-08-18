@@ -52,7 +52,7 @@ config("swiftshader_libvulkan_private_config") {
   }
 
   defines += [
-     "SWIFTSHADER_ENABLE_ASTC",  # TODO(b/150130101)
+    "SWIFTSHADER_ENABLE_ASTC",  # TODO(b/150130101)
   ]
 }
 
@@ -103,8 +103,10 @@ swiftshader_source_set("swiftshader_libvulkan_headers") {
       "VkSemaphoreExternalLinux.hpp",
     ]
   } else if (is_mac) {
-    sources += [
-      "VkDeviceMemoryExternalMac.hpp",
+    sources += [ "VkDeviceMemoryExternalMac.hpp" ]
+    frameworks = [
+      "CoreFoundation.framework",
+      "IOSurface.framework",
     ]
   } else if (is_fuchsia) {
     sources += [ "VkSemaphoreExternalFuchsia.hpp" ]
@@ -173,15 +175,14 @@ swiftshader_shared_library("swiftshader_libvulkan") {
           rebase_path("vk_swiftshader.exports", root_build_dir),
     ]
   } else if (is_linux || is_chromeos || is_fuchsia) {
-    inputs = [
-      "vk_swiftshader.lds",
-    ]
+    inputs = [ "vk_swiftshader.lds" ]
     ldflags = [
       # -Bsymbolic binds symbol references to their global definitions within
       # a shared object, thereby preventing symbol preemption.
       "-Wl,-Bsymbolic",
       "-Wl,--version-script=" +
-          rebase_path("vk_swiftshader.lds", root_build_dir) ]
+          rebase_path("vk_swiftshader.lds", root_build_dir),
+    ]
   }
 
   deps = [
@@ -201,9 +202,7 @@ swiftshader_shared_library("swiftshader_libvulkan") {
     "$spirv_tools_spirv_headers_dir/include",
   ]
 
-  public_deps = [
-    ":swiftshader_libvulkan_headers",
-  ]
+  public_deps = [ ":swiftshader_libvulkan_headers" ]
 }
 
 # Generates an ICD JSON file that can be used by all targets in this GN build
@@ -230,14 +229,8 @@ action("icd_file") {
     library_path,
   ]
 
-  inputs = [
-    input_file,
-  ]
-  outputs = [
-    output_icd_file,
-  ]
+  inputs = [ input_file ]
+  outputs = [ output_icd_file ]
 
-  deps = [
-    ":swiftshader_libvulkan",
-  ]
+  deps = [ ":swiftshader_libvulkan" ]
 }

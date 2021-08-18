@@ -211,8 +211,10 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 	VkMemoryRequirements memoryRequirements;
 	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
 	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
+	externalMemoryRequirements = true;
 	memoryRequirements.size = getStorageSize(format.getAspects()) +
 	                          (decompressedImage ? decompressedImage->getStorageSize(decompressedImage->format.getAspects()) : 0);
+	externalMemoryRequirements = false;
 	return memoryRequirements;
 }
 
@@ -788,6 +790,11 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 	return mipLevelExtent;
 }
 
+bool Image::hasExternalMemory() const
+{
+	return externalMemoryRequirements || (deviceMemory && deviceMemory->hasExternalMemory());
+}
+
 int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
 	if(deviceMemory && deviceMemory->hasExternalImageProperties())
@@ -807,7 +814,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 		return extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.pitchB(mipLevelExtent.width, borderSize(), deviceMemory && deviceMemory->hasExternalMemory());
+	return usedFormat.pitchB(mipLevelExtent.width, borderSize(), hasExternalMemory());
 }
 
 int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -824,7 +831,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 		return extentInBlocks.height * extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), deviceMemory && deviceMemory->hasExternalMemory());
+	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), hasExternalMemory());
 }
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
