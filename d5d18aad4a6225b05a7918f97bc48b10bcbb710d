@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "184ffc3a_bed42eaf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-18T15:17:58Z",
+      "side": 1,
+      "message": "Both the Kororo and Chromium infra results can be ignored.",
+      "revId": "d5d18aad4a6225b05a7918f97bc48b10bcbb710d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
