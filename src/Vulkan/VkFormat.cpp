@@ -17,6 +17,11 @@
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
 
+#if defined(__APPLE__)
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <IOSurface/IOSurface.h>
+#endif
+
 namespace vk {
 
 bool Format::isUnsignedNormalized() const
@@ -1708,6 +1713,8 @@ int Format::pitchB(int width, int border, bool external) const
 	// Render targets require 2x2 quads
 	width = sw::align<2>(width + 2 * border);
 
+	int pitchInBytes = 0;
+
 	switch(format)
 	{
 	case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
@@ -1722,7 +1729,8 @@ int Format::pitchB(int width, int border, bool external) const
 	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
 	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
-		return 8 * ((width + 3) / 4);  // 64 bit per 4x4 block, computed per 4 rows
+		pitchInBytes = 8 * ((width + 3) / 4);  // 64 bit per 4x4 block, computed per 4 rows
+		break;
 	case VK_FORMAT_BC2_UNORM_BLOCK:
 	case VK_FORMAT_BC2_SRGB_BLOCK:
 	case VK_FORMAT_BC3_UNORM_BLOCK:
@@ -1739,24 +1747,28 @@ int Format::pitchB(int width, int border, bool external) const
 	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_4x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
-		return 16 * ((width + 3) / 4);  // 128 bit per 4x4 block, computed per 4 rows
+		pitchInBytes = 16 * ((width + 3) / 4);  // 128 bit per 4x4 block, computed per 4 rows
+		break;
 	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
-		return 16 * ((width + 4) / 5);
+		pitchInBytes = 16 * ((width + 4) / 5);
+		break;
 	case VK_FORMAT_ASTC_6x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_6x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
-		return 16 * ((width + 5) / 6);
+		pitchInBytes = 16 * ((width + 5) / 6);
+		break;
 	case VK_FORMAT_ASTC_8x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_8x6_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x6_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
-		return 16 * ((width + 7) / 8);
+		pitchInBytes = 16 * ((width + 7) / 8);
+		break;
 	case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x6_UNORM_BLOCK:
@@ -1765,18 +1777,31 @@ int Format::pitchB(int width, int border, bool external) const
 	case VK_FORMAT_ASTC_10x8_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
-		return 16 * ((width + 9) / 10);
+		pitchInBytes = 16 * ((width + 9) / 10);
+		break;
 	case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
 	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
 	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
-		return 16 * ((width + 11) / 12);
+		pitchInBytes = 16 * ((width + 11) / 12);
+		break;
 	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
 	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
-		return sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
+		pitchInBytes = sw::align<16>(width);  // Y plane only  // TODO: ASSERT to ensure this is only called per-aspect?
+		break;
 	default:
-		return bytes() * width;
+		pitchInBytes = bytes() * width;
+		break;
 	}
+
+#if defined(__APPLE__)
+	if (external)
+	{
+		pitchInBytes = IOSurfaceAlignProperty(kIOSurfacePlaneBytesPerRow, pitchInBytes);
+	}
+#endif
+
+	return pitchInBytes;
 }
 
 int Format::sliceBUnpadded(int width, int height, int border, bool external) const
@@ -1853,7 +1878,16 @@ int Format::sliceBUnpadded(int width, int height, int border, bool external) con
 
 int Format::sliceB(int width, int height, int border, bool external) const
 {
-	return sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+	int sliceInBytes = sw::align<16>(sliceBUnpadded(width, height, border, external) + 15);
+
+#if defined(__APPLE__)
+	if (external)
+	{
+		sliceInBytes = IOSurfaceAlignProperty(kIOSurfacePlaneSize, sliceInBytes);
+	}
+#endif
+
+	return sliceInBytes;
 }
 
 sw::float4 Format::getScale() const
