@@ -96,6 +96,7 @@ public:
 	VkDeviceSize getLayerSize(VkImageAspectFlagBits aspect) const;
 	VkDeviceSize getMipLevelSize(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	bool canBindToMemory(DeviceMemory *pDeviceMemory) const;
+	bool hasExternalMemory() const;
 
 	void prepareForSampling(const VkImageSubresourceRange &subresourceRange);
 	enum ContentsChangedContext
@@ -155,6 +156,7 @@ private:
 #ifdef __ANDROID__
 	BackingMemory backingMemory = {};
 #endif
+	mutable bool externalMemoryRequirements = false;
 
 	VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleTypes = (VkExternalMemoryHandleTypeFlags)0;
 
