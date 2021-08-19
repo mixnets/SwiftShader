@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6509674_af31892b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:17:03Z",
+      "side": 1,
+      "message": "nit: This change does not add any check itself, it just adds the parameter and doesn\u0027t do anything with it yet.\n\n\"external memory parameter\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 29
+      },
+      "revId": "919338497782011c50ef6e12328edd3504ea378c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
