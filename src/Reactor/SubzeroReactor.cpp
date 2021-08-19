@@ -1034,8 +1034,8 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 		{
 			currFunc->emit();
 		}
-
-		currFunc->emitIAS();
+		return nullptr;
+		//currFunc->emitIAS();
 
 		if(currFunc->hasError())
 		{
