@@ -1010,7 +1010,7 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 
 		currFunc->setFunctionName(Ice::GlobalString::createWithString(::context, names[i]));
 
-		if(::optimizerCallback)
+		/*if(::optimizerCallback)
 		{
 			Nucleus::OptimizerReport report;
 			rr::optimize(currFunc, &report);
@@ -1020,7 +1020,8 @@ static std::shared_ptr<Routine> acquireRoutine(Ice::Cfg *const (&functions)[Coun
 		else
 		{
 			rr::optimize(currFunc);
-		}
+		}*/
+		// 1
 
 		currFunc->computeInOutEdges();
 		ASSERT_MSG(!currFunc->hasError(), "%s", currFunc->getError().c_str());
