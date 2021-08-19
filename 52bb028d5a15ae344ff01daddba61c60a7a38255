@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cf86966_514ab58c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 101106
+      },
+      "writtenOn": "2021-08-19T21:07:20Z",
+      "side": 1,
+      "message": "PTAL :) `nm` output was exactly the same when I tested.",
+      "revId": "52bb028d5a15ae344ff01daddba61c60a7a38255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
