@@ -16,6 +16,23 @@
       "message": "PTAL :) `nm` output was exactly the same when I tested.",
       "revId": "52bb028d5a15ae344ff01daddba61c60a7a38255",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85927c62_2b945e58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T21:15:57Z",
+      "side": 1,
+      "message": "Thanks Leonard! LGTM assuming the tryjobs pass.",
+      "revId": "52bb028d5a15ae344ff01daddba61c60a7a38255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
