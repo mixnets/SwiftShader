@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "87b24c73_c1f03cee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:32:21Z",
+      "side": 1,
+      "message": "It seems worth mentioning here that the buffer overrun issue will be addressed on the Chromium side, to make it clear that this change is an essential part of the solution and not a partial stopgap that could be mistaken for a step in the wrong direction .",
+      "range": {
+        "startLine": 17,
+        "startChar": 65,
+        "endLine": 17,
+        "endChar": 66
+      },
+      "revId": "4bf6e8d220a6b1c5d75c48b8d1ed1bc6ed622f6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "5a8b0a82_a3bf2129",
@@ -14,6 +37,75 @@
       "writtenOn": "2021-08-18T22:26:17Z",
       "side": 1,
       "message": "PTAL",
+      "revId": "4bf6e8d220a6b1c5d75c48b8d1ed1bc6ed622f6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28b7a060_d7eba396",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1798,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:32:21Z",
+      "side": 1,
+      "message": "Let’s add a comment here that in macOS if the image is backed by external memory, we assume it to be an IOSurface.",
+      "range": {
+        "startLine": 1798,
+        "startChar": 5,
+        "endLine": 1798,
+        "endChar": 13
+      },
+      "revId": "4bf6e8d220a6b1c5d75c48b8d1ed1bc6ed622f6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "919c1a2c_8ae6f7b3",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1800,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:32:21Z",
+      "side": 1,
+      "message": "Same comment as before, let\u0027s use bytes * width here to avoid confusion and potential edge cases?",
+      "range": {
+        "startLine": 1800,
+        "startChar": 68,
+        "endLine": 1800,
+        "endChar": 80
+      },
+      "revId": "4bf6e8d220a6b1c5d75c48b8d1ed1bc6ed622f6e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0386dc0e_bed31268",
+        "filename": "src/Vulkan/VkFormat.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1804,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:32:21Z",
+      "side": 1,
+      "message": "By handling the __APPLE__ case before the switch statement, we wouldn\u0027t need any changes below it.\n\nnit: I wouldn\u0027t mind moving the default case to the top of the switch statement, sine that\u0027s actually the most commonly taken code path and not the rare or inalid case like some other switches.",
+      "range": {
+        "startLine": 1804,
+        "startChar": 1,
+        "endLine": 1804,
+        "endChar": 21
+      },
       "revId": "4bf6e8d220a6b1c5d75c48b8d1ed1bc6ed622f6e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
