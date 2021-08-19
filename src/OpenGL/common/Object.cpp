@@ -16,36 +16,37 @@
 // lifecycle support for GL objects using the traditional BindObject scheme, but
 // that need to be reference counted for correct cross-context deletion.
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wglobal-constructor"
 #include "Object.hpp"
 
 #include "Common/Thread.hpp"
 
-namespace gl
-{
+namespace gl {
 #ifndef NDEBUG
 sw::MutexLock Object::instances_mutex;
-std::set<Object*> Object::instances;
+std::set<Object *> Object::instances;
 #endif
 
 Object::Object()
 {
 	referenceCount = 0;
 
-	#ifndef NDEBUG
-		LockGuard instances_lock(instances_mutex);
-		instances.insert(this);
-	#endif
+#ifndef NDEBUG
+	LockGuard instances_lock(instances_mutex);
+	instances.insert(this);
+#endif
 }
 
 Object::~Object()
 {
 	ASSERT(referenceCount == 0);
 
-	#ifndef NDEBUG
-		LockGuard instances_lock(instances_mutex);
-		ASSERT(instances.find(this) != instances.end());   // Check for double deletion
-		instances.erase(this);
-	#endif
+#ifndef NDEBUG
+	LockGuard instances_lock(instances_mutex);
+	ASSERT(instances.find(this) != instances.end());  // Check for double deletion
+	instances.erase(this);
+#endif
 }
 
 void Object::addRef()
@@ -79,7 +80,8 @@ void Object::destroy()
 	delete this;
 }
 
-NamedObject::NamedObject(GLuint name) : name(name)
+NamedObject::NamedObject(GLuint name)
+    : name(name)
 {
 }
 
@@ -93,11 +95,13 @@ struct ObjectLeakCheck
 	~ObjectLeakCheck()
 	{
 		LockGuard instances_lock(Object::instances_mutex);
-		ASSERT(Object::instances.empty());   // Check for GL object leak at termination
+		ASSERT(Object::instances.empty());  // Check for GL object leak at termination
 	}
 };
 
 static ObjectLeakCheck objectLeakCheck;
 #endif
 
-}
+}  // namespace gl
+
+#pragma clang diagnostic pop
