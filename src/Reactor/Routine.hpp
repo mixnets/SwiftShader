@@ -57,7 +57,7 @@ public:
 	template<typename... Args>
 	Return operator()(Args &&...args) const
 	{
-		return static_cast<Return>(0);  // 3
+		return static_cast<Return>(0);  // 4
 	}
 
 	const FunctionType getEntry() const
