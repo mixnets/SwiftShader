@@ -22,6 +22,30 @@
       },
       "revId": "3527dca0c50715bfe7a58d785df437cf73313cf6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44cfc2c4_f52c952e",
+        "filename": "src/Pipeline/ComputeProgram.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-19T02:06:28Z",
+      "side": 1,
+      "message": "This accessor returns a reference, and is inlineable, so it is very likely no more costly than the code on the left.",
+      "parentUuid": "b9ef4ed9_60dc39e5",
+      "range": {
+        "startLine": 269,
+        "startChar": 7,
+        "endLine": 269,
+        "endChar": 28
+      },
+      "revId": "3527dca0c50715bfe7a58d785df437cf73313cf6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
