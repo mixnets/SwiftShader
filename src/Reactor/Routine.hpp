@@ -57,7 +57,7 @@ public:
 	template<typename... Args>
 	Return operator()(Args &&...args) const
 	{
-		return function(std::forward<Args>(args)...);
+		return static_cast<Return>(0);  // 1
 	}
 
 	const FunctionType getEntry() const
