@@ -80,6 +80,9 @@ public:
 	VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const;
 
 private:
+	VkResult allocateBuffer();
+	void deallocateBuffer();
+
 	void *buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t memoryTypeIndex = 0;
