@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a85a4db0_4f30aaa0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-20T01:50:54Z",
+      "side": 1,
+      "message": "Excellent find, that was quite a hacky use of a global object. Note that I think we should get rid of rr::Config entirely: b/191050320, but that\u0027s a larger future refactoring.",
+      "revId": "222222899b6484d94d74b106f0f502bccec5243f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
