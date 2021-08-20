@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0946c2d4_e663d8f3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-20T16:35:12Z",
+      "side": 1,
+      "message": "If we\u0027re going to apply the IOSurface alignment only on external memory, then we need to compute the memory requirements by taking into account external memory requirements, otherwise we get OOB memory accesses when the external memory is big enough without the IOSurface alignment, but too small otherwise (crashes consistently simply by resizing the window).\n\nThis could also cause the Image::getSizeInBytes() function below to return the wrong value if the external deviceMemory hasn\u0027t been bound to the image yet and potentially other issues. Having pitchB() and sliceB() depend on external memory being bound to the image, which may of may not be the case at the moment the computation happens, might be dangerous.\n\nIt might actually be worth it to revert https://swiftshader-review.googlesource.com/c/SwiftShader/+/56388 and apply the IOSurface alignment unconditionally to avoid future issues.\n\nWhat\u0027s your opinion?",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 217,
+        "endChar": 36
+      },
+      "revId": "e6539149e1c352b66aeab63a48674f71cce73359",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
