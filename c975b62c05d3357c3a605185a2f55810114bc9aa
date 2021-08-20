@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c609f679_5ea5d942",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-20T19:42:53Z",
+      "side": 1,
+      "message": "Back to the simplest solution of always applying the alignment on MacOS, since it\u0027s the only safe solution for now. PTAL.",
+      "revId": "c975b62c05d3357c3a605185a2f55810114bc9aa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
