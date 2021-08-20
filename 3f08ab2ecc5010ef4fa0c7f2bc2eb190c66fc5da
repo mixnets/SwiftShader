@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4238e49_07aad6ad",
+        "filename": "src/OpenGL/libEGL/libEGL_deprecated.def",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-20T19:09:27Z",
+      "side": 1,
+      "message": "Note this and other symbol export files had to be renamed because our CMake build uses a macro which derives their file name from the build target name. Alternatively I could have passed the old name as an extra parameter to the macro, but I don\u0027t think it matters at this point.",
+      "revId": "3f08ab2ecc5010ef4fa0c7f2bc2eb190c66fc5da",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
