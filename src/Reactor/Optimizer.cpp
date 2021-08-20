@@ -114,7 +114,7 @@ void Optimizer::run(Ice::Cfg *function)
 	performScalarReplacementOfAggregates();
 
 	// Iterate through basic blocks to propagate loads following stores.
-	//optimizeSingleBasicBlockLoadsStores();// 2
+	//optimizeSingleBasicBlockLoadsStores();// 3
 
 	for(auto operand : operandsWithUses)
 	{
