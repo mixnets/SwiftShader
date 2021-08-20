@@ -33,6 +33,23 @@
       "message": "Thanks Leonard! LGTM assuming the tryjobs pass.",
       "revId": "52bb028d5a15ae344ff01daddba61c60a7a38255",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9df31816_9b56f1e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-20T04:54:53Z",
+      "side": 1,
+      "message": "Feel free to manually set Verified+1 and submit. I gave your account contributor privileges, but let me know if you run into issues.",
+      "revId": "52bb028d5a15ae344ff01daddba61c60a7a38255",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
