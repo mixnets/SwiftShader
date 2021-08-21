@@ -396,7 +396,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 			bool allLoadsReplaced = true;
 		};
 
-		std::unordered_map<const Ice::InstAlloca *, LastStore> lastStoreTo;
+		std::unordered_map<Ice::SizeT /* AllocaInst::Number */, LastStore> lastStoreTo;
 
 		for(Ice::Inst &inst : block->getInsts())
 		{
@@ -417,7 +417,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 					{
 						// If there was a previous store to this address, and it was propagated
 						// to all subsequent loads, it can be eliminated.
-						if(auto entry = lastStoreTo.find(alloca); entry != lastStoreTo.end())
+						if(auto entry = lastStoreTo.find(alloca->getDest()->getIndex()); entry != lastStoreTo.end())
 						{
 							Ice::Inst *previousStore = entry->second.store;
 
@@ -428,7 +428,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 							}
 						}
 
-						lastStoreTo[alloca] = { &inst };
+						lastStoreTo[alloca->getDest()->getIndex()] = { &inst };
 					}
 				}
 			}
@@ -436,7 +436,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 			{
 				if(Ice::InstAlloca *alloca = allocaOf(inst.getLoadAddress()))
 				{
-					auto entry = lastStoreTo.find(alloca);
+					auto entry = lastStoreTo.find(alloca->getDest()->getIndex());
 					if(entry != lastStoreTo.end())
 					{
 						const Ice::Inst *store = entry->second.store;
