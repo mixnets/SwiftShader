@@ -396,7 +396,7 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 			bool allLoadsReplaced = true;
 		};
 
-		std::unordered_map<Ice::SizeT /* AllocaInst::Number */, LastStore> lastStoreTo;
+		std::unordered_map<Ice::SizeT /* AllocaInst::Number */, LastStore> lastStoreTo;  // 2
 
 		for(Ice::Inst &inst : block->getInsts())
 		{
