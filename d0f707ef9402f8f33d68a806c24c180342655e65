@@ -33,6 +33,24 @@
       "message": "TBR: sugoi\n\nSince the tryjobs pass, and this change only touches GN builds, and the Chromium roll is currently broken, this can\u0027t make things worse so I\u0027m landing it now to try to restart the roll.",
       "revId": "d0f707ef9402f8f33d68a806c24c180342655e65",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4ef9734_d1927dc0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-23T12:41:46Z",
+      "side": 1,
+      "message": "Autoroll was successful: https://chromium-review.googlesource.com/c/chromium/src/+/3113285",
+      "parentUuid": "22781299_7a0d5286",
+      "revId": "d0f707ef9402f8f33d68a806c24c180342655e65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
