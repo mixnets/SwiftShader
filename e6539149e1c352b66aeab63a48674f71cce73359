@@ -22,6 +22,30 @@
       },
       "revId": "e6539149e1c352b66aeab63a48674f71cce73359",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85ec5356_35d79811",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-24T20:27:44Z",
+      "side": 1,
+      "message": "https://issuetracker.google.com/194190269#comment3",
+      "parentUuid": "0946c2d4_e663d8f3",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 217,
+        "endChar": 36
+      },
+      "revId": "e6539149e1c352b66aeab63a48674f71cce73359",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
