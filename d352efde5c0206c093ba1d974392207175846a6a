@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c2ba4a8_09b74f80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-24T16:50:46Z",
+      "side": 1,
+      "message": "Looks fine now. 😊\nAt some point we may want to support enabling or disabling the use of new instruction sets, but we can cross that bridge when we\u0027re there.",
+      "revId": "d352efde5c0206c093ba1d974392207175846a6a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
