@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9e01a74_98bdd176",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-24T14:06:58Z",
+      "side": 1,
+      "message": "The Regres run time increase seems worrisome. I recently fixed the largest source of variability: https://swiftshader-review.googlesource.com/c/SwiftShader/+/56528. Can you check if this change is responsible for the time increase, or I messed up?",
+      "revId": "e10be567ad6bd9d4a30761357883fd854c13699d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
