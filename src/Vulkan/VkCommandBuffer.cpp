@@ -49,7 +49,7 @@ public:
 	    , renderArea(renderArea)
 	    , clearValueCount(clearValueCount)
 	{
-		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+		// FIXME(b/119409619): use an allocator here so we can control all memory allocations
 		clearValues = new VkClearValue[clearValueCount];
 		memcpy(clearValues, pClearValues, clearValueCount * sizeof(VkClearValue));
 	}
