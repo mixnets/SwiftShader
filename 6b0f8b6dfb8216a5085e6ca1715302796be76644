@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0d9029fd_fb7daff5",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-25T14:00:31Z",
+      "side": 1,
+      "message": "Yes, lets do the refactoring, as a separate change.",
+      "parentUuid": "9cb8f9b0_9d0cce42",
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "81bef299_d855d1db",
         "filename": "src/Vulkan/VkDeviceMemory.cpp",
         "patchSetId": 2
@@ -73,6 +91,30 @@
       "side": 1,
       "message": "It might be confusing, I think. It\u0027s not the external memory buffer, it\u0027s the memory reserved for the object we use to store information about the external memory.",
       "parentUuid": "81bef299_d855d1db",
+      "range": {
+        "startLine": 257,
+        "startChar": 4,
+        "endLine": 257,
+        "endChar": 7
+      },
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88aa416c_0eeb86ab",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-25T14:00:31Z",
+      "side": 1,
+      "message": "Ah, I see, this is the regular \"additional\" memory. This code is not very intuitive and appears to try to achieve polymorphism through the DeviceMemory constructor. Like you said above, we should probably parse the chain of creation info once, and then pass that into a factory function which creates the expected derived class?\n\nIt\u0027s a fair bit of work but I\u0027m afraid this code would continue to haunt us if we don\u0027t tackle this now and bolt on more complexity for the IOSurface external memory.",
+      "parentUuid": "9c44c1dd_8bb56ab6",
       "range": {
         "startLine": 257,
         "startChar": 4,
