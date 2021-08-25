@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec3035dd_b0e1af11",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-25T20:21:25Z",
+      "side": 1,
+      "message": "Note: This logic now ignores:\n    VK_IMAGE_ASPECT_METADATA_BIT\n    VK_IMAGE_ASPECT_PLANE_0_BIT\n    VK_IMAGE_ASPECT_PLANE_1_BIT\n    VK_IMAGE_ASPECT_PLANE_2_BIT\n\nwhich I\u0027m assuming is ok.",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 3
+      },
+      "revId": "2794e557bab865b425d1cb8c1f2babe59e9ccc95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
