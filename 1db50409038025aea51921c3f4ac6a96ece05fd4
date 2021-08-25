@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "236ae7ce_dda68887",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-25T03:07:43Z",
+      "side": 1,
+      "message": "b/197695836 : This looks wrong. I\u0027ll fix it in a subsequent change so this one remains a pure refactoring.",
+      "range": {
+        "startLine": 94,
+        "startChar": 33,
+        "endLine": 94,
+        "endChar": 40
+      },
+      "revId": "1db50409038025aea51921c3f4ac6a96ece05fd4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
