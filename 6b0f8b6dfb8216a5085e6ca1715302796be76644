@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9cb8f9b0_9d0cce42",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-25T13:33:32Z",
+      "side": 1,
+      "message": "Yes, this is reached when there\u0027s no external memory source, so most of the time.\n\nAbout the assert, it\u0027s not that easy to do it with the current way the code is structured. Either we re-parse the pAllocateInfo again and duplicate the logic in each existing external memory structure above OR we refactor the whole thing to remove parseCreateInfo and only parse pAllocateInfo once and create the appropriate structure from the result of a single parsing. Maybe this should be done in a separate CL.",
+      "parentUuid": "c177d22b_6dfc287f",
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "81bef299_d855d1db",
         "filename": "src/Vulkan/VkDeviceMemory.cpp",
         "patchSetId": 2
@@ -31,6 +49,30 @@
       "writtenOn": "2021-08-24T20:24:55Z",
       "side": 1,
       "message": "This is only non-null for external memory? Let\u0027s rename it to \"externalMemory\" ?",
+      "range": {
+        "startLine": 257,
+        "startChar": 4,
+        "endLine": 257,
+        "endChar": 7
+      },
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c44c1dd_8bb56ab6",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-25T13:33:32Z",
+      "side": 1,
+      "message": "It might be confusing, I think. It\u0027s not the external memory buffer, it\u0027s the memory reserved for the object we use to store information about the external memory.",
+      "parentUuid": "81bef299_d855d1db",
       "range": {
         "startLine": 257,
         "startChar": 4,
