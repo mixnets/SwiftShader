@@ -22,6 +22,30 @@
       },
       "revId": "2794e557bab865b425d1cb8c1f2babe59e9ccc95",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70297a97_fabe8eef",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-26T19:21:37Z",
+      "side": 1,
+      "message": "Yes, the first is explicitly disallowed by the spec for attachments, and multi-planar formats are not renderable on any known implementation. We have asserts for that in place. I updated the commit message with detail.",
+      "parentUuid": "ec3035dd_b0e1af11",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 3
+      },
+      "revId": "2794e557bab865b425d1cb8c1f2babe59e9ccc95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
