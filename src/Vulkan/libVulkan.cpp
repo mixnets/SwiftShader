@@ -1089,6 +1089,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 				}
 			}
 			break;
+		case VK_STRUCTURE_TYPE_IMPORT_IO_SURFACE_GOOGLE:
+			break;
 #if VK_USE_PLATFORM_FUCHSIA
 		case VK_STRUCTURE_TYPE_TEMP_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA:
 			{

@@ -790,7 +790,7 @@ VkExtent3D Image::getMipLevelExtent(VkImageAspectFlagBits aspect, uint32_t mipLe
 
 int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 {
-	if(deviceMemory && deviceMemory->hasExternalImageProperties())
+	if(deviceMemory && deviceMemory->hasExternalImageRowPitchBytes())
 	{
 		return deviceMemory->externalImageRowPitchBytes(aspect);
 	}
@@ -844,7 +844,7 @@ uint8_t *Image::end() const
 
 VkDeviceSize Image::getMemoryOffset(VkImageAspectFlagBits aspect) const
 {
-	if(deviceMemory && deviceMemory->hasExternalImageProperties())
+	if(deviceMemory && deviceMemory->hasExternalImageMemoryOffset())
 	{
 		return deviceMemory->externalImageMemoryOffset(aspect);
 	}
