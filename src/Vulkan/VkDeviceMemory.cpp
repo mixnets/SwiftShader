@@ -21,6 +21,11 @@
 
 #include "VkConfig.hpp"
 
+#if defined(__APPLE__)
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <IOSurface/IOSurface.h>
+#endif
+
 namespace vk {
 
 // Small class describing a given DeviceMemory::ExternalBase derived class.
@@ -117,6 +122,8 @@ public:
 	{
 		bool supported = false;
 		void *hostPointer = nullptr;
+		void *io_surface = nullptr;
+		int io_surface_plane = 0;
 
 		AllocateInfo() = default;
 
@@ -137,6 +144,17 @@ public:
 						}
 						hostPointer = importInfo->pHostPointer;
 						supported = true;
+					}
+					break;
+				case VK_STRUCTURE_TYPE_IMPORT_IO_SURFACE_GOOGLE:
+					{
+						const auto *importInfo = reinterpret_cast<const VkImportIOSurfaceGOOGLE *>(createInfo);
+
+						if(importInfo->pIOSurface != nullptr)
+						{
+							io_surface = importInfo->pIOSurface;
+							io_surface_plane = importInfo->plane;
+						}
 					}
 					break;
 				default:
@@ -176,6 +194,27 @@ public:
 	VkExternalMemoryHandleTypeFlagBits getFlagBit() const override
 	{
 		return typeFlagBit;
+	}
+
+	bool hasExternalImageRowPitchBytes() const override final
+	{
+#if defined(__APPLE__)
+		return allocateInfo.io_surface != nullptr;
+#else
+		return false;
+#endif
+	}
+
+	int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const override final
+	{
+#if defined(__APPLE__)
+		return static_cast<int>(IOSurfaceGetBytesPerRowOfPlane(
+		    reinterpret_cast<IOSurfaceRef>(allocateInfo.io_surface), allocateInfo.io_surface_plane));
+#else
+		// This function should never be called
+		ASSERT(false);
+		return -1;
+#endif
 	}
 
 private:
@@ -232,7 +271,8 @@ struct OpaqueFdAllocateInfo
 				//  includes a handle of the sole buffer or image resource that the memory *can* be bound to."
 				break;
 			case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
-				// This will be handled at a later point within vk::findTraits() by
+			case VK_STRUCTURE_TYPE_IMPORT_IO_SURFACE_GOOGLE:
+				// These will be handled at a later point within vk::findTraits() by
 				// ExternalMemoryHost::AllocateInfo()
 				break;
 			default:
@@ -397,9 +437,14 @@ bool DeviceMemory::checkExternalMemoryHandleType(
 	return (supportedHandleTypes & handle_type_bit) != 0;
 }
 
-bool DeviceMemory::hasExternalImageProperties() const
+bool DeviceMemory::hasExternalImageRowPitchBytes() const
 {
-	return external && external->hasExternalImageProperties();
+	return external && external->hasExternalImageRowPitchBytes();
+}
+
+bool DeviceMemory::hasExternalImageMemoryOffset() const
+{
+	return external && external->hasExternalImageMemoryOffset();
 }
 
 int DeviceMemory::externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const
