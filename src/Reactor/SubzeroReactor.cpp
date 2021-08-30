@@ -165,7 +165,7 @@ Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Ice::Type retT
 
 // Wrapper for calls on C functions with Ice types
 template<typename Return, typename... CArgs, typename... RArgs>
-Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&...args)
+Ice::Variable *Call(Ice::Cfg *function, Ice::CfgNode *basicBlock, Return(fptr)(CArgs...), RArgs &&... args)
 {
 	static_assert(sizeof...(CArgs) == sizeof...(RArgs), "Expected number of args don't match");
 
@@ -287,7 +287,16 @@ Ice::Intrinsics::MemoryOrder stdToIceMemoryOrder(std::memory_order memoryOrder)
 class CPUID
 {
 public:
-	const static bool ARM;
+	constexpr static bool ARM =
+#if defined(__arm__) || defined(__aarch64__)
+	    true;
+#elif defined(__i386__) || defined(__x86_64__)
+	    false;
+#elif defined(__mips__)
+	    false;
+#else
+#	error "Unknown architecture"
+#endif
 	const static bool SSE4_1;
 
 private:
@@ -309,19 +318,6 @@ private:
 #endif
 	}
 
-	static bool detectARM()
-	{
-#if defined(__arm__) || defined(__aarch64__)
-		return true;
-#elif defined(__i386__) || defined(__x86_64__)
-		return false;
-#elif defined(__mips__)
-		return false;
-#else
-#	error "Unknown architecture"
-#endif
-	}
-
 	static bool detectSSE4_1()
 	{
 #if defined(__i386__) || defined(__x86_64__)
@@ -334,10 +330,9 @@ private:
 	}
 };
 
-const bool CPUID::ARM = CPUID::detectARM();
 const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
-const bool emulateIntrinsics = false;
-const bool emulateMismatchedBitCast = CPUID::ARM;
+constexpr bool emulateIntrinsics = false;
+constexpr bool emulateMismatchedBitCast = CPUID::ARM;
 
 constexpr bool subzeroDumpEnabled = false;
 constexpr bool subzeroEmitTextAsm = false;
