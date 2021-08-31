@@ -3238,7 +3238,22 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice
 		case VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT:
 			{
 				auto properties = reinterpret_cast<VkDrmFormatModifierPropertiesListEXT *>(extInfo);
-				properties->drmFormatModifierCount = 0; // No format supports any modifier
+				uint64_t drmFormatModifier = vk::Format(format).getDrmFormatModifier();
+				if(properties->pDrmFormatModifierProperties)
+				{
+					VkFormatProperties formatProperties;
+					vk::PhysicalDevice::GetFormatProperties(format, &formatProperties);
+					for(uint32_t i = 0; i < properties->drmFormatModifierCount; ++i)
+					{
+						properties->pDrmFormatModifierProperties[i].drmFormatModifier = drmFormatModifier;
+						properties->pDrmFormatModifierProperties[i].drmFormatModifierPlaneCount = 1;
+						properties->pDrmFormatModifierProperties[i].drmFormatModifierTilingFeatures = formatProperties.optimalTilingFeatures;
+					}
+				}
+				else
+				{
+					properties->drmFormatModifierCount = 1;
+				}
 			}
 			break;
 		default:
@@ -3251,12 +3266,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice
 	vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &(pFormatProperties->formatProperties));
 }
 
-VKAPI_ATTR VkResult VKAPI_CALL vkGetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT* pProperties)
+VKAPI_ATTR VkResult VKAPI_CALL vkGetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT *pProperties)
 {
 	TRACE("(VkDevice device = %p, VkImage image = %p, VkImageDrmFormatModifierPropertiesEXT* pProperties = %p)",
 	      device, static_cast<void *>(image), pProperties);
 
-	return VK_ERROR_OUT_OF_HOST_MEMORY; // No image can be created with a DRM format modifier
+	return vk::Cast(image)->getProperties(pProperties);
 }
 
 static bool checkFormatUsage(VkImageUsageFlags usage, VkFormatFeatureFlags features)
@@ -3344,7 +3359,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT:
 			if(pImageFormatInfo->tiling == VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT)
 			{
-				return VK_ERROR_FORMAT_NOT_SUPPORTED;
+				const VkPhysicalDeviceImageDrmFormatModifierInfoEXT *drmFormatModifierInfo = reinterpret_cast<const VkPhysicalDeviceImageDrmFormatModifierInfoEXT *>(extensionFormatInfo);
+				if(vk::Format(pImageFormatInfo->format).getDrmFormatModifier() != drmFormatModifierInfo->drmFormatModifier)
+				{
+					return VK_ERROR_FORMAT_NOT_SUPPORTED;
+				}
 			}
 			break;
 		default:
@@ -3416,6 +3435,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		features = properties.linearTilingFeatures;
 		break;
 
+	case VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT:
 	case VK_IMAGE_TILING_OPTIMAL:
 		features = properties.optimalTilingFeatures;
 		break;

@@ -69,6 +69,8 @@ public:
 	bool has32bitIntegerTextureComponents() const;
 	bool isRGBComponent(int component) const;
 
+	uint64_t getDrmFormatModifier() const;
+
 	static uint8_t mapTo8bit(VkFormat format);
 	static VkFormat mapFrom8bit(uint8_t format);
 
