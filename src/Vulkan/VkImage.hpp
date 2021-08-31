@@ -153,6 +153,7 @@ private:
 	VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags usage = (VkImageUsageFlags)0;
 	Image *decompressedImage = nullptr;
+	VkSubresourceLayout drmPlaneLayout = { 0, 0, 0, 0, 0 };
 #ifdef __ANDROID__
 	BackingMemory backingMemory = {};
 #endif
