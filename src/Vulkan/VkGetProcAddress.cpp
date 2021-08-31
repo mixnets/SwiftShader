@@ -425,6 +425,12 @@ static const std::vector<std::pair<const char *, std::unordered_map<std::string,
 	    {
 	        MAKE_VULKAN_DEVICE_ENTRY(vkResetQueryPoolEXT),
 	    } },
+	// VK_EXT_image_drm_format_modifier
+	{
+		VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_EXTENSION_NAME,
+		{
+			MAKE_VULKAN_DEVICE_ENTRY(vkGetImageDrmFormatModifierPropertiesEXT),
+		} },
 #ifndef __ANDROID__
 	// VK_KHR_swapchain
 	{
