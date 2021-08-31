@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55d0a13a_f6ccc091",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3296,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-08-31T20:20:52Z",
+      "side": 1,
+      "message": "Nit: Add spec text before a comment. Suggestion:\n\"If the pNext chain of VkImageCreateInfo includes a VkImageFormatListCreateInfo structure, then that structure contains a list of all formats that can be used when creating views of this image\"\nThis limitation does not affect SwiftShader\u0027s behavior and the Vulkan Validation Layers can detect Views created with a format which is not included in that list.",
+      "range": {
+        "startLine": 3295,
+        "startChar": 0,
+        "endLine": 3296,
+        "endChar": 41
+      },
+      "revId": "cd24487699147ddcd6df4113ff2b2f1adfd811e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
