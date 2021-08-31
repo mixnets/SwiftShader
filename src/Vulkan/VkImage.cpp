@@ -199,11 +199,16 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 				// For each element of pPlaneLayouts, size must be 0
 				// For each element of pPlaneLayouts, arrayPitch must be 0 if VkImageCreateInfo::arrayLayers is 1
 				// For each element of pPlaneLayouts, depthPitch must be 0 if VkImageCreateInfo::extent.depth is 1
-				ASSERT((externalInfo->drmFormatModifierPlaneCount == 1) &&
+				ASSERT((externalInfo->drmFormatModifier == format.getDrmFormatModifier()) &&
+				       (externalInfo->drmFormatModifierPlaneCount == 1) &&
 				       (externalInfo->pPlaneLayouts->size == 0) &&
-				       ((arrayLayers > 1) || (externalInfo->pPlaneLayouts->arrayPitch == 0)) &&
-				       ((extent.depth > 1) || (externalInfo->pPlaneLayouts->depthPitch == 0)));
-				(void)externalInfo->pPlaneLayouts->rowPitch;
+				       (externalInfo->pPlaneLayouts->offset == 0) &&
+				       (externalInfo->pPlaneLayouts->arrayPitch == 0) &&
+				       (externalInfo->pPlaneLayouts->depthPitch == 0));
+				if(externalInfo->drmFormatModifierPlaneCount > 0)
+				{
+					drmPlaneLayout = externalInfo->pPlaneLayouts[0];
+				}
 			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT:
@@ -842,7 +847,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 		return extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.pitchB(mipLevelExtent.width, borderSize());
+	return usedFormat.pitchB(mipLevelExtent.width, borderSize(), drmPlaneLayout);
 }
 
 int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
@@ -859,7 +864,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 		return extentInBlocks.height * extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
-	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize());
+	return usedFormat.sliceB(mipLevelExtent.width, mipLevelExtent.height, borderSize(), drmPlaneLayout);
 }
 
 Format Image::getFormat(VkImageAspectFlagBits aspect) const
