@@ -185,10 +185,37 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 	const auto *nextInfo = reinterpret_cast<const VkBaseInStructure *>(pCreateInfo->pNext);
 	for(; nextInfo != nullptr; nextInfo = nextInfo->pNext)
 	{
-		if(nextInfo->sType == VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO)
+		switch(nextInfo->sType)
 		{
-			const auto *externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo *>(nextInfo);
-			supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
+		case VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO:
+			{
+				const auto* externalInfo = reinterpret_cast<const VkExternalMemoryImageCreateInfo*>(nextInfo);
+				supportedExternalMemoryHandleTypes = externalInfo->handleTypes;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT:
+			{
+				const auto* externalInfo = reinterpret_cast<const VkImageDrmFormatModifierExplicitCreateInfoEXT*>(nextInfo);
+				// For each element of pPlaneLayouts, size must be 0
+				// For each element of pPlaneLayouts, arrayPitch must be 0 if VkImageCreateInfo::arrayLayers is 1
+				// For each element of pPlaneLayouts, depthPitch must be 0 if VkImageCreateInfo::extent.depth is 1
+				// SwiftShader doesn't support external memory with arrayLayers > 1 or extent.depth > 1.
+				ASSERT((externalInfo->drmFormatModifierPlaneCount == 1) &&
+					   (externalInfo->pPlaneLayouts->size == 0) &&
+					   (externalInfo->pPlaneLayouts->arrayPitch == 0) &&
+					   (externalInfo->pPlaneLayouts->depthPitch == 0));
+				(void)externalInfo->pPlaneLayouts->rowPitch;
+			}
+			break;
+		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT:
+			{
+				const auto* externalInfo = reinterpret_cast<const VkImageDrmFormatModifierListCreateInfoEXT*>(nextInfo);
+				// No format supports any DRM format modifier
+				ASSERT(externalInfo->drmFormatModifierCount == 0);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 }

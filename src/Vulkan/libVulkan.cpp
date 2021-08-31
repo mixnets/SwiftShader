@@ -365,6 +365,8 @@ static const ExtensionProperties deviceExtensionProperties[] = {
 	// The following extension is used by ANGLE to emulate blitting the stencil buffer
 	{ { VK_EXT_SHADER_STENCIL_EXPORT_EXTENSION_NAME, VK_EXT_SHADER_STENCIL_EXPORT_SPEC_VERSION } },
 	{ { VK_EXT_IMAGE_ROBUSTNESS_EXTENSION_NAME, VK_EXT_IMAGE_ROBUSTNESS_SPEC_VERSION } },
+	// This extension is used by ANGLE to support external device memory
+	{ { VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_EXTENSION_NAME, VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_SPEC_VERSION } },
 #ifndef __ANDROID__
 	// We fully support the KHR_swapchain v70 additions, so just track the spec version.
 	{ { VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_KHR_SWAPCHAIN_SPEC_VERSION } },
@@ -1797,6 +1799,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 				(void)stencilUsageInfo->stencilUsage;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT:
+			// Do nothing. Should be handled by vk::Image::Create()
+			break;
+		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT:
+			// Do nothing. Should be handled by vk::Image::Create()
+			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
@@ -3222,14 +3230,33 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice
 	TRACE("(VkPhysicalDevice physicalDevice = %p, VkFormat format = %d, VkFormatProperties2* pFormatProperties = %p)",
 	      physicalDevice, format, pFormatProperties);
 
-	auto extInfo = reinterpret_cast<VkBaseInStructure const *>(pFormatProperties->pNext);
+	auto extInfo = reinterpret_cast<VkBaseOutStructure*>(pFormatProperties->pNext);
 	while(extInfo)
 	{
-		LOG_TRAP("pFormatProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
+		switch(extInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT:
+			{
+				auto properties = reinterpret_cast<VkDrmFormatModifierPropertiesListEXT*>(extInfo);
+				properties->drmFormatModifierCount = 0; // No format supports any modifier
+			}
+			break;
+		default:
+			LOG_TRAP("pFormatProperties->pNext sType = %s", vk::Stringify(extInfo->sType).c_str());
+			break;
+		}
 		extInfo = extInfo->pNext;
 	}
 
 	vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &(pFormatProperties->formatProperties));
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT* pProperties)
+{
+	TRACE("(VkDevice device = %p, VkImage image = %p, VkImageDrmFormatModifierPropertiesEXT* pProperties = %p)",
+		device, static_cast<void *>(image), pProperties);
+
+	return VK_ERROR_OUT_OF_HOST_MEMORY; // No image can be created with a DRM format modifier
 }
 
 static bool checkFormatUsage(VkImageUsageFlags usage, VkFormatFeatureFlags features)
@@ -3309,9 +3336,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT:
+			if(pImageFormatInfo->tiling == VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT)
 			{
-				// Explicitly ignored, since VK_EXT_image_drm_format_modifier is not supported
-				ASSERT(!hasDeviceExtension(VK_EXT_IMAGE_DRM_FORMAT_MODIFIER_EXTENSION_NAME));
+				return VK_ERROR_FORMAT_NOT_SUPPORTED;
 			}
 			break;
 		default:
