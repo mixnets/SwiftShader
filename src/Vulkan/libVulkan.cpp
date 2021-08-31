@@ -3292,8 +3292,8 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		{
 		case VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO_KHR:
 			{
-				// Explicitly ignored, since VK_KHR_image_format_list is not supported
-				ASSERT(!hasDeviceExtension(VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME));
+				// Do nothing, SwiftShader does not benefit from knowing which
+				// formats a user may or may not use.
 			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
