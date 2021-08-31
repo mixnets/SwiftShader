@@ -58,6 +58,7 @@ config("swiftshader_libvulkan_private_config") {
 
 swiftshader_source_set("swiftshader_libvulkan_headers") {
   sources = [
+    "drm_fourcc_swiftshader.h",
     "Version.hpp",
     "VkBuffer.hpp",
     "VkBufferView.hpp",

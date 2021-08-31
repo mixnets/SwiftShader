@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkFormat.hpp"
+#include "drm_fourcc_swiftshader.h"
 
 #include "System/Debug.hpp"
 #include "System/Math.hpp"
@@ -2341,6 +2342,81 @@ bool Format::isRGBComponent(int component) const
 	}
 
 	return false;
+}
+
+uint64_t Format::getDRMFormat() const
+{
+	uint64_t value = DRM_FORMAT_INVALID;
+
+	switch(format)
+	{
+	case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+		value = DRM_FORMAT_ABGR4444;
+		break;
+	case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
+		value = DRM_FORMAT_ARGB4444;
+		break;
+	case VK_FORMAT_R5G6B5_UNORM_PACK16:
+		value = DRM_FORMAT_BGR565;
+		break;
+	case VK_FORMAT_B5G6R5_UNORM_PACK16:
+		value = DRM_FORMAT_RGB565;
+		break;
+	case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
+		value = DRM_FORMAT_ABGR1555;
+		break;
+	case VK_FORMAT_B5G5R5A1_UNORM_PACK16:
+		value = DRM_FORMAT_ARGB1555;
+		break;
+	case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
+		value = DRM_FORMAT_BGRA5551;
+		break;
+	case VK_FORMAT_R8_UNORM:
+		value = DRM_FORMAT_R8;
+		break;
+	case VK_FORMAT_R8G8_UNORM:
+		value = DRM_FORMAT_GR88;
+		break;
+	case VK_FORMAT_R8G8B8A8_UNORM:
+		value = DRM_FORMAT_ABGR8888;
+		break;
+	case VK_FORMAT_B8G8R8A8_UNORM:
+		value = DRM_FORMAT_ARGB8888;
+		break;
+	case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		value = DRM_FORMAT_RGBA8888;
+		break;
+	case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
+		value = DRM_FORMAT_BGRA1010102;
+		break;
+	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
+		value = DRM_FORMAT_RGBA1010102;
+		break;
+	case VK_FORMAT_R16_UNORM:
+		value = DRM_FORMAT_R16;
+		break;
+	case VK_FORMAT_R16G16_UNORM:
+		value = DRM_FORMAT_GR1616;
+		break;
+	case VK_FORMAT_R16G16B16_UNORM:
+		value = DRM_FORMAT_XBGR16161616;
+		break;
+	case VK_FORMAT_R16G16B16_SFLOAT:
+		value = DRM_FORMAT_XBGR16161616F;
+		break;
+	case VK_FORMAT_R16G16B16A16_UNORM:
+		value = DRM_FORMAT_ABGR16161616;
+		break;
+	case VK_FORMAT_R16G16B16A16_SFLOAT:
+		value = DRM_FORMAT_ABGR16161616F;
+		break;
+	case VK_FORMAT_UNDEFINED:
+	default:
+		// Keep DRM_FORMAT_INVALID
+		break;
+	}
+
+	return (value == DRM_FORMAT_INVALID) ? 0 : fourcc_mod_code(GOOGLE, value);
 }
 
 static constexpr uint8_t pack(VkFormat format)

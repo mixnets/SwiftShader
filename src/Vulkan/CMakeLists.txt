@@ -18,6 +18,7 @@ set(ROOT_PROJECT_COMPILE_OPTIONS
 )
 
 set(VULKAN_SRC_FILES
+    drm_fourcc_swiftshader.h
     libVulkan.cpp
     main.cpp
     resource.h

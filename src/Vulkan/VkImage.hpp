@@ -55,6 +55,7 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkImageCreateInfo *pCreateInfo);
 
+	VkResult getProperties(VkImageDrmFormatModifierPropertiesEXT* pProperties) const;
 	const VkMemoryRequirements getMemoryRequirements() const;
 	size_t getSizeInBytes(const VkImageSubresourceRange &subresourceRange) const;
 	void getSubresourceLayout(const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const;

@@ -3238,7 +3238,22 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice
 		case VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT:
 			{
 				auto properties = reinterpret_cast<VkDrmFormatModifierPropertiesListEXT*>(extInfo);
-				properties->drmFormatModifierCount = 0; // No format supports any modifier
+				uint64_t drmFormat = vk::Format(format).getDRMFormat();
+				if(properties->pDrmFormatModifierProperties)
+				{
+					VkFormatProperties formatProperties;
+					vk::PhysicalDevice::GetFormatProperties(format, &formatProperties);
+					for(uint32_t i = 0; i < properties->drmFormatModifierCount; ++i)
+					{
+						properties->pDrmFormatModifierProperties[i].drmFormatModifier = drmFormat;
+						properties->pDrmFormatModifierProperties[i].drmFormatModifierPlaneCount = 1;
+						properties->pDrmFormatModifierProperties[i].drmFormatModifierTilingFeatures = formatProperties.optimalTilingFeatures;
+					}
+				}
+				else
+				{
+					properties->drmFormatModifierCount = (drmFormat == 0) ? 0 : 1;
+				}
 			}
 			break;
 		default:
@@ -3256,7 +3271,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetImageDrmFormatModifierPropertiesEXT(VkDevice
 	TRACE("(VkDevice device = %p, VkImage image = %p, VkImageDrmFormatModifierPropertiesEXT* pProperties = %p)",
 		device, static_cast<void *>(image), pProperties);
 
-	return VK_ERROR_OUT_OF_HOST_MEMORY; // No image can be created with a DRM format modifier
+	return vk::Cast(image)->getProperties(pProperties);
 }
 
 static bool checkFormatUsage(VkImageUsageFlags usage, VkFormatFeatureFlags features)
@@ -3319,8 +3334,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		{
 		case VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO_KHR:
 			{
-				// Explicitly ignored, since VK_KHR_image_format_list is not supported
-				ASSERT(!hasDeviceExtension(VK_KHR_IMAGE_FORMAT_LIST_EXTENSION_NAME));
+				// Per the Vulkan spec on VkImageFormatListcreateInfo:
+				//     "If the pNext chain of VkImageCreateInfo includes a
+				//      VkImageFormatListCreateInfo structure, then that
+				//      structure contains a list of all formats that can be
+				//      used when creating views of this image"
+				// This limitation does not affect SwiftShader's behavior and
+				// the Vulkan Validation Layers can detect Views created with a
+				// format which is not included in that list.
 			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO:
@@ -3338,7 +3359,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT:
 			if(pImageFormatInfo->tiling == VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT)
 			{
-				return VK_ERROR_FORMAT_NOT_SUPPORTED;
+				const VkPhysicalDeviceImageDrmFormatModifierInfoEXT* drmFormatModifierInfo = reinterpret_cast<const VkPhysicalDeviceImageDrmFormatModifierInfoEXT *>(extensionFormatInfo);
+				if((drmFormatModifierInfo->drmFormatModifier == 0) ||
+				   (vk::Format(pImageFormatInfo->format).getDRMFormat() != drmFormatModifierInfo->drmFormatModifier))
+				{
+					return VK_ERROR_FORMAT_NOT_SUPPORTED;
+				}
 			}
 			break;
 		default:
@@ -3410,6 +3436,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceImageFormatProperties2(VkPhysi
 		features = properties.linearTilingFeatures;
 		break;
 
+	case VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT:
 	case VK_IMAGE_TILING_OPTIMAL:
 		features = properties.optimalTilingFeatures;
 		break;
