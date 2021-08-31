@@ -244,6 +244,8 @@ global:
 	# VK_KHR_draw_indirect_count
 	vkCmdDrawIndirectCount;
 	vkCmdDrawIndexedIndirectCount;
+	# VK_EXT_image_drm_format_modifier
+	vkGetImageDrmFormatModifierPropertiesEXT;
 	# Android HAL module info object
 	HMI;
 
