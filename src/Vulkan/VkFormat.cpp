@@ -2343,6 +2343,16 @@ bool Format::isRGBComponent(int component) const
 	return false;
 }
 
+uint64_t Format::getDRMFormat() const
+{
+	static constexpr uint64_t DRM_FORMAT_MOD_VENDOR_SWIFTSHADER = 0xFFULL << 56;
+	static constexpr uint64_t DRM_FORMAT_RESERVED = ((1ULL << 56) - 1);
+
+	// Make sure all VkFormats fit in 56 bits, for simplicity
+	static_assert(static_cast<uint64_t>(VK_FORMAT_MAX_ENUM) <= DRM_FORMAT_RESERVED);
+	return DRM_FORMAT_MOD_VENDOR_SWIFTSHADER | (static_cast<uint64_t>(format) & DRM_FORMAT_RESERVED);
+}
+
 static constexpr uint8_t pack(VkFormat format)
 {
 	if(format > VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM)

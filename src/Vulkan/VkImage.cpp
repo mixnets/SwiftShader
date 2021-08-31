@@ -199,19 +199,22 @@ Image::Image(const VkImageCreateInfo *pCreateInfo, void *mem, Device *device)
 				// For each element of pPlaneLayouts, size must be 0
 				// For each element of pPlaneLayouts, arrayPitch must be 0 if VkImageCreateInfo::arrayLayers is 1
 				// For each element of pPlaneLayouts, depthPitch must be 0 if VkImageCreateInfo::extent.depth is 1
-				// SwiftShader doesn't support external memory with arrayLayers > 1 or extent.depth > 1.
 				ASSERT((externalInfo->drmFormatModifierPlaneCount == 1) &&
 				       (externalInfo->pPlaneLayouts->size == 0) &&
-				       (externalInfo->pPlaneLayouts->arrayPitch == 0) &&
-				       (externalInfo->pPlaneLayouts->depthPitch == 0));
+				       ((arrayLayers > 1) || (externalInfo->pPlaneLayouts->arrayPitch == 0)) &&
+				       ((extent.depth > 1) || (externalInfo->pPlaneLayouts->depthPitch == 0)));
 				(void)externalInfo->pPlaneLayouts->rowPitch;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT:
 			{
 				const auto *externalInfo = reinterpret_cast<const VkImageDrmFormatModifierListCreateInfoEXT *>(nextInfo);
-				// No format supports any DRM format modifier
-				ASSERT(externalInfo->drmFormatModifierCount == 0);
+				if(externalInfo->drmFormatModifierCount > 0)
+				{
+					ASSERT((externalInfo->drmFormatModifierCount == 1) &&
+					       (externalInfo->pDrmFormatModifiers[0] != 0) &&
+					       (externalInfo->pDrmFormatModifiers[0] == format.getDRMFormat()));
+				}
 			}
 			break;
 		default:
@@ -231,6 +234,12 @@ void Image::destroy(const VkAllocationCallbacks *pAllocator)
 size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo *pCreateInfo)
 {
 	return Format(pCreateInfo->format).isCompressed() ? sizeof(Image) : 0;
+}
+
+VkResult Image::getProperties(VkImageDrmFormatModifierPropertiesEXT *pProperties) const
+{
+	pProperties->drmFormatModifier = format.getDRMFormat();
+	return (pProperties->drmFormatModifier == 0ull) ? VK_ERROR_OUT_OF_HOST_MEMORY : VK_SUCCESS;
 }
 
 const VkMemoryRequirements Image::getMemoryRequirements() const
