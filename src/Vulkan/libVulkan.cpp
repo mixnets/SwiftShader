@@ -1800,7 +1800,24 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT:
-			// Do nothing. Should be handled by vk::Image::Create()
+			{
+				const VkImageDrmFormatModifierExplicitCreateInfoEXT *drmFormatModifierExplicitCreateInfo = reinterpret_cast<const VkImageDrmFormatModifierExplicitCreateInfoEXT *>(extensionCreateInfo);
+				if(drmFormatModifierExplicitCreateInfo->drmFormatModifier != vk::Format(pCreateInfo->format).getDrmFormatModifier())
+				{
+					return VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT;
+				}
+
+				if(drmFormatModifierExplicitCreateInfo->drmFormatModifierPlaneCount > 1)
+				{
+					return VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT;
+				}
+
+				if((drmFormatModifierExplicitCreateInfo->drmFormatModifierPlaneCount > 0) &&
+				   !vk::Format(pCreateInfo->format).validateLayout(drmFormatModifierExplicitCreateInfo->pPlaneLayouts[0], pCreateInfo->extent))
+				{
+					return VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT;
+				}
+			}
 			break;
 		case VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT:
 			// Do nothing. Should be handled by vk::Image::Create()
