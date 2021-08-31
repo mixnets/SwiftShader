@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23e89186_88b090b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-31T15:58:34Z",
+      "side": 1,
+      "message": "Thanks Takuto! There\u0027s no harm in this, but we don\u0027t actually use this ANGLE submodule as part of the Chromium build. It\u0027s a separate DEPS entry. This submodule is just for our own standalone development purposes.\n\nIf things are actually more entangled than that, it would be unintentional, and require a deeper look.",
+      "revId": "bd19167ef4e0cfaf2e67b69c10640719984cccf1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
