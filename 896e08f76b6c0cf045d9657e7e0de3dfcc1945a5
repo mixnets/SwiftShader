@@ -33,6 +33,23 @@
       "message": "It looks like this size is completely arbitrary for SwiftShader (we don\u0027t even check it), and I can\u0027t think of any issues this might cause us in the future, so LGTM.\n\nAs always, we do attempt not to increase limits more than necessary, to avoid the creation of applications that run fine on SwiftShader but not on highly common hardware. For the record, in this instance we\u0027re only leaving behind 1% of reported implementations (not correlated to actual usage numbers): https://vulkan.gpuinfo.org/displaydevicelimit.php?name\u003dmaxComputeSharedMemorySize\u0026platform\u003dall",
       "revId": "896e08f76b6c0cf045d9657e7e0de3dfcc1945a5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17692e64_8d071fdb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-08-31T18:41:48Z",
+      "side": 1,
+      "message": "Alexis can you +2 for second @google review?",
+      "revId": "896e08f76b6c0cf045d9657e7e0de3dfcc1945a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
