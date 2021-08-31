@@ -2343,6 +2343,13 @@ bool Format::isRGBComponent(int component) const
 	return false;
 }
 
+uint64_t Format::getDrmFormatModifier() const
+{
+	// SwiftShader has no vendor specific internal format modifier
+	static constexpr uint64_t DRM_FORMAT_MOD_LINEAR = 0ull;
+	return DRM_FORMAT_MOD_LINEAR;
+}
+
 static constexpr uint8_t pack(VkFormat format)
 {
 	if(format > VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM)
