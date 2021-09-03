@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fadf494c_72287cc1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-03T19:07:41Z",
+      "side": 1,
+      "message": "Nice. Glad to see this go away. It can probably be rebased to not be blocked on reviews for the slightly larger external memory related refactors?",
+      "revId": "694cf296795b7201bfd42406614fd20b18c25139",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
