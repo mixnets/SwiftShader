@@ -33,7 +33,7 @@ class ExternalMemoryTraits
 public:
 	VkExternalMemoryHandleTypeFlagBits typeFlagBit;
 	size_t instanceSize;
-	void (*instanceInit)(void *external, const VkMemoryAllocateInfo *pAllocateInfo);
+	void (*instanceInit)(void *external, const DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo);
 };
 
 // Template function that parses a |pAllocateInfo.pNext| chain to verify that
@@ -41,16 +41,16 @@ public:
 // class T. On success, return true and sets |pTraits| accordingly. Otherwise
 // return false.
 template<typename T>
-static bool parseCreateInfo(const VkMemoryAllocateInfo *pAllocateInfo,
+static bool parseCreateInfo(const DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo,
                             ExternalMemoryTraits *pTraits)
 {
-	if(T::SupportsAllocateInfo(pAllocateInfo))
+	if(T::SupportsAllocateInfo(parsedAllocationInfo))
 	{
 		pTraits->typeFlagBit = T::typeFlagBit;
 		pTraits->instanceSize = sizeof(T);
 		pTraits->instanceInit = [](void *external,
-		                           const VkMemoryAllocateInfo *pAllocateInfo) {
-			new(external) T(pAllocateInfo);
+		                           const DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo) {
+			new(external) T(parsedAllocationInfo);
 		};
 		return true;
 	}
@@ -66,12 +66,12 @@ public:
 	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = (VkExternalMemoryHandleTypeFlagBits)0;
 
 	// Always return true as is used as a fallback in findTraits() below.
-	static bool SupportsAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+	static bool SupportsAllocateInfo(const DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 	{
 		return true;
 	}
 
-	DeviceMemoryHostExternalBase(const VkMemoryAllocateInfo *pAllocateInfo) {}
+	DeviceMemoryHostExternalBase(const DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo) {}
 
 	VkResult allocate(size_t size, void **pBuffer) override
 	{
@@ -120,43 +120,31 @@ public:
 
 		AllocateInfo() = default;
 
-		AllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+		AllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 		{
-			const auto *createInfo = reinterpret_cast<const VkBaseInStructure *>(pAllocateInfo->pNext);
-			while(createInfo)
+			if(parsedAllocationInfo.importMemoryHostPointerInfo)
 			{
-				switch(createInfo->sType)
+				if((parsedAllocationInfo.importMemoryHostPointerInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT) &&
+				   (parsedAllocationInfo.importMemoryHostPointerInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT))
 				{
-				case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
-					{
-						const auto *importInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(createInfo);
-
-						if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT && importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT)
-						{
-							UNSUPPORTED("importInfo->handleType");
-						}
-						hostPointer = importInfo->pHostPointer;
-						supported = true;
-					}
-					break;
-				default:
-					break;
+					UNSUPPORTED("parsedAllocationInfo.importMemoryHostPointerInfo->handleType");
 				}
-				createInfo = createInfo->pNext;
+				hostPointer = parsedAllocationInfo.importMemoryHostPointerInfo->pHostPointer;
+				supported = true;
 			}
 		}
 	};
 
 	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = (VkExternalMemoryHandleTypeFlagBits)(VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT | VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT);
 
-	static bool SupportsAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+	static bool SupportsAllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 	{
-		AllocateInfo info(pAllocateInfo);
+		AllocateInfo info(parsedAllocationInfo);
 		return info.supported;
 	}
 
-	explicit ExternalMemoryHost(const VkMemoryAllocateInfo *pAllocateInfo)
-	    : allocateInfo(pAllocateInfo)
+	explicit ExternalMemoryHost(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
+	    : allocateInfo(parsedAllocationInfo)
 	{
 	}
 
@@ -196,49 +184,16 @@ struct OpaqueFdAllocateInfo
 	OpaqueFdAllocateInfo() = default;
 
 	// Parse the VkMemoryAllocateInfo.pNext chain to initialize an OpaqueFdAllocateInfo.
-	OpaqueFdAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+	OpaqueFdAllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 	{
-		const auto *createInfo = reinterpret_cast<const VkBaseInStructure *>(pAllocateInfo->pNext);
-		while(createInfo)
+		if(parsedAllocationInfo.importMemoryFdInfo)
 		{
-			switch(createInfo->sType)
+			if(parsedAllocationInfo.importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
 			{
-			case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
-				{
-					const auto *importInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(createInfo);
-
-					if(importInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
-					{
-						UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(importInfo->handleType));
-					}
-					importFd = true;
-					fd = importInfo->fd;
-				}
-				break;
-			case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-				{
-					const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
-
-					if(exportInfo->handleTypes != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
-					{
-						UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
-					}
-					exportFd = true;
-				}
-				break;
-			case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
-				// This can safely be ignored, as the Vulkan spec mentions:
-				// "If the pNext chain includes a VkMemoryDedicatedAllocateInfo structure, then that structure
-				//  includes a handle of the sole buffer or image resource that the memory *can* be bound to."
-				break;
-			case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
-				// This will be handled at a later point within vk::findTraits() by
-				// ExternalMemoryHost::AllocateInfo()
-				break;
-			default:
-				WARN("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
+				UNSUPPORTED("VkImportMemoryFdInfoKHR::handleType %d", int(parsedAllocationInfo.importMemoryFdInfo->handleType));
 			}
-			createInfo = createInfo->pNext;
+			importFd = true;
+			fd = parsedAllocationInfo.importMemoryFdInfo->fd;
 		}
 	}
 };
@@ -266,35 +221,35 @@ struct OpaqueFdAllocateInfo
 
 namespace vk {
 
-static void findTraits(const VkMemoryAllocateInfo *pAllocateInfo,
+static void findTraits(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo,
                        ExternalMemoryTraits *pTraits)
 {
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
-	if(parseCreateInfo<AHardwareBufferExternalMemory>(pAllocateInfo, pTraits))
+	if(parseCreateInfo<AHardwareBufferExternalMemory>(parsedAllocationInfo, pTraits))
 	{
 		return;
 	}
 #endif
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	if(parseCreateInfo<OpaqueFdExternalMemory>(pAllocateInfo, pTraits))
+	if(parseCreateInfo<OpaqueFdExternalMemory>(parsedAllocationInfo, pTraits))
 	{
 		return;
 	}
 #endif
 #if VK_USE_PLATFORM_FUCHSIA
-	if(parseCreateInfo<zircon::VmoExternalMemory>(pAllocateInfo, pTraits))
+	if(parseCreateInfo<zircon::VmoExternalMemory>(parsedAllocationInfo, pTraits))
 	{
 		return;
 	}
 #endif
-	if(parseCreateInfo<ExternalMemoryHost>(pAllocateInfo, pTraits))
+	if(parseCreateInfo<ExternalMemoryHost>(parsedAllocationInfo, pTraits))
 	{
 		return;
 	}
-	parseCreateInfo<DeviceMemoryHostExternalBase>(pAllocateInfo, pTraits);
+	parseCreateInfo<DeviceMemoryHostExternalBase>(parsedAllocationInfo, pTraits);
 }
 
-DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem, Device *pDevice)
+DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem, const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo, Device *pDevice)
     : size(pAllocateInfo->allocationSize)
     , memoryTypeIndex(pAllocateInfo->memoryTypeIndex)
     , device(pDevice)
@@ -302,8 +257,8 @@ DeviceMemory::DeviceMemory(const VkMemoryAllocateInfo *pAllocateInfo, void *mem,
 	ASSERT(size);
 
 	ExternalMemoryTraits traits;
-	findTraits(pAllocateInfo, &traits);
-	traits.instanceInit(mem, pAllocateInfo);
+	findTraits(parsedAllocationInfo, &traits);
+	traits.instanceInit(mem, parsedAllocationInfo);
 	external = reinterpret_cast<ExternalBase *>(mem);
 	external->setDevicePtr(device);
 }
@@ -324,9 +279,96 @@ void DeviceMemory::destroy(const VkAllocationCallbacks *pAllocator)
 
 size_t DeviceMemory::ComputeRequiredAllocationSize(const VkMemoryAllocateInfo *pAllocateInfo)
 {
+	ParsedAllocationInfo parsedAllocationInfo;
+	ParseAllocationInfo(pAllocateInfo, &parsedAllocationInfo);
 	ExternalMemoryTraits traits;
-	findTraits(pAllocateInfo, &traits);
+	findTraits(parsedAllocationInfo, &traits);
 	return traits.instanceSize;
+}
+
+VkResult DeviceMemory::ParseAllocationInfo(const VkMemoryAllocateInfo *pAllocateInfo, DeviceMemory::ParsedAllocationInfo *parsedAllocationInfo)
+{
+	const VkBaseInStructure *allocationInfo = reinterpret_cast<const VkBaseInStructure *>(pAllocateInfo->pNext);
+	while(allocationInfo)
+	{
+		switch(allocationInfo->sType)
+		{
+		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
+			// This can safely be ignored on most platforms, as the Vulkan spec mentions:
+			// "If the pNext chain includes a VkMemoryDedicatedAllocateInfo structure, then that structure
+			//  includes a handle of the sole buffer or image resource that the memory *can* be bound to."
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+			parsedAllocationInfo->dedicatedAllocateInfo = reinterpret_cast<const VkMemoryDedicatedAllocateInfo *>(allocationInfo);
+#endif
+			break;
+		case VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO:
+			// This extension controls on which physical devices the memory gets allocated.
+			// SwiftShader only has a single physical device, so this extension does nothing in this case.
+			break;
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
+			parsedAllocationInfo->importMemoryFdInfo = reinterpret_cast<const VkImportMemoryFdInfoKHR *>(allocationInfo);
+			if(parsedAllocationInfo->importMemoryFdInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT)
+			{
+				UNSUPPORTED("parsedAllocationInfo->importMemoryFdInfo->handleType %u", parsedAllocationInfo->importMemoryFdInfo->handleType);
+				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+			}
+			break;
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
+			parsedAllocationInfo->exportMemoryAllocateInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(allocationInfo);
+			switch(parsedAllocationInfo->exportMemoryAllocateInfo->handleTypes)
+			{
+#if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
+			case VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT:
+				break;
+#endif
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+			case VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID:
+				break;
+#endif
+#if VK_USE_PLATFORM_FUCHSIA
+			case VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA:
+				break;
+#endif
+			default:
+				UNSUPPORTED("parsedAllocationInfo->exportMemoryAllocateInfo->handleTypes %u", parsedAllocationInfo->exportMemoryAllocateInfo->handleTypes);
+				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+			}
+			break;
+#if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+		case VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID:
+			parsedAllocationInfo->importAndroidHardwareBufferInfo = reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID *>(allocationInfo);
+			break;
+#endif  // SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT:
+			parsedAllocationInfo->importMemoryHostPointerInfo = reinterpret_cast<const VkImportMemoryHostPointerInfoEXT *>(allocationInfo);
+			if((parsedAllocationInfo->importMemoryHostPointerInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT) &&
+			   (parsedAllocationInfo->importMemoryHostPointerInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT))
+			{
+				UNSUPPORTED("parsedAllocationInfo->importMemoryHostPointerInfo->handleType %u", parsedAllocationInfo->importMemoryHostPointerInfo->handleType);
+				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+			}
+			break;
+#if VK_USE_PLATFORM_FUCHSIA
+		case VK_STRUCTURE_TYPE_TEMP_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA:
+			parsedAllocationInfo->importMemoryZirconHandleInfo = reinterpret_cast<const VkImportMemoryZirconHandleInfoFUCHSIA *>(allocationInfo);
+			if(parsedAllocationInfo->importMemoryZirconHandleInfo->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA)
+			{
+				UNSUPPORTED("parsedAllocationInfo->importMemoryZirconHandleInfo->handleType %u", parsedAllocationInfo->importMemoryZirconHandleInfo->handleType);
+				return VK_ERROR_INVALID_EXTERNAL_HANDLE;
+			}
+			break;
+#endif  // VK_USE_PLATFORM_FUCHSIA
+		default:
+			LOG_TRAP("pAllocateInfo->pNext sType = %s", vk::Stringify(allocationInfo->sType).c_str());
+			break;
+		}
+
+		allocationInfo = allocationInfo->pNext;
+	}
+
+	return VK_SUCCESS;
 }
 
 VkResult DeviceMemory::allocate()
