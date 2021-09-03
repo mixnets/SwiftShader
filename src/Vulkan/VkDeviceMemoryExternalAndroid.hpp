@@ -26,8 +26,8 @@
 class AHardwareBufferExternalMemory : public vk::DeviceMemory::ExternalBase
 {
 public:
-	// Helper struct to parse the VkMemoryAllocateInfo.pNext chain and
-	// extract relevant information related to the handle type supported
+	// Helper struct to used the parse allocation info and extract
+	// relevant information related to the handle type supported
 	// by this DeviceMemory::ExternalBase subclass.
 	struct AllocateInfo
 	{
@@ -39,19 +39,19 @@ public:
 
 		AllocateInfo() = default;
 
-		// Parse the VkMemoryAllocateInfo.pNext chain to initialize an AllocateInfo.
-		AllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo);
+		// Used the parsed allocation info to initialize a AllocateInfo.
+		AllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo);
 	};
 
 	static const VkExternalMemoryHandleTypeFlagBits typeFlagBit = VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID;
 
-	static bool SupportsAllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+	static bool SupportsAllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 	{
-		AllocateInfo info(pAllocateInfo);
+		AllocateInfo info(parsedAllocationInfo);
 		return info.importAhb || info.exportAhb;
 	}
 
-	explicit AHardwareBufferExternalMemory(const VkMemoryAllocateInfo *pAllocateInfo);
+	explicit AHardwareBufferExternalMemory(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo);
 	~AHardwareBufferExternalMemory();
 
 	VkResult allocate(size_t size, void **pBuffer) override;

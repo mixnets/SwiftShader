@@ -164,53 +164,35 @@ VkFormatFeatureFlags GetVkFormatFeaturesFromAHBFormat(uint32_t ahbFormat)
 
 }  // namespace
 
-AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const VkMemoryAllocateInfo *pAllocateInfo)
+AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
 {
-	const auto *createInfo = reinterpret_cast<const VkBaseInStructure *>(pAllocateInfo->pNext);
-	while(createInfo)
+	if(parsedAllocationInfo.importAndroidHardwareBufferInfo)
 	{
-		switch(createInfo->sType)
-		{
-		case VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID:
-			{
-				const auto *importInfo = reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID *>(createInfo);
-				importAhb = true;
-				ahb = importInfo->buffer;
-			}
-			break;
-		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
-			{
-				const auto *exportInfo = reinterpret_cast<const VkExportMemoryAllocateInfo *>(createInfo);
+		importAhb = true;
+		ahb = parsedAllocationInfo.importAndroidHardwareBufferInfo->buffer;
+	}
 
-				if(exportInfo->handleTypes == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
-				{
-					exportAhb = true;
-				}
-				else
-				{
-					UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(exportInfo->handleTypes));
-				}
-			}
-			break;
-		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
-			{
-				const auto *dedicatedAllocateInfo = reinterpret_cast<const VkMemoryDedicatedAllocateInfo *>(createInfo);
-				dedicatedImageHandle = vk::Cast(dedicatedAllocateInfo->image);
-				dedicatedBufferHandle = vk::Cast(dedicatedAllocateInfo->buffer);
-			}
-			break;
-		default:
-			{
-				LOG_TRAP("VkMemoryAllocateInfo->pNext sType = %s", vk::Stringify(createInfo->sType).c_str());
-			}
-			break;
+	if(parsedAllocationInfo.exportMemoryAllocateInfo)
+	{
+		if(parsedAllocationInfo.exportMemoryAllocateInfo->handleTypes == VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID)
+		{
+			exportAhb = true;
 		}
-		createInfo = createInfo->pNext;
+		else
+		{
+			UNSUPPORTED("VkExportMemoryAllocateInfo::handleTypes %d", int(parsedAllocationInfo.exportMemoryAllocateInfo->handleTypes));
+		}
+	}
+
+	if(parsedAllocationInfo.dedicatedAllocateInfo)
+	{
+		dedicatedImageHandle = vk::Cast(parsedAllocationInfo.dedicatedAllocateInfo->image);
+		dedicatedBufferHandle = vk::Cast(parsedAllocationInfo.dedicatedAllocateInfo->buffer);
 	}
 }
 
-AHardwareBufferExternalMemory::AHardwareBufferExternalMemory(const VkMemoryAllocateInfo *pAllocateInfo)
-    : allocateInfo(pAllocateInfo)
+AHardwareBufferExternalMemory::AHardwareBufferExternalMemory(const vk::DeviceMemory::ParsedAllocationInfo &parsedAllocationInfo)
+    : allocateInfo(parsedAllocationInfo)
 {
 }
 
