@@ -54,6 +54,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cceed473_082313b3",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-03T18:43:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d9029fd_fb7daff5",
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "81bef299_d855d1db",
@@ -115,6 +133,30 @@
       "side": 1,
       "message": "Ah, I see, this is the regular \"additional\" memory. This code is not very intuitive and appears to try to achieve polymorphism through the DeviceMemory constructor. Like you said above, we should probably parse the chain of creation info once, and then pass that into a factory function which creates the expected derived class?\n\nIt\u0027s a fair bit of work but I\u0027m afraid this code would continue to haunt us if we don\u0027t tackle this now and bolt on more complexity for the IOSurface external memory.",
       "parentUuid": "9c44c1dd_8bb56ab6",
+      "range": {
+        "startLine": 257,
+        "startChar": 4,
+        "endLine": 257,
+        "endChar": 7
+      },
+      "revId": "6b0f8b6dfb8216a5085e6ca1715302796be76644",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "97bd64db_57eff630",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-03T18:43:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "88aa416c_0eeb86ab",
       "range": {
         "startLine": 257,
         "startChar": 4,
