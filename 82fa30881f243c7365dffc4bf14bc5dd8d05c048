@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80092216_d269b6c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-04T04:11:28Z",
+      "side": 1,
+      "message": "I\u0027m curious if this would become even more straightforward when using a factory to create objects derived from vk::DeviceMemory itself, instead of it containing a pointer to classes derived from vk::DeviceMemory::ExternalBase.",
+      "revId": "82fa30881f243c7365dffc4bf14bc5dd8d05c048",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fc21c64_4729cb67",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-04T04:11:28Z",
+      "side": 1,
+      "message": "nit: *const\n\nWhile were\u0027re here...",
+      "range": {
+        "startLine": 90,
+        "startChar": 8,
+        "endLine": 90,
+        "endChar": 9
+      },
+      "revId": "82fa30881f243c7365dffc4bf14bc5dd8d05c048",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
