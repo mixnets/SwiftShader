@@ -27,6 +27,11 @@
 #	include <sys/types.h>
 #endif
 
+#if defined(__i386__) || defined(__x86_64__)
+#	include <xmmintrin.h>
+#	include <pmmintrin.h>
+#endif
+
 namespace sw {
 
 static void cpuid(int registers[4], int info)
@@ -158,14 +163,16 @@ void CPUID::setFlushToZero(bool enable)
 {
 #if defined(_MSC_VER)
 	_controlfp(enable ? _DN_FLUSH : _DN_SAVE, _MCW_DN);
-#else
-	                     // Unimplemented
+#elif defined(__i386__) || defined(__x86_64__)
+	_MM_SET_FLUSH_ZERO_MODE(enable ? _MM_FLUSH_ZERO_ON : _MM_FLUSH_ZERO_OFF);
 #endif
 }
 
 void CPUID::setDenormalsAreZero(bool enable)
 {
-	// Unimplemented
+#if defined(__i386__) || defined(__x86_64__)
+	_MM_SET_DENORMALS_ZERO_MODE(enable ? _MM_DENORMALS_ZERO_ON : _MM_DENORMALS_ZERO_OFF);
+#endif
 }
 
 }  // namespace sw
