@@ -3,6 +3,29 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "3f9c5feb_c59d0bdd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 100891
+      },
+      "writtenOn": "2021-09-07T23:17:32Z",
+      "side": 1,
+      "message": "The external semaphore and external memory extensions have been upstreamed.  VK_FUCHSIA_buffer_collection upstreaming is work in progress.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 26
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "35163df4_0a288f06",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
@@ -142,6 +165,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "33211994_02b0103f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 100891
+      },
+      "writtenOn": "2021-09-07T23:17:32Z",
+      "side": 1,
+      "message": "these *TEMP* references also",
+      "range": {
+        "startLine": 710,
+        "startChar": 0,
+        "endLine": 711,
+        "endChar": 105
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9da67955_3c8c9fe0",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 2
@@ -165,6 +211,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1e512397_e32e3c67",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 100891
+      },
+      "writtenOn": "2021-09-07T23:17:32Z",
+      "side": 1,
+      "message": "these *TEMP* references also",
+      "range": {
+        "startLine": 745,
+        "startChar": 2,
+        "endLine": 746,
+        "endChar": 105
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6d2b6d57_198ca54f",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 2
@@ -181,6 +250,29 @@
         "startChar": 42,
         "endLine": 878,
         "endChar": 105
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf4d1d88_21cbf5a9",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 881,
+      "author": {
+        "id": 100891
+      },
+      "writtenOn": "2021-09-07T23:17:32Z",
+      "side": 1,
+      "message": "these *TEMP* references also",
+      "range": {
+        "startLine": 880,
+        "startChar": 0,
+        "endLine": 881,
+        "endChar": 128
       },
       "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
