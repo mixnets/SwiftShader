@@ -21,6 +21,10 @@
 #include "marl/blockingcall.h"
 #include "marl/conditionvariable.h"
 
+#if VK_USE_PLATFORM_FUCHSIA
+#	include <vulkan/vulkan_fuchsia_extras.h>
+#endif
+
 #include <functional>
 #include <memory>
 #include <utility>

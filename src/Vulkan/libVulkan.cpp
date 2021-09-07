@@ -94,6 +94,10 @@
 #	endif
 #endif
 
+#if VK_USE_PLATFORM_FUCHSIA
+#	include <vulkan/vulkan_fuchsia_extras.h>
+#endif
+
 #include <algorithm>
 #include <cinttypes>
 #include <cstring>

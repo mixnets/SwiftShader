@@ -17,6 +17,7 @@
 
 #include "System/Debug.hpp"
 
+#include <vulkan/vulkan_fuchsia_extras.h>
 #include <zircon/syscalls.h>
 
 // An external semaphore implementation for the Zircon kernel using a simple

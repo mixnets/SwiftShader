@@ -16,6 +16,7 @@
 
 #include "System/Debug.hpp"
 
+#include <vulkan/vulkan_fuchsia_extras.h>
 #include <zircon/process.h>
 #include <zircon/syscalls.h>
 

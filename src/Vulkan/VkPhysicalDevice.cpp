@@ -19,12 +19,16 @@
 #include "Pipeline/SpirvShader.hpp"  // sw::SIMD::Width
 #include "Reactor/Reactor.hpp"
 
-#include <cstring>
-#include <limits>
-
 #ifdef __ANDROID__
 #	include <android/hardware_buffer.h>
 #endif
+
+#if VK_USE_PLATFORM_FUCHSIA
+#	include <vulkan/vulkan_fuchsia_extras.h>
+#endif
+
+#include <cstring>
+#include <limits>
 
 namespace vk {
 
