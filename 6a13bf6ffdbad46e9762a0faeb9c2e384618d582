@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35163df4_0a288f06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2021-09-07T21:14:48Z",
+      "side": 1,
+      "message": "Thanks for adding me on cc, I suspect this will break the Fuchsia build because while the definitions have been upstreamed, some minor adjustments have been made to some of the names. E.g. VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA is now called VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA (without the _TEMP_) part.\n\nLet me check this explicitly with a local Chromium checkout...",
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
