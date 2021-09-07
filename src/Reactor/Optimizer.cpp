@@ -67,20 +67,13 @@ private:
 
 		std::vector<Ice::Inst *> loads;
 		std::vector<Ice::Inst *> stores;
-	};
 
-	struct LoadStoreInst
-	{
-		LoadStoreInst(Ice::Inst *inst, bool isStore)
-		    : inst(inst)
-		    , address(isStore ? inst->getStoreAddress() : inst->getLoadAddress())
-		    , isStore(isStore)
-		{
-		}
-
-		Ice::Inst *inst;
-		Ice::Operand *address;
-		bool isStore;
+		// For each stack variable keep track of the last store instruction.
+		// To eliminate a store followed by another store to the same alloca address
+		// we must also know whether all loads have been replaced by the store value.
+		Ice::Inst *lastStore = nullptr;
+		Ice::CfgNode *block = nullptr;
+		bool allLoadsReplaced = true;
 	};
 
 	Optimizer::Uses *getUses(Ice::Operand *);
@@ -387,21 +380,6 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 {
 	for(Ice::CfgNode *block : function->getNodes())
 	{
-		// For each stack variable keep track of the last store instruction.
-		// To eliminate a store followed by another store to the same alloca address
-		// we must also know whether all loads have been replaced by the store value.
-		struct LastStore
-		{
-			Ice::Inst *store;
-			bool allLoadsReplaced = true;
-		};
-
-		// Use the (unique) index of the alloca's destination argument (i.e. the address
-		// of the allocated variable), which is of type SizeT, as the key. Note we do not
-		// use the pointer to the alloca instruction or its resulting address, to avoid
-		// undeterministic unordered_map behavior.
-		std::unordered_map<Ice::SizeT, LastStore> lastStoreTo;
-
 		for(Ice::Inst &inst : block->getInsts())
 		{
 			if(inst.isDeleted())
@@ -419,42 +397,39 @@ void Optimizer::optimizeSingleBasicBlockLoadsStores()
 					// a pointer which could be used for indirect stores.
 					if(getUses(address)->areOnlyLoadStore())
 					{
-						Ice::SizeT addressIdx = alloca->getDest()->getIndex();
+						Ice::Inst *previousStore = getUses(address)->lastStore;
 
 						// If there was a previous store to this address, and it was propagated
 						// to all subsequent loads, it can be eliminated.
-						if(auto entry = lastStoreTo.find(addressIdx); entry != lastStoreTo.end())
+						if(previousStore && getUses(address)->block == block)
 						{
-							Ice::Inst *previousStore = entry->second.store;
-
 							if(storeTypeMatchesStore(&inst, previousStore) &&
-							   entry->second.allLoadsReplaced)
+							   getUses(address)->allLoadsReplaced)
 							{
 								deleteInstruction(previousStore);
 							}
 						}
 
-						lastStoreTo[addressIdx] = { &inst };
+						getUses(address)->lastStore = &inst;
+						getUses(address)->block = block;
 					}
 				}
 			}
 			else if(isLoad(inst))
 			{
-				if(Ice::InstAlloca *alloca = allocaOf(inst.getLoadAddress()))
+				Ice::Operand *address = inst.getLoadAddress();
+				if(Ice::InstAlloca *alloca = allocaOf(address))
 				{
-					Ice::SizeT addressIdx = alloca->getDest()->getIndex();
-					auto entry = lastStoreTo.find(addressIdx);
-					if(entry != lastStoreTo.end())
+					Ice::Inst *lastStore = getUses(address)->lastStore;
+					if(lastStore && getUses(address)->block == block)
 					{
-						const Ice::Inst *store = entry->second.store;
-
-						if(loadTypeMatchesStore(&inst, store))
+						if(loadTypeMatchesStore(&inst, lastStore))
 						{
-							replace(&inst, store->getData());
+							replace(&inst, lastStore->getData());
 						}
 						else
 						{
-							entry->second.allLoadsReplaced = false;
+							getUses(address)->allLoadsReplaced = false;
 						}
 					}
 				}
