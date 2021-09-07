@@ -53,6 +53,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "02599ccf_918a528d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5045
+      },
+      "writtenOn": "2021-09-07T21:39:27Z",
+      "side": 1,
+      "message": "Actually, even before applying this CL, the Fuchsia build seems to be already broken in the Chromium build system due to other issues anyway (e.g. changes in some Vk structure types).\n\nI suggest approving this CL, and trying to fix everything Fuchsia-specific in a separate CL. What do you think?",
+      "parentUuid": "35163df4_0a288f06",
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "088d8534_86af6791",
