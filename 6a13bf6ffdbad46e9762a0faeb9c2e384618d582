@@ -16,6 +16,161 @@
       "message": "Thanks for adding me on cc, I suspect this will break the Fuchsia build because while the definitions have been upstreamed, some minor adjustments have been made to some of the names. E.g. VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA is now called VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA (without the _TEMP_) part.\n\nLet me check this explicitly with a local Chromium checkout...",
       "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e0b923d_df0ffaf9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "One thing to note is that upstream headers have updated the external memory / semaphore struct IDs and enum values, so we are now using the non-TEMP versions (https://source.chromium.org/search?q\u003dZirconHandleInfoFUCHSIA). \n\nWe should add the non-TEMP cases to the code, and remove the TEMP ones once all the migration is done (we also have fxb/73066 to track the same effort for Intel ICD).\n\n",
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "088d8534_86af6791",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "These structs won\u0027t be in the upstream headers. We should use the upstream version of these structs instead (e.g. VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA).",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 72
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b64fab3_dcc85924",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalFuchsia.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 84,
+        "startChar": 63,
+        "endLine": 84,
+        "endChar": 121
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6b7f217_d76005d1",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 708,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 708,
+        "startChar": 18,
+        "endLine": 708,
+        "endChar": 76
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9da67955_3c8c9fe0",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 743,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 743,
+        "startChar": 18,
+        "endLine": 743,
+        "endChar": 76
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d2b6d57_198ca54f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 878,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 878,
+        "startChar": 42,
+        "endLine": 878,
+        "endChar": 105
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eabe710a_e8ffb089",
+        "filename": "src/Vulkan/VkSemaphoreExternalFuchsia.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 94981
+      },
+      "writtenOn": "2021-09-07T21:24:38Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 25,
+        "startChar": 3,
+        "endLine": 25,
+        "endChar": 66
+      },
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
