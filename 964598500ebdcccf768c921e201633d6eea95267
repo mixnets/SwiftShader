@@ -16,6 +16,24 @@
       "message": "Wondering why this file is being deleted as part of this change ?  It\u0027s still required if using BufferCollection.",
       "revId": "964598500ebdcccf768c921e201633d6eea95267",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d004acf5_06bd6085",
+        "filename": "include/vulkan/vulkan_fuchsia_extras.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 100891
+      },
+      "writtenOn": "2021-09-08T18:51:49Z",
+      "side": 1,
+      "message": "Description says BufferCollection is not in use.  This change LGTM.",
+      "parentUuid": "a5a77187_94bc7f9c",
+      "revId": "964598500ebdcccf768c921e201633d6eea95267",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
