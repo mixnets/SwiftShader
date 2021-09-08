@@ -238,7 +238,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		}
 	}
 
-	Array<SIMD::Float> in(16);  // Maximum 16 input parameter components.
+	Array<SIMD::Int> in(16);  // Maximum 16 input parameter components.
 
 	uint32_t coordinates = coordinate.componentCount - instruction.isProj();
 	instruction.coordinates = coordinates;
@@ -248,11 +248,11 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 	{
 		if(instruction.isProj())
 		{
-			in[i] = coordinate.Float(i) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			in[i] = As<SIMD::Int>(coordinate.Float(i) / coordinate.Float(coordinates));  // TODO(b/129523279): Optimize using reciprocal.
 		}
 		else
 		{
-			in[i] = coordinate.Float(i);
+			in[i] = As<SIMD::Int>(coordinate.Float(i));
 		}
 	}
 
@@ -262,11 +262,11 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		if(instruction.isProj())
 		{
-			in[i] = drefValue.Float(0) / coordinate.Float(coordinates);  // TODO(b/129523279): Optimize using reciprocal.
+			in[i] = As<SIMD::Int>(drefValue.Float(0) / coordinate.Float(coordinates));  // TODO(b/129523279): Optimize using reciprocal.
 		}
 		else
 		{
-			in[i] = drefValue.Float(0);
+			in[i] = As<SIMD::Int>(drefValue.Float(0));
 		}
 
 		i++;
@@ -275,7 +275,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 	if(lodOrBias)
 	{
 		auto lodValue = Operand(this, state, lodOrBiasId);
-		in[i] = lodValue.Float(0);
+		in[i] = lodValue.Int(0);
 		i++;
 	}
 	else if(grad)
@@ -288,12 +288,12 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
 		{
-			in[i] = dxValue.Float(j);
+			in[i] = dxValue.Int(j);
 		}
 
 		for(uint32_t j = 0; j < dxValue.componentCount; j++, i++)
 		{
-			in[i] = dyValue.Float(j);
+			in[i] = dyValue.Int(j);
 		}
 	}
 	else if(instruction.samplerMethod == Fetch)
@@ -301,7 +301,7 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 		// The instruction didn't provide a lod operand, but the sampler's Fetch
 		// function requires one to be present. If no lod is supplied, the default
 		// is zero.
-		in[i] = As<SIMD::Float>(SIMD::Int(0));
+		in[i] = SIMD::Int(0);
 		i++;
 	}
 
@@ -312,14 +312,14 @@ void SpirvShader::EmitImageSampleUnconditional(Array<SIMD::Float> &out, ImageIns
 
 		for(uint32_t j = 0; j < offsetValue.componentCount; j++, i++)
 		{
-			in[i] = As<SIMD::Float>(offsetValue.Int(j));  // Integer values, but transfered as float.
+			in[i] = offsetValue.Int(j);  // Integer values, but transfered as float.
 		}
 	}
 
 	if(sample)
 	{
 		auto sampleValue = Operand(this, state, sampleId);
-		in[i] = As<SIMD::Float>(sampleValue.Int(0));
+		in[i] = sampleValue.Int(0);
 	}
 
 	auto cacheIt = state->routine->samplerCache.find(insn.resultId());
