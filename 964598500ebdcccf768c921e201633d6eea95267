@@ -34,6 +34,24 @@
       "parentUuid": "a5a77187_94bc7f9c",
       "revId": "964598500ebdcccf768c921e201633d6eea95267",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "468a41b6_d362c8d4",
+        "filename": "include/vulkan/vulkan_fuchsia_extras.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-08T18:57:38Z",
+      "side": 1,
+      "message": "Thanks! I\u0027ve provided you with contributor privileges so once that propagated you should be able to Code-Review+1.",
+      "parentUuid": "d004acf5_06bd6085",
+      "revId": "964598500ebdcccf768c921e201633d6eea95267",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }
