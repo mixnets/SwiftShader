@@ -26,7 +26,7 @@ SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler &state)
     , state(state)
 {
 }
-Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Float &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function)
+Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Float4 &dRef, Int &&lodOrBias, Float4 &dsx, Float4 &dsy, Vector4i &offset, Int4 &sample, SamplerFunction function)
 {
 	Vector4f c;
 
@@ -88,7 +88,7 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 		if(function == Bias)
 		{
 			// Add SPIR-V Bias operand to the sampler provided bias and clamp to maxSamplerLodBias limit.
-			bias = Min(Max(bias + lodOrBias, -vk::MAX_SAMPLER_LOD_BIAS), vk::MAX_SAMPLER_LOD_BIAS);
+			bias = Min(Max(bias + As<Float>(lodOrBias), -vk::MAX_SAMPLER_LOD_BIAS), vk::MAX_SAMPLER_LOD_BIAS);
 		}
 
 		lod += bias;
@@ -97,12 +97,12 @@ Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 uvwa[4], Floa
 	{
 		// Vulkan 1.1: "The absolute value of mipLodBias must be less than or equal to VkPhysicalDeviceLimits::maxSamplerLodBias"
 		// Hence no explicit clamping to maxSamplerLodBias is required in this case.
-		lod = lodOrBias + state.mipLodBias;
+		lod = As<Float>(lodOrBias) + state.mipLodBias;
 	}
 	else if(function == Fetch)
 	{
 		// TODO: Eliminate int-float-int conversion.
-		lod = Float(As<Int>(lodOrBias));
+		lod = Float(lodOrBias);
 	}
 	else if(function == Base || function == Gather)
 	{

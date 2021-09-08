@@ -132,7 +132,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 
 		SIMD::Float uvwa[4];
 		SIMD::Float dRef;
-		SIMD::Float lodOrBias;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
+		SIMD::Int lodOrBias;  // Explicit level-of-detail, or bias added to the implicit level-of-detail (depending on samplerMethod).
 		Vector4f dsx;
 		Vector4f dsy;
 		Vector4i offset;
@@ -153,7 +153,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 
 		if(instruction.samplerMethod == Lod || instruction.samplerMethod == Bias || instruction.samplerMethod == Fetch)
 		{
-			lodOrBias = in[i];
+			lodOrBias = As<SIMD::Int>(in[i]);
 			i++;
 		}
 		else if(instruction.samplerMethod == Grad)
@@ -190,7 +190,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 			// Only perform per-lane sampling if LOD diverges or we're doing Grad sampling.
 			Bool perLaneSampling = samplerFunction.method == Grad || lodOrBias.x != lodOrBias.y ||
 			                       lodOrBias.x != lodOrBias.z || lodOrBias.x != lodOrBias.w;
-			auto lod = Pointer<Float>(&lodOrBias);
+			auto lod = Pointer<Int>(&lodOrBias);
 			Int i = 0;
 			Do
 			{
@@ -229,7 +229,7 @@ std::shared_ptr<rr::Routine> SpirvShader::emitSamplerRoutine(ImageInstruction in
 		}
 		else
 		{
-			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, lodOrBias.x, (dsx.x), (dsy.x), offset, sampleId, samplerFunction);
+			Vector4f sample = s.sampleTexture(texture, uvwa, dRef, Int(lodOrBias.x), (dsx.x), (dsy.x), offset, sampleId, samplerFunction);
 
 			Pointer<SIMD::Float> rgba = out;
 			rgba[0] = sample.x;
