@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2350c1ac_e7576b1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-08T16:55:00Z",
+      "side": 1,
+      "message": "The only change that landed yesterday is https://swiftshader-review.googlesource.com/c/SwiftShader/+/56808, but no regression was found.\n\nHowever, I also changed running Regres on my workstation instead of the CloudTop system though. That affects the Vulkan Loader that gets used, which may affect dEQP-VK.api.version_check.entry_points: b/182287812",
+      "revId": "1523c1e02fbc4bcb0910c81094bd6ff5eefefc46",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
