@@ -22,11 +22,13 @@ namespace vk {
 
 class Device;
 
-class DeviceMemory : public Object<DeviceMemory, VkDeviceMemory>
+class DeviceMemory
 {
 public:
 	struct ExtendedAllocationInfo
 	{
+		VkDeviceSize allocationSize = 0;
+		uint32_t memoryTypeIndex = 0;
 		const VkExportMemoryAllocateInfo *exportMemoryAllocateInfo = nullptr;
 		const VkImportMemoryHostPointerInfoEXT *importMemoryHostPointerInfo = nullptr;
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
@@ -41,13 +43,26 @@ public:
 #endif
 	};
 
-	DeviceMemory(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, Device *pDevice);
+	DeviceMemory(const VkMemoryAllocateInfo *pCreateInfo, Device *pDevice);
+	virtual ~DeviceMemory() {}
+
+	static VkResult CreateFromFactory(const VkAllocationCallbacks *pAllocator, const VkMemoryAllocateInfo *pAllocateInfo, VkDeviceMemory *pMemory, Device *device);
+
+	operator VkDeviceMemory()
+	{
+		return vk::TtoVkT<DeviceMemory, VkDeviceMemory>(this);
+	}
+
+	static inline DeviceMemory *Cast(VkDeviceMemory object)
+	{
+		return vk::VkTtoT<DeviceMemory, VkDeviceMemory>(object);
+	}
 
 	static size_t ComputeRequiredAllocationSize(const VkMemoryAllocateInfo *pCreateInfo);
 	static VkResult ParseAllocationInfo(const VkMemoryAllocateInfo *pAllocateInfo, DeviceMemory::ExtendedAllocationInfo *extendedAllocationInfo);
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_OPAQUE_FD
-	VkResult exportFd(int *pFd) const;
+	virtual VkResult exportFd(int *pFd) const;
 #endif
 
 #if SWIFTSHADER_EXTERNAL_MEMORY_ANDROID_HARDWARE_BUFFER
@@ -71,19 +86,51 @@ public:
 	bool checkExternalMemoryHandleType(
 	    VkExternalMemoryHandleTypeFlags supportedExternalMemoryHandleType) const;
 
-	// Internal implementation class for external memory. Platform-specific.
-	class ExternalBase;
+	// Some external device memories, such as Android hardware buffers, represent
+	// specific images with requirements.
+	virtual bool hasExternalImageProperties() const { return false; }
+	virtual int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const { return 0; }
+	virtual VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const { return 0; }
 
-	bool hasExternalImageProperties() const;
-	int externalImageRowPitchBytes(VkImageAspectFlagBits aspect) const;
-	VkDeviceSize externalImageMemoryOffset(VkImageAspectFlagBits aspect) const;
+protected:
+	// Allocate the memory according to |size|. On success return VK_SUCCESS
+	// and sets |*pBuffer|.
+	virtual VkResult allocate(size_t size, void **pBuffer);
+
+	// Deallocate previously allocated memory at |buffer|.
+	virtual void deallocate(void *buffer, size_t size);
+
+	// Return the handle type flag bit supported by this implementation.
+	// A value of 0 corresponds to non-external memory.
+	virtual VkExternalMemoryHandleTypeFlagBits getFlagBit() const;
+
+	virtual void setDevicePtr(Device *pDevice) {}
+
+#ifdef SWIFTSHADER_DEVICE_MEMORY_REPORT
+	virtual bool isImport() const
+	{
+		return false;
+	}
+
+	virtual uint64_t getMemoryObjectId() const
+	{
+		return (uint64_t)buffer;
+	}
+#endif  // SWIFTSHADER_DEVICE_MEMORY_REPORT
 
 private:
 	void *buffer = nullptr;
 	VkDeviceSize size = 0;
 	uint32_t memoryTypeIndex = 0;
-	ExternalBase *external = nullptr;
 	Device *device;
+};
+
+class DeviceMemoryInternal : public DeviceMemory, public ObjectBase<DeviceMemoryInternal, VkDeviceMemory>
+{
+public:
+	DeviceMemoryInternal(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, Device *pDevice)
+	    : DeviceMemory(pCreateInfo, pDevice)
+	{}
 };
 
 static inline DeviceMemory *Cast(VkDeviceMemory object)
