@@ -94,6 +94,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9bd79c7_1f7defd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-08T18:24:55Z",
+      "side": 1,
+      "message": "Indeed addressing one issue per CL is usually preferable, but in this case it was straightforward to replace all TEMP definitions in the same change, and delete vulkan_fuchsia_extras.h instead of including it where it was previously needed and then removing it again.",
+      "parentUuid": "02599ccf_918a528d",
+      "revId": "6a13bf6ffdbad46e9762a0faeb9c2e384618d582",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "088d8534_86af6791",
