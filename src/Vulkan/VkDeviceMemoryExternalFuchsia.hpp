@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkDeviceMemory.hpp"
 #include "VkStringify.hpp"
 
 #include "System/Debug.hpp"
@@ -21,7 +22,7 @@
 
 namespace zircon {
 
-class VmoExternalMemory : public vk::DeviceMemory::ExternalBase
+class VmoExternalMemory : public vk::DeviceMemory, public vk::ObjectBase<VmoExternalMemory, VkDeviceMemory>
 {
 public:
 	// Helper struct to parse the VkMemoryAllocateInfo.pNext chain and
@@ -67,8 +68,9 @@ public:
 		return info.importHandle || info.exportHandle;
 	}
 
-	explicit VmoExternalMemory(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
-	    : allocateInfo(extendedAllocationInfo)
+	explicit VmoExternalMemory(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, vk::Device *pDevice)
+	    : vk::DeviceMemory(pCreateInfo, pDevice)
+	    , allocateInfo(extendedAllocationInfo)
 	{
 	}
 

@@ -191,8 +191,9 @@ AHardwareBufferExternalMemory::AllocateInfo::AllocateInfo(const vk::DeviceMemory
 	}
 }
 
-AHardwareBufferExternalMemory::AHardwareBufferExternalMemory(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo)
-    : allocateInfo(extendedAllocationInfo)
+AHardwareBufferExternalMemory::AHardwareBufferExternalMemory(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, vk::Device *pDevice)
+    : vk::DeviceMemory(pCreateInfo, pDevice)
+    , allocateInfo(extendedAllocationInfo)
 {
 }
 
