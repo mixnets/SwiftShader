@@ -18,12 +18,11 @@
 #include "VkBuffer.hpp"
 #include "VkDevice.hpp"
 #include "VkDeviceMemory.hpp"
-#include "VkDeviceMemoryExternalBase.hpp"
 #include "VkImage.hpp"
 
 #include <vndk/hardware_buffer.h>
 
-class AHardwareBufferExternalMemory : public vk::DeviceMemory::ExternalBase
+class AHardwareBufferExternalMemory : public vk::DeviceMemory, public vk::ObjectBase<AHardwareBufferExternalMemory, VkDeviceMemory>
 {
 public:
 	// Helper struct to used the parse allocation info and extract
@@ -51,7 +50,7 @@ public:
 		return info.importAhb || info.exportAhb;
 	}
 
-	explicit AHardwareBufferExternalMemory(const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo);
+	explicit AHardwareBufferExternalMemory(const VkMemoryAllocateInfo *pCreateInfo, void *mem, const vk::DeviceMemory::ExtendedAllocationInfo &extendedAllocationInfo, vk::Device *pDevice);
 	~AHardwareBufferExternalMemory();
 
 	VkResult allocate(size_t size, void **pBuffer) override;
