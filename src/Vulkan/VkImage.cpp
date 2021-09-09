@@ -381,7 +381,7 @@ void Image::copyTo(Image *dstImage, const VkImageCopy &region) const
 
 	VkExtent3D srcExtent = getMipLevelExtent(srcAspect, region.srcSubresource.mipLevel);
 	VkExtent3D dstExtent = dstImage->getMipLevelExtent(dstAspect, region.dstSubresource.mipLevel);
-	VkExtent3D copyExtent = imageExtentInBlocks(region.extent, srcAspect);
+	VkExtent3D copyExtent = imageExtentInBlocks(srcAspect, region.extent);
 
 	VkImageType srcImageType = imageType;
 	VkImageType dstImageType = dstImage->getImageType();
@@ -534,7 +534,7 @@ void Image::copy(Buffer *buffer, const VkBufferImageCopy &region, bool bufferIsS
 	auto aspect = static_cast<VkImageAspectFlagBits>(region.imageSubresource.aspectMask);
 	Format copyFormat = getFormat(aspect);
 
-	VkExtent3D imageExtent = imageExtentInBlocks(region.imageExtent, aspect);
+	VkExtent3D imageExtent = imageExtentInBlocks(aspect, region.imageExtent);
 
 	if(imageExtent.width == 0 || imageExtent.height == 0 || imageExtent.depth == 0)
 	{
@@ -659,11 +659,11 @@ void Image::copyFrom(Buffer *srcBuffer, const VkBufferImageCopy &region)
 void *Image::getTexelPointer(const VkOffset3D &offset, const VkImageSubresource &subresource) const
 {
 	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
-	return deviceMemory->getOffsetPointer(texelOffsetBytesInStorage(offset, subresource) +
+	return deviceMemory->getOffsetPointer(texelOffsetBytesInStorage(aspect, offset, subresource.mipLevel) +
 	                                      getMemoryOffset(aspect, subresource.mipLevel, subresource.arrayLayer));
 }
 
-VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFlagBits aspect) const
+VkExtent3D Image::imageExtentInBlocks(VkImageAspectFlagBits aspect, const VkExtent3D &extent) const
 {
 	VkExtent3D adjustedExtent = extent;
 	Format usedFormat = getFormat(aspect);
@@ -680,7 +680,7 @@ VkExtent3D Image::imageExtentInBlocks(const VkExtent3D &extent, VkImageAspectFla
 	return adjustedExtent;
 }
 
-VkOffset3D Image::imageOffsetInBlocks(const VkOffset3D &offset, VkImageAspectFlagBits aspect) const
+VkOffset3D Image::imageOffsetInBlocks(VkImageAspectFlagBits aspect, const VkOffset3D &offset) const
 {
 	VkOffset3D adjustedOffset = offset;
 	Format usedFormat = getFormat(aspect);
@@ -737,13 +737,12 @@ int Image::borderSize() const
 	return (isCube() && !format.isCompressed()) ? 1 : 0;
 }
 
-VkDeviceSize Image::texelOffsetBytesInStorage(const VkOffset3D &offset, const VkImageSubresource &subresource) const
+VkDeviceSize Image::texelOffsetBytesInStorage(VkImageAspectFlagBits aspect, const VkOffset3D &offset, uint32_t mipLevel) const
 {
-	VkImageAspectFlagBits aspect = static_cast<VkImageAspectFlagBits>(subresource.aspectMask);
-	VkOffset3D adjustedOffset = imageOffsetInBlocks(offset, aspect);
+	VkOffset3D adjustedOffset = imageOffsetInBlocks(aspect, offset);
 	int border = borderSize();
-	return adjustedOffset.z * slicePitchBytes(aspect, subresource.mipLevel) +
-	       (adjustedOffset.y + border) * rowPitchBytes(aspect, subresource.mipLevel) +
+	return adjustedOffset.z * slicePitchBytes(aspect, mipLevel) +
+	       (adjustedOffset.y + border) * rowPitchBytes(aspect, mipLevel) +
 	       (adjustedOffset.x + border) * getFormat(aspect).bytesPerBlock();
 }
 
@@ -803,7 +802,7 @@ int Image::rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const
 	Format usedFormat = getFormat(aspect);
 	if(usedFormat.isCompressed())
 	{
-		VkExtent3D extentInBlocks = imageExtentInBlocks(mipLevelExtent, aspect);
+		VkExtent3D extentInBlocks = imageExtentInBlocks(aspect, mipLevelExtent);
 		return extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
@@ -820,7 +819,7 @@ int Image::slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) cons
 	Format usedFormat = getFormat(aspect);
 	if(usedFormat.isCompressed())
 	{
-		VkExtent3D extentInBlocks = imageExtentInBlocks(mipLevelExtent, aspect);
+		VkExtent3D extentInBlocks = imageExtentInBlocks(aspect, mipLevelExtent);
 		return extentInBlocks.height * extentInBlocks.width * usedFormat.bytesPerBlock();
 	}
 
