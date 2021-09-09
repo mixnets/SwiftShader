@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24eee699_be689206",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-09T15:29:06Z",
+      "side": 1,
+      "message": "uber-nit: Just FYI, Git commit messages can be 72 characters wide so this would look a little less dense.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 49
+      },
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "964e0984_c2e9d677",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-09T15:29:06Z",
+      "side": 1,
+      "message": "Very nice reduction in complexity!\n\nSome observations that don\u0027t need to be acted on:",
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "037320d2_2509d8f4",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-09T15:29:06Z",
+      "side": 1,
+      "message": "uber-nit: Ideally this would print the handleType like in othe uses of UNSUPPORTED(). It wasn\u0027t there originally either though.",
+      "range": {
+        "startLine": 130,
+        "startChar": 80,
+        "endLine": 130,
+        "endChar": 83
+      },
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71b7f95c_67528005",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-09T15:29:06Z",
+      "side": 1,
+      "message": "I noticed we have differences between the external memory types for when the handle type is unexpected (especially in Release builds where UNSUPPORTED() becomes a no-op). Sometimes we enable the feature anyway, and sometimes we leave it disabled.\n\nI see you took care not to alter any behavior in this change, which is good.\n\nI think that if there\u0027s a VUID for it we should avoid spending any cycles on re-validating within SwiftShader. However, it is still valuable to keep the asserts just to alert ourselves to where we need changes when implementing new features.",
+      "range": {
+        "startLine": 181,
+        "startChar": 2,
+        "endLine": 181,
+        "endChar": 6
+      },
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5095e20_e2cc0aac",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-09T15:29:06Z",
+      "side": 1,
+      "message": "uber-nit: Slightly odd grammar here and in the comment at 42.",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 29,
+        "endChar": 51
+      },
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
