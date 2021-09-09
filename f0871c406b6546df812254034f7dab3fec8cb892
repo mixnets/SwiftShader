@@ -43,6 +43,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "e6d784f8_5e1fbe86",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-09T15:51:32Z",
+      "side": 1,
+      "message": "I noted all the nits and will address them in a follow-up. I\u0027ll land this right away to see if we have any issues merging this to Android or Fuchsia, so we can address them ASAP, if there are any.",
+      "revId": "f0871c406b6546df812254034f7dab3fec8cb892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "037320d2_2509d8f4",
         "filename": "src/Vulkan/VkDeviceMemory.cpp",
         "patchSetId": 5
