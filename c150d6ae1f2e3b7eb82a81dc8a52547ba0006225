@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dead6d79_1a4bcc94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "Excellent reduction in complexity! I think this can practically land as-is, but there\u0027s another follow-up refactoring that seems feasible now. Details inline. Might be useful to see how that works out first.",
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e50fdfe_f2c9d5c2",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "This probably could use its own file. But let\u0027s do that in a follow-up.",
+      "range": {
+        "startLine": 24,
+        "startChar": 6,
+        "endLine": 24,
+        "endChar": 24
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95210561_205617e0",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "I think this can be made `protected`, to ensure it doesn\u0027t get constructed directly. The factory method must be used instead.",
+      "range": {
+        "startLine": 46,
+        "startChar": 1,
+        "endLine": 46,
+        "endChar": 72
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e69ffb22_48a12b70",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "nit: It took me a bit of bikeshedding to come up with a better name that doesn\u0027t clash with the vk::ObjectBase::Create(), but \"Allocate\" wouldn\u0027t look out of place, if this also effectively allocated the memory. See my other comment at vkAllocateMemory().",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 34
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d15f23c7_cbd7a54b",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "nit: A small comment here that this class represents \"regular\" internal memory could be useful.\n\nThe \"Internal\" suffix threw me off for a bit as this being an internal implementation (cf. \"Impl\"), while it\u0027s really about External\u003c-\u003eInternal memory.",
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0889a9e6_417fce1d",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "I don\u0027t think these concrete classes have to be derived from vk::ObjectBase any more. ComputeRequiredAllocationSize() returns 0 for all of them, since any memory they allocate can be allocated in the allocate() call, as part of the \nvk::DeviceMemory factory method. Note that previously vk::ObjectBase::Create() was the factory method that enabled failing construction when the additional memory allocation failed, but that can now be done in the new one.\n\nThat probably also means we no longer need vk::ObjectBase itself; it can be merged into vk::Object (note there\u0027s no VkAHardwareBufferExternalMemory for which we need to support casting to/from vk::AHardwareBufferExternalMemory).\n\nProbably best left for a follow-up change.",
+      "range": {
+        "startLine": 25,
+        "startChar": 74,
+        "endLine": 25,
+        "endChar": 84
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d1558fe_318a910a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-10T14:32:14Z",
+      "side": 1,
+      "message": "I think this can now be moved into the factory method?",
+      "range": {
+        "startLine": 1034,
+        "startChar": 1,
+        "endLine": 1040,
+        "endChar": 2
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
