@@ -64,6 +64,54 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3e59964_41e5d7b3",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95210561_205617e0",
+      "range": {
+        "startLine": 46,
+        "startChar": 1,
+        "endLine": 46,
+        "endChar": 72
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c29a20b_04d1a6e1",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Done, along with the struct above it.",
+      "parentUuid": "95210561_205617e0",
+      "range": {
+        "startLine": 46,
+        "startChar": 1,
+        "endLine": 46,
+        "endChar": 72
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e69ffb22_48a12b70",
@@ -77,6 +125,54 @@
       "writtenOn": "2021-09-10T14:32:14Z",
       "side": 1,
       "message": "nit: It took me a bit of bikeshedding to come up with a better name that doesn\u0027t clash with the vk::ObjectBase::Create(), but \"Allocate\" wouldn\u0027t look out of place, if this also effectively allocated the memory. See my other comment at vkAllocateMemory().",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 34
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca13b6c4_e42a69d0",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e69ffb22_48a12b70",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 34
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "155a02e3_069a0151",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Done. Renamed to \"Allocate\".",
+      "parentUuid": "e69ffb22_48a12b70",
       "range": {
         "startLine": 49,
         "startChar": 17,
@@ -104,6 +200,24 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c8191f1_f961ce8e",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d15f23c7_cbd7a54b",
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0889a9e6_417fce1d",
@@ -127,6 +241,30 @@
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6330aaf_201d670d",
+        "filename": "src/Vulkan/VkDeviceMemoryExternalAndroid.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0889a9e6_417fce1d",
+      "range": {
+        "startLine": 25,
+        "startChar": 74,
+        "endLine": 25,
+        "endChar": 84
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5d1558fe_318a910a",
@@ -140,6 +278,30 @@
       "writtenOn": "2021-09-10T14:32:14Z",
       "side": 1,
       "message": "I think this can now be moved into the factory method?",
+      "range": {
+        "startLine": 1034,
+        "startChar": 1,
+        "endLine": 1040,
+        "endChar": 2
+      },
+      "revId": "c150d6ae1f2e3b7eb82a81dc8a52547ba0006225",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f38e9dd_d5166cc7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T20:31:08Z",
+      "side": 1,
+      "message": "Partially. \"vk::Cast(*pMemory)-\u003eallocate();\" can, but I\u0027d rather not move \"vk::destroy\", because it depends on every object derived from vk::Object.",
+      "parentUuid": "5d1558fe_318a910a",
       "range": {
         "startLine": 1034,
         "startChar": 1,
