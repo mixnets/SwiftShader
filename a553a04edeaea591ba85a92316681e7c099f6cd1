@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88411ace_5ee67dc8",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T12:46:27Z",
+      "side": 1,
+      "message": "This template function should probably be hidden in the cpp file.\nIf we look at the code below, for getProperties, there\u0027s an entry point explicitly defined for every type of structure used, so we should keep the same pattern for the hasFeatures() functions and add one for every type we want to use.",
+      "range": {
+        "startLine": 42,
+        "startChar": 1,
+        "endLine": 42,
+        "endChar": 51
+      },
+      "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b443dc39_eb90472a",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2021-09-10T12:46:27Z",
+      "side": 1,
+      "message": "Equivalent to:\nreturn ::memcmp(requestedFeatureBytes, supportedFeatureBytes, bytesToCompare) \u003d\u003d 0;",
+      "range": {
+        "startLine": 57,
+        "startChar": 2,
+        "endLine": 64,
+        "endChar": 14
+      },
+      "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
