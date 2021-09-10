@@ -38,6 +38,32 @@ public:
 	void getFeatures2(VkPhysicalDeviceFeatures2 *features) const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures &requestedFeatures) const;
 
+	template<typename T>
+	bool hasFeatures2(const T *requestedFeature) const
+	{
+		VkPhysicalDeviceFeatures2 features;
+		features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		T supportedFeature;
+		supportedFeature.sType = requestedFeature->sType;
+		supportedFeature.pNext = nullptr;
+		features.pNext = &supportedFeature;
+
+		getFeatures2(&features);
+		size_t offset = sizeof(VkBaseOutStructure);
+		size_t bytesToCompare = sizeof(T) - offset;
+		const uint8_t *requestedFeatureBytes = reinterpret_cast<const uint8_t *>(requestedFeature) + offset;
+		const uint8_t *supportedFeatureBytes = reinterpret_cast<const uint8_t *>(&supportedFeature) + offset;
+
+		for(size_t i = 0; i < bytesToCompare; i++)
+		{
+			if(requestedFeatureBytes[i] != supportedFeatureBytes[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	const VkPhysicalDeviceProperties &getProperties() const;
 	void getProperties(VkPhysicalDeviceIDProperties *properties) const;
 	void getProperties(VkPhysicalDeviceMaintenance3Properties *properties) const;

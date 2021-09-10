@@ -874,6 +874,36 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 				(void)customBorderColorFeatures->customBorderColorWithoutFormat;
 			}
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES:
+			{
+				const auto *vk11Features = reinterpret_cast<const VkPhysicalDeviceVulkan11Features *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasFeatures2<VkPhysicalDeviceVulkan11Features>(vk11Features);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES:
+			{
+				const auto *vk12Features = reinterpret_cast<const VkPhysicalDeviceVulkan12Features *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasFeatures2<VkPhysicalDeviceVulkan12Features>(vk12Features);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT:
+			{
+				const auto *depthClipFeatures = reinterpret_cast<const VkPhysicalDeviceDepthClipEnableFeaturesEXT *>(extensionCreateInfo);
+				bool hasFeatures = vk::Cast(physicalDevice)->hasFeatures2<VkPhysicalDeviceDepthClipEnableFeaturesEXT>(depthClipFeatures);
+				if(!hasFeatures)
+				{
+					return VK_ERROR_FEATURE_NOT_PRESENT;
+				}
+			}
+			break;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			LOG_TRAP("pCreateInfo->pNext sType = %s", vk::Stringify(extensionCreateInfo->sType).c_str());
