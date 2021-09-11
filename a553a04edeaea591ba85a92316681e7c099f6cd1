@@ -45,6 +45,30 @@
       },
       "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58d67981_fe8ad2dd",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "True, but it is also incorrect. We don\u0027t have to check for requested \u003d\u003d supported. If a feature is supported but not requested, that\u0027s fine too. It\u0027s fixed in Patchset 3.",
+      "parentUuid": "b443dc39_eb90472a",
+      "range": {
+        "startLine": 57,
+        "startChar": 2,
+        "endLine": 64,
+        "endChar": 14
+      },
+      "revId": "a553a04edeaea591ba85a92316681e7c099f6cd1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
     }
   ]
 }

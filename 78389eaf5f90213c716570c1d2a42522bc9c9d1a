@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "119f85c7_514d2b38",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1064,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "Let\u0027s rename this to something like \"hasExtendedFeatures\", to clarify that this should only be used for extension structures, and avoid comparison with getFeatures2 which is really for obtaining the second version of the VkPhysicalDeviceFeatures structure.",
+      "range": {
+        "startLine": 1064,
+        "startChar": 21,
+        "endLine": 1064,
+        "endChar": 33
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8991f73_6a077f61",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1074,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "\"offsetToFirstBool32\" would make it a lot clearer what happens here.",
+      "range": {
+        "startLine": 1074,
+        "startChar": 8,
+        "endLine": 1074,
+        "endChar": 14
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4ce29d8_5bbd58ff",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1076,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "All features use the VkBool32 type, so let\u0027s use that instead.",
+      "range": {
+        "startLine": 1076,
+        "startChar": 7,
+        "endLine": 1076,
+        "endChar": 14
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0ebe7a0_80c81c44",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1081,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "You can use the same logic as line 1054 here, which behaves as \"expected\" when a non-0 value other than VK_TRUE is used to indicate an enabled feature.",
+      "range": {
+        "startLine": 1081,
+        "startChar": 30,
+        "endLine": 1081,
+        "endChar": 31
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02b8b52a_162d750a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 795,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "Can this type be implicitly deduced from the parameter type?\n\nThat said, as also noted by Alexis, perhaps we should have explicit overloaded functions for each extension struct. This prevents accidentally using it with types for which it shouldn\u0027t be used. Templates that can be used in such a way without creating a compiler warning tend to be dangerous.",
+      "range": {
+        "startLine": 795,
+        "startChar": 61,
+        "endLine": 795,
+        "endChar": 107
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46017fe3_155ca4fb",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 906,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2021-09-11T03:54:05Z",
+      "side": 1,
+      "message": "This bug was caused by this macro being fairly silent. Addressing b/176893525 would help catch similar cases early.",
+      "range": {
+        "startLine": 906,
+        "startChar": 3,
+        "endLine": 906,
+        "endChar": 11
+      },
+      "revId": "78389eaf5f90213c716570c1d2a42522bc9c9d1a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4"
+    }
+  ]
+}
